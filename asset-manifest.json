@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/skirmish/static/css/main.362d1497.chunk.css",
+    "main.js": "/skirmish/static/js/main.5618bb77.chunk.js",
+    "main.js.map": "/skirmish/static/js/main.5618bb77.chunk.js.map",
+    "runtime-main.js": "/skirmish/static/js/runtime-main.0d4c2bb1.js",
+    "runtime-main.js.map": "/skirmish/static/js/runtime-main.0d4c2bb1.js.map",
+    "static/css/2.969b5337.chunk.css": "/skirmish/static/css/2.969b5337.chunk.css",
+    "static/js/2.bd993ff3.chunk.js": "/skirmish/static/js/2.bd993ff3.chunk.js",
+    "static/js/2.bd993ff3.chunk.js.map": "/skirmish/static/js/2.bd993ff3.chunk.js.map",
+    "index.html": "/skirmish/index.html",
+    "precache-manifest.e72757f7ef4884e710141fdfb17bd394.js": "/skirmish/precache-manifest.e72757f7ef4884e710141fdfb17bd394.js",
+    "service-worker.js": "/skirmish/service-worker.js",
+    "static/css/2.969b5337.chunk.css.map": "/skirmish/static/css/2.969b5337.chunk.css.map",
+    "static/css/main.362d1497.chunk.css.map": "/skirmish/static/css/main.362d1497.chunk.css.map",
+    "static/js/2.bd993ff3.chunk.js.LICENSE.txt": "/skirmish/static/js/2.bd993ff3.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.0d4c2bb1.js",
+    "static/css/2.969b5337.chunk.css",
+    "static/js/2.bd993ff3.chunk.js",
+    "static/css/main.362d1497.chunk.css",
+    "static/js/main.5618bb77.chunk.js"
+  ]
+}

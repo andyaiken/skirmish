@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "73b1de29fb7dc50f7e56a3e146e02f5a",
+    "revision": "00dfebad3e368649812483d513d13fae",
     "url": "/skirmish/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/skirmish/static/css/2.969b5337.chunk.css"
   },
   {
-    "revision": "e82589fb8e51e3a8add6",
+    "revision": "8c98e731ee9702b94068",
     "url": "/skirmish/static/css/main.362d1497.chunk.css"
   },
   {
@@ -20,8 +20,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/skirmish/static/js/2.bd993ff3.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "e82589fb8e51e3a8add6",
-    "url": "/skirmish/static/js/main.5618bb77.chunk.js"
+    "revision": "8c98e731ee9702b94068",
+    "url": "/skirmish/static/js/main.0332a9e1.chunk.js"
   },
   {
     "revision": "53bd9ef2c77f52e12620",

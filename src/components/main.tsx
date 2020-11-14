@@ -1,5 +1,5 @@
 import React from 'react';
-import { Encounter, EncounterHelper } from '../models/encounter';
+import { EncounterHelper } from '../models/encounter';
 import { FeatureHelper } from '../models/feature';
 import { Game, GameHelper } from '../models/game';
 import { HeroHelper } from '../models/hero';

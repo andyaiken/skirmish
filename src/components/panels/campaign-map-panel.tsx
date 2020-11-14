@@ -1,5 +1,5 @@
 import React from 'react';
-import { CampaignMap } from '../models/campaign-map';
+import { CampaignMap } from '../../models/campaign-map';
 
 interface Props {
 	map: CampaignMap;

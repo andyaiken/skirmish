@@ -2,7 +2,7 @@ import { Button, Col, Divider, Row } from 'antd';
 import React from 'react';
 import { CampaignMap } from '../../models/campaign-map';
 import { Game } from '../../models/game';
-import { CampaignMapPanel } from '../campaign-map-panel';
+import { CampaignMapPanel } from '../panels/campaign-map-panel';
 
 // TODO: Select region, inspect region details, start encounter there
 

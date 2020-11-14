@@ -1,7 +1,7 @@
 import { Button, Col, Divider, Row } from 'antd';
 import React from 'react';
 import { Encounter } from '../../models/encounter';
-import { EncounterMapPanel } from '../encounter-map-panel';
+import { EncounterMapPanel } from '../panels/encounter-map-panel';
 
 interface Props {
 	encounter: Encounter;

@@ -1,14 +1,14 @@
 import { Button, Col, Divider, Radio, Row, Typography } from 'antd';
 import React from 'react';
-import { DamageCategory, DamageType } from '../models/damage';
-import { Feature, FeatureHelper, FeatureType } from '../models/feature';
-import { Hero, HeroHelper } from '../models/hero';
-import { Proficiency } from '../models/proficiency';
-import { Skill, SkillCategory } from '../models/skill';
-import { Trait } from '../models/trait';
-import { Utils } from '../utils/utils';
-import { Align } from './align';
-import { PlayingCard } from './playing-card';
+import { DamageCategory, DamageType } from '../../models/damage';
+import { Feature, FeatureHelper, FeatureType } from '../../models/feature';
+import { Hero, HeroHelper } from '../../models/hero';
+import { Proficiency } from '../../models/proficiency';
+import { Skill, SkillCategory } from '../../models/skill';
+import { Trait } from '../../models/trait';
+import { Utils } from '../../utils/utils';
+import { Align } from '../utility/align';
+import { PlayingCard } from '../utility/playing-card';
 
 interface Props {
 	hero: Hero;

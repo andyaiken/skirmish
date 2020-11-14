@@ -1,14 +1,14 @@
 import { Button, Col, Divider, Row, Typography } from 'antd';
 import React from 'react';
-import { BackgroundHelper } from '../models/background';
-import { FeatureHelper } from '../models/feature';
-import { Hero, HeroHelper } from '../models/hero';
-import { Item, ItemHelper } from '../models/item';
-import { RoleHelper } from '../models/role';
-import { SpeciesHelper } from '../models/species';
-import { Utils } from '../utils/utils';
-import { Padding } from './padding';
-import { PlayingCard } from './playing-card';
+import { BackgroundHelper } from '../../models/background';
+import { FeatureHelper } from '../../models/feature';
+import { Hero, HeroHelper } from '../../models/hero';
+import { Item, ItemHelper } from '../../models/item';
+import { RoleHelper } from '../../models/role';
+import { SpeciesHelper } from '../../models/species';
+import { Utils } from '../../utils/utils';
+import { Padding } from '../utility/padding';
+import { PlayingCard } from '../utility/playing-card';
 
 interface Props {
 	finished: (hero: Hero) => void;

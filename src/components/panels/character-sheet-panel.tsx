@@ -1,12 +1,12 @@
 import { Col, Divider, Progress, Radio, Row, Typography } from 'antd';
 import React from 'react';
-import { BackgroundHelper } from '../models/background';
-import { Hero, HeroHelper } from '../models/hero';
-import { RoleHelper } from '../models/role';
-import { Skill } from '../models/skill';
-import { SpeciesHelper } from '../models/species';
-import { Trait } from '../models/trait';
-import { Align } from './align';
+import { BackgroundHelper } from '../../models/background';
+import { Hero, HeroHelper } from '../../models/hero';
+import { RoleHelper } from '../../models/role';
+import { Skill } from '../../models/skill';
+import { SpeciesHelper } from '../../models/species';
+import { Trait } from '../../models/trait';
+import { Align } from '../utility/align';
 
 interface Props {
 	hero: Hero;
@@ -17,7 +17,7 @@ interface State {
 	view: 'stats' | 'items' | 'features' | 'actions';
 }
 
-export class CharacterSheet extends React.Component<Props, State> {
+export class CharacterSheetPanel extends React.Component<Props, State> {
 	public static defaultProps = {
 		display: 'full'
 	};

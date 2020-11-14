@@ -1,5 +1,5 @@
 import React from 'react';
-import { EncounterMap } from '../models/encounter-map';
+import { EncounterMap } from '../../models/encounter-map';
 
 interface Props {
 	map: EncounterMap;

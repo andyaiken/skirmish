@@ -6,12 +6,12 @@ import { Hero, HeroHelper } from '../../models/hero';
 import { Skill } from '../../models/skill';
 import { Trait } from '../../models/trait';
 import { NameGenerator } from '../../utils/name-generator';
-import { Align } from '../align';
-import { CharacterSheet } from '../character-sheet';
-import { HeroBuilderPanel } from '../hero-builder-panel';
-import { HeroLevelUpPanel } from '../hero-level-up-panel';
-import { Padding } from '../padding';
-import { PlayingCard } from '../playing-card';
+import { CharacterSheetPanel } from '../panels/character-sheet-panel';
+import { HeroBuilderPanel } from '../panels/hero-builder-panel';
+import { HeroLevelUpPanel } from '../panels/hero-level-up-panel';
+import { Align } from '../utility/align';
+import { Padding } from '../utility/padding';
+import { PlayingCard } from '../utility/playing-card';
 
 interface Props {
 	game: Game;
@@ -45,7 +45,7 @@ export class HeroesScreen extends React.Component<Props, State> {
 			} else {
 				card = (
 					<Padding>
-						<CharacterSheet hero={hero} display='mini' />
+						<CharacterSheetPanel hero={hero} display='mini' />
 					</Padding>
 				);
 			}
@@ -77,9 +77,11 @@ export class HeroesScreen extends React.Component<Props, State> {
 				drawerContent = (
 					<HeroBuilderPanel
 						finished={hero => {
+							const h = this.state.selectedHero as Hero;
 							this.setState({
 								selectedHero: null
 							}, () => {
+								hero.id = h.id;
 								hero.name = NameGenerator.generateName();
 								this.props.addHero(hero);
 							});
@@ -92,11 +94,11 @@ export class HeroesScreen extends React.Component<Props, State> {
 					<HeroLevelUpPanel
 						hero={this.state.selectedHero}
 						finished={(trait, skill, feature) => {
-							const hero = this.state.selectedHero as Hero;
+							const h = this.state.selectedHero as Hero;
 							this.setState({
 								selectedHero: null
 							}, () => {
-								this.props.levelUp(hero, trait, skill, feature);
+								this.props.levelUp(h, trait, skill, feature);
 							});
 						}}
 					/>
@@ -104,7 +106,7 @@ export class HeroesScreen extends React.Component<Props, State> {
 			} else {
 				drawerTitle = 'Character Sheet';
 				drawerContent = (
-					<CharacterSheet hero={this.state.selectedHero as Hero}/>
+					<CharacterSheetPanel hero={this.state.selectedHero as Hero}/>
 				);
 				drawerClosable = true;
 			}

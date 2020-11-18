@@ -277,23 +277,7 @@ class SelectFeaturePanel extends React.Component<SelectFeaturePanelProps, Select
 	}
 
 	public render() {
-		const featureCards = this.state.features.map(feature => {
-			return (
-				<Col span={8} key={feature.id}>
-					<PlayingCard
-						back='Feature'
-						display={(this.props.feature !== null) && (this.props.feature.id !== feature.id) ? 'back' : 'front'}
-						onClick={() => this.props.onSelect(feature)}
-					>
-						<Align>
-							{FeatureHelper.getName(feature)}
-						</Align>
-					</PlayingCard>
-				</Col>
-			);
-		});
-
-		let extra = null;
+		let extra: JSX.Element | null = null;
 		if (this.props.feature) {
 			switch (this.props.feature.type) {
 				case FeatureType.DamageBonus:
@@ -343,11 +327,26 @@ class SelectFeaturePanel extends React.Component<SelectFeaturePanelProps, Select
 			}
 		}
 
+		const featureCards = this.state.features.map(feature => {
+			return (
+				<Col span={8} key={feature.id}>
+					<PlayingCard
+						back='Feature'
+						display={(this.props.feature !== null) && (this.props.feature.id !== feature.id) ? 'back' : 'front'}
+						onClick={() => this.props.onSelect(feature)}
+					>
+						<Align>
+							{(extra !== null) && (this.props.feature !== null) && (feature.id === this.props.feature.id) ? extra : FeatureHelper.getName(feature)}
+						</Align>
+					</PlayingCard>
+				</Col>
+			);
+		});
+
 		return (
-			<div>
+			<div className='hero-level-up'>
 				<Row gutter={10}>
 					{featureCards}
-					{extra}
 				</Row>
 			</div>
 		);

@@ -1,13 +1,17 @@
 import React from 'react';
+import { CampaignMap, CampaignMapHelper } from '../models/campaign-map';
 import { EncounterHelper } from '../models/encounter';
 import { FeatureHelper } from '../models/feature';
 import { Game, GameHelper } from '../models/game';
-import { HeroHelper } from '../models/hero';
+import { Hero, HeroHelper } from '../models/hero';
+import { Item } from '../models/item';
 import { Utils } from '../utils/utils';
 import { CampaignMapScreen } from './screens/campaign-map-screen';
 import { EncounterScreen } from './screens/encounter-screen';
 import { HeroesScreen } from './screens/heroes-screen';
 import { LandingScreen } from './screens/landing-screen';
+import { Align } from './utility/align';
+import { Heading } from './utility/heading';
 
 interface Props {
 }
@@ -42,6 +46,51 @@ export class Main extends React.Component<Props, State> {
 		this.saveAfterDelay();
 	}
 
+	//#region Saving
+
+	private saveAfterDelay = Utils.debounce(() => this.save(), 5 * 1000);
+
+	private save() {
+		this.saveKey(this.state.game, 'game');
+	}
+
+	private saveKey(obj: any, key: string) {
+		try {
+			const json = JSON.stringify(obj);
+			window.localStorage.setItem(key, json);
+		} catch (ex) {
+			console.error('Could not stringify data: ', ex);
+		}
+	}
+
+	//#endregion
+
+	private equipItem(item: Item, hero: Hero) {
+		const game = this.state.game as Game;
+
+		const index = game.items.indexOf(item);
+		game.items.splice(index, 1);
+
+		hero.items.push(item);
+
+		this.setState({
+			game: game
+		});
+	}
+
+	private unequipItem(item: Item, hero: Hero) {
+		const game = this.state.game as Game;
+
+		const index = hero.items.indexOf(item);
+		hero.items.splice(index, 1);
+
+		game.items.push(item);
+
+		this.setState({
+			game: game
+		});
+	}
+
 	private changeValue(source: any, type: string, value: any) {
 		const tokens = type.split('.');
 		let obj = source;
@@ -71,25 +120,6 @@ export class Main extends React.Component<Props, State> {
 			}
 		}
 	}
-
-	//#region Saving
-
-	private saveAfterDelay = Utils.debounce(() => this.save(), 5 * 1000);
-
-	private save() {
-		this.saveKey(this.state.game, 'game');
-	}
-
-	private saveKey(obj: any, key: string) {
-		try {
-			const json = JSON.stringify(obj);
-			window.localStorage.setItem(key, json);
-		} catch (ex) {
-			console.error('Could not stringify data: ', ex);
-		}
-	}
-
-	//#endregion
 
 	private getContent() {
 		switch (this.state.screen) {
@@ -126,7 +156,7 @@ export class Main extends React.Component<Props, State> {
 								screen: 'heroes'
 							});
 						}}
-						startEncounter={() => {
+						startEncounter={region => {
 							if (this.state.game) {
 								const game = this.state.game;
 								game.encounter = EncounterHelper.createEncounter();
@@ -136,10 +166,19 @@ export class Main extends React.Component<Props, State> {
 								screen: 'encounter'
 							});
 						}}
-						abandonCampaign={() => {
+						endCampaign={() => {
 							this.setState({
 								game: null,
 								screen: 'landing'
+							});
+						}}
+						// TEMP
+						conquer={region => {
+							const game = this.state.game as Game;
+							CampaignMapHelper.removeRegion(game.map as CampaignMap, region);
+							game.heroes.push(HeroHelper.createHero());
+							this.setState({
+								game: game
 							});
 						}}
 					/>
@@ -179,6 +218,8 @@ export class Main extends React.Component<Props, State> {
 								game: this.state.game
 							});
 						}}
+						equipItem={(item, hero) => this.equipItem(item, hero)}
+						unequipItem={(item, hero) => this.unequipItem(item, hero)}
 						back={() => {
 							this.setState({
 								screen: 'campaign-map'
@@ -191,7 +232,39 @@ export class Main extends React.Component<Props, State> {
 					return (
 						<EncounterScreen
 							encounter={this.state.game.encounter}
-							finish={() => {
+							game={this.state.game as Game}
+							equipItem={(item, hero) => this.equipItem(item, hero)}
+							unequipItem={(item, hero) => this.unequipItem(item, hero)}
+							finish={state => {
+								switch (state) {
+									case 'victory':
+										// TODO
+										// Get equipment from dead heroes
+										// Remove dead heroes from the game
+										// If region conquered: show message, add a new level 1 hero, draw a boon card
+										// Show victory message (plus loot)
+										// Increment XP for remaining heroes
+										// Clear current encounter
+										break;
+									case 'defeat':
+										// TODO
+										// Remove dead heroes from the game
+										// Show defeat message
+										// Clear current encounter
+										break;
+									case 'retreat':
+										// TODO
+										// Remove dead heroes from the game
+										// Show retreat message
+										// Clear current encounter
+										break;
+									case 'concede':
+										// TODO
+										// Remove all current heroes from the game
+										// Show concede message
+										// Clear current encounter
+										break;
+								}
 								this.setState({
 									screen: 'campaign-map'
 								});
@@ -223,7 +296,11 @@ export class Main extends React.Component<Props, State> {
 			return (
 				<div className='skirmish'>
 					<div className='top-bar'>
-						{this.getHeading()}
+						<Align>
+							<Heading>
+								{this.getHeading()}
+							</Heading>
+						</Align>
 					</div>
 					<div className='content'>
 						{this.getContent()}

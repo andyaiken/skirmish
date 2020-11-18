@@ -1,12 +1,12 @@
 {
 	"name": "skirmish",
-	"version": "11.5.1",
+	"version": "0.0.1",
 	"license": "MIT",
 	"repository": "https://github.com/andyaiken/skirmish.git",
 	"homepage": "https://andyaiken.github.io/skirmish/",
 	"dependencies": {
-		"@ant-design/icons": "^4.2.2",
-		"antd": "^4.8.2",
+		"@ant-design/icons": "^4.3.0",
+		"antd": "^4.8.3",
 		"react": "^17.0.1",
 		"react-dom": "^17.0.1",
 		"react-router-dom": "^5.2.0",

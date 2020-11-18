@@ -1,12 +1,15 @@
 import { Button, Col, Divider, Row, Typography } from 'antd';
 import React from 'react';
 import { BackgroundHelper } from '../../models/background';
-import { FeatureHelper } from '../../models/feature';
 import { Hero, HeroHelper } from '../../models/hero';
 import { Item, ItemHelper } from '../../models/item';
 import { RoleHelper } from '../../models/role';
 import { SpeciesHelper } from '../../models/species';
 import { Utils } from '../../utils/utils';
+import { BackgroundCard } from '../cards/background-card';
+import { ItemCard } from '../cards/item-card';
+import { RoleCard } from '../cards/role-card';
+import { SpeciesCard } from '../cards/species-card';
 import { Padding } from '../utility/padding';
 import { PlayingCard } from '../utility/playing-card';
 
@@ -85,7 +88,7 @@ export class HeroBuilderPanel extends React.Component<Props, State> {
 		}
 
 		return (
-			<div>
+			<div className='hero-builder'>
 				{cardInfo}
 				{itemInfo}
 				{content}
@@ -161,18 +164,7 @@ class CardSelector extends React.Component<CardSelectorProps, CardSelectorState>
 							display={(this.state.selectedSpeciesID !== '') && (this.state.selectedSpeciesID !== species.id) ? 'back' : 'front'}
 							onClick={() => this.selectSpecies(species.id)}
 						>
-							<Padding>
-								<Typography.Paragraph style={{ textAlign: 'center' }}>
-									<b>{species.name}</b>
-								</Typography.Paragraph>
-								<Divider/>
-								<Typography.Paragraph>
-									<b>Trait bonus:</b> {species.traits.map(t => t.toString()).join(', ')}
-								</Typography.Paragraph>
-								<Typography.Paragraph>
-									<b>Features:</b> {species.features.map(t => FeatureHelper.getName(t)).join(', ')}
-								</Typography.Paragraph>
-							</Padding>
+							<SpeciesCard species={species} />
 						</PlayingCard>
 					</Col>
 				);
@@ -191,24 +183,7 @@ class CardSelector extends React.Component<CardSelectorProps, CardSelectorState>
 							display={(this.state.selectedRoleID !== '') && (this.state.selectedRoleID !== role.id) ? 'back' : 'front'}
 							onClick={() => this.selectRole(role.id)}
 						>
-							<Padding>
-								<Typography.Paragraph style={{ textAlign: 'center' }}>
-									<b>{role.name}</b>
-								</Typography.Paragraph>
-								<Divider/>
-								<Typography.Paragraph>
-									<b>Trait bonus:</b> {role.traits.map(t => t.toString()).join(', ')}
-								</Typography.Paragraph>
-								<Typography.Paragraph>
-									<b>Skill bonus:</b> {role.skills.map(t => t.toString()).join(', ')}
-								</Typography.Paragraph>
-								<Typography.Paragraph>
-									<b>Proficiencies:</b> {role.proficiencies.map(t => t.toString()).join(', ')}
-								</Typography.Paragraph>
-								<Typography.Paragraph>
-									<b>Features:</b> {role.features.map(t => FeatureHelper.getName(t)).join(', ')}
-								</Typography.Paragraph>
-							</Padding>
+							<RoleCard role={role} />
 						</PlayingCard>
 					</Col>
 				);
@@ -227,15 +202,7 @@ class CardSelector extends React.Component<CardSelectorProps, CardSelectorState>
 							display={(this.state.selectedBackgroundID !== '') && (this.state.selectedBackgroundID !== background.id) ? 'back' : 'front'}
 							onClick={() => this.selectBackground(background.id)}
 						>
-							<Padding>
-								<Typography.Paragraph style={{ textAlign: 'center' }}>
-									<b>{background.name}</b>
-								</Typography.Paragraph>
-								<Divider/>
-								<Typography.Paragraph>
-									<b>Features:</b> {background.features.map(t => FeatureHelper.getName(t)).join(', ')}
-								</Typography.Paragraph>
-							</Padding>
+							<BackgroundCard background={background} />
 						</PlayingCard>
 					</Col>
 				);
@@ -321,51 +288,17 @@ class EquipmentSelector extends React.Component<EquipmentSelectorProps, Equipmen
 				.filter(item => item.proficiency === prof)
 				.map(item => item.id);
 
-			const items = ItemHelper.getItems(prof).map(item => {
-				let wpn = null;
-				if (item.weapon) {
-					wpn = (
-						<div>
-							<Typography.Paragraph>
-								<b>Damage:</b> {item.weapon.damage.rank} {item.weapon.damage.type}
-							</Typography.Paragraph>
-							<Typography.Paragraph>
-								<b>Range:</b> {item.weapon.range}
-							</Typography.Paragraph>
-							<Typography.Paragraph>
-								<b>Unreliable:</b> {item.weapon.unreliable}
-							</Typography.Paragraph>
-						</div>
-					);
-				}
-
-				return (
-					<Col span={6} key={item.id}>
-						<PlayingCard
-							back='Item'
-							display={(currentItemIDs.length !== 0) && (!currentItemIDs.includes(item.id)) ? 'back' : 'front'}
-							onClick={() => this.selectItem(item.id)}
-						>
-							<Padding>
-								<Typography.Paragraph style={{ textAlign: 'center' }}>
-									<b>{item.name}</b>
-								</Typography.Paragraph>
-								<Divider/>
-								<Typography.Paragraph>
-									<b>Proficiency:</b> {item.proficiency}
-								</Typography.Paragraph>
-								<Typography.Paragraph>
-									<b>Location:</b> {item.location}
-								</Typography.Paragraph>
-								{wpn}
-								<Typography.Paragraph>
-									<b>Features:</b> {item.features.map(t => FeatureHelper.getName(t)).join(', ')}
-								</Typography.Paragraph>
-							</Padding>
-						</PlayingCard>
-					</Col>
-				);
-			});
+			const items = ItemHelper.getItems(prof).map(item => (
+				<Col span={6} key={item.id}>
+					<PlayingCard
+						back='Item'
+						display={(currentItemIDs.length !== 0) && (!currentItemIDs.includes(item.id)) ? 'back' : 'front'}
+						onClick={() => this.selectItem(item.id)}
+					>
+						<ItemCard item={item} />
+					</PlayingCard>
+				</Col>
+			));
 
 			return (
 				<div key={n}>

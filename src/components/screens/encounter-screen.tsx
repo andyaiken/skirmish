@@ -1,70 +1,71 @@
-import { Button, Col, Divider, Row } from 'antd';
+import { Button, Col, Row } from 'antd';
 import React from 'react';
-import { Encounter } from '../../models/encounter';
+import { Encounter, EncounterHelper, EncounterState } from '../../models/encounter';
+import { Game } from '../../models/game';
+import { Hero } from '../../models/hero';
+import { Item } from '../../models/item';
+import { CharacterSheetPanel } from '../panels/character-sheet-panel';
 import { EncounterMapPanel } from '../panels/encounter-map-panel';
+import { InitiativeListPanel } from '../panels/initiative-list-panel';
 
 interface Props {
 	encounter: Encounter;
-	finish: () => void;
+	game: Game;
+	equipItem: (item: Item, hero: Hero) => void;
+	unequipItem: (item: Item, hero: Hero) => void;
+	finish: (state: 'victory' | 'defeat' | 'retreat' | 'concede') => void;
 }
 
 export class EncounterScreen extends React.Component<Props> {
-	private victory() {
-		// TODO
-		// Get equipment from dead heroes
-		// Remove dead heroes from the game
-		// If region conquered: show message, add a new level 1 hero
-		// Show victory message (plus loot)
-		// Increment XP for remaining heroes
-		// Clear current encounter
-
-		this.props.finish();
-	}
-
-	private defeat() {
-		// TODO
-		// Remove dead heroes from the game
-		// Show defeat message
-		// Clear current encounter
-
-		this.props.finish();
-	}
-
-	private retreat() {
-		// TODO
-		// Remove dead heroes from the game
-		// Show retreat message
-		// Clear current encounter
-
-		this.props.finish();
-	}
-
-	private concede() {
-		// TODO
-		// Remove all current heroes from the game
-		// Show concede message
-		// Clear current encounter
-
-		this.props.finish();
-	}
-
 	public render() {
+		let controls = null;
+		switch (EncounterHelper.getState(this.props.encounter)) {
+			case EncounterState.Active:
+				controls = (
+					<div>
+						<CharacterSheetPanel
+							hero={null as unknown as Hero}
+							game={this.props.game}
+							equipItem={(item, hero) => this.props.equipItem(item, hero)}
+							unequipItem={(item, hero) => this.props.unequipItem(item, hero)}
+						/>
+						<div>action card slots</div>
+						<Row gutter={10}>
+							<Col span={12}>
+								<Button block={true} onClick={() => this.props.finish('retreat')}>RETREAT</Button>
+							</Col>
+							<Col span={12}>
+								<Button block={true} onClick={() => this.props.finish('concede')}>CONCEDE</Button>
+							</Col>
+						</Row>
+					</div>
+				);
+				break;
+			case EncounterState.Won:
+				controls = (
+					<div>
+						<Button block={true} onClick={() => this.props.finish('victory')}>VICTORY</Button>
+					</div>
+				);
+				break;
+			case EncounterState.Defeated:
+				controls = (
+					<div>
+						<Button block={true} onClick={() => this.props.finish('defeat')}>DEFEAT</Button>
+					</div>
+				);
+				break;
+		}
+
 		return (
 			<div>
-				<EncounterMapPanel map={this.props.encounter.map}/>
-				<Divider/>
-				<Row gutter={10}>
-					<Col span={6}>
-						<Button block={true} onClick={() => this.victory()}>VICTORY</Button>
+				<Row gutter={10} style={{ height: '100%' }}>
+					<Col span={6} style={{ height: '100%', overflowY: 'auto' }}>
+						<InitiativeListPanel />
 					</Col>
-					<Col span={6}>
-						<Button block={true} onClick={() => this.defeat()}>DEFEAT</Button>
-					</Col>
-					<Col span={6}>
-						<Button block={true} onClick={() => this.retreat()}>RETREAT</Button>
-					</Col>
-					<Col span={6}>
-						<Button block={true} onClick={() => this.concede()}>CONCEDE</Button>
+					<Col span={18} style={{ height: '100%', display: 'flex', flexDirection: 'column'}}>
+						<EncounterMapPanel map={this.props.encounter.map} />
+						{controls}
 					</Col>
 				</Row>
 			</div>

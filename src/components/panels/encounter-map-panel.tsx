@@ -8,7 +8,7 @@ interface Props {
 export class EncounterMapPanel extends React.Component<Props> {
 	public render() {
 		return (
-			<div>
+			<div className='encounter-map'>
 				ENCOUNTER MAP PANEL
 			</div>
 		);

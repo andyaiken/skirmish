@@ -1,4 +1,4 @@
-export enum Location {
+export enum ItemLocation {
 	None = 'None',
 	Any = 'Any location',
 	All = 'All locations',
@@ -7,6 +7,5 @@ export enum Location {
 	Body = 'Body',
 	Feet = 'Feet',
 	Hand = 'Hand',
-	TwoHands = 'Two hands',
 	Ring = 'Ring'
 }

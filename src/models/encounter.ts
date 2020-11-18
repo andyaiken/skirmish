@@ -1,6 +1,12 @@
 import { EncounterMap, EncounterMapHelper } from './encounter-map';
 import { Monster } from './hero';
 
+export enum EncounterState {
+	Active,
+	Won,
+	Defeated
+}
+
 export interface Encounter {
 	heroIDs: string[];
 	monsters: Monster[];
@@ -14,5 +20,10 @@ export class EncounterHelper {
 			monsters: [],
 			map: EncounterMapHelper.createMap()
 		};
+	}
+
+	public static getState(encounter: Encounter): EncounterState {
+		// TODO
+		return EncounterState.Active;
 	}
 }

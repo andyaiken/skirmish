@@ -1,39 +1,107 @@
-import { Button, Col, Divider, Row } from 'antd';
+import { Button, Col, Divider, Row, Typography } from 'antd';
 import React from 'react';
-import { CampaignMap } from '../../models/campaign-map';
+import { CampaignMap, CampaignMapHelper, CampaignMapRegion } from '../../models/campaign-map';
 import { Game } from '../../models/game';
 import { CampaignMapPanel } from '../panels/campaign-map-panel';
-
-// TODO: Select region, inspect region details, start encounter there
+import { Align } from '../utility/align';
+import { Heading } from '../utility/heading';
+import { Padding } from '../utility/padding';
 
 interface Props {
 	game: Game;
 	viewHeroes: () => void;
-	startEncounter: () => void;
-	abandonCampaign: () => void;
+	startEncounter: (region: CampaignMapRegion) => void;
+	endCampaign: () => void;
+	conquer: (region: CampaignMapRegion) => void; // TEMP
 }
 
-export class CampaignMapScreen extends React.Component<Props> {
+interface State {
+	selectedRegion: CampaignMapRegion | null;
+}
+
+// TODO: You should only be able to start an encounter in adjacent regions
+
+export class CampaignMapScreen extends React.Component<Props, State> {
+	constructor(props: Props) {
+		super(props);
+		this.state = {
+			selectedRegion: null
+		};
+	}
+
 	public render() {
-		// TODO:
-		// If island conquered, show victory message and button to clear game and go to landing page
-		// If no heroes, show defeat message and button to clear game and go to landing page
+		let options = null;
+		if (CampaignMapHelper.isConquered(this.props.game.map as CampaignMap)) {
+			options = (
+				<div>
+					<Typography.Title>
+						You have conquered the island!
+					</Typography.Title>
+					<Button block={true} onClick={() => this.props.endCampaign()}>Done</Button>
+				</div>
+			);
+		} else if (this.props.game.heroes.length === 0) {
+			options = (
+				<div>
+					<Typography.Paragraph>
+						You have no more heroes. You have not been able to conquer the island, this time.
+					</Typography.Paragraph>
+					<Button block={true} onClick={() => this.props.endCampaign()}>Done</Button>
+				</div>
+			);
+		} else {
+			let selection = null;
+			if (this.state.selectedRegion) {
+				selection = (
+					<div>
+						<Padding>
+							<Align>
+								<Heading>
+									{this.state.selectedRegion.name}
+								</Heading>
+							</Align>
+						</Padding>
+						<Button block={true} onClick={() => this.props.startEncounter(this.state.selectedRegion as CampaignMapRegion)}>Start an Encounter</Button>
+						<Divider/>
+						<Button block={true} onClick={() => { this.setState({ selectedRegion: null }); this.props.conquer(this.state.selectedRegion as CampaignMapRegion); }}>CONQUER</Button>
+					</div>
+				);
+			} else {
+				selection = (
+					<div>
+						<Divider/>
+						<Padding>
+							<Align>
+								Select a region on the map.
+							</Align>
+						</Padding>
+					</div>
+				);
+			}
+
+			options = (
+				<Row gutter={10}>
+					<Col span={12}>
+						<Divider/>
+						<Button block={true} onClick={() => this.props.viewHeroes()}>Your Heroes</Button>
+						<Divider>Options</Divider>
+						<Button block={true} onClick={() => this.props.endCampaign()}>Abandon This Campaign</Button>
+					</Col>
+					<Col span={12}>
+						{selection}
+					</Col>
+				</Row>
+			);
+		}
 
 		return (
 			<div>
-				<CampaignMapPanel map={this.props.game.map as CampaignMap} />
-				<Divider/>
-				<Row gutter={10}>
-					<Col span={8}>
-						<Button block={true} onClick={() => this.props.viewHeroes()}>YOUR HEROES</Button>
-					</Col>
-					<Col span={8}>
-						<Button block={true} onClick={() => this.props.startEncounter()}>START AN ENCOUNTER</Button>
-					</Col>
-					<Col span={8}>
-						<Button block={true} onClick={() => this.props.abandonCampaign()}>ABANDON THIS CAMPAIGN</Button>
-					</Col>
-				</Row>
+				<CampaignMapPanel
+					map={this.props.game.map as CampaignMap}
+					selectedRegion={this.state.selectedRegion}
+					onSelectRegion={region => this.setState({ selectedRegion: region })}
+				/>
+				{options}
 			</div>
 		);
 	}

@@ -1,7 +1,7 @@
 import { DamageCategory, DamageType } from '../models/damage';
 import { FeatureHelper } from '../models/feature';
 import { Item } from '../models/item';
-import { Location } from '../models/location';
+import { ItemLocation } from '../models/item-location';
 import { Proficiency } from '../models/proficiency';
 import { SkillCategory } from '../models/skill';
 import { Trait } from '../models/trait';
@@ -11,7 +11,8 @@ export const ItemList: Item[] = [
 		id: 'item-punch',
 		name: 'Punch',
 		proficiency: Proficiency.None,
-		location: Location.None,
+		location: ItemLocation.None,
+		slots: 1,
 		weapon: {
 			damage: {
 				type: DamageType.Impact,
@@ -27,7 +28,8 @@ export const ItemList: Item[] = [
 		id: 'item-longsword',
 		name: 'Longsword',
 		proficiency: Proficiency.MilitaryWeapons,
-		location: Location.Hand,
+		location: ItemLocation.Hand,
+		slots: 1,
 		weapon: {
 			damage: {
 				type: DamageType.Edged,
@@ -43,7 +45,8 @@ export const ItemList: Item[] = [
 		id: 'item-handaxe',
 		name: 'Handaxe',
 		proficiency: Proficiency.MilitaryWeapons,
-		location: Location.Hand,
+		location: ItemLocation.Hand,
+		slots: 1,
 		weapon: {
 			damage: {
 				type: DamageType.Edged,
@@ -59,7 +62,8 @@ export const ItemList: Item[] = [
 		id: 'item-mace',
 		name: 'Mace',
 		proficiency: Proficiency.MilitaryWeapons,
-		location: Location.Hand,
+		location: ItemLocation.Hand,
+		slots: 1,
 		weapon: {
 			damage: {
 				type: DamageType.Impact,
@@ -75,7 +79,8 @@ export const ItemList: Item[] = [
 		id: 'item-morningstar',
 		name: 'Morningstar',
 		proficiency: Proficiency.MilitaryWeapons,
-		location: Location.Hand,
+		location: ItemLocation.Hand,
+		slots: 1,
 		weapon: {
 			damage: {
 				type: DamageType.Impact,
@@ -91,7 +96,8 @@ export const ItemList: Item[] = [
 		id: 'item-spear',
 		name: 'Spear',
 		proficiency: Proficiency.MilitaryWeapons,
-		location: Location.Hand,
+		location: ItemLocation.Hand,
+		slots: 1,
 		weapon: {
 			damage: {
 				type: DamageType.Piercing,
@@ -107,7 +113,8 @@ export const ItemList: Item[] = [
 		id: 'item-mattock',
 		name: 'Mattock',
 		proficiency: Proficiency.MilitaryWeapons,
-		location: Location.Hand,
+		location: ItemLocation.Hand,
+		slots: 1,
 		weapon: {
 			damage: {
 				type: DamageType.Piercing,
@@ -123,7 +130,8 @@ export const ItemList: Item[] = [
 		id: 'item-rapier',
 		name: 'Rapier',
 		proficiency: Proficiency.MilitaryWeapons,
-		location: Location.Hand,
+		location: ItemLocation.Hand,
+		slots: 1,
 		weapon: {
 			damage: {
 				type: DamageType.Piercing,
@@ -139,7 +147,8 @@ export const ItemList: Item[] = [
 		id: 'item-greatsword',
 		name: 'Greatsword',
 		proficiency: Proficiency.LargeWeapons,
-		location: Location.TwoHands,
+		location: ItemLocation.Hand,
+		slots: 2,
 		weapon: {
 			damage: {
 				type: DamageType.Edged,
@@ -155,7 +164,8 @@ export const ItemList: Item[] = [
 		id: 'item-battleaxe',
 		name: 'Battleaxe',
 		proficiency: Proficiency.LargeWeapons,
-		location: Location.TwoHands,
+		location: ItemLocation.Hand,
+		slots: 2,
 		weapon: {
 			damage: {
 				type: DamageType.Edged,
@@ -171,7 +181,8 @@ export const ItemList: Item[] = [
 		id: 'item-glaive',
 		name: 'Glaive',
 		proficiency: Proficiency.LargeWeapons,
-		location: Location.TwoHands,
+		location: ItemLocation.Hand,
+		slots: 2,
 		weapon: {
 			damage: {
 				type: DamageType.Edged,
@@ -187,7 +198,8 @@ export const ItemList: Item[] = [
 		id: 'item-warhammer',
 		name: 'Warhammer',
 		proficiency: Proficiency.LargeWeapons,
-		location: Location.TwoHands,
+		location: ItemLocation.Hand,
+		slots: 2,
 		weapon: {
 			damage: {
 				type: DamageType.Impact,
@@ -203,7 +215,8 @@ export const ItemList: Item[] = [
 		id: 'item-quarterstaff',
 		name: 'Quarterstaff',
 		proficiency: Proficiency.LargeWeapons,
-		location: Location.TwoHands,
+		location: ItemLocation.Hand,
+		slots: 2,
 		weapon: {
 			damage: {
 				type: DamageType.Impact,
@@ -219,7 +232,8 @@ export const ItemList: Item[] = [
 		id: 'item-pike',
 		name: 'Pike',
 		proficiency: Proficiency.LargeWeapons,
-		location: Location.TwoHands,
+		location: ItemLocation.Hand,
+		slots: 2,
 		weapon: {
 			damage: {
 				type: DamageType.Piercing,
@@ -235,7 +249,8 @@ export const ItemList: Item[] = [
 		id: 'item-trident',
 		name: 'Trident',
 		proficiency: Proficiency.LargeWeapons,
-		location: Location.TwoHands,
+		location: ItemLocation.Hand,
+		slots: 2,
 		weapon: {
 			damage: {
 				type: DamageType.Piercing,
@@ -251,7 +266,8 @@ export const ItemList: Item[] = [
 		id: 'item-dagger',
 		name: 'Dagger',
 		proficiency: Proficiency.PairedWeapons,
-		location: Location.TwoHands,
+		location: ItemLocation.Hand,
+		slots: 2,
 		weapon: {
 			damage: {
 				type: DamageType.Edged,
@@ -267,7 +283,8 @@ export const ItemList: Item[] = [
 		id: 'item-sai',
 		name: 'Sai',
 		proficiency: Proficiency.PairedWeapons,
-		location: Location.TwoHands,
+		location: ItemLocation.Hand,
+		slots: 2,
 		weapon: {
 			damage: {
 				type: DamageType.Piercing,
@@ -283,7 +300,8 @@ export const ItemList: Item[] = [
 		id: 'item-longbow',
 		name: 'Longbow',
 		proficiency: Proficiency.RangedWeapons,
-		location: Location.TwoHands,
+		location: ItemLocation.Hand,
+		slots: 2,
 		weapon: {
 			damage: {
 				type: DamageType.Piercing,
@@ -299,7 +317,8 @@ export const ItemList: Item[] = [
 		id: 'item-crossbow',
 		name: 'Crossbow',
 		proficiency: Proficiency.RangedWeapons,
-		location: Location.TwoHands,
+		location: ItemLocation.Hand,
+		slots: 2,
 		weapon: {
 			damage: {
 				type: DamageType.Piercing,
@@ -315,7 +334,8 @@ export const ItemList: Item[] = [
 		id: 'item-rifle',
 		name: 'Rifle',
 		proficiency: Proficiency.PowderWeapons,
-		location: Location.TwoHands,
+		location: ItemLocation.Hand,
+		slots: 2,
 		weapon: {
 			damage: {
 				type: DamageType.Piercing,
@@ -331,7 +351,8 @@ export const ItemList: Item[] = [
 		id: 'item-pistol',
 		name: 'Pistol',
 		proficiency: Proficiency.PowderWeapons,
-		location: Location.Hand,
+		location: ItemLocation.Hand,
+		slots: 1,
 		weapon: {
 			damage: {
 				type: DamageType.Piercing,
@@ -347,7 +368,8 @@ export const ItemList: Item[] = [
 		id: 'item-orb',
 		name: 'Orb',
 		proficiency: Proficiency.Implements,
-		location: Location.Hand,
+		location: ItemLocation.Hand,
+		slots: 1,
 		weapon: null,
 		features: [],
 		actions: []
@@ -356,7 +378,8 @@ export const ItemList: Item[] = [
 		id: 'item-wand',
 		name: 'Wand',
 		proficiency: Proficiency.Implements,
-		location: Location.Hand,
+		location: ItemLocation.Hand,
+		slots: 1,
 		weapon: null,
 		features: [],
 		actions: []
@@ -365,7 +388,8 @@ export const ItemList: Item[] = [
 		id: 'item-tome',
 		name: 'Tome',
 		proficiency: Proficiency.Implements,
-		location: Location.Hand,
+		location: ItemLocation.Hand,
+		slots: 1,
 		weapon: null,
 		features: [],
 		actions: []
@@ -374,7 +398,8 @@ export const ItemList: Item[] = [
 		id: 'item-amulet',
 		name: 'Amulet',
 		proficiency: Proficiency.Implements,
-		location: Location.Neck,
+		location: ItemLocation.Neck,
+		slots: 1,
 		weapon: null,
 		features: [],
 		actions: []
@@ -383,7 +408,8 @@ export const ItemList: Item[] = [
 		id: 'item-leather-armor',
 		name: 'Leather Armor',
 		proficiency: Proficiency.LightArmor,
-		location: Location.Body,
+		location: ItemLocation.Body,
+		slots: 1,
 		weapon: null,
 		features: [
 			FeatureHelper.createDamageCategoryResistFeature(DamageCategory.Physical, 1)
@@ -394,7 +420,8 @@ export const ItemList: Item[] = [
 		id: 'item-hide-armor',
 		name: 'Hide Armor',
 		proficiency: Proficiency.LightArmor,
-		location: Location.Body,
+		location: ItemLocation.Body,
+		slots: 1,
 		weapon: null,
 		features: [
 			FeatureHelper.createDamageCategoryResistFeature(DamageCategory.Physical, 2),
@@ -406,7 +433,8 @@ export const ItemList: Item[] = [
 		id: 'item-brigandine-armor',
 		name: 'Brigandine Armor',
 		proficiency: Proficiency.LightArmor,
-		location: Location.Body,
+		location: ItemLocation.Body,
+		slots: 1,
 		weapon: null,
 		features: [
 			FeatureHelper.createDamageCategoryResistFeature(DamageCategory.Physical, 3),
@@ -419,7 +447,8 @@ export const ItemList: Item[] = [
 		id: 'item-chain-armor',
 		name: 'Chain Armor',
 		proficiency: Proficiency.HeavyArmor,
-		location: Location.Body,
+		location: ItemLocation.Body,
+		slots: 1,
 		weapon: null,
 		features: [
 			FeatureHelper.createDamageCategoryResistFeature(DamageCategory.Physical, 4),
@@ -432,7 +461,8 @@ export const ItemList: Item[] = [
 		id: 'item-plate-armor',
 		name: 'Plate Armor',
 		proficiency: Proficiency.HeavyArmor,
-		location: Location.Body,
+		location: ItemLocation.Body,
+		slots: 1,
 		weapon: null,
 		features: [
 			FeatureHelper.createDamageCategoryResistFeature(DamageCategory.Physical, 5),
@@ -445,7 +475,8 @@ export const ItemList: Item[] = [
 		id: 'item-shield',
 		name: 'Shield',
 		proficiency: Proficiency.Shields,
-		location: Location.Hand,
+		location: ItemLocation.Hand,
+		slots: 1,
 		weapon: null,
 		features: [
 			FeatureHelper.createDamageCategoryResistFeature(DamageCategory.Physical, 1),
@@ -457,7 +488,8 @@ export const ItemList: Item[] = [
 		id: 'item-tower-shield',
 		name: 'Tower shield',
 		proficiency: Proficiency.Shields,
-		location: Location.Hand,
+		location: ItemLocation.Hand,
+		slots: 1,
 		weapon: null,
 		features: [
 			FeatureHelper.createDamageCategoryResistFeature(DamageCategory.Physical, 2),

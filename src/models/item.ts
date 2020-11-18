@@ -2,7 +2,7 @@ import { ItemList } from '../data/item-list';
 import { Action } from './action';
 import { DamageType } from './damage';
 import { Feature } from './feature';
-import { Location } from './location';
+import { ItemLocation } from './item-location';
 import { Proficiency } from './proficiency';
 
 export interface Item {
@@ -10,7 +10,8 @@ export interface Item {
 	name: string;
 
 	proficiency: Proficiency;
-	location: Location;
+	location: ItemLocation;
+	slots: number;
 
 	weapon: {
 		damage: {

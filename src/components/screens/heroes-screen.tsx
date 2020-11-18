@@ -3,9 +3,11 @@ import React from 'react';
 import { Feature } from '../../models/feature';
 import { Game } from '../../models/game';
 import { Hero, HeroHelper } from '../../models/hero';
+import { Item } from '../../models/item';
 import { Skill } from '../../models/skill';
 import { Trait } from '../../models/trait';
 import { NameGenerator } from '../../utils/name-generator';
+import { HeroCard } from '../cards/hero-card';
 import { CharacterSheetPanel } from '../panels/character-sheet-panel';
 import { HeroBuilderPanel } from '../panels/hero-builder-panel';
 import { HeroLevelUpPanel } from '../panels/hero-level-up-panel';
@@ -18,6 +20,8 @@ interface Props {
 	addHero: (hero: Hero) => void;
 	levelUp: (hero: Hero, trait: Trait, skill: Skill, feature: Feature) => void;
 	incrementXP: (hero: Hero) => void;
+	equipItem: (item: Item, hero: Hero) => void;
+	unequipItem: (item: Item, hero: Hero) => void;
 	back: () => void;
 }
 
@@ -45,7 +49,7 @@ export class HeroesScreen extends React.Component<Props, State> {
 			} else {
 				card = (
 					<Padding>
-						<CharacterSheetPanel hero={hero} display='mini' />
+						<HeroCard hero={hero} />
 					</Padding>
 				);
 			}
@@ -106,7 +110,12 @@ export class HeroesScreen extends React.Component<Props, State> {
 			} else {
 				drawerTitle = 'Character Sheet';
 				drawerContent = (
-					<CharacterSheetPanel hero={this.state.selectedHero as Hero}/>
+					<CharacterSheetPanel
+						hero={this.state.selectedHero as Hero}
+						game={this.props.game}
+						equipItem={(item, hero) => this.props.equipItem(item, hero)}
+						unequipItem={(item, hero) => this.props.unequipItem(item, hero)}
+					/>
 				);
 				drawerClosable = true;
 			}

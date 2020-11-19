@@ -16,6 +16,7 @@ import { Align } from '../utility/align';
 import { Heading } from '../utility/heading';
 import { Padding } from '../utility/padding';
 import { PlayingCard } from '../utility/playing-card';
+import { StatValue } from '../utility/stat-value';
 
 interface Props {
 	hero: Hero;
@@ -96,41 +97,21 @@ class StatsPage extends React.Component<StatsPageProps> {
 	public render() {
 		const traits = (
 			<div>
-				<Typography.Paragraph>
-					Endurance {HeroHelper.trait(this.props.hero, Trait.Endurance)}
-				</Typography.Paragraph>
-				<Typography.Paragraph>
-					Resolve {HeroHelper.trait(this.props.hero, Trait.Resolve)}
-				</Typography.Paragraph>
-				<Typography.Paragraph>
-					Speed {HeroHelper.trait(this.props.hero, Trait.Speed)}
-				</Typography.Paragraph>
+				<StatValue label='Endurance' value={HeroHelper.trait(this.props.hero, Trait.Endurance)}/>
+				<StatValue label='Resolve' value={HeroHelper.trait(this.props.hero, Trait.Resolve)}/>
+				<StatValue label='Speed' value={HeroHelper.trait(this.props.hero, Trait.Speed)}/>
 			</div>
 		);
 
 		const skills = (
 			<div>
-				<Typography.Paragraph>
-					Athletics {HeroHelper.skill(this.props.hero, Skill.Athletics)}
-				</Typography.Paragraph>
-				<Typography.Paragraph>
-					Brawl {HeroHelper.skill(this.props.hero, Skill.Brawl)}
-				</Typography.Paragraph>
-				<Typography.Paragraph>
-					Perception {HeroHelper.skill(this.props.hero, Skill.Perception)}
-				</Typography.Paragraph>
-				<Typography.Paragraph>
-					Reactions {HeroHelper.skill(this.props.hero, Skill.Reactions)}
-				</Typography.Paragraph>
-				<Typography.Paragraph>
-					Spellcasting {HeroHelper.skill(this.props.hero, Skill.Spellcasting)}
-				</Typography.Paragraph>
-				<Typography.Paragraph>
-					Stealth {HeroHelper.skill(this.props.hero, Skill.Stealth)}
-				</Typography.Paragraph>
-				<Typography.Paragraph>
-					Weapon {HeroHelper.skill(this.props.hero, Skill.Weapon)}
-				</Typography.Paragraph>
+				<StatValue label='Athletics' value={HeroHelper.skill(this.props.hero, Skill.Athletics)}/>
+				<StatValue label='Brawl' value={HeroHelper.skill(this.props.hero, Skill.Brawl)}/>
+				<StatValue label='Perception' value={HeroHelper.skill(this.props.hero, Skill.Perception)}/>
+				<StatValue label='Reactions' value={HeroHelper.skill(this.props.hero, Skill.Reactions)}/>
+				<StatValue label='Spellcasting' value={HeroHelper.skill(this.props.hero, Skill.Spellcasting)}/>
+				<StatValue label='Stealth' value={HeroHelper.skill(this.props.hero, Skill.Stealth)}/>
+				<StatValue label='Weapon' value={HeroHelper.skill(this.props.hero, Skill.Weapon)}/>
 			</div>
 		);
 
@@ -164,9 +145,9 @@ class StatsPage extends React.Component<StatsPageProps> {
 					percent={100 * this.props.hero.xp / this.props.hero.level}
 					showInfo={false}
 				/>
-				<Typography.Paragraph>
+				<Align>
 					{this.props.hero.xp} of {this.props.hero.level} XP required for level {this.props.hero.level + 1}
-				</Typography.Paragraph>
+				</Align>
 			</div>
 		);
 	}

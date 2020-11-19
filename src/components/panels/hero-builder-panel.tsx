@@ -10,7 +10,6 @@ import { BackgroundCard } from '../cards/background-card';
 import { ItemCard } from '../cards/item-card';
 import { RoleCard } from '../cards/role-card';
 import { SpeciesCard } from '../cards/species-card';
-import { Padding } from '../utility/padding';
 import { PlayingCard } from '../utility/playing-card';
 
 interface Props {

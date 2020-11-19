@@ -4,6 +4,7 @@ import { Background } from '../../models/background';
 import { FeatureHelper } from '../../models/feature';
 import { Align } from '../utility/align';
 import { Padding } from '../utility/padding';
+import { StatValue } from '../utility/stat-value';
 
 interface Props {
 	background: Background;
@@ -18,9 +19,7 @@ export class BackgroundCard extends React.Component<Props> {
 						<b>{this.props.background.name}</b>
 					</Typography.Paragraph>
 					<Divider/>
-					<Typography.Paragraph>
-						<b>Features:</b> {this.props.background.features.map(t => FeatureHelper.getName(t)).join(', ')}
-					</Typography.Paragraph>
+					<StatValue label='Features' value={this.props.background.features.map(f => FeatureHelper.getName(f)).join(', ')}/>
 				</Align>
 			</Padding>
 		);

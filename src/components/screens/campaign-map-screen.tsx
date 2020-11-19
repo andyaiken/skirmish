@@ -19,8 +19,6 @@ interface State {
 	selectedRegion: CampaignMapRegion | null;
 }
 
-// TODO: You should only be able to start an encounter in adjacent regions
-
 export class CampaignMapScreen extends React.Component<Props, State> {
 	constructor(props: Props) {
 		super(props);

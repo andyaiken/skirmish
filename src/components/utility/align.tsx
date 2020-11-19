@@ -9,8 +9,7 @@ interface Props {
 export class Align extends React.Component<Props> {
 	public static defaultProps = {
 		horizontal: 'center',
-		vertical: 'middle',
-		style: {}
+		vertical: 'middle'
 	};
 
 	public render() {

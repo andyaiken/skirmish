@@ -4,6 +4,7 @@ import { FeatureHelper } from '../../models/feature';
 import { Species } from '../../models/species';
 import { Align } from '../utility/align';
 import { Padding } from '../utility/padding';
+import { StatValue } from '../utility/stat-value';
 
 interface Props {
 	species: Species;
@@ -18,12 +19,8 @@ export class SpeciesCard extends React.Component<Props> {
 						<b>{this.props.species.name}</b>
 					</Typography.Paragraph>
 					<Divider/>
-					<Typography.Paragraph>
-						<b>Trait bonus:</b> {this.props.species.traits.map(t => t.toString()).join(', ')}
-					</Typography.Paragraph>
-					<Typography.Paragraph>
-						<b>Features:</b> {this.props.species.features.map(t => FeatureHelper.getName(t)).join(', ')}
-					</Typography.Paragraph>
+					<StatValue label='Trait bonus' value={this.props.species.traits.map(t => t.toString()).join(', ')}/>
+					<StatValue label='Features' value={this.props.species.features.map(f => FeatureHelper.getName(f)).join(', ')}/>
 				</Align>
 			</Padding>
 		);

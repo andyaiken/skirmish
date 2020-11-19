@@ -6,7 +6,7 @@
 	"homepage": "https://andyaiken.github.io/skirmish/",
 	"dependencies": {
 		"@ant-design/icons": "^4.3.0",
-		"antd": "^4.8.3",
+		"antd": "^4.8.4",
 		"react": "^17.0.1",
 		"react-dom": "^17.0.1",
 		"react-router-dom": "^5.2.0",

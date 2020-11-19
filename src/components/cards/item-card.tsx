@@ -3,6 +3,7 @@ import React from 'react';
 import { FeatureHelper } from '../../models/feature';
 import { Item } from '../../models/item';
 import { Padding } from '../utility/padding';
+import { StatValue } from '../utility/stat-value';
 
 interface Props {
 	item: Item;
@@ -15,15 +16,9 @@ export class ItemCard extends React.Component<Props> {
 			wpn = (
 				<div>
 					<Divider/>
-					<Typography.Paragraph>
-						<b>Damage:</b> {this.props.item.weapon.damage.rank} {this.props.item.weapon.damage.type}
-					</Typography.Paragraph>
-					<Typography.Paragraph>
-						<b>Range:</b> {this.props.item.weapon.range}
-					</Typography.Paragraph>
-					<Typography.Paragraph>
-						<b>Unreliable:</b> {this.props.item.weapon.unreliable}
-					</Typography.Paragraph>
+					<StatValue label='Damage' value={this.props.item.weapon.damage.rank + ' ' + this.props.item.weapon.damage.type}/>
+					<StatValue label='Range' value={this.props.item.weapon.range}/>
+					<StatValue label='Unreliable' value={this.props.item.weapon.unreliable}/>
 				</div>
 			);
 		}
@@ -33,9 +28,7 @@ export class ItemCard extends React.Component<Props> {
 			features = (
 				<div>
 					<Divider/>
-					<Typography.Paragraph>
-						<b>Features:</b> {this.props.item.features.map(t => FeatureHelper.getName(t)).join(', ')}
-					</Typography.Paragraph>
+					<StatValue label='Features' value={this.props.item.features.map(f => FeatureHelper.getName(f)).join(', ')}/>
 				</div>
 			);
 		}
@@ -51,12 +44,8 @@ export class ItemCard extends React.Component<Props> {
 					<b>{this.props.item.name}</b>
 				</Typography.Paragraph>
 				<Divider/>
-				<Typography.Paragraph>
-					<b>Proficiency:</b> {this.props.item.proficiency}
-				</Typography.Paragraph>
-				<Typography.Paragraph>
-					<b>Location:</b> {location}
-				</Typography.Paragraph>
+				<StatValue label='Proficiency' value={this.props.item.proficiency}/>
+				<StatValue label='Location' value={location}/>
 				{wpn}
 				{features}
 			</Padding>

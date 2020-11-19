@@ -7,8 +7,6 @@ interface Props {
 	onSelectRegion: (region: CampaignMapRegion | null) => void;
 }
 
-// TODO: Display at the correct aspect ratio
-
 export class CampaignMapPanel extends React.Component<Props> {
 	private onClick(e: React.MouseEvent, square: CampaignMapSquare) {
 		e.stopPropagation();
@@ -61,9 +59,12 @@ export class CampaignMapPanel extends React.Component<Props> {
 			);
 		});
 
+		const totalHeight = 500;
+		const totalWidth = totalHeight * width / height;
+
 		return (
-			<div className='campaign-map' role='button' onClick={() => this.props.onSelectRegion(null)}>
-				<div className='campaign-map-inner'>
+			<div className='campaign-map' style={{ height: totalHeight + 'px' }} role='button' onClick={() => this.props.onSelectRegion(null)}>
+				<div className='campaign-map-inner' style={{ width: totalWidth + 'px' }}>
 					<div className='campaign-map-square-container'>
 						{regions}
 					</div>

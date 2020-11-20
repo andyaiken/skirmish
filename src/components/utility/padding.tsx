@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface Props {
-	value: number;
+	value: number | string;
 }
 
 export class Padding extends React.Component<Props> {

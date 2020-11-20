@@ -22,7 +22,7 @@
 
 .ant-btn {
 	text-transform: uppercase;
-	letter-spacing: 2px;
+	letter-spacing: 1px;
 }
 
 .campaign-map {
@@ -70,7 +70,8 @@
 			border: 1px solid rgb(220, 220, 220);
 			border-radius: 15px;
 			cursor: pointer;
-			overflow: auto;
+			overflow-x: hidden;
+			overflow-y: auto;
 
 			&:hover {
 				border-color: #40a9ff;

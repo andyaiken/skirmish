@@ -1,4 +1,4 @@
-import { Divider, Typography } from 'antd';
+import { Divider } from 'antd';
 import React from 'react';
 import { FeatureHelper } from '../../models/feature';
 import { Species } from '../../models/species';
@@ -15,10 +15,7 @@ export class SpeciesCard extends React.Component<Props> {
 		return (
 			<Padding>
 				<Align>
-					<Typography.Paragraph style={{ textAlign: 'center' }}>
-						<b>{this.props.species.name}</b>
-					</Typography.Paragraph>
-					<Divider/>
+					<Divider>{this.props.species.name}</Divider>
 					<StatValue label='Trait bonus' value={this.props.species.traits.map(t => t.toString()).join(', ')}/>
 					<StatValue label='Features' value={this.props.species.features.map(f => FeatureHelper.getName(f)).join(', ')}/>
 				</Align>

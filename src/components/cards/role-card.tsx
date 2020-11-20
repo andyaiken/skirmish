@@ -1,4 +1,4 @@
-import { Divider, Typography } from 'antd';
+import { Divider } from 'antd';
 import React from 'react';
 import { FeatureHelper } from '../../models/feature';
 import { Role } from '../../models/role';
@@ -15,10 +15,7 @@ export class RoleCard extends React.Component<Props> {
 		return (
 			<Padding>
 				<Align>
-					<Typography.Paragraph style={{ textAlign: 'center' }}>
-						<b>{this.props.role.name}</b>
-					</Typography.Paragraph>
-					<Divider/>
+					<Divider>{this.props.role.name}</Divider>
 					<StatValue label='Trait bonus' value={this.props.role.traits.map(t => t.toString()).join(', ')}/>
 					<StatValue label='Skill bonus' value={this.props.role.skills.map(s => s.toString()).join(', ')}/>
 					<StatValue label='Proficiencies' value={this.props.role.proficiencies.map(p => p.toString()).join(', ')}/>

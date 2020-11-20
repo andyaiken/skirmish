@@ -1,5 +1,6 @@
 import { NameGenerator } from '../utils/name-generator';
 import { Utils } from '../utils/utils';
+import { BoonHelper, BoonType } from './boon';
 
 export interface CampaignMapSquare {
 	id: string;
@@ -12,6 +13,7 @@ export interface CampaignMapRegion {
 	id: string;
 	name: string;
 	color: string;
+	boon: BoonType;
 }
 
 export interface CampaignMap {
@@ -73,7 +75,8 @@ export class CampaignMapHelper {
 			map.regions.push({
 				id: Utils.guid(),
 				name: NameGenerator.generateName(),
-				color: 'rgb(' + r + ',' + g + ',' + b + ')'
+				color: 'rgb(' + r + ',' + g + ',' + b + ')',
+				boon: BoonHelper.getRandomBoon()
 			});
 		}
 

@@ -1,4 +1,4 @@
-import { Divider, Typography } from 'antd';
+import { Divider } from 'antd';
 import React from 'react';
 import { Background } from '../../models/background';
 import { FeatureHelper } from '../../models/feature';
@@ -15,10 +15,7 @@ export class BackgroundCard extends React.Component<Props> {
 		return (
 			<Padding>
 				<Align>
-					<Typography.Paragraph style={{ textAlign: 'center' }}>
-						<b>{this.props.background.name}</b>
-					</Typography.Paragraph>
-					<Divider/>
+					<Divider>{this.props.background.name}</Divider>
 					<StatValue label='Features' value={this.props.background.features.map(f => FeatureHelper.getName(f)).join(', ')}/>
 				</Align>
 			</Padding>

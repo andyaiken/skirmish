@@ -1,4 +1,4 @@
-import { Divider, Typography } from 'antd';
+import { Divider, Tag } from 'antd';
 import React from 'react';
 import { FeatureHelper } from '../../models/feature';
 import { Item } from '../../models/item';
@@ -15,8 +15,8 @@ export class ItemCard extends React.Component<Props> {
 		if (this.props.item.weapon) {
 			wpn = (
 				<div>
-					<Divider/>
-					<StatValue label='Damage' value={this.props.item.weapon.damage.rank + ' ' + this.props.item.weapon.damage.type}/>
+					<StatValue label='Damage' value={this.props.item.weapon.damage.rank}/>
+					<StatValue label='Type' value={this.props.item.weapon.damage.type}/>
 					<StatValue label='Range' value={this.props.item.weapon.range}/>
 					<StatValue label='Unreliable' value={this.props.item.weapon.unreliable}/>
 				</div>
@@ -28,7 +28,11 @@ export class ItemCard extends React.Component<Props> {
 			features = (
 				<div>
 					<Divider/>
-					<StatValue label='Features' value={this.props.item.features.map(f => FeatureHelper.getName(f)).join(', ')}/>
+					{this.props.item.features.map(f => (
+						<Tag key={f.id}>
+							{FeatureHelper.getName(f)}
+						</Tag>
+					))}
 				</div>
 			);
 		}
@@ -40,14 +44,12 @@ export class ItemCard extends React.Component<Props> {
 
 		return (
 			<Padding>
-				<Typography.Paragraph style={{ textAlign: 'center' }}>
-					<b>{this.props.item.name}</b>
-				</Typography.Paragraph>
-				<Divider/>
-				<StatValue label='Proficiency' value={this.props.item.proficiency}/>
-				<StatValue label='Location' value={location}/>
+				<Divider>{this.props.item.name}</Divider>
 				{wpn}
+				<StatValue label='Location' value={location}/>
 				{features}
+				<Divider>Proficiency</Divider>
+				<Tag>{this.props.item.proficiency}</Tag>
 			</Padding>
 		);
 	}

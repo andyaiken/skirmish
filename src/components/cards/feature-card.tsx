@@ -1,3 +1,4 @@
+import { Divider } from 'antd';
 import React from 'react';
 import { Feature, FeatureHelper } from '../../models/feature';
 import { Align } from '../utility/align';
@@ -12,7 +13,7 @@ export class FeatureCard extends React.Component<Props> {
 		return (
 			<Padding>
 				<Align>
-					{FeatureHelper.getName(this.props.feature)}
+					<Divider>{FeatureHelper.getName(this.props.feature)}</Divider>
 				</Align>
 			</Padding>
 		);

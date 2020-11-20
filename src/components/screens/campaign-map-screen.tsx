@@ -3,9 +3,7 @@ import React from 'react';
 import { CampaignMap, CampaignMapHelper, CampaignMapRegion } from '../../models/campaign-map';
 import { Game } from '../../models/game';
 import { CampaignMapPanel } from '../panels/campaign-map-panel';
-import { Align } from '../utility/align';
 import { Heading } from '../utility/heading';
-import { Padding } from '../utility/padding';
 
 interface Props {
 	game: Game;
@@ -47,48 +45,27 @@ export class CampaignMapScreen extends React.Component<Props, State> {
 					<Button block={true} onClick={() => this.props.endCampaign()}>Done</Button>
 				</div>
 			);
-		} else {
-			let selection = null;
-			if (this.state.selectedRegion) {
-				selection = (
-					<div>
-						<Padding>
-							<Align>
-								<Heading>
-									{this.state.selectedRegion.name}
-								</Heading>
-							</Align>
-						</Padding>
-						<Button block={true} onClick={() => this.props.startEncounter(this.state.selectedRegion as CampaignMapRegion)}>Start an Encounter</Button>
-						<Divider/>
-						<Button block={true} onClick={() => { this.setState({ selectedRegion: null }); this.props.conquer(this.state.selectedRegion as CampaignMapRegion); }}>CONQUER</Button>
-					</div>
-				);
-			} else {
-				selection = (
-					<div>
-						<Divider/>
-						<Padding>
-							<Align>
-								Select a region on the map.
-							</Align>
-						</Padding>
-					</div>
-				);
-			}
-
+		} else if (this.state.selectedRegion) {
 			options = (
-				<Row gutter={10}>
-					<Col span={12}>
-						<Divider/>
-						<Button block={true} onClick={() => this.props.viewHeroes()}>Your Heroes</Button>
-						<Divider>Options</Divider>
-						<Button block={true} onClick={() => this.props.endCampaign()}>Abandon This Campaign</Button>
-					</Col>
-					<Col span={12}>
-						{selection}
-					</Col>
-				</Row>
+				<div>
+					<Divider>
+						<Heading>
+							{this.state.selectedRegion.name}
+						</Heading>
+					</Divider>
+					<Button block={true} onClick={() => this.props.startEncounter(this.state.selectedRegion as CampaignMapRegion)}>Start an Encounter</Button>
+					<Divider/>
+					<Button block={true} onClick={() => { this.setState({ selectedRegion: null }); this.props.conquer(this.state.selectedRegion as CampaignMapRegion); }}>Auto-Conquer</Button>
+				</div>
+			);
+		} else {
+			options = (
+				<div>
+					<Divider/>
+					<Button block={true} onClick={() => this.props.viewHeroes()}>Your Heroes</Button>
+					<Divider/>
+					<Button block={true} onClick={() => this.props.endCampaign()}>Abandon This Campaign</Button>
+				</div>
 			);
 		}
 
@@ -99,7 +76,11 @@ export class CampaignMapScreen extends React.Component<Props, State> {
 					selectedRegion={this.state.selectedRegion}
 					onSelectRegion={region => this.setState({ selectedRegion: region })}
 				/>
-				{options}
+				<Row justify='center'>
+					<Col span={8}>
+						{options}
+					</Col>
+				</Row>
 			</div>
 		);
 	}

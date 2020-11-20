@@ -1,4 +1,4 @@
-import { Button, Col, Divider, Drawer, Progress, Radio, Row, Typography } from 'antd';
+import { Button, Col, Divider, Drawer, Progress, Radio, Row, Tag, Typography } from 'antd';
 import React from 'react';
 import { BackgroundHelper } from '../../models/background';
 import { Game } from '../../models/game';
@@ -118,7 +118,7 @@ class StatsPage extends React.Component<StatsPageProps> {
 		const profs = (
 			<div>
 				<Typography.Paragraph>
-					{HeroHelper.proficiencies(this.props.hero).join(', ') || 'None'}
+					{HeroHelper.proficiencies(this.props.hero).map(p => (<Tag key={p}>{p}</Tag>)) || 'None'}
 				</Typography.Paragraph>
 			</div>
 		);

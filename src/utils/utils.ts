@@ -45,6 +45,11 @@ export class Utils {
 		return collection;
 	}
 
+	public static draw<T>(collection: T[]): T {
+		const index = Utils.randomNumber(collection.length);
+		return collection[index];
+	}
+
 	public static debounce(func: () => void, delay: number = 500) {
 		let timeout: NodeJS.Timeout;
 		return () => {

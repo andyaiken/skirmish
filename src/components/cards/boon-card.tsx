@@ -1,19 +1,19 @@
 import { Divider } from 'antd';
 import React from 'react';
-import { Action } from '../../models/action';
+import { BoonType } from '../../models/boon';
 import { Align } from '../utility/align';
 import { Padding } from '../utility/padding';
 
 interface Props {
-	action: Action;
+	boon: BoonType;
 }
 
-export class ActionCard extends React.Component<Props> {
+export class BoonCard extends React.Component<Props> {
 	public render() {
 		return (
 			<Padding>
 				<Align>
-					<Divider>{this.props.action.name}</Divider>
+					<Divider>{this.props.boon}</Divider>
 				</Align>
 			</Padding>
 		);

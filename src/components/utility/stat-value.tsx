@@ -13,7 +13,7 @@ export class StatValue extends React.Component<Props> {
 				<Col span={12} style={{ textAlign: 'left' }}>
 					{this.props.label}
 				</Col>
-				<Col span={12} style={{ textAlign: 'right' }}>
+				<Col span={12} style={{ textAlign: 'right', fontWeight: 600 }}>
 					{this.props.value}
 				</Col>
 			</Row>

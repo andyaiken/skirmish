@@ -1,4 +1,4 @@
-import { Utils } from '../utils/utils';
+import { guid } from '../utils/utils';
 import { DamageCategory, DamageType } from './damage';
 import { Proficiency } from './proficiency';
 import { Skill, SkillCategory } from './skill';
@@ -40,7 +40,7 @@ export class FeatureHelper {
 			case FeatureType.DamageBonus:
 				return feature.damage + ' ' + feature.rank;
 			case FeatureType.DamageCategoryBonus:
-				return feature.damageCategory + feature.rank;
+				return feature.damageCategory + ' ' + feature.rank;
 			case FeatureType.DamageResist:
 				return feature.damage + ' resistance ' + feature.rank;
 			case FeatureType.DamageCategoryResist:
@@ -77,7 +77,7 @@ export class FeatureHelper {
 
 	public static createDamageBonusFeature(damage: DamageType, rank: number): Feature {
 		return {
-			id: Utils.guid(),
+			id: guid(),
 			type: FeatureType.DamageBonus,
 			damage: damage,
 			damageCategory: DamageCategory.None,
@@ -91,7 +91,7 @@ export class FeatureHelper {
 
 	public static createDamageCategoryBonusFeature(category: DamageCategory, rank: number): Feature {
 		return {
-			id: Utils.guid(),
+			id: guid(),
 			type: FeatureType.DamageCategoryBonus,
 			damage: DamageType.None,
 			damageCategory: category,
@@ -105,7 +105,7 @@ export class FeatureHelper {
 
 	public static createDamageResistFeature(damage: DamageType, rank: number): Feature {
 		return {
-			id: Utils.guid(),
+			id: guid(),
 			type: FeatureType.DamageResist,
 			damage: damage,
 			damageCategory: DamageCategory.None,
@@ -119,7 +119,7 @@ export class FeatureHelper {
 
 	public static createDamageCategoryResistFeature(category: DamageCategory, rank: number): Feature {
 		return {
-			id: Utils.guid(),
+			id: guid(),
 			type: FeatureType.DamageCategoryResist,
 			damage: DamageType.None,
 			damageCategory: category,
@@ -133,7 +133,7 @@ export class FeatureHelper {
 
 	public static createProficiencyFeature(proficiency: Proficiency): Feature {
 		return {
-			id: Utils.guid(),
+			id: guid(),
 			type: FeatureType.Proficiency,
 			damage: DamageType.None,
 			damageCategory: DamageCategory.None,
@@ -147,7 +147,7 @@ export class FeatureHelper {
 
 	public static createSkillFeature(skill: Skill, rank: number): Feature {
 		return {
-			id: Utils.guid(),
+			id: guid(),
 			type: FeatureType.Skill,
 			damage: DamageType.None,
 			damageCategory: DamageCategory.None,
@@ -161,7 +161,7 @@ export class FeatureHelper {
 
 	public static createSkillCategoryFeature(category: SkillCategory, rank: number): Feature {
 		return {
-			id: Utils.guid(),
+			id: guid(),
 			type: FeatureType.SkillCategory,
 			damage: DamageType.None,
 			damageCategory: DamageCategory.None,
@@ -175,7 +175,7 @@ export class FeatureHelper {
 
 	public static createTraitFeature(trait: Trait, rank: number): Feature {
 		return {
-			id: Utils.guid(),
+			id: guid(),
 			type: FeatureType.Trait,
 			damage: DamageType.None,
 			damageCategory: DamageCategory.None,

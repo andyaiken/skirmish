@@ -1,4 +1,4 @@
-import { Utils } from '../utils/utils';
+import { draw } from '../utils/collections';
 
 export enum BoonType {
 	ExtraHero = 'Extra hero',
@@ -15,6 +15,6 @@ export class BoonHelper {
 			BoonType.LevelUp,
 			BoonType.MagicItem
 		];
-		return Utils.draw(list);
+		return draw(list);
 	}
 }

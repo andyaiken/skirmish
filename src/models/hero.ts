@@ -1,4 +1,4 @@
-import { Utils } from '../utils/utils';
+import { guid } from '../utils/utils';
 import { Action, ActionHelper } from './action';
 import { BackgroundHelper } from './background';
 import { Feature, FeatureHelper, FeatureType } from './feature';
@@ -37,12 +37,10 @@ export interface Monster {
 }
 
 export class HeroHelper {
-	public static PlaceholderName: string = 'ZZZZZZZZ';
-
 	public static createHero(): Hero {
 		return {
-			id: Utils.guid(),
-			name: HeroHelper.PlaceholderName,
+			id: guid(),
+			name: '',
 			speciesID: '',
 			roleID: '',
 			backgroundID: '',
@@ -55,7 +53,7 @@ export class HeroHelper {
 
 	public static createMonster(): Monster {
 		return {
-			id: Utils.guid(),
+			id: guid(),
 			name: '',
 			level: 1,
 			size: 1,

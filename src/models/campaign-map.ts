@@ -1,5 +1,6 @@
-import { NameGenerator } from '../utils/name-generator';
-import { Utils } from '../utils/utils';
+import { generateName } from '../utils/name-generator';
+import { randomNumber } from '../utils/random';
+import { guid } from '../utils/utils';
 import { BoonHelper, BoonType } from './boon';
 
 export interface CampaignMapSquare {
@@ -25,7 +26,7 @@ export class CampaignMapHelper {
 	public static createMap(): CampaignMap {
 		const map: CampaignMap = {
 			squares: [{
-				id: Utils.guid(),
+				id: guid(),
 				x: 0,
 				y: 0,
 				regionID: ''
@@ -34,12 +35,12 @@ export class CampaignMapHelper {
 		};
 
 		while (map.squares.length < 1000) {
-			const index = Utils.randomNumber(map.squares.length);
+			const index = randomNumber(map.squares.length);
 			const parent = map.squares[index];
 
 			let x = parent.x;
 			let y = parent.y;
-			const dir = Utils.randomNumber(4);
+			const dir = randomNumber(4);
 			switch (dir) {
 				case 0:
 					y -= 1;
@@ -58,7 +59,7 @@ export class CampaignMapHelper {
 			const exists = map.squares.find(sq => (sq.x === x) && (sq.y === y));
 			if (!exists) {
 				map.squares.push({
-					id: Utils.guid(),
+					id: guid(),
 					x: x,
 					y: y,
 					regionID: ''
@@ -68,13 +69,13 @@ export class CampaignMapHelper {
 
 		const regionCount = map.squares.length / 20;
 		while (map.regions.length !== regionCount) {
-			const r = Utils.randomNumber(256);
-			const g = Utils.randomNumber(256);
-			const b = Utils.randomNumber(256);
+			const r = randomNumber(256);
+			const g = randomNumber(256);
+			const b = randomNumber(256);
 
 			map.regions.push({
-				id: Utils.guid(),
-				name: NameGenerator.generateName(),
+				id: guid(),
+				name: generateName(),
 				color: 'rgb(' + r + ',' + g + ',' + b + ')',
 				boon: BoonHelper.getRandomBoon()
 			});
@@ -82,7 +83,7 @@ export class CampaignMapHelper {
 
 		map.regions.forEach(region => {
 			const unclaimed = map.squares.filter(sq => sq.regionID === '');
-			const index = Utils.randomNumber(unclaimed.length);
+			const index = randomNumber(unclaimed.length);
 			const square = map.squares[index];
 			square.regionID = region.id;
 		});
@@ -102,7 +103,7 @@ export class CampaignMapHelper {
 
 				// Pick a square and claim it
 				if (candidates.length > 0) {
-					const index = Utils.randomNumber(candidates.length);
+					const index = randomNumber(candidates.length);
 					const square = candidates[index];
 					square.regionID = region.id;
 				}

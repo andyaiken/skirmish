@@ -1,15 +1,30 @@
-CampaignMapScreen
+# Tasks
+
+## Screens
+
+### Campaign Map Screen
 
 * You should only be able to start an encounter in adjacent regions
 
-EncounterScreen
+### Encounter Screen
 
 * Implement the encounter flow
 
-EncounterMapPanel
+## Panels
+
+### Encounter Map Panel
 
 * Implement this panel
 
-InitiativeListPanel
+### Hero Builder Panel
+
+* Allow names to be regenerated
+
+### Initiative List Panel
 
 * Implement this panel
+
+## Tech Debt
+
+* Convert to functional components
+* Use hooks

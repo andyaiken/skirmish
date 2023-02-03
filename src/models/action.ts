@@ -1,4 +1,4 @@
-import { Utils } from '../utils/utils';
+import { guid } from '../utils/utils';
 
 export interface Action {
 	id: string;
@@ -12,7 +12,7 @@ export class ActionHelper {
 
 	public static createPlaceholder(name: string): Action {
 		return {
-			id: Utils.guid(),
+			id: guid(),
 			name: name
 		};
 	}

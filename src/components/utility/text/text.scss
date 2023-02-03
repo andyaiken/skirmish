@@ -1,0 +1,23 @@
+.skirmish-text {
+	&.default {
+		font-size: 15px;
+		margin: 10px 0;
+	}
+
+	&.heading {
+		font-size: 30px;
+		text-transform: uppercase;
+		letter-spacing: 10px;
+		font-weight: 600;
+		text-align: center;
+		margin: 20px 0;
+	}
+
+	&.subheading {
+		font-size: 20px;
+		text-transform: uppercase;
+		letter-spacing: 3px;
+		margin: 10px 0;
+		font-weight: 500;
+	}
+}

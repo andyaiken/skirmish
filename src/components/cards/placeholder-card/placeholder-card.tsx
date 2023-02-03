@@ -1,0 +1,18 @@
+import { Component } from 'react';
+import { Text, TextType } from '../../utility';
+
+import './placeholder-card.scss';
+
+interface Props {
+	text: string
+}
+
+export class PlaceholderCard extends Component<Props> {
+	public render() {
+		return (
+			<div className='placeholder-card'>
+				<Text type={TextType.SubHeading}>{this.props.text}</Text>
+			</div>
+		);
+	}
+}

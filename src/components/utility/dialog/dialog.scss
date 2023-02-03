@@ -1,0 +1,29 @@
+.dialog-backdrop {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.1);
+	backdrop-filter: blur(2px);
+	z-index: 100;
+}
+
+.dialog {
+	position: absolute;
+	top: 10%;
+	left: 10%;
+	right: 10%;
+	bottom: 10%;
+	border: 2px solid grey;
+	background-color: rgb(255, 255, 255);
+    display: flex;
+    flex-direction: column;
+	z-index: 200;
+
+	.dialog-content {
+		flex: 1 1 0;
+		overflow-y: auto;
+		padding: 20px;
+	}
+}

@@ -1,0 +1,14 @@
+.stat-value {
+	display: flex;
+	font-size: 13px;
+
+	.stat-value-label {
+		flex: 1 1 auto;
+		font-weight: 600;
+	}
+
+	.stat-value-value {
+		flex: 1 1 auto;
+		text-align: right;
+	}
+}

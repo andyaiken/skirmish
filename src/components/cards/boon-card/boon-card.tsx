@@ -13,6 +13,7 @@ export class BoonCard extends Component<Props> {
 		return (
 			<div className='boon-card'>
 				<Text type={TextType.SubHeading}>{this.props.boon}</Text>
+				<hr />
 			</div>
 		);
 	}

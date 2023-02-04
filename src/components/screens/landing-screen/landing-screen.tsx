@@ -12,7 +12,7 @@ interface Props {
 export class LandingScreen extends Component<Props> {
 	public render() {
 		let continueBtn = null;
-		if (this.props.game && this.props.game.map) {
+		if (this.props.game?.map) {
 			continueBtn = (
 				<button onClick={this.props.continueCampaign}>Continue your current campaign</button>
 			);

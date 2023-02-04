@@ -5,7 +5,8 @@ import './text.scss';
 export enum TextType {
 	Default = 'default',
 	Heading = 'heading',
-	SubHeading = 'subheading'
+	SubHeading = 'subheading',
+	Information = 'information'
 }
 
 interface Props {

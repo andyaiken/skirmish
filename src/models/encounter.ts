@@ -1,5 +1,5 @@
-import { EncounterMap, EncounterMapHelper } from './encounter-map';
-import { Monster } from './hero';
+import { createMap, EncounterMap } from './encounter-map';
+import { Monster } from './monster';
 
 export enum EncounterState {
 	Active,
@@ -13,17 +13,15 @@ export interface Encounter {
 	map: EncounterMap;
 }
 
-export class EncounterHelper {
-	public static createEncounter(): Encounter {
-		return {
-			heroIDs: [],
-			monsters: [],
-			map: EncounterMapHelper.createMap()
-		};
-	}
+export const createEncounter = (): Encounter => {
+	return {
+		heroIDs: [],
+		monsters: [],
+		map: createMap()
+	};
+}
 
-	public static getState(encounter: Encounter): EncounterState {
-		// TODO
-		return EncounterState.Active;
-	}
+export const getState = (encounter: Encounter): EncounterState => {
+	// TODO
+	return EncounterState.Active;
 }

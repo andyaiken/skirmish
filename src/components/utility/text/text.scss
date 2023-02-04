@@ -20,4 +20,13 @@
 		margin: 10px 0;
 		font-weight: 500;
 	}
+
+	&.information {
+		font-size: 13px;
+		margin: 10px 0;
+		border: 2px solid rgb(60, 170, 255);
+		border-radius: 5px;
+		background-color: rgb(200, 230, 255);
+		padding: 10px;
+	}
 }

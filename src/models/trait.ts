@@ -7,8 +7,6 @@ export enum Trait {
 	Speed = 'Speed'
 }
 
-export class TraitHelper {
-	public static toText(trait: Trait) {
-		return trait;
-	}
+export const toText = (trait: Trait) => {
+	return trait;
 }

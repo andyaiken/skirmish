@@ -1,5 +1,5 @@
 import { DamageCategory, DamageType } from '../models/damage';
-import { FeatureHelper } from '../models/feature';
+import { createDamageCategoryResistFeature, createSkillCategoryFeature, createTraitFeature } from '../models/feature';
 import { Item } from '../models/item';
 import { ItemLocation } from '../models/item-location';
 import { Proficiency } from '../models/proficiency';
@@ -412,7 +412,7 @@ export const ItemList: Item[] = [
 		slots: 1,
 		weapon: null,
 		features: [
-			FeatureHelper.createDamageCategoryResistFeature(DamageCategory.Physical, 1)
+			createDamageCategoryResistFeature(DamageCategory.Physical, 1)
 		],
 		actions: []
 	},
@@ -424,8 +424,8 @@ export const ItemList: Item[] = [
 		slots: 1,
 		weapon: null,
 		features: [
-			FeatureHelper.createDamageCategoryResistFeature(DamageCategory.Physical, 2),
-			FeatureHelper.createSkillCategoryFeature(SkillCategory.Physical, -1)
+			createDamageCategoryResistFeature(DamageCategory.Physical, 2),
+			createSkillCategoryFeature(SkillCategory.Physical, -1)
 		],
 		actions: []
 	},
@@ -437,9 +437,9 @@ export const ItemList: Item[] = [
 		slots: 1,
 		weapon: null,
 		features: [
-			FeatureHelper.createDamageCategoryResistFeature(DamageCategory.Physical, 3),
-			FeatureHelper.createSkillCategoryFeature(SkillCategory.Physical, -1),
-			FeatureHelper.createTraitFeature(Trait.Speed, -1)
+			createDamageCategoryResistFeature(DamageCategory.Physical, 3),
+			createSkillCategoryFeature(SkillCategory.Physical, -1),
+			createTraitFeature(Trait.Speed, -1)
 		],
 		actions: []
 	},
@@ -451,9 +451,9 @@ export const ItemList: Item[] = [
 		slots: 1,
 		weapon: null,
 		features: [
-			FeatureHelper.createDamageCategoryResistFeature(DamageCategory.Physical, 4),
-			FeatureHelper.createSkillCategoryFeature(SkillCategory.Physical, -2),
-			FeatureHelper.createTraitFeature(Trait.Speed, -1)
+			createDamageCategoryResistFeature(DamageCategory.Physical, 4),
+			createSkillCategoryFeature(SkillCategory.Physical, -2),
+			createTraitFeature(Trait.Speed, -1)
 		],
 		actions: []
 	},
@@ -465,9 +465,9 @@ export const ItemList: Item[] = [
 		slots: 1,
 		weapon: null,
 		features: [
-			FeatureHelper.createDamageCategoryResistFeature(DamageCategory.Physical, 5),
-			FeatureHelper.createSkillCategoryFeature(SkillCategory.Physical, -3),
-			FeatureHelper.createTraitFeature(Trait.Speed, -2)
+			createDamageCategoryResistFeature(DamageCategory.Physical, 5),
+			createSkillCategoryFeature(SkillCategory.Physical, -3),
+			createTraitFeature(Trait.Speed, -2)
 		],
 		actions: []
 	},
@@ -479,8 +479,8 @@ export const ItemList: Item[] = [
 		slots: 1,
 		weapon: null,
 		features: [
-			FeatureHelper.createDamageCategoryResistFeature(DamageCategory.Physical, 1),
-			FeatureHelper.createSkillCategoryFeature(SkillCategory.Physical, -1)
+			createDamageCategoryResistFeature(DamageCategory.Physical, 1),
+			createSkillCategoryFeature(SkillCategory.Physical, -1)
 		],
 		actions: []
 	},
@@ -492,8 +492,8 @@ export const ItemList: Item[] = [
 		slots: 1,
 		weapon: null,
 		features: [
-			FeatureHelper.createDamageCategoryResistFeature(DamageCategory.Physical, 2),
-			FeatureHelper.createSkillCategoryFeature(SkillCategory.Physical, -2)
+			createDamageCategoryResistFeature(DamageCategory.Physical, 2),
+			createSkillCategoryFeature(SkillCategory.Physical, -2)
 		],
 		actions: []
 	}

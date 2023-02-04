@@ -11,18 +11,16 @@ export interface Species {
 	actions: Action[];
 }
 
-export class SpeciesHelper {
-	public static getSpecies(id: string) {
-		return SpeciesList.find(s => s.id === id);
-	}
+export const getSpecies = (id: string) => {
+	return SpeciesList.find(s => s.id === id);
+}
 
-	public static getDeck() {
-		const deck: string[] = [];
+export const getSpeciesDeck = () => {
+	const deck: string[] = [];
 
-		SpeciesList.forEach(s => {
-			deck.push(s.id);
-		});
+	SpeciesList.forEach(s => {
+		deck.push(s.id);
+	});
 
-		return deck;
-	}
+	return deck;
 }

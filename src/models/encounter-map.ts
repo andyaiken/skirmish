@@ -1,11 +1,10 @@
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface EncounterMap {
 	//
 }
 
-export class EncounterMapHelper {
-	public static createMap(): EncounterMap {
-		return {
-			// TODO
-		};
-	}
+export const createMap = (): EncounterMap => {
+	return {
+		// TODO
+	};
 }

@@ -1,6 +1,6 @@
-import { ActionHelper } from '../models/action';
+import { createPlaceholder } from '../models/action';
 import { DamageCategory, DamageType } from '../models/damage';
-import { FeatureHelper } from '../models/feature';
+import { createDamageBonusFeature, createDamageCategoryBonusFeature, createDamageCategoryResistFeature, createDamageResistFeature, createSkillFeature, createTraitFeature } from '../models/feature';
 import { Proficiency } from '../models/proficiency';
 import { Role } from '../models/role';
 import { Skill } from '../models/skill';
@@ -21,16 +21,16 @@ export const RoleList: Role[] = [
 			Proficiency.LightArmor
 		],
 		features: [
-			FeatureHelper.createTraitFeature(Trait.Endurance, 1),
-			FeatureHelper.createSkillFeature(Skill.Weapon, 2),
-			FeatureHelper.createDamageCategoryBonusFeature(DamageCategory.Physical, 1),
-			FeatureHelper.createDamageCategoryResistFeature(DamageCategory.Physical, 1)
+			createTraitFeature(Trait.Endurance, 1),
+			createSkillFeature(Skill.Weapon, 2),
+			createDamageCategoryBonusFeature(DamageCategory.Physical, 1),
+			createDamageCategoryResistFeature(DamageCategory.Physical, 1)
 		],
 		actions: [
-			ActionHelper.createPlaceholder('Overhead strike'),
-			ActionHelper.createPlaceholder('Knockdown strike'),
-			ActionHelper.createPlaceholder('Stunning strike'),
-			ActionHelper.createPlaceholder('Haymaker strike')
+			createPlaceholder('Overhead strike'),
+			createPlaceholder('Knockdown strike'),
+			createPlaceholder('Stunning strike'),
+			createPlaceholder('Haymaker strike')
 		]
 	},
 	{
@@ -47,15 +47,15 @@ export const RoleList: Role[] = [
 			Proficiency.LightArmor
 		],
 		features: [
-			FeatureHelper.createTraitFeature(Trait.Speed, 1),
-			FeatureHelper.createSkillFeature(Skill.Weapon, 2)
+			createTraitFeature(Trait.Speed, 1),
+			createSkillFeature(Skill.Weapon, 2)
 		],
 		actions: [
-			ActionHelper.createPlaceholder('Dual strike (one target)'),
-			ActionHelper.createPlaceholder('Dual strike (two targets)'),
-			ActionHelper.createPlaceholder('Whirlwind strike'),
-			ActionHelper.createPlaceholder('Leaping strike'),
-			ActionHelper.createPlaceholder('Dodging stance (adds physical damage resistance)')
+			createPlaceholder('Dual strike (one target)'),
+			createPlaceholder('Dual strike (two targets)'),
+			createPlaceholder('Whirlwind strike'),
+			createPlaceholder('Leaping strike'),
+			createPlaceholder('Dodging stance (adds physical damage resistance)')
 		]
 	},
 	{
@@ -71,17 +71,17 @@ export const RoleList: Role[] = [
 			Proficiency.Implements
 		],
 		features: [
-			FeatureHelper.createTraitFeature(Trait.Resolve, 1),
-			FeatureHelper.createSkillFeature(Skill.Spellcasting, 2),
-			FeatureHelper.createDamageBonusFeature(DamageType.Psychic, 1),
-			FeatureHelper.createDamageResistFeature(DamageType.Psychic, 1)
+			createTraitFeature(Trait.Resolve, 1),
+			createSkillFeature(Skill.Spellcasting, 2),
+			createDamageBonusFeature(DamageType.Psychic, 1),
+			createDamageResistFeature(DamageType.Psychic, 1)
 		],
 		actions: [
-			ActionHelper.createPlaceholder('Confusion (target makes attack)'),
-			ActionHelper.createPlaceholder('Stun (target loses action)'),
-			ActionHelper.createPlaceholder('Fear (target loses speed)'),
-			ActionHelper.createPlaceholder('Mental shield (add psychic damage resistance)'),
-			ActionHelper.createPlaceholder('Weaken (reduce target\'s damage)')
+			createPlaceholder('Confusion (target makes attack)'),
+			createPlaceholder('Stun (target loses action)'),
+			createPlaceholder('Fear (target loses speed)'),
+			createPlaceholder('Mental shield (add psychic damage resistance)'),
+			createPlaceholder('Weaken (reduce target\'s damage)')
 		]
 	},
 	{
@@ -98,17 +98,17 @@ export const RoleList: Role[] = [
 			// None
 		],
 		features: [
-			FeatureHelper.createTraitFeature(Trait.Speed, 1),
-			FeatureHelper.createSkillFeature(Skill.Brawl, 2),
-			FeatureHelper.createSkillFeature(Skill.Stealth, 2),
-			FeatureHelper.createDamageCategoryBonusFeature(DamageCategory.Physical, 1)
+			createTraitFeature(Trait.Speed, 1),
+			createSkillFeature(Skill.Brawl, 2),
+			createSkillFeature(Skill.Stealth, 2),
+			createDamageCategoryBonusFeature(DamageCategory.Physical, 1)
 		],
 		actions: [
-			ActionHelper.createPlaceholder('Roundhouse kick'),
-			ActionHelper.createPlaceholder('Flurry (single target)'),
-			ActionHelper.createPlaceholder('Leaping kick'),
-			ActionHelper.createPlaceholder('Lightning speed (move)'),
-			ActionHelper.createPlaceholder('Adrenal boost (adds to attack / damage)')
+			createPlaceholder('Roundhouse kick'),
+			createPlaceholder('Flurry (single target)'),
+			createPlaceholder('Leaping kick'),
+			createPlaceholder('Lightning speed (move)'),
+			createPlaceholder('Adrenal boost (adds to attack / damage)')
 		]
 	},
 	{
@@ -124,16 +124,16 @@ export const RoleList: Role[] = [
 			Proficiency.PowderWeapons
 		],
 		features: [
-			FeatureHelper.createTraitFeature(Trait.Speed, 1),
-			FeatureHelper.createSkillFeature(Skill.Weapon, 2)
+			createTraitFeature(Trait.Speed, 1),
+			createSkillFeature(Skill.Weapon, 2)
 		],
 		actions: [
-			ActionHelper.createPlaceholder('Deadeye (adds to next attack)'),
-			ActionHelper.createPlaceholder('Fire'),
-			ActionHelper.createPlaceholder('Pommel strike'),
-			ActionHelper.createPlaceholder('Quickfire (two attacks, low accuracy)'),
-			ActionHelper.createPlaceholder('Careful shot'),
-			ActionHelper.createPlaceholder('Fusilade (area, low damage)')
+			createPlaceholder('Deadeye (adds to next attack)'),
+			createPlaceholder('Fire'),
+			createPlaceholder('Pommel strike'),
+			createPlaceholder('Quickfire (two attacks, low accuracy)'),
+			createPlaceholder('Careful shot'),
+			createPlaceholder('Fusilade (area, low damage)')
 		]
 	},
 	{
@@ -150,16 +150,16 @@ export const RoleList: Role[] = [
 			Proficiency.LightArmor
 		],
 		features: [
-			FeatureHelper.createTraitFeature(Trait.Endurance, 1),
-			FeatureHelper.createSkillFeature(Skill.Perception, 2),
-			FeatureHelper.createSkillFeature(Skill.Weapon, 2)
+			createTraitFeature(Trait.Endurance, 1),
+			createSkillFeature(Skill.Perception, 2),
+			createSkillFeature(Skill.Weapon, 2)
 		],
 		actions: [
-			ActionHelper.createPlaceholder('Quick shot'),
-			ActionHelper.createPlaceholder('Sure shot'),
-			ActionHelper.createPlaceholder('Pinning shot (slows)'),
-			ActionHelper.createPlaceholder('Barrage (area, low damage)'),
-			ActionHelper.createPlaceholder('Aim (adds to next attack)')
+			createPlaceholder('Quick shot'),
+			createPlaceholder('Sure shot'),
+			createPlaceholder('Pinning shot (slows)'),
+			createPlaceholder('Barrage (area, low damage)'),
+			createPlaceholder('Aim (adds to next attack)')
 		]
 	},
 	{
@@ -177,16 +177,16 @@ export const RoleList: Role[] = [
 			Proficiency.Shields
 		],
 		features: [
-			FeatureHelper.createTraitFeature(Trait.Endurance, 1),
-			FeatureHelper.createSkillFeature(Skill.Weapon, 2),
-			FeatureHelper.createDamageCategoryBonusFeature(DamageCategory.Physical, 1)
+			createTraitFeature(Trait.Endurance, 1),
+			createSkillFeature(Skill.Weapon, 2),
+			createDamageCategoryBonusFeature(DamageCategory.Physical, 1)
 		],
 		actions: [
-			ActionHelper.createPlaceholder('Charge attack'),
-			ActionHelper.createPlaceholder('Precise attack'),
-			ActionHelper.createPlaceholder('Disarming attack'),
-			ActionHelper.createPlaceholder('Parrying stance'),
-			ActionHelper.createPlaceholder('Shield bash (push)')
+			createPlaceholder('Charge attack'),
+			createPlaceholder('Precise attack'),
+			createPlaceholder('Disarming attack'),
+			createPlaceholder('Parrying stance'),
+			createPlaceholder('Shield bash (push)')
 		]
 	},
 	{
@@ -202,16 +202,16 @@ export const RoleList: Role[] = [
 			Proficiency.Implements
 		],
 		features: [
-			FeatureHelper.createTraitFeature(Trait.Resolve, 1),
-			FeatureHelper.createSkillFeature(Skill.Spellcasting, 2),
-			FeatureHelper.createDamageCategoryBonusFeature(DamageCategory.Energy, 1)
+			createTraitFeature(Trait.Resolve, 1),
+			createSkillFeature(Skill.Spellcasting, 2),
+			createDamageCategoryBonusFeature(DamageCategory.Energy, 1)
 		],
 		actions: [
-			ActionHelper.createPlaceholder('Lightning bolt (single target, damage and stuns)'),
-			ActionHelper.createPlaceholder('Fireball (area, ongoing fire damage)'),
-			ActionHelper.createPlaceholder('Ice storm (area, damage and reduced speed)'),
-			ActionHelper.createPlaceholder('Elemental resistance'),
-			ActionHelper.createPlaceholder('Elemental aura (damage to nearby enemies)')
+			createPlaceholder('Lightning bolt (single target, damage and stuns)'),
+			createPlaceholder('Fireball (area, ongoing fire damage)'),
+			createPlaceholder('Ice storm (area, damage and reduced speed)'),
+			createPlaceholder('Elemental resistance'),
+			createPlaceholder('Elemental aura (damage to nearby enemies)')
 		]
 	},
 	{
@@ -228,17 +228,17 @@ export const RoleList: Role[] = [
 			Proficiency.LightArmor
 		],
 		features: [
-			FeatureHelper.createTraitFeature(Trait.Resolve, 1),
-			FeatureHelper.createSkillFeature(Skill.Weapon, 2),
-			FeatureHelper.createDamageCategoryBonusFeature(DamageCategory.Energy, 1),
-			FeatureHelper.createDamageCategoryBonusFeature(DamageCategory.Physical, 1)
+			createTraitFeature(Trait.Resolve, 1),
+			createSkillFeature(Skill.Weapon, 2),
+			createDamageCategoryBonusFeature(DamageCategory.Energy, 1),
+			createDamageCategoryBonusFeature(DamageCategory.Physical, 1)
 		],
 		actions: [
-			ActionHelper.createPlaceholder('Flaming blade (ongoing fire)'),
-			ActionHelper.createPlaceholder('Frost blade (slows)'),
-			ActionHelper.createPlaceholder('Shocking blade (stuns)'),
-			ActionHelper.createPlaceholder('Armor enhancement'),
-			ActionHelper.createPlaceholder('XXX (attack at range)')
+			createPlaceholder('Flaming blade (ongoing fire)'),
+			createPlaceholder('Frost blade (slows)'),
+			createPlaceholder('Shocking blade (stuns)'),
+			createPlaceholder('Armor enhancement'),
+			createPlaceholder('XXX (attack at range)')
 		]
 	},
 	{
@@ -254,16 +254,16 @@ export const RoleList: Role[] = [
 			Proficiency.Implements
 		],
 		features: [
-			FeatureHelper.createTraitFeature(Trait.Resolve, 1),
-			FeatureHelper.createSkillFeature(Skill.Spellcasting, 2),
-			FeatureHelper.createDamageCategoryBonusFeature(DamageCategory.Energy, 1)
+			createTraitFeature(Trait.Resolve, 1),
+			createSkillFeature(Skill.Spellcasting, 2),
+			createDamageCategoryBonusFeature(DamageCategory.Energy, 1)
 		],
 		actions: [
-			ActionHelper.createPlaceholder('XXX (shield self, resist all damage)'),
-			ActionHelper.createPlaceholder('XXX (shield other, resist all damage)'),
-			ActionHelper.createPlaceholder('XXX (push)'),
-			ActionHelper.createPlaceholder('Magic missile'),
-			ActionHelper.createPlaceholder('Swap positions')
+			createPlaceholder('XXX (shield self, resist all damage)'),
+			createPlaceholder('XXX (shield other, resist all damage)'),
+			createPlaceholder('XXX (push)'),
+			createPlaceholder('Magic missile'),
+			createPlaceholder('Swap positions')
 		]
 	}
 ];

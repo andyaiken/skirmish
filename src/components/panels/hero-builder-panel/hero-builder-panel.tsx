@@ -1,10 +1,11 @@
 import { Component } from 'react';
-import { BackgroundHelper } from '../../../models/background';
-import { Hero, HeroHelper } from '../../../models/hero';
-import { Item, ItemHelper } from '../../../models/item';
-import { RoleHelper } from '../../../models/role';
-import { SpeciesHelper } from '../../../models/species';
+import { getBackground, getBackgroundDeck } from '../../../models/background';
+import { createHero, Hero, proficiencies } from '../../../models/hero';
+import { getItem, getItems, Item } from '../../../models/item';
+import { getRole, getRoleDeck } from '../../../models/role';
+import { getSpecies, getSpeciesDeck } from '../../../models/species';
 import { shuffle } from '../../../utils/collections';
+import { generateName } from '../../../utils/name-generator';
 import { BackgroundCard, ItemCard, RoleCard, SpeciesCard } from '../../cards';
 import { CardList, PlayingCard, PlayingCardSide, Text, TextType } from '../../utility';
 
@@ -21,9 +22,25 @@ interface State {
 export class HeroBuilderPanel extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
+
+		const hero = createHero();
+		hero.name = generateName();
+
 		this.state = {
-			hero: HeroHelper.createHero()
+			hero: hero
 		};
+	}
+
+	rename = () => {
+		const hero = this.state.hero;
+		hero.name = generateName();
+		this.setState({
+			hero: hero
+		});
+	}
+
+	finished = () => {
+		this.props.finished(this.state.hero);
 	}
 
 	public render() {
@@ -42,7 +59,7 @@ export class HeroBuilderPanel extends Component<Props, State> {
 					}}
 				/>
 			);
-		} else if (HeroHelper.proficiencies(this.state.hero).length !== this.state.hero.items.length) {
+		} else if (proficiencies(this.state.hero).length !== this.state.hero.items.length) {
 			content = (
 				<EquipmentSelector
 					hero={this.state.hero}
@@ -57,20 +74,21 @@ export class HeroBuilderPanel extends Component<Props, State> {
 			);
 		} else {
 			content = (
-				<button onClick={() => this.props.finished(this.state.hero)}>
-					OK
-				</button>
+				<div>
+					<button onClick={this.rename}>Rename</button>
+					<button onClick={this.finished}>Finished</button>
+				</div>
 			);
 		}
 
 		let cardInfo = null;
 		if ((this.state.hero.speciesID !== '') && (this.state.hero.roleID !== '') && (this.state.hero.backgroundID !== '')) {
-			const species = SpeciesHelper.getSpecies(this.state.hero.speciesID);
-			const role = RoleHelper.getRole(this.state.hero.roleID);
-			const background = BackgroundHelper.getBackground(this.state.hero.backgroundID);
+			const species = getSpecies(this.state.hero.speciesID);
+			const role = getRole(this.state.hero.roleID);
+			const background = getBackground(this.state.hero.backgroundID);
 			cardInfo = (
 				<Text>
-					This hero is a <b>{species?.name} {role?.name} {background?.name}</b>
+					<b>{this.state.hero.name}</b> is a <b>{species?.name} {role?.name} {background?.name}</b>
 				</Text>
 			);
 		}
@@ -79,7 +97,7 @@ export class HeroBuilderPanel extends Component<Props, State> {
 		if (this.state.hero.items.length > 0) {
 			itemInfo = (
 				<Text>
-					Items: <b>{this.state.hero.items.map(i => i.name).join(', ')}</b>
+					They carry: <b>{this.state.hero.items.map(i => i.name).join(', ')}</b>
 				</Text>
 			);
 		}
@@ -114,9 +132,9 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 	constructor(props: CardSelectorProps) {
 		super(props);
 		this.state = {
-			speciesIDs: shuffle(SpeciesHelper.getDeck()).splice(0, 3),
-			roleIDs: shuffle(RoleHelper.getDeck()).splice(0, 3),
-			backgroundIDs: shuffle(BackgroundHelper.getDeck()).splice(0, 3),
+			speciesIDs: shuffle(getSpeciesDeck()).splice(0, 3),
+			roleIDs: shuffle(getRoleDeck()).splice(0, 3),
+			backgroundIDs: shuffle(getBackgroundDeck()).splice(0, 3),
 			selectedSpeciesID: '',
 			selectedRoleID: '',
 			selectedBackgroundID: ''
@@ -153,7 +171,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 
 	public render() {
 		const speciesCards = this.state.speciesIDs.map(id => {
-			const species = SpeciesHelper.getSpecies(id);
+			const species = getSpecies(id);
 			if (species) {
 				return (
 					<div key={species.id}>
@@ -171,7 +189,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 		});
 
 		const roleCards = this.state.roleIDs.map(id => {
-			const role = RoleHelper.getRole(id);
+			const role = getRole(id);
 			if (role) {
 				return (
 					<div key={role.id}>
@@ -189,7 +207,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 		});
 
 		const backgroundCards = this.state.backgroundIDs.map(id => {
-			const background = BackgroundHelper.getBackground(id);
+			const background = getBackground(id);
 			if (background) {
 				return (
 					<div key={background.id}>
@@ -244,7 +262,7 @@ class EquipmentSelector extends Component<EquipmentSelectorProps, EquipmentSelec
 	}
 
 	private selectItem(id: string) {
-		const item = ItemHelper.getItem(id);
+		const item = getItem(id);
 		if (item) {
 			const slotFilled = this.state.items.find(i => i.proficiency === item.proficiency);
 			if (!slotFilled) {
@@ -258,7 +276,7 @@ class EquipmentSelector extends Component<EquipmentSelectorProps, EquipmentSelec
 	}
 
 	public render() {
-		const role = RoleHelper.getRole(this.props.hero.roleID);
+		const role = getRole(this.props.hero.roleID);
 		if (!role) {
 			return null;
 		}
@@ -268,7 +286,7 @@ class EquipmentSelector extends Component<EquipmentSelectorProps, EquipmentSelec
 				.filter(item => item.proficiency === prof)
 				.map(item => item.id);
 
-			const items = ItemHelper.getItems(prof).map(item => (
+			const items = getItems(prof).map(item => (
 				<div key={item.id}>
 					<PlayingCard
 						front={<ItemCard item={item} />}

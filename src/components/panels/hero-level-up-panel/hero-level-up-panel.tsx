@@ -1,13 +1,14 @@
 import { Component } from 'react';
 import { Selector } from '../../../controls';
 import { DamageCategory, DamageType } from '../../../models/damage';
-import { Feature, FeatureHelper, FeatureType } from '../../../models/feature';
-import { Hero, HeroHelper } from '../../../models/hero';
+import { Feature, FeatureType, hasChoice } from '../../../models/feature';
+import { featureDeck, Hero } from '../../../models/hero';
 import { Proficiency } from '../../../models/proficiency';
 import { Skill, SkillCategory } from '../../../models/skill';
 import { Trait } from '../../../models/trait';
 import { shuffle } from '../../../utils/collections';
-import { PlayingCard, PlayingCardSide, Text, TextType } from '../../utility';
+import { FeatureCard } from '../../cards';
+import { CardList, PlayingCard, PlayingCardSide, Text, TextType } from '../../utility';
 
 import './hero-level-up-panel.scss';
 
@@ -35,16 +36,16 @@ export class HeroLevelUpPanel extends Component<Props, State> {
 	public render() {
 		const traitOK = (this.state.selectedTrait !== Trait.Any);
 		const skillOK = (this.state.selectedSkill !== Skill.Any);
-		const featureOK = (this.state.selectedFeature !== null) && !FeatureHelper.hasChoice(this.state.selectedFeature);
+		const featureOK = (this.state.selectedFeature !== null) && !hasChoice(this.state.selectedFeature);
 		const canFinish = traitOK && skillOK && featureOK;
 
 		return (
 			<div>
 				<Text type={TextType.Heading}>Level Up</Text>
 				<Text>Choose a <b>trait</b> to increment:</Text>
-				<SelectTraitPanel onSelect={trait => this.setState({ selectedTrait: trait })} />
+				<SelectTraitPanel trait={this.state.selectedTrait} onSelect={trait => this.setState({ selectedTrait: trait })} />
 				<Text>Choose a <b>skill</b> to increment:</Text>
-				<SelectSkillPanel onSelect={skill => this.setState({ selectedSkill: skill })} />
+				<SelectSkillPanel skill={this.state.selectedSkill} onSelect={skill => this.setState({ selectedSkill: skill })} />
 				<Text>Choose a <b>feature</b>:</Text>
 				<SelectFeaturePanel
 					hero={this.props.hero}
@@ -120,10 +121,15 @@ export class HeroLevelUpPanel extends Component<Props, State> {
 }
 
 interface SelectTraitPanelProps {
+	trait: Trait | undefined;
 	onSelect: (trait: Trait) => void;
 }
 
 class SelectTraitPanel extends Component<SelectTraitPanelProps> {
+	public static defaultProps = {
+		trait: undefined
+	};
+
 	public render() {
 		return (
 			<div>
@@ -133,6 +139,7 @@ class SelectTraitPanel extends Component<SelectTraitPanelProps> {
 						{ id: Trait.Resolve },
 						{ id: Trait.Speed }
 					]}
+					selectedID={this.props.trait}
 					onSelect={id => this.props.onSelect(id as Trait)}
 				/>
 			</div>
@@ -141,10 +148,15 @@ class SelectTraitPanel extends Component<SelectTraitPanelProps> {
 }
 
 interface SelectSkillPanelProps {
+	skill: Skill;
 	onSelect: (skill: Skill) => void;
 }
 
 class SelectSkillPanel extends Component<SelectSkillPanelProps> {
+	public static defaultProps = {
+		skill: undefined
+	};
+
 	public render() {
 		return (
 			<div>
@@ -158,6 +170,7 @@ class SelectSkillPanel extends Component<SelectSkillPanelProps> {
 						{ id: Skill.Stealth },
 						{ id: Skill.Weapon },
 					]}
+					selectedID={this.props.skill}
 					onSelect={id => this.props.onSelect(id as Skill)}
 				/>
 			</div>
@@ -166,10 +179,15 @@ class SelectSkillPanel extends Component<SelectSkillPanelProps> {
 }
 
 interface SelectSkillCategoryPanelProps {
+	skillCategory: SkillCategory;
 	onSelect: (skillCategory: SkillCategory) => void;
 }
 
 class SelectSkillCategoryPanel extends Component<SelectSkillCategoryPanelProps> {
+	public static defaultProps = {
+		skillCategory: undefined
+	};
+
 	public render() {
 		return (
 			<div>
@@ -178,6 +196,7 @@ class SelectSkillCategoryPanel extends Component<SelectSkillCategoryPanelProps> 
 						{ id: SkillCategory.Physical },
 						{ id: SkillCategory.Mental }
 					]}
+					selectedID={this.props.skillCategory}
 					onSelect={id => this.props.onSelect(id as SkillCategory)}
 				/>
 			</div>
@@ -186,10 +205,15 @@ class SelectSkillCategoryPanel extends Component<SelectSkillCategoryPanelProps> 
 }
 
 interface SelectProficiencyPanelProps {
+	proficiency: Proficiency;
 	onSelect: (proficiency: Proficiency) => void;
 }
 
 class SelectProficiencyPanel extends Component<SelectProficiencyPanelProps> {
+	public static defaultProps = {
+		proficiency: undefined
+	};
+
 	public render() {
 		return (
 			<div>
@@ -205,6 +229,7 @@ class SelectProficiencyPanel extends Component<SelectProficiencyPanelProps> {
 						{ id: Proficiency.HeavyArmor },
 						{ id: Proficiency.Shields }
 					]}
+					selectedID={this.props.proficiency}
 					onSelect={id => this.props.onSelect(id as Proficiency)}
 				/>
 			</div>
@@ -213,10 +238,15 @@ class SelectProficiencyPanel extends Component<SelectProficiencyPanelProps> {
 }
 
 interface SelectDamagePanelProps {
+	damage: DamageType;
 	onSelect: (damage: DamageType) => void;
 }
 
 class SelectDamagePanel extends Component<SelectDamagePanelProps> {
+	public static defaultProps = {
+		damage: undefined
+	};
+
 	public render() {
 		return (
 			<div>
@@ -235,6 +265,7 @@ class SelectDamagePanel extends Component<SelectDamagePanelProps> {
 						{ id: DamageType.Poison },
 						{ id: DamageType.Psychic }
 					]}
+					selectedID={this.props.damage}
 					onSelect={id => this.props.onSelect(id as DamageType)}
 				/>
 			</div>
@@ -243,10 +274,15 @@ class SelectDamagePanel extends Component<SelectDamagePanelProps> {
 }
 
 interface SelectDamageCategoryPanelProps {
+	damageCategory: DamageCategory;
 	onSelect: (damageCategory: DamageCategory) => void;
 }
 
 class SelectDamageCategoryPanel extends Component<SelectDamageCategoryPanelProps> {
+	public static defaultProps = {
+		damageCategory: undefined
+	};
+
 	public render() {
 		return (
 			<div>
@@ -256,6 +292,7 @@ class SelectDamageCategoryPanel extends Component<SelectDamageCategoryPanelProps
 						{ id: DamageCategory.Energy },
 						{ id: DamageCategory.Corruption }
 					]}
+					selectedID={this.props.damageCategory}
 					onSelect={id => this.props.onSelect(id as DamageCategory)}
 				/>
 			</div>
@@ -282,8 +319,10 @@ interface SelectFeaturePanelState {
 class SelectFeaturePanel extends Component<SelectFeaturePanelProps, SelectFeaturePanelState> {
 	constructor(props: SelectFeaturePanelProps) {
 		super(props);
+
+		const features = shuffle(featureDeck(props.hero)).splice(0, 3);
 		this.state = {
-			features: shuffle(HeroHelper.featureDeck(props.hero)).splice(0, 3)
+			features: features
 		};
 	}
 
@@ -342,7 +381,7 @@ class SelectFeaturePanel extends Component<SelectFeaturePanelProps, SelectFeatur
 			return (
 				<div key={feature.id}>
 					<PlayingCard
-						front={(extra !== null) && (this.props.feature !== null) && (feature.id === this.props.feature.id) ? extra : FeatureHelper.getName(feature)}
+						front={(extra !== null) && (this.props.feature !== null) && (feature.id === this.props.feature.id) ? extra : <FeatureCard feature={feature} />}
 						back='Feature'
 						display={(this.props.feature !== null) && (this.props.feature.id !== feature.id) ? PlayingCardSide.Back : PlayingCardSide.Front}
 						onClick={() => this.props.onSelect(feature)}
@@ -353,7 +392,7 @@ class SelectFeaturePanel extends Component<SelectFeaturePanelProps, SelectFeatur
 
 		return (
 			<div className='hero-level-up-panel'>
-				{featureCards}
+				<CardList cards={featureCards} />
 			</div>
 		);
 	}

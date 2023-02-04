@@ -1,6 +1,6 @@
-import { ActionHelper } from '../models/action';
+import { createPlaceholder } from '../models/action';
 import { DamageCategory, DamageType } from '../models/damage';
-import { FeatureHelper } from '../models/feature';
+import { createDamageBonusFeature, createDamageCategoryBonusFeature, createDamageCategoryResistFeature, createDamageResistFeature, createSkillFeature, createTraitFeature } from '../models/feature';
 import { Skill } from '../models/skill';
 import { Species } from '../models/species';
 import { Trait } from '../models/trait';
@@ -13,13 +13,13 @@ export const SpeciesList: Species[] = [
 			Trait.All
 		],
 		features: [
-			FeatureHelper.createSkillFeature(Skill.Any, 2),
-			FeatureHelper.createDamageBonusFeature(DamageType.Any, 1),
-			FeatureHelper.createDamageResistFeature(DamageType.Any, 1)
-			// TODO: Bonus action card slot
+			createSkillFeature(Skill.Any, 2),
+			createDamageBonusFeature(DamageType.Any, 1),
+			createDamageResistFeature(DamageType.Any, 1)
+			// TODO: Humans should have a feature giving them a bonus action card slot
 		],
 		actions: [
-			ActionHelper.createPlaceholder('Resilient (remove condition on self)')
+			createPlaceholder('Resilient (remove condition on self)')
 		]
 	},
 	{
@@ -29,13 +29,13 @@ export const SpeciesList: Species[] = [
 			Trait.Endurance
 		],
 		features: [
-			FeatureHelper.createTraitFeature(Trait.Endurance, 1),
-			FeatureHelper.createDamageResistFeature(DamageType.Poison, 1),
-			FeatureHelper.createDamageResistFeature(DamageType.Psychic, 1)
+			createTraitFeature(Trait.Endurance, 1),
+			createDamageResistFeature(DamageType.Poison, 1),
+			createDamageResistFeature(DamageType.Psychic, 1)
 		],
 		actions: [
-			ActionHelper.createPlaceholder('Knockdown attack'),
-			ActionHelper.createPlaceholder('Repair (heal self damage)')
+			createPlaceholder('Knockdown attack'),
+			createPlaceholder('Repair (heal self damage)')
 		]
 	},
 	{
@@ -45,13 +45,13 @@ export const SpeciesList: Species[] = [
 			Trait.Resolve
 		],
 		features: [
-			FeatureHelper.createTraitFeature(Trait.Resolve, 1),
-			FeatureHelper.createSkillFeature(Skill.Spellcasting, 2),
-			FeatureHelper.createDamageCategoryResistFeature(DamageCategory.Corruption, 1)
+			createTraitFeature(Trait.Resolve, 1),
+			createSkillFeature(Skill.Spellcasting, 2),
+			createDamageCategoryResistFeature(DamageCategory.Corruption, 1)
 		],
 		actions: [
-			ActionHelper.createPlaceholder('Insight (see opponent stats)'),
-			ActionHelper.createPlaceholder('Divine light (spell vs resolve, stuns)')
+			createPlaceholder('Insight (see opponent stats)'),
+			createPlaceholder('Divine light (spell vs resolve, stuns)')
 		]
 	},
 	{
@@ -61,14 +61,14 @@ export const SpeciesList: Species[] = [
 			Trait.Endurance
 		],
 		features: [
-			FeatureHelper.createTraitFeature(Trait.Endurance, 1),
-			FeatureHelper.createTraitFeature(Trait.Resolve, 1),
-			FeatureHelper.createDamageResistFeature(DamageType.Poison, 1),
-			FeatureHelper.createDamageResistFeature(DamageType.Psychic, 1)
+			createTraitFeature(Trait.Endurance, 1),
+			createTraitFeature(Trait.Resolve, 1),
+			createDamageResistFeature(DamageType.Poison, 1),
+			createDamageResistFeature(DamageType.Psychic, 1)
 		],
 		actions: [
-			ActionHelper.createPlaceholder('Remove endurance condition on self'),
-			ActionHelper.createPlaceholder('Remove resolve condition on self')
+			createPlaceholder('Remove endurance condition on self'),
+			createPlaceholder('Remove resolve condition on self')
 		]
 	},
 	{
@@ -78,14 +78,14 @@ export const SpeciesList: Species[] = [
 			Trait.Speed
 		],
 		features: [
-			FeatureHelper.createTraitFeature(Trait.Speed, 1),
-			FeatureHelper.createSkillFeature(Skill.Perception, 2),
-			FeatureHelper.createSkillFeature(Skill.Reactions, 2),
-			FeatureHelper.createSkillFeature(Skill.Stealth, 2)
+			createTraitFeature(Trait.Speed, 1),
+			createSkillFeature(Skill.Perception, 2),
+			createSkillFeature(Skill.Reactions, 2),
+			createSkillFeature(Skill.Stealth, 2)
 		],
 		actions: [
-			ActionHelper.createPlaceholder('Detect hidden opponents'),
-			ActionHelper.createPlaceholder('Elven Step (teleport self)')
+			createPlaceholder('Detect hidden opponents'),
+			createPlaceholder('Elven Step (teleport self)')
 		]
 	},
 	{
@@ -95,13 +95,13 @@ export const SpeciesList: Species[] = [
 			Trait.Speed
 		],
 		features: [
-			FeatureHelper.createTraitFeature(Trait.Speed, 1),
-			FeatureHelper.createSkillFeature(Skill.Reactions, 2),
-			FeatureHelper.createSkillFeature(Skill.Stealth, 2)
+			createTraitFeature(Trait.Speed, 1),
+			createSkillFeature(Skill.Reactions, 2),
+			createSkillFeature(Skill.Stealth, 2)
 		],
 		actions: [
-			ActionHelper.createPlaceholder('Trip attack'),
-			ActionHelper.createPlaceholder('Disable trap')
+			createPlaceholder('Trip attack'),
+			createPlaceholder('Disable trap')
 		]
 	},
 	{
@@ -111,14 +111,14 @@ export const SpeciesList: Species[] = [
 			Trait.Endurance
 		],
 		features: [
-			FeatureHelper.createTraitFeature(Trait.Endurance, 1),
-			FeatureHelper.createSkillFeature(Skill.Brawl, 2),
-			FeatureHelper.createDamageCategoryBonusFeature(DamageCategory.Physical, 1)
+			createTraitFeature(Trait.Endurance, 1),
+			createSkillFeature(Skill.Brawl, 2),
+			createDamageCategoryBonusFeature(DamageCategory.Physical, 1)
 		],
 		actions: [
-			ActionHelper.createPlaceholder('Gore attack'),
-			ActionHelper.createPlaceholder('Charge attack'),
-			ActionHelper.createPlaceholder('Intimidate')
+			createPlaceholder('Gore attack'),
+			createPlaceholder('Charge attack'),
+			createPlaceholder('Intimidate')
 		]
 	},
 	{
@@ -128,13 +128,13 @@ export const SpeciesList: Species[] = [
 			Trait.Speed
 		],
 		features: [
-			FeatureHelper.createTraitFeature(Trait.Speed, 1),
-			FeatureHelper.createSkillFeature(Skill.Stealth, 2)
-			// TODO: Move through occupied spaces
+			createTraitFeature(Trait.Speed, 1),
+			createSkillFeature(Skill.Stealth, 2)
+			// TODO: Pixies should have a feature allowing them to move through occupied spaces
 		],
 		actions: [
-			ActionHelper.createPlaceholder('Confusion (target makes attack)'),
-			ActionHelper.createPlaceholder('Lightning speed')
+			createPlaceholder('Confusion (target makes attack)'),
+			createPlaceholder('Lightning speed')
 		]
 	},
 	{
@@ -144,15 +144,15 @@ export const SpeciesList: Species[] = [
 			Trait.Speed
 		],
 		features: [
-			FeatureHelper.createTraitFeature(Trait.Speed, 1),
-			FeatureHelper.createSkillFeature(Skill.Brawl, 2),
-			FeatureHelper.createDamageCategoryResistFeature(DamageCategory.Physical, 1),
-			FeatureHelper.createDamageResistFeature(DamageType.Psychic, 1)
+			createTraitFeature(Trait.Speed, 1),
+			createSkillFeature(Skill.Brawl, 2),
+			createDamageCategoryResistFeature(DamageCategory.Physical, 1),
+			createDamageResistFeature(DamageType.Psychic, 1)
 		],
 		actions: [
-			ActionHelper.createPlaceholder('Poison bite'),
-			ActionHelper.createPlaceholder('Fear snarl'),
-			ActionHelper.createPlaceholder('Regeneration')
+			createPlaceholder('Poison bite'),
+			createPlaceholder('Fear snarl'),
+			createPlaceholder('Regeneration')
 		]
 	},
 	{
@@ -162,16 +162,16 @@ export const SpeciesList: Species[] = [
 			Trait.Resolve
 		],
 		features: [
-			FeatureHelper.createTraitFeature(Trait.Resolve, 1),
-			FeatureHelper.createSkillFeature(Skill.Brawl, 2),
-			FeatureHelper.createSkillFeature(Skill.Stealth, 2),
-			FeatureHelper.createDamageCategoryResistFeature(DamageCategory.Corruption, 1)
-			// TODO: Draining aura
+			createTraitFeature(Trait.Resolve, 1),
+			createSkillFeature(Skill.Brawl, 2),
+			createSkillFeature(Skill.Stealth, 2),
+			createDamageCategoryResistFeature(DamageCategory.Corruption, 1)
+			// TODO: Shadowborn should have an energy draining aura
 		],
 		actions: [
-			ActionHelper.createPlaceholder('Transfer a condition'),
-			ActionHelper.createPlaceholder('Induce fear'),
-			ActionHelper.createPlaceholder('Drain energy')
+			createPlaceholder('Transfer a condition'),
+			createPlaceholder('Induce fear'),
+			createPlaceholder('Drain energy')
 		]
 	},
 	{
@@ -181,15 +181,15 @@ export const SpeciesList: Species[] = [
 			Trait.Resolve
 		],
 		features: [
-			FeatureHelper.createTraitFeature(Trait.Resolve, 1),
-			FeatureHelper.createSkillFeature(Skill.Brawl, 2),
-			FeatureHelper.createSkillFeature(Skill.Perception, 2),
-			FeatureHelper.createSkillFeature(Skill.Stealth, 2)
+			createTraitFeature(Trait.Resolve, 1),
+			createSkillFeature(Skill.Brawl, 2),
+			createSkillFeature(Skill.Perception, 2),
+			createSkillFeature(Skill.Stealth, 2)
 		],
 		actions: [
-			ActionHelper.createPlaceholder('Regeneration'),
-			ActionHelper.createPlaceholder('Bite attack'),
-			ActionHelper.createPlaceholder('Claw attack')
+			createPlaceholder('Regeneration'),
+			createPlaceholder('Bite attack'),
+			createPlaceholder('Claw attack')
 		]
 	}
 ];

@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { FeatureHelper } from '../../../models/feature';
+import { getFeatureName } from '../../../models/feature';
 import { Item } from '../../../models/item';
 import { StatValue, Text, TextType } from '../../utility';
 
@@ -27,14 +27,14 @@ export class ItemCard extends Component<Props> {
 		if (this.props.item.features.length > 0) {
 			features = (
 				<div>
-					<StatValue label='Features' value={this.props.item.features.map(f => FeatureHelper.getName(f)).join(', ')}/>
+					<StatValue label='Features' value={this.props.item.features.map(f => getFeatureName(f)).join(', ')}/>
 				</div>
 			);
 		}
 
 		let location = this.props.item.location.toString();
 		if (this.props.item.slots > 1) {
-			location = this.props.item.slots + ' ' + location + 's';
+			location = `${this.props.item.slots} ${location}s`;
 		}
 
 		return (

@@ -1,12 +1,11 @@
 import { Component } from 'react';
 
-import { CampaignMap, CampaignMapHelper } from '../../models/campaign-map';
-import { EncounterHelper } from '../../models/encounter';
-import { FeatureHelper } from '../../models/feature';
-import { Game, GameHelper } from '../../models/game';
-import { Hero, HeroHelper } from '../../models/hero';
+import { CampaignMap, removeRegion } from '../../models/campaign-map';
+import { createEncounter } from '../../models/encounter';
+import { createSkillFeature, createTraitFeature } from '../../models/feature';
+import { createGame, Game } from '../../models/game';
+import { createHero, Hero } from '../../models/hero';
 import { Item } from '../../models/item';
-import { sort } from '../../utils/collections';
 import { debounce } from '../../utils/utils';
 import { CampaignMapScreen, EncounterFinishState, EncounterScreen, HeroesScreen, LandingScreen } from '../screens';
 import { Text, TextType } from '../utility';
@@ -20,6 +19,7 @@ enum ScreenType {
 	Encounter = 'encounter'
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props {
 }
 
@@ -37,7 +37,7 @@ export class Main extends Component<Props, State> {
 		try {
 			const str = window.localStorage.getItem('game');
 			if (str) {
-				game = JSON.parse(str);
+				game = JSON.parse(str) as Game;
 			}
 		} catch (ex) {
 			console.error('Could not parse JSON: ', ex);
@@ -58,13 +58,9 @@ export class Main extends Component<Props, State> {
 	private saveAfterDelay = debounce(() => this.save(), 5 * 1000);
 
 	private save() {
-		this.saveKey(this.state.game, 'game');
-	}
-
-	private saveKey(obj: any, key: string) {
 		try {
-			const json = JSON.stringify(obj);
-			window.localStorage.setItem(key, json);
+			const json = JSON.stringify(this.state.game);
+			window.localStorage.setItem('game', json);
 		} catch (ex) {
 			console.error('Could not stringify data: ', ex);
 		}
@@ -98,6 +94,7 @@ export class Main extends Component<Props, State> {
 		});
 	}
 
+	/*
 	private changeValue(source: any, type: string, value: any) {
 		const tokens = type.split('.');
 		let obj = source;
@@ -113,7 +110,9 @@ export class Main extends Component<Props, State> {
 		this.setState({
 		});
 	}
+	*/
 
+	/*
 	private nudgeValue(source: any, type: string, delta: number) {
 		const tokens = type.split('.');
 		let obj = source;
@@ -127,6 +126,7 @@ export class Main extends Component<Props, State> {
 			}
 		}
 	}
+	*/
 
 	private getContent() {
 		switch (this.state.screen) {
@@ -136,12 +136,12 @@ export class Main extends Component<Props, State> {
 						game={this.state.game}
 						startCampaign={() => {
 							this.setState({
-								game: GameHelper.createGame(),
+								game: createGame(),
 								screen: ScreenType.Heroes
 							});
 						}}
 						continueCampaign={() => {
-							const all = (this.state.game !== null) && this.state.game.heroes.every(h => !!h.name);
+							const all = this.state.game?.heroes.every(h => !!h.name);
 							if (all) {
 								this.setState({
 									screen: ScreenType.CampaignMap
@@ -166,7 +166,7 @@ export class Main extends Component<Props, State> {
 						startEncounter={region => {
 							if (this.state.game) {
 								const game = this.state.game;
-								game.encounter = EncounterHelper.createEncounter();
+								game.encounter = createEncounter();
 							}
 							this.setState({
 								game: this.state.game,
@@ -182,8 +182,8 @@ export class Main extends Component<Props, State> {
 						// TEMP
 						conquer={region => {
 							const game = this.state.game as Game;
-							CampaignMapHelper.removeRegion(game.map as CampaignMap, region);
-							game.heroes.push(HeroHelper.createHero());
+							removeRegion(game.map as CampaignMap, region);
+							game.heroes.push(createHero());
 							this.setState({
 								game: game
 							});
@@ -203,15 +203,15 @@ export class Main extends Component<Props, State> {
 								} else {
 									game.heroes[index] = hero;
 								}
-								sort(game.heroes);
+								game.heroes.sort((a, b) => a.name > b.name ? 1 : -1);
 								this.setState({
 									game: game
 								});
 							}
 						}}
 						levelUp={(hero, trait, skill, feature) => {
-							hero.features.push(FeatureHelper.createTraitFeature(trait, 1));
-							hero.features.push(FeatureHelper.createSkillFeature(skill, 1));
+							hero.features.push(createTraitFeature(trait, 1));
+							hero.features.push(createSkillFeature(skill, 1));
 							hero.features.push(feature);
 							hero.level += 1;
 							hero.xp = 0;
@@ -235,11 +235,11 @@ export class Main extends Component<Props, State> {
 					/>
 				);
 			case 'encounter':
-				if (this.state.game && this.state.game.encounter) {
+				if (this.state.game?.encounter) {
 					return (
 						<EncounterScreen
 							encounter={this.state.game.encounter}
-							game={this.state.game as Game}
+							game={this.state.game}
 							equipItem={(item, hero) => this.equipItem(item, hero)}
 							unequipItem={(item, hero) => this.unequipItem(item, hero)}
 							finish={state => {
@@ -289,32 +289,16 @@ export class Main extends Component<Props, State> {
 		);
 	}
 
-	private getHeading() {
-		switch (this.state.screen) {
-			case 'heroes':
-				return 'Your Heroes';
-		}
-
-		return 'Skirmish';
-	}
-
 	public render() {
-		try {
-			return (
-				<div className='skirmish'>
-					<div className='top-bar'>
-						<Text type={TextType.Heading}>
-							{this.getHeading()}
-						</Text>
-					</div>
-					<div className='content'>
-						{this.getContent()}
-					</div>
+		return (
+			<div className='skirmish'>
+				<div className='top-bar'>
+					<Text type={TextType.Heading}>Skirmish</Text>
 				</div>
-			);
-		} catch (e) {
-			console.error(e);
-			return <div className='render-error'/>;
-		}
+				<div className='content'>
+					{this.getContent()}
+				</div>
+			</div>
+		);
 	}
 }

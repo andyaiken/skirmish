@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { Encounter, EncounterHelper, EncounterState } from '../../../models/encounter';
+import { Encounter, EncounterState, getState } from '../../../models/encounter';
 import { Game } from '../../../models/game';
 import { Hero } from '../../../models/hero';
 import { Item } from '../../../models/item';
@@ -25,7 +25,7 @@ interface Props {
 export class EncounterScreen extends Component<Props> {
 	public render() {
 		let controls = null;
-		switch (EncounterHelper.getState(this.props.encounter)) {
+		switch (getState(this.props.encounter)) {
 			case EncounterState.Active:
 				controls = (
 					<div>

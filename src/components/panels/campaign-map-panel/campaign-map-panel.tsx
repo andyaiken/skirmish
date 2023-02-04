@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { CampaignMap, CampaignMapHelper, CampaignMapRegion, CampaignMapSquare } from '../../../models/campaign-map';
+import { CampaignMap, CampaignMapRegion, CampaignMapSquare, getDimensions } from '../../../models/campaign-map';
 
 import './campaign-map-panel.scss';
 
@@ -12,13 +12,13 @@ interface Props {
 export class CampaignMapPanel extends Component<Props> {
 	private onClick(e: React.MouseEvent, square: CampaignMapSquare) {
 		e.stopPropagation();
-		const region = this.props.map.regions.find(r => r.id === square.regionID) || null;
+		const region = this.props.map.regions.find(r => r.id === square.regionID) ?? null;
 		this.props.onSelectRegion(region);
 	}
 
 	public render() {
 		// Get dimensions, adding a 1-square border
-		const dims = CampaignMapHelper.getDimensions(this.props.map);
+		const dims = getDimensions(this.props.map);
 		dims.left -= 1;
 		dims.top -= 1;
 		dims.right += 1;
@@ -45,10 +45,10 @@ export class CampaignMapPanel extends Component<Props> {
 					key={square.id}
 					className='campaign-map-square'
 					style={{
-						width: squareWidthPC + '%',
-						height: squareHeightPC + '%',
-						left: ((square.x - dims.left) * squareWidthPC) + '%',
-						top: ((square.y - dims.top) * squareHeightPC) + '%',
+						width: `${squareWidthPC}%`,
+						height: `${squareWidthPC}%`,
+						left: `${((square.x - dims.left) * squareWidthPC)}%`,
+						top: `${((square.y - dims.top) * squareHeightPC)}%`,
 						backgroundColor: (this.props.selectedRegion === region) ? 'white' : color,
 						borderTopWidth: top ? 1 : 0,
 						borderRightWidth: right ? 1 : 0,
@@ -56,17 +56,18 @@ export class CampaignMapPanel extends Component<Props> {
 						borderLeftWidth: left ? 1 : 0
 					}}
 					role='button'
+					title={region ? region.name : 'Conquered'}
 					onClick={e => this.onClick(e, square)}
 				/>
 			);
 		});
 
-		const totalHeight = 500;
+		const totalHeight = 620;
 		const totalWidth = totalHeight * width / height;
 
 		return (
-			<div className='campaign-map' style={{ height: totalHeight + 'px' }} role='button' onClick={() => this.props.onSelectRegion(null)}>
-				<div className='campaign-map-inner' style={{ width: totalWidth + 'px' }}>
+			<div className='campaign-map' style={{ height: `${totalHeight}px` }} role='button' onClick={() => this.props.onSelectRegion(null)}>
+				<div className='campaign-map-inner' style={{ width: `${totalWidth}px` }}>
 					<div className='campaign-map-square-container'>
 						{regions}
 					</div>

@@ -1,14 +1,14 @@
 import { Component } from 'react';
+import { Selector } from '../../../controls';
 import { Feature } from '../../../models/feature';
 import { Game } from '../../../models/game';
 import { Hero } from '../../../models/hero';
 import { Item } from '../../../models/item';
 import { Skill } from '../../../models/skill';
 import { Trait } from '../../../models/trait';
-import { generateName } from '../../../utils/name-generator';
 import { HeroCard, PlaceholderCard } from '../../cards';
 import { CharacterSheetPanel, HeroBuilderPanel, HeroLevelUpPanel } from '../../panels';
-import { CardList, Dialog, PlayingCard, Text } from '../../utility';
+import { CardList, Dialog, PlayingCard, Text, TextType } from '../../utility';
 
 import './heroes-screen.scss';
 
@@ -46,17 +46,22 @@ export class HeroesScreen extends Component<Props, State> {
 					<HeroCard hero={hero} />
 				);
 			}
-			let btn = null;
+			let info = null;
+			if (!hero.name) {
+				info = (
+					<Text type={TextType.Information}>Empty</Text>
+				);
+			}
 			if (hero.xp >= hero.level) {
-				btn = (
-					<button onClick={() => this.setState({ selectedHero: hero })}>Level Up</button>
+				info = (
+					<Text type={TextType.Information}>Level Up</Text>
 				);
 			}
 			return (
 				<div key={hero.id}>
 					<PlayingCard front={card} onClick={() => this.setState({ selectedHero: hero })} />
-					{btn}
-					<button onClick={() => this.props.incrementXP(hero)}>Add XP</button>
+					{info}
+					<button className='hack' onClick={() => this.props.incrementXP(hero)}>Add XP</button>
 				</div>
 			);
 		});
@@ -74,7 +79,6 @@ export class HeroesScreen extends Component<Props, State> {
 										selectedHero: null
 									}, () => {
 										hero.id = h.id;
-										hero.name = generateName();
 										this.props.addHero(hero);
 									});
 								}}
@@ -103,11 +107,6 @@ export class HeroesScreen extends Component<Props, State> {
 								}}
 							/>
 						)}
-						onClickOff={() => {
-							this.setState({
-								selectedHero: null
-							});
-						}}
 					/>
 				);
 			} else {
@@ -115,7 +114,7 @@ export class HeroesScreen extends Component<Props, State> {
 					<Dialog
 						content={(
 							<CharacterSheetPanel
-								hero={this.state.selectedHero as Hero}
+								hero={this.state.selectedHero}
 								game={this.props.game}
 								equipItem={(item, hero) => this.props.equipItem(item, hero)}
 								unequipItem={(item, hero) => this.props.unequipItem(item, hero)}
@@ -132,26 +131,25 @@ export class HeroesScreen extends Component<Props, State> {
 		}
 
 		let info = null;
-		let mapBtn = null;
-		if (this.props.game.heroes.every(h => !!h.name)) {
-			mapBtn = (
-				<div>
-					<button onClick={() => this.props.back()}>Campaign Map</button>
-				</div>
-			);
-		} else {
+		if (this.props.game.heroes.some(h => !h.name)) {
 			info = (
-				<Text>
-					Click on a blank hero card to create a new level 1 hero.
+				<Text type={TextType.Information}>
+					<b>You have unfilled hero slots.</b> Click on a blank hero card to create a new level 1 hero.
+				</Text>
+			);
+		} else if (this.props.game.heroes.some(h => h.xp >= h.level)) {
+			info = (
+				<Text type={TextType.Information}>
+					<b>Some of your heroes can level up.</b> Click on their card to upgrade them.
 				</Text>
 			);
 		}
 
 		return (
 			<div className='heroes-screen'>
+				<Selector options={[{ id: 'heroes', display: 'Your Heroes' }, { id: 'map', display: 'The Island' }]} selectedID='heroes' onSelect={this.props.back} />
 				{info}
 				<CardList cards={heroes} />
-				{mapBtn}
 				{dialog}
 			</div>
 		);

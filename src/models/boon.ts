@@ -7,14 +7,12 @@ export enum BoonType {
 	MagicItem = 'Magic item'
 }
 
-export class BoonHelper {
-	public static getRandomBoon() {
-		const list = [
-			BoonType.ExtraHero,
-			BoonType.ExtraXP,
-			BoonType.LevelUp,
-			BoonType.MagicItem
-		];
-		return draw(list);
-	}
+export const getRandomBoon = () => {
+	const list = [
+		BoonType.ExtraHero,
+		BoonType.ExtraXP,
+		BoonType.LevelUp,
+		BoonType.MagicItem
+	];
+	return draw(list);
 }

@@ -15,18 +15,16 @@ export interface Role {
 	actions: Action[];
 }
 
-export class RoleHelper {
-	public static getRole(id: string) {
-		return RoleList.find(r => r.id === id);
-	}
+export const getRole = (id: string) => {
+	return RoleList.find(r => r.id === id);
+}
 
-	public static getDeck() {
-		const deck: string[] = [];
+export const getRoleDeck = () => {
+	const deck: string[] = [];
 
-		RoleList.forEach(r => {
-			deck.push(r.id);
-		});
+	RoleList.forEach(r => {
+		deck.push(r.id);
+	});
 
-		return deck;
-	}
+	return deck;
 }

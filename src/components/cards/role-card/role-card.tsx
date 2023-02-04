@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { FeatureHelper } from '../../../models/feature';
+import { getFeatureName } from '../../../models/feature';
 import { Role } from '../../../models/role';
 import { StatValue, Text, TextType } from '../../utility';
 
@@ -18,7 +18,8 @@ export class RoleCard extends Component<Props> {
 				<StatValue label='Trait bonus' value={this.props.role.traits.map(t => t.toString()).join(', ')}/>
 				<StatValue label='Skill bonus' value={this.props.role.skills.map(s => s.toString()).join(', ')}/>
 				<StatValue label='Proficiencies' value={this.props.role.proficiencies.map(p => p.toString()).join(', ')}/>
-				<StatValue label='Features' value={this.props.role.features.map(f => FeatureHelper.getName(f)).join(', ')}/>
+				<StatValue label='Features' value={this.props.role.features.map(f => getFeatureName(f)).join(', ')}/>
+				<StatValue label='Actions' value={this.props.role.actions.map(a => a.name).join(', ')}/>
 			</div>
 		);
 	}

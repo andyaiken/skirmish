@@ -19,22 +19,20 @@ export enum Skill {
 	Weapon = 'Weapon'
 }
 
-export class SkillHelper {
-	public static getCategory(skill: Skill) {
-		switch (skill) {
-			case Skill.All:
-				return SkillCategory.All;
-			case Skill.Athletics:
-			case Skill.Brawl:
-			case Skill.Stealth:
-			case Skill.Weapon:
-				return SkillCategory.Physical;
-			case Skill.Perception:
-			case Skill.Reactions:
-			case Skill.Spellcasting:
-				return SkillCategory.Mental;
-		}
-
-		return SkillCategory.None;
+export const getCategory = (skill: Skill) => {
+	switch (skill) {
+		case Skill.All:
+			return SkillCategory.All;
+		case Skill.Athletics:
+		case Skill.Brawl:
+		case Skill.Stealth:
+		case Skill.Weapon:
+			return SkillCategory.Physical;
+		case Skill.Perception:
+		case Skill.Reactions:
+		case Skill.Spellcasting:
+			return SkillCategory.Mental;
 	}
+
+	return SkillCategory.None;
 }

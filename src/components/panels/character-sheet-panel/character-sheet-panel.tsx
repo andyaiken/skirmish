@@ -1,13 +1,13 @@
 import { Component } from 'react';
 import { Selector, Tag } from '../../../controls';
-import { BackgroundHelper } from '../../../models/background';
+import { getBackground } from '../../../models/background';
 import { Game } from '../../../models/game';
-import { Hero, HeroHelper } from '../../../models/hero';
+import { actionDeck, featureDeck, Hero, proficiencies, skill, trait } from '../../../models/hero';
 import { Item } from '../../../models/item';
 import { ItemLocation } from '../../../models/item-location';
-import { RoleHelper } from '../../../models/role';
+import { getRole } from '../../../models/role';
 import { Skill } from '../../../models/skill';
-import { SpeciesHelper } from '../../../models/species';
+import { getSpecies } from '../../../models/species';
 import { Trait } from '../../../models/trait';
 import { ActionCard,FeatureCard, ItemCard } from '../../cards';
 import { CardList, PlayingCard, StatValue, Text, TextType } from '../../utility';
@@ -63,9 +63,9 @@ export class CharacterSheetPanel extends Component<Props, State> {
 			<div className='character-sheet-panel'>
 				<Text type={TextType.Heading}>{this.props.hero.name || 'unnamed hero'}</Text>
 				<div className='tags'>
-					<Tag>{SpeciesHelper.getSpecies(this.props.hero.speciesID)?.name || 'Unknown species'}</Tag>
-					<Tag>{RoleHelper.getRole(this.props.hero.roleID)?.name || 'Unknown role'}</Tag>
-					<Tag>{BackgroundHelper.getBackground(this.props.hero.backgroundID)?.name || 'Unknown background'}</Tag>
+					<Tag>{getSpecies(this.props.hero.speciesID)?.name ?? 'Unknown species'}</Tag>
+					<Tag>{getRole(this.props.hero.roleID)?.name ?? 'Unknown role'}</Tag>
+					<Tag>{getBackground(this.props.hero.backgroundID)?.name ?? 'Unknown background'}</Tag>
 				</div>
 				<Text>Level {this.props.hero.level}</Text>
 				<Selector
@@ -92,27 +92,27 @@ class StatsPage extends Component<StatsPageProps> {
 	public render() {
 		const traits = (
 			<div>
-				<StatValue label='Endurance' value={HeroHelper.trait(this.props.hero, Trait.Endurance)}/>
-				<StatValue label='Resolve' value={HeroHelper.trait(this.props.hero, Trait.Resolve)}/>
-				<StatValue label='Speed' value={HeroHelper.trait(this.props.hero, Trait.Speed)}/>
+				<StatValue label='Endurance' value={trait(this.props.hero, Trait.Endurance)}/>
+				<StatValue label='Resolve' value={trait(this.props.hero, Trait.Resolve)}/>
+				<StatValue label='Speed' value={trait(this.props.hero, Trait.Speed)}/>
 			</div>
 		);
 
 		const skills = (
 			<div>
-				<StatValue label='Athletics' value={HeroHelper.skill(this.props.hero, Skill.Athletics)}/>
-				<StatValue label='Brawl' value={HeroHelper.skill(this.props.hero, Skill.Brawl)}/>
-				<StatValue label='Perception' value={HeroHelper.skill(this.props.hero, Skill.Perception)}/>
-				<StatValue label='Reactions' value={HeroHelper.skill(this.props.hero, Skill.Reactions)}/>
-				<StatValue label='Spellcasting' value={HeroHelper.skill(this.props.hero, Skill.Spellcasting)}/>
-				<StatValue label='Stealth' value={HeroHelper.skill(this.props.hero, Skill.Stealth)}/>
-				<StatValue label='Weapon' value={HeroHelper.skill(this.props.hero, Skill.Weapon)}/>
+				<StatValue label='Athletics' value={skill(this.props.hero, Skill.Athletics)}/>
+				<StatValue label='Brawl' value={skill(this.props.hero, Skill.Brawl)}/>
+				<StatValue label='Perception' value={skill(this.props.hero, Skill.Perception)}/>
+				<StatValue label='Reactions' value={skill(this.props.hero, Skill.Reactions)}/>
+				<StatValue label='Spellcasting' value={skill(this.props.hero, Skill.Spellcasting)}/>
+				<StatValue label='Stealth' value={skill(this.props.hero, Skill.Stealth)}/>
+				<StatValue label='Weapon' value={skill(this.props.hero, Skill.Weapon)}/>
 			</div>
 		);
 
 		const profs = (
 			<div>
-				{HeroHelper.proficiencies(this.props.hero).map(p => (<div key={p}>{p}</div>)) || 'None'}
+				{proficiencies(this.props.hero).map(p => (<div key={p}>{p}</div>))}
 			</div>
 		);
 
@@ -155,7 +155,7 @@ class ItemsPage extends Component<ItemsPageProps, ItemsPageState> {
 		};
 	}
 
-	private getItemCards(location: ItemLocation, name: string, slots: number = 1) {
+	private getItemCards(location: ItemLocation, name: string, slots = 1) {
 		const items = this.props.hero.items.filter(item => location === item.location);
 		const used = items.map(item => item.slots).reduce((sum, current) => sum + current, 0);
 
@@ -267,7 +267,7 @@ interface FeaturesPageProps {
 
 class FeaturesPage extends Component<FeaturesPageProps> {
 	public render() {
-		const featureCards = HeroHelper.featureDeck(this.props.hero).map(feature => {
+		const featureCards = featureDeck(this.props.hero).map(feature => {
 			return (
 				<PlayingCard key={feature.id} front={<FeatureCard feature={feature} />} />
 			);
@@ -285,7 +285,7 @@ interface ActionsPageProps {
 
 class ActionsPage extends Component<ActionsPageProps> {
 	public render() {
-		const actionCards = HeroHelper.actionDeck(this.props.hero).map(action => {
+		const actionCards = actionDeck(this.props.hero).map(action => {
 			return (
 				<PlayingCard key={action.id} front={<ActionCard action={action} />} />
 			);

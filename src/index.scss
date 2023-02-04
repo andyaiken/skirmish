@@ -19,13 +19,29 @@ body {
 }
 
 hr {
-	border-top: 2px solid grey;
+	border-top: 2px solid rgb(130, 130, 130);
 	height: 0;
 	margin: 30px 10px;
 }
 
 button {
-	margin: 10px;
+	margin: 10px 0;
 	padding: 10px;
 	text-transform: uppercase;
+	font-weight: 600;
+	width: 100%;
+	border: 2px solid rgb(130, 130, 130);
+	border-radius: 5px;
+	background-color: rgb(255, 255, 255);
+	cursor: pointer;
+
+	&:hover {
+		border-color: rgb(60, 170, 255);
+		background-color: rgb(200, 230, 255);
+	}
+}
+
+.hack {
+	outline: 2px solid red;
+	background-image: repeating-linear-gradient(-45deg, rgba(255, 0, 0, 0.2), rgba(255, 0, 0, 0.2) 5px, rgba(0, 0, 0, 0) 5px, rgba(0, 0, 0, 0) 10px);
 }

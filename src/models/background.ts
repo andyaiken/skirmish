@@ -9,18 +9,16 @@ export interface Background {
 	actions: Action[];
 }
 
-export class BackgroundHelper {
-	public static getBackground(id: string) {
-		return BackgroundList.find(b => b.id === id);
-	}
+export const getBackground = (id: string) => {
+	return BackgroundList.find(b => b.id === id);
+}
 
-	public static getDeck() {
-		const deck: string[] = [];
+export const getBackgroundDeck = () => {
+	const deck: string[] = [];
 
-		BackgroundList.forEach(b => {
-			deck.push(b.id);
-		});
+	BackgroundList.forEach(b => {
+		deck.push(b.id);
+	});
 
-		return deck;
-	}
+	return deck;
 }

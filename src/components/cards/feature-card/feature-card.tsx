@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { Feature, FeatureHelper } from '../../../models/feature';
+import { Feature, getFeatureName } from '../../../models/feature';
 import { Text, TextType } from '../../utility';
 
 import './feature-card.scss';
@@ -12,7 +12,7 @@ export class FeatureCard extends Component<Props> {
 	public render() {
 		return (
 			<div className='feature-card'>
-				<Text type={TextType.SubHeading}>{FeatureHelper.getName(this.props.feature)}</Text>
+				<Text type={TextType.SubHeading}>{getFeatureName(this.props.feature)}</Text>
 			</div>
 		);
 	}

@@ -26,12 +26,10 @@ export interface Item {
 	actions: Action[];
 }
 
-export class ItemHelper {
-	public static getItem(id: string) {
-		return ItemList.find(b => b.id === id);
-	}
+export const getItem = (id: string) => {
+	return ItemList.find(b => b.id === id);
+}
 
-	public static getItems(proficiency: Proficiency) {
-		return ItemList.filter(i => i.proficiency === proficiency);
-	}
+export const getItems = (proficiency: Proficiency) => {
+	return ItemList.filter(i => i.proficiency === proficiency);
 }

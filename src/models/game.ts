@@ -1,6 +1,6 @@
-import { CampaignMap, CampaignMapHelper } from './campaign-map';
+import { CampaignMap, createMap } from './campaign-map';
 import { Encounter } from './encounter';
-import { Hero, HeroHelper } from './hero';
+import { createHero, Hero } from './hero';
 import { Item } from './item';
 
 export interface Game {
@@ -10,19 +10,17 @@ export interface Game {
 	encounter: Encounter | null;
 }
 
-export class GameHelper {
-	public static createGame(): Game {
-		return {
-			heroes: [
-				HeroHelper.createHero(),
-				HeroHelper.createHero(),
-				HeroHelper.createHero(),
-				HeroHelper.createHero(),
-				HeroHelper.createHero()
-			],
-			items: [],
-			map: CampaignMapHelper.createMap(),
-			encounter: null
-		};
-	}
+export const createGame = (): Game => {
+	return {
+		heroes: [
+			createHero(),
+			createHero(),
+			createHero(),
+			createHero(),
+			createHero()
+		],
+		items: [],
+		map: createMap(),
+		encounter: null
+	};
 }

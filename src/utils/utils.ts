@@ -10,7 +10,7 @@ export const guid = () => {
 	return id;
 }
 
-export const debounce = (func: () => void, delay: number = 500) => {
+export const debounce = (func: () => void, delay = 500) => {
 	let timeout: NodeJS.Timeout;
 	return () => {
 		clearTimeout(timeout);

@@ -25,28 +25,26 @@ export enum DamageType {
 	Psychic = 'Psychic'
 }
 
-export class DamageHelper {
-	public static getCategory(type: DamageType) {
-		switch (type) {
-			case DamageType.All:
-				return DamageCategory.All;
-			case DamageType.Acid:
-			case DamageType.Edged:
-			case DamageType.Impact:
-			case DamageType.Piercing:
-				return DamageCategory.Physical;
-			case DamageType.Cold:
-			case DamageType.Electricity:
-			case DamageType.Fire:
-			case DamageType.Light:
-			case DamageType.Sonic:
-				return DamageCategory.Energy;
-			case DamageType.Decay:
-			case DamageType.Poison:
-			case DamageType.Psychic:
-				return DamageCategory.Corruption;
-		}
-
-		return DamageCategory.None;
+export const getCategory = (type: DamageType) => {
+	switch (type) {
+		case DamageType.All:
+			return DamageCategory.All;
+		case DamageType.Acid:
+		case DamageType.Edged:
+		case DamageType.Impact:
+		case DamageType.Piercing:
+			return DamageCategory.Physical;
+		case DamageType.Cold:
+		case DamageType.Electricity:
+		case DamageType.Fire:
+		case DamageType.Light:
+		case DamageType.Sonic:
+			return DamageCategory.Energy;
+		case DamageType.Decay:
+		case DamageType.Poison:
+		case DamageType.Psychic:
+			return DamageCategory.Corruption;
 	}
+
+	return DamageCategory.None;
 }

@@ -1,8 +1,10 @@
 import { Component } from 'react';
-import { CampaignMap, CampaignMapHelper, CampaignMapRegion } from '../../../models/campaign-map';
+import { Selector } from '../../../controls';
+import { CampaignMap, CampaignMapRegion, isConquered } from '../../../models/campaign-map';
 import { Game } from '../../../models/game';
+import { BoonCard } from '../../cards';
 import { CampaignMapPanel } from '../../panels';
-import { Text, TextType } from '../../utility';
+import { PlayingCard, Text, TextType } from '../../utility';
 
 import './campaign-map-screen.scss';
 
@@ -27,35 +29,49 @@ export class CampaignMapScreen extends Component<Props, State> {
 	}
 
 	public render() {
-		let options = null;
-		if (CampaignMapHelper.isConquered(this.props.game.map as CampaignMap)) {
-			options = (
-				<div>
-					<Text>You have conquered the island!</Text>
+		let info = null;
+		if (isConquered(this.props.game.map as CampaignMap)) {
+			info = (
+				<div className='won'>
+					<Text type={TextType.SubHeading}>You have conquered the island!</Text>
+					<hr />
+					<Text>Well done!</Text>
 					<button onClick={() => this.props.endCampaign()}>Done</button>
 				</div>
 			);
 		} else if (this.props.game.heroes.length === 0) {
-			options = (
-				<div>
-					<Text>You have no more heroes. You have not been able to conquer the island, this time.</Text>
+			info = (
+				<div className='lost'>
+					<Text type={TextType.SubHeading}>You have no more heroes.</Text>
+					<hr />
+					<Text>You have not been able to conquer the island, this time.</Text>
 					<button onClick={() => this.props.endCampaign()}>Done</button>
 				</div>
 			);
 		} else if (this.state.selectedRegion) {
-			options = (
-				<div>
-					<Text type={TextType.Heading}>
-						{this.state.selectedRegion.name}
-					</Text>
-					<button onClick={() => this.props.startEncounter(this.state.selectedRegion as CampaignMapRegion)}>Start an Encounter</button>
-					<button onClick={() => { this.setState({ selectedRegion: null }); this.props.conquer(this.state.selectedRegion as CampaignMapRegion); }}>Auto-Conquer</button>
+			info = (
+				<div className='region'>
+					<Text type={TextType.SubHeading}>{this.state.selectedRegion.name}</Text>
+					<hr />
+					<Text>If you conquer {this.state.selectedRegion.name}, you will recieve:</Text>
+					<div className='boon'>
+						<PlayingCard front={<BoonCard boon={this.state.selectedRegion.boon} />} />
+					</div>
+					<hr />
+					<button disabled={(this.props.game.heroes.length === 0) || this.props.game.heroes.every(h => !h.name)} onClick={() => this.props.startEncounter(this.state.selectedRegion as CampaignMapRegion)}>
+						Start an encounter here
+					</button>
+					<button className='hack' onClick={() => { this.setState({ selectedRegion: null }); this.props.conquer(this.state.selectedRegion as CampaignMapRegion); }}>
+						Auto-conquer
+					</button>
 				</div>
 			);
 		} else {
-			options = (
+			info = (
 				<div>
-					<button onClick={() => this.props.viewHeroes()}>Your Heroes</button>
+					<Text>This is the map of the island.</Text>
+					<Text>Select a region to learn more about it.</Text>
+					<hr />
 					<button onClick={() => this.props.endCampaign()}>Abandon This Campaign</button>
 				</div>
 			);
@@ -63,12 +79,19 @@ export class CampaignMapScreen extends Component<Props, State> {
 
 		return (
 			<div className='campaign-map-screen'>
-				<CampaignMapPanel
-					map={this.props.game.map as CampaignMap}
-					selectedRegion={this.state.selectedRegion}
-					onSelectRegion={region => this.setState({ selectedRegion: region })}
-				/>
-				{options}
+				<Selector options={[{ id: 'heroes', display: 'Your Heroes' }, { id: 'map', display: 'The Island' }]} selectedID='map' onSelect={this.props.viewHeroes} />
+				<div className='row'>
+					<div className='map'>
+						<CampaignMapPanel
+							map={this.props.game.map as CampaignMap}
+							selectedRegion={this.state.selectedRegion}
+							onSelectRegion={region => this.setState({ selectedRegion: region })}
+						/>
+					</div>
+					<div className='info'>
+						{info}
+					</div>
+				</div>
 			</div>
 		);
 	}

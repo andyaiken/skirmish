@@ -19,7 +19,7 @@ export enum Skill {
 	Weapon = 'Weapon'
 }
 
-export const getCategory = (skill: Skill) => {
+export const getSkillCategory = (skill: Skill) => {
 	switch (skill) {
 		case Skill.All:
 			return SkillCategory.All;

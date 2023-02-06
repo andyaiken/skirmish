@@ -1,10 +1,16 @@
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface EncounterMap {
-	//
+export interface EncounterMapSquare {
+	id: string;
+	x: number;
+	y: number;
 }
 
-export const createMap = (): EncounterMap => {
+export interface EncounterMap {
+	squares: { x: number, y: number }[];
+}
+
+export const generateEncounterMap = (): EncounterMap => {
+	// TODO: Generate an encounter map
 	return {
-		// TODO
+		squares: []
 	};
 }

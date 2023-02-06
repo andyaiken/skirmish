@@ -18,7 +18,8 @@
 	},
 	"scripts": {
 		"update": "npx npm-check-updates --interactive --format group",
-		"start": "react-scripts start --display-error-details"
+		"start": "react-scripts start --display-error-details",
+		"lint": "npx eslint ."
 	},
 	"eslintConfig": {
 		"extends": [
@@ -37,7 +38,8 @@
 		],
 		"root": true,
 		"rules": {
-			"@typescript-eslint/non-nullable-type-assertion-style": 0
+			"@typescript-eslint/non-nullable-type-assertion-style": 0,
+			"no-debugger": 0
 		}
 	},
 	"browserslist": [

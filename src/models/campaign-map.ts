@@ -1,7 +1,7 @@
 import { generateName } from '../utils/name-generator';
 import { randomNumber } from '../utils/random';
 import { guid } from '../utils/utils';
-import { BoonType, getRandomBoon } from './boon';
+import { Boon, generateBoon } from './boon';
 
 export interface CampaignMapSquare {
 	id: string;
@@ -13,8 +13,9 @@ export interface CampaignMapSquare {
 export interface CampaignMapRegion {
 	id: string;
 	name: string;
+	count: number;
 	color: string;
-	boon: BoonType;
+	boon: Boon;
 }
 
 export interface CampaignMap {
@@ -22,7 +23,7 @@ export interface CampaignMap {
 	regions: CampaignMapRegion[];
 }
 
-export const createMap = (): CampaignMap => {
+export const generateCampaignMap = (): CampaignMap => {
 	const map: CampaignMap = {
 		squares: [{
 			id: guid(),
@@ -68,15 +69,21 @@ export const createMap = (): CampaignMap => {
 
 	const regionCount = map.squares.length / 20;
 	while (map.regions.length !== regionCount) {
-		const r = randomNumber(256);
-		const g = randomNumber(256);
-		const b = randomNumber(256);
+		const count = randomNumber(10) + 1;
+
+		// The lightest colour we will allow is rgb(229, 229, 229)
+		// This is so that the player (white) stands out
+		const max = 230;
+		const r = randomNumber(max);
+		const g = randomNumber(max);
+		const b = randomNumber(max);
 
 		map.regions.push({
 			id: guid(),
 			name: generateName(),
+			count: count,
 			color: `rgb(${r}, ${g}, ${b})`,
-			boon: getRandomBoon()
+			boon: generateBoon()
 		});
 	}
 

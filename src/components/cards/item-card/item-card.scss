@@ -1,3 +1,9 @@
 .item-card {
 	margin: 10px;
+
+	.tags {
+		display: flex;
+		justify-content: center;
+		margin: 10px 0;
+	}
 }

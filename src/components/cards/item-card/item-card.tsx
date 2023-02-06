@@ -1,7 +1,9 @@
 import { Component } from 'react';
-import { getFeatureName } from '../../../models/feature';
+import { Tag } from '../../../controls';
+import { getFeatureDescription, getFeatureTitle } from '../../../models/feature';
 import { Item } from '../../../models/item';
-import { StatValue, Text, TextType } from '../../utility';
+import { Proficiency } from '../../../models/proficiency';
+import { StatValue, StatValueList, Text, TextType } from '../../utility';
 
 import './item-card.scss';
 
@@ -17,17 +19,8 @@ export class ItemCard extends Component<Props> {
 				<div>
 					<StatValue label='Damage' value={this.props.item.weapon.damage.rank}/>
 					<StatValue label='Type' value={this.props.item.weapon.damage.type}/>
-					<StatValue label='Range' value={this.props.item.weapon.range}/>
-					<StatValue label='Unreliable' value={this.props.item.weapon.unreliable}/>
-				</div>
-			);
-		}
-
-		let features = null;
-		if (this.props.item.features.length > 0) {
-			features = (
-				<div>
-					<StatValue label='Features' value={this.props.item.features.map(f => getFeatureName(f)).join(', ')}/>
+					{this.props.item.weapon.range > 0 ? <StatValue label='Range' value={this.props.item.weapon.range}/> : null}
+					{this.props.item.weapon.unreliable > 0 ? <StatValue label='Unreliable' value={this.props.item.weapon.unreliable}/> : null}
 				</div>
 			);
 		}
@@ -37,14 +30,35 @@ export class ItemCard extends Component<Props> {
 			location = `${this.props.item.slots} ${location}s`;
 		}
 
+		let features = null;
+		if (this.props.item.features.length > 0) {
+			features = (
+				<div>
+					<StatValueList label='Features' values={this.props.item.features.map(f => `${getFeatureTitle(f)}: ${getFeatureDescription(f)}`)}/>
+				</div>
+			);
+		}
+
+		let actions = null;
+		if (this.props.item.actions.length > 0) {
+			actions = (
+				<div>
+					<StatValueList label='Actions' values={this.props.item.actions.map(a => a.name)}/>
+				</div>
+			);
+		}
+
 		return (
 			<div className='item-card'>
 				<Text type={TextType.SubHeading}>{this.props.item.name}</Text>
 				<hr />
-				<StatValue label='Location' value={location}/>
-				<StatValue label='Proficiency' value={this.props.item.proficiency}/>
+				<div className='tags'>
+					{this.props.item.proficiency !== Proficiency.None ? <Tag>{this.props.item.proficiency}</Tag> : null}
+					<Tag>{location}</Tag>
+				</div>
 				{wpn}
 				{features}
+				{actions}
 			</div>
 		);
 	}

@@ -25,7 +25,7 @@ export enum DamageType {
 	Psychic = 'Psychic'
 }
 
-export const getCategory = (type: DamageType) => {
+export const getDamageCategory = (type: DamageType) => {
 	switch (type) {
 		case DamageType.All:
 			return DamageCategory.All;

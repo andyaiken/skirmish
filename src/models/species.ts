@@ -1,6 +1,7 @@
 import { SpeciesList } from '../data/species-list';
 import { Action } from './action';
 import { Feature } from './feature';
+import { Game } from './game';
 import { Trait } from './trait';
 
 export interface Species {
@@ -15,12 +16,16 @@ export const getSpecies = (id: string) => {
 	return SpeciesList.find(s => s.id === id);
 }
 
-export const getSpeciesDeck = () => {
-	const deck: string[] = [];
+export const getSpeciesDeck = (game: Game) => {
+	const used = game.heroes.map(h => h.speciesID);
 
-	SpeciesList.forEach(s => {
-		deck.push(s.id);
-	});
+	const deck = SpeciesList
+		.filter(species => !used.includes(species.id))
+		.map(species => species.id);
 
-	return deck;
+	if (deck.length >= 3) {
+		return deck;
+	}
+
+	return SpeciesList.map(species => species.id);
 }

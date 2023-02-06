@@ -1,10 +1,12 @@
 import { Component } from 'react';
 import { Selector } from '../../../controls';
-import { CampaignMap, CampaignMapRegion, isConquered } from '../../../models/campaign-map';
+import { BoonType } from '../../../models/boon';
+import { CampaignMapRegion } from '../../../models/campaign-map';
 import { Game } from '../../../models/game';
-import { BoonCard } from '../../cards';
+import { Item } from '../../../models/item';
+import { BoonCard, ItemCard } from '../../cards';
 import { CampaignMapPanel } from '../../panels';
-import { PlayingCard, Text, TextType } from '../../utility';
+import { PlayingCard, StatValue, Text, TextType } from '../../utility';
 
 import './campaign-map-screen.scss';
 
@@ -13,7 +15,6 @@ interface Props {
 	viewHeroes: () => void;
 	startEncounter: (region: CampaignMapRegion) => void;
 	endCampaign: () => void;
-	conquer: (region: CampaignMapRegion) => void; // TEMP
 }
 
 interface State {
@@ -30,39 +31,25 @@ export class CampaignMapScreen extends Component<Props, State> {
 
 	public render() {
 		let info = null;
-		if (isConquered(this.props.game.map as CampaignMap)) {
-			info = (
-				<div className='won'>
-					<Text type={TextType.SubHeading}>You have conquered the island!</Text>
-					<hr />
-					<Text>Well done!</Text>
-					<button onClick={() => this.props.endCampaign()}>Done</button>
-				</div>
-			);
-		} else if (this.props.game.heroes.length === 0) {
-			info = (
-				<div className='lost'>
-					<Text type={TextType.SubHeading}>You have no more heroes.</Text>
-					<hr />
-					<Text>You have not been able to conquer the island, this time.</Text>
-					<button onClick={() => this.props.endCampaign()}>Done</button>
-				</div>
-			);
-		} else if (this.state.selectedRegion) {
+		if (this.state.selectedRegion) {
+			let boon = <PlayingCard front={<BoonCard boon={this.state.selectedRegion.boon} />} />;
+			if (this.state.selectedRegion.boon.type === BoonType.MagicItem) {
+				const item: Item = this.state.selectedRegion.boon.data as Item;
+				boon = <PlayingCard front={<ItemCard item={item} />} />;
+			}
 			info = (
 				<div className='region'>
 					<Text type={TextType.SubHeading}>{this.state.selectedRegion.name}</Text>
 					<hr />
+					<StatValue label='Encounters' value={this.state.selectedRegion.count} />
+					<hr />
 					<Text>If you conquer {this.state.selectedRegion.name}, you will recieve:</Text>
 					<div className='boon'>
-						<PlayingCard front={<BoonCard boon={this.state.selectedRegion.boon} />} />
+						{boon}
 					</div>
 					<hr />
 					<button disabled={(this.props.game.heroes.length === 0) || this.props.game.heroes.every(h => !h.name)} onClick={() => this.props.startEncounter(this.state.selectedRegion as CampaignMapRegion)}>
 						Start an encounter here
-					</button>
-					<button className='hack' onClick={() => { this.setState({ selectedRegion: null }); this.props.conquer(this.state.selectedRegion as CampaignMapRegion); }}>
-						Auto-conquer
 					</button>
 				</div>
 			);
@@ -70,6 +57,8 @@ export class CampaignMapScreen extends Component<Props, State> {
 			info = (
 				<div>
 					<Text>This is the map of the island.</Text>
+					<Text>There are {this.props.game.map.regions.length} regions, which you must attack and conquer.</Text>
+					{this.props.game.map.squares.some(sq => sq.regionID === '') ? <Text>The white area is land you have already conquered.</Text> : ''}
 					<Text>Select a region to learn more about it.</Text>
 					<hr />
 					<button onClick={() => this.props.endCampaign()}>Abandon This Campaign</button>
@@ -79,11 +68,11 @@ export class CampaignMapScreen extends Component<Props, State> {
 
 		return (
 			<div className='campaign-map-screen'>
-				<Selector options={[{ id: 'heroes', display: 'Your Heroes' }, { id: 'map', display: 'The Island' }]} selectedID='map' onSelect={this.props.viewHeroes} />
+				<Selector options={[{ id: 'heroes', display: 'Your Team' }, { id: 'map', display: 'The Island' }]} selectedID='map' onSelect={this.props.viewHeroes} />
 				<div className='row'>
 					<div className='map'>
 						<CampaignMapPanel
-							map={this.props.game.map as CampaignMap}
+							map={this.props.game.map}
 							selectedRegion={this.state.selectedRegion}
 							onSelectRegion={region => this.setState({ selectedRegion: region })}
 						/>

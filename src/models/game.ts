@@ -1,4 +1,5 @@
-import { CampaignMap, createMap } from './campaign-map';
+import { Boon } from './boon';
+import { CampaignMap, generateCampaignMap } from './campaign-map';
 import { Encounter } from './encounter';
 import { createHero, Hero } from './hero';
 import { Item } from './item';
@@ -6,7 +7,8 @@ import { Item } from './item';
 export interface Game {
 	heroes: Hero[];
 	items: Item[];
-	map: CampaignMap | null;
+	boons: Boon[];
+	map: CampaignMap;
 	encounter: Encounter | null;
 }
 
@@ -20,7 +22,8 @@ export const createGame = (): Game => {
 			createHero()
 		],
 		items: [],
-		map: createMap(),
+		boons: [],
+		map: generateCampaignMap(),
 		encounter: null
 	};
 }

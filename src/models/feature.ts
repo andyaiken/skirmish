@@ -5,15 +5,15 @@ import { Skill, SkillCategory } from './skill';
 import { Trait } from './trait';
 
 export enum FeatureType {
-	// TODO: Aura
+	Trait = 'Trait',
+	Skill = 'Skill',
+	SkillCategory = 'Skill category',
+	Proficiency = 'Proficiency',
 	DamageBonus = 'Damage bonus',
 	DamageCategoryBonus = 'Damage category bonus',
 	DamageResist = 'Damage resistance',
-	DamageCategoryResist = 'Damage category resistance',
-	Proficiency = 'Proficiency',
-	Skill = 'Skill',
-	SkillCategory = 'Skill category',
-	Trait = 'Trait'
+	DamageCategoryResist = 'Damage category resistance'
+	// TODO: Aura
 }
 
 export interface Feature {
@@ -28,43 +28,61 @@ export interface Feature {
 	rank: number;
 }
 
-export const getFeatureName = (feature: Feature) => {
+export const getFeatureTitle = (feature: Feature) => {
 	switch (feature.type) {
+		case FeatureType.Trait:
+			return 'Trait bonus';
+		case FeatureType.Skill:
+		case FeatureType.SkillCategory:
+			return 'Skill bonus';
+		case FeatureType.Proficiency:
+			return 'Proficiency';
 		case FeatureType.DamageBonus:
-			return `${feature.damage} ${feature.rank}`;
 		case FeatureType.DamageCategoryBonus:
-			return `${feature.damageCategory} ${feature.rank}`;
+			return 'Damage Bonus';
 		case FeatureType.DamageResist:
-			return `${feature.damage} resistance ${feature.rank}`;
 		case FeatureType.DamageCategoryResist:
-			return `${feature.damageCategory} resistance ${feature.rank}`;
+			return 'Resistance';
+	}
+}
+
+export const getFeatureDescription = (feature: Feature) => {
+	switch (feature.type) {
+		case FeatureType.Trait:
+			return `${feature.trait} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
+		case FeatureType.Skill:
+			return `${feature.skill} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
+		case FeatureType.SkillCategory:
+			return `All ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
 		case FeatureType.Proficiency:
 			return `${feature.proficiency}`;
-		case FeatureType.Skill:
-			return `${feature.skill} ${feature.rank}`;
-		case FeatureType.SkillCategory:
-			return `${feature.skillCategory} skills ${feature.rank}`;
-		case FeatureType.Trait:
-			return `${feature.trait} ${feature.rank}`;
+		case FeatureType.DamageBonus:
+			return `${feature.damage} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
+		case FeatureType.DamageCategoryBonus:
+			return `All ${feature.damageCategory} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
+		case FeatureType.DamageResist:
+			return `${feature.damage} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
+		case FeatureType.DamageCategoryResist:
+			return `All ${feature.damageCategory} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
 	}
 }
 
 export const hasChoice = (feature: Feature) => {
 	switch (feature.type) {
+		case FeatureType.Trait:
+			return feature.trait === Trait.Any;
+		case FeatureType.Skill:
+			return feature.skill === Skill.Any;
+		case FeatureType.SkillCategory:
+			return feature.skillCategory === SkillCategory.Any;
+		case FeatureType.Proficiency:
+			return feature.proficiency === Proficiency.Any;
 		case FeatureType.DamageBonus:
 		case FeatureType.DamageResist:
 			return feature.damage === DamageType.Any;
 		case FeatureType.DamageCategoryBonus:
 		case FeatureType.DamageCategoryResist:
 			return feature.damageCategory === DamageCategory.Any;
-		case FeatureType.Proficiency:
-			return feature.proficiency === Proficiency.Any;
-		case FeatureType.Skill:
-			return feature.skill === Skill.Any;
-		case FeatureType.SkillCategory:
-			return feature.skillCategory === SkillCategory.Any;
-		case FeatureType.Trait:
-			return feature.trait === Trait.Any;
 	}
 }
 

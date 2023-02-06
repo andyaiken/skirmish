@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { Encounter, EncounterState, getState } from '../../../models/encounter';
+import { Encounter, EncounterState, getEncounterState } from '../../../models/encounter';
 import { Game } from '../../../models/game';
 import { Hero } from '../../../models/hero';
 import { Item } from '../../../models/item';
@@ -10,8 +10,7 @@ import './encounter-screen.scss';
 export enum EncounterFinishState {
 	Victory = 'victory',
 	Defeat = 'defeat',
-	Retreat = 'retreat',
-	Concede = 'concede'
+	Retreat = 'retreat'
 }
 
 interface Props {
@@ -19,13 +18,13 @@ interface Props {
 	game: Game;
 	equipItem: (item: Item, hero: Hero) => void;
 	unequipItem: (item: Item, hero: Hero) => void;
-	finish: (state: EncounterFinishState) => void;
+	finishEncounter: (state: EncounterFinishState) => void;
 }
 
 export class EncounterScreen extends Component<Props> {
 	public render() {
 		let controls = null;
-		switch (getState(this.props.encounter)) {
+		switch (getEncounterState(this.props.encounter)) {
 			case EncounterState.Active:
 				controls = (
 					<div>
@@ -36,22 +35,22 @@ export class EncounterScreen extends Component<Props> {
 							unequipItem={(item, hero) => this.props.unequipItem(item, hero)}
 						/>
 						<div>action card slots</div>
-						<button onClick={() => this.props.finish(EncounterFinishState.Retreat)}>RETREAT</button>
-						<button onClick={() => this.props.finish(EncounterFinishState.Concede)}>CONCEDE</button>
+						<button onClick={() => this.props.finishEncounter(EncounterFinishState.Retreat)}>Retreat</button>
+						<button onClick={() => this.props.finishEncounter(EncounterFinishState.Defeat)}>Surrender</button>
 					</div>
 				);
 				break;
 			case EncounterState.Won:
 				controls = (
 					<div>
-						<button onClick={() => this.props.finish(EncounterFinishState.Victory)}>VICTORY</button>
+						<button onClick={() => this.props.finishEncounter(EncounterFinishState.Victory)}>Victory</button>
 					</div>
 				);
 				break;
 			case EncounterState.Defeated:
 				controls = (
 					<div>
-						<button onClick={() => this.props.finish(EncounterFinishState.Defeat)}>DEFEAT</button>
+						<button onClick={() => this.props.finishEncounter(EncounterFinishState.Defeat)}>Defeat</button>
 					</div>
 				);
 				break;

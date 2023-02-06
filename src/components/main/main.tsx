@@ -1,14 +1,15 @@
 import { Component } from 'react';
+import { BoonType } from '../../models/boon';
 
-import { CampaignMap, removeRegion } from '../../models/campaign-map';
-import { createEncounter } from '../../models/encounter';
-import { createSkillFeature, createTraitFeature } from '../../models/feature';
+import { CampaignMapRegion, removeRegion } from '../../models/campaign-map';
+import { createEncounter, Encounter, getAllHeroesInEncounter, getDeadHeroes, getSurvivingHeroes } from '../../models/encounter';
 import { createGame, Game } from '../../models/game';
 import { createHero, Hero } from '../../models/hero';
 import { Item } from '../../models/item';
 import { debounce } from '../../utils/utils';
+import { BoonCard } from '../cards';
 import { CampaignMapScreen, EncounterFinishState, EncounterScreen, HeroesScreen, LandingScreen } from '../screens';
-import { Text, TextType } from '../utility';
+import { PlayingCard, Text, TextType } from '../utility';
 
 import './main.scss';
 
@@ -26,6 +27,7 @@ interface Props {
 interface State {
 	screen: ScreenType;
 	game: Game | null;
+	message: JSX.Element | null;
 }
 
 export class Main extends Component<Props, State> {
@@ -45,13 +47,20 @@ export class Main extends Component<Props, State> {
 
 		this.state = {
 			screen: ScreenType.Landing,
-			game: game
+			game: game,
+			message: null
 		};
 	}
 
-	public componentDidUpdate() {
+	componentDidUpdate = () => {
 		this.saveAfterDelay();
 	}
+
+	setScreen = (screen: ScreenType) => {
+		this.setState({
+			screen: screen
+		});
+	};
 
 	//#region Saving
 
@@ -68,7 +77,50 @@ export class Main extends Component<Props, State> {
 
 	//#endregion
 
-	private equipItem(item: Item, hero: Hero) {
+	//#region Landing page
+
+	startCampaign = () => {
+		this.setState({
+			game: createGame(),
+			screen: ScreenType.Heroes
+		});
+	}
+
+	continueCampaign = () => {
+		this.setState({
+			screen: ScreenType.Heroes
+		});
+	}
+
+	//#endregion
+
+	//#region Heroes page
+
+	addHero = (hero: Hero) => {
+		if (this.state.game) {
+			const game = this.state.game;
+			const index = this.state.game.heroes.findIndex(h => h.id === hero.id);
+			if (index === -1) {
+				game.heroes.push(hero);
+			} else {
+				game.heroes[index] = hero;
+			}
+			game.heroes.sort((a, b) => a.name > b.name ? 1 : -1);
+			this.setState({
+				game: game
+			});
+		}
+	}
+
+	incrementXP = (hero: Hero) => {
+		// DEV ONLY
+		hero.xp += 1;
+		this.setState({
+			game: this.state.game
+		});
+	}
+
+	equipItem = (item: Item, hero: Hero) => {
 		const game = this.state.game as Game;
 
 		const index = game.items.indexOf(item);
@@ -81,7 +133,7 @@ export class Main extends Component<Props, State> {
 		});
 	}
 
-	private unequipItem(item: Item, hero: Hero) {
+	unequipItem = (item: Item, hero: Hero) => {
 		const game = this.state.game as Game;
 
 		const index = hero.items.indexOf(item);
@@ -93,6 +145,158 @@ export class Main extends Component<Props, State> {
 			game: game
 		});
 	}
+
+	//#endregion
+
+	//#region Campaign map page
+
+	startEncounter = (region: CampaignMapRegion) => {
+		if (this.state.game) {
+			const game = this.state.game;
+			game.encounter = createEncounter(region, game.heroes);
+			this.setState({
+				game: this.state.game,
+				screen: ScreenType.Encounter
+			});
+		}
+	}
+
+	endCampaign = () => {
+		this.setState({
+			game: null,
+			screen: ScreenType.Landing
+		});
+	}
+
+	//#endregion
+
+	//#region Encounter page
+
+	finishEncounter = (state: EncounterFinishState) => {
+		const game = this.state.game;
+		if (!game) {
+			return;
+		}
+
+		const encounter = game.encounter;
+		if (!encounter) {
+			return;
+		}
+
+		const region = game.map.regions.find(r => r.id === encounter.regionID);
+		if (!region) {
+			return;
+		}
+
+		let message = null;
+		switch (state) {
+			case EncounterFinishState.Victory: {
+				// Remove dead heroes from the game
+				const deadHeroes = getDeadHeroes(encounter, game);
+				game.heroes = game.heroes.filter(h => !deadHeroes.includes(h));
+				// Get equipment from dead heroes, add it to game loot
+				deadHeroes.forEach(h => game.items.push(...h.items));
+				// Increment XP for surviving heroes
+				getSurvivingHeroes(encounter, game).forEach(h => h.xp += 1);
+				// Decrement the number of encounters remaining for this region
+				region.count -= 1;
+				if (region.count <= 0) {
+					// Conquer the region
+					removeRegion(game.map, region);
+					if (game.map.squares.every(sq => sq.regionID === '')) {
+						// Show message
+						message = (
+							<div>
+								<Text type={TextType.SubHeading}>You control the island!</Text>
+								<Text><b>Congratulations!</b> There are no more regions to conquer.</Text>
+								<button onClick={() => this.endCampaign()}>Start Again</button>
+							</div>
+						);
+					} else {
+						// Add a new level 1 hero
+						game.heroes.push(createHero());
+						game.heroes.sort((a, b) => a.name > b.name ? 1 : -1);
+						// Add the region's boon
+						game.boons.push(region.boon);
+						// Show message
+						message = (
+							<div>
+								<Text type={TextType.SubHeading}>You have taken control of {region.name}!</Text>
+								<Text>Each hero who took part in this encounter gains 1 XP, you can recruit a new hero, and you have earned a reward:</Text>
+								<PlayingCard front={<BoonCard boon={region.boon} />} />
+								<Text>Any heroes who died have been lost, along with all their equipment.</Text>
+								<button onClick={() => this.setScreen(ScreenType.Heroes)}>OK</button>
+							</div>
+						);
+					}
+				} else {
+					// Show message
+					message = (
+						<div>
+							<Text type={TextType.SubHeading}>You won the encounter in {region.name}!</Text>
+							<Text>Each surviving hero who took part in this encounter gains 1 XP.</Text>
+							<Text>Any heroes who died have been lost, along with all their equipment.</Text>
+							<button onClick={() => this.setScreen(ScreenType.Heroes)}>OK</button>
+						</div>
+					);
+				}
+				// Clear the current encounter
+				game.encounter = null;
+				break;
+			}
+			case EncounterFinishState.Retreat: {
+				// Remove dead heroes from the game
+				const deadHeroes = getDeadHeroes(encounter, game);
+				game.heroes = game.heroes.filter(h => !deadHeroes.includes(h));
+				// Clear the current encounter
+				game.encounter = null;
+				// Show message
+				message = (
+					<div>
+						<Text type={TextType.SubHeading}>You retreated from the encounter in {region.name}.</Text>
+						<Text>Any heroes who died have been lost, along with all their equipment.</Text>
+						<button onClick={() => this.setScreen(ScreenType.CampaignMap)}>OK</button>
+					</div>
+				);
+				break;
+			}
+			case EncounterFinishState.Defeat: {
+				// Remove all participating heroes from the game
+				const heroes = getAllHeroesInEncounter(encounter, game);
+				game.heroes = game.heroes.filter(h => !heroes.includes(h));
+				// Clear the current encounter
+				game.encounter = null;
+				if ((game.heroes.length === 0) && (!game.boons.some(b => b.type === BoonType.ExtraHero))) {
+					// Show message
+					message = (
+						<div>
+							<Text type={TextType.SubHeading}>You lost the encounter in {region.name}, and have no more heroes.</Text>
+							<Text>Better luck next time.</Text>
+							<button onClick={() => this.endCampaign()}>OK</button>
+						</div>
+					);
+				} else {
+					// Show message
+					message = (
+						<div>
+							<Text type={TextType.SubHeading}>You lost the encounter in {region.name}.</Text>
+							<Text>Those heroes who took part have been lost, along with all their equipment.</Text>
+							<button onClick={() => this.setScreen(ScreenType.CampaignMap)}>Try Again</button>
+						</div>
+					);
+				}
+				break;
+			}
+		}
+
+		this.setState({
+			screen: ScreenType.CampaignMap,
+			game: game,
+			message: message
+		});
+	}
+
+	//#endregion
 
 	/*
 	private changeValue(source: any, type: string, value: any) {
@@ -128,158 +332,48 @@ export class Main extends Component<Props, State> {
 	}
 	*/
 
-	private getContent() {
+	//#region Rendering
+
+	getContent = () => {
 		switch (this.state.screen) {
 			case 'landing':
 				return (
 					<LandingScreen
 						game={this.state.game}
-						startCampaign={() => {
-							this.setState({
-								game: createGame(),
-								screen: ScreenType.Heroes
-							});
-						}}
-						continueCampaign={() => {
-							const all = this.state.game?.heroes.every(h => !!h.name);
-							if (all) {
-								this.setState({
-									screen: ScreenType.CampaignMap
-								});
-							} else {
-								this.setState({
-									screen: ScreenType.Heroes
-								});
-							}
-						}}
-					/>
-				);
-			case 'campaign-map':
-				return (
-					<CampaignMapScreen
-						game={this.state.game as Game}
-						viewHeroes={() => {
-							this.setState({
-								screen: ScreenType.Heroes
-							});
-						}}
-						startEncounter={region => {
-							if (this.state.game) {
-								const game = this.state.game;
-								game.encounter = createEncounter();
-							}
-							this.setState({
-								game: this.state.game,
-								screen: ScreenType.Encounter
-							});
-						}}
-						endCampaign={() => {
-							this.setState({
-								game: null,
-								screen: ScreenType.Landing
-							});
-						}}
-						// TEMP
-						conquer={region => {
-							const game = this.state.game as Game;
-							removeRegion(game.map as CampaignMap, region);
-							game.heroes.push(createHero());
-							this.setState({
-								game: game
-							});
-						}}
+						startCampaign={() => this.startCampaign()}
+						continueCampaign={() => this.continueCampaign()}
 					/>
 				);
 			case 'heroes':
 				return (
 					<HeroesScreen
 						game={this.state.game as Game}
-						addHero={hero => {
-							if (this.state.game) {
-								const game = this.state.game;
-								const index = this.state.game.heroes.findIndex(h => h.id === hero.id);
-								if (index === -1) {
-									game.heroes.push(hero);
-								} else {
-									game.heroes[index] = hero;
-								}
-								game.heroes.sort((a, b) => a.name > b.name ? 1 : -1);
-								this.setState({
-									game: game
-								});
-							}
-						}}
-						levelUp={(hero, trait, skill, feature) => {
-							hero.features.push(createTraitFeature(trait, 1));
-							hero.features.push(createSkillFeature(skill, 1));
-							hero.features.push(feature);
-							hero.level += 1;
-							hero.xp = 0;
-							this.setState({
-								game: this.state.game
-							});
-						}}
-						incrementXP={hero => {
-							hero.xp += 1;
-							this.setState({
-								game: this.state.game
-							});
-						}}
+						addHero={hero => this.addHero(hero)}
+						incrementXP={hero => this.incrementXP(hero)}
 						equipItem={(item, hero) => this.equipItem(item, hero)}
 						unequipItem={(item, hero) => this.unequipItem(item, hero)}
-						back={() => {
-							this.setState({
-								screen: ScreenType.CampaignMap
-							});
-						}}
+						viewCampaignMap={() => this.setScreen(ScreenType.CampaignMap)}
+					/>
+				);
+			case 'campaign-map':
+				return (
+					<CampaignMapScreen
+						game={this.state.game as Game}
+						viewHeroes={() => this.setScreen(ScreenType.Heroes)}
+						startEncounter={region => this.startEncounter(region)}
+						endCampaign={() => this.endCampaign()}
 					/>
 				);
 			case 'encounter':
-				if (this.state.game?.encounter) {
-					return (
-						<EncounterScreen
-							encounter={this.state.game.encounter}
-							game={this.state.game}
-							equipItem={(item, hero) => this.equipItem(item, hero)}
-							unequipItem={(item, hero) => this.unequipItem(item, hero)}
-							finish={state => {
-								switch (state) {
-									case EncounterFinishState.Victory:
-										// TODO
-										// Get equipment from dead heroes
-										// Remove dead heroes from the game
-										// If region conquered: show message, add a new level 1 hero, draw a boon card
-										// Show victory message (plus loot)
-										// Increment XP for remaining heroes
-										// Clear current encounter
-										break;
-									case EncounterFinishState.Defeat:
-										// TODO
-										// Remove dead heroes from the game
-										// Show defeat message
-										// Clear current encounter
-										break;
-									case EncounterFinishState.Retreat:
-										// TODO
-										// Remove dead heroes from the game
-										// Show retreat message
-										// Clear current encounter
-										break;
-									case EncounterFinishState.Concede:
-										// TODO
-										// Remove all current heroes from the game
-										// Show concede message
-										// Clear current encounter
-										break;
-								}
-								this.setState({
-									screen: ScreenType.CampaignMap
-								});
-							}}
-						/>
-					);
-				}
-				break;
+				return (
+					<EncounterScreen
+						encounter={this.state.game?.encounter as Encounter}
+						game={this.state.game as Game}
+						equipItem={(item, hero) => this.equipItem(item, hero)}
+						unequipItem={(item, hero) => this.unequipItem(item, hero)}
+						finishEncounter={state => this.finishEncounter(state)}
+					/>
+				);
 		}
 
 		return (
@@ -289,7 +383,7 @@ export class Main extends Component<Props, State> {
 		);
 	}
 
-	public render() {
+	render = () => {
 		return (
 			<div className='skirmish'>
 				<div className='top-bar'>
@@ -301,4 +395,6 @@ export class Main extends Component<Props, State> {
 			</div>
 		);
 	}
+
+	//#endregion
 }

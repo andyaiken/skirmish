@@ -12,10 +12,9 @@ export const BackgroundList: Background[] = [
 		features: [
 			createSkillFeature(Skill.Athletics, 2),
 			createTraitFeature(Trait.Speed, 1)
-			// TODO: Move through occupied spaces
 		],
 		actions: [
-			//
+			createPlaceholder('Move through occupied spaces')
 		]
 	},
 	{

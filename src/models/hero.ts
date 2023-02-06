@@ -1,11 +1,12 @@
 import { guid } from '../utils/utils';
 import { Action, universalActions } from './action';
 import { getBackground } from './background';
+import { DamageCategory, DamageType, getDamageCategory } from './damage';
 import { Feature, FeatureType, universalFeatures } from './feature';
 import { Item } from './item';
 import { Proficiency } from './proficiency';
 import { getRole } from './role';
-import { getCategory, Skill, SkillCategory } from './skill';
+import { getSkillCategory, Skill, SkillCategory } from './skill';
 import { getSpecies } from './species';
 import { Trait } from './trait';
 
@@ -38,7 +39,7 @@ export const createHero = (): Hero => {
 	};
 }
 
-export const featureDeck = (hero: Hero) => {
+export const getFeatureDeck = (hero: Hero) => {
 	const s = getSpecies(hero.speciesID);
 	const r = getRole(hero.roleID);
 	const b = getBackground(hero.backgroundID);
@@ -48,7 +49,7 @@ export const featureDeck = (hero: Hero) => {
 		.concat(b ? b.features : []);
 }
 
-export const actionDeck = (hero: Hero) => {
+export const getActionDeck = (hero: Hero) => {
 	let list: Action[] = ([] as Action[]).concat(universalActions);
 
 	const s = getSpecies(hero.speciesID);
@@ -65,7 +66,7 @@ export const actionDeck = (hero: Hero) => {
 	return list;
 }
 
-export const activeFeatures = (hero: Hero) => {
+export const getFeatures = (hero: Hero) => {
 	let list = ([] as Feature[]).concat(hero.features);
 	hero.items.forEach(i => {
 		list = list.concat(i.features);
@@ -74,22 +75,10 @@ export const activeFeatures = (hero: Hero) => {
 	return list;
 }
 
-export const trait = (hero: Hero, trait: Trait) => {
+export const getTraitValue = (hero: Hero, trait: Trait) => {
 	let value = 1;
 
-	const s = getSpecies(hero.speciesID);
-	if (s) {
-		const bonuses = s.traits.filter(t => (t === trait) || (t === Trait.All));
-		value += bonuses.length;
-	}
-
-	const r = getRole(hero.roleID);
-	if (r) {
-		const bonuses = r.traits.filter(t => (t === trait) || (t === Trait.All));
-		value += bonuses.length;
-	}
-
-	activeFeatures(hero)
+	getFeatures(hero)
 		.filter(f => f.type === FeatureType.Trait)
 		.filter(f => (f.trait === trait) || (f.trait === Trait.All))
 		.forEach(f => value += f.rank);
@@ -97,36 +86,55 @@ export const trait = (hero: Hero, trait: Trait) => {
 	return Math.max(value, 0);
 }
 
-export const skill = (hero: Hero, skill: Skill) => {
+export const getSkillValue = (hero: Hero, skill: Skill) => {
 	let value = 0;
 
-	const r = getRole(hero.roleID);
-	if (r) {
-		const bonuses = r.skills.filter(s => (s === skill) || (s === Skill.All));
-		value += bonuses.length * 2;
-	}
-
-	activeFeatures(hero)
+	getFeatures(hero)
 		.filter(f => f.type === FeatureType.Skill)
 		.filter(f => (f.skill === skill) || (f.skill === Skill.All))
 		.forEach(f => value += f.rank);
-	activeFeatures(hero)
+	getFeatures(hero)
 		.filter(f => f.type === FeatureType.SkillCategory)
-		.filter(f => (f.skillCategory === getCategory(skill)) || (f.skillCategory === SkillCategory.All))
+		.filter(f => (f.skillCategory === getSkillCategory(skill)) || (f.skillCategory === SkillCategory.All))
 		.forEach(f => value += f.rank);
 
 	return Math.max(value, 0);
 }
 
-export const proficiencies = (hero: Hero) => {
-	let profs: Proficiency[] = [];
+export const getDamageBonusValue = (hero: Hero, damage: DamageType) => {
+	let value = 0;
 
-	// From role
-	const r = getRole(hero.roleID);
-	profs = profs.concat(r ? r.proficiencies : []);
+	getFeatures(hero)
+		.filter(f => f.type === FeatureType.DamageBonus)
+		.filter(f => (f.damage === damage) || (f.damage === DamageType.All))
+		.forEach(f => value += f.rank);
+	getFeatures(hero)
+		.filter(f => f.type === FeatureType.DamageCategoryBonus)
+		.filter(f => (f.damageCategory === getDamageCategory(damage)) || (f.damageCategory === DamageCategory.All))
+		.forEach(f => value += f.rank);
 
-	// From active features
-	activeFeatures(hero)
+	return Math.max(value, 0);
+}
+
+export const getDamageResistanceValue = (hero: Hero, damage: DamageType) => {
+	let value = 0;
+
+	getFeatures(hero)
+		.filter(f => f.type === FeatureType.DamageResist)
+		.filter(f => (f.damage === damage) || (f.damage === DamageType.All))
+		.forEach(f => value += f.rank);
+	getFeatures(hero)
+		.filter(f => f.type === FeatureType.DamageCategoryResist)
+		.filter(f => (f.damageCategory === getDamageCategory(damage)) || (f.damageCategory === DamageCategory.All))
+		.forEach(f => value += f.rank);
+
+	return Math.max(value, 0);
+}
+
+export const getProficiencies = (hero: Hero) => {
+	const profs: Proficiency[] = [];
+
+	getFeatures(hero)
 		.filter(f => f.type === FeatureType.Proficiency)
 		.forEach(f => profs.push(f.proficiency));
 

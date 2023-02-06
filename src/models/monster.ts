@@ -1,9 +1,10 @@
 import { guid } from '../utils/utils';
 import { Action, universalActions } from './action';
+import { DamageCategory, DamageType, getDamageCategory } from './damage';
 import { Feature, FeatureType } from './feature';
 import { Item } from './item';
 import { Proficiency } from './proficiency';
-import { getCategory, Skill, SkillCategory } from './skill';
+import { getSkillCategory, Skill, SkillCategory } from './skill';
 import { Trait } from './trait';
 
 export interface Monster {
@@ -30,7 +31,7 @@ export const createMonster = (): Monster => {
 	};
 }
 
-export const actionDeck = (monster: Monster) => {
+export const getActionDeck = (monster: Monster) => {
 	let list: Action[] = ([] as Action[]).concat(universalActions);
 
 	list = list.concat(monster.actions);
@@ -42,7 +43,7 @@ export const actionDeck = (monster: Monster) => {
 	return list;
 }
 
-export const activeFeatures = (monster: Monster) => {
+export const getFeatures = (monster: Monster) => {
 	let list = ([] as Feature[]).concat(monster.features);
 	monster.items.forEach(i => {
 		list = list.concat(i.features);
@@ -51,10 +52,10 @@ export const activeFeatures = (monster: Monster) => {
 	return list;
 }
 
-export const trait = (monster: Monster, trait: Trait) => {
+export const getTraitValue = (monster: Monster, trait: Trait) => {
 	let value = 1;
 
-	activeFeatures(monster)
+	getFeatures(monster)
 		.filter(f => f.type === FeatureType.Trait)
 		.filter(f => (f.trait === trait) || (f.trait === Trait.All))
 		.forEach(f => value += f.rank);
@@ -62,26 +63,55 @@ export const trait = (monster: Monster, trait: Trait) => {
 	return Math.max(value, 0);
 }
 
-export const skill = (monster: Monster, skill: Skill) => {
+export const getSkillValue = (monster: Monster, skill: Skill) => {
 	let value = 0;
 
-	activeFeatures(monster)
+	getFeatures(monster)
 		.filter(f => f.type === FeatureType.Skill)
 		.filter(f => (f.skill === skill) || (f.skill === Skill.All))
 		.forEach(f => value += f.rank);
-	activeFeatures(monster)
+	getFeatures(monster)
 		.filter(f => f.type === FeatureType.SkillCategory)
-		.filter(f => (f.skillCategory === getCategory(skill)) || (f.skillCategory === SkillCategory.All))
+		.filter(f => (f.skillCategory === getSkillCategory(skill)) || (f.skillCategory === SkillCategory.All))
 		.forEach(f => value += f.rank);
 
 	return Math.max(value, 0);
 }
 
-export const proficiencies = (monster: Monster) => {
+export const getDamageBonusValue = (monster: Monster, damage: DamageType) => {
+	let value = 0;
+
+	getFeatures(monster)
+		.filter(f => f.type === FeatureType.DamageBonus)
+		.filter(f => (f.damage === damage) || (f.damage === DamageType.All))
+		.forEach(f => value += f.rank);
+	getFeatures(monster)
+		.filter(f => f.type === FeatureType.DamageCategoryBonus)
+		.filter(f => (f.damageCategory === getDamageCategory(damage)) || (f.damageCategory === DamageCategory.All))
+		.forEach(f => value += f.rank);
+
+	return Math.max(value, 0);
+}
+
+export const getDamageResistanceValue = (monster: Monster, damage: DamageType) => {
+	let value = 0;
+
+	getFeatures(monster)
+		.filter(f => f.type === FeatureType.DamageResist)
+		.filter(f => (f.damage === damage) || (f.damage === DamageType.All))
+		.forEach(f => value += f.rank);
+	getFeatures(monster)
+		.filter(f => f.type === FeatureType.DamageCategoryResist)
+		.filter(f => (f.damageCategory === getDamageCategory(damage)) || (f.damageCategory === DamageCategory.All))
+		.forEach(f => value += f.rank);
+
+	return Math.max(value, 0);
+}
+
+export const getProficiencies = (monster: Monster) => {
 	const profs: Proficiency[] = [];
 
-	// From active features
-	activeFeatures(monster)
+	getFeatures(monster)
 		.filter(f => f.type === FeatureType.Proficiency)
 		.forEach(f => profs.push(f.proficiency));
 

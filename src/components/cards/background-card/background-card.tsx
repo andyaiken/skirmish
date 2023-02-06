@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import { Background } from '../../../models/background';
-import { getFeatureName } from '../../../models/feature';
-import { StatValue, Text, TextType } from '../../utility';
+import { getFeatureDescription, getFeatureTitle } from '../../../models/feature';
+import { StatValueList, Text, TextType } from '../../utility';
 
 import './background-card.scss';
 
@@ -15,8 +15,8 @@ export class BackgroundCard extends Component<Props> {
 			<div className='background-card'>
 				<Text type={TextType.SubHeading}>{this.props.background.name}</Text>
 				<hr />
-				<StatValue label='Features' value={this.props.background.features.map(f => getFeatureName(f)).join(', ')}/>
-				<StatValue label='Actions' value={this.props.background.actions.map(a => a.name).join(', ')}/>
+				<StatValueList label='Features' values={this.props.background.features.map(f => `${getFeatureTitle(f)}: ${getFeatureDescription(f)}`)}/>
+				<StatValueList label='Actions' values={this.props.background.actions.map(a => a.name)}/>
 			</div>
 		);
 	}

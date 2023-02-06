@@ -8,23 +8,6 @@ import { Trait } from '../models/trait';
 
 export const ItemList: Item[] = [
 	{
-		id: 'item-punch',
-		name: 'Punch',
-		proficiency: Proficiency.None,
-		location: ItemLocation.None,
-		slots: 1,
-		weapon: {
-			damage: {
-				type: DamageType.Impact,
-				rank: 0
-			},
-			range: 0,
-			unreliable: 0
-		},
-		features: [],
-		actions: []
-	},
-	{
 		id: 'item-longsword',
 		name: 'Longsword',
 		proficiency: Proficiency.MilitaryWeapons,
@@ -264,7 +247,7 @@ export const ItemList: Item[] = [
 	},
 	{
 		id: 'item-dagger',
-		name: 'Dagger',
+		name: 'Daggers',
 		proficiency: Proficiency.PairedWeapons,
 		location: ItemLocation.Hand,
 		slots: 2,
@@ -281,7 +264,7 @@ export const ItemList: Item[] = [
 	},
 	{
 		id: 'item-sai',
-		name: 'Sai',
+		name: 'Sais',
 		proficiency: Proficiency.PairedWeapons,
 		location: ItemLocation.Hand,
 		slots: 2,
@@ -495,6 +478,96 @@ export const ItemList: Item[] = [
 			createDamageCategoryResistFeature(DamageCategory.Physical, 2),
 			createSkillCategoryFeature(SkillCategory.Physical, -2)
 		],
+		actions: []
+	},
+	{
+		id: 'item-helm',
+		name: 'Helm',
+		proficiency: Proficiency.None,
+		location: ItemLocation.Head,
+		slots: 1,
+		weapon: null,
+		features: [],
+		actions: []
+	},
+	{
+		id: 'item-circlet',
+		name: 'Circlet',
+		proficiency: Proficiency.None,
+		location: ItemLocation.Head,
+		slots: 1,
+		weapon: null,
+		features: [],
+		actions: []
+	},
+	{
+		id: 'item-crown',
+		name: 'Crown',
+		proficiency: Proficiency.None,
+		location: ItemLocation.Head,
+		slots: 1,
+		weapon: null,
+		features: [],
+		actions: []
+	},
+	{
+		id: 'item-tiara',
+		name: 'Tiara',
+		proficiency: Proficiency.None,
+		location: ItemLocation.Head,
+		slots: 1,
+		weapon: null,
+		features: [],
+		actions: []
+	},
+	{
+		id: 'item-cloak',
+		name: 'Cloak',
+		proficiency: Proficiency.None,
+		location: ItemLocation.Neck,
+		slots: 1,
+		weapon: null,
+		features: [],
+		actions: []
+	},
+	{
+		id: 'item-torc',
+		name: 'Torc',
+		proficiency: Proficiency.None,
+		location: ItemLocation.Neck,
+		slots: 1,
+		weapon: null,
+		features: [],
+		actions: []
+	},
+	{
+		id: 'item-necklace',
+		name: 'Necklace',
+		proficiency: Proficiency.None,
+		location: ItemLocation.Neck,
+		slots: 1,
+		weapon: null,
+		features: [],
+		actions: []
+	},
+	{
+		id: 'item-ring',
+		name: 'Ring',
+		proficiency: Proficiency.None,
+		location: ItemLocation.Ring,
+		slots: 1,
+		weapon: null,
+		features: [],
+		actions: []
+	},
+	{
+		id: 'item-boots',
+		name: 'Boots',
+		proficiency: Proficiency.None,
+		location: ItemLocation.Feet,
+		slots: 1,
+		weapon: null,
+		features: [],
 		actions: []
 	}
 ];

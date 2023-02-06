@@ -16,7 +16,6 @@ export const SpeciesList: Species[] = [
 			createSkillFeature(Skill.Any, 2),
 			createDamageBonusFeature(DamageType.Any, 1),
 			createDamageResistFeature(DamageType.Any, 1)
-			// TODO: Humans should have a feature giving them a bonus action card slot
 		],
 		actions: [
 			createPlaceholder('Resilient (remove condition on self)')
@@ -47,7 +46,8 @@ export const SpeciesList: Species[] = [
 		features: [
 			createTraitFeature(Trait.Resolve, 1),
 			createSkillFeature(Skill.Spellcasting, 2),
-			createDamageCategoryResistFeature(DamageCategory.Corruption, 1)
+			createDamageCategoryResistFeature(DamageCategory.Corruption, 1),
+			createDamageCategoryResistFeature(DamageCategory.Energy, 1)
 		],
 		actions: [
 			createPlaceholder('Insight (see opponent stats)'),
@@ -129,12 +129,13 @@ export const SpeciesList: Species[] = [
 		],
 		features: [
 			createTraitFeature(Trait.Speed, 1),
-			createSkillFeature(Skill.Stealth, 2)
-			// TODO: Pixies should have a feature allowing them to move through occupied spaces
+			createSkillFeature(Skill.Stealth, 2),
+			createDamageCategoryResistFeature(DamageCategory.Corruption, 1)
 		],
 		actions: [
 			createPlaceholder('Confusion (target makes attack)'),
-			createPlaceholder('Lightning speed')
+			createPlaceholder('Lightning speed'),
+			createPlaceholder('Move through occupied spaces')
 		]
 	},
 	{
@@ -166,7 +167,7 @@ export const SpeciesList: Species[] = [
 			createSkillFeature(Skill.Brawl, 2),
 			createSkillFeature(Skill.Stealth, 2),
 			createDamageCategoryResistFeature(DamageCategory.Corruption, 1)
-			// TODO: Shadowborn should have an energy draining aura
+			// TODO: Energy draining aura
 		],
 		actions: [
 			createPlaceholder('Transfer a condition'),

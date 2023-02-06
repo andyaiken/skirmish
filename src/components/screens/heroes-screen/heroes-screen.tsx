@@ -1,13 +1,10 @@
 import { Component } from 'react';
 import { Selector } from '../../../controls';
-import { Feature } from '../../../models/feature';
 import { Game } from '../../../models/game';
 import { Hero } from '../../../models/hero';
 import { Item } from '../../../models/item';
-import { Skill } from '../../../models/skill';
-import { Trait } from '../../../models/trait';
-import { HeroCard, PlaceholderCard } from '../../cards';
-import { CharacterSheetPanel, HeroBuilderPanel, HeroLevelUpPanel } from '../../panels';
+import { BoonCard, HeroCard, ItemCard, PlaceholderCard } from '../../cards';
+import { CharacterSheetPanel, HeroBuilderPanel } from '../../panels';
 import { CardList, Dialog, PlayingCard, Text, TextType } from '../../utility';
 
 import './heroes-screen.scss';
@@ -15,11 +12,11 @@ import './heroes-screen.scss';
 interface Props {
 	game: Game;
 	addHero: (hero: Hero) => void;
-	levelUp: (hero: Hero, trait: Trait, skill: Skill, feature: Feature) => void;
+	// levelUp: (hero: Hero, trait: Trait, skill: Skill, feature: Feature) => void;
 	incrementXP: (hero: Hero) => void;
 	equipItem: (item: Item, hero: Hero) => void;
 	unequipItem: (item: Item, hero: Hero) => void;
-	back: () => void;
+	viewCampaignMap: () => void;
 }
 
 interface State {
@@ -35,44 +32,98 @@ export class HeroesScreen extends Component<Props, State> {
 	}
 
 	public render() {
-		const heroes = this.props.game.heroes.map(hero => {
-			let card = null;
-			if (!hero.name) {
-				card = (
-					<PlaceholderCard text='Hero' />
-				);
-			} else {
-				card = (
-					<HeroCard hero={hero} />
-				);
-			}
+		let heroes = null;
+		if (this.props.game.heroes.length > 0) {
 			let info = null;
-			if (!hero.name) {
+			if (this.props.game.heroes.some(h => !h.name)) {
 				info = (
-					<Text type={TextType.Information}>Empty</Text>
+					<Text type={TextType.Information}>
+						<b>You have unfilled hero slots.</b> Select a blank hero card to recruit a new level 1 hero.
+					</Text>
+				);
+			} else if (this.props.game.heroes.some(h => h.xp >= h.level)) {
+				info = (
+					<Text type={TextType.Information}>
+						<b>Some of your heroes can level up.</b> Select their card to upgrade them.
+					</Text>
 				);
 			}
-			if (hero.xp >= hero.level) {
-				info = (
-					<Text type={TextType.Information}>Level Up</Text>
+
+			const heroCards = this.props.game.heroes.map(hero => {
+				let card = null;
+				if (!hero.name) {
+					card = (
+						<PlaceholderCard text='Hero' />
+					);
+				} else {
+					card = (
+						<HeroCard hero={hero} />
+					);
+				}
+				let info = null;
+				if (!hero.name) {
+					info = (
+						<Text type={TextType.Information}>Empty</Text>
+					);
+				} else {
+					info = (
+						<button className='hack' onClick={() => this.props.incrementXP(hero)}>Add XP</button>
+					);
+				}
+				if (hero.xp >= hero.level) {
+					info = (
+						<Text type={TextType.Information}>Level Up</Text>
+					);
+				}
+				return (
+					<div key={hero.id}>
+						<PlayingCard front={card} onClick={() => this.setState({ selectedHero: hero })} />
+						{info}
+					</div>
 				);
-			}
-			return (
-				<div key={hero.id}>
-					<PlayingCard front={card} onClick={() => this.setState({ selectedHero: hero })} />
+			});
+
+			heroes = (
+				<div>
 					{info}
-					<button className='hack' onClick={() => this.props.incrementXP(hero)}>Add XP</button>
+					<CardList cards={heroCards} />
 				</div>
 			);
-		});
+		}
+
+		let items = null;
+		if (this.props.game.items.length > 0) {
+			items = (
+				<div>
+					<hr />
+					<Text>In addition to the equipment carried by your heroes, you also have:</Text>
+					<CardList cards={this.props.game.items.map((i, n) => (<PlayingCard key={n} front={<ItemCard item={i} />} />))} />
+				</div>
+			);
+		}
+
+		let boons = null;
+		if (this.props.game.boons.length > 0) {
+			boons = (
+				<div>
+					<hr />
+					<Text type={TextType.Information}>
+						<b>You have won these rewards.</b> Select a card to redeem a reward.
+					</Text>
+					<CardList cards={this.props.game.boons.map((b, n) => (<PlayingCard key={n} front={<BoonCard boon={b} />} />))} />
+				</div>
+			);
+		}
 
 		let dialog = null;
 		if (this.state.selectedHero) {
-			if (!this.state.selectedHero.name) {
+			if (!this.state.selectedHero.name || (this.state.selectedHero.xp >= this.state.selectedHero.level)) {
 				dialog = (
 					<Dialog
 						content={(
 							<HeroBuilderPanel
+								hero={this.state.selectedHero}
+								game={this.props.game}
 								finished={hero => {
 									const h = this.state.selectedHero as Hero;
 									this.setState({
@@ -89,24 +140,6 @@ export class HeroesScreen extends Component<Props, State> {
 								selectedHero: null
 							});
 						}}
-					/>
-				);
-			} else if (this.state.selectedHero.xp >= this.state.selectedHero.level) {
-				dialog = (
-					<Dialog
-						content={(
-							<HeroLevelUpPanel
-								hero={this.state.selectedHero}
-								finished={(trait, skill, feature) => {
-									const h = this.state.selectedHero as Hero;
-									this.setState({
-										selectedHero: null
-									}, () => {
-										this.props.levelUp(h, trait, skill, feature);
-									});
-								}}
-							/>
-						)}
 					/>
 				);
 			} else {
@@ -130,26 +163,12 @@ export class HeroesScreen extends Component<Props, State> {
 			}
 		}
 
-		let info = null;
-		if (this.props.game.heroes.some(h => !h.name)) {
-			info = (
-				<Text type={TextType.Information}>
-					<b>You have unfilled hero slots.</b> Click on a blank hero card to create a new level 1 hero.
-				</Text>
-			);
-		} else if (this.props.game.heroes.some(h => h.xp >= h.level)) {
-			info = (
-				<Text type={TextType.Information}>
-					<b>Some of your heroes can level up.</b> Click on their card to upgrade them.
-				</Text>
-			);
-		}
-
 		return (
 			<div className='heroes-screen'>
-				<Selector options={[{ id: 'heroes', display: 'Your Heroes' }, { id: 'map', display: 'The Island' }]} selectedID='heroes' onSelect={this.props.back} />
-				{info}
-				<CardList cards={heroes} />
+				<Selector options={[{ id: 'heroes', display: 'Your Team' }, { id: 'map', display: 'The Island' }]} selectedID='heroes' onSelect={this.props.viewCampaignMap} />
+				{heroes}
+				{items}
+				{boons}
 				{dialog}
 			</div>
 		);

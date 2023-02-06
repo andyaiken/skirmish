@@ -1,6 +1,6 @@
 import { Component } from 'react';
-import { BoonType } from '../../models/boon';
 
+import { BoonType } from '../../models/boon';
 import { CampaignMapRegion, removeRegion } from '../../models/campaign-map';
 import { createEncounter, Encounter, getAllHeroesInEncounter, getDeadHeroes, getSurvivingHeroes } from '../../models/encounter';
 import { createGame, Game } from '../../models/game';
@@ -27,7 +27,7 @@ interface Props {
 interface State {
 	screen: ScreenType;
 	game: Game | null;
-	message: JSX.Element | null;
+	dialog: JSX.Element | null;
 }
 
 export class Main extends Component<Props, State> {
@@ -48,7 +48,7 @@ export class Main extends Component<Props, State> {
 		this.state = {
 			screen: ScreenType.Landing,
 			game: game,
-			message: null
+			dialog: null
 		};
 	}
 
@@ -150,10 +150,10 @@ export class Main extends Component<Props, State> {
 
 	//#region Campaign map page
 
-	startEncounter = (region: CampaignMapRegion) => {
+	startEncounter = (region: CampaignMapRegion, heroes: Hero[]) => {
 		if (this.state.game) {
 			const game = this.state.game;
-			game.encounter = createEncounter(region, game.heroes);
+			game.encounter = createEncounter(region, heroes);
 			this.setState({
 				game: this.state.game,
 				screen: ScreenType.Encounter
@@ -188,7 +188,7 @@ export class Main extends Component<Props, State> {
 			return;
 		}
 
-		let message = null;
+		let dialog = null;
 		switch (state) {
 			case EncounterFinishState.Victory: {
 				// Remove dead heroes from the game
@@ -205,7 +205,7 @@ export class Main extends Component<Props, State> {
 					removeRegion(game.map, region);
 					if (game.map.squares.every(sq => sq.regionID === '')) {
 						// Show message
-						message = (
+						dialog = (
 							<div>
 								<Text type={TextType.SubHeading}>You control the island!</Text>
 								<Text><b>Congratulations!</b> There are no more regions to conquer.</Text>
@@ -219,7 +219,7 @@ export class Main extends Component<Props, State> {
 						// Add the region's boon
 						game.boons.push(region.boon);
 						// Show message
-						message = (
+						dialog = (
 							<div>
 								<Text type={TextType.SubHeading}>You have taken control of {region.name}!</Text>
 								<Text>Each hero who took part in this encounter gains 1 XP, you can recruit a new hero, and you have earned a reward:</Text>
@@ -231,7 +231,7 @@ export class Main extends Component<Props, State> {
 					}
 				} else {
 					// Show message
-					message = (
+					dialog = (
 						<div>
 							<Text type={TextType.SubHeading}>You won the encounter in {region.name}!</Text>
 							<Text>Each surviving hero who took part in this encounter gains 1 XP.</Text>
@@ -251,7 +251,7 @@ export class Main extends Component<Props, State> {
 				// Clear the current encounter
 				game.encounter = null;
 				// Show message
-				message = (
+				dialog = (
 					<div>
 						<Text type={TextType.SubHeading}>You retreated from the encounter in {region.name}.</Text>
 						<Text>Any heroes who died have been lost, along with all their equipment.</Text>
@@ -268,7 +268,7 @@ export class Main extends Component<Props, State> {
 				game.encounter = null;
 				if ((game.heroes.length === 0) && (!game.boons.some(b => b.type === BoonType.ExtraHero))) {
 					// Show message
-					message = (
+					dialog = (
 						<div>
 							<Text type={TextType.SubHeading}>You lost the encounter in {region.name}, and have no more heroes.</Text>
 							<Text>Better luck next time.</Text>
@@ -277,7 +277,7 @@ export class Main extends Component<Props, State> {
 					);
 				} else {
 					// Show message
-					message = (
+					dialog = (
 						<div>
 							<Text type={TextType.SubHeading}>You lost the encounter in {region.name}.</Text>
 							<Text>Those heroes who took part have been lost, along with all their equipment.</Text>
@@ -292,45 +292,11 @@ export class Main extends Component<Props, State> {
 		this.setState({
 			screen: ScreenType.CampaignMap,
 			game: game,
-			message: message
+			dialog: dialog
 		});
 	}
 
 	//#endregion
-
-	/*
-	private changeValue(source: any, type: string, value: any) {
-		const tokens = type.split('.');
-		let obj = source;
-		for (let n = 0; n !== tokens.length; ++n) {
-			const token = tokens[n];
-			if (n === tokens.length - 1) {
-				obj[token] = value;
-			} else {
-				obj = obj[token];
-			}
-		}
-
-		this.setState({
-		});
-	}
-	*/
-
-	/*
-	private nudgeValue(source: any, type: string, delta: number) {
-		const tokens = type.split('.');
-		let obj = source;
-		for (let n = 0; n !== tokens.length; ++n) {
-			const token = tokens[n];
-			if (n === tokens.length - 1) {
-				const value = obj[token] + delta;
-				this.changeValue(obj, token, value);
-			} else {
-				obj = obj[token];
-			}
-		}
-	}
-	*/
 
 	//#region Rendering
 
@@ -340,18 +306,18 @@ export class Main extends Component<Props, State> {
 				return (
 					<LandingScreen
 						game={this.state.game}
-						startCampaign={() => this.startCampaign()}
-						continueCampaign={() => this.continueCampaign()}
+						startCampaign={this.startCampaign}
+						continueCampaign={this.continueCampaign}
 					/>
 				);
 			case 'heroes':
 				return (
 					<HeroesScreen
 						game={this.state.game as Game}
-						addHero={hero => this.addHero(hero)}
-						incrementXP={hero => this.incrementXP(hero)}
-						equipItem={(item, hero) => this.equipItem(item, hero)}
-						unequipItem={(item, hero) => this.unequipItem(item, hero)}
+						addHero={this.addHero}
+						incrementXP={this.incrementXP}
+						equipItem={this.equipItem}
+						unequipItem={this.unequipItem}
 						viewCampaignMap={() => this.setScreen(ScreenType.CampaignMap)}
 					/>
 				);
@@ -360,8 +326,8 @@ export class Main extends Component<Props, State> {
 					<CampaignMapScreen
 						game={this.state.game as Game}
 						viewHeroes={() => this.setScreen(ScreenType.Heroes)}
-						startEncounter={region => this.startEncounter(region)}
-						endCampaign={() => this.endCampaign()}
+						startEncounter={this.startEncounter}
+						endCampaign={this.endCampaign}
 					/>
 				);
 			case 'encounter':
@@ -369,9 +335,9 @@ export class Main extends Component<Props, State> {
 					<EncounterScreen
 						encounter={this.state.game?.encounter as Encounter}
 						game={this.state.game as Game}
-						equipItem={(item, hero) => this.equipItem(item, hero)}
-						unequipItem={(item, hero) => this.unequipItem(item, hero)}
-						finishEncounter={state => this.finishEncounter(state)}
+						equipItem={this.equipItem}
+						unequipItem={this.unequipItem}
+						finishEncounter={this.finishEncounter}
 					/>
 				);
 		}

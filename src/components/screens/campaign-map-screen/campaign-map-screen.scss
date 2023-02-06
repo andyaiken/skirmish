@@ -21,4 +21,19 @@
 			}
 		}
 	}
+
+	.hero-selection {
+		.hero-lists {
+			display: flex;
+
+			.hero-list-column {
+				flex: 1 1 0;
+
+				.list {
+					display: grid;
+					grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+				}
+			}
+		}
+	}
 }

@@ -1,16 +1,17 @@
 import { guid } from '../utils/utils';
-import { Action, universalActions } from './action';
+import { ActionModel, universalActions } from './action';
+import { AuraModel, createAura } from './aura';
 import { getBackground } from './background';
 import { DamageCategory, DamageType, getDamageCategory } from './damage';
-import { Feature, FeatureType, universalFeatures } from './feature';
-import { Item } from './item';
-import { Proficiency } from './proficiency';
+import { FeatureModel, FeatureType, universalFeatures } from './feature';
+import { ItemModel } from './item';
+import { ItemProficiency } from './item-proficiency';
 import { getRole } from './role';
 import { getSkillCategory, Skill, SkillCategory } from './skill';
 import { getSpecies } from './species';
 import { Trait } from './trait';
 
-export interface Hero {
+export interface HeroModel {
 	id: string;
 	name: string;
 
@@ -21,11 +22,11 @@ export interface Hero {
 	level: number;
 	xp: number;
 
-	features: Feature[];
-	items: Item[];
+	features: FeatureModel[];
+	items: ItemModel[];
 }
 
-export const createHero = (): Hero => {
+export const createHero = (): HeroModel => {
 	return {
 		id: guid(),
 		name: '',
@@ -39,7 +40,7 @@ export const createHero = (): Hero => {
 	};
 }
 
-export const getFeatureDeck = (hero: Hero) => {
+export const getFeatureDeck = (hero: HeroModel) => {
 	const s = getSpecies(hero.speciesID);
 	const r = getRole(hero.roleID);
 	const b = getBackground(hero.backgroundID);
@@ -49,8 +50,8 @@ export const getFeatureDeck = (hero: Hero) => {
 		.concat(b ? b.features : []);
 }
 
-export const getActionDeck = (hero: Hero) => {
-	let list: Action[] = ([] as Action[]).concat(universalActions);
+export const getActionDeck = (hero: HeroModel) => {
+	let list = ([] as ActionModel[]).concat(universalActions);
 
 	const s = getSpecies(hero.speciesID);
 	list = list.concat(s ? s.actions : []);
@@ -66,8 +67,8 @@ export const getActionDeck = (hero: Hero) => {
 	return list;
 }
 
-export const getFeatures = (hero: Hero) => {
-	let list = ([] as Feature[]).concat(hero.features);
+export const getFeatures = (hero: HeroModel) => {
+	let list = ([] as FeatureModel[]).concat(hero.features);
 	hero.items.forEach(i => {
 		list = list.concat(i.features);
 	});
@@ -75,7 +76,7 @@ export const getFeatures = (hero: Hero) => {
 	return list;
 }
 
-export const getTraitValue = (hero: Hero, trait: Trait) => {
+export const getTraitValue = (hero: HeroModel, trait: Trait) => {
 	let value = 1;
 
 	getFeatures(hero)
@@ -86,7 +87,7 @@ export const getTraitValue = (hero: Hero, trait: Trait) => {
 	return Math.max(value, 0);
 }
 
-export const getSkillValue = (hero: Hero, skill: Skill) => {
+export const getSkillValue = (hero: HeroModel, skill: Skill) => {
 	let value = 0;
 
 	getFeatures(hero)
@@ -101,7 +102,7 @@ export const getSkillValue = (hero: Hero, skill: Skill) => {
 	return Math.max(value, 0);
 }
 
-export const getDamageBonusValue = (hero: Hero, damage: DamageType) => {
+export const getDamageBonusValue = (hero: HeroModel, damage: DamageType) => {
 	let value = 0;
 
 	getFeatures(hero)
@@ -116,7 +117,7 @@ export const getDamageBonusValue = (hero: Hero, damage: DamageType) => {
 	return Math.max(value, 0);
 }
 
-export const getDamageResistanceValue = (hero: Hero, damage: DamageType) => {
+export const getDamageResistanceValue = (hero: HeroModel, damage: DamageType) => {
 	let value = 0;
 
 	getFeatures(hero)
@@ -131,16 +132,34 @@ export const getDamageResistanceValue = (hero: Hero, damage: DamageType) => {
 	return Math.max(value, 0);
 }
 
-export const getProficiencies = (hero: Hero) => {
-	const profs: Proficiency[] = [];
+export const getProficiencies = (hero: HeroModel) => {
+	const profs: ItemProficiency[] = [];
 
 	getFeatures(hero)
 		.filter(f => f.type === FeatureType.Proficiency)
 		.forEach(f => profs.push(f.proficiency));
 
-	if (profs.includes(Proficiency.All)) {
-		return [Proficiency.All];
+	if (profs.includes(ItemProficiency.All)) {
+		return [ItemProficiency.All];
 	}
 
 	return profs;
+}
+
+export const getAuras = (hero: HeroModel) => {
+	const auras: AuraModel[] = [];
+
+	getFeatures(hero)
+		.filter(f => f.type === FeatureType.Aura)
+		.forEach(f => {
+			const original = auras.find(a => (a.type === f.aura) && (a.damage === f.damage) && (a.damageCategory === f.damageCategory));
+			if (original) {
+				original.rank += 1;
+			} else {
+				const aura = createAura(f);
+				auras.push(aura);
+			}
+		});
+
+	return auras;
 }

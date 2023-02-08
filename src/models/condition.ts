@@ -10,7 +10,7 @@ export enum ConditionType {
 	Trait = 'Trait'
 }
 
-export interface Condition {
+export interface ConditionModel {
 	type: ConditionType;
 	rank: number;
 	damageType: DamageType;

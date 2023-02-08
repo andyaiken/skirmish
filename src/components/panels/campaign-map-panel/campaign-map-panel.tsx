@@ -1,16 +1,16 @@
 import { Component } from 'react';
-import { CampaignMap, CampaignMapRegion, CampaignMapSquare, getDimensions } from '../../../models/campaign-map';
+import { CampaignMapModel, CampaignMapRegionModel, CampaignMapSquareModel, getCampaignMapDimensions } from '../../../models/campaign-map';
 
 import './campaign-map-panel.scss';
 
 interface Props {
-	map: CampaignMap;
-	selectedRegion: CampaignMapRegion | null;
-	onSelectRegion: (region: CampaignMapRegion | null) => void;
+	map: CampaignMapModel;
+	selectedRegion: CampaignMapRegionModel | null;
+	onSelectRegion: (region: CampaignMapRegionModel | null) => void;
 }
 
 export class CampaignMapPanel extends Component<Props> {
-	private onClick(e: React.MouseEvent, square: CampaignMapSquare) {
+	private onClick(e: React.MouseEvent, square: CampaignMapSquareModel) {
 		e.stopPropagation();
 		const region = this.props.map.regions.find(r => r.id === square.regionID) ?? null;
 		this.props.onSelectRegion(region);
@@ -18,7 +18,7 @@ export class CampaignMapPanel extends Component<Props> {
 
 	public render() {
 		// Get dimensions, adding a 1-square border
-		const dims = getDimensions(this.props.map);
+		const dims = getCampaignMapDimensions(this.props.map);
 		dims.left -= 1;
 		dims.top -= 1;
 		dims.right += 1;

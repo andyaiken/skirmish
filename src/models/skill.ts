@@ -1,6 +1,6 @@
 export enum SkillCategory {
 	None = 'None',
-	Any = 'Any skill category',
+	Any = '[choose one skill category]',
 	All = 'All skill categories',
 	Physical = 'Physical',
 	Mental = 'Mental'

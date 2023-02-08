@@ -1,4 +1,18 @@
 .character-sheet-panel {
+	display: flex;
+	flex-direction: column;
+	overflow-y: hidden;
+	height: 100%;
+
+	.header {
+		flex: 0 0 auto;
+	}
+
+	.content {
+		flex: 1 1 0;
+		overflow-y: auto;
+	}
+
 	.tags {
 		display: flex;
 		justify-content: center;
@@ -13,6 +27,11 @@
 		.column {
 			flex: 1 1 0;
 			margin: 0 10px;
+		}
+
+		.traits {
+			display: flex;
+			flex-direction: row;
 		}
 	}
 

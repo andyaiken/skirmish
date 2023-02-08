@@ -1,11 +1,11 @@
 import { Component } from 'react';
-import { Feature, getFeatureDescription, getFeatureTitle } from '../../../models/feature';
-import { Text, TextType } from '../../utility';
+import { FeatureModel, getFeatureDescription, getFeatureTitle } from '../../../models/feature';
+import { Text, TextType } from '../../../controls';
 
 import './feature-card.scss';
 
 interface Props {
-	feature: Feature;
+	feature: FeatureModel;
 }
 
 export class FeatureCard extends Component<Props> {

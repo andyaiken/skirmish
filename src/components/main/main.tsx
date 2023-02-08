@@ -1,22 +1,22 @@
 import { Component } from 'react';
 
-import { BoonType } from '../../models/boon';
-import { CampaignMapRegion, removeRegion } from '../../models/campaign-map';
-import { createEncounter, Encounter, getAllHeroesInEncounter, getDeadHeroes, getSurvivingHeroes } from '../../models/encounter';
-import { createGame, Game } from '../../models/game';
-import { createHero, Hero } from '../../models/hero';
-import { Item } from '../../models/item';
+import { BoonModel, BoonType } from '../../models/boon';
+import { CampaignMapRegionModel, removeRegion } from '../../models/campaign-map';
+import { createEncounter, EncounterModel, getAllHeroesInEncounter, getDeadHeroes, getSurvivingHeroes } from '../../models/encounter';
+import { addHeroToGame, createGame, GameModel } from '../../models/game';
+import { createHero, HeroModel } from '../../models/hero';
+import { ItemModel } from '../../models/item';
 import { debounce } from '../../utils/utils';
 import { BoonCard } from '../cards';
-import { CampaignMapScreen, EncounterFinishState, EncounterScreen, HeroesScreen, LandingScreen } from '../screens';
-import { PlayingCard, Text, TextType } from '../utility';
+import { CampaignScreen, EncounterFinishState, EncounterScreen, LandingScreen } from '../screens';
+import { Text, TextType } from '../../controls';
+import { PlayingCard } from '../utility';
 
 import './main.scss';
 
 enum ScreenType {
 	Landing = 'landing',
-	Heroes = 'heroes',
-	CampaignMap = 'campaign-map',
+	Campaign = 'campaign',
 	Encounter = 'encounter'
 }
 
@@ -26,7 +26,7 @@ interface Props {
 
 interface State {
 	screen: ScreenType;
-	game: Game | null;
+	game: GameModel | null;
 	dialog: JSX.Element | null;
 }
 
@@ -35,11 +35,11 @@ export class Main extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 
-		let game: Game | null = null;
+		let game: GameModel | null = null;
 		try {
 			const str = window.localStorage.getItem('game');
 			if (str) {
-				game = JSON.parse(str) as Game;
+				game = JSON.parse(str) as GameModel;
 			}
 		} catch (ex) {
 			console.error('Could not parse JSON: ', ex);
@@ -82,13 +82,13 @@ export class Main extends Component<Props, State> {
 	startCampaign = () => {
 		this.setState({
 			game: createGame(),
-			screen: ScreenType.Heroes
+			screen: ScreenType.Campaign
 		});
 	}
 
 	continueCampaign = () => {
 		this.setState({
-			screen: ScreenType.Heroes
+			screen: ScreenType.Campaign
 		});
 	}
 
@@ -96,23 +96,15 @@ export class Main extends Component<Props, State> {
 
 	//#region Heroes page
 
-	addHero = (hero: Hero) => {
-		if (this.state.game) {
-			const game = this.state.game;
-			const index = this.state.game.heroes.findIndex(h => h.id === hero.id);
-			if (index === -1) {
-				game.heroes.push(hero);
-			} else {
-				game.heroes[index] = hero;
-			}
-			game.heroes.sort((a, b) => a.name > b.name ? 1 : -1);
-			this.setState({
-				game: game
-			});
-		}
+	addHero = (hero: HeroModel) => {
+		const game = this.state.game as GameModel;
+		addHeroToGame(game, hero);
+		this.setState({
+			game: game
+		});
 	}
 
-	incrementXP = (hero: Hero) => {
+	incrementXP = (hero: HeroModel) => {
 		// DEV ONLY
 		hero.xp += 1;
 		this.setState({
@@ -120,12 +112,10 @@ export class Main extends Component<Props, State> {
 		});
 	}
 
-	equipItem = (item: Item, hero: Hero) => {
-		const game = this.state.game as Game;
+	equipItem = (item: ItemModel, hero: HeroModel) => {
+		const game = this.state.game as GameModel;
 
-		const index = game.items.indexOf(item);
-		game.items.splice(index, 1);
-
+		game.items = game.items.filter(i => i !== item);
 		hero.items.push(item);
 
 		this.setState({
@@ -133,12 +123,10 @@ export class Main extends Component<Props, State> {
 		});
 	}
 
-	unequipItem = (item: Item, hero: Hero) => {
-		const game = this.state.game as Game;
+	unequipItem = (item: ItemModel, hero: HeroModel) => {
+		const game = this.state.game as GameModel;
 
-		const index = hero.items.indexOf(item);
-		hero.items.splice(index, 1);
-
+		hero.items = hero.items.filter(i => i !== item);
 		game.items.push(item);
 
 		this.setState({
@@ -146,20 +134,48 @@ export class Main extends Component<Props, State> {
 		});
 	}
 
+	redeemBoon = (boon: BoonModel, hero: HeroModel | null) => {
+		const game = this.state.game as GameModel;
+		game.boons = game.boons.filter(b => b.id !== boon.id);
+
+		switch (boon.type) {
+			case BoonType.ExtraHero:
+				game.heroes.push(createHero());
+				break;
+			case BoonType.ExtraXP:
+				(hero as HeroModel).xp += boon.data as number;
+				break;
+			case BoonType.LevelUp:
+				(hero as HeroModel).xp += (hero as HeroModel).level;
+				break;
+			case BoonType.MagicItem:
+				game.items.push(boon.data as ItemModel);
+				break;
+		}
+
+		this.setState({
+			game: game
+		});
+}
+
 	//#endregion
 
 	//#region Campaign map page
 
-	startEncounter = (region: CampaignMapRegion, heroes: Hero[]) => {
+	startEncounter = (region: CampaignMapRegionModel, heroes: HeroModel[]) => {
 		if (this.state.game) {
 			const game = this.state.game;
 			game.encounter = createEncounter(region, heroes);
 			this.setState({
-				game: this.state.game,
+				game: game,
 				screen: ScreenType.Encounter
 			});
 		}
 	}
+
+	//#endregion
+
+	//#region Options page
 
 	endCampaign = () => {
 		this.setState({
@@ -225,7 +241,7 @@ export class Main extends Component<Props, State> {
 								<Text>Each hero who took part in this encounter gains 1 XP, you can recruit a new hero, and you have earned a reward:</Text>
 								<PlayingCard front={<BoonCard boon={region.boon} />} />
 								<Text>Any heroes who died have been lost, along with all their equipment.</Text>
-								<button onClick={() => this.setScreen(ScreenType.Heroes)}>OK</button>
+								<button onClick={() => this.setScreen(ScreenType.Campaign)}>OK</button>
 							</div>
 						);
 					}
@@ -236,7 +252,7 @@ export class Main extends Component<Props, State> {
 							<Text type={TextType.SubHeading}>You won the encounter in {region.name}!</Text>
 							<Text>Each surviving hero who took part in this encounter gains 1 XP.</Text>
 							<Text>Any heroes who died have been lost, along with all their equipment.</Text>
-							<button onClick={() => this.setScreen(ScreenType.Heroes)}>OK</button>
+							<button onClick={() => this.setScreen(ScreenType.Campaign)}>OK</button>
 						</div>
 					);
 				}
@@ -255,7 +271,7 @@ export class Main extends Component<Props, State> {
 					<div>
 						<Text type={TextType.SubHeading}>You retreated from the encounter in {region.name}.</Text>
 						<Text>Any heroes who died have been lost, along with all their equipment.</Text>
-						<button onClick={() => this.setScreen(ScreenType.CampaignMap)}>OK</button>
+						<button onClick={() => this.setScreen(ScreenType.Campaign)}>OK</button>
 					</div>
 				);
 				break;
@@ -281,7 +297,7 @@ export class Main extends Component<Props, State> {
 						<div>
 							<Text type={TextType.SubHeading}>You lost the encounter in {region.name}.</Text>
 							<Text>Those heroes who took part have been lost, along with all their equipment.</Text>
-							<button onClick={() => this.setScreen(ScreenType.CampaignMap)}>Try Again</button>
+							<button onClick={() => this.setScreen(ScreenType.Campaign)}>Try Again</button>
 						</div>
 					);
 				}
@@ -290,7 +306,7 @@ export class Main extends Component<Props, State> {
 		}
 
 		this.setState({
-			screen: ScreenType.CampaignMap,
+			screen: ScreenType.Campaign,
 			game: game,
 			dialog: dialog
 		});
@@ -310,22 +326,15 @@ export class Main extends Component<Props, State> {
 						continueCampaign={this.continueCampaign}
 					/>
 				);
-			case 'heroes':
+			case 'campaign':
 				return (
-					<HeroesScreen
-						game={this.state.game as Game}
+					<CampaignScreen
+						game={this.state.game as GameModel}
 						addHero={this.addHero}
 						incrementXP={this.incrementXP}
 						equipItem={this.equipItem}
 						unequipItem={this.unequipItem}
-						viewCampaignMap={() => this.setScreen(ScreenType.CampaignMap)}
-					/>
-				);
-			case 'campaign-map':
-				return (
-					<CampaignMapScreen
-						game={this.state.game as Game}
-						viewHeroes={() => this.setScreen(ScreenType.Heroes)}
+						redeemBoon={this.redeemBoon}
 						startEncounter={this.startEncounter}
 						endCampaign={this.endCampaign}
 					/>
@@ -333,8 +342,8 @@ export class Main extends Component<Props, State> {
 			case 'encounter':
 				return (
 					<EncounterScreen
-						encounter={this.state.game?.encounter as Encounter}
-						game={this.state.game as Game}
+						encounter={this.state.game?.encounter as EncounterModel}
+						game={this.state.game as GameModel}
 						equipItem={this.equipItem}
 						unequipItem={this.unequipItem}
 						finishEncounter={this.finishEncounter}
@@ -352,10 +361,10 @@ export class Main extends Component<Props, State> {
 	render = () => {
 		return (
 			<div className='skirmish'>
-				<div className='top-bar'>
+				<div className='skirmish-top-bar'>
 					<Text type={TextType.Heading}>Skirmish</Text>
 				</div>
-				<div className='content'>
+				<div className='skirmish-content'>
 					{this.getContent()}
 				</div>
 			</div>

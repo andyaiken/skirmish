@@ -4,12 +4,12 @@
 	display: flex;
 	flex-direction: column;
 
-	.top-bar {
+	.skirmish-top-bar {
 		flex: 0 0 auto;
 		border-bottom: 2px solid rgb(220, 220, 220);
 	}
 
-	.content {
+	.skirmish-content {
 		flex: 1 1 0;
 		padding: 20px;
 		overflow-y: auto;

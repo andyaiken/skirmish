@@ -1,6 +1,6 @@
 export enum DamageCategory {
 	None = 'None',
-	Any = 'Any damage category',
+	Any = '[choose one damage category]',
 	All = 'All damage categories',
 	Physical = 'Physical',
 	Energy = 'Energy',
@@ -9,7 +9,7 @@ export enum DamageCategory {
 
 export enum DamageType {
 	None = 'None',
-	Any = 'Any damage type',
+	Any = '[choose one damage type]',
 	All = 'All damage types',
 	Acid = 'Acid',
 	Edged = 'Edged',

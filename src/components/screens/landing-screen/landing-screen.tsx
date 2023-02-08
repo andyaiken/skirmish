@@ -1,10 +1,10 @@
 import { Component } from 'react';
-import { Game } from '../../../models/game';
+import { GameModel } from '../../../models/game';
 
 import './landing-screen.scss';
 
 interface Props {
-	game: Game | null;
+	game: GameModel | null;
 	startCampaign: () => void;
 	continueCampaign: () => void;
 }

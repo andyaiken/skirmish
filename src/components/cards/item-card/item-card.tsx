@@ -1,14 +1,15 @@
 import { Component } from 'react';
 import { Tag } from '../../../controls';
 import { getFeatureDescription, getFeatureTitle } from '../../../models/feature';
-import { Item } from '../../../models/item';
-import { Proficiency } from '../../../models/proficiency';
-import { StatValue, StatValueList, Text, TextType } from '../../utility';
+import { ItemModel } from '../../../models/item';
+import { ItemProficiency } from '../../../models/item-proficiency';
+import { Text, TextType } from '../../../controls';
+import { StatValue } from '../../utility';
 
 import './item-card.scss';
 
 interface Props {
-	item: Item;
+	item: ItemModel;
 }
 
 export class ItemCard extends Component<Props> {
@@ -34,7 +35,7 @@ export class ItemCard extends Component<Props> {
 		if (this.props.item.features.length > 0) {
 			features = (
 				<div>
-					<StatValueList label='Features' values={this.props.item.features.map(f => `${getFeatureTitle(f)}: ${getFeatureDescription(f)}`)}/>
+					<StatValue label='Features' value={this.props.item.features.map(f => `${getFeatureTitle(f)}: ${getFeatureDescription(f)}`)}/>
 				</div>
 			);
 		}
@@ -43,7 +44,7 @@ export class ItemCard extends Component<Props> {
 		if (this.props.item.actions.length > 0) {
 			actions = (
 				<div>
-					<StatValueList label='Actions' values={this.props.item.actions.map(a => a.name)}/>
+					<StatValue label='Actions' value={this.props.item.actions.map(a => a.name)}/>
 				</div>
 			);
 		}
@@ -53,8 +54,9 @@ export class ItemCard extends Component<Props> {
 				<Text type={TextType.SubHeading}>{this.props.item.name}</Text>
 				<hr />
 				<div className='tags'>
-					{this.props.item.proficiency !== Proficiency.None ? <Tag>{this.props.item.proficiency}</Tag> : null}
+					{this.props.item.proficiency !== ItemProficiency.None ? <Tag>{this.props.item.proficiency}</Tag> : null}
 					<Tag>{location}</Tag>
+					{this.props.item.baseItem !== '' ? <Tag>{this.props.item.baseItem}</Tag> : null}
 				</div>
 				{wpn}
 				{features}

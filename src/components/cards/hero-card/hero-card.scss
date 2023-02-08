@@ -4,4 +4,17 @@
 	.tags {
 		text-align: center;
 	}
+
+	.traits {
+		margin: 10px 0;
+		display: flex;
+	}
+
+	.items {
+		margin: 10px 0;
+
+		.item {
+			font-size: 13px;
+		}
+	}
 }

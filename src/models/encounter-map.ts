@@ -1,14 +1,14 @@
-export interface EncounterMapSquare {
+export interface EncounterMapSquareModel {
 	id: string;
 	x: number;
 	y: number;
 }
 
-export interface EncounterMap {
-	squares: { x: number, y: number }[];
+export interface EncounterMapModel {
+	squares: EncounterMapSquareModel[];
 }
 
-export const generateEncounterMap = (): EncounterMap => {
+export const generateEncounterMap = (): EncounterMapModel => {
 	// TODO: Generate an encounter map
 	return {
 		squares: []

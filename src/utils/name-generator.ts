@@ -1,6 +1,14 @@
 import { randomNumber } from './random';
 
 export const generateName = () => {
+	if (randomNumber(10) === 0) {
+		return capitalise(generateWord()) + ' ' + capitalise(generateWord());
+	}
+
+	return capitalise(generateWord());
+}
+
+export const generateWord = () => {
 	const startHuman1 = 'As Has Khe Zash Gl Ig Iv Kos Miv Pav Ser Dar Even Gor Rand Sto Tam Barer Keth Mum';
 	const startHuman2 = 'Mar Burg Al Hel Wrayt S Eag Eath Joan Answ L Ot Ced At Tal Ham Jasm Mail Yash Row';
 	const startDwarf = 'Adr Alber Ba Bar Gar Kildr Kath Dies Eld Gurd Har Morg Or Rur Mar Vis Jen Torg Tak Thor End Ris Em Gunn';
@@ -36,12 +44,12 @@ export const generateName = () => {
 
 	let separator = '';
 	if (randomNumber(10) === 0) {
-		const separators = ['-', '\'', ' '];
+		const separators = ['-', '\''];
 		const sepIndex = randomNumber(separators.length);
 		separator = separators[sepIndex];
 	}
 
-	return capitalise(starts[startIndex] + separator + ends[endIndex]);
+	return starts[startIndex] + separator + ends[endIndex];
 }
 
 export const capitalise = (str: string) => {

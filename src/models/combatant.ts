@@ -1,14 +1,20 @@
-import { CombatantState } from './combatant-state';
-import { Condition } from './condition';
-import { Hero } from './hero';
-import { Monster } from './monster';
+import { ConditionModel } from './condition';
+import { HeroModel } from './hero';
+import { MonsterModel } from './monster';
 
 export enum CombatantType {
 	Hero = 'Hero',
 	Monster = 'Monster'
 }
 
-export interface Combatant {
+export enum CombatantState {
+	Standing = 'Standing',
+	Prone = 'Prone',
+	Unconscious = 'Unconscious',
+	Dead = 'Dead'
+}
+
+export interface CombatantModel {
 	id: string;
 	type: CombatantType;
 	state: CombatantState;
@@ -20,19 +26,20 @@ export interface Combatant {
 	wounds: number;
 	initiative: number;
 	movement: number;
-	stealth: number;
-	conditions: Condition[];
+	senses: number;
+	hidden: number;
+	conditions: ConditionModel[];
 }
 
-export const createHeroCombatant = (hero: Hero): Combatant => {
+export const createHeroCombatant = (hero: HeroModel): CombatantModel => {
 	return createCombatant(hero.id, CombatantType.Hero);
 }
 
-export const createMonsterCombatant = (monster: Monster): Combatant => {
+export const createMonsterCombatant = (monster: MonsterModel): CombatantModel => {
 	return createCombatant(monster.id, CombatantType.Monster);
 }
 
-const createCombatant = (id: string, type: CombatantType): Combatant => {
+const createCombatant = (id: string, type: CombatantType): CombatantModel => {
 	return {
 		id: id,
 		type: type,
@@ -42,7 +49,8 @@ const createCombatant = (id: string, type: CombatantType): Combatant => {
 		wounds: 0,
 		initiative: 0,
 		movement: 0,
-		stealth: 0,
+		senses: 0,
+		hidden: 0,
 		conditions: []
 	};
 }

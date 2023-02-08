@@ -1,11 +1,11 @@
 import { Component } from 'react';
-import { Action } from '../../../models/action';
-import { Text, TextType } from '../../utility';
+import { Text, TextType } from '../../../controls';
+import { ActionModel } from '../../../models/action';
 
 import './action-card.scss';
 
 interface Props {
-	action: Action;
+	action: ActionModel;
 }
 
 export class ActionCard extends Component<Props> {

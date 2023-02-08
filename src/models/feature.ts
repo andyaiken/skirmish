@@ -1,6 +1,7 @@
 import { guid } from '../utils/utils';
+import { AuraType, createAura, getAuraDescription } from './aura';
 import { DamageCategory, DamageType } from './damage';
-import { Proficiency } from './proficiency';
+import { ItemProficiency } from './item-proficiency';
 import { Skill, SkillCategory } from './skill';
 import { Trait } from './trait';
 
@@ -12,23 +13,24 @@ export enum FeatureType {
 	DamageBonus = 'Damage bonus',
 	DamageCategoryBonus = 'Damage category bonus',
 	DamageResist = 'Damage resistance',
-	DamageCategoryResist = 'Damage category resistance'
-	// TODO: Aura
+	DamageCategoryResist = 'Damage category resistance',
+	Aura = 'Aura'
 }
 
-export interface Feature {
+export interface FeatureModel {
 	id: string;
 	type: FeatureType;
 	damage: DamageType;
 	damageCategory: DamageCategory;
-	proficiency: Proficiency;
+	proficiency: ItemProficiency;
 	skill: Skill;
 	skillCategory: SkillCategory;
 	trait: Trait;
+	aura: AuraType;
 	rank: number;
 }
 
-export const getFeatureTitle = (feature: Feature) => {
+export const getFeatureTitle = (feature: FeatureModel) => {
 	switch (feature.type) {
 		case FeatureType.Trait:
 			return 'Trait bonus';
@@ -43,10 +45,12 @@ export const getFeatureTitle = (feature: Feature) => {
 		case FeatureType.DamageResist:
 		case FeatureType.DamageCategoryResist:
 			return 'Resistance';
+		case FeatureType.Aura:
+			return 'Aura';
 	}
 }
 
-export const getFeatureDescription = (feature: Feature) => {
+export const getFeatureDescription = (feature: FeatureModel) => {
 	switch (feature.type) {
 		case FeatureType.Trait:
 			return `${feature.trait} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
@@ -64,10 +68,14 @@ export const getFeatureDescription = (feature: Feature) => {
 			return `${feature.damage} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
 		case FeatureType.DamageCategoryResist:
 			return `All ${feature.damageCategory} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
+		case FeatureType.Aura: {
+			const aura = createAura(feature);
+			return `${getAuraDescription(aura)} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
+		}
 	}
 }
 
-export const hasChoice = (feature: Feature) => {
+export const hasChoice = (feature: FeatureModel) => {
 	switch (feature.type) {
 		case FeatureType.Trait:
 			return feature.trait === Trait.Any;
@@ -76,7 +84,7 @@ export const hasChoice = (feature: Feature) => {
 		case FeatureType.SkillCategory:
 			return feature.skillCategory === SkillCategory.Any;
 		case FeatureType.Proficiency:
-			return feature.proficiency === Proficiency.Any;
+			return feature.proficiency === ItemProficiency.Any;
 		case FeatureType.DamageBonus:
 		case FeatureType.DamageResist:
 			return feature.damage === DamageType.Any;
@@ -86,63 +94,67 @@ export const hasChoice = (feature: Feature) => {
 	}
 }
 
-export const createDamageBonusFeature = (damage: DamageType, rank: number): Feature => {
+export const createDamageBonusFeature = (damage: DamageType, rank: number): FeatureModel => {
 	return {
 		id: guid(),
 		type: FeatureType.DamageBonus,
 		damage: damage,
 		damageCategory: DamageCategory.None,
-		proficiency: Proficiency.None,
+		proficiency: ItemProficiency.None,
 		skill: Skill.None,
 		skillCategory: SkillCategory.None,
 		trait: Trait.None,
+		aura: AuraType.None,
 		rank: rank
 	};
 }
 
-export const createDamageCategoryBonusFeature = (category: DamageCategory, rank: number): Feature => {
+export const createDamageCategoryBonusFeature = (category: DamageCategory, rank: number): FeatureModel => {
 	return {
 		id: guid(),
 		type: FeatureType.DamageCategoryBonus,
 		damage: DamageType.None,
 		damageCategory: category,
-		proficiency: Proficiency.None,
+		proficiency: ItemProficiency.None,
 		skill: Skill.None,
 		skillCategory: SkillCategory.None,
 		trait: Trait.None,
+		aura: AuraType.None,
 		rank: rank
 	};
 }
 
-export const createDamageResistFeature = (damage: DamageType, rank: number): Feature => {
+export const createDamageResistFeature = (damage: DamageType, rank: number): FeatureModel => {
 	return {
 		id: guid(),
 		type: FeatureType.DamageResist,
 		damage: damage,
 		damageCategory: DamageCategory.None,
-		proficiency: Proficiency.None,
+		proficiency: ItemProficiency.None,
 		skill: Skill.None,
 		skillCategory: SkillCategory.None,
 		trait: Trait.None,
+		aura: AuraType.None,
 		rank: rank
 	};
 }
 
-export const createDamageCategoryResistFeature = (category: DamageCategory, rank: number): Feature => {
+export const createDamageCategoryResistFeature = (category: DamageCategory, rank: number): FeatureModel => {
 	return {
 		id: guid(),
 		type: FeatureType.DamageCategoryResist,
 		damage: DamageType.None,
 		damageCategory: category,
-		proficiency: Proficiency.None,
+		proficiency: ItemProficiency.None,
 		skill: Skill.None,
 		skillCategory: SkillCategory.None,
 		trait: Trait.None,
+		aura: AuraType.None,
 		rank: rank
 	};
 }
 
-export const createProficiencyFeature = (proficiency: Proficiency): Feature => {
+export const createProficiencyFeature = (proficiency: ItemProficiency): FeatureModel => {
 	return {
 		id: guid(),
 		type: FeatureType.Proficiency,
@@ -152,54 +164,103 @@ export const createProficiencyFeature = (proficiency: Proficiency): Feature => {
 		skill: Skill.None,
 		skillCategory: SkillCategory.None,
 		trait: Trait.None,
+		aura: AuraType.None,
 		rank: 0
 	};
 }
 
-export const createSkillFeature = (skill: Skill, rank: number): Feature => {
+export const createSkillFeature = (skill: Skill, rank: number): FeatureModel => {
 	return {
 		id: guid(),
 		type: FeatureType.Skill,
 		damage: DamageType.None,
 		damageCategory: DamageCategory.None,
-		proficiency: Proficiency.None,
+		proficiency: ItemProficiency.None,
 		skill: skill,
 		skillCategory: SkillCategory.None,
 		trait: Trait.None,
+		aura: AuraType.None,
 		rank: rank
 	};
 }
 
-export const createSkillCategoryFeature = (category: SkillCategory, rank: number): Feature => {
+export const createSkillCategoryFeature = (category: SkillCategory, rank: number): FeatureModel => {
 	return {
 		id: guid(),
 		type: FeatureType.SkillCategory,
 		damage: DamageType.None,
 		damageCategory: DamageCategory.None,
-		proficiency: Proficiency.None,
+		proficiency: ItemProficiency.None,
 		skill: Skill.None,
 		skillCategory: category,
 		trait: Trait.None,
+		aura: AuraType.None,
 		rank: rank
 	};
 }
 
-export const createTraitFeature = (trait: Trait, rank: number): Feature => {
+export const createTraitFeature = (trait: Trait, rank: number): FeatureModel => {
 	return {
 		id: guid(),
 		type: FeatureType.Trait,
 		damage: DamageType.None,
 		damageCategory: DamageCategory.None,
-		proficiency: Proficiency.None,
+		proficiency: ItemProficiency.None,
 		skill: Skill.None,
 		skillCategory: SkillCategory.None,
 		trait: trait,
+		aura: AuraType.None,
 		rank: rank
 	};
 }
 
-export const universalFeatures: Feature[] = [
+export const createAuraFeature = (aura: AuraType, rank: number): FeatureModel => {
+	return {
+		id: guid(),
+		type: FeatureType.Aura,
+		damage: DamageType.None,
+		damageCategory: DamageCategory.None,
+		proficiency: ItemProficiency.None,
+		skill: Skill.None,
+		skillCategory: SkillCategory.None,
+		trait: Trait.None,
+		aura: aura,
+		rank: rank
+	};
+}
+
+export const createAuraDamageFeature = (aura: AuraType, damage: DamageType, rank: number): FeatureModel => {
+	return {
+		id: guid(),
+		type: FeatureType.Aura,
+		damage: damage,
+		damageCategory: DamageCategory.None,
+		proficiency: ItemProficiency.None,
+		skill: Skill.None,
+		skillCategory: SkillCategory.None,
+		trait: Trait.None,
+		aura: aura,
+		rank: rank
+	};
+}
+
+export const createAuraDamageCategoryFeature = (aura: AuraType, category: DamageCategory, rank: number): FeatureModel => {
+	return {
+		id: guid(),
+		type: FeatureType.Aura,
+		damage: DamageType.None,
+		damageCategory: category,
+		proficiency: ItemProficiency.None,
+		skill: Skill.None,
+		skillCategory: SkillCategory.None,
+		trait: Trait.None,
+		aura: aura,
+		rank: rank
+	};
+}
+
+export const universalFeatures: FeatureModel[] = [
 	createTraitFeature(Trait.Any, 1),
 	createSkillFeature(Skill.Any, 1),
-	createProficiencyFeature(Proficiency.Any)
+	createProficiencyFeature(ItemProficiency.Any)
 ];

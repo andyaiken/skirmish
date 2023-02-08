@@ -1,6 +1,7 @@
 import { draw } from '../utils/collections';
+import { dice } from '../utils/random';
 import { guid } from '../utils/utils';
-import { generateMagicItem, Item } from './item';
+import { generateMagicItem, ItemModel } from './item';
 
 export enum BoonType {
 	ExtraHero = 'Extra hero',
@@ -9,13 +10,13 @@ export enum BoonType {
 	MagicItem = 'Magic item'
 }
 
-export interface Boon {
+export interface BoonModel {
 	id: string;
 	type: BoonType;
-	data: Item | null;
+	data: ItemModel | number | null;
 }
 
-export const generateBoon = (): Boon => {
+export const generateBoon = (): BoonModel => {
 	const list = [
 		BoonType.ExtraHero,
 		BoonType.ExtraXP,
@@ -25,8 +26,13 @@ export const generateBoon = (): Boon => {
 	const type = draw(list);
 
 	let data = null;
-	if (type === BoonType.MagicItem) {
-		data = generateMagicItem();
+	switch (type) {
+		case BoonType.MagicItem:
+			data = generateMagicItem();
+			break;
+		case BoonType.ExtraXP:
+			data = dice();
+			break;
 	}
 
 	return {

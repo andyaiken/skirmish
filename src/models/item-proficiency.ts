@@ -1,6 +1,6 @@
-export enum Proficiency {
+export enum ItemProficiency {
 	None = 'None',
-	Any = 'Any proficiency',
+	Any = '[choose one proficiency]',
 	All = 'All proficiencies',
 	MilitaryWeapons = 'Military weapons',
 	LargeWeapons = 'Large weapons',

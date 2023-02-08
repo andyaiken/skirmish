@@ -1,17 +1,17 @@
 import { guid } from '../utils/utils';
 
-export interface Action {
+export interface ActionModel {
 	id: string;
 	name: string;
 }
 
-export const createPlaceholder = (name: string): Action => {
+export const createActionPlaceholder = (name: string): ActionModel => {
 	return {
 		id: guid(),
 		name: name
 	};
 }
 
-export const universalActions: Action[] = [
-	createPlaceholder('Unarmed attack')
+export const universalActions: ActionModel[] = [
+	createActionPlaceholder('Unarmed attack')
 ];

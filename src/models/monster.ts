@@ -1,25 +1,25 @@
 import { guid } from '../utils/utils';
-import { Action, universalActions } from './action';
+import { ActionModel, universalActions } from './action';
 import { DamageCategory, DamageType, getDamageCategory } from './damage';
-import { Feature, FeatureType } from './feature';
-import { Item } from './item';
-import { Proficiency } from './proficiency';
+import { FeatureModel, FeatureType } from './feature';
+import { ItemModel } from './item';
+import { ItemProficiency } from './item-proficiency';
 import { getSkillCategory, Skill, SkillCategory } from './skill';
 import { Trait } from './trait';
 
-export interface Monster {
+export interface MonsterModel {
 	id: string;
 	name: string;
 
 	level: number;
 	size: number;
 
-	features: Feature[];
-	actions: Action[];
-	items: Item[];
+	features: FeatureModel[];
+	actions: ActionModel[];
+	items: ItemModel[];
 }
 
-export const createMonster = (): Monster => {
+export const createMonster = (): MonsterModel => {
 	return {
 		id: guid(),
 		name: '',
@@ -31,8 +31,8 @@ export const createMonster = (): Monster => {
 	};
 }
 
-export const getActionDeck = (monster: Monster) => {
-	let list: Action[] = ([] as Action[]).concat(universalActions);
+export const getActionDeck = (monster: MonsterModel) => {
+	let list = ([] as ActionModel[]).concat(universalActions);
 
 	list = list.concat(monster.actions);
 
@@ -43,8 +43,8 @@ export const getActionDeck = (monster: Monster) => {
 	return list;
 }
 
-export const getFeatures = (monster: Monster) => {
-	let list = ([] as Feature[]).concat(monster.features);
+export const getFeatures = (monster: MonsterModel) => {
+	let list = ([] as FeatureModel[]).concat(monster.features);
 	monster.items.forEach(i => {
 		list = list.concat(i.features);
 	});
@@ -52,7 +52,7 @@ export const getFeatures = (monster: Monster) => {
 	return list;
 }
 
-export const getTraitValue = (monster: Monster, trait: Trait) => {
+export const getTraitValue = (monster: MonsterModel, trait: Trait) => {
 	let value = 1;
 
 	getFeatures(monster)
@@ -63,7 +63,7 @@ export const getTraitValue = (monster: Monster, trait: Trait) => {
 	return Math.max(value, 0);
 }
 
-export const getSkillValue = (monster: Monster, skill: Skill) => {
+export const getSkillValue = (monster: MonsterModel, skill: Skill) => {
 	let value = 0;
 
 	getFeatures(monster)
@@ -78,7 +78,7 @@ export const getSkillValue = (monster: Monster, skill: Skill) => {
 	return Math.max(value, 0);
 }
 
-export const getDamageBonusValue = (monster: Monster, damage: DamageType) => {
+export const getDamageBonusValue = (monster: MonsterModel, damage: DamageType) => {
 	let value = 0;
 
 	getFeatures(monster)
@@ -93,7 +93,7 @@ export const getDamageBonusValue = (monster: Monster, damage: DamageType) => {
 	return Math.max(value, 0);
 }
 
-export const getDamageResistanceValue = (monster: Monster, damage: DamageType) => {
+export const getDamageResistanceValue = (monster: MonsterModel, damage: DamageType) => {
 	let value = 0;
 
 	getFeatures(monster)
@@ -108,15 +108,15 @@ export const getDamageResistanceValue = (monster: Monster, damage: DamageType) =
 	return Math.max(value, 0);
 }
 
-export const getProficiencies = (monster: Monster) => {
-	const profs: Proficiency[] = [];
+export const getProficiencies = (monster: MonsterModel) => {
+	const profs: ItemProficiency[] = [];
 
 	getFeatures(monster)
 		.filter(f => f.type === FeatureType.Proficiency)
 		.forEach(f => profs.push(f.proficiency));
 
-	if (profs.includes(Proficiency.All)) {
-		return [Proficiency.All];
+	if (profs.includes(ItemProficiency.All)) {
+		return [ItemProficiency.All];
 	}
 
 	return profs;

@@ -1,10 +1,9 @@
-import { CampaignMapRegion } from './campaign-map';
-import { Combatant, createHeroCombatant, createMonsterCombatant } from './combatant';
-import { CombatantState } from './combatant-state';
-import { EncounterMap, generateEncounterMap } from './encounter-map';
-import { Game } from './game';
-import { Hero } from './hero';
-import { Monster } from './monster';
+import { CampaignMapRegionModel } from './campaign-map';
+import { CombatantModel, CombatantState, createHeroCombatant, createMonsterCombatant } from './combatant';
+import { EncounterMapModel, generateEncounterMap } from './encounter-map';
+import { GameModel } from './game';
+import { HeroModel } from './hero';
+import { MonsterModel } from './monster';
 
 export enum EncounterState {
 	Active,
@@ -12,19 +11,19 @@ export enum EncounterState {
 	Defeated
 }
 
-export interface Encounter {
+export interface EncounterModel {
 	regionID: string;
 	heroIDs: string[];
-	monsters: Monster[];
-	combatants: Combatant[];
-	map: EncounterMap;
+	monsters: MonsterModel[];
+	combatants: CombatantModel[];
+	map: EncounterMapModel;
 }
 
-export const createEncounter = (region: CampaignMapRegion, heroes: Hero[]): Encounter => {
+export const createEncounter = (region: CampaignMapRegionModel, heroes: HeroModel[]): EncounterModel => {
 	// TODO: Create an appropriate number of monsters
-	const monsters: Monster[] = [];
+	const monsters: MonsterModel[] = [];
 
-	const combatants: Combatant[] = [];
+	const combatants: CombatantModel[] = [];
 	heroes.forEach(h => combatants.push(createHeroCombatant(h)));
 	monsters.forEach(m => combatants.push(createMonsterCombatant(m)));
 
@@ -39,7 +38,7 @@ export const createEncounter = (region: CampaignMapRegion, heroes: Hero[]): Enco
 	};
 }
 
-export const getEncounterState = (encounter: Encounter): EncounterState => {
+export const getEncounterState = (encounter: EncounterModel): EncounterState => {
 	const allMonstersDead = encounter.monsters.every(m => {
 		const combatant = getCombatant(encounter, m.id);
 		return (combatant != null) && (combatant.state === CombatantState.Dead);
@@ -57,22 +56,22 @@ export const getEncounterState = (encounter: Encounter): EncounterState => {
 	return EncounterState.Active;
 }
 
-const getCombatant = (encounter: Encounter, id: string): Combatant | null => {
+const getCombatant = (encounter: EncounterModel, id: string): CombatantModel | null => {
 	return encounter.combatants.find(c => c.id === id) ?? null;
 }
 
-export const getAllHeroesInEncounter = (encounter: Encounter, game: Game): Hero[] => {
+export const getAllHeroesInEncounter = (encounter: EncounterModel, game: GameModel): HeroModel[] => {
 	return game.heroes.filter(h => encounter.heroIDs.includes(h.id));
 }
 
-export const getSurvivingHeroes = (encounter: Encounter, game: Game): Hero[] => {
+export const getSurvivingHeroes = (encounter: EncounterModel, game: GameModel): HeroModel[] => {
 	return getAllHeroesInEncounter(encounter, game).filter(h => {
 		const combatant = getCombatant(encounter, h.id);
 		return (combatant != null) && (combatant.state !== CombatantState.Dead);
 	});
 }
 
-export const getDeadHeroes = (encounter: Encounter, game: Game): Hero[] => {
+export const getDeadHeroes = (encounter: EncounterModel, game: GameModel): HeroModel[] => {
 	return getAllHeroesInEncounter(encounter, game).filter(h => {
 		const combatant = getCombatant(encounter, h.id);
 		return (combatant != null) && (combatant.state === CombatantState.Dead);

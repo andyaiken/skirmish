@@ -1,19 +1,32 @@
 import { Component } from 'react';
 import { Tag } from '../../../controls';
 import { getBackground } from '../../../models/background';
-import { Hero } from '../../../models/hero';
+import { HeroModel, getTraitValue } from '../../../models/hero';
 import { getRole } from '../../../models/role';
 import { getSpecies } from '../../../models/species';
-import { Text, TextType } from '../../utility';
+import { Text, TextType } from '../../../controls';
 
 import './hero-card.scss';
+import { Trait } from '../../../models/trait';
+import { StatValue } from '../../utility';
 
 interface Props {
-	hero: Hero;
+	hero: HeroModel;
 }
 
 export class HeroCard extends Component<Props> {
 	public render() {
+		const items = this.props.hero.items.filter(i => i.magic);
+
+		let itemSection = null;
+		if (items.length > 0) {
+			itemSection = (
+				<div className='items'>
+					{items.map(i => (<div key={i.id} className='item'>{i.name}</div>))}
+				</div>
+			);
+		}
+
 		return (
 			<div className='hero-card'>
 				<Text type={TextType.SubHeading}>{this.props.hero.name || 'unnamed hero'}</Text>
@@ -24,6 +37,12 @@ export class HeroCard extends Component<Props> {
 					<Tag>{getBackground(this.props.hero.backgroundID)?.name ?? 'Unknown background'}</Tag>
 					<Tag>Level {this.props.hero.level}</Tag>
 				</div>
+				<div className='traits'>
+					<StatValue orientation='vertical' label='End' value={getTraitValue(this.props.hero, Trait.Endurance)} />
+					<StatValue orientation='vertical' label='Res' value={getTraitValue(this.props.hero, Trait.Resolve)} />
+					<StatValue orientation='vertical' label='Spd' value={getTraitValue(this.props.hero, Trait.Speed)} />
+				</div>
+				{itemSection}
 			</div>
 		);
 	}

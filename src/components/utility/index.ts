@@ -1,13 +1,9 @@
 import { CardList } from './card-list/card-list';
-import { Dialog } from './dialog/dialog';
 import { PlayingCard, PlayingCardSide } from './playing-card/playing-card';
-import { StatValue, StatValueList } from './stat-value/stat-value';
-import { Text, TextType } from './text/text';
+import { StatValue } from './stat-value/stat-value';
 
 export {
 	CardList,
-	Dialog,
 	PlayingCard, PlayingCardSide,
-	StatValue, StatValueList,
-	Text, TextType
+	StatValue
 };

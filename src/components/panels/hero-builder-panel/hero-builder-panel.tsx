@@ -1,31 +1,32 @@
 import { Component } from 'react';
-import { Selector, Tag } from '../../../controls';
+import { Selector, Tag, Text, TextType } from '../../../controls';
 import { getBackground, getBackgroundDeck } from '../../../models/background';
 import { DamageCategory, DamageType } from '../../../models/damage';
-import { createProficiencyFeature, createSkillFeature, createTraitFeature, Feature, FeatureType, getFeatureDescription, getFeatureTitle, hasChoice } from '../../../models/feature';
-import { Game } from '../../../models/game';
-import { getFeatureDeck, getProficiencies, Hero } from '../../../models/hero';
-import { getItem, getItems, Item } from '../../../models/item';
-import { Proficiency } from '../../../models/proficiency';
+import { createProficiencyFeature, createSkillFeature, createTraitFeature, FeatureModel, FeatureType, hasChoice } from '../../../models/feature';
+import { GameModel } from '../../../models/game';
+import { getFeatureDeck, getProficiencies, HeroModel } from '../../../models/hero';
+import { getItem, getItems, ItemModel } from '../../../models/item';
+import { ItemProficiency } from '../../../models/item-proficiency';
 import { getRole, getRoleDeck } from '../../../models/role';
 import { Skill, SkillCategory } from '../../../models/skill';
 import { getSpecies, getSpeciesDeck } from '../../../models/species';
 import { Trait } from '../../../models/trait';
 import { shuffle } from '../../../utils/collections';
 import { generateName } from '../../../utils/name-generator';
+import { guid } from '../../../utils/utils';
 import { BackgroundCard, FeatureCard, ItemCard, RoleCard, SpeciesCard } from '../../cards';
-import { CardList, PlayingCard, PlayingCardSide, Text, TextType } from '../../utility';
+import { CardList, PlayingCard, PlayingCardSide } from '../../utility';
 
 import './hero-builder-panel.scss';
 
 interface Props {
-	hero: Hero;
-	game: Game;
-	finished: (hero: Hero) => void;
+	hero: HeroModel;
+	game: GameModel;
+	finished: (hero: HeroModel) => void;
 }
 
 interface State {
-	hero: Hero;
+	hero: HeroModel;
 	mode: 'create' | 'level up';
 }
 
@@ -33,7 +34,7 @@ export class HeroBuilderPanel extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 
-		const hero = JSON.parse(JSON.stringify(props.hero)) as Hero;
+		const hero = JSON.parse(JSON.stringify(props.hero)) as HeroModel;
 		if (hero.name === '') {
 			hero.name = generateName();
 		}
@@ -71,19 +72,17 @@ export class HeroBuilderPanel extends Component<Props, State> {
 		});
 	}
 
-	levelUp = (trait: Trait, skill: Skill, feature: Feature) => {
+	levelUp = (feature: FeatureModel) => {
 		const hero = this.state.hero;
+		hero.xp -= hero.level;
 		hero.level += 1;
-		hero.xp = 0;
-		hero.features.push(createTraitFeature(trait, 1));
-		hero.features.push(createSkillFeature(skill, 1));
-		hero.features.push(JSON.parse(JSON.stringify(feature)) as Feature);
+		hero.features.push(feature);
 		this.setState({
 			hero: hero
 		});
 	}
 
-	makeChoices = (features: Feature[]) => {
+	makeChoices = (features: FeatureModel[]) => {
 		const hero = this.state.hero;
 		features.forEach(feature => {
 			const n = hero.features.findIndex(f => f.id === feature.id);
@@ -96,7 +95,7 @@ export class HeroBuilderPanel extends Component<Props, State> {
 		});
 	}
 
-	addItems = (items: Item[]) => {
+	addItems = (items: ItemModel[]) => {
 		const hero = this.state.hero;
 		hero.items = items;
 		this.setState({
@@ -117,59 +116,6 @@ export class HeroBuilderPanel extends Component<Props, State> {
 	}
 
 	public render() {
-		let content = null;
-		if ((this.state.hero.speciesID === '') && (this.state.hero.roleID === '') && (this.state.hero.backgroundID === '')) {
-			// Initial card selection
-			content = (
-				<CardSelector
-					game={this.props.game}
-					select={this.selectCards}
-				/>
-			);
-		} else if (this.state.hero.xp === this.state.hero.level) {
-			// Level up
-			content = (
-				<LevelUpPanel
-					hero={this.state.hero}
-					finished={this.levelUp}
-				/>
-			);
-		} else {
-			const choices = this.state.hero.features.filter(f => hasChoice(f));
-			if (choices.length > 0) {
-				// Choices
-				content = (
-					<ChoicesPanel
-						features={choices}
-						finished={this.makeChoices}
-					/>
-				);
-			} else if ((this.state.hero.level === 1) && getProficiencies(this.state.hero).length !== this.state.hero.items.length) {
-				// Choose initial equipment
-				content = (
-					<EquipmentSelector
-						hero={this.state.hero}
-						addItems={this.addItems}
-					/>
-				);
-			} else if (this.state.hero.level === 1) {
-				// Finalise character creation
-				content = (
-					<div>
-						<button onClick={this.rename}>Rename this hero</button>
-						<button onClick={this.finished}>Finished</button>
-					</div>
-				);
-			} else {
-				// Finalise level up
-				content = (
-					<div>
-						<button onClick={this.finished}>Finished</button>
-					</div>
-				);
-			}
-		}
-
 		let info = null;
 		if ((this.state.hero.speciesID !== '') && (this.state.hero.roleID !== '') && (this.state.hero.backgroundID !== '')) {
 			const species = getSpecies(this.state.hero.speciesID);
@@ -182,12 +128,82 @@ export class HeroBuilderPanel extends Component<Props, State> {
 			);
 		}
 
-		return (
-			<div className='hero-builder-panel'>
+		const header = (
+			<div className='header'>
 				<Text type={TextType.Heading}>
 					{this.state.mode === 'create' ? 'Recruit a Hero' : `Level Up ${this.state.hero.name}`}
 				</Text>
 				{info}
+			</div>
+		);
+
+		let content = null;
+		if ((this.state.hero.speciesID === '') && (this.state.hero.roleID === '') && (this.state.hero.backgroundID === '')) {
+			// Initial card selection
+			content = (
+				<CardSelector
+					game={this.props.game}
+					header={header}
+					select={this.selectCards}
+				/>
+			);
+		} else if (this.state.hero.xp >= this.state.hero.level) {
+			// Level up
+			const features = shuffle(getFeatureDeck(this.state.hero))
+				.splice(0, 3)
+				.map(f => {
+					const copy = JSON.parse(JSON.stringify(f)) as FeatureModel;
+					copy.id = guid();
+					return copy;
+				});
+			content = (
+				<LevelUpPanel
+					hero={this.state.hero}
+					features={features}
+					header={header}
+					finished={this.levelUp}
+				/>
+			);
+		} else {
+			if ((this.state.hero.level === 1) && getProficiencies(this.state.hero).length !== this.state.hero.items.length) {
+				// Choose initial equipment
+				content = (
+					<EquipmentSelector
+						hero={this.state.hero}
+						header={header}
+						addItems={this.addItems}
+					/>
+				);
+			} else if (this.state.hero.level === 1) {
+				// Finalise character creation
+				content = (
+					<div className='finish-page'>
+						{header}
+						<div className='content'>
+							<button onClick={this.rename}>Rename this hero</button>
+						</div>
+						<div className='footer'>
+							<button onClick={this.finished}>Finished</button>
+						</div>
+					</div>
+				);
+			} else {
+				// Finalise level up
+				content = (
+					<div className='finish-page'>
+						{header}
+						<div className='content'>
+						</div>
+						<div className='footer'>
+							<button onClick={this.finished}>Finished</button>
+						</div>
+					</div>
+				);
+			}
+		}
+
+		return (
+			<div className='hero-builder-panel'>
 				{content}
 			</div>
 		);
@@ -197,7 +213,8 @@ export class HeroBuilderPanel extends Component<Props, State> {
 //#region Card selector
 
 interface CardSelectorProps {
-	game: Game;
+	game: GameModel;
+	header: JSX.Element;
 	select: (speciesID: string, roleID: string, backgroundID: string) => void;
 }
 
@@ -309,14 +326,19 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 		const canSelect = (this.state.selectedSpeciesID !== '') && (this.state.selectedRoleID !== '') && (this.state.selectedBackgroundID !== '');
 
 		return (
-			<div>
-				<Text>Select one of these <b>species</b> cards:</Text>
-				<CardList cards={speciesCards} />
-				<Text>Select one of these <b>role</b> cards:</Text>
-				<CardList cards={roleCards} />
-				<Text>Select one of these <b>background</b> cards:</Text>
-				<CardList cards={backgroundCards} />
-				<button disabled={!canSelect} onClick={() => this.select()}>Select these cards</button>
+			<div className='card-selector-page'>
+				{this.props.header}
+				<div className='content'>
+					<Text>Select one of these <b>species</b> cards:</Text>
+					<CardList cards={speciesCards} />
+					<Text>Select one of these <b>role</b> cards:</Text>
+					<CardList cards={roleCards} />
+					<Text>Select one of these <b>background</b> cards:</Text>
+					<CardList cards={backgroundCards} />
+				</div>
+				<div className='footer'>
+					<button disabled={!canSelect} onClick={() => this.select()}>Select these cards</button>
+				</div>
 			</div>
 		);
 	}
@@ -327,34 +349,46 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 //#region Level up
 
 interface LevelUpPanelProps {
-	hero: Hero;
-	finished: (trait: Trait, skill: Skill, feature: Feature) => void;
+	hero: HeroModel;
+	features: FeatureModel[];
+	header: JSX.Element;
+	finished: (feature: FeatureModel) => void;
 }
 
 interface LevelUpPanelState {
-	features: Feature[];
-	selectedTrait: Trait;
-	selectedSkill: Skill;
-	selectedFeature: Feature | null;
+	selectedFeature: FeatureModel | null;
 }
 
 class LevelUpPanel extends Component<LevelUpPanelProps, LevelUpPanelState> {
 	constructor(props: LevelUpPanelProps) {
 		super(props);
 		this.state = {
-			features: shuffle(getFeatureDeck(props.hero)).splice(0, 3),
-			selectedTrait: Trait.Any,
-			selectedSkill: Skill.Any,
 			selectedFeature: null
 		};
 	}
 
+	setFeature = (feature: FeatureModel) => {
+		this.setState({
+			selectedFeature: feature
+		});
+	}
+
+	levelUp = () => {
+		const feature = this.state.selectedFeature as FeatureModel;
+
+		this.setState({
+			selectedFeature: null
+		}, () => {
+			this.props.finished(feature);
+		});
+	}
+
 	public render() {
-		const featureCards = this.state.features.map(feature => {
+		const featureCards = this.props.features.map(feature => {
 			return (
 				<div key={feature.id}>
 					<PlayingCard
-						front={<FeatureCard feature={feature} />}
+						front={<FeatureCard feature={(this.state.selectedFeature !== null) && (this.state.selectedFeature.id === feature.id) ? this.state.selectedFeature : feature} />}
 						back='Feature'
 						display={(this.state.selectedFeature !== null) && (this.state.selectedFeature.id !== feature.id) ? PlayingCardSide.Back : PlayingCardSide.Front}
 						onClick={() => {
@@ -369,39 +403,24 @@ class LevelUpPanel extends Component<LevelUpPanelProps, LevelUpPanelState> {
 			);
 		});
 
-		const canFinish = (this.state.selectedTrait !== Trait.Any) && (this.state.selectedSkill !== Skill.Any) && (this.state.selectedFeature !== null);
+		let choice = null;
+		let canFinish = false;
+		if (this.state.selectedFeature !== null) {
+			choice = hasChoice(this.state.selectedFeature) ? <ChoicePanel feature={this.state.selectedFeature} onChange={this.setFeature} /> : null;
+			canFinish = !hasChoice(this.state.selectedFeature);
+		}
 
 		return (
-			<div>
-				<Text>Choose a <b>trait</b> to increment:</Text>
-				<Selector
-					options={[
-						{ id: Trait.Endurance },
-						{ id: Trait.Resolve },
-						{ id: Trait.Speed }
-					]}
-					selectedID={this.state.selectedTrait}
-					onSelect={id => this.setState({ selectedTrait: id as Trait })}
-				/>
-				<Text>Choose a <b>skill</b> to increment:</Text>
-				<Selector
-					options={[
-						{ id: Skill.Athletics },
-						{ id: Skill.Brawl },
-						{ id: Skill.Perception },
-						{ id: Skill.Reactions },
-						{ id: Skill.Spellcasting },
-						{ id: Skill.Stealth },
-						{ id: Skill.Weapon },
-					]}
-					selectedID={this.state.selectedSkill}
-					onSelect={id => this.setState({ selectedSkill: id as Skill })}
-				/>
-				<Text>Choose a <b>feature</b>:</Text>
-				<CardList cards={featureCards} />
-				<button disabled={!canFinish} onClick={() => this.props.finished(this.state.selectedTrait, this.state.selectedSkill, this.state.selectedFeature as Feature)}>
-					Level Up
-				</button>
+			<div className='level-up-page'>
+				{this.props.header}
+				<div className='content'>
+					<Text type={TextType.SubHeading}>Level {this.props.hero.level + 1}</Text>
+					<CardList cards={featureCards} />
+					{choice}
+				</div>
+				<div className='footer'>
+					<button disabled={!canFinish} onClick={this.levelUp}>Level Up</button>
+				</div>
 			</div>
 		);
 	}
@@ -409,198 +428,205 @@ class LevelUpPanel extends Component<LevelUpPanelProps, LevelUpPanelState> {
 
 //#endregion
 
-//#region Choices
+//#region Choice
 
-interface ChoicesPanelProps {
-	features: Feature[];
-	finished: (features: Feature[]) => void;
+interface ChoicePanelProps {
+	feature: FeatureModel;
+	onChange: (feature: FeatureModel) => void;
 }
 
-interface ChoicesPanelState {
-	features: Feature[];
+interface ChoicePanelState {
+	feature: FeatureModel;
 }
 
-class ChoicesPanel extends Component<ChoicesPanelProps, ChoicesPanelState> {
-	constructor(props: ChoicesPanelProps) {
+class ChoicePanel extends Component<ChoicePanelProps, ChoicePanelState> {
+	constructor(props: ChoicePanelProps) {
 		super(props);
 
-		const features = props.features.map(f => JSON.parse(JSON.stringify(f)) as Feature);
+		const feature = JSON.parse(JSON.stringify(props.feature)) as FeatureModel;
 		this.state = {
-			features: features
+			feature: feature
 		};
 	}
 
-	selectTrait = (feature: Feature, trait: Trait) => {
+	selectTrait = (trait: Trait) => {
+		const feature = this.state.feature;
 		feature.trait = trait;
-		const features = this.state.features;
 		this.setState({
-			features: features
+			feature: feature
+		}, () => {
+			this.props.onChange(this.state.feature);
 		});
 	}
 
-	selectSkill = (feature: Feature, skill: Skill) => {
+	selectSkill = (skill: Skill) => {
+		const feature = this.state.feature;
 		feature.skill = skill;
-		const features = this.state.features;
 		this.setState({
-			features: features
+			feature: feature
+		}, () => {
+			this.props.onChange(this.state.feature);
 		});
 	}
 
-	selectSkillCategory = (feature: Feature, category: SkillCategory) => {
+	selectSkillCategory = (category: SkillCategory) => {
+		const feature = this.state.feature;
 		feature.skillCategory = category;
-		const features = this.state.features;
 		this.setState({
-			features: features
+			feature: feature
+		}, () => {
+			this.props.onChange(this.state.feature);
 		});
 	}
 
-	selectProficiency = (feature: Feature, proficiency: Proficiency) => {
+	selectProficiency = (proficiency: ItemProficiency) => {
+		const feature = this.state.feature;
 		feature.proficiency = proficiency;
-		const features = this.state.features;
 		this.setState({
-			features: features
+			feature: feature
+		}, () => {
+			this.props.onChange(this.state.feature);
 		});
 	}
 
-	selectDamage = (feature: Feature, damage: DamageType) => {
+	selectDamage = (damage: DamageType) => {
+		const feature = this.state.feature;
 		feature.damage = damage;
-		const features = this.state.features;
 		this.setState({
-			features: features
+			feature: feature
+		}, () => {
+			this.props.onChange(this.state.feature);
 		});
 	}
 
-	selectDamageCategory = (feature: Feature, category: DamageCategory) => {
+	selectDamageCategory = (category: DamageCategory) => {
+		const feature = this.state.feature;
 		feature.damageCategory = category;
-		const features = this.state.features;
 		this.setState({
-			features: features
+			feature: feature
+		}, () => {
+			this.props.onChange(this.state.feature);
 		});
 	}
 
 	render = () => {
-		const choices = this.state.features.map(f => {
-			switch (f.type) {
-				case FeatureType.Trait:
-					return (
-						<div key={f.id}>
-							<Text><b></b>{getFeatureTitle(f)}: {getFeatureDescription(f)}</Text>
-							<Selector
-								options={[
-									{ id: Trait.Endurance },
-									{ id: Trait.Resolve },
-									{ id: Trait.Speed }
-								]}
-								selectedID={f.trait}
-								onSelect={id => this.selectTrait(f, id as Trait)}
-							/>
-						</div>
-					);
-				case FeatureType.Skill:
-					return (
-						<div key={f.id}>
-							<Text>{getFeatureTitle(f)}: {getFeatureDescription(f)}</Text>
-							<Selector
-								options={[
-									{ id: Skill.Athletics },
-									{ id: Skill.Brawl },
-									{ id: Skill.Perception },
-									{ id: Skill.Reactions },
-									{ id: Skill.Spellcasting },
-									{ id: Skill.Stealth },
-									{ id: Skill.Weapon }
-								]}
-								selectedID={f.skill}
-								onSelect={id => this.selectSkill(f, id as Skill)}
-							/>
-						</div>
-					);
-				case FeatureType.SkillCategory:
-					return (
-						<div key={f.id}>
-							<Text>{getFeatureTitle(f)}: {getFeatureDescription(f)}</Text>
-							<Selector
-								options={[
-									{ id: SkillCategory.Physical },
-									{ id: SkillCategory.Mental }
-								]}
-								selectedID={f.skillCategory}
-								onSelect={id => this.selectSkillCategory(f, id as SkillCategory)}
-							/>
-						</div>
-					);
-				case FeatureType.Proficiency:
-					return (
-						<div key={f.id}>
-							<Text>{getFeatureTitle(f)}: {getFeatureDescription(f)}</Text>
-							<Selector
-								options={[
-									{ id: Proficiency.MilitaryWeapons },
-									{ id: Proficiency.LargeWeapons },
-									{ id: Proficiency.PairedWeapons },
-									{ id: Proficiency.RangedWeapons },
-									{ id: Proficiency.PowderWeapons },
-									{ id: Proficiency.Implements },
-									{ id: Proficiency.LightArmor },
-									{ id: Proficiency.HeavyArmor },
-									{ id: Proficiency.Shields }
-								]}
-								selectedID={f.proficiency}
-								onSelect={id => this.selectProficiency(f, id as Proficiency)}
-							/>
-						</div>
-					);
-				case FeatureType.DamageBonus:
-				case FeatureType.DamageResist:
-					return (
-						<div key={f.id}>
-							<Text>{getFeatureTitle(f)}: {getFeatureDescription(f)}</Text>
-							<Selector
-								options={[
-									{ id: DamageType.Acid },
-									{ id: DamageType.Edged },
-									{ id: DamageType.Impact },
-									{ id: DamageType.Piercing },
-									{ id: DamageType.Cold },
-									{ id: DamageType.Electricity },
-									{ id: DamageType.Fire },
-									{ id: DamageType.Light },
-									{ id: DamageType.Sonic },
-									{ id: DamageType.Decay },
-									{ id: DamageType.Poison },
-									{ id: DamageType.Psychic }
-								]}
-								selectedID={f.damage}
-								onSelect={id => this.selectDamage(f, id as DamageType)}
-							/>
-						</div>
-					);
-				case FeatureType.DamageCategoryBonus:
-				case FeatureType.DamageCategoryResist:
-					return (
-						<div key={f.id}>
-							<Text>{getFeatureTitle(f)}: {getFeatureDescription(f)}</Text>
-							<Selector
-								options={[
-									{ id: DamageCategory.Physical },
-									{ id: DamageCategory.Energy },
-									{ id: DamageCategory.Corruption }
-								]}
-								selectedID={f.damageCategory}
-								onSelect={id => this.selectDamageCategory(f, id as DamageCategory)}
-							/>
-						</div>
-					);
-				default:
-					return null;
-			}
-		});
+		let choice = null;
+		switch (this.state.feature.type) {
+			case FeatureType.Trait:
+				choice = (
+					<div>
+						<Selector
+							options={[
+								{ id: Trait.Endurance },
+								{ id: Trait.Resolve },
+								{ id: Trait.Speed }
+							]}
+							selectedID={this.state.feature.trait}
+							onSelect={id => this.selectTrait(id as Trait)}
+						/>
+					</div>
+				);
+				break;
+			case FeatureType.Skill:
+				choice = (
+					<div>
+						<Selector
+							options={[
+								{ id: Skill.Athletics },
+								{ id: Skill.Brawl },
+								{ id: Skill.Perception },
+								{ id: Skill.Reactions },
+								{ id: Skill.Spellcasting },
+								{ id: Skill.Stealth },
+								{ id: Skill.Weapon }
+							]}
+							selectedID={this.state.feature.skill}
+							onSelect={id => this.selectSkill(id as Skill)}
+						/>
+					</div>
+				);
+				break;
+			case FeatureType.SkillCategory:
+				choice = (
+					<div>
+						<Selector
+							options={[
+								{ id: SkillCategory.Physical },
+								{ id: SkillCategory.Mental }
+							]}
+							selectedID={this.state.feature.skillCategory}
+							onSelect={id => this.selectSkillCategory(id as SkillCategory)}
+						/>
+					</div>
+				);
+				break;
+			case FeatureType.Proficiency:
+				choice = (
+					<div>
+						<Selector
+							options={[
+								{ id: ItemProficiency.MilitaryWeapons },
+								{ id: ItemProficiency.LargeWeapons },
+								{ id: ItemProficiency.PairedWeapons },
+								{ id: ItemProficiency.RangedWeapons },
+								{ id: ItemProficiency.PowderWeapons },
+								{ id: ItemProficiency.Implements },
+								{ id: ItemProficiency.LightArmor },
+								{ id: ItemProficiency.HeavyArmor },
+								{ id: ItemProficiency.Shields }
+							]}
+							selectedID={this.state.feature.proficiency}
+							onSelect={id => this.selectProficiency(id as ItemProficiency)}
+						/>
+					</div>
+				);
+				break;
+			case FeatureType.DamageBonus:
+			case FeatureType.DamageResist:
+				choice = (
+					<div>
+						<Selector
+							options={[
+								{ id: DamageType.Acid },
+								{ id: DamageType.Edged },
+								{ id: DamageType.Impact },
+								{ id: DamageType.Piercing },
+								{ id: DamageType.Cold },
+								{ id: DamageType.Electricity },
+								{ id: DamageType.Fire },
+								{ id: DamageType.Light },
+								{ id: DamageType.Sonic },
+								{ id: DamageType.Decay },
+								{ id: DamageType.Poison },
+								{ id: DamageType.Psychic }
+							]}
+							selectedID={this.state.feature.damage}
+							onSelect={id => this.selectDamage(id as DamageType)}
+						/>
+					</div>
+				);
+				break;
+			case FeatureType.DamageCategoryBonus:
+			case FeatureType.DamageCategoryResist:
+				choice = (
+					<div>
+						<Selector
+							options={[
+								{ id: DamageCategory.Physical },
+								{ id: DamageCategory.Energy },
+								{ id: DamageCategory.Corruption }
+							]}
+							selectedID={this.state.feature.damageCategory}
+							onSelect={id => this.selectDamageCategory(id as DamageCategory)}
+						/>
+					</div>
+				);
+				break;
+		}
 
 		return (
-			<div>
-				<Text>You have some choices to make:</Text>
-				{choices}
-				<button onClick={() => this.props.finished(this.state.features)}>OK</button>
+			<div className='choice-page'>
+				{choice}
 			</div>
 		);
 	}
@@ -611,12 +637,13 @@ class ChoicesPanel extends Component<ChoicesPanelProps, ChoicesPanelState> {
 //#region Equipment selector
 
 interface EquipmentSelectorProps {
-	hero: Hero;
-	addItems: (items: Item[]) => void;
+	hero: HeroModel;
+	header: JSX.Element;
+	addItems: (items: ItemModel[]) => void;
 }
 
 interface EquipmentSelectorState {
-	items: Item[];
+	items: ItemModel[];
 }
 
 class EquipmentSelector extends Component<EquipmentSelectorProps, EquipmentSelectorState> {
@@ -674,9 +701,14 @@ class EquipmentSelector extends Component<EquipmentSelectorProps, EquipmentSelec
 		const canSelect = (this.state.items.length === role.proficiencies.length);
 
 		return (
-			<div>
-				{slots}
-				<button disabled={!canSelect} onClick={() => this.props.addItems(this.state.items)}>Select these items</button>
+			<div className='equipment-page'>
+				{this.props.header}
+				<div className='content'>
+					{slots}
+				</div>
+				<div className='footer'>
+					<button disabled={!canSelect} onClick={() => this.props.addItems(this.state.items)}>Select these items</button>
+				</div>
 			</div>
 		);
 	}

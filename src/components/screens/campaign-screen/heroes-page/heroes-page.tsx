@@ -1,34 +1,53 @@
 import { Component } from 'react';
-import { Selector } from '../../../controls';
-import { Game } from '../../../models/game';
-import { Hero } from '../../../models/hero';
-import { Item } from '../../../models/item';
-import { BoonCard, HeroCard, ItemCard, PlaceholderCard } from '../../cards';
-import { CharacterSheetPanel, HeroBuilderPanel } from '../../panels';
-import { CardList, Dialog, PlayingCard, Text, TextType } from '../../utility';
+import { Dialog, Text, TextType } from '../../../../controls';
+import { BoonModel, BoonType } from '../../../../models/boon';
+import { GameModel } from '../../../../models/game';
+import { HeroModel } from '../../../../models/hero';
+import { ItemModel } from '../../../../models/item';
+import { BoonCard, HeroCard, ItemCard, PlaceholderCard } from '../../../cards';
+import { CharacterSheetPanel, HeroBuilderPanel } from '../../../panels';
+import { CardList, PlayingCard } from '../../../utility';
 
-import './heroes-screen.scss';
+import './heroes-page.scss';
 
 interface Props {
-	game: Game;
-	addHero: (hero: Hero) => void;
-	// levelUp: (hero: Hero, trait: Trait, skill: Skill, feature: Feature) => void;
-	incrementXP: (hero: Hero) => void;
-	equipItem: (item: Item, hero: Hero) => void;
-	unequipItem: (item: Item, hero: Hero) => void;
-	viewCampaignMap: () => void;
+	game: GameModel;
+	addHero: (hero: HeroModel) => void;
+	incrementXP: (hero: HeroModel) => void;
+	equipItem: (item: ItemModel, hero: HeroModel) => void;
+	unequipItem: (item: ItemModel, hero: HeroModel) => void;
+	redeemBoon: (boon: BoonModel, hero: HeroModel | null) => void;
 }
 
 interface State {
-	selectedHero: Hero | null;
+	selectedHero: HeroModel | null;
+	selectedBoon: BoonModel | null;
 }
 
-export class HeroesScreen extends Component<Props, State> {
+export class HeroesPage extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
-			selectedHero: null
+			selectedHero: null,
+			selectedBoon: null
 		};
+	}
+
+	selectBoon = (boon: BoonModel) => {
+		switch (boon.type) {
+			case BoonType.ExtraHero:
+			case BoonType.MagicItem: {
+				this.props.redeemBoon(boon, null);
+				break;
+			}
+			case BoonType.ExtraXP:
+			case BoonType.LevelUp: {
+				this.setState({
+					selectedBoon: boon
+				});
+				break;
+			}
+		}
 	}
 
 	public render() {
@@ -110,7 +129,7 @@ export class HeroesScreen extends Component<Props, State> {
 					<Text type={TextType.Information}>
 						<b>You have won these rewards.</b> Select a card to redeem a reward.
 					</Text>
-					<CardList cards={this.props.game.boons.map((b, n) => (<PlayingCard key={n} front={<BoonCard boon={b} />} />))} />
+					<CardList cards={this.props.game.boons.map(b => (<PlayingCard key={b.id} front={<BoonCard boon={b} />} onClick={() => this.selectBoon(b)} />))} />
 				</div>
 			);
 		}
@@ -125,7 +144,7 @@ export class HeroesScreen extends Component<Props, State> {
 								hero={this.state.selectedHero}
 								game={this.props.game}
 								finished={hero => {
-									const h = this.state.selectedHero as Hero;
+									const h = this.state.selectedHero as HeroModel;
 									this.setState({
 										selectedHero: null
 									}, () => {
@@ -162,10 +181,45 @@ export class HeroesScreen extends Component<Props, State> {
 				);
 			}
 		}
+		if (this.state.selectedBoon) {
+			const heroCards = this.props.game.heroes
+				.filter(h => h.name !== '')
+				.map(h => {
+					return (
+						<PlayingCard
+							key={h.id}
+							front={<HeroCard hero={h} />}
+							onClick={() => {
+								const boon = this.state.selectedBoon as BoonModel;
+								this.setState({
+									selectedBoon: null
+								}, () => {
+									this.props.redeemBoon(boon, h);
+								});
+							}}
+						/>
+					);
+				});
+
+			dialog = (
+				<Dialog
+					content={(
+						<div>
+							<Text>Choose a hero to receive this reward:</Text>
+							<CardList cards={heroCards} />
+						</div>
+					)}
+					onClickOff={() => {
+						this.setState({
+							selectedBoon: null
+						});
+					}}
+				/>
+			);
+		}
 
 		return (
-			<div className='heroes-screen'>
-				<Selector options={[{ id: 'heroes', display: 'Your Team' }, { id: 'map', display: 'The Island' }]} selectedID='heroes' onSelect={this.props.viewCampaignMap} />
+			<div className='heroes-page'>
 				{heroes}
 				{items}
 				{boons}

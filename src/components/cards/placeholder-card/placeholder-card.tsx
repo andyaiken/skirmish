@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { Text, TextType } from '../../utility';
+import { Text, TextType } from '../../../controls';
 
 import './placeholder-card.scss';
 

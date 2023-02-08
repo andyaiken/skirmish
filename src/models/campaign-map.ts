@@ -1,30 +1,30 @@
 import { generateName } from '../utils/name-generator';
-import { randomNumber } from '../utils/random';
+import { dice, randomNumber } from '../utils/random';
 import { guid } from '../utils/utils';
-import { Boon, generateBoon } from './boon';
+import { BoonModel, generateBoon } from './boon';
 
-export interface CampaignMapSquare {
+export interface CampaignMapSquareModel {
 	id: string;
 	x: number;
 	y: number;
 	regionID: string;
 }
 
-export interface CampaignMapRegion {
+export interface CampaignMapRegionModel {
 	id: string;
 	name: string;
 	count: number;
 	color: string;
-	boon: Boon;
+	boon: BoonModel;
 }
 
-export interface CampaignMap {
-	squares: CampaignMapSquare[];
-	regions: CampaignMapRegion[];
+export interface CampaignMapModel {
+	squares: CampaignMapSquareModel[];
+	regions: CampaignMapRegionModel[];
 }
 
-export const generateCampaignMap = (): CampaignMap => {
-	const map: CampaignMap = {
+export const generateCampaignMap = (): CampaignMapModel => {
+	const map: CampaignMapModel = {
 		squares: [{
 			id: guid(),
 			x: 0,
@@ -69,7 +69,7 @@ export const generateCampaignMap = (): CampaignMap => {
 
 	const regionCount = map.squares.length / 20;
 	while (map.regions.length !== regionCount) {
-		const count = randomNumber(10) + 1;
+		const count = dice();
 
 		// The lightest colour we will allow is rgb(229, 229, 229)
 		// This is so that the player (white) stands out
@@ -98,11 +98,11 @@ export const generateCampaignMap = (): CampaignMap => {
 		// Pick a region
 		map.regions.forEach(region => {
 			// Find all adjacent squares
-			const candidates: CampaignMapSquare[] = [];
+			const candidates: CampaignMapSquareModel[] = [];
 			map.squares
 				.filter(sq => sq.regionID === region.id)
 				.forEach(sq => {
-					getAdjacentSquares(map, sq.x, sq.y)
+					getCampaignMapAdjacentSquares(map, sq.x, sq.y)
 						.filter(s => s.regionID === '')
 						.forEach(s => candidates.push(s));
 				});
@@ -119,7 +119,7 @@ export const generateCampaignMap = (): CampaignMap => {
 	return map;
 }
 
-export const getDimensions = (map: CampaignMap) => {
+export const getCampaignMapDimensions = (map: CampaignMapModel) => {
 	const dims = {
 		left: Number.MAX_VALUE,
 		top: Number.MAX_VALUE,
@@ -137,8 +137,8 @@ export const getDimensions = (map: CampaignMap) => {
 	return dims;
 }
 
-export const getAdjacentSquares = (map: CampaignMap, x: number, y: number) => {
-	const adj: CampaignMapSquare[] = [];
+export const getCampaignMapAdjacentSquares = (map: CampaignMapModel, x: number, y: number) => {
+	const adj: CampaignMapSquareModel[] = [];
 
 	const left = map.squares.find(sq => (sq.x === x - 1) && (sq.y === y));
 	if (left) {
@@ -160,7 +160,11 @@ export const getAdjacentSquares = (map: CampaignMap, x: number, y: number) => {
 	return adj;
 }
 
-export const removeRegion = (map: CampaignMap, region: CampaignMapRegion) => {
+export const getCampaignMapSquares = (map: CampaignMapModel, region: CampaignMapRegionModel) => {
+	return map.squares.filter(sq => sq.regionID === region.id);
+}
+
+export const removeRegion = (map: CampaignMapModel, region: CampaignMapRegionModel) => {
 	map.squares.forEach(sq => {
 		if (sq.regionID === region.id) {
 			sq.regionID = '';
@@ -168,6 +172,13 @@ export const removeRegion = (map: CampaignMap, region: CampaignMapRegion) => {
 	});
 }
 
-export const isConquered = (map: CampaignMap) => {
+export const isConquered = (map: CampaignMapModel) => {
 	return map.squares.every(sq => sq.regionID === '');
+}
+
+export const canAttackRegion = (map: CampaignMapModel, region: CampaignMapRegionModel) => {
+	const squares = getCampaignMapSquares(map, region);
+	const coastal = squares.some(sq => getCampaignMapAdjacentSquares(map, sq.x, sq.y).length !== 4);
+	const bordering = squares.some(sq => getCampaignMapAdjacentSquares(map, sq.x, sq.y).some(a => a.regionID === ''));
+	return coastal || bordering;
 }

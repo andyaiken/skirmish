@@ -1,6 +1,4 @@
-.campaign-map-screen {
-	display: block;
-
+.campaign-map-page {
 	.row {
 		display: flex;
 
@@ -23,17 +21,27 @@
 	}
 
 	.hero-selection {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+		overflow-y: hidden;
+
+		.header {
+			flex: 0 0 auto;
+		}
+
 		.hero-lists {
 			display: flex;
+			overflow-y: hidden;
 
 			.hero-list-column {
 				flex: 1 1 0;
-
-				.list {
-					display: grid;
-					grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-				}
+				overflow-y: auto;
 			}
+		}
+
+		.footer {
+			flex: 0 0 auto;
 		}
 	}
 }

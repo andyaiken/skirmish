@@ -2,40 +2,51 @@ import { Component } from 'react';
 
 import './stat-value.scss';
 
-interface StatValueProps {
+interface Props {
+	orientation: 'horizontal' | 'vertical';
 	label: number | string | JSX.Element;
-	value: number | string | JSX.Element;
+	value: number | string | JSX.Element | (number | string | JSX.Element)[];
 }
 
-export class StatValue extends Component<StatValueProps> {
+export class StatValue extends Component<Props> {
+	static defaultProps = {
+		orientation: 'horizontal'
+	};
+
 	public render() {
+		if (Array.isArray(this.props.value)) {
+			return (
+				<div className='stat-value horizontal'>
+					<div className='stat-value-label'>
+						{this.props.label}
+					</div>
+					<div className='stat-value-list'>
+						{this.props.value.map((v, n) => (<div key={n} className='stat-value-value'>{v}</div>))}
+					</div>
+				</div>
+			);
+		}
+
+		if (this.props.orientation === 'vertical') {
+			return (
+				<div className='stat-value vertical'>
+					<div className='stat-value-value'>
+						{this.props.value}
+					</div>
+					<div className='stat-value-label'>
+						{this.props.label}
+					</div>
+				</div>
+			);
+		}
+
 		return (
-			<div className='stat-value'>
+			<div className='stat-value horizontal'>
 				<div className='stat-value-label'>
 					{this.props.label}
 				</div>
 				<div className='stat-value-value'>
 					{this.props.value}
-				</div>
-			</div>
-		);
-	}
-}
-
-interface StatValueListProps {
-	label: number | string | JSX.Element;
-	values: (number | string | JSX.Element)[];
-}
-
-export class StatValueList extends Component<StatValueListProps> {
-	public render() {
-		return (
-			<div className='stat-value stat-list'>
-				<div className='stat-value-label'>
-					{this.props.label}
-				</div>
-				<div className='stat-value-list'>
-					{this.props.values.map((v, n) => (<div key={n} className='stat-value-value'>{v}</div>))}
 				</div>
 			</div>
 		);

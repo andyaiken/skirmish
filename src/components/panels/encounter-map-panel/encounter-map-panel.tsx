@@ -1,10 +1,10 @@
 import { Component } from 'react';
-import { EncounterMap } from '../../../models/encounter-map';
+import { EncounterMapModel } from '../../../models/encounter-map';
 
 import './encounter-map-panel.scss';
 
 interface Props {
-	map: EncounterMap;
+	map: EncounterMapModel;
 }
 
 export class EncounterMapPanel extends Component<Props> {

@@ -1,28 +1,29 @@
 import { Component } from 'react';
-import { Selector, Tag } from '../../../controls';
+import { Dialog, Selector, Tag, Text, TextType } from '../../../controls';
+import { getAuraDescription } from '../../../models/aura';
 import { getBackground } from '../../../models/background';
 import { DamageType } from '../../../models/damage';
-import { Game } from '../../../models/game';
-import { getActionDeck, getDamageBonusValue, getDamageResistanceValue, getFeatureDeck, getProficiencies, getSkillValue, getTraitValue, Hero } from '../../../models/hero';
-import { Item } from '../../../models/item';
+import { GameModel } from '../../../models/game';
+import { getActionDeck, getAuras, getDamageBonusValue, getDamageResistanceValue, getFeatureDeck, getProficiencies, getSkillValue, getTraitValue, HeroModel } from '../../../models/hero';
+import { ItemModel } from '../../../models/item';
 import { ItemLocation } from '../../../models/item-location';
-import { Proficiency } from '../../../models/proficiency';
+import { ItemProficiency } from '../../../models/item-proficiency';
 import { getRole } from '../../../models/role';
 import { Skill } from '../../../models/skill';
 import { getSpecies } from '../../../models/species';
 import { Trait } from '../../../models/trait';
 import { ActionCard, FeatureCard, ItemCard } from '../../cards';
-import { CardList, Dialog, PlayingCard, StatValue, Text, TextType } from '../../utility';
+import { CardList, PlayingCard, StatValue } from '../../utility';
 
 import './character-sheet-panel.scss';
 
 type ViewType = 'stats' | 'items' | 'features' | 'actions';
 
 interface Props {
-	hero: Hero;
-	game: Game;
-	equipItem: (item: Item, hero: Hero) => void;
-	unequipItem: (item: Item, hero: Hero) => void;
+	hero: HeroModel;
+	game: GameModel;
+	equipItem: (item: ItemModel, hero: HeroModel) => void;
+	unequipItem: (item: ItemModel, hero: HeroModel) => void;
 }
 
 interface State {
@@ -63,57 +64,73 @@ export class CharacterSheetPanel extends Component<Props, State> {
 
 		return (
 			<div className='character-sheet-panel'>
-				<Text type={TextType.Heading}>{this.props.hero.name || 'unnamed hero'}</Text>
-				<div className='tags'>
-					<Tag>{getSpecies(this.props.hero.speciesID)?.name ?? 'Unknown species'}</Tag>
-					<Tag>{getRole(this.props.hero.roleID)?.name ?? 'Unknown role'}</Tag>
-					<Tag>{getBackground(this.props.hero.backgroundID)?.name ?? 'Unknown background'}</Tag>
-					<Tag>Level {this.props.hero.level}</Tag>
+				<div className='header'>
+					<Text type={TextType.Heading}>{this.props.hero.name || 'unnamed hero'}</Text>
+					<div className='tags'>
+						<Tag>{getSpecies(this.props.hero.speciesID)?.name ?? 'Unknown species'}</Tag>
+						<Tag>{getRole(this.props.hero.roleID)?.name ?? 'Unknown role'}</Tag>
+						<Tag>{getBackground(this.props.hero.backgroundID)?.name ?? 'Unknown background'}</Tag>
+						<Tag>Level {this.props.hero.level}</Tag>
+					</div>
+					<Selector
+						selectedID={this.state.view}
+						options={[
+							{ id: 'stats', display: 'Statistics' },
+							{ id: 'items', display: 'Equipment' },
+							{ id: 'features', display: 'Feature Deck' },
+							{ id: 'actions', display: 'Action Deck' }
+						]}
+						onSelect={id => this.setState({ view: id as ViewType })}
+					/>
 				</div>
-				<Selector
-					selectedID={this.state.view}
-					options={[
-						{ id: 'stats', display: 'Statistics' },
-						{ id: 'items', display: 'Equipment' },
-						{ id: 'features', display: 'Feature Deck' },
-						{ id: 'actions', display: 'Action Deck' }
-					]}
-					onSelect={id => this.setState({ view: id as ViewType })}
-				/>
-				{content}
+				<div className='content'>
+					{content}
+				</div>
 			</div>
 		);
 	}
 }
 
 interface StatsPageProps {
-	hero: Hero;
+	hero: HeroModel;
 }
 
 class StatsPage extends Component<StatsPageProps> {
 	public render() {
-		const traits = (
-			<div>
-				<StatValue label='Endurance' value={getTraitValue(this.props.hero, Trait.Endurance)}/>
-				<StatValue label='Resolve' value={getTraitValue(this.props.hero, Trait.Resolve)}/>
-				<StatValue label='Speed' value={getTraitValue(this.props.hero, Trait.Speed)}/>
-			</div>
-		);
+		let proficiencySection = null;
+		const profs = getProficiencies(this.props.hero);
+		if (profs.length > 0 ) {
+			proficiencySection = (
+				<div>
+					{profs.map((p, n) => (<Tag key={n}>{p}</Tag>))}
+				</div>
+			);
+		} else {
+			proficiencySection = (
+				<div>
+					<Text>None</Text>
+				</div>
+			);
+		}
 
-		const skills = (
-			<div>
-				<StatValue label='Athletics' value={getSkillValue(this.props.hero, Skill.Athletics)}/>
-				<StatValue label='Brawl' value={getSkillValue(this.props.hero, Skill.Brawl)}/>
-				<StatValue label='Perception' value={getSkillValue(this.props.hero, Skill.Perception)}/>
-				<StatValue label='Reactions' value={getSkillValue(this.props.hero, Skill.Reactions)}/>
-				<StatValue label='Spellcasting' value={getSkillValue(this.props.hero, Skill.Spellcasting)}/>
-				<StatValue label='Stealth' value={getSkillValue(this.props.hero, Skill.Stealth)}/>
-				<StatValue label='Weapon' value={getSkillValue(this.props.hero, Skill.Weapon)}/>
-			</div>
-		);
+		let auraSection = null;
+		const auras = getAuras(this.props.hero);
+		if (auras.length > 0) {
+			auraSection = (
+				<div>
+					{auras.map(a => (<StatValue key={a.id} label={getAuraDescription(a)} value={a.rank} />))}
+				</div>
+			);
+		} else {
+			auraSection = (
+				<div>
+					<Text>None</Text>
+				</div>
+			);
+		}
 
 		const damageBonuses = (
-			<div>
+			<div className='damage-bonuses'>
 				<StatValue label='Acid' value={getDamageBonusValue(this.props.hero, DamageType.Acid)}/>
 				<StatValue label='Cold' value={getDamageBonusValue(this.props.hero, DamageType.Cold)}/>
 				<StatValue label='Decay' value={getDamageBonusValue(this.props.hero, DamageType.Decay)}/>
@@ -130,7 +147,7 @@ class StatsPage extends Component<StatsPageProps> {
 		);
 
 		const damageResistances = (
-			<div>
+			<div className='damage-resistances'>
 				<StatValue label='Acid' value={getDamageResistanceValue(this.props.hero, DamageType.Acid)}/>
 				<StatValue label='Cold' value={getDamageResistanceValue(this.props.hero, DamageType.Cold)}/>
 				<StatValue label='Decay' value={getDamageResistanceValue(this.props.hero, DamageType.Decay)}/>
@@ -146,23 +163,26 @@ class StatsPage extends Component<StatsPageProps> {
 			</div>
 		);
 
-		const profs = (
-			<div>
-				{getProficiencies(this.props.hero).map((p, n) => (<Tag key={n}>{p}</Tag>))}
-			</div>
-		);
-
 		return (
 			<div className='stats-page'>
 				<div className='column'>
 					<Text type={TextType.SubHeading}>Traits</Text>
-					{traits}
+					<div className='traits'>
+						<StatValue orientation='vertical' label='Endurance' value={getTraitValue(this.props.hero, Trait.Endurance)}/>
+						<StatValue orientation='vertical' label='Resolve' value={getTraitValue(this.props.hero, Trait.Resolve)}/>
+						<StatValue orientation='vertical' label='Speed' value={getTraitValue(this.props.hero, Trait.Speed)}/>
+					</div>
+					<hr />
 					<Text type={TextType.SubHeading}>Skills</Text>
-					{skills}
-					<Text type={TextType.SubHeading}>Proficiencies</Text>
-					{profs}
-					<Text type={TextType.SubHeading}>XP</Text>
-					{this.props.hero.xp} of {this.props.hero.level} XP required for level {this.props.hero.level + 1}
+					<div className='skills'>
+						<StatValue label='Athletics' value={getSkillValue(this.props.hero, Skill.Athletics)}/>
+						<StatValue label='Brawl' value={getSkillValue(this.props.hero, Skill.Brawl)}/>
+						<StatValue label='Perception' value={getSkillValue(this.props.hero, Skill.Perception)}/>
+						<StatValue label='Reactions' value={getSkillValue(this.props.hero, Skill.Reactions)}/>
+						<StatValue label='Spellcasting' value={getSkillValue(this.props.hero, Skill.Spellcasting)}/>
+						<StatValue label='Stealth' value={getSkillValue(this.props.hero, Skill.Stealth)}/>
+						<StatValue label='Weapon' value={getSkillValue(this.props.hero, Skill.Weapon)}/>
+					</div>
 				</div>
 				<div className='column'>
 					<Text type={TextType.SubHeading}>Damage Bonuses</Text>
@@ -172,20 +192,30 @@ class StatsPage extends Component<StatsPageProps> {
 					<Text type={TextType.SubHeading}>Resistances</Text>
 					{damageResistances}
 				</div>
+				<div className='column'>
+					<Text type={TextType.SubHeading}>Proficiencies</Text>
+					{proficiencySection}
+					<hr />
+					<Text type={TextType.SubHeading}>Auras</Text>
+					{auraSection}
+					<hr />
+					<Text type={TextType.SubHeading}>XP</Text>
+					{this.props.hero.xp} of {this.props.hero.level} XP required for level {this.props.hero.level + 1}
+				</div>
 			</div>
 		);
 	}
 }
 
 interface ItemsPageProps {
-	hero: Hero;
-	game: Game;
-	equipItem: (item: Item) => void;
-	unequipItem: (item: Item) => void;
+	hero: HeroModel;
+	game: GameModel;
+	equipItem: (item: ItemModel) => void;
+	unequipItem: (item: ItemModel) => void;
 }
 
 interface ItemsPageState {
-	selectedItem: Item | null;
+	selectedItem: ItemModel | null;
 	selectedLocation: ItemLocation;
 }
 
@@ -228,7 +258,7 @@ class ItemsPage extends Component<ItemsPageProps, ItemsPageState> {
 		return cards;
 	}
 
-	private equip(item: Item) {
+	private equip(item: ItemModel) {
 		this.setState({
 			selectedLocation: ItemLocation.None
 		}, () => {
@@ -261,7 +291,7 @@ class ItemsPage extends Component<ItemsPageProps, ItemsPageState> {
 			// Find items that fit this location that we can use
 			const campaignItemCards = this.props.game.items
 				.filter(item => item.location === this.state.selectedLocation)
-				.filter(item => (item.proficiency === Proficiency.None) || (getProficiencies(this.props.hero).includes(item.proficiency)))
+				.filter(item => (item.proficiency === ItemProficiency.None) || (getProficiencies(this.props.hero).includes(item.proficiency)))
 				.map(item => (
 					<div key={item.id}>
 						<PlayingCard
@@ -343,7 +373,7 @@ class ItemsPage extends Component<ItemsPageProps, ItemsPageState> {
 }
 
 interface FeaturesPageProps {
-	hero: Hero;
+	hero: HeroModel;
 }
 
 class FeaturesPage extends Component<FeaturesPageProps> {
@@ -357,7 +387,6 @@ class FeaturesPage extends Component<FeaturesPageProps> {
 		return (
 			<div className='features-page'>
 				<div className='column'>
-					<Text type={TextType.SubHeading}>Feature Deck</Text>
 					<Text>Each time {this.props.hero.name} levels up, they get to choose one of these features.</Text>
 					<CardList cards={featureCards} />
 				</div>
@@ -367,7 +396,7 @@ class FeaturesPage extends Component<FeaturesPageProps> {
 }
 
 interface ActionsPageProps {
-	hero: Hero;
+	hero: HeroModel;
 }
 
 class ActionsPage extends Component<ActionsPageProps> {
@@ -381,7 +410,6 @@ class ActionsPage extends Component<ActionsPageProps> {
 		return (
 			<div className='actions-page'>
 				<div className='column'>
-					<Text type={TextType.SubHeading}>Action Deck</Text>
 					<Text>In an encounter, {this.props.hero.name} will be able to choose from these actions.</Text>
 					<CardList cards={actionCards} />
 				</div>

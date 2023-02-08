@@ -1,32 +1,44 @@
 import { Component } from 'react';
-import { Boon, BoonType } from '../../../models/boon';
-import { Text, TextType } from '../../utility';
+
+import { ItemCard } from '../item-card/item-card';
+import { BoonModel, BoonType } from '../../../models/boon';
+import { ItemModel } from '../../../models/item';
+import { Text, TextType } from '../../../controls';
 
 import './boon-card.scss';
+import { StatValue } from '../../utility';
 
 interface Props {
-	boon: Boon;
+	boon: BoonModel;
 }
 
 export class BoonCard extends Component<Props> {
 	public render() {
+		if (this.props.boon.type === BoonType.MagicItem) {
+			return <ItemCard item={this.props.boon.data as ItemModel} />
+		}
+
 		let desc = '';
+		let extra = null;
 		switch (this.props.boon.type) {
 			case BoonType.ExtraHero:
 				desc = 'Gain an empty hero slot.';
 				break;
 			case BoonType.ExtraXP:
-				desc = 'Choose one of your heroes to gain additional XP';
+				desc = `Choose one of your heroes to gain bonus XP.`;
+				extra = <StatValue orientation='vertical' label='XP' value={this.props.boon.data as number} />
 				break;
 			case BoonType.LevelUp:
 				desc = 'Choose one of your heroes to level up.';
 				break;
 		}
+
 		return (
 			<div className='boon-card'>
 				<Text type={TextType.SubHeading}>{this.props.boon.type}</Text>
 				<hr />
 				<Text>{desc}</Text>
+				{extra ? <div className='extra'>{extra}</div> : null}
 			</div>
 		);
 	}

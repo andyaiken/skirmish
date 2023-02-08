@@ -1,18 +1,18 @@
-import { Boon } from './boon';
-import { CampaignMap, generateCampaignMap } from './campaign-map';
-import { Encounter } from './encounter';
-import { createHero, Hero } from './hero';
-import { Item } from './item';
+import { BoonModel } from './boon';
+import { CampaignMapModel, generateCampaignMap } from './campaign-map';
+import { EncounterModel } from './encounter';
+import { createHero, HeroModel } from './hero';
+import { ItemModel } from './item';
 
-export interface Game {
-	heroes: Hero[];
-	items: Item[];
-	boons: Boon[];
-	map: CampaignMap;
-	encounter: Encounter | null;
+export interface GameModel {
+	heroes: HeroModel[];
+	items: ItemModel[];
+	boons: BoonModel[];
+	map: CampaignMapModel;
+	encounter: EncounterModel | null;
 }
 
-export const createGame = (): Game => {
+export const createGame = (): GameModel => {
 	return {
 		heroes: [
 			createHero(),
@@ -26,4 +26,14 @@ export const createGame = (): Game => {
 		map: generateCampaignMap(),
 		encounter: null
 	};
+}
+
+export const addHeroToGame = (game: GameModel, hero: HeroModel) => {
+	const index = game.heroes.findIndex(h => h.id === hero.id);
+	if (index === -1) {
+		game.heroes.push(hero);
+	} else {
+		game.heroes[index] = hero;
+	}
+	game.heroes.sort((a, b) => a.name > b.name ? 1 : -1);
 }

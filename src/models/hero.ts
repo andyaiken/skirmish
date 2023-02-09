@@ -139,10 +139,6 @@ export const getProficiencies = (hero: HeroModel) => {
 		.filter(f => f.type === FeatureType.Proficiency)
 		.forEach(f => profs.push(f.proficiency));
 
-	if (profs.includes(ItemProficiency.All)) {
-		return [ItemProficiency.All];
-	}
-
 	return profs;
 }
 

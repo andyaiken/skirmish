@@ -1,7 +1,7 @@
 export const dice = (count = 1) => {
 	const rolls = [];
 
-	while (rolls.length < count) {
+	while (rolls.length < (Math.min(count, 1))) {
 		let result = 0;
 		let rollAgain = true;
 
@@ -9,6 +9,10 @@ export const dice = (count = 1) => {
 			const n = randomNumber(10) + 1;
 			result += n;
 			rollAgain = (n === 10);
+		}
+
+		if (count < 1) {
+			result = Math.floor(result / 2);
 		}
 
 		rolls.push(result);

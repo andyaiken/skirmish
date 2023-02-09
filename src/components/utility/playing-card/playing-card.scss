@@ -22,14 +22,9 @@
 			backface-visibility: hidden;
 			border: 2px solid rgb(220, 220, 220);
 			border-radius: 15px;
-			cursor: pointer;
 			overflow-x: hidden;
 			overflow-y: auto;
 			background-color: rgb(255, 255, 255);
-
-			&:hover {
-				border-color: rgb(64, 169, 255);
-			}
 
 			hr {
 				margin: 10px 0;
@@ -43,6 +38,15 @@
 			justify-content: center;
 			transform: rotateY(180deg);
 			background-color: rgb(240, 240, 240);
+		}
+	}
+
+	&.clickable .playing-card-inner .playing-card-front,
+	&.clickable .playing-card-inner .playing-card-back {
+		cursor: pointer;
+
+		&:hover {
+			border-color: rgb(64, 169, 255);
 		}
 	}
 

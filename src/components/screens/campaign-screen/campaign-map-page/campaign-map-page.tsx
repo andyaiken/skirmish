@@ -89,8 +89,7 @@ export class CampaignMapPage extends Component<Props, State> {
 				.map(h => {
 					return (
 						<div key={h.id}>
-							<PlayingCard front={<HeroCard hero={h} />} />
-							<button onClick={() => this.selectHero(h)}>Select</button>
+							<PlayingCard front={<HeroCard hero={h} />} onClick={() => this.selectHero(h)} />
 						</div>
 					);
 				});
@@ -99,8 +98,7 @@ export class CampaignMapPage extends Component<Props, State> {
 				.map(h => {
 					return (
 						<div key={h.id}>
-							<PlayingCard front={<HeroCard hero={h} />} />
-							<button onClick={() => this.deselectHero(h)}>Deselect</button>
+							<PlayingCard front={<HeroCard hero={h} />} onClick={() => this.deselectHero(h)} />
 						</div>
 					);
 				});

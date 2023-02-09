@@ -11,20 +11,32 @@ interface Props {
 	front: JSX.Element | string;
 	back: JSX.Element | string;
 	display: PlayingCardSide;
-	onClick: () => void;
+	onClick: (() => void) | null;
 }
 
 export class PlayingCard extends Component<Props> {
 	public static defaultProps = {
 		back: null,
 		display: PlayingCardSide.Front,
-		onClick: () => null
+		onClick: null
 	};
 
+	onClick = () => {
+		if (this.props.onClick) {
+			this.props.onClick();
+		}
+	}
+
 	public render() {
-		const className = this.props.display === PlayingCardSide.Front ? 'playing-card' : 'playing-card flipped';
+		let className = 'playing-card';
+		if (this.props.onClick) {
+			className += ' clickable';
+		}
+		if (this.props.display === PlayingCardSide.Back) {
+			className += ' flipped';
+		}
 		return (
-			<div className={className} onClick={this.props.onClick} role='button'>
+			<div className={className} onClick={this.onClick} role='button'>
 				<div className='playing-card-inner'>
 					<div className='playing-card-front'>
 						{this.props.front}

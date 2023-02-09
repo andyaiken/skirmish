@@ -57,17 +57,17 @@ export const getFeatureDescription = (feature: FeatureModel) => {
 		case FeatureType.Skill:
 			return `${feature.skill} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
 		case FeatureType.SkillCategory:
-			return `All ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
+			return `All ${feature.skillCategory} skills ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
 		case FeatureType.Proficiency:
 			return `${feature.proficiency}`;
 		case FeatureType.DamageBonus:
 			return `${feature.damage} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
 		case FeatureType.DamageCategoryBonus:
-			return `All ${feature.damageCategory} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
+			return `All ${feature.damageCategory} types ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
 		case FeatureType.DamageResist:
 			return `${feature.damage} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
 		case FeatureType.DamageCategoryResist:
-			return `All ${feature.damageCategory} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
+			return `All ${feature.damageCategory} types ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
 		case FeatureType.Aura: {
 			const aura = createAura(feature);
 			return `${getAuraDescription(aura)} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;

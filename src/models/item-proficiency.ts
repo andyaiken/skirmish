@@ -1,7 +1,6 @@
 export enum ItemProficiency {
 	None = 'None',
 	Any = '[choose one proficiency]',
-	All = 'All proficiencies',
 	MilitaryWeapons = 'Military weapons',
 	LargeWeapons = 'Large weapons',
 	PairedWeapons = 'Paired weapons',

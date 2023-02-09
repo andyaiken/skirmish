@@ -1,0 +1,9 @@
+.stats {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(232px, 1fr));
+
+	.traits {
+		display: flex;
+		flex-direction: row;
+	}
+}

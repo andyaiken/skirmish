@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import { Dialog, Text, TextType } from '../../../../controls';
 import { BoonModel, BoonType } from '../../../../models/boon';
+import { FeatureModel } from '../../../../models/feature';
 import { GameModel } from '../../../../models/game';
 import { HeroModel } from '../../../../models/hero';
 import { ItemModel } from '../../../../models/item';
@@ -16,6 +17,7 @@ interface Props {
 	incrementXP: (hero: HeroModel) => void;
 	equipItem: (item: ItemModel, hero: HeroModel) => void;
 	unequipItem: (item: ItemModel, hero: HeroModel) => void;
+	levelUp: (feature: FeatureModel, hero: HeroModel) => void;
 	redeemBoon: (boon: BoonModel, hero: HeroModel | null) => void;
 }
 
@@ -53,15 +55,15 @@ export class HeroesPage extends Component<Props, State> {
 	public render() {
 		let heroes = null;
 		if (this.props.game.heroes.length > 0) {
-			let info = null;
+			let banner = null;
 			if (this.props.game.heroes.some(h => !h.name)) {
-				info = (
+				banner = (
 					<Text type={TextType.Information}>
 						<b>You have unfilled hero slots.</b> Select a blank hero card to recruit a new level 1 hero.
 					</Text>
 				);
 			} else if (this.props.game.heroes.some(h => h.xp >= h.level)) {
-				info = (
+				banner = (
 					<Text type={TextType.Information}>
 						<b>Some of your heroes can level up.</b> Select their card to upgrade them.
 					</Text>
@@ -79,13 +81,15 @@ export class HeroesPage extends Component<Props, State> {
 						<HeroCard hero={hero} />
 					);
 				}
+
 				let info = null;
+				let hack = null;
 				if (!hero.name) {
 					info = (
 						<Text type={TextType.Information}>Empty</Text>
 					);
 				} else {
-					info = (
+					hack = (
 						<button className='hack' onClick={() => this.props.incrementXP(hero)}>Add XP</button>
 					);
 				}
@@ -98,13 +102,14 @@ export class HeroesPage extends Component<Props, State> {
 					<div key={hero.id}>
 						<PlayingCard front={card} onClick={() => this.setState({ selectedHero: hero })} />
 						{info}
+						{hack}
 					</div>
 				);
 			});
 
 			heroes = (
 				<div>
-					{info}
+					{banner}
 					<CardList cards={heroCards} />
 				</div>
 			);
@@ -136,7 +141,7 @@ export class HeroesPage extends Component<Props, State> {
 
 		let dialog = null;
 		if (this.state.selectedHero) {
-			if (!this.state.selectedHero.name || (this.state.selectedHero.xp >= this.state.selectedHero.level)) {
+			if (!this.state.selectedHero.name) {
 				dialog = (
 					<Dialog
 						content={(
@@ -168,8 +173,9 @@ export class HeroesPage extends Component<Props, State> {
 							<CharacterSheetPanel
 								hero={this.state.selectedHero}
 								game={this.props.game}
-								equipItem={(item, hero) => this.props.equipItem(item, hero)}
-								unequipItem={(item, hero) => this.props.unequipItem(item, hero)}
+								equipItem={this.props.equipItem}
+								unequipItem={this.props.unequipItem}
+								levelUp={this.props.levelUp}
 							/>
 						)}
 						onClickOff={() => {

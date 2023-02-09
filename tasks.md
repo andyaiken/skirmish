@@ -16,7 +16,6 @@
 
 * Show the XP required as a gauge
 * Show damage bonuses / resistances grouped by category
-* Show the level up panel beside the character sheet if required
 
 ### Encounter Map Panel
 
@@ -37,10 +36,11 @@
 * Actions
 * Monsters
 * Features and Actons should indicate where they come from (universal, species, role, background, item)
+* Cleric / Paladin as role or background
 
 ## Bugs
 
-* It's possible to have the same proficiency twice, or to run out of proficiencies to learn
+* It's possible to run out of proficiencies to learn
   * Might have to add some code to a feature to see whether it can be chosen
 
 ## Tech Debt

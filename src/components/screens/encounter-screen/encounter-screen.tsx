@@ -3,7 +3,7 @@ import { EncounterModel, EncounterState, getEncounterState } from '../../../mode
 import { GameModel } from '../../../models/game';
 import { HeroModel } from '../../../models/hero';
 import { ItemModel } from '../../../models/item';
-import { CharacterSheetPanel, EncounterMapPanel, InitiativeListPanel } from '../../panels';
+import { EncounterMapPanel, InitiativeListPanel } from '../../panels';
 
 import './encounter-screen.scss';
 
@@ -90,12 +90,6 @@ export class EncounterScreen extends Component<Props> {
 			case EncounterState.Active:
 				controls = (
 					<div>
-						<CharacterSheetPanel
-							hero={null as unknown as HeroModel}
-							game={this.props.game}
-							equipItem={(item, hero) => this.props.equipItem(item, hero)}
-							unequipItem={(item, hero) => this.props.unequipItem(item, hero)}
-						/>
 						<div>action card slots</div>
 						<button onClick={() => this.props.finishEncounter(EncounterFinishState.Retreat)}>Retreat</button>
 						<button onClick={() => this.props.finishEncounter(EncounterFinishState.Defeat)}>Surrender</button>

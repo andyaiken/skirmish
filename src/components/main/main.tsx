@@ -13,6 +13,7 @@ import { Text, TextType } from '../../controls';
 import { PlayingCard } from '../utility';
 
 import './main.scss';
+import { FeatureModel } from '../../models/feature';
 
 enum ScreenType {
 	Landing = 'landing',
@@ -134,13 +135,23 @@ export class Main extends Component<Props, State> {
 		});
 	}
 
+	levelUp = (feature: FeatureModel, hero: HeroModel) => {
+		hero.xp -= hero.level;
+		hero.level += 1;
+		hero.features.push(feature);
+
+		this.setState({
+			game: this.state.game
+		});
+	}
+
 	redeemBoon = (boon: BoonModel, hero: HeroModel | null) => {
 		const game = this.state.game as GameModel;
 		game.boons = game.boons.filter(b => b.id !== boon.id);
 
 		switch (boon.type) {
 			case BoonType.ExtraHero:
-				game.heroes.push(createHero());
+				addHeroToGame(game, createHero());
 				break;
 			case BoonType.ExtraXP:
 				(hero as HeroModel).xp += boon.data as number;
@@ -230,8 +241,7 @@ export class Main extends Component<Props, State> {
 						);
 					} else {
 						// Add a new level 1 hero
-						game.heroes.push(createHero());
-						game.heroes.sort((a, b) => a.name > b.name ? 1 : -1);
+						addHeroToGame(game, createHero());
 						// Add the region's boon
 						game.boons.push(region.boon);
 						// Show message
@@ -334,6 +344,7 @@ export class Main extends Component<Props, State> {
 						incrementXP={this.incrementXP}
 						equipItem={this.equipItem}
 						unequipItem={this.unequipItem}
+						levelUp={this.levelUp}
 						redeemBoon={this.redeemBoon}
 						startEncounter={this.startEncounter}
 						endCampaign={this.endCampaign}

@@ -2,6 +2,7 @@ import { Component } from 'react';
 import { Selector } from '../../../controls';
 import { BoonModel } from '../../../models/boon';
 import { CampaignMapRegionModel } from '../../../models/campaign-map';
+import { FeatureModel } from '../../../models/feature';
 import { GameModel } from '../../../models/game';
 import { HeroModel } from '../../../models/hero';
 import { ItemModel } from '../../../models/item';
@@ -17,6 +18,7 @@ interface Props {
 	incrementXP: (hero: HeroModel) => void;
 	equipItem: (item: ItemModel, hero: HeroModel) => void;
 	unequipItem: (item: ItemModel, hero: HeroModel) => void;
+	levelUp: (feature: FeatureModel, hero: HeroModel) => void;
 	redeemBoon: (boon: BoonModel, hero: HeroModel | null) => void;
 	startEncounter: (region: CampaignMapRegionModel, heroes: HeroModel[]) => void;
 	endCampaign: () => void;
@@ -29,8 +31,13 @@ interface State {
 export class CampaignScreen extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
+
+		let page = 'map';
+		if (props.game.heroes.some(h => h.name === '') || props.game.heroes.some(h => h.xp >= h.level)) {
+			page = 'heroes';
+		}
 		this.state = {
-			page: 'map'
+			page: page
 		};
 	}
 
@@ -51,6 +58,7 @@ export class CampaignScreen extends Component<Props, State> {
 						incrementXP={this.props.incrementXP}
 						equipItem={this.props.equipItem}
 						unequipItem={this.props.unequipItem}
+						levelUp={this.props.levelUp}
 						redeemBoon={this.props.redeemBoon}
 					/>
 				);

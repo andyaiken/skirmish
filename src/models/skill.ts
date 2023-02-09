@@ -8,7 +8,7 @@ export enum SkillCategory {
 
 export enum Skill {
 	None = 'None',
-	Any = 'Any skill',
+	Any = '[choose one skill]',
 	All = 'All skills',
 	Athletics = 'Athletics',
 	Brawl = 'Brawl',

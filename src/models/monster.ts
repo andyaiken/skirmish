@@ -115,9 +115,5 @@ export const getProficiencies = (monster: MonsterModel) => {
 		.filter(f => f.type === FeatureType.Proficiency)
 		.forEach(f => profs.push(f.proficiency));
 
-	if (profs.includes(ItemProficiency.All)) {
-		return [ItemProficiency.All];
-	}
-
 	return profs;
 }

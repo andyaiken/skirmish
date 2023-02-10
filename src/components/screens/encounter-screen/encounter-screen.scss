@@ -1,15 +1,16 @@
 .encounter-screen {
 	display: flex;
 
-	.encounter-left-panel {
+	.encounter-left-panel,
+	.encounter-right-panel {
 		flex: 0 0 250px;
+		border: 2px solid rgb(220, 220, 220);
+		border-radius: 10px;
+		padding: 10px 20px;
+		background-color: white;
 	}
 
 	.encounter-central-panel {
 		flex: 1 1 0;
-	}
-
-	.encounter-right-panel {
-		flex: 0 0 250px;
 	}
 }

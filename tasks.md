@@ -9,6 +9,11 @@
 ### Encounter Screen
 
 * Implement the encounter flow
+* Click on an initiative entry or a map token, to show a character sheet with combat data included
+  * Limited data for monsters (level, conditions, damage, wounds)
+* Monster names should be suffixed with ...1, 2 if duplicated
+* Show controls for current combatant, if it's a hero
+  * Otherwise, show log of monster's turn
 
 ## Panels
 

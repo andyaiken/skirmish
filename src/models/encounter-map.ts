@@ -29,6 +29,7 @@ export const generateEncounterMap = (): EncounterMapModel => {
 	};
 	addTile(map, tile, { x: 0, y: 0 });
 
+	/*
 	while (map.squares.length < 200) {
 		const tile = {
 			width: dice() + dice() + dice(),
@@ -40,6 +41,7 @@ export const generateEncounterMap = (): EncounterMapModel => {
 
 		addTile(map, tile, position);
 	}
+	*/
 
 	// TODO: Add decorations, obstructed terrain, blocked terrain
 

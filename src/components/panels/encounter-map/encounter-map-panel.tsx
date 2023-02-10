@@ -1,5 +1,6 @@
 import { Component } from 'react';
-import { EncounterModel } from '../../../models/encounter';
+import { CombatantModel } from '../../../models/combatant';
+import { EncounterModel, getCombatant } from '../../../models/encounter';
 import { getEncounterMapDimensions } from '../../../models/encounter-map';
 
 import './encounter-map-panel.scss';
@@ -23,20 +24,39 @@ export class EncounterMapPanel extends Component<Props> {
 		const squareWidthPC = 100 / width;
 		const squareHeightPC = 100 / height;
 
-		const squares = this.props.encounter.map.squares.map(square => {
+		const squares = this.props.encounter.map.squares.map(sq => {
 			return (
 				<div
-					key={square.id}
+					key={`${sq.x} ${sq.y}`}
 					className='encounter-map-square'
 					style={{
 						width: `${squareWidthPC}%`,
 						height: `${squareWidthPC}%`,
-						left: `${((square.x - dims.left) * squareWidthPC)}%`,
-						top: `${((square.y - dims.top) * squareHeightPC)}%`,
+						left: `${((sq.x - dims.left) * squareWidthPC)}%`,
+						top: `${((sq.y - dims.top) * squareHeightPC)}%`,
 						backgroundColor: 'white'
 					}}
 				/>
 			);
+		});
+
+		const tokens = this.props.encounter.combatData.map(cd => {
+			const combatant = getCombatant(this.props.encounter, cd.id) as CombatantModel;
+			return (
+				<div
+					key={cd.id}
+					className={`encounter-map-token ${cd.type.toLowerCase()}`}
+					style={{
+						width: `${squareWidthPC * combatant.size}%`,
+						height: `${squareWidthPC * combatant.size}%`,
+						left: `${((cd.position.x - dims.left) * squareWidthPC)}%`,
+						top: `${((cd.position.y - dims.top) * squareHeightPC)}%`
+					}}
+					title={combatant.name}
+				>
+					{combatant.name[0]}
+				</div>
+			)
 		});
 
 		return (
@@ -44,6 +64,7 @@ export class EncounterMapPanel extends Component<Props> {
 				<div className='encounter-map-inner'>
 					<div className='encounter-map-square-container'>
 						{squares}
+						{tokens}
 					</div>
 				</div>
 			</div>

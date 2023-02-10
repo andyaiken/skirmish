@@ -36,7 +36,7 @@ export class PlayingCard extends Component<Props> {
 			className += ' flipped';
 		}
 		return (
-			<div className={className} onClick={this.onClick} role='button'>
+			<div className={className} onClick={this.onClick}>
 				<div className='playing-card-inner'>
 					<div className='playing-card-front'>
 						{this.props.front}

@@ -3,7 +3,7 @@ import { Selector, Tag, Text, TextType } from '../../../controls';
 import { getBackground } from '../../../models/background';
 import { FeatureModel } from '../../../models/feature';
 import { GameModel } from '../../../models/game';
-import { getActionDeck, getFeatureDeck, HeroModel } from '../../../models/hero';
+import { CombatantModel, getActionDeck, getFeatureDeck } from '../../../models/combatant';
 import { ItemModel } from '../../../models/item';
 import { getRole } from '../../../models/role';
 import { getSpecies } from '../../../models/species';
@@ -20,11 +20,11 @@ import './character-sheet-panel.scss';
 type ViewType = 'stats' | 'items' | 'features' | 'actions';
 
 interface Props {
-	hero: HeroModel;
+	hero: CombatantModel;
 	game: GameModel;
-	equipItem: (item: ItemModel, hero: HeroModel) => void;
-	unequipItem: (item: ItemModel, hero: HeroModel) => void;
-	levelUp: (feature: FeatureModel, hero: HeroModel)=> void;
+	equipItem: (item: ItemModel, hero: CombatantModel) => void;
+	unequipItem: (item: ItemModel, hero: CombatantModel) => void;
+	levelUp: (feature: FeatureModel, hero: CombatantModel)=> void;
 }
 
 interface State {
@@ -41,7 +41,7 @@ export class CharacterSheetPanel extends Component<Props, State> {
 		};
 	}
 
-	drawFeatures = (hero: HeroModel) => {
+	drawFeatures = (hero: CombatantModel) => {
 		return shuffle(getFeatureDeck(hero))
 			.splice(0, 3)
 			.map(f => {
@@ -133,7 +133,7 @@ export class CharacterSheetPanel extends Component<Props, State> {
 }
 
 interface FeaturesPageProps {
-	hero: HeroModel;
+	hero: CombatantModel;
 }
 
 class FeaturesPage extends Component<FeaturesPageProps> {
@@ -156,7 +156,7 @@ class FeaturesPage extends Component<FeaturesPageProps> {
 }
 
 interface ActionsPageProps {
-	hero: HeroModel;
+	hero: CombatantModel;
 }
 
 class ActionsPage extends Component<ActionsPageProps> {

@@ -2,7 +2,7 @@ import { Component } from 'react';
 import { Selector, Text, TextType } from '../../../../controls';
 import { DamageCategory, DamageType } from '../../../../models/damage';
 import { FeatureModel, FeatureType, hasChoice } from '../../../../models/feature';
-import { getProficiencies, HeroModel } from '../../../../models/hero';
+import { CombatantModel, getProficiencies } from '../../../../models/combatant';
 import { ItemProficiency } from '../../../../models/item-proficiency';
 import { Skill, SkillCategory } from '../../../../models/skill';
 import { Trait } from '../../../../models/trait';
@@ -12,7 +12,7 @@ import { CardList, PlayingCard, PlayingCardSide } from '../../../utility';
 import './level-up.scss';
 
 interface Props {
-	hero: HeroModel;
+	hero: CombatantModel;
 	features: FeatureModel[];
 	levelUp: (feature: FeatureModel) => void;
 }
@@ -93,7 +93,7 @@ export class LevelUp extends Component<Props, State> {
 
 interface ChoicePanelProps {
 	feature: FeatureModel;
-	hero: HeroModel;
+	hero: CombatantModel;
 	onChange: (feature: FeatureModel) => void;
 }
 

@@ -3,7 +3,7 @@ import { Dialog, Text, TextType } from '../../../../controls';
 import { BoonModel, BoonType } from '../../../../models/boon';
 import { FeatureModel } from '../../../../models/feature';
 import { GameModel } from '../../../../models/game';
-import { HeroModel } from '../../../../models/hero';
+import { CombatantModel } from '../../../../models/combatant';
 import { ItemModel } from '../../../../models/item';
 import { BoonCard, HeroCard, ItemCard, PlaceholderCard } from '../../../cards';
 import { CharacterSheetPanel, HeroBuilderPanel } from '../../../panels';
@@ -13,16 +13,16 @@ import './heroes-page.scss';
 
 interface Props {
 	game: GameModel;
-	addHero: (hero: HeroModel) => void;
-	incrementXP: (hero: HeroModel) => void;
-	equipItem: (item: ItemModel, hero: HeroModel) => void;
-	unequipItem: (item: ItemModel, hero: HeroModel) => void;
-	levelUp: (feature: FeatureModel, hero: HeroModel) => void;
-	redeemBoon: (boon: BoonModel, hero: HeroModel | null) => void;
+	addHero: (hero: CombatantModel) => void;
+	incrementXP: (hero: CombatantModel) => void;
+	equipItem: (item: ItemModel, hero: CombatantModel) => void;
+	unequipItem: (item: ItemModel, hero: CombatantModel) => void;
+	levelUp: (feature: FeatureModel, hero: CombatantModel) => void;
+	redeemBoon: (boon: BoonModel, hero: CombatantModel | null) => void;
 }
 
 interface State {
-	selectedHero: HeroModel | null;
+	selectedHero: CombatantModel | null;
 	selectedBoon: BoonModel | null;
 }
 
@@ -149,7 +149,7 @@ export class HeroesPage extends Component<Props, State> {
 								hero={this.state.selectedHero}
 								game={this.props.game}
 								finished={hero => {
-									const h = this.state.selectedHero as HeroModel;
+									const h = this.state.selectedHero as CombatantModel;
 									this.setState({
 										selectedHero: null
 									}, () => {

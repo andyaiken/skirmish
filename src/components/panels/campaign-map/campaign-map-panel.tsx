@@ -30,7 +30,7 @@ export class CampaignMapPanel extends Component<Props> {
 		const squareWidthPC = 100 / width;
 		const squareHeightPC = 100 / height;
 
-		const regions: JSX.Element[] = this.props.map.squares.map(square => {
+		const squares: JSX.Element[] = this.props.map.squares.map(square => {
 			const region = this.props.map.regions.find(r => r.id === square.regionID);
 			const color = region ? region.color : 'white';
 
@@ -55,21 +55,17 @@ export class CampaignMapPanel extends Component<Props> {
 						borderBottomWidth: bottom ? 1 : 0,
 						borderLeftWidth: left ? 1 : 0
 					}}
-					role='button'
 					title={region ? region.name : 'Conquered'}
 					onClick={e => this.onClick(e, square)}
 				/>
 			);
 		});
 
-		const totalHeight = 620;
-		const totalWidth = totalHeight * width / height;
-
 		return (
-			<div className='campaign-map' style={{ height: `${totalHeight}px` }} role='button' onClick={() => this.props.onSelectRegion(null)}>
-				<div className='campaign-map-inner' style={{ width: `${totalWidth}px` }}>
+			<div className='campaign-map' onClick={() => this.props.onSelectRegion(null)}>
+				<div className='campaign-map-inner'>
 					<div className='campaign-map-square-container'>
-						{regions}
+						{squares}
 					</div>
 				</div>
 			</div>

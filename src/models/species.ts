@@ -18,15 +18,17 @@ import { Trait } from './trait';
 export interface SpeciesModel {
 	id: string;
 	name: string;
+	size: number;
 	traits: Trait[];
 	features: FeatureModel[];
 	actions: ActionModel[];
 }
 
-export const SpeciesList: SpeciesModel[] = [
+const HeroSpeciesList: SpeciesModel[] = [
 	{
 		id: 'species-human',
 		name: 'Human',
+		size: 1,
 		traits: [
 			Trait.All
 		],
@@ -42,6 +44,7 @@ export const SpeciesList: SpeciesModel[] = [
 	{
 		id: 'species-construct',
 		name: 'Construct',
+		size: 1,
 		traits: [
 			Trait.Endurance
 		],
@@ -58,6 +61,7 @@ export const SpeciesList: SpeciesModel[] = [
 	{
 		id: 'species-deva',
 		name: 'Deva',
+		size: 1,
 		traits: [
 			Trait.Resolve
 		],
@@ -76,6 +80,7 @@ export const SpeciesList: SpeciesModel[] = [
 	{
 		id: 'species-dwarf',
 		name: 'Dwarf',
+		size: 1,
 		traits: [
 			Trait.Endurance
 		],
@@ -93,6 +98,7 @@ export const SpeciesList: SpeciesModel[] = [
 	{
 		id: 'species-elf',
 		name: 'Elf',
+		size: 1,
 		traits: [
 			Trait.Speed
 		],
@@ -110,6 +116,7 @@ export const SpeciesList: SpeciesModel[] = [
 	{
 		id: 'species-gnome',
 		name: 'Gnome',
+		size: 1,
 		traits: [
 			Trait.Speed
 		],
@@ -126,6 +133,7 @@ export const SpeciesList: SpeciesModel[] = [
 	{
 		id: 'species-minotaur',
 		name: 'Minotaur',
+		size: 1,
 		traits: [
 			Trait.Endurance
 		],
@@ -143,6 +151,7 @@ export const SpeciesList: SpeciesModel[] = [
 	{
 		id: 'species-pixie',
 		name: 'Pixie',
+		size: 1,
 		traits: [
 			Trait.Speed
 		],
@@ -160,6 +169,7 @@ export const SpeciesList: SpeciesModel[] = [
 	{
 		id: 'species-reptilian',
 		name: 'Reptilian',
+		size: 1,
 		traits: [
 			Trait.Speed
 		],
@@ -178,6 +188,7 @@ export const SpeciesList: SpeciesModel[] = [
 	{
 		id: 'species-shadowborn',
 		name: 'Shadowborn',
+		size: 1,
 		traits: [
 			Trait.Resolve
 		],
@@ -197,6 +208,7 @@ export const SpeciesList: SpeciesModel[] = [
 	{
 		id: 'species-werewolf',
 		name: 'Werewolf',
+		size: 1,
 		traits: [
 			Trait.Resolve
 		],
@@ -214,20 +226,43 @@ export const SpeciesList: SpeciesModel[] = [
 	}
 ];
 
+const MonsterSpeciesList: SpeciesModel[] = [
+	{
+		id: 'species-orc',
+		name: 'Orc',
+		size: 1,
+		traits: [
+			Trait.All
+		],
+		features: [
+			createDamageResistFeature(DamageType.All, 1)
+		],
+		actions: [
+			createActionPlaceholder('Fury'),
+			createActionPlaceholder('Ignore damage')
+		]
+	}
+];
+
 export const getSpecies = (id: string) => {
-	return SpeciesList.find(s => s.id === id);
+	const all = ([] as SpeciesModel[]).concat(HeroSpeciesList).concat(MonsterSpeciesList);
+	return all.find(s => s.id === id);
 }
 
-export const getSpeciesDeck = (game: GameModel) => {
-	const used = game.heroes.map(h => h.speciesID);
+export const getSpeciesDeck = (game: GameModel | null = null) => {
+	if (game) {
+		const used = game.heroes.map(h => h.speciesID);
 
-	const deck = SpeciesList
-		.filter(species => !used.includes(species.id))
-		.map(species => species.id);
+		const deck = HeroSpeciesList
+			.filter(species => !used.includes(species.id))
+			.map(species => species.id);
 
-	if (deck.length >= 3) {
-		return deck;
+		if (deck.length >= 3) {
+			return deck;
+		}
+
+		return HeroSpeciesList.map(species => species.id);
 	}
 
-	return SpeciesList.map(species => species.id);
+	return MonsterSpeciesList.map(species => species.id);
 }

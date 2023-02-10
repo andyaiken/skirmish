@@ -26,7 +26,7 @@ export interface RoleModel {
 	actions: ActionModel[];
 }
 
-export const RoleList: RoleModel[] = [
+const RoleList: RoleModel[] = [
 	{
 		id: 'role-barbarian',
 		name: 'Barbarian',
@@ -297,15 +297,17 @@ export const getRole = (id: string) => {
 	return RoleList.find(r => r.id === id);
 }
 
-export const getRoleDeck = (game: GameModel) => {
-	const used = game.heroes.map(h => h.roleID);
+export const getRoleDeck = (game: GameModel | null = null) => {
+	if (game) {
+		const used = game.heroes.map(h => h.roleID);
 
-	const deck = RoleList
-		.filter(role => !used.includes(role.id))
-		.map(role => role.id);
+		const deck = RoleList
+			.filter(role => !used.includes(role.id))
+			.map(role => role.id);
 
-	if (deck.length >= 3) {
-		return deck;
+		if (deck.length >= 3) {
+			return deck;
+		}
 	}
 
 	return RoleList.map(role => role.id);

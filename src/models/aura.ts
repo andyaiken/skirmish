@@ -1,6 +1,6 @@
-import { guid } from "../utils/utils";
-import { DamageCategory, DamageType } from "./damage";
-import { FeatureModel } from "./feature";
+import { guid } from '../utils/utils';
+import { DamageCategory, DamageType } from './damage';
+import { FeatureModel } from './feature';
 
 export enum AuraType {
 	None = 'None',

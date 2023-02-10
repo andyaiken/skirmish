@@ -2,14 +2,14 @@ import { Component } from 'react';
 
 import { BoonModel, BoonType } from '../../models/boon';
 import { CampaignMapRegionModel, removeRegion } from '../../models/campaign-map';
-import { createEncounter, EncounterModel, getAllHeroesInEncounter, getDeadHeroes, getSurvivingHeroes } from '../../models/encounter';
+import { createEncounter, EncounterModel, getAllHeroesInEncounter, getDeadHeroes, getSurvivingHeroes, rollInitiative } from '../../models/encounter';
 import { addHeroToGame, createGame, GameModel } from '../../models/game';
-import { createHero, HeroModel } from '../../models/hero';
+import { CombatantModel, CombatantType, createCombatant } from '../../models/combatant';
 import { ItemModel } from '../../models/item';
 import { debounce } from '../../utils/utils';
 import { BoonCard } from '../cards';
 import { CampaignScreen, EncounterFinishState, EncounterScreen, LandingScreen } from '../screens';
-import { Text, TextType } from '../../controls';
+import { Dialog, Text, TextType } from '../../controls';
 import { PlayingCard } from '../utility';
 
 import './main.scss';
@@ -59,7 +59,8 @@ export class Main extends Component<Props, State> {
 
 	setScreen = (screen: ScreenType) => {
 		this.setState({
-			screen: screen
+			screen: screen,
+			dialog: null
 		});
 	};
 
@@ -89,7 +90,7 @@ export class Main extends Component<Props, State> {
 
 	continueCampaign = () => {
 		this.setState({
-			screen: ScreenType.Campaign
+			screen: !this.state.game?.encounter ? ScreenType.Campaign : ScreenType.Encounter
 		});
 	}
 
@@ -97,7 +98,7 @@ export class Main extends Component<Props, State> {
 
 	//#region Heroes page
 
-	addHero = (hero: HeroModel) => {
+	addHero = (hero: CombatantModel) => {
 		const game = this.state.game as GameModel;
 		addHeroToGame(game, hero);
 		this.setState({
@@ -105,7 +106,7 @@ export class Main extends Component<Props, State> {
 		});
 	}
 
-	incrementXP = (hero: HeroModel) => {
+	incrementXP = (hero: CombatantModel) => {
 		// DEV ONLY
 		hero.xp += 1;
 		this.setState({
@@ -113,29 +114,7 @@ export class Main extends Component<Props, State> {
 		});
 	}
 
-	equipItem = (item: ItemModel, hero: HeroModel) => {
-		const game = this.state.game as GameModel;
-
-		game.items = game.items.filter(i => i !== item);
-		hero.items.push(item);
-
-		this.setState({
-			game: game
-		});
-	}
-
-	unequipItem = (item: ItemModel, hero: HeroModel) => {
-		const game = this.state.game as GameModel;
-
-		hero.items = hero.items.filter(i => i !== item);
-		game.items.push(item);
-
-		this.setState({
-			game: game
-		});
-	}
-
-	levelUp = (feature: FeatureModel, hero: HeroModel) => {
+	levelUp = (feature: FeatureModel, hero: CombatantModel) => {
 		hero.xp -= hero.level;
 		hero.level += 1;
 		hero.features.push(feature);
@@ -145,19 +124,19 @@ export class Main extends Component<Props, State> {
 		});
 	}
 
-	redeemBoon = (boon: BoonModel, hero: HeroModel | null) => {
+	redeemBoon = (boon: BoonModel, hero: CombatantModel | null) => {
 		const game = this.state.game as GameModel;
 		game.boons = game.boons.filter(b => b.id !== boon.id);
 
 		switch (boon.type) {
 			case BoonType.ExtraHero:
-				addHeroToGame(game, createHero());
+				addHeroToGame(game, createCombatant(CombatantType.Hero));
 				break;
 			case BoonType.ExtraXP:
-				(hero as HeroModel).xp += boon.data as number;
+				(hero as CombatantModel).xp += boon.data as number;
 				break;
 			case BoonType.LevelUp:
-				(hero as HeroModel).xp += (hero as HeroModel).level;
+				(hero as CombatantModel).xp += (hero as CombatantModel).level;
 				break;
 			case BoonType.MagicItem:
 				game.items.push(boon.data as ItemModel);
@@ -173,7 +152,7 @@ export class Main extends Component<Props, State> {
 
 	//#region Campaign map page
 
-	startEncounter = (region: CampaignMapRegionModel, heroes: HeroModel[]) => {
+	startEncounter = (region: CampaignMapRegionModel, heroes: CombatantModel[]) => {
 		if (this.state.game) {
 			const game = this.state.game;
 			game.encounter = createEncounter(region, heroes);
@@ -199,6 +178,37 @@ export class Main extends Component<Props, State> {
 
 	//#region Encounter page
 
+	rollInitiative = (encounter: EncounterModel) => {
+		if (this.state.game) {
+			rollInitiative(encounter);
+			this.setState({
+				game: this.state.game
+			});
+		}
+	}
+
+	equipItem = (item: ItemModel, combatant: CombatantModel) => {
+		const game = this.state.game as GameModel;
+
+		game.items = game.items.filter(i => i !== item);
+		combatant.items.push(item);
+
+		this.setState({
+			game: game
+		});
+	}
+
+	unequipItem = (item: ItemModel, combatant: CombatantModel) => {
+		const game = this.state.game as GameModel;
+
+		combatant.items = combatant.items.filter(i => i !== item);
+		game.items.push(item);
+
+		this.setState({
+			game: game
+		});
+	}
+
 	finishEncounter = (state: EncounterFinishState) => {
 		const game = this.state.game;
 		if (!game) {
@@ -219,15 +229,15 @@ export class Main extends Component<Props, State> {
 		switch (state) {
 			case EncounterFinishState.Victory: {
 				// Remove dead heroes from the game
-				const deadHeroes = getDeadHeroes(encounter, game);
+				const deadHeroes = getDeadHeroes(encounter);
 				game.heroes = game.heroes.filter(h => !deadHeroes.includes(h));
 				// Get equipment from dead heroes, add it to game loot
 				deadHeroes.forEach(h => game.items.push(...h.items));
 				// Increment XP for surviving heroes
-				getSurvivingHeroes(encounter, game).forEach(h => h.xp += 1);
-				// Decrement the number of encounters remaining for this region
-				region.count -= 1;
-				if (region.count <= 0) {
+				getSurvivingHeroes(encounter).forEach(h => h.xp += 1);
+				// Remove the first encounter for this region
+				region.encounters.splice(0, 1);
+				if (region.encounters.length <= 0) {
 					// Conquer the region
 					removeRegion(game.map, region);
 					if (game.map.squares.every(sq => sq.regionID === '')) {
@@ -241,7 +251,7 @@ export class Main extends Component<Props, State> {
 						);
 					} else {
 						// Add a new level 1 hero
-						addHeroToGame(game, createHero());
+						addHeroToGame(game, createCombatant(CombatantType.Hero));
 						// Add the region's boon
 						game.boons.push(region.boon);
 						// Show message
@@ -272,7 +282,7 @@ export class Main extends Component<Props, State> {
 			}
 			case EncounterFinishState.Retreat: {
 				// Remove dead heroes from the game
-				const deadHeroes = getDeadHeroes(encounter, game);
+				const deadHeroes = getDeadHeroes(encounter);
 				game.heroes = game.heroes.filter(h => !deadHeroes.includes(h));
 				// Clear the current encounter
 				game.encounter = null;
@@ -288,7 +298,7 @@ export class Main extends Component<Props, State> {
 			}
 			case EncounterFinishState.Defeat: {
 				// Remove all participating heroes from the game
-				const heroes = getAllHeroesInEncounter(encounter, game);
+				const heroes = getAllHeroesInEncounter(encounter);
 				game.heroes = game.heroes.filter(h => !heroes.includes(h));
 				// Clear the current encounter
 				game.encounter = null;
@@ -355,6 +365,7 @@ export class Main extends Component<Props, State> {
 					<EncounterScreen
 						encounter={this.state.game?.encounter as EncounterModel}
 						game={this.state.game as GameModel}
+						rollInitiative={this.rollInitiative}
 						equipItem={this.equipItem}
 						unequipItem={this.unequipItem}
 						finishEncounter={this.finishEncounter}
@@ -378,6 +389,7 @@ export class Main extends Component<Props, State> {
 				<div className='skirmish-content'>
 					{this.getContent()}
 				</div>
+				{this.state.dialog ? <Dialog content={this.state.dialog} /> : null}
 			</div>
 		);
 	}

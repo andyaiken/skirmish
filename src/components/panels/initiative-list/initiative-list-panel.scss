@@ -1,3 +1,20 @@
 .initiative-list-panel {
 	display: block;
+
+	.initiative-entry {
+		margin: 10px 0;
+		display: flex;
+		align-items: center;
+
+		.initiative-entry-name {
+			flex: 1 1 0;
+			font-size: 18px;
+			font-weight: 600;
+		}
+
+		.initiative-entry-value {
+			flex: 0 0 auto;
+			font-size: 15px;
+		}
+	}
 }

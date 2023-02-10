@@ -29,14 +29,51 @@
 
 * Mountebank, Thief and Pixie should have an attack redirection aura
 * Noble should have trait buffing / skill buffing auras
+* Monster species:
+  * Orc
+  * Goblin
+  * Kobold
+  * Troll
+  * Ogre
+  * Giant
+  * Elemental
+  * Wraith
+  * Zombie
+  * Ghoul
+  * Vampire
+  * Dark elf
+* Roles / backgrounds:
+  * Cleric
+  * Paladin
+  * Cultist
+  * Assassin / poisoner
+  * Bandit
+  * Blackguard
+  * Champion
+  * Evoker
+  * Guard / warden
+  * Illusionist
+  * Knight
+  * Mage
+  * Necromancer
+  * Shaman
+  * Scout
+  * Spy
+  * Thug
+  * Warpriest
+  * Warrior
+  * Warlock
+  * Warlord
 
 ## To Do
 
+* Regions should have a seed for each encounter that is used to generate its map and monsters
+* Monsters should have add-on templates (leader, skirmisher, lurker, brute, artillery, soldier, etc)
+* Encounter maps should (occasionally) have items scattered about
 * Magic item generation (add features and actions)
 * Actions
-* Monsters
-* Features and Actons should indicate where they come from (universal, species, role, background, item)
-* Cleric / Paladin as role or background
+* Potions (add features when used)
+* Features and Actions should indicate where they come from (universal, species, role, background, item)
 
 ## Bugs
 

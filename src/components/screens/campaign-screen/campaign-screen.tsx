@@ -4,7 +4,7 @@ import { BoonModel } from '../../../models/boon';
 import { CampaignMapRegionModel } from '../../../models/campaign-map';
 import { FeatureModel } from '../../../models/feature';
 import { GameModel } from '../../../models/game';
-import { HeroModel } from '../../../models/hero';
+import { CombatantModel } from '../../../models/combatant';
 import { ItemModel } from '../../../models/item';
 import { CampaignMapPage } from './campaign-map-page/campaign-map-page';
 
@@ -14,13 +14,13 @@ import { OptionsPage } from './options-page/options-page';
 
 interface Props {
 	game: GameModel;
-	addHero: (hero: HeroModel) => void;
-	incrementXP: (hero: HeroModel) => void;
-	equipItem: (item: ItemModel, hero: HeroModel) => void;
-	unequipItem: (item: ItemModel, hero: HeroModel) => void;
-	levelUp: (feature: FeatureModel, hero: HeroModel) => void;
-	redeemBoon: (boon: BoonModel, hero: HeroModel | null) => void;
-	startEncounter: (region: CampaignMapRegionModel, heroes: HeroModel[]) => void;
+	addHero: (hero: CombatantModel) => void;
+	incrementXP: (hero: CombatantModel) => void;
+	equipItem: (item: ItemModel, hero: CombatantModel) => void;
+	unequipItem: (item: ItemModel, hero: CombatantModel) => void;
+	levelUp: (feature: FeatureModel, hero: CombatantModel) => void;
+	redeemBoon: (boon: BoonModel, hero: CombatantModel | null) => void;
+	startEncounter: (region: CampaignMapRegionModel, heroes: CombatantModel[]) => void;
 	endCampaign: () => void;
 }
 

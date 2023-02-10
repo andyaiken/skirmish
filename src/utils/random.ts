@@ -1,7 +1,7 @@
 export const dice = (count = 1) => {
 	const rolls = [];
 
-	while (rolls.length < (Math.min(count, 1))) {
+	while (rolls.length < (Math.max(count, 1))) {
 		let result = 0;
 		let rollAgain = true;
 

@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import { EncounterModel, EncounterState, getEncounterState } from '../../../models/encounter';
 import { GameModel } from '../../../models/game';
-import { HeroModel } from '../../../models/hero';
+import { CombatantModel } from '../../../models/combatant';
 import { ItemModel } from '../../../models/item';
 import { EncounterMapPanel, InitiativeListPanel } from '../../panels';
 
@@ -16,8 +16,9 @@ export enum EncounterFinishState {
 interface Props {
 	encounter: EncounterModel;
 	game: GameModel;
-	equipItem: (item: ItemModel, hero: HeroModel) => void;
-	unequipItem: (item: ItemModel, hero: HeroModel) => void;
+	rollInitiative: (encounter: EncounterModel) => void;
+	equipItem: (item: ItemModel, combatant: CombatantModel) => void;
+	unequipItem: (item: ItemModel, combatant: CombatantModel) => void;
 	finishEncounter: (state: EncounterFinishState) => void;
 }
 
@@ -37,34 +38,34 @@ export class EncounterScreen extends Component<Props> {
 			// Roll Speed to set movement points; roll and apply movement conditions
 			// Roll Perception to set Senses
 			// Draw three action cards
-			// Apply auto-healing effects from auras
-			// Apply auto-damage effects from auras
+			// Apply 'auto-healing' effects from auras
+			// Apply 'auto-damage' effects from auras
 			// Combatant moves / takes an action
 			// When (action taken and movement points are gone) or (combatant chooses), end turn
 
 	// Moving:
 	// Move into any adjacent empty square, including diagonals, for 1 movement point
-		// If the square you are moving into is obstructed, add 1 movement point
-		// If the square you are moving out of is adjacent to a standing opponent, add 4 movement points
-		// Apply ease movement effects from auras
-		// Apply prevent movement effects from auras
+		// If any of the squares you are moving into are obstructed, add 1 movement point
+		// If any of the squares you are moving out of is adjacent to a standing opponent, add 4 movement points
+		// Apply 'ease movement' effects from auras
+		// Apply 'prevent movement' effects from auras
 		// If you are prone or hidden, movement point costs are x2
 
 	// Using an action:
 	// Select targets (self / allies / opponents, within range of weapon / implement, cannot target opponents whose Stealth beats your Perception)
 	// Apply initial effects
-	// If Unreliable weapon, roll Unreliable; if 10 or over, attack ends
-	// Otherwise, for each target:
-		// Apply pre-attack effects
-		// If attack:
+	// If attack:
+		// If requires weapon, and Unreliable weapon, roll Unreliable; if 10 or over, attack ends
+		// Otherwise, for each target:
+			// Apply pre-attack effects
 			// Roll attacker's attack skill vs target's trait
 			// Bonus equal to allies adjacent to the target
 			// Apply hit / miss effects
-		// Apply post-attack effects
+			// Apply post-attack effects
 	// Apply finish effects
 
 	// Taking damage:
-	// Roll damage rank, add attacker's damage bonus, add weapon damage bonus, subtract target's damage resistance; apply damage vulnerability / damage resistance effects from auras; add this to the target’s Damage
+	// Roll damage rank, add attacker's damage bonus, add weapon damage bonus, subtract target's damage resistance; apply 'damage vulnerability' / 'damage resistance' effects from auras; add this to the target’s Damage
 	// If more than 0:
 		// Roll target's Endurance; if result less than Damage, reset Damage to 0 and increment Wounds
 		// If target's Wounds equals Resolve rank, unconscious; if target's Wounds greater than Resolve rank, dead
@@ -89,8 +90,7 @@ export class EncounterScreen extends Component<Props> {
 		switch (getEncounterState(this.props.encounter)) {
 			case EncounterState.Active:
 				controls = (
-					<div>
-						<div>action card slots</div>
+					<div className='encounter-right-panel'>
 						<button onClick={() => this.props.finishEncounter(EncounterFinishState.Retreat)}>Retreat</button>
 						<button onClick={() => this.props.finishEncounter(EncounterFinishState.Defeat)}>Surrender</button>
 					</div>
@@ -98,14 +98,14 @@ export class EncounterScreen extends Component<Props> {
 				break;
 			case EncounterState.Won:
 				controls = (
-					<div>
+					<div className='encounter-right-panel'>
 						<button onClick={() => this.props.finishEncounter(EncounterFinishState.Victory)}>Victory</button>
 					</div>
 				);
 				break;
 			case EncounterState.Defeated:
 				controls = (
-					<div>
+					<div className='encounter-right-panel'>
 						<button onClick={() => this.props.finishEncounter(EncounterFinishState.Defeat)}>Defeat</button>
 					</div>
 				);
@@ -114,8 +114,17 @@ export class EncounterScreen extends Component<Props> {
 
 		return (
 			<div className='encounter-screen'>
-				<InitiativeListPanel />
-				<EncounterMapPanel map={this.props.encounter.map} />
+				<div className='encounter-left-panel'>
+					<InitiativeListPanel
+						encounter={this.props.encounter}
+						rollInitiative={this.props.rollInitiative}
+					/>
+				</div>
+				<div className='encounter-central-panel'>
+					<EncounterMapPanel
+						encounter={this.props.encounter}
+					/>
+				</div>
 				{controls}
 			</div>
 		);

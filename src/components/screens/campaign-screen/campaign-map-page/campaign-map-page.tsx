@@ -2,7 +2,7 @@ import { Component } from 'react';
 import { Dialog, Text, TextType } from '../../../../controls';
 import { CampaignMapRegionModel, canAttackRegion, getCampaignMapSquares } from '../../../../models/campaign-map';
 import { GameModel } from '../../../../models/game';
-import { HeroModel } from '../../../../models/hero';
+import { CombatantModel } from '../../../../models/combatant';
 import { BoonCard, HeroCard } from '../../../cards';
 import { CampaignMapPanel } from '../../../panels';
 import { CardList, PlayingCard, StatValue } from '../../../utility';
@@ -11,13 +11,13 @@ import './campaign-map-page.scss';
 
 interface Props {
 	game: GameModel;
-	startEncounter: (region: CampaignMapRegionModel, heroes: HeroModel[]) => void;
+	startEncounter: (region: CampaignMapRegionModel, heroes: CombatantModel[]) => void;
 }
 
 interface State {
 	showHeroSelection: boolean;
 	selectedRegion: CampaignMapRegionModel | null;
-	selectedHeroes: HeroModel[];
+	selectedHeroes: CombatantModel[];
 }
 
 export class CampaignMapPage extends Component<Props, State> {
@@ -30,7 +30,7 @@ export class CampaignMapPage extends Component<Props, State> {
 		};
 	}
 
-	selectHero = (hero: HeroModel) => {
+	selectHero = (hero: CombatantModel) => {
 		const selected = this.state.selectedHeroes;
 		selected.push(hero);
 		this.setState({
@@ -38,7 +38,7 @@ export class CampaignMapPage extends Component<Props, State> {
 		});
 	}
 
-	deselectHero = (hero: HeroModel) => {
+	deselectHero = (hero: CombatantModel) => {
 		const selected = this.state.selectedHeroes.filter(h => h.id !== hero.id);
 		this.setState({
 			selectedHeroes: selected
@@ -59,7 +59,7 @@ export class CampaignMapPage extends Component<Props, State> {
 					<Text type={TextType.SubHeading}>{this.state.selectedRegion.name}</Text>
 					<hr />
 					<StatValue label='Size' value={`${getCampaignMapSquares(this.props.game.map, this.state.selectedRegion).length} sq mi`} />
-					<StatValue label='Encounters' value={this.state.selectedRegion.count} />
+					<StatValue label='Encounters' value={this.state.selectedRegion.encounters.length} />
 					<hr />
 					<Text>If you conquer {this.state.selectedRegion.name}, you will recieve:</Text>
 					<div className='boon'>

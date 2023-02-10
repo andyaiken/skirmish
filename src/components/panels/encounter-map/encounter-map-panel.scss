@@ -1,3 +1,20 @@
-.encounter-map-panel {
-	display: block;
+.encounter-map {
+	background-color: rgb(240, 240, 240);
+
+	.encounter-map-inner {
+		width: 620px;
+		height: 620px;
+		margin: 0 auto;
+
+		.encounter-map-square-container {
+			position: relative;
+			width: 100%;
+			height: 100%;
+	
+			.encounter-map-square {
+				position: absolute;
+				border: 1px solid rgb(200, 200, 200);
+			}
+		}
+	}
 }

@@ -1,3 +1,15 @@
 .encounter-screen {
-	display: block;
+	display: flex;
+
+	.encounter-left-panel {
+		flex: 0 0 250px;
+	}
+
+	.encounter-central-panel {
+		flex: 1 1 0;
+	}
+
+	.encounter-right-panel {
+		flex: 0 0 250px;
+	}
 }

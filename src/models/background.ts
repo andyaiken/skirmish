@@ -23,7 +23,7 @@ export interface BackgroundModel {
 	actions: ActionModel[];
 }
 
-export const BackgroundList: BackgroundModel[] = [
+const BackgroundList: BackgroundModel[] = [
 	{
 		id: 'background-acrobat',
 		name: 'Acrobat',
@@ -152,15 +152,17 @@ export const getBackground = (id: string) => {
 	return BackgroundList.find(b => b.id === id);
 }
 
-export const getBackgroundDeck = (game: GameModel) => {
-	const used = game.heroes.map(h => h.backgroundID);
+export const getBackgroundDeck = (game: GameModel | null = null) => {
+	if (game) {
+		const used = game.heroes.map(h => h.backgroundID);
 
-	const deck = BackgroundList
-		.filter(background => !used.includes(background.id))
-		.map(background => background.id);
+		const deck = BackgroundList
+			.filter(background => !used.includes(background.id))
+			.map(background => background.id);
 
-	if (deck.length >= 3) {
-		return deck;
+		if (deck.length >= 3) {
+			return deck;
+		}
 	}
 
 	return BackgroundList.map(background => background.id);

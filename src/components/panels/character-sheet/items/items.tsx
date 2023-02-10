@@ -1,18 +1,18 @@
-import { Component } from "react";
+import { Component } from 'react';
 
-import { Dialog, Text, TextType } from "../../../../controls";
-import { GameModel } from "../../../../models/game";
-import { getProficiencies, HeroModel } from "../../../../models/hero";
-import { ItemModel } from "../../../../models/item";
-import { ItemLocation } from "../../../../models/item-location";
-import { ItemProficiency } from "../../../../models/item-proficiency";
-import { ItemCard } from "../../../cards";
-import { PlayingCard } from "../../../utility";
+import { Dialog, Text, TextType } from '../../../../controls';
+import { GameModel } from '../../../../models/game';
+import { CombatantModel, getProficiencies } from '../../../../models/combatant';
+import { ItemModel } from '../../../../models/item';
+import { ItemLocation } from '../../../../models/item-location';
+import { ItemProficiency } from '../../../../models/item-proficiency';
+import { ItemCard } from '../../../cards';
+import { PlayingCard } from '../../../utility';
 
 import './items.scss';
 
 interface Props {
-	hero: HeroModel;
+	hero: CombatantModel;
 	game: GameModel;
 	equipItem: (item: ItemModel) => void;
 	unequipItem: (item: ItemModel) => void;

@@ -1,16 +1,16 @@
-import { Component } from "react";
-import { Tag, Text } from "../../../../controls";
-import { getAuraDescription } from "../../../../models/aura";
-import { DamageType } from "../../../../models/damage";
-import { getAuras, getDamageBonusValue, getDamageResistanceValue, getProficiencies, getSkillValue, getTraitValue, HeroModel } from "../../../../models/hero";
-import { Skill } from "../../../../models/skill";
-import { Trait } from "../../../../models/trait";
-import { Box, StatValue } from "../../../utility";
+import { Component } from 'react';
+import { Tag, Text } from '../../../../controls';
+import { getAuraDescription } from '../../../../models/aura';
+import { DamageType } from '../../../../models/damage';
+import { CombatantModel, getAuras, getDamageBonusValue, getDamageResistanceValue, getProficiencies, getSkillValue, getTraitValue } from '../../../../models/combatant';
+import { Skill } from '../../../../models/skill';
+import { Trait } from '../../../../models/trait';
+import { Box, StatValue } from '../../../utility';
 
 import './stats.scss';
 
 interface Props {
-	hero: HeroModel;
+	hero: CombatantModel;
 }
 
 export class Stats extends Component<Props> {

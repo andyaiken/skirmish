@@ -13,8 +13,8 @@ export interface CampaignMapSquareModel {
 export interface CampaignMapRegionModel {
 	id: string;
 	name: string;
-	count: number;
 	color: string;
+	encounters: string[];
 	boon: BoonModel;
 }
 
@@ -70,6 +70,10 @@ export const generateCampaignMap = (): CampaignMapModel => {
 	const regionCount = map.squares.length / 20;
 	while (map.regions.length !== regionCount) {
 		const count = dice();
+		const encounters: string[] = [];
+		while (encounters.length < count) {
+			encounters.push(guid());
+		}
 
 		// The lightest colour we will allow is rgb(229, 229, 229)
 		// This is so that the player (white) stands out
@@ -81,8 +85,8 @@ export const generateCampaignMap = (): CampaignMapModel => {
 		map.regions.push({
 			id: guid(),
 			name: generateName(),
-			count: count,
 			color: `rgb(${r}, ${g}, ${b})`,
+			encounters: encounters,
 			boon: generateBoon()
 		});
 	}

@@ -1,9 +1,8 @@
 import { Component } from 'react';
 import { Tag, Text, TextType } from '../../../controls';
 import { getBackground, getBackgroundDeck } from '../../../models/background';
-import { createProficiencyFeature, createSkillFeature, createTraitFeature } from '../../../models/feature';
 import { GameModel } from '../../../models/game';
-import { getProficiencies, HeroModel } from '../../../models/hero';
+import { applyCombatantCards, CombatantModel, getProficiencies } from '../../../models/combatant';
 import { getItem, getItems, ItemModel } from '../../../models/item';
 import { getRole, getRoleDeck } from '../../../models/role';
 import { getSpecies, getSpeciesDeck } from '../../../models/species';
@@ -15,20 +14,20 @@ import { CardList, PlayingCard, PlayingCardSide } from '../../utility';
 import './hero-builder-panel.scss';
 
 interface Props {
-	hero: HeroModel;
+	hero: CombatantModel;
 	game: GameModel;
-	finished: (hero: HeroModel) => void;
+	finished: (hero: CombatantModel) => void;
 }
 
 interface State {
-	hero: HeroModel;
+	hero: CombatantModel;
 }
 
 export class HeroBuilderPanel extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 
-		const hero = JSON.parse(JSON.stringify(props.hero)) as HeroModel;
+		const hero = JSON.parse(JSON.stringify(props.hero)) as CombatantModel;
 		if (hero.name === '') {
 			hero.name = generateName();
 		}
@@ -40,26 +39,7 @@ export class HeroBuilderPanel extends Component<Props, State> {
 
 	selectCards = (speciesID: string, roleID: string, backgroundID: string) => {
 		const hero = this.state.hero;
-
-		const species = getSpecies(speciesID);
-		if (species) {
-			hero.speciesID = species.id;
-			species.traits.forEach(t => hero.features.push(createTraitFeature(t, 1)));
-		}
-
-		const role = getRole(roleID);
-		if (role) {
-			hero.roleID = role.id;
-			role.traits.forEach(t => hero.features.push(createTraitFeature(t, 1)));
-			role.skills.forEach(s => hero.features.push(createSkillFeature(s, 2)));
-			role.proficiencies.forEach(p => hero.features.push(createProficiencyFeature(p)));
-		}
-
-		const background = getBackground(backgroundID);
-		if (background) {
-			hero.backgroundID = background.id;
-		}
-
+		applyCombatantCards(hero, speciesID, roleID, backgroundID);
 		this.setState({
 			hero: hero
 		});
@@ -288,7 +268,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 //#region Equipment selector
 
 interface EquipmentSelectorProps {
-	hero: HeroModel;
+	hero: CombatantModel;
 	header: JSX.Element;
 	addItems: (items: ItemModel[]) => void;
 }

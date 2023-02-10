@@ -1,11 +1,11 @@
 import { BoonModel } from './boon';
 import { CampaignMapModel, generateCampaignMap } from './campaign-map';
 import { EncounterModel } from './encounter';
-import { createHero, HeroModel } from './hero';
+import { CombatantModel, CombatantType, createCombatant } from './combatant';
 import { ItemModel } from './item';
 
 export interface GameModel {
-	heroes: HeroModel[];
+	heroes: CombatantModel[];
 	items: ItemModel[];
 	boons: BoonModel[];
 	map: CampaignMapModel;
@@ -15,11 +15,11 @@ export interface GameModel {
 export const createGame = (): GameModel => {
 	return {
 		heroes: [
-			createHero(),
-			createHero(),
-			createHero(),
-			createHero(),
-			createHero()
+			createCombatant(CombatantType.Hero),
+			createCombatant(CombatantType.Hero),
+			createCombatant(CombatantType.Hero),
+			createCombatant(CombatantType.Hero),
+			createCombatant(CombatantType.Hero)
 		],
 		items: [],
 		boons: [],
@@ -28,7 +28,7 @@ export const createGame = (): GameModel => {
 	};
 }
 
-export const addHeroToGame = (game: GameModel, hero: HeroModel) => {
+export const addHeroToGame = (game: GameModel, hero: CombatantModel) => {
 	const index = game.heroes.findIndex(h => h.id === hero.id);
 	if (index === -1) {
 		game.heroes.push(hero);

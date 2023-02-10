@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import { Tag } from '../../../controls';
 import { getBackground } from '../../../models/background';
-import { HeroModel, getTraitValue } from '../../../models/hero';
+import { CombatantModel, getTraitValue } from '../../../models/combatant';
 import { getRole } from '../../../models/role';
 import { getSpecies } from '../../../models/species';
 import { Text, TextType } from '../../../controls';
@@ -11,7 +11,7 @@ import { Trait } from '../../../models/trait';
 import { StatValue } from '../../utility';
 
 interface Props {
-	hero: HeroModel;
+	hero: CombatantModel;
 }
 
 export class HeroCard extends Component<Props> {

@@ -10,20 +10,6 @@ export const guid = () => {
 	return id;
 }
 
-export const getHashCode = (str: string) => {
-	if (str.length === 0) {
-		return 0;
-	}
-
-	let hash = 0;
-	for (let i = 0; i < str.length; ++i) {
-		const chr = str.charCodeAt(i);
-		hash = ((hash << 5) - hash) + chr;
-		hash |= 0;
-	}
-	return Math.abs(hash);
-}
-
 export const debounce = (func: () => void, delay = 500) => {
 	let timeout: NodeJS.Timeout;
 	return () => {

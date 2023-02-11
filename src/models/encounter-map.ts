@@ -18,22 +18,22 @@ export interface EncounterMapModel {
 	squares: EncounterMapSquareModel[];
 }
 
-export const generateEncounterMap = (): EncounterMapModel => {
+export const generateEncounterMap = (rng: () => number): EncounterMapModel => {
 	const map: EncounterMapModel = {
 		squares: []
 	};
 
 	const tile = {
-		width: dice() + dice() + dice(),
-		height: dice() + dice() + dice()
+		width: dice(1, rng) + dice(1, rng) + dice(1, rng),
+		height: dice(1, rng) + dice(1, rng) + dice(1, rng)
 	};
 	addTile(map, tile, { x: 0, y: 0 });
 
 	/*
 	while (map.squares.length < 200) {
 		const tile = {
-			width: dice() + dice() + dice(),
-			height: dice() + dice() + dice()
+			width: dice(1, rng) + dice(1, rng) + dice(1, rng),
+			height: dice(1, rng) + dice(1, rng) + dice(1, rng)
 		};
 
 		// TODO: Find a position that is adjacent but non-overlapping

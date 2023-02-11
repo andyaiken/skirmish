@@ -1,4 +1,4 @@
-import { dice, randomNumber } from '../utils/random';
+import { dice, getSeededRNG, randomNumber } from '../utils/random';
 import { CampaignMapRegionModel } from './campaign-map';
 import { CombatDataModel, CombatDataState, createCombatData } from './combat-data';
 import { EncounterMapModel, EncounterMapSquareType, generateEncounterMap } from './encounter-map';
@@ -23,15 +23,12 @@ export interface EncounterModel {
 }
 
 export const createEncounter = (region: CampaignMapRegionModel, heroes: CombatantModel[]): EncounterModel => {
-	/*
-	// TODO: Use this seed / hash to create the map / monsters
 	const seed = region.encounters[0];
-	const hash = getHashCode(seed);
-	*/
+	const rng = getSeededRNG(seed);
 
 	const monsters: CombatantModel[] = [];
 	while (monsters.reduce((value, m) => value + m.level, 0) < heroes.reduce((value, h) => value + h.level, 0)) {
-		switch (randomNumber(6)) {
+		switch (randomNumber(6, rng)) {
 			case 0: {
 				// Add a new monster
 				const monster = createCombatant(CombatantType.Monster);
@@ -48,7 +45,7 @@ export const createEncounter = (region: CampaignMapRegionModel, heroes: Combatan
 			case 2: {
 				// Add a monster we already have
 				if (monsters.length > 0) {
-					const n = randomNumber(monsters.length);
+					const n = randomNumber(monsters.length, rng);
 					const original = monsters[n];
 					const monster = createCombatant(CombatantType.Monster);
 					applyCombatantCards(monster, original.speciesID, original.roleID, original.backgroundID);
@@ -73,29 +70,31 @@ export const createEncounter = (region: CampaignMapRegionModel, heroes: Combatan
 		}
 	}
 
+	// TODO: Add number suffixes to duplicates
+
 	const encounter: EncounterModel = {
 		regionID: region.id,
 		combatants: [],
 		combatData: [],
-		map: generateEncounterMap()
+		map: generateEncounterMap(rng)
 	};
 
 	encounter.combatants.push(...heroes);
 	encounter.combatants.push(...monsters);
 	encounter.combatants.forEach(c => encounter.combatData.push(createCombatData(c)));
 
-	placeCombatants(encounter);
+	placeCombatants(encounter, rng);
 
 	return encounter;
 }
 
-const placeCombatants = (encounter: EncounterModel) => {
+const placeCombatants = (encounter: EncounterModel, rng: () => number) => {
 	encounter.combatData.forEach(cd => {
 		const size = getCombatantSize(encounter, cd.id);
 
 		for (let i = 0; i <= 1000; ++i) {
 			// Pick a random square
-			const n = randomNumber(encounter.map.squares.length);
+			const n = randomNumber(encounter.map.squares.length, rng);
 			const sq = encounter.map.squares[n];
 
 			// Is this square empty?

@@ -31,7 +31,7 @@ export const generateBoon = (): BoonModel => {
 			data = generateMagicItem();
 			break;
 		case BoonType.ExtraXP:
-			data = dice();
+			data = dice(1);
 			break;
 	}
 

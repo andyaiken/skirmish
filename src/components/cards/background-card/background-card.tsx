@@ -16,8 +16,8 @@ export class BackgroundCard extends Component<Props> {
 			<div className='background-card'>
 				<Text type={TextType.SubHeading}>{this.props.background.name}</Text>
 				<hr />
-				<StatValue label='Features' value={this.props.background.features.map(f => `${getFeatureTitle(f)}: ${getFeatureDescription(f)}`)}/>
-				<StatValue label='Actions' value={this.props.background.actions.map(a => a.name)}/>
+				<StatValue label='Features' value={this.props.background.features.length > 0 ? this.props.background.features.map(f => `${getFeatureTitle(f)}: ${getFeatureDescription(f)}`) : '-'}/>
+				<StatValue label='Actions' value={this.props.background.features.length > 0 ? this.props.background.actions.map(a => a.name) : '-'}/>
 			</div>
 		);
 	}

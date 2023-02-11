@@ -3,7 +3,7 @@
 
 	.encounter-left-panel,
 	.encounter-right-panel {
-		flex: 0 0 250px;
+		flex: 1 1 0;
 		border: 2px solid rgb(220, 220, 220);
 		border-radius: 10px;
 		padding: 10px 20px;
@@ -11,6 +11,6 @@
 	}
 
 	.encounter-central-panel {
-		flex: 1 1 0;
+		flex: 0 0 710px;
 	}
 }

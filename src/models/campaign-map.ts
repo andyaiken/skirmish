@@ -69,7 +69,7 @@ export const generateCampaignMap = (): CampaignMapModel => {
 
 	const regionCount = map.squares.length / 20;
 	while (map.regions.length !== regionCount) {
-		const count = dice();
+		const count = dice(1);
 		const encounters: string[] = [];
 		while (encounters.length < count) {
 			encounters.push(guid());

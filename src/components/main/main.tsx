@@ -170,7 +170,8 @@ export class Main extends Component<Props, State> {
 	endCampaign = () => {
 		this.setState({
 			game: null,
-			screen: ScreenType.Landing
+			screen: ScreenType.Landing,
+			dialog: null
 		});
 	}
 

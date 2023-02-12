@@ -108,7 +108,7 @@ export class HeroesPage extends Component<Props, State> {
 			});
 			heroes = (
 				<div>
-					<Text type={TextType.SubHeading}>Heroes</Text>
+					<Text type={TextType.SubHeading}>Heroes ({this.props.game.heroes.length})</Text>
 					<CardList cards={heroCards} />
 				</div>
 			);
@@ -118,7 +118,7 @@ export class HeroesPage extends Component<Props, State> {
 		if (this.props.game.items.filter(i => i.magic).length > 0) {
 			magicItems = (
 				<div>
-					<Text type={TextType.SubHeading}>Magic Items</Text>
+					<Text type={TextType.SubHeading}>Magic Items ({this.props.game.items.filter(i => i.magic).length})</Text>
 					<Text>You have the following magic items:</Text>
 					<CardList cards={this.props.game.items.filter(i => i.magic).map((i, n) => (<PlayingCard key={n} front={<ItemCard item={i} />} />))} />
 				</div>
@@ -129,7 +129,7 @@ export class HeroesPage extends Component<Props, State> {
 		if (this.props.game.items.filter(i => !i.magic).length > 0) {
 			mundaneItems = (
 				<div>
-					<Text type={TextType.SubHeading}>Mundane Items</Text>
+					<Text type={TextType.SubHeading}>Mundane Items ({this.props.game.items.filter(i => !i.magic).length})</Text>
 					<Text>In addition to the equipment carried by your heroes, you also have:</Text>
 					<CardList cards={this.props.game.items.filter(i => !i.magic).map((i, n) => (<PlayingCard key={n} front={<ItemCard item={i} />} />))} />
 				</div>

@@ -2,35 +2,38 @@
 
 ## Bugs
 
+* The campaign map (sometimes) has odd lines on it
+* The encounter map is not rendering correctly
 * It's possible to run out of proficiencies to learn
   * Might have to add some code to a feature to see whether it can be chosen
 
 ## To Do
 
 * Encounters:
-  * Implement the encounter flow
-  * Implement things you can do when it's your turn
-  * Implement AI so that monsters can take their turns
+  * Monster names should be suffixed with ...1, 2 if duplicated
   * Click on an initiative entry or a map token, to show a character sheet with combat data included
     * Limited data for monsters (level, conditions, damage, wounds)
-  * Monster names should be suffixed with ...1, 2 if duplicated
   * Show controls for current combatant, if it's a hero
     * Otherwise, show log of monster's turn
+  * Implement things you can do when it's your turn
+  * Implement the encounter flow
+  * Implement AI so that monsters can take their turns
 * Implement actions
 * Magic item generation (add features and actions)
-* Monster species:
-  * Orc
-  * Goblin
-  * Troll
 
 ## Ideas for Future Work
 
+* Features and Actions should indicate where they come from (universal, species, role, background, item)
+* Heroes page / hero selection dialog:
+  * Allow grouping by species, role, background, level
+* Heroes page:
+  * Allow mundane items to be filtered out or sold
+  * Click on magic item / mundane item to see heroes with the correct proficiency
 * Character sheet panel:
+  * Show skills as ranks (filled circles)
   * Show the XP required as a gauge
-  * Show damage bonuses / resistances grouped by category
 * Encounter maps should (occasionally) have items scattered about
 * Potions (add features when used)
-* Features and Actions should indicate where they come from (universal, species, role, background, item)
 * The island should include mountain ranges, lakes etc, which are impassable
 * Mountebank, Thief and Pixie should have an attack redirection aura
 * Noble should have trait buffing / skill buffing auras

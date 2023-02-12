@@ -53,88 +53,85 @@ export class HeroesPage extends Component<Props, State> {
 	}
 
 	public render() {
-		let heroes = null;
-		if (this.props.game.heroes.length > 0) {
-			let banner = null;
-			if (this.props.game.heroes.some(h => !h.name)) {
-				banner = (
-					<Text type={TextType.Information}>
-						<b>You have unfilled hero slots.</b> Select a blank hero card to recruit a new level 1 hero.
-					</Text>
-				);
-			} else if (this.props.game.heroes.some(h => h.xp >= h.level)) {
-				banner = (
-					<Text type={TextType.Information}>
-						<b>Some of your heroes can level up.</b> Select their card to upgrade them.
-					</Text>
-				);
-			}
+		let boons = null;
+		if (this.props.game.boons.length > 0) {
+			boons = (
+				<div>
+					<Text type={TextType.SubHeading}>Rewards</Text>
+					<Text>You have won these rewards. Select a card to redeem a reward.</Text>
+					<CardList cards={this.props.game.boons.map(b => (<PlayingCard key={b.id} front={<BoonCard boon={b} />} onClick={() => this.selectBoon(b)} />))} />
+				</div>
+			);
+		}
 
-			const heroCards = this.props.game.heroes.map(hero => {
-				let card = null;
-				if (!hero.name) {
-					card = (
-						<PlaceholderCard text='Hero' />
-					);
-				} else {
-					card = (
-						<HeroCard hero={hero} />
-					);
-				}
-
-				let info = null;
-				let hack = null;
-				if (!hero.name) {
-					info = (
-						<Text type={TextType.Information}>Empty</Text>
-					);
-				} else {
-					hack = (
-						<button className='hack' onClick={() => this.props.incrementXP(hero)}>Add XP</button>
-					);
-				}
-				if (hero.xp >= hero.level) {
-					info = (
-						<Text type={TextType.Information}>Level Up</Text>
-					);
-				}
+		let blankHeroes = null;
+		if (this.props.game.heroes.some(h => !h.name)) {
+			const heroCards = this.props.game.heroes.filter(h => !h.name).map(h => {
 				return (
-					<div key={hero.id}>
-						<PlayingCard front={card} onClick={() => this.setState({ selectedHero: hero })} />
-						{info}
-						{hack}
-					</div>
+					<PlayingCard key={h.id} front={<PlaceholderCard text='Hero' />} onClick={() => this.setState({ selectedHero: h })} />
 				);
 			});
-
-			heroes = (
+			blankHeroes = (
 				<div>
-					{banner}
+					<Text type={TextType.SubHeading}>New Heroes</Text>
+					<Text>You have unfilled hero slots. Select a blank hero card to recruit a new level 1 hero.</Text>
 					<CardList cards={heroCards} />
 				</div>
 			);
 		}
 
-		let items = null;
-		if (this.props.game.items.length > 0) {
-			items = (
+		let levelUp = null;
+		if (this.props.game.heroes.some(h => h.xp >= h.level)) {
+			const heroCards = this.props.game.heroes.filter(h => h.xp >= h.level).map(h => {
+				return (
+					<PlayingCard key={h.id} front={<HeroCard hero={h} />} onClick={() => this.setState({ selectedHero: h })} />
+				);
+			});
+			levelUp = (
 				<div>
-					<hr />
-					<Text>In addition to the equipment carried by your heroes, you also have:</Text>
-					<CardList cards={this.props.game.items.map((i, n) => (<PlayingCard key={n} front={<ItemCard item={i} />} />))} />
+					<Text type={TextType.SubHeading}>Level Up</Text>
+					<Text>Some of your heroes have gained enough XP to level up. Select their card to upgrade them.</Text>
+					<CardList cards={heroCards} />
 				</div>
 			);
 		}
 
-		let boons = null;
-		if (this.props.game.boons.length > 0) {
-			boons = (
+		let heroes = null;
+		if (this.props.game.heroes.length > 0) {
+			const heroCards = this.props.game.heroes.map(hero => {
+				return (
+					<div key={hero.id}>
+						<PlayingCard front={<HeroCard hero={hero} />} onClick={() => this.setState({ selectedHero: hero })} />
+						<button className='hack' onClick={() => this.props.incrementXP(hero)}>Add XP</button>
+					</div>
+				);
+			});
+			heroes = (
 				<div>
-					<hr />
-					<Text type={TextType.Information}>
-						<b>You have won these rewards.</b> Select a card to redeem a reward.
-					</Text>
-					<CardList cards={this.props.game.boons.map(b => (<PlayingCard key={b.id} front={<BoonCard boon={b} />} onClick={() => this.selectBoon(b)} />))} />
+					<Text type={TextType.SubHeading}>Heroes</Text>
+					<CardList cards={heroCards} />
+				</div>
+			);
+		}
+
+		let magicItems = null;
+		if (this.props.game.items.filter(i => i.magic).length > 0) {
+			magicItems = (
+				<div>
+					<Text type={TextType.SubHeading}>Magic Items</Text>
+					<Text>You have the following magic items:</Text>
+					<CardList cards={this.props.game.items.filter(i => i.magic).map((i, n) => (<PlayingCard key={n} front={<ItemCard item={i} />} />))} />
+				</div>
+			);
+		}
+
+		let mundaneItems = null;
+		if (this.props.game.items.filter(i => !i.magic).length > 0) {
+			mundaneItems = (
+				<div>
+					<Text type={TextType.SubHeading}>Mundane Items</Text>
+					<Text>In addition to the equipment carried by your heroes, you also have:</Text>
+					<CardList cards={this.props.game.items.filter(i => !i.magic).map((i, n) => (<PlayingCard key={n} front={<ItemCard item={i} />} />))} />
 				</div>
 			);
 		}
@@ -226,9 +223,12 @@ export class HeroesPage extends Component<Props, State> {
 
 		return (
 			<div className='heroes-page'>
-				{heroes}
-				{items}
 				{boons}
+				{blankHeroes}
+				{levelUp}
+				{heroes}
+				{magicItems}
+				{mundaneItems}
 				{dialog}
 			</div>
 		);

@@ -461,7 +461,7 @@ export const ItemList: ItemModel[] = [
 		magic: false,
 		proficiency: ItemProficiency.Implements,
 		location: ItemLocation.Hand,
-		slots: 1,
+		slots: 2,
 		weapon: null,
 		features: [],
 		actions: []

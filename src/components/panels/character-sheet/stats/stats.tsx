@@ -51,8 +51,8 @@ export class Stats extends Component<Props> {
 			<div className='stats'>
 				<div className='column'>
 					<Box label='Traits'>
-						<div className='traits'>
-							<StatValue orientation='vertical' label='Endurance' value={getTraitValue(this.props.hero, Trait.Endurance)}/>
+						<div className='stats-row'>
+							<StatValue orientation='vertical' label='Endure' value={getTraitValue(this.props.hero, Trait.Endurance)}/>
 							<StatValue orientation='vertical' label='Resolve' value={getTraitValue(this.props.hero, Trait.Resolve)}/>
 							<StatValue orientation='vertical' label='Speed' value={getTraitValue(this.props.hero, Trait.Speed)}/>
 						</div>
@@ -68,38 +68,6 @@ export class Stats extends Component<Props> {
 					</Box>
 				</div>
 				<div className='column'>
-					<Box label='Damage Bonuses'>
-						<StatValue label='Acid' value={getDamageBonusValue(this.props.hero, DamageType.Acid)}/>
-						<StatValue label='Cold' value={getDamageBonusValue(this.props.hero, DamageType.Cold)}/>
-						<StatValue label='Decay' value={getDamageBonusValue(this.props.hero, DamageType.Decay)}/>
-						<StatValue label='Edged' value={getDamageBonusValue(this.props.hero, DamageType.Edged)}/>
-						<StatValue label='Electricity' value={getDamageBonusValue(this.props.hero, DamageType.Electricity)}/>
-						<StatValue label='Fire' value={getDamageBonusValue(this.props.hero, DamageType.Fire)}/>
-						<StatValue label='Impact' value={getDamageBonusValue(this.props.hero, DamageType.Impact)}/>
-						<StatValue label='Light' value={getDamageBonusValue(this.props.hero, DamageType.Light)}/>
-						<StatValue label='Piercing' value={getDamageBonusValue(this.props.hero, DamageType.Piercing)}/>
-						<StatValue label='Poison' value={getDamageBonusValue(this.props.hero, DamageType.Poison)}/>
-						<StatValue label='Psychic' value={getDamageBonusValue(this.props.hero, DamageType.Psychic)}/>
-						<StatValue label='Sonic' value={getDamageBonusValue(this.props.hero, DamageType.Sonic)}/>
-					</Box>
-				</div>
-				<div className='column'>
-					<Box label='Resistances'>
-						<StatValue label='Acid' value={getDamageResistanceValue(this.props.hero, DamageType.Acid)}/>
-						<StatValue label='Cold' value={getDamageResistanceValue(this.props.hero, DamageType.Cold)}/>
-						<StatValue label='Decay' value={getDamageResistanceValue(this.props.hero, DamageType.Decay)}/>
-						<StatValue label='Edged' value={getDamageResistanceValue(this.props.hero, DamageType.Edged)}/>
-						<StatValue label='Electricity' value={getDamageResistanceValue(this.props.hero, DamageType.Electricity)}/>
-						<StatValue label='Fire' value={getDamageResistanceValue(this.props.hero, DamageType.Fire)}/>
-						<StatValue label='Impact' value={getDamageResistanceValue(this.props.hero, DamageType.Impact)}/>
-						<StatValue label='Light' value={getDamageResistanceValue(this.props.hero, DamageType.Light)}/>
-						<StatValue label='Piercing' value={getDamageResistanceValue(this.props.hero, DamageType.Piercing)}/>
-						<StatValue label='Poison' value={getDamageResistanceValue(this.props.hero, DamageType.Poison)}/>
-						<StatValue label='Psychic' value={getDamageResistanceValue(this.props.hero, DamageType.Psychic)}/>
-						<StatValue label='Sonic' value={getDamageResistanceValue(this.props.hero, DamageType.Sonic)}/>
-					</Box>
-				</div>
-				<div className='column'>
 					<Box label='Proficiencies'>
 						{proficiencySection}
 					</Box>
@@ -109,6 +77,42 @@ export class Stats extends Component<Props> {
 					<Box label='XP'>
 						<StatValue label='Earned' value={this.props.hero.xp} />
 						<StatValue label={`Required for level ${this.props.hero.level + 1}`} value={this.props.hero.level} />
+					</Box>
+				</div>
+				<div className='column'>
+					<Box label='Damage Bonuses'>
+						<StatValue label='Acid' value={getDamageBonusValue(this.props.hero, DamageType.Acid)}/>
+						<StatValue label='Edged' value={getDamageBonusValue(this.props.hero, DamageType.Edged)}/>
+						<StatValue label='Impact' value={getDamageBonusValue(this.props.hero, DamageType.Impact)}/>
+						<StatValue label='Piercing' value={getDamageBonusValue(this.props.hero, DamageType.Piercing)}/>
+						<hr />
+						<StatValue label='Cold' value={getDamageBonusValue(this.props.hero, DamageType.Cold)}/>
+						<StatValue label='Electricity' value={getDamageBonusValue(this.props.hero, DamageType.Electricity)}/>
+						<StatValue label='Fire' value={getDamageBonusValue(this.props.hero, DamageType.Fire)}/>
+						<StatValue label='Light' value={getDamageBonusValue(this.props.hero, DamageType.Light)}/>
+						<StatValue label='Sonic' value={getDamageBonusValue(this.props.hero, DamageType.Sonic)}/>
+						<hr />
+						<StatValue label='Decay' value={getDamageBonusValue(this.props.hero, DamageType.Decay)}/>
+						<StatValue label='Poison' value={getDamageBonusValue(this.props.hero, DamageType.Poison)}/>
+						<StatValue label='Psychic' value={getDamageBonusValue(this.props.hero, DamageType.Psychic)}/>
+					</Box>
+				</div>
+				<div className='column'>
+					<Box label='Resistances'>
+						<StatValue label='Acid' value={getDamageResistanceValue(this.props.hero, DamageType.Acid)}/>
+						<StatValue label='Edged' value={getDamageResistanceValue(this.props.hero, DamageType.Edged)}/>
+						<StatValue label='Impact' value={getDamageResistanceValue(this.props.hero, DamageType.Impact)}/>
+						<StatValue label='Piercing' value={getDamageResistanceValue(this.props.hero, DamageType.Piercing)}/>
+						<hr />
+						<StatValue label='Cold' value={getDamageResistanceValue(this.props.hero, DamageType.Cold)}/>
+						<StatValue label='Electricity' value={getDamageResistanceValue(this.props.hero, DamageType.Electricity)}/>
+						<StatValue label='Fire' value={getDamageResistanceValue(this.props.hero, DamageType.Fire)}/>
+						<StatValue label='Light' value={getDamageResistanceValue(this.props.hero, DamageType.Light)}/>
+						<StatValue label='Sonic' value={getDamageResistanceValue(this.props.hero, DamageType.Sonic)}/>
+						<hr />
+						<StatValue label='Decay' value={getDamageResistanceValue(this.props.hero, DamageType.Decay)}/>
+						<StatValue label='Poison' value={getDamageResistanceValue(this.props.hero, DamageType.Poison)}/>
+						<StatValue label='Psychic' value={getDamageResistanceValue(this.props.hero, DamageType.Psychic)}/>
 					</Box>
 				</div>
 			</div>

@@ -1,5 +1,4 @@
 import { dice } from '../utils/random';
-import { guid } from '../utils/utils';
 
 export enum EncounterMapSquareType {
 	Clear,
@@ -8,7 +7,6 @@ export enum EncounterMapSquareType {
 }
 
 export interface EncounterMapSquareModel {
-	id: string;
 	x: number;
 	y: number;
 	type: EncounterMapSquareType;
@@ -70,7 +68,6 @@ const addTile = (map: EncounterMapModel, tile: { width: number, height: number }
 	for (let tileX = 0; tileX < tile.width; ++tileX) {
 		for (let tileY = 0; tileY < tile.height; ++tileY) {
 			const square: EncounterMapSquareModel = {
-				id: guid(),
 				x: position.x + tileX,
 				y: position.y + tileY,
 				type: EncounterMapSquareType.Clear

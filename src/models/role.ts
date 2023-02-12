@@ -26,7 +26,7 @@ export interface RoleModel {
 	actions: ActionModel[];
 }
 
-const RoleList: RoleModel[] = [
+export const RoleList: RoleModel[] = [
 	{
 		id: 'role-barbarian',
 		name: 'Barbarian',

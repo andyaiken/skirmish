@@ -28,7 +28,7 @@ export const createEncounter = (region: CampaignMapRegionModel, heroes: Combatan
 
 	const monsters: CombatantModel[] = [];
 	while (monsters.reduce((value, m) => value + m.level, 0) < heroes.reduce((value, h) => value + h.level, 0)) {
-		switch (randomNumber(6, rng)) {
+		switch (randomNumber(10, rng)) {
 			case 0: {
 				// Add a new monster
 				const monster = createCombatant(CombatantType.Monster);
@@ -42,7 +42,8 @@ export const createEncounter = (region: CampaignMapRegionModel, heroes: Combatan
 				break;
 			}
 			case 1:
-			case 2: {
+			case 2:
+			case 3: {
 				// Add a monster we already have
 				if (monsters.length > 0) {
 					const n = randomNumber(monsters.length, rng);
@@ -55,9 +56,12 @@ export const createEncounter = (region: CampaignMapRegionModel, heroes: Combatan
 				}
 				break;
 			}
-			case 3:
 			case 4:
-			case 5: {
+			case 5:
+			case 6:
+			case 7:
+			case 8:
+			case 9: {
 				// Level up a random monster
 				if (monsters.length > 0) {
 					const n = randomNumber(monsters.length);

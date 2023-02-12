@@ -261,7 +261,7 @@ export class Main extends Component<Props, State> {
 								<Text type={TextType.SubHeading}>You have taken control of {region.name}!</Text>
 								<Text>Each hero who took part in this encounter gains 1 XP, you can recruit a new hero, and you have earned a reward:</Text>
 								<PlayingCard front={<BoonCard boon={region.boon} />} />
-								<Text>Any heroes who died have been lost, along with all their equipment.</Text>
+								<Text>Any heroes who died have been lost.</Text>
 								<button onClick={() => this.setScreen(ScreenType.Campaign)}>OK</button>
 							</div>
 						);
@@ -272,7 +272,7 @@ export class Main extends Component<Props, State> {
 						<div>
 							<Text type={TextType.SubHeading}>You won the encounter in {region.name}!</Text>
 							<Text>Each surviving hero who took part in this encounter gains 1 XP.</Text>
-							<Text>Any heroes who died have been lost, along with all their equipment.</Text>
+							<Text>Any heroes who died have been lost.</Text>
 							<button onClick={() => this.setScreen(ScreenType.Campaign)}>OK</button>
 						</div>
 					);

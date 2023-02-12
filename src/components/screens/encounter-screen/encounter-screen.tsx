@@ -91,6 +91,7 @@ export class EncounterScreen extends Component<Props> {
 			case EncounterState.Active:
 				controls = (
 					<div className='encounter-right-panel'>
+						<button className='hack' onClick={() => this.props.finishEncounter(EncounterFinishState.Victory)}>Win</button>
 						<button onClick={() => this.props.finishEncounter(EncounterFinishState.Retreat)}>Retreat</button>
 						<button onClick={() => this.props.finishEncounter(EncounterFinishState.Defeat)}>Surrender</button>
 					</div>

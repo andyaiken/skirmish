@@ -4,7 +4,6 @@ import { guid } from '../utils/utils';
 import { BoonModel, generateBoon } from './boon';
 
 export interface CampaignMapSquareModel {
-	id: string;
 	x: number;
 	y: number;
 	regionID: string;
@@ -26,7 +25,6 @@ export interface CampaignMapModel {
 export const generateCampaignMap = (): CampaignMapModel => {
 	const map: CampaignMapModel = {
 		squares: [{
-			id: guid(),
 			x: 0,
 			y: 0,
 			regionID: ''
@@ -59,7 +57,6 @@ export const generateCampaignMap = (): CampaignMapModel => {
 		const exists = map.squares.find(sq => (sq.x === x) && (sq.y === y));
 		if (!exists) {
 			map.squares.push({
-				id: guid(),
 				x: x,
 				y: y,
 				regionID: ''

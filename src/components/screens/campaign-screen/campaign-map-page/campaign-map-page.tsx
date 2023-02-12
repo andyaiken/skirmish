@@ -59,9 +59,9 @@ export class CampaignMapPage extends Component<Props, State> {
 					<Text type={TextType.SubHeading}>{this.state.selectedRegion.name}</Text>
 					<hr />
 					<StatValue label='Size' value={`${getCampaignMapSquares(this.props.game.map, this.state.selectedRegion).length} sq mi`} />
-					<StatValue label='Encounters' value={this.state.selectedRegion.encounters.length} />
+					<StatValue label='Number of Encounters' value={this.state.selectedRegion.encounters.length} />
 					<hr />
-					<Text>If you conquer {this.state.selectedRegion.name}, you will recieve:</Text>
+					<Text>If you take control of {this.state.selectedRegion.name}, you will recieve:</Text>
 					<div className='boon'>
 						<PlayingCard front={<BoonCard boon={this.state.selectedRegion.boon} />} />
 					</div>
@@ -72,24 +72,27 @@ export class CampaignMapPage extends Component<Props, State> {
 				</div>
 			);
 		} else {
+			const owned = this.props.game.map.squares.filter(sq => sq.regionID === '');
 			info = (
 				<div>
 					<Text>This is the map of the island.</Text>
-					{this.props.game.map.squares.some(sq => sq.regionID === '') ? <Text>The white area is land you have already conquered.</Text> : ''}
+					{owned.length > 0 ? <Text>The white area is land you already control.</Text> : null}
 					<Text>Select a region to learn more about it.</Text>
+					{owned.length > 0 ? <StatValue label='Controlled' value={`${Math.floor(100 * owned.length / this.props.game.map.squares.length)}%`} /> : null}
 				</div>
 			);
 		}
 
 		let dialog = null;
 		if (this.state.showHeroSelection) {
+			const canAdd = this.state.selectedHeroes.length < 5;
 			const candidates = this.props.game.heroes
 				.filter(h => h.name !== '')
 				.filter(h => !this.state.selectedHeroes.includes(h))
 				.map(h => {
 					return (
 						<div key={h.id}>
-							<PlayingCard front={<HeroCard hero={h} />} onClick={() => this.selectHero(h)} />
+							<PlayingCard front={<HeroCard hero={h} />} onClick={canAdd ? () => this.selectHero(h) : null} />
 						</div>
 					);
 				});
@@ -109,19 +112,20 @@ export class CampaignMapPage extends Component<Props, State> {
 						<div className='hero-selection'>
 							<div className='header'>
 								<Text type={TextType.Heading}>Choose your Heroes</Text>
+								<Text>You can pick up to 5 heroes to take part in this encounter.</Text>
 							</div>
 							<div className='hero-lists'>
 								<div className='hero-list-column'>
-									<Text type={TextType.SubHeading}>Available heroes</Text>
+									<Text type={TextType.SubHeading}>Available heroes ({candidates.length})</Text>
 									<CardList cards={candidates} />
 								</div>
 								<div className='hero-list-column'>
-									<Text type={TextType.SubHeading}>Selected heroes</Text>
+									<Text type={TextType.SubHeading}>Selected heroes ({selected.length})</Text>
 									<CardList cards={selected} />
 								</div>
 							</div>
 							<div className='footer'>
-								<button disabled={this.state.selectedHeroes.length === 0} onClick={this.startEncounter}>Start the Encounter</button>
+								<button disabled={(this.state.selectedHeroes.length < 1) || (this.state.selectedHeroes.length > 5)} onClick={this.startEncounter}>Start the Encounter</button>
 							</div>
 						</div>
 					)}

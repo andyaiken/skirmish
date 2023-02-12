@@ -42,7 +42,7 @@ export class CampaignMapPanel extends Component<Props> {
 
 			return (
 				<div
-					key={square.id}
+					key={`${square.x} ${square.y}`}
 					className='campaign-map-square'
 					style={{
 						width: `${squareWidthPC}%`,

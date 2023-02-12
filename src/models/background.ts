@@ -23,7 +23,7 @@ export interface BackgroundModel {
 	actions: ActionModel[];
 }
 
-const BackgroundList: BackgroundModel[] = [
+export const BackgroundList: BackgroundModel[] = [
 	{
 		id: 'background-acrobat',
 		name: 'Acrobat',

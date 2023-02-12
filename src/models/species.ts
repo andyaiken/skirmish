@@ -24,7 +24,7 @@ export interface SpeciesModel {
 	actions: ActionModel[];
 }
 
-const HeroSpeciesList: SpeciesModel[] = [
+export const HeroSpeciesList: SpeciesModel[] = [
 	{
 		id: 'species-human',
 		name: 'Human',
@@ -226,7 +226,7 @@ const HeroSpeciesList: SpeciesModel[] = [
 	}
 ];
 
-const MonsterSpeciesList: SpeciesModel[] = [
+export const MonsterSpeciesList: SpeciesModel[] = [
 	{
 		id: 'species-orc',
 		name: 'Orc',
@@ -235,13 +235,52 @@ const MonsterSpeciesList: SpeciesModel[] = [
 			Trait.All
 		],
 		features: [
-			createDamageResistFeature(DamageType.All, 1)
+			createTraitFeature(Trait.Any, 1),
+			createDamageResistFeature(DamageType.All, 1),
+			createSkillFeature(Skill.Brawl, 2),
+			createSkillFeature(Skill.Weapon, 2),
 		],
 		actions: [
 			createActionPlaceholder('Fury'),
 			createActionPlaceholder('Ignore damage')
 		]
-	}
+	},
+	{
+		id: 'species-goblin',
+		name: 'Goblin',
+		size: 1,
+		traits: [
+			Trait.Speed
+		],
+		features: [
+			createTraitFeature(Trait.Speed, 1),
+			createSkillFeature(Skill.Reactions, 1),
+			createSkillFeature(Skill.Stealth, 1)
+		],
+		actions: [
+			createActionPlaceholder('Sneak attack')
+		]
+	},
+	{
+		id: 'species-troll',
+		name: 'Troll',
+		size: 2,
+		traits: [
+			Trait.Endurance,
+			Trait.Resolve
+		],
+		features: [
+			createTraitFeature(Trait.Endurance, 1),
+			createTraitFeature(Trait.Resolve, 1),
+			createDamageCategoryResistFeature(DamageCategory.Physical, 1),
+			createDamageCategoryResistFeature(DamageCategory.Energy, 1),
+			createDamageCategoryResistFeature(DamageCategory.Corruption, 1)
+		],
+		actions: [
+			createActionPlaceholder('Slam'),
+			createActionPlaceholder('Regeneration')
+		]
+	},
 ];
 
 export const getSpecies = (id: string) => {

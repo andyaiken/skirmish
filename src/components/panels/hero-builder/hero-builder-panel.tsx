@@ -8,7 +8,7 @@ import { getRole, getRoleDeck } from '../../../models/role';
 import { getSpecies, getSpeciesDeck } from '../../../models/species';
 import { shuffle } from '../../../utils/collections';
 import { generateName } from '../../../utils/name-generator';
-import { BackgroundCard, ItemCard, RoleCard, SpeciesCard } from '../../cards';
+import { BackgroundCard, ItemCard, PlaceholderCard, RoleCard, SpeciesCard } from '../../cards';
 import { CardList, PlayingCard, PlayingCardSide } from '../../utility';
 
 import './hero-builder-panel.scss';
@@ -195,7 +195,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 					<div key={species.id}>
 						<PlayingCard
 							front={<SpeciesCard species={species} />}
-							back='Species'
+							back={<PlaceholderCard text='Species' />}
 							display={(this.state.selectedSpeciesID !== '') && (this.state.selectedSpeciesID !== species.id) ? PlayingCardSide.Back : PlayingCardSide.Front}
 							onClick={() => this.selectSpecies(species.id)}
 						/>
@@ -213,7 +213,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 					<div key={role.id}>
 						<PlayingCard
 							front={<RoleCard role={role} />}
-							back='Role'
+							back={<PlaceholderCard text='Role' />}
 							display={(this.state.selectedRoleID !== '') && (this.state.selectedRoleID !== role.id) ? PlayingCardSide.Back : PlayingCardSide.Front}
 							onClick={() => this.selectRole(role.id)}
 						/>
@@ -231,7 +231,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 					<div key={background.id}>
 						<PlayingCard
 							front={<BackgroundCard background={background} />}
-							back='Background'
+							back={<PlaceholderCard text='Background' />}
 							display={(this.state.selectedBackgroundID !== '') && (this.state.selectedBackgroundID !== background.id) ? PlayingCardSide.Back : PlayingCardSide.Front}
 							onClick={() => this.selectBackground(background.id)}
 						/>
@@ -314,7 +314,7 @@ class EquipmentSelector extends Component<EquipmentSelectorProps, EquipmentSelec
 				<div key={item.id}>
 					<PlayingCard
 						front={<ItemCard item={item} />}
-						back='Item'
+						back={<PlaceholderCard text='Item' />}
 						display={(currentItemIDs.length !== 0) && (!currentItemIDs.includes(item.id)) ? PlayingCardSide.Back : PlayingCardSide.Front}
 						onClick={() => this.selectItem(item.id)}
 					/>

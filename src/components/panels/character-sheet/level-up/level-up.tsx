@@ -6,7 +6,7 @@ import { CombatantModel, getProficiencies } from '../../../../models/combatant';
 import { ItemProficiencyType } from '../../../../models/item-proficiency';
 import { SkillType, SkillCategoryType } from '../../../../models/skill';
 import { TraitType } from '../../../../models/trait';
-import { FeatureCard } from '../../../cards';
+import { FeatureCard, PlaceholderCard } from '../../../cards';
 import { CardList, PlayingCard, PlayingCardSide } from '../../../utility';
 
 import './level-up.scss';
@@ -51,7 +51,7 @@ export class LevelUp extends Component<Props, State> {
 				<div key={feature.id}>
 					<PlayingCard
 						front={<FeatureCard feature={(this.state.selectedFeature !== null) && (this.state.selectedFeature.id === feature.id) ? this.state.selectedFeature : feature} />}
-						back='Feature'
+						back={<PlaceholderCard text='Feature' />}
 						display={(this.state.selectedFeature !== null) && (this.state.selectedFeature.id !== feature.id) ? PlayingCardSide.Back : PlayingCardSide.Front}
 						onClick={() => {
 							if (this.state.selectedFeature === null) {

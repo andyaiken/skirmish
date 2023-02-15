@@ -28,11 +28,11 @@ export const BackgroundList: BackgroundModel[] = [
 		id: 'background-acrobat',
 		name: 'Acrobat',
 		features: [
-			createSkillFeature(Skill.Athletics, 2),
 			createTraitFeature(Trait.Speed, 1)
 		],
 		actions: [
-			createActionPlaceholder('Move through occupied spaces')
+			createActionPlaceholder('Move through occupied spaces'),
+			createActionPlaceholder('Burst of speed (roll speed again and add)')
 		]
 	},
 	{

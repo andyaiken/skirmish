@@ -1,11 +1,20 @@
 import { Component } from 'react';
-import { EncounterModel, EncounterState, getEncounterState } from '../../../models/encounter';
+import { EncounterModel, EncounterState, getActiveCombatants, getCombatant, getCombatData, getEncounterState, getMoveCost } from '../../../models/encounter';
 import { GameModel } from '../../../models/game';
-import { CombatantModel } from '../../../models/combatant';
+import { CombatantModel, CombatantType, getSkillValue, getTraitValue } from '../../../models/combatant';
 import { ItemModel } from '../../../models/item';
-import { EncounterMapPanel, InitiativeListPanel } from '../../panels';
+import { DirectionPanel, EncounterMapPanel, InitiativeListPanel } from '../../panels';
+import { Tag, Text, TextType } from '../../../controls';
 
 import './encounter-screen.scss';
+import { Box, CardList, IconType, IconValue, PlayingCard, StatValue } from '../../utility';
+import { Trait } from '../../../models/trait';
+import { CombatDataModel, CombatDataState } from '../../../models/combat-data';
+import { ActionCard } from '../../cards';
+import { getRole } from '../../../models/role';
+import { getSpecies } from '../../../models/species';
+import { getBackground } from '../../../models/background';
+import { Skill } from '../../../models/skill';
 
 export enum EncounterFinishState {
 	Victory = 'victory',
@@ -17,83 +26,185 @@ interface Props {
 	encounter: EncounterModel;
 	game: GameModel;
 	rollInitiative: (encounter: EncounterModel) => void;
+	endTurn: (encounter: EncounterModel) => void;
+	move: (encounter: EncounterModel, combatData: CombatDataModel, dir: string, cost: number) => void;
+	standUp: (encounter: EncounterModel, combatData: CombatDataModel) => void;
+	scan: (encounter: EncounterModel, combatData: CombatDataModel) => void;
+	hide: (encounter: EncounterModel, combatData: CombatDataModel) => void;
 	equipItem: (item: ItemModel, combatant: CombatantModel) => void;
 	unequipItem: (item: ItemModel, combatant: CombatantModel) => void;
 	finishEncounter: (state: EncounterFinishState) => void;
 }
 
-export class EncounterScreen extends Component<Props> {
+interface State {
+	selectedIDs: string[];
+}
 
-	// Each round:
-	// Roll reactions to get initiative score
-	// Iterate through combatants in initiative order
-		// Set Hidden to 0
-		// Iterate through conditions
-			// If beneficial, reduce by 1
-			// Otherwise, roll trait vs condition rank; on success, reduced to 0, on fail, reduced by 1
-			// If condition rank is 0, removed
-			// If health condition, roll and apply
-		// If unconscious, roll resolve vs 8; on failure, dead
-		// If standing or prone
-			// Roll Speed to set movement points; roll and apply movement conditions
-			// Roll Perception to set Senses
-			// Draw three action cards
-			// Apply 'auto-healing' effects from auras
-			// Apply 'auto-damage' effects from auras
-			// Combatant moves / takes an action
-			// When (action taken and movement points are gone) or (combatant chooses), end turn
+export class EncounterScreen extends Component<Props, State> {
+	constructor(props: Props) {
+		super(props);
+		this.state = {
+			selectedIDs: []
+		};
+	}
 
-	// Moving:
-	// Move into any adjacent empty square, including diagonals, for 1 movement point
-		// If any of the squares you are moving into are obstructed, add 1 movement point
-		// If any of the squares you are moving out of is adjacent to a standing opponent, add 4 movement points
-		// Apply 'ease movement' effects from auras
-		// Apply 'prevent movement' effects from auras
-		// If you are prone or hidden, movement point costs are x2
+	selectCombatant = (combatant: CombatantModel | null) => {
+		this.setState({
+			selectedIDs: combatant ? [ combatant.id ] : []
+		});
+	}
 
-	// Using an action:
-	// Select targets (self / allies / opponents, within range of weapon / implement, cannot target opponents whose Stealth beats your Perception)
-	// Apply initial effects
-	// If attack:
-		// If requires weapon, and Unreliable weapon, roll Unreliable; if 10 or over, attack ends
-		// Otherwise, for each target:
-			// Apply pre-attack effects
-			// Roll attacker's attack skill vs target's trait
-			// Bonus equal to allies adjacent to the target
-			// Apply hit / miss effects
-			// Apply post-attack effects
-	// Apply finish effects
+	endTurn = () => {
+		this.props.endTurn(this.props.encounter);
+	}
 
-	// Taking damage:
-	// Roll damage rank, add attacker's damage bonus, add weapon damage bonus, subtract target's damage resistance; apply 'damage vulnerability' / 'damage resistance' effects from auras; add this to the target’s Damage
-	// If more than 0:
-		// Roll target's Endurance; if result less than Damage, reset Damage to 0 and increment Wounds
-		// If target's Wounds equals Resolve rank, unconscious; if target's Wounds greater than Resolve rank, dead
-			// If dead, removed from the map; equipment lies in the square it fell in
+	getEncounterControls = (currentID: string | null) => {
+		if (currentID) {
+			const combatant = getCombatant(this.props.encounter, currentID) as CombatantModel;
+			const combatData = getCombatData(this.props.encounter, currentID) as CombatDataModel;
 
-	// Healing:
-	// Healing damage reduces target's Damage
-	// Healing wounds reduces target's Wounds
-	// If unconscious and Wounds reduced to below Resolve, prone
+			const movement = <IconValue value={combatData.movement} type={IconType.Movement} />;
 
-	// Other options:
-	// Hide: spend 4 movement pts, roll Stealth
-	// Go prone: 1 pt of movement
-		// Prone: skill ranks are halved
-	// Stand from prone: spend 10 - (Athletics roll) movement points
-	// Pick up (and don) adjacent object: 1 movement pts
-	// Drop held (or worn) object: 1 movement pt
-	// Open / close door: 2 movement pts
+			let wounds = '';
+			for (let n = 0; n < combatData.wounds; ++n) {
+				wounds += '♥︎';
+			}
+			while (wounds.length < getTraitValue(combatant, Trait.Resolve)) {
+				wounds += '♡';
+			}
+			const woundsInRows: string[] = [];
+			while (wounds.length > 5) {
+				woundsInRows.push(wounds.substring(0, 5));
+				wounds = wounds.substring(5);
+			}
+			woundsInRows.push(wounds);
+			wounds = woundsInRows.join('\n');
+
+			const moveCosts: Record<string, number> = {};
+			moveCosts.n = getMoveCost(this.props.encounter, combatData, 'n');
+			moveCosts.ne = getMoveCost(this.props.encounter, combatData, 'ne');
+			moveCosts.e = getMoveCost(this.props.encounter, combatData, 'e');
+			moveCosts.se = getMoveCost(this.props.encounter, combatData, 'se');
+			moveCosts.s = getMoveCost(this.props.encounter, combatData, 's');
+			moveCosts.sw = getMoveCost(this.props.encounter, combatData, 'sw');
+			moveCosts.w = getMoveCost(this.props.encounter, combatData, 'w');
+			moveCosts.nw = getMoveCost(this.props.encounter, combatData, 'nw');
+
+			switch (combatant.type) {
+				case CombatantType.Hero: {
+					if (combatData.state === CombatDataState.Unconscious) {
+						return (
+							<div>
+								UNCONSCIOUS
+							</div>
+						);
+					}
+					if (combatData.state === CombatDataState.Dead) {
+						return (
+							<div>
+								DEAD
+							</div>
+						);
+					}
+					return (
+						<div>
+							<Text type={TextType.SubHeading}>{combatant.name}</Text>
+							<div className='tags'>
+								<Tag>{getSpecies(combatant.speciesID)?.name ?? 'Unknown species'}</Tag>
+								<Tag>{getRole(combatant.roleID)?.name ?? 'Unknown role'}</Tag>
+								<Tag>{getBackground(combatant.backgroundID)?.name ?? 'Unknown background'}</Tag>
+								<Tag>Level {combatant.level}</Tag>
+							</div>
+							{combatData.state === CombatDataState.Prone ? <Text type={TextType.Information}><b>You are Prone.</b> Your skill ranks are halved and moving costs are doubled.</Text> : null}
+							{combatData.hidden > 0 ? <Text type={TextType.Information}><b>You are Hidden.</b> Your moving costs are doubled.</Text> : null}
+							<Box label='This Round'>
+								<div className='stats-row'>
+									<StatValue orientation='vertical' label='Movement' value={movement} />
+									<div>
+										<StatValue orientation='vertical' label='Senses' value={combatData.senses} />
+										<button disabled={combatData.movement < 4} onClick={() => this.props.scan(this.props.encounter, combatData)}>Scan<br/><IconValue value={4} type={IconType.Movement} /></button>
+										<StatValue label='Perc' value={getSkillValue(combatant, Skill.Perception)} />
+									</div>
+									<div>
+										<StatValue orientation='vertical' label='Hidden' value={combatData.hidden} />
+										<button disabled={combatData.movement < 4} onClick={() => this.props.hide(this.props.encounter, combatData)}>Hide<br/><IconValue value={4} type={IconType.Movement} /></button>
+										<StatValue label='Stealth' value={getSkillValue(combatant, Skill.Stealth)} />
+									</div>
+									<div>
+										<StatValue orientation='vertical' label='State' value={combatData.state} />
+										{combatData.state === CombatDataState.Prone ? <button disabled={combatData.movement < 8} onClick={() => this.props.standUp(this.props.encounter, combatData)}>Stand<br/><IconValue value={8} type={IconType.Movement} /></button> : null}
+									</div>
+								</div>
+							</Box>
+							<Box label='Damage and Wounds'>
+								<div className='stats-row'>
+									<StatValue orientation='vertical' label='Damage' value={combatData.damage} />
+									<StatValue orientation='vertical' label='Wounds' value={wounds} />
+								</div>
+							</Box>
+							<Box label='Traits and Conditions'>
+								<div className='stats-row'>
+									<div>
+										<StatValue orientation='vertical' label='Endurance' value={getTraitValue(combatant, Trait.Endurance)} />
+										<div>{combatData.conditions.filter(c => c.trait === Trait.Endurance).map(c => c.type)}</div>
+									</div>
+									<div>
+										<StatValue orientation='vertical' label='Resolve' value={getTraitValue(combatant, Trait.Resolve)} />
+										<div>{combatData.conditions.filter(c => c.trait === Trait.Resolve).map(c => c.type)}</div>
+									</div>
+									<div>
+										<StatValue orientation='vertical' label='Speed' value={getTraitValue(combatant, Trait.Speed)} />
+										<div>{combatData.conditions.filter(c => c.trait === Trait.Speed).map(c => c.type)}</div>
+									</div>
+								</div>
+							</Box>
+							<hr />
+							<div className='movement'>
+								<DirectionPanel combatData={combatData} costs={moveCosts} onMove={dir => this.props.move(this.props.encounter, combatData, dir, 1)} />
+							</div>
+							<hr />
+							<div className='actions'>
+								<CardList cards={combatData.actions.map(a => (<PlayingCard front={<ActionCard action={a} />} />))} />
+							</div>
+							<hr />
+							<button onClick={() => null}>Pick Up Item<br/><IconValue value={2} type={IconType.Movement} /></button>
+							<button onClick={() => null}>Drop Item<br/><IconValue value={1} type={IconType.Movement} /></button>
+							<hr />
+							<button onClick={this.endTurn}>End Turn</button>
+							<hr />
+							<button className='hack' onClick={() => this.props.finishEncounter(EncounterFinishState.Victory)}>Win</button>
+							<button onClick={() => this.props.finishEncounter(EncounterFinishState.Retreat)}>Retreat</button>
+							<button onClick={() => this.props.finishEncounter(EncounterFinishState.Defeat)}>Surrender</button>
+						</div>
+					);
+				}
+				case CombatantType.Monster: {
+					return (
+						<div>
+							<Text type={TextType.SubHeading}>{combatant.name}</Text>
+							<div className='tags'>
+								<Tag>Level {combatant.level}</Tag>
+							</div>
+							MONSTER CONTROLS
+							<hr />
+							<button onClick={this.endTurn}>End Turn</button>
+						</div>
+					);
+				}
+			}
+		}
+	}
 	
 	public render() {
+		const acting = getActiveCombatants(this.props.encounter);
+		const currentID = acting.length > 0 ? acting[0].id : null;
+
 		let controls = null;
 		switch (getEncounterState(this.props.encounter)) {
 			case EncounterState.Active:
 				controls = (
 					<div className='encounter-right-panel'>
-						<button className='hack' onClick={() => this.props.finishEncounter(EncounterFinishState.Victory)}>Win</button>
-						<button onClick={() => this.props.finishEncounter(EncounterFinishState.Retreat)}>Retreat</button>
-						<button onClick={() => this.props.finishEncounter(EncounterFinishState.Defeat)}>Surrender</button>
+						{this.getEncounterControls(currentID)}
 					</div>
 				);
 				break;
@@ -107,7 +218,7 @@ export class EncounterScreen extends Component<Props> {
 			case EncounterState.Defeated:
 				controls = (
 					<div className='encounter-right-panel'>
-						<button onClick={() => this.props.finishEncounter(EncounterFinishState.Defeat)}>Defeat</button>
+						<button onClick={() => this.props.finishEncounter(EncounterFinishState.Defeat)}>Defeated</button>
 					</div>
 				);
 				break;
@@ -118,12 +229,18 @@ export class EncounterScreen extends Component<Props> {
 				<div className='encounter-left-panel'>
 					<InitiativeListPanel
 						encounter={this.props.encounter}
+						currentID={currentID}
+						selectedIDs={this.state.selectedIDs}
 						rollInitiative={this.props.rollInitiative}
+						onSelect={this.selectCombatant}
 					/>
 				</div>
 				<div className='encounter-central-panel'>
 					<EncounterMapPanel
 						encounter={this.props.encounter}
+						currentID={currentID}
+						selectedIDs={this.state.selectedIDs}
+						onSelect={this.selectCombatant}
 					/>
 				</div>
 				{controls}

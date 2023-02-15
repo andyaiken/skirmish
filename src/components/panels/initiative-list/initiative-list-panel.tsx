@@ -1,13 +1,18 @@
 import { Component } from 'react';
-import { Text, TextType } from '../../../controls';
+import { Tag, Text, TextType } from '../../../controls';
+import { CombatDataState } from '../../../models/combat-data';
 import { CombatantModel } from '../../../models/combatant';
-import { EncounterModel, getCombatant } from '../../../models/encounter';
+import { EncounterModel, getActiveCombatants, getCombatant } from '../../../models/encounter';
+import { StatValue } from '../../utility';
 
 import './initiative-list-panel.scss';
 
 interface Props {
 	encounter: EncounterModel;
+	currentID: string | null;
+	selectedIDs: string[];
 	rollInitiative: (encounter: EncounterModel) => void;
+	onSelect: (combatant: CombatantModel | null) => void;
 }
 
 export class InitiativeListPanel extends Component<Props> {
@@ -16,8 +21,7 @@ export class InitiativeListPanel extends Component<Props> {
 	}
 
 	public render() {
-		const acting = this.props.encounter.combatData
-			.filter(cd => cd.initiative !== Number.MIN_VALUE)
+		const acting = getActiveCombatants(this.props.encounter)
 			.map(cd => {
 				return {
 					combatant: getCombatant(this.props.encounter, cd.id) as CombatantModel,
@@ -25,10 +29,21 @@ export class InitiativeListPanel extends Component<Props> {
 				};
 			})
 			.map(a => {
-				return (
-					<div key={a.combatant.id} className='initiative-entry'>
+				const current = this.props.currentID === a.combatant.id;
+				const selected = this.props.selectedIDs.includes(a.combatant.id);
+				const className = `initiative-entry ${current ? 'current' : ''} ${selected ? 'selected' : ''}`;
+				const label = (
+					<div className='initiative-entry-details'>
 						<div className='initiative-entry-name'>{a.combatant.name}</div>
-						<div className='initiative-entry-value'>{a.data.initiative}</div>
+						{current ? <Tag>Current Turn</Tag> : null}
+						{a.data.state === CombatDataState.Unconscious ? <Tag>Unconscious</Tag> : null}
+						{a.data.state === CombatDataState.Dead ? <Tag>Dead</Tag> : null}
+					</div>
+				);
+				return (
+					<div key={a.combatant.id} className={className} onClick={() => this.props.onSelect(a.combatant)}>
+						<div className={`initiative-entry-token ${a.combatant.type.toLowerCase()}`}></div>
+						<StatValue label={label} value={a.data.initiative} />
 					</div>
 				);
 			});
@@ -36,13 +51,14 @@ export class InitiativeListPanel extends Component<Props> {
 		let content = null;
 		if (acting.length === 0) {
 			content = (
-				<div>
+				<div className='empty'>
 					<button onClick={this.rollInitiative}>Roll for initiative</button>
 				</div>
 			);
 		} else {
 			content = (
 				<div>
+					<Text type={TextType.SubHeading}>Initiative</Text>
 					{acting}
 				</div>
 			)
@@ -50,7 +66,6 @@ export class InitiativeListPanel extends Component<Props> {
 
 		return (
 			<div className='initiative-list-panel'>
-				<Text type={TextType.SubHeading}>Initiative</Text>
 				{content}
 			</div>
 		);

@@ -58,7 +58,6 @@ export class Stats extends Component<Props> {
 						</div>
 					</Box>
 					<Box label='Skills'>
-						<StatValue label='Athletics' value={getSkillValue(this.props.hero, Skill.Athletics)}/>
 						<StatValue label='Brawl' value={getSkillValue(this.props.hero, Skill.Brawl)}/>
 						<StatValue label='Perception' value={getSkillValue(this.props.hero, Skill.Perception)}/>
 						<StatValue label='Reactions' value={getSkillValue(this.props.hero, Skill.Reactions)}/>

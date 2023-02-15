@@ -1,4 +1,5 @@
 .encounter-map {
+	margin: 5px 20px;
 	background-color: rgb(240, 240, 240);
 
 	.encounter-map-inner {
@@ -35,6 +36,18 @@
 				&.monster {
 					border-color: darkred;
 					background-color: red;
+				}
+
+				&:hover {
+					outline: 3px solid rgb(200, 230, 255);
+				}
+
+				&.current {
+					outline: 3px solid rgb(60, 170, 255);
+				}
+
+				&.selected {
+					outline: 3px solid rgb(60, 170, 255);
 				}
 			}
 		}

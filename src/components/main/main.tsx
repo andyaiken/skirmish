@@ -2,7 +2,7 @@ import { Component } from 'react';
 
 import { BoonModel, BoonType } from '../../models/boon';
 import { CampaignMapRegionModel, removeRegion } from '../../models/campaign-map';
-import { createEncounter, EncounterModel, getAllHeroesInEncounter, getDeadHeroes, getSurvivingHeroes, rollInitiative } from '../../models/encounter';
+import { createEncounter, EncounterModel, endOfTurn, getActiveCombatants, getAllHeroesInEncounter, getDeadHeroes, getFallenHeroes, getSurvivingHeroes, hide, move, rollInitiative, scan, standUpSitDown, startOfTurn } from '../../models/encounter';
 import { addHeroToGame, createGame, GameModel } from '../../models/game';
 import { CombatantModel, CombatantType, createCombatant } from '../../models/combatant';
 import { ItemModel } from '../../models/item';
@@ -14,6 +14,7 @@ import { PlayingCard } from '../utility';
 
 import './main.scss';
 import { FeatureModel } from '../../models/feature';
+import { CombatDataModel } from '../../models/combat-data';
 
 enum ScreenType {
 	Landing = 'landing',
@@ -180,12 +181,64 @@ export class Main extends Component<Props, State> {
 	//#region Encounter page
 
 	rollInitiative = (encounter: EncounterModel) => {
-		if (this.state.game) {
-			rollInitiative(encounter);
-			this.setState({
-				game: this.state.game
-			});
+		rollInitiative(encounter);
+
+		const acting = getActiveCombatants(encounter);
+		const current = acting.length > 0 ? acting[0] : null;
+		if (current) {
+			startOfTurn(encounter, current);
 		}
+
+		this.setState({
+			game: this.state.game
+		});
+	}
+
+	move = (encounter: EncounterModel, combatData: CombatDataModel, dir: string, cost: number) => {
+		move(combatData, dir, cost);
+
+		this.setState({
+			game: this.state.game
+		});
+	}
+
+	standUp = (encounter: EncounterModel, combatData: CombatDataModel) => {
+		standUpSitDown(combatData);
+
+		this.setState({
+			game: this.state.game
+		});
+	}
+
+	scan = (encounter: EncounterModel, combatData: CombatDataModel) => {
+		scan(encounter, combatData);
+
+		this.setState({
+			game: this.state.game
+		});
+	}
+
+	hide = (encounter: EncounterModel, combatData: CombatDataModel) => {
+		hide(encounter, combatData);
+
+		this.setState({
+			game: this.state.game
+		});
+	}
+
+	endTurn = (encounter: EncounterModel) => {
+		const acting = getActiveCombatants(encounter);
+		const current = acting.length > 0 ? acting[0] : null;
+		const next = acting.length > 1 ? acting[1] : null;
+		if (current) {
+			endOfTurn(encounter, current);
+		}
+		if (next) {
+			startOfTurn(encounter, next);
+		}
+		this.setState({
+			game: this.state.game
+		});
 	}
 
 	equipItem = (item: ItemModel, combatant: CombatantModel) => {
@@ -282,16 +335,16 @@ export class Main extends Component<Props, State> {
 				break;
 			}
 			case EncounterFinishState.Retreat: {
-				// Remove dead heroes from the game
-				const deadHeroes = getDeadHeroes(encounter);
-				game.heroes = game.heroes.filter(h => !deadHeroes.includes(h));
+				// Remove fallen heroes from the game
+				const fallenHeroes = getFallenHeroes(encounter);
+				game.heroes = game.heroes.filter(h => !fallenHeroes.includes(h));
 				// Clear the current encounter
 				game.encounter = null;
 				// Show message
 				dialog = (
 					<div>
 						<Text type={TextType.SubHeading}>You retreated from the encounter in {region.name}.</Text>
-						<Text>Any heroes who died have been lost, along with all their equipment.</Text>
+						<Text>Any heroes who fell have been lost, along with all their equipment.</Text>
 						<button onClick={() => this.setScreen(ScreenType.Campaign)}>OK</button>
 					</div>
 				);
@@ -367,6 +420,11 @@ export class Main extends Component<Props, State> {
 						encounter={this.state.game?.encounter as EncounterModel}
 						game={this.state.game as GameModel}
 						rollInitiative={this.rollInitiative}
+						endTurn={this.endTurn}
+						move={this.move}
+						standUp={this.standUp}
+						scan={this.scan}
+						hide={this.hide}
 						equipItem={this.equipItem}
 						unequipItem={this.unequipItem}
 						finishEncounter={this.finishEncounter}

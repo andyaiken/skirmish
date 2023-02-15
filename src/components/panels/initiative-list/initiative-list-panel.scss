@@ -1,20 +1,65 @@
 .initiative-list-panel {
-	display: block;
+	height: 100%;
 
-	.initiative-entry {
-		margin: 10px 0;
+	.empty {
 		display: flex;
 		align-items: center;
+		height: 100%;
+	}
 
-		.initiative-entry-name {
-			flex: 1 1 0;
-			font-size: 18px;
-			font-weight: 600;
+	.initiative-entry {
+		display: flex;
+		align-items: center;
+		margin: 3px 0;
+		border: 1px solid transparent;
+		border-radius: 5px;
+		padding: 0 10px;
+
+		&.current {
+			border-color: rgb(60, 170, 255);
+			background-color: rgb(200, 230, 255);
+			margin-bottom: 20px;
 		}
 
-		.initiative-entry-value {
+		&.selected {
+			border-color: rgb(60, 170, 255);
+			background-color: rgb(200, 230, 255);
+		}
+
+		&:hover {
+			background-color: rgb(200, 230, 255);
+		}
+
+		.initiative-entry-token {
 			flex: 0 0 auto;
-			font-size: 15px;
+			margin-right: 10px;
+			width: 15px;
+			height: 15px;
+			border: 1px solid transparent;
+			border-radius: 50%;
+
+			&.hero {
+				border-color: darkgreen;
+				background-color: green;
+			}
+
+			&.monster {
+				border-color: darkred;
+				background-color: red;
+			}
+		}
+
+		.stat-value {
+			flex: 1 1 0;
+		}
+
+		.initiative-entry-details {
+			display: flex;
+			align-items: center;
+
+			.initiative-entry-name {
+				margin-right: 10px;
+			}
 		}
 	}
 }

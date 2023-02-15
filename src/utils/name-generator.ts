@@ -9,7 +9,7 @@ export const generateName = () => {
 }
 
 export const generateWord = () => {
-	const startHuman1 = 'As Has Khe Zash Gl Ig Iv Kos Miv Pav Ser Dar Even Gor Rand Sto Tam Barer Keth Mum';
+	const startHuman1 = 'As Has Khe Zash Gl Ig Iv Kos Miv Pav Ser Dar Even Gor Rand Sto Tam Barer Keth Mum Ford Cam';
 	const startHuman2 = 'Mar Burg Al Hel Wrayt S Eag Eath Joan Answ L Ot Ced At Tal Ham Jasm Mail Yash Row';
 	const startDwarf = 'Adr Alber Ba Bar Gar Kildr Kath Dies Eld Gurd Har Morg Or Rur Mar Vis Jen Torg Tak Thor End Ris Em Gunn';
 	const startElf = 'Ad All Aram Berri Car Enial Gann Im Per Sorvi Var Adr An Beth Bir Jelen Key Lesh Mer Mia Naiv Quel Sar Shan';
@@ -17,7 +17,7 @@ export const generateWord = () => {
 	const startDragonborn = 'Are Bala Bhar Don Gh Hesk Med Meh Nad Pand Patr Sham Shed Ak Bir Farid Fla Ka Ko Mish Thav Uad Eder Hener';
 	const startMisc = 'Alu Stos Fa Ravay Leo Stok Vic El Yeng Car Ric Ar Guir Es My Pey';
 
-	const maleHuman = 'Eir Eid Eed El Ar An Or Ef Al Vin Orn Dur Stag Elm Ur Us';
+	const maleHuman = 'Eir Eid Eed El Ar An Or Ef Al Vin Orn Dur Stag Elm Ur Us For';
 	const maleDwarf = 'Ik Ich Ern End Tor Nor In Rak Gen Sik Gran Linn Vok Brek Dal Gar';
 	const maleElf = 'An Ar Il Rian Ric Is Dan Arai Meral Cian En Rion Ialis Ior Nan Kas';
 	const maleHalfling = 'Ton Der Ade Rin Don Rich Nan Ret Al Born Coe By Fire Yas Dal Yle';
@@ -39,9 +39,6 @@ export const generateWord = () => {
 		femaleHuman, femaleDwarf, femaleElf, femaleHalfling, femaleDragonborn, femaleMisc
 	].join(' ').toLowerCase().split(' ');
 
-	const startIndex = randomNumber(starts.length);
-	const endIndex = randomNumber(ends.length);
-
 	let separator = '';
 	if (randomNumber(10) === 0) {
 		const separators = ['-', '\''];
@@ -49,6 +46,8 @@ export const generateWord = () => {
 		separator = separators[sepIndex];
 	}
 
+	const startIndex = randomNumber(starts.length);
+	const endIndex = randomNumber(ends.length);
 	return starts[startIndex] + separator + ends[endIndex];
 }
 

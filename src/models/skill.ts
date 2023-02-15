@@ -10,7 +10,6 @@ export enum Skill {
 	None = 'None',
 	Any = '[choose one skill]',
 	All = 'All skills',
-	Athletics = 'Athletics',
 	Brawl = 'Brawl',
 	Perception = 'Perception',
 	Reactions = 'Reactions',
@@ -23,7 +22,6 @@ export const getSkillCategory = (skill: Skill) => {
 	switch (skill) {
 		case Skill.All:
 			return SkillCategory.All;
-		case Skill.Athletics:
 		case Skill.Brawl:
 		case Skill.Stealth:
 		case Skill.Weapon:

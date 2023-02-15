@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component, MouseEvent } from 'react';
 import { CampaignMapModel, CampaignMapRegionModel, CampaignMapSquareModel, getCampaignMapDimensions } from '../../../models/campaign-map';
 
 import './campaign-map-panel.scss';
@@ -10,7 +10,7 @@ interface Props {
 }
 
 export class CampaignMapPanel extends Component<Props> {
-	private onClick(e: React.MouseEvent, square: CampaignMapSquareModel) {
+	private onClick(e: MouseEvent, square: CampaignMapSquareModel) {
 		e.stopPropagation();
 		const region = this.props.map.regions.find(r => r.id === square.regionID) ?? null;
 		this.props.onSelectRegion(region);
@@ -27,8 +27,7 @@ export class CampaignMapPanel extends Component<Props> {
 		// Determine the percentage width and height of a square
 		const width = 1 + (dims.right - dims.left);
 		const height = 1 + (dims.bottom - dims.top);
-		const squareWidthPC = 100 / width;
-		const squareHeightPC = 100 / height;
+		const squareSizePC = 100 / Math.max(width, height);
 
 		const squares: JSX.Element[] = this.props.map.squares.map(square => {
 			const region = this.props.map.regions.find(r => r.id === square.regionID);
@@ -45,10 +44,10 @@ export class CampaignMapPanel extends Component<Props> {
 					key={`${square.x} ${square.y}`}
 					className='campaign-map-square'
 					style={{
-						width: `${squareWidthPC}%`,
-						height: `${squareWidthPC}%`,
-						left: `${((square.x - dims.left) * squareWidthPC)}%`,
-						top: `${((square.y - dims.top) * squareHeightPC)}%`,
+						width: `${squareSizePC}%`,
+						height: `${squareSizePC}%`,
+						left: `${((square.x - dims.left) * squareSizePC)}%`,
+						top: `${((square.y - dims.top) * squareSizePC)}%`,
 						backgroundColor: (this.props.selectedRegion === region) ? 'white' : color,
 						borderTopWidth: top ? 1 : 0,
 						borderRightWidth: right ? 1 : 0,

@@ -16,6 +16,7 @@ body {
 * {
 	box-sizing: border-box;
 	user-select: none;
+	transition: all ease-in-out 0.2s;
 }
 
 hr {
@@ -27,18 +28,21 @@ hr {
 
 button {
 	margin: 10px 0;
-	padding: 10px;
+	padding: 10px 5px;
 	text-transform: uppercase;
 	font-weight: 600;
 	width: 100%;
 	border: 2px solid rgb(130, 130, 130);
 	border-radius: 5px;
 	background-color: rgb(255, 255, 255);
-	cursor: pointer;
 
-	&:hover {
-		border-color: rgb(60, 170, 255);
-		background-color: rgb(200, 230, 255);
+	&:not(:disabled) {
+		cursor: pointer;
+
+		&:hover {
+			border-color: rgb(60, 170, 255);
+			background-color: rgb(200, 230, 255);
+		}
 	}
 }
 

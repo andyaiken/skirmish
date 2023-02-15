@@ -194,7 +194,6 @@ class ChoicePanel extends Component<ChoicePanelProps, ChoicePanelState> {
 					<div>
 						<Selector
 							options={[
-								{ id: Skill.Athletics },
 								{ id: Skill.Brawl },
 								{ id: Skill.Perception },
 								{ id: Skill.Reactions },

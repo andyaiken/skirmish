@@ -6,14 +6,41 @@
 	.encounter-right-panel {
 		height: 100%;
 		overflow-y: auto;
-		flex: 1 1 0;
 		border: 2px solid rgb(220, 220, 220);
 		border-radius: 10px;
-		padding: 10px 20px;
+		padding: 10px;
 		background-color: white;
+
+		.tags {
+			text-align: center;
+		}
+
+		.stats-row {
+			display: flex;
+			align-items: flex-start;
+			justify-content: center;
+			gap: 10px;
+
+			&>* {
+				flex: 1 1 0;
+			}
+		}
+
+		.movement {
+			display: flex;
+			justify-content: center;
+		}
+	}
+
+	.encounter-left-panel {
+		flex: 1 1 0;
 	}
 
 	.encounter-central-panel {
-		flex: 0 0 710px;
+		flex: 0 0 auto;
+	}
+
+	.encounter-right-panel {
+		flex: 2 2 0;
 	}
 }

@@ -1,6 +1,7 @@
 .stat-value {
 	&.horizontal {
 		display: flex;
+		align-items: center;
 		margin: 10px 0;
 
 		.stat-value-label {
@@ -26,9 +27,10 @@
 		}
 
 		.stat-value-label {
-			margin-top: 3px;
+			margin: 5px 0;
 			font-size: 13px;
 			text-align: center;
+			word-break: break-all;
 		}
 	}
 }

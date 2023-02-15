@@ -1,0 +1,133 @@
+.direction-panel {
+	width: 210px;
+	height: 210px;
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 2px;
+
+	.dir,
+	.center {
+		width: 70px;
+		height: 70px;
+	}
+
+	.dir {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border: 2px solid rgb(220, 220, 220);
+		border-radius: 10px;
+		background-color: rgb(250, 250, 250);
+
+		.arrow {
+			position: absolute;
+			font-size: 70px;
+		}
+
+		.cost {
+			position: absolute;
+			border: 1px solid rgb(220, 220, 220);
+			border-radius: 3px;
+			background-color: rgb(250, 250, 250);
+		}
+
+		&.nw {
+			.arrow {
+				transform: rotate(225deg);
+			}
+
+			.cost {
+				right: 15%;
+				bottom: 15%;
+			}
+		}
+
+		&.n {
+			.arrow {
+				transform: rotate(270deg);
+			}
+
+			.cost {
+				bottom: 15%;
+			}
+		}
+
+		&.ne {
+			.arrow {
+				transform: rotate(315deg);
+			}
+
+			.cost {
+				left: 15%;
+				bottom: 15%;
+			}
+		}
+
+		&.w {
+			.arrow {
+				transform: rotate(180deg);
+			}
+
+			.cost {
+				right: 15%;
+			}
+		}
+
+		&.e {
+			.arrow {
+				transform: rotate(0deg);
+			}
+
+			.cost {
+				left: 15%;
+			}
+		}
+
+		&.sw {
+			.arrow {
+				transform: rotate(135deg);
+			}
+
+			.cost {
+				right: 15%;
+				top: 15%;
+			}
+		}
+
+		&.s {
+			.arrow {
+				transform: rotate(90deg);
+			}
+
+			.cost {
+				top: 15%;
+			}
+		}
+
+		&.se {
+			.arrow {
+				transform: rotate(45deg);
+			}
+
+			.cost {
+				left: 15%;
+				top: 15%;
+			}
+		}
+
+		&.enabled {
+			cursor: pointer;
+
+			&:hover {
+				border-color: rgb(60, 170, 255);
+				background-color: rgb(200, 230, 255);
+			}
+		}
+
+		&.disabled {
+			opacity: 0.3;
+			pointer-events: none;
+		}
+	}
+}

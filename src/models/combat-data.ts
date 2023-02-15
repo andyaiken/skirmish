@@ -1,8 +1,9 @@
+import { ActionModel } from './action';
 import { CombatantModel, CombatantType } from './combatant';
 import { ConditionModel } from './condition';
 
 export enum CombatDataState {
-	Standing = 'Standing',
+	Standing = 'Stand',
 	Prone = 'Prone',
 	Unconscious = 'Unconscious',
 	Dead = 'Dead'
@@ -11,6 +12,7 @@ export enum CombatDataState {
 export interface CombatDataModel {
 	id: string;
 	type: CombatantType;
+	size: number;
 	state: CombatDataState;
 	position: {
 		x: number,
@@ -23,12 +25,14 @@ export interface CombatDataModel {
 	senses: number;
 	hidden: number;
 	conditions: ConditionModel[];
+	actions: ActionModel[];
 }
 
 export const createCombatData = (combatant: CombatantModel): CombatDataModel => {
 	return {
 		id: combatant.id,
 		type: combatant.type,
+		size: combatant.size,
 		state: CombatDataState.Standing,
 		position: {
 			x: 0,
@@ -40,6 +44,7 @@ export const createCombatData = (combatant: CombatantModel): CombatDataModel => 
 		movement: 0,
 		senses: 0,
 		hidden: 0,
-		conditions: []
+		conditions: [],
+		actions: []
 	};
 }

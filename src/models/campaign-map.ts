@@ -141,21 +141,21 @@ export const getCampaignMapDimensions = (map: CampaignMapModel) => {
 export const getCampaignMapAdjacentSquares = (map: CampaignMapModel, x: number, y: number) => {
 	const adj: CampaignMapSquareModel[] = [];
 
-	const left = map.squares.find(sq => (sq.x === x - 1) && (sq.y === y));
-	if (left) {
-		adj.push(left);
+	const n = map.squares.find(sq => (sq.x === x) && (sq.y === y - 1));
+	if (n) {
+		adj.push(n);
 	}
-	const top = map.squares.find(sq => (sq.x === x) && (sq.y === y - 1));
-	if (top) {
-		adj.push(top);
+	const e = map.squares.find(sq => (sq.x === x + 1) && (sq.y === y));
+	if (e) {
+		adj.push(e);
 	}
-	const right = map.squares.find(sq => (sq.x === x + 1) && (sq.y === y));
-	if (right) {
-		adj.push(right);
+	const s = map.squares.find(sq => (sq.x === x) && (sq.y === y + 1));
+	if (s) {
+		adj.push(s);
 	}
-	const bottom = map.squares.find(sq => (sq.x === x) && (sq.y === y + 1));
-	if (bottom) {
-		adj.push(bottom);
+	const w = map.squares.find(sq => (sq.x === x - 1) && (sq.y === y));
+	if (w) {
+		adj.push(w);
 	}
 
 	return adj;

@@ -3,19 +3,20 @@
 ## Bugs
 
 * The campaign map (sometimes) has odd lines on it
-* The encounter map is not rendering correctly
 * It's possible to run out of proficiencies to learn
   * Might have to add some code to a feature to see whether it can be chosen
+  * Should do the same for actions - only allow action cards to be drawn if they can be used
 
 ## To Do
 
 * Encounters:
-  * Monster names should be suffixed with ...1, 2 if duplicated
   * Click on an initiative entry or a map token, to show a character sheet with combat data included
     * Limited data for monsters (level, conditions, damage, wounds)
   * Show controls for current combatant, if it's a hero
     * Otherwise, show log of monster's turn
   * Implement things you can do when it's your turn
+    * Picking up / dropping items
+    * Actions
   * Implement the encounter flow
   * Implement AI so that monsters can take their turns
 * Implement actions

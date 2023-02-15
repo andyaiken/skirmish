@@ -55,50 +55,51 @@ export class HeroesPage extends Component<Props, State> {
 	public render() {
 		let boons = null;
 		if (this.props.game.boons.length > 0) {
+			const cards = this.props.game.boons.map(b => (<PlayingCard key={b.id} front={<BoonCard boon={b} />} onClick={() => this.selectBoon(b)} />));
 			boons = (
 				<div>
-					<Text type={TextType.SubHeading}>Rewards</Text>
-					<Text>You have won these rewards. Select a card to redeem a reward.</Text>
-					<CardList cards={this.props.game.boons.map(b => (<PlayingCard key={b.id} front={<BoonCard boon={b} />} onClick={() => this.selectBoon(b)} />))} />
+					<Text type={TextType.SubHeading}>Rewards ({cards.length})</Text>
+					<Text type={TextType.Information}><b>You have won these rewards.</b> Select a card to redeem a reward.</Text>
+					<CardList cards={cards} />
 				</div>
 			);
 		}
 
 		let blankHeroes = null;
 		if (this.props.game.heroes.some(h => !h.name)) {
-			const heroCards = this.props.game.heroes.filter(h => !h.name).map(h => {
+			const cards = this.props.game.heroes.filter(h => !h.name).map(h => {
 				return (
 					<PlayingCard key={h.id} front={<PlaceholderCard text='Hero' />} onClick={() => this.setState({ selectedHero: h })} />
 				);
 			});
 			blankHeroes = (
 				<div>
-					<Text type={TextType.SubHeading}>New Heroes</Text>
-					<Text>You have unfilled hero slots. Select a blank hero card to recruit a new level 1 hero.</Text>
-					<CardList cards={heroCards} />
+					<Text type={TextType.SubHeading}>New Heroes ({cards.length})</Text>
+					<Text type={TextType.Information}><b>You have unfilled hero slots.</b> Select a blank hero card to recruit a new level 1 hero.</Text>
+					<CardList cards={cards} />
 				</div>
 			);
 		}
 
 		let levelUp = null;
 		if (this.props.game.heroes.some(h => h.xp >= h.level)) {
-			const heroCards = this.props.game.heroes.filter(h => h.xp >= h.level).map(h => {
+			const cards = this.props.game.heroes.filter(h => h.xp >= h.level).map(h => {
 				return (
 					<PlayingCard key={h.id} front={<HeroCard hero={h} />} onClick={() => this.setState({ selectedHero: h })} />
 				);
 			});
 			levelUp = (
 				<div>
-					<Text type={TextType.SubHeading}>Level Up</Text>
-					<Text>Some of your heroes have gained enough XP to level up. Select their card to upgrade them.</Text>
-					<CardList cards={heroCards} />
+					<Text type={TextType.SubHeading}>Level Up ({cards.length})</Text>
+					<Text type={TextType.Information}><b>Some of your heroes have gained enough XP to level up.</b> Select their card to upgrade them.</Text>
+					<CardList cards={cards} />
 				</div>
 			);
 		}
 
 		let heroes = null;
-		if (this.props.game.heroes.length > 0) {
-			const heroCards = this.props.game.heroes.map(hero => {
+		if (this.props.game.heroes.filter(h => !!h.name).length > 0) {
+			const cards = this.props.game.heroes.filter(h => !!h.name).map(hero => {
 				return (
 					<div key={hero.id}>
 						<PlayingCard front={<HeroCard hero={hero} />} onClick={() => this.setState({ selectedHero: hero })} />
@@ -108,30 +109,32 @@ export class HeroesPage extends Component<Props, State> {
 			});
 			heroes = (
 				<div>
-					<Text type={TextType.SubHeading}>Heroes ({this.props.game.heroes.length})</Text>
-					<CardList cards={heroCards} />
+					<Text type={TextType.SubHeading}>Heroes ({cards.length})</Text>
+					<CardList cards={cards} />
 				</div>
 			);
 		}
 
 		let magicItems = null;
 		if (this.props.game.items.filter(i => i.magic).length > 0) {
+			const cards = this.props.game.items.filter(i => i.magic).map((i, n) => (<PlayingCard key={n} front={<ItemCard item={i} />} />));
 			magicItems = (
 				<div>
-					<Text type={TextType.SubHeading}>Magic Items ({this.props.game.items.filter(i => i.magic).length})</Text>
+					<Text type={TextType.SubHeading}>Magic Items ({cards.length})</Text>
 					<Text>You have the following magic items:</Text>
-					<CardList cards={this.props.game.items.filter(i => i.magic).map((i, n) => (<PlayingCard key={n} front={<ItemCard item={i} />} />))} />
+					<CardList cards={cards} />
 				</div>
 			);
 		}
 
 		let mundaneItems = null;
 		if (this.props.game.items.filter(i => !i.magic).length > 0) {
+			const cards = this.props.game.items.filter(i => !i.magic).map((i, n) => (<PlayingCard key={n} front={<ItemCard item={i} />} />));
 			mundaneItems = (
 				<div>
-					<Text type={TextType.SubHeading}>Mundane Items ({this.props.game.items.filter(i => !i.magic).length})</Text>
+					<Text type={TextType.SubHeading}>Mundane Items ({cards.length})</Text>
 					<Text>In addition to the equipment carried by your heroes, you also have:</Text>
-					<CardList cards={this.props.game.items.filter(i => !i.magic).map((i, n) => (<PlayingCard key={n} front={<ItemCard item={i} />} />))} />
+					<CardList cards={cards} />
 				</div>
 			);
 		}

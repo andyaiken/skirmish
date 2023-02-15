@@ -99,7 +99,6 @@ export const makeFeatureChoices = (combatant: CombatantModel) => {
 
 		if (feature.skill === Skill.Any) {
 			const options = [
-				Skill.Athletics,
 				Skill.Brawl,
 				Skill.Perception,
 				Skill.Reactions,

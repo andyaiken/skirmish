@@ -3,8 +3,8 @@ import { Tag, Text } from '../../../../controls';
 import { getAuraDescription } from '../../../../models/aura';
 import { DamageType } from '../../../../models/damage';
 import { CombatantModel, getAuras, getDamageBonusValue, getDamageResistanceValue, getProficiencies, getSkillValue, getTraitValue } from '../../../../models/combatant';
-import { Skill } from '../../../../models/skill';
-import { Trait } from '../../../../models/trait';
+import { SkillType } from '../../../../models/skill';
+import { TraitType } from '../../../../models/trait';
 import { Box, StatValue } from '../../../utility';
 
 import './stats.scss';
@@ -17,7 +17,7 @@ export class Stats extends Component<Props> {
 	public render() {
 		let proficiencySection = null;
 		const profs = getProficiencies(this.props.hero);
-		if (profs.length > 0 ) {
+		if (profs.length > 0) {
 			proficiencySection = (
 				<div>
 					{profs.map((p, n) => (<Tag key={n}>{p}</Tag>))}
@@ -52,18 +52,18 @@ export class Stats extends Component<Props> {
 				<div className='column'>
 					<Box label='Traits'>
 						<div className='stats-row'>
-							<StatValue orientation='vertical' label='Endure' value={getTraitValue(this.props.hero, Trait.Endurance)}/>
-							<StatValue orientation='vertical' label='Resolve' value={getTraitValue(this.props.hero, Trait.Resolve)}/>
-							<StatValue orientation='vertical' label='Speed' value={getTraitValue(this.props.hero, Trait.Speed)}/>
+							<StatValue orientation='vertical' label='Endure' value={getTraitValue(this.props.hero, TraitType.Endurance)}/>
+							<StatValue orientation='vertical' label='Resolve' value={getTraitValue(this.props.hero, TraitType.Resolve)}/>
+							<StatValue orientation='vertical' label='Speed' value={getTraitValue(this.props.hero, TraitType.Speed)}/>
 						</div>
 					</Box>
 					<Box label='Skills'>
-						<StatValue label='Brawl' value={getSkillValue(this.props.hero, Skill.Brawl)}/>
-						<StatValue label='Perception' value={getSkillValue(this.props.hero, Skill.Perception)}/>
-						<StatValue label='Reactions' value={getSkillValue(this.props.hero, Skill.Reactions)}/>
-						<StatValue label='Spellcasting' value={getSkillValue(this.props.hero, Skill.Spellcasting)}/>
-						<StatValue label='Stealth' value={getSkillValue(this.props.hero, Skill.Stealth)}/>
-						<StatValue label='Weapon' value={getSkillValue(this.props.hero, Skill.Weapon)}/>
+						<StatValue label='Brawl' value={getSkillValue(this.props.hero, SkillType.Brawl)}/>
+						<StatValue label='Perception' value={getSkillValue(this.props.hero, SkillType.Perception)}/>
+						<StatValue label='Reactions' value={getSkillValue(this.props.hero, SkillType.Reactions)}/>
+						<StatValue label='Spellcasting' value={getSkillValue(this.props.hero, SkillType.Spellcasting)}/>
+						<StatValue label='Stealth' value={getSkillValue(this.props.hero, SkillType.Stealth)}/>
+						<StatValue label='Weapon' value={getSkillValue(this.props.hero, SkillType.Weapon)}/>
 					</Box>
 				</div>
 				<div className='column'>

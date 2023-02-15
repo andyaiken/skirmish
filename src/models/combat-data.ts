@@ -15,9 +15,9 @@ export interface CombatDataModel {
 	size: number;
 	state: CombatDataState;
 	position: {
-		x: number,
-		y: number
-	},
+		x: number;
+		y: number;
+	};
 	damage: number;
 	wounds: number;
 	initiative: number;

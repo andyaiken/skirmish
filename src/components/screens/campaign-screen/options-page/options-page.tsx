@@ -8,7 +8,7 @@ import { CardList, PlayingCard } from '../../../utility';
 
 import './options-page.scss';
 
-type DeckType = '' | 'species' | 'role' | 'background';
+type DeckType = '' | 'background' | 'role' | 'species';
 
 interface Props {
 	endCampaign: () => void;

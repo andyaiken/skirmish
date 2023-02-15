@@ -1,7 +1,7 @@
 import { draw } from '../utils/collections';
 import { dice } from '../utils/random';
 import { guid } from '../utils/utils';
-import { generateMagicItem, ItemModel } from './item';
+import { ItemModel, generateMagicItem } from './item';
 
 export enum BoonType {
 	ExtraHero = 'Extra hero',

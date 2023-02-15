@@ -1,9 +1,8 @@
 import { Component } from 'react';
-import { Tag } from '../../../controls';
+import { Tag, Text, TextType } from '../../../controls';
 import { getFeatureDescription, getFeatureTitle } from '../../../models/feature';
 import { ItemModel } from '../../../models/item';
-import { ItemProficiency } from '../../../models/item-proficiency';
-import { Text, TextType } from '../../../controls';
+import { ItemProficiencyType } from '../../../models/item-proficiency';
 import { StatValue } from '../../utility';
 
 import './item-card.scss';
@@ -54,7 +53,7 @@ export class ItemCard extends Component<Props> {
 				<Text type={TextType.SubHeading}>{this.props.item.name}</Text>
 				<hr />
 				<div className='tags'>
-					{this.props.item.proficiency !== ItemProficiency.None ? <Tag>{this.props.item.proficiency}</Tag> : null}
+					{this.props.item.proficiency !== ItemProficiencyType.None ? <Tag>{this.props.item.proficiency}</Tag> : null}
 					<Tag>{location}</Tag>
 					{this.props.item.baseItem !== '' ? <Tag>{this.props.item.baseItem}</Tag> : null}
 				</div>

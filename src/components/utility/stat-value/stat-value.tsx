@@ -4,8 +4,8 @@ import './stat-value.scss';
 
 interface Props {
 	orientation: 'horizontal' | 'vertical';
-	label: number | string | JSX.Element;
-	value: number | string | JSX.Element | (number | string | JSX.Element)[];
+	label: JSX.Element | number | string;
+	value: (JSX.Element | number | string)[] | JSX.Element | number | string;
 }
 
 export class StatValue extends Component<Props> {
@@ -13,7 +13,7 @@ export class StatValue extends Component<Props> {
 		orientation: 'horizontal'
 	};
 
-	public render() {
+	render = () => {
 		if (Array.isArray(this.props.value)) {
 			return (
 				<div className='stat-value horizontal'>
@@ -50,5 +50,5 @@ export class StatValue extends Component<Props> {
 				</div>
 			</div>
 		);
-	}
+	};
 }

@@ -17,14 +17,14 @@ import { LevelUp } from './level-up/level-up';
 
 import './character-sheet-panel.scss';
 
-type ViewType = 'stats' | 'items' | 'features' | 'actions';
+type ViewType = 'actions' | 'features' | 'items' | 'stats';
 
 interface Props {
 	hero: CombatantModel;
 	game: GameModel;
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
 	unequipItem: (item: ItemModel, hero: CombatantModel) => void;
-	levelUp: (feature: FeatureModel, hero: CombatantModel)=> void;
+	levelUp: (feature: FeatureModel, hero: CombatantModel) => void;
 }
 
 interface State {

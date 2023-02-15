@@ -1,4 +1,4 @@
-export enum ItemLocation {
+export enum ItemLocationType {
 	None = 'None',
 	Head = 'Head',
 	Neck = 'Neck',

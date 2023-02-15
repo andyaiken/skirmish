@@ -13,8 +13,8 @@ import {
 	FeatureModel
 } from './feature';
 import { GameModel } from './game';
-import { Skill } from './skill';
-import { Trait } from './trait';
+import { SkillType } from './skill';
+import { TraitType } from './trait';
 
 export interface BackgroundModel {
 	id: string;
@@ -28,7 +28,7 @@ export const BackgroundList: BackgroundModel[] = [
 		id: 'background-acrobat',
 		name: 'Acrobat',
 		features: [
-			createTraitFeature(Trait.Speed, 1)
+			createTraitFeature(TraitType.Speed, 1)
 		],
 		actions: [
 			createActionPlaceholder('Move through occupied spaces'),
@@ -66,7 +66,7 @@ export const BackgroundList: BackgroundModel[] = [
 		id: 'background-mystic',
 		name: 'Mystic',
 		features: [
-			createSkillFeature(Skill.Spellcasting, 2),
+			createSkillFeature(SkillType.Spellcasting, 2),
 			createDamageCategoryBonusFeature(DamageCategory.Energy, 1),
 			createDamageCategoryBonusFeature(DamageCategory.Corruption, 1),
 			createDamageCategoryResistFeature(DamageCategory.Corruption, 1)
@@ -106,8 +106,8 @@ export const BackgroundList: BackgroundModel[] = [
 		id: 'background-reaver',
 		name: 'Reaver',
 		features: [
-			createSkillFeature(Skill.Brawl, 2),
-			createSkillFeature(Skill.Weapon, 2),
+			createSkillFeature(SkillType.Brawl, 2),
+			createSkillFeature(SkillType.Weapon, 2),
 			createDamageCategoryResistFeature(DamageCategory.Any, 1),
 			createDamageCategoryBonusFeature(DamageCategory.Physical, 1),
 			createAuraDamageFeature(AuraType.AutomaticDamage, DamageType.Edged, 1),
@@ -124,8 +124,8 @@ export const BackgroundList: BackgroundModel[] = [
 		id: 'background-sentinel',
 		name: 'Sentinel',
 		features: [
-			createTraitFeature(Trait.Endurance, 1),
-			createTraitFeature(Trait.Resolve, 1),
+			createTraitFeature(TraitType.Endurance, 1),
+			createTraitFeature(TraitType.Resolve, 1),
 			createDamageResistFeature(DamageType.All, 1),
 			createAuraFeature(AuraType.PreventMovement, 1)
 		],
@@ -138,8 +138,8 @@ export const BackgroundList: BackgroundModel[] = [
 		id: 'background-thief',
 		name: 'Thief',
 		features: [
-			createSkillFeature(Skill.Reactions, 2),
-			createSkillFeature(Skill.Stealth, 2)
+			createSkillFeature(SkillType.Reactions, 2),
+			createSkillFeature(SkillType.Stealth, 2)
 		],
 		actions: [
 			createActionPlaceholder('Disable trap'),

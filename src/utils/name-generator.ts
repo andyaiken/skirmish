@@ -2,7 +2,7 @@ import { randomNumber } from './random';
 
 export const generateName = () => {
 	if (randomNumber(10) === 0) {
-		return capitalise(generateWord()) + ' ' + capitalise(generateWord());
+		return `${capitalise(generateWord())} ${capitalise(generateWord())}`;
 	}
 
 	return capitalise(generateWord());
@@ -39,7 +39,10 @@ export const generateWord = () => {
 		startHalfling,
 		startDragonborn,
 		startMisc
-	].join(' ').toLowerCase().split(' ');
+	]
+		.join(' ')
+		.toLowerCase()
+		.split(' ');
 	const ends = [
 		maleHuman,
 		maleDwarf,
@@ -53,7 +56,10 @@ export const generateWord = () => {
 		femaleHalfling,
 		femaleDragonborn,
 		femaleMisc
-	].join(' ').toLowerCase().split(' ');
+	]
+		.join(' ')
+		.toLowerCase()
+		.split(' ');
 
 	let separator = '';
 	if (randomNumber(10) === 0) {

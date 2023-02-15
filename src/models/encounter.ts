@@ -7,14 +7,14 @@ import { draw, shuffle } from '../utils/collections';
 import { getSpeciesDeck } from './species';
 import { getRoleDeck } from './role';
 import { getBackgroundDeck } from './background';
-import { Trait } from './trait';
-import { Skill } from './skill';
+import { TraitType } from './trait';
+import { SkillType } from './skill';
 import { ConditionType } from './condition';
 
 export enum EncounterState {
-	Active,
-	Won,
-	Defeated
+	Active = 'Active',
+	Won = 'Won',
+	Defeated = 'Defeated'
 }
 
 export interface EncounterModel {
@@ -79,7 +79,7 @@ export const createEncounter = (region: CampaignMapRegionModel, heroes: Combatan
 	const checkedIDs: string[] = [];
 	monsters.forEach(monster => {
 		if (!checkedIDs.includes(monster.id)) {
-			const duplicates = monsters.filter(m => m.name = monster.name);
+			const duplicates = monsters.filter(m => m.name === monster.name);
 			if (duplicates.length > 1) {
 				let n = 1;
 				duplicates.forEach(m => {
@@ -122,11 +122,8 @@ const placeCombatants = (encounter: EncounterModel, rng: () => number) => {
 				}
 			}
 
-			const occupiedSquares: { x: number, y: number }[] = [];
-			encounter.combatData.forEach(cd => {
-				const squares = getCombatantSquares(encounter, cd);
-				occupiedSquares.push(...squares);
-			});
+			const occupiedSquares: { x: number; y: number }[] = [];
+			encounter.combatData.forEach(data => occupiedSquares.push(...getCombatantSquares(encounter, data)));
 
 			const canPlace = squares.every(sq => {
 				const mapSquare = encounter.map.squares.find(ms => (ms.x === sq.x) && (ms.y === sq.y));
@@ -171,7 +168,7 @@ export const rollInitiative = (encounter: EncounterModel) => {
 
 		const combatant = getCombatant(encounter, cd.id);
 		if (combatant) {
-			const speed = getTraitValue(combatant, Trait.Speed);
+			const speed = getTraitValue(combatant, TraitType.Speed);
 			cd.initiative = dice(speed);
 		}
 	});
@@ -185,8 +182,8 @@ export const rollInitiative = (encounter: EncounterModel) => {
 
 		if (result === 0) {
 			// Sort by Speed
-			const speedA = getTraitValue(combatantA as CombatantModel, Trait.Speed);
-			const speedB = getTraitValue(combatantB as CombatantModel, Trait.Speed);
+			const speedA = getTraitValue(combatantA as CombatantModel, TraitType.Speed);
+			const speedB = getTraitValue(combatantB as CombatantModel, TraitType.Speed);
 			result = speedB - speedA;
 		}
 
@@ -216,7 +213,7 @@ export const startOfTurn = (encounter: EncounterModel, combatData: CombatDataMod
 	combatData.movement = 0;
 
 	if (combatData.state === CombatDataState.Unconscious) {
-		const result = dice(getTraitValue(combatant, Trait.Resolve));
+		const result = dice(getTraitValue(combatant, TraitType.Resolve));
 		if (result < 8) {
 			combatData.state = CombatDataState.Dead;
 		}
@@ -232,8 +229,8 @@ export const startOfTurn = (encounter: EncounterModel, combatData: CombatDataMod
 	// TODO: Apply 'auto-damage' effects from auras
 
 	if ((combatData.state === CombatDataState.Standing) || (combatData.state === CombatDataState.Prone)) {
-		combatData.senses = dice(getSkillValue(combatant, Skill.Perception));
-		combatData.movement = dice(getTraitValue(combatant, Trait.Speed));
+		combatData.senses = dice(getSkillValue(combatant, SkillType.Perception));
+		combatData.movement = dice(getTraitValue(combatant, TraitType.Speed));
 		// TODO: Apply movement conditions
 
 		combatData.actions = shuffle(getActionDeck(combatant)).splice(0, 3);
@@ -316,7 +313,7 @@ export const getMoveCost = (encounter: EncounterModel, combatData: CombatDataMod
 	}
 
 	// Can't move into an occupied square
-	const occupied: { x: number, y: number }[] = [];
+	const occupied: { x: number; y: number }[] = [];
 	encounter.combatData.forEach(cd => {
 		const squares = getCombatantSquares(encounter, cd);
 		occupied.push(...squares);
@@ -333,7 +330,7 @@ export const getMoveCost = (encounter: EncounterModel, combatData: CombatDataMod
 	}
 
 	// Moving out of a space adjacent to standing opponent: +4
-	const adjacent: { x: number, y: number }[] = [];
+	const adjacent: { x: number; y: number }[] = [];
 	encounter.combatData
 		.filter(cd => cd.type !== combatant.type)
 		.filter(cd => cd.state === CombatDataState.Standing)
@@ -406,7 +403,7 @@ export const standUpSitDown = (combatData: CombatDataModel) => {
 
 export const scan = (encounter: EncounterModel, combatData: CombatDataModel) => {
 	const combatant = getCombatant(encounter, combatData.id) as CombatantModel;
-	let perception = getSkillValue(combatant, Skill.Perception);
+	let perception = getSkillValue(combatant, SkillType.Perception);
 	if (combatData.state === CombatDataState.Prone) {
 		perception = Math.floor(perception / 2);
 	}
@@ -417,7 +414,7 @@ export const scan = (encounter: EncounterModel, combatData: CombatDataModel) => 
 
 export const hide = (encounter: EncounterModel, combatData: CombatDataModel) => {
 	const combatant = getCombatant(encounter, combatData.id) as CombatantModel;
-	let stealth = getSkillValue(combatant, Skill.Stealth);
+	let stealth = getSkillValue(combatant, SkillType.Stealth);
 	if (combatData.state === CombatDataState.Prone) {
 		stealth = Math.floor(stealth / 2);
 	}

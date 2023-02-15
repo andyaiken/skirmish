@@ -3,9 +3,9 @@ import { Selector, Text, TextType } from '../../../../controls';
 import { DamageCategory, DamageType } from '../../../../models/damage';
 import { FeatureModel, FeatureType, hasChoice } from '../../../../models/feature';
 import { CombatantModel, getProficiencies } from '../../../../models/combatant';
-import { ItemProficiency } from '../../../../models/item-proficiency';
-import { Skill, SkillCategory } from '../../../../models/skill';
-import { Trait } from '../../../../models/trait';
+import { ItemProficiencyType } from '../../../../models/item-proficiency';
+import { SkillType, SkillCategoryType } from '../../../../models/skill';
+import { TraitType } from '../../../../models/trait';
 import { FeatureCard } from '../../../cards';
 import { CardList, PlayingCard, PlayingCardSide } from '../../../utility';
 
@@ -111,7 +111,7 @@ class ChoicePanel extends Component<ChoicePanelProps, ChoicePanelState> {
 		};
 	}
 
-	selectTrait = (trait: Trait) => {
+	selectTrait = (trait: TraitType) => {
 		const feature = this.state.feature;
 		feature.trait = trait;
 		this.setState({
@@ -121,7 +121,7 @@ class ChoicePanel extends Component<ChoicePanelProps, ChoicePanelState> {
 		});
 	};
 
-	selectSkill = (skill: Skill) => {
+	selectSkill = (skill: SkillType) => {
 		const feature = this.state.feature;
 		feature.skill = skill;
 		this.setState({
@@ -131,7 +131,7 @@ class ChoicePanel extends Component<ChoicePanelProps, ChoicePanelState> {
 		});
 	};
 
-	selectSkillCategory = (category: SkillCategory) => {
+	selectSkillCategory = (category: SkillCategoryType) => {
 		const feature = this.state.feature;
 		feature.skillCategory = category;
 		this.setState({
@@ -141,7 +141,7 @@ class ChoicePanel extends Component<ChoicePanelProps, ChoicePanelState> {
 		});
 	};
 
-	selectProficiency = (proficiency: ItemProficiency) => {
+	selectProficiency = (proficiency: ItemProficiencyType) => {
 		const feature = this.state.feature;
 		feature.proficiency = proficiency;
 		this.setState({
@@ -179,12 +179,12 @@ class ChoicePanel extends Component<ChoicePanelProps, ChoicePanelState> {
 					<div>
 						<Selector
 							options={[
-								{ id: Trait.Endurance },
-								{ id: Trait.Resolve },
-								{ id: Trait.Speed }
+								{ id: TraitType.Endurance },
+								{ id: TraitType.Resolve },
+								{ id: TraitType.Speed }
 							]}
 							selectedID={this.state.feature.trait}
-							onSelect={id => this.selectTrait(id as Trait)}
+							onSelect={id => this.selectTrait(id as TraitType)}
 						/>
 					</div>
 				);
@@ -194,15 +194,15 @@ class ChoicePanel extends Component<ChoicePanelProps, ChoicePanelState> {
 					<div>
 						<Selector
 							options={[
-								{ id: Skill.Brawl },
-								{ id: Skill.Perception },
-								{ id: Skill.Reactions },
-								{ id: Skill.Spellcasting },
-								{ id: Skill.Stealth },
-								{ id: Skill.Weapon }
+								{ id: SkillType.Brawl },
+								{ id: SkillType.Perception },
+								{ id: SkillType.Reactions },
+								{ id: SkillType.Spellcasting },
+								{ id: SkillType.Stealth },
+								{ id: SkillType.Weapon }
 							]}
 							selectedID={this.state.feature.skill}
-							onSelect={id => this.selectSkill(id as Skill)}
+							onSelect={id => this.selectSkill(id as SkillType)}
 						/>
 					</div>
 				);
@@ -212,11 +212,11 @@ class ChoicePanel extends Component<ChoicePanelProps, ChoicePanelState> {
 					<div>
 						<Selector
 							options={[
-								{ id: SkillCategory.Physical },
-								{ id: SkillCategory.Mental }
+								{ id: SkillCategoryType.Physical },
+								{ id: SkillCategoryType.Mental }
 							]}
 							selectedID={this.state.feature.skillCategory}
-							onSelect={id => this.selectSkillCategory(id as SkillCategory)}
+							onSelect={id => this.selectSkillCategory(id as SkillCategoryType)}
 						/>
 					</div>
 				);
@@ -227,18 +227,18 @@ class ChoicePanel extends Component<ChoicePanelProps, ChoicePanelState> {
 					<div>
 						<Selector
 							options={[
-								{ id: ItemProficiency.MilitaryWeapons },
-								{ id: ItemProficiency.LargeWeapons },
-								{ id: ItemProficiency.PairedWeapons },
-								{ id: ItemProficiency.RangedWeapons },
-								{ id: ItemProficiency.PowderWeapons },
-								{ id: ItemProficiency.Implements },
-								{ id: ItemProficiency.LightArmor },
-								{ id: ItemProficiency.HeavyArmor },
-								{ id: ItemProficiency.Shields }
+								{ id: ItemProficiencyType.MilitaryWeapons },
+								{ id: ItemProficiencyType.LargeWeapons },
+								{ id: ItemProficiencyType.PairedWeapons },
+								{ id: ItemProficiencyType.RangedWeapons },
+								{ id: ItemProficiencyType.PowderWeapons },
+								{ id: ItemProficiencyType.Implements },
+								{ id: ItemProficiencyType.LightArmor },
+								{ id: ItemProficiencyType.HeavyArmor },
+								{ id: ItemProficiencyType.Shields }
 							].filter(o => !got.includes(o.id))}
 							selectedID={this.state.feature.proficiency}
-							onSelect={id => this.selectProficiency(id as ItemProficiency)}
+							onSelect={id => this.selectProficiency(id as ItemProficiencyType)}
 						/>
 					</div>
 				);

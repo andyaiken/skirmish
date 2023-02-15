@@ -1,14 +1,13 @@
 import { Component } from 'react';
-import { Tag } from '../../../controls';
+import { Tag, Text, TextType } from '../../../controls';
 import { getBackground } from '../../../models/background';
 import { CombatantModel, getTraitValue } from '../../../models/combatant';
 import { getRole } from '../../../models/role';
 import { getSpecies } from '../../../models/species';
-import { Text, TextType } from '../../../controls';
+import { TraitType } from '../../../models/trait';
+import { StatValue } from '../../utility';
 
 import './hero-card.scss';
-import { Trait } from '../../../models/trait';
-import { StatValue } from '../../utility';
 
 interface Props {
 	hero: CombatantModel;
@@ -38,9 +37,9 @@ export class HeroCard extends Component<Props> {
 					<Tag>Level {this.props.hero.level}</Tag>
 				</div>
 				<div className='traits'>
-					<StatValue orientation='vertical' label='End' value={getTraitValue(this.props.hero, Trait.Endurance)} />
-					<StatValue orientation='vertical' label='Res' value={getTraitValue(this.props.hero, Trait.Resolve)} />
-					<StatValue orientation='vertical' label='Spd' value={getTraitValue(this.props.hero, Trait.Speed)} />
+					<StatValue orientation='vertical' label='End' value={getTraitValue(this.props.hero, TraitType.Endurance)} />
+					<StatValue orientation='vertical' label='Res' value={getTraitValue(this.props.hero, TraitType.Resolve)} />
+					<StatValue orientation='vertical' label='Spd' value={getTraitValue(this.props.hero, TraitType.Speed)} />
 				</div>
 				{itemSection}
 			</div>

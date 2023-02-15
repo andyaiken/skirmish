@@ -1,9 +1,9 @@
 import { dice } from '../utils/random';
 
 export enum EncounterMapSquareType {
-	Clear,
-	Obstructed,
-	Blocked
+	Clear = 'Clear',
+	Obstructed = 'Obstructed',
+	Blocked = 'Blocked'
 }
 
 export interface EncounterMapSquareModel {
@@ -104,7 +104,7 @@ export const getEncounterMapAdjacentSquares = (map: EncounterMapModel, x: number
 	return adj;
 };
 
-const addTile = (map: EncounterMapModel, tile: { width: number, height: number }, position: { x: number, y: number }) => {
+const addTile = (map: EncounterMapModel, tile: { width: number; height: number }, position: { x: number; y: number }) => {
 	for (let tileX = 0; tileX < tile.width; ++tileX) {
 		for (let tileY = 0; tileY < tile.height; ++tileY) {
 			const square: EncounterMapSquareModel = {

@@ -2,7 +2,7 @@ import { randomNumber } from './random';
 
 export const shuffle = <T>(collection: T[]) => {
 	let currentIndex = collection.length;
-	while (0 !== currentIndex) {
+	while (currentIndex !== 0) {
 		const randomIndex = randomNumber(currentIndex);
 		currentIndex -= 1;
 

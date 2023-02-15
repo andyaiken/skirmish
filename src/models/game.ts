@@ -35,5 +35,5 @@ export const addHeroToGame = (game: GameModel, hero: CombatantModel) => {
 	} else {
 		game.heroes[index] = hero;
 	}
-	game.heroes.sort((a, b) => a.name > b.name ? 1 : -1);
+	game.heroes.sort((a, b) => (a.name > b.name ? 1 : -1));
 };

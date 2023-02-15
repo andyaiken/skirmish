@@ -7,11 +7,11 @@ import { getBackground } from './background';
 import { DamageCategory, DamageType, getDamageCategory } from './damage';
 import { createProficiencyFeature, createSkillFeature, createTraitFeature, FeatureModel, FeatureType, universalFeatures } from './feature';
 import { getItems, ItemModel } from './item';
-import { ItemProficiency } from './item-proficiency';
+import { ItemProficiencyType } from './item-proficiency';
 import { getRole } from './role';
-import { getSkillCategory, Skill, SkillCategory } from './skill';
+import { getSkillCategory, SkillType, SkillCategoryType } from './skill';
 import { getSpecies } from './species';
-import { Trait } from './trait';
+import { TraitType } from './trait';
 
 export enum CombatantType {
 	Hero = 'Hero',
@@ -88,46 +88,46 @@ export const incrementCombatantLevel = (combatant: CombatantModel) => {
 
 export const makeFeatureChoices = (combatant: CombatantModel) => {
 	combatant.features.forEach(feature => {
-		if (feature.trait === Trait.Any) {
+		if (feature.trait === TraitType.Any) {
 			const options = [
-				Trait.Endurance,
-				Trait.Resolve,
-				Trait.Speed
+				TraitType.Endurance,
+				TraitType.Resolve,
+				TraitType.Speed
 			];
 			feature.trait = draw(options);
 		}
 
-		if (feature.skill === Skill.Any) {
+		if (feature.skill === SkillType.Any) {
 			const options = [
-				Skill.Brawl,
-				Skill.Perception,
-				Skill.Reactions,
-				Skill.Spellcasting,
-				Skill.Stealth,
-				Skill.Weapon
+				SkillType.Brawl,
+				SkillType.Perception,
+				SkillType.Reactions,
+				SkillType.Spellcasting,
+				SkillType.Stealth,
+				SkillType.Weapon
 			];
 			feature.skill = draw(options);
 		}
 
-		if (feature.skillCategory === SkillCategory.Any) {
+		if (feature.skillCategory === SkillCategoryType.Any) {
 			const options = [
-				SkillCategory.Physical,
-				SkillCategory.Mental
+				SkillCategoryType.Physical,
+				SkillCategoryType.Mental
 			];
 			feature.skillCategory = draw(options);
 		}
 
-		if (feature.proficiency === ItemProficiency.Any){
+		if (feature.proficiency === ItemProficiencyType.Any) {
 			const options = [
-				ItemProficiency.MilitaryWeapons,
-				ItemProficiency.LargeWeapons,
-				ItemProficiency.PairedWeapons,
-				ItemProficiency.RangedWeapons,
-				ItemProficiency.PowderWeapons,
-				ItemProficiency.Implements,
-				ItemProficiency.LightArmor,
-				ItemProficiency.HeavyArmor,
-				ItemProficiency.Shields
+				ItemProficiencyType.MilitaryWeapons,
+				ItemProficiencyType.LargeWeapons,
+				ItemProficiencyType.PairedWeapons,
+				ItemProficiencyType.RangedWeapons,
+				ItemProficiencyType.PowderWeapons,
+				ItemProficiencyType.Implements,
+				ItemProficiencyType.LightArmor,
+				ItemProficiencyType.HeavyArmor,
+				ItemProficiencyType.Shields
 			];
 			feature.proficiency = draw(options);
 		}
@@ -206,27 +206,27 @@ export const getFeatures = (combatant: CombatantModel) => {
 	return list;
 };
 
-export const getTraitValue = (combatant: CombatantModel, trait: Trait) => {
+export const getTraitValue = (combatant: CombatantModel, trait: TraitType) => {
 	let value = 1;
 
 	getFeatures(combatant)
 		.filter(f => f.type === FeatureType.Trait)
-		.filter(f => (f.trait === trait) || (f.trait === Trait.All))
+		.filter(f => (f.trait === trait) || (f.trait === TraitType.All))
 		.forEach(f => value += f.rank);
 
 	return Math.max(value, 0);
 };
 
-export const getSkillValue = (combatant: CombatantModel, skill: Skill) => {
+export const getSkillValue = (combatant: CombatantModel, skill: SkillType) => {
 	let value = 0;
 
 	getFeatures(combatant)
 		.filter(f => f.type === FeatureType.Skill)
-		.filter(f => (f.skill === skill) || (f.skill === Skill.All))
+		.filter(f => (f.skill === skill) || (f.skill === SkillType.All))
 		.forEach(f => value += f.rank);
 	getFeatures(combatant)
 		.filter(f => f.type === FeatureType.SkillCategory)
-		.filter(f => (f.skillCategory === getSkillCategory(skill)) || (f.skillCategory === SkillCategory.All))
+		.filter(f => (f.skillCategory === getSkillCategory(skill)) || (f.skillCategory === SkillCategoryType.All))
 		.forEach(f => value += f.rank);
 
 	return Math.max(value, 0);
@@ -263,7 +263,7 @@ export const getDamageResistanceValue = (combatant: CombatantModel, damage: Dama
 };
 
 export const getProficiencies = (combatant: CombatantModel) => {
-	const profs: ItemProficiency[] = [];
+	const profs: ItemProficiencyType[] = [];
 
 	getFeatures(combatant)
 		.filter(f => f.type === FeatureType.Proficiency)

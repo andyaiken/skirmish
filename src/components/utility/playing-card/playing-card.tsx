@@ -27,7 +27,7 @@ export class PlayingCard extends Component<Props> {
 		}
 	};
 
-	public render() {
+	render = () => {
 		let className = 'playing-card';
 		if (this.props.onClick) {
 			className += ' clickable';
@@ -47,5 +47,5 @@ export class PlayingCard extends Component<Props> {
 				</div>
 			</div>
 		);
-	}
+	};
 }

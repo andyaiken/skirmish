@@ -1,6 +1,6 @@
 import { DamageType } from './damage';
-import { Skill } from './skill';
-import { Trait } from './trait';
+import { SkillType } from './skill';
+import { TraitType } from './trait';
 
 export enum ConditionType {
 	Health = 'Auto Damage',
@@ -15,6 +15,6 @@ export interface ConditionModel {
 	rank: number;
 	beneficial: boolean;
 	damageType: DamageType;
-	skill: Skill;
-	trait: Trait;
+	skill: SkillType;
+	trait: TraitType;
 }

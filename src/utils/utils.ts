@@ -1,6 +1,6 @@
 import { randomNumber } from './random';
 
-export const guid = () => {
+export const guid = (): string => {
 	const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890';
 	let id = '';
 	while (id.length < 16) {

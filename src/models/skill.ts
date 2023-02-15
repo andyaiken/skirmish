@@ -1,4 +1,4 @@
-export enum SkillCategory {
+export enum SkillCategoryType {
 	None = 'None',
 	Any = '[choose one skill category]',
 	All = 'All skill categories',
@@ -6,7 +6,7 @@ export enum SkillCategory {
 	Mental = 'Mental'
 }
 
-export enum Skill {
+export enum SkillType {
 	None = 'None',
 	Any = '[choose one skill]',
 	All = 'All skills',
@@ -18,19 +18,19 @@ export enum Skill {
 	Weapon = 'Weapon'
 }
 
-export const getSkillCategory = (skill: Skill) => {
+export const getSkillCategory = (skill: SkillType) => {
 	switch (skill) {
-		case Skill.All:
-			return SkillCategory.All;
-		case Skill.Brawl:
-		case Skill.Stealth:
-		case Skill.Weapon:
-			return SkillCategory.Physical;
-		case Skill.Perception:
-		case Skill.Reactions:
-		case Skill.Spellcasting:
-			return SkillCategory.Mental;
+		case SkillType.All:
+			return SkillCategoryType.All;
+		case SkillType.Brawl:
+		case SkillType.Stealth:
+		case SkillType.Weapon:
+			return SkillCategoryType.Physical;
+		case SkillType.Perception:
+		case SkillType.Reactions:
+		case SkillType.Spellcasting:
+			return SkillCategoryType.Mental;
 	}
 
-	return SkillCategory.None;
+	return SkillCategoryType.None;
 };

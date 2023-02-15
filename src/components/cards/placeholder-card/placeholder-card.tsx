@@ -4,15 +4,15 @@ import { Text, TextType } from '../../../controls';
 import './placeholder-card.scss';
 
 interface Props {
-	text: string
+	text: string;
 }
 
 export class PlaceholderCard extends Component<Props> {
-	public render() {
+	render = () => {
 		return (
 			<div className='placeholder-card'>
 				<Text type={TextType.SubHeading}>{this.props.text}</Text>
 			</div>
 		);
-	}
+	};
 }

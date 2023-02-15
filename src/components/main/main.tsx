@@ -55,7 +55,7 @@ export class Main extends Component<Props, State> {
 		let game: GameModel | null = null;
 		try {
 			const str = window.localStorage.getItem('game');
-			if (str) {
+			if (str !== null) {
 				game = JSON.parse(str) as GameModel;
 			}
 		} catch (ex) {
@@ -82,7 +82,7 @@ export class Main extends Component<Props, State> {
 
 	//#region Saving
 
-	private saveAfterDelay = debounce(() => this.save(), 5 * 1000);
+	private readonly saveAfterDelay = debounce(() => this.save(), 5 * 1000);
 
 	private save() {
 		try {

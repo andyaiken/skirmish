@@ -7,11 +7,11 @@ interface Props {
 }
 
 export class CardList extends Component<Props> {
-	public render() {
+	render = () => {
 		return (
 			<div className='card-list'>
 				{this.props.cards.map((card, n) => <div key={n} className='card-container'>{ card }</div>)}
 			</div>
 		);
-	}
+	};
 }

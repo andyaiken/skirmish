@@ -10,13 +10,13 @@ interface Props {
 }
 
 export class CampaignMapPanel extends Component<Props> {
-	private onClick(e: MouseEvent, square: CampaignMapSquareModel) {
+	onClick = (e: MouseEvent, square: CampaignMapSquareModel) => {
 		e.stopPropagation();
 		const region = this.props.map.regions.find(r => r.id === square.regionID) ?? null;
 		this.props.onSelectRegion(region);
-	}
+	};
 
-	public render() {
+	render = () => {
 		// Get dimensions, adding a 1-square border
 		const dims = getCampaignMapDimensions(this.props.map);
 		dims.left -= 1;
@@ -69,5 +69,5 @@ export class CampaignMapPanel extends Component<Props> {
 				</div>
 			</div>
 		);
-	}
+	};
 }

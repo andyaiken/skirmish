@@ -5,16 +5,16 @@ import { CombatantModel, CombatantType, getSkillValue, getTraitValue } from '../
 import { ItemModel } from '../../../models/item';
 import { DirectionPanel, EncounterMapPanel, InitiativeListPanel } from '../../panels';
 import { Tag, Text, TextType } from '../../../controls';
-
-import './encounter-screen.scss';
 import { Box, CardList, IconType, IconValue, PlayingCard, StatValue } from '../../utility';
-import { Trait } from '../../../models/trait';
+import { TraitType } from '../../../models/trait';
 import { CombatDataModel, CombatDataState } from '../../../models/combat-data';
 import { ActionCard } from '../../cards';
 import { getRole } from '../../../models/role';
 import { getSpecies } from '../../../models/species';
 import { getBackground } from '../../../models/background';
-import { Skill } from '../../../models/skill';
+import { SkillType } from '../../../models/skill';
+
+import './encounter-screen.scss';
 
 export enum EncounterFinishState {
 	Victory = 'victory',
@@ -59,7 +59,7 @@ export class EncounterScreen extends Component<Props, State> {
 	};
 
 	getEncounterControls = (currentID: string | null) => {
-		if (currentID) {
+		if (currentID !== null) {
 			const combatant = getCombatant(this.props.encounter, currentID) as CombatantModel;
 			const combatData = getCombatData(this.props.encounter, currentID) as CombatDataModel;
 
@@ -71,7 +71,7 @@ export class EncounterScreen extends Component<Props, State> {
 			for (let n = 0; n < combatData.wounds; ++n) {
 				wounds += '♥︎';
 			}
-			while (wounds.length < getTraitValue(combatant, Trait.Resolve)) {
+			while (wounds.length < getTraitValue(combatant, TraitType.Resolve)) {
 				wounds += '♡';
 			}
 			const woundsInRows: string[] = [];
@@ -130,7 +130,7 @@ export class EncounterScreen extends Component<Props, State> {
 										>
 											Scan<br/><IconValue value={4} type={IconType.Movement} />
 										</button>
-										<StatValue label='Perc' value={getSkillValue(combatant, Skill.Perception)} />
+										<StatValue label='Perc' value={getSkillValue(combatant, SkillType.Perception)} />
 									</div>
 									<div>
 										<StatValue orientation='vertical' label='Hidden' value={combatData.hidden} />
@@ -140,7 +140,7 @@ export class EncounterScreen extends Component<Props, State> {
 										>
 											Hide<br/><IconValue value={4} type={IconType.Movement} />
 										</button>
-										<StatValue label='Stealth' value={getSkillValue(combatant, Skill.Stealth)} />
+										<StatValue label='Stealth' value={getSkillValue(combatant, SkillType.Stealth)} />
 									</div>
 									<div>
 										<StatValue orientation='vertical' label='State' value={combatData.state} />
@@ -166,16 +166,16 @@ export class EncounterScreen extends Component<Props, State> {
 							<Box label='Traits and Conditions'>
 								<div className='stats-row'>
 									<div>
-										<StatValue orientation='vertical' label='Endurance' value={getTraitValue(combatant, Trait.Endurance)} />
-										<div>{combatData.conditions.filter(c => c.trait === Trait.Endurance).map(c => c.type)}</div>
+										<StatValue orientation='vertical' label='Endurance' value={getTraitValue(combatant, TraitType.Endurance)} />
+										<div>{combatData.conditions.filter(c => c.trait === TraitType.Endurance).map(c => c.type)}</div>
 									</div>
 									<div>
-										<StatValue orientation='vertical' label='Resolve' value={getTraitValue(combatant, Trait.Resolve)} />
-										<div>{combatData.conditions.filter(c => c.trait === Trait.Resolve).map(c => c.type)}</div>
+										<StatValue orientation='vertical' label='Resolve' value={getTraitValue(combatant, TraitType.Resolve)} />
+										<div>{combatData.conditions.filter(c => c.trait === TraitType.Resolve).map(c => c.type)}</div>
 									</div>
 									<div>
-										<StatValue orientation='vertical' label='Speed' value={getTraitValue(combatant, Trait.Speed)} />
-										<div>{combatData.conditions.filter(c => c.trait === Trait.Speed).map(c => c.type)}</div>
+										<StatValue orientation='vertical' label='Speed' value={getTraitValue(combatant, TraitType.Speed)} />
+										<div>{combatData.conditions.filter(c => c.trait === TraitType.Speed).map(c => c.type)}</div>
 									</div>
 								</div>
 							</Box>

@@ -12,16 +12,16 @@ import {
 	FeatureModel
 } from './feature';
 import { GameModel } from './game';
-import { ItemProficiency } from './item-proficiency';
-import { Skill } from './skill';
-import { Trait } from './trait';
+import { ItemProficiencyType } from './item-proficiency';
+import { SkillType } from './skill';
+import { TraitType } from './trait';
 
 export interface RoleModel {
 	id: string;
 	name: string;
-	traits: Trait[];
-	skills: Skill[];
-	proficiencies: ItemProficiency[];
+	traits: TraitType[];
+	skills: SkillType[];
+	proficiencies: ItemProficiencyType[];
 	features: FeatureModel[];
 	actions: ActionModel[];
 }
@@ -31,18 +31,18 @@ export const RoleList: RoleModel[] = [
 		id: 'role-barbarian',
 		name: 'Barbarian',
 		traits: [
-			Trait.Endurance
+			TraitType.Endurance
 		],
 		skills: [
-			Skill.Weapon
+			SkillType.Weapon
 		],
 		proficiencies: [
-			ItemProficiency.LargeWeapons,
-			ItemProficiency.LightArmor
+			ItemProficiencyType.LargeWeapons,
+			ItemProficiencyType.LightArmor
 		],
 		features: [
-			createTraitFeature(Trait.Endurance, 1),
-			createSkillFeature(Skill.Weapon, 2),
+			createTraitFeature(TraitType.Endurance, 1),
+			createSkillFeature(SkillType.Weapon, 2),
 			createDamageCategoryBonusFeature(DamageCategory.Physical, 1),
 			createDamageCategoryResistFeature(DamageCategory.Physical, 1)
 		],
@@ -57,18 +57,18 @@ export const RoleList: RoleModel[] = [
 		id: 'role-dervish',
 		name: 'Dervish',
 		traits: [
-			Trait.Speed
+			TraitType.Speed
 		],
 		skills: [
-			Skill.Weapon
+			SkillType.Weapon
 		],
 		proficiencies: [
-			ItemProficiency.PairedWeapons,
-			ItemProficiency.LightArmor
+			ItemProficiencyType.PairedWeapons,
+			ItemProficiencyType.LightArmor
 		],
 		features: [
-			createTraitFeature(Trait.Speed, 1),
-			createSkillFeature(Skill.Weapon, 2)
+			createTraitFeature(TraitType.Speed, 1),
+			createSkillFeature(SkillType.Weapon, 2)
 		],
 		actions: [
 			createActionPlaceholder('Dual strike (one target)'),
@@ -82,17 +82,17 @@ export const RoleList: RoleModel[] = [
 		id: 'role-enchanter',
 		name: 'Enchanter',
 		traits: [
-			Trait.Resolve
+			TraitType.Resolve
 		],
 		skills: [
-			Skill.Spellcasting
+			SkillType.Spellcasting
 		],
 		proficiencies: [
-			ItemProficiency.Implements
+			ItemProficiencyType.Implements
 		],
 		features: [
-			createTraitFeature(Trait.Resolve, 1),
-			createSkillFeature(Skill.Spellcasting, 2),
+			createTraitFeature(TraitType.Resolve, 1),
+			createSkillFeature(SkillType.Spellcasting, 2),
 			createDamageBonusFeature(DamageType.Psychic, 1),
 			createDamageResistFeature(DamageType.Psychic, 1)
 		],
@@ -108,19 +108,19 @@ export const RoleList: RoleModel[] = [
 		id: 'role-ninja',
 		name: 'Ninja',
 		traits: [
-			Trait.Speed
+			TraitType.Speed
 		],
 		skills: [
-			Skill.Brawl,
-			Skill.Stealth
+			SkillType.Brawl,
+			SkillType.Stealth
 		],
 		proficiencies: [
 			// None
 		],
 		features: [
-			createTraitFeature(Trait.Speed, 1),
-			createSkillFeature(Skill.Brawl, 2),
-			createSkillFeature(Skill.Stealth, 2),
+			createTraitFeature(TraitType.Speed, 1),
+			createSkillFeature(SkillType.Brawl, 2),
+			createSkillFeature(SkillType.Stealth, 2),
 			createDamageCategoryBonusFeature(DamageCategory.Physical, 1)
 		],
 		actions: [
@@ -135,17 +135,17 @@ export const RoleList: RoleModel[] = [
 		id: 'role-gunslinger',
 		name: 'Gunslinger',
 		traits: [
-			Trait.Speed
+			TraitType.Speed
 		],
 		skills: [
-			Skill.Weapon
+			SkillType.Weapon
 		],
 		proficiencies: [
-			ItemProficiency.PowderWeapons
+			ItemProficiencyType.PowderWeapons
 		],
 		features: [
-			createTraitFeature(Trait.Speed, 1),
-			createSkillFeature(Skill.Weapon, 2)
+			createTraitFeature(TraitType.Speed, 1),
+			createSkillFeature(SkillType.Weapon, 2)
 		],
 		actions: [
 			createActionPlaceholder('Deadeye (adds to next attack)'),
@@ -160,19 +160,19 @@ export const RoleList: RoleModel[] = [
 		id: 'role-ranger',
 		name: 'Ranger',
 		traits: [
-			Trait.Endurance
+			TraitType.Endurance
 		],
 		skills: [
-			Skill.Weapon
+			SkillType.Weapon
 		],
 		proficiencies: [
-			ItemProficiency.RangedWeapons,
-			ItemProficiency.LightArmor
+			ItemProficiencyType.RangedWeapons,
+			ItemProficiencyType.LightArmor
 		],
 		features: [
-			createTraitFeature(Trait.Endurance, 1),
-			createSkillFeature(Skill.Perception, 2),
-			createSkillFeature(Skill.Weapon, 2)
+			createTraitFeature(TraitType.Endurance, 1),
+			createSkillFeature(SkillType.Perception, 2),
+			createSkillFeature(SkillType.Weapon, 2)
 		],
 		actions: [
 			createActionPlaceholder('Quick shot'),
@@ -186,19 +186,19 @@ export const RoleList: RoleModel[] = [
 		id: 'role-soldier',
 		name: 'Soldier',
 		traits: [
-			Trait.Endurance
+			TraitType.Endurance
 		],
 		skills: [
-			Skill.Weapon
+			SkillType.Weapon
 		],
 		proficiencies: [
-			ItemProficiency.MilitaryWeapons,
-			ItemProficiency.HeavyArmor,
-			ItemProficiency.Shields
+			ItemProficiencyType.MilitaryWeapons,
+			ItemProficiencyType.HeavyArmor,
+			ItemProficiencyType.Shields
 		],
 		features: [
-			createTraitFeature(Trait.Endurance, 1),
-			createSkillFeature(Skill.Weapon, 2),
+			createTraitFeature(TraitType.Endurance, 1),
+			createSkillFeature(SkillType.Weapon, 2),
 			createDamageCategoryBonusFeature(DamageCategory.Physical, 1)
 		],
 		actions: [
@@ -213,17 +213,17 @@ export const RoleList: RoleModel[] = [
 		id: 'role-sorcerer',
 		name: 'Sorcerer',
 		traits: [
-			Trait.Resolve
+			TraitType.Resolve
 		],
 		skills: [
-			Skill.Spellcasting
+			SkillType.Spellcasting
 		],
 		proficiencies: [
-			ItemProficiency.Implements
+			ItemProficiencyType.Implements
 		],
 		features: [
-			createTraitFeature(Trait.Resolve, 1),
-			createSkillFeature(Skill.Spellcasting, 2),
+			createTraitFeature(TraitType.Resolve, 1),
+			createSkillFeature(SkillType.Spellcasting, 2),
 			createDamageCategoryBonusFeature(DamageCategory.Energy, 1),
 			createDamageCategoryResistFeature(DamageCategory.Energy, 1),
 			createAuraDamageFeature(AuraType.AutomaticDamage, DamageType.Fire, 1),
@@ -243,18 +243,18 @@ export const RoleList: RoleModel[] = [
 		id: 'role-warmage',
 		name: 'Warmage',
 		traits: [
-			Trait.Resolve
+			TraitType.Resolve
 		],
 		skills: [
-			Skill.Weapon
+			SkillType.Weapon
 		],
 		proficiencies: [
-			ItemProficiency.MilitaryWeapons,
-			ItemProficiency.LightArmor
+			ItemProficiencyType.MilitaryWeapons,
+			ItemProficiencyType.LightArmor
 		],
 		features: [
-			createTraitFeature(Trait.Resolve, 1),
-			createSkillFeature(Skill.Weapon, 2),
+			createTraitFeature(TraitType.Resolve, 1),
+			createSkillFeature(SkillType.Weapon, 2),
 			createDamageCategoryBonusFeature(DamageCategory.Energy, 1),
 			createDamageCategoryBonusFeature(DamageCategory.Physical, 1)
 		],
@@ -270,17 +270,17 @@ export const RoleList: RoleModel[] = [
 		id: 'role-wizard',
 		name: 'Wizard',
 		traits: [
-			Trait.Resolve
+			TraitType.Resolve
 		],
 		skills: [
-			Skill.Spellcasting
+			SkillType.Spellcasting
 		],
 		proficiencies: [
-			ItemProficiency.Implements
+			ItemProficiencyType.Implements
 		],
 		features: [
-			createTraitFeature(Trait.Resolve, 1),
-			createSkillFeature(Skill.Spellcasting, 2),
+			createTraitFeature(TraitType.Resolve, 1),
+			createSkillFeature(SkillType.Spellcasting, 2),
 			createDamageCategoryBonusFeature(DamageCategory.Energy, 1)
 		],
 		actions: [

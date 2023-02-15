@@ -4,8 +4,8 @@ import { Dialog, Text, TextType } from '../../../../controls';
 import { GameModel } from '../../../../models/game';
 import { CombatantModel, getProficiencies } from '../../../../models/combatant';
 import { ItemModel } from '../../../../models/item';
-import { ItemLocation } from '../../../../models/item-location';
-import { ItemProficiency } from '../../../../models/item-proficiency';
+import { ItemLocationType } from '../../../../models/item-location';
+import { ItemProficiencyType } from '../../../../models/item-proficiency';
 import { ItemCard } from '../../../cards';
 import { PlayingCard } from '../../../utility';
 
@@ -20,7 +20,7 @@ interface Props {
 
 interface State {
 	selectedItem: ItemModel | null;
-	selectedLocation: ItemLocation;
+	selectedLocation: ItemLocationType;
 }
 
 export class Items extends Component<Props, State> {
@@ -28,11 +28,11 @@ export class Items extends Component<Props, State> {
 		super(props);
 		this.state = {
 			selectedItem: null,
-			selectedLocation: ItemLocation.None
+			selectedLocation: ItemLocationType.None
 		};
 	}
 
-	private getItemCards(location: ItemLocation, name: string, slots = 1) {
+	private getItemCards(location: ItemLocationType, name: string, slots = 1) {
 		const items = this.props.hero.items.filter(item => location === item.location);
 		const used = items.map(item => item.slots).reduce((sum, current) => sum + current, 0);
 
@@ -64,7 +64,7 @@ export class Items extends Component<Props, State> {
 
 	private equip(item: ItemModel) {
 		this.setState({
-			selectedLocation: ItemLocation.None
+			selectedLocation: ItemLocationType.None
 		}, () => {
 			this.props.equipItem(item);
 		});
@@ -91,11 +91,11 @@ export class Items extends Component<Props, State> {
 				</div>
 			);
 		}
-		if (this.state.selectedLocation !== ItemLocation.None) {
+		if (this.state.selectedLocation !== ItemLocationType.None) {
 			// Find items that fit this location that we can use
 			const campaignItemCards = this.props.game.items
 				.filter(item => item.location === this.state.selectedLocation)
-				.filter(item => (item.proficiency === ItemProficiency.None) || (getProficiencies(this.props.hero).includes(item.proficiency)))
+				.filter(item => (item.proficiency === ItemProficiencyType.None) || (getProficiencies(this.props.hero).includes(item.proficiency)))
 				.map(item => (
 					<div key={item.id}>
 						<PlayingCard
@@ -129,7 +129,7 @@ export class Items extends Component<Props, State> {
 						</div>
 					</div>
 					<div className='item-row'>
-						{this.getItemCards(ItemLocation.Hand, 'Hand', 2)}
+						{this.getItemCards(ItemLocationType.Hand, 'Hand', 2)}
 					</div>
 				</div>
 				<div className='section'>
@@ -142,8 +142,8 @@ export class Items extends Component<Props, State> {
 						</div>
 					</div>
 					<div className='item-row'>
-						{this.getItemCards(ItemLocation.Body, 'Body')}
-						{this.getItemCards(ItemLocation.Feet, 'Feet')}
+						{this.getItemCards(ItemLocationType.Body, 'Body')}
+						{this.getItemCards(ItemLocationType.Feet, 'Feet')}
 					</div>
 				</div>
 				<div className='section'>
@@ -156,8 +156,8 @@ export class Items extends Component<Props, State> {
 						</div>
 					</div>
 					<div className='item-row'>
-						{this.getItemCards(ItemLocation.Head, 'Head')}
-						{this.getItemCards(ItemLocation.Neck, 'Neck')}
+						{this.getItemCards(ItemLocationType.Head, 'Head')}
+						{this.getItemCards(ItemLocationType.Neck, 'Neck')}
 					</div>
 				</div>
 				<div className='section'>
@@ -167,10 +167,10 @@ export class Items extends Component<Props, State> {
 						</div>
 					</div>
 					<div className='item-row'>
-						{this.getItemCards(ItemLocation.Ring, 'Ring', 2)}
+						{this.getItemCards(ItemLocationType.Ring, 'Ring', 2)}
 					</div>
 				</div>
-				{dialogContent ? <Dialog content={dialogContent} onClickOff={() => this.setState({ selectedItem: null, selectedLocation: ItemLocation.None })} /> : null}
+				{dialogContent ? <Dialog content={dialogContent} onClickOff={() => this.setState({ selectedItem: null, selectedLocation: ItemLocationType.None })} /> : null}
 			</div>
 		);
 	}

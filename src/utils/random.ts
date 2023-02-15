@@ -1,7 +1,7 @@
 export const dice = (count: number, rng: () => number = Math.random) => {
 	const rolls = [];
 
-	while (rolls.length < (Math.max(count, 1))) {
+	while (rolls.length < Math.max(count, 1)) {
 		let result = 0;
 		let rollAgain = true;
 
@@ -39,7 +39,10 @@ export const randomDecimal = (rng: () => number = Math.random) => {
 
 export const getSeededRNG = (seed: string) => {
 	const getHashes = (str: string) => {
-		let h1 = 1779033703, h2 = 3144134277, h3 = 1013904242, h4 = 2773480762;
+		let h1 = 1779033703;
+		let h2 = 3144134277;
+		let h3 = 1013904242;
+		let h4 = 2773480762;
 
 		for (let i = 0, k; i < str.length; i++) {
 			k = str.charCodeAt(i);
@@ -55,15 +58,15 @@ export const getSeededRNG = (seed: string) => {
 		h4 = Math.imul(h2 ^ (h4 >>> 19), 2716044179);
 
 		return [
-			(h1^h2^h3^h4) >>> 0,
-			(h2^h1) >>> 0,
-			(h3^h1) >>> 0,
-			(h4^h1) >>> 0
+			(h1 ^ h2 ^ h3 ^ h4) >>> 0,
+			(h2 ^ h1) >>> 0,
+			(h3 ^ h1) >>> 0,
+			(h4 ^ h1) >>> 0
 		];
 	};
 
 	const getRNG = (a: number, b: number, c: number, d: number) => {
-		return function() {
+		return () => {
 			a >>>= 0;
 			b >>>= 0;
 			c >>>= 0;

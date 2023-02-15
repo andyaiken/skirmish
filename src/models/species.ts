@@ -1,25 +1,25 @@
 import { ActionModel, createActionPlaceholder } from './action';
 import { AuraType } from './aura';
-import { DamageType, DamageCategory } from './damage';
+import { DamageCategory, DamageType } from './damage';
 import {
+	FeatureModel,
 	createAuraDamageFeature,
 	createDamageBonusFeature,
 	createDamageCategoryBonusFeature,
 	createDamageCategoryResistFeature,
 	createDamageResistFeature,
 	createSkillFeature,
-	createTraitFeature,
-	FeatureModel
+	createTraitFeature
 } from './feature';
 import { GameModel } from './game';
-import { Skill } from './skill';
-import { Trait } from './trait';
+import { SkillType } from './skill';
+import { TraitType } from './trait';
 
 export interface SpeciesModel {
 	id: string;
 	name: string;
 	size: number;
-	traits: Trait[];
+	traits: TraitType[];
 	features: FeatureModel[];
 	actions: ActionModel[];
 }
@@ -30,10 +30,10 @@ export const HeroSpeciesList: SpeciesModel[] = [
 		name: 'Human',
 		size: 1,
 		traits: [
-			Trait.All
+			TraitType.All
 		],
 		features: [
-			createSkillFeature(Skill.Any, 2),
+			createSkillFeature(SkillType.Any, 2),
 			createDamageBonusFeature(DamageType.Any, 1),
 			createDamageResistFeature(DamageType.Any, 1)
 		],
@@ -46,10 +46,10 @@ export const HeroSpeciesList: SpeciesModel[] = [
 		name: 'Construct',
 		size: 1,
 		traits: [
-			Trait.Endurance
+			TraitType.Endurance
 		],
 		features: [
-			createTraitFeature(Trait.Endurance, 1),
+			createTraitFeature(TraitType.Endurance, 1),
 			createDamageResistFeature(DamageType.Poison, 1),
 			createDamageResistFeature(DamageType.Psychic, 1)
 		],
@@ -63,11 +63,11 @@ export const HeroSpeciesList: SpeciesModel[] = [
 		name: 'Deva',
 		size: 1,
 		traits: [
-			Trait.Resolve
+			TraitType.Resolve
 		],
 		features: [
-			createTraitFeature(Trait.Resolve, 1),
-			createSkillFeature(Skill.Spellcasting, 2),
+			createTraitFeature(TraitType.Resolve, 1),
+			createSkillFeature(SkillType.Spellcasting, 2),
 			createDamageCategoryResistFeature(DamageCategory.Corruption, 1),
 			createDamageCategoryResistFeature(DamageCategory.Energy, 1),
 			createAuraDamageFeature(AuraType.AutomaticDamage, DamageType.Light, 1)
@@ -82,11 +82,11 @@ export const HeroSpeciesList: SpeciesModel[] = [
 		name: 'Dwarf',
 		size: 1,
 		traits: [
-			Trait.Endurance
+			TraitType.Endurance
 		],
 		features: [
-			createTraitFeature(Trait.Endurance, 1),
-			createTraitFeature(Trait.Resolve, 1),
+			createTraitFeature(TraitType.Endurance, 1),
+			createTraitFeature(TraitType.Resolve, 1),
 			createDamageResistFeature(DamageType.Poison, 1),
 			createDamageResistFeature(DamageType.Psychic, 1)
 		],
@@ -100,13 +100,13 @@ export const HeroSpeciesList: SpeciesModel[] = [
 		name: 'Elf',
 		size: 1,
 		traits: [
-			Trait.Speed
+			TraitType.Speed
 		],
 		features: [
-			createTraitFeature(Trait.Speed, 1),
-			createSkillFeature(Skill.Perception, 2),
-			createSkillFeature(Skill.Reactions, 2),
-			createSkillFeature(Skill.Stealth, 2)
+			createTraitFeature(TraitType.Speed, 1),
+			createSkillFeature(SkillType.Perception, 2),
+			createSkillFeature(SkillType.Reactions, 2),
+			createSkillFeature(SkillType.Stealth, 2)
 		],
 		actions: [
 			createActionPlaceholder('Detect hidden opponents'),
@@ -118,12 +118,12 @@ export const HeroSpeciesList: SpeciesModel[] = [
 		name: 'Gnome',
 		size: 1,
 		traits: [
-			Trait.Speed
+			TraitType.Speed
 		],
 		features: [
-			createTraitFeature(Trait.Speed, 1),
-			createSkillFeature(Skill.Reactions, 2),
-			createSkillFeature(Skill.Stealth, 2)
+			createTraitFeature(TraitType.Speed, 1),
+			createSkillFeature(SkillType.Reactions, 2),
+			createSkillFeature(SkillType.Stealth, 2)
 		],
 		actions: [
 			createActionPlaceholder('Trip attack'),
@@ -135,11 +135,11 @@ export const HeroSpeciesList: SpeciesModel[] = [
 		name: 'Minotaur',
 		size: 1,
 		traits: [
-			Trait.Endurance
+			TraitType.Endurance
 		],
 		features: [
-			createTraitFeature(Trait.Endurance, 1),
-			createSkillFeature(Skill.Brawl, 2),
+			createTraitFeature(TraitType.Endurance, 1),
+			createSkillFeature(SkillType.Brawl, 2),
 			createDamageCategoryBonusFeature(DamageCategory.Physical, 1)
 		],
 		actions: [
@@ -153,11 +153,11 @@ export const HeroSpeciesList: SpeciesModel[] = [
 		name: 'Pixie',
 		size: 1,
 		traits: [
-			Trait.Speed
+			TraitType.Speed
 		],
 		features: [
-			createTraitFeature(Trait.Speed, 1),
-			createSkillFeature(Skill.Stealth, 2),
+			createTraitFeature(TraitType.Speed, 1),
+			createSkillFeature(SkillType.Stealth, 2),
 			createDamageCategoryResistFeature(DamageCategory.Corruption, 1)
 		],
 		actions: [
@@ -171,11 +171,11 @@ export const HeroSpeciesList: SpeciesModel[] = [
 		name: 'Reptilian',
 		size: 1,
 		traits: [
-			Trait.Speed
+			TraitType.Speed
 		],
 		features: [
-			createTraitFeature(Trait.Speed, 1),
-			createSkillFeature(Skill.Brawl, 2),
+			createTraitFeature(TraitType.Speed, 1),
+			createSkillFeature(SkillType.Brawl, 2),
 			createDamageCategoryResistFeature(DamageCategory.Physical, 1),
 			createDamageResistFeature(DamageType.Psychic, 1)
 		],
@@ -190,12 +190,12 @@ export const HeroSpeciesList: SpeciesModel[] = [
 		name: 'Shadowborn',
 		size: 1,
 		traits: [
-			Trait.Resolve
+			TraitType.Resolve
 		],
 		features: [
-			createTraitFeature(Trait.Resolve, 1),
-			createSkillFeature(Skill.Brawl, 2),
-			createSkillFeature(Skill.Stealth, 2),
+			createTraitFeature(TraitType.Resolve, 1),
+			createSkillFeature(SkillType.Brawl, 2),
+			createSkillFeature(SkillType.Stealth, 2),
 			createDamageCategoryResistFeature(DamageCategory.Corruption, 1),
 			createAuraDamageFeature(AuraType.AutomaticDamage, DamageType.Decay, 1)
 		],
@@ -210,13 +210,13 @@ export const HeroSpeciesList: SpeciesModel[] = [
 		name: 'Werewolf',
 		size: 1,
 		traits: [
-			Trait.Resolve
+			TraitType.Resolve
 		],
 		features: [
-			createTraitFeature(Trait.Resolve, 1),
-			createSkillFeature(Skill.Brawl, 2),
-			createSkillFeature(Skill.Perception, 2),
-			createSkillFeature(Skill.Stealth, 2)
+			createTraitFeature(TraitType.Resolve, 1),
+			createSkillFeature(SkillType.Brawl, 2),
+			createSkillFeature(SkillType.Perception, 2),
+			createSkillFeature(SkillType.Stealth, 2)
 		],
 		actions: [
 			createActionPlaceholder('Regeneration'),
@@ -232,13 +232,13 @@ export const MonsterSpeciesList: SpeciesModel[] = [
 		name: 'Orc',
 		size: 1,
 		traits: [
-			Trait.All
+			TraitType.All
 		],
 		features: [
-			createTraitFeature(Trait.Any, 1),
+			createTraitFeature(TraitType.Any, 1),
 			createDamageResistFeature(DamageType.All, 1),
-			createSkillFeature(Skill.Brawl, 2),
-			createSkillFeature(Skill.Weapon, 2)
+			createSkillFeature(SkillType.Brawl, 2),
+			createSkillFeature(SkillType.Weapon, 2)
 		],
 		actions: [
 			createActionPlaceholder('Fury'),
@@ -250,12 +250,12 @@ export const MonsterSpeciesList: SpeciesModel[] = [
 		name: 'Goblin',
 		size: 1,
 		traits: [
-			Trait.Speed
+			TraitType.Speed
 		],
 		features: [
-			createTraitFeature(Trait.Speed, 1),
-			createSkillFeature(Skill.Reactions, 1),
-			createSkillFeature(Skill.Stealth, 1)
+			createTraitFeature(TraitType.Speed, 1),
+			createSkillFeature(SkillType.Reactions, 1),
+			createSkillFeature(SkillType.Stealth, 1)
 		],
 		actions: [
 			createActionPlaceholder('Sneak attack')
@@ -266,12 +266,12 @@ export const MonsterSpeciesList: SpeciesModel[] = [
 		name: 'Troll',
 		size: 2,
 		traits: [
-			Trait.Endurance,
-			Trait.Resolve
+			TraitType.Endurance,
+			TraitType.Resolve
 		],
 		features: [
-			createTraitFeature(Trait.Endurance, 1),
-			createTraitFeature(Trait.Resolve, 1),
+			createTraitFeature(TraitType.Endurance, 1),
+			createTraitFeature(TraitType.Resolve, 1),
 			createDamageCategoryResistFeature(DamageCategory.Physical, 1),
 			createDamageCategoryResistFeature(DamageCategory.Energy, 1),
 			createDamageCategoryResistFeature(DamageCategory.Corruption, 1)

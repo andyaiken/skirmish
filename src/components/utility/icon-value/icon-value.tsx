@@ -9,7 +9,7 @@ export enum IconType {
 
 interface Props {
 	value: number | string;
-	type: IconType | DamageType;
+	type: DamageType | IconType;
 }
 
 export class IconValue extends Component<Props> {

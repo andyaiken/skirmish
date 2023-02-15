@@ -12,6 +12,7 @@
 		"@typescript-eslint/eslint-plugin": "^5.52.0",
 		"@typescript-eslint/parser": "^5.52.0",
 		"eslint": "^8.34.0",
+		"eslint-config-react-app": "^7.0.1",
 		"react-scripts": "^5.0.1",
 		"sass": "^1.58.1",
 		"typescript": "^4.9.5"
@@ -23,10 +24,8 @@
 	},
 	"eslintConfig": {
 		"extends": [
-			"eslint:recommended",
-			"plugin:@typescript-eslint/recommended",
-			"plugin:@typescript-eslint/recommended-requiring-type-checking",
-			"plugin:@typescript-eslint/strict",
+			"eslint:all",
+			"plugin:@typescript-eslint/all",
 			"react-app"
 		],
 		"parser": "@typescript-eslint/parser",
@@ -38,29 +37,131 @@
 		],
 		"root": true,
 		"rules": {
-			"@typescript-eslint/non-nullable-type-assertion-style": 0,
+			"semi": [
+				"error",
+				"always"
+			],
+			"comma-dangle": [
+				"error",
+				"never"
+			],
+			"quotes": [
+				"error",
+				"single"
+			],
+			"@typescript-eslint/quotes": [
+				"error",
+				"single"
+			],
+			"object-curly-spacing": [
+				"error",
+				"always"
+			],
+			"@typescript-eslint/object-curly-spacing": [
+				"error",
+				"always"
+			],
+			"max-len": [
+				"error",
+				{
+					"code": 200
+				}
+			],
+			"indent": [
+				"error",
+				"tab",
+				{
+					"SwitchCase": 1
+				}
+			],
+			"@typescript-eslint/indent": [
+				"error",
+				"tab",
+				{
+					"SwitchCase": 1
+				}
+			],
+			"no-tabs": [
+				"error",
+				{
+					"allowIndentationTabs": true
+				}
+			],
+			"@typescript-eslint/non-nullable-type-assertion-style": "off",
+			"arrow-parens": [
+				"error",
+				"as-needed"
+			],
+			"no-trailing-spaces": [
+				"error"
+			],
+			"array-bracket-spacing": [
+				"error",
+				"always"
+			],
+			"array-element-newline": [
+				"error",
+				"consistent"
+			],
+			"array-bracket-newline": [
+				"error",
+				"consistent"
+			],
+			"jsx-quotes": [
+				"error",
+				"prefer-single"
+			],
+			"no-warning-comments": "warn",
 			"no-debugger": "warn",
-			"semi": [ "error", "always" ],
-			"comma-dangle": [ "error", "never" ],
-			"quotes": [ "error", "single" ],
-			"@typescript-eslint/quotes": [ "error", "single" ],
-			"object-curly-spacing": [ "error", "always" ],
-			"max-len": [ "error", { "code": 200 } ],
-			"indent": [ "error", "tab", { "SwitchCase": 1 } ],
-			"@typescript-eslint/indent": [ "error", "tab", { "SwitchCase": 1 } ],
-			"no-tabs": [ "error", { "allowIndentationTabs": true } ],
+			"no-console": "warn",
 			"no-magic-numbers": "off",
 			"@typescript-eslint/no-magic-numbers": "off",
 			"no-bitwise": "off",
 			"no-param-reassign": "off",
 			"id-length": "off",
 			"one-var": "off",
+			"arrow-body-style": "off",
+			"spaced-comment": "off",
 			"max-lines-per-function": "off",
+			"max-params": "off",
+			"max-lines": "off",
 			"max-statements": "off",
+			"multiline-ternary": "off",
 			"no-ternary": "off",
+			"no-plusplus": "off",
 			"padded-blocks": "off",
-			"no-trailing-spaces": [ "error" ],
-			"array-bracket-spacing": [ "error", "always" ]
+			"quote-props": "off",
+			"sort-keys": "off",
+			"object-shorthand": "off",
+			"function-call-argument-newline": "off",
+			"@typescript-eslint/explicit-function-return-type": "off",
+			"@typescript-eslint/explicit-module-boundary-types": "off",
+			"@typescript-eslint/init-declarations": "off",
+			"@typescript-eslint/no-extra-parens": "off",
+			"@typescript-eslint/naming-convention": "off",
+			"@typescript-eslint/switch-exhaustiveness-check": "off",
+			"@typescript-eslint/consistent-type-imports": "off",
+			"multiline-comment-style": "off",
+			"capitalized-comments": "off",
+			"prefer-destructuring": "off",
+			"@typescript-eslint/prefer-readonly-parameter-types": "off",
+			"sort-imports": "off",
+			"consistent-return": "off",
+			"object-property-newline": "off",
+			"no-return-assign": "off",
+			"@typescript-eslint/explicit-member-accessibility": "off",
+			"@typescript-eslint/no-import-type-side-effects": "off",
+			"class-methods-use-this": "off",
+			"function-paren-newline": "off",
+			"space-before-function-paren": "off",
+			"@typescript-eslint/space-before-function-paren": "off",
+			"@typescript-eslint/member-ordering": "off",
+			"@typescript-eslint/no-confusing-void-expression": "off",
+			"@typescript-eslint/no-type-alias": "off",
+			"max-classes-per-file": "off",
+			"no-negated-condition": "off",
+			"no-implicit-coercion": "off",
+			"operator-linebreak": "off"
 		}
 	},
 	"browserslist": [

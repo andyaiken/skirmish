@@ -140,7 +140,7 @@ const placeCombatants = (encounter: EncounterModel, rng: () => number) => {
 					// Someone else is here
 					return false;
 				}
-		
+
 				return true;
 			});
 

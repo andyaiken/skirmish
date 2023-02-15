@@ -151,7 +151,11 @@ export const makeFeatureChoices = (combatant: CombatantModel) => {
 		}
 
 		if (feature.damageCategory === DamageCategory.Any) {
-			const options = [ DamageCategory.Physical, DamageCategory.Energy, DamageCategory.Corruption ];
+			const options = [
+				DamageCategory.Physical,
+				DamageCategory.Energy,
+				DamageCategory.Corruption
+			];
 			feature.damageCategory = draw(options);
 		}
 	});

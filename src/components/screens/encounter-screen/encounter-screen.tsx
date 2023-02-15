@@ -63,6 +63,8 @@ export class EncounterScreen extends Component<Props, State> {
 			const combatant = getCombatant(this.props.encounter, currentID) as CombatantModel;
 			const combatData = getCombatData(this.props.encounter, currentID) as CombatDataModel;
 
+			const prone = combatData.state === CombatDataState.Prone;
+
 			const movement = <IconValue value={combatData.movement} type={IconType.Movement} />;
 
 			let wounds = '';
@@ -115,24 +117,43 @@ export class EncounterScreen extends Component<Props, State> {
 								<Tag>{getBackground(combatant.backgroundID)?.name ?? 'Unknown background'}</Tag>
 								<Tag>Level {combatant.level}</Tag>
 							</div>
-							{combatData.state === CombatDataState.Prone ? <Text type={TextType.Information}><b>You are Prone.</b> Your skill ranks are halved and moving costs are doubled.</Text> : null}
+							{prone ? <Text type={TextType.Information}><b>You are Prone.</b> Your skill ranks are halved and moving costs are doubled.</Text> : null}
 							{combatData.hidden > 0 ? <Text type={TextType.Information}><b>You are Hidden.</b> Your moving costs are doubled.</Text> : null}
 							<Box label='This Round'>
 								<div className='stats-row'>
 									<StatValue orientation='vertical' label='Movement' value={movement} />
 									<div>
 										<StatValue orientation='vertical' label='Senses' value={combatData.senses} />
-										<button disabled={combatData.movement < 4} onClick={() => this.props.scan(this.props.encounter, combatData)}>Scan<br/><IconValue value={4} type={IconType.Movement} /></button>
+										<button
+											disabled={combatData.movement < 4}
+											onClick={() => this.props.scan(this.props.encounter, combatData)}
+										>
+											Scan<br/><IconValue value={4} type={IconType.Movement} />
+										</button>
 										<StatValue label='Perc' value={getSkillValue(combatant, Skill.Perception)} />
 									</div>
 									<div>
 										<StatValue orientation='vertical' label='Hidden' value={combatData.hidden} />
-										<button disabled={combatData.movement < 4} onClick={() => this.props.hide(this.props.encounter, combatData)}>Hide<br/><IconValue value={4} type={IconType.Movement} /></button>
+										<button
+											disabled={combatData.movement < 4}
+											onClick={() => this.props.hide(this.props.encounter, combatData)}
+										>
+											Hide<br/><IconValue value={4} type={IconType.Movement} />
+										</button>
 										<StatValue label='Stealth' value={getSkillValue(combatant, Skill.Stealth)} />
 									</div>
 									<div>
 										<StatValue orientation='vertical' label='State' value={combatData.state} />
-										{combatData.state === CombatDataState.Prone ? <button disabled={combatData.movement < 8} onClick={() => this.props.standUp(this.props.encounter, combatData)}>Stand<br/><IconValue value={8} type={IconType.Movement} /></button> : null}
+										{
+											prone ?
+												<button
+													disabled={combatData.movement < 8}
+													onClick={() => this.props.standUp(this.props.encounter, combatData)}
+												>
+													Stand<br/><IconValue value={8} type={IconType.Movement} />
+												</button>
+												: null
+										}
 									</div>
 								</div>
 							</Box>
@@ -194,7 +215,7 @@ export class EncounterScreen extends Component<Props, State> {
 			}
 		}
 	};
-	
+
 	public render() {
 		const acting = getActiveCombatants(this.props.encounter);
 		const currentID = acting.length > 0 ? acting[0].id : null;

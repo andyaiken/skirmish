@@ -54,12 +54,21 @@ export const getSeededRNG = (seed: string) => {
 		h3 = Math.imul(h1 ^ (h3 >>> 17), 951274213);
 		h4 = Math.imul(h2 ^ (h4 >>> 19), 2716044179);
 
-		return [ (h1^h2^h3^h4) >>> 0, (h2^h1) >>> 0, (h3^h1) >>> 0, (h4^h1) >>> 0 ];
+		return [
+			(h1^h2^h3^h4) >>> 0,
+			(h2^h1) >>> 0,
+			(h3^h1) >>> 0,
+			(h4^h1) >>> 0
+		];
 	};
 
 	const getRNG = (a: number, b: number, c: number, d: number) => {
 		return function() {
-			a >>>= 0; b >>>= 0; c >>>= 0; d >>>= 0; 
+			a >>>= 0;
+			b >>>= 0;
+			c >>>= 0;
+			d >>>= 0;
+
 			let t = (a + b) | 0;
 			a = (b ^ b) >>> 9;
 			b = c + (c << 3) | 0;
@@ -67,6 +76,7 @@ export const getSeededRNG = (seed: string) => {
 			d = (d + 1) | 0;
 			t = (t + d) | 0;
 			c = (c + t) | 0;
+
 			return (t >>> 0) / 4294967296;
 		};
 	};

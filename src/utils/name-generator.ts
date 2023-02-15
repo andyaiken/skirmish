@@ -32,16 +32,32 @@ export const generateWord = () => {
 	const femaleMisc = 'Ina Ceryn Vyn Ella Aella Vyre';
 
 	const starts = [
-		startHuman1, startHuman2, startDwarf, startElf, startHalfling, startDragonborn, startMisc
+		startHuman1,
+		startHuman2,
+		startDwarf,
+		startElf,
+		startHalfling,
+		startDragonborn,
+		startMisc
 	].join(' ').toLowerCase().split(' ');
 	const ends = [
-		maleHuman, maleDwarf, maleElf, maleHalfling, maleDragonborn, maleMisc,
-		femaleHuman, femaleDwarf, femaleElf, femaleHalfling, femaleDragonborn, femaleMisc
+		maleHuman,
+		maleDwarf,
+		maleElf,
+		maleHalfling,
+		maleDragonborn,
+		maleMisc,
+		femaleHuman,
+		femaleDwarf,
+		femaleElf,
+		femaleHalfling,
+		femaleDragonborn,
+		femaleMisc
 	].join(' ').toLowerCase().split(' ');
 
 	let separator = '';
 	if (randomNumber(10) === 0) {
-		const separators = ['-', '\''];
+		const separators = [ '-', '\'' ];
 		const sepIndex = randomNumber(separators.length);
 		separator = separators[sepIndex];
 	}

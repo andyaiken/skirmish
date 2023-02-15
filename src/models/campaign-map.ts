@@ -24,11 +24,11 @@ export interface CampaignMapModel {
 
 export const generateCampaignMap = (): CampaignMapModel => {
 	const map: CampaignMapModel = {
-		squares: [{
+		squares: [ {
 			x: 0,
 			y: 0,
 			regionID: ''
-		}],
+		} ],
 		regions: []
 	};
 

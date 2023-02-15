@@ -65,43 +65,45 @@ export const getEncounterMapDimensions = (map: EncounterMapModel) => {
 	return dims;
 };
 
-export const getEncounterMapAdjacentSquares = (map: EncounterMapModel, x: number, y: number) => {
+export const getEncounterMapAdjacentSquares = (map: EncounterMapModel, squares: { x: number; y: number }[]) => {
 	const adj: EncounterMapSquareModel[] = [];
 
-	const n = map.squares.find(sq => (sq.x === x) && (sq.y === y - 1));
-	if (n) {
-		adj.push(n);
-	}
-	const ne = map.squares.find(sq => (sq.x === x + 1) && (sq.y === y - 1));
-	if (ne) {
-		adj.push(ne);
-	}
-	const e = map.squares.find(sq => (sq.x === x + 1) && (sq.y === y));
-	if (e) {
-		adj.push(e);
-	}
-	const se = map.squares.find(sq => (sq.x === x + 1) && (sq.y === y + 1));
-	if (se) {
-		adj.push(se);
-	}
-	const s = map.squares.find(sq => (sq.x === x) && (sq.y === y + 1));
-	if (s) {
-		adj.push(s);
-	}
-	const sw = map.squares.find(sq => (sq.x === x - 1) && (sq.y === y + 1));
-	if (sw) {
-		adj.push(sw);
-	}
-	const w = map.squares.find(sq => (sq.x === x - 1) && (sq.y === y));
-	if (w) {
-		adj.push(w);
-	}
-	const nw = map.squares.find(sq => (sq.x === x - 1) && (sq.y === y - 1));
-	if (nw) {
-		adj.push(nw);
-	}
+	squares.forEach(square => {
+		const n = map.squares.find(sq => (sq.x === square.x) && (sq.y === square.y - 1));
+		if (n) {
+			adj.push(n);
+		}
+		const ne = map.squares.find(sq => (sq.x === square.x + 1) && (sq.y === square.y - 1));
+		if (ne) {
+			adj.push(ne);
+		}
+		const e = map.squares.find(sq => (sq.x === square.x + 1) && (sq.y === square.y));
+		if (e) {
+			adj.push(e);
+		}
+		const se = map.squares.find(sq => (sq.x === square.x + 1) && (sq.y === square.y + 1));
+		if (se) {
+			adj.push(se);
+		}
+		const s = map.squares.find(sq => (sq.x === square.x) && (sq.y === square.y + 1));
+		if (s) {
+			adj.push(s);
+		}
+		const sw = map.squares.find(sq => (sq.x === square.x - 1) && (sq.y === square.y + 1));
+		if (sw) {
+			adj.push(sw);
+		}
+		const w = map.squares.find(sq => (sq.x === square.x - 1) && (sq.y === square.y));
+		if (w) {
+			adj.push(w);
+		}
+		const nw = map.squares.find(sq => (sq.x === square.x - 1) && (sq.y === square.y - 1));
+		if (nw) {
+			adj.push(nw);
+		}
+	});
 
-	return adj;
+	return adj.filter(sq => !squares.find(s => (s.x === sq.x) && (s.y === sq.y)));
 };
 
 const addTile = (map: EncounterMapModel, tile: { width: number; height: number }, position: { x: number; y: number }) => {

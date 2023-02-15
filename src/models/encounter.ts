@@ -335,7 +335,8 @@ export const getMoveCost = (encounter: EncounterModel, combatData: CombatDataMod
 		.filter(cd => cd.type !== combatant.type)
 		.filter(cd => cd.state === CombatDataState.Standing)
 		.forEach(cd => {
-			const squares = getEncounterMapAdjacentSquares(encounter.map, cd.position.x, cd.position.y);
+			const current = getCombatantSquares(encounter, cd);
+			const squares = getEncounterMapAdjacentSquares(encounter.map, current);
 			adjacent.push(...squares);
 		});
 	if (movingFrom.some(sq => adjacent.find(os => (os.x === sq.x) && (os.y === sq.y)))) {

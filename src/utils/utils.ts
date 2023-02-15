@@ -8,7 +8,7 @@ export const guid = () => {
 		id += letters[n];
 	}
 	return id;
-}
+};
 
 export const debounce = (func: () => void, delay = 500) => {
 	let timeout: NodeJS.Timeout;
@@ -16,4 +16,4 @@ export const debounce = (func: () => void, delay = 500) => {
 		clearTimeout(timeout);
 		timeout = setTimeout(func, delay);
 	};
-}
+};

@@ -47,4 +47,4 @@ export const createCombatData = (combatant: CombatantModel): CombatDataModel => 
 		conditions: [],
 		actions: []
 	};
-}
+};

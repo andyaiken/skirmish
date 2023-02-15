@@ -10,7 +10,7 @@ export const createActionPlaceholder = (name: string): ActionModel => {
 		id: guid(),
 		name: name
 	};
-}
+};
 
 export const universalActions: ActionModel[] = [
 	createActionPlaceholder('Unarmed attack')

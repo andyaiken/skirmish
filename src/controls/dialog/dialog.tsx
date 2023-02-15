@@ -10,17 +10,17 @@ interface Props {
 export class Dialog extends Component<Props> {
 	public static defaultProps = {
 		onClickOff: null
-	}
+	};
 
 	backdropClick = () => {
 		if (this.props.onClickOff) {
 			this.props.onClickOff();
 		}
-	}
+	};
 
 	dialogClick = (e: MouseEvent) => {
 		e.stopPropagation();
-	}
+	};
 
 	public render = () => {
 		return (

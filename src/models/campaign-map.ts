@@ -118,7 +118,7 @@ export const generateCampaignMap = (): CampaignMapModel => {
 	} while (map.squares.filter(sq => sq.regionID === '').length !== 0);
 
 	return map;
-}
+};
 
 export const getCampaignMapDimensions = (map: CampaignMapModel) => {
 	const dims = {
@@ -136,7 +136,7 @@ export const getCampaignMapDimensions = (map: CampaignMapModel) => {
 	});
 
 	return dims;
-}
+};
 
 export const getCampaignMapAdjacentSquares = (map: CampaignMapModel, x: number, y: number) => {
 	const adj: CampaignMapSquareModel[] = [];
@@ -159,11 +159,11 @@ export const getCampaignMapAdjacentSquares = (map: CampaignMapModel, x: number, 
 	}
 
 	return adj;
-}
+};
 
 export const getCampaignMapSquares = (map: CampaignMapModel, region: CampaignMapRegionModel) => {
 	return map.squares.filter(sq => sq.regionID === region.id);
-}
+};
 
 export const removeRegion = (map: CampaignMapModel, region: CampaignMapRegionModel) => {
 	map.squares.forEach(sq => {
@@ -171,15 +171,15 @@ export const removeRegion = (map: CampaignMapModel, region: CampaignMapRegionMod
 			sq.regionID = '';
 		}
 	});
-}
+};
 
 export const isConquered = (map: CampaignMapModel) => {
 	return map.squares.every(sq => sq.regionID === '');
-}
+};
 
 export const canAttackRegion = (map: CampaignMapModel, region: CampaignMapRegionModel) => {
 	const squares = getCampaignMapSquares(map, region);
 	const coastal = squares.some(sq => getCampaignMapAdjacentSquares(map, sq.x, sq.y).length !== 4);
 	const bordering = squares.some(sq => getCampaignMapAdjacentSquares(map, sq.x, sq.y).some(a => a.regionID === ''));
 	return coastal || bordering;
-}
+};

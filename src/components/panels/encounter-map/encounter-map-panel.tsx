@@ -16,7 +16,7 @@ export class EncounterMapPanel extends Component<Props> {
 	onSelectCombatant = (e: MouseEvent, combatant: CombatantModel | null) => {
 		e.stopPropagation();
 		this.props.onSelect(combatant);
-	}
+	};
 
 	public render() {
 		// Get dimensions
@@ -63,7 +63,7 @@ export class EncounterMapPanel extends Component<Props> {
 				>
 					{combatant.name[0]}
 				</div>
-			)
+			);
 		});
 
 		return (

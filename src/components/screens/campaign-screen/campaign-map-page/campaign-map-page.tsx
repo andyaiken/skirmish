@@ -36,18 +36,18 @@ export class CampaignMapPage extends Component<Props, State> {
 		this.setState({
 			selectedHeroes: selected
 		});
-	}
+	};
 
 	deselectHero = (hero: CombatantModel) => {
 		const selected = this.state.selectedHeroes.filter(h => h.id !== hero.id);
 		this.setState({
 			selectedHeroes: selected
 		});
-	}
+	};
 
 	startEncounter = () => {
 		this.props.startEncounter(this.state.selectedRegion as CampaignMapRegionModel, this.state.selectedHeroes);
-	}
+	};
 
 	public render() {
 		let info = null;
@@ -135,7 +135,7 @@ export class CampaignMapPage extends Component<Props, State> {
 						});
 					}}
 				/>
-			)
+			);
 		}
 
 		return (

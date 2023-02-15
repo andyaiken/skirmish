@@ -29,5 +29,5 @@ export class IconValue extends Component<Props> {
 				{this.props.value} {icon}
 			</div>
 		);
-	}
+	};
 }

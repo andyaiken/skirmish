@@ -45,7 +45,7 @@ export const generateEncounterMap = (rng: () => number): EncounterMapModel => {
 	// TODO: Add decorations, obstructed terrain, blocked terrain
 
 	return map;
-}
+};
 
 export const getEncounterMapDimensions = (map: EncounterMapModel) => {
 	const dims = {
@@ -63,7 +63,7 @@ export const getEncounterMapDimensions = (map: EncounterMapModel) => {
 	});
 
 	return dims;
-}
+};
 
 export const getEncounterMapAdjacentSquares = (map: EncounterMapModel, x: number, y: number) => {
 	const adj: EncounterMapSquareModel[] = [];
@@ -102,7 +102,7 @@ export const getEncounterMapAdjacentSquares = (map: EncounterMapModel, x: number
 	}
 
 	return adj;
-}
+};
 
 const addTile = (map: EncounterMapModel, tile: { width: number, height: number }, position: { x: number, y: number }) => {
 	for (let tileX = 0; tileX < tile.width; ++tileX) {
@@ -115,5 +115,5 @@ const addTile = (map: EncounterMapModel, tile: { width: number, height: number }
 			map.squares.push(square);
 		}
 	}
-}
+};
 

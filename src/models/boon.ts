@@ -40,4 +40,4 @@ export const generateBoon = (): BoonModel => {
 		type: type,
 		data: data
 	};
-}
+};

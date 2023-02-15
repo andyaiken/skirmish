@@ -49,7 +49,7 @@ export const createCombatant = (type: CombatantType): CombatantModel => {
 		features: [],
 		items: []
 	};
-}
+};
 
 export const applyCombatantCards = (combatant: CombatantModel, speciesID: string, roleID: string, backgroundID: string) => {
 	const species = getSpecies(speciesID);
@@ -75,7 +75,7 @@ export const applyCombatantCards = (combatant: CombatantModel, speciesID: string
 	if (combatant.type === CombatantType.Monster) {
 		combatant.name = `${species?.name ?? ''} ${role?.name ?? ''}`;
 	}
-}
+};
 
 export const incrementCombatantLevel = (combatant: CombatantModel) => {
 	const deck = getFeatureDeck(combatant);
@@ -84,7 +84,7 @@ export const incrementCombatantLevel = (combatant: CombatantModel) => {
 
 	combatant.features.push(feature);
 	combatant.level += 1;
-}
+};
 
 export const makeFeatureChoices = (combatant: CombatantModel) => {
 	combatant.features.forEach(feature => {
@@ -155,7 +155,7 @@ export const makeFeatureChoices = (combatant: CombatantModel) => {
 			feature.damageCategory = draw(options);
 		}
 	});
-}
+};
 
 export const addItems = (combatant: CombatantModel) => {
 	getProficiencies(combatant).forEach(prof => {
@@ -164,7 +164,7 @@ export const addItems = (combatant: CombatantModel) => {
 		const item = JSON.parse(JSON.stringify(items[n])) as ItemModel;
 		combatant.items.push(item);
 	});
-}
+};
 
 export const getFeatureDeck = (combatant: CombatantModel) => {
 	const s = getSpecies(combatant.speciesID);
@@ -174,7 +174,7 @@ export const getFeatureDeck = (combatant: CombatantModel) => {
 		.concat(s ? s.features : [])
 		.concat(r ? r.features : [])
 		.concat(b ? b.features : []);
-}
+};
 
 export const getActionDeck = (combatant: CombatantModel) => {
 	let list = ([] as ActionModel[]).concat(universalActions);
@@ -191,7 +191,7 @@ export const getActionDeck = (combatant: CombatantModel) => {
 	});
 
 	return list;
-}
+};
 
 export const getFeatures = (combatant: CombatantModel) => {
 	let list = ([] as FeatureModel[]).concat(combatant.features);
@@ -200,7 +200,7 @@ export const getFeatures = (combatant: CombatantModel) => {
 	});
 
 	return list;
-}
+};
 
 export const getTraitValue = (combatant: CombatantModel, trait: Trait) => {
 	let value = 1;
@@ -211,7 +211,7 @@ export const getTraitValue = (combatant: CombatantModel, trait: Trait) => {
 		.forEach(f => value += f.rank);
 
 	return Math.max(value, 0);
-}
+};
 
 export const getSkillValue = (combatant: CombatantModel, skill: Skill) => {
 	let value = 0;
@@ -226,7 +226,7 @@ export const getSkillValue = (combatant: CombatantModel, skill: Skill) => {
 		.forEach(f => value += f.rank);
 
 	return Math.max(value, 0);
-}
+};
 
 export const getDamageBonusValue = (combatant: CombatantModel, damage: DamageType) => {
 	let value = 0;
@@ -241,7 +241,7 @@ export const getDamageBonusValue = (combatant: CombatantModel, damage: DamageTyp
 		.forEach(f => value += f.rank);
 
 	return Math.max(value, 0);
-}
+};
 
 export const getDamageResistanceValue = (combatant: CombatantModel, damage: DamageType) => {
 	let value = 0;
@@ -256,7 +256,7 @@ export const getDamageResistanceValue = (combatant: CombatantModel, damage: Dama
 		.forEach(f => value += f.rank);
 
 	return Math.max(value, 0);
-}
+};
 
 export const getProficiencies = (combatant: CombatantModel) => {
 	const profs: ItemProficiency[] = [];
@@ -266,7 +266,7 @@ export const getProficiencies = (combatant: CombatantModel) => {
 		.forEach(f => profs.push(f.proficiency));
 
 	return profs;
-}
+};
 
 export const getAuras = (combatant: CombatantModel) => {
 	const auras: AuraModel[] = [];
@@ -284,4 +284,4 @@ export const getAuras = (combatant: CombatantModel) => {
 		});
 
 	return auras;
-}
+};

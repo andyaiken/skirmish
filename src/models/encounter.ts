@@ -105,7 +105,7 @@ export const createEncounter = (region: CampaignMapRegionModel, heroes: Combatan
 	placeCombatants(encounter, rng);
 
 	return encounter;
-}
+};
 
 const placeCombatants = (encounter: EncounterModel, rng: () => number) => {
 	encounter.combatData.forEach(cd => {
@@ -151,7 +151,7 @@ const placeCombatants = (encounter: EncounterModel, rng: () => number) => {
 			}
 		}
 	});
-}
+};
 
 const getCombatantSquares = (encounter: EncounterModel, combatData: CombatDataModel) => {
 	const squares = [];
@@ -163,7 +163,7 @@ const getCombatantSquares = (encounter: EncounterModel, combatData: CombatDataMo
 	}
 
 	return squares;
-}
+};
 
 export const rollInitiative = (encounter: EncounterModel) => {
 	encounter.combatData.forEach(cd => {
@@ -206,7 +206,7 @@ export const rollInitiative = (encounter: EncounterModel) => {
 
 		return result;
 	});
-}
+};
 
 export const startOfTurn = (encounter: EncounterModel, combatData: CombatDataModel) => {
 	const combatant = encounter.combatants.find(c => c.id === combatData.id) as CombatantModel;
@@ -238,7 +238,7 @@ export const startOfTurn = (encounter: EncounterModel, combatData: CombatDataMod
 
 		combatData.actions = shuffle(getActionDeck(combatant)).splice(0, 3);
 	}
-}
+};
 
 export const endOfTurn = (encounter: EncounterModel, combatData: CombatDataModel) => {
 	const combatant = encounter.combatants.find(c => c.id === combatData.id) as CombatantModel;
@@ -260,7 +260,7 @@ export const endOfTurn = (encounter: EncounterModel, combatData: CombatDataModel
 		}
 	});
 	combatData.conditions = combatData.conditions.filter(c => c.rank > 0);
-}
+};
 
 export const getMoveCost = (encounter: EncounterModel, combatData: CombatDataModel, dir: string) => {
 	const combatant = getCombatant(encounter, combatData.id) as CombatantModel;
@@ -354,7 +354,7 @@ export const getMoveCost = (encounter: EncounterModel, combatData: CombatDataMod
 	}
 
 	return cost;
-}
+};
 
 export const move = (combatData: CombatDataModel, dir: string, cost: number) => {
 	combatData.movement -= cost;
@@ -389,7 +389,7 @@ export const move = (combatData: CombatDataModel, dir: string, cost: number) => 
 			combatData.position.y -= 1;
 			break;
 	}
-}
+};
 
 export const standUpSitDown = (combatData: CombatDataModel) => {
 	switch (combatData.state) {
@@ -402,7 +402,7 @@ export const standUpSitDown = (combatData: CombatDataModel) => {
 			combatData.state = CombatDataState.Standing;
 			break;
 	}
-}
+};
 
 export const scan = (encounter: EncounterModel, combatData: CombatDataModel) => {
 	const combatant = getCombatant(encounter, combatData.id) as CombatantModel;
@@ -413,7 +413,7 @@ export const scan = (encounter: EncounterModel, combatData: CombatDataModel) => 
 
 	combatData.movement -= 4;
 	combatData.senses = dice(perception);
-}
+};
 
 export const hide = (encounter: EncounterModel, combatData: CombatDataModel) => {
 	const combatant = getCombatant(encounter, combatData.id) as CombatantModel;
@@ -424,7 +424,7 @@ export const hide = (encounter: EncounterModel, combatData: CombatDataModel) => 
 
 	combatData.movement -= 4;
 	combatData.hidden = dice(stealth);
-}
+};
 
 export const getEncounterState = (encounter: EncounterModel): EncounterState => {
 	const allMonstersDead = encounter.combatData
@@ -441,15 +441,15 @@ export const getEncounterState = (encounter: EncounterModel): EncounterState => 
 	}
 
 	return EncounterState.Active;
-}
+};
 
 export const getCombatant = (encounter: EncounterModel, id: string): CombatantModel | null => {
 	return encounter.combatants.find(c => c.id === id) ?? null;
-}
+};
 
 export const getCombatData = (encounter: EncounterModel, id: string): CombatDataModel | null => {
 	return encounter.combatData.find(c => c.id === id) ?? null;
-}
+};
 
 export const getCombatantSize = (encounter: EncounterModel, id: string): number => {
 	const combatant = getCombatant(encounter, id);
@@ -458,35 +458,35 @@ export const getCombatantSize = (encounter: EncounterModel, id: string): number 
 	}
 
 	return 1;
-}
+};
 
 export const getActiveCombatants = (encounter: EncounterModel) => {
 	return encounter.combatData
 		.filter(cd => cd.state !== CombatDataState.Dead)
 		.filter(cd => cd.initiative !== Number.MIN_VALUE);
-}
+};
 
 export const getAllHeroesInEncounter = (encounter: EncounterModel): CombatantModel[] => {
 	return encounter.combatants.filter(c => c.type === CombatantType.Hero);
-}
+};
 
 export const getSurvivingHeroes = (encounter: EncounterModel): CombatantModel[] => {
 	return getAllHeroesInEncounter(encounter).filter(h => {
 		const combatData = getCombatData(encounter, h.id) as CombatDataModel;
 		return (combatData.state !== CombatDataState.Dead) && (combatData.state !== CombatDataState.Unconscious);
 	});
-}
+};
 
 export const getFallenHeroes = (encounter: EncounterModel): CombatantModel[] => {
 	return getAllHeroesInEncounter(encounter).filter(h => {
 		const combatData = getCombatData(encounter, h.id) as CombatDataModel;
 		return (combatData.state === CombatDataState.Dead) || (combatData.state === CombatDataState.Unconscious);
 	});
-}
+};
 
 export const getDeadHeroes = (encounter: EncounterModel): CombatantModel[] => {
 	return getAllHeroesInEncounter(encounter).filter(h => {
 		const combatData = getCombatData(encounter, h.id) as CombatDataModel;
 		return (combatData.state === CombatDataState.Dead);
 	});
-}
+};

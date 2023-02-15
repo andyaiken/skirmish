@@ -18,7 +18,7 @@ interface Props {
 export class InitiativeListPanel extends Component<Props> {
 	rollInitiative = () => {
 		this.props.rollInitiative(this.props.encounter);
-	}
+	};
 
 	public render() {
 		const acting = getActiveCombatants(this.props.encounter)
@@ -61,7 +61,7 @@ export class InitiativeListPanel extends Component<Props> {
 					<Text type={TextType.SubHeading}>Initiative</Text>
 					{acting}
 				</div>
-			)
+			);
 		}
 
 		return (

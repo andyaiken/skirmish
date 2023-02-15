@@ -26,7 +26,7 @@ export const createGame = (): GameModel => {
 		map: generateCampaignMap(),
 		encounter: null
 	};
-}
+};
 
 export const addHeroToGame = (game: GameModel, hero: CombatantModel) => {
 	const index = game.heroes.findIndex(h => h.id === hero.id);
@@ -36,4 +36,4 @@ export const addHeroToGame = (game: GameModel, hero: CombatantModel) => {
 		game.heroes[index] = hero;
 	}
 	game.heroes.sort((a, b) => a.name > b.name ? 1 : -1);
-}
+};

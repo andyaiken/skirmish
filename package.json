@@ -8,12 +8,12 @@
 	},
 	"devDependencies": {
 		"@types/react": "^18.0.28",
-		"@types/react-dom": "^18.0.10",
-		"@typescript-eslint/eslint-plugin": "^5.51.0",
-		"@typescript-eslint/parser": "^5.51.0",
+		"@types/react-dom": "^18.0.11",
+		"@typescript-eslint/eslint-plugin": "^5.52.0",
+		"@typescript-eslint/parser": "^5.52.0",
 		"eslint": "^8.34.0",
 		"react-scripts": "^5.0.1",
-		"sass": "^1.58.0",
+		"sass": "^1.58.1",
 		"typescript": "^4.9.5"
 	},
 	"scripts": {
@@ -39,7 +39,21 @@
 		"root": true,
 		"rules": {
 			"@typescript-eslint/non-nullable-type-assertion-style": 0,
-			"no-debugger": 0
+			"no-debugger": 1,
+			"semi": [ "error", "always" ],
+			"comma-dangle": [ "error", "never" ],
+			"quotes": [ "error", "single" ],
+			"max-len": [ "error", { "code": 200 } ],
+			"indent": [ "error", "tab", { "SwitchCase": 1 } ],
+			"no-tabs": [ "error", { "allowIndentationTabs": true } ],
+			"no-magic-numbers": 0,
+			"no-bitwise": 0,
+			"no-param-reassign": 0,
+			"id-length": 0,
+			"one-var": 0,
+			"max-lines-per-function": 0,
+			"max-statements": 0,
+			"no-ternary": 0
 		}
 	},
 	"browserslist": [

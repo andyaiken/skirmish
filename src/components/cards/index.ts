@@ -18,4 +18,4 @@ export {
 	PlaceholderCard,
 	RoleCard,
 	SpeciesCard
-}
+};

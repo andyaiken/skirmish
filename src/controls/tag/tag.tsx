@@ -13,5 +13,5 @@ export class Tag extends Component<Props> {
 				{this.props.children}
 			</div>
 		);
-	}
+	};
 }

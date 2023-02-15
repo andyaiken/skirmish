@@ -10,16 +10,15 @@
 ## To Do
 
 * Encounters:
+  * Encounter map generation
   * Click on an initiative entry or a map token, to show a character sheet with combat data included
     * Limited data for monsters (level, conditions, damage, wounds)
-  * Show controls for current combatant, if it's a hero
-    * Otherwise, show log of monster's turn
+  * Show turn log for current combatant, if it's a monster
   * Implement things you can do when it's your turn
     * Picking up / dropping items
     * Actions
   * Implement the encounter flow
   * Implement AI so that monsters can take their turns
-* Implement actions
 * Magic item generation (add features and actions)
 
 ## Ideas for Future Work

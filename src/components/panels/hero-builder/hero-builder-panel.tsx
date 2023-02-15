@@ -43,7 +43,7 @@ export class HeroBuilderPanel extends Component<Props, State> {
 		this.setState({
 			hero: hero
 		});
-	}
+	};
 
 	addItems = (items: ItemModel[]) => {
 		const hero = this.state.hero;
@@ -51,7 +51,7 @@ export class HeroBuilderPanel extends Component<Props, State> {
 		this.setState({
 			hero: hero
 		});
-	}
+	};
 
 	rename = () => {
 		const hero = this.state.hero;
@@ -59,11 +59,11 @@ export class HeroBuilderPanel extends Component<Props, State> {
 		this.setState({
 			hero: hero
 		});
-	}
+	};
 
 	finished = () => {
 		this.props.finished(this.state.hero);
-	}
+	};
 
 	public render() {
 		let info = null;

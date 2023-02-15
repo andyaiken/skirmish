@@ -12,9 +12,9 @@ export const shuffle = <T>(collection: T[]) => {
 	}
 
 	return collection;
-}
+};
 
 export const draw = <T>(collection: T[]) => {
 	const index = randomNumber(collection.length);
 	return collection[index];
-}
+};

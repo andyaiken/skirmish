@@ -45,7 +45,7 @@ export class CampaignScreen extends Component<Props, State> {
 		this.setState({
 			page: page
 		});
-	}
+	};
 
 	public render() {
 		let content = null;

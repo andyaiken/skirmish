@@ -29,7 +29,7 @@ export const createAura = (feature: FeatureModel) => {
 		rank: feature.rank
 	};
 	return aura;
-}
+};
 
 export const getAuraDescription = (aura: AuraModel) => {
 	switch (aura.type) {
@@ -45,4 +45,4 @@ export const getAuraDescription = (aura: AuraModel) => {
 	}
 
 	return '';
-}
+};

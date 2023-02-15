@@ -295,7 +295,7 @@ export const RoleList: RoleModel[] = [
 
 export const getRole = (id: string) => {
 	return RoleList.find(r => r.id === id);
-}
+};
 
 export const getRoleDeck = (game: GameModel | null = null) => {
 	if (game) {
@@ -311,4 +311,4 @@ export const getRoleDeck = (game: GameModel | null = null) => {
 	}
 
 	return RoleList.map(role => role.id);
-}
+};

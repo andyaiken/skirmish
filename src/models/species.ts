@@ -238,7 +238,7 @@ export const MonsterSpeciesList: SpeciesModel[] = [
 			createTraitFeature(Trait.Any, 1),
 			createDamageResistFeature(DamageType.All, 1),
 			createSkillFeature(Skill.Brawl, 2),
-			createSkillFeature(Skill.Weapon, 2),
+			createSkillFeature(Skill.Weapon, 2)
 		],
 		actions: [
 			createActionPlaceholder('Fury'),
@@ -280,13 +280,13 @@ export const MonsterSpeciesList: SpeciesModel[] = [
 			createActionPlaceholder('Slam'),
 			createActionPlaceholder('Regeneration')
 		]
-	},
+	}
 ];
 
 export const getSpecies = (id: string) => {
 	const all = ([] as SpeciesModel[]).concat(HeroSpeciesList).concat(MonsterSpeciesList);
 	return all.find(s => s.id === id);
-}
+};
 
 export const getSpeciesDeck = (game: GameModel | null = null) => {
 	if (game) {
@@ -304,4 +304,4 @@ export const getSpeciesDeck = (game: GameModel | null = null) => {
 	}
 
 	return MonsterSpeciesList.map(species => species.id);
-}
+};

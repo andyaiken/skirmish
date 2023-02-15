@@ -47,7 +47,7 @@ export const unarmedAttack: ItemModel = {
 	},
 	features: [],
 	actions: []
-}
+};
 
 export const ItemList: ItemModel[] = [
 	{
@@ -696,11 +696,11 @@ export const ItemList: ItemModel[] = [
 
 export const getItem = (id: string) => {
 	return ItemList.find(b => b.id === id);
-}
+};
 
 export const getItems = (proficiency: ItemProficiency) => {
 	return ItemList.filter(i => i.proficiency === proficiency);
-}
+};
 
 export const generateMagicItem = (): ItemModel => {
 	// Pick a random item from the item list
@@ -715,4 +715,4 @@ export const generateMagicItem = (): ItemModel => {
 	// TODO: Add features or actions
 
 	return item;
-}
+};

@@ -2,7 +2,22 @@ import { Component } from 'react';
 
 import { BoonModel, BoonType } from '../../models/boon';
 import { CampaignMapRegionModel, removeRegion } from '../../models/campaign-map';
-import { createEncounter, EncounterModel, endOfTurn, getActiveCombatants, getAllHeroesInEncounter, getDeadHeroes, getFallenHeroes, getSurvivingHeroes, hide, move, rollInitiative, scan, standUpSitDown, startOfTurn } from '../../models/encounter';
+import {
+	createEncounter,
+	EncounterModel,
+	endOfTurn,
+	getActiveCombatants,
+	getAllHeroesInEncounter,
+	getDeadHeroes,
+	getFallenHeroes,
+	getSurvivingHeroes,
+	hide,
+	move,
+	rollInitiative,
+	scan,
+	standUpSitDown,
+	startOfTurn
+} from '../../models/encounter';
 import { addHeroToGame, createGame, GameModel } from '../../models/game';
 import { CombatantModel, CombatantType, createCombatant } from '../../models/combatant';
 import { ItemModel } from '../../models/item';
@@ -56,7 +71,7 @@ export class Main extends Component<Props, State> {
 
 	componentDidUpdate = () => {
 		this.saveAfterDelay();
-	}
+	};
 
 	setScreen = (screen: ScreenType) => {
 		this.setState({
@@ -87,13 +102,13 @@ export class Main extends Component<Props, State> {
 			game: createGame(),
 			screen: ScreenType.Campaign
 		});
-	}
+	};
 
 	continueCampaign = () => {
 		this.setState({
 			screen: !this.state.game?.encounter ? ScreenType.Campaign : ScreenType.Encounter
 		});
-	}
+	};
 
 	//#endregion
 
@@ -105,7 +120,7 @@ export class Main extends Component<Props, State> {
 		this.setState({
 			game: game
 		});
-	}
+	};
 
 	incrementXP = (hero: CombatantModel) => {
 		// DEV ONLY
@@ -113,7 +128,7 @@ export class Main extends Component<Props, State> {
 		this.setState({
 			game: this.state.game
 		});
-	}
+	};
 
 	levelUp = (feature: FeatureModel, hero: CombatantModel) => {
 		hero.xp -= hero.level;
@@ -123,7 +138,7 @@ export class Main extends Component<Props, State> {
 		this.setState({
 			game: this.state.game
 		});
-	}
+	};
 
 	redeemBoon = (boon: BoonModel, hero: CombatantModel | null) => {
 		const game = this.state.game as GameModel;
@@ -147,7 +162,7 @@ export class Main extends Component<Props, State> {
 		this.setState({
 			game: game
 		});
-}
+	};
 
 	//#endregion
 
@@ -162,7 +177,7 @@ export class Main extends Component<Props, State> {
 				screen: ScreenType.Encounter
 			});
 		}
-	}
+	};
 
 	//#endregion
 
@@ -174,7 +189,7 @@ export class Main extends Component<Props, State> {
 			screen: ScreenType.Landing,
 			dialog: null
 		});
-	}
+	};
 
 	//#endregion
 
@@ -192,7 +207,7 @@ export class Main extends Component<Props, State> {
 		this.setState({
 			game: this.state.game
 		});
-	}
+	};
 
 	move = (encounter: EncounterModel, combatData: CombatDataModel, dir: string, cost: number) => {
 		move(combatData, dir, cost);
@@ -200,7 +215,7 @@ export class Main extends Component<Props, State> {
 		this.setState({
 			game: this.state.game
 		});
-	}
+	};
 
 	standUp = (encounter: EncounterModel, combatData: CombatDataModel) => {
 		standUpSitDown(combatData);
@@ -208,7 +223,7 @@ export class Main extends Component<Props, State> {
 		this.setState({
 			game: this.state.game
 		});
-	}
+	};
 
 	scan = (encounter: EncounterModel, combatData: CombatDataModel) => {
 		scan(encounter, combatData);
@@ -216,7 +231,7 @@ export class Main extends Component<Props, State> {
 		this.setState({
 			game: this.state.game
 		});
-	}
+	};
 
 	hide = (encounter: EncounterModel, combatData: CombatDataModel) => {
 		hide(encounter, combatData);
@@ -224,7 +239,7 @@ export class Main extends Component<Props, State> {
 		this.setState({
 			game: this.state.game
 		});
-	}
+	};
 
 	endTurn = (encounter: EncounterModel) => {
 		const acting = getActiveCombatants(encounter);
@@ -239,7 +254,7 @@ export class Main extends Component<Props, State> {
 		this.setState({
 			game: this.state.game
 		});
-	}
+	};
 
 	equipItem = (item: ItemModel, combatant: CombatantModel) => {
 		const game = this.state.game as GameModel;
@@ -250,7 +265,7 @@ export class Main extends Component<Props, State> {
 		this.setState({
 			game: game
 		});
-	}
+	};
 
 	unequipItem = (item: ItemModel, combatant: CombatantModel) => {
 		const game = this.state.game as GameModel;
@@ -261,7 +276,7 @@ export class Main extends Component<Props, State> {
 		this.setState({
 			game: game
 		});
-	}
+	};
 
 	finishEncounter = (state: EncounterFinishState) => {
 		const game = this.state.game;
@@ -384,7 +399,7 @@ export class Main extends Component<Props, State> {
 			game: game,
 			dialog: dialog
 		});
-	}
+	};
 
 	//#endregion
 
@@ -437,7 +452,7 @@ export class Main extends Component<Props, State> {
 				{this.state.screen}
 			</div>
 		);
-	}
+	};
 
 	render = () => {
 		return (
@@ -451,7 +466,7 @@ export class Main extends Component<Props, State> {
 				{this.state.dialog ? <Dialog content={this.state.dialog} /> : null}
 			</div>
 		);
-	}
+	};
 
 	//#endregion
 }

@@ -30,7 +30,7 @@ export class OptionsPage extends Component<Props, State> {
 		this.setState({
 			deck: deck
 		});
-	}
+	};
 
 	public render() {
 		let dialog = null;

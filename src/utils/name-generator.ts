@@ -6,7 +6,7 @@ export const generateName = () => {
 	}
 
 	return capitalise(generateWord());
-}
+};
 
 export const generateWord = () => {
 	const startHuman1 = 'As Has Khe Zash Gl Ig Iv Kos Miv Pav Ser Dar Even Gor Rand Sto Tam Barer Keth Mum Ford Cam';
@@ -49,7 +49,7 @@ export const generateWord = () => {
 	const startIndex = randomNumber(starts.length);
 	const endIndex = randomNumber(ends.length);
 	return starts[startIndex] + separator + ends[endIndex];
-}
+};
 
 export const capitalise = (str: string) => {
 	return str
@@ -61,4 +61,4 @@ export const capitalise = (str: string) => {
 			return first + rest;
 		})
 		.join(' ');
-}
+};

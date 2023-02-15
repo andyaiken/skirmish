@@ -33,7 +33,7 @@ export class LevelUp extends Component<Props, State> {
 		this.setState({
 			selectedFeature: feature
 		});
-	}
+	};
 
 	levelUp = () => {
 		const feature = this.state.selectedFeature as FeatureModel;
@@ -43,7 +43,7 @@ export class LevelUp extends Component<Props, State> {
 		}, () => {
 			this.props.levelUp(feature);
 		});
-	}
+	};
 
 	public render() {
 		const featureCards = this.props.features.map(feature => {
@@ -119,7 +119,7 @@ class ChoicePanel extends Component<ChoicePanelProps, ChoicePanelState> {
 		}, () => {
 			this.props.onChange(this.state.feature);
 		});
-	}
+	};
 
 	selectSkill = (skill: Skill) => {
 		const feature = this.state.feature;
@@ -129,7 +129,7 @@ class ChoicePanel extends Component<ChoicePanelProps, ChoicePanelState> {
 		}, () => {
 			this.props.onChange(this.state.feature);
 		});
-	}
+	};
 
 	selectSkillCategory = (category: SkillCategory) => {
 		const feature = this.state.feature;
@@ -139,7 +139,7 @@ class ChoicePanel extends Component<ChoicePanelProps, ChoicePanelState> {
 		}, () => {
 			this.props.onChange(this.state.feature);
 		});
-	}
+	};
 
 	selectProficiency = (proficiency: ItemProficiency) => {
 		const feature = this.state.feature;
@@ -149,7 +149,7 @@ class ChoicePanel extends Component<ChoicePanelProps, ChoicePanelState> {
 		}, () => {
 			this.props.onChange(this.state.feature);
 		});
-	}
+	};
 
 	selectDamage = (damage: DamageType) => {
 		const feature = this.state.feature;
@@ -159,7 +159,7 @@ class ChoicePanel extends Component<ChoicePanelProps, ChoicePanelState> {
 		}, () => {
 			this.props.onChange(this.state.feature);
 		});
-	}
+	};
 
 	selectDamageCategory = (category: DamageCategory) => {
 		const feature = this.state.feature;
@@ -169,7 +169,7 @@ class ChoicePanel extends Component<ChoicePanelProps, ChoicePanelState> {
 		}, () => {
 			this.props.onChange(this.state.feature);
 		});
-	}
+	};
 
 	render = () => {
 		let choice = null;
@@ -292,7 +292,7 @@ class ChoicePanel extends Component<ChoicePanelProps, ChoicePanelState> {
 				{choice}
 			</div>
 		);
-	}
+	};
 }
 
 //#endregion

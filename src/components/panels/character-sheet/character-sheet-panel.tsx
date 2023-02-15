@@ -49,15 +49,15 @@ export class CharacterSheetPanel extends Component<Props, State> {
 				copy.id = guid();
 				return copy;
 			});
-	}
+	};
 
 	equipItem = (item: ItemModel) => {
 		this.props.equipItem(item, this.props.hero);
-	}
+	};
 
 	unequipItem = (item: ItemModel) => {
 		this.props.unequipItem(item, this.props.hero);
-	}
+	};
 
 	levelUp = (feature: FeatureModel) => {
 		this.setState({
@@ -65,7 +65,7 @@ export class CharacterSheetPanel extends Component<Props, State> {
 		}, () => {
 			this.props.levelUp(feature, this.props.hero);
 		});
-	}
+	};
 
 	public render() {
 		let content = null;

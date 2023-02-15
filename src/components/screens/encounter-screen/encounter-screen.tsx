@@ -52,11 +52,11 @@ export class EncounterScreen extends Component<Props, State> {
 		this.setState({
 			selectedIDs: combatant ? [ combatant.id ] : []
 		});
-	}
+	};
 
 	endTurn = () => {
 		this.props.endTurn(this.props.encounter);
-	}
+	};
 
 	getEncounterControls = (currentID: string | null) => {
 		if (currentID) {
@@ -193,7 +193,7 @@ export class EncounterScreen extends Component<Props, State> {
 				}
 			}
 		}
-	}
+	};
 	
 	public render() {
 		const acting = getActiveCombatants(this.props.encounter);

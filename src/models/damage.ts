@@ -47,4 +47,4 @@ export const getDamageCategory = (type: DamageType) => {
 	}
 
 	return DamageCategory.None;
-}
+};

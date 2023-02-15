@@ -19,7 +19,7 @@ export const dice = (count: number, rng: () => number = Math.random) => {
 	}
 
 	return Math.max(...rolls);
-}
+};
 
 export const randomNumber = (max: number, rng: () => number = Math.random) => {
 	if (max <= 0) {
@@ -27,15 +27,15 @@ export const randomNumber = (max: number, rng: () => number = Math.random) => {
 	}
 
 	return Math.floor(rng() * max);
-}
+};
 
 export const randomBoolean = (rng: () => number = Math.random) => {
 	return randomNumber(2, rng) === 0;
-}
+};
 
 export const randomDecimal = (rng: () => number = Math.random) => {
 	return randomNumber(100, rng) / 100;
-}
+};
 
 export const getSeededRNG = (seed: string) => {
 	const getHashes = (str: string) => {
@@ -55,22 +55,22 @@ export const getSeededRNG = (seed: string) => {
 		h4 = Math.imul(h2 ^ (h4 >>> 19), 2716044179);
 
 		return [ (h1^h2^h3^h4) >>> 0, (h2^h1) >>> 0, (h3^h1) >>> 0, (h4^h1) >>> 0 ];
-	}
+	};
 
 	const getRNG = (a: number, b: number, c: number, d: number) => {
 		return function() {
-		a >>>= 0; b >>>= 0; c >>>= 0; d >>>= 0; 
-		let t = (a + b) | 0;
-		a = (b ^ b) >>> 9;
-		b = c + (c << 3) | 0;
-		c = (c << 21) | (c >>> 11);
-		d = (d + 1) | 0;
-		t = (t + d) | 0;
-		c = (c + t) | 0;
-		return (t >>> 0) / 4294967296;
-		}
-	}
+			a >>>= 0; b >>>= 0; c >>>= 0; d >>>= 0; 
+			let t = (a + b) | 0;
+			a = (b ^ b) >>> 9;
+			b = c + (c << 3) | 0;
+			c = (c << 21) | (c >>> 11);
+			d = (d + 1) | 0;
+			t = (t + d) | 0;
+			c = (c + t) | 0;
+			return (t >>> 0) / 4294967296;
+		};
+	};
 
 	const hashes = getHashes(seed);
 	return getRNG(hashes[0], hashes[1], hashes[2], hashes[3]);
-}
+};

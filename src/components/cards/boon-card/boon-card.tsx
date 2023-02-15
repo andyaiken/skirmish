@@ -15,7 +15,7 @@ interface Props {
 export class BoonCard extends Component<Props> {
 	public render() {
 		if (this.props.boon.type === BoonType.MagicItem) {
-			return <ItemCard item={this.props.boon.data as ItemModel} />
+			return <ItemCard item={this.props.boon.data as ItemModel} />;
 		}
 
 		let desc = '';
@@ -25,8 +25,8 @@ export class BoonCard extends Component<Props> {
 				desc = 'Gain an empty hero slot.';
 				break;
 			case BoonType.ExtraXP:
-				desc = `Choose one of your heroes to gain bonus XP.`;
-				extra = <StatValue orientation='vertical' label='XP' value={this.props.boon.data as number} />
+				desc = 'Choose one of your heroes to gain bonus XP.';
+				extra = <StatValue orientation='vertical' label='XP' value={this.props.boon.data as number} />;
 				break;
 			case BoonType.LevelUp:
 				desc = 'Choose one of your heroes to level up.';

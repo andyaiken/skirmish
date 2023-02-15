@@ -26,5 +26,5 @@ export class Text extends Component<Props> {
 				{this.props.children}
 			</div>
 		);
-	}
+	};
 }

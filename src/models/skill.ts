@@ -33,4 +33,4 @@ export const getSkillCategory = (skill: Skill) => {
 	}
 
 	return SkillCategory.None;
-}
+};

@@ -28,5 +28,5 @@ export class Selector extends Component<Props> {
 				{ options }
 			</div>
 		);
-	}
+	};
 }

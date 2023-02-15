@@ -50,7 +50,7 @@ export class HeroesPage extends Component<Props, State> {
 				break;
 			}
 		}
-	}
+	};
 
 	public render() {
 		let boons = null;

@@ -19,5 +19,5 @@ export class Box extends Component<Props> {
 				</div>
 			</div>
 		);
-	}
+	};
 }

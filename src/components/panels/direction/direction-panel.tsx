@@ -13,12 +13,12 @@ interface Props {
 export class DirectionPanel extends Component<Props> {
 	getClassName = (dir: string) => {
 		return `dir ${dir} ${this.canMove(dir) ? 'enabled' : 'disabled'}`;
-	}
+	};
 
 	canMove = (dir: string) => {
 		const cost = this.props.costs[dir];
 		return (cost !== Number.MAX_VALUE) && (cost <= this.props.combatData.movement);
-	}
+	};
 
 	getCostLabel = (value: number) => {
 		if (value === Number.MAX_VALUE) {
@@ -26,7 +26,7 @@ export class DirectionPanel extends Component<Props> {
 		}
 
 		return value;
-	}
+	};
 
 	render = () => {
 		return (
@@ -66,5 +66,5 @@ export class DirectionPanel extends Component<Props> {
 				</div>
 			</div>
 		);
-	}
+	};
 }

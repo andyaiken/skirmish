@@ -48,7 +48,7 @@ export const getFeatureTitle = (feature: FeatureModel) => {
 		case FeatureType.Aura:
 			return 'Aura';
 	}
-}
+};
 
 export const getFeatureDescription = (feature: FeatureModel) => {
 	switch (feature.type) {
@@ -73,7 +73,7 @@ export const getFeatureDescription = (feature: FeatureModel) => {
 			return `${getAuraDescription(aura)} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
 		}
 	}
-}
+};
 
 export const hasChoice = (feature: FeatureModel) => {
 	switch (feature.type) {
@@ -92,7 +92,7 @@ export const hasChoice = (feature: FeatureModel) => {
 		case FeatureType.DamageCategoryResist:
 			return feature.damageCategory === DamageCategory.Any;
 	}
-}
+};
 
 export const createDamageBonusFeature = (damage: DamageType, rank: number): FeatureModel => {
 	return {
@@ -107,7 +107,7 @@ export const createDamageBonusFeature = (damage: DamageType, rank: number): Feat
 		aura: AuraType.None,
 		rank: rank
 	};
-}
+};
 
 export const createDamageCategoryBonusFeature = (category: DamageCategory, rank: number): FeatureModel => {
 	return {
@@ -122,7 +122,7 @@ export const createDamageCategoryBonusFeature = (category: DamageCategory, rank:
 		aura: AuraType.None,
 		rank: rank
 	};
-}
+};
 
 export const createDamageResistFeature = (damage: DamageType, rank: number): FeatureModel => {
 	return {
@@ -137,7 +137,7 @@ export const createDamageResistFeature = (damage: DamageType, rank: number): Fea
 		aura: AuraType.None,
 		rank: rank
 	};
-}
+};
 
 export const createDamageCategoryResistFeature = (category: DamageCategory, rank: number): FeatureModel => {
 	return {
@@ -152,7 +152,7 @@ export const createDamageCategoryResistFeature = (category: DamageCategory, rank
 		aura: AuraType.None,
 		rank: rank
 	};
-}
+};
 
 export const createProficiencyFeature = (proficiency: ItemProficiency): FeatureModel => {
 	return {
@@ -167,7 +167,7 @@ export const createProficiencyFeature = (proficiency: ItemProficiency): FeatureM
 		aura: AuraType.None,
 		rank: 0
 	};
-}
+};
 
 export const createSkillFeature = (skill: Skill, rank: number): FeatureModel => {
 	return {
@@ -182,7 +182,7 @@ export const createSkillFeature = (skill: Skill, rank: number): FeatureModel => 
 		aura: AuraType.None,
 		rank: rank
 	};
-}
+};
 
 export const createSkillCategoryFeature = (category: SkillCategory, rank: number): FeatureModel => {
 	return {
@@ -197,7 +197,7 @@ export const createSkillCategoryFeature = (category: SkillCategory, rank: number
 		aura: AuraType.None,
 		rank: rank
 	};
-}
+};
 
 export const createTraitFeature = (trait: Trait, rank: number): FeatureModel => {
 	return {
@@ -212,7 +212,7 @@ export const createTraitFeature = (trait: Trait, rank: number): FeatureModel => 
 		aura: AuraType.None,
 		rank: rank
 	};
-}
+};
 
 export const createAuraFeature = (aura: AuraType, rank: number): FeatureModel => {
 	return {
@@ -227,7 +227,7 @@ export const createAuraFeature = (aura: AuraType, rank: number): FeatureModel =>
 		aura: aura,
 		rank: rank
 	};
-}
+};
 
 export const createAuraDamageFeature = (aura: AuraType, damage: DamageType, rank: number): FeatureModel => {
 	return {
@@ -242,7 +242,7 @@ export const createAuraDamageFeature = (aura: AuraType, damage: DamageType, rank
 		aura: aura,
 		rank: rank
 	};
-}
+};
 
 export const createAuraDamageCategoryFeature = (aura: AuraType, category: DamageCategory, rank: number): FeatureModel => {
 	return {
@@ -257,7 +257,7 @@ export const createAuraDamageCategoryFeature = (aura: AuraType, category: Damage
 		aura: aura,
 		rank: rank
 	};
-}
+};
 
 export const universalFeatures: FeatureModel[] = [
 	createTraitFeature(Trait.Any, 1),

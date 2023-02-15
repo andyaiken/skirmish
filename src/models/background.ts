@@ -150,7 +150,7 @@ export const BackgroundList: BackgroundModel[] = [
 
 export const getBackground = (id: string) => {
 	return BackgroundList.find(b => b.id === id);
-}
+};
 
 export const getBackgroundDeck = (game: GameModel | null = null) => {
 	if (game) {
@@ -166,4 +166,4 @@ export const getBackgroundDeck = (game: GameModel | null = null) => {
 	}
 
 	return BackgroundList.map(background => background.id);
-}
+};

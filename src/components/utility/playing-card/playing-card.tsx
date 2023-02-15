@@ -25,7 +25,7 @@ export class PlayingCard extends Component<Props> {
 		if (this.props.onClick) {
 			this.props.onClick();
 		}
-	}
+	};
 
 	public render() {
 		let className = 'playing-card';

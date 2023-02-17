@@ -36,6 +36,12 @@ export const generateEncounterMap = (rng: () => number): EncounterMapModel => {
 		if (map.squares.length > 0) {
 			const adj = getEncounterMapEdges(map, map.squares, dir as 'n' | 'e' | 's' | 'w');
 			const sq = adj[randomNumber(adj.length, rng)];
+			if (dir === 'n') {
+				sq.y -= (size.height - 1);
+			}
+			if (dir === 'w') {
+				sq.x -= (size.width - 1);
+			}
 			position.x = sq.x;
 			position.y = sq.y;
 		}

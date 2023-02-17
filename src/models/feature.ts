@@ -1,9 +1,10 @@
+import { randomBonus, randomNumber } from '../utils/random';
 import { guid } from '../utils/utils';
 import { AuraType, createAura, getAuraDescription } from './aura';
-import { DamageCategory, DamageType } from './damage';
-import { ItemProficiencyType } from './item-proficiency';
-import { SkillCategoryType, SkillType } from './skill';
-import { TraitType } from './trait';
+import { DamageCategory, DamageType, getRandomDamageCategory, getRandomDamageType } from './damage';
+import { getRandomProficiency, ItemProficiencyType } from './item-proficiency';
+import { getRandomSkill, getRandomSkillCategory, SkillCategoryType, SkillType } from './skill';
+import { getRandomTrait, TraitType } from './trait';
 
 export enum FeatureType {
 	Trait = 'Trait',
@@ -259,6 +260,27 @@ export const createAuraDamageCategoryFeature = (aura: AuraType, category: Damage
 		aura: aura,
 		rank: rank
 	};
+};
+
+export const createRandomFeature = () => {
+	switch (randomNumber(8)) {
+		case 0:
+			return createDamageBonusFeature(getRandomDamageType(), randomBonus());
+		case 1:
+			return createDamageCategoryBonusFeature(getRandomDamageCategory(), randomBonus());
+		case 2:
+			return createDamageResistFeature(getRandomDamageType(), randomBonus());
+		case 3:
+			return createDamageCategoryResistFeature(getRandomDamageCategory(), randomBonus());
+		case 4:
+			return createProficiencyFeature(getRandomProficiency());
+		case 5:
+			return createTraitFeature(getRandomTrait(), randomBonus());
+		case 6:
+			return createSkillFeature(getRandomSkill(), randomBonus());
+		default:
+			return createSkillCategoryFeature(getRandomSkillCategory(), randomBonus());
+	}
 };
 
 export const universalFeatures: FeatureModel[] = [

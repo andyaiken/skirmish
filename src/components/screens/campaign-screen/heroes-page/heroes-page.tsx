@@ -121,7 +121,6 @@ export class HeroesPage extends Component<Props, State> {
 			magicItems = (
 				<div>
 					<Text type={TextType.SubHeading}>Magic Items ({cards.length})</Text>
-					<Text>You have the following magic items:</Text>
 					<CardList cards={cards} />
 				</div>
 			);
@@ -133,7 +132,6 @@ export class HeroesPage extends Component<Props, State> {
 			mundaneItems = (
 				<div>
 					<Text type={TextType.SubHeading}>Mundane Items ({cards.length})</Text>
-					<Text>In addition to the equipment carried by your heroes, you also have:</Text>
 					<CardList cards={cards} />
 				</div>
 			);

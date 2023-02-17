@@ -1,13 +1,32 @@
 import { draw } from '../utils/collections';
 import { generateName } from '../utils/name-generator';
+import { randomBonus, randomBoolean, randomNumber } from '../utils/random';
 import { guid } from '../utils/utils';
-import { ActionModel } from './action';
-import { DamageCategory, DamageType } from './damage';
-import { createDamageCategoryResistFeature, createSkillCategoryFeature, createTraitFeature, FeatureModel } from './feature';
+import { ActionModel, getRandomAction } from './action';
+import { DamageCategory, DamageType, getRandomDamageType } from './damage';
+import {
+	createDamageCategoryBonusFeature,
+	createDamageCategoryResistFeature,
+	createRandomFeature,
+	createSkillCategoryFeature,
+	createSkillFeature,
+	createTraitFeature,
+	FeatureModel,
+	FeatureType
+} from './feature';
 import { ItemLocationType } from './item-location';
 import { ItemProficiencyType } from './item-proficiency';
-import { SkillCategoryType } from './skill';
+import { getRandomSkill, SkillCategoryType, SkillType } from './skill';
 import { TraitType } from './trait';
+
+interface WeaponModel {
+	damage: {
+		type: DamageType;
+		rank: number;
+	};
+	range: number;
+	unreliable: number;
+}
 
 export interface ItemModel {
 	id: string;
@@ -17,14 +36,7 @@ export interface ItemModel {
 	proficiency: ItemProficiencyType;
 	location: ItemLocationType;
 	slots: number;
-	weapon: {
-		damage: {
-			type: DamageType;
-			rank: number;
-		};
-		range: number;
-		unreliable: number;
-	} | null;
+	weapon: WeaponModel | null;
 	features: FeatureModel[];
 	actions: ActionModel[];
 }
@@ -712,7 +724,129 @@ export const generateMagicItem = (): ItemModel => {
 	item.name = generateName();
 	item.magic = true;
 
-	// TODO: Add features or actions
+	return addMagicItemFeature(item);
+};
 
-	return item;
+const addMagicItemFeature = (item: ItemModel) => {
+	const options: ItemModel[] = [];
+
+	if (item.weapon) {
+		// Increase damage rank
+		const copy1 = JSON.parse(JSON.stringify(item)) as ItemModel;
+		const wpn1 = copy1.weapon as WeaponModel;
+		wpn1.damage.rank += randomBonus();
+		options.push(copy1);
+
+		// Increase range
+		const copy2 = JSON.parse(JSON.stringify(item)) as ItemModel;
+		const wpn2 = copy2.weapon as WeaponModel;
+		if (wpn2.range === 0) {
+			wpn2.range = 1;
+		} else {
+			wpn2.range += Math.floor(wpn2.range * randomBonus() / 10);
+		}
+		options.push(copy2);
+
+		// Change damage type
+		const copy3 = JSON.parse(JSON.stringify(item)) as ItemModel;
+		const wpn3 = copy3.weapon as WeaponModel;
+		wpn3.damage.type = getRandomDamageType(randomBoolean() ? DamageCategory.Energy : DamageCategory.Corruption);
+		options.push(copy3);
+
+		// Increase Weapon skill
+		const copy4 = JSON.parse(JSON.stringify(item)) as ItemModel;
+		copy4.features.push(createSkillFeature(SkillType.Weapon, randomBonus()));
+		options.push(copy4);
+
+		// Negate unreliability
+		if (item.weapon.unreliable > 0) {
+			const copy5 = JSON.parse(JSON.stringify(item)) as ItemModel;
+			const wpn5 = copy5.weapon as WeaponModel;
+			wpn5.unreliable = 0;
+			options.push(copy5);
+		}
+	}
+
+	if (item.proficiency === ItemProficiencyType.Implements) {
+		// Increase Spellcasting skill
+		const copy1 = JSON.parse(JSON.stringify(item)) as ItemModel;
+		copy1.features.push(createSkillFeature(SkillType.Spellcasting, randomBonus()));
+		options.push(copy1);
+
+		// Increase Energy damage
+		const copy2 = JSON.parse(JSON.stringify(item)) as ItemModel;
+		copy2.features.push(createDamageCategoryBonusFeature(DamageCategory.Energy, randomBonus()));
+		options.push(copy2);
+
+		// Increase Corruption damage
+		const copy3 = JSON.parse(JSON.stringify(item)) as ItemModel;
+		copy3.features.push(createDamageCategoryBonusFeature(DamageCategory.Corruption, randomBonus()));
+		options.push(copy3);
+	}
+
+	if ((item.proficiency === ItemProficiencyType.LightArmor) || (item.proficiency === ItemProficiencyType.HeavyArmor) || (item.proficiency === ItemProficiencyType.Shields)) {
+		// Increase damage resistance rank
+		const copy = JSON.parse(JSON.stringify(item)) as ItemModel;
+		const feature = copy.features.find(f => f.type === FeatureType.DamageCategoryResist);
+		if (feature) {
+			feature.rank += randomBonus();
+			options.push(copy);
+		}
+	}
+
+	item.features.filter(f => f.rank < 0).forEach(penalty => {
+		// Negate the penalty
+		const copy = JSON.parse(JSON.stringify(item)) as ItemModel;
+		copy.features = copy.features.filter(f => f.id !== penalty.id);
+		options.push(copy);
+	});
+
+	if (item.location === ItemLocationType.Head) {
+		// Increase a mental skill
+		const copy1 = JSON.parse(JSON.stringify(item)) as ItemModel;
+		copy1.features.push(createSkillFeature(getRandomSkill(SkillCategoryType.Mental), randomBonus()));
+		options.push(copy1);
+
+		// Increase all physical or mental skills
+		const copy2 = JSON.parse(JSON.stringify(item)) as ItemModel;
+		copy2.features.push(createSkillCategoryFeature(randomBoolean() ? SkillCategoryType.Physical : SkillCategoryType.Mental, randomBonus()));
+		options.push(copy2);
+
+		// Increase Resolve
+		const copy3 = JSON.parse(JSON.stringify(item)) as ItemModel;
+		copy3.features.push(createTraitFeature(TraitType.Resolve, randomBonus()));
+		options.push(copy3);
+	}
+
+	if (item.location === ItemLocationType.Feet) {
+		// Increase Speed
+		const copy = JSON.parse(JSON.stringify(item)) as ItemModel;
+		copy.features.push(createTraitFeature(TraitType.Speed, randomBonus()));
+		options.push(copy);
+	}
+
+	if (item.location === ItemLocationType.Neck) {
+		// Increase Endurance
+		const copy1 = JSON.parse(JSON.stringify(item)) as ItemModel;
+		copy1.features.push(createTraitFeature(TraitType.Speed, randomBonus()));
+		options.push(copy1);
+
+		// Increase Resolve
+		const copy2 = JSON.parse(JSON.stringify(item)) as ItemModel;
+		copy2.features.push(createTraitFeature(TraitType.Resolve, randomBonus()));
+		options.push(copy2);
+	}
+
+	// A random feature
+	const copyFeature = JSON.parse(JSON.stringify(item)) as ItemModel;
+	copyFeature.features.push(createRandomFeature());
+	options.push(copyFeature);
+
+	// a random action
+	const copyAction = JSON.parse(JSON.stringify(item)) as ItemModel;
+	copyAction.actions.push(getRandomAction());
+	options.push(copyFeature);
+
+	const n = randomNumber(options.length);
+	return options[n];
 };

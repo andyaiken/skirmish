@@ -1,3 +1,5 @@
+import { randomNumber } from '../utils/random';
+
 export enum SkillCategoryType {
 	None = 'None',
 	Any = '[choose one skill category]',
@@ -33,4 +35,42 @@ export const getSkillCategory = (skill: SkillType) => {
 	}
 
 	return SkillCategoryType.None;
+};
+
+export const getRandomSkill = (category: SkillCategoryType = SkillCategoryType.Any) => {
+	const options = [];
+
+	switch (category) {
+		case SkillCategoryType.Any:
+			options.push(SkillType.Brawl);
+			options.push(SkillType.Perception);
+			options.push(SkillType.Reactions);
+			options.push(SkillType.Spellcasting);
+			options.push(SkillType.Stealth);
+			options.push(SkillType.Weapon);
+			break;
+		case SkillCategoryType.Physical:
+			options.push(SkillType.Brawl);
+			options.push(SkillType.Stealth);
+			options.push(SkillType.Weapon);
+			break;
+		case SkillCategoryType.Mental:
+			options.push(SkillType.Perception);
+			options.push(SkillType.Reactions);
+			options.push(SkillType.Spellcasting);
+			break;
+	}
+
+	const n = randomNumber(options.length);
+	return options[n];
+};
+
+export const getRandomSkillCategory = () => {
+	const options = [
+		SkillCategoryType.Physical,
+		SkillCategoryType.Mental
+	];
+
+	const n = randomNumber(options.length);
+	return options[n];
 };

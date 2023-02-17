@@ -18,7 +18,6 @@
     * Actions
   * Implement the encounter flow
   * Implement AI so that monsters can take their turns
-* Magic item generation (add features and actions)
 
 ## Ideas for Future Work
 

@@ -1,3 +1,5 @@
+import { randomNumber } from '../utils/random';
+
 export enum DamageCategory {
 	None = 'None',
 	Any = '[choose one damage category]',
@@ -47,4 +49,57 @@ export const getDamageCategory = (type: DamageType) => {
 	}
 
 	return DamageCategory.None;
+};
+
+export const getRandomDamageType = (category: DamageCategory = DamageCategory.Any) => {
+	const options = [];
+
+	switch (category) {
+		case DamageCategory.Any:
+			options.push(DamageType.Acid);
+			options.push(DamageType.Cold);
+			options.push(DamageType.Decay);
+			options.push(DamageType.Edged);
+			options.push(DamageType.Electricity);
+			options.push(DamageType.Fire);
+			options.push(DamageType.Impact);
+			options.push(DamageType.Light);
+			options.push(DamageType.Piercing);
+			options.push(DamageType.Poison);
+			options.push(DamageType.Psychic);
+			options.push(DamageType.Sonic);
+			break;
+		case DamageCategory.Physical:
+			options.push(DamageType.Acid);
+			options.push(DamageType.Edged);
+			options.push(DamageType.Impact);
+			options.push(DamageType.Piercing);
+			break;
+		case DamageCategory.Energy:
+			options.push(DamageType.Cold);
+			options.push(DamageType.Electricity);
+			options.push(DamageType.Fire);
+			options.push(DamageType.Light);
+			options.push(DamageType.Sonic);
+			break;
+		case DamageCategory.Corruption:
+			options.push(DamageType.Decay);
+			options.push(DamageType.Poison);
+			options.push(DamageType.Psychic);
+			break;
+	}
+
+	const n = randomNumber(options.length);
+	return options[n];
+};
+
+export const getRandomDamageCategory = () => {
+	const options = [
+		DamageCategory.Physical,
+		DamageCategory.Energy,
+		DamageCategory.Corruption
+	];
+
+	const n = randomNumber(options.length);
+	return options[n];
 };

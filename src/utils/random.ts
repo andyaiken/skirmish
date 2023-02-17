@@ -37,6 +37,22 @@ export const randomDecimal = (rng: () => number = Math.random) => {
 	return randomNumber(100, rng) / 100;
 };
 
+export const randomBonus = (rng: () => number = Math.random) => {
+	switch (randomNumber(6, rng)) {
+		case 0:
+		case 1:
+		case 2:
+			return 1;
+		case 3:
+		case 4:
+			return 2;
+		case 5:
+			return 3;
+	}
+
+	return 0;
+};
+
 export const getSeededRNG = (seed: string) => {
 	const getHashes = (str: string) => {
 		let h1 = 1779033703;

@@ -66,24 +66,11 @@ export class HeroBuilderPanel extends Component<Props, State> {
 	};
 
 	public render() {
-		let info = null;
-		if ((this.state.hero.speciesID !== '') && (this.state.hero.roleID !== '') && (this.state.hero.backgroundID !== '')) {
-			const species = getSpecies(this.state.hero.speciesID);
-			const role = getRole(this.state.hero.roleID);
-			const background = getBackground(this.state.hero.backgroundID);
-			info = (
-				<div>
-					<Text><b>{this.state.hero.name}</b>: <Tag>{species?.name ?? ''}</Tag> <Tag>{role?.name ?? ''}</Tag> <Tag>{background?.name ?? ''}</Tag></Text>
-				</div>
-			);
-		}
-
 		const header = (
 			<div className='header'>
 				<Text type={TextType.Heading}>
 					Recruit a Hero
 				</Text>
-				{info}
 			</div>
 		);
 
@@ -108,11 +95,23 @@ export class HeroBuilderPanel extends Component<Props, State> {
 			);
 		} else if (this.state.hero.level === 1) {
 			// Finalise character creation
+			const species = getSpecies(this.state.hero.speciesID);
+			const role = getRole(this.state.hero.roleID);
+			const background = getBackground(this.state.hero.backgroundID);
+
 			content = (
 				<div className='finish-page'>
 					{header}
 					<div className='content'>
-						<button onClick={this.rename}>Rename this hero</button>
+						<div className='rename-section'>
+							<div className='hero-name'>
+								{this.state.hero.name}
+							</div>
+							<div className='tags'>
+								<Tag>{species?.name ?? ''}</Tag> <Tag>{role?.name ?? ''}</Tag> <Tag>{background?.name ?? ''}</Tag>
+							</div>
+							<button onClick={this.rename}>Rename this hero</button>
+						</div>
 					</div>
 					<div className='footer'>
 						<button onClick={this.finished}>Finished</button>

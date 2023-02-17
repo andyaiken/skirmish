@@ -19,6 +19,23 @@
 		.content {
 			flex: 1 1 0;
 			overflow-y: auto;
+
+			.rename-section {
+				margin: 10%;
+
+				.hero-name {
+					margin: 20px 0;
+					font-size: 50px;
+					text-align: center;
+					text-transform: uppercase;
+					letter-spacing: 5px;
+				}
+
+				.tags {
+					margin: 20px 0;
+					text-align: center;
+				}
+			}
 		}
 
 		.footer {

@@ -1,7 +1,7 @@
 import { draw } from '../utils/collections';
 import { randomNumber } from '../utils/random';
 import { guid } from '../utils/utils';
-import { ActionModel, universalActions } from './action';
+import { universalActions } from './action';
 import { AuraModel, createAura } from './aura';
 import { getBackground } from './background';
 import { DamageCategory, DamageType, getDamageCategory } from './damage';
@@ -174,6 +174,7 @@ export const getFeatureDeck = (combatant: CombatantModel) => {
 	const s = getSpecies(combatant.speciesID);
 	const r = getRole(combatant.roleID);
 	const b = getBackground(combatant.backgroundID);
+
 	return universalFeatures
 		.concat(s ? s.features : [])
 		.concat(r ? r.features : [])
@@ -181,20 +182,83 @@ export const getFeatureDeck = (combatant: CombatantModel) => {
 };
 
 export const getActionDeck = (combatant: CombatantModel) => {
-	let list = ([] as ActionModel[]).concat(universalActions);
-
 	const s = getSpecies(combatant.speciesID);
-	list = list.concat(s ? s.actions : []);
 	const r = getRole(combatant.roleID);
-	list = list.concat(r ? r.actions : []);
 	const b = getBackground(combatant.backgroundID);
-	list = list.concat(b ? b.actions : []);
+
+	let list = universalActions
+		.concat(s ? s.actions : [])
+		.concat(r ? r.actions : [])
+		.concat(b ? b.actions : []);
 
 	combatant.items.forEach(i => {
 		list = list.concat(i.actions);
 	});
 
 	return list;
+};
+
+export const getCardSource = (combatant: CombatantModel, cardID: string, cardType: 'action' | 'feature') => {
+	switch (cardType) {
+		case 'action': {
+			if (universalActions.find(a => a.id === cardID)) {
+				return 'Universal';
+			}
+
+			const s = getSpecies(combatant.speciesID);
+			if (!!s && s.actions.find(c => c.id === cardID)) {
+				return s.name;
+			}
+
+			const r = getRole(combatant.roleID);
+			if (!!r && r.actions.find(c => c.id === cardID)) {
+				return r.name;
+			}
+
+			const b = getBackground(combatant.backgroundID);
+			if (!!b && b.actions.find(c => c.id === cardID)) {
+				return b.name;
+			}
+
+			combatant.items.forEach(item => {
+				if (item.actions.find(a => a.id === cardID)) {
+					return item.name;
+				}
+			});
+
+			break;
+		}
+		case 'feature': {
+			if (universalFeatures.find(f => f.id === cardID)) {
+				return 'Universal';
+			}
+
+			const s = getSpecies(combatant.speciesID);
+			if (!!s && s.features.find(c => c.id === cardID)) {
+				return s.name;
+			}
+
+			const r = getRole(combatant.roleID);
+			if (!!r && r.features.find(c => c.id === cardID)) {
+				return r.name;
+			}
+
+			const b = getBackground(combatant.backgroundID);
+			if (!!b && b.features.find(c => c.id === cardID)) {
+				return b.name;
+			}
+
+			combatant.items.forEach(item => {
+				if (item.features.find(f => f.id === cardID)) {
+					return item.name;
+				}
+			});
+
+			break;
+		}
+	}
+
+	return null;
 };
 
 export const getFeatures = (combatant: CombatantModel) => {

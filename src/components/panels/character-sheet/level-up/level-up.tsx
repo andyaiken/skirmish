@@ -2,7 +2,7 @@ import { Component } from 'react';
 import { Selector, Text, TextType } from '../../../../controls';
 import { DamageCategory, DamageType } from '../../../../models/damage';
 import { FeatureModel, FeatureType, hasChoice } from '../../../../models/feature';
-import { CombatantModel, getProficiencies } from '../../../../models/combatant';
+import { CombatantModel, getCardSource, getProficiencies } from '../../../../models/combatant';
 import { ItemProficiencyType } from '../../../../models/item-proficiency';
 import { SkillType, SkillCategoryType } from '../../../../models/skill';
 import { TraitType } from '../../../../models/trait';
@@ -47,11 +47,13 @@ export class LevelUp extends Component<Props, State> {
 
 	public render() {
 		const featureCards = this.props.features.map(feature => {
+			const source = getCardSource(this.props.hero, feature.id, 'feature');
 			return (
 				<div key={feature.id}>
 					<PlayingCard
 						front={<FeatureCard feature={(this.state.selectedFeature !== null) && (this.state.selectedFeature.id === feature.id) ? this.state.selectedFeature : feature} />}
 						back={<PlaceholderCard text='Feature' />}
+						footer={source}
 						display={(this.state.selectedFeature !== null) && (this.state.selectedFeature.id !== feature.id) ? PlayingCardSide.Back : PlayingCardSide.Front}
 						onClick={() => {
 							if (this.state.selectedFeature === null) {

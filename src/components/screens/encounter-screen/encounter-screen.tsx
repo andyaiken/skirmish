@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import { EncounterModel, EncounterState, getActiveCombatants, getCombatant, getCombatData, getEncounterState, getMoveCost } from '../../../models/encounter';
 import { GameModel } from '../../../models/game';
-import { CombatantModel, CombatantType, getSkillValue, getTraitValue } from '../../../models/combatant';
+import { CombatantModel, CombatantType, getCardSource, getSkillValue, getTraitValue } from '../../../models/combatant';
 import { ItemModel } from '../../../models/item';
 import { DirectionPanel, EncounterMapPanel, InitiativeListPanel } from '../../panels';
 import { Tag, Text, TextType } from '../../../controls';
@@ -74,13 +74,15 @@ export class EncounterScreen extends Component<Props, State> {
 			while (wounds.length < getTraitValue(combatant, TraitType.Resolve)) {
 				wounds += '♡';
 			}
-			const woundsInRows: string[] = [];
-			while (wounds.length > 5) {
-				woundsInRows.push(wounds.substring(0, 5));
-				wounds = wounds.substring(5);
+			const woundsPerRow = (wounds.length < 6) || (wounds.length > 8) ? 5 : 4;
+			const woundsInRows: JSX.Element[] = [];
+			while (wounds.length > woundsPerRow) {
+				woundsInRows.push(<div key={woundsInRows.length}>{wounds.substring(0, woundsPerRow)}</div>);
+				wounds = wounds.substring(woundsPerRow);
 			}
-			woundsInRows.push(wounds);
-			wounds = woundsInRows.join('\n');
+			if (wounds !== '') {
+				woundsInRows.push(<div key={woundsInRows.length}>{wounds}</div>);
+			}
 
 			const moveCosts: Record<string, number> = {};
 			moveCosts.n = getMoveCost(this.props.encounter, combatData, 'n');
@@ -91,6 +93,13 @@ export class EncounterScreen extends Component<Props, State> {
 			moveCosts.sw = getMoveCost(this.props.encounter, combatData, 'sw');
 			moveCosts.w = getMoveCost(this.props.encounter, combatData, 'w');
 			moveCosts.nw = getMoveCost(this.props.encounter, combatData, 'nw');
+
+			const actionCards = combatData.actions.map(a => {
+				const source = getCardSource(combatant, a.id, 'action');
+				return (
+					<PlayingCard front={<ActionCard action={a} />} footer={source} />
+				);
+			});
 
 			switch (combatant.type) {
 				case CombatantType.Hero: {
@@ -160,7 +169,7 @@ export class EncounterScreen extends Component<Props, State> {
 							<Box label='Damage and Wounds'>
 								<div className='stats-row'>
 									<StatValue orientation='vertical' label='Damage' value={combatData.damage} />
-									<StatValue orientation='vertical' label='Wounds' value={wounds} />
+									<StatValue orientation='vertical' label='Wounds' value={<div>{woundsInRows}</div>} />
 								</div>
 							</Box>
 							<Box label='Traits and Conditions'>
@@ -181,11 +190,11 @@ export class EncounterScreen extends Component<Props, State> {
 							</Box>
 							<hr />
 							<div className='movement'>
-								<DirectionPanel combatData={combatData} costs={moveCosts} onMove={dir => this.props.move(this.props.encounter, combatData, dir, 1)} />
+								<DirectionPanel combatData={combatData} costs={moveCosts} onMove={(dir, cost) => this.props.move(this.props.encounter, combatData, dir, cost)} />
 							</div>
 							<hr />
 							<div className='actions'>
-								<CardList cards={combatData.actions.map(a => (<PlayingCard front={<ActionCard action={a} />} />))} />
+								<CardList cards={actionCards} />
 							</div>
 							<hr />
 							<button onClick={() => null}>Pick Up Item<br/><IconValue value={2} type={IconType.Movement} /></button>

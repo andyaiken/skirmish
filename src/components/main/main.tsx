@@ -2,6 +2,7 @@ import { Component } from 'react';
 
 import { BoonModel, BoonType } from '../../models/boon';
 import { CampaignMapRegionModel, removeRegion } from '../../models/campaign-map';
+import { CombatDataModel } from '../../models/combat-data';
 import {
 	createEncounter,
 	EncounterModel,
@@ -20,6 +21,7 @@ import {
 } from '../../models/encounter';
 import { addHeroToGame, createGame, GameModel } from '../../models/game';
 import { CombatantModel, CombatantType, createCombatant } from '../../models/combatant';
+import { FeatureModel } from '../../models/feature';
 import { ItemModel } from '../../models/item';
 import { debounce } from '../../utils/utils';
 import { BoonCard } from '../cards';
@@ -28,8 +30,6 @@ import { Dialog, Text, TextType } from '../../controls';
 import { PlayingCard } from '../utility';
 
 import './main.scss';
-import { FeatureModel } from '../../models/feature';
-import { CombatDataModel } from '../../models/combat-data';
 
 enum ScreenType {
 	Landing = 'landing',

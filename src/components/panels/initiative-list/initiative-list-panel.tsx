@@ -35,9 +35,11 @@ export class InitiativeListPanel extends Component<Props> {
 				const label = (
 					<div className='initiative-entry-details'>
 						<div className='initiative-entry-name'>{a.combatant.name}</div>
-						{current ? <Tag>Current Turn</Tag> : null}
-						{a.data.state === CombatDataState.Unconscious ? <Tag>Unconscious</Tag> : null}
-						{a.data.state === CombatDataState.Dead ? <Tag>Dead</Tag> : null}
+						<div className='initiative-entry-tags'>
+							{current ? <Tag>Current Turn</Tag> : null}
+							{a.data.state === CombatDataState.Unconscious ? <Tag>Unconscious</Tag> : null}
+							{a.data.state === CombatDataState.Dead ? <Tag>Dead</Tag> : null}
+						</div>
 					</div>
 				);
 				return (

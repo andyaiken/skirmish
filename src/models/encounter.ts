@@ -104,6 +104,11 @@ export const createEncounter = (region: CampaignMapRegionModel, heroes: Combatan
 
 	placeCombatants(encounter, rng);
 
+	// If any monsters are not placed, remove them from the encounter
+	const notPlacedIDs = encounter.combatData.filter(cd => (cd.position.x === Number.MIN_VALUE) || (cd.position.y === Number.MIN_VALUE)).map(cd => cd.id);
+	encounter.combatants = encounter.combatants.filter(c => !notPlacedIDs.includes(c.id));
+	encounter.combatData = encounter.combatData.filter(cd => !notPlacedIDs.includes(cd.id));
+
 	return encounter;
 };
 
@@ -304,11 +309,6 @@ export const getMoveCost = (encounter: EncounterModel, combatData: CombatDataMod
 
 	// Can't move off the map
 	if (destinationMapSquares.length !== movingTo.length) {
-		return Number.MAX_VALUE;
-	}
-
-	// Can't move into a blocked square
-	if (destinationMapSquares.some(ms => ms.type === EncounterMapSquareType.Blocked)) {
 		return Number.MAX_VALUE;
 	}
 

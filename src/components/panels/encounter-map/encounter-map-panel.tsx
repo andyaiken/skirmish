@@ -28,16 +28,16 @@ export class EncounterMapPanel extends Component<Props> {
 		const squareSizePC = 100 / Math.max(width, height);
 
 		const squares = this.props.encounter.map.squares.map(sq => {
+			const className = `encounter-map-square ${sq.type.toLowerCase()}`;
 			return (
 				<div
 					key={`${sq.x} ${sq.y}`}
-					className='encounter-map-square'
+					className={className}
 					style={{
 						width: `${squareSizePC}%`,
 						height: `${squareSizePC}%`,
 						left: `${((sq.x - dims.left) * squareSizePC)}%`,
-						top: `${((sq.y - dims.top) * squareSizePC)}%`,
-						backgroundColor: 'white'
+						top: `${((sq.y - dims.top) * squareSizePC)}%`
 					}}
 				/>
 			);

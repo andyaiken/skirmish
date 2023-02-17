@@ -54,11 +54,12 @@
 		}
 
 		.initiative-entry-details {
-			display: flex;
-			align-items: center;
-
 			.initiative-entry-name {
 				margin-right: 10px;
+			}
+
+			.initiative-entry-tags {
+				margin-top: 5px;
 			}
 		}
 	}

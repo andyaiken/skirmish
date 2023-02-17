@@ -10,7 +10,6 @@
 ## To Do
 
 * Encounters:
-  * Encounter map generation
   * Click on an initiative entry or a map token, to show a character sheet with combat data included
     * Limited data for monsters (level, conditions, damage, wounds)
   * Show turn log for current combatant, if it's a monster
@@ -23,7 +22,6 @@
 
 ## Ideas for Future Work
 
-* Features and Actions should indicate where they come from (universal, species, role, background, item)
 * Heroes page / hero selection dialog:
   * Allow grouping by species, role, background, level
 * Heroes page:

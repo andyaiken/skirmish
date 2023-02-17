@@ -3,7 +3,7 @@ import { Selector, Tag, Text, TextType } from '../../../controls';
 import { getBackground } from '../../../models/background';
 import { FeatureModel } from '../../../models/feature';
 import { GameModel } from '../../../models/game';
-import { CombatantModel, getActionDeck, getFeatureDeck } from '../../../models/combatant';
+import { CombatantModel, getActionDeck, getCardSource, getFeatureDeck } from '../../../models/combatant';
 import { ItemModel } from '../../../models/item';
 import { getRole } from '../../../models/role';
 import { getSpecies } from '../../../models/species';
@@ -139,8 +139,9 @@ interface FeaturesPageProps {
 class FeaturesPage extends Component<FeaturesPageProps> {
 	public render() {
 		const featureCards = getFeatureDeck(this.props.hero).map(feature => {
+			const source = getCardSource(this.props.hero, feature.id, 'feature');
 			return (
-				<PlayingCard key={feature.id} front={<FeatureCard feature={feature} />} />
+				<PlayingCard key={feature.id} front={<FeatureCard feature={feature} />} footer={source} />
 			);
 		});
 
@@ -162,8 +163,9 @@ interface ActionsPageProps {
 class ActionsPage extends Component<ActionsPageProps> {
 	public render() {
 		const actionCards = getActionDeck(this.props.hero).map(action => {
+			const source = getCardSource(this.props.hero, action.id, 'action');
 			return (
-				<PlayingCard key={action.id} front={<ActionCard action={action} />} />
+				<PlayingCard key={action.id} front={<ActionCard action={action} />} footer={source} />
 			);
 		});
 

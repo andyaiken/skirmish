@@ -2,9 +2,9 @@ import type { ActionModel } from '../models/action';
 import type { AuraModel } from '../models/aura';
 import type { BoonModel } from '../models/boon';
 import type { CombatantModel } from '../models/combatant';
-import { AuraType, BoonType, TraitType, SkillType, SkillCategoryType, ItemProficiencyType, DamageType, DamageCategoryType } from '../enums/enums';
 import type { GameModel } from '../models/game';
 import type { SpeciesModel } from '../models/species';
+import type { FeatureModel } from '../models/feature';
 import { Collections } from '../utils/collections';
 import { MagicItemGenerator } from './magic-item-generator';
 import { Random } from '../utils/random';
@@ -14,6 +14,15 @@ import { HeroSpeciesList } from '../data/hero-species-data';
 import { ItemList } from '../data/item-data';
 import { MonsterSpeciesList } from '../data/monster-species-data';
 import { RoleList } from '../data/role-data';
+import { FeatureUtils } from './feature-utils';
+import { AuraType } from '../enums/aura-type';
+import { BoonType } from '../enums/boon-type';
+import { DamageCategoryType } from '../enums/damage-category-type';
+import { DamageType } from '../enums/damage-type';
+import { ItemProficiencyType } from '../enums/item-proficiency-type';
+import { SkillCategoryType } from '../enums/skill-category-type';
+import { SkillType } from '../enums/skill-type';
+import { TraitType } from '../enums/trait-type';
 
 export class GameLogic {
 	static getRandomAction = () => {
@@ -151,6 +160,16 @@ export class GameLogic {
 	};
 
 	///////////////////////////////////////////////////////////////////////////////
+
+	static getFeatureDescription = (feature: FeatureModel) => {
+		const title = FeatureUtils.getFeatureTitle(feature).toString();
+		const desc = FeatureUtils.getFeatureInformation(feature).toString();
+		return `${title}: ${desc}`;
+	};
+
+	static getActionDescription = (action: ActionModel) => {
+		return action.name;
+	};
 
 	static getAuraDescription = (aura: AuraModel) => {
 		switch (aura.type) {

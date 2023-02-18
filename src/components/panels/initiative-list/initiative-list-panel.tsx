@@ -2,7 +2,7 @@ import { Component } from 'react';
 import { Tag, Text, TextType } from '../../../controls';
 import type { CombatantModel } from '../../../models/combatant';
 import type { EncounterModel } from '../../../models/encounter';
-import { CombatDataState } from '../../../enums/enums';
+import { CombatDataState } from '../../../enums/combat-data-state';
 import { StatValue } from '../../utility';
 
 import './initiative-list-panel.scss';

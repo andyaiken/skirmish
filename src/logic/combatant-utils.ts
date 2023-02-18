@@ -1,9 +1,16 @@
 import { universalFeatures, universalActions } from '../data/universal-data';
+import { CombatantType } from '../enums/combatant-type';
+import { DamageCategoryType } from '../enums/damage-category-type';
+import { DamageType } from '../enums/damage-type';
+import { FeatureType } from '../enums/feature-type';
+import { ItemProficiencyType } from '../enums/item-proficiency-type';
+import { SkillCategoryType } from '../enums/skill-category-type';
+import { SkillType } from '../enums/skill-type';
+import { TraitType } from '../enums/trait-type';
 import type { AuraModel } from '../models/aura';
 import type { CombatantModel } from '../models/combatant';
 import type { FeatureModel } from '../models/feature';
 import type { ItemModel } from '../models/item';
-import { CombatantType, TraitType, SkillType, SkillCategoryType, ItemProficiencyType, DamageType, DamageCategoryType, FeatureType } from '../enums/enums';
 import { Collections } from '../utils/collections';
 import { Random } from '../utils/random';
 import { Factory } from './factory';
@@ -218,7 +225,7 @@ export class CombatantUtils {
 			}
 		}
 
-		return null;
+		return '';
 	};
 
 	static getFeatures = (combatant: CombatantModel) => {

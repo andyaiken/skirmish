@@ -1,8 +1,14 @@
+import { CombatDataState } from '../enums/combat-data-state';
+import { CombatantType } from '../enums/combatant-type';
+import { ConditionType } from '../enums/condition-type';
+import { EncounterMapSquareType } from '../enums/encounter-map-square-type';
+import { EncounterState } from '../enums/encounter-state';
+import { SkillType } from '../enums/skill-type';
+import { TraitType } from '../enums/trait-type';
 import type { CombatDataModel } from '../models/combat-data';
 import type { CombatantModel } from '../models/combatant';
 import type { EncounterModel } from '../models/encounter';
 import type { EncounterMapSquareModel } from '../models/encounter-map';
-import { TraitType, CombatantType, CombatDataState, ConditionType, SkillType, EncounterMapSquareType, EncounterState } from '../enums/enums';
 import { Collections } from '../utils/collections';
 import { Random } from '../utils/random';
 import { CombatantUtils } from './combatant-utils';
@@ -92,7 +98,8 @@ export class EncounterUtils {
 			combatData.movement = Random.dice(CombatantUtils.getTraitValue(combatant, TraitType.Speed));
 			// TODO: Apply movement conditions
 
-			combatData.actions = Collections.shuffle(CombatantUtils.getActionDeck(combatant)).splice(0, 3);
+			const deck = CombatantUtils.getActionDeck(combatant);
+			combatData.actions = Collections.shuffle(deck).splice(0, 3);
 		}
 	};
 

@@ -1,6 +1,11 @@
 import type { ItemModel } from '../models/item';
-import { TraitType, DamageType, DamageCategoryType, ItemLocationType, ItemProficiencyType, SkillCategoryType } from '../enums/enums';
 import { FeatureUtils } from '../logic/feature-utils';
+import { DamageCategoryType } from '../enums/damage-category-type';
+import { DamageType } from '../enums/damage-type';
+import { ItemLocationType } from '../enums/item-location-type';
+import { ItemProficiencyType } from '../enums/item-proficiency-type';
+import { SkillCategoryType } from '../enums/skill-category-type';
+import { TraitType } from '../enums/trait-type';
 
 export const ItemList: ItemModel[] = [
 	{

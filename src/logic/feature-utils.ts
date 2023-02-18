@@ -1,4 +1,11 @@
-import { DamageType, FeatureType, DamageCategoryType, ItemProficiencyType, SkillType, SkillCategoryType, TraitType, AuraType } from '../enums/enums';
+import { AuraType } from '../enums/aura-type';
+import { DamageCategoryType } from '../enums/damage-category-type';
+import { DamageType } from '../enums/damage-type';
+import { FeatureType } from '../enums/feature-type';
+import { ItemProficiencyType } from '../enums/item-proficiency-type';
+import { SkillCategoryType } from '../enums/skill-category-type';
+import { SkillType } from '../enums/skill-type';
+import { TraitType } from '../enums/trait-type';
 import type { FeatureModel } from '../models/feature';
 import { Random } from '../utils/random';
 import { Utils } from '../utils/utils';
@@ -212,7 +219,7 @@ export class FeatureUtils {
 		}
 	};
 
-	static getFeatureDescription = (feature: FeatureModel) => {
+	static getFeatureInformation = (feature: FeatureModel) => {
 		switch (feature.type) {
 			case FeatureType.Trait:
 				return `${feature.trait} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;

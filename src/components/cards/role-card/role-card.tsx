@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import type { RoleModel } from '../../../models/role';
 import { Text, TextType } from '../../../controls';
-import { FeatureUtils } from '../../../logic/feature-utils';
+import { GameLogic } from '../../../logic/game-logic';
 import { StatValue } from '../../utility';
 
 import './role-card.scss';
@@ -12,8 +12,8 @@ interface Props {
 
 export class RoleCard extends Component<Props> {
 	public render() {
-		const features = this.props.role.features.length > 0 ? this.props.role.features.map(f => `${FeatureUtils.getFeatureTitle(f)}: ${FeatureUtils.getFeatureDescription(f)}`) : '-';
-		const actions = this.props.role.actions.length > 0 ? this.props.role.actions.map(a => a.name) : '-';
+		const features = this.props.role.features.length > 0 ? this.props.role.features.map(f => GameLogic.getFeatureDescription(f)) : '-';
+		const actions = this.props.role.actions.length > 0 ? this.props.role.actions.map(a => GameLogic.getActionDescription(a)) : '-';
 
 		return (
 			<div className='role-card'>

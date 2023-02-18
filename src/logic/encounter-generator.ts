@@ -1,7 +1,8 @@
+import { CombatantType } from '../enums/combatant-type';
+import { EncounterMapSquareType } from '../enums/encounter-map-square-type';
 import type { CampaignMapRegionModel } from '../models/campaign-map';
 import type { CombatantModel } from '../models/combatant';
 import type { EncounterModel } from '../models/encounter';
-import { CombatantType, EncounterMapSquareType } from '../enums/enums';
 import { Collections } from '../utils/collections';
 import { Random } from '../utils/random';
 import { CombatantUtils } from './combatant-utils';

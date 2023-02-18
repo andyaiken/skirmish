@@ -1,12 +1,14 @@
 import { Component } from 'react';
 import { Tag, Text } from '../../../../controls';
 import type { CombatantModel } from '../../../../models/combatant';
-import { TraitType, SkillType, DamageType } from '../../../../enums/enums';
+import { TraitType } from '../../../../enums/trait-type';
 import { CombatantUtils } from '../../../../logic/combatant-utils';
 import { Box, StatValue } from '../../../utility';
 
 import './stats.scss';
 import { GameLogic } from '../../../../logic/game-logic';
+import { DamageType } from '../../../../enums/damage-type';
+import { SkillType } from '../../../../enums/skill-type';
 
 interface Props {
 	hero: CombatantModel;

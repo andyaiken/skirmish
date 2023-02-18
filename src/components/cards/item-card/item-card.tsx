@@ -1,9 +1,9 @@
 import { Component } from 'react';
 import { Tag, Text, TextType } from '../../../controls';
-import { ItemProficiencyType } from '../../../enums/enums';
+import { ItemProficiencyType } from '../../../enums/item-proficiency-type';
 import type { ItemModel } from '../../../models/item';
-import { FeatureUtils } from '../../../logic/feature-utils';
 import { StatValue } from '../../utility';
+import { GameLogic } from '../../../logic/game-logic';
 
 import './item-card.scss';
 
@@ -34,7 +34,7 @@ export class ItemCard extends Component<Props> {
 		if (this.props.item.features.length > 0) {
 			features = (
 				<div>
-					<StatValue label='Features' value={this.props.item.features.map(f => `${FeatureUtils.getFeatureTitle(f)}: ${FeatureUtils.getFeatureDescription(f)}`)}/>
+					<StatValue label='Features' value={this.props.item.features.map(f => GameLogic.getFeatureDescription(f))} />
 				</div>
 			);
 		}
@@ -43,7 +43,7 @@ export class ItemCard extends Component<Props> {
 		if (this.props.item.actions.length > 0) {
 			actions = (
 				<div>
-					<StatValue label='Actions' value={this.props.item.actions.map(a => a.name)}/>
+					<StatValue label='Actions' value={this.props.item.actions.map(a => GameLogic.getActionDescription(a))}/>
 				</div>
 			);
 		}

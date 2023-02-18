@@ -15,7 +15,7 @@ export class FeatureCard extends Component<Props> {
 			<div className='feature-card'>
 				<Text type={TextType.SubHeading}>{FeatureUtils.getFeatureTitle(this.props.feature)}</Text>
 				<hr />
-				<Text>{FeatureUtils.getFeatureDescription(this.props.feature)}</Text>
+				<Text>{FeatureUtils.getFeatureInformation(this.props.feature)}</Text>
 			</div>
 		);
 	}

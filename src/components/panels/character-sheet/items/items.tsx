@@ -1,15 +1,16 @@
 import { Component } from 'react';
 
 import { Dialog, Text, TextType } from '../../../../controls';
-import { ItemLocationType, ItemProficiencyType } from '../../../../enums/enums';
+import { ItemLocationType } from '../../../../enums/item-location-type';
+import { ItemProficiencyType } from '../../../../enums/item-proficiency-type';
 import type { GameModel } from '../../../../models/game';
 import type { CombatantModel } from '../../../../models/combatant';
 import type { ItemModel } from '../../../../models/item';
 import { ItemCard } from '../../../cards';
 import { PlayingCard } from '../../../utility';
+import { CombatantUtils } from '../../../../logic/combatant-utils';
 
 import './items.scss';
-import { CombatantUtils } from '../../../../logic/combatant-utils';
 
 interface Props {
 	hero: CombatantModel;

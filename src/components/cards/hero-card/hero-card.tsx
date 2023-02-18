@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import { Tag, Text, TextType } from '../../../controls';
 import type { CombatantModel } from '../../../models/combatant';
-import { TraitType } from '../../../enums/enums';
+import { TraitType } from '../../../enums/trait-type';
 import { StatValue } from '../../utility';
 import { CombatantUtils } from '../../../logic/combatant-utils';
 

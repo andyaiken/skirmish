@@ -4,7 +4,6 @@ import type { GameModel } from '../../../models/game';
 import type { CombatantModel } from '../../../models/combatant';
 import type { ItemModel } from '../../../models/item';
 import type { CombatDataModel } from '../../../models/combat-data';
-import { CombatDataState, TraitType, CombatantType, SkillType, EncounterState } from '../../../enums/enums';
 import { DirectionPanel, EncounterMapPanel, InitiativeListPanel } from '../../panels';
 import { Tag, Text, TextType } from '../../../controls';
 import { Box, CardList, IconType, IconValue, PlayingCard, StatValue } from '../../utility';
@@ -14,6 +13,11 @@ import { EncounterUtils } from '../../../logic/encounter-utils';
 
 import './encounter-screen.scss';
 import { GameLogic } from '../../../logic/game-logic';
+import { CombatDataState } from '../../../enums/combat-data-state';
+import { CombatantType } from '../../../enums/combatant-type';
+import { EncounterState } from '../../../enums/encounter-state';
+import { SkillType } from '../../../enums/skill-type';
+import { TraitType } from '../../../enums/trait-type';
 
 export enum EncounterFinishState {
 	Victory = 'victory',

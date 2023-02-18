@@ -13,7 +13,6 @@ import { BoonCard } from '../cards';
 import { CampaignScreen, EncounterFinishState, EncounterScreen, LandingScreen } from '../screens';
 import { Dialog, Text, TextType } from '../../controls';
 import { PlayingCard } from '../utility';
-import { BoonType, CombatantType } from '../../enums/enums';
 import { CampaignMapUtils } from '../../logic/campaign-map-utils';
 import { Factory } from '../../logic/factory';
 import { EncounterGenerator } from '../../logic/encounter-generator';
@@ -21,6 +20,8 @@ import { EncounterUtils } from '../../logic/encounter-utils';
 
 import './main.scss';
 import { GameLogic } from '../../logic/game-logic';
+import { BoonType } from '../../enums/boon-type';
+import { CombatantType } from '../../enums/combatant-type';
 
 enum ScreenType {
 	Landing = 'landing',

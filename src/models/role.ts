@@ -1,5 +1,7 @@
+import type { ItemProficiencyType } from '../enums/item-proficiency-type';
+import type { SkillType } from '../enums/skill-type';
+import type { TraitType } from '../enums/trait-type';
 import type { ActionModel } from './action';
-import type { ItemProficiencyType, SkillType, TraitType } from '../enums/enums';
 import type { FeatureModel } from './feature';
 
 export interface RoleModel {

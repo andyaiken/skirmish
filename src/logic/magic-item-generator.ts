@@ -1,5 +1,4 @@
 import { ItemList } from '../data/item-data';
-import { DamageCategoryType, SkillType, ItemProficiencyType, FeatureType, ItemLocationType, SkillCategoryType, TraitType } from '../enums/enums';
 import type { ItemModel, WeaponModel } from '../models/item';
 import { Collections } from '../utils/collections';
 import { FeatureUtils } from './feature-utils';
@@ -7,6 +6,13 @@ import { NameGenerator } from './name-generator';
 import { Random } from '../utils/random';
 import { Utils } from '../utils/utils';
 import { GameLogic } from './game-logic';
+import { DamageCategoryType } from '../enums/damage-category-type';
+import { FeatureType } from '../enums/feature-type';
+import { ItemLocationType } from '../enums/item-location-type';
+import { ItemProficiencyType } from '../enums/item-proficiency-type';
+import { SkillCategoryType } from '../enums/skill-category-type';
+import { SkillType } from '../enums/skill-type';
+import { TraitType } from '../enums/trait-type';
 
 export class MagicItemGenerator {
 	static generateMagicItem = (): ItemModel => {
@@ -43,9 +49,11 @@ export class MagicItemGenerator {
 			options.push(copy2);
 
 			// Change damage type
+			// This assumes that it's currently Physical, which is probably a safe assumption
+			const type = Random.randomBoolean() ? DamageCategoryType.Energy : DamageCategoryType.Corruption;
 			const copy3 = JSON.parse(JSON.stringify(item)) as ItemModel;
 			const wpn3 = copy3.weapon as WeaponModel;
-			wpn3.damage.type = GameLogic.getRandomDamageType(Random.randomBoolean() ? DamageCategoryType.Energy : DamageCategoryType.Corruption);
+			wpn3.damage.type = GameLogic.getRandomDamageType(type);
 			options.push(copy3);
 
 			// Increase Weapon skill

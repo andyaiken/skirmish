@@ -1,8 +1,12 @@
 import type { ActionModel } from '../models/action';
 import type { BackgroundModel } from '../models/background';
-import { TraitType, SkillType, DamageType, DamageCategoryType, AuraType } from '../enums/enums';
+import { TraitType } from '../enums/trait-type';
 import { FeatureUtils } from '../logic/feature-utils';
 import { Utils } from '../utils/utils';
+import { AuraType } from '../enums/aura-type';
+import { DamageCategoryType } from '../enums/damage-category-type';
+import { DamageType } from '../enums/damage-type';
+import { SkillType } from '../enums/skill-type';
 
 const createActionPlaceholder = (name: string): ActionModel => {
 	return {

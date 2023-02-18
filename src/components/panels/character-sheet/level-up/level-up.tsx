@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { Selector, Text, TextType } from '../../../../controls';
-import { TraitType, SkillType, SkillCategoryType, ItemProficiencyType, DamageType, DamageCategoryType, FeatureType } from '../../../../enums/enums';
+import { TraitType } from '../../../../enums/trait-type';
 import type { FeatureModel } from '../../../../models/feature';
 import type { CombatantModel } from '../../../../models/combatant';
 import { FeatureCard, PlaceholderCard } from '../../../cards';
@@ -9,6 +9,12 @@ import { CardList, PlayingCard, PlayingCardSide } from '../../../utility';
 import './level-up.scss';
 import { FeatureUtils } from '../../../../logic/feature-utils';
 import { CombatantUtils } from '../../../../logic/combatant-utils';
+import { DamageCategoryType } from '../../../../enums/damage-category-type';
+import { DamageType } from '../../../../enums/damage-type';
+import { FeatureType } from '../../../../enums/feature-type';
+import { ItemProficiencyType } from '../../../../enums/item-proficiency-type';
+import { SkillCategoryType } from '../../../../enums/skill-category-type';
+import { SkillType } from '../../../../enums/skill-type';
 
 interface Props {
 	hero: CombatantModel;
@@ -46,13 +52,11 @@ export class LevelUp extends Component<Props, State> {
 
 	public render() {
 		const featureCards = this.props.features.map(feature => {
-			const source = CombatantUtils.getCardSource(this.props.hero, feature.id, 'feature');
 			return (
 				<div key={feature.id}>
 					<PlayingCard
 						front={<FeatureCard feature={(this.state.selectedFeature !== null) && (this.state.selectedFeature.id === feature.id) ? this.state.selectedFeature : feature} />}
 						back={<PlaceholderCard text='Feature' />}
-						footer={source}
 						display={(this.state.selectedFeature !== null) && (this.state.selectedFeature.id !== feature.id) ? PlayingCardSide.Back : PlayingCardSide.Front}
 						onClick={() => {
 							if (this.state.selectedFeature === null) {

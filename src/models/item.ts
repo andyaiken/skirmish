@@ -1,5 +1,7 @@
+import type { DamageType } from '../enums/damage-type';
+import type { ItemLocationType } from '../enums/item-location-type';
+import type { ItemProficiencyType } from '../enums/item-proficiency-type';
 import type { ActionModel } from './action';
-import type { DamageType, ItemProficiencyType, ItemLocationType } from '../enums/enums';
 import type { FeatureModel } from './feature';
 
 export interface WeaponModel {

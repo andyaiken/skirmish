@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import { Dialog, Text, TextType } from '../../../../controls';
 import type { BoonModel } from '../../../../models/boon';
-import { BoonType } from '../../../../enums/enums';
+import { BoonType } from '../../../../enums/boon-type';
 import type { FeatureModel } from '../../../../models/feature';
 import type { GameModel } from '../../../../models/game';
 import type { CombatantModel } from '../../../../models/combatant';

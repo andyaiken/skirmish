@@ -1,6 +1,6 @@
 import { EncounterMapModel, EncounterMapSquareModel } from '../models/encounter-map';
 import { EncounterMapSquareType } from '../models/enums';
-import { Random } from './random';
+import { Random } from '../utils/random';
 
 export class EncounterMapUtils {
 	static generateEncounterMap = (rng: () => number): EncounterMapModel => {

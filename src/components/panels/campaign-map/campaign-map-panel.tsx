@@ -1,6 +1,6 @@
 import { Component, MouseEvent } from 'react';
 import { CampaignMapModel, CampaignMapRegionModel, CampaignMapSquareModel } from '../../../models/campaign-map';
-import { CampaignMapUtils } from '../../../utils/campaign-map-utils';
+import { CampaignMapUtils } from '../../../logic/campaign-map-utils';
 
 import './campaign-map-panel.scss';
 

@@ -3,13 +3,14 @@ import { Tag, Text, TextType } from '../../../controls';
 import { GameModel } from '../../../models/game';
 import { CombatantModel } from '../../../models/combatant';
 import { ItemModel } from '../../../models/item';
-import { NameGenerator } from '../../../utils/name-generator';
+import { NameGenerator } from '../../../logic/name-generator';
 import { BackgroundCard, ItemCard, PlaceholderCard, RoleCard, SpeciesCard } from '../../cards';
 import { CardList, PlayingCard, PlayingCardSide } from '../../utility';
-import { applyCombatantCards, getBackground, getBackgroundDeck, getItem, getItems, getProficiencies, getRole, getRoleDeck, getSpecies, getSpeciesDeck } from '../../../utils/game-logic';
+import { getBackground, getBackgroundDeck, getItem, getItemsForProficiency, getRole, getRoleDeck, getSpecies, getSpeciesDeck } from '../../../logic/game-logic';
 import { Collections } from '../../../utils/collections';
 
 import './hero-builder-panel.scss';
+import { CombatantUtils } from '../../../logic/combatant-utils';
 
 interface Props {
 	hero: CombatantModel;
@@ -37,7 +38,7 @@ export class HeroBuilderPanel extends Component<Props, State> {
 
 	selectCards = (speciesID: string, roleID: string, backgroundID: string) => {
 		const hero = this.state.hero;
-		applyCombatantCards(hero, speciesID, roleID, backgroundID);
+		CombatantUtils.applyCombatantCards(hero, speciesID, roleID, backgroundID);
 		this.setState({
 			hero: hero
 		});
@@ -82,7 +83,7 @@ export class HeroBuilderPanel extends Component<Props, State> {
 					select={this.selectCards}
 				/>
 			);
-		} else if (getProficiencies(this.state.hero).length !== this.state.hero.items.length) {
+		} else if (CombatantUtils.getProficiencies(this.state.hero).length !== this.state.hero.items.length) {
 			// Choose initial equipment
 			content = (
 				<EquipmentSelector
@@ -307,7 +308,7 @@ class EquipmentSelector extends Component<EquipmentSelectorProps, EquipmentSelec
 				.filter(item => item.proficiency === prof)
 				.map(item => item.id);
 
-			const items = getItems(prof).map(item => (
+			const items = getItemsForProficiency(prof).map(item => (
 				<div key={item.id}>
 					<PlayingCard
 						front={<ItemCard item={item} />}

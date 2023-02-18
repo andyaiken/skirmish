@@ -7,9 +7,9 @@ import { CombatantModel } from '../../../../models/combatant';
 import { ItemModel } from '../../../../models/item';
 import { ItemCard } from '../../../cards';
 import { PlayingCard } from '../../../utility';
-import { getProficiencies } from '../../../../utils/game-logic';
 
 import './items.scss';
+import { CombatantUtils } from '../../../../logic/combatant-utils';
 
 interface Props {
 	hero: CombatantModel;
@@ -95,7 +95,7 @@ export class Items extends Component<Props, State> {
 			// Find items that fit this location that we can use
 			const campaignItemCards = this.props.game.items
 				.filter(item => item.location === this.state.selectedLocation)
-				.filter(item => (item.proficiency === ItemProficiencyType.None) || (getProficiencies(this.props.hero).includes(item.proficiency)))
+				.filter(item => (item.proficiency === ItemProficiencyType.None) || (CombatantUtils.getProficiencies(this.props.hero).includes(item.proficiency)))
 				.map(item => (
 					<div key={item.id}>
 						<PlayingCard

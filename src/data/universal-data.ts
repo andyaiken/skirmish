@@ -2,7 +2,7 @@ import { ActionModel } from '../models/action';
 import { TraitType, SkillType, ItemProficiencyType, ItemLocationType, DamageType } from '../models/enums';
 import { FeatureModel } from '../models/feature';
 import { ItemModel } from '../models/item';
-import { FeatureUtils } from '../utils/feature-utils';
+import { FeatureUtils } from '../logic/feature-utils';
 import { Utils } from '../utils/utils';
 
 export const universalFeatures: FeatureModel[] = [

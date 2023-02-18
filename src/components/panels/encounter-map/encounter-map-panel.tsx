@@ -1,8 +1,8 @@
 import { Component, MouseEvent } from 'react';
 import { CombatantModel } from '../../../models/combatant';
 import { EncounterModel } from '../../../models/encounter';
-import { EncounterMapUtils } from '../../../utils/encounter-map-utils';
-import { getCombatant } from '../../../utils/game-logic';
+import { EncounterMapUtils } from '../../../logic/encounter-map-utils';
+import { EncounterUtils } from '../../../logic/encounter-utils';
 
 import './encounter-map-panel.scss';
 
@@ -45,7 +45,7 @@ export class EncounterMapPanel extends Component<Props> {
 		});
 
 		const tokens = this.props.encounter.combatData.map(cd => {
-			const combatant = getCombatant(this.props.encounter, cd.id) as CombatantModel;
+			const combatant = EncounterUtils.getCombatant(this.props.encounter, cd.id) as CombatantModel;
 			const current = this.props.currentID === combatant.id;
 			const selected = this.props.selectedIDs.includes(combatant.id);
 			const className = `encounter-map-token ${cd.type.toLowerCase()} ${current ? 'current' : ''} ${selected ? 'selected' : ''}`;

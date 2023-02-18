@@ -9,21 +9,11 @@ import { Tag, Text, TextType } from '../../../controls';
 import { Box, CardList, IconType, IconValue, PlayingCard, StatValue } from '../../utility';
 import { CombatDataModel } from '../../../models/combat-data';
 import { ActionCard } from '../../cards';
-import {
-	getCombatant,
-	getCombatData,
-	getTraitValue,
-	getMoveCost,
-	getCardSource,
-	getSkillValue,
-	getActiveCombatants,
-	getEncounterState,
-	getBackground,
-	getRole,
-	getSpecies
-} from '../../../utils/game-logic';
+import { getBackground, getRole, getSpecies } from '../../../logic/game-logic';
+import { CombatantUtils } from '../../../logic/combatant-utils';
 
 import './encounter-screen.scss';
+import { EncounterUtils } from '../../../logic/encounter-utils';
 
 export enum EncounterFinishState {
 	Victory = 'victory',
@@ -69,8 +59,8 @@ export class EncounterScreen extends Component<Props, State> {
 
 	getEncounterControls = (currentID: string | null) => {
 		if (currentID !== null) {
-			const combatant = getCombatant(this.props.encounter, currentID) as CombatantModel;
-			const combatData = getCombatData(this.props.encounter, currentID) as CombatDataModel;
+			const combatant = EncounterUtils.getCombatant(this.props.encounter, currentID) as CombatantModel;
+			const combatData = EncounterUtils.getCombatData(this.props.encounter, currentID) as CombatDataModel;
 
 			const prone = combatData.state === CombatDataState.Prone;
 
@@ -80,7 +70,7 @@ export class EncounterScreen extends Component<Props, State> {
 			for (let n = 0; n < combatData.wounds; ++n) {
 				wounds += '♥︎';
 			}
-			while (wounds.length < getTraitValue(combatant, TraitType.Resolve)) {
+			while (wounds.length < CombatantUtils.getTraitValue(combatant, TraitType.Resolve)) {
 				wounds += '♡';
 			}
 			const woundsPerRow = (wounds.length < 6) || (wounds.length > 8) ? 5 : 4;
@@ -94,17 +84,17 @@ export class EncounterScreen extends Component<Props, State> {
 			}
 
 			const moveCosts: Record<string, number> = {};
-			moveCosts.n = getMoveCost(this.props.encounter, combatData, 'n');
-			moveCosts.ne = getMoveCost(this.props.encounter, combatData, 'ne');
-			moveCosts.e = getMoveCost(this.props.encounter, combatData, 'e');
-			moveCosts.se = getMoveCost(this.props.encounter, combatData, 'se');
-			moveCosts.s = getMoveCost(this.props.encounter, combatData, 's');
-			moveCosts.sw = getMoveCost(this.props.encounter, combatData, 'sw');
-			moveCosts.w = getMoveCost(this.props.encounter, combatData, 'w');
-			moveCosts.nw = getMoveCost(this.props.encounter, combatData, 'nw');
+			moveCosts.n = EncounterUtils.getMoveCost(this.props.encounter, combatData, 'n');
+			moveCosts.ne = EncounterUtils.getMoveCost(this.props.encounter, combatData, 'ne');
+			moveCosts.e = EncounterUtils.getMoveCost(this.props.encounter, combatData, 'e');
+			moveCosts.se = EncounterUtils.getMoveCost(this.props.encounter, combatData, 'se');
+			moveCosts.s = EncounterUtils.getMoveCost(this.props.encounter, combatData, 's');
+			moveCosts.sw = EncounterUtils.getMoveCost(this.props.encounter, combatData, 'sw');
+			moveCosts.w = EncounterUtils.getMoveCost(this.props.encounter, combatData, 'w');
+			moveCosts.nw = EncounterUtils.getMoveCost(this.props.encounter, combatData, 'nw');
 
 			const actionCards = combatData.actions.map(a => {
-				const source = getCardSource(combatant, a.id, 'action');
+				const source = CombatantUtils.getCardSource(combatant, a.id, 'action');
 				return (
 					<PlayingCard front={<ActionCard action={a} />} footer={source} />
 				);
@@ -148,7 +138,7 @@ export class EncounterScreen extends Component<Props, State> {
 										>
 											Scan<br/><IconValue value={4} type={IconType.Movement} />
 										</button>
-										<StatValue label='Perc' value={getSkillValue(combatant, SkillType.Perception)} />
+										<StatValue label='Perc' value={CombatantUtils.getSkillValue(combatant, SkillType.Perception)} />
 									</div>
 									<div>
 										<StatValue orientation='vertical' label='Hidden' value={combatData.hidden} />
@@ -158,7 +148,7 @@ export class EncounterScreen extends Component<Props, State> {
 										>
 											Hide<br/><IconValue value={4} type={IconType.Movement} />
 										</button>
-										<StatValue label='Stealth' value={getSkillValue(combatant, SkillType.Stealth)} />
+										<StatValue label='Stealth' value={CombatantUtils.getSkillValue(combatant, SkillType.Stealth)} />
 									</div>
 									<div>
 										<StatValue orientation='vertical' label='State' value={combatData.state} />
@@ -184,15 +174,15 @@ export class EncounterScreen extends Component<Props, State> {
 							<Box label='Traits and Conditions'>
 								<div className='stats-row'>
 									<div>
-										<StatValue orientation='vertical' label='Endurance' value={getTraitValue(combatant, TraitType.Endurance)} />
+										<StatValue orientation='vertical' label='Endurance' value={CombatantUtils.getTraitValue(combatant, TraitType.Endurance)} />
 										<div>{combatData.conditions.filter(c => c.trait === TraitType.Endurance).map(c => c.type)}</div>
 									</div>
 									<div>
-										<StatValue orientation='vertical' label='Resolve' value={getTraitValue(combatant, TraitType.Resolve)} />
+										<StatValue orientation='vertical' label='Resolve' value={CombatantUtils.getTraitValue(combatant, TraitType.Resolve)} />
 										<div>{combatData.conditions.filter(c => c.trait === TraitType.Resolve).map(c => c.type)}</div>
 									</div>
 									<div>
-										<StatValue orientation='vertical' label='Speed' value={getTraitValue(combatant, TraitType.Speed)} />
+										<StatValue orientation='vertical' label='Speed' value={CombatantUtils.getTraitValue(combatant, TraitType.Speed)} />
 										<div>{combatData.conditions.filter(c => c.trait === TraitType.Speed).map(c => c.type)}</div>
 									</div>
 								</div>
@@ -235,11 +225,11 @@ export class EncounterScreen extends Component<Props, State> {
 	};
 
 	public render() {
-		const acting = getActiveCombatants(this.props.encounter);
+		const acting = EncounterUtils.getActiveCombatants(this.props.encounter);
 		const currentID = acting.length > 0 ? acting[0].id : null;
 
 		let controls = null;
-		switch (getEncounterState(this.props.encounter)) {
+		switch (EncounterUtils.getEncounterState(this.props.encounter)) {
 			case EncounterState.Active:
 				controls = (
 					<div className='encounter-right-panel'>

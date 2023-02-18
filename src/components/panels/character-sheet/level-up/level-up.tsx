@@ -5,9 +5,10 @@ import { FeatureModel } from '../../../../models/feature';
 import { CombatantModel } from '../../../../models/combatant';
 import { FeatureCard, PlaceholderCard } from '../../../cards';
 import { CardList, PlayingCard, PlayingCardSide } from '../../../utility';
-import { getCardSource, hasChoice, getProficiencies } from '../../../../utils/game-logic';
 
 import './level-up.scss';
+import { FeatureUtils } from '../../../../logic/feature-utils';
+import { CombatantUtils } from '../../../../logic/combatant-utils';
 
 interface Props {
 	hero: CombatantModel;
@@ -45,7 +46,7 @@ export class LevelUp extends Component<Props, State> {
 
 	public render() {
 		const featureCards = this.props.features.map(feature => {
-			const source = getCardSource(this.props.hero, feature.id, 'feature');
+			const source = CombatantUtils.getCardSource(this.props.hero, feature.id, 'feature');
 			return (
 				<div key={feature.id}>
 					<PlayingCard
@@ -68,8 +69,8 @@ export class LevelUp extends Component<Props, State> {
 		let choice = null;
 		let canFinish = false;
 		if (this.state.selectedFeature !== null) {
-			choice = hasChoice(this.state.selectedFeature) ? <ChoicePanel feature={this.state.selectedFeature} hero={this.props.hero} onChange={this.setFeature} /> : null;
-			canFinish = !hasChoice(this.state.selectedFeature);
+			choice = FeatureUtils.hasChoice(this.state.selectedFeature) ? <ChoicePanel feature={this.state.selectedFeature} hero={this.props.hero} onChange={this.setFeature} /> : null;
+			canFinish = !FeatureUtils.hasChoice(this.state.selectedFeature);
 		}
 
 		return (
@@ -222,7 +223,7 @@ class ChoicePanel extends Component<ChoicePanelProps, ChoicePanelState> {
 				);
 				break;
 			case FeatureType.Proficiency: {
-				const got = getProficiencies(this.props.hero);
+				const got = CombatantUtils.getProficiencies(this.props.hero);
 				choice = (
 					<div>
 						<Selector

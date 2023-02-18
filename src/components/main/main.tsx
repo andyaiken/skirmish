@@ -14,27 +14,13 @@ import { Dialog, Text, TextType } from '../../controls';
 import { PlayingCard } from '../utility';
 import { BoonType, CombatantType } from '../../models/enums';
 import { EncounterModel } from '../../models/encounter';
-import {
-	createGame,
-	addHeroToGame,
-	createCombatant,
-	createEncounter,
-	rollInitiative,
-	getActiveCombatants,
-	startOfTurn,
-	move,
-	standUpSitDown,
-	scan,
-	hide,
-	endOfTurn,
-	getDeadHeroes,
-	getSurvivingHeroes,
-	getFallenHeroes,
-	getAllHeroesInEncounter
-} from '../../utils/game-logic';
+import { addHeroToGame } from '../../logic/game-logic';
+import { CampaignMapUtils } from '../../logic/campaign-map-utils';
+import { Factory } from '../../logic/factory';
+import { EncounterGenerator } from '../../logic/encounter-generator';
+import { EncounterUtils } from '../../logic/encounter-utils';
 
 import './main.scss';
-import { CampaignMapUtils } from '../../utils/campaign-map-utils';
 
 enum ScreenType {
 	Landing = 'landing',
@@ -104,7 +90,7 @@ export class Main extends Component<Props, State> {
 
 	startCampaign = () => {
 		this.setState({
-			game: createGame(),
+			game: Factory.createGame(),
 			screen: ScreenType.Campaign
 		});
 	};
@@ -151,7 +137,7 @@ export class Main extends Component<Props, State> {
 
 		switch (boon.type) {
 			case BoonType.ExtraHero:
-				addHeroToGame(game, createCombatant(CombatantType.Hero));
+				addHeroToGame(game, Factory.createCombatant(CombatantType.Hero));
 				break;
 			case BoonType.ExtraXP:
 				(hero as CombatantModel).xp += boon.data as number;
@@ -176,7 +162,7 @@ export class Main extends Component<Props, State> {
 	startEncounter = (region: CampaignMapRegionModel, heroes: CombatantModel[]) => {
 		if (this.state.game) {
 			const game = this.state.game;
-			game.encounter = createEncounter(region, heroes);
+			game.encounter = EncounterGenerator.createEncounter(region, heroes);
 			this.setState({
 				game: game,
 				screen: ScreenType.Encounter
@@ -201,12 +187,12 @@ export class Main extends Component<Props, State> {
 	//#region Encounter page
 
 	rollInitiative = (encounter: EncounterModel) => {
-		rollInitiative(encounter);
+		EncounterUtils.rollInitiative(encounter);
 
-		const acting = getActiveCombatants(encounter);
+		const acting = EncounterUtils.getActiveCombatants(encounter);
 		const current = acting.length > 0 ? acting[0] : null;
 		if (current) {
-			startOfTurn(encounter, current);
+			EncounterUtils.startOfTurn(encounter, current);
 		}
 
 		this.setState({
@@ -215,7 +201,7 @@ export class Main extends Component<Props, State> {
 	};
 
 	move = (encounter: EncounterModel, combatData: CombatDataModel, dir: string, cost: number) => {
-		move(combatData, dir, cost);
+		EncounterUtils.move(combatData, dir, cost);
 
 		this.setState({
 			game: this.state.game
@@ -223,7 +209,7 @@ export class Main extends Component<Props, State> {
 	};
 
 	standUp = (encounter: EncounterModel, combatData: CombatDataModel) => {
-		standUpSitDown(combatData);
+		EncounterUtils.standUpSitDown(combatData);
 
 		this.setState({
 			game: this.state.game
@@ -231,7 +217,7 @@ export class Main extends Component<Props, State> {
 	};
 
 	scan = (encounter: EncounterModel, combatData: CombatDataModel) => {
-		scan(encounter, combatData);
+		EncounterUtils.scan(encounter, combatData);
 
 		this.setState({
 			game: this.state.game
@@ -239,7 +225,7 @@ export class Main extends Component<Props, State> {
 	};
 
 	hide = (encounter: EncounterModel, combatData: CombatDataModel) => {
-		hide(encounter, combatData);
+		EncounterUtils.hide(encounter, combatData);
 
 		this.setState({
 			game: this.state.game
@@ -247,14 +233,14 @@ export class Main extends Component<Props, State> {
 	};
 
 	endTurn = (encounter: EncounterModel) => {
-		const acting = getActiveCombatants(encounter);
+		const acting = EncounterUtils.getActiveCombatants(encounter);
 		const current = acting.length > 0 ? acting[0] : null;
 		const next = acting.length > 1 ? acting[1] : null;
 		if (current) {
-			endOfTurn(encounter, current);
+			EncounterUtils.endOfTurn(encounter, current);
 		}
 		if (next) {
-			startOfTurn(encounter, next);
+			EncounterUtils.startOfTurn(encounter, next);
 		}
 		this.setState({
 			game: this.state.game
@@ -303,12 +289,12 @@ export class Main extends Component<Props, State> {
 		switch (state) {
 			case EncounterFinishState.Victory: {
 				// Remove dead heroes from the game
-				const deadHeroes = getDeadHeroes(encounter);
+				const deadHeroes = EncounterUtils.getDeadHeroes(encounter);
 				game.heroes = game.heroes.filter(h => !deadHeroes.includes(h));
 				// Get equipment from dead heroes, add it to game loot
 				deadHeroes.forEach(h => game.items.push(...h.items));
 				// Increment XP for surviving heroes
-				getSurvivingHeroes(encounter).forEach(h => h.xp += 1);
+				EncounterUtils.getSurvivingHeroes(encounter).forEach(h => h.xp += 1);
 				// Remove the first encounter for this region
 				region.encounters.splice(0, 1);
 				if (region.encounters.length <= 0) {
@@ -325,7 +311,7 @@ export class Main extends Component<Props, State> {
 						);
 					} else {
 						// Add a new level 1 hero
-						addHeroToGame(game, createCombatant(CombatantType.Hero));
+						addHeroToGame(game, Factory.createCombatant(CombatantType.Hero));
 						// Add the region's boon
 						game.boons.push(region.boon);
 						// Show message
@@ -356,7 +342,7 @@ export class Main extends Component<Props, State> {
 			}
 			case EncounterFinishState.Retreat: {
 				// Remove fallen heroes from the game
-				const fallenHeroes = getFallenHeroes(encounter);
+				const fallenHeroes = EncounterUtils.getFallenHeroes(encounter);
 				game.heroes = game.heroes.filter(h => !fallenHeroes.includes(h));
 				// Clear the current encounter
 				game.encounter = null;
@@ -372,7 +358,7 @@ export class Main extends Component<Props, State> {
 			}
 			case EncounterFinishState.Defeat: {
 				// Remove all participating heroes from the game
-				const heroes = getAllHeroesInEncounter(encounter);
+				const heroes = EncounterUtils.getAllHeroesInEncounter(encounter);
 				game.heroes = game.heroes.filter(h => !heroes.includes(h));
 				// Clear the current encounter
 				game.encounter = null;

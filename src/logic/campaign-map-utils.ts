@@ -1,8 +1,8 @@
 import { CampaignMapModel, CampaignMapSquareModel, CampaignMapRegionModel } from '../models/campaign-map';
 import { generateBoon } from './game-logic';
 import { NameGenerator } from './name-generator';
-import { Random } from './random';
-import { Utils } from './utils';
+import { Random } from '../utils/random';
+import { Utils } from '../utils/utils';
 
 export class CampaignMapUtils {
 	static generateCampaignMap = (): CampaignMapModel => {

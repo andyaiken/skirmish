@@ -3,10 +3,10 @@ import { Tag, Text, TextType } from '../../../controls';
 import { CombatantModel } from '../../../models/combatant';
 import { EncounterModel } from '../../../models/encounter';
 import { CombatDataState } from '../../../models/enums';
-import { getActiveCombatants, getCombatant } from '../../../utils/game-logic';
 import { StatValue } from '../../utility';
 
 import './initiative-list-panel.scss';
+import { EncounterUtils } from '../../../logic/encounter-utils';
 
 interface Props {
 	encounter: EncounterModel;
@@ -22,10 +22,10 @@ export class InitiativeListPanel extends Component<Props> {
 	};
 
 	public render() {
-		const acting = getActiveCombatants(this.props.encounter)
+		const acting = EncounterUtils.getActiveCombatants(this.props.encounter)
 			.map(cd => {
 				return {
-					combatant: getCombatant(this.props.encounter, cd.id) as CombatantModel,
+					combatant: EncounterUtils.getCombatant(this.props.encounter, cd.id) as CombatantModel,
 					data: cd
 				};
 			})

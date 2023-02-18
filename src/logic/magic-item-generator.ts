@@ -1,12 +1,12 @@
 import { ItemList } from '../data/item-data';
 import { DamageCategoryType, SkillType, ItemProficiencyType, FeatureType, ItemLocationType, SkillCategoryType, TraitType } from '../models/enums';
 import { ItemModel, WeaponModel } from '../models/item';
-import { Collections } from './collections';
+import { Collections } from '../utils/collections';
 import { FeatureUtils } from './feature-utils';
 import { getRandomDamageType, getRandomSkill, getRandomAction } from './game-logic';
 import { NameGenerator } from './name-generator';
-import { Random } from './random';
-import { Utils } from './utils';
+import { Random } from '../utils/random';
+import { Utils } from '../utils/utils';
 
 export class MagicItemGenerator {
 	static generateMagicItem = (): ItemModel => {

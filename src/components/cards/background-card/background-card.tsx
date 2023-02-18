@@ -2,9 +2,9 @@ import { Component } from 'react';
 import { BackgroundModel } from '../../../models/background';
 import { Text, TextType } from '../../../controls';
 import { StatValue } from '../../utility';
+import { FeatureUtils } from '../../../logic/feature-utils';
 
 import './background-card.scss';
-import { getFeatureTitle, getFeatureDescription } from '../../../utils/game-logic';
 
 interface Props {
 	background: BackgroundModel;
@@ -12,12 +12,15 @@ interface Props {
 
 export class BackgroundCard extends Component<Props> {
 	public render() {
+		const features = this.props.background.features.length > 0 ? this.props.background.features.map(f => `${FeatureUtils.getFeatureTitle(f)}: ${FeatureUtils.getFeatureDescription(f)}`) : '-';
+		const actions = this.props.background.features.length > 0 ? this.props.background.actions.map(a => a.name) : '-';
+
 		return (
 			<div className='background-card'>
 				<Text type={TextType.SubHeading}>{this.props.background.name}</Text>
 				<hr />
-				<StatValue label='Features' value={this.props.background.features.length > 0 ? this.props.background.features.map(f => `${getFeatureTitle(f)}: ${getFeatureDescription(f)}`) : '-'}/>
-				<StatValue label='Actions' value={this.props.background.features.length > 0 ? this.props.background.actions.map(a => a.name) : '-'}/>
+				<StatValue label='Features' value={features}/>
+				<StatValue label='Actions' value={actions}/>
 			</div>
 		);
 	}

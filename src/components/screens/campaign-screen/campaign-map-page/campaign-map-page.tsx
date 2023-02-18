@@ -3,7 +3,7 @@ import { Dialog, Text, TextType } from '../../../../controls';
 import { CampaignMapRegionModel } from '../../../../models/campaign-map';
 import { GameModel } from '../../../../models/game';
 import { CombatantModel } from '../../../../models/combatant';
-import { CampaignMapUtils } from '../../../../utils/campaign-map-utils';
+import { CampaignMapUtils } from '../../../../logic/campaign-map-utils';
 import { BoonCard, HeroCard } from '../../../cards';
 import { CampaignMapPanel } from '../../../panels';
 import { CardList, PlayingCard, StatValue } from '../../../utility';

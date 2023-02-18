@@ -1,8 +1,9 @@
 import { DamageType, FeatureType, DamageCategoryType, ItemProficiencyType, SkillType, SkillCategoryType, TraitType, AuraType } from '../models/enums';
 import { FeatureModel } from '../models/feature';
-import { getRandomDamageType, getRandomDamageCategoryType, getRandomItemProficiency, getRandomTrait, getRandomSkill, getRandomSkillCategory } from './game-logic';
-import { Random } from './random';
-import { Utils } from './utils';
+import { getRandomDamageType, getRandomDamageCategoryType, getRandomItemProficiency, getRandomTrait, getRandomSkill, getRandomSkillCategory, getAuraDescription } from './game-logic';
+import { Random } from '../utils/random';
+import { Utils } from '../utils/utils';
+import { Factory } from './factory';
 
 export class FeatureUtils {
 	static createDamageBonusFeature = (damage: DamageType, rank: number): FeatureModel => {
@@ -189,5 +190,71 @@ export class FeatureUtils {
 			default:
 				return FeatureUtils.createSkillCategoryFeature(getRandomSkillCategory(), Random.randomBonus());
 		}
+	};
+
+	static getFeatureTitle = (feature: FeatureModel) => {
+		switch (feature.type) {
+			case FeatureType.Trait:
+				return 'Trait bonus';
+			case FeatureType.Skill:
+			case FeatureType.SkillCategory:
+				return 'Skill bonus';
+			case FeatureType.Proficiency:
+				return 'Proficiency';
+			case FeatureType.DamageBonus:
+			case FeatureType.DamageCategoryTypeBonus:
+				return 'Damage Bonus';
+			case FeatureType.DamageResist:
+			case FeatureType.DamageCategoryTypeResist:
+				return 'Resistance';
+			case FeatureType.Aura:
+				return 'Aura';
+		}
+	};
+
+	static getFeatureDescription = (feature: FeatureModel) => {
+		switch (feature.type) {
+			case FeatureType.Trait:
+				return `${feature.trait} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
+			case FeatureType.Skill:
+				return `${feature.skill} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
+			case FeatureType.SkillCategory:
+				return `All ${feature.skillCategory} skills ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
+			case FeatureType.Proficiency:
+				return `${feature.proficiency}`;
+			case FeatureType.DamageBonus:
+				return `${feature.damage} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
+			case FeatureType.DamageCategoryTypeBonus:
+				return `All ${feature.DamageCategoryType} types ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
+			case FeatureType.DamageResist:
+				return `${feature.damage} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
+			case FeatureType.DamageCategoryTypeResist:
+				return `All ${feature.DamageCategoryType} types ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
+			case FeatureType.Aura: {
+				const aura = Factory.createAura(feature);
+				return `${getAuraDescription(aura)} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
+			}
+		}
+	};
+
+	static hasChoice = (feature: FeatureModel) => {
+		switch (feature.type) {
+			case FeatureType.Trait:
+				return feature.trait === TraitType.Any;
+			case FeatureType.Skill:
+				return feature.skill === SkillType.Any;
+			case FeatureType.SkillCategory:
+				return feature.skillCategory === SkillCategoryType.Any;
+			case FeatureType.Proficiency:
+				return feature.proficiency === ItemProficiencyType.Any;
+			case FeatureType.DamageBonus:
+			case FeatureType.DamageResist:
+				return feature.damage === DamageType.Any;
+			case FeatureType.DamageCategoryTypeBonus:
+			case FeatureType.DamageCategoryTypeResist:
+				return feature.DamageCategoryType === DamageCategoryType.Any;
+		}
+
+		return false;
 	};
 }

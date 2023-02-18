@@ -2,7 +2,7 @@ import { Component } from 'react';
 import { Tag, Text, TextType } from '../../../controls';
 import { ItemProficiencyType } from '../../../models/enums';
 import { ItemModel } from '../../../models/item';
-import { getFeatureTitle, getFeatureDescription } from '../../../utils/game-logic';
+import { FeatureUtils } from '../../../logic/feature-utils';
 import { StatValue } from '../../utility';
 
 import './item-card.scss';
@@ -34,7 +34,7 @@ export class ItemCard extends Component<Props> {
 		if (this.props.item.features.length > 0) {
 			features = (
 				<div>
-					<StatValue label='Features' value={this.props.item.features.map(f => `${getFeatureTitle(f)}: ${getFeatureDescription(f)}`)}/>
+					<StatValue label='Features' value={this.props.item.features.map(f => `${FeatureUtils.getFeatureTitle(f)}: ${FeatureUtils.getFeatureDescription(f)}`)}/>
 				</div>
 			);
 		}

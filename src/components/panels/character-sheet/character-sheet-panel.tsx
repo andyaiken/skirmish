@@ -11,7 +11,8 @@ import { CardList, PlayingCard } from '../../utility';
 import { Stats } from './stats/stats';
 import { Items } from './items/items';
 import { LevelUp } from './level-up/level-up';
-import { getFeatureDeck, getCardSource, getActionDeck, getSpecies, getBackground, getRole } from '../../../utils/game-logic';
+import { getSpecies, getBackground, getRole } from '../../../logic/game-logic';
+import { CombatantUtils } from '../../../logic/combatant-utils';
 
 import './character-sheet-panel.scss';
 
@@ -40,7 +41,7 @@ export class CharacterSheetPanel extends Component<Props, State> {
 	}
 
 	drawFeatures = (hero: CombatantModel) => {
-		return Collections.shuffle(getFeatureDeck(hero))
+		return Collections.shuffle(CombatantUtils.getFeatureDeck(hero))
 			.splice(0, 3)
 			.map(f => {
 				const copy = JSON.parse(JSON.stringify(f)) as FeatureModel;
@@ -136,8 +137,8 @@ interface FeaturesPageProps {
 
 class FeaturesPage extends Component<FeaturesPageProps> {
 	public render() {
-		const featureCards = getFeatureDeck(this.props.hero).map(feature => {
-			const source = getCardSource(this.props.hero, feature.id, 'feature');
+		const featureCards = CombatantUtils.getFeatureDeck(this.props.hero).map(feature => {
+			const source = CombatantUtils.getCardSource(this.props.hero, feature.id, 'feature');
 			return (
 				<PlayingCard key={feature.id} front={<FeatureCard feature={feature} />} footer={source} />
 			);
@@ -160,8 +161,8 @@ interface ActionsPageProps {
 
 class ActionsPage extends Component<ActionsPageProps> {
 	public render() {
-		const actionCards = getActionDeck(this.props.hero).map(action => {
-			const source = getCardSource(this.props.hero, action.id, 'action');
+		const actionCards = CombatantUtils.getActionDeck(this.props.hero).map(action => {
+			const source = CombatantUtils.getCardSource(this.props.hero, action.id, 'action');
 			return (
 				<PlayingCard key={action.id} front={<ActionCard action={action} />} footer={source} />
 			);

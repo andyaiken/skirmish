@@ -1,7 +1,7 @@
 import { ActionModel } from '../models/action';
 import { TraitType, SkillType, DamageType, DamageCategoryType, AuraType } from '../models/enums';
 import { SpeciesModel } from '../models/species';
-import { FeatureUtils } from '../utils/feature-utils';
+import { FeatureUtils } from '../logic/feature-utils';
 import { Utils } from '../utils/utils';
 
 const createActionPlaceholder = (name: string): ActionModel => {

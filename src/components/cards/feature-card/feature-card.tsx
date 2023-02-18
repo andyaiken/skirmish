@@ -1,6 +1,7 @@
 import { Component } from 'react';
-import { FeatureModel, getFeatureDescription, getFeatureTitle } from '../../../models/feature';
+import { FeatureModel } from '../../../models/feature';
 import { Text, TextType } from '../../../controls';
+import { getFeatureTitle, getFeatureDescription } from '../../../utils/game-logic';
 
 import './feature-card.scss';
 

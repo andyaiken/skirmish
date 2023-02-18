@@ -1,35 +1,40 @@
 import { Component } from 'react';
 
-import { BoonModel, BoonType } from '../../models/boon';
-import { CampaignMapRegionModel, removeRegion } from '../../models/campaign-map';
+import { BoonModel } from '../../models/boon';
+import { CampaignMapRegionModel } from '../../models/campaign-map';
 import { CombatDataModel } from '../../models/combat-data';
-import {
-	createEncounter,
-	EncounterModel,
-	endOfTurn,
-	getActiveCombatants,
-	getAllHeroesInEncounter,
-	getDeadHeroes,
-	getFallenHeroes,
-	getSurvivingHeroes,
-	hide,
-	move,
-	rollInitiative,
-	scan,
-	standUpSitDown,
-	startOfTurn
-} from '../../models/encounter';
-import { addHeroToGame, createGame, GameModel } from '../../models/game';
-import { CombatantModel, CombatantType, createCombatant } from '../../models/combatant';
+import { GameModel } from '../../models/game';
+import { CombatantModel } from '../../models/combatant';
 import { FeatureModel } from '../../models/feature';
 import { ItemModel } from '../../models/item';
-import { debounce } from '../../utils/utils';
+import { Utils } from '../../utils/utils';
 import { BoonCard } from '../cards';
 import { CampaignScreen, EncounterFinishState, EncounterScreen, LandingScreen } from '../screens';
 import { Dialog, Text, TextType } from '../../controls';
 import { PlayingCard } from '../utility';
+import { BoonType, CombatantType } from '../../models/enums';
+import { EncounterModel } from '../../models/encounter';
+import {
+	createGame,
+	addHeroToGame,
+	createCombatant,
+	createEncounter,
+	rollInitiative,
+	getActiveCombatants,
+	startOfTurn,
+	move,
+	standUpSitDown,
+	scan,
+	hide,
+	endOfTurn,
+	getDeadHeroes,
+	getSurvivingHeroes,
+	getFallenHeroes,
+	getAllHeroesInEncounter
+} from '../../utils/game-logic';
 
 import './main.scss';
+import { CampaignMapUtils } from '../../utils/campaign-map-utils';
 
 enum ScreenType {
 	Landing = 'landing',
@@ -82,7 +87,7 @@ export class Main extends Component<Props, State> {
 
 	//#region Saving
 
-	private readonly saveAfterDelay = debounce(() => this.save(), 5 * 1000);
+	private readonly saveAfterDelay = Utils.debounce(() => this.save(), 5 * 1000);
 
 	private save() {
 		try {
@@ -308,7 +313,7 @@ export class Main extends Component<Props, State> {
 				region.encounters.splice(0, 1);
 				if (region.encounters.length <= 0) {
 					// Conquer the region
-					removeRegion(game.map, region);
+					CampaignMapUtils.removeRegion(game.map, region);
 					if (game.map.squares.every(sq => sq.regionID === '')) {
 						// Show message
 						dialog = (

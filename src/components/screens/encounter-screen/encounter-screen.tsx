@@ -1,18 +1,27 @@
 import { Component } from 'react';
-import { EncounterModel, EncounterState, getActiveCombatants, getCombatant, getCombatData, getEncounterState, getMoveCost } from '../../../models/encounter';
+import { EncounterModel } from '../../../models/encounter';
 import { GameModel } from '../../../models/game';
-import { CombatantModel, CombatantType, getCardSource, getSkillValue, getTraitValue } from '../../../models/combatant';
+import { CombatantModel } from '../../../models/combatant';
+import { CombatDataState, TraitType, CombatantType, SkillType, EncounterState } from '../../../models/enums';
 import { ItemModel } from '../../../models/item';
 import { DirectionPanel, EncounterMapPanel, InitiativeListPanel } from '../../panels';
 import { Tag, Text, TextType } from '../../../controls';
 import { Box, CardList, IconType, IconValue, PlayingCard, StatValue } from '../../utility';
-import { TraitType } from '../../../models/trait';
-import { CombatDataModel, CombatDataState } from '../../../models/combat-data';
+import { CombatDataModel } from '../../../models/combat-data';
 import { ActionCard } from '../../cards';
-import { getRole } from '../../../models/role';
-import { getSpecies } from '../../../models/species';
-import { getBackground } from '../../../models/background';
-import { SkillType } from '../../../models/skill';
+import {
+	getCombatant,
+	getCombatData,
+	getTraitValue,
+	getMoveCost,
+	getCardSource,
+	getSkillValue,
+	getActiveCombatants,
+	getEncounterState,
+	getBackground,
+	getRole,
+	getSpecies
+} from '../../../utils/game-logic';
 
 import './encounter-screen.scss';
 

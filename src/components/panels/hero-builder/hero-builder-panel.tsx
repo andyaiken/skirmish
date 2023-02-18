@@ -1,15 +1,13 @@
 import { Component } from 'react';
 import { Tag, Text, TextType } from '../../../controls';
-import { getBackground, getBackgroundDeck } from '../../../models/background';
 import { GameModel } from '../../../models/game';
-import { applyCombatantCards, CombatantModel, getProficiencies } from '../../../models/combatant';
-import { getItem, getItems, ItemModel } from '../../../models/item';
-import { getRole, getRoleDeck } from '../../../models/role';
-import { getSpecies, getSpeciesDeck } from '../../../models/species';
-import { shuffle } from '../../../utils/collections';
-import { generateName } from '../../../utils/name-generator';
+import { CombatantModel } from '../../../models/combatant';
+import { ItemModel } from '../../../models/item';
+import { NameGenerator } from '../../../utils/name-generator';
 import { BackgroundCard, ItemCard, PlaceholderCard, RoleCard, SpeciesCard } from '../../cards';
 import { CardList, PlayingCard, PlayingCardSide } from '../../utility';
+import { applyCombatantCards, getBackground, getBackgroundDeck, getItem, getItems, getProficiencies, getRole, getRoleDeck, getSpecies, getSpeciesDeck } from '../../../utils/game-logic';
+import { Collections } from '../../../utils/collections';
 
 import './hero-builder-panel.scss';
 
@@ -29,7 +27,7 @@ export class HeroBuilderPanel extends Component<Props, State> {
 
 		const hero = JSON.parse(JSON.stringify(props.hero)) as CombatantModel;
 		if (hero.name === '') {
-			hero.name = generateName();
+			hero.name = NameGenerator.generateName();
 		}
 
 		this.state = {
@@ -55,7 +53,7 @@ export class HeroBuilderPanel extends Component<Props, State> {
 
 	rename = () => {
 		const hero = this.state.hero;
-		hero.name = generateName();
+		hero.name = NameGenerator.generateName();
 		this.setState({
 			hero: hero
 		});
@@ -149,9 +147,9 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 	constructor(props: CardSelectorProps) {
 		super(props);
 		this.state = {
-			speciesIDs: shuffle(getSpeciesDeck(this.props.game)).splice(0, 3),
-			roleIDs: shuffle(getRoleDeck(this.props.game)).splice(0, 3),
-			backgroundIDs: shuffle(getBackgroundDeck(this.props.game)).splice(0, 3),
+			speciesIDs: Collections.shuffle(getSpeciesDeck(this.props.game)).splice(0, 3),
+			roleIDs: Collections.shuffle(getRoleDeck(this.props.game)).splice(0, 3),
+			backgroundIDs: Collections.shuffle(getBackgroundDeck(this.props.game)).splice(0, 3),
 			selectedSpeciesID: '',
 			selectedRoleID: '',
 			selectedBackgroundID: ''

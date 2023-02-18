@@ -1,8 +1,8 @@
 import { Component } from 'react';
 import { Tag, Text, TextType } from '../../../controls';
-import { getFeatureDescription, getFeatureTitle } from '../../../models/feature';
+import { ItemProficiencyType } from '../../../models/enums';
 import { ItemModel } from '../../../models/item';
-import { ItemProficiencyType } from '../../../models/item-proficiency';
+import { getFeatureTitle, getFeatureDescription } from '../../../utils/game-logic';
 import { StatValue } from '../../utility';
 
 import './item-card.scss';

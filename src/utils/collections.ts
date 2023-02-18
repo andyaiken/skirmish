@@ -1,20 +1,22 @@
-import { randomNumber } from './random';
+import { Random } from './random';
 
-export const shuffle = <T>(collection: T[]) => {
-	let currentIndex = collection.length;
-	while (currentIndex !== 0) {
-		const randomIndex = randomNumber(currentIndex);
-		currentIndex -= 1;
+export class Collections {
+	static shuffle = <T>(collection: T[]) => {
+		let currentIndex = collection.length;
+		while (currentIndex !== 0) {
+			const randomIndex = Random.randomNumber(currentIndex);
+			currentIndex -= 1;
 
-		const temporaryValue = collection[currentIndex];
-		collection[currentIndex] = collection[randomIndex];
-		collection[randomIndex] = temporaryValue;
-	}
+			const temporaryValue = collection[currentIndex];
+			collection[currentIndex] = collection[randomIndex];
+			collection[randomIndex] = temporaryValue;
+		}
 
-	return collection;
-};
+		return collection;
+	};
 
-export const draw = <T>(collection: T[]) => {
-	const index = randomNumber(collection.length);
-	return collection[index];
-};
+	static draw = <T>(collection: T[]) => {
+		const index = Random.randomNumber(collection.length);
+		return collection[index];
+	};
+}

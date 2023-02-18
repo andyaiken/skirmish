@@ -1,8 +1,8 @@
 import { Component } from 'react';
 import { Dialog, Text, TextType } from '../../../../controls';
-import { BackgroundList } from '../../../../models/background';
-import { RoleList } from '../../../../models/role';
-import { HeroSpeciesList } from '../../../../models/species';
+import { BackgroundList } from '../../../../data/background-data';
+import { RoleList } from '../../../../data/role-data';
+import { HeroSpeciesList } from '../../../../data/species-data';
 import { BackgroundCard, RoleCard, SpeciesCard } from '../../../cards';
 import { CardList, PlayingCard } from '../../../utility';
 

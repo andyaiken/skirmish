@@ -1,10 +1,8 @@
 import { Component } from 'react';
 import { Tag, Text, TextType } from '../../../controls';
-import { getBackground } from '../../../models/background';
-import { CombatantModel, getTraitValue } from '../../../models/combatant';
-import { getRole } from '../../../models/role';
-import { getSpecies } from '../../../models/species';
-import { TraitType } from '../../../models/trait';
+import { CombatantModel } from '../../../models/combatant';
+import { TraitType } from '../../../models/enums';
+import { getBackground, getRole, getSpecies, getTraitValue } from '../../../utils/game-logic';
 import { StatValue } from '../../utility';
 
 import './hero-card.scss';

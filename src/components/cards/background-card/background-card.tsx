@@ -1,10 +1,10 @@
 import { Component } from 'react';
 import { BackgroundModel } from '../../../models/background';
-import { getFeatureDescription, getFeatureTitle } from '../../../models/feature';
 import { Text, TextType } from '../../../controls';
 import { StatValue } from '../../utility';
 
 import './background-card.scss';
+import { getFeatureTitle, getFeatureDescription } from '../../../utils/game-logic';
 
 interface Props {
 	background: BackgroundModel;

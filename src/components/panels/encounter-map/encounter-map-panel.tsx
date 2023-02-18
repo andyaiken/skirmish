@@ -1,7 +1,8 @@
 import { Component, MouseEvent } from 'react';
 import { CombatantModel } from '../../../models/combatant';
-import { EncounterModel, getCombatant } from '../../../models/encounter';
-import { getEncounterMapDimensions } from '../../../models/encounter-map';
+import { EncounterModel } from '../../../models/encounter';
+import { EncounterMapUtils } from '../../../utils/encounter-map-utils';
+import { getCombatant } from '../../../utils/game-logic';
 
 import './encounter-map-panel.scss';
 
@@ -20,7 +21,7 @@ export class EncounterMapPanel extends Component<Props> {
 
 	public render() {
 		// Get dimensions
-		const dims = getEncounterMapDimensions(this.props.encounter.map);
+		const dims = EncounterMapUtils.getEncounterMapDimensions(this.props.encounter.map);
 
 		// Determine the percentage width and height of a square
 		const width = 1 + (dims.right - dims.left);

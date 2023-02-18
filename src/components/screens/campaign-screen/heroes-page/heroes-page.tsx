@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import { Dialog, Text, TextType } from '../../../../controls';
-import { BoonModel, BoonType } from '../../../../models/boon';
+import { BoonModel } from '../../../../models/boon';
+import { BoonType } from '../../../../models/enums';
 import { FeatureModel } from '../../../../models/feature';
 import { GameModel } from '../../../../models/game';
 import { CombatantModel } from '../../../../models/combatant';

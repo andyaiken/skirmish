@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { DamageType } from '../../../models/damage';
+import { DamageType } from '../../../models/enums';
 
 import './icon-value.scss';
 

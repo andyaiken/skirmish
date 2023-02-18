@@ -1,8 +1,8 @@
 import { Component } from 'react';
-import { getFeatureDescription, getFeatureTitle } from '../../../models/feature';
 import { RoleModel } from '../../../models/role';
 import { Text, TextType } from '../../../controls';
 import { StatValue } from '../../utility';
+import { getFeatureTitle, getFeatureDescription } from '../../../utils/game-logic';
 
 import './role-card.scss';
 

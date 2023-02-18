@@ -1,8 +1,9 @@
 import { Component } from 'react';
 import { Tag, Text, TextType } from '../../../controls';
-import { CombatDataState } from '../../../models/combat-data';
 import { CombatantModel } from '../../../models/combatant';
-import { EncounterModel, getActiveCombatants, getCombatant } from '../../../models/encounter';
+import { EncounterModel } from '../../../models/encounter';
+import { CombatDataState } from '../../../models/enums';
+import { getActiveCombatants, getCombatant } from '../../../utils/game-logic';
 import { StatValue } from '../../utility';
 
 import './initiative-list-panel.scss';

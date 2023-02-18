@@ -66,6 +66,8 @@
   * Warrior
   * Warlock
   * Warlord
+  * Grenadier
+  * Martial artist
 
 ## Tech Debt
 

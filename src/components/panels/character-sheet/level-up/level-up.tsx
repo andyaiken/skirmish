@@ -1,13 +1,11 @@
 import { Component } from 'react';
 import { Selector, Text, TextType } from '../../../../controls';
-import { DamageCategory, DamageType } from '../../../../models/damage';
-import { FeatureModel, FeatureType, hasChoice } from '../../../../models/feature';
-import { CombatantModel, getCardSource, getProficiencies } from '../../../../models/combatant';
-import { ItemProficiencyType } from '../../../../models/item-proficiency';
-import { SkillType, SkillCategoryType } from '../../../../models/skill';
-import { TraitType } from '../../../../models/trait';
+import { TraitType, SkillType, SkillCategoryType, ItemProficiencyType, DamageType, DamageCategoryType, FeatureType } from '../../../../models/enums';
+import { FeatureModel } from '../../../../models/feature';
+import { CombatantModel } from '../../../../models/combatant';
 import { FeatureCard, PlaceholderCard } from '../../../cards';
 import { CardList, PlayingCard, PlayingCardSide } from '../../../utility';
+import { getCardSource, hasChoice, getProficiencies } from '../../../../utils/game-logic';
 
 import './level-up.scss';
 
@@ -163,9 +161,9 @@ class ChoicePanel extends Component<ChoicePanelProps, ChoicePanelState> {
 		});
 	};
 
-	selectDamageCategory = (category: DamageCategory) => {
+	selectDamageCategoryType = (category: DamageCategoryType) => {
 		const feature = this.state.feature;
-		feature.damageCategory = category;
+		feature.DamageCategoryType = category;
 		this.setState({
 			feature: feature
 		}, () => {
@@ -271,18 +269,18 @@ class ChoicePanel extends Component<ChoicePanelProps, ChoicePanelState> {
 					</div>
 				);
 				break;
-			case FeatureType.DamageCategoryBonus:
-			case FeatureType.DamageCategoryResist:
+			case FeatureType.DamageCategoryTypeBonus:
+			case FeatureType.DamageCategoryTypeResist:
 				choice = (
 					<div>
 						<Selector
 							options={[
-								{ id: DamageCategory.Physical },
-								{ id: DamageCategory.Energy },
-								{ id: DamageCategory.Corruption }
+								{ id: DamageCategoryType.Physical },
+								{ id: DamageCategoryType.Energy },
+								{ id: DamageCategoryType.Corruption }
 							]}
-							selectedID={this.state.feature.damageCategory}
-							onSelect={id => this.selectDamageCategory(id as DamageCategory)}
+							selectedID={this.state.feature.DamageCategoryType}
+							onSelect={id => this.selectDamageCategoryType(id as DamageCategoryType)}
 						/>
 					</div>
 				);

@@ -1,10 +1,8 @@
 import { Component } from 'react';
 import { Tag, Text } from '../../../../controls';
-import { getAuraDescription } from '../../../../models/aura';
-import { DamageType } from '../../../../models/damage';
-import { CombatantModel, getAuras, getDamageBonusValue, getDamageResistanceValue, getProficiencies, getSkillValue, getTraitValue } from '../../../../models/combatant';
-import { SkillType } from '../../../../models/skill';
-import { TraitType } from '../../../../models/trait';
+import { CombatantModel } from '../../../../models/combatant';
+import { TraitType, SkillType, DamageType } from '../../../../models/enums';
+import { getProficiencies, getAuras, getAuraDescription, getTraitValue, getSkillValue, getDamageBonusValue, getDamageResistanceValue } from '../../../../utils/game-logic';
 import { Box, StatValue } from '../../../utility';
 
 import './stats.scss';

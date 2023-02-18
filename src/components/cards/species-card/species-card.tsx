@@ -1,8 +1,8 @@
 import { Component } from 'react';
-import { getFeatureDescription, getFeatureTitle } from '../../../models/feature';
 import { SpeciesModel } from '../../../models/species';
 import { Text, TextType } from '../../../controls';
 import { StatValue } from '../../utility';
+import { getFeatureDescription, getFeatureTitle } from '../../../utils/game-logic';
 
 import './species-card.scss';
 

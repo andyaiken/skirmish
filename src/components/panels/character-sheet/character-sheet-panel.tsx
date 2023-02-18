@@ -1,19 +1,17 @@
 import { Component } from 'react';
 import { Selector, Tag, Text, TextType } from '../../../controls';
-import { getBackground } from '../../../models/background';
 import { FeatureModel } from '../../../models/feature';
 import { GameModel } from '../../../models/game';
-import { CombatantModel, getActionDeck, getCardSource, getFeatureDeck } from '../../../models/combatant';
+import { CombatantModel } from '../../../models/combatant';
 import { ItemModel } from '../../../models/item';
-import { getRole } from '../../../models/role';
-import { getSpecies } from '../../../models/species';
-import { shuffle } from '../../../utils/collections';
-import { guid } from '../../../utils/utils';
+import { Collections } from '../../../utils/collections';
+import { Utils } from '../../../utils/utils';
 import { ActionCard, FeatureCard } from '../../cards';
 import { CardList, PlayingCard } from '../../utility';
 import { Stats } from './stats/stats';
 import { Items } from './items/items';
 import { LevelUp } from './level-up/level-up';
+import { getFeatureDeck, getCardSource, getActionDeck, getSpecies, getBackground, getRole } from '../../../utils/game-logic';
 
 import './character-sheet-panel.scss';
 
@@ -42,11 +40,11 @@ export class CharacterSheetPanel extends Component<Props, State> {
 	}
 
 	drawFeatures = (hero: CombatantModel) => {
-		return shuffle(getFeatureDeck(hero))
+		return Collections.shuffle(getFeatureDeck(hero))
 			.splice(0, 3)
 			.map(f => {
 				const copy = JSON.parse(JSON.stringify(f)) as FeatureModel;
-				copy.id = guid();
+				copy.id = Utils.guid();
 				return copy;
 			});
 	};

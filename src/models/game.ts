@@ -1,8 +1,8 @@
-import { BoonModel } from './boon';
-import { CampaignMapModel } from './campaign-map';
-import { EncounterModel } from './encounter';
-import { CombatantModel } from './combatant';
-import { ItemModel } from './item';
+import type { BoonModel } from './boon';
+import type { CampaignMapModel } from './campaign-map';
+import type { EncounterModel } from './encounter';
+import type { CombatantModel } from './combatant';
+import type { ItemModel } from './item';
 
 export interface GameModel {
 	heroes: CombatantModel[];

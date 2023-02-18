@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { Text, TextType } from '../../../controls';
-import { ActionModel } from '../../../models/action';
+import type { ActionModel } from '../../../models/action';
 
 import './action-card.scss';
 

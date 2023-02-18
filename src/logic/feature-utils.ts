@@ -1,9 +1,9 @@
-import { DamageType, FeatureType, DamageCategoryType, ItemProficiencyType, SkillType, SkillCategoryType, TraitType, AuraType } from '../models/enums';
-import { FeatureModel } from '../models/feature';
-import { getRandomDamageType, getRandomDamageCategoryType, getRandomItemProficiency, getRandomTrait, getRandomSkill, getRandomSkillCategory, getAuraDescription } from './game-logic';
+import { DamageType, FeatureType, DamageCategoryType, ItemProficiencyType, SkillType, SkillCategoryType, TraitType, AuraType } from '../enums/enums';
+import type { FeatureModel } from '../models/feature';
 import { Random } from '../utils/random';
 import { Utils } from '../utils/utils';
 import { Factory } from './factory';
+import { GameLogic } from './game-logic';
 
 export class FeatureUtils {
 	static createDamageBonusFeature = (damage: DamageType, rank: number): FeatureModel => {
@@ -174,21 +174,21 @@ export class FeatureUtils {
 	static createRandomFeature = () => {
 		switch (Random.randomNumber(8)) {
 			case 0:
-				return FeatureUtils.createDamageBonusFeature(getRandomDamageType(), Random.randomBonus());
+				return FeatureUtils.createDamageBonusFeature(GameLogic.getRandomDamageType(), Random.randomBonus());
 			case 1:
-				return FeatureUtils.createDamageCategoryTypeBonusFeature(getRandomDamageCategoryType(), Random.randomBonus());
+				return FeatureUtils.createDamageCategoryTypeBonusFeature(GameLogic.getRandomDamageCategoryType(), Random.randomBonus());
 			case 2:
-				return FeatureUtils.createDamageResistFeature(getRandomDamageType(), Random.randomBonus());
+				return FeatureUtils.createDamageResistFeature(GameLogic.getRandomDamageType(), Random.randomBonus());
 			case 3:
-				return FeatureUtils.createDamageCategoryTypeResistFeature(getRandomDamageCategoryType(), Random.randomBonus());
+				return FeatureUtils.createDamageCategoryTypeResistFeature(GameLogic.getRandomDamageCategoryType(), Random.randomBonus());
 			case 4:
-				return FeatureUtils.createProficiencyFeature(getRandomItemProficiency());
+				return FeatureUtils.createProficiencyFeature(GameLogic.getRandomItemProficiency());
 			case 5:
-				return FeatureUtils.createTraitFeature(getRandomTrait(), Random.randomBonus());
+				return FeatureUtils.createTraitFeature(GameLogic.getRandomTrait(), Random.randomBonus());
 			case 6:
-				return FeatureUtils.createSkillFeature(getRandomSkill(), Random.randomBonus());
+				return FeatureUtils.createSkillFeature(GameLogic.getRandomSkill(), Random.randomBonus());
 			default:
-				return FeatureUtils.createSkillCategoryFeature(getRandomSkillCategory(), Random.randomBonus());
+				return FeatureUtils.createSkillCategoryFeature(GameLogic.getRandomSkillCategory(), Random.randomBonus());
 		}
 	};
 
@@ -232,7 +232,7 @@ export class FeatureUtils {
 				return `All ${feature.DamageCategoryType} types ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
 			case FeatureType.Aura: {
 				const aura = Factory.createAura(feature);
-				return `${getAuraDescription(aura)} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
+				return `${GameLogic.getAuraDescription(aura)} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
 			}
 		}
 	};

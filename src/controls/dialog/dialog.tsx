@@ -1,4 +1,4 @@
-import { Component, MouseEvent } from 'react';
+import { Component } from 'react';
 
 import './dialog.scss';
 
@@ -18,7 +18,7 @@ export class Dialog extends Component<Props> {
 		}
 	};
 
-	dialogClick = (e: MouseEvent) => {
+	dialogClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
 	};
 

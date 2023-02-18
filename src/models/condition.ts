@@ -1,4 +1,4 @@
-import { ConditionType, DamageType, SkillType, TraitType } from './enums';
+import type { ConditionType, DamageType, SkillType, TraitType } from '../enums/enums';
 
 export interface ConditionModel {
 	type: ConditionType;

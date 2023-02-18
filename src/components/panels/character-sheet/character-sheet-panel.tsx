@@ -1,9 +1,9 @@
 import { Component } from 'react';
 import { Selector, Tag, Text, TextType } from '../../../controls';
-import { FeatureModel } from '../../../models/feature';
-import { GameModel } from '../../../models/game';
-import { CombatantModel } from '../../../models/combatant';
-import { ItemModel } from '../../../models/item';
+import type { FeatureModel } from '../../../models/feature';
+import type { GameModel } from '../../../models/game';
+import type { CombatantModel } from '../../../models/combatant';
+import type { ItemModel } from '../../../models/item';
 import { Collections } from '../../../utils/collections';
 import { Utils } from '../../../utils/utils';
 import { ActionCard, FeatureCard } from '../../cards';
@@ -11,10 +11,10 @@ import { CardList, PlayingCard } from '../../utility';
 import { Stats } from './stats/stats';
 import { Items } from './items/items';
 import { LevelUp } from './level-up/level-up';
-import { getSpecies, getBackground, getRole } from '../../../logic/game-logic';
 import { CombatantUtils } from '../../../logic/combatant-utils';
 
 import './character-sheet-panel.scss';
+import { GameLogic } from '../../../logic/game-logic';
 
 type ViewType = 'actions' | 'features' | 'items' | 'stats';
 
@@ -105,9 +105,9 @@ export class CharacterSheetPanel extends Component<Props, State> {
 					<div className='header'>
 						<Text type={TextType.Heading}>{this.props.hero.name || 'unnamed hero'}</Text>
 						<div className='tags'>
-							<Tag>{getSpecies(this.props.hero.speciesID)?.name ?? 'Unknown species'}</Tag>
-							<Tag>{getRole(this.props.hero.roleID)?.name ?? 'Unknown role'}</Tag>
-							<Tag>{getBackground(this.props.hero.backgroundID)?.name ?? 'Unknown background'}</Tag>
+							<Tag>{GameLogic.getSpecies(this.props.hero.speciesID)?.name ?? 'Unknown species'}</Tag>
+							<Tag>{GameLogic.getRole(this.props.hero.roleID)?.name ?? 'Unknown role'}</Tag>
+							<Tag>{GameLogic.getBackground(this.props.hero.backgroundID)?.name ?? 'Unknown background'}</Tag>
 							<Tag>Level {this.props.hero.level}</Tag>
 						</div>
 						<Selector

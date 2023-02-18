@@ -1,12 +1,12 @@
 import { ItemList } from '../data/item-data';
-import { DamageCategoryType, SkillType, ItemProficiencyType, FeatureType, ItemLocationType, SkillCategoryType, TraitType } from '../models/enums';
-import { ItemModel, WeaponModel } from '../models/item';
+import { DamageCategoryType, SkillType, ItemProficiencyType, FeatureType, ItemLocationType, SkillCategoryType, TraitType } from '../enums/enums';
+import type { ItemModel, WeaponModel } from '../models/item';
 import { Collections } from '../utils/collections';
 import { FeatureUtils } from './feature-utils';
-import { getRandomDamageType, getRandomSkill, getRandomAction } from './game-logic';
 import { NameGenerator } from './name-generator';
 import { Random } from '../utils/random';
 import { Utils } from '../utils/utils';
+import { GameLogic } from './game-logic';
 
 export class MagicItemGenerator {
 	static generateMagicItem = (): ItemModel => {
@@ -45,7 +45,7 @@ export class MagicItemGenerator {
 			// Change damage type
 			const copy3 = JSON.parse(JSON.stringify(item)) as ItemModel;
 			const wpn3 = copy3.weapon as WeaponModel;
-			wpn3.damage.type = getRandomDamageType(Random.randomBoolean() ? DamageCategoryType.Energy : DamageCategoryType.Corruption);
+			wpn3.damage.type = GameLogic.getRandomDamageType(Random.randomBoolean() ? DamageCategoryType.Energy : DamageCategoryType.Corruption);
 			options.push(copy3);
 
 			// Increase Weapon skill
@@ -99,7 +99,7 @@ export class MagicItemGenerator {
 		if (item.location === ItemLocationType.Head) {
 			// Increase a mental skill
 			const copy1 = JSON.parse(JSON.stringify(item)) as ItemModel;
-			copy1.features.push(FeatureUtils.createSkillFeature(getRandomSkill(SkillCategoryType.Mental), Random.randomBonus()));
+			copy1.features.push(FeatureUtils.createSkillFeature(GameLogic.getRandomSkill(SkillCategoryType.Mental), Random.randomBonus()));
 			options.push(copy1);
 
 			// Increase all physical or mental skills
@@ -139,7 +139,7 @@ export class MagicItemGenerator {
 
 		// a random action
 		const copyAction = JSON.parse(JSON.stringify(item)) as ItemModel;
-		copyAction.actions.push(getRandomAction());
+		copyAction.actions.push(GameLogic.getRandomAction());
 		options.push(copyFeature);
 
 		const n = Random.randomNumber(options.length);

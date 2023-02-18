@@ -1,6 +1,6 @@
-import { ActionModel } from '../models/action';
-import { BackgroundModel } from '../models/background';
-import { TraitType, AuraType, DamageCategoryType, SkillType, DamageType } from '../models/enums';
+import type { ActionModel } from '../models/action';
+import type { BackgroundModel } from '../models/background';
+import { TraitType, SkillType, DamageType, DamageCategoryType, AuraType } from '../enums/enums';
 import { FeatureUtils } from '../logic/feature-utils';
 import { Utils } from '../utils/utils';
 

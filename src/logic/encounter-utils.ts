@@ -1,8 +1,8 @@
-import { CombatDataModel } from '../models/combat-data';
-import { CombatantModel } from '../models/combatant';
-import { EncounterModel } from '../models/encounter';
-import { EncounterMapSquareModel } from '../models/encounter-map';
-import { TraitType, CombatantType, CombatDataState, ConditionType, SkillType, EncounterMapSquareType, EncounterState } from '../models/enums';
+import type { CombatDataModel } from '../models/combat-data';
+import type { CombatantModel } from '../models/combatant';
+import type { EncounterModel } from '../models/encounter';
+import type { EncounterMapSquareModel } from '../models/encounter-map';
+import { TraitType, CombatantType, CombatDataState, ConditionType, SkillType, EncounterMapSquareType, EncounterState } from '../enums/enums';
 import { Collections } from '../utils/collections';
 import { Random } from '../utils/random';
 import { CombatantUtils } from './combatant-utils';

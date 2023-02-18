@@ -1,6 +1,6 @@
-import { CombatantType } from './enums';
-import { FeatureModel } from './feature';
-import { ItemModel } from './item';
+import type { CombatantType } from '../enums/enums';
+import type { FeatureModel } from './feature';
+import type { ItemModel } from './item';
 
 export interface CombatantModel {
 	id: string;

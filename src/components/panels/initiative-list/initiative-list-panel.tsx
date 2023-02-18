@@ -1,8 +1,8 @@
 import { Component } from 'react';
 import { Tag, Text, TextType } from '../../../controls';
-import { CombatantModel } from '../../../models/combatant';
-import { EncounterModel } from '../../../models/encounter';
-import { CombatDataState } from '../../../models/enums';
+import type { CombatantModel } from '../../../models/combatant';
+import type { EncounterModel } from '../../../models/encounter';
+import { CombatDataState } from '../../../enums/enums';
 import { StatValue } from '../../utility';
 
 import './initiative-list-panel.scss';

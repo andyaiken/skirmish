@@ -1,6 +1,6 @@
-import { ActionModel } from '../models/action';
-import { TraitType, SkillType, ItemProficiencyType, DamageCategoryType, DamageType, AuraType } from '../models/enums';
-import { RoleModel } from '../models/role';
+import type { ActionModel } from '../models/action';
+import type { RoleModel } from '../models/role';
+import { TraitType, SkillType, DamageType, DamageCategoryType, AuraType, ItemProficiencyType } from '../enums/enums';
 import { FeatureUtils } from '../logic/feature-utils';
 import { Utils } from '../utils/utils';
 

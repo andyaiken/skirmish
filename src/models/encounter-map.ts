@@ -1,4 +1,4 @@
-import { EncounterMapSquareType } from './enums';
+import type { EncounterMapSquareType } from '../enums/enums';
 
 export interface EncounterMapSquareModel {
 	x: number;

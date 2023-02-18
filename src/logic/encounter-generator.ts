@@ -1,14 +1,14 @@
-import { CampaignMapRegionModel } from '../models/campaign-map';
-import { CombatantModel } from '../models/combatant';
-import { EncounterModel } from '../models/encounter';
-import { CombatantType, EncounterMapSquareType } from '../models/enums';
+import type { CampaignMapRegionModel } from '../models/campaign-map';
+import type { CombatantModel } from '../models/combatant';
+import type { EncounterModel } from '../models/encounter';
+import { CombatantType, EncounterMapSquareType } from '../enums/enums';
 import { Collections } from '../utils/collections';
 import { Random } from '../utils/random';
 import { CombatantUtils } from './combatant-utils';
 import { EncounterMapUtils } from './encounter-map-utils';
 import { EncounterUtils } from './encounter-utils';
 import { Factory } from './factory';
-import { getSpeciesDeck, getRoleDeck, getBackgroundDeck } from './game-logic';
+import { GameLogic } from './game-logic';
 
 export class EncounterGenerator {
 	static createEncounter = (region: CampaignMapRegionModel, heroes: CombatantModel[]): EncounterModel => {
@@ -21,9 +21,9 @@ export class EncounterGenerator {
 				case 0: {
 					// Add a new monster
 					const monster = Factory.createCombatant(CombatantType.Monster);
-					const speciesID = Collections.draw(getSpeciesDeck());
-					const roleID = Collections.draw(getRoleDeck());
-					const backgroundID = Collections.draw(getBackgroundDeck());
+					const speciesID = Collections.draw(GameLogic.getSpeciesDeck());
+					const roleID = Collections.draw(GameLogic.getRoleDeck());
+					const backgroundID = Collections.draw(GameLogic.getBackgroundDeck());
 					CombatantUtils.applyCombatantCards(monster, speciesID, roleID, backgroundID);
 					CombatantUtils.makeFeatureChoices(monster);
 					CombatantUtils.addItems(monster);

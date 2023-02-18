@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { FeatureModel } from '../../../models/feature';
+import type { FeatureModel } from '../../../models/feature';
 import { Text, TextType } from '../../../controls';
 import { FeatureUtils } from '../../../logic/feature-utils';
 

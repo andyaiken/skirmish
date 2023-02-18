@@ -1,9 +1,16 @@
-import { ActionModel } from '../models/action';
-import { TraitType, SkillType, ItemProficiencyType, ItemLocationType, DamageType } from '../models/enums';
-import { FeatureModel } from '../models/feature';
-import { ItemModel } from '../models/item';
+import type { ActionModel } from '../models/action';
+import type { FeatureModel } from '../models/feature';
+import type { ItemModel } from '../models/item';
+import { TraitType, SkillType, DamageType, ItemLocationType, ItemProficiencyType } from '../enums/enums';
 import { FeatureUtils } from '../logic/feature-utils';
 import { Utils } from '../utils/utils';
+
+const createActionPlaceholder = (name: string): ActionModel => {
+	return {
+		id: Utils.guid(),
+		name: name
+	};
+};
 
 export const universalFeatures: FeatureModel[] = [
 	FeatureUtils.createTraitFeature(TraitType.Any, 1),
@@ -12,13 +19,10 @@ export const universalFeatures: FeatureModel[] = [
 ];
 
 export const universalActions: ActionModel[] = [
-	{
-		id: Utils.guid(),
-		name: 'Unarmed Attack'
-	}
+	createActionPlaceholder('Unarmed Attack')
 ];
 
-export const unarmedAttack: ItemModel = {
+export const fist: ItemModel = {
 	id: 'item-punch',
 	name: 'Punch',
 	baseItem: '',

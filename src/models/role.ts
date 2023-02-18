@@ -1,6 +1,6 @@
-import { ActionModel } from './action';
-import { ItemProficiencyType, SkillType, TraitType } from './enums';
-import { FeatureModel } from './feature';
+import type { ActionModel } from './action';
+import type { ItemProficiencyType, SkillType, TraitType } from '../enums/enums';
+import type { FeatureModel } from './feature';
 
 export interface RoleModel {
 	id: string;

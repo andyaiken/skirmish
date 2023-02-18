@@ -1,5 +1,5 @@
-import { Component, MouseEvent } from 'react';
-import { CampaignMapModel, CampaignMapRegionModel, CampaignMapSquareModel } from '../../../models/campaign-map';
+import { Component } from 'react';
+import type { CampaignMapModel, CampaignMapRegionModel, CampaignMapSquareModel } from '../../../models/campaign-map';
 import { CampaignMapUtils } from '../../../logic/campaign-map-utils';
 
 import './campaign-map-panel.scss';
@@ -11,7 +11,7 @@ interface Props {
 }
 
 export class CampaignMapPanel extends Component<Props> {
-	onClick = (e: MouseEvent, square: CampaignMapSquareModel) => {
+	onClick = (e: React.MouseEvent, square: CampaignMapSquareModel) => {
 		e.stopPropagation();
 		const region = this.props.map.regions.find(r => r.id === square.regionID) ?? null;
 		this.props.onSelectRegion(region);

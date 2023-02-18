@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { SpeciesModel } from '../../../models/species';
+import type { SpeciesModel } from '../../../models/species';
 import { Text, TextType } from '../../../controls';
 import { StatValue } from '../../utility';
 import { FeatureUtils } from '../../../logic/feature-utils';

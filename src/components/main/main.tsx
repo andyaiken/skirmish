@@ -1,26 +1,26 @@
 import { Component } from 'react';
 
-import { BoonModel } from '../../models/boon';
-import { CampaignMapRegionModel } from '../../models/campaign-map';
-import { CombatDataModel } from '../../models/combat-data';
-import { GameModel } from '../../models/game';
-import { CombatantModel } from '../../models/combatant';
-import { FeatureModel } from '../../models/feature';
-import { ItemModel } from '../../models/item';
+import type { BoonModel } from '../../models/boon';
+import type { CampaignMapRegionModel } from '../../models/campaign-map';
+import type { CombatDataModel } from '../../models/combat-data';
+import type { GameModel } from '../../models/game';
+import type { CombatantModel } from '../../models/combatant';
+import type { FeatureModel } from '../../models/feature';
+import type { ItemModel } from '../../models/item';
+import type { EncounterModel } from '../../models/encounter';
 import { Utils } from '../../utils/utils';
 import { BoonCard } from '../cards';
 import { CampaignScreen, EncounterFinishState, EncounterScreen, LandingScreen } from '../screens';
 import { Dialog, Text, TextType } from '../../controls';
 import { PlayingCard } from '../utility';
-import { BoonType, CombatantType } from '../../models/enums';
-import { EncounterModel } from '../../models/encounter';
-import { addHeroToGame } from '../../logic/game-logic';
+import { BoonType, CombatantType } from '../../enums/enums';
 import { CampaignMapUtils } from '../../logic/campaign-map-utils';
 import { Factory } from '../../logic/factory';
 import { EncounterGenerator } from '../../logic/encounter-generator';
 import { EncounterUtils } from '../../logic/encounter-utils';
 
 import './main.scss';
+import { GameLogic } from '../../logic/game-logic';
 
 enum ScreenType {
 	Landing = 'landing',
@@ -107,7 +107,7 @@ export class Main extends Component<Props, State> {
 
 	addHero = (hero: CombatantModel) => {
 		const game = this.state.game as GameModel;
-		addHeroToGame(game, hero);
+		GameLogic.addHeroToGame(game, hero);
 		this.setState({
 			game: game
 		});
@@ -137,7 +137,7 @@ export class Main extends Component<Props, State> {
 
 		switch (boon.type) {
 			case BoonType.ExtraHero:
-				addHeroToGame(game, Factory.createCombatant(CombatantType.Hero));
+				GameLogic.addHeroToGame(game, Factory.createCombatant(CombatantType.Hero));
 				break;
 			case BoonType.ExtraXP:
 				(hero as CombatantModel).xp += boon.data as number;
@@ -311,7 +311,7 @@ export class Main extends Component<Props, State> {
 						);
 					} else {
 						// Add a new level 1 hero
-						addHeroToGame(game, Factory.createCombatant(CombatantType.Hero));
+						GameLogic.addHeroToGame(game, Factory.createCombatant(CombatantType.Hero));
 						// Add the region's boon
 						game.boons.push(region.boon);
 						// Show message

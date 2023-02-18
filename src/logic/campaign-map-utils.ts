@@ -1,8 +1,8 @@
-import { CampaignMapModel, CampaignMapSquareModel, CampaignMapRegionModel } from '../models/campaign-map';
-import { generateBoon } from './game-logic';
+import type { CampaignMapModel, CampaignMapSquareModel, CampaignMapRegionModel } from '../models/campaign-map';
 import { NameGenerator } from './name-generator';
 import { Random } from '../utils/random';
 import { Utils } from '../utils/utils';
+import { GameLogic } from './game-logic';
 
 export class CampaignMapUtils {
 	static generateCampaignMap = (): CampaignMapModel => {
@@ -67,7 +67,7 @@ export class CampaignMapUtils {
 				name: NameGenerator.generateName(),
 				color: `rgb(${r}, ${g}, ${b})`,
 				encounters: encounters,
-				boon: generateBoon()
+				boon: GameLogic.generateBoon()
 			});
 		}
 

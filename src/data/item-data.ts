@@ -1,5 +1,5 @@
-import { ItemProficiencyType, ItemLocationType, DamageType, DamageCategoryType, SkillCategoryType, TraitType } from '../models/enums';
-import { ItemModel } from '../models/item';
+import type { ItemModel } from '../models/item';
+import { TraitType, DamageType, DamageCategoryType, ItemLocationType, ItemProficiencyType, SkillCategoryType } from '../enums/enums';
 import { FeatureUtils } from '../logic/feature-utils';
 
 export const ItemList: ItemModel[] = [

@@ -1,8 +1,8 @@
 import { Component } from 'react';
 import { Selector, Text, TextType } from '../../../../controls';
-import { TraitType, SkillType, SkillCategoryType, ItemProficiencyType, DamageType, DamageCategoryType, FeatureType } from '../../../../models/enums';
-import { FeatureModel } from '../../../../models/feature';
-import { CombatantModel } from '../../../../models/combatant';
+import { TraitType, SkillType, SkillCategoryType, ItemProficiencyType, DamageType, DamageCategoryType, FeatureType } from '../../../../enums/enums';
+import type { FeatureModel } from '../../../../models/feature';
+import type { CombatantModel } from '../../../../models/combatant';
 import { FeatureCard, PlaceholderCard } from '../../../cards';
 import { CardList, PlayingCard, PlayingCardSide } from '../../../utility';
 

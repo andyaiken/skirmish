@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { BackgroundModel } from '../../../models/background';
+import type { BackgroundModel } from '../../../models/background';
 import { Text, TextType } from '../../../controls';
 import { StatValue } from '../../utility';
 import { FeatureUtils } from '../../../logic/feature-utils';

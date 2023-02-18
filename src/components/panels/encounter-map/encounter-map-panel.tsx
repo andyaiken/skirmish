@@ -1,6 +1,6 @@
-import { Component, MouseEvent } from 'react';
-import { CombatantModel } from '../../../models/combatant';
-import { EncounterModel } from '../../../models/encounter';
+import { Component } from 'react';
+import type { CombatantModel } from '../../../models/combatant';
+import type { EncounterModel } from '../../../models/encounter';
 import { EncounterMapUtils } from '../../../logic/encounter-map-utils';
 import { EncounterUtils } from '../../../logic/encounter-utils';
 
@@ -14,7 +14,7 @@ interface Props {
 }
 
 export class EncounterMapPanel extends Component<Props> {
-	onSelectCombatant = (e: MouseEvent, combatant: CombatantModel | null) => {
+	onSelectCombatant = (e: React.MouseEvent, combatant: CombatantModel | null) => {
 		e.stopPropagation();
 		this.props.onSelect(combatant);
 	};

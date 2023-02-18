@@ -1,6 +1,6 @@
-import { ActionModel } from './action';
-import { ConditionModel } from './condition';
-import { CombatantType, CombatDataState } from './enums';
+import type { ActionModel } from './action';
+import type { ConditionModel } from './condition';
+import type { CombatantType, CombatDataState } from '../enums/enums';
 
 export interface CombatDataModel {
 	id: string;

@@ -1,8 +1,8 @@
 import { Component } from 'react';
 import { Dialog, Text, TextType } from '../../../../controls';
-import { CampaignMapRegionModel } from '../../../../models/campaign-map';
-import { GameModel } from '../../../../models/game';
-import { CombatantModel } from '../../../../models/combatant';
+import type { CampaignMapRegionModel } from '../../../../models/campaign-map';
+import type { GameModel } from '../../../../models/game';
+import type { CombatantModel } from '../../../../models/combatant';
 import { CampaignMapUtils } from '../../../../logic/campaign-map-utils';
 import { BoonCard, HeroCard } from '../../../cards';
 import { CampaignMapPanel } from '../../../panels';

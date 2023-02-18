@@ -1,4 +1,4 @@
-import { AuraType, DamageType, DamageCategoryType } from './enums';
+import type { AuraType, DamageType, DamageCategoryType } from '../enums/enums';
 
 export interface AuraModel {
 	id: string;

@@ -1,4 +1,4 @@
-import { AuraType, DamageCategoryType, DamageType, FeatureType, ItemProficiencyType, SkillCategoryType, SkillType, TraitType } from './enums';
+import type { AuraType, DamageCategoryType, DamageType, FeatureType, ItemProficiencyType, SkillCategoryType, SkillType, TraitType } from '../enums/enums';
 
 export interface FeatureModel {
 	id: string;

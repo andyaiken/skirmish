@@ -73,3 +73,4 @@
 
 * Convert to functional components
 * Use hooks
+* Use CSS modules

@@ -2,6 +2,7 @@
 	"name": "skirmish",
 	"version": "0.0.1",
 	"repository": "https://github.com/andyaiken/skirmish.git",
+	"homepage": "https://andyaiken.github.io/skirmish/",
 	"dependencies": {
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0"
@@ -13,6 +14,7 @@
 		"@typescript-eslint/parser": "^5.52.0",
 		"eslint": "^8.34.0",
 		"eslint-config-react-app": "^7.0.1",
+		"gh-pages": "^5.0.0",
 		"react-scripts": "^5.0.1",
 		"sass": "^1.58.3",
 		"typescript": "^4.9.5"
@@ -20,7 +22,9 @@
 	"scripts": {
 		"update": "npx npm-check-updates --interactive --format group",
 		"start": "react-scripts start --display-error-details",
-		"lint": "npx eslint src --ext .ts,.tsx"
+		"lint": "npx eslint src --ext .ts,.tsx",
+		"predeploy": "react-scripts build",
+		"deploy": "gh-pages -d build"
 	},
 	"eslintConfig": {
 		"extends": [
@@ -150,7 +154,6 @@
 			"@typescript-eslint/no-extra-parens": "off",
 			"@typescript-eslint/naming-convention": "off",
 			"@typescript-eslint/switch-exhaustiveness-check": "off",
-			"@typescript-eslint/consistent-type-imports": "off",
 			"multiline-comment-style": "off",
 			"capitalized-comments": "off",
 			"prefer-destructuring": "off",

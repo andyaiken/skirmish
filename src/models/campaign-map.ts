@@ -1,4 +1,4 @@
-import { BoonModel } from './boon';
+import type { BoonModel } from './boon';
 
 export interface CampaignMapSquareModel {
 	x: number;

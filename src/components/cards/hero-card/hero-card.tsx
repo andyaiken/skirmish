@@ -1,12 +1,12 @@
 import { Component } from 'react';
 import { Tag, Text, TextType } from '../../../controls';
-import { CombatantModel } from '../../../models/combatant';
-import { TraitType } from '../../../models/enums';
-import { getBackground, getRole, getSpecies } from '../../../logic/game-logic';
+import type { CombatantModel } from '../../../models/combatant';
+import { TraitType } from '../../../enums/enums';
 import { StatValue } from '../../utility';
 import { CombatantUtils } from '../../../logic/combatant-utils';
 
 import './hero-card.scss';
+import { GameLogic } from '../../../logic/game-logic';
 
 interface Props {
 	hero: CombatantModel;
@@ -30,9 +30,9 @@ export class HeroCard extends Component<Props> {
 				<Text type={TextType.SubHeading}>{this.props.hero.name || 'unnamed hero'}</Text>
 				<hr />
 				<div className='tags'>
-					<Tag>{getSpecies(this.props.hero.speciesID)?.name ?? 'Unknown species'}</Tag>
-					<Tag>{getRole(this.props.hero.roleID)?.name ?? 'Unknown role'}</Tag>
-					<Tag>{getBackground(this.props.hero.backgroundID)?.name ?? 'Unknown background'}</Tag>
+					<Tag>{GameLogic.getSpecies(this.props.hero.speciesID)?.name ?? 'Unknown species'}</Tag>
+					<Tag>{GameLogic.getRole(this.props.hero.roleID)?.name ?? 'Unknown role'}</Tag>
+					<Tag>{GameLogic.getBackground(this.props.hero.backgroundID)?.name ?? 'Unknown background'}</Tag>
 					<Tag>Level {this.props.hero.level}</Tag>
 				</div>
 				<div className='traits'>

@@ -1,16 +1,16 @@
 import { Component } from 'react';
 import { Tag, Text, TextType } from '../../../controls';
-import { GameModel } from '../../../models/game';
-import { CombatantModel } from '../../../models/combatant';
-import { ItemModel } from '../../../models/item';
+import type { GameModel } from '../../../models/game';
+import type { CombatantModel } from '../../../models/combatant';
+import type { ItemModel } from '../../../models/item';
 import { NameGenerator } from '../../../logic/name-generator';
 import { BackgroundCard, ItemCard, PlaceholderCard, RoleCard, SpeciesCard } from '../../cards';
 import { CardList, PlayingCard, PlayingCardSide } from '../../utility';
-import { getBackground, getBackgroundDeck, getItem, getItemsForProficiency, getRole, getRoleDeck, getSpecies, getSpeciesDeck } from '../../../logic/game-logic';
 import { Collections } from '../../../utils/collections';
 
 import './hero-builder-panel.scss';
 import { CombatantUtils } from '../../../logic/combatant-utils';
+import { GameLogic } from '../../../logic/game-logic';
 
 interface Props {
 	hero: CombatantModel;
@@ -94,9 +94,9 @@ export class HeroBuilderPanel extends Component<Props, State> {
 			);
 		} else if (this.state.hero.level === 1) {
 			// Finalise character creation
-			const species = getSpecies(this.state.hero.speciesID);
-			const role = getRole(this.state.hero.roleID);
-			const background = getBackground(this.state.hero.backgroundID);
+			const species = GameLogic.getSpecies(this.state.hero.speciesID);
+			const role = GameLogic.getRole(this.state.hero.roleID);
+			const background = GameLogic.getBackground(this.state.hero.backgroundID);
 
 			content = (
 				<div className='finish-page'>
@@ -148,9 +148,9 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 	constructor(props: CardSelectorProps) {
 		super(props);
 		this.state = {
-			speciesIDs: Collections.shuffle(getSpeciesDeck(this.props.game)).splice(0, 3),
-			roleIDs: Collections.shuffle(getRoleDeck(this.props.game)).splice(0, 3),
-			backgroundIDs: Collections.shuffle(getBackgroundDeck(this.props.game)).splice(0, 3),
+			speciesIDs: Collections.shuffle(GameLogic.getSpeciesDeck(this.props.game)).splice(0, 3),
+			roleIDs: Collections.shuffle(GameLogic.getRoleDeck(this.props.game)).splice(0, 3),
+			backgroundIDs: Collections.shuffle(GameLogic.getBackgroundDeck(this.props.game)).splice(0, 3),
 			selectedSpeciesID: '',
 			selectedRoleID: '',
 			selectedBackgroundID: ''
@@ -187,7 +187,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 
 	public render() {
 		const speciesCards = this.state.speciesIDs.map(id => {
-			const species = getSpecies(id);
+			const species = GameLogic.getSpecies(id);
 			if (species) {
 				return (
 					<div key={species.id}>
@@ -205,7 +205,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 		});
 
 		const roleCards = this.state.roleIDs.map(id => {
-			const role = getRole(id);
+			const role = GameLogic.getRole(id);
 			if (role) {
 				return (
 					<div key={role.id}>
@@ -223,7 +223,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 		});
 
 		const backgroundCards = this.state.backgroundIDs.map(id => {
-			const background = getBackground(id);
+			const background = GameLogic.getBackground(id);
 			if (background) {
 				return (
 					<div key={background.id}>
@@ -284,7 +284,7 @@ class EquipmentSelector extends Component<EquipmentSelectorProps, EquipmentSelec
 	}
 
 	private selectItem(id: string) {
-		const item = getItem(id);
+		const item = GameLogic.getItem(id);
 		if (item) {
 			const slotFilled = this.state.items.find(i => i.proficiency === item.proficiency);
 			if (!slotFilled) {
@@ -298,7 +298,7 @@ class EquipmentSelector extends Component<EquipmentSelectorProps, EquipmentSelec
 	}
 
 	public render() {
-		const role = getRole(this.props.hero.roleID);
+		const role = GameLogic.getRole(this.props.hero.roleID);
 		if (!role) {
 			return null;
 		}
@@ -308,7 +308,7 @@ class EquipmentSelector extends Component<EquipmentSelectorProps, EquipmentSelec
 				.filter(item => item.proficiency === prof)
 				.map(item => item.id);
 
-			const items = getItemsForProficiency(prof).map(item => (
+			const items = GameLogic.getItemsForProficiency(prof).map(item => (
 				<div key={item.id}>
 					<PlayingCard
 						front={<ItemCard item={item} />}

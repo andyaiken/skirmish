@@ -1,19 +1,19 @@
 import { Component } from 'react';
-import { EncounterModel } from '../../../models/encounter';
-import { GameModel } from '../../../models/game';
-import { CombatantModel } from '../../../models/combatant';
-import { CombatDataState, TraitType, CombatantType, SkillType, EncounterState } from '../../../models/enums';
-import { ItemModel } from '../../../models/item';
+import type { EncounterModel } from '../../../models/encounter';
+import type { GameModel } from '../../../models/game';
+import type { CombatantModel } from '../../../models/combatant';
+import type { ItemModel } from '../../../models/item';
+import type { CombatDataModel } from '../../../models/combat-data';
+import { CombatDataState, TraitType, CombatantType, SkillType, EncounterState } from '../../../enums/enums';
 import { DirectionPanel, EncounterMapPanel, InitiativeListPanel } from '../../panels';
 import { Tag, Text, TextType } from '../../../controls';
 import { Box, CardList, IconType, IconValue, PlayingCard, StatValue } from '../../utility';
-import { CombatDataModel } from '../../../models/combat-data';
 import { ActionCard } from '../../cards';
-import { getBackground, getRole, getSpecies } from '../../../logic/game-logic';
 import { CombatantUtils } from '../../../logic/combatant-utils';
+import { EncounterUtils } from '../../../logic/encounter-utils';
 
 import './encounter-screen.scss';
-import { EncounterUtils } from '../../../logic/encounter-utils';
+import { GameLogic } from '../../../logic/game-logic';
 
 export enum EncounterFinishState {
 	Victory = 'victory',
@@ -120,9 +120,9 @@ export class EncounterScreen extends Component<Props, State> {
 						<div>
 							<Text type={TextType.SubHeading}>{combatant.name}</Text>
 							<div className='tags'>
-								<Tag>{getSpecies(combatant.speciesID)?.name ?? 'Unknown species'}</Tag>
-								<Tag>{getRole(combatant.roleID)?.name ?? 'Unknown role'}</Tag>
-								<Tag>{getBackground(combatant.backgroundID)?.name ?? 'Unknown background'}</Tag>
+								<Tag>{GameLogic.getSpecies(combatant.speciesID)?.name ?? 'Unknown species'}</Tag>
+								<Tag>{GameLogic.getRole(combatant.roleID)?.name ?? 'Unknown role'}</Tag>
+								<Tag>{GameLogic.getBackground(combatant.backgroundID)?.name ?? 'Unknown background'}</Tag>
 								<Tag>Level {combatant.level}</Tag>
 							</div>
 							{prone ? <Text type={TextType.Information}><b>You are Prone.</b> Your skill ranks are halved and moving costs are doubled.</Text> : null}
@@ -192,12 +192,12 @@ export class EncounterScreen extends Component<Props, State> {
 								<DirectionPanel combatData={combatData} costs={moveCosts} onMove={(dir, cost) => this.props.move(this.props.encounter, combatData, dir, cost)} />
 							</div>
 							<hr />
-							<div className='actions'>
+							<div className='actions not-implemented'>
 								<CardList cards={actionCards} />
 							</div>
 							<hr />
-							<button onClick={() => null}>Pick Up Item<br/><IconValue value={2} type={IconType.Movement} /></button>
-							<button onClick={() => null}>Drop Item<br/><IconValue value={1} type={IconType.Movement} /></button>
+							<button className='not-implemented' onClick={() => null}>Pick Up Item<br/><IconValue value={2} type={IconType.Movement} /></button>
+							<button className='not-implemented' onClick={() => null}>Drop Item<br/><IconValue value={1} type={IconType.Movement} /></button>
 							<hr />
 							<button onClick={this.endTurn}>End Turn</button>
 							<hr />

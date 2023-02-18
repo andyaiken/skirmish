@@ -1,12 +1,12 @@
 import { Component } from 'react';
 import { Tag, Text } from '../../../../controls';
-import { CombatantModel } from '../../../../models/combatant';
-import { TraitType, SkillType, DamageType } from '../../../../models/enums';
+import type { CombatantModel } from '../../../../models/combatant';
+import { TraitType, SkillType, DamageType } from '../../../../enums/enums';
 import { CombatantUtils } from '../../../../logic/combatant-utils';
-import { getAuraDescription } from '../../../../logic/game-logic';
 import { Box, StatValue } from '../../../utility';
 
 import './stats.scss';
+import { GameLogic } from '../../../../logic/game-logic';
 
 interface Props {
 	hero: CombatantModel;
@@ -35,7 +35,7 @@ export class Stats extends Component<Props> {
 		if (auras.length > 0) {
 			auraSection = (
 				<div>
-					{auras.map(a => (<StatValue key={a.id} label={getAuraDescription(a)} value={a.rank} />))}
+					{auras.map(a => (<StatValue key={a.id} label={GameLogic.getAuraDescription(a)} value={a.rank} />))}
 				</div>
 			);
 		} else {

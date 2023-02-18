@@ -1,9 +1,9 @@
-import { AuraModel } from '../models/aura';
-import { CombatDataModel } from '../models/combat-data';
-import { CombatantModel } from '../models/combatant';
-import { CombatDataState, CombatantType } from '../models/enums';
-import { FeatureModel } from '../models/feature';
-import { GameModel } from '../models/game';
+import type { AuraModel } from '../models/aura';
+import type { CombatDataModel } from '../models/combat-data';
+import type { CombatantModel } from '../models/combatant';
+import type { FeatureModel } from '../models/feature';
+import type { GameModel } from '../models/game';
+import { CombatDataState, CombatantType } from '../enums/enums';
 import { Utils } from '../utils/utils';
 import { CampaignMapUtils } from './campaign-map-utils';
 

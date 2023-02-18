@@ -1,10 +1,10 @@
 import { Component } from 'react';
 
 import { Dialog, Text, TextType } from '../../../../controls';
-import { ItemLocationType, ItemProficiencyType } from '../../../../models/enums';
-import { GameModel } from '../../../../models/game';
-import { CombatantModel } from '../../../../models/combatant';
-import { ItemModel } from '../../../../models/item';
+import { ItemLocationType, ItemProficiencyType } from '../../../../enums/enums';
+import type { GameModel } from '../../../../models/game';
+import type { CombatantModel } from '../../../../models/combatant';
+import type { ItemModel } from '../../../../models/item';
 import { ItemCard } from '../../../cards';
 import { PlayingCard } from '../../../utility';
 

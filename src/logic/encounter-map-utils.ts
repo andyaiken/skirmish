@@ -1,5 +1,5 @@
-import { EncounterMapModel, EncounterMapSquareModel } from '../models/encounter-map';
-import { EncounterMapSquareType } from '../models/enums';
+import type { EncounterMapModel, EncounterMapSquareModel } from '../models/encounter-map';
+import { EncounterMapSquareType } from '../enums/enums';
 import { Random } from '../utils/random';
 
 export class EncounterMapUtils {

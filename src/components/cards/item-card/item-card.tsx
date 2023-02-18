@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import { Tag, Text, TextType } from '../../../controls';
-import { ItemProficiencyType } from '../../../models/enums';
-import { ItemModel } from '../../../models/item';
+import { ItemProficiencyType } from '../../../enums/enums';
+import type { ItemModel } from '../../../models/item';
 import { FeatureUtils } from '../../../logic/feature-utils';
 import { StatValue } from '../../utility';
 

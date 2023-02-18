@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { RoleModel } from '../../../models/role';
+import type { RoleModel } from '../../../models/role';
 import { Text, TextType } from '../../../controls';
 import { FeatureUtils } from '../../../logic/feature-utils';
 import { StatValue } from '../../utility';

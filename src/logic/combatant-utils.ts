@@ -1,25 +1,25 @@
 import { universalFeatures, universalActions } from '../data/universal-data';
-import { AuraModel } from '../models/aura';
-import { CombatantModel } from '../models/combatant';
-import { CombatantType, TraitType, SkillType, SkillCategoryType, ItemProficiencyType, DamageType, DamageCategoryType, FeatureType } from '../models/enums';
-import { FeatureModel } from '../models/feature';
-import { ItemModel } from '../models/item';
+import type { AuraModel } from '../models/aura';
+import type { CombatantModel } from '../models/combatant';
+import type { FeatureModel } from '../models/feature';
+import type { ItemModel } from '../models/item';
+import { CombatantType, TraitType, SkillType, SkillCategoryType, ItemProficiencyType, DamageType, DamageCategoryType, FeatureType } from '../enums/enums';
 import { Collections } from '../utils/collections';
 import { Random } from '../utils/random';
 import { Factory } from './factory';
 import { FeatureUtils } from './feature-utils';
-import { getSpecies, getRole, getBackground, getItemsForProficiency, getSkillCategory, getDamageCategoryType } from './game-logic';
+import { GameLogic } from './game-logic';
 
 export class CombatantUtils {
 	static applyCombatantCards = (combatant: CombatantModel, speciesID: string, roleID: string, backgroundID: string) => {
-		const species = getSpecies(speciesID);
+		const species = GameLogic.getSpecies(speciesID);
 		if (species) {
 			combatant.speciesID = species.id;
 			combatant.size = species.size;
 			species.traits.forEach(t => combatant.features.push(FeatureUtils.createTraitFeature(t, 1)));
 		}
 
-		const role = getRole(roleID);
+		const role = GameLogic.getRole(roleID);
 		if (role) {
 			combatant.roleID = role.id;
 			role.traits.forEach(t => combatant.features.push(FeatureUtils.createTraitFeature(t, 1)));
@@ -27,7 +27,7 @@ export class CombatantUtils {
 			role.proficiencies.forEach(p => combatant.features.push(FeatureUtils.createProficiencyFeature(p)));
 		}
 
-		const background = getBackground(backgroundID);
+		const background = GameLogic.getBackground(backgroundID);
 		if (background) {
 			combatant.backgroundID = background.id;
 		}
@@ -123,7 +123,7 @@ export class CombatantUtils {
 
 	static addItems = (combatant: CombatantModel) => {
 		CombatantUtils.getProficiencies(combatant).forEach(prof => {
-			const items = getItemsForProficiency(prof);
+			const items = GameLogic.getItemsForProficiency(prof);
 			const n = Random.randomNumber(items.length);
 			const item = JSON.parse(JSON.stringify(items[n])) as ItemModel;
 			combatant.items.push(item);
@@ -131,9 +131,9 @@ export class CombatantUtils {
 	};
 
 	static getFeatureDeck = (combatant: CombatantModel) => {
-		const s = getSpecies(combatant.speciesID);
-		const r = getRole(combatant.roleID);
-		const b = getBackground(combatant.backgroundID);
+		const s = GameLogic.getSpecies(combatant.speciesID);
+		const r = GameLogic.getRole(combatant.roleID);
+		const b = GameLogic.getBackground(combatant.backgroundID);
 
 		return universalFeatures
 			.concat(s ? s.features : [])
@@ -142,9 +142,9 @@ export class CombatantUtils {
 	};
 
 	static getActionDeck = (combatant: CombatantModel) => {
-		const s = getSpecies(combatant.speciesID);
-		const r = getRole(combatant.roleID);
-		const b = getBackground(combatant.backgroundID);
+		const s = GameLogic.getSpecies(combatant.speciesID);
+		const r = GameLogic.getRole(combatant.roleID);
+		const b = GameLogic.getBackground(combatant.backgroundID);
 
 		let list = universalActions
 			.concat(s ? s.actions : [])
@@ -165,17 +165,17 @@ export class CombatantUtils {
 					return 'Universal';
 				}
 
-				const s = getSpecies(combatant.speciesID);
+				const s = GameLogic.getSpecies(combatant.speciesID);
 				if (!!s && s.actions.find(c => c.id === cardID)) {
 					return s.name;
 				}
 
-				const r = getRole(combatant.roleID);
+				const r = GameLogic.getRole(combatant.roleID);
 				if (!!r && r.actions.find(c => c.id === cardID)) {
 					return r.name;
 				}
 
-				const b = getBackground(combatant.backgroundID);
+				const b = GameLogic.getBackground(combatant.backgroundID);
 				if (!!b && b.actions.find(c => c.id === cardID)) {
 					return b.name;
 				}
@@ -193,17 +193,17 @@ export class CombatantUtils {
 					return 'Universal';
 				}
 
-				const s = getSpecies(combatant.speciesID);
+				const s = GameLogic.getSpecies(combatant.speciesID);
 				if (!!s && s.features.find(c => c.id === cardID)) {
 					return s.name;
 				}
 
-				const r = getRole(combatant.roleID);
+				const r = GameLogic.getRole(combatant.roleID);
 				if (!!r && r.features.find(c => c.id === cardID)) {
 					return r.name;
 				}
 
-				const b = getBackground(combatant.backgroundID);
+				const b = GameLogic.getBackground(combatant.backgroundID);
 				if (!!b && b.features.find(c => c.id === cardID)) {
 					return b.name;
 				}
@@ -250,7 +250,7 @@ export class CombatantUtils {
 			.forEach(f => value += f.rank);
 		CombatantUtils.getFeatures(combatant)
 			.filter(f => f.type === FeatureType.SkillCategory)
-			.filter(f => (f.skillCategory === getSkillCategory(skill)) || (f.skillCategory === SkillCategoryType.All))
+			.filter(f => (f.skillCategory === GameLogic.getSkillCategory(skill)) || (f.skillCategory === SkillCategoryType.All))
 			.forEach(f => value += f.rank);
 
 		return Math.max(value, 0);
@@ -265,7 +265,7 @@ export class CombatantUtils {
 			.forEach(f => value += f.rank);
 		CombatantUtils.getFeatures(combatant)
 			.filter(f => f.type === FeatureType.DamageCategoryTypeBonus)
-			.filter(f => (f.DamageCategoryType === getDamageCategoryType(damage)) || (f.DamageCategoryType === DamageCategoryType.All))
+			.filter(f => (f.DamageCategoryType === GameLogic.getDamageCategoryType(damage)) || (f.DamageCategoryType === DamageCategoryType.All))
 			.forEach(f => value += f.rank);
 
 		return Math.max(value, 0);
@@ -280,7 +280,7 @@ export class CombatantUtils {
 			.forEach(f => value += f.rank);
 		CombatantUtils.getFeatures(combatant)
 			.filter(f => f.type === FeatureType.DamageCategoryTypeResist)
-			.filter(f => (f.DamageCategoryType === getDamageCategoryType(damage)) || (f.DamageCategoryType === DamageCategoryType.All))
+			.filter(f => (f.DamageCategoryType === GameLogic.getDamageCategoryType(damage)) || (f.DamageCategoryType === DamageCategoryType.All))
 			.forEach(f => value += f.rank);
 
 		return Math.max(value, 0);

@@ -1,11 +1,11 @@
 import { Component } from 'react';
 
 import { ItemCard } from '../item-card/item-card';
-import { BoonModel } from '../../../models/boon';
-import { ItemModel } from '../../../models/item';
+import type { BoonModel } from '../../../models/boon';
+import type { ItemModel } from '../../../models/item';
 import { Text, TextType } from '../../../controls';
 import { StatValue } from '../../utility';
-import { BoonType } from '../../../models/enums';
+import { BoonType } from '../../../enums/enums';
 
 import './boon-card.scss';
 

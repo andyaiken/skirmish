@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { GameModel } from '../../../models/game';
+import type { GameModel } from '../../../models/game';
 
 import './landing-screen.scss';
 

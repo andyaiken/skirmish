@@ -1,5 +1,5 @@
-import { BoonType } from './enums';
-import { ItemModel } from './item';
+import type { BoonType } from '../enums/enums';
+import type { ItemModel } from './item';
 
 export interface BoonModel {
 	id: string;

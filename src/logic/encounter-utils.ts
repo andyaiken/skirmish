@@ -5,6 +5,7 @@ import { EncounterMapSquareType } from '../enums/encounter-map-square-type';
 import { EncounterState } from '../enums/encounter-state';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
+import { ActionModel } from '../models/action';
 import type { CombatDataModel } from '../models/combat-data';
 import type { CombatantModel } from '../models/combatant';
 import type { EncounterModel } from '../models/encounter';

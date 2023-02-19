@@ -8,6 +8,7 @@ import './encounter-map-panel.scss';
 
 interface Props {
 	encounter: EncounterModel;
+	squareSize: number;
 	currentID: string | null;
 	selectedIDs: string[];
 	onSelect: (combatant: CombatantModel | null) => void;
@@ -23,11 +24,6 @@ export class EncounterMapPanel extends Component<Props> {
 		// Get dimensions
 		const dims = EncounterMapUtils.getEncounterMapDimensions(this.props.encounter.map);
 
-		// Determine the percentage width and height of a square
-		const width = 1 + (dims.right - dims.left);
-		const height = 1 + (dims.bottom - dims.top);
-		const squareSizePC = 100 / Math.max(width, height);
-
 		const squares = this.props.encounter.map.squares.map(sq => {
 			const className = `encounter-map-square ${sq.type.toLowerCase()}`;
 			return (
@@ -35,10 +31,10 @@ export class EncounterMapPanel extends Component<Props> {
 					key={`${sq.x} ${sq.y}`}
 					className={className}
 					style={{
-						width: `${squareSizePC}%`,
-						height: `${squareSizePC}%`,
-						left: `${((sq.x - dims.left) * squareSizePC)}%`,
-						top: `${((sq.y - dims.top) * squareSizePC)}%`
+						width: `${this.props.squareSize}px`,
+						height: `${this.props.squareSize}px`,
+						left: `${((sq.x - dims.left) * this.props.squareSize)}px`,
+						top: `${((sq.y - dims.top) * this.props.squareSize)}px`
 					}}
 				/>
 			);
@@ -54,10 +50,11 @@ export class EncounterMapPanel extends Component<Props> {
 					key={cd.id}
 					className={className}
 					style={{
-						width: `${squareSizePC * combatant.size}%`,
-						height: `${squareSizePC * combatant.size}%`,
-						left: `${((cd.position.x - dims.left) * squareSizePC)}%`,
-						top: `${((cd.position.y - dims.top) * squareSizePC)}%`
+						width: `${this.props.squareSize * combatant.size}px`,
+						height: `${this.props.squareSize * combatant.size}px`,
+						left: `${((cd.position.x - dims.left) * this.props.squareSize)}px`,
+						top: `${((cd.position.y - dims.top) * this.props.squareSize)}px`,
+						fontSize: `${this.props.squareSize * 0.8}px`
 					}}
 					title={combatant.name}
 					onClick={e => this.onSelectCombatant(e, combatant)}
@@ -69,11 +66,9 @@ export class EncounterMapPanel extends Component<Props> {
 
 		return (
 			<div className='encounter-map'>
-				<div className='encounter-map-inner'>
-					<div className='encounter-map-square-container' onClick={e => this.onSelectCombatant(e, null)}>
-						{squares}
-						{tokens}
-					</div>
+				<div className='encounter-map-square-container' onClick={e => this.onSelectCombatant(e, null)}>
+					{squares}
+					{tokens}
 				</div>
 			</div>
 		);

@@ -37,12 +37,14 @@ export class PlayingCard extends Component<Props> {
 		if (this.props.display === PlayingCardSide.Back) {
 			className += ' flipped';
 		}
+		const hasFront = (this.props.front !== null) && (this.props.front !== '');
+		const hasFooter = (this.props.footer !== null) && (this.props.footer !== '');
 		return (
 			<div className={className} onClick={this.onClick}>
 				<div className='playing-card-inner'>
 					<div className='playing-card-front'>
-						{this.props.front !== null ? <div className='front-content'>{this.props.front}</div> : null }
-						{this.props.footer !== null ? <div className='front-footer'>{this.props.footer}</div> : null }
+						{hasFront ? <div className='front-content'>{this.props.front}</div> : null }
+						{hasFooter ? <div className='front-footer'>{this.props.footer}</div> : null }
 					</div>
 					<div className='playing-card-back'>
 						{this.props.back}

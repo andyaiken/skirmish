@@ -9,39 +9,47 @@ import { ItemLocationType } from '../enums/item-location-type';
 import { ItemProficiencyType } from '../enums/item-proficiency-type';
 import { SkillType } from '../enums/skill-type';
 
-const createActionPlaceholder = (name: string): ActionModel => {
-	return {
-		id: Utils.guid(),
-		name: name
+export class UniversalData {
+	static createActionPlaceholder = (name: string): ActionModel => {
+		return {
+			id: Utils.guid(),
+			name: name
+		};
 	};
-};
 
-export const universalFeatures: FeatureModel[] = [
-	FeatureUtils.createTraitFeature(TraitType.Any, 1),
-	FeatureUtils.createSkillFeature(SkillType.Any, 1),
-	FeatureUtils.createProficiencyFeature(ItemProficiencyType.Any)
-];
+	static getUniversalFeatures = (): FeatureModel[] => {
+		return [
+			FeatureUtils.createTraitFeature(TraitType.Any, 1),
+			FeatureUtils.createSkillFeature(SkillType.Any, 1),
+			FeatureUtils.createProficiencyFeature(ItemProficiencyType.Any)
+		];
+	};
 
-export const universalActions: ActionModel[] = [
-	createActionPlaceholder('Unarmed Attack')
-];
+	static getUniversalActions = (): ActionModel[] => {
+		return [
+			UniversalData.createActionPlaceholder('Unarmed Attack')
+		];
+	};
 
-export const fist: ItemModel = {
-	id: 'item-punch',
-	name: 'Punch',
-	baseItem: '',
-	magic: false,
-	proficiency: ItemProficiencyType.None,
-	location: ItemLocationType.None,
-	slots: 1,
-	weapon: {
-		damage: {
-			type: DamageType.Impact,
-			rank: 0
-		},
-		range: 0,
-		unreliable: 0
-	},
-	features: [],
-	actions: []
-};
+	static getFist = (): ItemModel => {
+		return {
+			id: 'item-punch',
+			name: 'Punch',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.None,
+			slots: 1,
+			weapon: {
+				damage: {
+					type: DamageType.Impact,
+					rank: 0
+				},
+				range: 0,
+				unreliable: 0
+			},
+			features: [],
+			actions: []
+		};
+	};
+}

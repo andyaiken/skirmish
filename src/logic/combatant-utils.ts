@@ -1,4 +1,4 @@
-import { universalFeatures, universalActions } from '../data/universal-data';
+import { UniversalData } from '../data/universal-data';
 import { CombatantType } from '../enums/combatant-type';
 import { DamageCategoryType } from '../enums/damage-category-type';
 import { DamageType } from '../enums/damage-type';
@@ -142,7 +142,8 @@ export class CombatantUtils {
 		const r = GameLogic.getRole(combatant.roleID);
 		const b = GameLogic.getBackground(combatant.backgroundID);
 
-		return universalFeatures
+		return UniversalData
+			.getUniversalFeatures()
 			.concat(s ? s.features : [])
 			.concat(r ? r.features : [])
 			.concat(b ? b.features : []);
@@ -153,7 +154,8 @@ export class CombatantUtils {
 		const r = GameLogic.getRole(combatant.roleID);
 		const b = GameLogic.getBackground(combatant.backgroundID);
 
-		let list = universalActions
+		let list = UniversalData
+			.getUniversalActions()
 			.concat(s ? s.actions : [])
 			.concat(r ? r.actions : [])
 			.concat(b ? b.actions : []);
@@ -168,7 +170,7 @@ export class CombatantUtils {
 	static getCardSource = (combatant: CombatantModel, cardID: string, cardType: 'action' | 'feature') => {
 		switch (cardType) {
 			case 'action': {
-				if (universalActions.find(a => a.id === cardID)) {
+				if (UniversalData.getUniversalActions().find(a => a.id === cardID)) {
 					return 'Universal';
 				}
 
@@ -196,7 +198,7 @@ export class CombatantUtils {
 				break;
 			}
 			case 'feature': {
-				if (universalFeatures.find(f => f.id === cardID)) {
+				if (UniversalData.getUniversalFeatures().find(f => f.id === cardID)) {
 					return 'Universal';
 				}
 

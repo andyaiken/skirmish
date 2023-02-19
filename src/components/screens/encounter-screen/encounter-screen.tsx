@@ -40,6 +40,7 @@ interface Props {
 }
 
 interface State {
+	mapSquareSize: number;
 	selectedIDs: string[];
 }
 
@@ -47,9 +48,17 @@ export class EncounterScreen extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
+			mapSquareSize: 10,
 			selectedIDs: []
 		};
 	}
+
+	nudgeMapSize = (delta: number) => {
+		const size = Math.max(this.state.mapSquareSize + delta, 5);
+		this.setState({
+			mapSquareSize: size
+		});
+	};
 
 	selectCombatant = (combatant: CombatantModel | null) => {
 		this.setState({
@@ -271,10 +280,15 @@ export class EncounterScreen extends Component<Props, State> {
 				<div className='encounter-central-panel'>
 					<EncounterMapPanel
 						encounter={this.props.encounter}
+						squareSize={this.state.mapSquareSize}
 						currentID={currentID}
 						selectedIDs={this.state.selectedIDs}
 						onSelect={this.selectCombatant}
 					/>
+					<div className='map-controls'>
+						<button disabled={this.state.mapSquareSize <= 5} onClick={() => this.nudgeMapSize(-5)}>-</button>
+						<button disabled={this.state.mapSquareSize >= 50} onClick={() => this.nudgeMapSize(+5)}>+</button>
+					</div>
 				</div>
 				{controls}
 			</div>

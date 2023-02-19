@@ -1,4 +1,4 @@
-import { ItemList } from '../data/item-data';
+import { ItemData } from '../data/item-data';
 import type { ItemModel, WeaponModel } from '../models/item';
 import { Collections } from '../utils/collections';
 import { FeatureUtils } from './feature-utils';
@@ -17,7 +17,7 @@ import { TraitType } from '../enums/trait-type';
 export class MagicItemGenerator {
 	static generateMagicItem = (): ItemModel => {
 		// Pick a random item from the item list
-		const baseItem = Collections.draw(ItemList);
+		const baseItem = Collections.draw(ItemData.getList());
 
 		const item = JSON.parse(JSON.stringify(baseItem)) as ItemModel;
 		item.id = Utils.guid();

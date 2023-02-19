@@ -6,6 +6,7 @@
 * It's possible to run out of proficiencies to learn
   * Might have to add some code to a feature to see whether it can be chosen
   * Should do the same for actions - only allow action cards to be drawn if they can be used
+    * For example, can't use a weapon attack if you dont have a weapon
 
 ## To Do
 
@@ -68,6 +69,7 @@
   * Warlord
   * Grenadier
   * Martial artist
+  * Chaos magic
 
 ## Tech Debt
 

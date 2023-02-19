@@ -9,276 +9,280 @@ import { ItemProficiencyType } from '../enums/item-proficiency-type';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
 
-const createActionPlaceholder = (name: string): ActionModel => {
-	return {
-		id: Utils.guid(),
-		name: name
+export class RoleData {
+	static createActionPlaceholder = (name: string): ActionModel => {
+		return {
+			id: Utils.guid(),
+			name: name
+		};
 	};
-};
 
-export const RoleList: RoleModel[] = [
-	{
-		id: 'role-barbarian',
-		name: 'Barbarian',
-		traits: [
-			TraitType.Endurance
-		],
-		skills: [
-			SkillType.Weapon
-		],
-		proficiencies: [
-			ItemProficiencyType.LargeWeapons,
-			ItemProficiencyType.LightArmor
-		],
-		features: [
-			FeatureUtils.createTraitFeature(TraitType.Endurance, 1),
-			FeatureUtils.createSkillFeature(SkillType.Weapon, 2),
-			FeatureUtils.createDamageCategoryTypeBonusFeature(DamageCategoryType.Physical, 1),
-			FeatureUtils.createDamageCategoryTypeResistFeature(DamageCategoryType.Physical, 1)
-		],
-		actions: [
-			createActionPlaceholder('Overhead strike'),
-			createActionPlaceholder('Knockdown strike'),
-			createActionPlaceholder('Stunning strike'),
-			createActionPlaceholder('Haymaker strike')
-		]
-	},
-	{
-		id: 'role-dervish',
-		name: 'Dervish',
-		traits: [
-			TraitType.Speed
-		],
-		skills: [
-			SkillType.Weapon
-		],
-		proficiencies: [
-			ItemProficiencyType.PairedWeapons,
-			ItemProficiencyType.LightArmor
-		],
-		features: [
-			FeatureUtils.createTraitFeature(TraitType.Speed, 1),
-			FeatureUtils.createSkillFeature(SkillType.Weapon, 2)
-		],
-		actions: [
-			createActionPlaceholder('Dual strike (one target)'),
-			createActionPlaceholder('Dual strike (two targets)'),
-			createActionPlaceholder('Whirlwind strike'),
-			createActionPlaceholder('Leaping strike'),
-			createActionPlaceholder('Dodging stance (adds physical damage resistance)')
-		]
-	},
-	{
-		id: 'role-enchanter',
-		name: 'Enchanter',
-		traits: [
-			TraitType.Resolve
-		],
-		skills: [
-			SkillType.Spellcasting
-		],
-		proficiencies: [
-			ItemProficiencyType.Implements
-		],
-		features: [
-			FeatureUtils.createTraitFeature(TraitType.Resolve, 1),
-			FeatureUtils.createSkillFeature(SkillType.Spellcasting, 2),
-			FeatureUtils.createDamageBonusFeature(DamageType.Psychic, 1),
-			FeatureUtils.createDamageResistFeature(DamageType.Psychic, 1)
-		],
-		actions: [
-			createActionPlaceholder('Confusion (target makes attack)'),
-			createActionPlaceholder('Stun (target loses action)'),
-			createActionPlaceholder('Fear (target loses speed)'),
-			createActionPlaceholder('Mental shield (add psychic damage resistance)'),
-			createActionPlaceholder('Weaken (reduce target\'s damage)')
-		]
-	},
-	{
-		id: 'role-ninja',
-		name: 'Ninja',
-		traits: [
-			TraitType.Speed
-		],
-		skills: [
-			SkillType.Brawl,
-			SkillType.Stealth
-		],
-		proficiencies: [
-			// None
-		],
-		features: [
-			FeatureUtils.createTraitFeature(TraitType.Speed, 1),
-			FeatureUtils.createSkillFeature(SkillType.Brawl, 2),
-			FeatureUtils.createSkillFeature(SkillType.Stealth, 2),
-			FeatureUtils.createDamageCategoryTypeBonusFeature(DamageCategoryType.Physical, 1)
-		],
-		actions: [
-			createActionPlaceholder('Roundhouse kick'),
-			createActionPlaceholder('Flurry (single target)'),
-			createActionPlaceholder('Leaping kick'),
-			createActionPlaceholder('Lightning speed (move)'),
-			createActionPlaceholder('Adrenal boost (adds to attack / damage)')
-		]
-	},
-	{
-		id: 'role-gunslinger',
-		name: 'Gunslinger',
-		traits: [
-			TraitType.Speed
-		],
-		skills: [
-			SkillType.Weapon
-		],
-		proficiencies: [
-			ItemProficiencyType.PowderWeapons
-		],
-		features: [
-			FeatureUtils.createTraitFeature(TraitType.Speed, 1),
-			FeatureUtils.createSkillFeature(SkillType.Weapon, 2)
-		],
-		actions: [
-			createActionPlaceholder('Deadeye (adds to next attack)'),
-			createActionPlaceholder('Fire'),
-			createActionPlaceholder('Pommel strike'),
-			createActionPlaceholder('Quickfire (two attacks, low accuracy)'),
-			createActionPlaceholder('Careful shot'),
-			createActionPlaceholder('Fusilade (area, low damage)')
-		]
-	},
-	{
-		id: 'role-ranger',
-		name: 'Ranger',
-		traits: [
-			TraitType.Endurance
-		],
-		skills: [
-			SkillType.Weapon
-		],
-		proficiencies: [
-			ItemProficiencyType.RangedWeapons,
-			ItemProficiencyType.LightArmor
-		],
-		features: [
-			FeatureUtils.createTraitFeature(TraitType.Endurance, 1),
-			FeatureUtils.createSkillFeature(SkillType.Perception, 2),
-			FeatureUtils.createSkillFeature(SkillType.Weapon, 2)
-		],
-		actions: [
-			createActionPlaceholder('Quick shot'),
-			createActionPlaceholder('Sure shot'),
-			createActionPlaceholder('Pinning shot (slows)'),
-			createActionPlaceholder('Barrage (area, low damage)'),
-			createActionPlaceholder('Aim (adds to next attack)')
-		]
-	},
-	{
-		id: 'role-soldier',
-		name: 'Soldier',
-		traits: [
-			TraitType.Endurance
-		],
-		skills: [
-			SkillType.Weapon
-		],
-		proficiencies: [
-			ItemProficiencyType.MilitaryWeapons,
-			ItemProficiencyType.HeavyArmor,
-			ItemProficiencyType.Shields
-		],
-		features: [
-			FeatureUtils.createTraitFeature(TraitType.Endurance, 1),
-			FeatureUtils.createSkillFeature(SkillType.Weapon, 2),
-			FeatureUtils.createDamageCategoryTypeBonusFeature(DamageCategoryType.Physical, 1)
-		],
-		actions: [
-			createActionPlaceholder('Charge attack'),
-			createActionPlaceholder('Precise attack'),
-			createActionPlaceholder('Disarming attack'),
-			createActionPlaceholder('Parrying stance'),
-			createActionPlaceholder('Shield bash (push)')
-		]
-	},
-	{
-		id: 'role-sorcerer',
-		name: 'Sorcerer',
-		traits: [
-			TraitType.Resolve
-		],
-		skills: [
-			SkillType.Spellcasting
-		],
-		proficiencies: [
-			ItemProficiencyType.Implements
-		],
-		features: [
-			FeatureUtils.createTraitFeature(TraitType.Resolve, 1),
-			FeatureUtils.createSkillFeature(SkillType.Spellcasting, 2),
-			FeatureUtils.createDamageCategoryTypeBonusFeature(DamageCategoryType.Energy, 1),
-			FeatureUtils.createDamageCategoryTypeResistFeature(DamageCategoryType.Energy, 1),
-			FeatureUtils.createAuraDamageFeature(AuraType.AutomaticDamage, DamageType.Fire, 1),
-			FeatureUtils.createAuraDamageFeature(AuraType.AutomaticDamage, DamageType.Cold, 1),
-			FeatureUtils.createAuraDamageFeature(AuraType.AutomaticDamage, DamageType.Electricity, 1)
-		],
-		actions: [
-			createActionPlaceholder('Lightning bolt (single target, damage and stuns)'),
-			createActionPlaceholder('Fireball (area, ongoing fire damage)'),
-			createActionPlaceholder('Ice storm (area, damage and reduced speed)'),
-			createActionPlaceholder('Elemental resistance: fire'),
-			createActionPlaceholder('Elemental resistance: cold'),
-			createActionPlaceholder('Elemental resistance: electricity')
-		]
-	},
-	{
-		id: 'role-warmage',
-		name: 'Warmage',
-		traits: [
-			TraitType.Resolve
-		],
-		skills: [
-			SkillType.Weapon
-		],
-		proficiencies: [
-			ItemProficiencyType.MilitaryWeapons,
-			ItemProficiencyType.LightArmor
-		],
-		features: [
-			FeatureUtils.createTraitFeature(TraitType.Resolve, 1),
-			FeatureUtils.createSkillFeature(SkillType.Weapon, 2),
-			FeatureUtils.createDamageCategoryTypeBonusFeature(DamageCategoryType.Energy, 1),
-			FeatureUtils.createDamageCategoryTypeBonusFeature(DamageCategoryType.Physical, 1)
-		],
-		actions: [
-			createActionPlaceholder('Flaming blade (ongoing fire)'),
-			createActionPlaceholder('Frost blade (slows)'),
-			createActionPlaceholder('Shocking blade (stuns)'),
-			createActionPlaceholder('Armor enhancement'),
-			createActionPlaceholder('XXX (attack at range)')
-		]
-	},
-	{
-		id: 'role-wizard',
-		name: 'Wizard',
-		traits: [
-			TraitType.Resolve
-		],
-		skills: [
-			SkillType.Spellcasting
-		],
-		proficiencies: [
-			ItemProficiencyType.Implements
-		],
-		features: [
-			FeatureUtils.createTraitFeature(TraitType.Resolve, 1),
-			FeatureUtils.createSkillFeature(SkillType.Spellcasting, 2),
-			FeatureUtils.createDamageCategoryTypeBonusFeature(DamageCategoryType.Energy, 1)
-		],
-		actions: [
-			createActionPlaceholder('XXX (shield self, resist all damage)'),
-			createActionPlaceholder('XXX (shield other, resist all damage)'),
-			createActionPlaceholder('XXX (push)'),
-			createActionPlaceholder('Magic missile'),
-			createActionPlaceholder('Swap positions')
-		]
-	}
-];
+	static getList = (): RoleModel[] => {
+		return [
+			{
+				id: 'role-barbarian',
+				name: 'Barbarian',
+				traits: [
+					TraitType.Endurance
+				],
+				skills: [
+					SkillType.Weapon
+				],
+				proficiencies: [
+					ItemProficiencyType.LargeWeapons,
+					ItemProficiencyType.LightArmor
+				],
+				features: [
+					FeatureUtils.createTraitFeature(TraitType.Endurance, 1),
+					FeatureUtils.createSkillFeature(SkillType.Weapon, 2),
+					FeatureUtils.createDamageCategoryTypeBonusFeature(DamageCategoryType.Physical, 1),
+					FeatureUtils.createDamageCategoryTypeResistFeature(DamageCategoryType.Physical, 1)
+				],
+				actions: [
+					RoleData.createActionPlaceholder('Overhead strike'),
+					RoleData.createActionPlaceholder('Knockdown strike'),
+					RoleData.createActionPlaceholder('Stunning strike'),
+					RoleData.createActionPlaceholder('Haymaker strike')
+				]
+			},
+			{
+				id: 'role-dervish',
+				name: 'Dervish',
+				traits: [
+					TraitType.Speed
+				],
+				skills: [
+					SkillType.Weapon
+				],
+				proficiencies: [
+					ItemProficiencyType.PairedWeapons,
+					ItemProficiencyType.LightArmor
+				],
+				features: [
+					FeatureUtils.createTraitFeature(TraitType.Speed, 1),
+					FeatureUtils.createSkillFeature(SkillType.Weapon, 2)
+				],
+				actions: [
+					RoleData.createActionPlaceholder('Dual strike (one target)'),
+					RoleData.createActionPlaceholder('Dual strike (two targets)'),
+					RoleData.createActionPlaceholder('Whirlwind strike'),
+					RoleData.createActionPlaceholder('Leaping strike'),
+					RoleData.createActionPlaceholder('Dodging stance (adds physical damage resistance)')
+				]
+			},
+			{
+				id: 'role-enchanter',
+				name: 'Enchanter',
+				traits: [
+					TraitType.Resolve
+				],
+				skills: [
+					SkillType.Spellcasting
+				],
+				proficiencies: [
+					ItemProficiencyType.Implements
+				],
+				features: [
+					FeatureUtils.createTraitFeature(TraitType.Resolve, 1),
+					FeatureUtils.createSkillFeature(SkillType.Spellcasting, 2),
+					FeatureUtils.createDamageBonusFeature(DamageType.Psychic, 1),
+					FeatureUtils.createDamageResistFeature(DamageType.Psychic, 1)
+				],
+				actions: [
+					RoleData.createActionPlaceholder('Confusion (target makes attack)'),
+					RoleData.createActionPlaceholder('Stun (target loses action)'),
+					RoleData.createActionPlaceholder('Fear (target loses speed)'),
+					RoleData.createActionPlaceholder('Mental shield (add psychic damage resistance)'),
+					RoleData.createActionPlaceholder('Weaken (reduce target\'s damage)')
+				]
+			},
+			{
+				id: 'role-ninja',
+				name: 'Ninja',
+				traits: [
+					TraitType.Speed
+				],
+				skills: [
+					SkillType.Brawl,
+					SkillType.Stealth
+				],
+				proficiencies: [
+					// None
+				],
+				features: [
+					FeatureUtils.createTraitFeature(TraitType.Speed, 1),
+					FeatureUtils.createSkillFeature(SkillType.Brawl, 2),
+					FeatureUtils.createSkillFeature(SkillType.Stealth, 2),
+					FeatureUtils.createDamageCategoryTypeBonusFeature(DamageCategoryType.Physical, 1)
+				],
+				actions: [
+					RoleData.createActionPlaceholder('Roundhouse kick'),
+					RoleData.createActionPlaceholder('Flurry (single target)'),
+					RoleData.createActionPlaceholder('Leaping kick'),
+					RoleData.createActionPlaceholder('Lightning speed (move)'),
+					RoleData.createActionPlaceholder('Adrenal boost (adds to attack / damage)')
+				]
+			},
+			{
+				id: 'role-gunslinger',
+				name: 'Gunslinger',
+				traits: [
+					TraitType.Speed
+				],
+				skills: [
+					SkillType.Weapon
+				],
+				proficiencies: [
+					ItemProficiencyType.PowderWeapons
+				],
+				features: [
+					FeatureUtils.createTraitFeature(TraitType.Speed, 1),
+					FeatureUtils.createSkillFeature(SkillType.Weapon, 2)
+				],
+				actions: [
+					RoleData.createActionPlaceholder('Deadeye (adds to next attack)'),
+					RoleData.createActionPlaceholder('Fire'),
+					RoleData.createActionPlaceholder('Pommel strike'),
+					RoleData.createActionPlaceholder('Quickfire (two attacks, low accuracy)'),
+					RoleData.createActionPlaceholder('Careful shot'),
+					RoleData.createActionPlaceholder('Fusilade (area, low damage)')
+				]
+			},
+			{
+				id: 'role-ranger',
+				name: 'Ranger',
+				traits: [
+					TraitType.Endurance
+				],
+				skills: [
+					SkillType.Weapon
+				],
+				proficiencies: [
+					ItemProficiencyType.RangedWeapons,
+					ItemProficiencyType.LightArmor
+				],
+				features: [
+					FeatureUtils.createTraitFeature(TraitType.Endurance, 1),
+					FeatureUtils.createSkillFeature(SkillType.Perception, 2),
+					FeatureUtils.createSkillFeature(SkillType.Weapon, 2)
+				],
+				actions: [
+					RoleData.createActionPlaceholder('Quick shot'),
+					RoleData.createActionPlaceholder('Sure shot'),
+					RoleData.createActionPlaceholder('Pinning shot (slows)'),
+					RoleData.createActionPlaceholder('Barrage (area, low damage)'),
+					RoleData.createActionPlaceholder('Aim (adds to next attack)')
+				]
+			},
+			{
+				id: 'role-soldier',
+				name: 'Soldier',
+				traits: [
+					TraitType.Endurance
+				],
+				skills: [
+					SkillType.Weapon
+				],
+				proficiencies: [
+					ItemProficiencyType.MilitaryWeapons,
+					ItemProficiencyType.HeavyArmor,
+					ItemProficiencyType.Shields
+				],
+				features: [
+					FeatureUtils.createTraitFeature(TraitType.Endurance, 1),
+					FeatureUtils.createSkillFeature(SkillType.Weapon, 2),
+					FeatureUtils.createDamageCategoryTypeBonusFeature(DamageCategoryType.Physical, 1)
+				],
+				actions: [
+					RoleData.createActionPlaceholder('Charge attack'),
+					RoleData.createActionPlaceholder('Precise attack'),
+					RoleData.createActionPlaceholder('Disarming attack'),
+					RoleData.createActionPlaceholder('Parrying stance'),
+					RoleData.createActionPlaceholder('Shield bash (push)')
+				]
+			},
+			{
+				id: 'role-sorcerer',
+				name: 'Sorcerer',
+				traits: [
+					TraitType.Resolve
+				],
+				skills: [
+					SkillType.Spellcasting
+				],
+				proficiencies: [
+					ItemProficiencyType.Implements
+				],
+				features: [
+					FeatureUtils.createTraitFeature(TraitType.Resolve, 1),
+					FeatureUtils.createSkillFeature(SkillType.Spellcasting, 2),
+					FeatureUtils.createDamageCategoryTypeBonusFeature(DamageCategoryType.Energy, 1),
+					FeatureUtils.createDamageCategoryTypeResistFeature(DamageCategoryType.Energy, 1),
+					FeatureUtils.createAuraDamageFeature(AuraType.AutomaticDamage, DamageType.Fire, 1),
+					FeatureUtils.createAuraDamageFeature(AuraType.AutomaticDamage, DamageType.Cold, 1),
+					FeatureUtils.createAuraDamageFeature(AuraType.AutomaticDamage, DamageType.Electricity, 1)
+				],
+				actions: [
+					RoleData.createActionPlaceholder('Lightning bolt (single target, damage and stuns)'),
+					RoleData.createActionPlaceholder('Fireball (area, ongoing fire damage)'),
+					RoleData.createActionPlaceholder('Ice storm (area, damage and reduced speed)'),
+					RoleData.createActionPlaceholder('Elemental resistance: fire'),
+					RoleData.createActionPlaceholder('Elemental resistance: cold'),
+					RoleData.createActionPlaceholder('Elemental resistance: electricity')
+				]
+			},
+			{
+				id: 'role-warmage',
+				name: 'Warmage',
+				traits: [
+					TraitType.Resolve
+				],
+				skills: [
+					SkillType.Weapon
+				],
+				proficiencies: [
+					ItemProficiencyType.MilitaryWeapons,
+					ItemProficiencyType.LightArmor
+				],
+				features: [
+					FeatureUtils.createTraitFeature(TraitType.Resolve, 1),
+					FeatureUtils.createSkillFeature(SkillType.Weapon, 2),
+					FeatureUtils.createDamageCategoryTypeBonusFeature(DamageCategoryType.Energy, 1),
+					FeatureUtils.createDamageCategoryTypeBonusFeature(DamageCategoryType.Physical, 1)
+				],
+				actions: [
+					RoleData.createActionPlaceholder('Flaming blade (ongoing fire)'),
+					RoleData.createActionPlaceholder('Frost blade (slows)'),
+					RoleData.createActionPlaceholder('Shocking blade (stuns)'),
+					RoleData.createActionPlaceholder('Armor enhancement'),
+					RoleData.createActionPlaceholder('XXX (attack at range)')
+				]
+			},
+			{
+				id: 'role-wizard',
+				name: 'Wizard',
+				traits: [
+					TraitType.Resolve
+				],
+				skills: [
+					SkillType.Spellcasting
+				],
+				proficiencies: [
+					ItemProficiencyType.Implements
+				],
+				features: [
+					FeatureUtils.createTraitFeature(TraitType.Resolve, 1),
+					FeatureUtils.createSkillFeature(SkillType.Spellcasting, 2),
+					FeatureUtils.createDamageCategoryTypeBonusFeature(DamageCategoryType.Energy, 1)
+				],
+				actions: [
+					RoleData.createActionPlaceholder('XXX (shield self, resist all damage)'),
+					RoleData.createActionPlaceholder('XXX (shield other, resist all damage)'),
+					RoleData.createActionPlaceholder('XXX (push)'),
+					RoleData.createActionPlaceholder('Magic missile'),
+					RoleData.createActionPlaceholder('Swap positions')
+				]
+			}
+		];
+	};
+}

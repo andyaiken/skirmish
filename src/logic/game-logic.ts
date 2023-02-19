@@ -9,11 +9,11 @@ import { Collections } from '../utils/collections';
 import { MagicItemGenerator } from './magic-item-generator';
 import { Random } from '../utils/random';
 import { Utils } from '../utils/utils';
-import { BackgroundList } from '../data/background-data';
-import { HeroSpeciesList } from '../data/hero-species-data';
-import { ItemList } from '../data/item-data';
-import { MonsterSpeciesList } from '../data/monster-species-data';
-import { RoleList } from '../data/role-data';
+import { BackgroundData } from '../data/background-data';
+import { HeroSpeciesData } from '../data/hero-species-data';
+import { ItemData } from '../data/item-data';
+import { MonsterSpeciesData } from '../data/monster-species-data';
+import { RoleData } from '../data/role-data';
 import { FeatureUtils } from './feature-utils';
 import { AuraType } from '../enums/aura-type';
 import { BoonType } from '../enums/boon-type';
@@ -28,10 +28,10 @@ export class GameLogic {
 	static getRandomAction = () => {
 		const actions: ActionModel[] = [];
 
-		HeroSpeciesList.forEach(s => actions.push(...s.actions));
-		MonsterSpeciesList.forEach(s => actions.push(...s.actions));
-		RoleList.forEach(r => actions.push(...r.actions));
-		BackgroundList.forEach(b => actions.push(...b.actions));
+		HeroSpeciesData.getList().forEach(s => actions.push(...s.actions));
+		MonsterSpeciesData.getList().forEach(s => actions.push(...s.actions));
+		RoleData.getList().forEach(r => actions.push(...r.actions));
+		BackgroundData.getList().forEach(b => actions.push(...b.actions));
 
 		const n = Random.randomNumber(actions.length);
 		const copy = JSON.parse(JSON.stringify(actions[n])) as ActionModel;
@@ -267,14 +267,15 @@ export class GameLogic {
 	///////////////////////////////////////////////////////////////////////////////
 
 	static getBackground = (id: string) => {
-		return BackgroundList.find(b => b.id === id);
+		return BackgroundData.getList().find(b => b.id === id);
 	};
 
 	static getBackgroundDeck = (game: GameModel | null = null) => {
 		if (game) {
 			const used = game.heroes.map(h => h.backgroundID);
 
-			const deck = BackgroundList
+			const deck = BackgroundData
+				.getList()
 				.filter(background => !used.includes(background.id))
 				.map(background => background.id);
 
@@ -283,18 +284,21 @@ export class GameLogic {
 			}
 		}
 
-		return BackgroundList.map(background => background.id);
+		return BackgroundData
+			.getList()
+			.map(background => background.id);
 	};
 
 	static getRole = (id: string) => {
-		return RoleList.find(r => r.id === id);
+		return RoleData.getList().find(r => r.id === id);
 	};
 
 	static getRoleDeck = (game: GameModel | null = null) => {
 		if (game) {
 			const used = game.heroes.map(h => h.roleID);
 
-			const deck = RoleList
+			const deck = RoleData
+				.getList()
 				.filter(role => !used.includes(role.id))
 				.map(role => role.id);
 
@@ -303,11 +307,13 @@ export class GameLogic {
 			}
 		}
 
-		return RoleList.map(role => role.id);
+		return RoleData
+			.getList()
+			.map(role => role.id);
 	};
 
 	static getSpecies = (id: string) => {
-		const all = ([] as SpeciesModel[]).concat(HeroSpeciesList).concat(MonsterSpeciesList);
+		const all = ([] as SpeciesModel[]).concat(HeroSpeciesData.getList()).concat(MonsterSpeciesData.getList());
 		return all.find(s => s.id === id);
 	};
 
@@ -315,7 +321,8 @@ export class GameLogic {
 		if (game) {
 			const used = game.heroes.map(h => h.speciesID);
 
-			const deck = HeroSpeciesList
+			const deck = HeroSpeciesData
+				.getList()
 				.filter(species => !used.includes(species.id))
 				.map(species => species.id);
 
@@ -323,17 +330,21 @@ export class GameLogic {
 				return deck;
 			}
 
-			return HeroSpeciesList.map(species => species.id);
+			return HeroSpeciesData
+				.getList()
+				.map(species => species.id);
 		}
 
-		return MonsterSpeciesList.map(species => species.id);
+		return MonsterSpeciesData
+			.getList()
+			.map(species => species.id);
 	};
 
 	static getItem = (id: string) => {
-		return ItemList.find(b => b.id === id);
+		return ItemData.getList().find(b => b.id === id);
 	};
 
 	static getItemsForProficiency = (proficiency: ItemProficiencyType) => {
-		return ItemList.filter(i => i.proficiency === proficiency);
+		return ItemData.getList().filter(i => i.proficiency === proficiency);
 	};
 }

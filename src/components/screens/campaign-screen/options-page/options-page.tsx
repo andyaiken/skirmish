@@ -1,8 +1,8 @@
 import { Component } from 'react';
 import { Dialog, Text, TextType } from '../../../../controls';
-import { BackgroundList } from '../../../../data/background-data';
-import { HeroSpeciesList } from '../../../../data/hero-species-data';
-import { RoleList } from '../../../../data/role-data';
+import { BackgroundData } from '../../../../data/background-data';
+import { HeroSpeciesData } from '../../../../data/hero-species-data';
+import { RoleData } from '../../../../data/role-data';
 import { BackgroundCard, RoleCard, SpeciesCard } from '../../../cards';
 import { CardList, PlayingCard } from '../../../utility';
 
@@ -40,15 +40,15 @@ export class OptionsPage extends Component<Props, State> {
 			switch (this.state.deck) {
 				case 'species':
 					heading = 'Species Deck';
-					cards = HeroSpeciesList.map(s => (<PlayingCard front={<SpeciesCard species={s} />} />));
+					cards = HeroSpeciesData.getList().map(s => (<PlayingCard front={<SpeciesCard species={s} />} />));
 					break;
 				case 'role':
 					heading = 'Role Deck';
-					cards = RoleList.map(r => (<PlayingCard front={<RoleCard role={r} />} />));
+					cards = RoleData.getList().map(r => (<PlayingCard front={<RoleCard role={r} />} />));
 					break;
 				case 'background':
 					heading = 'Background Deck';
-					cards = BackgroundList.map(b => (<PlayingCard front={<BackgroundCard background={b} />} />));
+					cards = BackgroundData.getList().map(b => (<PlayingCard front={<BackgroundCard background={b} />} />));
 					break;
 			}
 			const content = (

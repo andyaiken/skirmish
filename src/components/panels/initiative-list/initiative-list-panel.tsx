@@ -4,9 +4,9 @@ import type { CombatantModel } from '../../../models/combatant';
 import type { EncounterModel } from '../../../models/encounter';
 import { CombatDataState } from '../../../enums/combat-data-state';
 import { StatValue } from '../../utility';
+import { EncounterUtils } from '../../../logic/encounter-utils';
 
 import './initiative-list-panel.scss';
-import { EncounterUtils } from '../../../logic/encounter-utils';
 
 interface Props {
 	encounter: EncounterModel;

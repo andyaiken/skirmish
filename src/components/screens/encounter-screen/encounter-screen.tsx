@@ -109,7 +109,7 @@ export class EncounterScreen extends Component<Props, State> {
 			const actionCards = combatData.actions.map(a => {
 				const source = CombatantUtils.getCardSource(combatant, a.id, 'action');
 				return (
-					<PlayingCard front={<ActionCard action={a} />} footer={source} />
+					<PlayingCard key={a.id} front={<ActionCard action={a} />} footer={source} />
 				);
 			});
 

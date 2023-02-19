@@ -40,15 +40,15 @@ export class OptionsPage extends Component<Props, State> {
 			switch (this.state.deck) {
 				case 'species':
 					heading = 'Species Deck';
-					cards = HeroSpeciesData.getList().map(s => (<PlayingCard front={<SpeciesCard species={s} />} />));
+					cards = HeroSpeciesData.getList().map(s => (<PlayingCard key={s.id} front={<SpeciesCard species={s} />} />));
 					break;
 				case 'role':
 					heading = 'Role Deck';
-					cards = RoleData.getList().map(r => (<PlayingCard front={<RoleCard role={r} />} />));
+					cards = RoleData.getList().map(r => (<PlayingCard key={r.id} front={<RoleCard role={r} />} />));
 					break;
 				case 'background':
 					heading = 'Background Deck';
-					cards = BackgroundData.getList().map(b => (<PlayingCard front={<BackgroundCard background={b} />} />));
+					cards = BackgroundData.getList().map(b => (<PlayingCard key={b.id} front={<BackgroundCard background={b} />} />));
 					break;
 			}
 			const content = (

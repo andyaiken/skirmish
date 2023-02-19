@@ -67,8 +67,8 @@ export class CampaignMapPage extends Component<Props, State> {
 						<PlayingCard front={<BoonCard boon={this.state.selectedRegion.boon} />} />
 					</div>
 					<hr />
-					{canAttack ? null : <Text type={TextType.Information}>You can't attack {this.state.selectedRegion.name} because it's not on the coast or adjacent to your land.</Text>}
-					{heroesExist ? null : <Text type={TextType.Information}>You can't attack {this.state.selectedRegion.name} because you don't have any heroes.</Text>}
+					{canAttack ? null : <Text type={TextType.Information}>You can&apos;t attack {this.state.selectedRegion.name} because it&apos;s not on the coast or adjacent to your land.</Text>}
+					{heroesExist ? null : <Text type={TextType.Information}>You can&apos;t attack {this.state.selectedRegion.name} because you don&apos;t have any heroes.</Text>}
 					{canAttack && heroesExist ? <button onClick={() => this.setState({ showHeroSelection: true })}>Start an encounter here</button> : null}
 				</div>
 			);

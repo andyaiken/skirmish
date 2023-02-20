@@ -1,13 +1,16 @@
-import type { ActionModel } from '../models/action';
-import type { FeatureModel } from '../models/feature';
-import type { ItemModel } from '../models/item';
-import { TraitType } from '../enums/trait-type';
-import { FeatureUtils } from '../logic/feature-utils';
-import { Utils } from '../utils/utils';
 import { DamageType } from '../enums/damage-type';
 import { ItemLocationType } from '../enums/item-location-type';
 import { ItemProficiencyType } from '../enums/item-proficiency-type';
 import { SkillType } from '../enums/skill-type';
+import { TraitType } from '../enums/trait-type';
+
+import type { ActionModel } from '../models/action';
+import type { FeatureModel } from '../models/feature';
+import type { ItemModel } from '../models/item';
+
+import { FeatureLogic } from '../logic/feature-logic';
+
+import { Utils } from '../utils/utils';
 
 export class UniversalData {
 	static createActionPlaceholder = (name: string): ActionModel => {
@@ -19,9 +22,9 @@ export class UniversalData {
 
 	static getUniversalFeatures = (): FeatureModel[] => {
 		return [
-			FeatureUtils.createTraitFeature(TraitType.Any, 1),
-			FeatureUtils.createSkillFeature(SkillType.Any, 1),
-			FeatureUtils.createProficiencyFeature(ItemProficiencyType.Any)
+			FeatureLogic.createTraitFeature(TraitType.Any, 1),
+			FeatureLogic.createSkillFeature(SkillType.Any, 1),
+			FeatureLogic.createProficiencyFeature(ItemProficiencyType.Any)
 		];
 	};
 

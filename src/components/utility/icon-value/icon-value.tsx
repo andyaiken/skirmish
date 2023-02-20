@@ -1,4 +1,5 @@
 import { Component } from 'react';
+
 import type { DamageType } from '../../../enums/damage-type';
 
 import './icon-value.scss';

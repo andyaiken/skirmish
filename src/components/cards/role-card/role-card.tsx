@@ -1,7 +1,10 @@
 import { Component } from 'react';
-import type { RoleModel } from '../../../models/role';
-import { Text, TextType } from '../../../controls';
+
 import { GameLogic } from '../../../logic/game-logic';
+
+import type { RoleModel } from '../../../models/role';
+
+import { Text, TextType } from '../../../controls';
 import { StatValue } from '../../utility';
 
 import './role-card.scss';

@@ -17,7 +17,7 @@
 	}
 
 	.encounter-central-panel {
-		flex: 1 1 0;
+		flex: 2 2 0;
 		height: 100%;
 		display: flex;
 		flex-direction: column;
@@ -41,7 +41,7 @@
 	}
 
 	.encounter-right-panel {
-		flex: 0 0 460px;
+		flex: 1 1 0;
 
 		.tags {
 			text-align: center;

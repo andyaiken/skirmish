@@ -1,20 +1,9 @@
-import type { ActionModel } from '../models/action';
-import type { AuraModel } from '../models/aura';
-import type { BoonModel } from '../models/boon';
-import type { CombatantModel } from '../models/combatant';
-import type { GameModel } from '../models/game';
-import type { SpeciesModel } from '../models/species';
-import type { FeatureModel } from '../models/feature';
-import { Collections } from '../utils/collections';
-import { MagicItemGenerator } from './magic-item-generator';
-import { Random } from '../utils/random';
-import { Utils } from '../utils/utils';
 import { BackgroundData } from '../data/background-data';
 import { HeroSpeciesData } from '../data/hero-species-data';
 import { ItemData } from '../data/item-data';
 import { MonsterSpeciesData } from '../data/monster-species-data';
 import { RoleData } from '../data/role-data';
-import { FeatureUtils } from './feature-utils';
+
 import { AuraType } from '../enums/aura-type';
 import { BoonType } from '../enums/boon-type';
 import { DamageCategoryType } from '../enums/damage-category-type';
@@ -23,6 +12,21 @@ import { ItemProficiencyType } from '../enums/item-proficiency-type';
 import { SkillCategoryType } from '../enums/skill-category-type';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
+
+import type { ActionModel } from '../models/action';
+import type { AuraModel } from '../models/aura';
+import type { BoonModel } from '../models/boon';
+import type { CombatantModel } from '../models/combatant';
+import type { FeatureModel } from '../models/feature';
+import type { GameModel } from '../models/game';
+import type { SpeciesModel } from '../models/species';
+
+import { Collections } from '../utils/collections';
+import { Random } from '../utils/random';
+import { Utils } from '../utils/utils';
+
+import { FeatureLogic } from './feature-logic';
+import { MagicItemGenerator } from './magic-item-generator';
 
 export class GameLogic {
 	static getRandomAction = () => {
@@ -162,8 +166,8 @@ export class GameLogic {
 	///////////////////////////////////////////////////////////////////////////////
 
 	static getFeatureDescription = (feature: FeatureModel) => {
-		const title = FeatureUtils.getFeatureTitle(feature).toString();
-		const desc = FeatureUtils.getFeatureInformation(feature).toString();
+		const title = FeatureLogic.getFeatureTitle(feature).toString();
+		const desc = FeatureLogic.getFeatureInformation(feature).toString();
 		return `${title}: ${desc}`;
 	};
 

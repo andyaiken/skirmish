@@ -6,13 +6,16 @@ import { ItemProficiencyType } from '../enums/item-proficiency-type';
 import { SkillCategoryType } from '../enums/skill-category-type';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
+
 import type { FeatureModel } from '../models/feature';
+
 import { Random } from '../utils/random';
 import { Utils } from '../utils/utils';
+
 import { Factory } from './factory';
 import { GameLogic } from './game-logic';
 
-export class FeatureUtils {
+export class FeatureLogic {
 	static createDamageBonusFeature = (damage: DamageType, rank: number): FeatureModel => {
 		return {
 			id: Utils.guid(),
@@ -181,21 +184,21 @@ export class FeatureUtils {
 	static createRandomFeature = () => {
 		switch (Random.randomNumber(8)) {
 			case 0:
-				return FeatureUtils.createDamageBonusFeature(GameLogic.getRandomDamageType(), Random.randomBonus());
+				return FeatureLogic.createDamageBonusFeature(GameLogic.getRandomDamageType(), Random.randomBonus());
 			case 1:
-				return FeatureUtils.createDamageCategoryTypeBonusFeature(GameLogic.getRandomDamageCategoryType(), Random.randomBonus());
+				return FeatureLogic.createDamageCategoryTypeBonusFeature(GameLogic.getRandomDamageCategoryType(), Random.randomBonus());
 			case 2:
-				return FeatureUtils.createDamageResistFeature(GameLogic.getRandomDamageType(), Random.randomBonus());
+				return FeatureLogic.createDamageResistFeature(GameLogic.getRandomDamageType(), Random.randomBonus());
 			case 3:
-				return FeatureUtils.createDamageCategoryTypeResistFeature(GameLogic.getRandomDamageCategoryType(), Random.randomBonus());
+				return FeatureLogic.createDamageCategoryTypeResistFeature(GameLogic.getRandomDamageCategoryType(), Random.randomBonus());
 			case 4:
-				return FeatureUtils.createProficiencyFeature(GameLogic.getRandomItemProficiency());
+				return FeatureLogic.createProficiencyFeature(GameLogic.getRandomItemProficiency());
 			case 5:
-				return FeatureUtils.createTraitFeature(GameLogic.getRandomTrait(), Random.randomBonus());
+				return FeatureLogic.createTraitFeature(GameLogic.getRandomTrait(), Random.randomBonus());
 			case 6:
-				return FeatureUtils.createSkillFeature(GameLogic.getRandomSkill(), Random.randomBonus());
+				return FeatureLogic.createSkillFeature(GameLogic.getRandomSkill(), Random.randomBonus());
 			default:
-				return FeatureUtils.createSkillCategoryFeature(GameLogic.getRandomSkillCategory(), Random.randomBonus());
+				return FeatureLogic.createSkillCategoryFeature(GameLogic.getRandomSkillCategory(), Random.randomBonus());
 		}
 	};
 

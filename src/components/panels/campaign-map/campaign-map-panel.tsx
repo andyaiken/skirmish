@@ -1,6 +1,8 @@
 import { Component } from 'react';
+
+import { CampaignMapLogic } from '../../../logic/campaign-map-logic';
+
 import type { CampaignMapModel, CampaignMapRegionModel, CampaignMapSquareModel } from '../../../models/campaign-map';
-import { CampaignMapUtils } from '../../../logic/campaign-map-utils';
 
 import './campaign-map-panel.scss';
 
@@ -19,7 +21,7 @@ export class CampaignMapPanel extends Component<Props> {
 
 	render = () => {
 		// Get dimensions, adding a 1-square border
-		const dims = CampaignMapUtils.getCampaignMapDimensions(this.props.map);
+		const dims = CampaignMapLogic.getCampaignMapDimensions(this.props.map);
 		dims.left -= 1;
 		dims.top -= 1;
 		dims.right += 1;

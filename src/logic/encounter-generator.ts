@@ -1,13 +1,16 @@
 import { CombatantType } from '../enums/combatant-type';
 import { EncounterMapSquareType } from '../enums/encounter-map-square-type';
+
 import type { CampaignMapRegionModel } from '../models/campaign-map';
 import type { CombatantModel } from '../models/combatant';
 import type { EncounterModel } from '../models/encounter';
+
 import { Collections } from '../utils/collections';
 import { Random } from '../utils/random';
-import { CombatantUtils } from './combatant-utils';
-import { EncounterMapUtils } from './encounter-map-utils';
-import { EncounterUtils } from './encounter-utils';
+
+import { CombatantLogic } from './combatant-logic';
+import { EncounterLogic } from './encounter-logic';
+import { EncounterMapLogic } from './encounter-map-logic';
 import { Factory } from './factory';
 import { GameLogic } from './game-logic';
 
@@ -25,9 +28,9 @@ export class EncounterGenerator {
 					const speciesID = Collections.draw(GameLogic.getSpeciesDeck());
 					const roleID = Collections.draw(GameLogic.getRoleDeck());
 					const backgroundID = Collections.draw(GameLogic.getBackgroundDeck());
-					CombatantUtils.applyCombatantCards(monster, speciesID, roleID, backgroundID);
-					CombatantUtils.makeFeatureChoices(monster);
-					CombatantUtils.addItems(monster);
+					CombatantLogic.applyCombatantCards(monster, speciesID, roleID, backgroundID);
+					CombatantLogic.makeFeatureChoices(monster);
+					CombatantLogic.addItems(monster);
 					monsters.push(monster);
 					break;
 				}
@@ -39,9 +42,9 @@ export class EncounterGenerator {
 						const n = Random.randomNumber(monsters.length, rng);
 						const original = monsters[n];
 						const monster = Factory.createCombatant(CombatantType.Monster);
-						CombatantUtils.applyCombatantCards(monster, original.speciesID, original.roleID, original.backgroundID);
-						CombatantUtils.makeFeatureChoices(monster);
-						CombatantUtils.addItems(monster);
+						CombatantLogic.applyCombatantCards(monster, original.speciesID, original.roleID, original.backgroundID);
+						CombatantLogic.makeFeatureChoices(monster);
+						CombatantLogic.addItems(monster);
 						monsters.push(monster);
 					}
 					break;
@@ -56,8 +59,8 @@ export class EncounterGenerator {
 					if (monsters.length > 0) {
 						const n = Random.randomNumber(monsters.length);
 						const monster = monsters[n];
-						CombatantUtils.incrementCombatantLevel(monster);
-						CombatantUtils.makeFeatureChoices(monster);
+						CombatantLogic.incrementCombatantLevel(monster);
+						CombatantLogic.makeFeatureChoices(monster);
 					}
 					break;
 				}
@@ -83,7 +86,7 @@ export class EncounterGenerator {
 			regionID: region.id,
 			combatants: [],
 			combatData: [],
-			map: EncounterMapUtils.generateEncounterMap(rng)
+			map: EncounterMapLogic.generateEncounterMap(rng)
 		};
 
 		encounter.combatants.push(...heroes);
@@ -102,7 +105,7 @@ export class EncounterGenerator {
 
 	static placeCombatants = (encounter: EncounterModel, rng: () => number) => {
 		encounter.combatData.forEach(cd => {
-			const size = EncounterUtils.getCombatantSize(encounter, cd.id);
+			const size = EncounterLogic.getCombatantSize(encounter, cd.id);
 
 			for (let i = 0; i <= 1000; ++i) {
 				const n = Random.randomNumber(encounter.map.squares.length, rng);
@@ -116,7 +119,7 @@ export class EncounterGenerator {
 				}
 
 				const occupiedSquares: { x: number; y: number }[] = [];
-				encounter.combatData.forEach(data => occupiedSquares.push(...EncounterUtils.getCombatantSquares(encounter, data)));
+				encounter.combatData.forEach(data => occupiedSquares.push(...EncounterLogic.getCombatantSquares(encounter, data)));
 
 				const canPlace = squares.every(sq => {
 					const mapSquare = encounter.map.squares.find(ms => (ms.x === sq.x) && (ms.y === sq.y));

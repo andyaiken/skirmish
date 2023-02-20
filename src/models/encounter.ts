@@ -1,6 +1,6 @@
 import type { CombatDataModel } from './combat-data';
-import type { EncounterMapModel } from './encounter-map';
 import type { CombatantModel } from './combatant';
+import type { EncounterMapModel } from './encounter-map';
 
 export interface EncounterModel {
 	regionID: string;

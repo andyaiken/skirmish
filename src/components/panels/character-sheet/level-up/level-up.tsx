@@ -1,20 +1,24 @@
 import { Component } from 'react';
-import { Selector, Text, TextType } from '../../../../controls';
-import { TraitType } from '../../../../enums/trait-type';
-import type { FeatureModel } from '../../../../models/feature';
-import type { CombatantModel } from '../../../../models/combatant';
-import { FeatureCard, PlaceholderCard } from '../../../cards';
-import { CardList, PlayingCard, PlayingCardSide } from '../../../utility';
 
-import './level-up.scss';
-import { FeatureUtils } from '../../../../logic/feature-utils';
-import { CombatantUtils } from '../../../../logic/combatant-utils';
 import { DamageCategoryType } from '../../../../enums/damage-category-type';
 import { DamageType } from '../../../../enums/damage-type';
 import { FeatureType } from '../../../../enums/feature-type';
 import { ItemProficiencyType } from '../../../../enums/item-proficiency-type';
 import { SkillCategoryType } from '../../../../enums/skill-category-type';
 import { SkillType } from '../../../../enums/skill-type';
+import { TraitType } from '../../../../enums/trait-type';
+
+import { CombatantLogic } from '../../../../logic/combatant-logic';
+import { FeatureLogic } from '../../../../logic/feature-logic';
+
+import type { CombatantModel } from '../../../../models/combatant';
+import type { FeatureModel } from '../../../../models/feature';
+
+import { CardList, PlayingCard, PlayingCardSide } from '../../../utility';
+import { FeatureCard, PlaceholderCard } from '../../../cards';
+import { Selector, Text, TextType } from '../../../../controls';
+
+import './level-up.scss';
 
 interface Props {
 	hero: CombatantModel;
@@ -73,8 +77,8 @@ export class LevelUp extends Component<Props, State> {
 		let choice = null;
 		let canFinish = false;
 		if (this.state.selectedFeature !== null) {
-			choice = FeatureUtils.hasChoice(this.state.selectedFeature) ? <ChoicePanel feature={this.state.selectedFeature} hero={this.props.hero} onChange={this.setFeature} /> : null;
-			canFinish = !FeatureUtils.hasChoice(this.state.selectedFeature);
+			choice = FeatureLogic.hasChoice(this.state.selectedFeature) ? <ChoicePanel feature={this.state.selectedFeature} hero={this.props.hero} onChange={this.setFeature} /> : null;
+			canFinish = !FeatureLogic.hasChoice(this.state.selectedFeature);
 		}
 
 		return (
@@ -227,7 +231,7 @@ class ChoicePanel extends Component<ChoicePanelProps, ChoicePanelState> {
 				);
 				break;
 			case FeatureType.Proficiency: {
-				const got = CombatantUtils.getProficiencies(this.props.hero);
+				const got = CombatantLogic.getProficiencies(this.props.hero);
 				choice = (
 					<div>
 						<Selector

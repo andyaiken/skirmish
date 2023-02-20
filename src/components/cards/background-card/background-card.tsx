@@ -1,8 +1,11 @@
 import { Component } from 'react';
+
 import type { BackgroundModel } from '../../../models/background';
+
+import { GameLogic } from '../../../logic/game-logic';
+
 import { Text, TextType } from '../../../controls';
 import { StatValue } from '../../utility';
-import { GameLogic } from '../../../logic/game-logic';
 
 import './background-card.scss';
 

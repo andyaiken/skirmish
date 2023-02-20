@@ -1,13 +1,16 @@
-import type { ActionModel } from '../models/action';
-import type { RoleModel } from '../models/role';
-import { FeatureUtils } from '../logic/feature-utils';
-import { Utils } from '../utils/utils';
 import { AuraType } from '../enums/aura-type';
 import { DamageCategoryType } from '../enums/damage-category-type';
 import { DamageType } from '../enums/damage-type';
 import { ItemProficiencyType } from '../enums/item-proficiency-type';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
+
+import { FeatureLogic } from '../logic/feature-logic';
+
+import type { ActionModel } from '../models/action';
+import type { RoleModel } from '../models/role';
+
+import { Utils } from '../utils/utils';
 
 export class RoleData {
 	static createActionPlaceholder = (name: string): ActionModel => {
@@ -33,10 +36,10 @@ export class RoleData {
 					ItemProficiencyType.LightArmor
 				],
 				features: [
-					FeatureUtils.createTraitFeature(TraitType.Endurance, 1),
-					FeatureUtils.createSkillFeature(SkillType.Weapon, 2),
-					FeatureUtils.createDamageCategoryTypeBonusFeature(DamageCategoryType.Physical, 1),
-					FeatureUtils.createDamageCategoryTypeResistFeature(DamageCategoryType.Physical, 1)
+					FeatureLogic.createTraitFeature(TraitType.Endurance, 1),
+					FeatureLogic.createSkillFeature(SkillType.Weapon, 2),
+					FeatureLogic.createDamageCategoryTypeBonusFeature(DamageCategoryType.Physical, 1),
+					FeatureLogic.createDamageCategoryTypeResistFeature(DamageCategoryType.Physical, 1)
 				],
 				actions: [
 					RoleData.createActionPlaceholder('Overhead strike'),
@@ -59,8 +62,8 @@ export class RoleData {
 					ItemProficiencyType.LightArmor
 				],
 				features: [
-					FeatureUtils.createTraitFeature(TraitType.Speed, 1),
-					FeatureUtils.createSkillFeature(SkillType.Weapon, 2)
+					FeatureLogic.createTraitFeature(TraitType.Speed, 1),
+					FeatureLogic.createSkillFeature(SkillType.Weapon, 2)
 				],
 				actions: [
 					RoleData.createActionPlaceholder('Dual strike (one target)'),
@@ -83,10 +86,10 @@ export class RoleData {
 					ItemProficiencyType.Implements
 				],
 				features: [
-					FeatureUtils.createTraitFeature(TraitType.Resolve, 1),
-					FeatureUtils.createSkillFeature(SkillType.Spellcasting, 2),
-					FeatureUtils.createDamageBonusFeature(DamageType.Psychic, 1),
-					FeatureUtils.createDamageResistFeature(DamageType.Psychic, 1)
+					FeatureLogic.createTraitFeature(TraitType.Resolve, 1),
+					FeatureLogic.createSkillFeature(SkillType.Spellcasting, 2),
+					FeatureLogic.createDamageBonusFeature(DamageType.Psychic, 1),
+					FeatureLogic.createDamageResistFeature(DamageType.Psychic, 1)
 				],
 				actions: [
 					RoleData.createActionPlaceholder('Confusion (target makes attack)'),
@@ -110,10 +113,10 @@ export class RoleData {
 					// None
 				],
 				features: [
-					FeatureUtils.createTraitFeature(TraitType.Speed, 1),
-					FeatureUtils.createSkillFeature(SkillType.Brawl, 2),
-					FeatureUtils.createSkillFeature(SkillType.Stealth, 2),
-					FeatureUtils.createDamageCategoryTypeBonusFeature(DamageCategoryType.Physical, 1)
+					FeatureLogic.createTraitFeature(TraitType.Speed, 1),
+					FeatureLogic.createSkillFeature(SkillType.Brawl, 2),
+					FeatureLogic.createSkillFeature(SkillType.Stealth, 2),
+					FeatureLogic.createDamageCategoryTypeBonusFeature(DamageCategoryType.Physical, 1)
 				],
 				actions: [
 					RoleData.createActionPlaceholder('Roundhouse kick'),
@@ -136,8 +139,8 @@ export class RoleData {
 					ItemProficiencyType.PowderWeapons
 				],
 				features: [
-					FeatureUtils.createTraitFeature(TraitType.Speed, 1),
-					FeatureUtils.createSkillFeature(SkillType.Weapon, 2)
+					FeatureLogic.createTraitFeature(TraitType.Speed, 1),
+					FeatureLogic.createSkillFeature(SkillType.Weapon, 2)
 				],
 				actions: [
 					RoleData.createActionPlaceholder('Deadeye (adds to next attack)'),
@@ -162,9 +165,9 @@ export class RoleData {
 					ItemProficiencyType.LightArmor
 				],
 				features: [
-					FeatureUtils.createTraitFeature(TraitType.Endurance, 1),
-					FeatureUtils.createSkillFeature(SkillType.Perception, 2),
-					FeatureUtils.createSkillFeature(SkillType.Weapon, 2)
+					FeatureLogic.createTraitFeature(TraitType.Endurance, 1),
+					FeatureLogic.createSkillFeature(SkillType.Perception, 2),
+					FeatureLogic.createSkillFeature(SkillType.Weapon, 2)
 				],
 				actions: [
 					RoleData.createActionPlaceholder('Quick shot'),
@@ -189,9 +192,9 @@ export class RoleData {
 					ItemProficiencyType.Shields
 				],
 				features: [
-					FeatureUtils.createTraitFeature(TraitType.Endurance, 1),
-					FeatureUtils.createSkillFeature(SkillType.Weapon, 2),
-					FeatureUtils.createDamageCategoryTypeBonusFeature(DamageCategoryType.Physical, 1)
+					FeatureLogic.createTraitFeature(TraitType.Endurance, 1),
+					FeatureLogic.createSkillFeature(SkillType.Weapon, 2),
+					FeatureLogic.createDamageCategoryTypeBonusFeature(DamageCategoryType.Physical, 1)
 				],
 				actions: [
 					RoleData.createActionPlaceholder('Charge attack'),
@@ -214,13 +217,13 @@ export class RoleData {
 					ItemProficiencyType.Implements
 				],
 				features: [
-					FeatureUtils.createTraitFeature(TraitType.Resolve, 1),
-					FeatureUtils.createSkillFeature(SkillType.Spellcasting, 2),
-					FeatureUtils.createDamageCategoryTypeBonusFeature(DamageCategoryType.Energy, 1),
-					FeatureUtils.createDamageCategoryTypeResistFeature(DamageCategoryType.Energy, 1),
-					FeatureUtils.createAuraDamageFeature(AuraType.AutomaticDamage, DamageType.Fire, 1),
-					FeatureUtils.createAuraDamageFeature(AuraType.AutomaticDamage, DamageType.Cold, 1),
-					FeatureUtils.createAuraDamageFeature(AuraType.AutomaticDamage, DamageType.Electricity, 1)
+					FeatureLogic.createTraitFeature(TraitType.Resolve, 1),
+					FeatureLogic.createSkillFeature(SkillType.Spellcasting, 2),
+					FeatureLogic.createDamageCategoryTypeBonusFeature(DamageCategoryType.Energy, 1),
+					FeatureLogic.createDamageCategoryTypeResistFeature(DamageCategoryType.Energy, 1),
+					FeatureLogic.createAuraDamageFeature(AuraType.AutomaticDamage, DamageType.Fire, 1),
+					FeatureLogic.createAuraDamageFeature(AuraType.AutomaticDamage, DamageType.Cold, 1),
+					FeatureLogic.createAuraDamageFeature(AuraType.AutomaticDamage, DamageType.Electricity, 1)
 				],
 				actions: [
 					RoleData.createActionPlaceholder('Lightning bolt (single target, damage and stuns)'),
@@ -245,10 +248,10 @@ export class RoleData {
 					ItemProficiencyType.LightArmor
 				],
 				features: [
-					FeatureUtils.createTraitFeature(TraitType.Resolve, 1),
-					FeatureUtils.createSkillFeature(SkillType.Weapon, 2),
-					FeatureUtils.createDamageCategoryTypeBonusFeature(DamageCategoryType.Energy, 1),
-					FeatureUtils.createDamageCategoryTypeBonusFeature(DamageCategoryType.Physical, 1)
+					FeatureLogic.createTraitFeature(TraitType.Resolve, 1),
+					FeatureLogic.createSkillFeature(SkillType.Weapon, 2),
+					FeatureLogic.createDamageCategoryTypeBonusFeature(DamageCategoryType.Energy, 1),
+					FeatureLogic.createDamageCategoryTypeBonusFeature(DamageCategoryType.Physical, 1)
 				],
 				actions: [
 					RoleData.createActionPlaceholder('Flaming blade (ongoing fire)'),
@@ -271,9 +274,9 @@ export class RoleData {
 					ItemProficiencyType.Implements
 				],
 				features: [
-					FeatureUtils.createTraitFeature(TraitType.Resolve, 1),
-					FeatureUtils.createSkillFeature(SkillType.Spellcasting, 2),
-					FeatureUtils.createDamageCategoryTypeBonusFeature(DamageCategoryType.Energy, 1)
+					FeatureLogic.createTraitFeature(TraitType.Resolve, 1),
+					FeatureLogic.createSkillFeature(SkillType.Spellcasting, 2),
+					FeatureLogic.createDamageCategoryTypeBonusFeature(DamageCategoryType.Energy, 1)
 				],
 				actions: [
 					RoleData.createActionPlaceholder('XXX (shield self, resist all damage)'),

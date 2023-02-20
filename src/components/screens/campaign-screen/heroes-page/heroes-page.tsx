@@ -1,14 +1,16 @@
 import { Component } from 'react';
-import { Dialog, Text, TextType } from '../../../../controls';
+
 import type { BoonModel } from '../../../../models/boon';
 import { BoonType } from '../../../../enums/boon-type';
+import type { CombatantModel } from '../../../../models/combatant';
 import type { FeatureModel } from '../../../../models/feature';
 import type { GameModel } from '../../../../models/game';
-import type { CombatantModel } from '../../../../models/combatant';
 import type { ItemModel } from '../../../../models/item';
+
 import { BoonCard, HeroCard, ItemCard, PlaceholderCard } from '../../../cards';
-import { CharacterSheetPanel, HeroBuilderPanel } from '../../../panels';
 import { CardList, PlayingCard } from '../../../utility';
+import { CharacterSheetPanel, HeroBuilderPanel } from '../../../panels';
+import { Dialog, Text, TextType } from '../../../../controls';
 
 import './heroes-page.scss';
 

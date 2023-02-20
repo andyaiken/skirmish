@@ -1,4 +1,5 @@
 import type { CombatantType } from '../enums/combatant-type';
+
 import type { FeatureModel } from './feature';
 import type { ItemModel } from './item';
 

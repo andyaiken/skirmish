@@ -1,23 +1,27 @@
 import { Component } from 'react';
-import type { EncounterModel } from '../../../models/encounter';
-import type { GameModel } from '../../../models/game';
-import type { CombatantModel } from '../../../models/combatant';
-import type { ItemModel } from '../../../models/item';
-import type { CombatDataModel } from '../../../models/combat-data';
-import { DirectionPanel, EncounterMapPanel, InitiativeListPanel } from '../../panels';
-import { Tag, Text, TextType } from '../../../controls';
-import { Box, CardList, IconType, IconValue, PlayingCard, StatValue } from '../../utility';
-import { ActionCard } from '../../cards';
-import { CombatantUtils } from '../../../logic/combatant-utils';
-import { EncounterUtils } from '../../../logic/encounter-utils';
 
-import './encounter-screen.scss';
-import { GameLogic } from '../../../logic/game-logic';
 import { CombatDataState } from '../../../enums/combat-data-state';
 import { CombatantType } from '../../../enums/combatant-type';
 import { EncounterState } from '../../../enums/encounter-state';
 import { SkillType } from '../../../enums/skill-type';
 import { TraitType } from '../../../enums/trait-type';
+
+import { CombatantLogic } from '../../../logic/combatant-logic';
+import { EncounterLogic } from '../../../logic/encounter-logic';
+import { GameLogic } from '../../../logic/game-logic';
+
+import type { CombatDataModel } from '../../../models/combat-data';
+import type { CombatantModel } from '../../../models/combatant';
+import type { EncounterModel } from '../../../models/encounter';
+import type { GameModel } from '../../../models/game';
+import type { ItemModel } from '../../../models/item';
+
+import { Box, CardList, IconType, IconValue, PlayingCard, StatValue } from '../../utility';
+import { DirectionPanel, EncounterMapPanel, InitiativeListPanel } from '../../panels';
+import { Selector, Tag, Text, TextType } from '../../../controls';
+import { ActionCard } from '../../cards';
+
+import './encounter-screen.scss';
 
 export enum EncounterFinishState {
 	Victory = 'victory',
@@ -42,6 +46,7 @@ interface Props {
 interface State {
 	mapSquareSize: number;
 	selectedIDs: string[];
+	controls: string;
 }
 
 export class EncounterScreen extends Component<Props, State> {
@@ -49,7 +54,8 @@ export class EncounterScreen extends Component<Props, State> {
 		super(props);
 		this.state = {
 			mapSquareSize: 10,
-			selectedIDs: []
+			selectedIDs: [],
+			controls: 'stats'
 		};
 	}
 
@@ -66,14 +72,20 @@ export class EncounterScreen extends Component<Props, State> {
 		});
 	};
 
+	setControls = (controls: string) => {
+		this.setState({
+			controls: controls
+		});
+	};
+
 	endTurn = () => {
 		this.props.endTurn(this.props.encounter);
 	};
 
 	getEncounterControls = (currentID: string | null) => {
 		if (currentID !== null) {
-			const combatant = EncounterUtils.getCombatant(this.props.encounter, currentID) as CombatantModel;
-			const combatData = EncounterUtils.getCombatData(this.props.encounter, currentID) as CombatDataModel;
+			const combatant = EncounterLogic.getCombatant(this.props.encounter, currentID) as CombatantModel;
+			const combatData = EncounterLogic.getCombatData(this.props.encounter, currentID) as CombatDataModel;
 
 			const prone = combatData.state === CombatDataState.Prone;
 
@@ -83,7 +95,7 @@ export class EncounterScreen extends Component<Props, State> {
 			for (let n = 0; n < combatData.wounds; ++n) {
 				wounds += '♥︎';
 			}
-			while (wounds.length < CombatantUtils.getTraitValue(combatant, TraitType.Resolve)) {
+			while (wounds.length < CombatantLogic.getTraitValue(combatant, TraitType.Resolve)) {
 				wounds += '♡';
 			}
 			const woundsPerRow = (wounds.length < 6) || (wounds.length > 8) ? 5 : 4;
@@ -96,22 +108,124 @@ export class EncounterScreen extends Component<Props, State> {
 				woundsInRows.push(<div key={woundsInRows.length}>{wounds}</div>);
 			}
 
-			const moveCosts: Record<string, number> = {};
-			moveCosts.n = EncounterUtils.getMoveCost(this.props.encounter, combatData, 'n');
-			moveCosts.ne = EncounterUtils.getMoveCost(this.props.encounter, combatData, 'ne');
-			moveCosts.e = EncounterUtils.getMoveCost(this.props.encounter, combatData, 'e');
-			moveCosts.se = EncounterUtils.getMoveCost(this.props.encounter, combatData, 'se');
-			moveCosts.s = EncounterUtils.getMoveCost(this.props.encounter, combatData, 's');
-			moveCosts.sw = EncounterUtils.getMoveCost(this.props.encounter, combatData, 'sw');
-			moveCosts.w = EncounterUtils.getMoveCost(this.props.encounter, combatData, 'w');
-			moveCosts.nw = EncounterUtils.getMoveCost(this.props.encounter, combatData, 'nw');
+			let controls = null;
+			switch (this.state.controls) {
+				case 'stats': {
+					controls = (
+						<div>
+							<Box label='This Round'>
+								<div className='stats-row'>
+									<StatValue orientation='vertical' label='Movement' value={movement} />
+									<div>
+										<StatValue orientation='vertical' label='Senses' value={combatData.senses} />
+										<button
+											disabled={combatData.movement < 4}
+											onClick={() => this.props.scan(this.props.encounter, combatData)}
+										>
+											Scan<br/><IconValue value={4} type={IconType.Movement} />
+										</button>
+										<StatValue label='Perc' value={CombatantLogic.getSkillValue(combatant, SkillType.Perception)} />
+									</div>
+									<div>
+										<StatValue orientation='vertical' label='Hidden' value={combatData.hidden} />
+										<button
+											disabled={combatData.movement < 4}
+											onClick={() => this.props.hide(this.props.encounter, combatData)}
+										>
+											Hide<br/><IconValue value={4} type={IconType.Movement} />
+										</button>
+										<StatValue label='Stealth' value={CombatantLogic.getSkillValue(combatant, SkillType.Stealth)} />
+									</div>
+									<div>
+										<StatValue orientation='vertical' label='State' value={combatData.state} />
+										{
+											prone ?
+												<button
+													disabled={combatData.movement < 8}
+													onClick={() => this.props.standUp(this.props.encounter, combatData)}
+												>
+													Stand<br/><IconValue value={8} type={IconType.Movement} />
+												</button>
+												: null
+										}
+									</div>
+								</div>
+							</Box>
+							<Box label='Damage and Wounds'>
+								<div className='stats-row'>
+									<StatValue orientation='vertical' label='Damage' value={combatData.damage} />
+									<StatValue orientation='vertical' label='Wounds' value={<div>{woundsInRows}</div>} />
+								</div>
+							</Box>
+							<Box label='Traits and Conditions'>
+								<div className='stats-row'>
+									<div>
+										<StatValue orientation='vertical' label='Endurance' value={CombatantLogic.getTraitValue(combatant, TraitType.Endurance)} />
+										<div>{combatData.conditions.filter(c => c.trait === TraitType.Endurance).map(c => c.type)}</div>
+									</div>
+									<div>
+										<StatValue orientation='vertical' label='Resolve' value={CombatantLogic.getTraitValue(combatant, TraitType.Resolve)} />
+										<div>{combatData.conditions.filter(c => c.trait === TraitType.Resolve).map(c => c.type)}</div>
+									</div>
+									<div>
+										<StatValue orientation='vertical' label='Speed' value={CombatantLogic.getTraitValue(combatant, TraitType.Speed)} />
+										<div>{combatData.conditions.filter(c => c.trait === TraitType.Speed).map(c => c.type)}</div>
+									</div>
+								</div>
+							</Box>
+						</div>
+					);
+					break;
+				}
+				case 'move': {
+					const moveCosts: Record<string, number> = {};
+					moveCosts.n = EncounterLogic.getMoveCost(this.props.encounter, combatData, 'n');
+					moveCosts.ne = EncounterLogic.getMoveCost(this.props.encounter, combatData, 'ne');
+					moveCosts.e = EncounterLogic.getMoveCost(this.props.encounter, combatData, 'e');
+					moveCosts.se = EncounterLogic.getMoveCost(this.props.encounter, combatData, 'se');
+					moveCosts.s = EncounterLogic.getMoveCost(this.props.encounter, combatData, 's');
+					moveCosts.sw = EncounterLogic.getMoveCost(this.props.encounter, combatData, 'sw');
+					moveCosts.w = EncounterLogic.getMoveCost(this.props.encounter, combatData, 'w');
+					moveCosts.nw = EncounterLogic.getMoveCost(this.props.encounter, combatData, 'nw');
 
-			const actionCards = combatData.actions.map(a => {
-				const source = CombatantUtils.getCardSource(combatant, a.id, 'action');
-				return (
-					<PlayingCard key={a.id} front={<ActionCard action={a} />} footer={source} />
-				);
-			});
+					controls = (
+						<div className='movement'>
+							<DirectionPanel combatData={combatData} costs={moveCosts} onMove={(dir, cost) => this.props.move(this.props.encounter, combatData, dir, cost)} />
+						</div>
+					);
+					break;
+				}
+				case 'actions': {
+					const actionCards = combatData.actions.map(a => {
+						const source = CombatantLogic.getCardSource(combatant, a.id, 'action');
+						return (
+							<PlayingCard key={a.id} front={<ActionCard action={a} />} footer={source} />
+						);
+					});
+
+					controls = (
+						<div className='actions not-implemented'>
+							<CardList cards={actionCards} />
+						</div>
+					);
+					break;
+				}
+				case 'other': {
+					controls = (
+						<div>
+							<button className='not-implemented' onClick={() => null}>Pick Up Item<br/><IconValue value={2} type={IconType.Movement} /></button>
+							<button className='not-implemented' onClick={() => null}>Drop Item<br/><IconValue value={1} type={IconType.Movement} /></button>
+							<hr />
+							<button onClick={this.endTurn}>End Turn</button>
+							<hr />
+							<button className='hack' onClick={() => this.props.finishEncounter(EncounterFinishState.Victory)}>Win</button>
+							<button onClick={() => this.props.finishEncounter(EncounterFinishState.Retreat)}>Retreat</button>
+							<button onClick={() => this.props.finishEncounter(EncounterFinishState.Defeat)}>Surrender</button>
+						</div>
+					);
+					break;
+				}
+			}
 
 			switch (combatant.type) {
 				case CombatantType.Hero: {
@@ -140,83 +254,12 @@ export class EncounterScreen extends Component<Props, State> {
 							</div>
 							{prone ? <Text type={TextType.Information}><b>You are Prone.</b> Your skill ranks are halved and moving costs are doubled.</Text> : null}
 							{combatData.hidden > 0 ? <Text type={TextType.Information}><b>You are Hidden.</b> Your moving costs are doubled.</Text> : null}
-							<Box label='This Round'>
-								<div className='stats-row'>
-									<StatValue orientation='vertical' label='Movement' value={movement} />
-									<div>
-										<StatValue orientation='vertical' label='Senses' value={combatData.senses} />
-										<button
-											disabled={combatData.movement < 4}
-											onClick={() => this.props.scan(this.props.encounter, combatData)}
-										>
-											Scan<br/><IconValue value={4} type={IconType.Movement} />
-										</button>
-										<StatValue label='Perc' value={CombatantUtils.getSkillValue(combatant, SkillType.Perception)} />
-									</div>
-									<div>
-										<StatValue orientation='vertical' label='Hidden' value={combatData.hidden} />
-										<button
-											disabled={combatData.movement < 4}
-											onClick={() => this.props.hide(this.props.encounter, combatData)}
-										>
-											Hide<br/><IconValue value={4} type={IconType.Movement} />
-										</button>
-										<StatValue label='Stealth' value={CombatantUtils.getSkillValue(combatant, SkillType.Stealth)} />
-									</div>
-									<div>
-										<StatValue orientation='vertical' label='State' value={combatData.state} />
-										{
-											prone ?
-												<button
-													disabled={combatData.movement < 8}
-													onClick={() => this.props.standUp(this.props.encounter, combatData)}
-												>
-													Stand<br/><IconValue value={8} type={IconType.Movement} />
-												</button>
-												: null
-										}
-									</div>
-								</div>
-							</Box>
-							<Box label='Damage and Wounds'>
-								<div className='stats-row'>
-									<StatValue orientation='vertical' label='Damage' value={combatData.damage} />
-									<StatValue orientation='vertical' label='Wounds' value={<div>{woundsInRows}</div>} />
-								</div>
-							</Box>
-							<Box label='Traits and Conditions'>
-								<div className='stats-row'>
-									<div>
-										<StatValue orientation='vertical' label='Endurance' value={CombatantUtils.getTraitValue(combatant, TraitType.Endurance)} />
-										<div>{combatData.conditions.filter(c => c.trait === TraitType.Endurance).map(c => c.type)}</div>
-									</div>
-									<div>
-										<StatValue orientation='vertical' label='Resolve' value={CombatantUtils.getTraitValue(combatant, TraitType.Resolve)} />
-										<div>{combatData.conditions.filter(c => c.trait === TraitType.Resolve).map(c => c.type)}</div>
-									</div>
-									<div>
-										<StatValue orientation='vertical' label='Speed' value={CombatantUtils.getTraitValue(combatant, TraitType.Speed)} />
-										<div>{combatData.conditions.filter(c => c.trait === TraitType.Speed).map(c => c.type)}</div>
-									</div>
-								</div>
-							</Box>
-							<hr />
-							<div className='movement'>
-								<DirectionPanel combatData={combatData} costs={moveCosts} onMove={(dir, cost) => this.props.move(this.props.encounter, combatData, dir, cost)} />
-							</div>
-							<hr />
-							<div className='actions not-implemented'>
-								<CardList cards={actionCards} />
-							</div>
-							<hr />
-							<button className='not-implemented' onClick={() => null}>Pick Up Item<br/><IconValue value={2} type={IconType.Movement} /></button>
-							<button className='not-implemented' onClick={() => null}>Drop Item<br/><IconValue value={1} type={IconType.Movement} /></button>
-							<hr />
-							<button onClick={this.endTurn}>End Turn</button>
-							<hr />
-							<button className='hack' onClick={() => this.props.finishEncounter(EncounterFinishState.Victory)}>Win</button>
-							<button onClick={() => this.props.finishEncounter(EncounterFinishState.Retreat)}>Retreat</button>
-							<button onClick={() => this.props.finishEncounter(EncounterFinishState.Defeat)}>Surrender</button>
+							<Selector
+								options={[ { id: 'stats', display: 'Stats' }, { id: 'move', display: 'Move' }, { id: 'actions', display: 'Actions' }, { id: 'other', display: 'Other' } ]}
+								selectedID={this.state.controls}
+								onSelect={this.setControls}
+							/>
+							{controls}
 						</div>
 					);
 				}
@@ -238,11 +281,11 @@ export class EncounterScreen extends Component<Props, State> {
 	};
 
 	public render() {
-		const acting = EncounterUtils.getActiveCombatants(this.props.encounter);
+		const acting = EncounterLogic.getActiveCombatants(this.props.encounter);
 		const currentID = acting.length > 0 ? acting[0].id : null;
 
 		let controls = null;
-		switch (EncounterUtils.getEncounterState(this.props.encounter)) {
+		switch (EncounterLogic.getEncounterState(this.props.encounter)) {
 			case EncounterState.Active:
 				controls = (
 					<div className='encounter-right-panel'>

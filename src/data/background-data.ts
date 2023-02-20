@@ -1,12 +1,15 @@
-import type { ActionModel } from '../models/action';
-import type { BackgroundModel } from '../models/background';
-import { TraitType } from '../enums/trait-type';
-import { FeatureUtils } from '../logic/feature-utils';
-import { Utils } from '../utils/utils';
 import { AuraType } from '../enums/aura-type';
 import { DamageCategoryType } from '../enums/damage-category-type';
 import { DamageType } from '../enums/damage-type';
 import { SkillType } from '../enums/skill-type';
+import { TraitType } from '../enums/trait-type';
+
+import { FeatureLogic } from '../logic/feature-logic';
+
+import type { ActionModel } from '../models/action';
+import type { BackgroundModel } from '../models/background';
+
+import { Utils } from '../utils/utils';
 
 export class BackgroundData {
 	static createActionPlaceholder = (name: string): ActionModel => {
@@ -22,7 +25,7 @@ export class BackgroundData {
 				id: 'background-acrobat',
 				name: 'Acrobat',
 				features: [
-					FeatureUtils.createTraitFeature(TraitType.Speed, 1)
+					FeatureLogic.createTraitFeature(TraitType.Speed, 1)
 				],
 				actions: [
 					BackgroundData.createActionPlaceholder('Move through occupied spaces'),
@@ -33,9 +36,9 @@ export class BackgroundData {
 				id: 'background-commander',
 				name: 'Commander',
 				features: [
-					FeatureUtils.createAuraDamageCategoryTypeFeature(AuraType.DamageResistance, DamageCategoryType.Corruption, 1),
-					FeatureUtils.createAuraDamageCategoryTypeFeature(AuraType.DamageResistance, DamageCategoryType.Energy, 1),
-					FeatureUtils.createAuraDamageCategoryTypeFeature(AuraType.DamageResistance, DamageCategoryType.Physical, 1)
+					FeatureLogic.createAuraDamageCategoryTypeFeature(AuraType.DamageResistance, DamageCategoryType.Corruption, 1),
+					FeatureLogic.createAuraDamageCategoryTypeFeature(AuraType.DamageResistance, DamageCategoryType.Energy, 1),
+					FeatureLogic.createAuraDamageCategoryTypeFeature(AuraType.DamageResistance, DamageCategoryType.Physical, 1)
 				],
 				actions: [
 					BackgroundData.createActionPlaceholder('Knock prone'),
@@ -46,9 +49,9 @@ export class BackgroundData {
 				id: 'background-mountebank',
 				name: 'Mountebank',
 				features: [
-					FeatureUtils.createAuraDamageCategoryTypeFeature(AuraType.DamageVulnerability, DamageCategoryType.Corruption, 1),
-					FeatureUtils.createAuraDamageCategoryTypeFeature(AuraType.DamageVulnerability, DamageCategoryType.Energy, 1),
-					FeatureUtils.createAuraDamageCategoryTypeFeature(AuraType.DamageVulnerability, DamageCategoryType.Physical, 1)
+					FeatureLogic.createAuraDamageCategoryTypeFeature(AuraType.DamageVulnerability, DamageCategoryType.Corruption, 1),
+					FeatureLogic.createAuraDamageCategoryTypeFeature(AuraType.DamageVulnerability, DamageCategoryType.Energy, 1),
+					FeatureLogic.createAuraDamageCategoryTypeFeature(AuraType.DamageVulnerability, DamageCategoryType.Physical, 1)
 				],
 				actions: [
 					BackgroundData.createActionPlaceholder('Command attack'),
@@ -60,10 +63,10 @@ export class BackgroundData {
 				id: 'background-mystic',
 				name: 'Mystic',
 				features: [
-					FeatureUtils.createSkillFeature(SkillType.Spellcasting, 2),
-					FeatureUtils.createDamageCategoryTypeBonusFeature(DamageCategoryType.Energy, 1),
-					FeatureUtils.createDamageCategoryTypeBonusFeature(DamageCategoryType.Corruption, 1),
-					FeatureUtils.createDamageCategoryTypeResistFeature(DamageCategoryType.Corruption, 1)
+					FeatureLogic.createSkillFeature(SkillType.Spellcasting, 2),
+					FeatureLogic.createDamageCategoryTypeBonusFeature(DamageCategoryType.Energy, 1),
+					FeatureLogic.createDamageCategoryTypeBonusFeature(DamageCategoryType.Corruption, 1),
+					FeatureLogic.createDamageCategoryTypeResistFeature(DamageCategoryType.Corruption, 1)
 				],
 				actions: [
 					BackgroundData.createActionPlaceholder('Confusion (target makes attack)'),
@@ -76,7 +79,7 @@ export class BackgroundData {
 				id: 'background-noble',
 				name: 'Noble',
 				features: [
-					FeatureUtils.createAuraFeature(AuraType.EaseMovement, 1)
+					FeatureLogic.createAuraFeature(AuraType.EaseMovement, 1)
 				],
 				actions: [
 					BackgroundData.createActionPlaceholder('Buff ally'),
@@ -88,7 +91,7 @@ export class BackgroundData {
 				id: 'background-physician',
 				name: 'Physician',
 				features: [
-					FeatureUtils.createAuraFeature(AuraType.AutomaticHealing, 1)
+					FeatureLogic.createAuraFeature(AuraType.AutomaticHealing, 1)
 				],
 				actions: [
 					BackgroundData.createActionPlaceholder('Remove condition (ally)'),
@@ -100,13 +103,13 @@ export class BackgroundData {
 				id: 'background-reaver',
 				name: 'Reaver',
 				features: [
-					FeatureUtils.createSkillFeature(SkillType.Brawl, 2),
-					FeatureUtils.createSkillFeature(SkillType.Weapon, 2),
-					FeatureUtils.createDamageCategoryTypeResistFeature(DamageCategoryType.Any, 1),
-					FeatureUtils.createDamageCategoryTypeBonusFeature(DamageCategoryType.Physical, 1),
-					FeatureUtils.createAuraDamageFeature(AuraType.AutomaticDamage, DamageType.Edged, 1),
-					FeatureUtils.createAuraDamageFeature(AuraType.AutomaticDamage, DamageType.Impact, 1),
-					FeatureUtils.createAuraDamageFeature(AuraType.AutomaticDamage, DamageType.Piercing, 1)
+					FeatureLogic.createSkillFeature(SkillType.Brawl, 2),
+					FeatureLogic.createSkillFeature(SkillType.Weapon, 2),
+					FeatureLogic.createDamageCategoryTypeResistFeature(DamageCategoryType.Any, 1),
+					FeatureLogic.createDamageCategoryTypeBonusFeature(DamageCategoryType.Physical, 1),
+					FeatureLogic.createAuraDamageFeature(AuraType.AutomaticDamage, DamageType.Edged, 1),
+					FeatureLogic.createAuraDamageFeature(AuraType.AutomaticDamage, DamageType.Impact, 1),
+					FeatureLogic.createAuraDamageFeature(AuraType.AutomaticDamage, DamageType.Piercing, 1)
 				],
 				actions: [
 					BackgroundData.createActionPlaceholder('Frenzy (adds to damage)'),
@@ -118,10 +121,10 @@ export class BackgroundData {
 				id: 'background-sentinel',
 				name: 'Sentinel',
 				features: [
-					FeatureUtils.createTraitFeature(TraitType.Endurance, 1),
-					FeatureUtils.createTraitFeature(TraitType.Resolve, 1),
-					FeatureUtils.createDamageResistFeature(DamageType.All, 1),
-					FeatureUtils.createAuraFeature(AuraType.PreventMovement, 1)
+					FeatureLogic.createTraitFeature(TraitType.Endurance, 1),
+					FeatureLogic.createTraitFeature(TraitType.Resolve, 1),
+					FeatureLogic.createDamageResistFeature(DamageType.All, 1),
+					FeatureLogic.createAuraFeature(AuraType.PreventMovement, 1)
 				],
 				actions: [
 					BackgroundData.createActionPlaceholder('Mark enemy'),
@@ -132,8 +135,8 @@ export class BackgroundData {
 				id: 'background-thief',
 				name: 'Thief',
 				features: [
-					FeatureUtils.createSkillFeature(SkillType.Reactions, 2),
-					FeatureUtils.createSkillFeature(SkillType.Stealth, 2)
+					FeatureLogic.createSkillFeature(SkillType.Reactions, 2),
+					FeatureLogic.createSkillFeature(SkillType.Stealth, 2)
 				],
 				actions: [
 					BackgroundData.createActionPlaceholder('Disable trap'),

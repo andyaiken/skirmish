@@ -1,12 +1,16 @@
 import { Component } from 'react';
-import { Tag, Text, TextType } from '../../../controls';
-import type { CombatantModel } from '../../../models/combatant';
+
 import { TraitType } from '../../../enums/trait-type';
+
+import { CombatantLogic } from '../../../logic/combatant-logic';
+import { GameLogic } from '../../../logic/game-logic';
+
+import type { CombatantModel } from '../../../models/combatant';
+
+import { Tag, Text, TextType } from '../../../controls';
 import { StatValue } from '../../utility';
-import { CombatantUtils } from '../../../logic/combatant-utils';
 
 import './hero-card.scss';
-import { GameLogic } from '../../../logic/game-logic';
 
 interface Props {
 	hero: CombatantModel;
@@ -36,9 +40,9 @@ export class HeroCard extends Component<Props> {
 					<Tag>Level {this.props.hero.level}</Tag>
 				</div>
 				<div className='traits'>
-					<StatValue orientation='vertical' label='End' value={CombatantUtils.getTraitValue(this.props.hero, TraitType.Endurance)} />
-					<StatValue orientation='vertical' label='Res' value={CombatantUtils.getTraitValue(this.props.hero, TraitType.Resolve)} />
-					<StatValue orientation='vertical' label='Spd' value={CombatantUtils.getTraitValue(this.props.hero, TraitType.Speed)} />
+					<StatValue orientation='vertical' label='End' value={CombatantLogic.getTraitValue(this.props.hero, TraitType.Endurance)} />
+					<StatValue orientation='vertical' label='Res' value={CombatantLogic.getTraitValue(this.props.hero, TraitType.Resolve)} />
+					<StatValue orientation='vertical' label='Spd' value={CombatantLogic.getTraitValue(this.props.hero, TraitType.Speed)} />
 				</div>
 				{itemSection}
 			</div>

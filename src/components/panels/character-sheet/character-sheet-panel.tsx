@@ -1,20 +1,24 @@
 import { Component } from 'react';
-import { Selector, Tag, Text, TextType } from '../../../controls';
+
+import { CombatantLogic } from '../../../logic/combatant-logic';
+import { GameLogic } from '../../../logic/game-logic';
+
+import type { CombatantModel } from '../../../models/combatant';
 import type { FeatureModel } from '../../../models/feature';
 import type { GameModel } from '../../../models/game';
-import type { CombatantModel } from '../../../models/combatant';
 import type { ItemModel } from '../../../models/item';
+
 import { Collections } from '../../../utils/collections';
 import { Utils } from '../../../utils/utils';
+
 import { ActionCard, FeatureCard } from '../../cards';
 import { CardList, PlayingCard } from '../../utility';
-import { Stats } from './stats/stats';
+import { Selector, Tag, Text, TextType } from '../../../controls';
 import { Items } from './items/items';
 import { LevelUp } from './level-up/level-up';
-import { CombatantUtils } from '../../../logic/combatant-utils';
+import { Stats } from './stats/stats';
 
 import './character-sheet-panel.scss';
-import { GameLogic } from '../../../logic/game-logic';
 
 type ViewType = 'actions' | 'features' | 'items' | 'stats';
 
@@ -41,7 +45,7 @@ export class CharacterSheetPanel extends Component<Props, State> {
 	}
 
 	drawFeatures = (hero: CombatantModel) => {
-		return Collections.shuffle(CombatantUtils.getFeatureDeck(hero))
+		return Collections.shuffle(CombatantLogic.getFeatureDeck(hero))
 			.splice(0, 3)
 			.map(f => {
 				const copy = JSON.parse(JSON.stringify(f)) as FeatureModel;
@@ -137,8 +141,8 @@ interface FeaturesPageProps {
 
 class FeaturesPage extends Component<FeaturesPageProps> {
 	public render() {
-		const featureCards = CombatantUtils.getFeatureDeck(this.props.hero).map(feature => {
-			const source = CombatantUtils.getCardSource(this.props.hero, feature.id, 'feature');
+		const featureCards = CombatantLogic.getFeatureDeck(this.props.hero).map(feature => {
+			const source = CombatantLogic.getCardSource(this.props.hero, feature.id, 'feature');
 			return (
 				<PlayingCard key={feature.id} front={<FeatureCard feature={feature} />} footer={source} />
 			);
@@ -161,8 +165,8 @@ interface ActionsPageProps {
 
 class ActionsPage extends Component<ActionsPageProps> {
 	public render() {
-		const actionCards = CombatantUtils.getActionDeck(this.props.hero).map(action => {
-			const source = CombatantUtils.getCardSource(this.props.hero, action.id, 'action');
+		const actionCards = CombatantLogic.getActionDeck(this.props.hero).map(action => {
+			const source = CombatantLogic.getCardSource(this.props.hero, action.id, 'action');
 			return (
 				<PlayingCard key={action.id} front={<ActionCard action={action} />} footer={source} />
 			);

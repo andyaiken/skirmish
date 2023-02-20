@@ -1,10 +1,14 @@
 import { Component } from 'react';
-import { Tag, Text, TextType } from '../../../controls';
+
+import { CombatDataState } from '../../../enums/combat-data-state';
+
+import { EncounterLogic } from '../../../logic/encounter-logic';
+
 import type { CombatantModel } from '../../../models/combatant';
 import type { EncounterModel } from '../../../models/encounter';
-import { CombatDataState } from '../../../enums/combat-data-state';
+
+import { Tag, Text, TextType } from '../../../controls';
 import { StatValue } from '../../utility';
-import { EncounterUtils } from '../../../logic/encounter-utils';
 
 import './initiative-list-panel.scss';
 
@@ -22,25 +26,34 @@ export class InitiativeListPanel extends Component<Props> {
 	};
 
 	public render() {
-		const acting = EncounterUtils.getActiveCombatants(this.props.encounter)
+		const acting = EncounterLogic.getActiveCombatants(this.props.encounter)
 			.map(cd => {
 				return {
-					combatant: EncounterUtils.getCombatant(this.props.encounter, cd.id) as CombatantModel,
+					combatant: EncounterLogic.getCombatant(this.props.encounter, cd.id) as CombatantModel,
 					data: cd
 				};
 			})
 			.map(a => {
-				const current = this.props.currentID === a.combatant.id;
+				const currentTag = this.props.currentID === a.combatant.id ? <Tag>Current Turn</Tag> : null;
+				const unconsciousTag = a.data.state === CombatDataState.Unconscious ? <Tag>Unconscious</Tag> : null;
+				const deadTag = a.data.state === CombatDataState.Dead ? <Tag>Dead</Tag> : null;
+				let tags = null;
+				if (currentTag || unconsciousTag || deadTag) {
+					tags = (
+						<div className='initiative-entry-tags'>
+							{currentTag}
+							{unconsciousTag}
+							{deadTag}
+						</div>
+					);
+				}
+
 				const selected = this.props.selectedIDs.includes(a.combatant.id);
-				const className = `initiative-entry ${current ? 'current' : ''} ${selected ? 'selected' : ''}`;
+				const className = `initiative-entry ${this.props.currentID === a.combatant.id ? 'current' : ''} ${selected ? 'selected' : ''}`;
 				const label = (
 					<div className='initiative-entry-details'>
 						<div className='initiative-entry-name'>{a.combatant.name}</div>
-						<div className='initiative-entry-tags'>
-							{current ? <Tag>Current Turn</Tag> : null}
-							{a.data.state === CombatDataState.Unconscious ? <Tag>Unconscious</Tag> : null}
-							{a.data.state === CombatDataState.Dead ? <Tag>Dead</Tag> : null}
-						</div>
+						{tags}
 					</div>
 				);
 				return (

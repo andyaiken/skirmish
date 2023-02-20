@@ -1,12 +1,15 @@
-import type { ActionModel } from '../models/action';
-import type { SpeciesModel } from '../models/species';
-import { TraitType } from '../enums/trait-type';
-import { FeatureUtils } from '../logic/feature-utils';
-import { Utils } from '../utils/utils';
 import { AuraType } from '../enums/aura-type';
 import { DamageCategoryType } from '../enums/damage-category-type';
 import { DamageType } from '../enums/damage-type';
 import { SkillType } from '../enums/skill-type';
+import { TraitType } from '../enums/trait-type';
+
+import { FeatureLogic } from '../logic/feature-logic';
+
+import type { ActionModel } from '../models/action';
+import type { SpeciesModel } from '../models/species';
+
+import { Utils } from '../utils/utils';
 
 export class HeroSpeciesData {
 	static createActionPlaceholder = (name: string): ActionModel => {
@@ -26,9 +29,9 @@ export class HeroSpeciesData {
 					TraitType.All
 				],
 				features: [
-					FeatureUtils.createSkillFeature(SkillType.Any, 2),
-					FeatureUtils.createDamageBonusFeature(DamageType.Any, 1),
-					FeatureUtils.createDamageResistFeature(DamageType.Any, 1)
+					FeatureLogic.createSkillFeature(SkillType.Any, 2),
+					FeatureLogic.createDamageBonusFeature(DamageType.Any, 1),
+					FeatureLogic.createDamageResistFeature(DamageType.Any, 1)
 				],
 				actions: [
 					HeroSpeciesData.createActionPlaceholder('Resilient (remove condition on self)')
@@ -42,9 +45,9 @@ export class HeroSpeciesData {
 					TraitType.Endurance
 				],
 				features: [
-					FeatureUtils.createTraitFeature(TraitType.Endurance, 1),
-					FeatureUtils.createDamageResistFeature(DamageType.Poison, 1),
-					FeatureUtils.createDamageResistFeature(DamageType.Psychic, 1)
+					FeatureLogic.createTraitFeature(TraitType.Endurance, 1),
+					FeatureLogic.createDamageResistFeature(DamageType.Poison, 1),
+					FeatureLogic.createDamageResistFeature(DamageType.Psychic, 1)
 				],
 				actions: [
 					HeroSpeciesData.createActionPlaceholder('Knockdown attack'),
@@ -59,11 +62,11 @@ export class HeroSpeciesData {
 					TraitType.Resolve
 				],
 				features: [
-					FeatureUtils.createTraitFeature(TraitType.Resolve, 1),
-					FeatureUtils.createSkillFeature(SkillType.Spellcasting, 2),
-					FeatureUtils.createDamageCategoryTypeResistFeature(DamageCategoryType.Corruption, 1),
-					FeatureUtils.createDamageCategoryTypeResistFeature(DamageCategoryType.Energy, 1),
-					FeatureUtils.createAuraDamageFeature(AuraType.AutomaticDamage, DamageType.Light, 1)
+					FeatureLogic.createTraitFeature(TraitType.Resolve, 1),
+					FeatureLogic.createSkillFeature(SkillType.Spellcasting, 2),
+					FeatureLogic.createDamageCategoryTypeResistFeature(DamageCategoryType.Corruption, 1),
+					FeatureLogic.createDamageCategoryTypeResistFeature(DamageCategoryType.Energy, 1),
+					FeatureLogic.createAuraDamageFeature(AuraType.AutomaticDamage, DamageType.Light, 1)
 				],
 				actions: [
 					HeroSpeciesData.createActionPlaceholder('Insight (see opponent stats)'),
@@ -78,10 +81,10 @@ export class HeroSpeciesData {
 					TraitType.Endurance
 				],
 				features: [
-					FeatureUtils.createTraitFeature(TraitType.Endurance, 1),
-					FeatureUtils.createTraitFeature(TraitType.Resolve, 1),
-					FeatureUtils.createDamageResistFeature(DamageType.Poison, 1),
-					FeatureUtils.createDamageResistFeature(DamageType.Psychic, 1)
+					FeatureLogic.createTraitFeature(TraitType.Endurance, 1),
+					FeatureLogic.createTraitFeature(TraitType.Resolve, 1),
+					FeatureLogic.createDamageResistFeature(DamageType.Poison, 1),
+					FeatureLogic.createDamageResistFeature(DamageType.Psychic, 1)
 				],
 				actions: [
 					HeroSpeciesData.createActionPlaceholder('Remove endurance condition on self'),
@@ -96,10 +99,10 @@ export class HeroSpeciesData {
 					TraitType.Speed
 				],
 				features: [
-					FeatureUtils.createTraitFeature(TraitType.Speed, 1),
-					FeatureUtils.createSkillFeature(SkillType.Perception, 2),
-					FeatureUtils.createSkillFeature(SkillType.Reactions, 2),
-					FeatureUtils.createSkillFeature(SkillType.Stealth, 2)
+					FeatureLogic.createTraitFeature(TraitType.Speed, 1),
+					FeatureLogic.createSkillFeature(SkillType.Perception, 2),
+					FeatureLogic.createSkillFeature(SkillType.Reactions, 2),
+					FeatureLogic.createSkillFeature(SkillType.Stealth, 2)
 				],
 				actions: [
 					HeroSpeciesData.createActionPlaceholder('Detect hidden opponents'),
@@ -114,9 +117,9 @@ export class HeroSpeciesData {
 					TraitType.Speed
 				],
 				features: [
-					FeatureUtils.createTraitFeature(TraitType.Speed, 1),
-					FeatureUtils.createSkillFeature(SkillType.Reactions, 2),
-					FeatureUtils.createSkillFeature(SkillType.Stealth, 2)
+					FeatureLogic.createTraitFeature(TraitType.Speed, 1),
+					FeatureLogic.createSkillFeature(SkillType.Reactions, 2),
+					FeatureLogic.createSkillFeature(SkillType.Stealth, 2)
 				],
 				actions: [
 					HeroSpeciesData.createActionPlaceholder('Trip attack'),
@@ -131,9 +134,9 @@ export class HeroSpeciesData {
 					TraitType.Endurance
 				],
 				features: [
-					FeatureUtils.createTraitFeature(TraitType.Endurance, 1),
-					FeatureUtils.createSkillFeature(SkillType.Brawl, 2),
-					FeatureUtils.createDamageCategoryTypeBonusFeature(DamageCategoryType.Physical, 1)
+					FeatureLogic.createTraitFeature(TraitType.Endurance, 1),
+					FeatureLogic.createSkillFeature(SkillType.Brawl, 2),
+					FeatureLogic.createDamageCategoryTypeBonusFeature(DamageCategoryType.Physical, 1)
 				],
 				actions: [
 					HeroSpeciesData.createActionPlaceholder('Gore attack'),
@@ -149,9 +152,9 @@ export class HeroSpeciesData {
 					TraitType.Speed
 				],
 				features: [
-					FeatureUtils.createTraitFeature(TraitType.Speed, 1),
-					FeatureUtils.createSkillFeature(SkillType.Stealth, 2),
-					FeatureUtils.createDamageCategoryTypeResistFeature(DamageCategoryType.Corruption, 1)
+					FeatureLogic.createTraitFeature(TraitType.Speed, 1),
+					FeatureLogic.createSkillFeature(SkillType.Stealth, 2),
+					FeatureLogic.createDamageCategoryTypeResistFeature(DamageCategoryType.Corruption, 1)
 				],
 				actions: [
 					HeroSpeciesData.createActionPlaceholder('Confusion (target makes attack)'),
@@ -167,10 +170,10 @@ export class HeroSpeciesData {
 					TraitType.Speed
 				],
 				features: [
-					FeatureUtils.createTraitFeature(TraitType.Speed, 1),
-					FeatureUtils.createSkillFeature(SkillType.Brawl, 2),
-					FeatureUtils.createDamageCategoryTypeResistFeature(DamageCategoryType.Physical, 1),
-					FeatureUtils.createDamageResistFeature(DamageType.Psychic, 1)
+					FeatureLogic.createTraitFeature(TraitType.Speed, 1),
+					FeatureLogic.createSkillFeature(SkillType.Brawl, 2),
+					FeatureLogic.createDamageCategoryTypeResistFeature(DamageCategoryType.Physical, 1),
+					FeatureLogic.createDamageResistFeature(DamageType.Psychic, 1)
 				],
 				actions: [
 					HeroSpeciesData.createActionPlaceholder('Poison bite'),
@@ -186,11 +189,11 @@ export class HeroSpeciesData {
 					TraitType.Resolve
 				],
 				features: [
-					FeatureUtils.createTraitFeature(TraitType.Resolve, 1),
-					FeatureUtils.createSkillFeature(SkillType.Brawl, 2),
-					FeatureUtils.createSkillFeature(SkillType.Stealth, 2),
-					FeatureUtils.createDamageCategoryTypeResistFeature(DamageCategoryType.Corruption, 1),
-					FeatureUtils.createAuraDamageFeature(AuraType.AutomaticDamage, DamageType.Decay, 1)
+					FeatureLogic.createTraitFeature(TraitType.Resolve, 1),
+					FeatureLogic.createSkillFeature(SkillType.Brawl, 2),
+					FeatureLogic.createSkillFeature(SkillType.Stealth, 2),
+					FeatureLogic.createDamageCategoryTypeResistFeature(DamageCategoryType.Corruption, 1),
+					FeatureLogic.createAuraDamageFeature(AuraType.AutomaticDamage, DamageType.Decay, 1)
 				],
 				actions: [
 					HeroSpeciesData.createActionPlaceholder('Transfer a condition'),
@@ -206,10 +209,10 @@ export class HeroSpeciesData {
 					TraitType.Resolve
 				],
 				features: [
-					FeatureUtils.createTraitFeature(TraitType.Resolve, 1),
-					FeatureUtils.createSkillFeature(SkillType.Brawl, 2),
-					FeatureUtils.createSkillFeature(SkillType.Perception, 2),
-					FeatureUtils.createSkillFeature(SkillType.Stealth, 2)
+					FeatureLogic.createTraitFeature(TraitType.Resolve, 1),
+					FeatureLogic.createSkillFeature(SkillType.Brawl, 2),
+					FeatureLogic.createSkillFeature(SkillType.Perception, 2),
+					FeatureLogic.createSkillFeature(SkillType.Stealth, 2)
 				],
 				actions: [
 					HeroSpeciesData.createActionPlaceholder('Regeneration'),

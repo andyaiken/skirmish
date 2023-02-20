@@ -1,9 +1,13 @@
 import { Component } from 'react';
-import { Tag, Text, TextType } from '../../../controls';
+
 import { ItemProficiencyType } from '../../../enums/item-proficiency-type';
-import type { ItemModel } from '../../../models/item';
-import { StatValue } from '../../utility';
+
 import { GameLogic } from '../../../logic/game-logic';
+
+import type { ItemModel } from '../../../models/item';
+
+import { Tag, Text, TextType } from '../../../controls';
+import { StatValue } from '../../utility';
 
 import './item-card.scss';
 

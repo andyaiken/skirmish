@@ -1,4 +1,5 @@
 import { UniversalData } from '../data/universal-data';
+
 import { CombatantType } from '../enums/combatant-type';
 import { DamageCategoryType } from '../enums/damage-category-type';
 import { DamageType } from '../enums/damage-type';
@@ -7,31 +8,34 @@ import { ItemProficiencyType } from '../enums/item-proficiency-type';
 import { SkillCategoryType } from '../enums/skill-category-type';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
+
 import type { AuraModel } from '../models/aura';
 import type { CombatantModel } from '../models/combatant';
 import type { FeatureModel } from '../models/feature';
 import type { ItemModel } from '../models/item';
+
 import { Collections } from '../utils/collections';
 import { Random } from '../utils/random';
+
 import { Factory } from './factory';
-import { FeatureUtils } from './feature-utils';
+import { FeatureLogic } from './feature-logic';
 import { GameLogic } from './game-logic';
 
-export class CombatantUtils {
+export class CombatantLogic {
 	static applyCombatantCards = (combatant: CombatantModel, speciesID: string, roleID: string, backgroundID: string) => {
 		const species = GameLogic.getSpecies(speciesID);
 		if (species) {
 			combatant.speciesID = species.id;
 			combatant.size = species.size;
-			species.traits.forEach(t => combatant.features.push(FeatureUtils.createTraitFeature(t, 1)));
+			species.traits.forEach(t => combatant.features.push(FeatureLogic.createTraitFeature(t, 1)));
 		}
 
 		const role = GameLogic.getRole(roleID);
 		if (role) {
 			combatant.roleID = role.id;
-			role.traits.forEach(t => combatant.features.push(FeatureUtils.createTraitFeature(t, 1)));
-			role.skills.forEach(s => combatant.features.push(FeatureUtils.createSkillFeature(s, 2)));
-			role.proficiencies.forEach(p => combatant.features.push(FeatureUtils.createProficiencyFeature(p)));
+			role.traits.forEach(t => combatant.features.push(FeatureLogic.createTraitFeature(t, 1)));
+			role.skills.forEach(s => combatant.features.push(FeatureLogic.createSkillFeature(s, 2)));
+			role.proficiencies.forEach(p => combatant.features.push(FeatureLogic.createProficiencyFeature(p)));
 		}
 
 		const background = GameLogic.getBackground(backgroundID);
@@ -45,7 +49,7 @@ export class CombatantUtils {
 	};
 
 	static incrementCombatantLevel = (combatant: CombatantModel) => {
-		const deck = CombatantUtils.getFeatureDeck(combatant);
+		const deck = CombatantLogic.getFeatureDeck(combatant);
 		const n = Random.randomNumber(deck.length);
 		const feature = JSON.parse(JSON.stringify(deck[n])) as FeatureModel;
 
@@ -129,7 +133,7 @@ export class CombatantUtils {
 	};
 
 	static addItems = (combatant: CombatantModel) => {
-		CombatantUtils.getProficiencies(combatant).forEach(prof => {
+		CombatantLogic.getProficiencies(combatant).forEach(prof => {
 			const items = GameLogic.getItemsForProficiency(prof);
 			const n = Random.randomNumber(items.length);
 			const item = JSON.parse(JSON.stringify(items[n])) as ItemModel;
@@ -242,7 +246,7 @@ export class CombatantUtils {
 	static getTraitValue = (combatant: CombatantModel, trait: TraitType) => {
 		let value = 1;
 
-		CombatantUtils.getFeatures(combatant)
+		CombatantLogic.getFeatures(combatant)
 			.filter(f => f.type === FeatureType.Trait)
 			.filter(f => (f.trait === trait) || (f.trait === TraitType.All))
 			.forEach(f => value += f.rank);
@@ -253,11 +257,11 @@ export class CombatantUtils {
 	static getSkillValue = (combatant: CombatantModel, skill: SkillType) => {
 		let value = 0;
 
-		CombatantUtils.getFeatures(combatant)
+		CombatantLogic.getFeatures(combatant)
 			.filter(f => f.type === FeatureType.Skill)
 			.filter(f => (f.skill === skill) || (f.skill === SkillType.All))
 			.forEach(f => value += f.rank);
-		CombatantUtils.getFeatures(combatant)
+		CombatantLogic.getFeatures(combatant)
 			.filter(f => f.type === FeatureType.SkillCategory)
 			.filter(f => (f.skillCategory === GameLogic.getSkillCategory(skill)) || (f.skillCategory === SkillCategoryType.All))
 			.forEach(f => value += f.rank);
@@ -268,11 +272,11 @@ export class CombatantUtils {
 	static getDamageBonusValue = (combatant: CombatantModel, damage: DamageType) => {
 		let value = 0;
 
-		CombatantUtils.getFeatures(combatant)
+		CombatantLogic.getFeatures(combatant)
 			.filter(f => f.type === FeatureType.DamageBonus)
 			.filter(f => (f.damage === damage) || (f.damage === DamageType.All))
 			.forEach(f => value += f.rank);
-		CombatantUtils.getFeatures(combatant)
+		CombatantLogic.getFeatures(combatant)
 			.filter(f => f.type === FeatureType.DamageCategoryTypeBonus)
 			.filter(f => (f.DamageCategoryType === GameLogic.getDamageCategoryType(damage)) || (f.DamageCategoryType === DamageCategoryType.All))
 			.forEach(f => value += f.rank);
@@ -283,11 +287,11 @@ export class CombatantUtils {
 	static getDamageResistanceValue = (combatant: CombatantModel, damage: DamageType) => {
 		let value = 0;
 
-		CombatantUtils.getFeatures(combatant)
+		CombatantLogic.getFeatures(combatant)
 			.filter(f => f.type === FeatureType.DamageResist)
 			.filter(f => (f.damage === damage) || (f.damage === DamageType.All))
 			.forEach(f => value += f.rank);
-		CombatantUtils.getFeatures(combatant)
+		CombatantLogic.getFeatures(combatant)
 			.filter(f => f.type === FeatureType.DamageCategoryTypeResist)
 			.filter(f => (f.DamageCategoryType === GameLogic.getDamageCategoryType(damage)) || (f.DamageCategoryType === DamageCategoryType.All))
 			.forEach(f => value += f.rank);
@@ -298,7 +302,7 @@ export class CombatantUtils {
 	static getProficiencies = (combatant: CombatantModel) => {
 		const profs: ItemProficiencyType[] = [];
 
-		CombatantUtils.getFeatures(combatant)
+		CombatantLogic.getFeatures(combatant)
 			.filter(f => f.type === FeatureType.Proficiency)
 			.forEach(f => profs.push(f.proficiency));
 
@@ -308,7 +312,7 @@ export class CombatantUtils {
 	static getAuras = (combatant: CombatantModel) => {
 		const auras: AuraModel[] = [];
 
-		CombatantUtils.getFeatures(combatant)
+		CombatantLogic.getFeatures(combatant)
 			.filter(f => f.type === FeatureType.Aura)
 			.forEach(f => {
 				const original = auras.find(a => (a.type === f.aura) && (a.damage === f.damage) && (a.DamageCategoryType === f.DamageCategoryType));

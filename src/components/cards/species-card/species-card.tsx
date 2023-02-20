@@ -1,8 +1,11 @@
 import { Component } from 'react';
+
+import { GameLogic } from '../../../logic/game-logic';
+
 import type { SpeciesModel } from '../../../models/species';
+
 import { Text, TextType } from '../../../controls';
 import { StatValue } from '../../utility';
-import { GameLogic } from '../../../logic/game-logic';
 
 import './species-card.scss';
 

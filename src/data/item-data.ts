@@ -1,11 +1,13 @@
-import type { ItemModel } from '../models/item';
-import { FeatureUtils } from '../logic/feature-utils';
 import { DamageCategoryType } from '../enums/damage-category-type';
 import { DamageType } from '../enums/damage-type';
 import { ItemLocationType } from '../enums/item-location-type';
 import { ItemProficiencyType } from '../enums/item-proficiency-type';
 import { SkillCategoryType } from '../enums/skill-category-type';
 import { TraitType } from '../enums/trait-type';
+
+import { FeatureLogic } from '../logic/feature-logic';
+
+import type { ItemModel } from '../models/item';
 
 export class ItemData {
 	static getList = (): ItemModel[] => {
@@ -448,7 +450,7 @@ export class ItemData {
 				slots: 1,
 				weapon: null,
 				features: [
-					FeatureUtils.createDamageCategoryTypeResistFeature(DamageCategoryType.Physical, 1)
+					FeatureLogic.createDamageCategoryTypeResistFeature(DamageCategoryType.Physical, 1)
 				],
 				actions: []
 			},
@@ -462,8 +464,8 @@ export class ItemData {
 				slots: 1,
 				weapon: null,
 				features: [
-					FeatureUtils.createDamageCategoryTypeResistFeature(DamageCategoryType.Physical, 2),
-					FeatureUtils.createSkillCategoryFeature(SkillCategoryType.Physical, -1)
+					FeatureLogic.createDamageCategoryTypeResistFeature(DamageCategoryType.Physical, 2),
+					FeatureLogic.createSkillCategoryFeature(SkillCategoryType.Physical, -1)
 				],
 				actions: []
 			},
@@ -477,9 +479,9 @@ export class ItemData {
 				slots: 1,
 				weapon: null,
 				features: [
-					FeatureUtils.createDamageCategoryTypeResistFeature(DamageCategoryType.Physical, 3),
-					FeatureUtils.createSkillCategoryFeature(SkillCategoryType.Physical, -1),
-					FeatureUtils.createTraitFeature(TraitType.Speed, -1)
+					FeatureLogic.createDamageCategoryTypeResistFeature(DamageCategoryType.Physical, 3),
+					FeatureLogic.createSkillCategoryFeature(SkillCategoryType.Physical, -1),
+					FeatureLogic.createTraitFeature(TraitType.Speed, -1)
 				],
 				actions: []
 			},
@@ -493,9 +495,9 @@ export class ItemData {
 				slots: 1,
 				weapon: null,
 				features: [
-					FeatureUtils.createDamageCategoryTypeResistFeature(DamageCategoryType.Physical, 4),
-					FeatureUtils.createSkillCategoryFeature(SkillCategoryType.Physical, -2),
-					FeatureUtils.createTraitFeature(TraitType.Speed, -1)
+					FeatureLogic.createDamageCategoryTypeResistFeature(DamageCategoryType.Physical, 4),
+					FeatureLogic.createSkillCategoryFeature(SkillCategoryType.Physical, -2),
+					FeatureLogic.createTraitFeature(TraitType.Speed, -1)
 				],
 				actions: []
 			},
@@ -509,9 +511,9 @@ export class ItemData {
 				slots: 1,
 				weapon: null,
 				features: [
-					FeatureUtils.createDamageCategoryTypeResistFeature(DamageCategoryType.Physical, 5),
-					FeatureUtils.createSkillCategoryFeature(SkillCategoryType.Physical, -2),
-					FeatureUtils.createTraitFeature(TraitType.Speed, -2)
+					FeatureLogic.createDamageCategoryTypeResistFeature(DamageCategoryType.Physical, 5),
+					FeatureLogic.createSkillCategoryFeature(SkillCategoryType.Physical, -2),
+					FeatureLogic.createTraitFeature(TraitType.Speed, -2)
 				],
 				actions: []
 			},
@@ -525,7 +527,7 @@ export class ItemData {
 				slots: 1,
 				weapon: null,
 				features: [
-					FeatureUtils.createDamageCategoryTypeResistFeature(DamageCategoryType.Physical, 1)
+					FeatureLogic.createDamageCategoryTypeResistFeature(DamageCategoryType.Physical, 1)
 				],
 				actions: []
 			},
@@ -539,8 +541,8 @@ export class ItemData {
 				slots: 1,
 				weapon: null,
 				features: [
-					FeatureUtils.createDamageCategoryTypeResistFeature(DamageCategoryType.Physical, 2),
-					FeatureUtils.createSkillCategoryFeature(SkillCategoryType.Physical, -1)
+					FeatureLogic.createDamageCategoryTypeResistFeature(DamageCategoryType.Physical, 2),
+					FeatureLogic.createSkillCategoryFeature(SkillCategoryType.Physical, -1)
 				],
 				actions: []
 			},

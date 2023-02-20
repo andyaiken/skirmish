@@ -5,16 +5,19 @@ import { EncounterMapSquareType } from '../enums/encounter-map-square-type';
 import { EncounterState } from '../enums/encounter-state';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
+
 import type { CombatDataModel } from '../models/combat-data';
 import type { CombatantModel } from '../models/combatant';
-import type { EncounterModel } from '../models/encounter';
 import type { EncounterMapSquareModel } from '../models/encounter-map';
+import type { EncounterModel } from '../models/encounter';
+
 import { Collections } from '../utils/collections';
 import { Random } from '../utils/random';
-import { CombatantUtils } from './combatant-utils';
-import { EncounterMapUtils } from './encounter-map-utils';
 
-export class EncounterUtils {
+import { CombatantLogic } from './combatant-logic';
+import { EncounterMapLogic } from './encounter-map-logic';
+
+export class EncounterLogic {
 	static getCombatantSquares = (encounter: EncounterModel, combatData: CombatDataModel) => {
 		const squares = [];
 
@@ -31,24 +34,24 @@ export class EncounterUtils {
 		encounter.combatData.forEach(cd => {
 			cd.initiative = Number.MIN_VALUE;
 
-			const combatant = EncounterUtils.getCombatant(encounter, cd.id);
+			const combatant = EncounterLogic.getCombatant(encounter, cd.id);
 			if (combatant) {
-				const speed = CombatantUtils.getTraitValue(combatant, TraitType.Speed);
+				const speed = CombatantLogic.getTraitValue(combatant, TraitType.Speed);
 				cd.initiative = Random.dice(speed);
 			}
 		});
 
 		encounter.combatData.sort((a, b) => {
-			const combatantA = EncounterUtils.getCombatant(encounter, a.id);
-			const combatantB = EncounterUtils.getCombatant(encounter, a.id);
+			const combatantA = EncounterLogic.getCombatant(encounter, a.id);
+			const combatantB = EncounterLogic.getCombatant(encounter, a.id);
 
 			// Sort by Inititive
 			let result: number = b.initiative - a.initiative;
 
 			if (result === 0) {
 				// Sort by Speed
-				const speedA = CombatantUtils.getTraitValue(combatantA as CombatantModel, TraitType.Speed);
-				const speedB = CombatantUtils.getTraitValue(combatantB as CombatantModel, TraitType.Speed);
+				const speedA = CombatantLogic.getTraitValue(combatantA as CombatantModel, TraitType.Speed);
+				const speedB = CombatantLogic.getTraitValue(combatantB as CombatantModel, TraitType.Speed);
 				result = speedB - speedA;
 			}
 
@@ -78,7 +81,7 @@ export class EncounterUtils {
 		combatData.movement = 0;
 
 		if (combatData.state === CombatDataState.Unconscious) {
-			const result = Random.dice(CombatantUtils.getTraitValue(combatant, TraitType.Resolve));
+			const result = Random.dice(CombatantLogic.getTraitValue(combatant, TraitType.Resolve));
 			if (result < 8) {
 				combatData.state = CombatDataState.Dead;
 			}
@@ -94,11 +97,11 @@ export class EncounterUtils {
 		// TODO: Apply 'auto-damage' effects from auras
 
 		if ((combatData.state === CombatDataState.Standing) || (combatData.state === CombatDataState.Prone)) {
-			combatData.senses = Random.dice(CombatantUtils.getSkillValue(combatant, SkillType.Perception));
-			combatData.movement = Random.dice(CombatantUtils.getTraitValue(combatant, TraitType.Speed));
+			combatData.senses = Random.dice(CombatantLogic.getSkillValue(combatant, SkillType.Perception));
+			combatData.movement = Random.dice(CombatantLogic.getTraitValue(combatant, TraitType.Speed));
 			// TODO: Apply movement conditions
 
-			const deck = CombatantUtils.getActionDeck(combatant);
+			const deck = CombatantLogic.getActionDeck(combatant);
 			combatData.actions = Collections.shuffle(deck).splice(0, 3);
 		}
 	};
@@ -114,7 +117,7 @@ export class EncounterUtils {
 			if (condition.beneficial) {
 				condition.rank -= 1;
 			} else {
-				const trait = CombatantUtils.getTraitValue(combatant, condition.trait);
+				const trait = CombatantLogic.getTraitValue(combatant, condition.trait);
 				if (Random.dice(trait) >= Random.dice(condition.rank)) {
 					condition.rank = 0;
 				} else {
@@ -126,9 +129,9 @@ export class EncounterUtils {
 	};
 
 	static getMoveCost = (encounter: EncounterModel, combatData: CombatDataModel, dir: string) => {
-		const combatant = EncounterUtils.getCombatant(encounter, combatData.id) as CombatantModel;
+		const combatant = EncounterLogic.getCombatant(encounter, combatData.id) as CombatantModel;
 
-		const movingFrom = EncounterUtils.getCombatantSquares(encounter, combatData);
+		const movingFrom = EncounterLogic.getCombatantSquares(encounter, combatData);
 		const movingTo = movingFrom.map(sq => {
 			const dest = { x: sq.x, y: sq.y };
 			switch (dir) {
@@ -176,7 +179,7 @@ export class EncounterUtils {
 		// Can't move into an occupied square
 		const occupied: { x: number; y: number }[] = [];
 		encounter.combatData.forEach(cd => {
-			const squares = EncounterUtils.getCombatantSquares(encounter, cd);
+			const squares = EncounterLogic.getCombatantSquares(encounter, cd);
 			occupied.push(...squares);
 		});
 		if (movingTo.some(sq => occupied.find(os => (os.x === sq.x) && (os.y === sq.y)))) {
@@ -196,8 +199,8 @@ export class EncounterUtils {
 			.filter(cd => cd.type !== combatant.type)
 			.filter(cd => cd.state === CombatDataState.Standing)
 			.forEach(cd => {
-				const current = EncounterUtils.getCombatantSquares(encounter, cd);
-				const squares = EncounterMapUtils.getEncounterMapAdjacentSquares(encounter.map, current);
+				const current = EncounterLogic.getCombatantSquares(encounter, cd);
+				const squares = EncounterMapLogic.getEncounterMapAdjacentSquares(encounter.map, current);
 				adjacent.push(...squares);
 			});
 		if (movingFrom.some(sq => adjacent.find(os => (os.x === sq.x) && (os.y === sq.y)))) {
@@ -264,8 +267,8 @@ export class EncounterUtils {
 	};
 
 	static scan = (encounter: EncounterModel, combatData: CombatDataModel) => {
-		const combatant = EncounterUtils.getCombatant(encounter, combatData.id) as CombatantModel;
-		let perception = CombatantUtils.getSkillValue(combatant, SkillType.Perception);
+		const combatant = EncounterLogic.getCombatant(encounter, combatData.id) as CombatantModel;
+		let perception = CombatantLogic.getSkillValue(combatant, SkillType.Perception);
 		if (combatData.state === CombatDataState.Prone) {
 			perception = Math.floor(perception / 2);
 		}
@@ -275,8 +278,8 @@ export class EncounterUtils {
 	};
 
 	static hide = (encounter: EncounterModel, combatData: CombatDataModel) => {
-		const combatant = EncounterUtils.getCombatant(encounter, combatData.id) as CombatantModel;
-		let stealth = CombatantUtils.getSkillValue(combatant, SkillType.Stealth);
+		const combatant = EncounterLogic.getCombatant(encounter, combatData.id) as CombatantModel;
+		let stealth = CombatantLogic.getSkillValue(combatant, SkillType.Stealth);
 		if (combatData.state === CombatDataState.Prone) {
 			stealth = Math.floor(stealth / 2);
 		}
@@ -311,7 +314,7 @@ export class EncounterUtils {
 	};
 
 	static getCombatantSize = (encounter: EncounterModel, id: string): number => {
-		const combatant = EncounterUtils.getCombatant(encounter, id);
+		const combatant = EncounterLogic.getCombatant(encounter, id);
 		if (combatant) {
 			return combatant.size;
 		}
@@ -330,22 +333,22 @@ export class EncounterUtils {
 	};
 
 	static getSurvivingHeroes = (encounter: EncounterModel): CombatantModel[] => {
-		return EncounterUtils.getAllHeroesInEncounter(encounter).filter(h => {
-			const combatData = EncounterUtils.getCombatData(encounter, h.id) as CombatDataModel;
+		return EncounterLogic.getAllHeroesInEncounter(encounter).filter(h => {
+			const combatData = EncounterLogic.getCombatData(encounter, h.id) as CombatDataModel;
 			return (combatData.state !== CombatDataState.Dead) && (combatData.state !== CombatDataState.Unconscious);
 		});
 	};
 
 	static getFallenHeroes = (encounter: EncounterModel): CombatantModel[] => {
-		return EncounterUtils.getAllHeroesInEncounter(encounter).filter(h => {
-			const combatData = EncounterUtils.getCombatData(encounter, h.id) as CombatDataModel;
+		return EncounterLogic.getAllHeroesInEncounter(encounter).filter(h => {
+			const combatData = EncounterLogic.getCombatData(encounter, h.id) as CombatDataModel;
 			return (combatData.state === CombatDataState.Dead) || (combatData.state === CombatDataState.Unconscious);
 		});
 	};
 
 	static getDeadHeroes = (encounter: EncounterModel): CombatantModel[] => {
-		return EncounterUtils.getAllHeroesInEncounter(encounter).filter(h => {
-			const combatData = EncounterUtils.getCombatData(encounter, h.id) as CombatDataModel;
+		return EncounterLogic.getAllHeroesInEncounter(encounter).filter(h => {
+			const combatData = EncounterLogic.getCombatData(encounter, h.id) as CombatDataModel;
 			return (combatData.state === CombatDataState.Dead);
 		});
 	};

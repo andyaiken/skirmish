@@ -5,7 +5,7 @@
 	padding: 3px;
 	background-color: rgb(255, 255, 255);
 	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
+	grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
 
 	&:hover {
 		border-color: rgb(60, 170, 255);

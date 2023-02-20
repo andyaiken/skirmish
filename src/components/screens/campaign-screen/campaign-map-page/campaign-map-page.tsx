@@ -1,12 +1,15 @@
 import { Component } from 'react';
-import { Dialog, Text, TextType } from '../../../../controls';
+
+import { CampaignMapLogic } from '../../../../logic/campaign-map-logic';
+
 import type { CampaignMapRegionModel } from '../../../../models/campaign-map';
-import type { GameModel } from '../../../../models/game';
 import type { CombatantModel } from '../../../../models/combatant';
-import { CampaignMapUtils } from '../../../../logic/campaign-map-utils';
+import type { GameModel } from '../../../../models/game';
+
 import { BoonCard, HeroCard } from '../../../cards';
-import { CampaignMapPanel } from '../../../panels';
 import { CardList, PlayingCard, StatValue } from '../../../utility';
+import { Dialog, Text, TextType } from '../../../../controls';
+import { CampaignMapPanel } from '../../../panels';
 
 import './campaign-map-page.scss';
 
@@ -53,13 +56,13 @@ export class CampaignMapPage extends Component<Props, State> {
 	public render() {
 		let info = null;
 		if (this.state.selectedRegion) {
-			const canAttack = CampaignMapUtils.canAttackRegion(this.props.game.map, this.state.selectedRegion);
+			const canAttack = CampaignMapLogic.canAttackRegion(this.props.game.map, this.state.selectedRegion);
 			const heroesExist = this.props.game.heroes.filter(h => h.name !== '').length > 0;
 			info = (
 				<div className='region'>
 					<Text type={TextType.SubHeading}>{this.state.selectedRegion.name}</Text>
 					<hr />
-					<StatValue label='Size' value={`${CampaignMapUtils.getCampaignMapSquares(this.props.game.map, this.state.selectedRegion).length} sq mi`} />
+					<StatValue label='Size' value={`${CampaignMapLogic.getCampaignMapSquares(this.props.game.map, this.state.selectedRegion).length} sq mi`} />
 					<StatValue label='Number of Encounters' value={this.state.selectedRegion.encounters.length} />
 					<hr />
 					<Text>If you take control of {this.state.selectedRegion.name}, you will recieve:</Text>

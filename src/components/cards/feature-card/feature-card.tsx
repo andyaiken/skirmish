@@ -1,7 +1,10 @@
 import { Component } from 'react';
+
+import { FeatureLogic } from '../../../logic/feature-logic';
+
 import type { FeatureModel } from '../../../models/feature';
+
 import { Text, TextType } from '../../../controls';
-import { FeatureUtils } from '../../../logic/feature-utils';
 
 import './feature-card.scss';
 
@@ -13,9 +16,9 @@ export class FeatureCard extends Component<Props> {
 	public render() {
 		return (
 			<div className='feature-card'>
-				<Text type={TextType.SubHeading}>{FeatureUtils.getFeatureTitle(this.props.feature)}</Text>
+				<Text type={TextType.SubHeading}>{FeatureLogic.getFeatureTitle(this.props.feature)}</Text>
 				<hr />
-				<Text>{FeatureUtils.getFeatureInformation(this.props.feature)}</Text>
+				<Text>{FeatureLogic.getFeatureInformation(this.props.feature)}</Text>
 			</div>
 		);
 	}

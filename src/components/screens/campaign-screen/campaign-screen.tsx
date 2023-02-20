@@ -1,16 +1,19 @@
 import { Component } from 'react';
-import { Selector } from '../../../controls';
+
 import type { BoonModel } from '../../../models/boon';
 import type { CampaignMapRegionModel } from '../../../models/campaign-map';
+import type { CombatantModel } from '../../../models/combatant';
 import type { FeatureModel } from '../../../models/feature';
 import type { GameModel } from '../../../models/game';
-import type { CombatantModel } from '../../../models/combatant';
 import type { ItemModel } from '../../../models/item';
-import { CampaignMapPage } from './campaign-map-page/campaign-map-page';
 
-import './campaign-screen.scss';
+import { Selector } from '../../../controls';
+
+import { CampaignMapPage } from './campaign-map-page/campaign-map-page';
 import { HeroesPage } from './heroes-page/heroes-page';
 import { OptionsPage } from './options-page/options-page';
+
+import './campaign-screen.scss';
 
 interface Props {
 	game: GameModel;

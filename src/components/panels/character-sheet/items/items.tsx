@@ -1,14 +1,17 @@
 import { Component } from 'react';
 
-import { Dialog, Text, TextType } from '../../../../controls';
 import { ItemLocationType } from '../../../../enums/item-location-type';
 import { ItemProficiencyType } from '../../../../enums/item-proficiency-type';
-import type { GameModel } from '../../../../models/game';
+
+import { CombatantLogic } from '../../../../logic/combatant-logic';
+
 import type { CombatantModel } from '../../../../models/combatant';
+import type { GameModel } from '../../../../models/game';
 import type { ItemModel } from '../../../../models/item';
+
+import { Dialog, Text, TextType } from '../../../../controls';
 import { ItemCard } from '../../../cards';
 import { PlayingCard } from '../../../utility';
-import { CombatantUtils } from '../../../../logic/combatant-utils';
 
 import './items.scss';
 
@@ -96,7 +99,7 @@ export class Items extends Component<Props, State> {
 			// Find items that fit this location that we can use
 			const campaignItemCards = this.props.game.items
 				.filter(item => item.location === this.state.selectedLocation)
-				.filter(item => (item.proficiency === ItemProficiencyType.None) || (CombatantUtils.getProficiencies(this.props.hero).includes(item.proficiency)))
+				.filter(item => (item.proficiency === ItemProficiencyType.None) || (CombatantLogic.getProficiencies(this.props.hero).includes(item.proficiency)))
 				.map(item => (
 					<div key={item.id}>
 						<PlayingCard

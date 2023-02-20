@@ -1,6 +1,6 @@
 import type { ActionModel } from './action';
-import type { TraitType } from '../enums/trait-type';
 import type { FeatureModel } from './feature';
+import type { TraitType } from '../enums/trait-type';
 
 export interface SpeciesModel {
 	id: string;

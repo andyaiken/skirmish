@@ -1,8 +1,10 @@
-import type { EncounterMapModel, EncounterMapSquareModel } from '../models/encounter-map';
 import { EncounterMapSquareType } from '../enums/encounter-map-square-type';
+
+import type { EncounterMapModel, EncounterMapSquareModel } from '../models/encounter-map';
+
 import { Random } from '../utils/random';
 
-export class EncounterMapUtils {
+export class EncounterMapLogic {
 	static generateEncounterMap = (rng: () => number): EncounterMapModel => {
 		const map: EncounterMapModel = {
 			squares: []
@@ -22,7 +24,7 @@ export class EncounterMapUtils {
 
 			const position = { x: 0, y: 0 };
 			if (map.squares.length > 0) {
-				const adj = EncounterMapUtils.getEncounterMapEdges(map, map.squares, dir as 'n' | 'e' | 's' | 'w');
+				const adj = EncounterMapLogic.getEncounterMapEdges(map, map.squares, dir as 'n' | 'e' | 's' | 'w');
 				const sq = adj[Random.randomNumber(adj.length, rng)];
 				if (dir === 'n') {
 					sq.y -= (size.height - 1);
@@ -53,7 +55,7 @@ export class EncounterMapUtils {
 			const blob: EncounterMapSquareModel[] = [];
 			while ((blob.length < 5) || (Random.randomNumber(10, rng) !== 0)) {
 				const candidates = ((blob.length === 0) ?
-					map.squares : EncounterMapUtils.getEncounterMapAdjacentSquares(map, blob, [ 'n', 'e', 's', 'w' ])).filter(c => c.type === EncounterMapSquareType.Clear);
+					map.squares : EncounterMapLogic.getEncounterMapAdjacentSquares(map, blob, [ 'n', 'e', 's', 'w' ])).filter(c => c.type === EncounterMapSquareType.Clear);
 				if (candidates.length > 0) {
 					const n = Random.randomNumber(candidates.length, rng);
 					const square = candidates[n];
@@ -68,7 +70,7 @@ export class EncounterMapUtils {
 			const blob: EncounterMapSquareModel[] = [];
 			while ((blob.length < 5) || (Random.randomNumber(10, rng) !== 0)) {
 				const candidates = ((blob.length === 0) ?
-					map.squares : EncounterMapUtils.getEncounterMapAdjacentSquares(map, blob, [ 'n', 'e', 's', 'w' ])).filter(c => c.type === EncounterMapSquareType.Clear);
+					map.squares : EncounterMapLogic.getEncounterMapAdjacentSquares(map, blob, [ 'n', 'e', 's', 'w' ])).filter(c => c.type === EncounterMapSquareType.Clear);
 				if (candidates.length > 0) {
 					const n = Random.randomNumber(candidates.length, rng);
 					const square = candidates[n];

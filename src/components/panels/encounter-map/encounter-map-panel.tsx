@@ -1,8 +1,11 @@
 import { Component } from 'react';
+
+import { CombatantLogic } from '../../../logic/combatant-logic';
+import { EncounterLogic } from '../../../logic/encounter-logic';
+import { EncounterMapLogic } from '../../../logic/encounter-map-logic';
+
 import type { CombatantModel } from '../../../models/combatant';
 import type { EncounterModel } from '../../../models/encounter';
-import { EncounterMapUtils } from '../../../logic/encounter-map-utils';
-import { EncounterUtils } from '../../../logic/encounter-utils';
 
 import './encounter-map-panel.scss';
 
@@ -22,7 +25,7 @@ export class EncounterMapPanel extends Component<Props> {
 
 	public render() {
 		// Get dimensions
-		const dims = EncounterMapUtils.getEncounterMapDimensions(this.props.encounter.map);
+		const dims = EncounterMapLogic.getEncounterMapDimensions(this.props.encounter.map);
 
 		const squares = this.props.encounter.map.squares.map(sq => {
 			const className = `encounter-map-square ${sq.type.toLowerCase()}`;
@@ -40,8 +43,29 @@ export class EncounterMapPanel extends Component<Props> {
 			);
 		});
 
+		const auras = this.props.encounter.combatData.map(cd => {
+			const combatant = EncounterLogic.getCombatant(this.props.encounter, cd.id) as CombatantModel;
+			if (CombatantLogic.getAuras(combatant).length > 0) {
+				return (
+					<div
+						key={cd.id}
+						className='encounter-map-aura'
+						style={{
+							width: `${this.props.squareSize * (combatant.size + 2)}px`,
+							height: `${this.props.squareSize * (combatant.size + 2)}px`,
+							left: `${((cd.position.x - dims.left - 1) * this.props.squareSize)}px`,
+							top: `${((cd.position.y - dims.top - 1) * this.props.squareSize)}px`
+						}}
+					>
+					</div>
+				);
+			}
+
+			return null;
+		});
+
 		const tokens = this.props.encounter.combatData.map(cd => {
-			const combatant = EncounterUtils.getCombatant(this.props.encounter, cd.id) as CombatantModel;
+			const combatant = EncounterLogic.getCombatant(this.props.encounter, cd.id) as CombatantModel;
 			const current = this.props.currentID === combatant.id;
 			const selected = this.props.selectedIDs.includes(combatant.id);
 			const className = `encounter-map-token ${cd.type.toLowerCase()} ${current ? 'current' : ''} ${selected ? 'selected' : ''}`;
@@ -68,6 +92,7 @@ export class EncounterMapPanel extends Component<Props> {
 			<div className='encounter-map'>
 				<div className='encounter-map-square-container' onClick={e => this.onSelectCombatant(e, null)}>
 					{squares}
+					{auras}
 					{tokens}
 				</div>
 			</div>

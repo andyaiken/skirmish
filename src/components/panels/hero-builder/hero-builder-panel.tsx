@@ -1,16 +1,20 @@
 import { Component } from 'react';
-import { Tag, Text, TextType } from '../../../controls';
-import type { GameModel } from '../../../models/game';
-import type { CombatantModel } from '../../../models/combatant';
-import type { ItemModel } from '../../../models/item';
+
+import { CombatantLogic } from '../../../logic/combatant-logic';
+import { GameLogic } from '../../../logic/game-logic';
 import { NameGenerator } from '../../../logic/name-generator';
-import { BackgroundCard, ItemCard, PlaceholderCard, RoleCard, SpeciesCard } from '../../cards';
-import { CardList, PlayingCard, PlayingCardSide } from '../../utility';
+
+import type { CombatantModel } from '../../../models/combatant';
+import type { GameModel } from '../../../models/game';
+import type { ItemModel } from '../../../models/item';
+
 import { Collections } from '../../../utils/collections';
 
+import { BackgroundCard, ItemCard, PlaceholderCard, RoleCard, SpeciesCard } from '../../cards';
+import { CardList, PlayingCard, PlayingCardSide } from '../../utility';
+import { Tag, Text, TextType } from '../../../controls';
+
 import './hero-builder-panel.scss';
-import { CombatantUtils } from '../../../logic/combatant-utils';
-import { GameLogic } from '../../../logic/game-logic';
 
 interface Props {
 	hero: CombatantModel;
@@ -38,7 +42,7 @@ export class HeroBuilderPanel extends Component<Props, State> {
 
 	selectCards = (speciesID: string, roleID: string, backgroundID: string) => {
 		const hero = this.state.hero;
-		CombatantUtils.applyCombatantCards(hero, speciesID, roleID, backgroundID);
+		CombatantLogic.applyCombatantCards(hero, speciesID, roleID, backgroundID);
 		this.setState({
 			hero: hero
 		});
@@ -83,7 +87,7 @@ export class HeroBuilderPanel extends Component<Props, State> {
 					select={this.selectCards}
 				/>
 			);
-		} else if (CombatantUtils.getProficiencies(this.state.hero).length !== this.state.hero.items.length) {
+		} else if (CombatantLogic.getProficiencies(this.state.hero).length !== this.state.hero.items.length) {
 			// Choose initial equipment
 			content = (
 				<EquipmentSelector

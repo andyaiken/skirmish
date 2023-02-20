@@ -1,5 +1,6 @@
 import type { CombatDataState } from '../enums/combat-data-state';
 import type { CombatantType } from '../enums/combatant-type';
+
 import type { ActionModel } from './action';
 import type { ConditionModel } from './condition';
 

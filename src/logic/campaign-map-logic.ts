@@ -1,10 +1,12 @@
-import type { CampaignMapModel, CampaignMapSquareModel, CampaignMapRegionModel } from '../models/campaign-map';
-import { NameGenerator } from './name-generator';
+import type { CampaignMapModel, CampaignMapRegionModel, CampaignMapSquareModel } from '../models/campaign-map';
+
 import { Random } from '../utils/random';
 import { Utils } from '../utils/utils';
-import { GameLogic } from './game-logic';
 
-export class CampaignMapUtils {
+import { GameLogic } from './game-logic';
+import { NameGenerator } from './name-generator';
+
+export class CampaignMapLogic {
 	static generateCampaignMap = (): CampaignMapModel => {
 		const map: CampaignMapModel = {
 			squares: [ {
@@ -86,7 +88,7 @@ export class CampaignMapUtils {
 				map.squares
 					.filter(sq => sq.regionID === region.id)
 					.forEach(sq => {
-						CampaignMapUtils.getCampaignMapAdjacentSquares(map, sq.x, sq.y)
+						CampaignMapLogic.getCampaignMapAdjacentSquares(map, sq.x, sq.y)
 							.filter(s => s.regionID === '')
 							.forEach(s => candidates.push(s));
 					});
@@ -149,9 +151,9 @@ export class CampaignMapUtils {
 	};
 
 	static canAttackRegion = (map: CampaignMapModel, region: CampaignMapRegionModel) => {
-		const squares = CampaignMapUtils.getCampaignMapSquares(map, region);
-		const coastal = squares.some(sq => CampaignMapUtils.getCampaignMapAdjacentSquares(map, sq.x, sq.y).length !== 4);
-		const bordering = squares.some(sq => CampaignMapUtils.getCampaignMapAdjacentSquares(map, sq.x, sq.y).some(a => a.regionID === ''));
+		const squares = CampaignMapLogic.getCampaignMapSquares(map, region);
+		const coastal = squares.some(sq => CampaignMapLogic.getCampaignMapAdjacentSquares(map, sq.x, sq.y).length !== 4);
+		const bordering = squares.some(sq => CampaignMapLogic.getCampaignMapAdjacentSquares(map, sq.x, sq.y).some(a => a.regionID === ''));
 		return coastal || bordering;
 	};
 

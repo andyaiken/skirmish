@@ -14,9 +14,8 @@ import { FeatureLogic } from '../../../../logic/feature-logic';
 import type { CombatantModel } from '../../../../models/combatant';
 import type { FeatureModel } from '../../../../models/feature';
 
-import { CardList, PlayingCard, PlayingCardSide } from '../../../utility';
+import { CardList, PlayingCard, PlayingCardSide, Selector, Text, TextType } from '../../../controls';
 import { FeatureCard, PlaceholderCard } from '../../../cards';
-import { Selector, Text, TextType } from '../../../../controls';
 
 import './level-up.scss';
 

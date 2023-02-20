@@ -7,8 +7,7 @@ import { GameLogic } from '../../../logic/game-logic';
 
 import type { CombatantModel } from '../../../models/combatant';
 
-import { Tag, Text, TextType } from '../../../controls';
-import { StatValue } from '../../utility';
+import { StatValue, Tag, Text, TextType } from '../../controls';
 
 import './hero-card.scss';
 

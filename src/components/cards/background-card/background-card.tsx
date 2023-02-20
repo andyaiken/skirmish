@@ -4,8 +4,7 @@ import type { BackgroundModel } from '../../../models/background';
 
 import { GameLogic } from '../../../logic/game-logic';
 
-import { Text, TextType } from '../../../controls';
-import { StatValue } from '../../utility';
+import { StatValue, Text, TextType } from '../../controls';
 
 import './background-card.scss';
 

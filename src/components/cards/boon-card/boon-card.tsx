@@ -5,9 +5,8 @@ import { BoonType } from '../../../enums/boon-type';
 import type { BoonModel } from '../../../models/boon';
 import type { ItemModel } from '../../../models/item';
 
-import { Text, TextType } from '../../../controls';
+import { StatValue, Text, TextType } from '../../controls';
 import { ItemCard } from '../item-card/item-card';
-import { StatValue } from '../../utility';
 
 import './boon-card.scss';
 

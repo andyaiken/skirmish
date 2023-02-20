@@ -7,7 +7,7 @@ import type { FeatureModel } from '../../../models/feature';
 import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
 
-import { Selector } from '../../../controls';
+import { Selector } from '../../controls';
 
 import { CampaignMapPage } from './campaign-map-page/campaign-map-page';
 import { HeroesPage } from './heroes-page/heroes-page';

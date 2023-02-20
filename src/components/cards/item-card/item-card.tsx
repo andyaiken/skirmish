@@ -6,8 +6,7 @@ import { GameLogic } from '../../../logic/game-logic';
 
 import type { ItemModel } from '../../../models/item';
 
-import { Tag, Text, TextType } from '../../../controls';
-import { StatValue } from '../../utility';
+import { StatValue, Tag, Text, TextType } from '../../controls';
 
 import './item-card.scss';
 

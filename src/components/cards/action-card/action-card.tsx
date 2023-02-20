@@ -2,7 +2,7 @@ import { Component } from 'react';
 
 import type { ActionModel } from '../../../models/action';
 
-import { Text, TextType } from '../../../controls';
+import { Text, TextType } from '../../controls';
 
 import './action-card.scss';
 

@@ -16,9 +16,9 @@ import type { EncounterModel } from '../../../models/encounter';
 import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
 
-import { Box, CardList, IconType, IconValue, PlayingCard, StatValue } from '../../utility';
+import { Box, CardList, IconType, IconValue, PlayingCard, StatValue } from '../../controls';
 import { DirectionPanel, EncounterMapPanel, InitiativeListPanel } from '../../panels';
-import { Selector, Tag, Text, TextType } from '../../../controls';
+import { Selector, Tag, Text, TextType } from '../../controls';
 import { ActionCard } from '../../cards';
 
 import './encounter-screen.scss';

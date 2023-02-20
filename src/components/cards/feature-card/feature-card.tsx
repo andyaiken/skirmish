@@ -4,7 +4,7 @@ import { FeatureLogic } from '../../../logic/feature-logic';
 
 import type { FeatureModel } from '../../../models/feature';
 
-import { Text, TextType } from '../../../controls';
+import { Text, TextType } from '../../controls';
 
 import './feature-card.scss';
 

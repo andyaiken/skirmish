@@ -7,8 +7,7 @@ import type { CombatantModel } from '../../../../models/combatant';
 import type { GameModel } from '../../../../models/game';
 
 import { BoonCard, HeroCard } from '../../../cards';
-import { CardList, PlayingCard, StatValue } from '../../../utility';
-import { Dialog, Text, TextType } from '../../../../controls';
+import { CardList, Dialog, PlayingCard, StatValue, Text, TextType } from '../../../controls';
 import { CampaignMapPanel } from '../../../panels';
 
 import './campaign-map-page.scss';

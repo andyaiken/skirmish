@@ -2,7 +2,7 @@ import { Component } from 'react';
 
 import type { CombatDataModel } from '../../../models/combat-data';
 
-import { IconType, IconValue } from '../../utility';
+import { IconType, IconValue } from '../../controls';
 
 import './direction-panel.scss';
 

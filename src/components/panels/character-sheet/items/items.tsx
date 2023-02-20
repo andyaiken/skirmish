@@ -9,9 +9,8 @@ import type { CombatantModel } from '../../../../models/combatant';
 import type { GameModel } from '../../../../models/game';
 import type { ItemModel } from '../../../../models/item';
 
-import { Dialog, Text, TextType } from '../../../../controls';
+import { Dialog, PlayingCard, Text, TextType } from '../../../controls';
 import { ItemCard } from '../../../cards';
-import { PlayingCard } from '../../../utility';
 
 import './items.scss';
 

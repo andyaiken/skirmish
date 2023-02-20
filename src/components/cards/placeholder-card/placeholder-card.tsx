@@ -1,6 +1,6 @@
 import { Component } from 'react';
 
-import { Text, TextType } from '../../../controls';
+import { Text, TextType } from '../../controls';
 
 import './placeholder-card.scss';
 

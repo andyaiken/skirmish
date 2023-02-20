@@ -21,9 +21,8 @@ import type { ItemModel } from '../../models/item';
 import { Utils } from '../../utils/utils';
 
 import { CampaignScreen, EncounterFinishState, EncounterScreen, LandingScreen } from '../screens';
-import { Dialog, Text, TextType } from '../../controls';
+import { Dialog, PlayingCard, Text, TextType } from '../controls';
 import { BoonCard } from '../cards';
-import { PlayingCard } from '../utility';
 
 import './main.scss';
 

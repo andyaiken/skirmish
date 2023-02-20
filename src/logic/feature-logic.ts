@@ -216,7 +216,7 @@ export class FeatureLogic {
 				return 'Damage Bonus';
 			case FeatureType.DamageResist:
 			case FeatureType.DamageCategoryTypeResist:
-				return 'Resistance';
+				return 'Damage Resistance';
 			case FeatureType.Aura:
 				return 'Aura';
 		}

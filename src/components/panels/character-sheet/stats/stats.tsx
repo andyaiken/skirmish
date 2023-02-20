@@ -9,8 +9,7 @@ import { GameLogic } from '../../../../logic/game-logic';
 
 import type { CombatantModel } from '../../../../models/combatant';
 
-import { Box, StatValue } from '../../../utility';
-import { Tag, Text } from '../../../../controls';
+import { Box, StatValue, Tag, Text } from '../../../controls';
 
 import './stats.scss';
 

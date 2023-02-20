@@ -5,8 +5,7 @@ import { HeroSpeciesData } from '../../../../data/hero-species-data';
 import { RoleData } from '../../../../data/role-data';
 
 import { BackgroundCard, RoleCard, SpeciesCard } from '../../../cards';
-import { CardList, PlayingCard } from '../../../utility';
-import { Dialog, Text, TextType } from '../../../../controls';
+import { CardList, Dialog, PlayingCard, Text, TextType } from '../../../controls';
 
 import './options-page.scss';
 

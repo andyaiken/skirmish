@@ -4,8 +4,7 @@ import { GameLogic } from '../../../logic/game-logic';
 
 import type { SpeciesModel } from '../../../models/species';
 
-import { Text, TextType } from '../../../controls';
-import { StatValue } from '../../utility';
+import { StatValue, Text, TextType } from '../../controls';
 
 import './species-card.scss';
 

@@ -11,8 +11,7 @@ import type { ItemModel } from '../../../models/item';
 import { Collections } from '../../../utils/collections';
 
 import { BackgroundCard, ItemCard, PlaceholderCard, RoleCard, SpeciesCard } from '../../cards';
-import { CardList, PlayingCard, PlayingCardSide } from '../../utility';
-import { Tag, Text, TextType } from '../../../controls';
+import { CardList, PlayingCard, PlayingCardSide, Tag, Text, TextType } from '../../controls';
 
 import './hero-builder-panel.scss';
 

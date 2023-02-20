@@ -8,9 +8,8 @@ import type { GameModel } from '../../../../models/game';
 import type { ItemModel } from '../../../../models/item';
 
 import { BoonCard, HeroCard, ItemCard, PlaceholderCard } from '../../../cards';
-import { CardList, PlayingCard } from '../../../utility';
+import { CardList, Dialog, PlayingCard, Text, TextType } from '../../../controls';
 import { CharacterSheetPanel, HeroBuilderPanel } from '../../../panels';
-import { Dialog, Text, TextType } from '../../../../controls';
 
 import './heroes-page.scss';
 

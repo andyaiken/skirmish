@@ -12,8 +12,7 @@ import { Collections } from '../../../utils/collections';
 import { Utils } from '../../../utils/utils';
 
 import { ActionCard, FeatureCard } from '../../cards';
-import { CardList, PlayingCard } from '../../utility';
-import { Selector, Tag, Text, TextType } from '../../../controls';
+import { CardList, PlayingCard, Selector, Tag, Text, TextType } from '../../controls';
 import { Items } from './items/items';
 import { LevelUp } from './level-up/level-up';
 import { Stats } from './stats/stats';

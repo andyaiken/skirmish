@@ -171,7 +171,7 @@ class ChoicePanel extends Component<ChoicePanelProps, ChoicePanelState> {
 
 	selectDamageCategoryType = (category: DamageCategoryType) => {
 		const feature = this.state.feature;
-		feature.DamageCategoryType = category;
+		feature.damageCategory = category;
 		this.setState({
 			feature: feature
 		}, () => {
@@ -287,7 +287,7 @@ class ChoicePanel extends Component<ChoicePanelProps, ChoicePanelState> {
 								{ id: DamageCategoryType.Energy },
 								{ id: DamageCategoryType.Corruption }
 							]}
-							selectedID={this.state.feature.DamageCategoryType}
+							selectedID={this.state.feature.damageCategory}
 							onSelect={id => this.selectDamageCategoryType(id as DamageCategoryType)}
 						/>
 					</div>

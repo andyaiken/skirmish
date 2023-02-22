@@ -1,4 +1,4 @@
-import { AuraType } from '../enums/aura-type';
+import { ConditionType } from '../enums/condition-type';
 import { DamageCategoryType } from '../enums/damage-category-type';
 import { DamageType } from '../enums/damage-type';
 import { SkillType } from '../enums/skill-type';
@@ -66,7 +66,7 @@ export class HeroSpeciesData {
 					FeatureLogic.createSkillFeature(SkillType.Spellcasting, 2),
 					FeatureLogic.createDamageCategoryTypeResistFeature(DamageCategoryType.Corruption, 1),
 					FeatureLogic.createDamageCategoryTypeResistFeature(DamageCategoryType.Energy, 1),
-					FeatureLogic.createAuraDamageFeature(AuraType.AutomaticDamage, DamageType.Light, 1)
+					FeatureLogic.createAuraDamageFeature(ConditionType.AutoDamage, DamageType.Light, 1)
 				],
 				actions: [
 					HeroSpeciesData.createActionPlaceholder('Insight (see opponent stats)'),
@@ -193,7 +193,7 @@ export class HeroSpeciesData {
 					FeatureLogic.createSkillFeature(SkillType.Brawl, 2),
 					FeatureLogic.createSkillFeature(SkillType.Stealth, 2),
 					FeatureLogic.createDamageCategoryTypeResistFeature(DamageCategoryType.Corruption, 1),
-					FeatureLogic.createAuraDamageFeature(AuraType.AutomaticDamage, DamageType.Decay, 1)
+					FeatureLogic.createAuraDamageFeature(ConditionType.AutoDamage, DamageType.Decay, 1)
 				],
 				actions: [
 					HeroSpeciesData.createActionPlaceholder('Transfer a condition'),

@@ -1,0 +1,14 @@
+.combatant-controls {
+	.tags {
+		text-align: center;
+	}
+
+	.movement {
+		display: flex;
+		justify-content: center;
+
+		.direction-panel {
+			margin-top: 30px;
+		}
+	}
+}

@@ -1,6 +1,8 @@
 import { UniversalData } from '../data/universal-data';
 
+import { CombatantState } from '../enums/combatant-state';
 import { CombatantType } from '../enums/combatant-type';
+import { ConditionType } from '../enums/condition-type';
 import { DamageCategoryType } from '../enums/damage-category-type';
 import { DamageType } from '../enums/damage-type';
 import { FeatureType } from '../enums/feature-type';
@@ -9,8 +11,8 @@ import { SkillCategoryType } from '../enums/skill-category-type';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
 
-import type { AuraModel } from '../models/aura';
 import type { CombatantModel } from '../models/combatant';
+import type { ConditionModel } from '../models/condition';
 import type { FeatureModel } from '../models/feature';
 import type { ItemModel } from '../models/item';
 
@@ -121,13 +123,13 @@ export class CombatantLogic {
 				feature.damage = Collections.draw(options);
 			}
 
-			if (feature.DamageCategoryType === DamageCategoryType.Any) {
+			if (feature.damageCategory === DamageCategoryType.Any) {
 				const options = [
 					DamageCategoryType.Physical,
 					DamageCategoryType.Energy,
 					DamageCategoryType.Corruption
 				];
-				feature.DamageCategoryType = Collections.draw(options);
+				feature.damageCategory = Collections.draw(options);
 			}
 		});
 	};
@@ -243,7 +245,7 @@ export class CombatantLogic {
 		return list;
 	};
 
-	static getTraitValue = (combatant: CombatantModel, trait: TraitType) => {
+	static getTraitValue = (combatant: CombatantModel, conditions: ConditionModel[], trait: TraitType) => {
 		let value = 1;
 
 		CombatantLogic.getFeatures(combatant)
@@ -251,10 +253,18 @@ export class CombatantLogic {
 			.filter(f => (f.trait === trait) || (f.trait === TraitType.All))
 			.forEach(f => value += f.rank);
 
+		conditions.filter(c => c.type === ConditionType.TraitBonus)
+			.filter(c => (c.details.trait === trait) || (c.details.trait === TraitType.All))
+			.forEach(c => value += c.rank);
+		conditions.filter(c => c.type === ConditionType.TraitPenalty)
+			.filter(c => (c.details.trait === trait) || (c.details.trait === TraitType.All))
+			.forEach(c => value -= c.rank);
+
+		// Minimum 0
 		return Math.max(value, 0);
 	};
 
-	static getSkillValue = (combatant: CombatantModel, skill: SkillType) => {
+	static getSkillValue = (combatant: CombatantModel, conditions: ConditionModel[], skill: SkillType) => {
 		let value = 0;
 
 		CombatantLogic.getFeatures(combatant)
@@ -266,10 +276,27 @@ export class CombatantLogic {
 			.filter(f => (f.skillCategory === GameLogic.getSkillCategory(skill)) || (f.skillCategory === SkillCategoryType.All))
 			.forEach(f => value += f.rank);
 
+		conditions.filter(c => c.type === ConditionType.SkillBonus)
+			.filter(c => (c.details.skill === skill) || (c.details.skill === SkillType.All))
+			.forEach(c => value += c.rank);
+		conditions.filter(c => c.type === ConditionType.SkillCategoryBonus)
+			.filter(c => (c.details.skillCategory === GameLogic.getSkillCategory(skill)) || (c.details.skillCategory === SkillCategoryType.All))
+			.forEach(c => value += c.rank);
+		conditions.filter(c => c.type === ConditionType.SkillPenalty)
+			.filter(c => (c.details.skill === skill) || (c.details.trait === TraitType.All))
+			.forEach(c => value -= c.rank);
+		conditions.filter(c => c.type === ConditionType.SkillCategoryPenalty)
+			.filter(c => (c.details.skillCategory === GameLogic.getSkillCategory(skill)) || (c.details.skillCategory === SkillCategoryType.All))
+			.forEach(c => value -= c.rank);
+
+		if (combatant.combat.state === CombatantState.Prone) {
+			value = Math.floor(value / 2);
+		}
+		// Minimum 0
 		return Math.max(value, 0);
 	};
 
-	static getDamageBonusValue = (combatant: CombatantModel, damage: DamageType) => {
+	static getDamageBonusValue = (combatant: CombatantModel, conditions: ConditionModel[], damage: DamageType) => {
 		let value = 0;
 
 		CombatantLogic.getFeatures(combatant)
@@ -278,13 +305,27 @@ export class CombatantLogic {
 			.forEach(f => value += f.rank);
 		CombatantLogic.getFeatures(combatant)
 			.filter(f => f.type === FeatureType.DamageCategoryTypeBonus)
-			.filter(f => (f.DamageCategoryType === GameLogic.getDamageCategoryType(damage)) || (f.DamageCategoryType === DamageCategoryType.All))
+			.filter(f => (f.damageCategory === GameLogic.getDamageCategoryType(damage)) || (f.damageCategory === DamageCategoryType.All))
 			.forEach(f => value += f.rank);
 
-		return Math.max(value, 0);
+		conditions.filter(c => c.type === ConditionType.DamageBonus)
+			.filter(c => (c.details.damage === damage) || (c.details.damage === DamageType.All))
+			.forEach(c => value += c.rank);
+		conditions.filter(c => c.type === ConditionType.DamageCategoryBonus)
+			.filter(c => (c.details.damageCategory === GameLogic.getDamageCategoryType(damage)) || (c.details.damageCategory === DamageCategoryType.All))
+			.forEach(c => value += c.rank);
+		conditions.filter(c => c.type === ConditionType.DamagePenalty)
+			.filter(c => (c.details.damage === damage) || (c.details.damage === DamageType.All))
+			.forEach(c => value -= c.rank);
+		conditions.filter(c => c.type === ConditionType.DamageCategoryPenalty)
+			.filter(c => (c.details.damageCategory === GameLogic.getDamageCategoryType(damage)) || (c.details.damageCategory === DamageCategoryType.All))
+			.forEach(c => value -= c.rank);
+
+		// No minimum value
+		return value;
 	};
 
-	static getDamageResistanceValue = (combatant: CombatantModel, damage: DamageType) => {
+	static getDamageResistanceValue = (combatant: CombatantModel, conditions: ConditionModel[], damage: DamageType) => {
 		let value = 0;
 
 		CombatantLogic.getFeatures(combatant)
@@ -293,10 +334,24 @@ export class CombatantLogic {
 			.forEach(f => value += f.rank);
 		CombatantLogic.getFeatures(combatant)
 			.filter(f => f.type === FeatureType.DamageCategoryTypeResist)
-			.filter(f => (f.DamageCategoryType === GameLogic.getDamageCategoryType(damage)) || (f.DamageCategoryType === DamageCategoryType.All))
+			.filter(f => (f.damageCategory === GameLogic.getDamageCategoryType(damage)) || (f.damageCategory === DamageCategoryType.All))
 			.forEach(f => value += f.rank);
 
-		return Math.max(value, 0);
+		conditions.filter(c => c.type === ConditionType.DamageResistance)
+			.filter(c => (c.details.damage === damage) || (c.details.damage === DamageType.All))
+			.forEach(c => value += c.rank);
+		conditions.filter(c => c.type === ConditionType.DamageCategoryResistance)
+			.filter(c => (c.details.damageCategory === GameLogic.getDamageCategoryType(damage)) || (c.details.damageCategory === DamageCategoryType.All))
+			.forEach(c => value += c.rank);
+		conditions.filter(c => c.type === ConditionType.DamageVulnerability)
+			.filter(c => (c.details.damage === damage) || (c.details.damage === DamageType.All))
+			.forEach(c => value -= c.rank);
+		conditions.filter(c => c.type === ConditionType.DamageCategoryVulnerability)
+			.filter(c => (c.details.damageCategory === GameLogic.getDamageCategoryType(damage)) || (c.details.damageCategory === DamageCategoryType.All))
+			.forEach(c => value -= c.rank);
+
+		// No minimum value
+		return value;
 	};
 
 	static getProficiencies = (combatant: CombatantModel) => {
@@ -310,16 +365,28 @@ export class CombatantLogic {
 	};
 
 	static getAuras = (combatant: CombatantModel) => {
-		const auras: AuraModel[] = [];
+		const auras: ConditionModel[] = [];
 
 		CombatantLogic.getFeatures(combatant)
 			.filter(f => f.type === FeatureType.Aura)
 			.forEach(f => {
-				const original = auras.find(a => (a.type === f.aura) && (a.damage === f.damage) && (a.DamageCategoryType === f.DamageCategoryType));
+				const original = auras.find(a => (a.type === f.aura)
+					&& (a.details.trait === f.trait)
+					&& (a.details.skill === f.skill)
+					&& (a.details.skillCategory === f.skillCategory)
+					&& (a.details.damage === f.damage)
+					&& (a.details.damageCategory === f.damageCategory));
 				if (original) {
 					original.rank += 1;
 				} else {
-					const aura = Factory.createAura(f);
+					const aura = Factory.createCondition();
+					aura.type = f.aura;
+					aura.rank = f.rank;
+					aura.details.trait = f.trait;
+					aura.details.skill = f.skill;
+					aura.details.skillCategory = f.skillCategory;
+					aura.details.damage = f.damage;
+					aura.details.damageCategory = f.damageCategory;
 					auras.push(aura);
 				}
 			});

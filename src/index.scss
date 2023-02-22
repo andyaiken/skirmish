@@ -37,10 +37,10 @@ button {
 	background-color: rgb(255, 255, 255);
 
 	&:not(:disabled) {
+		border-color: rgb(60, 170, 255);
 		cursor: pointer;
 
 		&:hover {
-			border-color: rgb(60, 170, 255);
 			background-color: rgb(200, 230, 255);
 		}
 	}

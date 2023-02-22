@@ -11,7 +11,6 @@ import { GameLogic } from '../../logic/game-logic';
 
 import type { BoonModel } from '../../models/boon';
 import type { CampaignMapRegionModel } from '../../models/campaign-map';
-import type { CombatDataModel } from '../../models/combat-data';
 import type { CombatantModel } from '../../models/combatant';
 import type { EncounterModel } from '../../models/encounter';
 import type { FeatureModel } from '../../models/feature';
@@ -204,32 +203,32 @@ export class Main extends Component<Props, State> {
 		});
 	};
 
-	move = (encounter: EncounterModel, combatData: CombatDataModel, dir: string, cost: number) => {
-		EncounterLogic.move(combatData, dir, cost);
+	move = (encounter: EncounterModel, combatant: CombatantModel, dir: string, cost: number) => {
+		EncounterLogic.move(encounter, combatant, dir, cost);
 
 		this.setState({
 			game: this.state.game
 		});
 	};
 
-	standUp = (encounter: EncounterModel, combatData: CombatDataModel) => {
-		EncounterLogic.standUpSitDown(combatData);
+	standUp = (encounter: EncounterModel, combatant: CombatantModel) => {
+		EncounterLogic.standUpSitDown(combatant);
 
 		this.setState({
 			game: this.state.game
 		});
 	};
 
-	scan = (encounter: EncounterModel, combatData: CombatDataModel) => {
-		EncounterLogic.scan(encounter, combatData);
+	scan = (encounter: EncounterModel, combatant: CombatantModel) => {
+		EncounterLogic.scan(encounter, combatant);
 
 		this.setState({
 			game: this.state.game
 		});
 	};
 
-	hide = (encounter: EncounterModel, combatData: CombatDataModel) => {
-		EncounterLogic.hide(encounter, combatData);
+	hide = (encounter: EncounterModel, combatant: CombatantModel) => {
+		EncounterLogic.hide(encounter, combatant);
 
 		this.setState({
 			game: this.state.game

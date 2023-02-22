@@ -1,4 +1,4 @@
-import { AuraType } from '../enums/aura-type';
+import { ConditionType } from '../enums/condition-type';
 import { DamageCategoryType } from '../enums/damage-category-type';
 import { DamageType } from '../enums/damage-type';
 import { SkillType } from '../enums/skill-type';
@@ -36,9 +36,9 @@ export class BackgroundData {
 				id: 'background-commander',
 				name: 'Commander',
 				features: [
-					FeatureLogic.createAuraDamageCategoryTypeFeature(AuraType.DamageResistance, DamageCategoryType.Corruption, 1),
-					FeatureLogic.createAuraDamageCategoryTypeFeature(AuraType.DamageResistance, DamageCategoryType.Energy, 1),
-					FeatureLogic.createAuraDamageCategoryTypeFeature(AuraType.DamageResistance, DamageCategoryType.Physical, 1)
+					FeatureLogic.createAuraDamageCategoryFeature(ConditionType.DamageCategoryBonus, DamageCategoryType.Corruption, 1),
+					FeatureLogic.createAuraDamageCategoryFeature(ConditionType.DamageCategoryBonus, DamageCategoryType.Energy, 1),
+					FeatureLogic.createAuraDamageCategoryFeature(ConditionType.DamageCategoryBonus, DamageCategoryType.Physical, 1)
 				],
 				actions: [
 					BackgroundData.createActionPlaceholder('Knock prone'),
@@ -49,9 +49,9 @@ export class BackgroundData {
 				id: 'background-mountebank',
 				name: 'Mountebank',
 				features: [
-					FeatureLogic.createAuraDamageCategoryTypeFeature(AuraType.DamageVulnerability, DamageCategoryType.Corruption, 1),
-					FeatureLogic.createAuraDamageCategoryTypeFeature(AuraType.DamageVulnerability, DamageCategoryType.Energy, 1),
-					FeatureLogic.createAuraDamageCategoryTypeFeature(AuraType.DamageVulnerability, DamageCategoryType.Physical, 1)
+					FeatureLogic.createAuraDamageCategoryFeature(ConditionType.DamageCategoryVulnerability, DamageCategoryType.Corruption, 1),
+					FeatureLogic.createAuraDamageCategoryFeature(ConditionType.DamageCategoryVulnerability, DamageCategoryType.Energy, 1),
+					FeatureLogic.createAuraDamageCategoryFeature(ConditionType.DamageCategoryVulnerability, DamageCategoryType.Physical, 1)
 				],
 				actions: [
 					BackgroundData.createActionPlaceholder('Command attack'),
@@ -79,7 +79,7 @@ export class BackgroundData {
 				id: 'background-noble',
 				name: 'Noble',
 				features: [
-					FeatureLogic.createAuraFeature(AuraType.EaseMovement, 1)
+					FeatureLogic.createAuraFeature(ConditionType.MovementBonus, 1)
 				],
 				actions: [
 					BackgroundData.createActionPlaceholder('Buff ally'),
@@ -91,7 +91,7 @@ export class BackgroundData {
 				id: 'background-physician',
 				name: 'Physician',
 				features: [
-					FeatureLogic.createAuraFeature(AuraType.AutomaticHealing, 1)
+					FeatureLogic.createAuraFeature(ConditionType.AutoHeal, 1)
 				],
 				actions: [
 					BackgroundData.createActionPlaceholder('Remove condition (ally)'),
@@ -107,9 +107,9 @@ export class BackgroundData {
 					FeatureLogic.createSkillFeature(SkillType.Weapon, 2),
 					FeatureLogic.createDamageCategoryTypeResistFeature(DamageCategoryType.Any, 1),
 					FeatureLogic.createDamageCategoryTypeBonusFeature(DamageCategoryType.Physical, 1),
-					FeatureLogic.createAuraDamageFeature(AuraType.AutomaticDamage, DamageType.Edged, 1),
-					FeatureLogic.createAuraDamageFeature(AuraType.AutomaticDamage, DamageType.Impact, 1),
-					FeatureLogic.createAuraDamageFeature(AuraType.AutomaticDamage, DamageType.Piercing, 1)
+					FeatureLogic.createAuraDamageFeature(ConditionType.AutoDamage, DamageType.Edged, 1),
+					FeatureLogic.createAuraDamageFeature(ConditionType.AutoDamage, DamageType.Impact, 1),
+					FeatureLogic.createAuraDamageFeature(ConditionType.AutoDamage, DamageType.Piercing, 1)
 				],
 				actions: [
 					BackgroundData.createActionPlaceholder('Frenzy (adds to damage)'),
@@ -124,7 +124,7 @@ export class BackgroundData {
 					FeatureLogic.createTraitFeature(TraitType.Endurance, 1),
 					FeatureLogic.createTraitFeature(TraitType.Resolve, 1),
 					FeatureLogic.createDamageResistFeature(DamageType.All, 1),
-					FeatureLogic.createAuraFeature(AuraType.PreventMovement, 1)
+					FeatureLogic.createAuraFeature(ConditionType.MovementPenalty, 1)
 				],
 				actions: [
 					BackgroundData.createActionPlaceholder('Mark enemy'),

@@ -42,25 +42,5 @@
 
 	.encounter-right-panel {
 		flex: 1 1 0;
-
-		.tags {
-			text-align: center;
-		}
-
-		.stats-row {
-			display: flex;
-			align-items: flex-start;
-			justify-content: center;
-			gap: 10px;
-
-			&>* {
-				flex: 1 1 0;
-			}
-		}
-
-		.movement {
-			display: flex;
-			justify-content: center;
-		}
 	}
 }

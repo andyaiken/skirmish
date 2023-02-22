@@ -1,4 +1,4 @@
-export enum CombatDataState {
+export enum CombatantState {
 	Standing = 'Stand',
 	Prone = 'Prone',
 	Unconscious = 'Unconscious',

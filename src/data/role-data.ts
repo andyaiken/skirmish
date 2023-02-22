@@ -1,4 +1,4 @@
-import { AuraType } from '../enums/aura-type';
+import { ConditionType } from '../enums/condition-type';
 import { DamageCategoryType } from '../enums/damage-category-type';
 import { DamageType } from '../enums/damage-type';
 import { ItemProficiencyType } from '../enums/item-proficiency-type';
@@ -221,9 +221,9 @@ export class RoleData {
 					FeatureLogic.createSkillFeature(SkillType.Spellcasting, 2),
 					FeatureLogic.createDamageCategoryTypeBonusFeature(DamageCategoryType.Energy, 1),
 					FeatureLogic.createDamageCategoryTypeResistFeature(DamageCategoryType.Energy, 1),
-					FeatureLogic.createAuraDamageFeature(AuraType.AutomaticDamage, DamageType.Fire, 1),
-					FeatureLogic.createAuraDamageFeature(AuraType.AutomaticDamage, DamageType.Cold, 1),
-					FeatureLogic.createAuraDamageFeature(AuraType.AutomaticDamage, DamageType.Electricity, 1)
+					FeatureLogic.createAuraDamageFeature(ConditionType.AutoDamage, DamageType.Fire, 1),
+					FeatureLogic.createAuraDamageFeature(ConditionType.AutoDamage, DamageType.Cold, 1),
+					FeatureLogic.createAuraDamageFeature(ConditionType.AutoDamage, DamageType.Electricity, 1)
 				],
 				actions: [
 					RoleData.createActionPlaceholder('Lightning bolt (single target, damage and stuns)'),

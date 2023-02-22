@@ -1,13 +1,13 @@
 import { Component } from 'react';
 
-import type { CombatDataModel } from '../../../models/combat-data';
+import type { CombatantModel } from '../../../models/combatant';
 
 import { IconType, IconValue } from '../../controls';
 
 import './direction-panel.scss';
 
 interface Props {
-	combatData: CombatDataModel;
+	combatant: CombatantModel;
 	costs: Record<string, number>;
 	onMove: (dir: string, cost: number) => void;
 }
@@ -19,7 +19,7 @@ export class DirectionPanel extends Component<Props> {
 
 	canMove = (dir: string) => {
 		const cost = this.props.costs[dir];
-		return (cost !== Number.MAX_VALUE) && (cost <= this.props.combatData.movement);
+		return (cost !== Number.MAX_VALUE) && (cost <= this.props.combatant.combat.movement);
 	};
 
 	getCostLabel = (value: number) => {

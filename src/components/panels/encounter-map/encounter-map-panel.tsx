@@ -1,7 +1,6 @@
 import { Component } from 'react';
 
 import { CombatantLogic } from '../../../logic/combatant-logic';
-import { EncounterLogic } from '../../../logic/encounter-logic';
 import { EncounterMapLogic } from '../../../logic/encounter-map-logic';
 
 import type { CombatantModel } from '../../../models/combatant';
@@ -24,8 +23,12 @@ export class EncounterMapPanel extends Component<Props> {
 	};
 
 	public render() {
-		// Get dimensions
+		// Get dimensions, adding a 1-square border
 		const dims = EncounterMapLogic.getEncounterMapDimensions(this.props.encounter.map);
+		dims.left -= 1;
+		dims.top -= 1;
+		dims.right += 1;
+		dims.bottom += 1;
 
 		const squares = this.props.encounter.map.squares.map(sq => {
 			const className = `encounter-map-square ${sq.type.toLowerCase()}`;
@@ -43,18 +46,17 @@ export class EncounterMapPanel extends Component<Props> {
 			);
 		});
 
-		const auras = this.props.encounter.combatData.map(cd => {
-			const combatant = EncounterLogic.getCombatant(this.props.encounter, cd.id) as CombatantModel;
+		const auras = this.props.encounter.combatants.map(combatant => {
 			if (CombatantLogic.getAuras(combatant).length > 0) {
 				return (
 					<div
-						key={cd.id}
+						key={combatant.id}
 						className='encounter-map-aura'
 						style={{
 							width: `${this.props.squareSize * (combatant.size + 2)}px`,
 							height: `${this.props.squareSize * (combatant.size + 2)}px`,
-							left: `${((cd.position.x - dims.left - 1) * this.props.squareSize)}px`,
-							top: `${((cd.position.y - dims.top - 1) * this.props.squareSize)}px`
+							left: `${((combatant.combat.position.x - dims.left - 1) * this.props.squareSize)}px`,
+							top: `${((combatant.combat.position.y - dims.top - 1) * this.props.squareSize)}px`
 						}}
 					>
 					</div>
@@ -64,20 +66,19 @@ export class EncounterMapPanel extends Component<Props> {
 			return null;
 		});
 
-		const tokens = this.props.encounter.combatData.map(cd => {
-			const combatant = EncounterLogic.getCombatant(this.props.encounter, cd.id) as CombatantModel;
+		const tokens = this.props.encounter.combatants.map(combatant => {
 			const current = this.props.currentID === combatant.id;
 			const selected = this.props.selectedIDs.includes(combatant.id);
-			const className = `encounter-map-token ${cd.type.toLowerCase()} ${current ? 'current' : ''} ${selected ? 'selected' : ''}`;
+			const className = `encounter-map-token ${combatant.type.toLowerCase()} ${current ? 'current' : ''} ${selected ? 'selected' : ''}`;
 			return (
 				<div
-					key={cd.id}
+					key={combatant.id}
 					className={className}
 					style={{
 						width: `${this.props.squareSize * combatant.size}px`,
 						height: `${this.props.squareSize * combatant.size}px`,
-						left: `${((cd.position.x - dims.left) * this.props.squareSize)}px`,
-						top: `${((cd.position.y - dims.top) * this.props.squareSize)}px`,
+						left: `${((combatant.combat.position.x - dims.left) * this.props.squareSize)}px`,
+						top: `${((combatant.combat.position.y - dims.top) * this.props.squareSize)}px`,
 						fontSize: `${this.props.squareSize * 0.8}px`
 					}}
 					title={combatant.name}

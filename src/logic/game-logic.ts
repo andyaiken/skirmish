@@ -4,8 +4,8 @@ import { ItemData } from '../data/item-data';
 import { MonsterSpeciesData } from '../data/monster-species-data';
 import { RoleData } from '../data/role-data';
 
-import { AuraType } from '../enums/aura-type';
 import { BoonType } from '../enums/boon-type';
+import { ConditionType } from '../enums/condition-type';
 import { DamageCategoryType } from '../enums/damage-category-type';
 import { DamageType } from '../enums/damage-type';
 import { ItemProficiencyType } from '../enums/item-proficiency-type';
@@ -14,9 +14,9 @@ import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
 
 import type { ActionModel } from '../models/action';
-import type { AuraModel } from '../models/aura';
 import type { BoonModel } from '../models/boon';
 import type { CombatantModel } from '../models/combatant';
+import type { ConditionModel } from '../models/condition';
 import type { FeatureModel } from '../models/feature';
 import type { GameModel } from '../models/game';
 import type { SpeciesModel } from '../models/species';
@@ -175,20 +175,64 @@ export class GameLogic {
 		return action.name;
 	};
 
-	static getAuraDescription = (aura: AuraModel) => {
-		switch (aura.type) {
-			case AuraType.AutomaticHealing:
-			case AuraType.EaseMovement:
-			case AuraType.PreventMovement:
-				return `${aura.type}`;
-			case AuraType.AutomaticDamage:
-				return `${aura.type}: ${aura.damage}`;
-			case AuraType.DamageResistance:
-			case AuraType.DamageVulnerability:
-				return `${aura.type}: ${aura.DamageCategoryType}`;
+	static getConditionDescription = (condition: ConditionModel) => {
+		switch (condition.type) {
+			case ConditionType.AutoHeal:
+				return 'Healing';
+			case ConditionType.AutoDamage:
+				return `${condition.details.damage} damage`;
+			case ConditionType.TraitBonus:
+				return `Trait bonus: ${condition.details.trait}`;
+			case ConditionType.TraitPenalty:
+				return `Trait penalty: ${condition.details.trait}`;
+			case ConditionType.SkillBonus:
+				return `Skill bonus: ${condition.details.skill}`;
+			case ConditionType.SkillPenalty:
+				return `Skill penalty: ${condition.details.skill}`;
+			case ConditionType.SkillCategoryBonus:
+				return `Skill bonus: all ${condition.details.skillCategory} skills`;
+			case ConditionType.SkillCategoryPenalty:
+				return `Skill penalty: all ${condition.details.skillCategory} skills`;
+			case ConditionType.DamageBonus:
+				return `Damage bonus: ${condition.details.damage}`;
+			case ConditionType.DamagePenalty:
+				return `Damage penalty: ${condition.details.damage}`;
+			case ConditionType.DamageCategoryBonus:
+				return `Damage bonus: all ${condition.details.damageCategory} types`;
+			case ConditionType.DamageCategoryPenalty:
+				return `Damage penalty: all ${condition.details.damageCategory} types`;
+			case ConditionType.DamageResistance:
+				return `Damage resistance: ${condition.details.damage}`;
+			case ConditionType.DamageVulnerability:
+				return `Damage vulnerability: ${condition.details.damage}`;
+			case ConditionType.DamageCategoryResistance:
+				return `Damage resistance: all ${condition.details.damageCategory} types`;
+			case ConditionType.DamageCategoryVulnerability:
+				return `Damage vulnerability: all ${condition.details.damageCategory} types`;
+			case ConditionType.MovementBonus:
+				return 'Movement bonus';
+			case ConditionType.MovementPenalty:
+				return 'Movement penalty';
 		}
 
 		return '';
+	};
+
+	static getConditionIsBeneficial = (condition: ConditionModel) => {
+		switch (condition.type) {
+			case ConditionType.AutoHeal:
+			case ConditionType.TraitBonus:
+			case ConditionType.SkillBonus:
+			case ConditionType.SkillCategoryBonus:
+			case ConditionType.DamageBonus:
+			case ConditionType.DamageCategoryBonus:
+			case ConditionType.DamageResistance:
+			case ConditionType.DamageCategoryResistance:
+			case ConditionType.MovementBonus:
+				return true;
+		}
+
+		return false;
 	};
 
 	static generateBoon = (): BoonModel => {

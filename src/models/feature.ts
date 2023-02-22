@@ -1,4 +1,4 @@
-import type { AuraType } from '../enums/aura-type';
+import type { ConditionType } from '../enums/condition-type';
 import type { DamageCategoryType } from '../enums/damage-category-type';
 import type { DamageType } from '../enums/damage-type';
 import type { FeatureType } from '../enums/feature-type';
@@ -11,11 +11,11 @@ export interface FeatureModel {
 	id: string;
 	type: FeatureType;
 	damage: DamageType;
-	DamageCategoryType: DamageCategoryType;
+	damageCategory: DamageCategoryType;
 	proficiency: ItemProficiencyType;
 	skill: SkillType;
 	skillCategory: SkillCategoryType;
 	trait: TraitType;
-	aura: AuraType;
+	aura: ConditionType;
 	rank: number;
 }

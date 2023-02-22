@@ -73,7 +73,7 @@ export class CharacterSheetPanel extends Component<Props, State> {
 		let content = null;
 		switch (this.state.view) {
 			case 'stats':
-				content = <Stats hero={this.props.hero} />;
+				content = <Stats hero={this.props.hero} encounter={this.props.game.encounter} />;
 				break;
 			case 'items':
 				content = (
@@ -93,12 +93,26 @@ export class CharacterSheetPanel extends Component<Props, State> {
 				break;
 		}
 
+		let selector = null;
 		let sidebar = null;
 		if (this.props.hero.xp >= this.props.hero.level) {
 			sidebar = (
 				<div className='sidebar-section'>
 					<LevelUp hero={this.props.hero} features={this.state.features} levelUp={this.levelUp} />
 				</div>
+			);
+		} else {
+			selector = (
+				<Selector
+					selectedID={this.state.view}
+					options={[
+						{ id: 'stats', display: 'Statistics' },
+						{ id: 'items', display: 'Equipment' },
+						{ id: 'features', display: 'Feature Deck' },
+						{ id: 'actions', display: 'Action Deck' }
+					]}
+					onSelect={id => this.setState({ view: id as ViewType })}
+				/>
 			);
 		}
 
@@ -113,17 +127,8 @@ export class CharacterSheetPanel extends Component<Props, State> {
 							<Tag>{GameLogic.getBackground(this.props.hero.backgroundID)?.name ?? 'Unknown background'}</Tag>
 							<Tag>Level {this.props.hero.level}</Tag>
 						</div>
-						<Selector
-							selectedID={this.state.view}
-							options={[
-								{ id: 'stats', display: 'Statistics' },
-								{ id: 'items', display: 'Equipment' },
-								{ id: 'features', display: 'Feature Deck' },
-								{ id: 'actions', display: 'Action Deck' }
-							]}
-							onSelect={id => this.setState({ view: id as ViewType })}
-						/>
 					</div>
+					{selector}
 					<div className='content'>
 						{content}
 					</div>

@@ -6,6 +6,8 @@ export enum TextType {
 	Default = 'default',
 	Heading = 'heading',
 	SubHeading = 'subheading',
+	MinorHeading = 'minorheading',
+	ListItem = 'listitem',
 	Information = 'information'
 }
 

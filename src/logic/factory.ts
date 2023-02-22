@@ -1,10 +1,14 @@
-import { CombatDataState } from '../enums/combat-data-state';
+import { CombatantState } from '../enums/combatant-state';
 import { CombatantType } from '../enums/combatant-type';
+import { ConditionType } from '../enums/condition-type';
+import { DamageCategoryType } from '../enums/damage-category-type';
+import { DamageType } from '../enums/damage-type';
+import { SkillCategoryType } from '../enums/skill-category-type';
+import { SkillType } from '../enums/skill-type';
+import { TraitType } from '../enums/trait-type';
 
-import type { AuraModel } from '../models/aura';
-import type { CombatDataModel } from '../models/combat-data';
 import type { CombatantModel } from '../models/combatant';
-import type { FeatureModel } from '../models/feature';
+import type { ConditionModel } from '../models/condition';
 import type { GameModel } from '../models/game';
 
 import { Utils } from '../utils/utils';
@@ -12,38 +16,6 @@ import { Utils } from '../utils/utils';
 import { CampaignMapLogic } from './campaign-map-logic';
 
 export class Factory {
-	static createAura = (feature: FeatureModel) => {
-		const aura: AuraModel = {
-			id: Utils.guid(),
-			type: feature.aura,
-			damage: feature.damage,
-			DamageCategoryType: feature.DamageCategoryType,
-			rank: feature.rank
-		};
-		return aura;
-	};
-
-	static createCombatData = (combatant: CombatantModel): CombatDataModel => {
-		return {
-			id: combatant.id,
-			type: combatant.type,
-			size: combatant.size,
-			state: CombatDataState.Standing,
-			position: {
-				x: 0,
-				y: 0
-			},
-			damage: 0,
-			wounds: 0,
-			initiative: Number.MIN_VALUE,
-			movement: 0,
-			senses: 0,
-			hidden: 0,
-			conditions: [],
-			actions: []
-		};
-	};
-
 	static createCombatant = (type: CombatantType): CombatantModel => {
 		return {
 			id: Utils.guid(),
@@ -56,7 +28,22 @@ export class Factory {
 			level: 1,
 			xp: 0,
 			features: [],
-			items: []
+			items: [],
+			combat: {
+				state: CombatantState.Standing,
+				position: {
+					x: 0,
+					y: 0
+				},
+				damage: 0,
+				wounds: 0,
+				initiative: Number.MIN_VALUE,
+				movement: 0,
+				senses: 0,
+				hidden: 0,
+				conditions: [],
+				actions: []
+			}
 		};
 	};
 
@@ -73,6 +60,22 @@ export class Factory {
 			boons: [],
 			map: CampaignMapLogic.generateCampaignMap(),
 			encounter: null
+		};
+	};
+
+	static createCondition = (): ConditionModel => {
+		return {
+			id: Utils.guid(),
+			type: ConditionType.None,
+			trait: TraitType.None,
+			rank: 1,
+			details: {
+				trait: TraitType.None,
+				skill: SkillType.None,
+				skillCategory: SkillCategoryType.None,
+				damage: DamageType.None,
+				damageCategory: DamageCategoryType.None
+			}
 		};
 	};
 }

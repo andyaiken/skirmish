@@ -14,16 +14,33 @@ interface Props {
 
 export class SpeciesCard extends Component<Props> {
 	public render() {
-		const features = this.props.species.features.length > 0 ? this.props.species.features.map(f => GameLogic.getFeatureDescription(f)) : '-';
-		const actions = this.props.species.actions.length > 0 ? this.props.species.actions.map(a => GameLogic.getActionDescription(a)) : '-';
+		let features = null;
+		if (this.props.species.features.length > 0) {
+			features = (
+				<div>
+					<Text type={TextType.MinorHeading}>Features</Text>
+					{this.props.species.features.map(f => <Text key={f.id} type={TextType.ListItem}>{GameLogic.getFeatureDescription(f)}</Text>)}
+				</div>
+			);
+		}
+
+		let actions = null;
+		if (this.props.species.actions.length > 0) {
+			actions = (
+				<div>
+					<Text type={TextType.MinorHeading}>Actions</Text>
+					{this.props.species.actions.map(a => <Text key={a.id} type={TextType.ListItem}>{GameLogic.getActionDescription(a)}</Text>)}
+				</div>
+			);
+		}
 
 		return (
 			<div className='species-card'>
 				<Text type={TextType.SubHeading}>{this.props.species.name}</Text>
 				<hr />
 				<StatValue label='Trait bonus' value={this.props.species.traits.map(t => t.toString()).join(', ') || '-'}/>
-				<StatValue label='Features' value={features}/>
-				<StatValue label='Actions' value={actions}/>
+				{features}
+				{actions}
 			</div>
 		);
 	}

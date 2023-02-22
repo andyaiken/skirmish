@@ -1,4 +1,4 @@
-import { AuraType } from '../enums/aura-type';
+import { ConditionType } from '../enums/condition-type';
 import { DamageCategoryType } from '../enums/damage-category-type';
 import { DamageType } from '../enums/damage-type';
 import { FeatureType } from '../enums/feature-type';
@@ -21,12 +21,12 @@ export class FeatureLogic {
 			id: Utils.guid(),
 			type: FeatureType.DamageBonus,
 			damage: damage,
-			DamageCategoryType: DamageCategoryType.None,
+			damageCategory: DamageCategoryType.None,
 			proficiency: ItemProficiencyType.None,
 			skill: SkillType.None,
 			skillCategory: SkillCategoryType.None,
 			trait: TraitType.None,
-			aura: AuraType.None,
+			aura: ConditionType.None,
 			rank: rank
 		};
 	};
@@ -36,12 +36,12 @@ export class FeatureLogic {
 			id: Utils.guid(),
 			type: FeatureType.DamageCategoryTypeBonus,
 			damage: DamageType.None,
-			DamageCategoryType: category,
+			damageCategory: category,
 			proficiency: ItemProficiencyType.None,
 			skill: SkillType.None,
 			skillCategory: SkillCategoryType.None,
 			trait: TraitType.None,
-			aura: AuraType.None,
+			aura: ConditionType.None,
 			rank: rank
 		};
 	};
@@ -51,12 +51,12 @@ export class FeatureLogic {
 			id: Utils.guid(),
 			type: FeatureType.DamageResist,
 			damage: damage,
-			DamageCategoryType: DamageCategoryType.None,
+			damageCategory: DamageCategoryType.None,
 			proficiency: ItemProficiencyType.None,
 			skill: SkillType.None,
 			skillCategory: SkillCategoryType.None,
 			trait: TraitType.None,
-			aura: AuraType.None,
+			aura: ConditionType.None,
 			rank: rank
 		};
 	};
@@ -66,12 +66,12 @@ export class FeatureLogic {
 			id: Utils.guid(),
 			type: FeatureType.DamageCategoryTypeResist,
 			damage: DamageType.None,
-			DamageCategoryType: category,
+			damageCategory: category,
 			proficiency: ItemProficiencyType.None,
 			skill: SkillType.None,
 			skillCategory: SkillCategoryType.None,
 			trait: TraitType.None,
-			aura: AuraType.None,
+			aura: ConditionType.None,
 			rank: rank
 		};
 	};
@@ -81,12 +81,12 @@ export class FeatureLogic {
 			id: Utils.guid(),
 			type: FeatureType.Proficiency,
 			damage: DamageType.None,
-			DamageCategoryType: DamageCategoryType.None,
+			damageCategory: DamageCategoryType.None,
 			proficiency: proficiency,
 			skill: SkillType.None,
 			skillCategory: SkillCategoryType.None,
 			trait: TraitType.None,
-			aura: AuraType.None,
+			aura: ConditionType.None,
 			rank: 0
 		};
 	};
@@ -96,12 +96,12 @@ export class FeatureLogic {
 			id: Utils.guid(),
 			type: FeatureType.Skill,
 			damage: DamageType.None,
-			DamageCategoryType: DamageCategoryType.None,
+			damageCategory: DamageCategoryType.None,
 			proficiency: ItemProficiencyType.None,
 			skill: skill,
 			skillCategory: SkillCategoryType.None,
 			trait: TraitType.None,
-			aura: AuraType.None,
+			aura: ConditionType.None,
 			rank: rank
 		};
 	};
@@ -111,12 +111,12 @@ export class FeatureLogic {
 			id: Utils.guid(),
 			type: FeatureType.SkillCategory,
 			damage: DamageType.None,
-			DamageCategoryType: DamageCategoryType.None,
+			damageCategory: DamageCategoryType.None,
 			proficiency: ItemProficiencyType.None,
 			skill: SkillType.None,
 			skillCategory: category,
 			trait: TraitType.None,
-			aura: AuraType.None,
+			aura: ConditionType.None,
 			rank: rank
 		};
 	};
@@ -126,22 +126,31 @@ export class FeatureLogic {
 			id: Utils.guid(),
 			type: FeatureType.Trait,
 			damage: DamageType.None,
-			DamageCategoryType: DamageCategoryType.None,
+			damageCategory: DamageCategoryType.None,
 			proficiency: ItemProficiencyType.None,
 			skill: SkillType.None,
 			skillCategory: SkillCategoryType.None,
 			trait: trait,
-			aura: AuraType.None,
+			aura: ConditionType.None,
 			rank: rank
 		};
 	};
 
-	static createAuraFeature = (aura: AuraType, rank: number): FeatureModel => {
+	static createAuraFeature = (aura: ConditionType, rank: number): FeatureModel => {
+		const types = [
+			ConditionType.AutoHeal,
+			ConditionType.MovementBonus,
+			ConditionType.MovementPenalty
+		];
+		if (!types.includes(aura)) {
+			throw new Error('Incorrect aura parameters');
+		}
+
 		return {
 			id: Utils.guid(),
 			type: FeatureType.Aura,
 			damage: DamageType.None,
-			DamageCategoryType: DamageCategoryType.None,
+			damageCategory: DamageCategoryType.None,
 			proficiency: ItemProficiencyType.None,
 			skill: SkillType.None,
 			skillCategory: SkillCategoryType.None,
@@ -151,12 +160,92 @@ export class FeatureLogic {
 		};
 	};
 
-	static createAuraDamageFeature = (aura: AuraType, damage: DamageType, rank: number): FeatureModel => {
+	static createAuraTraitFeature = (aura: ConditionType, trait: TraitType, rank: number): FeatureModel => {
+		const types = [
+			ConditionType.TraitBonus,
+			ConditionType.TraitPenalty
+		];
+		if (!types.includes(aura)) {
+			throw new Error('Incorrect aura parameters');
+		}
+
+		return {
+			id: Utils.guid(),
+			type: FeatureType.Aura,
+			damage: DamageType.None,
+			damageCategory: DamageCategoryType.None,
+			proficiency: ItemProficiencyType.None,
+			skill: SkillType.None,
+			skillCategory: SkillCategoryType.None,
+			trait: trait,
+			aura: aura,
+			rank: rank
+		};
+	};
+
+	static createAuraSkillFeature = (aura: ConditionType, skill: SkillType, rank: number): FeatureModel => {
+		const types = [
+			ConditionType.SkillBonus,
+			ConditionType.SkillPenalty
+		];
+		if (!types.includes(aura)) {
+			throw new Error('Incorrect aura parameters');
+		}
+
+		return {
+			id: Utils.guid(),
+			type: FeatureType.Aura,
+			damage: DamageType.None,
+			damageCategory: DamageCategoryType.None,
+			proficiency: ItemProficiencyType.None,
+			skill: skill,
+			skillCategory: SkillCategoryType.None,
+			trait: TraitType.None,
+			aura: aura,
+			rank: rank
+		};
+	};
+
+	static createAuraSkillCategoryFeature = (aura: ConditionType, category: SkillCategoryType, rank: number): FeatureModel => {
+		const types = [
+			ConditionType.SkillCategoryBonus,
+			ConditionType.SkillCategoryPenalty
+		];
+		if (!types.includes(aura)) {
+			throw new Error('Incorrect aura parameters');
+		}
+
+		return {
+			id: Utils.guid(),
+			type: FeatureType.Aura,
+			damage: DamageType.None,
+			damageCategory: DamageCategoryType.None,
+			proficiency: ItemProficiencyType.None,
+			skill: SkillType.None,
+			skillCategory: category,
+			trait: TraitType.None,
+			aura: aura,
+			rank: rank
+		};
+	};
+
+	static createAuraDamageFeature = (aura: ConditionType, damage: DamageType, rank: number): FeatureModel => {
+		const types = [
+			ConditionType.AutoDamage,
+			ConditionType.DamageBonus,
+			ConditionType.DamagePenalty,
+			ConditionType.DamageResistance,
+			ConditionType.DamageVulnerability
+		];
+		if (!types.includes(aura)) {
+			throw new Error('Incorrect aura parameters');
+		}
+
 		return {
 			id: Utils.guid(),
 			type: FeatureType.Aura,
 			damage: damage,
-			DamageCategoryType: DamageCategoryType.None,
+			damageCategory: DamageCategoryType.None,
 			proficiency: ItemProficiencyType.None,
 			skill: SkillType.None,
 			skillCategory: SkillCategoryType.None,
@@ -166,12 +255,22 @@ export class FeatureLogic {
 		};
 	};
 
-	static createAuraDamageCategoryTypeFeature = (aura: AuraType, category: DamageCategoryType, rank: number): FeatureModel => {
+	static createAuraDamageCategoryFeature = (aura: ConditionType, category: DamageCategoryType, rank: number): FeatureModel => {
+		const types = [
+			ConditionType.DamageCategoryBonus,
+			ConditionType.DamageCategoryPenalty,
+			ConditionType.DamageCategoryResistance,
+			ConditionType.DamageCategoryVulnerability
+		];
+		if (!types.includes(aura)) {
+			throw new Error('Incorrect aura parameters');
+		}
+
 		return {
 			id: Utils.guid(),
 			type: FeatureType.Aura,
 			damage: DamageType.None,
-			DamageCategoryType: category,
+			damageCategory: category,
 			proficiency: ItemProficiencyType.None,
 			skill: SkillType.None,
 			skillCategory: SkillCategoryType.None,
@@ -235,14 +334,22 @@ export class FeatureLogic {
 			case FeatureType.DamageBonus:
 				return `${feature.damage} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
 			case FeatureType.DamageCategoryTypeBonus:
-				return `All ${feature.DamageCategoryType} types ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
+				return `All ${feature.damageCategory} types ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
 			case FeatureType.DamageResist:
 				return `${feature.damage} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
 			case FeatureType.DamageCategoryTypeResist:
-				return `All ${feature.DamageCategoryType} types ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
+				return `All ${feature.damageCategory} types ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
 			case FeatureType.Aura: {
-				const aura = Factory.createAura(feature);
-				return `${GameLogic.getAuraDescription(aura)} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
+				const aura = Factory.createCondition();
+				aura.type = feature.aura;
+				aura.trait = TraitType.None;
+				aura.rank = feature.rank;
+				aura.details.trait = feature.trait;
+				aura.details.skill = feature.skill;
+				aura.details.skillCategory = feature.skillCategory;
+				aura.details.damage = feature.damage;
+				aura.details.damageCategory = feature.damageCategory;
+				return `${GameLogic.getConditionDescription(aura)} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
 			}
 		}
 	};
@@ -262,7 +369,7 @@ export class FeatureLogic {
 				return feature.damage === DamageType.Any;
 			case FeatureType.DamageCategoryTypeBonus:
 			case FeatureType.DamageCategoryTypeResist:
-				return feature.DamageCategoryType === DamageCategoryType.Any;
+				return feature.damageCategory === DamageCategoryType.Any;
 		}
 
 		return false;

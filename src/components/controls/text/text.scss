@@ -18,7 +18,20 @@
 		text-transform: uppercase;
 		letter-spacing: 3px;
 		margin: 10px 0;
-		font-weight: 500;
+		font-weight: 600;
+	}
+
+	&.minorheading {
+		font-size: 16px;
+		text-transform: uppercase;
+		letter-spacing: 2px;
+		margin: 10px 0 5px 0;
+		font-weight: 600;
+	}
+
+	&.listitem {
+		margin: 5px 0;
+		font-size: 13px;
 	}
 
 	&.information {

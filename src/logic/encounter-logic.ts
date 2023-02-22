@@ -1,13 +1,14 @@
-import { CombatDataState } from '../enums/combat-data-state';
+import { CombatantState } from '../enums/combatant-state';
 import { CombatantType } from '../enums/combatant-type';
 import { ConditionType } from '../enums/condition-type';
+import { DamageType } from '../enums/damage-type';
 import { EncounterMapSquareType } from '../enums/encounter-map-square-type';
 import { EncounterState } from '../enums/encounter-state';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
 
-import type { CombatDataModel } from '../models/combat-data';
 import type { CombatantModel } from '../models/combatant';
+import type { ConditionModel } from '../models/condition';
 import type { EncounterMapSquareModel } from '../models/encounter-map';
 import type { EncounterModel } from '../models/encounter';
 
@@ -16,13 +17,19 @@ import { Random } from '../utils/random';
 
 import { CombatantLogic } from './combatant-logic';
 import { EncounterMapLogic } from './encounter-map-logic';
+import { GameLogic } from './game-logic';
 
 export class EncounterLogic {
-	static getCombatantSquares = (encounter: EncounterModel, combatData: CombatDataModel) => {
+	static getCombatantSquares = (encounter: EncounterModel, combatant: CombatantModel) => {
 		const squares = [];
 
-		for (let x = combatData.position.x; x <= combatData.position.x + combatData.size - 1; ++x) {
-			for (let y = combatData.position.y; y <= combatData.position.y + combatData.size - 1; ++y) {
+		const left = combatant.combat.position.x;
+		const right = left + combatant.size - 1;
+		const top = combatant.combat.position.y;
+		const bottom = top + combatant.size - 1;
+
+		for (let x = left; x <= right; ++x) {
+			for (let y = top; y <= bottom; ++y) {
 				squares.push({ x: x, y: y });
 			}
 		}
@@ -30,28 +37,50 @@ export class EncounterLogic {
 		return squares;
 	};
 
-	static rollInitiative = (encounter: EncounterModel) => {
-		encounter.combatData.forEach(cd => {
-			cd.initiative = Number.MIN_VALUE;
+	static getCombatantAuraSquares = (encounter: EncounterModel, combatant: CombatantModel) => {
+		const squares = [];
 
-			const combatant = EncounterLogic.getCombatant(encounter, cd.id);
-			if (combatant) {
-				const speed = CombatantLogic.getTraitValue(combatant, TraitType.Speed);
-				cd.initiative = Random.dice(speed);
+		const left = combatant.combat.position.x - 1;
+		const right = left + combatant.size + 1;
+		const top = combatant.combat.position.y - 1;
+		const bottom = top + combatant.size + 1;
+
+		for (let x = left; x <= right; ++x) {
+			for (let y = top; y <= bottom; ++y) {
+				squares.push({ x: x, y: y });
 			}
+		}
+
+		const combatantSquares = EncounterLogic.getCombatantSquares(encounter, combatant);
+		return squares.filter(sq => !combatantSquares.find(s => (s.x === sq.x) && (s.y === sq.y)));
+	};
+
+	static rollInitiative = (encounter: EncounterModel) => {
+		encounter.combatants.forEach(c => {
+			c.combat.initiative = Number.MIN_VALUE;
+
+			const conditions = ([] as ConditionModel[])
+				.concat(c.combat.conditions)
+				.concat(EncounterLogic.getAuraConditions(encounter, c));
+
+			const speed = CombatantLogic.getTraitValue(c, conditions, TraitType.Speed);
+			c.combat.initiative = Random.dice(speed);
 		});
 
-		encounter.combatData.sort((a, b) => {
-			const combatantA = EncounterLogic.getCombatant(encounter, a.id);
-			const combatantB = EncounterLogic.getCombatant(encounter, a.id);
-
+		encounter.combatants.sort((a, b) => {
 			// Sort by Inititive
-			let result: number = b.initiative - a.initiative;
+			let result: number = b.combat.initiative - a.combat.initiative;
 
 			if (result === 0) {
 				// Sort by Speed
-				const speedA = CombatantLogic.getTraitValue(combatantA as CombatantModel, TraitType.Speed);
-				const speedB = CombatantLogic.getTraitValue(combatantB as CombatantModel, TraitType.Speed);
+				const conditionsA = ([] as ConditionModel[])
+					.concat(a.combat.conditions)
+					.concat(EncounterLogic.getAuraConditions(encounter, a));
+				const conditionsB = ([] as ConditionModel[])
+					.concat(b.combat.conditions)
+					.concat(EncounterLogic.getAuraConditions(encounter, b));
+				const speedA = CombatantLogic.getTraitValue(a, conditionsA, TraitType.Speed);
+				const speedB = CombatantLogic.getTraitValue(b, conditionsB, TraitType.Speed);
 				result = speedB - speedA;
 			}
 
@@ -64,60 +93,75 @@ export class EncounterLogic {
 
 			if (result === 0) {
 				// Sort alphabetically
-				const nameA = (combatantA as CombatantModel).name;
-				const nameB = (combatantB as CombatantModel).name;
-				result = (nameA < nameB) ? -1 : +1;
+				result = (a.name < b.name) ? -1 : +1;
 			}
 
 			return result;
 		});
 	};
 
-	static startOfTurn = (encounter: EncounterModel, combatData: CombatDataModel) => {
-		const combatant = encounter.combatants.find(c => c.id === combatData.id) as CombatantModel;
+	static startOfTurn = (encounter: EncounterModel, combatant: CombatantModel) => {
+		combatant.combat.hidden = 0;
+		combatant.combat.senses = 0;
+		combatant.combat.movement = 0;
 
-		combatData.hidden = 0;
-		combatData.senses = 0;
-		combatData.movement = 0;
+		const conditions = ([] as ConditionModel[])
+			.concat(combatant.combat.conditions)
+			.concat(EncounterLogic.getAuraConditions(encounter, combatant));
 
-		if (combatData.state === CombatDataState.Unconscious) {
-			const result = Random.dice(CombatantLogic.getTraitValue(combatant, TraitType.Resolve));
+		if (combatant.combat.state === CombatantState.Unconscious) {
+			const result = Random.dice(CombatantLogic.getTraitValue(combatant, conditions, TraitType.Resolve));
 			if (result < 8) {
-				combatData.state = CombatDataState.Dead;
+				combatant.combat.state = CombatantState.Dead;
 			}
 		}
 
-		combatData.conditions
-			.filter(condition => condition.type === ConditionType.Health)
+		conditions
+			.filter(condition => condition.type === ConditionType.AutoHeal)
 			.forEach(condition => {
-				// TODO: Apply this auto-heal / auto-damage condition
+				EncounterLogic.healDamage(encounter, combatant, condition.rank);
 			});
 
-		// TODO: Apply 'auto-healing' effects from auras
-		// TODO: Apply 'auto-damage' effects from auras
+		conditions
+			.filter(condition => condition.type === ConditionType.AutoDamage)
+			.forEach(condition => {
+				EncounterLogic.damage(encounter, combatant, condition.rank, condition.details.damage);
+			});
 
-		if ((combatData.state === CombatDataState.Standing) || (combatData.state === CombatDataState.Prone)) {
-			combatData.senses = Random.dice(CombatantLogic.getSkillValue(combatant, SkillType.Perception));
-			combatData.movement = Random.dice(CombatantLogic.getTraitValue(combatant, TraitType.Speed));
-			// TODO: Apply movement conditions
+		if ((combatant.combat.state === CombatantState.Standing) || (combatant.combat.state === CombatantState.Prone)) {
+			combatant.combat.senses = Random.dice(CombatantLogic.getSkillValue(combatant, conditions, SkillType.Perception));
+			combatant.combat.movement = Random.dice(CombatantLogic.getTraitValue(combatant, conditions, TraitType.Speed));
+
+			conditions
+				.filter(condition => condition.type === ConditionType.MovementBonus)
+				.forEach(condition => {
+					combatant.combat.movement += condition.rank;
+				});
+			conditions
+				.filter(condition => condition.type === ConditionType.MovementPenalty)
+				.forEach(condition => {
+					combatant.combat.movement = Math.max(0, combatant.combat.movement - condition.rank);
+				});
 
 			const deck = CombatantLogic.getActionDeck(combatant);
-			combatData.actions = Collections.shuffle(deck).splice(0, 3);
+			combatant.combat.actions = Collections.shuffle(deck).splice(0, 3);
 		}
 	};
 
-	static endOfTurn = (encounter: EncounterModel, combatData: CombatDataModel) => {
-		const combatant = encounter.combatants.find(c => c.id === combatData.id) as CombatantModel;
+	static endOfTurn = (encounter: EncounterModel, combatant: CombatantModel) => {
+		combatant.combat.initiative = Number.MIN_VALUE;
+		combatant.combat.senses = 0;
+		combatant.combat.movement = 0;
 
-		combatData.initiative = Number.MIN_VALUE;
-		combatData.senses = 0;
-		combatData.movement = 0;
+		const conditions = ([] as ConditionModel[])
+			.concat(combatant.combat.conditions)
+			.concat(EncounterLogic.getAuraConditions(encounter, combatant));
 
-		combatData.conditions.forEach(condition => {
-			if (condition.beneficial) {
+		combatant.combat.conditions.forEach(condition => {
+			if (GameLogic.getConditionIsBeneficial(condition)) {
 				condition.rank -= 1;
 			} else {
-				const trait = CombatantLogic.getTraitValue(combatant, condition.trait);
+				const trait = CombatantLogic.getTraitValue(combatant, conditions, condition.trait);
 				if (Random.dice(trait) >= Random.dice(condition.rank)) {
 					condition.rank = 0;
 				} else {
@@ -125,13 +169,11 @@ export class EncounterLogic {
 				}
 			}
 		});
-		combatData.conditions = combatData.conditions.filter(c => c.rank > 0);
+		combatant.combat.conditions = combatant.combat.conditions.filter(c => c.rank > 0);
 	};
 
-	static getMoveCost = (encounter: EncounterModel, combatData: CombatDataModel, dir: string) => {
-		const combatant = EncounterLogic.getCombatant(encounter, combatData.id) as CombatantModel;
-
-		const movingFrom = EncounterLogic.getCombatantSquares(encounter, combatData);
+	static getMoveCost = (encounter: EncounterModel, combatant: CombatantModel, dir: string) => {
+		const movingFrom = EncounterLogic.getCombatantSquares(encounter, combatant);
 		const movingTo = movingFrom.map(sq => {
 			const dest = { x: sq.x, y: sq.y };
 			switch (dir) {
@@ -178,8 +220,8 @@ export class EncounterLogic {
 
 		// Can't move into an occupied square
 		const occupied: { x: number; y: number }[] = [];
-		encounter.combatData.forEach(cd => {
-			const squares = EncounterLogic.getCombatantSquares(encounter, cd);
+		encounter.combatants.forEach(c => {
+			const squares = EncounterLogic.getCombatantSquares(encounter, c);
 			occupied.push(...squares);
 		});
 		if (movingTo.some(sq => occupied.find(os => (os.x === sq.x) && (os.y === sq.y)))) {
@@ -195,11 +237,11 @@ export class EncounterLogic {
 
 		// Moving out of a space adjacent to standing opponent: +4
 		const adjacent: { x: number; y: number }[] = [];
-		encounter.combatData
-			.filter(cd => cd.type !== combatant.type)
-			.filter(cd => cd.state === CombatDataState.Standing)
-			.forEach(cd => {
-				const current = EncounterLogic.getCombatantSquares(encounter, cd);
+		encounter.combatants
+			.filter(c => c.type !== combatant.type)
+			.filter(c => c.combat.state === CombatantState.Standing)
+			.forEach(c => {
+				const current = EncounterLogic.getCombatantSquares(encounter, c);
 				const squares = EncounterMapLogic.getEncounterMapAdjacentSquares(encounter.map, current);
 				adjacent.push(...squares);
 			});
@@ -207,97 +249,144 @@ export class EncounterLogic {
 			cost += 4;
 		}
 
-		// TODO: Apply ease movement effects from auras
-		// TODO: Apply prevent movement effects from auras
-
 		// Prone or hidden: x2
-		if ((combatData.state === CombatDataState.Prone) || (combatData.hidden > 0)) {
+		if ((combatant.combat.state === CombatantState.Prone) || (combatant.combat.hidden > 0)) {
 			cost *= 2;
 		}
 
 		return cost;
 	};
 
-	static move = (combatData: CombatDataModel, dir: string, cost: number) => {
-		combatData.movement -= cost;
+	static move = (encounter: EncounterModel, combatant: CombatantModel, dir: string, cost: number) => {
+		combatant.combat.movement = Math.max(0, combatant.combat.movement - cost);
 
 		switch (dir) {
 			case 'n':
-				combatData.position.y -= 1;
+				combatant.combat.position.y -= 1;
 				break;
 			case 'ne':
-				combatData.position.x += 1;
-				combatData.position.y -= 1;
+				combatant.combat.position.x += 1;
+				combatant.combat.position.y -= 1;
 				break;
 			case 'e':
-				combatData.position.x += 1;
+				combatant.combat.position.x += 1;
 				break;
 			case 'se':
-				combatData.position.x += 1;
-				combatData.position.y += 1;
+				combatant.combat.position.x += 1;
+				combatant.combat.position.y += 1;
 				break;
 			case 's':
-				combatData.position.y += 1;
+				combatant.combat.position.y += 1;
 				break;
 			case 'sw':
-				combatData.position.x -= 1;
-				combatData.position.y += 1;
+				combatant.combat.position.x -= 1;
+				combatant.combat.position.y += 1;
 				break;
 			case 'w':
-				combatData.position.x -= 1;
+				combatant.combat.position.x -= 1;
 				break;
 			case 'nw':
-				combatData.position.x -= 1;
-				combatData.position.y -= 1;
+				combatant.combat.position.x -= 1;
+				combatant.combat.position.y -= 1;
 				break;
 		}
 	};
 
-	static standUpSitDown = (combatData: CombatDataModel) => {
-		switch (combatData.state) {
-			case CombatDataState.Standing:
-				combatData.movement -= 1;
-				combatData.state = CombatDataState.Prone;
+	static healDamage = (encounter: EncounterModel, combatant: CombatantModel, value: number) => {
+		combatant.combat.damage = Math.max(0, combatant.combat.damage - value);
+	};
+
+	static healWounds = (encounter: EncounterModel, combatant: CombatantModel, value: number) => {
+		const conditions = ([] as ConditionModel[])
+			.concat(combatant.combat.conditions)
+			.concat(EncounterLogic.getAuraConditions(encounter, combatant));
+
+		combatant.combat.wounds = Math.max(0, combatant.combat.wounds - value);
+
+		const resolve = CombatantLogic.getTraitValue(combatant, conditions, TraitType.Resolve);
+		if ((combatant.combat.wounds < resolve) && (combatant.combat.state === CombatantState.Unconscious)) {
+			combatant.combat.state = CombatantState.Prone;
+		}
+		if (combatant.combat.wounds === resolve) {
+			combatant.combat.state = CombatantState.Unconscious;
+		}
+		if (combatant.combat.wounds > resolve) {
+			combatant.combat.state = CombatantState.Dead;
+		}
+	};
+
+	static damage = (encounter: EncounterModel, combatant: CombatantModel, value: number, type: DamageType) => {
+		const conditions = ([] as ConditionModel[])
+			.concat(combatant.combat.conditions)
+			.concat(EncounterLogic.getAuraConditions(encounter, combatant));
+
+		const resistance = CombatantLogic.getDamageResistanceValue(combatant, conditions, type);
+		const damage = value - resistance;
+		if (damage > 0) {
+			combatant.combat.damage += damage;
+
+			const endurance = CombatantLogic.getTraitValue(combatant, conditions, TraitType.Endurance);
+			const resolve = CombatantLogic.getTraitValue(combatant, conditions, TraitType.Resolve);
+
+			if (Random.dice(endurance) < combatant.combat.damage) {
+				combatant.combat.damage = 0;
+				combatant.combat.wounds += 1;
+
+				if (combatant.combat.wounds === resolve) {
+					combatant.combat.state = CombatantState.Unconscious;
+				}
+				if (combatant.combat.wounds > resolve) {
+					combatant.combat.state = CombatantState.Dead;
+				}
+			}
+		}
+	};
+
+	static standUpSitDown = (combatant: CombatantModel) => {
+		switch (combatant.combat.state) {
+			case CombatantState.Standing:
+				combatant.combat.movement -= 1;
+				combatant.combat.state = CombatantState.Prone;
 				break;
-			case CombatDataState.Prone:
-				combatData.movement -= 8;
-				combatData.state = CombatDataState.Standing;
+			case CombatantState.Prone:
+				combatant.combat.movement -= 8;
+				combatant.combat.state = CombatantState.Standing;
 				break;
 		}
 	};
 
-	static scan = (encounter: EncounterModel, combatData: CombatDataModel) => {
-		const combatant = EncounterLogic.getCombatant(encounter, combatData.id) as CombatantModel;
-		let perception = CombatantLogic.getSkillValue(combatant, SkillType.Perception);
-		if (combatData.state === CombatDataState.Prone) {
-			perception = Math.floor(perception / 2);
-		}
+	static scan = (encounter: EncounterModel, combatant: CombatantModel) => {
+		const conditions = ([] as ConditionModel[])
+			.concat(combatant.combat.conditions)
+			.concat(EncounterLogic.getAuraConditions(encounter, combatant));
 
-		combatData.movement -= 4;
-		combatData.senses = Random.dice(perception);
+		const perception = CombatantLogic.getSkillValue(combatant, conditions, SkillType.Perception);
+
+		combatant.combat.movement -= 4;
+		combatant.combat.senses = Random.dice(perception);
 	};
 
-	static hide = (encounter: EncounterModel, combatData: CombatDataModel) => {
-		const combatant = EncounterLogic.getCombatant(encounter, combatData.id) as CombatantModel;
-		let stealth = CombatantLogic.getSkillValue(combatant, SkillType.Stealth);
-		if (combatData.state === CombatDataState.Prone) {
-			stealth = Math.floor(stealth / 2);
-		}
+	static hide = (encounter: EncounterModel, combatant: CombatantModel) => {
+		const conditions = ([] as ConditionModel[])
+			.concat(combatant.combat.conditions)
+			.concat(EncounterLogic.getAuraConditions(encounter, combatant));
 
-		combatData.movement -= 4;
-		combatData.hidden = Random.dice(stealth);
+		const stealth = CombatantLogic.getSkillValue(combatant, conditions, SkillType.Stealth);
+
+		combatant.combat.movement -= 4;
+		combatant.combat.hidden = Random.dice(stealth);
 	};
 
 	static getEncounterState = (encounter: EncounterModel): EncounterState => {
-		const allMonstersDead = encounter.combatData
-			.filter(cd => cd.type === CombatantType.Monster)
-			.every(cd => cd.state === CombatDataState.Dead);
+		const allMonstersDead = encounter.combatants
+			.filter(c => c.type === CombatantType.Monster)
+			.every(c => (c.combat.state === CombatantState.Dead) || (c.combat.state === CombatantState.Unconscious));
 		if (allMonstersDead) {
 			return EncounterState.Won;
 		}
-		const allHeroesDead = encounter.combatData
-			.filter(cd => cd.type === CombatantType.Hero)
-			.every(cd => cd.state === CombatDataState.Dead);
+		const allHeroesDead = encounter.combatants
+			.filter(c => c.type === CombatantType.Hero)
+			.every(c => (c.combat.state === CombatantState.Dead) || (c.combat.state === CombatantState.Unconscious));
 		if (allHeroesDead) {
 			return EncounterState.Defeated;
 		}
@@ -309,47 +398,53 @@ export class EncounterLogic {
 		return encounter.combatants.find(c => c.id === id) ?? null;
 	};
 
-	static getCombatData = (encounter: EncounterModel, id: string): CombatDataModel | null => {
-		return encounter.combatData.find(c => c.id === id) ?? null;
-	};
+	static getAuraConditions = (encounter: EncounterModel, combatant: CombatantModel) => {
+		const auras: ConditionModel[] = [];
 
-	static getCombatantSize = (encounter: EncounterModel, id: string): number => {
-		const combatant = EncounterLogic.getCombatant(encounter, id);
-		if (combatant) {
-			return combatant.size;
-		}
+		const squares = EncounterLogic.getCombatantSquares(encounter, combatant);
 
-		return 1;
+		// Get all beneficial aura conditions from adjacent allies
+		encounter.combatants.filter(c => c.type === combatant.type)
+			.filter(c => squares.some(sq => EncounterLogic.getCombatantAuraSquares(encounter, c).find(s => (s.x === sq.x) && (s.y === sq.y))))
+			.flatMap(c => CombatantLogic.getAuras(EncounterLogic.getCombatant(encounter, c.id) as CombatantModel))
+			.filter(aura => GameLogic.getConditionIsBeneficial(aura))
+			.forEach(aura => auras.push(aura));
+
+		// Get all non-beneficial aura conditions from adjacent enemies
+		encounter.combatants.filter(c => c.type !== combatant.type)
+			.filter(c => squares.some(sq => EncounterLogic.getCombatantAuraSquares(encounter, c).find(s => (s.x === sq.x) && (s.y === sq.y))))
+			.flatMap(c => CombatantLogic.getAuras(EncounterLogic.getCombatant(encounter, c.id) as CombatantModel))
+			.filter(aura => !GameLogic.getConditionIsBeneficial(aura))
+			.forEach(aura => auras.push(aura));
+
+		return auras;
 	};
 
 	static getActiveCombatants = (encounter: EncounterModel) => {
-		return encounter.combatData
-			.filter(cd => cd.state !== CombatDataState.Dead)
-			.filter(cd => cd.initiative !== Number.MIN_VALUE);
+		return encounter.combatants
+			.filter(c => c.combat.state !== CombatantState.Dead)
+			.filter(c => c.combat.initiative !== Number.MIN_VALUE);
 	};
 
-	static getAllHeroesInEncounter = (encounter: EncounterModel): CombatantModel[] => {
+	static getAllHeroesInEncounter = (encounter: EncounterModel) => {
 		return encounter.combatants.filter(c => c.type === CombatantType.Hero);
 	};
 
 	static getSurvivingHeroes = (encounter: EncounterModel): CombatantModel[] => {
 		return EncounterLogic.getAllHeroesInEncounter(encounter).filter(h => {
-			const combatData = EncounterLogic.getCombatData(encounter, h.id) as CombatDataModel;
-			return (combatData.state !== CombatDataState.Dead) && (combatData.state !== CombatDataState.Unconscious);
+			return (h.combat.state !== CombatantState.Dead) && (h.combat.state !== CombatantState.Unconscious);
 		});
 	};
 
 	static getFallenHeroes = (encounter: EncounterModel): CombatantModel[] => {
 		return EncounterLogic.getAllHeroesInEncounter(encounter).filter(h => {
-			const combatData = EncounterLogic.getCombatData(encounter, h.id) as CombatDataModel;
-			return (combatData.state === CombatDataState.Dead) || (combatData.state === CombatDataState.Unconscious);
+			return (h.combat.state === CombatantState.Dead) || (h.combat.state === CombatantState.Unconscious);
 		});
 	};
 
 	static getDeadHeroes = (encounter: EncounterModel): CombatantModel[] => {
 		return EncounterLogic.getAllHeroesInEncounter(encounter).filter(h => {
-			const combatData = EncounterLogic.getCombatData(encounter, h.id) as CombatDataModel;
-			return (combatData.state === CombatDataState.Dead);
+			return (h.combat.state === CombatantState.Dead);
 		});
 	};
 }

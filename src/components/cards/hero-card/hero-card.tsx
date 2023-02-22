@@ -23,7 +23,7 @@ export class HeroCard extends Component<Props> {
 		if (items.length > 0) {
 			itemSection = (
 				<div className='items'>
-					{items.map(i => (<div key={i.id} className='item'>{i.name}</div>))}
+					{items.map(i => (<div key={i.id} className='item'>{i.name} ({i.baseItem})</div>))}
 				</div>
 			);
 		}
@@ -39,9 +39,9 @@ export class HeroCard extends Component<Props> {
 					<Tag>Level {this.props.hero.level}</Tag>
 				</div>
 				<div className='traits'>
-					<StatValue orientation='vertical' label='End' value={CombatantLogic.getTraitValue(this.props.hero, TraitType.Endurance)} />
-					<StatValue orientation='vertical' label='Res' value={CombatantLogic.getTraitValue(this.props.hero, TraitType.Resolve)} />
-					<StatValue orientation='vertical' label='Spd' value={CombatantLogic.getTraitValue(this.props.hero, TraitType.Speed)} />
+					<StatValue orientation='vertical' label='End' value={CombatantLogic.getTraitValue(this.props.hero, [], TraitType.Endurance)} />
+					<StatValue orientation='vertical' label='Res' value={CombatantLogic.getTraitValue(this.props.hero, [], TraitType.Resolve)} />
+					<StatValue orientation='vertical' label='Spd' value={CombatantLogic.getTraitValue(this.props.hero, [], TraitType.Speed)} />
 				</div>
 				{itemSection}
 			</div>

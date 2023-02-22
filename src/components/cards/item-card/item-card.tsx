@@ -37,7 +37,8 @@ export class ItemCard extends Component<Props> {
 		if (this.props.item.features.length > 0) {
 			features = (
 				<div>
-					<StatValue label='Features' value={this.props.item.features.map(f => GameLogic.getFeatureDescription(f))} />
+					<Text type={TextType.MinorHeading}>Features</Text>
+					{this.props.item.features.map(f => <Text key={f.id} type={TextType.ListItem}>{GameLogic.getFeatureDescription(f)}</Text>)}
 				</div>
 			);
 		}
@@ -46,7 +47,8 @@ export class ItemCard extends Component<Props> {
 		if (this.props.item.actions.length > 0) {
 			actions = (
 				<div>
-					<StatValue label='Actions' value={this.props.item.actions.map(a => GameLogic.getActionDescription(a))}/>
+					<Text type={TextType.MinorHeading}>Actions</Text>
+					{this.props.item.actions.map(a => <Text key={a.id} type={TextType.ListItem}>{GameLogic.getActionDescription(a)}</Text>)}
 				</div>
 			);
 		}

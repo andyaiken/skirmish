@@ -1,6 +1,6 @@
 import { Component } from 'react';
 
-import { CombatDataState } from '../../../enums/combat-data-state';
+import { CombatantState } from '../../../enums/combatant-state';
 
 import { EncounterLogic } from '../../../logic/encounter-logic';
 
@@ -17,6 +17,7 @@ interface Props {
 	selectedIDs: string[];
 	rollInitiative: (encounter: EncounterModel) => void;
 	onSelect: (combatant: CombatantModel | null) => void;
+	onDetails: (combatant: CombatantModel) => void;
 }
 
 export class InitiativeListPanel extends Component<Props> {
@@ -26,16 +27,13 @@ export class InitiativeListPanel extends Component<Props> {
 
 	public render() {
 		const acting = EncounterLogic.getActiveCombatants(this.props.encounter)
-			.map(cd => {
-				return {
-					combatant: EncounterLogic.getCombatant(this.props.encounter, cd.id) as CombatantModel,
-					data: cd
-				};
-			})
-			.map(a => {
-				const currentTag = this.props.currentID === a.combatant.id ? <Tag>Current Turn</Tag> : null;
-				const unconsciousTag = a.data.state === CombatDataState.Unconscious ? <Tag>Unconscious</Tag> : null;
-				const deadTag = a.data.state === CombatDataState.Dead ? <Tag>Dead</Tag> : null;
+			.map(combatant => {
+				const current = combatant.id === this.props.currentID;
+				const selected = this.props.selectedIDs.includes(combatant.id);
+
+				const currentTag = current ? <Tag>Current Turn</Tag> : null;
+				const unconsciousTag = combatant.combat.state === CombatantState.Unconscious ? <Tag>Unconscious</Tag> : null;
+				const deadTag = combatant.combat.state === CombatantState.Dead ? <Tag>Dead</Tag> : null;
 				let tags = null;
 				if (currentTag || unconsciousTag || deadTag) {
 					tags = (
@@ -47,18 +45,25 @@ export class InitiativeListPanel extends Component<Props> {
 					);
 				}
 
-				const selected = this.props.selectedIDs.includes(a.combatant.id);
-				const className = `initiative-entry ${this.props.currentID === a.combatant.id ? 'current' : ''} ${selected ? 'selected' : ''}`;
+				let button = null;
+				if (!current && selected) {
+					button = (
+						<button onClick={() => this.props.onDetails(combatant)}>Character Sheet</button>
+					);
+				}
+
+				const className = `initiative-entry ${current ? 'current' : ''} ${selected ? 'selected' : ''}`;
 				const label = (
 					<div className='initiative-entry-details'>
-						<div className='initiative-entry-name'>{a.combatant.name}</div>
+						<div className='initiative-entry-name'>{combatant.name}</div>
 						{tags}
+						{button}
 					</div>
 				);
 				return (
-					<div key={a.combatant.id} className={className} onClick={() => this.props.onSelect(a.combatant)}>
-						<div className={`initiative-entry-token ${a.combatant.type.toLowerCase()}`}></div>
-						<StatValue label={label} value={a.data.initiative} />
+					<div key={combatant.id} className={className} onClick={() => this.props.onSelect(combatant)}>
+						<div className={`initiative-entry-token ${combatant.type.toLowerCase()}`}></div>
+						<StatValue label={label} value={combatant.combat.initiative} />
 					</div>
 				);
 			});

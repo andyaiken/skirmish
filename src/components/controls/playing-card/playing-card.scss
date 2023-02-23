@@ -56,10 +56,7 @@
 	&.clickable .playing-card-inner .playing-card-front,
 	&.clickable .playing-card-inner .playing-card-back {
 		cursor: pointer;
-
-		&:hover {
-			border-color: rgb(64, 169, 255);
-		}
+		border-color: rgb(64, 169, 255);
 	}
 
 	&.flipped .playing-card-inner {

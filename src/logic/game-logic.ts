@@ -1,10 +1,10 @@
 import { BackgroundData } from '../data/background-data';
-import { HeroSpeciesData } from '../data/hero-species-data';
 import { ItemData } from '../data/item-data';
-import { MonsterSpeciesData } from '../data/monster-species-data';
 import { RoleData } from '../data/role-data';
+import { SpeciesData } from '../data/species-data';
 
 import { BoonType } from '../enums/boon-type';
+import { CombatantType } from '../enums/combatant-type';
 import { ConditionType } from '../enums/condition-type';
 import { DamageCategoryType } from '../enums/damage-category-type';
 import { DamageType } from '../enums/damage-type';
@@ -19,7 +19,6 @@ import type { CombatantModel } from '../models/combatant';
 import type { ConditionModel } from '../models/condition';
 import type { FeatureModel } from '../models/feature';
 import type { GameModel } from '../models/game';
-import type { SpeciesModel } from '../models/species';
 
 import { Collections } from '../utils/collections';
 import { Random } from '../utils/random';
@@ -32,8 +31,7 @@ export class GameLogic {
 	static getRandomAction = () => {
 		const actions: ActionModel[] = [];
 
-		HeroSpeciesData.getList().forEach(s => actions.push(...s.actions));
-		MonsterSpeciesData.getList().forEach(s => actions.push(...s.actions));
+		SpeciesData.getList().forEach(s => actions.push(...s.actions));
 		RoleData.getList().forEach(r => actions.push(...r.actions));
 		BackgroundData.getList().forEach(b => actions.push(...b.actions));
 
@@ -361,16 +359,16 @@ export class GameLogic {
 	};
 
 	static getSpecies = (id: string) => {
-		const all = ([] as SpeciesModel[]).concat(HeroSpeciesData.getList()).concat(MonsterSpeciesData.getList());
-		return all.find(s => s.id === id);
+		return SpeciesData.getList().find(s => s.id === id);
 	};
 
 	static getSpeciesDeck = (game: GameModel | null = null) => {
 		if (game) {
 			const used = game.heroes.map(h => h.speciesID);
 
-			const deck = HeroSpeciesData
+			const deck = SpeciesData
 				.getList()
+				.filter(s => s.type === CombatantType.Hero)
 				.filter(species => !used.includes(species.id))
 				.map(species => species.id);
 
@@ -378,13 +376,15 @@ export class GameLogic {
 				return deck;
 			}
 
-			return HeroSpeciesData
+			return SpeciesData
 				.getList()
+				.filter(s => s.type === CombatantType.Hero)
 				.map(species => species.id);
 		}
 
-		return MonsterSpeciesData
+		return SpeciesData
 			.getList()
+			.filter(s => s.type === CombatantType.Monster)
 			.map(species => species.id);
 	};
 

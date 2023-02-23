@@ -4,6 +4,7 @@ import { BoonType } from '../../enums/boon-type';
 import { CombatantType } from '../../enums/combatant-type';
 
 import { CampaignMapLogic } from '../../logic/campaign-map-logic';
+import { CombatantLogic } from '../../logic/combatant-logic';
 import { EncounterGenerator } from '../../logic/encounter-generator';
 import { EncounterLogic } from '../../logic/encounter-logic';
 import { Factory } from '../../logic/factory';
@@ -54,6 +55,14 @@ export class Main extends Component<Props, State> {
 			}
 		} catch (ex) {
 			console.error('Could not parse JSON: ', ex);
+		}
+
+		if (game) {
+			game.heroes.forEach(h => {
+				if (h.carried === undefined) {
+					h.carried = [];
+				}
+			});
 		}
 
 		this.state = {
@@ -253,7 +262,11 @@ export class Main extends Component<Props, State> {
 	equipItem = (item: ItemModel, combatant: CombatantModel) => {
 		const game = this.state.game as GameModel;
 
-		game.items = game.items.filter(i => i !== item);
+		if (game.encounter) {
+			combatant.combat.movement = Math.max(0, combatant.combat.movement - 1);
+		}
+
+		combatant.carried = combatant.carried.filter(i => i !== item);
 		combatant.items.push(item);
 
 		this.setState({
@@ -264,8 +277,54 @@ export class Main extends Component<Props, State> {
 	unequipItem = (item: ItemModel, combatant: CombatantModel) => {
 		const game = this.state.game as GameModel;
 
+		if (game.encounter) {
+			combatant.combat.movement = Math.max(0, combatant.combat.movement - 1);
+		}
+
 		combatant.items = combatant.items.filter(i => i !== item);
-		game.items.push(item);
+		combatant.carried.push(item);
+
+		this.setState({
+			game: game
+		});
+	};
+
+	pickUpItem = (item: ItemModel, combatant: CombatantModel) => {
+		const game = this.state.game as GameModel;
+
+		if (game.encounter) {
+			combatant.combat.movement = Math.max(0, combatant.combat.movement - 1);
+		}
+
+		if (game.encounter) {
+			// TODO: Moving from ground
+		} else {
+			game.heroes.forEach(h => h.carried = h.carried.filter(i => i !== item));
+			game.items = game.items.filter(i => i !== item);
+		}
+
+		if (CombatantLogic.canEquip(combatant, item)) {
+			combatant.items.push(item);
+		} else {
+			combatant.carried.push(item);
+		}
+
+		this.setState({
+			game: game
+		});
+	};
+
+	dropItem = (item: ItemModel, combatant: CombatantModel) => {
+		const game = this.state.game as GameModel;
+
+		combatant.items = combatant.items.filter(i => i !== item);
+		combatant.carried = combatant.carried.filter(i => i !== item);
+
+		if (game.encounter) {
+			// TODO: Moving to ground
+		} else {
+			game.items.push(item);
+		}
 
 		this.setState({
 			game: game
@@ -296,11 +355,13 @@ export class Main extends Component<Props, State> {
 				game.heroes = game.heroes.filter(h => !deadHeroes.includes(h));
 				// Get equipment from dead heroes, add it to game loot
 				deadHeroes.forEach(h => game.items.push(...h.items));
+				// Get equipment from monsters, add it to game loot
+				encounter.combatants.filter(c => c.type === CombatantType.Monster).forEach(h => game.items.push(...h.items));
 				// Increment XP for surviving heroes
 				EncounterLogic.getSurvivingHeroes(encounter).forEach(h => h.xp += 1);
 				// Remove the first encounter for this region
 				region.encounters.splice(0, 1);
-				if (region.encounters.length <= 0) {
+				if (region.encounters.length === 0) {
 					// Conquer the region
 					CampaignMapLogic.removeRegion(game.map, region);
 					if (game.map.squares.every(sq => sq.regionID === '')) {
@@ -417,6 +478,8 @@ export class Main extends Component<Props, State> {
 						incrementXP={this.incrementXP}
 						equipItem={this.equipItem}
 						unequipItem={this.unequipItem}
+						pickUpItem={this.pickUpItem}
+						dropItem={this.dropItem}
 						levelUp={this.levelUp}
 						redeemBoon={this.redeemBoon}
 						startEncounter={this.startEncounter}
@@ -436,6 +499,8 @@ export class Main extends Component<Props, State> {
 						hide={this.hide}
 						equipItem={this.equipItem}
 						unequipItem={this.unequipItem}
+						pickUpItem={this.pickUpItem}
+						dropItem={this.dropItem}
 						finishEncounter={this.finishEncounter}
 					/>
 				);

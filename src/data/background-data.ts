@@ -4,21 +4,12 @@ import { DamageType } from '../enums/damage-type';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
 
+import { ActionLogic } from '../logic/action-logic';
 import { FeatureLogic } from '../logic/feature-logic';
 
-import type { ActionModel } from '../models/action';
 import type { BackgroundModel } from '../models/background';
 
-import { Utils } from '../utils/utils';
-
 export class BackgroundData {
-	static createActionPlaceholder = (name: string): ActionModel => {
-		return {
-			id: Utils.guid(),
-			name: name
-		};
-	};
-
 	static getList = (): BackgroundModel[] => {
 		return [
 			{
@@ -28,8 +19,8 @@ export class BackgroundData {
 					FeatureLogic.createTraitFeature(TraitType.Speed, 1)
 				],
 				actions: [
-					BackgroundData.createActionPlaceholder('Move through occupied spaces'),
-					BackgroundData.createActionPlaceholder('Burst of speed (roll speed again and add)')
+					ActionLogic.createActionPlaceholder('Move through occupied spaces'),
+					ActionLogic.createActionPlaceholder('Burst of speed (roll speed again and add)')
 				]
 			},
 			{
@@ -41,8 +32,8 @@ export class BackgroundData {
 					FeatureLogic.createAuraDamageCategoryFeature(ConditionType.DamageCategoryBonus, DamageCategoryType.Physical, 1)
 				],
 				actions: [
-					BackgroundData.createActionPlaceholder('Knock prone'),
-					BackgroundData.createActionPlaceholder('Extra move')
+					ActionLogic.createActionPlaceholder('Knock prone'),
+					ActionLogic.createActionPlaceholder('Extra move')
 				]
 			},
 			{
@@ -54,9 +45,9 @@ export class BackgroundData {
 					FeatureLogic.createAuraDamageCategoryFeature(ConditionType.DamageCategoryVulnerability, DamageCategoryType.Physical, 1)
 				],
 				actions: [
-					BackgroundData.createActionPlaceholder('Command attack'),
-					BackgroundData.createActionPlaceholder('Command move'),
-					BackgroundData.createActionPlaceholder('Buff ally')
+					ActionLogic.createActionPlaceholder('Command attack'),
+					ActionLogic.createActionPlaceholder('Command move'),
+					ActionLogic.createActionPlaceholder('Buff ally')
 				]
 			},
 			{
@@ -64,15 +55,15 @@ export class BackgroundData {
 				name: 'Mystic',
 				features: [
 					FeatureLogic.createSkillFeature(SkillType.Spellcasting, 2),
-					FeatureLogic.createDamageCategoryTypeBonusFeature(DamageCategoryType.Energy, 1),
-					FeatureLogic.createDamageCategoryTypeBonusFeature(DamageCategoryType.Corruption, 1),
-					FeatureLogic.createDamageCategoryTypeResistFeature(DamageCategoryType.Corruption, 1)
+					FeatureLogic.createDamageCategoryBonusFeature(DamageCategoryType.Energy, 1),
+					FeatureLogic.createDamageCategoryBonusFeature(DamageCategoryType.Corruption, 1),
+					FeatureLogic.createDamageCategoryResistFeature(DamageCategoryType.Corruption, 1)
 				],
 				actions: [
-					BackgroundData.createActionPlaceholder('Confusion (target makes attack)'),
-					BackgroundData.createActionPlaceholder('Stun (target loses action)'),
-					BackgroundData.createActionPlaceholder('Transfer a condition'),
-					BackgroundData.createActionPlaceholder('Invert a condition')
+					ActionLogic.createActionPlaceholder('Confusion (target makes attack)'),
+					ActionLogic.createActionPlaceholder('Stun (target loses action)'),
+					ActionLogic.createActionPlaceholder('Transfer a condition'),
+					ActionLogic.createActionPlaceholder('Invert a condition')
 				]
 			},
 			{
@@ -82,9 +73,9 @@ export class BackgroundData {
 					FeatureLogic.createAuraFeature(ConditionType.MovementBonus, 1)
 				],
 				actions: [
-					BackgroundData.createActionPlaceholder('Buff ally'),
-					BackgroundData.createActionPlaceholder('Debuff enemy'),
-					BackgroundData.createActionPlaceholder('Taunt')
+					ActionLogic.createActionPlaceholder('Buff ally'),
+					ActionLogic.createActionPlaceholder('Debuff enemy'),
+					ActionLogic.createActionPlaceholder('Taunt')
 				]
 			},
 			{
@@ -94,9 +85,9 @@ export class BackgroundData {
 					FeatureLogic.createAuraFeature(ConditionType.AutoHeal, 1)
 				],
 				actions: [
-					BackgroundData.createActionPlaceholder('Remove condition (ally)'),
-					BackgroundData.createActionPlaceholder('Healing (damage)'),
-					BackgroundData.createActionPlaceholder('Healing (wounds)')
+					ActionLogic.createActionPlaceholder('Remove condition (ally)'),
+					ActionLogic.createActionPlaceholder('Healing (damage)'),
+					ActionLogic.createActionPlaceholder('Healing (wounds)')
 				]
 			},
 			{
@@ -105,16 +96,16 @@ export class BackgroundData {
 				features: [
 					FeatureLogic.createSkillFeature(SkillType.Brawl, 2),
 					FeatureLogic.createSkillFeature(SkillType.Weapon, 2),
-					FeatureLogic.createDamageCategoryTypeResistFeature(DamageCategoryType.Any, 1),
-					FeatureLogic.createDamageCategoryTypeBonusFeature(DamageCategoryType.Physical, 1),
+					FeatureLogic.createDamageCategoryResistFeature(DamageCategoryType.Any, 1),
+					FeatureLogic.createDamageCategoryBonusFeature(DamageCategoryType.Physical, 1),
 					FeatureLogic.createAuraDamageFeature(ConditionType.AutoDamage, DamageType.Edged, 1),
 					FeatureLogic.createAuraDamageFeature(ConditionType.AutoDamage, DamageType.Impact, 1),
 					FeatureLogic.createAuraDamageFeature(ConditionType.AutoDamage, DamageType.Piercing, 1)
 				],
 				actions: [
-					BackgroundData.createActionPlaceholder('Frenzy (adds to damage)'),
-					BackgroundData.createActionPlaceholder('Speed boost'),
-					BackgroundData.createActionPlaceholder('Endurance boost')
+					ActionLogic.createActionPlaceholder('Frenzy (adds to damage)'),
+					ActionLogic.createActionPlaceholder('Speed boost'),
+					ActionLogic.createActionPlaceholder('Endurance boost')
 				]
 			},
 			{
@@ -127,8 +118,8 @@ export class BackgroundData {
 					FeatureLogic.createAuraFeature(ConditionType.MovementPenalty, 1)
 				],
 				actions: [
-					BackgroundData.createActionPlaceholder('Mark enemy'),
-					BackgroundData.createActionPlaceholder('Interposing stance')
+					ActionLogic.createActionPlaceholder('Mark enemy'),
+					ActionLogic.createActionPlaceholder('Interposing stance')
 				]
 			},
 			{
@@ -139,8 +130,8 @@ export class BackgroundData {
 					FeatureLogic.createSkillFeature(SkillType.Stealth, 2)
 				],
 				actions: [
-					BackgroundData.createActionPlaceholder('Disable trap'),
-					BackgroundData.createActionPlaceholder('Set trap')
+					ActionLogic.createActionPlaceholder('Disable trap'),
+					ActionLogic.createActionPlaceholder('Set trap')
 				]
 			}
 		];

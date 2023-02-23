@@ -82,19 +82,19 @@ export class MagicItemGenerator {
 
 			// Increase Energy damage
 			const copy2 = JSON.parse(JSON.stringify(item)) as ItemModel;
-			copy2.features.push(FeatureLogic.createDamageCategoryTypeBonusFeature(DamageCategoryType.Energy, Random.randomBonus()));
+			copy2.features.push(FeatureLogic.createDamageCategoryBonusFeature(DamageCategoryType.Energy, Random.randomBonus()));
 			options.push(copy2);
 
 			// Increase Corruption damage
 			const copy3 = JSON.parse(JSON.stringify(item)) as ItemModel;
-			copy3.features.push(FeatureLogic.createDamageCategoryTypeBonusFeature(DamageCategoryType.Corruption, Random.randomBonus()));
+			copy3.features.push(FeatureLogic.createDamageCategoryBonusFeature(DamageCategoryType.Corruption, Random.randomBonus()));
 			options.push(copy3);
 		}
 
 		if ((item.proficiency === ItemProficiencyType.LightArmor) || (item.proficiency === ItemProficiencyType.HeavyArmor) || (item.proficiency === ItemProficiencyType.Shields)) {
 			// Increase damage resistance rank
 			const copy = JSON.parse(JSON.stringify(item)) as ItemModel;
-			const feature = copy.features.find(f => f.type === FeatureType.DamageCategoryTypeResist);
+			const feature = copy.features.find(f => f.type === FeatureType.DamageCategoryResist);
 			if (feature) {
 				feature.rank += Random.randomBonus();
 				options.push(copy);

@@ -1,29 +1,22 @@
+import { CombatantType } from '../enums/combatant-type';
 import { ConditionType } from '../enums/condition-type';
 import { DamageCategoryType } from '../enums/damage-category-type';
 import { DamageType } from '../enums/damage-type';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
 
+import { ActionLogic } from '../logic/action-logic';
 import { FeatureLogic } from '../logic/feature-logic';
 
-import type { ActionModel } from '../models/action';
 import type { SpeciesModel } from '../models/species';
 
-import { Utils } from '../utils/utils';
-
-export class HeroSpeciesData {
-	static createActionPlaceholder = (name: string): ActionModel => {
-		return {
-			id: Utils.guid(),
-			name: name
-		};
-	};
-
+export class SpeciesData {
 	static getList = (): SpeciesModel[] => {
 		return [
 			{
 				id: 'species-human',
 				name: 'Human',
+				type: CombatantType.Hero,
 				size: 1,
 				traits: [
 					TraitType.All
@@ -34,12 +27,13 @@ export class HeroSpeciesData {
 					FeatureLogic.createDamageResistFeature(DamageType.Any, 1)
 				],
 				actions: [
-					HeroSpeciesData.createActionPlaceholder('Resilient (remove condition on self)')
+					ActionLogic.createActionPlaceholder('Resilient (remove condition on self)')
 				]
 			},
 			{
 				id: 'species-construct',
 				name: 'Construct',
+				type: CombatantType.Hero,
 				size: 1,
 				traits: [
 					TraitType.Endurance
@@ -50,13 +44,14 @@ export class HeroSpeciesData {
 					FeatureLogic.createDamageResistFeature(DamageType.Psychic, 1)
 				],
 				actions: [
-					HeroSpeciesData.createActionPlaceholder('Knockdown attack'),
-					HeroSpeciesData.createActionPlaceholder('Repair (heal self damage)')
+					ActionLogic.createActionPlaceholder('Knockdown attack'),
+					ActionLogic.createActionPlaceholder('Repair (heal self damage)')
 				]
 			},
 			{
 				id: 'species-deva',
 				name: 'Deva',
+				type: CombatantType.Hero,
 				size: 1,
 				traits: [
 					TraitType.Resolve
@@ -64,18 +59,19 @@ export class HeroSpeciesData {
 				features: [
 					FeatureLogic.createTraitFeature(TraitType.Resolve, 1),
 					FeatureLogic.createSkillFeature(SkillType.Spellcasting, 2),
-					FeatureLogic.createDamageCategoryTypeResistFeature(DamageCategoryType.Corruption, 1),
-					FeatureLogic.createDamageCategoryTypeResistFeature(DamageCategoryType.Energy, 1),
+					FeatureLogic.createDamageCategoryResistFeature(DamageCategoryType.Corruption, 1),
+					FeatureLogic.createDamageCategoryResistFeature(DamageCategoryType.Energy, 1),
 					FeatureLogic.createAuraDamageFeature(ConditionType.AutoDamage, DamageType.Light, 1)
 				],
 				actions: [
-					HeroSpeciesData.createActionPlaceholder('Insight (see opponent stats)'),
-					HeroSpeciesData.createActionPlaceholder('Divine light (spell vs resolve, stuns)')
+					ActionLogic.createActionPlaceholder('Insight (see opponent stats)'),
+					ActionLogic.createActionPlaceholder('Divine light (spell vs resolve, stuns)')
 				]
 			},
 			{
 				id: 'species-dwarf',
 				name: 'Dwarf',
+				type: CombatantType.Hero,
 				size: 1,
 				traits: [
 					TraitType.Endurance
@@ -87,13 +83,14 @@ export class HeroSpeciesData {
 					FeatureLogic.createDamageResistFeature(DamageType.Psychic, 1)
 				],
 				actions: [
-					HeroSpeciesData.createActionPlaceholder('Remove endurance condition on self'),
-					HeroSpeciesData.createActionPlaceholder('Remove resolve condition on self')
+					ActionLogic.createActionPlaceholder('Remove endurance condition on self'),
+					ActionLogic.createActionPlaceholder('Remove resolve condition on self')
 				]
 			},
 			{
 				id: 'species-elf',
 				name: 'Elf',
+				type: CombatantType.Hero,
 				size: 1,
 				traits: [
 					TraitType.Speed
@@ -105,13 +102,14 @@ export class HeroSpeciesData {
 					FeatureLogic.createSkillFeature(SkillType.Stealth, 2)
 				],
 				actions: [
-					HeroSpeciesData.createActionPlaceholder('Detect hidden opponents'),
-					HeroSpeciesData.createActionPlaceholder('Elven Step (teleport self)')
+					ActionLogic.createActionPlaceholder('Detect hidden opponents'),
+					ActionLogic.createActionPlaceholder('Elven Step (teleport self)')
 				]
 			},
 			{
 				id: 'species-gnome',
 				name: 'Gnome',
+				type: CombatantType.Hero,
 				size: 1,
 				traits: [
 					TraitType.Speed
@@ -122,13 +120,14 @@ export class HeroSpeciesData {
 					FeatureLogic.createSkillFeature(SkillType.Stealth, 2)
 				],
 				actions: [
-					HeroSpeciesData.createActionPlaceholder('Trip attack'),
-					HeroSpeciesData.createActionPlaceholder('Disable trap')
+					ActionLogic.createActionPlaceholder('Trip attack'),
+					ActionLogic.createActionPlaceholder('Disable trap')
 				]
 			},
 			{
 				id: 'species-minotaur',
 				name: 'Minotaur',
+				type: CombatantType.Hero,
 				size: 1,
 				traits: [
 					TraitType.Endurance
@@ -136,17 +135,18 @@ export class HeroSpeciesData {
 				features: [
 					FeatureLogic.createTraitFeature(TraitType.Endurance, 1),
 					FeatureLogic.createSkillFeature(SkillType.Brawl, 2),
-					FeatureLogic.createDamageCategoryTypeBonusFeature(DamageCategoryType.Physical, 1)
+					FeatureLogic.createDamageCategoryBonusFeature(DamageCategoryType.Physical, 1)
 				],
 				actions: [
-					HeroSpeciesData.createActionPlaceholder('Gore attack'),
-					HeroSpeciesData.createActionPlaceholder('Charge attack'),
-					HeroSpeciesData.createActionPlaceholder('Intimidate')
+					ActionLogic.createActionPlaceholder('Gore attack'),
+					ActionLogic.createActionPlaceholder('Charge attack'),
+					ActionLogic.createActionPlaceholder('Intimidate')
 				]
 			},
 			{
 				id: 'species-pixie',
 				name: 'Pixie',
+				type: CombatantType.Hero,
 				size: 1,
 				traits: [
 					TraitType.Speed
@@ -154,17 +154,18 @@ export class HeroSpeciesData {
 				features: [
 					FeatureLogic.createTraitFeature(TraitType.Speed, 1),
 					FeatureLogic.createSkillFeature(SkillType.Stealth, 2),
-					FeatureLogic.createDamageCategoryTypeResistFeature(DamageCategoryType.Corruption, 1)
+					FeatureLogic.createDamageCategoryResistFeature(DamageCategoryType.Corruption, 1)
 				],
 				actions: [
-					HeroSpeciesData.createActionPlaceholder('Confusion (target makes attack)'),
-					HeroSpeciesData.createActionPlaceholder('Teleport'),
-					HeroSpeciesData.createActionPlaceholder('Teleport attack')
+					ActionLogic.createActionPlaceholder('Confusion (target makes attack)'),
+					ActionLogic.createActionPlaceholder('Teleport'),
+					ActionLogic.createActionPlaceholder('Teleport attack')
 				]
 			},
 			{
 				id: 'species-reptilian',
 				name: 'Reptilian',
+				type: CombatantType.Hero,
 				size: 1,
 				traits: [
 					TraitType.Speed
@@ -172,18 +173,19 @@ export class HeroSpeciesData {
 				features: [
 					FeatureLogic.createTraitFeature(TraitType.Speed, 1),
 					FeatureLogic.createSkillFeature(SkillType.Brawl, 2),
-					FeatureLogic.createDamageCategoryTypeResistFeature(DamageCategoryType.Physical, 1),
+					FeatureLogic.createDamageCategoryResistFeature(DamageCategoryType.Physical, 1),
 					FeatureLogic.createDamageResistFeature(DamageType.Psychic, 1)
 				],
 				actions: [
-					HeroSpeciesData.createActionPlaceholder('Poison bite'),
-					HeroSpeciesData.createActionPlaceholder('Fear snarl'),
-					HeroSpeciesData.createActionPlaceholder('Regeneration')
+					ActionLogic.createActionPlaceholder('Poison bite'),
+					ActionLogic.createActionPlaceholder('Fear snarl'),
+					ActionLogic.createActionPlaceholder('Regeneration')
 				]
 			},
 			{
 				id: 'species-shadowborn',
 				name: 'Shadowborn',
+				type: CombatantType.Hero,
 				size: 1,
 				traits: [
 					TraitType.Resolve
@@ -192,18 +194,19 @@ export class HeroSpeciesData {
 					FeatureLogic.createTraitFeature(TraitType.Resolve, 1),
 					FeatureLogic.createSkillFeature(SkillType.Brawl, 2),
 					FeatureLogic.createSkillFeature(SkillType.Stealth, 2),
-					FeatureLogic.createDamageCategoryTypeResistFeature(DamageCategoryType.Corruption, 1),
+					FeatureLogic.createDamageCategoryResistFeature(DamageCategoryType.Corruption, 1),
 					FeatureLogic.createAuraDamageFeature(ConditionType.AutoDamage, DamageType.Decay, 1)
 				],
 				actions: [
-					HeroSpeciesData.createActionPlaceholder('Transfer a condition'),
-					HeroSpeciesData.createActionPlaceholder('Induce fear'),
-					HeroSpeciesData.createActionPlaceholder('Drain energy')
+					ActionLogic.createActionPlaceholder('Transfer a condition'),
+					ActionLogic.createActionPlaceholder('Induce fear'),
+					ActionLogic.createActionPlaceholder('Drain energy')
 				]
 			},
 			{
 				id: 'species-werewolf',
 				name: 'Werewolf',
+				type: CombatantType.Hero,
 				size: 1,
 				traits: [
 					TraitType.Resolve
@@ -215,9 +218,66 @@ export class HeroSpeciesData {
 					FeatureLogic.createSkillFeature(SkillType.Stealth, 2)
 				],
 				actions: [
-					HeroSpeciesData.createActionPlaceholder('Regeneration'),
-					HeroSpeciesData.createActionPlaceholder('Bite attack'),
-					HeroSpeciesData.createActionPlaceholder('Claw attack')
+					ActionLogic.createActionPlaceholder('Regeneration'),
+					ActionLogic.createActionPlaceholder('Bite attack'),
+					ActionLogic.createActionPlaceholder('Claw attack')
+				]
+			},
+			{
+				id: 'species-orc',
+				name: 'Orc',
+				type: CombatantType.Monster,
+				size: 1,
+				traits: [
+					TraitType.All
+				],
+				features: [
+					FeatureLogic.createTraitFeature(TraitType.Any, 1),
+					FeatureLogic.createDamageResistFeature(DamageType.All, 1),
+					FeatureLogic.createSkillFeature(SkillType.Brawl, 2),
+					FeatureLogic.createSkillFeature(SkillType.Weapon, 2)
+				],
+				actions: [
+					ActionLogic.createActionPlaceholder('Fury'),
+					ActionLogic.createActionPlaceholder('Ignore damage')
+				]
+			},
+			{
+				id: 'species-goblin',
+				name: 'Goblin',
+				type: CombatantType.Monster,
+				size: 1,
+				traits: [
+					TraitType.Speed
+				],
+				features: [
+					FeatureLogic.createTraitFeature(TraitType.Speed, 1),
+					FeatureLogic.createSkillFeature(SkillType.Reactions, 1),
+					FeatureLogic.createSkillFeature(SkillType.Stealth, 1)
+				],
+				actions: [
+					ActionLogic.createActionPlaceholder('Sneak attack')
+				]
+			},
+			{
+				id: 'species-troll',
+				name: 'Troll',
+				type: CombatantType.Monster,
+				size: 2,
+				traits: [
+					TraitType.Endurance,
+					TraitType.Resolve
+				],
+				features: [
+					FeatureLogic.createTraitFeature(TraitType.Endurance, 1),
+					FeatureLogic.createTraitFeature(TraitType.Resolve, 1),
+					FeatureLogic.createDamageCategoryResistFeature(DamageCategoryType.Physical, 1),
+					FeatureLogic.createDamageCategoryResistFeature(DamageCategoryType.Energy, 1),
+					FeatureLogic.createDamageCategoryResistFeature(DamageCategoryType.Corruption, 1)
+				],
+				actions: [
+					ActionLogic.createActionPlaceholder('Slam'),
+					ActionLogic.createActionPlaceholder('Regeneration')
 				]
 			}
 		];

@@ -4,8 +4,8 @@ export enum FeatureType {
 	SkillCategory = 'Skill category',
 	Proficiency = 'Proficiency',
 	DamageBonus = 'Damage bonus',
-	DamageCategoryTypeBonus = 'Damage category bonus',
+	DamageCategoryBonus = 'Damage category bonus',
 	DamageResist = 'Damage resistance',
-	DamageCategoryTypeResist = 'Damage category resistance',
+	DamageCategoryResist = 'Damage category resistance',
 	Aura = 'Aura'
 }

@@ -32,6 +32,8 @@ interface Props {
 	hide: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	equipItem: (item: ItemModel, combatant: CombatantModel) => void;
 	unequipItem: (item: ItemModel, combatant: CombatantModel) => void;
+	pickUpItem: (item: ItemModel, hero: CombatantModel) => void;
+	dropItem: (item: ItemModel, combatant: CombatantModel) => void;
 	finishEncounter: (state: EncounterFinishState) => void;
 }
 
@@ -118,7 +120,17 @@ export class EncounterScreen extends Component<Props, State> {
 			const details = EncounterLogic.getCombatant(this.props.encounter, this.state.detailsID) as CombatantModel;
 			dialog = (
 				<Dialog
-					content={<CharacterSheetPanel hero={details} game={this.props.game} equipItem={this.props.equipItem} unequipItem={this.props.unequipItem} levelUp={() => null} />}
+					content={
+						<CharacterSheetPanel
+							hero={details}
+							game={this.props.game}
+							equipItem={this.props.equipItem}
+							unequipItem={this.props.unequipItem}
+							pickUpItem={this.props.pickUpItem}
+							dropItem={this.props.dropItem}
+							levelUp={() => null}
+						/>
+					}
 					onClickOff={() => this.showDetails(null)}
 				/>
 			);

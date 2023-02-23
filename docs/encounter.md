@@ -75,5 +75,6 @@
 * ~~**Hide**: spend 4 movement pts, roll Stealth, set Hide~~
 * ~~**Stand up**: spend 8 movement points~~
   * ~~When prone: skill ranks are halved~~
-* **Pick up (and don) adjacent object**: 2 movement pts
-* **Drop held (or worn) object**: 1 movement pt
+* **Pick up adjacent object**: 1 movement pt
+* **Equip / unequip carried object**: 1 movement pt
+* **Drop equipped / carried object**: 0 movement pts

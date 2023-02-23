@@ -1,16 +1,44 @@
 .items {
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
-	gap: 10px;
+	.equipped {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
+		gap: 10px;
 
-	.section {
-		.item-row {
+		.grid-cell {
 			display: flex;
+			gap: 10px;
 
-			.item {
+			.location-section {
 				flex: 1 1 0;
-				margin: 0 10px;
+
+				&.double {
+					flex: 2 2 0;
+				}
+
+				.cards {
+					display: flex;
+					gap: 10px;
+
+					.item {
+						flex: 1 1 0;
+						display: flex;
+						flex-direction: column;
+						align-items: center;
+					}
+				}
 			}
+		}
+	}
+
+	.carried {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+		gap: 10px;
+
+		.item {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
 		}
 	}
 }

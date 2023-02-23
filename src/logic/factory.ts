@@ -3,12 +3,15 @@ import { CombatantType } from '../enums/combatant-type';
 import { ConditionType } from '../enums/condition-type';
 import { DamageCategoryType } from '../enums/damage-category-type';
 import { DamageType } from '../enums/damage-type';
+import { FeatureType } from '../enums/feature-type';
+import { ItemProficiencyType } from '../enums/item-proficiency-type';
 import { SkillCategoryType } from '../enums/skill-category-type';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
 
 import type { CombatantModel } from '../models/combatant';
 import type { ConditionModel } from '../models/condition';
+import type { FeatureModel } from '../models/feature';
 import type { GameModel } from '../models/game';
 
 import { Utils } from '../utils/utils';
@@ -29,6 +32,7 @@ export class Factory {
 			xp: 0,
 			features: [],
 			items: [],
+			carried: [],
 			combat: {
 				state: CombatantState.Standing,
 				position: {
@@ -76,6 +80,21 @@ export class Factory {
 				damage: DamageType.None,
 				damageCategory: DamageCategoryType.None
 			}
+		};
+	};
+
+	static createFeature = (): FeatureModel => {
+		return {
+			id: Utils.guid(),
+			type: FeatureType.Trait,
+			damage: DamageType.None,
+			damageCategory: DamageCategoryType.None,
+			proficiency: ItemProficiencyType.None,
+			skill: SkillType.None,
+			skillCategory: SkillCategoryType.None,
+			trait: TraitType.None,
+			aura: ConditionType.None,
+			rank: 1
 		};
 	};
 }

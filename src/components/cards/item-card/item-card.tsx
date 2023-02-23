@@ -56,11 +56,11 @@ export class ItemCard extends Component<Props> {
 		return (
 			<div className='item-card'>
 				<Text type={TextType.SubHeading}>{this.props.item.name}</Text>
+				{this.props.item.baseItem !== '' ? <Text type={TextType.MinorHeading}>{this.props.item.baseItem}</Text> : null}
 				<hr />
 				<div className='tags'>
 					{this.props.item.proficiency !== ItemProficiencyType.None ? <Tag>{this.props.item.proficiency}</Tag> : null}
 					<Tag>{location}</Tag>
-					{this.props.item.baseItem !== '' ? <Tag>{this.props.item.baseItem}</Tag> : null}
 				</div>
 				{wpn}
 				{features}

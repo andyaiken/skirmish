@@ -8,18 +8,10 @@ import type { ActionModel } from '../models/action';
 import type { FeatureModel } from '../models/feature';
 import type { ItemModel } from '../models/item';
 
+import { ActionLogic } from '../logic/action-logic';
 import { FeatureLogic } from '../logic/feature-logic';
 
-import { Utils } from '../utils/utils';
-
 export class UniversalData {
-	static createActionPlaceholder = (name: string): ActionModel => {
-		return {
-			id: Utils.guid(),
-			name: name
-		};
-	};
-
 	static getUniversalFeatures = (): FeatureModel[] => {
 		return [
 			FeatureLogic.createTraitFeature(TraitType.Any, 1),
@@ -30,7 +22,7 @@ export class UniversalData {
 
 	static getUniversalActions = (): ActionModel[] => {
 		return [
-			UniversalData.createActionPlaceholder('Unarmed Attack')
+			ActionLogic.createActionPlaceholder('Unarmed Attack')
 		];
 	};
 

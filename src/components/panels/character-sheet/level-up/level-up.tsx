@@ -277,8 +277,8 @@ class ChoicePanel extends Component<ChoicePanelProps, ChoicePanelState> {
 					</div>
 				);
 				break;
-			case FeatureType.DamageCategoryTypeBonus:
-			case FeatureType.DamageCategoryTypeResist:
+			case FeatureType.DamageCategoryBonus:
+			case FeatureType.DamageCategoryResist:
 				choice = (
 					<div>
 						<Selector

@@ -122,7 +122,6 @@ export class CombatantControls extends Component<Props, State> {
 				controls = (
 					<div>
 						<button className='not-implemented' onClick={() => null}>Pick Up Item<br/><IconValue value={2} type={IconType.Movement} /></button>
-						<button className='not-implemented' onClick={() => null}>Drop Item<br/><IconValue value={1} type={IconType.Movement} /></button>
 						<hr />
 						<button className='hack' onClick={() => this.props.finishEncounter(EncounterFinishState.Victory)}>Win</button>
 						<button onClick={() => this.props.finishEncounter(EncounterFinishState.Retreat)}>Retreat</button>

@@ -5,5 +5,6 @@ export enum ItemLocationType {
 	Body = 'Body',
 	Feet = 'Feet',
 	Hand = 'Hand',
-	Ring = 'Ring'
+	Ring = 'Ring',
+	Carried = 'Carried'
 }

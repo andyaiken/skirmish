@@ -26,6 +26,8 @@ interface Props {
 	game: GameModel;
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
 	unequipItem: (item: ItemModel, hero: CombatantModel) => void;
+	pickUpItem: (item: ItemModel, hero: CombatantModel) => void;
+	dropItem: (item: ItemModel, hero: CombatantModel) => void;
 	levelUp: (feature: FeatureModel, hero: CombatantModel) => void;
 }
 
@@ -61,6 +63,14 @@ export class CharacterSheetPanel extends Component<Props, State> {
 		this.props.unequipItem(item, this.props.hero);
 	};
 
+	dropItem = (item: ItemModel) => {
+		this.props.dropItem(item, this.props.hero);
+	};
+
+	pickUpItem = (item: ItemModel) => {
+		this.props.pickUpItem(item, this.props.hero);
+	};
+
 	levelUp = (feature: FeatureModel) => {
 		this.setState({
 			features: this.drawFeatures(this.props.hero)
@@ -82,6 +92,8 @@ export class CharacterSheetPanel extends Component<Props, State> {
 						game={this.props.game}
 						equipItem={this.equipItem}
 						unequipItem={this.unequipItem}
+						pickUpItem={this.pickUpItem}
+						dropItem={this.dropItem}
 					/>
 				);
 				break;

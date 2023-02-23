@@ -6,6 +6,7 @@ import { ConditionType } from '../enums/condition-type';
 import { DamageCategoryType } from '../enums/damage-category-type';
 import { DamageType } from '../enums/damage-type';
 import { FeatureType } from '../enums/feature-type';
+import { ItemLocationType } from '../enums/item-location-type';
 import { ItemProficiencyType } from '../enums/item-proficiency-type';
 import { SkillCategoryType } from '../enums/skill-category-type';
 import { SkillType } from '../enums/skill-type';
@@ -53,9 +54,7 @@ export class CombatantLogic {
 	static incrementCombatantLevel = (combatant: CombatantModel) => {
 		const deck = CombatantLogic.getFeatureDeck(combatant);
 		const n = Random.randomNumber(deck.length);
-		const feature = JSON.parse(JSON.stringify(deck[n])) as FeatureModel;
-
-		combatant.features.push(feature);
+		combatant.features.push(deck[n]);
 		combatant.level += 1;
 	};
 
@@ -141,6 +140,37 @@ export class CombatantLogic {
 			const item = JSON.parse(JSON.stringify(items[n])) as ItemModel;
 			combatant.items.push(item);
 		});
+	};
+
+	static canEquip = (combatant: CombatantModel, item: ItemModel) => {
+		if (item.location !== ItemLocationType.None) {
+			let slotsTotal = 1;
+			switch (item.location) {
+				case ItemLocationType.Hand:
+				case ItemLocationType.Ring:
+					slotsTotal = 2;
+					break;
+			}
+
+			const slotsUsed = combatant.items
+				.filter(i => i.location === item.location)
+				.map(i => i.slots)
+				.reduce((sum, value) => sum + value, 0);
+
+			const slotsAvailable = slotsTotal - slotsUsed;
+
+			if (item.slots > slotsAvailable) {
+				return false;
+			}
+		} else {
+			// We can only carry 6 items
+			if (combatant.carried.length >= 6) {
+				return false;
+			}
+		}
+
+		const profOK = (item.proficiency === ItemProficiencyType.None) || (CombatantLogic.getProficiencies(combatant).includes(item.proficiency));
+		return profOK;
 	};
 
 	static getFeatureDeck = (combatant: CombatantModel) => {
@@ -304,7 +334,7 @@ export class CombatantLogic {
 			.filter(f => (f.damage === damage) || (f.damage === DamageType.All))
 			.forEach(f => value += f.rank);
 		CombatantLogic.getFeatures(combatant)
-			.filter(f => f.type === FeatureType.DamageCategoryTypeBonus)
+			.filter(f => f.type === FeatureType.DamageCategoryBonus)
 			.filter(f => (f.damageCategory === GameLogic.getDamageCategoryType(damage)) || (f.damageCategory === DamageCategoryType.All))
 			.forEach(f => value += f.rank);
 
@@ -333,7 +363,7 @@ export class CombatantLogic {
 			.filter(f => (f.damage === damage) || (f.damage === DamageType.All))
 			.forEach(f => value += f.rank);
 		CombatantLogic.getFeatures(combatant)
-			.filter(f => f.type === FeatureType.DamageCategoryTypeResist)
+			.filter(f => f.type === FeatureType.DamageCategoryResist)
 			.filter(f => (f.damageCategory === GameLogic.getDamageCategoryType(damage)) || (f.damageCategory === DamageCategoryType.All))
 			.forEach(f => value += f.rank);
 

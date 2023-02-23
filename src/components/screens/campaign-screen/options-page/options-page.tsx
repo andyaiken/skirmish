@@ -1,10 +1,10 @@
 import { Component } from 'react';
 
 import { BackgroundData } from '../../../../data/background-data';
-import { HeroSpeciesData } from '../../../../data/hero-species-data';
 import { RoleData } from '../../../../data/role-data';
+import { SpeciesData } from '../../../../data/species-data';
 
-import { BackgroundCard, RoleCard, SpeciesCard } from '../../../cards';
+import { BackgroundCard, PlaceholderCard, RoleCard, SpeciesCard } from '../../../cards';
 import { CardList, Dialog, PlayingCard, Text, TextType } from '../../../controls';
 
 import './options-page.scss';
@@ -41,7 +41,7 @@ export class OptionsPage extends Component<Props, State> {
 			switch (this.state.deck) {
 				case 'species':
 					heading = 'Species Deck';
-					cards = HeroSpeciesData.getList().map(s => (<PlayingCard key={s.id} front={<SpeciesCard species={s} />} />));
+					cards = SpeciesData.getList().map(s => (<PlayingCard key={s.id} front={<SpeciesCard species={s} />} />));
 					break;
 				case 'role':
 					heading = 'Role Deck';
@@ -68,9 +68,11 @@ export class OptionsPage extends Component<Props, State> {
 
 		return (
 			<div className='options-page'>
-				<button onClick={() => this.setDeck('species')}>Species Deck</button>
-				<button onClick={() => this.setDeck('role')}>Role Deck</button>
-				<button onClick={() => this.setDeck('background')}>Background Deck</button>
+				<div className='cards'>
+					<PlayingCard front={<PlaceholderCard text='Species' />} onClick={() => this.setDeck('species')} />
+					<PlayingCard front={<PlaceholderCard text='Role' />} onClick={() => this.setDeck('role')} />
+					<PlayingCard front={<PlaceholderCard text='Background' />} onClick={() => this.setDeck('background')} />
+				</div>
 				<hr />
 				<button onClick={() => this.props.endCampaign()}>Abandon This Campaign</button>
 				{dialog}

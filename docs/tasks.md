@@ -2,6 +2,8 @@
 
 ## Bugs
 
+* Cards no longer show their source at the bottom
+  * This is because features / actions have random IDs, unlike species / roles / backgrounds / items
 * The campaign map (sometimes) has odd lines on it
 * It's possible to run out of proficiencies to learn
   * Might have to add some code to a feature to see whether it can be chosen

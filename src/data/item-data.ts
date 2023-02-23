@@ -450,7 +450,7 @@ export class ItemData {
 				slots: 1,
 				weapon: null,
 				features: [
-					FeatureLogic.createDamageCategoryTypeResistFeature(DamageCategoryType.Physical, 1)
+					FeatureLogic.createDamageCategoryResistFeature(DamageCategoryType.Physical, 1)
 				],
 				actions: []
 			},
@@ -464,7 +464,7 @@ export class ItemData {
 				slots: 1,
 				weapon: null,
 				features: [
-					FeatureLogic.createDamageCategoryTypeResistFeature(DamageCategoryType.Physical, 2),
+					FeatureLogic.createDamageCategoryResistFeature(DamageCategoryType.Physical, 2),
 					FeatureLogic.createSkillCategoryFeature(SkillCategoryType.Physical, -1)
 				],
 				actions: []
@@ -479,7 +479,7 @@ export class ItemData {
 				slots: 1,
 				weapon: null,
 				features: [
-					FeatureLogic.createDamageCategoryTypeResistFeature(DamageCategoryType.Physical, 3),
+					FeatureLogic.createDamageCategoryResistFeature(DamageCategoryType.Physical, 3),
 					FeatureLogic.createSkillCategoryFeature(SkillCategoryType.Physical, -1),
 					FeatureLogic.createTraitFeature(TraitType.Speed, -1)
 				],
@@ -495,7 +495,7 @@ export class ItemData {
 				slots: 1,
 				weapon: null,
 				features: [
-					FeatureLogic.createDamageCategoryTypeResistFeature(DamageCategoryType.Physical, 4),
+					FeatureLogic.createDamageCategoryResistFeature(DamageCategoryType.Physical, 4),
 					FeatureLogic.createSkillCategoryFeature(SkillCategoryType.Physical, -2),
 					FeatureLogic.createTraitFeature(TraitType.Speed, -1)
 				],
@@ -511,7 +511,7 @@ export class ItemData {
 				slots: 1,
 				weapon: null,
 				features: [
-					FeatureLogic.createDamageCategoryTypeResistFeature(DamageCategoryType.Physical, 5),
+					FeatureLogic.createDamageCategoryResistFeature(DamageCategoryType.Physical, 5),
 					FeatureLogic.createSkillCategoryFeature(SkillCategoryType.Physical, -2),
 					FeatureLogic.createTraitFeature(TraitType.Speed, -2)
 				],
@@ -527,7 +527,7 @@ export class ItemData {
 				slots: 1,
 				weapon: null,
 				features: [
-					FeatureLogic.createDamageCategoryTypeResistFeature(DamageCategoryType.Physical, 1)
+					FeatureLogic.createDamageCategoryResistFeature(DamageCategoryType.Physical, 1)
 				],
 				actions: []
 			},
@@ -541,7 +541,7 @@ export class ItemData {
 				slots: 1,
 				weapon: null,
 				features: [
-					FeatureLogic.createDamageCategoryTypeResistFeature(DamageCategoryType.Physical, 2),
+					FeatureLogic.createDamageCategoryResistFeature(DamageCategoryType.Physical, 2),
 					FeatureLogic.createSkillCategoryFeature(SkillCategoryType.Physical, -1)
 				],
 				actions: []
@@ -601,6 +601,42 @@ export class ItemData {
 				magic: false,
 				proficiency: ItemProficiencyType.None,
 				location: ItemLocationType.Neck,
+				slots: 1,
+				weapon: null,
+				features: [],
+				actions: []
+			},
+			{
+				id: 'item-belt',
+				name: 'Belt',
+				baseItem: '',
+				magic: false,
+				proficiency: ItemProficiencyType.None,
+				location: ItemLocationType.Body,
+				slots: 1,
+				weapon: null,
+				features: [],
+				actions: []
+			},
+			{
+				id: 'item-sash',
+				name: 'Sash',
+				baseItem: '',
+				magic: false,
+				proficiency: ItemProficiencyType.None,
+				location: ItemLocationType.Body,
+				slots: 1,
+				weapon: null,
+				features: [],
+				actions: []
+			},
+			{
+				id: 'item-bandolier',
+				name: 'Bandolier',
+				baseItem: '',
+				magic: false,
+				proficiency: ItemProficiencyType.None,
+				location: ItemLocationType.Body,
 				slots: 1,
 				weapon: null,
 				features: [],

@@ -7,7 +7,7 @@ import type { FeatureModel } from '../../../../models/feature';
 import type { GameModel } from '../../../../models/game';
 import type { ItemModel } from '../../../../models/item';
 
-import { BoonCard, HeroCard, ItemCard, PlaceholderCard } from '../../../cards';
+import { BoonCard, HeroCard, PlaceholderCard } from '../../../cards';
 import { CardList, Dialog, PlayingCard, Text, TextType } from '../../../controls';
 import { CharacterSheetPanel, HeroBuilderPanel } from '../../../panels';
 
@@ -19,6 +19,8 @@ interface Props {
 	incrementXP: (hero: CombatantModel) => void;
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
 	unequipItem: (item: ItemModel, hero: CombatantModel) => void;
+	pickUpItem: (item: ItemModel, hero: CombatantModel) => void;
+	dropItem: (item: ItemModel, hero: CombatantModel) => void;
 	levelUp: (feature: FeatureModel, hero: CombatantModel) => void;
 	redeemBoon: (boon: BoonModel, hero: CombatantModel | null) => void;
 }
@@ -117,28 +119,6 @@ export class HeroesPage extends Component<Props, State> {
 			);
 		}
 
-		let magicItems = null;
-		if (this.props.game.items.filter(i => i.magic).length > 0) {
-			const cards = this.props.game.items.filter(i => i.magic).map((i, n) => (<PlayingCard key={n} front={<ItemCard item={i} />} />));
-			magicItems = (
-				<div>
-					<Text type={TextType.SubHeading}>Magic Items ({cards.length})</Text>
-					<CardList cards={cards} />
-				</div>
-			);
-		}
-
-		let mundaneItems = null;
-		if (this.props.game.items.filter(i => !i.magic).length > 0) {
-			const cards = this.props.game.items.filter(i => !i.magic).map((i, n) => (<PlayingCard key={n} front={<ItemCard item={i} />} />));
-			mundaneItems = (
-				<div>
-					<Text type={TextType.SubHeading}>Mundane Items ({cards.length})</Text>
-					<CardList cards={cards} />
-				</div>
-			);
-		}
-
 		let dialog = null;
 		if (this.state.selectedHero) {
 			if (!this.state.selectedHero.name) {
@@ -175,6 +155,8 @@ export class HeroesPage extends Component<Props, State> {
 								game={this.props.game}
 								equipItem={this.props.equipItem}
 								unequipItem={this.props.unequipItem}
+								pickUpItem={this.props.pickUpItem}
+								dropItem={this.props.dropItem}
 								levelUp={this.props.levelUp}
 							/>
 						)}
@@ -230,8 +212,6 @@ export class HeroesPage extends Component<Props, State> {
 				{blankHeroes}
 				{levelUp}
 				{heroes}
-				{magicItems}
-				{mundaneItems}
 				{dialog}
 			</div>
 		);

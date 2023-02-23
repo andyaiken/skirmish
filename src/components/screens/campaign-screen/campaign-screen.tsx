@@ -11,6 +11,7 @@ import { Selector } from '../../controls';
 
 import { CampaignMapPage } from './campaign-map-page/campaign-map-page';
 import { HeroesPage } from './heroes-page/heroes-page';
+import { ItemsPage } from './items-page/items-page';
 import { OptionsPage } from './options-page/options-page';
 
 import './campaign-screen.scss';
@@ -21,6 +22,8 @@ interface Props {
 	incrementXP: (hero: CombatantModel) => void;
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
 	unequipItem: (item: ItemModel, hero: CombatantModel) => void;
+	pickUpItem: (item: ItemModel, hero: CombatantModel) => void;
+	dropItem: (item: ItemModel, hero: CombatantModel) => void;
 	levelUp: (feature: FeatureModel, hero: CombatantModel) => void;
 	redeemBoon: (boon: BoonModel, hero: CombatantModel | null) => void;
 	startEncounter: (region: CampaignMapRegionModel, heroes: CombatantModel[]) => void;
@@ -61,8 +64,17 @@ export class CampaignScreen extends Component<Props, State> {
 						incrementXP={this.props.incrementXP}
 						equipItem={this.props.equipItem}
 						unequipItem={this.props.unequipItem}
+						pickUpItem={this.props.pickUpItem}
+						dropItem={this.props.dropItem}
 						levelUp={this.props.levelUp}
 						redeemBoon={this.props.redeemBoon}
+					/>
+				);
+				break;
+			case 'items':
+				content = (
+					<ItemsPage
+						game={this.props.game}
 					/>
 				);
 				break;
@@ -85,6 +97,7 @@ export class CampaignScreen extends Component<Props, State> {
 
 		const options = [
 			{ id: 'heroes', display: 'Your Team' },
+			{ id: 'items', display: 'Your Equipment' },
 			{ id: 'map', display: 'The Island' },
 			{ id: 'options', display: 'Options' }
 		];

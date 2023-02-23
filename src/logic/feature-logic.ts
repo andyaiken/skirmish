@@ -10,130 +10,72 @@ import { TraitType } from '../enums/trait-type';
 import type { FeatureModel } from '../models/feature';
 
 import { Random } from '../utils/random';
-import { Utils } from '../utils/utils';
 
 import { Factory } from './factory';
 import { GameLogic } from './game-logic';
 
 export class FeatureLogic {
 	static createDamageBonusFeature = (damage: DamageType, rank: number): FeatureModel => {
-		return {
-			id: Utils.guid(),
-			type: FeatureType.DamageBonus,
-			damage: damage,
-			damageCategory: DamageCategoryType.None,
-			proficiency: ItemProficiencyType.None,
-			skill: SkillType.None,
-			skillCategory: SkillCategoryType.None,
-			trait: TraitType.None,
-			aura: ConditionType.None,
-			rank: rank
-		};
+		const feature = Factory.createFeature();
+		feature.type = FeatureType.DamageBonus;
+		feature.damage = damage;
+		feature.rank = rank;
+		return feature;
 	};
 
-	static createDamageCategoryTypeBonusFeature = (category: DamageCategoryType, rank: number): FeatureModel => {
-		return {
-			id: Utils.guid(),
-			type: FeatureType.DamageCategoryTypeBonus,
-			damage: DamageType.None,
-			damageCategory: category,
-			proficiency: ItemProficiencyType.None,
-			skill: SkillType.None,
-			skillCategory: SkillCategoryType.None,
-			trait: TraitType.None,
-			aura: ConditionType.None,
-			rank: rank
-		};
+	static createDamageCategoryBonusFeature = (category: DamageCategoryType, rank: number): FeatureModel => {
+		const feature = Factory.createFeature();
+		feature.type = FeatureType.DamageCategoryBonus;
+		feature.damageCategory = category;
+		feature.rank = rank;
+		return feature;
 	};
 
 	static createDamageResistFeature = (damage: DamageType, rank: number): FeatureModel => {
-		return {
-			id: Utils.guid(),
-			type: FeatureType.DamageResist,
-			damage: damage,
-			damageCategory: DamageCategoryType.None,
-			proficiency: ItemProficiencyType.None,
-			skill: SkillType.None,
-			skillCategory: SkillCategoryType.None,
-			trait: TraitType.None,
-			aura: ConditionType.None,
-			rank: rank
-		};
+		const feature = Factory.createFeature();
+		feature.type = FeatureType.DamageResist;
+		feature.damage = damage;
+		feature.rank = rank;
+		return feature;
 	};
 
-	static createDamageCategoryTypeResistFeature = (category: DamageCategoryType, rank: number): FeatureModel => {
-		return {
-			id: Utils.guid(),
-			type: FeatureType.DamageCategoryTypeResist,
-			damage: DamageType.None,
-			damageCategory: category,
-			proficiency: ItemProficiencyType.None,
-			skill: SkillType.None,
-			skillCategory: SkillCategoryType.None,
-			trait: TraitType.None,
-			aura: ConditionType.None,
-			rank: rank
-		};
+	static createDamageCategoryResistFeature = (category: DamageCategoryType, rank: number): FeatureModel => {
+		const feature = Factory.createFeature();
+		feature.type = FeatureType.DamageCategoryResist;
+		feature.damageCategory = category;
+		feature.rank = rank;
+		return feature;
 	};
 
 	static createProficiencyFeature = (proficiency: ItemProficiencyType): FeatureModel => {
-		return {
-			id: Utils.guid(),
-			type: FeatureType.Proficiency,
-			damage: DamageType.None,
-			damageCategory: DamageCategoryType.None,
-			proficiency: proficiency,
-			skill: SkillType.None,
-			skillCategory: SkillCategoryType.None,
-			trait: TraitType.None,
-			aura: ConditionType.None,
-			rank: 0
-		};
+		const feature = Factory.createFeature();
+		feature.type = FeatureType.Proficiency;
+		feature.proficiency = proficiency;
+		return feature;
 	};
 
 	static createSkillFeature = (skill: SkillType, rank: number): FeatureModel => {
-		return {
-			id: Utils.guid(),
-			type: FeatureType.Skill,
-			damage: DamageType.None,
-			damageCategory: DamageCategoryType.None,
-			proficiency: ItemProficiencyType.None,
-			skill: skill,
-			skillCategory: SkillCategoryType.None,
-			trait: TraitType.None,
-			aura: ConditionType.None,
-			rank: rank
-		};
+		const feature = Factory.createFeature();
+		feature.type = FeatureType.Skill;
+		feature.skill = skill;
+		feature.rank = rank;
+		return feature;
 	};
 
 	static createSkillCategoryFeature = (category: SkillCategoryType, rank: number): FeatureModel => {
-		return {
-			id: Utils.guid(),
-			type: FeatureType.SkillCategory,
-			damage: DamageType.None,
-			damageCategory: DamageCategoryType.None,
-			proficiency: ItemProficiencyType.None,
-			skill: SkillType.None,
-			skillCategory: category,
-			trait: TraitType.None,
-			aura: ConditionType.None,
-			rank: rank
-		};
+		const feature = Factory.createFeature();
+		feature.type = FeatureType.SkillCategory;
+		feature.skillCategory = category;
+		feature.rank = rank;
+		return feature;
 	};
 
 	static createTraitFeature = (trait: TraitType, rank: number): FeatureModel => {
-		return {
-			id: Utils.guid(),
-			type: FeatureType.Trait,
-			damage: DamageType.None,
-			damageCategory: DamageCategoryType.None,
-			proficiency: ItemProficiencyType.None,
-			skill: SkillType.None,
-			skillCategory: SkillCategoryType.None,
-			trait: trait,
-			aura: ConditionType.None,
-			rank: rank
-		};
+		const feature = Factory.createFeature();
+		feature.type = FeatureType.Trait;
+		feature.trait = trait;
+		feature.rank = rank;
+		return feature;
 	};
 
 	static createAuraFeature = (aura: ConditionType, rank: number): FeatureModel => {
@@ -146,18 +88,11 @@ export class FeatureLogic {
 			throw new Error('Incorrect aura parameters');
 		}
 
-		return {
-			id: Utils.guid(),
-			type: FeatureType.Aura,
-			damage: DamageType.None,
-			damageCategory: DamageCategoryType.None,
-			proficiency: ItemProficiencyType.None,
-			skill: SkillType.None,
-			skillCategory: SkillCategoryType.None,
-			trait: TraitType.None,
-			aura: aura,
-			rank: rank
-		};
+		const feature = Factory.createFeature();
+		feature.type = FeatureType.Aura;
+		feature.aura = aura;
+		feature.rank = rank;
+		return feature;
 	};
 
 	static createAuraTraitFeature = (aura: ConditionType, trait: TraitType, rank: number): FeatureModel => {
@@ -169,18 +104,12 @@ export class FeatureLogic {
 			throw new Error('Incorrect aura parameters');
 		}
 
-		return {
-			id: Utils.guid(),
-			type: FeatureType.Aura,
-			damage: DamageType.None,
-			damageCategory: DamageCategoryType.None,
-			proficiency: ItemProficiencyType.None,
-			skill: SkillType.None,
-			skillCategory: SkillCategoryType.None,
-			trait: trait,
-			aura: aura,
-			rank: rank
-		};
+		const feature = Factory.createFeature();
+		feature.type = FeatureType.Aura;
+		feature.aura = aura;
+		feature.trait = trait;
+		feature.rank = rank;
+		return feature;
 	};
 
 	static createAuraSkillFeature = (aura: ConditionType, skill: SkillType, rank: number): FeatureModel => {
@@ -192,18 +121,12 @@ export class FeatureLogic {
 			throw new Error('Incorrect aura parameters');
 		}
 
-		return {
-			id: Utils.guid(),
-			type: FeatureType.Aura,
-			damage: DamageType.None,
-			damageCategory: DamageCategoryType.None,
-			proficiency: ItemProficiencyType.None,
-			skill: skill,
-			skillCategory: SkillCategoryType.None,
-			trait: TraitType.None,
-			aura: aura,
-			rank: rank
-		};
+		const feature = Factory.createFeature();
+		feature.type = FeatureType.Aura;
+		feature.aura = aura;
+		feature.skill = skill;
+		feature.rank = rank;
+		return feature;
 	};
 
 	static createAuraSkillCategoryFeature = (aura: ConditionType, category: SkillCategoryType, rank: number): FeatureModel => {
@@ -215,18 +138,12 @@ export class FeatureLogic {
 			throw new Error('Incorrect aura parameters');
 		}
 
-		return {
-			id: Utils.guid(),
-			type: FeatureType.Aura,
-			damage: DamageType.None,
-			damageCategory: DamageCategoryType.None,
-			proficiency: ItemProficiencyType.None,
-			skill: SkillType.None,
-			skillCategory: category,
-			trait: TraitType.None,
-			aura: aura,
-			rank: rank
-		};
+		const feature = Factory.createFeature();
+		feature.type = FeatureType.Aura;
+		feature.aura = aura;
+		feature.skillCategory = category;
+		feature.rank = rank;
+		return feature;
 	};
 
 	static createAuraDamageFeature = (aura: ConditionType, damage: DamageType, rank: number): FeatureModel => {
@@ -241,18 +158,12 @@ export class FeatureLogic {
 			throw new Error('Incorrect aura parameters');
 		}
 
-		return {
-			id: Utils.guid(),
-			type: FeatureType.Aura,
-			damage: damage,
-			damageCategory: DamageCategoryType.None,
-			proficiency: ItemProficiencyType.None,
-			skill: SkillType.None,
-			skillCategory: SkillCategoryType.None,
-			trait: TraitType.None,
-			aura: aura,
-			rank: rank
-		};
+		const feature = Factory.createFeature();
+		feature.type = FeatureType.Aura;
+		feature.aura = aura;
+		feature.damage = damage;
+		feature.rank = rank;
+		return feature;
 	};
 
 	static createAuraDamageCategoryFeature = (aura: ConditionType, category: DamageCategoryType, rank: number): FeatureModel => {
@@ -266,18 +177,12 @@ export class FeatureLogic {
 			throw new Error('Incorrect aura parameters');
 		}
 
-		return {
-			id: Utils.guid(),
-			type: FeatureType.Aura,
-			damage: DamageType.None,
-			damageCategory: category,
-			proficiency: ItemProficiencyType.None,
-			skill: SkillType.None,
-			skillCategory: SkillCategoryType.None,
-			trait: TraitType.None,
-			aura: aura,
-			rank: rank
-		};
+		const feature = Factory.createFeature();
+		feature.type = FeatureType.Aura;
+		feature.aura = aura;
+		feature.damageCategory = category;
+		feature.rank = rank;
+		return feature;
 	};
 
 	static createRandomFeature = () => {
@@ -285,11 +190,11 @@ export class FeatureLogic {
 			case 0:
 				return FeatureLogic.createDamageBonusFeature(GameLogic.getRandomDamageType(), Random.randomBonus());
 			case 1:
-				return FeatureLogic.createDamageCategoryTypeBonusFeature(GameLogic.getRandomDamageCategoryType(), Random.randomBonus());
+				return FeatureLogic.createDamageCategoryBonusFeature(GameLogic.getRandomDamageCategoryType(), Random.randomBonus());
 			case 2:
 				return FeatureLogic.createDamageResistFeature(GameLogic.getRandomDamageType(), Random.randomBonus());
 			case 3:
-				return FeatureLogic.createDamageCategoryTypeResistFeature(GameLogic.getRandomDamageCategoryType(), Random.randomBonus());
+				return FeatureLogic.createDamageCategoryResistFeature(GameLogic.getRandomDamageCategoryType(), Random.randomBonus());
 			case 4:
 				return FeatureLogic.createProficiencyFeature(GameLogic.getRandomItemProficiency());
 			case 5:
@@ -311,10 +216,10 @@ export class FeatureLogic {
 			case FeatureType.Proficiency:
 				return 'Proficiency';
 			case FeatureType.DamageBonus:
-			case FeatureType.DamageCategoryTypeBonus:
+			case FeatureType.DamageCategoryBonus:
 				return 'Damage Bonus';
 			case FeatureType.DamageResist:
-			case FeatureType.DamageCategoryTypeResist:
+			case FeatureType.DamageCategoryResist:
 				return 'Damage Resistance';
 			case FeatureType.Aura:
 				return 'Aura';
@@ -333,11 +238,11 @@ export class FeatureLogic {
 				return `${feature.proficiency}`;
 			case FeatureType.DamageBonus:
 				return `${feature.damage} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
-			case FeatureType.DamageCategoryTypeBonus:
+			case FeatureType.DamageCategoryBonus:
 				return `All ${feature.damageCategory} types ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
 			case FeatureType.DamageResist:
 				return `${feature.damage} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
-			case FeatureType.DamageCategoryTypeResist:
+			case FeatureType.DamageCategoryResist:
 				return `All ${feature.damageCategory} types ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
 			case FeatureType.Aura: {
 				const aura = Factory.createCondition();
@@ -367,8 +272,8 @@ export class FeatureLogic {
 			case FeatureType.DamageBonus:
 			case FeatureType.DamageResist:
 				return feature.damage === DamageType.Any;
-			case FeatureType.DamageCategoryTypeBonus:
-			case FeatureType.DamageCategoryTypeResist:
+			case FeatureType.DamageCategoryBonus:
+			case FeatureType.DamageCategoryResist:
 				return feature.damageCategory === DamageCategoryType.Any;
 		}
 

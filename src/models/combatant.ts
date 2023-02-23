@@ -21,6 +21,7 @@ export interface CombatantModel {
 
 	features: FeatureModel[];
 	items: ItemModel[];
+	carried: ItemModel[];
 
 	combat: {
 		state: CombatantState;

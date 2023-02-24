@@ -61,6 +61,8 @@ export class EncounterMapLogic {
 					const n = Random.randomNumber(candidates.length, rng);
 					const square = candidates[n];
 					blob.push(square);
+				} else {
+					break;
 				}
 			}
 			map.squares = map.squares.filter(sq => !blob.includes(sq));
@@ -76,6 +78,8 @@ export class EncounterMapLogic {
 					const n = Random.randomNumber(candidates.length, rng);
 					const square = candidates[n];
 					blob.push(square);
+				} else {
+					break;
 				}
 			}
 			blob.forEach(sq => sq.type = EncounterMapSquareType.Obstructed);

@@ -12,6 +12,8 @@ import { CombatantModel } from '../../../../models/combatant';
 import { EncounterModel } from '../../../../models/encounter';
 import { ItemModel } from '../../../../models/item';
 
+import { Collections } from '../../../../utils/collections';
+
 import { Box, CardList, IconType, IconValue, PlayingCard, Selector, StatValue, Tag, Text, TextType } from '../../../controls';
 import { ActionCard } from '../../../cards';
 import { CombatStatsPanel } from '../../../panels/combat-stats/combat-stats-panel';
@@ -112,7 +114,12 @@ export class CombatantControls extends Component<Props, State> {
 				const actionCards = this.props.combatant.combat.actions.map(a => {
 					const source = CombatantLogic.getCardSource(this.props.combatant, a.id, 'action');
 					return (
-						<PlayingCard key={a.id} front={<ActionCard action={a} />} footer={source} />
+						<PlayingCard
+							key={a.id}
+							front={<ActionCard action={a} />}
+							footer={source}
+							onClick={null}
+						/>
 					);
 				});
 
@@ -125,25 +132,23 @@ export class CombatantControls extends Component<Props, State> {
 			}
 			case 'other': {
 				const canPickUp = (this.props.combatant.combat.movement >= 1) && (this.props.combatant.carried.length < 6);
+
 				const adj = EncounterMapLogic.getEncounterMapAdjacentSquares(this.props.encounter.map, [ this.props.combatant.combat.position ]);
 				const piles = this.props.encounter.map.loot.filter(lp => adj.find(sq => (sq.x === lp.position.x) && (sq.y === lp.position.y)));
-				const pickUpButtons: JSX.Element[] = [];
-				piles.forEach(lp => {
-					lp.items.forEach(item => {
-						const name = item.magic ? `${item.name} (${item.baseItem})` : item.name;
-						pickUpButtons.push(
-							<button key={item.id} disabled={!canPickUp} onClick={() => this.props.pickUpItem(item, this.props.combatant)}>
-								Pick Up {name}<br/><IconValue value={1} type={IconType.Movement} />
-							</button>
-						);
-					});
+				const items = Collections.distinct(piles.flatMap(pile => pile.items), i => i.id);
+				const pickUpButtons = items.map(item => {
+					const name = item.magic ? `${item.name} (${item.baseItem})` : item.name;
+					return (
+						<button key={item.id} disabled={!canPickUp} onClick={() => this.props.pickUpItem(item, this.props.combatant)}>
+							Pick Up {name}<br/><IconValue value={1} type={IconType.Movement} />
+						</button>
+					);
 				});
 
 				controls = (
 					<div>
 						{pickUpButtons}
 						{pickUpButtons.length > 0 ? <hr /> : null}
-						<button className='hack' onClick={() => this.props.finishEncounter(EncounterFinishState.Victory)}>Win</button>
 						<button onClick={() => this.props.finishEncounter(EncounterFinishState.Retreat)}>Retreat</button>
 						<button onClick={() => this.props.finishEncounter(EncounterFinishState.Defeat)}>Surrender</button>
 					</div>

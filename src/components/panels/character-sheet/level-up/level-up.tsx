@@ -61,13 +61,7 @@ export class LevelUp extends Component<Props, State> {
 						front={<FeatureCard feature={(this.state.selectedFeature !== null) && (this.state.selectedFeature.id === feature.id) ? this.state.selectedFeature : feature} />}
 						back={<PlaceholderCard text='Feature' />}
 						display={(this.state.selectedFeature !== null) && (this.state.selectedFeature.id !== feature.id) ? PlayingCardSide.Back : PlayingCardSide.Front}
-						onClick={() => {
-							if (this.state.selectedFeature === null) {
-								this.setState({
-									selectedFeature: feature
-								});
-							}
-						}}
+						onClick={(this.state.selectedFeature !== null) ? null : () => this.setState({ selectedFeature: feature })}
 					/>
 				</div>
 			);

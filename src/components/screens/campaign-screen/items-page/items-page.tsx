@@ -1,6 +1,9 @@
 import { Component } from 'react';
 
 import type { GameModel } from '../../../../models/game';
+import type { ItemModel } from '../../../../models/item';
+
+import { Collections } from '../../../../utils/collections';
 
 import { CardList, PlayingCard, Text, TextType } from '../../../controls';
 import { ItemCard } from '../../../cards';
@@ -13,23 +16,35 @@ interface Props {
 
 export class ItemsPage extends Component<Props> {
 	public render() {
-		let magicItems = null;
-		if (this.props.game.items.filter(i => i.magic).length > 0) {
-			const cards = this.props.game.items.filter(i => i.magic).map((i, n) => (<PlayingCard key={n} front={<ItemCard item={i} />} />));
-			magicItems = (
+		const magicItems = this.props.game.items.filter(i => i.magic);
+		const mundaneItems = this.props.game.items.filter(i => !i.magic);
+
+		let magicItemSection = null;
+		if (magicItems.length > 0) {
+			const cards = magicItems.map(item => (<PlayingCard key={item.id} front={<ItemCard item={item} />} />));
+			magicItemSection = (
 				<div>
-					<Text type={TextType.SubHeading}>Magic Items ({cards.length})</Text>
+					<Text type={TextType.SubHeading}>Magic Items ({magicItems.length})</Text>
 					<CardList cards={cards} />
 				</div>
 			);
 		}
 
-		let mundaneItems = null;
-		if (this.props.game.items.filter(i => !i.magic).length > 0) {
-			const cards = this.props.game.items.filter(i => !i.magic).map((i, n) => (<PlayingCard key={n} front={<ItemCard item={i} />} />));
-			mundaneItems = (
+		let mundaneItemSection = null;
+		if (mundaneItems.length > 0) {
+			const distinct = Collections.distinct(mundaneItems, i => i.id);
+			const cards = distinct.map(item => {
+				const copy = JSON.parse(JSON.stringify(item)) as ItemModel;
+				const count = mundaneItems.filter(i => i.id === item.id).length;
+				copy.name = `${copy.name} (${count})`;
+
+				return (
+					<PlayingCard key={copy.id} front={<ItemCard item={copy} />} />
+				);
+			});
+			mundaneItemSection = (
 				<div>
-					<Text type={TextType.SubHeading}>Mundane Items ({cards.length})</Text>
+					<Text type={TextType.SubHeading}>Items ({mundaneItems.length})</Text>
 					<CardList cards={cards} />
 				</div>
 			);
@@ -37,8 +52,8 @@ export class ItemsPage extends Component<Props> {
 
 		return (
 			<div className='items-page'>
-				{magicItems}
-				{mundaneItems}
+				{magicItemSection}
+				{mundaneItemSection}
 			</div>
 		);
 	}

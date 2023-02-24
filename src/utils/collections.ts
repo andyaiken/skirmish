@@ -19,4 +19,12 @@ export class Collections {
 		const index = Random.randomNumber(collection.length);
 		return collection[index];
 	};
+
+	static distinct = <T>(collection: T[], key: (item: T) => string) => {
+		const seen = new Set();
+		return collection.filter(item => {
+			const k = key(item);
+			return seen.has(k) ? false : seen.add(k);
+		});
+	};
 }

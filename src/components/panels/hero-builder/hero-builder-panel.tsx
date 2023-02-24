@@ -198,7 +198,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 							front={<SpeciesCard species={species} />}
 							back={<PlaceholderCard text='Species' />}
 							display={(this.state.selectedSpeciesID !== '') && (this.state.selectedSpeciesID !== species.id) ? PlayingCardSide.Back : PlayingCardSide.Front}
-							onClick={() => this.selectSpecies(species.id)}
+							onClick={(this.state.selectedSpeciesID !== '') ? null : () => this.selectSpecies(species.id)}
 						/>
 					</div>
 				);
@@ -216,7 +216,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 							front={<RoleCard role={role} />}
 							back={<PlaceholderCard text='Role' />}
 							display={(this.state.selectedRoleID !== '') && (this.state.selectedRoleID !== role.id) ? PlayingCardSide.Back : PlayingCardSide.Front}
-							onClick={() => this.selectRole(role.id)}
+							onClick={(this.state.selectedRoleID !== '') ? null : () => this.selectRole(role.id)}
 						/>
 					</div>
 				);
@@ -234,7 +234,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 							front={<BackgroundCard background={background} />}
 							back={<PlaceholderCard text='Background' />}
 							display={(this.state.selectedBackgroundID !== '') && (this.state.selectedBackgroundID !== background.id) ? PlayingCardSide.Back : PlayingCardSide.Front}
-							onClick={() => this.selectBackground(background.id)}
+							onClick={(this.state.selectedBackgroundID !== '') ? null : () => this.selectBackground(background.id)}
 						/>
 					</div>
 				);
@@ -317,7 +317,7 @@ class EquipmentSelector extends Component<EquipmentSelectorProps, EquipmentSelec
 						front={<ItemCard item={item} />}
 						back={<PlaceholderCard text='Item' />}
 						display={(currentItemIDs.length !== 0) && (!currentItemIDs.includes(item.id)) ? PlayingCardSide.Back : PlayingCardSide.Front}
-						onClick={() => this.selectItem(item.id)}
+						onClick={(currentItemIDs.length !== 0) ? null : () => this.selectItem(item.id)}
 					/>
 				</div>
 			));

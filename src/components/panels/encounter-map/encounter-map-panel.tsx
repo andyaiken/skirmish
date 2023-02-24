@@ -48,6 +48,23 @@ export class EncounterMapPanel extends Component<Props> {
 			);
 		});
 
+		const loot = this.props.encounter.map.loot
+			.map(lp => {
+				return (
+					<div
+						key={lp.id}
+						className='encounter-map-loot'
+						style={{
+							width: `${this.props.squareSize}px`,
+							height: `${this.props.squareSize}px`,
+							left: `${((lp.position.x - dims.left) * this.props.squareSize)}px`,
+							top: `${((lp.position.y - dims.top) * this.props.squareSize)}px`
+						}}
+					>
+					</div>
+				);
+			});
+
 		const auras = this.props.encounter.combatants
 			.filter(combatant => combatant.combat.state !== CombatantState.Dead)
 			.map(combatant => {
@@ -99,6 +116,7 @@ export class EncounterMapPanel extends Component<Props> {
 			<div className='encounter-map'>
 				<div className='encounter-map-square-container' onClick={e => this.onSelectCombatant(e, null)}>
 					{squares}
+					{loot}
 					{auras}
 					{tokens}
 				</div>

@@ -5,6 +5,7 @@ import { CombatantType } from '../../../../enums/combatant-type';
 
 import { CombatantLogic } from '../../../../logic/combatant-logic';
 import { EncounterLogic } from '../../../../logic/encounter-logic';
+import { EncounterMapLogic } from '../../../../logic/encounter-map-logic';
 import { GameLogic } from '../../../../logic/game-logic';
 
 import { CombatantModel } from '../../../../models/combatant';
@@ -27,8 +28,7 @@ interface Props {
 	standUp: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	scan: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	hide: (encounter: EncounterModel, combatant: CombatantModel) => void;
-	equipItem: (item: ItemModel, combatant: CombatantModel) => void;
-	unequipItem: (item: ItemModel, combatant: CombatantModel) => void;
+	pickUpItem: (item: ItemModel, combatant: CombatantModel) => void;
 	showCharacterSheet: (combatant: CombatantModel) => void;
 	kill: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	finishEncounter: (state: EncounterFinishState) => void;
@@ -124,10 +124,25 @@ export class CombatantControls extends Component<Props, State> {
 				break;
 			}
 			case 'other': {
+				const canPickUp = (this.props.combatant.combat.movement >= 1) && (this.props.combatant.carried.length < 6);
+				const adj = EncounterMapLogic.getEncounterMapAdjacentSquares(this.props.encounter.map, [ this.props.combatant.combat.position ]);
+				const piles = this.props.encounter.map.loot.filter(lp => adj.find(sq => (sq.x === lp.position.x) && (sq.y === lp.position.y)));
+				const pickUpButtons: JSX.Element[] = [];
+				piles.forEach(lp => {
+					lp.items.forEach(item => {
+						const name = item.magic ? `${item.name} (${item.baseItem})` : item.name;
+						pickUpButtons.push(
+							<button key={item.id} disabled={!canPickUp} onClick={() => this.props.pickUpItem(item, this.props.combatant)}>
+								Pick Up {name}<br/><IconValue value={1} type={IconType.Movement} />
+							</button>
+						);
+					});
+				});
+
 				controls = (
 					<div>
-						<button className='not-implemented' onClick={() => null}>Pick Up Item<br/><IconValue value={2} type={IconType.Movement} /></button>
-						<hr />
+						{pickUpButtons}
+						{pickUpButtons.length > 0 ? <hr /> : null}
 						<button className='hack' onClick={() => this.props.finishEncounter(EncounterFinishState.Victory)}>Win</button>
 						<button onClick={() => this.props.finishEncounter(EncounterFinishState.Retreat)}>Retreat</button>
 						<button onClick={() => this.props.finishEncounter(EncounterFinishState.Defeat)}>Surrender</button>

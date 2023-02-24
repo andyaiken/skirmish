@@ -91,8 +91,7 @@ export class EncounterScreen extends Component<Props, State> {
 								standUp={this.props.standUp}
 								scan={this.props.scan}
 								hide={this.props.hide}
-								equipItem={this.props.equipItem}
-								unequipItem={this.props.unequipItem}
+								pickUpItem={this.props.pickUpItem}
 								showCharacterSheet={this.showDetails}
 								kill={this.props.kill}
 								finishEncounter={this.props.finishEncounter}

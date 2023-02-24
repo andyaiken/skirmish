@@ -8,7 +8,7 @@ import type { CombatantModel } from '../../../../models/combatant';
 import type { GameModel } from '../../../../models/game';
 import type { ItemModel } from '../../../../models/item';
 
-import { Box, CardList, Dialog, PlayingCard, Text, TextType } from '../../../controls';
+import { Box, CardList, Dialog, IconType, IconValue, PlayingCard, Text, TextType } from '../../../controls';
 import { ItemCard } from '../../../cards';
 
 import './items.scss';
@@ -60,13 +60,22 @@ export class Items extends Component<Props, State> {
 
 		const cards = this.props.hero.items
 			.filter(item => location === item.location)
-			.map(item => (
-				<div key={item.id} className='item'>
-					<PlayingCard front={<ItemCard item={item} />} />
-					<button onClick={() => this.props.unequipItem(item)}>Carry</button>
-					<button onClick={() => this.props.dropItem(item)}>Drop</button>
-				</div>
-			));
+			.map(item => {
+				let unequip: JSX.Element | string = 'Carry';
+				if (this.props.game.encounter) {
+					unequip = (
+						<div>Carry<br/><IconValue type={IconType.Movement} value={1} /></div>
+					);
+				}
+
+				return (
+					<div key={item.id} className='item'>
+						<PlayingCard front={<ItemCard item={item} />} />
+						<button disabled={this.props.hero.carried.length >= 6} onClick={() => this.props.unequipItem(item)}>{unequip}</button>
+						<button onClick={() => this.props.dropItem(item)}>Drop</button>
+					</div>
+				);
+			});
 
 		if (cards.length === 0) {
 			cards.push(<div key='empty'>No items</div>);
@@ -88,13 +97,22 @@ export class Items extends Component<Props, State> {
 
 	private getCarriedItemCards = () => {
 		const cards = this.props.hero.carried
-			.map(item => (
-				<div key={item.id} className='item'>
-					<PlayingCard front={<ItemCard item={item} />} />
-					<button onClick={() => this.props.unequipItem(item)}>Unequip</button>
-					<button onClick={() => this.props.dropItem(item)}>Drop</button>
-				</div>
-			));
+			.map(item => {
+				let equip: JSX.Element | string = 'Equip';
+				if (this.props.game.encounter) {
+					equip = (
+						<div>Equip<br/><IconValue type={IconType.Movement} value={1} /></div>
+					);
+				}
+
+				return (
+					<div key={item.id} className='item'>
+						<PlayingCard front={<ItemCard item={item} />} />
+						<button disabled={!CombatantLogic.canEquip(this.props.hero, item)} onClick={() => this.props.equipItem(item)}>{equip}</button>
+						<button onClick={() => this.props.dropItem(item)}>Drop</button>
+					</div>
+				);
+			});
 
 		if (cards.length === 0) {
 			cards.push(<div key='empty'>No items</div>);
@@ -171,7 +189,7 @@ export class Items extends Component<Props, State> {
 				<Text type={TextType.SubHeading}>Carried</Text>
 				<div className='carried'>
 					{this.getCarriedItemCards()}
-					<button disabled={this.getEquippableItems(ItemLocationType.Carried).length === 0} onClick={() => this.setState({ selectedLocation: ItemLocationType.Carried })}>
+					<button disabled={this.props.hero.carried.length >= 6} onClick={() => this.setState({ selectedLocation: ItemLocationType.Carried })}>
 						Choose an Item
 					</button>
 				</div>

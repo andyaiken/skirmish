@@ -25,12 +25,13 @@
 
 ## Ideas for Future Work
 
+* Place random loot piles around the encounter map
 * Magic items should gain additional attributes when wielder levels up
   * dormant => awakened => exalted
 * Heroes page / hero selection dialog:
   * Allow grouping by species, role, background, level
 * Heroes page:
-  * Allow mundane items to be filtered out or sold
+  * Allow mundane items to be filtered out or sold (you could then use money buy items / hero slots)
   * Click on magic item / mundane item to see heroes with the correct proficiency
 * Character sheet panel:
   * Show ranks as filled circles

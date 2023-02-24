@@ -7,7 +7,8 @@ import { Random } from '../utils/random';
 export class EncounterMapLogic {
 	static generateEncounterMap = (rng: () => number): EncounterMapModel => {
 		const map: EncounterMapModel = {
-			squares: []
+			squares: [],
+			loot: []
 		};
 
 		while (map.squares.length < 1000) {

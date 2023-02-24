@@ -8,6 +8,7 @@ import { CampaignMapLogic } from '../../logic/campaign-map-logic';
 import { CombatantLogic } from '../../logic/combatant-logic';
 import { EncounterGenerator } from '../../logic/encounter-generator';
 import { EncounterLogic } from '../../logic/encounter-logic';
+import { EncounterMapLogic } from '../../logic/encounter-map-logic';
 import { Factory } from '../../logic/factory';
 import { GameLogic } from '../../logic/game-logic';
 
@@ -19,6 +20,7 @@ import type { FeatureModel } from '../../models/feature';
 import type { GameModel } from '../../models/game';
 import type { ItemModel } from '../../models/item';
 
+import { Collections } from '../../utils/collections';
 import { Utils } from '../../utils/utils';
 
 import { CampaignScreen, EncounterFinishState, EncounterScreen, LandingScreen } from '../screens';
@@ -298,13 +300,22 @@ export class Main extends Component<Props, State> {
 		}
 
 		if (game.encounter) {
-			// TODO: Moving from ground
+			const adj = EncounterMapLogic.getEncounterMapAdjacentSquares(game.encounter.map, [ combatant.combat.position ]);
+			const piles = game.encounter.map.loot.filter(lp => adj.find(sq => (sq.x === lp.position.x) && (sq.y === lp.position.y)));
+			const lp = piles.find(l => l.items.find(i => i.id === item.id));
+			if (lp) {
+				lp.items = lp.items.filter(i => i.id !== item.id);
+				if (lp.items.length === 0) {
+					game.encounter.map.loot = game.encounter.map.loot.filter(l => l.id !== lp.id);
+				}
+			}
+
 		} else {
 			game.heroes.forEach(h => h.carried = h.carried.filter(i => i !== item));
 			game.items = game.items.filter(i => i !== item);
 		}
 
-		if (CombatantLogic.canEquip(combatant, item)) {
+		if ((game.encounter === null) && CombatantLogic.canEquip(combatant, item)) {
 			combatant.items.push(item);
 		} else {
 			combatant.carried.push(item);
@@ -322,7 +333,26 @@ export class Main extends Component<Props, State> {
 		combatant.carried = combatant.carried.filter(i => i !== item);
 
 		if (game.encounter) {
-			// TODO: Moving to ground
+			// See if we're beside any loot piles
+			const adj = EncounterMapLogic.getEncounterMapAdjacentSquares(game.encounter.map, [ combatant.combat.position ]);
+			const piles = game.encounter.map.loot.filter(lp => adj.find(sq => (sq.x === lp.position.x) && (sq.y === lp.position.y)));
+
+			let lp = null;
+			if (piles.length === 0) {
+				lp = Factory.createLootPile();
+
+				const empty = adj.filter(sq => EncounterLogic.getSquareIsEmpty(game.encounter as EncounterModel, sq));
+				if (empty.length > 0) {
+					const sq = Collections.draw(empty);
+					lp.position.x = sq.x;
+					lp.position.y = sq.y;
+					game.encounter.map.loot.push(lp);
+				}
+			} else {
+				lp = Collections.draw(piles);
+			}
+
+			lp.items.push(item);
 		} else {
 			game.items.push(item);
 		}
@@ -333,7 +363,18 @@ export class Main extends Component<Props, State> {
 	};
 
 	kill = (encounter: EncounterModel, combatant: CombatantModel) => {
+		const active = EncounterLogic.getActiveCombatants(encounter);
+		if (combatant === active[0]) {
+			this.endTurn(encounter);
+		}
+
 		combatant.combat.state = CombatantState.Dead;
+
+		const loot = Factory.createLootPile();
+		loot.items.push(...combatant.items, ...combatant.carried);
+		loot.position.x = combatant.combat.position.x;
+		loot.position.y = combatant.combat.position.y;
+		encounter.map.loot.push(loot);
 
 		this.setState({
 			game: this.state.game

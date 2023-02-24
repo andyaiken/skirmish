@@ -13,6 +13,7 @@ import type { CombatantModel } from '../models/combatant';
 import type { ConditionModel } from '../models/condition';
 import type { FeatureModel } from '../models/feature';
 import type { GameModel } from '../models/game';
+import type { LootPileModel } from '../models/encounter-map';
 
 import { Utils } from '../utils/utils';
 
@@ -95,6 +96,14 @@ export class Factory {
 			trait: TraitType.None,
 			aura: ConditionType.None,
 			rank: 1
+		};
+	};
+
+	static createLootPile = (): LootPileModel => {
+		return {
+			id: Utils.guid(),
+			items: [],
+			position: { x: 0, y: 0 }
 		};
 	};
 }

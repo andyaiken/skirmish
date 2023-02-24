@@ -25,6 +25,13 @@
 			}
 		}
 
+		.encounter-map-loot {
+			position: absolute;
+			border-radius: 50%;
+			border: 1px solid darkgoldenrod;
+			background-color: goldenrod;
+		}
+
 		.encounter-map-aura {
 			position: absolute;
 			border-radius: 33%;

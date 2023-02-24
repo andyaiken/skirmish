@@ -130,6 +130,7 @@ export class BackgroundData {
 					FeatureLogic.createSkillFeature(SkillType.Stealth, 2)
 				],
 				actions: [
+					ActionLogic.createActionPlaceholder('Steal item'),
 					ActionLogic.createActionPlaceholder('Disable trap'),
 					ActionLogic.createActionPlaceholder('Set trap')
 				]

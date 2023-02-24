@@ -17,6 +17,7 @@ import { Random } from '../utils/random';
 
 import { CombatantLogic } from './combatant-logic';
 import { EncounterMapLogic } from './encounter-map-logic';
+import { Factory } from './factory';
 import { GameLogic } from './game-logic';
 
 export class EncounterLogic {
@@ -53,6 +54,20 @@ export class EncounterLogic {
 
 		const combatantSquares = EncounterLogic.getCombatantSquares(encounter, combatant);
 		return squares.filter(sq => !combatantSquares.find(s => (s.x === sq.x) && (s.y === sq.y)));
+	};
+
+	static getSquareIsEmpty = (encounter: EncounterModel, square: { x: number, y: number }) => {
+		const occupied: { x: number; y: number }[] = [];
+
+		encounter.combatants
+			.filter(c => c.combat.state !== CombatantState.Dead)
+			.forEach(c => {
+				const squares = EncounterLogic.getCombatantSquares(encounter, c);
+				occupied.push(...squares);
+			});
+		encounter.map.loot.forEach(lp => occupied.push(lp.position));
+
+		return occupied.find(s => (s.x === square.x) && (s.y === square.y)) === undefined;
 	};
 
 	static rollInitiative = (encounter: EncounterModel) => {
@@ -219,14 +234,7 @@ export class EncounterLogic {
 		}
 
 		// Can't move into an occupied square
-		const occupied: { x: number; y: number }[] = [];
-		encounter.combatants
-			.filter(c => c.combat.state !== CombatantState.Dead)
-			.forEach(c => {
-				const squares = EncounterLogic.getCombatantSquares(encounter, c);
-				occupied.push(...squares);
-			});
-		if (movingTo.some(sq => occupied.find(os => (os.x === sq.x) && (os.y === sq.y)))) {
+		if (movingTo.some(sq => !EncounterLogic.getSquareIsEmpty(encounter, sq))) {
 			return Number.MAX_VALUE;
 		}
 
@@ -339,6 +347,12 @@ export class EncounterLogic {
 				}
 				if (combatant.combat.wounds > resolve) {
 					combatant.combat.state = CombatantState.Dead;
+
+					const loot = Factory.createLootPile();
+					loot.items.push(...combatant.items, ...combatant.carried);
+					loot.position.x = combatant.combat.position.x;
+					loot.position.y = combatant.combat.position.y;
+					encounter.map.loot.push(loot);
 				}
 			}
 		}

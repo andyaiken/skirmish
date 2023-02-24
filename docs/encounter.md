@@ -61,7 +61,7 @@
 * ~~If more than 0:~~
   * ~~Roll target's Endurance; if result less than Damage, reset Damage to 0 and increment Wounds~~
   * ~~If target's Wounds equals Resolve rank, unconscious; if target's Wounds greater than Resolve rank, dead~~
-    * If dead, removed from the map; equipment lies in the square it fell in
+    * ~~If dead, removed from the map; equipment lies in the square it fell in~~
 
 ## Healing
 
@@ -75,6 +75,6 @@
 * ~~**Hide**: spend 4 movement pts, roll Stealth, set Hide~~
 * ~~**Stand up**: spend 8 movement points~~
   * ~~When prone: skill ranks are halved~~
-* **Pick up adjacent object**: 1 movement pt
-* **Equip / unequip carried object**: 1 movement pt
-* **Drop equipped / carried object**: 0 movement pts
+* ~~**Pick up adjacent object**: 1 movement pt~~
+* ~~**Equip / unequip carried object**: 1 movement pt~~
+* ~~**Drop equipped / carried object**: 0 movement pts~~

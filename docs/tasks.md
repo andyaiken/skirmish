@@ -11,6 +11,7 @@
     * For example, can't use a weapon attack if you dont have a weapon
 * In an encounter, you can't see the stats for someone who has already acted
   * Show acted combatants below the initiative list
+* It's possible for some squares on the encounter map to be detatched from the rest
 
 ## To Do
 

@@ -1,5 +1,7 @@
 import { Component } from 'react';
 
+import { CombatantState } from '../../../enums/combatant-state';
+
 import { CombatantLogic } from '../../../logic/combatant-logic';
 import { EncounterMapLogic } from '../../../logic/encounter-map-logic';
 
@@ -46,48 +48,52 @@ export class EncounterMapPanel extends Component<Props> {
 			);
 		});
 
-		const auras = this.props.encounter.combatants.map(combatant => {
-			if (CombatantLogic.getAuras(combatant).length > 0) {
+		const auras = this.props.encounter.combatants
+			.filter(combatant => combatant.combat.state !== CombatantState.Dead)
+			.map(combatant => {
+				if (CombatantLogic.getAuras(combatant).length > 0) {
+					return (
+						<div
+							key={combatant.id}
+							className='encounter-map-aura'
+							style={{
+								width: `${this.props.squareSize * (combatant.size + 2)}px`,
+								height: `${this.props.squareSize * (combatant.size + 2)}px`,
+								left: `${((combatant.combat.position.x - dims.left - 1) * this.props.squareSize)}px`,
+								top: `${((combatant.combat.position.y - dims.top - 1) * this.props.squareSize)}px`
+							}}
+						>
+						</div>
+					);
+				}
+
+				return null;
+			});
+
+		const tokens = this.props.encounter.combatants
+			.filter(combatant => combatant.combat.state !== CombatantState.Dead)
+			.map(combatant => {
+				const current = this.props.currentID === combatant.id;
+				const selected = this.props.selectedIDs.includes(combatant.id);
+				const className = `encounter-map-token ${combatant.type.toLowerCase()} ${current ? 'current' : ''} ${selected ? 'selected' : ''}`;
 				return (
 					<div
 						key={combatant.id}
-						className='encounter-map-aura'
+						className={className}
 						style={{
-							width: `${this.props.squareSize * (combatant.size + 2)}px`,
-							height: `${this.props.squareSize * (combatant.size + 2)}px`,
-							left: `${((combatant.combat.position.x - dims.left - 1) * this.props.squareSize)}px`,
-							top: `${((combatant.combat.position.y - dims.top - 1) * this.props.squareSize)}px`
+							width: `${this.props.squareSize * combatant.size}px`,
+							height: `${this.props.squareSize * combatant.size}px`,
+							left: `${((combatant.combat.position.x - dims.left) * this.props.squareSize)}px`,
+							top: `${((combatant.combat.position.y - dims.top) * this.props.squareSize)}px`,
+							fontSize: `${this.props.squareSize * 0.8}px`
 						}}
+						title={combatant.name}
+						onClick={e => this.onSelectCombatant(e, combatant)}
 					>
+						{combatant.name[0]}
 					</div>
 				);
-			}
-
-			return null;
-		});
-
-		const tokens = this.props.encounter.combatants.map(combatant => {
-			const current = this.props.currentID === combatant.id;
-			const selected = this.props.selectedIDs.includes(combatant.id);
-			const className = `encounter-map-token ${combatant.type.toLowerCase()} ${current ? 'current' : ''} ${selected ? 'selected' : ''}`;
-			return (
-				<div
-					key={combatant.id}
-					className={className}
-					style={{
-						width: `${this.props.squareSize * combatant.size}px`,
-						height: `${this.props.squareSize * combatant.size}px`,
-						left: `${((combatant.combat.position.x - dims.left) * this.props.squareSize)}px`,
-						top: `${((combatant.combat.position.y - dims.top) * this.props.squareSize)}px`,
-						fontSize: `${this.props.squareSize * 0.8}px`
-					}}
-					title={combatant.name}
-					onClick={e => this.onSelectCombatant(e, combatant)}
-				>
-					{combatant.name[0]}
-				</div>
-			);
-		});
+			});
 
 		return (
 			<div className='encounter-map'>

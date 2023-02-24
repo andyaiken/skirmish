@@ -34,6 +34,7 @@ interface Props {
 	unequipItem: (item: ItemModel, combatant: CombatantModel) => void;
 	pickUpItem: (item: ItemModel, hero: CombatantModel) => void;
 	dropItem: (item: ItemModel, combatant: CombatantModel) => void;
+	kill: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	finishEncounter: (state: EncounterFinishState) => void;
 }
 
@@ -93,6 +94,7 @@ export class EncounterScreen extends Component<Props, State> {
 								equipItem={this.props.equipItem}
 								unequipItem={this.props.unequipItem}
 								showCharacterSheet={this.showDetails}
+								kill={this.props.kill}
 								finishEncounter={this.props.finishEncounter}
 							/>
 						</div>

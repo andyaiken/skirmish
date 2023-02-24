@@ -220,10 +220,12 @@ export class EncounterLogic {
 
 		// Can't move into an occupied square
 		const occupied: { x: number; y: number }[] = [];
-		encounter.combatants.forEach(c => {
-			const squares = EncounterLogic.getCombatantSquares(encounter, c);
-			occupied.push(...squares);
-		});
+		encounter.combatants
+			.filter(c => c.combat.state !== CombatantState.Dead)
+			.forEach(c => {
+				const squares = EncounterLogic.getCombatantSquares(encounter, c);
+				occupied.push(...squares);
+			});
 		if (movingTo.some(sq => occupied.find(os => (os.x === sq.x) && (os.y === sq.y)))) {
 			return Number.MAX_VALUE;
 		}
@@ -404,14 +406,18 @@ export class EncounterLogic {
 		const squares = EncounterLogic.getCombatantSquares(encounter, combatant);
 
 		// Get all beneficial aura conditions from adjacent allies
-		encounter.combatants.filter(c => c.type === combatant.type)
+		encounter.combatants
+			.filter(combatant => combatant.combat.state !== CombatantState.Dead)
+			.filter(c => c.type === combatant.type)
 			.filter(c => squares.some(sq => EncounterLogic.getCombatantAuraSquares(encounter, c).find(s => (s.x === sq.x) && (s.y === sq.y))))
 			.flatMap(c => CombatantLogic.getAuras(EncounterLogic.getCombatant(encounter, c.id) as CombatantModel))
 			.filter(aura => GameLogic.getConditionIsBeneficial(aura))
 			.forEach(aura => auras.push(aura));
 
 		// Get all non-beneficial aura conditions from adjacent enemies
-		encounter.combatants.filter(c => c.type !== combatant.type)
+		encounter.combatants
+			.filter(combatant => combatant.combat.state !== CombatantState.Dead)
+			.filter(c => c.type !== combatant.type)
 			.filter(c => squares.some(sq => EncounterLogic.getCombatantAuraSquares(encounter, c).find(s => (s.x === sq.x) && (s.y === sq.y))))
 			.flatMap(c => CombatantLogic.getAuras(EncounterLogic.getCombatant(encounter, c.id) as CombatantModel))
 			.filter(aura => !GameLogic.getConditionIsBeneficial(aura))

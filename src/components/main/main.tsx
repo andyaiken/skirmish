@@ -1,6 +1,7 @@
 import { Component } from 'react';
 
 import { BoonType } from '../../enums/boon-type';
+import { CombatantState } from '../../enums/combatant-state';
 import { CombatantType } from '../../enums/combatant-type';
 
 import { CampaignMapLogic } from '../../logic/campaign-map-logic';
@@ -331,6 +332,14 @@ export class Main extends Component<Props, State> {
 		});
 	};
 
+	kill = (encounter: EncounterModel, combatant: CombatantModel) => {
+		combatant.combat.state = CombatantState.Dead;
+
+		this.setState({
+			game: this.state.game
+		});
+	};
+
 	finishEncounter = (state: EncounterFinishState) => {
 		const game = this.state.game;
 		if (!game) {
@@ -501,6 +510,7 @@ export class Main extends Component<Props, State> {
 						unequipItem={this.unequipItem}
 						pickUpItem={this.pickUpItem}
 						dropItem={this.dropItem}
+						kill={this.kill}
 						finishEncounter={this.finishEncounter}
 					/>
 				);

@@ -74,7 +74,7 @@ export class OptionsPage extends Component<Props, State> {
 					<PlayingCard front={<PlaceholderCard text='Background' />} onClick={() => this.setDeck('background')} />
 				</div>
 				<hr />
-				<button onClick={() => this.props.endCampaign()}>Abandon This Campaign</button>
+				<button className='danger' onClick={() => this.props.endCampaign()}>Abandon This Campaign</button>
 				{dialog}
 			</div>
 		);

@@ -21,7 +21,7 @@ export class CampaignMapPanel extends Component<Props> {
 
 	render = () => {
 		// Get dimensions, adding a 1-square border
-		const dims = CampaignMapLogic.getCampaignMapDimensions(this.props.map);
+		const dims = CampaignMapLogic.getDimensions(this.props.map);
 		dims.left -= 1;
 		dims.top -= 1;
 		dims.right += 1;

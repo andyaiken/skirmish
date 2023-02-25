@@ -94,7 +94,6 @@ export class EncounterScreen extends Component<Props, State> {
 								pickUpItem={this.props.pickUpItem}
 								showCharacterSheet={this.showDetails}
 								kill={this.props.kill}
-								finishEncounter={this.props.finishEncounter}
 							/>
 						</div>
 					);
@@ -156,10 +155,15 @@ export class EncounterScreen extends Component<Props, State> {
 						currentID={currentCombatant ? currentCombatant.id : null}
 						selectedIDs={this.state.selectedIDs}
 						onSelect={this.selectCombatant}
+						onDetails={this.showDetails}
 					/>
 					<div className='map-controls'>
-						<button disabled={this.state.mapSquareSize <= 5} onClick={() => this.nudgeMapSize(-5)}>-</button>
-						<button disabled={this.state.mapSquareSize >= 50} onClick={() => this.nudgeMapSize(+5)}>+</button>
+						<div className='zoom'>
+							<button disabled={this.state.mapSquareSize <= 5} className='zoom-btn' onClick={() => this.nudgeMapSize(-5)}>-</button>
+							<button disabled={this.state.mapSquareSize >= 50} className='zoom-btn' onClick={() => this.nudgeMapSize(+5)}>+</button>
+						</div>
+						<button className='finish-btn danger' onClick={() => this.props.finishEncounter(EncounterFinishState.Retreat)}>Retreat</button>
+						<button className='finish-btn danger' onClick={() => this.props.finishEncounter(EncounterFinishState.Defeat)}>Surrender</button>
 					</div>
 				</div>
 				{controls}

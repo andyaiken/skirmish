@@ -16,6 +16,7 @@ interface Props {
 	currentID: string | null;
 	selectedIDs: string[];
 	onSelect: (combatant: CombatantModel | null) => void;
+	onDetails: (combatant: CombatantModel) => void;
 }
 
 export class EncounterMapPanel extends Component<Props> {
@@ -24,13 +25,14 @@ export class EncounterMapPanel extends Component<Props> {
 		this.props.onSelect(combatant);
 	};
 
+	onDoubleClickCombatant = (e: React.MouseEvent, combatant: CombatantModel) => {
+		e.stopPropagation();
+		this.props.onDetails(combatant);
+	};
+
 	public render() {
-		// Get dimensions, adding a 1-square border
-		const dims = EncounterMapLogic.getEncounterMapDimensions(this.props.encounter.map);
-		dims.left -= 1;
-		dims.top -= 1;
-		dims.right += 1;
-		dims.bottom += 1;
+		// Get dimensions
+		const dims = EncounterMapLogic.getDimensions(this.props.encounter.map);
 
 		const squares = this.props.encounter.map.squares.map(sq => {
 			const className = `encounter-map-square ${sq.type.toLowerCase()}`;
@@ -106,15 +108,22 @@ export class EncounterMapPanel extends Component<Props> {
 						}}
 						title={combatant.name}
 						onClick={e => this.onSelectCombatant(e, combatant)}
+						onDoubleClick={e => this.onDoubleClickCombatant(e, combatant)}
 					>
 						{combatant.name[0]}
 					</div>
 				);
 			});
 
+		const width = dims.right - dims.left + 1;
+		const height = dims.bottom - dims.top + 1;
 		return (
 			<div className='encounter-map'>
-				<div className='encounter-map-square-container' onClick={e => this.onSelectCombatant(e, null)}>
+				<div
+					className='encounter-map-square-container'
+					style={{ maxWidth: `${this.props.squareSize * width}px`, maxHeight: `${this.props.squareSize * height}px` }}
+					onClick={e => this.onSelectCombatant(e, null)}
+				>
 					{squares}
 					{loot}
 					{auras}

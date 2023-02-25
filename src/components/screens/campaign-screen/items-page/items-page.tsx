@@ -16,8 +16,8 @@ interface Props {
 
 export class ItemsPage extends Component<Props> {
 	public render() {
-		const magicItems = this.props.game.items.filter(i => i.magic);
-		const mundaneItems = this.props.game.items.filter(i => !i.magic);
+		const magicItems = this.props.game.items.filter(i => i.magic).sort((a, b) => a.name.localeCompare(b.name));
+		const mundaneItems = this.props.game.items.filter(i => !i.magic).sort((a, b) => a.name.localeCompare(b.name));
 
 		let magicItemSection = null;
 		if (magicItems.length > 0) {
@@ -32,11 +32,10 @@ export class ItemsPage extends Component<Props> {
 
 		let mundaneItemSection = null;
 		if (mundaneItems.length > 0) {
-			const distinct = Collections.distinct(mundaneItems, i => i.id);
-			const cards = distinct.map(item => {
+			const cards = Collections.distinct(mundaneItems, i => i.id).map(item => {
 				const copy = JSON.parse(JSON.stringify(item)) as ItemModel;
 				const count = mundaneItems.filter(i => i.id === item.id).length;
-				copy.name = `${copy.name} (${count})`;
+				copy.name = count > 1 ? `${copy.name} (${count})` : copy.name;
 
 				return (
 					<PlayingCard key={copy.id} front={<ItemCard item={copy} />} />

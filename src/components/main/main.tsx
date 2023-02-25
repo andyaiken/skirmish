@@ -270,6 +270,7 @@ export class Main extends Component<Props, State> {
 		}
 
 		combatant.carried = combatant.carried.filter(i => i !== item);
+
 		combatant.items.push(item);
 
 		this.setState({
@@ -285,6 +286,7 @@ export class Main extends Component<Props, State> {
 		}
 
 		combatant.items = combatant.items.filter(i => i !== item);
+
 		combatant.carried.push(item);
 
 		this.setState({
@@ -300,18 +302,16 @@ export class Main extends Component<Props, State> {
 		}
 
 		if (game.encounter) {
-			const adj = EncounterMapLogic.getEncounterMapAdjacentSquares(game.encounter.map, [ combatant.combat.position ]);
+			const adj = EncounterMapLogic.getAdjacentSquares(game.encounter.map, [ combatant.combat.position ]);
 			const piles = game.encounter.map.loot.filter(lp => adj.find(sq => (sq.x === lp.position.x) && (sq.y === lp.position.y)));
-			const lp = piles.find(l => l.items.find(i => i.id === item.id));
+			const lp = piles.find(l => l.items.find(i => i === item));
 			if (lp) {
-				lp.items = lp.items.filter(i => i.id !== item.id);
+				lp.items = lp.items.filter(i => i !== item);
 				if (lp.items.length === 0) {
 					game.encounter.map.loot = game.encounter.map.loot.filter(l => l.id !== lp.id);
 				}
 			}
-
 		} else {
-			game.heroes.forEach(h => h.carried = h.carried.filter(i => i !== item));
 			game.items = game.items.filter(i => i !== item);
 		}
 
@@ -334,7 +334,7 @@ export class Main extends Component<Props, State> {
 
 		if (game.encounter) {
 			// See if we're beside any loot piles
-			const adj = EncounterMapLogic.getEncounterMapAdjacentSquares(game.encounter.map, [ combatant.combat.position ]);
+			const adj = EncounterMapLogic.getAdjacentSquares(game.encounter.map, [ combatant.combat.position ]);
 			const piles = game.encounter.map.loot.filter(lp => adj.find(sq => (sq.x === lp.position.x) && (sq.y === lp.position.y)));
 
 			let lp = null;

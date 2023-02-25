@@ -91,6 +91,32 @@ export class RoleData {
 				]
 			},
 			{
+				id: 'role-geomancer',
+				name: 'Geomancer',
+				traits: [
+					TraitType.Endurance
+				],
+				skills: [
+					SkillType.Spellcasting
+				],
+				proficiencies: [
+					ItemProficiencyType.Implements
+				],
+				features: [
+					FeatureLogic.createTraitFeature(TraitType.Endurance, 1),
+					FeatureLogic.createSkillFeature(SkillType.Spellcasting, 2),
+					FeatureLogic.createAuraFeature(ConditionType.MovementBonus, 1),
+					FeatureLogic.createAuraFeature(ConditionType.MovementPenalty, 1)
+				],
+				actions: [
+					ActionLogic.createActionPlaceholder('Create difficult terrain'),
+					ActionLogic.createActionPlaceholder('Create clear terrain'),
+					ActionLogic.createActionPlaceholder('Destroy ground'),
+					ActionLogic.createActionPlaceholder('Create ground'),
+					ActionLogic.createActionPlaceholder('Earthbind (reduce target\'s speed)')
+				]
+			},
+			{
 				id: 'role-ninja',
 				name: 'Ninja',
 				traits: [

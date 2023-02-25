@@ -35,6 +35,7 @@ export class Factory {
 			items: [],
 			carried: [],
 			combat: {
+				current: false,
 				state: CombatantState.Standing,
 				position: {
 					x: 0,

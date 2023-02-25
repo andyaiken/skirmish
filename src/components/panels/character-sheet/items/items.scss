@@ -17,28 +17,13 @@
 
 				.cards {
 					display: flex;
-					gap: 10px;
-
-					.item {
-						flex: 1 1 0;
-						display: flex;
-						flex-direction: column;
-						align-items: center;
-					}
+					justify-content: space-around;
 				}
 			}
 		}
 	}
 
-	.carried {
-		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-		gap: 10px;
-
-		.item {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-		}
+	.item-options {
+		margin: 10px 20px;
 	}
 }

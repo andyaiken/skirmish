@@ -1,9 +1,9 @@
 .direction-panel {
-	width: 210px;
-	height: 210px;
+	width: 220px;
+	height: 220px;
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
-	gap: 2px;
+	gap: 5px;
 
 	.dir,
 	.center {
@@ -118,10 +118,10 @@
 		}
 
 		&.enabled {
+			border-color: rgb(60, 170, 255);
 			cursor: pointer;
 
 			&:hover {
-				border-color: rgb(60, 170, 255);
 				background-color: rgb(200, 230, 255);
 			}
 		}

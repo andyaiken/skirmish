@@ -116,6 +116,8 @@ export class EncounterLogic {
 	};
 
 	static startOfTurn = (encounter: EncounterModel, combatant: CombatantModel) => {
+		combatant.combat.current = true;
+
 		combatant.combat.hidden = 0;
 		combatant.combat.senses = 0;
 		combatant.combat.movement = 0;
@@ -164,6 +166,8 @@ export class EncounterLogic {
 	};
 
 	static endOfTurn = (encounter: EncounterModel, combatant: CombatantModel) => {
+		combatant.combat.current = true;
+
 		combatant.combat.initiative = Number.MIN_VALUE;
 		combatant.combat.senses = 0;
 		combatant.combat.movement = 0;
@@ -252,7 +256,7 @@ export class EncounterLogic {
 			.filter(c => c.combat.state === CombatantState.Standing)
 			.forEach(c => {
 				const current = EncounterLogic.getCombatantSquares(encounter, c);
-				const squares = EncounterMapLogic.getEncounterMapAdjacentSquares(encounter.map, current);
+				const squares = EncounterMapLogic.getAdjacentSquares(encounter.map, current);
 				adjacent.push(...squares);
 			});
 		if (movingFrom.some(sq => adjacent.find(os => (os.x === sq.x) && (os.y === sq.y)))) {

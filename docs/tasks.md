@@ -9,8 +9,6 @@
   * Should add code to a feature / action to see whether it can be chosen
   * Only draw feature / action cards that can be chosen
     * For example, you can't use a weapon attack if you don't have a weapon
-* In an encounter, you can't see the stats for someone who has already acted
-  * Should show acted combatants below the initiative list
 * It's possible for some squares on the encounter map to be detatched from the rest
   * When generating the map, remove unattached areas
   * Or, when removing squares, check whether this would result in an unattached area
@@ -19,6 +17,7 @@
 ## To Do
 
 * Encounters:
+  * Show round number
   * Implement actions
   * Implement AI so that monsters can take their turns
   * Show turn log for current combatant, if it's a monster
@@ -59,30 +58,32 @@
   * Vampire
   * Dark elf
 * Roles / backgrounds:
-  * Cleric
-  * Paladin
-  * Cultist
-  * Assassin / poisoner
-  * Bandit
   * Blackguard
-  * Champion
-  * Evoker
-  * Guard / warden
-  * Illusionist
-  * Knight
-  * Mage
-  * Necromancer
   * Shaman
-  * Scout
-  * Spy
-  * Thug
-  * Warpriest
-  * Warrior
   * Warlock
-  * Warlord
-  * Grenadier
-  * Martial artist
-  * Chaos magic
+  * Non-magic types
+    * Champion
+    * Guard / warden
+    * Knight
+    * Warrior
+    * Warlord
+    * Grenadier
+    * Martial artist
+  * Divine types
+    * Cleric
+    * Cultist
+    * Paladin / warpriest
+  * Thief types
+    * Assassin / poisoner
+    * Bandit
+    * Scout
+    * Spy
+    * Thug
+  * Wizard types
+    * Chaos magic
+    * Evoker
+    * Illusionist
+    * Necromancer
 
 ## Tech Debt
 

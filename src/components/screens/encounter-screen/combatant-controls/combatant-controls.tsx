@@ -18,7 +18,6 @@ import { Box, CardList, IconType, IconValue, PlayingCard, Selector, StatValue, T
 import { ActionCard } from '../../../cards';
 import { CombatStatsPanel } from '../../../panels/combat-stats/combat-stats-panel';
 import { DirectionPanel } from '../../../panels';
-import { EncounterFinishState } from '../encounter-screen';
 
 import './combatant-controls.scss';
 
@@ -33,7 +32,6 @@ interface Props {
 	pickUpItem: (item: ItemModel, combatant: CombatantModel) => void;
 	showCharacterSheet: (combatant: CombatantModel) => void;
 	kill: (encounter: EncounterModel, combatant: CombatantModel) => void;
-	finishEncounter: (state: EncounterFinishState) => void;
 }
 
 interface State {
@@ -103,9 +101,25 @@ export class CombatantControls extends Component<Props, State> {
 				moveCosts.w = EncounterLogic.getMoveCost(this.props.encounter, this.props.combatant, 'w');
 				moveCosts.nw = EncounterLogic.getMoveCost(this.props.encounter, this.props.combatant, 'nw');
 
+				const canPickUp = (this.props.combatant.combat.movement >= 1) && (this.props.combatant.carried.length < 6);
+
+				const adj = EncounterMapLogic.getAdjacentSquares(this.props.encounter.map, [ this.props.combatant.combat.position ]);
+				const piles = this.props.encounter.map.loot.filter(lp => adj.find(sq => (sq.x === lp.position.x) && (sq.y === lp.position.y)));
+				const items = Collections.distinct(piles.flatMap(pile => pile.items), i => i.id);
+				const pickUpButtons = items.map(item => {
+					const name = item.magic ? `${item.name} (${item.baseItem})` : item.name;
+					return (
+						<button key={item.id} disabled={!canPickUp} onClick={() => this.props.pickUpItem(item, this.props.combatant)}>
+							Pick Up {name}<br/><IconValue value={1} type={IconType.Movement} />
+						</button>
+					);
+				});
+
 				controls = (
 					<div className='movement'>
 						<DirectionPanel combatant={this.props.combatant} costs={moveCosts} onMove={(dir, cost) => this.props.move(this.props.encounter, this.props.combatant, dir, cost)} />
+						{pickUpButtons.length > 0 ? <hr /> : null}
+						{pickUpButtons}
 					</div>
 				);
 				break;
@@ -126,31 +140,6 @@ export class CombatantControls extends Component<Props, State> {
 				controls = (
 					<div className='actions not-implemented'>
 						<CardList cards={actionCards} />
-					</div>
-				);
-				break;
-			}
-			case 'other': {
-				const canPickUp = (this.props.combatant.combat.movement >= 1) && (this.props.combatant.carried.length < 6);
-
-				const adj = EncounterMapLogic.getEncounterMapAdjacentSquares(this.props.encounter.map, [ this.props.combatant.combat.position ]);
-				const piles = this.props.encounter.map.loot.filter(lp => adj.find(sq => (sq.x === lp.position.x) && (sq.y === lp.position.y)));
-				const items = Collections.distinct(piles.flatMap(pile => pile.items), i => i.id);
-				const pickUpButtons = items.map(item => {
-					const name = item.magic ? `${item.name} (${item.baseItem})` : item.name;
-					return (
-						<button key={item.id} disabled={!canPickUp} onClick={() => this.props.pickUpItem(item, this.props.combatant)}>
-							Pick Up {name}<br/><IconValue value={1} type={IconType.Movement} />
-						</button>
-					);
-				});
-
-				controls = (
-					<div>
-						{pickUpButtons}
-						{pickUpButtons.length > 0 ? <hr /> : null}
-						<button onClick={() => this.props.finishEncounter(EncounterFinishState.Retreat)}>Retreat</button>
-						<button onClick={() => this.props.finishEncounter(EncounterFinishState.Defeat)}>Surrender</button>
 					</div>
 				);
 				break;
@@ -185,7 +174,7 @@ export class CombatantControls extends Component<Props, State> {
 						{prone ? <Text type={TextType.Information}><b>{this.props.combatant.name} is Prone.</b> Their skill ranks are halved and moving costs are doubled.</Text> : null}
 						{this.props.combatant.combat.hidden > 0 ? <Text type={TextType.Information}><b>{this.props.combatant.name} is Hidden.</b> Their moving costs are doubled.</Text> : null}
 						<Selector
-							options={[ { id: 'overview', display: 'Overview' }, { id: 'move', display: 'Move' }, { id: 'actions', display: 'Actions' }, { id: 'other', display: 'Other' } ]}
+							options={[ { id: 'overview', display: 'Overview' }, { id: 'move', display: 'Move' }, { id: 'actions', display: 'Actions' } ]}
 							selectedID={this.state.controls}
 							onSelect={this.setControls}
 						/>

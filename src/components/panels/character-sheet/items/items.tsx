@@ -8,8 +8,10 @@ import type { CombatantModel } from '../../../../models/combatant';
 import type { GameModel } from '../../../../models/game';
 import type { ItemModel } from '../../../../models/item';
 
-import { Box, CardList, Dialog, IconType, IconValue, PlayingCard, Text, TextType } from '../../../controls';
-import { ItemCard } from '../../../cards';
+import { Collections } from '../../../../utils/collections';
+
+import { Box, CardList, Dialog, IconType, IconValue, PlayingCard, PlayingCardSide, Text, TextType } from '../../../controls';
+import { ItemCard, PlaceholderCard } from '../../../cards';
 
 import './items.scss';
 
@@ -34,7 +36,7 @@ export class Items extends Component<Props, State> {
 		};
 	}
 
-	private equipItem = (item: ItemModel) => {
+	equipItem = (item: ItemModel) => {
 		this.setState({
 			selectedLocation: ItemLocationType.None
 		}, () => {
@@ -42,7 +44,7 @@ export class Items extends Component<Props, State> {
 		});
 	};
 
-	private pickUpItem = (item: ItemModel) => {
+	pickUpItem = (item: ItemModel) => {
 		this.setState({
 			selectedLocation: ItemLocationType.None
 		}, () => {
@@ -50,7 +52,7 @@ export class Items extends Component<Props, State> {
 		});
 	};
 
-	private getLocationSection = (location: ItemLocationType) => {
+	getLocationSection = (location: ItemLocationType) => {
 		let className = 'location-section';
 		switch (location) {
 			case ItemLocationType.Hand:
@@ -68,17 +70,53 @@ export class Items extends Component<Props, State> {
 					);
 				}
 
-				return (
-					<div key={item.id} className='item'>
-						<PlayingCard front={<ItemCard item={item} />} />
+				let back: JSX.Element | null = (
+					<div className='item-options'>
 						<button disabled={this.props.hero.carried.length >= 6} onClick={() => this.props.unequipItem(item)}>{unequip}</button>
 						<button onClick={() => this.props.dropItem(item)}>Drop</button>
 					</div>
 				);
+				if (!!this.props.game.encounter && !this.props.hero.combat.current) {
+					back = null;
+				}
+
+				return (
+					<div key={item.id} className='item'>
+						<Card item={item} back={back} />
+					</div>
+				);
 			});
 
-		if (cards.length === 0) {
-			cards.push(<div key='empty'>No items</div>);
+		if (this.props.game.encounter && !this.props.hero.combat.current) {
+			if (cards.length === 0) {
+				cards.push(
+					<div key='empty' className='item'>
+						<PlayingCard front={<PlaceholderCard text='No items' />} />
+					</div>
+				);
+			}
+		} else {
+			let slotsTotal = 1;
+			switch (location) {
+				case ItemLocationType.Hand:
+				case ItemLocationType.Ring:
+					slotsTotal = 2;
+					break;
+			}
+
+			const slotsUsed = this.props.hero.items
+				.filter(i => i.location === location)
+				.map(i => i.slots)
+				.reduce((sum, value) => sum + value, 0);
+
+			const slotsAvailable = slotsTotal - slotsUsed;
+			if (slotsAvailable > 0) {
+				cards.push(
+					<div key='add' className='item'>
+						<PlayingCard front={<PlaceholderCard text='Choose an item' />} onClick={() => this.setState({ selectedLocation: location })} />
+					</div>
+				);
+			}
 		}
 
 		return (
@@ -87,15 +125,12 @@ export class Items extends Component<Props, State> {
 					<div className='cards'>
 						{cards}
 					</div>
-					<button disabled={this.getEquippableItems(ItemLocationType.Body).length === 0} onClick={() => this.setState({ selectedLocation: ItemLocationType.Body })}>
-						Choose an Item
-					</button>
 				</Box>
 			</div>
 		);
 	};
 
-	private getCarriedItemCards = () => {
+	getCarriedItemSection = () => {
 		const cards = this.props.hero.carried
 			.map(item => {
 				let equip: JSX.Element | string = 'Equip';
@@ -105,66 +140,97 @@ export class Items extends Component<Props, State> {
 					);
 				}
 
-				return (
-					<div key={item.id} className='item'>
-						<PlayingCard front={<ItemCard item={item} />} />
+				let back: JSX.Element | null = (
+					<div className='item-options'>
 						<button disabled={!CombatantLogic.canEquip(this.props.hero, item)} onClick={() => this.props.equipItem(item)}>{equip}</button>
 						<button onClick={() => this.props.dropItem(item)}>Drop</button>
 					</div>
 				);
+				if (!!this.props.game.encounter && !this.props.hero.combat.current) {
+					back = null;
+				}
+
+				return (
+					<div key={item.id} className='item'>
+						<Card item={item} back={back} />
+					</div>
+				);
 			});
 
-		if (cards.length === 0) {
-			cards.push(<div key='empty'>No items</div>);
+		if (this.props.game.encounter && !this.props.hero.combat.current) {
+			if (cards.length === 0) {
+				cards.push(
+					<div key='empty' className='item'>
+						<PlayingCard front={<PlaceholderCard text='No items' />} />
+					</div>
+				);
+			}
+		} else {
+			if (this.props.hero.carried.length < 6) {
+				cards.push(
+					<div key='add' className='item'>
+						<PlayingCard front={<PlaceholderCard text='Choose an item' />} onClick={() => this.setState({ selectedLocation: ItemLocationType.Carried })} />
+					</div>
+				);
+			}
 		}
 
-		return cards;
+		return (
+			<CardList cards={cards} />
+		);
 	};
 
-	private getEquippableItems = (location: ItemLocationType) => {
-		// Get all game items and items carried by other heroes
-		let items = ([] as ItemModel[]).concat(this.props.game.items);
-		this.props.game.heroes
-			.filter(h => h.id !== this.props.hero.id)
-			.forEach(h => items.push(...h.carried));
+	getDialogContent = () => {
+		if (this.state.selectedLocation === ItemLocationType.None) {
+			return null;
+		}
 
-		if (location !== ItemLocationType.Carried) {
+		let items: ItemModel[] = [];
+		if (this.props.game.encounter) {
+			// Get items we're carrying
+			items = items.concat(this.props.hero.carried);
+		} else {
+			// Get game items
+			items = items.concat(this.props.game.items);
+		}
+
+		if (this.state.selectedLocation !== ItemLocationType.Carried) {
 			// We only want items for this location
-			items = items.filter(item => item.location === location);
+			items = items.filter(item => item.location === this.state.selectedLocation);
 
 			// Ignore items we can't equip
 			items = items.filter(item => CombatantLogic.canEquip(this.props.hero, item));
 		}
 
-		return items;
-	};
+		items.sort((a, b) => a.name.localeCompare(b.name));
 
-	public render() {
-		let dialogContent = null;
-		if (this.state.selectedLocation !== ItemLocationType.None) {
-			const items = this.getEquippableItems(this.state.selectedLocation);
-			const campaignItemCards = items
-				.map(item => (
-					<div key={item.id}>
-						<PlayingCard
-							front={<ItemCard item={item} />}
-							onClick={() => this.state.selectedLocation === ItemLocationType.Carried ? this.pickUpItem(item) : this.equipItem(item)}
-						/>
-					</div>
-				));
+		const cards = Collections.distinct(items, i => i.id).map(item => {
+			const copy = JSON.parse(JSON.stringify(item)) as ItemModel;
+			const count = items.filter(i => i.id === item.id).length;
+			copy.name = count > 1 ? `${copy.name} (${count})` : copy.name;
 
-			if (campaignItemCards.length === 0) {
-				campaignItemCards.push(
-					<div key='empty'>
-						No items
-					</div>
-				);
-			}
+			return (
+				<PlayingCard
+					key={item.id}
+					front={<ItemCard item={copy} />}
+					onClick={() => this.state.selectedLocation === ItemLocationType.Carried ? this.pickUpItem(item) : this.equipItem(item)}
+				/>
+			);
+		});
 
-			dialogContent = (
-				<CardList cards={campaignItemCards} />
+		if (cards.length === 0) {
+			return (
+				<Text type={TextType.Information}>No available items.</Text>
 			);
 		}
+
+		return (
+			<CardList cards={cards} />
+		);
+	};
+
+	render = () => {
+		const dialogContent = this.getDialogContent();
 
 		return (
 			<div className='items'>
@@ -186,15 +252,49 @@ export class Items extends Component<Props, State> {
 					</div>
 				</div>
 				<hr />
-				<Text type={TextType.SubHeading}>Carried</Text>
-				<div className='carried'>
-					{this.getCarriedItemCards()}
-					<button disabled={this.props.hero.carried.length >= 6} onClick={() => this.setState({ selectedLocation: ItemLocationType.Carried })}>
-						Choose an Item
-					</button>
-				</div>
+				<Text type={TextType.SubHeading}>Carried ({this.props.hero.carried.length} / 6)</Text>
+				{this.getCarriedItemSection()}
 				{dialogContent ? <Dialog content={dialogContent} onClickOff={() => this.setState({ selectedLocation: ItemLocationType.None })} /> : null}
 			</div>
 		);
-	}
+	};
 }
+
+//#region Card
+
+interface CardProps {
+	item: ItemModel;
+	back: JSX.Element | null;
+}
+
+interface CardState {
+	showFront: boolean;
+}
+
+class Card extends Component<CardProps, CardState> {
+	constructor(props: CardProps) {
+		super(props);
+		this.state = {
+			showFront: true
+		};
+	}
+
+	flip = () => {
+		this.setState({
+			showFront: !this.state.showFront
+		});
+	};
+
+	render = () => {
+		return (
+			<PlayingCard
+				front={<ItemCard item={this.props.item} />}
+				back={this.props.back}
+				display={this.state.showFront ? PlayingCardSide.Front : PlayingCardSide.Back}
+				onClick={this.props.back === null ? null : this.flip}
+			/>
+		);
+	};
+}
+
+//#endregion

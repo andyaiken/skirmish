@@ -24,6 +24,7 @@ export interface CombatantModel {
 	carried: ItemModel[];
 
 	combat: {
+		current: boolean;
 		state: CombatantState;
 		position: {
 			x: number;

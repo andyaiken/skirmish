@@ -44,6 +44,11 @@ button {
 			background-color: rgb(200, 230, 255);
 		}
 	}
+
+	&.danger:not(:disabled):hover {
+		border-color: red;
+		background-color: rgb(255, 200, 200);
+	}
 }
 
 .hack {

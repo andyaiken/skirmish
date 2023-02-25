@@ -61,7 +61,7 @@ export class CampaignMapPage extends Component<Props, State> {
 				<div className='region'>
 					<Text type={TextType.SubHeading}>{this.state.selectedRegion.name}</Text>
 					<hr />
-					<StatValue label='Size' value={`${CampaignMapLogic.getCampaignMapSquares(this.props.game.map, this.state.selectedRegion).length} sq mi`} />
+					<StatValue label='Size' value={`${CampaignMapLogic.getSquares(this.props.game.map, this.state.selectedRegion).length} sq mi`} />
 					<StatValue label='Number of Encounters' value={this.state.selectedRegion.encounters.length} />
 					<hr />
 					<Text>If you take control of {this.state.selectedRegion.name}, you will recieve:</Text>

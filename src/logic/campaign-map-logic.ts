@@ -88,7 +88,7 @@ export class CampaignMapLogic {
 				map.squares
 					.filter(sq => sq.regionID === region.id)
 					.forEach(sq => {
-						CampaignMapLogic.getCampaignMapAdjacentSquares(map, sq.x, sq.y)
+						CampaignMapLogic.getAdjacentSquares(map, sq.x, sq.y)
 							.filter(s => s.regionID === '')
 							.forEach(s => candidates.push(s));
 					});
@@ -105,7 +105,7 @@ export class CampaignMapLogic {
 		return map;
 	};
 
-	static getCampaignMapAdjacentSquares = (map: CampaignMapModel, x: number, y: number) => {
+	static getAdjacentSquares = (map: CampaignMapModel, x: number, y: number) => {
 		const adj: CampaignMapSquareModel[] = [];
 
 		const n = map.squares.find(sq => (sq.x === x) && (sq.y === y - 1));
@@ -128,7 +128,7 @@ export class CampaignMapLogic {
 		return adj;
 	};
 
-	static getCampaignMapDimensions = (map: CampaignMapModel) => {
+	static getDimensions = (map: CampaignMapModel) => {
 		const dims = {
 			left: Number.MAX_VALUE,
 			top: Number.MAX_VALUE,
@@ -146,14 +146,14 @@ export class CampaignMapLogic {
 		return dims;
 	};
 
-	static getCampaignMapSquares = (map: CampaignMapModel, region: CampaignMapRegionModel) => {
+	static getSquares = (map: CampaignMapModel, region: CampaignMapRegionModel) => {
 		return map.squares.filter(sq => sq.regionID === region.id);
 	};
 
 	static canAttackRegion = (map: CampaignMapModel, region: CampaignMapRegionModel) => {
-		const squares = CampaignMapLogic.getCampaignMapSquares(map, region);
-		const coastal = squares.some(sq => CampaignMapLogic.getCampaignMapAdjacentSquares(map, sq.x, sq.y).length !== 4);
-		const bordering = squares.some(sq => CampaignMapLogic.getCampaignMapAdjacentSquares(map, sq.x, sq.y).some(a => a.regionID === ''));
+		const squares = CampaignMapLogic.getSquares(map, region);
+		const coastal = squares.some(sq => CampaignMapLogic.getAdjacentSquares(map, sq.x, sq.y).length !== 4);
+		const bordering = squares.some(sq => CampaignMapLogic.getAdjacentSquares(map, sq.x, sq.y).some(a => a.regionID === ''));
 		return coastal || bordering;
 	};
 

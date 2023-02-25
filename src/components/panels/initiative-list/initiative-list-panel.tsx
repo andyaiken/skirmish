@@ -45,23 +45,15 @@ export class InitiativeListPanel extends Component<Props> {
 					);
 				}
 
-				let button = null;
-				if (!current && selected) {
-					button = (
-						<button onClick={() => this.props.onDetails(combatant)}>Character Sheet</button>
-					);
-				}
-
 				const className = `initiative-entry ${current ? 'current' : ''} ${selected ? 'selected' : ''}`;
 				const label = (
 					<div className='initiative-entry-details'>
 						<div className='initiative-entry-name'>{combatant.name}</div>
 						{tags}
-						{button}
 					</div>
 				);
 				return (
-					<div key={combatant.id} className={className} onClick={() => this.props.onSelect(combatant)}>
+					<div key={combatant.id} className={className} onClick={() => this.props.onSelect(combatant)} onDoubleClick={() => this.props.onDetails(combatant)}>
 						<div className={`initiative-entry-token ${combatant.type.toLowerCase()}`}></div>
 						<StatValue label={label} value={combatant.combat.initiative} />
 					</div>

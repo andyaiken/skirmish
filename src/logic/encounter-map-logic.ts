@@ -25,7 +25,7 @@ export class EncounterMapLogic {
 
 			const position = { x: 0, y: 0 };
 			if (map.squares.length > 0) {
-				const adj = EncounterMapLogic.getEncounterMapEdges(map, map.squares, dir as 'n' | 'e' | 's' | 'w');
+				const adj = EncounterMapLogic.getEdges(map, map.squares, dir as 'n' | 'e' | 's' | 'w');
 				const sq = adj[Random.randomNumber(adj.length, rng)];
 				if (dir === 'n') {
 					sq.y -= (size.height - 1);
@@ -53,42 +53,37 @@ export class EncounterMapLogic {
 
 		while (Random.randomNumber(3, rng) !== 0) {
 			// Add a blob of blocked terrain
-			const blob: EncounterMapSquareModel[] = [];
-			while ((blob.length < 5) || (Random.randomNumber(10, rng) !== 0)) {
-				const candidates = ((blob.length === 0) ?
-					map.squares : EncounterMapLogic.getEncounterMapAdjacentSquares(map, blob, [ 'n', 'e', 's', 'w' ])).filter(c => c.type === EncounterMapSquareType.Clear);
-				if (candidates.length > 0) {
-					const n = Random.randomNumber(candidates.length, rng);
-					const square = candidates[n];
-					blob.push(square);
-				} else {
-					break;
-				}
-			}
+			const blob = EncounterMapLogic.getBlob(map, rng);
 			map.squares = map.squares.filter(sq => !blob.includes(sq));
 		}
 
 		while (Random.randomNumber(3, rng) !== 0) {
 			// Add a blob of obstructed terrain
-			const blob: EncounterMapSquareModel[] = [];
-			while ((blob.length < 5) || (Random.randomNumber(10, rng) !== 0)) {
-				const candidates = ((blob.length === 0) ?
-					map.squares : EncounterMapLogic.getEncounterMapAdjacentSquares(map, blob, [ 'n', 'e', 's', 'w' ])).filter(c => c.type === EncounterMapSquareType.Clear);
-				if (candidates.length > 0) {
-					const n = Random.randomNumber(candidates.length, rng);
-					const square = candidates[n];
-					blob.push(square);
-				} else {
-					break;
-				}
-			}
+			const blob = EncounterMapLogic.getBlob(map, rng);
 			blob.forEach(sq => sq.type = EncounterMapSquareType.Obstructed);
 		}
 
 		return map;
 	};
 
-	static getEncounterMapDimensions = (map: EncounterMapModel) => {
+	static getBlob = (map: EncounterMapModel, rng: () => number) => {
+		const blob: EncounterMapSquareModel[] = [];
+		while ((blob.length < 5) || (Random.randomNumber(10, rng) !== 0)) {
+			const candidates = ((blob.length === 0) ? map.squares : EncounterMapLogic.getAdjacentSquares(map, blob, [ 'n', 'e', 's', 'w' ])).filter(c => c.type === EncounterMapSquareType.Clear);
+
+			if (candidates.length === 0) {
+				return blob;
+			}
+
+			const n = Random.randomNumber(candidates.length, rng);
+			const square = candidates[n];
+			blob.push(square);
+		}
+
+		return blob;
+	};
+
+	static getDimensions = (map: EncounterMapModel) => {
 		const dims = {
 			left: Number.MAX_VALUE,
 			top: Number.MAX_VALUE,
@@ -106,7 +101,7 @@ export class EncounterMapLogic {
 		return dims;
 	};
 
-	static getEncounterMapAdjacentSquares = (map: EncounterMapModel, squares: { x: number; y: number }[], directions: ('n' | 'ne' | 'e' | 'se' | 's' | 'sw' | 'w' | 'nw')[] = []) => {
+	static getAdjacentSquares = (map: EncounterMapModel, squares: { x: number; y: number }[], directions: ('n' | 'ne' | 'e' | 'se' | 's' | 'sw' | 'w' | 'nw')[] = []) => {
 		const adj: EncounterMapSquareModel[] = [];
 
 		squares.forEach(square => {
@@ -163,7 +158,7 @@ export class EncounterMapLogic {
 		return adj.filter(sq => !squares.find(s => (s.x === sq.x) && (s.y === sq.y)));
 	};
 
-	static getEncounterMapEdges = (map: EncounterMapModel, squares: { x: number; y: number }[], direction: 'n' | 'e' | 's' | 'w') => {
+	static getEdges = (map: EncounterMapModel, squares: { x: number; y: number }[], direction: 'n' | 'e' | 's' | 'w') => {
 		const adj: { x: number; y: number }[] = [];
 
 		squares.forEach(square => {

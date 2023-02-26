@@ -12,7 +12,9 @@ import './options-page.scss';
 type DeckType = '' | 'background' | 'role' | 'species';
 
 interface Props {
+	developer: boolean;
 	endCampaign: () => void;
+	setDeveloper: (value: boolean) => void;
 }
 
 interface State {
@@ -69,10 +71,12 @@ export class OptionsPage extends Component<Props, State> {
 		return (
 			<div className='options-page'>
 				<div className='cards'>
-					<PlayingCard front={<PlaceholderCard text='Species' />} onClick={() => this.setDeck('species')} />
-					<PlayingCard front={<PlaceholderCard text='Role' />} onClick={() => this.setDeck('role')} />
-					<PlayingCard front={<PlaceholderCard text='Background' />} onClick={() => this.setDeck('background')} />
+					<PlayingCard front={<PlaceholderCard text={<div>Species<br/>Deck</div>} />} onClick={() => this.setDeck('species')} />
+					<PlayingCard front={<PlaceholderCard text={<div>Role<br/>Deck</div>} />} onClick={() => this.setDeck('role')} />
+					<PlayingCard front={<PlaceholderCard text={<div>Background<br/>Deck</div>} />} onClick={() => this.setDeck('background')} />
 				</div>
+				<hr />
+				<button className='danger' onClick={() => this.props.setDeveloper(!this.props.developer)}>Developer Mode: {this.props.developer ? 'On' : 'Off'}</button>
 				<hr />
 				<button className='danger' onClick={() => this.props.endCampaign()}>Abandon This Campaign</button>
 				{dialog}

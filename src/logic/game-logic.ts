@@ -35,8 +35,7 @@ export class GameLogic {
 		RoleData.getList().forEach(r => actions.push(...r.actions));
 		BackgroundData.getList().forEach(b => actions.push(...b.actions));
 
-		const n = Random.randomNumber(actions.length);
-		const copy = JSON.parse(JSON.stringify(actions[n])) as ActionModel;
+		const copy = JSON.parse(JSON.stringify(Collections.draw(actions))) as ActionModel;
 		copy.id = Utils.guid();
 
 		return copy;
@@ -80,8 +79,7 @@ export class GameLogic {
 				break;
 		}
 
-		const n = Random.randomNumber(options.length);
-		return options[n];
+		return Collections.draw(options);
 	};
 
 	static getRandomDamageCategoryType = () => {
@@ -91,8 +89,7 @@ export class GameLogic {
 			DamageCategoryType.Corruption
 		];
 
-		const n = Random.randomNumber(options.length);
-		return options[n];
+		return Collections.draw(options);
 	};
 
 	static getRandomItemProficiency = () => {
@@ -108,8 +105,7 @@ export class GameLogic {
 			ItemProficiencyType.Shields
 		];
 
-		const n = Random.randomNumber(options.length);
-		return options[n];
+		return Collections.draw(options);
 	};
 
 	static getRandomSkill = (category: SkillCategoryType = SkillCategoryType.Any) => {
@@ -136,8 +132,7 @@ export class GameLogic {
 				break;
 		}
 
-		const n = Random.randomNumber(options.length);
-		return options[n];
+		return Collections.draw(options);
 	};
 
 	static getRandomSkillCategory = () => {
@@ -146,8 +141,7 @@ export class GameLogic {
 			SkillCategoryType.Mental
 		];
 
-		const n = Random.randomNumber(options.length);
-		return options[n];
+		return Collections.draw(options);
 	};
 
 	static getRandomTrait = () => {
@@ -157,8 +151,7 @@ export class GameLogic {
 			TraitType.Speed
 		];
 
-		const n = Random.randomNumber(options.length);
-		return options[n];
+		return Collections.draw(options);
 	};
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -248,7 +241,7 @@ export class GameLogic {
 				data = MagicItemGenerator.generateMagicItem();
 				break;
 			case BoonType.ExtraXP:
-				data = Random.dice(1);
+				data = Random.dice(3);
 				break;
 		}
 

@@ -14,7 +14,6 @@ import './encounter-map-panel.scss';
 interface Props {
 	encounter: EncounterModel;
 	squareSize: number;
-	currentID: string | null;
 	selectedIDs: string[];
 	onSelect: (combatant: CombatantModel | null) => void;
 	onDetails: (combatant: CombatantModel) => void;

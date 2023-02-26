@@ -15,6 +15,7 @@ import './heroes-page.scss';
 
 interface Props {
 	game: GameModel;
+	developer: boolean;
 	addHero: (hero: CombatantModel) => void;
 	incrementXP: (hero: CombatantModel) => void;
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
@@ -107,7 +108,7 @@ export class HeroesPage extends Component<Props, State> {
 				return (
 					<div key={hero.id}>
 						<PlayingCard front={<HeroCard hero={hero} />} onClick={() => this.setState({ selectedHero: hero })} />
-						<button className='hack' onClick={() => this.props.incrementXP(hero)}>Add XP</button>
+						{this.props.developer ? <button className='developer' onClick={() => this.props.incrementXP(hero)}>Add XP</button> : null}
 					</div>
 				);
 			});

@@ -19,6 +19,7 @@ import './encounter-screen.scss';
 interface Props {
 	encounter: EncounterModel;
 	game: GameModel;
+	developer: boolean;
 	rollInitiative: (encounter: EncounterModel) => void;
 	endTurn: (encounter: EncounterModel) => void;
 	move: (encounter: EncounterModel, combatant: CombatantModel, dir: string, cost: number) => void;
@@ -77,9 +78,6 @@ export class EncounterScreen extends Component<Props, State> {
 	};
 
 	public render() {
-		const acting = EncounterLogic.getActiveCombatants(this.props.encounter);
-		const currentCombatant = acting.length > 0 ? acting[0] : null;
-
 		let state = this.state.manualEncounterState;
 		if (state === EncounterState.Active) {
 			state = EncounterLogic.getEncounterState(this.props.encounter);
@@ -88,10 +86,12 @@ export class EncounterScreen extends Component<Props, State> {
 		let initiative = null;
 		let controls = null;
 		switch (state) {
-			case EncounterState.Active:
+			case EncounterState.Active: {
+				const currentCombatant = EncounterLogic.getActiveCombatants(this.props.encounter).find(c => c.combat.current) || null;
 				if (currentCombatant === null) {
 					controls = (
-						<div className='encounter-right-panel empty'>
+						<div className='encounter-right-panel'>
+							<Text type={TextType.SubHeading}>Round {this.props.encounter.round + 1}</Text>
 							<button onClick={() => this.props.rollInitiative(this.props.encounter)}>Roll Initiative</button>
 						</div>
 					);
@@ -100,7 +100,6 @@ export class EncounterScreen extends Component<Props, State> {
 						<div className='encounter-left-panel'>
 							<InitiativeListPanel
 								encounter={this.props.encounter}
-								currentID={currentCombatant.id}
 								selectedIDs={this.state.selectedIDs}
 								onSelect={this.selectCombatant}
 								onDetails={this.showDetails}
@@ -125,11 +124,12 @@ export class EncounterScreen extends Component<Props, State> {
 					);
 				}
 				break;
+			}
 			case EncounterState.Victory: {
 				const region = this.props.game.map.regions.find(r => r.id === this.props.encounter.regionID) as CampaignMapRegionModel;
 				controls = (
-					<div className='encounter-right-panel empty'>
-						<Text type={TextType.Heading}>Victory</Text>
+					<div className='encounter-right-panel'>
+						<Text type={TextType.SubHeading}>Victory</Text>
 						<Text>You won the encounter in {region.name}!</Text>
 						<Text>Each surviving hero who took part in this encounter gains 1 XP.</Text>
 						<Text>Any heroes who died have been lost.</Text>
@@ -141,8 +141,8 @@ export class EncounterScreen extends Component<Props, State> {
 			case EncounterState.Defeat: {
 				const region = this.props.game.map.regions.find(r => r.id === this.props.encounter.regionID) as CampaignMapRegionModel;
 				controls = (
-					<div className='encounter-right-panel empty'>
-						<Text type={TextType.Heading}>Defeated</Text>
+					<div className='encounter-right-panel'>
+						<Text type={TextType.SubHeading}>Defeated</Text>
 						<Text>You lost the encounter in {region.name}.</Text>
 						<Text>Those heroes who took part have been lost, along with all their equipment.</Text>
 						<button onClick={() => this.props.finishEncounter(EncounterState.Defeat)}>OK</button>
@@ -154,7 +154,7 @@ export class EncounterScreen extends Component<Props, State> {
 				const region = this.props.game.map.regions.find(r => r.id === this.props.encounter.regionID) as CampaignMapRegionModel;
 				controls = (
 					<div className='encounter-right-panel empty'>
-						<Text type={TextType.Heading}>Retreat</Text>
+						<Text type={TextType.SubHeading}>Retreat</Text>
 						<Text>You retreated from the encounter in {region.name}.</Text>
 						<Text>Any heroes who fell have been lost, along with all their equipment.</Text>
 						<button onClick={() => this.props.finishEncounter(EncounterState.Retreat)}>OK</button>
@@ -192,7 +192,6 @@ export class EncounterScreen extends Component<Props, State> {
 					<EncounterMapPanel
 						encounter={this.props.encounter}
 						squareSize={this.state.mapSquareSize}
-						currentID={currentCombatant ? currentCombatant.id : null}
 						selectedIDs={this.state.selectedIDs}
 						onSelect={this.selectCombatant}
 						onDetails={this.showDetails}
@@ -202,7 +201,7 @@ export class EncounterScreen extends Component<Props, State> {
 							<button disabled={this.state.mapSquareSize <= 5} className='zoom-btn' onClick={() => this.nudgeMapSize(-5)}>-</button>
 							<button disabled={this.state.mapSquareSize >= 50} className='zoom-btn' onClick={() => this.nudgeMapSize(+5)}>+</button>
 						</div>
-						<button className='finish-btn hack' onClick={() => this.setManualEncounterState(EncounterState.Victory)}>Victory</button>
+						{this.props.developer ? <button className='finish-btn developer' onClick={() => this.setManualEncounterState(EncounterState.Victory)}>Victory</button> : null}
 						<button className='finish-btn danger' onClick={() => this.setManualEncounterState(EncounterState.Retreat)}>Retreat</button>
 						<button className='finish-btn danger' onClick={() => this.setManualEncounterState(EncounterState.Defeat)}>Surrender</button>
 					</div>

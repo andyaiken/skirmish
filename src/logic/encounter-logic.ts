@@ -71,6 +71,8 @@ export class EncounterLogic {
 	};
 
 	static rollInitiative = (encounter: EncounterModel) => {
+		encounter.round += 1;
+
 		encounter.combatants.forEach(c => {
 			c.combat.initiative = Number.MIN_VALUE;
 

@@ -70,8 +70,8 @@ export class ItemData {
 				actions: []
 			},
 			{
-				id: 'item-morningstar',
-				name: 'Morningstar',
+				id: 'item-flail',
+				name: 'Flail',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.MilitaryWeapons,

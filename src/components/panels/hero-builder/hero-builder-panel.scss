@@ -20,6 +20,11 @@
 			flex: 1 1 0;
 			overflow-y: auto;
 
+			.card-selection-row {
+				width: 620px;
+				margin: 0 auto;
+			}
+
 			.rename-section {
 				margin: 10%;
 

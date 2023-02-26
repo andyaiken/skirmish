@@ -14,6 +14,7 @@ import { EncounterLogic } from './encounter-logic';
 import { EncounterMapLogic } from './encounter-map-logic';
 import { Factory } from './factory';
 import { GameLogic } from './game-logic';
+import { MagicItemGenerator } from './magic-item-generator';
 
 export class EncounterGenerator {
 	static createEncounter = (region: CampaignMapRegionModel, heroes: CombatantModel[]): EncounterModel => {
@@ -25,9 +26,9 @@ export class EncounterGenerator {
 			switch (Random.randomNumber(10, rng)) {
 				case 0: {
 					// Add a random monster
-					const speciesID = Collections.draw(GameLogic.getSpeciesDeck());
-					const roleID = Collections.draw(GameLogic.getRoleDeck());
-					const backgroundID = Collections.draw(GameLogic.getBackgroundDeck());
+					const speciesID = Collections.draw(GameLogic.getSpeciesDeck(), rng);
+					const roleID = Collections.draw(GameLogic.getRoleDeck(), rng);
+					const backgroundID = Collections.draw(GameLogic.getBackgroundDeck(), rng);
 					const monster = Factory.createCombatant(CombatantType.Monster);
 					CombatantLogic.applyCombatantCards(monster, speciesID, roleID, backgroundID);
 					CombatantLogic.makeFeatureChoices(monster);
@@ -38,11 +39,10 @@ export class EncounterGenerator {
 				case 1: {
 					// Add a monster we already have, keeping the species only
 					if (monsters.length > 0) {
-						const n = Random.randomNumber(monsters.length, rng);
-						const original = monsters[n];
+						const original = Collections.draw(monsters, rng);
 						const speciesID = original.speciesID;
-						const roleID = Collections.draw(GameLogic.getRoleDeck());
-						const backgroundID = Collections.draw(GameLogic.getBackgroundDeck());
+						const roleID = Collections.draw(GameLogic.getRoleDeck(), rng);
+						const backgroundID = Collections.draw(GameLogic.getBackgroundDeck(), rng);
 						const monster = Factory.createCombatant(CombatantType.Monster);
 						CombatantLogic.applyCombatantCards(monster, speciesID, roleID, backgroundID);
 						CombatantLogic.makeFeatureChoices(monster);
@@ -55,11 +55,10 @@ export class EncounterGenerator {
 				case 3: {
 					// Add a monster we already have, keeping the species and role
 					if (monsters.length > 0) {
-						const n = Random.randomNumber(monsters.length, rng);
-						const original = monsters[n];
+						const original = Collections.draw(monsters, rng);
 						const speciesID = original.speciesID;
 						const roleID = original.roleID;
-						const backgroundID = Collections.draw(GameLogic.getBackgroundDeck());
+						const backgroundID = Collections.draw(GameLogic.getBackgroundDeck(), rng);
 						const monster = Factory.createCombatant(CombatantType.Monster);
 						CombatantLogic.applyCombatantCards(monster, speciesID, roleID, backgroundID);
 						CombatantLogic.makeFeatureChoices(monster);
@@ -72,14 +71,23 @@ export class EncounterGenerator {
 				case 5:
 				case 6:
 				case 7:
-				case 8:
-				case 9: {
+				case 8: {
 					// Level up a random monster
 					if (monsters.length > 0) {
-						const n = Random.randomNumber(monsters.length);
-						const monster = monsters[n];
+						const monster = Collections.draw(monsters, rng);
 						CombatantLogic.incrementCombatantLevel(monster);
 						CombatantLogic.makeFeatureChoices(monster);
+					}
+					break;
+				}
+				case 9: {
+					// Add a magic item
+					if (monsters.length > 0) {
+						const monster = Collections.draw(monsters, rng);
+						if (monster.items.length > 0) {
+							const item = Collections.draw(monster.items, rng);
+							MagicItemGenerator.addMagicItemFeature(item);
+						}
 					}
 					break;
 				}
@@ -103,6 +111,7 @@ export class EncounterGenerator {
 
 		const encounter: EncounterModel = {
 			regionID: region.id,
+			round: 0,
 			combatants: [],
 			map: EncounterMapLogic.generateEncounterMap(rng)
 		};
@@ -135,8 +144,7 @@ export class EncounterGenerator {
 	static placeCombatants = (encounter: EncounterModel, rng: () => number) => {
 		encounter.combatants.forEach(combatant => {
 			for (let i = 0; i <= 1000; ++i) {
-				const n = Random.randomNumber(encounter.map.squares.length, rng);
-				const square = encounter.map.squares[n];
+				const square = Collections.draw(encounter.map.squares, rng);
 
 				const squares = [];
 				for (let x = square.x; x <= square.x + combatant.size - 1; ++x) {
@@ -147,6 +155,7 @@ export class EncounterGenerator {
 
 				const occupiedSquares: { x: number; y: number }[] = [];
 				encounter.combatants.forEach(combatant => occupiedSquares.push(...EncounterLogic.getCombatantSquares(encounter, combatant)));
+				encounter.map.loot.forEach(lp => occupiedSquares.push(lp.position));
 
 				const canPlace = squares.every(sq => {
 					const mapSquare = encounter.map.squares.find(ms => (ms.x === sq.x) && (ms.y === sq.y));

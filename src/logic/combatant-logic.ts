@@ -18,7 +18,6 @@ import type { FeatureModel } from '../models/feature';
 import type { ItemModel } from '../models/item';
 
 import { Collections } from '../utils/collections';
-import { Random } from '../utils/random';
 import { Utils } from '../utils/utils';
 
 import { Factory } from './factory';
@@ -54,8 +53,7 @@ export class CombatantLogic {
 
 	static incrementCombatantLevel = (combatant: CombatantModel) => {
 		const deck = CombatantLogic.getFeatureDeck(combatant);
-		const n = Random.randomNumber(deck.length);
-		combatant.features.push(deck[n]);
+		combatant.features.push(Collections.draw(deck));
 		combatant.level += 1;
 	};
 
@@ -137,8 +135,7 @@ export class CombatantLogic {
 	static addItems = (combatant: CombatantModel) => {
 		CombatantLogic.getProficiencies(combatant).forEach(prof => {
 			const items = GameLogic.getItemsForProficiency(prof);
-			const n = Random.randomNumber(items.length);
-			const item = JSON.parse(JSON.stringify(items[n])) as ItemModel;
+			const item = JSON.parse(JSON.stringify(Collections.draw(items))) as ItemModel;
 			item.id = Utils.guid();
 			combatant.items.push(item);
 		});

@@ -199,7 +199,7 @@ export class CombatantControls extends Component<Props, State> {
 						{this.props.combatant.combat.hidden > 0 ? <Text type={TextType.Information}><b>{this.props.combatant.name} is Hidden.</b> Their moving costs are doubled.</Text> : null}
 						<hr />
 						<button onClick={() => this.props.showCharacterSheet(this.props.combatant)}>Character Sheet</button>
-						<button className='hack' onClick={this.kill}>Kill</button>
+						<button className='developer' onClick={this.kill}>Kill</button>
 						<button onClick={this.endTurn}>End Turn</button>
 					</div>
 				);

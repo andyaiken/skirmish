@@ -54,11 +54,5 @@
 
 	.encounter-right-panel {
 		flex: 1 1 0;
-
-
-		&.empty {
-			display: flex;
-			flex-direction: column;
-		}
 	}
 }

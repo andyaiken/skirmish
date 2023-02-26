@@ -2,7 +2,11 @@ import { EncounterMapSquareType } from '../enums/encounter-map-square-type';
 
 import type { EncounterMapModel, EncounterMapSquareModel } from '../models/encounter-map';
 
+import { Collections } from '../utils/collections';
 import { Random } from '../utils/random';
+
+import { Factory } from './factory';
+import { MagicItemGenerator } from './magic-item-generator';
 
 export class EncounterMapLogic {
 	static generateEncounterMap = (rng: () => number): EncounterMapModel => {
@@ -19,8 +23,8 @@ export class EncounterMapLogic {
 			const type = Random.randomNumber(3, rng);
 
 			const size = {
-				width: (type === 2) && ((dir === 'n') || (dir === 's')) ? 2 : Random.dice(1, rng) + Random.dice(1, rng),
-				height: (type === 2) && ((dir === 'e') || (dir === 'w')) ? 2 : Random.dice(1, rng) + Random.dice(1, rng)
+				width: (type === 2) && ((dir === 'n') || (dir === 's')) ? 2 : Random.dice(3, rng),
+				height: (type === 2) && ((dir === 'e') || (dir === 'w')) ? 2 : Random.dice(3, rng)
 			};
 
 			const position = { x: 0, y: 0 };
@@ -63,6 +67,16 @@ export class EncounterMapLogic {
 			blob.forEach(sq => sq.type = EncounterMapSquareType.Obstructed);
 		}
 
+		while (Random.randomNumber(3, rng) !== 0) {
+			// Add magic items loot piles
+			const square = Collections.draw(map.squares.filter(c => c.type === EncounterMapSquareType.Clear), rng);
+			const lp = Factory.createLootPile();
+			lp.items.push(MagicItemGenerator.generateMagicItem());
+			lp.position.x = square.x;
+			lp.position.y = square.y;
+			map.loot.push(lp);
+		}
+
 		return map;
 	};
 
@@ -75,9 +89,7 @@ export class EncounterMapLogic {
 				return blob;
 			}
 
-			const n = Random.randomNumber(candidates.length, rng);
-			const square = candidates[n];
-			blob.push(square);
+			blob.push(Collections.draw(candidates));
 		}
 
 		return blob;

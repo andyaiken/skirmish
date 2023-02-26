@@ -1,5 +1,6 @@
 import type { CampaignMapModel, CampaignMapRegionModel, CampaignMapSquareModel } from '../models/campaign-map';
 
+import { Collections } from '../utils/collections';
 import { Random } from '../utils/random';
 import { Utils } from '../utils/utils';
 
@@ -18,8 +19,7 @@ export class CampaignMapLogic {
 		};
 
 		while (map.squares.length < 1000) {
-			const index = Random.randomNumber(map.squares.length);
-			const parent = map.squares[index];
+			const parent = Collections.draw(map.squares);
 
 			let x = parent.x;
 			let y = parent.y;
@@ -75,8 +75,7 @@ export class CampaignMapLogic {
 
 		map.regions.forEach(region => {
 			const unclaimed = map.squares.filter(sq => sq.regionID === '');
-			const index = Random.randomNumber(unclaimed.length);
-			const square = map.squares[index];
+			const square = Collections.draw(unclaimed);
 			square.regionID = region.id;
 		});
 
@@ -95,8 +94,7 @@ export class CampaignMapLogic {
 
 				// Pick a square and claim it
 				if (candidates.length > 0) {
-					const index = Random.randomNumber(candidates.length);
-					const square = candidates[index];
+					const square = Collections.draw(candidates);
 					square.regionID = region.id;
 				}
 			});

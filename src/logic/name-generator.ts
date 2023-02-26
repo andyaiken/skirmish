@@ -1,3 +1,4 @@
+import { Collections } from '../utils/collections';
 import { Random } from '../utils/random';
 
 export class NameGenerator {
@@ -65,8 +66,7 @@ export class NameGenerator {
 		let separator = '';
 		if (Random.randomNumber(10) === 0) {
 			const separators = [ '-', '\'' ];
-			const sepIndex = Random.randomNumber(separators.length);
-			separator = separators[sepIndex];
+			separator = Collections.draw(separators);
 		}
 
 		const startIndex = Random.randomNumber(starts.length);

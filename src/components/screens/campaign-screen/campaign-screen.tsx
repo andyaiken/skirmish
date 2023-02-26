@@ -18,6 +18,7 @@ import './campaign-screen.scss';
 
 interface Props {
 	game: GameModel;
+	developer: boolean;
 	addHero: (hero: CombatantModel) => void;
 	incrementXP: (hero: CombatantModel) => void;
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
@@ -27,7 +28,9 @@ interface Props {
 	levelUp: (feature: FeatureModel, hero: CombatantModel) => void;
 	redeemBoon: (boon: BoonModel, hero: CombatantModel | null) => void;
 	startEncounter: (region: CampaignMapRegionModel, heroes: CombatantModel[]) => void;
+	conquer: (region: CampaignMapRegionModel) => void;
 	endCampaign: () => void;
+	setDeveloper: (value: boolean) => void;
 }
 
 interface State {
@@ -60,6 +63,7 @@ export class CampaignScreen extends Component<Props, State> {
 				content = (
 					<HeroesPage
 						game={this.props.game}
+						developer={this.props.developer}
 						addHero={this.props.addHero}
 						incrementXP={this.props.incrementXP}
 						equipItem={this.props.equipItem}
@@ -82,14 +86,18 @@ export class CampaignScreen extends Component<Props, State> {
 				content = (
 					<CampaignMapPage
 						game={this.props.game}
+						developer={this.props.developer}
 						startEncounter={this.props.startEncounter}
+						conquer={this.props.conquer}
 					/>
 				);
 				break;
 			case 'options':
 				content = (
 					<OptionsPage
+						developer={this.props.developer}
 						endCampaign={this.props.endCampaign}
+						setDeveloper={this.props.setDeveloper}
 					/>
 				);
 				break;

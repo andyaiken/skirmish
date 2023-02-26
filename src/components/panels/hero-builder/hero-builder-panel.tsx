@@ -250,12 +250,18 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 			<div className='card-selector-page'>
 				{this.props.header}
 				<div className='content'>
-					<Text>Select one of these <b>species</b> cards:</Text>
-					<CardList cards={speciesCards} />
-					<Text>Select one of these <b>role</b> cards:</Text>
-					<CardList cards={roleCards} />
-					<Text>Select one of these <b>background</b> cards:</Text>
-					<CardList cards={backgroundCards} />
+					<div className='card-selection-row'>
+						<Text>Select one of these <b>species</b> cards:</Text>
+						<CardList cards={speciesCards} />
+					</div>
+					<div className='card-selection-row'>
+						<Text>Select one of these <b>role</b> cards:</Text>
+						<CardList cards={roleCards} />
+					</div>
+					<div className='card-selection-row'>
+						<Text>Select one of these <b>background</b> cards:</Text>
+						<CardList cards={backgroundCards} />
+					</div>
 				</div>
 				<div className='footer'>
 					<button disabled={!canSelect} onClick={() => this.select()}>Select these cards</button>
@@ -310,17 +316,17 @@ class EquipmentSelector extends Component<EquipmentSelectorProps, EquipmentSelec
 		}
 
 		const slots = role.proficiencies.map((prof, n) => {
-			const currentItemIDs = this.state.items
+			const currentItemNames = this.state.items
 				.filter(item => item.proficiency === prof)
-				.map(item => item.id);
+				.map(item => item.name);
 
 			const items = GameLogic.getItemsForProficiency(prof).map(item => (
 				<div key={item.id}>
 					<PlayingCard
 						front={<ItemCard item={item} />}
 						back={<PlaceholderCard text='Item' />}
-						display={(currentItemIDs.length !== 0) && (!currentItemIDs.includes(item.id)) ? PlayingCardSide.Back : PlayingCardSide.Front}
-						onClick={(currentItemIDs.length !== 0) ? null : () => this.selectItem(item.id)}
+						display={(currentItemNames.length !== 0) && (!currentItemNames.includes(item.name)) ? PlayingCardSide.Back : PlayingCardSide.Front}
+						onClick={(currentItemNames.length !== 0) ? null : () => this.selectItem(item.id)}
 					/>
 				</div>
 			));

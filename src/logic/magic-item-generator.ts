@@ -156,7 +156,6 @@ export class MagicItemGenerator {
 		copyAction.actions.push(GameLogic.getRandomAction());
 		options.push(copyFeature);
 
-		const n = Random.randomNumber(options.length);
-		return options[n];
+		return Collections.draw(options);
 	};
 }

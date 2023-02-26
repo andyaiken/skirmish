@@ -34,12 +34,14 @@
 
 			.front-footer {
 				flex: 0 0 auto;
+				border-top: 1px solid rgb(220, 220, 220);
+				border-radius: 0 0 13px 13px;
+				background-color: rgb(240, 240, 240);
+				padding: 8px 0;
 				text-align: center;
 				text-transform: uppercase;
-				font-size: 12px;
+				font-size: 10px;
 				letter-spacing: 2px;
-				border-top: 1px solid rgb(220, 220, 220);
-				padding: 8px 0;
 			}
 
 			hr {

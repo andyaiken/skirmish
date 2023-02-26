@@ -4,7 +4,7 @@ import './box.scss';
 
 interface Props {
 	label: string;
-	children: JSX.Element | JSX.Element[];
+	children: JSX.Element | null | (JSX.Element | null)[];
 }
 
 export class Box extends Component<Props> {

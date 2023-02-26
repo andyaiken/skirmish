@@ -6,7 +6,7 @@ import { GameLogic } from '../../../logic/game-logic';
 
 import type { ItemModel } from '../../../models/item';
 
-import { StatValue, Tag, Text, TextType } from '../../controls';
+import { Box, StatValue, Tag, Text, TextType } from '../../controls';
 
 import './item-card.scss';
 
@@ -19,12 +19,12 @@ export class ItemCard extends Component<Props> {
 		let wpn = null;
 		if (this.props.item.weapon) {
 			wpn = (
-				<div>
+				<Box label='Weapon'>
 					<StatValue label='Damage' value={this.props.item.weapon.damage.rank}/>
 					<StatValue label='Type' value={this.props.item.weapon.damage.type}/>
 					{this.props.item.weapon.range > 0 ? <StatValue label='Range' value={this.props.item.weapon.range}/> : null}
 					{this.props.item.weapon.unreliable > 0 ? <StatValue label='Unreliable' value={this.props.item.weapon.unreliable}/> : null}
-				</div>
+				</Box>
 			);
 		}
 

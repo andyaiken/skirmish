@@ -3,6 +3,7 @@ import type { EncounterMapModel } from './encounter-map';
 
 export interface EncounterModel {
 	regionID: string;
+	round: number;
 	combatants: CombatantModel[];
 	map: EncounterMapModel;
 }

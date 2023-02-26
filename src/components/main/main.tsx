@@ -43,6 +43,7 @@ interface Props {
 interface State {
 	screen: ScreenType;
 	game: GameModel | null;
+	developer: boolean;
 	dialog: JSX.Element | null;
 }
 
@@ -71,6 +72,7 @@ export class Main extends Component<Props, State> {
 		this.state = {
 			screen: ScreenType.Landing,
 			game: game,
+			developer: false,
 			dialog: null
 		};
 	}
@@ -83,6 +85,12 @@ export class Main extends Component<Props, State> {
 		this.setState({
 			screen: screen,
 			dialog: null
+		});
+	};
+
+	setDeveloper = (value: boolean) => {
+		this.setState({
+			developer: value
 		});
 	};
 
@@ -181,6 +189,20 @@ export class Main extends Component<Props, State> {
 			this.setState({
 				game: game,
 				screen: ScreenType.Encounter
+			});
+		}
+	};
+
+	conquer = (region: CampaignMapRegionModel) => {
+		if (this.state.game) {
+			const game = this.state.game;
+
+			CampaignMapLogic.removeRegion(game.map, region);
+			GameLogic.addHeroToGame(game, Factory.createCombatant(CombatantType.Hero));
+			game.boons.push(region.boon);
+
+			this.setState({
+				game: game
 			});
 		}
 	};
@@ -405,8 +427,8 @@ export class Main extends Component<Props, State> {
 				game.heroes = game.heroes.filter(h => !deadHeroes.includes(h));
 				// Get equipment from dead heroes, add it to game loot
 				deadHeroes.forEach(h => game.items.push(...h.items));
-				// Get equipment from monsters, add it to game loot
-				encounter.combatants.filter(c => c.type === CombatantType.Monster).forEach(h => game.items.push(...h.items));
+				// Get equipment from loot piles, add it to game loot
+				encounter.map.loot.forEach(lp => game.items.push(...lp.items));
 				// Increment XP for surviving heroes
 				EncounterLogic.getSurvivingHeroes(encounter).forEach(h => h.xp += 1);
 				// Remove the first encounter for this region
@@ -499,6 +521,7 @@ export class Main extends Component<Props, State> {
 				return (
 					<CampaignScreen
 						game={this.state.game as GameModel}
+						developer={this.state.developer}
 						addHero={this.addHero}
 						incrementXP={this.incrementXP}
 						equipItem={this.equipItem}
@@ -508,7 +531,9 @@ export class Main extends Component<Props, State> {
 						levelUp={this.levelUp}
 						redeemBoon={this.redeemBoon}
 						startEncounter={this.startEncounter}
+						conquer={this.conquer}
 						endCampaign={this.endCampaign}
+						setDeveloper={this.setDeveloper}
 					/>
 				);
 			case 'encounter':
@@ -516,6 +541,7 @@ export class Main extends Component<Props, State> {
 					<EncounterScreen
 						encounter={this.state.game?.encounter as EncounterModel}
 						game={this.state.game as GameModel}
+						developer={this.state.developer}
 						rollInitiative={this.rollInitiative}
 						endTurn={this.endTurn}
 						move={this.move}

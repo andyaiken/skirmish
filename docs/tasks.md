@@ -14,7 +14,6 @@
 ## To Do
 
 * Encounters:
-  * Show round number
   * Implement actions
   * Implement AI so that monsters can take their turns
   * Show turn log for current combatant, if it's a monster
@@ -32,16 +31,15 @@
   * Also do this in the hero selection dialog
 * Campaign screen, Items page:
   * Allow mundane items to be filtered out or sold
-    * You could then use money buy items / hero slots
+    * You could then use money buy magic items / hero slots, or to add enhancements to items
     * Loot piles could include money
   * Click on magic item / mundane item to see heroes with the correct proficiency
 * Character sheet panel:
   * Show ranks as filled circles
   * Show the XP required as a gauge
-* Encounter maps:
-  * Encounter maps should (occasionally) have random loot piles scattered about
 * Campaign maps:
   * The island should include mountain ranges, lakes etc, which are impassable
+  * Regions could have population, terrain types, etc
 * Mountebank, Thief and Pixie should have an attack redirection aura
 * Noble should have trait buffing / skill buffing auras
 * Monster species:

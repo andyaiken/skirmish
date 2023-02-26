@@ -1,4 +1,7 @@
 .campaign-map-page {
+	background-color: rgb(130, 200, 250);
+	border-radius: 20px;
+
 	.row {
 		display: flex;
 
@@ -9,7 +12,11 @@
 
 		.info {
 			flex: 1 1 0;
-			padding: 10px 0 0 10px;
+			margin: 20px;
+			padding: 20px;
+			background-color: white;
+			border: 2px solid rgb(210, 210, 210);
+			border-radius: 10px;
 
 			.region {
 				.boon {

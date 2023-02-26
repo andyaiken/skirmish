@@ -5,7 +5,7 @@ import { Text, TextType } from '../../controls';
 import './placeholder-card.scss';
 
 interface Props {
-	text: string;
+	text: string | JSX.Element;
 }
 
 export class PlaceholderCard extends Component<Props> {

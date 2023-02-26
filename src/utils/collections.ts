@@ -1,10 +1,10 @@
 import { Random } from './random';
 
 export class Collections {
-	static shuffle = <T>(collection: T[]) => {
+	static shuffle = <T>(collection: T[], rng: () => number = Math.random) => {
 		let currentIndex = collection.length;
 		while (currentIndex !== 0) {
-			const randomIndex = Random.randomNumber(currentIndex);
+			const randomIndex = Random.randomNumber(currentIndex, rng);
 			currentIndex -= 1;
 
 			const temporaryValue = collection[currentIndex];
@@ -15,8 +15,8 @@ export class Collections {
 		return collection;
 	};
 
-	static draw = <T>(collection: T[]) => {
-		const index = Random.randomNumber(collection.length);
+	static draw = <T>(collection: T[], rng: () => number = Math.random) => {
+		const index = Random.randomNumber(collection.length, rng);
 		return collection[index];
 	};
 

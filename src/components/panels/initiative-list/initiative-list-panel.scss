@@ -1,6 +1,4 @@
 .initiative-list-panel {
-	height: 100%;
-
 	.initiative-entry {
 		display: flex;
 		align-items: center;
@@ -12,7 +10,7 @@
 		&.current {
 			border-color: rgb(60, 170, 255);
 			background-color: rgb(200, 230, 255);
-			margin: 20px 0;
+			margin-bottom: 30px;
 		}
 
 		&.selected {

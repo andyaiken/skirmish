@@ -1,12 +1,11 @@
 import type { ActionModel } from '../models/action';
 
-import { Utils } from '../utils/utils';
+import { Factory } from './factory';
 
 export class ActionLogic {
-	static createActionPlaceholder = (name: string): ActionModel => {
-		return {
-			id: Utils.guid(),
-			name: name
-		};
+	static createActionPlaceholder = (id: string, name: string): ActionModel => {
+		const action = Factory.createAction(id);
+		action.name = name;
+		return action;
 	};
 }

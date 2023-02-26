@@ -3,6 +3,7 @@ import { Component } from 'react';
 import { BoonType } from '../../enums/boon-type';
 import { CombatantState } from '../../enums/combatant-state';
 import { CombatantType } from '../../enums/combatant-type';
+import { EncounterState } from '../../enums/encounter-state';
 
 import { CampaignMapLogic } from '../../logic/campaign-map-logic';
 import { CombatantLogic } from '../../logic/combatant-logic';
@@ -23,7 +24,7 @@ import type { ItemModel } from '../../models/item';
 import { Collections } from '../../utils/collections';
 import { Utils } from '../../utils/utils';
 
-import { CampaignScreen, EncounterFinishState, EncounterScreen, LandingScreen } from '../screens';
+import { CampaignScreen, EncounterScreen, LandingScreen } from '../screens';
 import { Dialog, PlayingCard, Text, TextType } from '../controls';
 import { BoonCard } from '../cards';
 
@@ -46,7 +47,6 @@ interface State {
 }
 
 export class Main extends Component<Props, State> {
-
 	constructor(props: Props) {
 		super(props);
 
@@ -381,7 +381,7 @@ export class Main extends Component<Props, State> {
 		});
 	};
 
-	finishEncounter = (state: EncounterFinishState) => {
+	finishEncounter = (state: EncounterState) => {
 		const game = this.state.game;
 		if (!game) {
 			return;
@@ -399,7 +399,7 @@ export class Main extends Component<Props, State> {
 
 		let dialog = null;
 		switch (state) {
-			case EncounterFinishState.Victory: {
+			case EncounterState.Victory: {
 				// Remove dead heroes from the game
 				const deadHeroes = EncounterLogic.getDeadHeroes(encounter);
 				game.heroes = game.heroes.filter(h => !deadHeroes.includes(h));
@@ -418,6 +418,7 @@ export class Main extends Component<Props, State> {
 						// Show message
 						dialog = (
 							<div>
+								<Text type={TextType.Heading}>Victory</Text>
 								<Text type={TextType.SubHeading}>You control the island!</Text>
 								<Text><b>Congratulations!</b> There are no more regions to conquer.</Text>
 								<button onClick={() => this.endCampaign()}>Start Again</button>
@@ -431,6 +432,7 @@ export class Main extends Component<Props, State> {
 						// Show message
 						dialog = (
 							<div>
+								<Text type={TextType.Heading}>Victory</Text>
 								<Text type={TextType.SubHeading}>You have taken control of {region.name}!</Text>
 								<Text>Each hero who took part in this encounter gains 1 XP, you can recruit a new hero, and you have earned a reward:</Text>
 								<PlayingCard front={<BoonCard boon={region.boon} />} />
@@ -439,38 +441,12 @@ export class Main extends Component<Props, State> {
 							</div>
 						);
 					}
-				} else {
-					// Show message
-					dialog = (
-						<div>
-							<Text type={TextType.SubHeading}>You won the encounter in {region.name}!</Text>
-							<Text>Each surviving hero who took part in this encounter gains 1 XP.</Text>
-							<Text>Any heroes who died have been lost.</Text>
-							<button onClick={() => this.setScreen(ScreenType.Campaign)}>OK</button>
-						</div>
-					);
 				}
 				// Clear the current encounter
 				game.encounter = null;
 				break;
 			}
-			case EncounterFinishState.Retreat: {
-				// Remove fallen heroes from the game
-				const fallenHeroes = EncounterLogic.getFallenHeroes(encounter);
-				game.heroes = game.heroes.filter(h => !fallenHeroes.includes(h));
-				// Clear the current encounter
-				game.encounter = null;
-				// Show message
-				dialog = (
-					<div>
-						<Text type={TextType.SubHeading}>You retreated from the encounter in {region.name}.</Text>
-						<Text>Any heroes who fell have been lost, along with all their equipment.</Text>
-						<button onClick={() => this.setScreen(ScreenType.Campaign)}>OK</button>
-					</div>
-				);
-				break;
-			}
-			case EncounterFinishState.Defeat: {
+			case EncounterState.Defeat: {
 				// Remove all participating heroes from the game
 				const heroes = EncounterLogic.getAllHeroesInEncounter(encounter);
 				game.heroes = game.heroes.filter(h => !heroes.includes(h));
@@ -485,16 +461,15 @@ export class Main extends Component<Props, State> {
 							<button onClick={() => this.endCampaign()}>OK</button>
 						</div>
 					);
-				} else {
-					// Show message
-					dialog = (
-						<div>
-							<Text type={TextType.SubHeading}>You lost the encounter in {region.name}.</Text>
-							<Text>Those heroes who took part have been lost, along with all their equipment.</Text>
-							<button onClick={() => this.setScreen(ScreenType.Campaign)}>Try Again</button>
-						</div>
-					);
 				}
+				break;
+			}
+			case EncounterState.Retreat: {
+				// Remove fallen heroes from the game
+				const fallenHeroes = EncounterLogic.getFallenHeroes(encounter);
+				game.heroes = game.heroes.filter(h => !fallenHeroes.includes(h));
+				// Clear the current encounter
+				game.encounter = null;
 				break;
 			}
 		}

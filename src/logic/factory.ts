@@ -9,6 +9,7 @@ import { SkillCategoryType } from '../enums/skill-category-type';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
 
+import type { ActionModel } from '../models/action';
 import type { CombatantModel } from '../models/combatant';
 import type { ConditionModel } from '../models/condition';
 import type { FeatureModel } from '../models/feature';
@@ -85,9 +86,9 @@ export class Factory {
 		};
 	};
 
-	static createFeature = (): FeatureModel => {
+	static createFeature = (id: string): FeatureModel => {
 		return {
-			id: Utils.guid(),
+			id: id,
 			type: FeatureType.Trait,
 			damage: DamageType.None,
 			damageCategory: DamageCategoryType.None,
@@ -97,6 +98,13 @@ export class Factory {
 			trait: TraitType.None,
 			aura: ConditionType.None,
 			rank: 1
+		};
+	};
+
+	static createAction = (id: string): ActionModel => {
+		return {
+			id: id,
+			name: ''
 		};
 	};
 

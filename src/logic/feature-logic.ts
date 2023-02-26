@@ -10,75 +10,76 @@ import { TraitType } from '../enums/trait-type';
 import type { FeatureModel } from '../models/feature';
 
 import { Random } from '../utils/random';
+import { Utils } from '../utils/utils';
 
 import { Factory } from './factory';
 import { GameLogic } from './game-logic';
 
 export class FeatureLogic {
-	static createDamageBonusFeature = (damage: DamageType, rank: number): FeatureModel => {
-		const feature = Factory.createFeature();
+	static createDamageBonusFeature = (id: string, damage: DamageType, rank: number): FeatureModel => {
+		const feature = Factory.createFeature(id);
 		feature.type = FeatureType.DamageBonus;
 		feature.damage = damage;
 		feature.rank = rank;
 		return feature;
 	};
 
-	static createDamageCategoryBonusFeature = (category: DamageCategoryType, rank: number): FeatureModel => {
-		const feature = Factory.createFeature();
+	static createDamageCategoryBonusFeature = (id: string, category: DamageCategoryType, rank: number): FeatureModel => {
+		const feature = Factory.createFeature(id);
 		feature.type = FeatureType.DamageCategoryBonus;
 		feature.damageCategory = category;
 		feature.rank = rank;
 		return feature;
 	};
 
-	static createDamageResistFeature = (damage: DamageType, rank: number): FeatureModel => {
-		const feature = Factory.createFeature();
+	static createDamageResistFeature = (id: string, damage: DamageType, rank: number): FeatureModel => {
+		const feature = Factory.createFeature(id);
 		feature.type = FeatureType.DamageResist;
 		feature.damage = damage;
 		feature.rank = rank;
 		return feature;
 	};
 
-	static createDamageCategoryResistFeature = (category: DamageCategoryType, rank: number): FeatureModel => {
-		const feature = Factory.createFeature();
+	static createDamageCategoryResistFeature = (id: string, category: DamageCategoryType, rank: number): FeatureModel => {
+		const feature = Factory.createFeature(id);
 		feature.type = FeatureType.DamageCategoryResist;
 		feature.damageCategory = category;
 		feature.rank = rank;
 		return feature;
 	};
 
-	static createProficiencyFeature = (proficiency: ItemProficiencyType): FeatureModel => {
-		const feature = Factory.createFeature();
+	static createProficiencyFeature = (id: string, proficiency: ItemProficiencyType): FeatureModel => {
+		const feature = Factory.createFeature(id);
 		feature.type = FeatureType.Proficiency;
 		feature.proficiency = proficiency;
 		return feature;
 	};
 
-	static createSkillFeature = (skill: SkillType, rank: number): FeatureModel => {
-		const feature = Factory.createFeature();
+	static createSkillFeature = (id: string, skill: SkillType, rank: number): FeatureModel => {
+		const feature = Factory.createFeature(id);
 		feature.type = FeatureType.Skill;
 		feature.skill = skill;
 		feature.rank = rank;
 		return feature;
 	};
 
-	static createSkillCategoryFeature = (category: SkillCategoryType, rank: number): FeatureModel => {
-		const feature = Factory.createFeature();
+	static createSkillCategoryFeature = (id: string, category: SkillCategoryType, rank: number): FeatureModel => {
+		const feature = Factory.createFeature(id);
 		feature.type = FeatureType.SkillCategory;
 		feature.skillCategory = category;
 		feature.rank = rank;
 		return feature;
 	};
 
-	static createTraitFeature = (trait: TraitType, rank: number): FeatureModel => {
-		const feature = Factory.createFeature();
+	static createTraitFeature = (id: string, trait: TraitType, rank: number): FeatureModel => {
+		const feature = Factory.createFeature(id);
 		feature.type = FeatureType.Trait;
 		feature.trait = trait;
 		feature.rank = rank;
 		return feature;
 	};
 
-	static createAuraFeature = (aura: ConditionType, rank: number): FeatureModel => {
+	static createAuraFeature = (id: string, aura: ConditionType, rank: number): FeatureModel => {
 		const types = [
 			ConditionType.AutoHeal,
 			ConditionType.MovementBonus,
@@ -88,14 +89,14 @@ export class FeatureLogic {
 			throw new Error('Incorrect aura parameters');
 		}
 
-		const feature = Factory.createFeature();
+		const feature = Factory.createFeature(id);
 		feature.type = FeatureType.Aura;
 		feature.aura = aura;
 		feature.rank = rank;
 		return feature;
 	};
 
-	static createAuraTraitFeature = (aura: ConditionType, trait: TraitType, rank: number): FeatureModel => {
+	static createAuraTraitFeature = (id: string, aura: ConditionType, trait: TraitType, rank: number): FeatureModel => {
 		const types = [
 			ConditionType.TraitBonus,
 			ConditionType.TraitPenalty
@@ -104,7 +105,7 @@ export class FeatureLogic {
 			throw new Error('Incorrect aura parameters');
 		}
 
-		const feature = Factory.createFeature();
+		const feature = Factory.createFeature(id);
 		feature.type = FeatureType.Aura;
 		feature.aura = aura;
 		feature.trait = trait;
@@ -112,7 +113,7 @@ export class FeatureLogic {
 		return feature;
 	};
 
-	static createAuraSkillFeature = (aura: ConditionType, skill: SkillType, rank: number): FeatureModel => {
+	static createAuraSkillFeature = (id: string, aura: ConditionType, skill: SkillType, rank: number): FeatureModel => {
 		const types = [
 			ConditionType.SkillBonus,
 			ConditionType.SkillPenalty
@@ -121,7 +122,7 @@ export class FeatureLogic {
 			throw new Error('Incorrect aura parameters');
 		}
 
-		const feature = Factory.createFeature();
+		const feature = Factory.createFeature(id);
 		feature.type = FeatureType.Aura;
 		feature.aura = aura;
 		feature.skill = skill;
@@ -129,7 +130,7 @@ export class FeatureLogic {
 		return feature;
 	};
 
-	static createAuraSkillCategoryFeature = (aura: ConditionType, category: SkillCategoryType, rank: number): FeatureModel => {
+	static createAuraSkillCategoryFeature = (id: string, aura: ConditionType, category: SkillCategoryType, rank: number): FeatureModel => {
 		const types = [
 			ConditionType.SkillCategoryBonus,
 			ConditionType.SkillCategoryPenalty
@@ -138,7 +139,7 @@ export class FeatureLogic {
 			throw new Error('Incorrect aura parameters');
 		}
 
-		const feature = Factory.createFeature();
+		const feature = Factory.createFeature(id);
 		feature.type = FeatureType.Aura;
 		feature.aura = aura;
 		feature.skillCategory = category;
@@ -146,7 +147,7 @@ export class FeatureLogic {
 		return feature;
 	};
 
-	static createAuraDamageFeature = (aura: ConditionType, damage: DamageType, rank: number): FeatureModel => {
+	static createAuraDamageFeature = (id: string, aura: ConditionType, damage: DamageType, rank: number): FeatureModel => {
 		const types = [
 			ConditionType.AutoDamage,
 			ConditionType.DamageBonus,
@@ -158,7 +159,7 @@ export class FeatureLogic {
 			throw new Error('Incorrect aura parameters');
 		}
 
-		const feature = Factory.createFeature();
+		const feature = Factory.createFeature(id);
 		feature.type = FeatureType.Aura;
 		feature.aura = aura;
 		feature.damage = damage;
@@ -166,7 +167,7 @@ export class FeatureLogic {
 		return feature;
 	};
 
-	static createAuraDamageCategoryFeature = (aura: ConditionType, category: DamageCategoryType, rank: number): FeatureModel => {
+	static createAuraDamageCategoryFeature = (id: string, aura: ConditionType, category: DamageCategoryType, rank: number): FeatureModel => {
 		const types = [
 			ConditionType.DamageCategoryBonus,
 			ConditionType.DamageCategoryPenalty,
@@ -177,7 +178,7 @@ export class FeatureLogic {
 			throw new Error('Incorrect aura parameters');
 		}
 
-		const feature = Factory.createFeature();
+		const feature = Factory.createFeature(id);
 		feature.type = FeatureType.Aura;
 		feature.aura = aura;
 		feature.damageCategory = category;
@@ -188,21 +189,21 @@ export class FeatureLogic {
 	static createRandomFeature = () => {
 		switch (Random.randomNumber(8)) {
 			case 0:
-				return FeatureLogic.createDamageBonusFeature(GameLogic.getRandomDamageType(), Random.randomBonus());
+				return FeatureLogic.createDamageBonusFeature(Utils.guid(), GameLogic.getRandomDamageType(), Random.randomBonus());
 			case 1:
-				return FeatureLogic.createDamageCategoryBonusFeature(GameLogic.getRandomDamageCategoryType(), Random.randomBonus());
+				return FeatureLogic.createDamageCategoryBonusFeature(Utils.guid(), GameLogic.getRandomDamageCategoryType(), Random.randomBonus());
 			case 2:
-				return FeatureLogic.createDamageResistFeature(GameLogic.getRandomDamageType(), Random.randomBonus());
+				return FeatureLogic.createDamageResistFeature(Utils.guid(), GameLogic.getRandomDamageType(), Random.randomBonus());
 			case 3:
-				return FeatureLogic.createDamageCategoryResistFeature(GameLogic.getRandomDamageCategoryType(), Random.randomBonus());
+				return FeatureLogic.createDamageCategoryResistFeature(Utils.guid(), GameLogic.getRandomDamageCategoryType(), Random.randomBonus());
 			case 4:
-				return FeatureLogic.createProficiencyFeature(GameLogic.getRandomItemProficiency());
+				return FeatureLogic.createProficiencyFeature(Utils.guid(), GameLogic.getRandomItemProficiency());
 			case 5:
-				return FeatureLogic.createTraitFeature(GameLogic.getRandomTrait(), Random.randomBonus());
+				return FeatureLogic.createTraitFeature(Utils.guid(), GameLogic.getRandomTrait(), Random.randomBonus());
 			case 6:
-				return FeatureLogic.createSkillFeature(GameLogic.getRandomSkill(), Random.randomBonus());
+				return FeatureLogic.createSkillFeature(Utils.guid(), GameLogic.getRandomSkill(), Random.randomBonus());
 			default:
-				return FeatureLogic.createSkillCategoryFeature(GameLogic.getRandomSkillCategory(), Random.randomBonus());
+				return FeatureLogic.createSkillCategoryFeature(Utils.guid(), GameLogic.getRandomSkillCategory(), Random.randomBonus());
 		}
 	};
 

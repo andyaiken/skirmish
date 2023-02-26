@@ -1,5 +1,6 @@
 export enum EncounterState {
 	Active = 'Active',
-	Won = 'Won',
-	Defeated = 'Defeated'
+	Victory = 'Victory',
+	Defeat = 'Defeat',
+	Retreat = 'Retreat'
 }

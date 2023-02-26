@@ -462,7 +462,7 @@ export class ItemData {
 				slots: 1,
 				weapon: null,
 				features: [
-					FeatureLogic.createDamageCategoryResistFeature(DamageCategoryType.Physical, 1)
+					FeatureLogic.createDamageCategoryResistFeature('leatherarmour-1', DamageCategoryType.Physical, 1)
 				],
 				actions: []
 			},
@@ -476,8 +476,8 @@ export class ItemData {
 				slots: 1,
 				weapon: null,
 				features: [
-					FeatureLogic.createDamageCategoryResistFeature(DamageCategoryType.Physical, 2),
-					FeatureLogic.createSkillCategoryFeature(SkillCategoryType.Physical, -1)
+					FeatureLogic.createDamageCategoryResistFeature('hidearmour-1', DamageCategoryType.Physical, 2),
+					FeatureLogic.createSkillCategoryFeature('hidearmour-2', SkillCategoryType.Physical, -1)
 				],
 				actions: []
 			},
@@ -491,9 +491,9 @@ export class ItemData {
 				slots: 1,
 				weapon: null,
 				features: [
-					FeatureLogic.createDamageCategoryResistFeature(DamageCategoryType.Physical, 3),
-					FeatureLogic.createSkillCategoryFeature(SkillCategoryType.Physical, -1),
-					FeatureLogic.createTraitFeature(TraitType.Speed, -1)
+					FeatureLogic.createDamageCategoryResistFeature('brigandinearmour-1', DamageCategoryType.Physical, 3),
+					FeatureLogic.createSkillCategoryFeature('brigandinearmour-2', SkillCategoryType.Physical, -1),
+					FeatureLogic.createTraitFeature('brigandinearmour-3', TraitType.Speed, -1)
 				],
 				actions: []
 			},
@@ -507,9 +507,9 @@ export class ItemData {
 				slots: 1,
 				weapon: null,
 				features: [
-					FeatureLogic.createDamageCategoryResistFeature(DamageCategoryType.Physical, 4),
-					FeatureLogic.createSkillCategoryFeature(SkillCategoryType.Physical, -2),
-					FeatureLogic.createTraitFeature(TraitType.Speed, -1)
+					FeatureLogic.createDamageCategoryResistFeature('chainarmour-1', DamageCategoryType.Physical, 4),
+					FeatureLogic.createSkillCategoryFeature('chainarmour-2', SkillCategoryType.Physical, -2),
+					FeatureLogic.createTraitFeature('chainarmour-3', TraitType.Speed, -1)
 				],
 				actions: []
 			},
@@ -523,9 +523,9 @@ export class ItemData {
 				slots: 1,
 				weapon: null,
 				features: [
-					FeatureLogic.createDamageCategoryResistFeature(DamageCategoryType.Physical, 5),
-					FeatureLogic.createSkillCategoryFeature(SkillCategoryType.Physical, -2),
-					FeatureLogic.createTraitFeature(TraitType.Speed, -2)
+					FeatureLogic.createDamageCategoryResistFeature('platearmor-1', DamageCategoryType.Physical, 5),
+					FeatureLogic.createSkillCategoryFeature('platearmor-2', SkillCategoryType.Physical, -2),
+					FeatureLogic.createTraitFeature('platearmor-3', TraitType.Speed, -2)
 				],
 				actions: []
 			},
@@ -539,7 +539,7 @@ export class ItemData {
 				slots: 1,
 				weapon: null,
 				features: [
-					FeatureLogic.createDamageCategoryResistFeature(DamageCategoryType.Physical, 1)
+					FeatureLogic.createDamageCategoryResistFeature('shield-1', DamageCategoryType.Physical, 1)
 				],
 				actions: []
 			},
@@ -553,8 +553,8 @@ export class ItemData {
 				slots: 1,
 				weapon: null,
 				features: [
-					FeatureLogic.createDamageCategoryResistFeature(DamageCategoryType.Physical, 2),
-					FeatureLogic.createSkillCategoryFeature(SkillCategoryType.Physical, -1)
+					FeatureLogic.createDamageCategoryResistFeature('towershield-1', DamageCategoryType.Physical, 2),
+					FeatureLogic.createSkillCategoryFeature('towershield-2', SkillCategoryType.Physical, -1)
 				],
 				actions: []
 			},

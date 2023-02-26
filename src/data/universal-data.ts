@@ -14,15 +14,15 @@ import { FeatureLogic } from '../logic/feature-logic';
 export class UniversalData {
 	static getUniversalFeatures = (): FeatureModel[] => {
 		return [
-			FeatureLogic.createTraitFeature(TraitType.Any, 1),
-			FeatureLogic.createSkillFeature(SkillType.Any, 1),
-			FeatureLogic.createProficiencyFeature(ItemProficiencyType.Any)
+			FeatureLogic.createTraitFeature('universal-trait', TraitType.Any, 1),
+			FeatureLogic.createSkillFeature('universal-skill', SkillType.Any, 1),
+			FeatureLogic.createProficiencyFeature('universal-prof', ItemProficiencyType.Any)
 		];
 	};
 
 	static getUniversalActions = (): ActionModel[] => {
 		return [
-			ActionLogic.createActionPlaceholder('Unarmed Attack')
+			ActionLogic.createActionPlaceholder('universal-punch', 'Unarmed Attack')
 		];
 	};
 

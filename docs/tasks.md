@@ -2,9 +2,6 @@
 
 ## Bugs
 
-* Cards no longer show their source at the bottom
-  * This is because features / actions have random IDs, unlike species / roles / backgrounds / items
-  * Should change species / roles / backgrounds / items to have features / actions with fixed IDs
 * It's possible to run out of proficiencies to learn
   * Should add code to a feature / action to see whether it can be chosen
   * Only draw feature / action cards that can be chosen

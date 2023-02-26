@@ -31,15 +31,15 @@ export class CombatantLogic {
 		if (species) {
 			combatant.speciesID = species.id;
 			combatant.size = species.size;
-			species.traits.forEach(t => combatant.features.push(FeatureLogic.createTraitFeature(t, 1)));
+			species.traits.forEach(t => combatant.features.push(FeatureLogic.createTraitFeature(Utils.guid(), t, 1)));
 		}
 
 		const role = GameLogic.getRole(roleID);
 		if (role) {
 			combatant.roleID = role.id;
-			role.traits.forEach(t => combatant.features.push(FeatureLogic.createTraitFeature(t, 1)));
-			role.skills.forEach(s => combatant.features.push(FeatureLogic.createSkillFeature(s, 2)));
-			role.proficiencies.forEach(p => combatant.features.push(FeatureLogic.createProficiencyFeature(p)));
+			role.traits.forEach(t => combatant.features.push(FeatureLogic.createTraitFeature(Utils.guid(), t, 1)));
+			role.skills.forEach(s => combatant.features.push(FeatureLogic.createSkillFeature(Utils.guid(), s, 2)));
+			role.proficiencies.forEach(p => combatant.features.push(FeatureLogic.createProficiencyFeature(Utils.guid(), p)));
 		}
 
 		const background = GameLogic.getBackground(backgroundID);

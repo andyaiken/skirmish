@@ -402,13 +402,13 @@ export class EncounterLogic {
 			.filter(c => c.type === CombatantType.Monster)
 			.every(c => (c.combat.state === CombatantState.Dead) || (c.combat.state === CombatantState.Unconscious));
 		if (allMonstersDead) {
-			return EncounterState.Won;
+			return EncounterState.Victory;
 		}
 		const allHeroesDead = encounter.combatants
 			.filter(c => c.type === CombatantType.Hero)
 			.every(c => (c.combat.state === CombatantState.Dead) || (c.combat.state === CombatantState.Unconscious));
 		if (allHeroesDead) {
-			return EncounterState.Defeated;
+			return EncounterState.Defeat;
 		}
 
 		return EncounterState.Active;

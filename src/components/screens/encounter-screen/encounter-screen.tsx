@@ -4,22 +4,17 @@ import { EncounterState } from '../../../enums/encounter-state';
 
 import { EncounterLogic } from '../../../logic/encounter-logic';
 
+import type { CampaignMapRegionModel } from '../../../models/campaign-map';
 import type { CombatantModel } from '../../../models/combatant';
 import type { EncounterModel } from '../../../models/encounter';
 import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
 
 import { CharacterSheetPanel, EncounterMapPanel, InitiativeListPanel } from '../../panels';
+import { Dialog, Text, TextType } from '../../controls';
 import { CombatantControls } from './combatant-controls/combatant-controls';
-import { Dialog } from '../../controls';
 
 import './encounter-screen.scss';
-
-export enum EncounterFinishState {
-	Victory = 'victory',
-	Defeat = 'defeat',
-	Retreat = 'retreat'
-}
 
 interface Props {
 	encounter: EncounterModel;
@@ -35,12 +30,13 @@ interface Props {
 	pickUpItem: (item: ItemModel, hero: CombatantModel) => void;
 	dropItem: (item: ItemModel, combatant: CombatantModel) => void;
 	kill: (encounter: EncounterModel, combatant: CombatantModel) => void;
-	finishEncounter: (state: EncounterFinishState) => void;
+	finishEncounter: (state: EncounterState) => void;
 }
 
 interface State {
 	mapSquareSize: number;
 	selectedIDs: string[];
+	manualEncounterState: EncounterState;
 	detailsID: string | null;
 }
 
@@ -50,6 +46,7 @@ export class EncounterScreen extends Component<Props, State> {
 		this.state = {
 			mapSquareSize: 10,
 			selectedIDs: [],
+			manualEncounterState: EncounterState.Active,
 			detailsID: null
 		};
 	}
@@ -67,6 +64,12 @@ export class EncounterScreen extends Component<Props, State> {
 		});
 	};
 
+	setManualEncounterState = (state: EncounterState) => {
+		this.setState({
+			manualEncounterState: state
+		});
+	};
+
 	showDetails = (combatant: CombatantModel | null) => {
 		this.setState({
 			detailsID: combatant ? combatant.id : null
@@ -74,16 +77,25 @@ export class EncounterScreen extends Component<Props, State> {
 	};
 
 	public render() {
-		const state = EncounterLogic.getEncounterState(this.props.encounter);
-
 		const acting = EncounterLogic.getActiveCombatants(this.props.encounter);
 		const currentCombatant = acting.length > 0 ? acting[0] : null;
+
+		let state = this.state.manualEncounterState;
+		if (state === EncounterState.Active) {
+			state = EncounterLogic.getEncounterState(this.props.encounter);
+		}
 
 		let initiative = null;
 		let controls = null;
 		switch (state) {
 			case EncounterState.Active:
-				if (currentCombatant !== null) {
+				if (currentCombatant === null) {
+					controls = (
+						<div className='encounter-right-panel empty'>
+							<button onClick={() => this.props.rollInitiative(this.props.encounter)}>Roll Initiative</button>
+						</div>
+					);
+				} else {
 					initiative = (
 						<div className='encounter-left-panel'>
 							<InitiativeListPanel
@@ -111,28 +123,45 @@ export class EncounterScreen extends Component<Props, State> {
 							/>
 						</div>
 					);
-				} else {
-					controls = (
-						<div className='encounter-right-panel empty'>
-							<button onClick={() => this.props.rollInitiative(this.props.encounter)}>Roll Initiative</button>
-						</div>
-					);
 				}
 				break;
-			case EncounterState.Won:
+			case EncounterState.Victory: {
+				const region = this.props.game.map.regions.find(r => r.id === this.props.encounter.regionID) as CampaignMapRegionModel;
 				controls = (
 					<div className='encounter-right-panel empty'>
-						<button onClick={() => this.props.finishEncounter(EncounterFinishState.Victory)}>Victory</button>
+						<Text type={TextType.Heading}>Victory</Text>
+						<Text>You won the encounter in {region.name}!</Text>
+						<Text>Each surviving hero who took part in this encounter gains 1 XP.</Text>
+						<Text>Any heroes who died have been lost.</Text>
+						<button onClick={() => this.props.finishEncounter(EncounterState.Victory)}>OK</button>
 					</div>
 				);
 				break;
-			case EncounterState.Defeated:
+			}
+			case EncounterState.Defeat: {
+				const region = this.props.game.map.regions.find(r => r.id === this.props.encounter.regionID) as CampaignMapRegionModel;
 				controls = (
 					<div className='encounter-right-panel empty'>
-						<button onClick={() => this.props.finishEncounter(EncounterFinishState.Defeat)}>Defeated</button>
+						<Text type={TextType.Heading}>Defeated</Text>
+						<Text>You lost the encounter in {region.name}.</Text>
+						<Text>Those heroes who took part have been lost, along with all their equipment.</Text>
+						<button onClick={() => this.props.finishEncounter(EncounterState.Defeat)}>OK</button>
 					</div>
 				);
 				break;
+			}
+			case EncounterState.Retreat: {
+				const region = this.props.game.map.regions.find(r => r.id === this.props.encounter.regionID) as CampaignMapRegionModel;
+				controls = (
+					<div className='encounter-right-panel empty'>
+						<Text type={TextType.Heading}>Retreat</Text>
+						<Text>You retreated from the encounter in {region.name}.</Text>
+						<Text>Any heroes who fell have been lost, along with all their equipment.</Text>
+						<button onClick={() => this.props.finishEncounter(EncounterState.Retreat)}>OK</button>
+					</div>
+				);
+				break;
+			}
 		}
 
 		let dialog = null;
@@ -173,8 +202,9 @@ export class EncounterScreen extends Component<Props, State> {
 							<button disabled={this.state.mapSquareSize <= 5} className='zoom-btn' onClick={() => this.nudgeMapSize(-5)}>-</button>
 							<button disabled={this.state.mapSquareSize >= 50} className='zoom-btn' onClick={() => this.nudgeMapSize(+5)}>+</button>
 						</div>
-						<button className='finish-btn danger' onClick={() => this.props.finishEncounter(EncounterFinishState.Retreat)}>Retreat</button>
-						<button className='finish-btn danger' onClick={() => this.props.finishEncounter(EncounterFinishState.Defeat)}>Surrender</button>
+						<button className='finish-btn hack' onClick={() => this.setManualEncounterState(EncounterState.Victory)}>Victory</button>
+						<button className='finish-btn danger' onClick={() => this.setManualEncounterState(EncounterState.Retreat)}>Retreat</button>
+						<button className='finish-btn danger' onClick={() => this.setManualEncounterState(EncounterState.Defeat)}>Surrender</button>
 					</div>
 				</div>
 				{controls}

@@ -22,12 +22,12 @@ export class SpeciesData {
 					TraitType.All
 				],
 				features: [
-					FeatureLogic.createSkillFeature(SkillType.Any, 2),
-					FeatureLogic.createDamageBonusFeature(DamageType.Any, 1),
-					FeatureLogic.createDamageResistFeature(DamageType.Any, 1)
+					FeatureLogic.createSkillFeature('human-feature-1', SkillType.Any, 2),
+					FeatureLogic.createDamageBonusFeature('human-feature-2', DamageType.Any, 1),
+					FeatureLogic.createDamageResistFeature('human-feature-3', DamageType.Any, 1)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('Resilient (remove condition on self)')
+					ActionLogic.createActionPlaceholder('human-action-1', 'Resilient (remove condition on self)')
 				]
 			},
 			{
@@ -39,13 +39,13 @@ export class SpeciesData {
 					TraitType.Endurance
 				],
 				features: [
-					FeatureLogic.createTraitFeature(TraitType.Endurance, 1),
-					FeatureLogic.createDamageResistFeature(DamageType.Poison, 1),
-					FeatureLogic.createDamageResistFeature(DamageType.Psychic, 1)
+					FeatureLogic.createTraitFeature('construct-feature-1', TraitType.Endurance, 1),
+					FeatureLogic.createDamageResistFeature('construct-feature-2', DamageType.Poison, 1),
+					FeatureLogic.createDamageResistFeature('construct-feature-3', DamageType.Psychic, 1)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('Knockdown attack'),
-					ActionLogic.createActionPlaceholder('Repair (heal self damage)')
+					ActionLogic.createActionPlaceholder('construct-action-1', 'Knockdown attack'),
+					ActionLogic.createActionPlaceholder('construct-action-2', 'Repair (heal self damage)')
 				]
 			},
 			{
@@ -57,15 +57,15 @@ export class SpeciesData {
 					TraitType.Resolve
 				],
 				features: [
-					FeatureLogic.createTraitFeature(TraitType.Resolve, 1),
-					FeatureLogic.createSkillFeature(SkillType.Spellcasting, 2),
-					FeatureLogic.createDamageCategoryResistFeature(DamageCategoryType.Corruption, 1),
-					FeatureLogic.createDamageCategoryResistFeature(DamageCategoryType.Energy, 1),
-					FeatureLogic.createAuraDamageFeature(ConditionType.AutoDamage, DamageType.Light, 1)
+					FeatureLogic.createTraitFeature('deva-feature-1', TraitType.Resolve, 1),
+					FeatureLogic.createSkillFeature('deva-feature-2', SkillType.Spellcasting, 2),
+					FeatureLogic.createDamageCategoryResistFeature('deva-feature-3', DamageCategoryType.Corruption, 1),
+					FeatureLogic.createDamageCategoryResistFeature('deva-feature-4', DamageCategoryType.Energy, 1),
+					FeatureLogic.createAuraDamageFeature('deva-feature-5', ConditionType.AutoDamage, DamageType.Light, 1)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('Insight (see opponent stats)'),
-					ActionLogic.createActionPlaceholder('Divine light (spell vs resolve, stuns)')
+					ActionLogic.createActionPlaceholder('deva-action-1', 'Insight (see opponent stats)'),
+					ActionLogic.createActionPlaceholder('deva-action-2', 'Divine light (spell vs resolve, stuns)')
 				]
 			},
 			{
@@ -77,14 +77,14 @@ export class SpeciesData {
 					TraitType.Endurance
 				],
 				features: [
-					FeatureLogic.createTraitFeature(TraitType.Endurance, 1),
-					FeatureLogic.createTraitFeature(TraitType.Resolve, 1),
-					FeatureLogic.createDamageResistFeature(DamageType.Poison, 1),
-					FeatureLogic.createDamageResistFeature(DamageType.Psychic, 1)
+					FeatureLogic.createTraitFeature('dwarf-feature-1', TraitType.Endurance, 1),
+					FeatureLogic.createTraitFeature('dwarf-feature-2', TraitType.Resolve, 1),
+					FeatureLogic.createDamageResistFeature('dwarf-feature-3', DamageType.Poison, 1),
+					FeatureLogic.createDamageResistFeature('dwarf-feature-4', DamageType.Psychic, 1)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('Remove endurance condition on self'),
-					ActionLogic.createActionPlaceholder('Remove resolve condition on self')
+					ActionLogic.createActionPlaceholder('dwarf-action-1', 'Remove endurance condition on self'),
+					ActionLogic.createActionPlaceholder('dwarf-action-5', 'Remove resolve condition on self')
 				]
 			},
 			{
@@ -96,14 +96,14 @@ export class SpeciesData {
 					TraitType.Speed
 				],
 				features: [
-					FeatureLogic.createTraitFeature(TraitType.Speed, 1),
-					FeatureLogic.createSkillFeature(SkillType.Perception, 2),
-					FeatureLogic.createSkillFeature(SkillType.Reactions, 2),
-					FeatureLogic.createSkillFeature(SkillType.Stealth, 2)
+					FeatureLogic.createTraitFeature('elf-feature-1', TraitType.Speed, 1),
+					FeatureLogic.createSkillFeature('elf-feature-2', SkillType.Perception, 2),
+					FeatureLogic.createSkillFeature('elf-feature-3', SkillType.Reactions, 2),
+					FeatureLogic.createSkillFeature('elf-feature-4', SkillType.Stealth, 2)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('Detect hidden opponents'),
-					ActionLogic.createActionPlaceholder('Elven Step (teleport self)')
+					ActionLogic.createActionPlaceholder('elf-action-1', 'Detect hidden opponents'),
+					ActionLogic.createActionPlaceholder('elf-action-2', 'Elven Step (teleport self)')
 				]
 			},
 			{
@@ -115,13 +115,13 @@ export class SpeciesData {
 					TraitType.Speed
 				],
 				features: [
-					FeatureLogic.createTraitFeature(TraitType.Speed, 1),
-					FeatureLogic.createSkillFeature(SkillType.Reactions, 2),
-					FeatureLogic.createSkillFeature(SkillType.Stealth, 2)
+					FeatureLogic.createTraitFeature('gnome-feature-1', TraitType.Speed, 1),
+					FeatureLogic.createSkillFeature('gnome-feature-2', SkillType.Reactions, 2),
+					FeatureLogic.createSkillFeature('gnome-feature-3', SkillType.Stealth, 2)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('Trip attack'),
-					ActionLogic.createActionPlaceholder('Disable trap')
+					ActionLogic.createActionPlaceholder('gnome-action-1', 'Trip attack'),
+					ActionLogic.createActionPlaceholder('gnome-action-2', 'Disable trap')
 				]
 			},
 			{
@@ -133,14 +133,14 @@ export class SpeciesData {
 					TraitType.Endurance
 				],
 				features: [
-					FeatureLogic.createTraitFeature(TraitType.Endurance, 1),
-					FeatureLogic.createSkillFeature(SkillType.Brawl, 2),
-					FeatureLogic.createDamageCategoryBonusFeature(DamageCategoryType.Physical, 1)
+					FeatureLogic.createTraitFeature('minotaur-feature-1', TraitType.Endurance, 1),
+					FeatureLogic.createSkillFeature('minotaur-feature-2', SkillType.Brawl, 2),
+					FeatureLogic.createDamageCategoryBonusFeature('minotaur-feature-3', DamageCategoryType.Physical, 1)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('Gore attack'),
-					ActionLogic.createActionPlaceholder('Charge attack'),
-					ActionLogic.createActionPlaceholder('Intimidate')
+					ActionLogic.createActionPlaceholder('minotaur-action-1', 'Gore attack'),
+					ActionLogic.createActionPlaceholder('minotaur-action-2', 'Charge attack'),
+					ActionLogic.createActionPlaceholder('minotaur-action-3', 'Intimidate')
 				]
 			},
 			{
@@ -152,14 +152,14 @@ export class SpeciesData {
 					TraitType.Speed
 				],
 				features: [
-					FeatureLogic.createTraitFeature(TraitType.Speed, 1),
-					FeatureLogic.createSkillFeature(SkillType.Stealth, 2),
-					FeatureLogic.createDamageCategoryResistFeature(DamageCategoryType.Corruption, 1)
+					FeatureLogic.createTraitFeature('pixie-feature-1', TraitType.Speed, 1),
+					FeatureLogic.createSkillFeature('pixie-feature-2', SkillType.Stealth, 2),
+					FeatureLogic.createDamageCategoryResistFeature('pixie-feature-3', DamageCategoryType.Corruption, 1)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('Confusion (target makes attack)'),
-					ActionLogic.createActionPlaceholder('Teleport'),
-					ActionLogic.createActionPlaceholder('Teleport attack')
+					ActionLogic.createActionPlaceholder('pixie-action-1', 'Confusion (target makes attack)'),
+					ActionLogic.createActionPlaceholder('pixie-action-2', 'Teleport'),
+					ActionLogic.createActionPlaceholder('pixie-action-3', 'Teleport attack')
 				]
 			},
 			{
@@ -171,15 +171,15 @@ export class SpeciesData {
 					TraitType.Speed
 				],
 				features: [
-					FeatureLogic.createTraitFeature(TraitType.Speed, 1),
-					FeatureLogic.createSkillFeature(SkillType.Brawl, 2),
-					FeatureLogic.createDamageCategoryResistFeature(DamageCategoryType.Physical, 1),
-					FeatureLogic.createDamageResistFeature(DamageType.Psychic, 1)
+					FeatureLogic.createTraitFeature('reptilian-feature-1', TraitType.Speed, 1),
+					FeatureLogic.createSkillFeature('reptilian-feature-2', SkillType.Brawl, 2),
+					FeatureLogic.createDamageCategoryResistFeature('reptilian-feature-3', DamageCategoryType.Physical, 1),
+					FeatureLogic.createDamageResistFeature('reptilian-feature-4', DamageType.Psychic, 1)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('Poison bite'),
-					ActionLogic.createActionPlaceholder('Fear snarl'),
-					ActionLogic.createActionPlaceholder('Regeneration')
+					ActionLogic.createActionPlaceholder('reptilian-action-1', 'Poison bite'),
+					ActionLogic.createActionPlaceholder('reptilian-action-2', 'Fear snarl'),
+					ActionLogic.createActionPlaceholder('reptilian-action-3', 'Regeneration')
 				]
 			},
 			{
@@ -191,16 +191,16 @@ export class SpeciesData {
 					TraitType.Resolve
 				],
 				features: [
-					FeatureLogic.createTraitFeature(TraitType.Resolve, 1),
-					FeatureLogic.createSkillFeature(SkillType.Brawl, 2),
-					FeatureLogic.createSkillFeature(SkillType.Stealth, 2),
-					FeatureLogic.createDamageCategoryResistFeature(DamageCategoryType.Corruption, 1),
-					FeatureLogic.createAuraDamageFeature(ConditionType.AutoDamage, DamageType.Decay, 1)
+					FeatureLogic.createTraitFeature('shadowborn-feature-1', TraitType.Resolve, 1),
+					FeatureLogic.createSkillFeature('shadowborn-feature-2', SkillType.Brawl, 2),
+					FeatureLogic.createSkillFeature('shadowborn-feature-3', SkillType.Stealth, 2),
+					FeatureLogic.createDamageCategoryResistFeature('shadowborn-feature-4', DamageCategoryType.Corruption, 1),
+					FeatureLogic.createAuraDamageFeature('shadowborn-feature-5', ConditionType.AutoDamage, DamageType.Decay, 1)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('Transfer a condition'),
-					ActionLogic.createActionPlaceholder('Induce fear'),
-					ActionLogic.createActionPlaceholder('Drain energy')
+					ActionLogic.createActionPlaceholder('shadowborn-action-1', 'Transfer a condition'),
+					ActionLogic.createActionPlaceholder('shadowborn-action-2', 'Induce fear'),
+					ActionLogic.createActionPlaceholder('shadowborn-action-3', 'Drain energy')
 				]
 			},
 			{
@@ -212,15 +212,15 @@ export class SpeciesData {
 					TraitType.Resolve
 				],
 				features: [
-					FeatureLogic.createTraitFeature(TraitType.Resolve, 1),
-					FeatureLogic.createSkillFeature(SkillType.Brawl, 2),
-					FeatureLogic.createSkillFeature(SkillType.Perception, 2),
-					FeatureLogic.createSkillFeature(SkillType.Stealth, 2)
+					FeatureLogic.createTraitFeature('werewolf-feature-1', TraitType.Resolve, 1),
+					FeatureLogic.createSkillFeature('werewolf-feature-2', SkillType.Brawl, 2),
+					FeatureLogic.createSkillFeature('werewolf-feature-3', SkillType.Perception, 2),
+					FeatureLogic.createSkillFeature('werewolf-feature-4', SkillType.Stealth, 2)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('Regeneration'),
-					ActionLogic.createActionPlaceholder('Bite attack'),
-					ActionLogic.createActionPlaceholder('Claw attack')
+					ActionLogic.createActionPlaceholder('werewolf-action-1', 'Regeneration'),
+					ActionLogic.createActionPlaceholder('werewolf-action-2', 'Bite attack'),
+					ActionLogic.createActionPlaceholder('werewolf-action-3', 'Claw attack')
 				]
 			},
 			{
@@ -232,14 +232,14 @@ export class SpeciesData {
 					TraitType.All
 				],
 				features: [
-					FeatureLogic.createTraitFeature(TraitType.Any, 1),
-					FeatureLogic.createDamageResistFeature(DamageType.All, 1),
-					FeatureLogic.createSkillFeature(SkillType.Brawl, 2),
-					FeatureLogic.createSkillFeature(SkillType.Weapon, 2)
+					FeatureLogic.createTraitFeature('orc-feature-1', TraitType.Any, 1),
+					FeatureLogic.createDamageResistFeature('orc-feature-2', DamageType.All, 1),
+					FeatureLogic.createSkillFeature('orc-feature-3', SkillType.Brawl, 2),
+					FeatureLogic.createSkillFeature('orc-feature-4', SkillType.Weapon, 2)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('Fury'),
-					ActionLogic.createActionPlaceholder('Ignore damage')
+					ActionLogic.createActionPlaceholder('human-action-1', 'Fury'),
+					ActionLogic.createActionPlaceholder('human-action-2', 'Ignore damage')
 				]
 			},
 			{
@@ -251,12 +251,12 @@ export class SpeciesData {
 					TraitType.Speed
 				],
 				features: [
-					FeatureLogic.createTraitFeature(TraitType.Speed, 1),
-					FeatureLogic.createSkillFeature(SkillType.Reactions, 1),
-					FeatureLogic.createSkillFeature(SkillType.Stealth, 1)
+					FeatureLogic.createTraitFeature('goblin-feature-1', TraitType.Speed, 1),
+					FeatureLogic.createSkillFeature('goblin-feature-2', SkillType.Reactions, 1),
+					FeatureLogic.createSkillFeature('goblin-feature-3', SkillType.Stealth, 1)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('Sneak attack')
+					ActionLogic.createActionPlaceholder('goblin-action-1', 'Sneak attack')
 				]
 			},
 			{
@@ -269,15 +269,15 @@ export class SpeciesData {
 					TraitType.Resolve
 				],
 				features: [
-					FeatureLogic.createTraitFeature(TraitType.Endurance, 1),
-					FeatureLogic.createTraitFeature(TraitType.Resolve, 1),
-					FeatureLogic.createDamageCategoryResistFeature(DamageCategoryType.Physical, 1),
-					FeatureLogic.createDamageCategoryResistFeature(DamageCategoryType.Energy, 1),
-					FeatureLogic.createDamageCategoryResistFeature(DamageCategoryType.Corruption, 1)
+					FeatureLogic.createTraitFeature('troll-feature-1', TraitType.Endurance, 1),
+					FeatureLogic.createTraitFeature('troll-feature-2', TraitType.Resolve, 1),
+					FeatureLogic.createDamageCategoryResistFeature('troll-feature-3', DamageCategoryType.Physical, 1),
+					FeatureLogic.createDamageCategoryResistFeature('troll-feature-4', DamageCategoryType.Energy, 1),
+					FeatureLogic.createDamageCategoryResistFeature('troll-feature-5', DamageCategoryType.Corruption, 1)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('Slam'),
-					ActionLogic.createActionPlaceholder('Regeneration')
+					ActionLogic.createActionPlaceholder('troll-action-1', 'Slam'),
+					ActionLogic.createActionPlaceholder('troll-action-2', 'Regeneration')
 				]
 			}
 		];

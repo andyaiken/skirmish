@@ -62,7 +62,7 @@ export class MagicItemGenerator {
 
 			// Increase Weapon skill
 			const copy4 = JSON.parse(JSON.stringify(item)) as ItemModel;
-			copy4.features.push(FeatureLogic.createSkillFeature(SkillType.Weapon, Random.randomBonus()));
+			copy4.features.push(FeatureLogic.createSkillFeature(Utils.guid(), SkillType.Weapon, Random.randomBonus()));
 			options.push(copy4);
 
 			// Negate unreliability
@@ -77,17 +77,17 @@ export class MagicItemGenerator {
 		if (item.proficiency === ItemProficiencyType.Implements) {
 			// Increase Spellcasting skill
 			const copy1 = JSON.parse(JSON.stringify(item)) as ItemModel;
-			copy1.features.push(FeatureLogic.createSkillFeature(SkillType.Spellcasting, Random.randomBonus()));
+			copy1.features.push(FeatureLogic.createSkillFeature(Utils.guid(), SkillType.Spellcasting, Random.randomBonus()));
 			options.push(copy1);
 
 			// Increase Energy damage
 			const copy2 = JSON.parse(JSON.stringify(item)) as ItemModel;
-			copy2.features.push(FeatureLogic.createDamageCategoryBonusFeature(DamageCategoryType.Energy, Random.randomBonus()));
+			copy2.features.push(FeatureLogic.createDamageCategoryBonusFeature(Utils.guid(), DamageCategoryType.Energy, Random.randomBonus()));
 			options.push(copy2);
 
 			// Increase Corruption damage
 			const copy3 = JSON.parse(JSON.stringify(item)) as ItemModel;
-			copy3.features.push(FeatureLogic.createDamageCategoryBonusFeature(DamageCategoryType.Corruption, Random.randomBonus()));
+			copy3.features.push(FeatureLogic.createDamageCategoryBonusFeature(Utils.guid(), DamageCategoryType.Corruption, Random.randomBonus()));
 			options.push(copy3);
 		}
 
@@ -111,46 +111,48 @@ export class MagicItemGenerator {
 		if (item.location === ItemLocationType.Head) {
 			// Increase a mental skill
 			const copy1 = JSON.parse(JSON.stringify(item)) as ItemModel;
-			copy1.features.push(FeatureLogic.createSkillFeature(GameLogic.getRandomSkill(SkillCategoryType.Mental), Random.randomBonus()));
+			copy1.features.push(FeatureLogic.createSkillFeature(Utils.guid(), GameLogic.getRandomSkill(SkillCategoryType.Mental), Random.randomBonus()));
 			options.push(copy1);
 
 			// Increase all physical or mental skills
 			const copy2 = JSON.parse(JSON.stringify(item)) as ItemModel;
-			copy2.features.push(FeatureLogic.createSkillCategoryFeature(Random.randomBoolean() ? SkillCategoryType.Physical : SkillCategoryType.Mental, Random.randomBonus()));
+			copy2.features.push(FeatureLogic.createSkillCategoryFeature(Utils.guid(), Random.randomBoolean() ? SkillCategoryType.Physical : SkillCategoryType.Mental, Random.randomBonus()));
 			options.push(copy2);
 
 			// Increase Resolve
 			const copy3 = JSON.parse(JSON.stringify(item)) as ItemModel;
-			copy3.features.push(FeatureLogic.createTraitFeature(TraitType.Resolve, Random.randomBonus()));
+			copy3.features.push(FeatureLogic.createTraitFeature(Utils.guid(), TraitType.Resolve, Random.randomBonus()));
 			options.push(copy3);
 		}
 
 		if (item.location === ItemLocationType.Feet) {
 			// Increase Speed
 			const copy = JSON.parse(JSON.stringify(item)) as ItemModel;
-			copy.features.push(FeatureLogic.createTraitFeature(TraitType.Speed, Random.randomBonus()));
+			copy.features.push(FeatureLogic.createTraitFeature(Utils.guid(), TraitType.Speed, Random.randomBonus()));
 			options.push(copy);
 		}
 
 		if (item.location === ItemLocationType.Neck) {
 			// Increase Endurance
 			const copy1 = JSON.parse(JSON.stringify(item)) as ItemModel;
-			copy1.features.push(FeatureLogic.createTraitFeature(TraitType.Speed, Random.randomBonus()));
+			copy1.features.push(FeatureLogic.createTraitFeature(Utils.guid(), TraitType.Speed, Random.randomBonus()));
 			options.push(copy1);
 
 			// Increase Resolve
 			const copy2 = JSON.parse(JSON.stringify(item)) as ItemModel;
-			copy2.features.push(FeatureLogic.createTraitFeature(TraitType.Resolve, Random.randomBonus()));
+			copy2.features.push(FeatureLogic.createTraitFeature(Utils.guid(), TraitType.Resolve, Random.randomBonus()));
 			options.push(copy2);
 		}
 
 		// A random feature
 		const copyFeature = JSON.parse(JSON.stringify(item)) as ItemModel;
+		copyFeature.id = Utils.guid();
 		copyFeature.features.push(FeatureLogic.createRandomFeature());
 		options.push(copyFeature);
 
 		// a random action
 		const copyAction = JSON.parse(JSON.stringify(item)) as ItemModel;
+		copyAction.id = Utils.guid();
 		copyAction.actions.push(GameLogic.getRandomAction());
 		options.push(copyFeature);
 

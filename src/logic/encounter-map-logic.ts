@@ -19,8 +19,8 @@ export class EncounterMapLogic {
 			const type = Random.randomNumber(3, rng);
 
 			const size = {
-				width: (type === 2) && ((dir === 'n') || (dir === 's')) ? 2 : Random.dice(1, rng) + Random.dice(1, rng) + Random.dice(1, rng),
-				height: (type === 2) && ((dir === 'e') || (dir === 'w')) ? 2 : Random.dice(1, rng) + Random.dice(1, rng) + Random.dice(1, rng)
+				width: (type === 2) && ((dir === 'n') || (dir === 's')) ? 2 : Random.dice(1, rng) + Random.dice(1, rng),
+				height: (type === 2) && ((dir === 'e') || (dir === 'w')) ? 2 : Random.dice(1, rng) + Random.dice(1, rng)
 			};
 
 			const position = { x: 0, y: 0 };

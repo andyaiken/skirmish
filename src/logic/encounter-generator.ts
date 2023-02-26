@@ -111,6 +111,7 @@ export class EncounterGenerator {
 		encounter.combatants.push(...monsters);
 		encounter.combatants.forEach(c => {
 			// Reset combat data
+			c.combat.current = false;
 			c.combat.state = CombatantState.Standing;
 			c.combat.position = { x: 0, y: 0 };
 			c.combat.damage = 0;

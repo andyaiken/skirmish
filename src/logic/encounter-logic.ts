@@ -166,7 +166,7 @@ export class EncounterLogic {
 	};
 
 	static endOfTurn = (encounter: EncounterModel, combatant: CombatantModel) => {
-		combatant.combat.current = true;
+		combatant.combat.current = false;
 
 		combatant.combat.initiative = Number.MIN_VALUE;
 		combatant.combat.senses = 0;

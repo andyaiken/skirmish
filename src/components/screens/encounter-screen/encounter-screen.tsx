@@ -74,13 +74,27 @@ export class EncounterScreen extends Component<Props, State> {
 	};
 
 	public render() {
+		const state = EncounterLogic.getEncounterState(this.props.encounter);
+
 		const acting = EncounterLogic.getActiveCombatants(this.props.encounter);
 		const currentCombatant = acting.length > 0 ? acting[0] : null;
 
+		let initiative = null;
 		let controls = null;
-		switch (EncounterLogic.getEncounterState(this.props.encounter)) {
+		switch (state) {
 			case EncounterState.Active:
 				if (currentCombatant !== null) {
+					initiative = (
+						<div className='encounter-left-panel'>
+							<InitiativeListPanel
+								encounter={this.props.encounter}
+								currentID={currentCombatant.id}
+								selectedIDs={this.state.selectedIDs}
+								onSelect={this.selectCombatant}
+								onDetails={this.showDetails}
+							/>
+						</div>
+					);
 					controls = (
 						<div className='encounter-right-panel'>
 							<CombatantControls
@@ -97,18 +111,24 @@ export class EncounterScreen extends Component<Props, State> {
 							/>
 						</div>
 					);
+				} else {
+					controls = (
+						<div className='encounter-right-panel empty'>
+							<button onClick={() => this.props.rollInitiative(this.props.encounter)}>Roll Initiative</button>
+						</div>
+					);
 				}
 				break;
 			case EncounterState.Won:
 				controls = (
-					<div className='encounter-right-panel'>
+					<div className='encounter-right-panel empty'>
 						<button onClick={() => this.props.finishEncounter(EncounterFinishState.Victory)}>Victory</button>
 					</div>
 				);
 				break;
 			case EncounterState.Defeated:
 				controls = (
-					<div className='encounter-right-panel'>
+					<div className='encounter-right-panel empty'>
 						<button onClick={() => this.props.finishEncounter(EncounterFinishState.Defeat)}>Defeated</button>
 					</div>
 				);
@@ -138,16 +158,7 @@ export class EncounterScreen extends Component<Props, State> {
 
 		return (
 			<div className='encounter-screen'>
-				<div className='encounter-left-panel'>
-					<InitiativeListPanel
-						encounter={this.props.encounter}
-						currentID={currentCombatant ? currentCombatant.id : null}
-						selectedIDs={this.state.selectedIDs}
-						rollInitiative={this.props.rollInitiative}
-						onSelect={this.selectCombatant}
-						onDetails={this.showDetails}
-					/>
-				</div>
+				{initiative}
 				<div className='encounter-central-panel'>
 					<EncounterMapPanel
 						encounter={this.props.encounter}

@@ -202,30 +202,65 @@ export class Items extends Component<Props, State> {
 			items = items.filter(item => CombatantLogic.canEquip(this.props.hero, item));
 		}
 
-		items.sort((a, b) => a.name.localeCompare(b.name));
-
-		const cards = Collections.distinct(items, i => i.id).map(item => {
-			const copy = JSON.parse(JSON.stringify(item)) as ItemModel;
-			const count = items.filter(i => i.id === item.id).length;
-			copy.name = count > 1 ? `${copy.name} (${count})` : copy.name;
-
-			return (
-				<PlayingCard
-					key={item.id}
-					front={<ItemCard item={copy} />}
-					onClick={() => this.state.selectedLocation === ItemLocationType.Carried ? this.pickUpItem(item) : this.equipItem(item)}
-				/>
-			);
-		});
-
-		if (cards.length === 0) {
+		if (items.length === 0) {
 			return (
 				<Text type={TextType.Information}>No available items.</Text>
 			);
 		}
 
+		items.sort((a, b) => a.name.localeCompare(b.name));
+		const magicItems = items.filter(i => i.magic);
+		const mundaneItems = items.filter(i => !i.magic);
+
+		let magic = null;
+		if (magicItems.length > 0) {
+			const magicCards = magicItems.map(item => {
+				return (
+					<PlayingCard
+						key={item.id}
+						front={<ItemCard item={item} />}
+						onClick={() => this.pickUpItem(item)}
+					/>
+				);
+			});
+
+			magic = (
+				<div>
+					<Text type={TextType.SubHeading}>Magic Items</Text>
+					<CardList cards={magicCards} />
+				</div>
+			);
+		}
+
+		let mundane = null;
+		if (mundaneItems.length > 0) {
+			const mundaneCards = Collections.distinct(mundaneItems, i => i.name).map(item => {
+				const copy = JSON.parse(JSON.stringify(item)) as ItemModel;
+				const count = items.filter(i => i.id === item.id).length;
+				copy.name = count > 1 ? `${copy.name} (${count})` : copy.name;
+
+				return (
+					<PlayingCard
+						key={item.id}
+						front={<ItemCard item={copy} />}
+						onClick={() => this.pickUpItem(item)}
+					/>
+				);
+			});
+
+			mundane = (
+				<div>
+					<Text type={TextType.SubHeading}>Items</Text>
+					<CardList cards={mundaneCards} />
+				</div>
+			);
+		}
+
 		return (
-			<CardList cards={cards} />
+			<div>
+				{magic}
+				{mundane}
+			</div>
 		);
 	};
 

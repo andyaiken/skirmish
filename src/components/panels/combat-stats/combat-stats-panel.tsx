@@ -1,7 +1,6 @@
 import { Component } from 'react';
 
 import { CombatantState } from '../../../enums/combatant-state';
-import { SkillType } from '../../../enums/skill-type';
 import { TraitType } from '../../../enums/trait-type';
 
 import { CombatantLogic } from '../../../logic/combatant-logic';
@@ -61,7 +60,6 @@ export class CombatStatsPanel extends Component<Props> {
 					<button disabled={this.props.combatant.combat.movement < 4} onClick={() => this.scan(this.props.combatant)}>
 						Scan<br/><IconValue value={4} type={IconType.Movement} />
 					</button>
-					<StatValue label='Perc' value={CombatantLogic.getSkillValue(this.props.combatant, conditions, SkillType.Perception)} />
 				</div>
 			);
 		}
@@ -76,7 +74,6 @@ export class CombatStatsPanel extends Component<Props> {
 					<button disabled={this.props.combatant.combat.movement < 4} onClick={() => this.hide(this.props.combatant)}>
 						Hide<br/><IconValue value={4} type={IconType.Movement} />
 					</button>
-					<StatValue label='Stealth' value={CombatantLogic.getSkillValue(this.props.combatant, conditions, SkillType.Stealth)} />
 				</div>
 			);
 		}

@@ -441,6 +441,18 @@ export class ItemData {
 				actions: []
 			},
 			{
+				id: 'item-staff',
+				name: 'Staff',
+				baseItem: '',
+				magic: false,
+				proficiency: ItemProficiencyType.Implements,
+				location: ItemLocationType.Hand,
+				slots: 2,
+				weapon: null,
+				features: [],
+				actions: []
+			},
+			{
 				id: 'item-leather-armor',
 				name: 'Leather Armor',
 				baseItem: '',

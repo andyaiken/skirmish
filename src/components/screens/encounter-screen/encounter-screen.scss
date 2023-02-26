@@ -54,5 +54,12 @@
 
 	.encounter-right-panel {
 		flex: 1 1 0;
+
+
+		&.empty {
+			display: flex;
+			align-items: center;
+			height: 100%;
+		}
 	}
 }

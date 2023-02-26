@@ -15,18 +15,13 @@ interface Props {
 	encounter: EncounterModel;
 	currentID: string | null;
 	selectedIDs: string[];
-	rollInitiative: (encounter: EncounterModel) => void;
 	onSelect: (combatant: CombatantModel | null) => void;
 	onDetails: (combatant: CombatantModel) => void;
 }
 
 export class InitiativeListPanel extends Component<Props> {
-	rollInitiative = () => {
-		this.props.rollInitiative(this.props.encounter);
-	};
-
 	public render() {
-		const acting = EncounterLogic.getActiveCombatants(this.props.encounter)
+		const entries = EncounterLogic.getActiveCombatants(this.props.encounter)
 			.map(combatant => {
 				const current = combatant.id === this.props.currentID;
 				const selected = this.props.selectedIDs.includes(combatant.id);
@@ -61,17 +56,11 @@ export class InitiativeListPanel extends Component<Props> {
 			});
 
 		let content = null;
-		if (acting.length === 0) {
-			content = (
-				<div className='empty'>
-					<button onClick={this.rollInitiative}>Roll for initiative</button>
-				</div>
-			);
-		} else {
+		if (entries.length !== 0) {
 			content = (
 				<div>
 					<Text type={TextType.SubHeading}>Initiative</Text>
-					{acting}
+					{entries}
 				</div>
 			);
 		}

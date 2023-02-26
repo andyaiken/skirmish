@@ -9,6 +9,7 @@ import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
 
 import { Collections } from '../../../utils/collections';
+import { Utils } from '../../../utils/utils';
 
 import { BackgroundCard, ItemCard, PlaceholderCard, RoleCard, SpeciesCard } from '../../cards';
 import { CardList, PlayingCard, PlayingCardSide, Tag, Text, TextType } from '../../controls';
@@ -292,7 +293,9 @@ class EquipmentSelector extends Component<EquipmentSelectorProps, EquipmentSelec
 			const slotFilled = this.state.items.find(i => i.proficiency === item.proficiency);
 			if (!slotFilled) {
 				const items = this.state.items;
-				items.push(item);
+				const copy = JSON.parse(JSON.stringify(item)) as ItemModel;
+				copy.id = Utils.guid();
+				items.push(copy);
 				this.setState({
 					items: items
 				});

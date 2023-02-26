@@ -19,6 +19,7 @@ import type { ItemModel } from '../models/item';
 
 import { Collections } from '../utils/collections';
 import { Random } from '../utils/random';
+import { Utils } from '../utils/utils';
 
 import { Factory } from './factory';
 import { FeatureLogic } from './feature-logic';
@@ -138,6 +139,7 @@ export class CombatantLogic {
 			const items = GameLogic.getItemsForProficiency(prof);
 			const n = Random.randomNumber(items.length);
 			const item = JSON.parse(JSON.stringify(items[n])) as ItemModel;
+			item.id = Utils.guid();
 			combatant.items.push(item);
 		});
 	};

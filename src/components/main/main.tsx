@@ -269,7 +269,7 @@ export class Main extends Component<Props, State> {
 			combatant.combat.movement = Math.max(0, combatant.combat.movement - 1);
 		}
 
-		combatant.carried = combatant.carried.filter(i => i !== item);
+		combatant.carried = combatant.carried.filter(i => i.id !== item.id);
 
 		combatant.items.push(item);
 
@@ -285,7 +285,7 @@ export class Main extends Component<Props, State> {
 			combatant.combat.movement = Math.max(0, combatant.combat.movement - 1);
 		}
 
-		combatant.items = combatant.items.filter(i => i !== item);
+		combatant.items = combatant.items.filter(i => i.id !== item.id);
 
 		combatant.carried.push(item);
 
@@ -306,13 +306,13 @@ export class Main extends Component<Props, State> {
 			const piles = game.encounter.map.loot.filter(lp => adj.find(sq => (sq.x === lp.position.x) && (sq.y === lp.position.y)));
 			const lp = piles.find(l => l.items.find(i => i === item));
 			if (lp) {
-				lp.items = lp.items.filter(i => i !== item);
+				lp.items = lp.items.filter(i => i.id !== item.id);
 				if (lp.items.length === 0) {
 					game.encounter.map.loot = game.encounter.map.loot.filter(l => l.id !== lp.id);
 				}
 			}
 		} else {
-			game.items = game.items.filter(i => i !== item);
+			game.items = game.items.filter(i => i.id !== item.id);
 		}
 
 		if ((game.encounter === null) && CombatantLogic.canEquip(combatant, item)) {
@@ -329,8 +329,8 @@ export class Main extends Component<Props, State> {
 	dropItem = (item: ItemModel, combatant: CombatantModel) => {
 		const game = this.state.game as GameModel;
 
-		combatant.items = combatant.items.filter(i => i !== item);
-		combatant.carried = combatant.carried.filter(i => i !== item);
+		combatant.items = combatant.items.filter(i => i.id !== item.id);
+		combatant.carried = combatant.carried.filter(i => i.id !== item.id);
 
 		if (game.encounter) {
 			// See if we're beside any loot piles

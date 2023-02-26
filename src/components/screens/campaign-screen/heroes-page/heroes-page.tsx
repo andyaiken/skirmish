@@ -193,7 +193,7 @@ export class HeroesPage extends Component<Props, State> {
 				<Dialog
 					content={(
 						<div>
-							<Text>Choose a hero to receive this reward:</Text>
+							<Text type={TextType.Information}>Choose a hero to receive this reward:</Text>
 							<CardList cards={heroCards} />
 						</div>
 					)}

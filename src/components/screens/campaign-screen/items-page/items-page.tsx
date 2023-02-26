@@ -16,6 +16,14 @@ interface Props {
 
 export class ItemsPage extends Component<Props> {
 	public render() {
+		if (this.props.game.items.length === 0) {
+			return (
+				<div className='items-page'>
+					<Text type={TextType.Information}>You have no unequipped items.</Text>
+				</div>
+			);
+		}
+
 		const magicItems = this.props.game.items.filter(i => i.magic).sort((a, b) => a.name.localeCompare(b.name));
 		const mundaneItems = this.props.game.items.filter(i => !i.magic).sort((a, b) => a.name.localeCompare(b.name));
 
@@ -32,7 +40,7 @@ export class ItemsPage extends Component<Props> {
 
 		let mundaneItemSection = null;
 		if (mundaneItems.length > 0) {
-			const cards = Collections.distinct(mundaneItems, i => i.id).map(item => {
+			const cards = Collections.distinct(mundaneItems, i => i.name).map(item => {
 				const copy = JSON.parse(JSON.stringify(item)) as ItemModel;
 				const count = mundaneItems.filter(i => i.id === item.id).length;
 				copy.name = count > 1 ? `${copy.name} (${count})` : copy.name;

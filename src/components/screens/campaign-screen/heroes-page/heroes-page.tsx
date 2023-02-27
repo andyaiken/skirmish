@@ -8,7 +8,7 @@ import type { GameModel } from '../../../../models/game';
 import type { ItemModel } from '../../../../models/item';
 
 import { BoonCard, HeroCard, PlaceholderCard } from '../../../cards';
-import { CardList, Dialog, PlayingCard, Text, TextType } from '../../../controls';
+import { CardList, Developer, Dialog, PlayingCard, Text, TextType } from '../../../controls';
 import { CharacterSheetPanel, HeroBuilderPanel } from '../../../panels';
 
 import './heroes-page.scss';
@@ -118,7 +118,7 @@ export class HeroesPage extends Component<Props, State> {
 							front={<HeroCard hero={hero} />}
 							footer={<button onClick={e => this.selectHero(e, hero)}>Character Sheet</button>}
 						/>
-						{this.props.developer ? <button className='developer' onClick={() => this.props.incrementXP(hero)}>Add XP</button> : null}
+						{this.props.developer ? <Developer><button onClick={() => this.props.incrementXP(hero)}>Add XP</button></Developer> : null}
 					</div>
 				);
 			});

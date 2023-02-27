@@ -11,7 +11,7 @@ import type { ItemModel } from '../../../models/item';
 import type { RegionModel } from '../../../models/campaign-map';
 
 import { CharacterSheetPanel, EncounterMapPanel, InitiativeListPanel } from '../../panels';
-import { Dialog, Text, TextType } from '../../controls';
+import { Developer, Dialog, Text, TextType } from '../../controls';
 import { CombatantControls } from './combatant-controls/combatant-controls';
 
 import './encounter-screen.scss';
@@ -201,7 +201,7 @@ export class EncounterScreen extends Component<Props, State> {
 							<button disabled={this.state.mapSquareSize <= 5} className='zoom-btn' onClick={() => this.nudgeMapSize(-5)}>-</button>
 							<button disabled={this.state.mapSquareSize >= 50} className='zoom-btn' onClick={() => this.nudgeMapSize(+5)}>+</button>
 						</div>
-						{this.props.developer ? <button className='finish-btn developer' onClick={() => this.setManualEncounterState(EncounterState.Victory)}>Victory</button> : null}
+						{this.props.developer ? <Developer><button className='finish-btn' onClick={() => this.setManualEncounterState(EncounterState.Victory)}>Victory</button></Developer> : null}
 						<button className='finish-btn danger' onClick={() => this.setManualEncounterState(EncounterState.Retreat)}>Retreat</button>
 						<button className='finish-btn danger' onClick={() => this.setManualEncounterState(EncounterState.Defeat)}>Surrender</button>
 					</div>

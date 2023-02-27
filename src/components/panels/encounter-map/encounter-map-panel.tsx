@@ -20,8 +20,13 @@ interface Props {
 
 export class EncounterMapPanel extends Component<Props> {
 	public render() {
-		// Get dimensions
 		const dims = EncounterMapLogic.getDimensions(this.props.encounter.mapSquares);
+
+		let combatants = this.props.encounter.combatants.filter(combatant => combatant.combat.state !== CombatantState.Dead);
+		const current = combatants.find(c => c.combat.current);
+		if (current) {
+			combatants = combatants.filter(c => (c === current) || (c.combat.senses >= c.combat.hidden));
+		}
 
 		const squares = this.props.encounter.mapSquares.map(sq => {
 			const className = `encounter-map-square ${sq.type.toLowerCase()}`;
@@ -51,38 +56,34 @@ export class EncounterMapPanel extends Component<Props> {
 				);
 			});
 
-		const auras = this.props.encounter.combatants
-			.filter(combatant => combatant.combat.state !== CombatantState.Dead)
-			.map(combatant => {
-				if (CombatantLogic.getAuras(combatant).length > 0) {
-					return (
-						<AuraToken
-							key={combatant.id}
-							combatant={combatant}
-							squareSize={this.props.squareSize}
-							mapDimensions={dims}
-						/>
-					);
-				}
-
-				return null;
-			});
-
-		const minis = this.props.encounter.combatants
-			.filter(combatant => combatant.combat.state !== CombatantState.Dead)
-			.map(combatant => {
+		const auras = combatants.map(combatant => {
+			if (CombatantLogic.getAuras(combatant).length > 0) {
 				return (
-					<MiniToken
+					<AuraToken
 						key={combatant.id}
 						combatant={combatant}
 						squareSize={this.props.squareSize}
 						mapDimensions={dims}
-						selected={this.props.selectedIDs.includes(combatant.id)}
-						onSelect={this.props.onSelect}
-						onDetails={this.props.onDetails}
 					/>
 				);
-			});
+			}
+
+			return null;
+		});
+
+		const minis = combatants.map(combatant => {
+			return (
+				<MiniToken
+					key={combatant.id}
+					combatant={combatant}
+					squareSize={this.props.squareSize}
+					mapDimensions={dims}
+					selected={this.props.selectedIDs.includes(combatant.id)}
+					onSelect={this.props.onSelect}
+					onDetails={this.props.onDetails}
+				/>
+			);
+		});
 
 		const width = dims.right - dims.left + 1;
 		const height = dims.bottom - dims.top + 1;

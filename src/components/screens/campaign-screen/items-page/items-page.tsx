@@ -7,7 +7,7 @@ import type { ItemModel } from '../../../../models/item';
 
 import { Collections } from '../../../../utils/collections';
 
-import { CardList, Dialog, IconType, IconValue, PlayingCard, StatValue, Text, TextType } from '../../../controls';
+import { CardList, Developer, Dialog, IconType, IconValue, PlayingCard, StatValue, Text, TextType } from '../../../controls';
 import { ItemCard } from '../../../cards';
 
 import './items-page.scss';
@@ -119,10 +119,10 @@ export class ItemsPage extends Component<Props, State> {
 		const moneySection = (
 			<div>
 				<StatValue orientation='vertical' label='Money' value={<IconValue type={IconType.Money} value={this.props.game.money} />} />
-				<button disabled={this.props.game.money < 100} className='not-implemented' onClick={() => this.setShowMarket(true)}>
+				<button disabled={this.props.game.money < 100} onClick={() => this.setShowMarket(true)}>
 					Buy a magic item<br/><IconValue type={IconType.Money} value={100} />
 				</button>
-				{this.props.developer ? <button className='developer' onClick={() => this.props.addMoney()}>Add money</button> : null}
+				{this.props.developer ? <Developer><button onClick={() => this.props.addMoney()}>Add money</button></Developer> : null}
 			</div>
 		);
 

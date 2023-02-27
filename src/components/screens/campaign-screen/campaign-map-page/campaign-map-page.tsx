@@ -7,7 +7,7 @@ import type { GameModel } from '../../../../models/game';
 import type { RegionModel } from '../../../../models/campaign-map';
 
 import { BoonCard, HeroCard } from '../../../cards';
-import { CardList, Dialog, PlayingCard, Selector, StatValue, Text, TextType } from '../../../controls';
+import { CardList, Developer, Dialog, PlayingCard, Selector, StatValue, Text, TextType } from '../../../controls';
 import { CampaignMapPanel } from '../../../panels';
 
 import './campaign-map-page.scss';
@@ -162,7 +162,7 @@ export class CampaignMapPage extends Component<Props, State> {
 					{canAttack ? null : <Text type={TextType.Information}>You can&apos;t attack {this.state.selectedRegion.name} because it&apos;s not on the coast or adjacent to your land.</Text>}
 					{heroesExist ? null : <Text type={TextType.Information}>You can&apos;t attack {this.state.selectedRegion.name} because you don&apos;t have any heroes.</Text>}
 					{canAttack && heroesExist ? <button onClick={() => this.setState({ showHeroSelection: true })}>Start an encounter here</button> : null}
-					{this.props.developer ? <button className='developer' onClick={() => this.props.conquer(this.state.selectedRegion as RegionModel)}>Conquer</button> : null}
+					{this.props.developer ? <Developer><button onClick={() => this.props.conquer(this.state.selectedRegion as RegionModel)}>Conquer</button></Developer> : null}
 				</div>
 			);
 		} else {

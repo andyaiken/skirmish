@@ -14,7 +14,7 @@ import { ItemModel } from '../../../../models/item';
 
 import { Collections } from '../../../../utils/collections';
 
-import { Box, CardList, IconType, IconValue, PlayingCard, Selector, StatValue, Tag, Text, TextType } from '../../../controls';
+import { Box, CardList, Developer, IconType, IconValue, NotImplemented, PlayingCard, Selector, StatValue, Tag, Text, TextType } from '../../../controls';
 import { ActionCard } from '../../../cards';
 import { CombatStatsPanel } from '../../../panels/combat-stats/combat-stats-panel';
 import { DirectionPanel } from '../../../panels';
@@ -138,9 +138,11 @@ export class CombatantControls extends Component<Props, State> {
 				});
 
 				controls = (
-					<div className='actions not-implemented'>
-						<CardList cards={actionCards} />
-					</div>
+					<NotImplemented>
+						<div className='actions'>
+							<CardList cards={actionCards} />
+						</div>
+					</NotImplemented>
 				);
 				break;
 			}
@@ -199,7 +201,7 @@ export class CombatantControls extends Component<Props, State> {
 						{this.props.combatant.combat.hidden > 0 ? <Text type={TextType.Information}><b>{this.props.combatant.name} is Hidden.</b> Their moving costs are doubled.</Text> : null}
 						<hr />
 						<button onClick={() => this.props.showCharacterSheet(this.props.combatant)}>Character Sheet</button>
-						<button className='developer' onClick={this.kill}>Kill</button>
+						<Developer><button onClick={this.kill}>Kill</button></Developer>
 						<button onClick={this.endTurn}>End Turn</button>
 					</div>
 				);

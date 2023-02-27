@@ -15,7 +15,7 @@ interface Props {
 }
 
 export class ItemCard extends Component<Props> {
-	public render() {
+	render = () => {
 		let location = this.props.item.location.toString();
 		if (this.props.item.slots > 1) {
 			location = `${this.props.item.slots} ${location}s`;
@@ -57,5 +57,5 @@ export class ItemCard extends Component<Props> {
 				{actions}
 			</div>
 		);
-	}
+	};
 }

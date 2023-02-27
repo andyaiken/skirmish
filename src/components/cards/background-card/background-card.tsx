@@ -13,7 +13,7 @@ interface Props {
 }
 
 export class BackgroundCard extends Component<Props> {
-	public render() {
+	render = () => {
 		let features = null;
 		if (this.props.background.features.length > 0) {
 			features = (
@@ -42,5 +42,5 @@ export class BackgroundCard extends Component<Props> {
 				{actions}
 			</div>
 		);
-	}
+	};
 }

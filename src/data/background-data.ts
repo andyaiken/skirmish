@@ -97,7 +97,10 @@ export class BackgroundData {
 				id: 'background-noble',
 				name: 'Noble',
 				features: [
-					FeatureLogic.createAuraFeature('noble-feature-1', ConditionType.MovementBonus, 1)
+					FeatureLogic.createAuraFeature('noble-feature-1', ConditionType.MovementBonus, 1),
+					FeatureLogic.createAuraTraitFeature('noble-feature-2', ConditionType.TraitBonus, TraitType.Endurance, 1),
+					FeatureLogic.createAuraTraitFeature('noble-feature-2', ConditionType.TraitBonus, TraitType.Resolve, 1),
+					FeatureLogic.createAuraTraitFeature('noble-feature-3', ConditionType.TraitBonus, TraitType.Speed, 1)
 				],
 				actions: [
 					ActionLogic.createActionPlaceholder('noble-action-1', 'Buff ally'),

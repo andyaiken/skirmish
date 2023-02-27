@@ -23,7 +23,7 @@ interface Props {
 }
 
 export class Stats extends Component<Props> {
-	public render() {
+	render = () => {
 		let conditions: ConditionModel[] = [];
 		if (this.props.encounter) {
 			conditions = ([] as ConditionModel[])
@@ -143,5 +143,5 @@ export class Stats extends Component<Props> {
 				</div>
 			</div>
 		);
-	}
+	};
 }

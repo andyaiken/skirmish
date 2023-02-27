@@ -59,7 +59,7 @@ export class CampaignScreen extends Component<Props, State> {
 		});
 	};
 
-	public render() {
+	render = () => {
 		let content = null;
 		switch (this.state.page) {
 			case 'heroes':
@@ -122,5 +122,5 @@ export class CampaignScreen extends Component<Props, State> {
 				{content}
 			</div>
 		);
-	}
+	};
 }

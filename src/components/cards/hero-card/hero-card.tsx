@@ -16,7 +16,7 @@ interface Props {
 }
 
 export class HeroCard extends Component<Props> {
-	public render() {
+	render = () => {
 		const items = this.props.hero.items.filter(i => i.magic);
 
 		let itemSection = null;
@@ -46,5 +46,5 @@ export class HeroCard extends Component<Props> {
 				{itemSection}
 			</div>
 		);
-	}
+	};
 }

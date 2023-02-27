@@ -13,7 +13,7 @@ interface Props {
 }
 
 export class FeatureCard extends Component<Props> {
-	public render() {
+	render = () => {
 		return (
 			<div className='feature-card'>
 				<Text type={TextType.SubHeading}>{FeatureLogic.getFeatureTitle(this.props.feature)}</Text>
@@ -21,5 +21,5 @@ export class FeatureCard extends Component<Props> {
 				<Text>{FeatureLogic.getFeatureInformation(this.props.feature)}</Text>
 			</div>
 		);
-	}
+	};
 }

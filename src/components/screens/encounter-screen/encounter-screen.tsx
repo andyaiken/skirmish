@@ -4,15 +4,16 @@ import { EncounterState } from '../../../enums/encounter-state';
 
 import { EncounterLogic } from '../../../logic/encounter-logic';
 
+import type { EncounterModel, LootPileModel } from '../../../models/encounter';
 import type { CombatantModel } from '../../../models/combatant';
-import type { EncounterModel } from '../../../models/encounter';
 import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
 import type { RegionModel } from '../../../models/campaign-map';
 
+import { CardList, Developer, Dialog, PlayingCard, Text, TextType } from '../../controls';
 import { CharacterSheetPanel, EncounterMapPanel, InitiativeListPanel } from '../../panels';
-import { Developer, Dialog, Text, TextType } from '../../controls';
 import { CombatantControls } from './combatant-controls/combatant-controls';
+import { ItemCard } from '../../cards';
 
 import './encounter-screen.scss';
 
@@ -38,7 +39,8 @@ interface State {
 	mapSquareSize: number;
 	selectedIDs: string[];
 	manualEncounterState: EncounterState;
-	detailsID: string | null;
+	detailsCombatant: CombatantModel | null;
+	detailsLoot: LootPileModel | null;
 }
 
 export class EncounterScreen extends Component<Props, State> {
@@ -48,7 +50,8 @@ export class EncounterScreen extends Component<Props, State> {
 			mapSquareSize: 10,
 			selectedIDs: [],
 			manualEncounterState: EncounterState.Active,
-			detailsID: null
+			detailsCombatant: null,
+			detailsLoot: null
 		};
 	}
 
@@ -71,13 +74,21 @@ export class EncounterScreen extends Component<Props, State> {
 		});
 	};
 
-	showDetails = (combatant: CombatantModel | null) => {
+	showDetailsCombatant = (combatant: CombatantModel | null) => {
 		this.setState({
-			detailsID: combatant ? combatant.id : null
+			detailsCombatant: combatant,
+			detailsLoot: null
 		});
 	};
 
-	public render() {
+	showDetailsLoot = (loot: LootPileModel | null) => {
+		this.setState({
+			detailsCombatant: null,
+			detailsLoot: loot
+		});
+	};
+
+	render = () => {
 		let state = this.state.manualEncounterState;
 		if (state === EncounterState.Active) {
 			state = EncounterLogic.getEncounterState(this.props.encounter);
@@ -102,7 +113,7 @@ export class EncounterScreen extends Component<Props, State> {
 								encounter={this.props.encounter}
 								selectedIDs={this.state.selectedIDs}
 								onSelect={this.selectCombatant}
-								onDetails={this.showDetails}
+								onDetails={this.showDetailsCombatant}
 							/>
 						</div>
 					);
@@ -117,7 +128,7 @@ export class EncounterScreen extends Component<Props, State> {
 								scan={this.props.scan}
 								hide={this.props.hide}
 								pickUpItem={this.props.pickUpItem}
-								showCharacterSheet={this.showDetails}
+								showCharacterSheet={this.showDetailsCombatant}
 								kill={this.props.kill}
 							/>
 						</div>
@@ -130,6 +141,7 @@ export class EncounterScreen extends Component<Props, State> {
 				controls = (
 					<div className='encounter-right-panel'>
 						<Text type={TextType.Heading}>Victory</Text>
+						<hr />
 						<Text type={TextType.MinorHeading}>You won the encounter in {region.name}!</Text>
 						<Text>Each surviving hero who took part in this encounter gains 1 XP.</Text>
 						<Text>Any heroes who died have been lost.</Text>
@@ -143,6 +155,7 @@ export class EncounterScreen extends Component<Props, State> {
 				controls = (
 					<div className='encounter-right-panel'>
 						<Text type={TextType.Heading}>Defeated</Text>
+						<hr />
 						<Text type={TextType.MinorHeading}>You lost the encounter in {region.name}.</Text>
 						<Text>Those heroes who took part have been lost, along with all their equipment.</Text>
 						<button onClick={() => this.props.finishEncounter(EncounterState.Defeat)}>OK</button>
@@ -155,6 +168,7 @@ export class EncounterScreen extends Component<Props, State> {
 				controls = (
 					<div className='encounter-right-panel empty'>
 						<Text type={TextType.Heading}>Retreat</Text>
+						<hr />
 						<Text type={TextType.MinorHeading}>You retreated from the encounter in {region.name}.</Text>
 						<Text>Any heroes who fell have been lost, along with all their equipment.</Text>
 						<button onClick={() => this.props.finishEncounter(EncounterState.Retreat)}>OK</button>
@@ -165,13 +179,12 @@ export class EncounterScreen extends Component<Props, State> {
 		}
 
 		let dialog = null;
-		if (this.state.detailsID) {
-			const details = EncounterLogic.getCombatant(this.props.encounter, this.state.detailsID) as CombatantModel;
+		if (this.state.detailsCombatant) {
 			dialog = (
 				<Dialog
 					content={
 						<CharacterSheetPanel
-							hero={details}
+							hero={this.state.detailsCombatant}
 							game={this.props.game}
 							equipItem={this.props.equipItem}
 							unequipItem={this.props.unequipItem}
@@ -180,7 +193,20 @@ export class EncounterScreen extends Component<Props, State> {
 							levelUp={() => null}
 						/>
 					}
-					onClickOff={() => this.showDetails(null)}
+					onClickOff={() => this.showDetailsCombatant(null)}
+				/>
+			);
+		}
+		if (this.state.detailsLoot) {
+			dialog = (
+				<Dialog
+					content={
+						<div>
+							<Text type={TextType.Heading}>Treasure</Text>
+							<CardList cards={this.state.detailsLoot.items.map(i => <PlayingCard key={i.id} front={<ItemCard item={i} />} />)} />
+						</div>
+					}
+					onClickOff={() => this.showDetailsLoot(null)}
 				/>
 			);
 		}
@@ -194,7 +220,8 @@ export class EncounterScreen extends Component<Props, State> {
 						squareSize={this.state.mapSquareSize}
 						selectedIDs={this.state.selectedIDs}
 						onSelect={this.selectCombatant}
-						onDetails={this.showDetails}
+						onCombatantDetails={this.showDetailsCombatant}
+						onLootDetails={this.showDetailsLoot}
 					/>
 					<div className='map-controls'>
 						<div className='zoom'>
@@ -210,5 +237,5 @@ export class EncounterScreen extends Component<Props, State> {
 				{dialog}
 			</div>
 		);
-	}
+	};
 }

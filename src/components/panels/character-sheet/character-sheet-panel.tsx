@@ -1,5 +1,7 @@
 import { Component } from 'react';
 
+import { FeatureType } from '../../../enums/feature-type';
+
 import { CombatantLogic } from '../../../logic/combatant-logic';
 import { GameLogic } from '../../../logic/game-logic';
 
@@ -46,7 +48,23 @@ export class CharacterSheetPanel extends Component<Props, State> {
 	}
 
 	drawFeatures = (hero: CombatantModel) => {
-		return Collections.shuffle(CombatantLogic.getFeatureDeck(hero)).splice(0, 3);
+		const features = CombatantLogic.getFeatureDeck(hero)
+			.filter(feature => {
+				// Make sure we can select this feature
+				if (feature.type === FeatureType.Proficiency) {
+					const profs = CombatantLogic.getProficiencies(hero);
+					if (profs.length <= 9) {
+						// We already have all proficiencies
+						return false;
+					}
+					if (profs.includes(feature.proficiency)) {
+						// We already have this proficiency
+						return false;
+					}
+				}
+				return true;
+			});
+		return Collections.shuffle(features).splice(0, 3);
 	};
 
 	equipItem = (item: ItemModel) => {
@@ -75,7 +93,7 @@ export class CharacterSheetPanel extends Component<Props, State> {
 		});
 	};
 
-	public render() {
+	render = () => {
 		let content = null;
 		switch (this.state.view) {
 			case 'stats':
@@ -144,7 +162,7 @@ export class CharacterSheetPanel extends Component<Props, State> {
 				{sidebar}
 			</div>
 		);
-	}
+	};
 }
 
 interface FeaturesPageProps {
@@ -152,7 +170,7 @@ interface FeaturesPageProps {
 }
 
 class FeaturesPage extends Component<FeaturesPageProps> {
-	public render() {
+	render = () => {
 		const featureCards = CombatantLogic.getFeatureDeck(this.props.hero).map(feature => {
 			return (
 				<PlayingCard
@@ -171,7 +189,7 @@ class FeaturesPage extends Component<FeaturesPageProps> {
 				</div>
 			</div>
 		);
-	}
+	};
 }
 
 interface ActionsPageProps {
@@ -179,7 +197,7 @@ interface ActionsPageProps {
 }
 
 class ActionsPage extends Component<ActionsPageProps> {
-	public render() {
+	render = () => {
 		const actionCards = CombatantLogic.getActionDeck(this.props.hero).map(action => {
 			return (
 				<PlayingCard
@@ -198,5 +216,5 @@ class ActionsPage extends Component<ActionsPageProps> {
 				</div>
 			</div>
 		);
-	}
+	};
 }

@@ -16,7 +16,7 @@ interface Props {
 }
 
 export class PlayingCard extends Component<Props> {
-	public static defaultProps = {
+	static defaultProps = {
 		back: null,
 		footer: null,
 		display: PlayingCardSide.Front,

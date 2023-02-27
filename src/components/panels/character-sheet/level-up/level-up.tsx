@@ -53,7 +53,7 @@ export class LevelUp extends Component<Props, State> {
 		});
 	};
 
-	public render() {
+	render = () => {
 		const featureCards = this.props.features.map(feature => {
 			return (
 				<div key={feature.id}>
@@ -87,7 +87,7 @@ export class LevelUp extends Component<Props, State> {
 				</div>
 			</div>
 		);
-	}
+	};
 }
 
 //#endregion

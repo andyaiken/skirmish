@@ -11,11 +11,11 @@ interface Props {
 }
 
 export class ActionCard extends Component<Props> {
-	public render() {
+	render = () => {
 		return (
 			<div className='action-card'>
 				<Text type={TextType.SubHeading}>{this.props.action.name}</Text>
 			</div>
 		);
-	}
+	};
 }

@@ -7,7 +7,7 @@ interface Props {
 }
 
 export class Tag extends Component<Props> {
-	public render = () => {
+	render = () => {
 		return (
 			<div className='tag'>
 				{this.props.children}

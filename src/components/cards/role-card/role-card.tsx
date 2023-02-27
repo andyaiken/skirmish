@@ -13,7 +13,7 @@ interface Props {
 }
 
 export class RoleCard extends Component<Props> {
-	public render() {
+	render = () => {
 		let features = null;
 		if (this.props.role.features.length > 0) {
 			features = (
@@ -45,5 +45,5 @@ export class RoleCard extends Component<Props> {
 				{actions}
 			</div>
 		);
-	}
+	};
 }

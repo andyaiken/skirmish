@@ -15,7 +15,7 @@ interface Props {
 }
 
 export class BoonCard extends Component<Props> {
-	public render() {
+	render = () => {
 		if (this.props.boon.type === BoonType.MagicItem) {
 			return <ItemCard item={this.props.boon.data as ItemModel} />;
 		}
@@ -43,5 +43,5 @@ export class BoonCard extends Component<Props> {
 				{extra ? <div className='extra'>{extra}</div> : null}
 			</div>
 		);
-	}
+	};
 }

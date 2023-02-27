@@ -72,7 +72,7 @@ export class HeroBuilderPanel extends Component<Props, State> {
 		this.props.finished(this.state.hero);
 	};
 
-	public render() {
+	render = () => {
 		const header = (
 			<div className='header'>
 				<Text type={TextType.Heading}>
@@ -132,7 +132,7 @@ export class HeroBuilderPanel extends Component<Props, State> {
 				{content}
 			</div>
 		);
-	}
+	};
 }
 
 //#region Card selector
@@ -165,35 +165,35 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 		};
 	}
 
-	private selectSpecies(id: string) {
+	selectSpecies = (id: string) => {
 		if (this.state.selectedSpeciesID === '') {
 			this.setState({
 				selectedSpeciesID: id
 			});
 		}
-	}
+	};
 
-	private selectRole(id: string) {
+	selectRole = (id: string) => {
 		if (this.state.selectedRoleID === '') {
 			this.setState({
 				selectedRoleID: id
 			});
 		}
-	}
+	};
 
-	private selectBackground(id: string) {
+	selectBackground = (id: string) => {
 		if (this.state.selectedBackgroundID === '') {
 			this.setState({
 				selectedBackgroundID: id
 			});
 		}
-	}
+	};
 
-	private select() {
+	select = () => {
 		this.props.select(this.state.selectedSpeciesID, this.state.selectedRoleID, this.state.selectedBackgroundID);
-	}
+	};
 
-	public render() {
+	render = () => {
 		const speciesCards = this.state.speciesIDs.map(id => {
 			const species = GameLogic.getSpecies(id);
 			if (species) {
@@ -272,7 +272,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 				</div>
 			</div>
 		);
-	}
+	};
 }
 
 //#endregion
@@ -311,7 +311,7 @@ class EquipmentSelector extends Component<EquipmentSelectorProps, EquipmentSelec
 		};
 	}
 
-	private selectItem(item: ItemModel) {
+	selectItem = (item: ItemModel) => {
 		const slot = this.state.slots.find(s => s.proficiency === item.proficiency);
 		if (slot) {
 			const copy = JSON.parse(JSON.stringify(item)) as ItemModel;
@@ -321,14 +321,14 @@ class EquipmentSelector extends Component<EquipmentSelectorProps, EquipmentSelec
 				slots: this.state.slots
 			});
 		}
-	}
+	};
 
 	addItems = () => {
 		const items = this.state.slots.map(s => s.selected).filter(i => i !== null) as ItemModel[];
 		this.props.addItems(items);
 	};
 
-	public render() {
+	render = () => {
 		const role = GameLogic.getRole(this.props.hero.roleID);
 		if (!role) {
 			return null;
@@ -367,7 +367,7 @@ class EquipmentSelector extends Component<EquipmentSelectorProps, EquipmentSelec
 				</div>
 			</div>
 		);
-	}
+	};
 }
 
 //#endregion

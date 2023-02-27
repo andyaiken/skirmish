@@ -64,7 +64,7 @@ export class HeroesPage extends Component<Props, State> {
 		});
 	};
 
-	public render() {
+	render = () => {
 		let boons = null;
 		if (this.props.game.boons.length > 0) {
 			const cards = this.props.game.boons.map(b => (<PlayingCard key={b.id} front={<BoonCard boon={b} />} onClick={() => this.selectBoon(b)} />));
@@ -226,5 +226,5 @@ export class HeroesPage extends Component<Props, State> {
 				{dialog}
 			</div>
 		);
-	}
+	};
 }

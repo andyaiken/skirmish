@@ -161,7 +161,7 @@ export class EncounterLogic {
 					combatant.combat.movement = Math.max(0, combatant.combat.movement - condition.rank);
 				});
 
-			const deck = CombatantLogic.getActionDeck(combatant);
+			const deck = CombatantLogic.getActionDeck(combatant).filter(action => action.isAvailable(combatant, encounter));
 			combatant.combat.actions = Collections.shuffle(deck).splice(0, 3);
 		}
 	};

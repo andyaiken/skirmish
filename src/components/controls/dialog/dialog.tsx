@@ -8,7 +8,7 @@ interface Props {
 }
 
 export class Dialog extends Component<Props> {
-	public static defaultProps = {
+	static defaultProps = {
 		onClickOff: null
 	};
 
@@ -22,7 +22,7 @@ export class Dialog extends Component<Props> {
 		e.stopPropagation();
 	};
 
-	public render = () => {
+	render = () => {
 		return (
 			<div className='dialog-backdrop' onClick={this.backdropClick}>
 				<div className='dialog' onClick={this.dialogClick}>

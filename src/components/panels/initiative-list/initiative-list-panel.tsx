@@ -19,7 +19,7 @@ interface Props {
 }
 
 export class InitiativeListPanel extends Component<Props> {
-	public render() {
+	render = () => {
 		const entries = EncounterLogic.getActiveCombatants(this.props.encounter).map(combatant => {
 			return (
 				<Entry
@@ -37,7 +37,7 @@ export class InitiativeListPanel extends Component<Props> {
 				{entries}
 			</div>
 		);
-	}
+	};
 }
 
 interface EntryProps {

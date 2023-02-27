@@ -15,11 +15,12 @@ interface Props {
 	squareSize: number;
 	selectedIDs: string[];
 	onSelect: (combatant: CombatantModel | null) => void;
-	onDetails: (combatant: CombatantModel) => void;
+	onCombatantDetails: (combatant: CombatantModel) => void;
+	onLootDetails: (loot: LootPileModel) => void;
 }
 
 export class EncounterMapPanel extends Component<Props> {
-	public render() {
+	render = () => {
 		const dims = EncounterMapLogic.getDimensions(this.props.encounter.mapSquares);
 
 		let combatants = this.props.encounter.combatants.filter(combatant => combatant.combat.state !== CombatantState.Dead);
@@ -52,6 +53,7 @@ export class EncounterMapPanel extends Component<Props> {
 						loot={lp}
 						squareSize={this.props.squareSize}
 						mapDimensions={dims}
+						onDetails={this.props.onLootDetails}
 					/>
 				);
 			});
@@ -80,7 +82,7 @@ export class EncounterMapPanel extends Component<Props> {
 					mapDimensions={dims}
 					selected={this.props.selectedIDs.includes(combatant.id)}
 					onSelect={this.props.onSelect}
-					onDetails={this.props.onDetails}
+					onDetails={this.props.onCombatantDetails}
 				/>
 			);
 		});
@@ -97,7 +99,7 @@ export class EncounterMapPanel extends Component<Props> {
 				</div>
 			</div>
 		);
-	}
+	};
 }
 
 interface MiniTokenProps {
@@ -110,14 +112,14 @@ interface MiniTokenProps {
 }
 
 class MiniToken extends Component<MiniTokenProps> {
-	onSelectCombatant = (e: React.MouseEvent, combatant: CombatantModel | null) => {
+	onClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
-		this.props.onSelect(combatant);
+		this.props.onSelect(this.props.combatant);
 	};
 
-	onDoubleClickCombatant = (e: React.MouseEvent, combatant: CombatantModel) => {
+	onDoubleClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
-		this.props.onDetails(combatant);
+		this.props.onDetails(this.props.combatant);
 	};
 
 	render = () => {
@@ -133,8 +135,8 @@ class MiniToken extends Component<MiniTokenProps> {
 					fontSize: `${this.props.squareSize * 0.8}px`
 				}}
 				title={this.props.combatant.name}
-				onClick={e => this.onSelectCombatant(e, this.props.combatant)}
-				onDoubleClick={e => this.onDoubleClickCombatant(e, this.props.combatant)}
+				onClick={e => this.onClick(e)}
+				onDoubleClick={e => this.onDoubleClick(e)}
 			>
 				{this.props.combatant.name[0]}
 			</div>
@@ -169,9 +171,15 @@ interface LootTokenProps {
 	loot: LootPileModel;
 	squareSize: number;
 	mapDimensions: { left: number, top: number };
+	onDetails: (loot: LootPileModel) => void;
 }
 
 class LootToken extends Component<LootTokenProps> {
+	onDoubleClick = (e: React.MouseEvent) => {
+		e.stopPropagation();
+		this.props.onDetails(this.props.loot);
+	};
+
 	render = () => {
 		return (
 			<div
@@ -183,6 +191,7 @@ class LootToken extends Component<LootTokenProps> {
 					top: `${((this.props.loot.position.y - this.props.mapDimensions.top) * this.props.squareSize)}px`
 				}}
 				title='Treasure'
+				onDoubleClick={e => this.onDoubleClick(e)}
 			>
 			</div>
 		);

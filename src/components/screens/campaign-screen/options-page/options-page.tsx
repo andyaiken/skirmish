@@ -36,7 +36,7 @@ export class OptionsPage extends Component<Props, State> {
 		});
 	};
 
-	public render() {
+	render = () => {
 		let dialog = null;
 		if (this.state.deck !== '') {
 			let heading = '';
@@ -87,5 +87,5 @@ export class OptionsPage extends Component<Props, State> {
 				{dialog}
 			</div>
 		);
-	}
+	};
 }

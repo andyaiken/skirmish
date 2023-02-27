@@ -140,7 +140,7 @@ export class CampaignMapPage extends Component<Props, State> {
 		return;
 	};
 
-	public render() {
+	render = () => {
 		let info = null;
 		if (this.state.selectedRegion) {
 			const canAttack = CampaignMapLogic.canAttackRegion(this.props.game.map, this.state.selectedRegion);
@@ -195,5 +195,5 @@ export class CampaignMapPage extends Component<Props, State> {
 				{this.getDialog()}
 			</div>
 		);
-	}
+	};
 }

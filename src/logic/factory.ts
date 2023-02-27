@@ -105,7 +105,8 @@ export class Factory {
 	static createAction = (id: string): ActionModel => {
 		return {
 			id: id,
-			name: ''
+			name: '',
+			isAvailable: (combatant, encounter) => true
 		};
 	};
 

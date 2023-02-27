@@ -2,10 +2,6 @@
 
 ## Bugs
 
-* It's possible to run out of proficiencies to learn
-  * Should add code to a feature / action to see whether it can be chosen
-  * Only draw feature / action cards that can be chosen
-    * For example, you can't use a weapon attack if you don't have a weapon
 * It's possible for some squares on the encounter map to be detatched from the rest
   * When generating the map, remove unattached areas
   * Or, when removing squares, check whether this would result in an unattached area
@@ -31,10 +27,7 @@
 * Character sheet panel:
   * Show ranks as filled circles
   * Show the XP required as a gauge
-* Campaign maps:
-  * The island should include mountain ranges, lakes etc, which are impassable
 * Mountebank, Thief and Pixie should have an attack redirection aura
-* Noble should have trait buffing / skill buffing auras
 * Monster species:
   * Kobold
   * Ogre

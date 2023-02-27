@@ -17,11 +17,11 @@ interface Props {
 }
 
 export class Text extends Component<Props> {
-	public static defaultProps = {
+	static defaultProps = {
 		type: TextType.Default
 	};
 
-	public render = () => {
+	render = () => {
 		const className = `skirmish-text ${this.props.type}`;
 		return (
 			<div className={className}>

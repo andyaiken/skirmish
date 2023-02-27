@@ -13,7 +13,7 @@ interface Props {
 }
 
 export class SpeciesCard extends Component<Props> {
-	public render() {
+	render = () => {
 		let features = null;
 		if (this.props.species.features.length > 0) {
 			features = (
@@ -43,5 +43,5 @@ export class SpeciesCard extends Component<Props> {
 				{actions}
 			</div>
 		);
-	}
+	};
 }

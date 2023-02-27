@@ -139,6 +139,7 @@ export class CombatantControls extends Component<Props, State> {
 
 				controls = (
 					<NotImplemented>
+						<Text type={TextType.Information}><b>Actions are not yet implemented.</b></Text>
 						<div className='actions'>
 							<CardList cards={actionCards} />
 						</div>

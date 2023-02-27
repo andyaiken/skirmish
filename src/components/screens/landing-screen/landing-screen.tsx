@@ -14,7 +14,7 @@ interface Props {
 }
 
 export class LandingScreen extends Component<Props> {
-	public render() {
+	render = () => {
 		let continueBtn = null;
 		if (this.props.game?.map) {
 			continueBtn = (
@@ -28,5 +28,5 @@ export class LandingScreen extends Component<Props> {
 				<PlayingCard front={<PlaceholderCard>Start a new campaign</PlaceholderCard>} onClick={this.props.startCampaign} />
 			</div>
 		);
-	}
+	};
 }

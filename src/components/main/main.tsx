@@ -109,16 +109,16 @@ export class Main extends Component<Props, State> {
 
 	//#region Saving
 
-	private readonly saveAfterDelay = Utils.debounce(() => this.save(), 5 * 1000);
+	readonly saveAfterDelay = Utils.debounce(() => this.save(), 5 * 1000);
 
-	private save() {
+	save = () => {
 		try {
 			const json = JSON.stringify(this.state.game);
 			window.localStorage.setItem('game', json);
 		} catch (ex) {
 			console.error('Could not stringify data: ', ex);
 		}
-	}
+	};
 
 	//#endregion
 

@@ -6,15 +6,20 @@ export interface CampaignMapSquareModel {
 	regionID: string;
 }
 
-export interface CampaignMapRegionModel {
+export interface RegionModel {
 	id: string;
 	name: string;
 	color: string;
 	encounters: string[];
 	boon: BoonModel;
+	demographics: {
+		size: number;
+		population: number;
+		terrain: string;
+	};
 }
 
 export interface CampaignMapModel {
 	squares: CampaignMapSquareModel[];
-	regions: CampaignMapRegionModel[];
+	regions: RegionModel[];
 }

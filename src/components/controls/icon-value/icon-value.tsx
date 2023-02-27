@@ -5,7 +5,8 @@ import type { DamageType } from '../../../enums/damage-type';
 import './icon-value.scss';
 
 export enum IconType {
-	Movement = 'Movement'
+	Movement = 'Movement',
+	Money = 'Money'
 }
 
 interface Props {
@@ -20,8 +21,11 @@ export class IconValue extends Component<Props> {
 			case IconType.Movement:
 				icon = '▶︎';
 				break;
+			case IconType.Money:
+				icon = '⬥';
+				break;
 			default:
-				icon = '✦';
+				icon = '';
 				break;
 		}
 

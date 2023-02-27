@@ -2,12 +2,12 @@ import { Component } from 'react';
 
 import { CampaignMapLogic } from '../../../../logic/campaign-map-logic';
 
-import type { CampaignMapRegionModel } from '../../../../models/campaign-map';
 import type { CombatantModel } from '../../../../models/combatant';
 import type { GameModel } from '../../../../models/game';
+import type { RegionModel } from '../../../../models/campaign-map';
 
 import { BoonCard, HeroCard } from '../../../cards';
-import { CardList, Dialog, PlayingCard, StatValue, Text, TextType } from '../../../controls';
+import { CardList, Dialog, PlayingCard, Selector, StatValue, Text, TextType } from '../../../controls';
 import { CampaignMapPanel } from '../../../panels';
 
 import './campaign-map-page.scss';
@@ -15,13 +15,14 @@ import './campaign-map-page.scss';
 interface Props {
 	game: GameModel;
 	developer: boolean;
-	startEncounter: (region: CampaignMapRegionModel, heroes: CombatantModel[]) => void;
-	conquer: (region: CampaignMapRegionModel) => void;
+	startEncounter: (region: RegionModel, heroes: CombatantModel[]) => void;
+	conquer: (region: RegionModel) => void;
 }
 
 interface State {
+	selectedRegion: RegionModel | null;
 	showHeroSelection: boolean;
-	selectedRegion: CampaignMapRegionModel | null;
+	heroSelectionMode: string;
 	selectedHeroes: CombatantModel[];
 }
 
@@ -29,8 +30,9 @@ export class CampaignMapPage extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
-			showHeroSelection: false,
 			selectedRegion: null,
+			showHeroSelection: false,
+			heroSelectionMode: 'Name',
 			selectedHeroes: []
 		};
 	}
@@ -51,48 +53,33 @@ export class CampaignMapPage extends Component<Props, State> {
 	};
 
 	startEncounter = () => {
-		this.props.startEncounter(this.state.selectedRegion as CampaignMapRegionModel, this.state.selectedHeroes);
+		this.props.startEncounter(this.state.selectedRegion as RegionModel, this.state.selectedHeroes);
 	};
 
-	public render() {
-		let info = null;
-		if (this.state.selectedRegion) {
-			const canAttack = CampaignMapLogic.canAttackRegion(this.props.game.map, this.state.selectedRegion);
-			const heroesExist = this.props.game.heroes.filter(h => h.name !== '').length > 0;
-			info = (
-				<div className='region'>
-					<Text type={TextType.SubHeading}>{this.state.selectedRegion.name}</Text>
-					<hr />
-					<StatValue label='Size' value={`${CampaignMapLogic.getSquares(this.props.game.map, this.state.selectedRegion).length} sq mi`} />
-					<StatValue label='Number of Encounters' value={this.state.selectedRegion.encounters.length} />
-					<hr />
-					<Text>If you take control of {this.state.selectedRegion.name}, you will recieve:</Text>
-					<div className='boon'>
-						<PlayingCard front={<BoonCard boon={this.state.selectedRegion.boon} />} />
-					</div>
-					<hr />
-					{canAttack ? null : <Text type={TextType.Information}>You can&apos;t attack {this.state.selectedRegion.name} because it&apos;s not on the coast or adjacent to your land.</Text>}
-					{heroesExist ? null : <Text type={TextType.Information}>You can&apos;t attack {this.state.selectedRegion.name} because you don&apos;t have any heroes.</Text>}
-					{canAttack && heroesExist ? <button onClick={() => this.setState({ showHeroSelection: true })}>Start an encounter here</button> : null}
-					{this.props.developer ? <button className='developer' onClick={() => this.props.conquer(this.state.selectedRegion as CampaignMapRegionModel)}>Conquer</button> : null}
-				</div>
-			);
-		} else {
-			const owned = this.props.game.map.squares.filter(sq => sq.regionID === '');
-			info = (
-				<div>
-					<Text>This is the map of the island.</Text>
-					{owned.length > 0 ? <Text>The white area is land you already control.</Text> : null}
-					<Text>Select a region to learn more about it.</Text>
-					{owned.length > 0 ? <StatValue label='Controlled' value={`${Math.floor(100 * owned.length / this.props.game.map.squares.length)}%`} /> : null}
-				</div>
-			);
-		}
-
-		let dialog = null;
+	getDialog = () => {
 		if (this.state.showHeroSelection) {
 			const canAdd = this.state.selectedHeroes.length < 5;
-			const candidates = this.props.game.heroes
+
+			const heroes = ([] as CombatantModel[]).concat(this.props.game.heroes);
+			switch (this.state.heroSelectionMode) {
+				case 'Name':
+					heroes.sort((a, b) => a.name.localeCompare(b.name));
+					break;
+				case 'Species':
+					heroes.sort((a, b) => a.speciesID.localeCompare(b.speciesID));
+					break;
+				case 'Role':
+					heroes.sort((a, b) => a.roleID.localeCompare(b.roleID));
+					break;
+				case 'Background':
+					heroes.sort((a, b) => a.backgroundID.localeCompare(b.backgroundID));
+					break;
+				case 'Level':
+					heroes.sort((a, b) => a.level - b.level);
+					break;
+			}
+
+			const candidates = heroes
 				.filter(h => h.name !== '')
 				.filter(h => !this.state.selectedHeroes.includes(h))
 				.map(h => {
@@ -112,21 +99,27 @@ export class CampaignMapPage extends Component<Props, State> {
 					);
 				});
 
-			dialog = (
+			return (
 				<Dialog
 					content={(
 						<div className='hero-selection'>
 							<div className='header'>
 								<Text type={TextType.Heading}>Choose your Heroes</Text>
-								<Text>You can pick up to 5 heroes to take part in this encounter.</Text>
 							</div>
 							<div className='hero-lists'>
 								<div className='hero-list-column'>
-									<Text type={TextType.SubHeading}>Available heroes ({candidates.length})</Text>
+									<Text type={TextType.SubHeading}>Available heroes</Text>
+									<Selector
+										options={[ { id: 'Name' }, { id: 'Species' }, { id: 'Role' }, { id: 'Background' }, { id: 'Level' } ]}
+										selectedID={this.state.heroSelectionMode}
+										onSelect={id => this.setState({ heroSelectionMode: id })}
+									/>
 									<CardList cards={candidates} />
 								</div>
+								<div className='divider' />
 								<div className='hero-list-column'>
-									<Text type={TextType.SubHeading}>Selected heroes ({selected.length})</Text>
+									<Text type={TextType.SubHeading}>Selected heroes ({selected.length} / 5)</Text>
+									{selected.length === 0 ? <Text type={TextType.Information}>Select <b>up to 5 heroes</b> from the left to take part in this encounter.</Text> : null}
 									<CardList cards={selected} />
 								</div>
 							</div>
@@ -144,6 +137,47 @@ export class CampaignMapPage extends Component<Props, State> {
 			);
 		}
 
+		return;
+	};
+
+	public render() {
+		let info = null;
+		if (this.state.selectedRegion) {
+			const canAttack = CampaignMapLogic.canAttackRegion(this.props.game.map, this.state.selectedRegion);
+			const heroesExist = this.props.game.heroes.filter(h => h.name !== '').length > 0;
+			info = (
+				<div className='region'>
+					<Text type={TextType.SubHeading}>{this.state.selectedRegion.name}</Text>
+					<hr />
+					<StatValue label='Area' value={`${this.state.selectedRegion.demographics.size} sq mi`} />
+					<StatValue label='Population' value={`${this.state.selectedRegion.demographics.population},000`} />
+					<StatValue label='Terrain' value={this.state.selectedRegion.demographics.terrain} />
+					<StatValue label='Number of Encounters' value={this.state.selectedRegion.encounters.length} />
+					<hr />
+					<Text>If you take control of {this.state.selectedRegion.name}, you will recieve:</Text>
+					<div className='boon'>
+						<PlayingCard front={<BoonCard boon={this.state.selectedRegion.boon} />} />
+					</div>
+					<hr />
+					{canAttack ? null : <Text type={TextType.Information}>You can&apos;t attack {this.state.selectedRegion.name} because it&apos;s not on the coast or adjacent to your land.</Text>}
+					{heroesExist ? null : <Text type={TextType.Information}>You can&apos;t attack {this.state.selectedRegion.name} because you don&apos;t have any heroes.</Text>}
+					{canAttack && heroesExist ? <button onClick={() => this.setState({ showHeroSelection: true })}>Start an encounter here</button> : null}
+					{this.props.developer ? <button className='developer' onClick={() => this.props.conquer(this.state.selectedRegion as RegionModel)}>Conquer</button> : null}
+				</div>
+			);
+		} else {
+			const owned = this.props.game.map.squares.filter(sq => sq.regionID === '');
+			info = (
+				<div>
+					<Text>This is the map of the island.</Text>
+					{owned.length > 0 ? <Text>The white area is land you already control.</Text> : null}
+					<Text>Select a region to learn more about it.</Text>
+					{owned.length > 0 ? <StatValue label='Controlled' value={`${Math.floor(100 * owned.length / this.props.game.map.squares.length)}%`} /> : null}
+				</div>
+			);
+		}
+
+
 		return (
 			<div className='campaign-map-page'>
 				<div className='row'>
@@ -158,7 +192,7 @@ export class CampaignMapPage extends Component<Props, State> {
 						{info}
 					</div>
 				</div>
-				{dialog}
+				{this.getDialog()}
 			</div>
 		);
 	}

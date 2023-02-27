@@ -103,8 +103,8 @@ export class CombatantControls extends Component<Props, State> {
 
 				const canPickUp = (this.props.combatant.combat.movement >= 1) && (this.props.combatant.carried.length < 6);
 
-				const adj = EncounterMapLogic.getAdjacentSquares(this.props.encounter.map, [ this.props.combatant.combat.position ]);
-				const piles = this.props.encounter.map.loot.filter(lp => adj.find(sq => (sq.x === lp.position.x) && (sq.y === lp.position.y)));
+				const adj = EncounterMapLogic.getAdjacentSquares(this.props.encounter.mapSquares, [ this.props.combatant.combat.position ]);
+				const piles = this.props.encounter.loot.filter(lp => adj.find(sq => (sq.x === lp.position.x) && (sq.y === lp.position.y)));
 				const items = Collections.distinct(piles.flatMap(pile => pile.items), i => i.id);
 				const pickUpButtons = items.map(item => {
 					const name = item.magic ? `${item.name} (${item.baseItem})` : item.name;

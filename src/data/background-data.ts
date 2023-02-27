@@ -1,6 +1,8 @@
 import { ConditionType } from '../enums/condition-type';
 import { DamageCategoryType } from '../enums/damage-category-type';
 import { DamageType } from '../enums/damage-type';
+import { ItemProficiencyType } from '../enums/item-proficiency-type';
+import { SkillCategoryType } from '../enums/skill-category-type';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
 
@@ -24,6 +26,30 @@ export class BackgroundData {
 				]
 			},
 			{
+				id: 'background-artificer',
+				name: 'Artificer',
+				features: [
+					FeatureLogic.createSkillFeature('artificer-feature-1', SkillType.Perception, 2),
+					FeatureLogic.createProficiencyFeature('artificer-feature-2', ItemProficiencyType.Any)
+				],
+				actions: [
+					ActionLogic.createActionPlaceholder('artificer-action-1', 'Infuse item'),
+					ActionLogic.createActionPlaceholder('artificer-action-2', 'Drain item')
+				]
+			},
+			{
+				id: 'background-bard',
+				name: 'Bard',
+				features: [
+					FeatureLogic.createSkillCategoryFeature('bard-feature-1', SkillCategoryType.Mental, 2),
+					FeatureLogic.createProficiencyFeature('bard-feature-2', ItemProficiencyType.Any)
+				],
+				actions: [
+					ActionLogic.createActionPlaceholder('bard-action-1', 'Song of health (AOE heal)'),
+					ActionLogic.createActionPlaceholder('bard-action-2', 'Song of inspiration (AOE buff)')
+				]
+			},
+			{
 				id: 'background-commander',
 				name: 'Commander',
 				features: [
@@ -33,7 +59,8 @@ export class BackgroundData {
 				],
 				actions: [
 					ActionLogic.createActionPlaceholder('commander-action-1', 'Knock prone'),
-					ActionLogic.createActionPlaceholder('commander-action-2', 'Extra move')
+					ActionLogic.createActionPlaceholder('commander-action-2', 'Extra move'),
+					ActionLogic.createActionPlaceholder('commander-action-3', 'Reveal hidden enemies')
 				]
 			},
 			{

@@ -14,7 +14,7 @@ import type { CombatantModel } from '../models/combatant';
 import type { ConditionModel } from '../models/condition';
 import type { FeatureModel } from '../models/feature';
 import type { GameModel } from '../models/game';
-import type { LootPileModel } from '../models/encounter-map';
+import type { LootPileModel } from '../models/encounter';
 
 import { Utils } from '../utils/utils';
 
@@ -65,6 +65,7 @@ export class Factory {
 			],
 			items: [],
 			boons: [],
+			money: 0,
 			map: CampaignMapLogic.generateCampaignMap(),
 			encounter: null
 		};

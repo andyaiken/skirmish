@@ -23,6 +23,13 @@ export class PlayingCard extends Component<Props> {
 		onClick: null
 	};
 
+	constructor(props: Props) {
+		super(props);
+		this.state = {
+			display: props.display
+		};
+	}
+
 	onClick = () => {
 		if (this.props.onClick) {
 			this.props.onClick();
@@ -31,7 +38,7 @@ export class PlayingCard extends Component<Props> {
 
 	render = () => {
 		let className = 'playing-card';
-		if (this.props.onClick) {
+		if (this.props.onClick !== null) {
 			className += ' clickable';
 		}
 		if (this.props.display === PlayingCardSide.Back) {

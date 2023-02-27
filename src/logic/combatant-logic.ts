@@ -52,7 +52,7 @@ export class CombatantLogic {
 	};
 
 	static incrementCombatantLevel = (combatant: CombatantModel) => {
-		const deck = CombatantLogic.getFeatureDeck(combatant);
+		const deck = CombatantLogic.getFeatureDeck(combatant).filter(f => f.type !== FeatureType.Proficiency);
 		combatant.features.push(Collections.draw(deck));
 		combatant.level += 1;
 	};
@@ -100,7 +100,7 @@ export class CombatantLogic {
 					ItemProficiencyType.HeavyArmor,
 					ItemProficiencyType.Shields
 				];
-				feature.proficiency = Collections.draw(options);
+				feature.proficiency = Collections.draw(options.filter(o => !CombatantLogic.getProficiencies(combatant).includes(o)));
 			}
 
 			if (feature.damage === DamageType.Any) {

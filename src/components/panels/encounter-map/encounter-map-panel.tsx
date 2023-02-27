@@ -5,9 +5,8 @@ import { CombatantState } from '../../../enums/combatant-state';
 import { CombatantLogic } from '../../../logic/combatant-logic';
 import { EncounterMapLogic } from '../../../logic/encounter-map-logic';
 
+import type { EncounterModel, LootPileModel } from '../../../models/encounter';
 import type { CombatantModel } from '../../../models/combatant';
-import type { EncounterModel } from '../../../models/encounter';
-import { LootPileModel } from '../../../models/encounter-map';
 
 import './encounter-map-panel.scss';
 
@@ -22,9 +21,9 @@ interface Props {
 export class EncounterMapPanel extends Component<Props> {
 	public render() {
 		// Get dimensions
-		const dims = EncounterMapLogic.getDimensions(this.props.encounter.map);
+		const dims = EncounterMapLogic.getDimensions(this.props.encounter.mapSquares);
 
-		const squares = this.props.encounter.map.squares.map(sq => {
+		const squares = this.props.encounter.mapSquares.map(sq => {
 			const className = `encounter-map-square ${sq.type.toLowerCase()}`;
 			return (
 				<div
@@ -40,7 +39,7 @@ export class EncounterMapPanel extends Component<Props> {
 			);
 		});
 
-		const loot = this.props.encounter.map.loot
+		const loot = this.props.encounter.loot
 			.map(lp => {
 				return (
 					<LootToken
@@ -182,6 +181,7 @@ class LootToken extends Component<LootTokenProps> {
 					left: `${((this.props.loot.position.x - this.props.mapDimensions.left) * this.props.squareSize)}px`,
 					top: `${((this.props.loot.position.y - this.props.mapDimensions.top) * this.props.squareSize)}px`
 				}}
+				title='Treasure'
 			>
 			</div>
 		);

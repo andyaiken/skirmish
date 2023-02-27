@@ -1,21 +1,15 @@
 import { EncounterMapSquareType } from '../enums/encounter-map-square-type';
 
-import type { EncounterMapModel, EncounterMapSquareModel } from '../models/encounter-map';
+import type { EncounterMapSquareModel } from '../models/encounter';
 
 import { Collections } from '../utils/collections';
 import { Random } from '../utils/random';
 
-import { Factory } from './factory';
-import { MagicItemGenerator } from './magic-item-generator';
-
 export class EncounterMapLogic {
-	static generateEncounterMap = (rng: () => number): EncounterMapModel => {
-		const map: EncounterMapModel = {
-			squares: [],
-			loot: []
-		};
+	static generateEncounterMap = (rng: () => number): EncounterMapSquareModel[] => {
+		let map: EncounterMapSquareModel[] = [];
 
-		while (map.squares.length < 1000) {
+		while (map.length < 1000) {
 			const dirs = [ 'n', 'e', 's', 'w' ];
 			const dir = dirs[Random.randomNumber(4, rng)];
 
@@ -28,8 +22,8 @@ export class EncounterMapLogic {
 			};
 
 			const position = { x: 0, y: 0 };
-			if (map.squares.length > 0) {
-				const adj = EncounterMapLogic.getEdges(map, map.squares, dir as 'n' | 'e' | 's' | 'w');
+			if (map.length > 0) {
+				const adj = EncounterMapLogic.getEdges(map, map, dir as 'n' | 'e' | 's' | 'w');
 				const sq = adj[Random.randomNumber(adj.length, rng)];
 				if (dir === 'n') {
 					sq.y -= (size.height - 1);
@@ -43,13 +37,13 @@ export class EncounterMapLogic {
 
 			for (let x = position.x; x < position.x + size.width; ++x) {
 				for (let y = position.y; y < position.y + size.height; ++y) {
-					if (!map.squares.find(t => (t.x === x) && (t.y === y))) {
+					if (!map.find(t => (t.x === x) && (t.y === y))) {
 						const square: EncounterMapSquareModel = {
 							x: x,
 							y: y,
 							type: EncounterMapSquareType.Clear
 						};
-						map.squares.push(square);
+						map.push(square);
 					}
 				}
 			}
@@ -58,7 +52,7 @@ export class EncounterMapLogic {
 		while (Random.randomNumber(3, rng) !== 0) {
 			// Add a blob of blocked terrain
 			const blob = EncounterMapLogic.getBlob(map, rng);
-			map.squares = map.squares.filter(sq => !blob.includes(sq));
+			map = map.filter(sq => !blob.includes(sq));
 		}
 
 		while (Random.randomNumber(3, rng) !== 0) {
@@ -67,23 +61,13 @@ export class EncounterMapLogic {
 			blob.forEach(sq => sq.type = EncounterMapSquareType.Obstructed);
 		}
 
-		while (Random.randomNumber(3, rng) !== 0) {
-			// Add magic items loot piles
-			const square = Collections.draw(map.squares.filter(c => c.type === EncounterMapSquareType.Clear), rng);
-			const lp = Factory.createLootPile();
-			lp.items.push(MagicItemGenerator.generateMagicItem());
-			lp.position.x = square.x;
-			lp.position.y = square.y;
-			map.loot.push(lp);
-		}
-
 		return map;
 	};
 
-	static getBlob = (map: EncounterMapModel, rng: () => number) => {
+	static getBlob = (map: EncounterMapSquareModel[], rng: () => number) => {
 		const blob: EncounterMapSquareModel[] = [];
 		while ((blob.length < 5) || (Random.randomNumber(10, rng) !== 0)) {
-			const candidates = ((blob.length === 0) ? map.squares : EncounterMapLogic.getAdjacentSquares(map, blob, [ 'n', 'e', 's', 'w' ])).filter(c => c.type === EncounterMapSquareType.Clear);
+			const candidates = ((blob.length === 0) ? map : EncounterMapLogic.getAdjacentSquares(map, blob, [ 'n', 'e', 's', 'w' ])).filter(c => c.type === EncounterMapSquareType.Clear);
 
 			if (candidates.length === 0) {
 				return blob;
@@ -95,7 +79,7 @@ export class EncounterMapLogic {
 		return blob;
 	};
 
-	static getDimensions = (map: EncounterMapModel) => {
+	static getDimensions = (map: EncounterMapSquareModel[]) => {
 		const dims = {
 			left: Number.MAX_VALUE,
 			top: Number.MAX_VALUE,
@@ -103,7 +87,7 @@ export class EncounterMapLogic {
 			bottom: Number.MIN_VALUE
 		};
 
-		map.squares.forEach(sq => {
+		map.forEach(sq => {
 			dims.left = Math.min(dims.left, sq.x);
 			dims.top = Math.min(dims.top, sq.y);
 			dims.right = Math.max(dims.right, sq.x);
@@ -113,54 +97,54 @@ export class EncounterMapLogic {
 		return dims;
 	};
 
-	static getAdjacentSquares = (map: EncounterMapModel, squares: { x: number; y: number }[], directions: ('n' | 'ne' | 'e' | 'se' | 's' | 'sw' | 'w' | 'nw')[] = []) => {
+	static getAdjacentSquares = (map: EncounterMapSquareModel[], squares: { x: number; y: number }[], directions: ('n' | 'ne' | 'e' | 'se' | 's' | 'sw' | 'w' | 'nw')[] = []) => {
 		const adj: EncounterMapSquareModel[] = [];
 
 		squares.forEach(square => {
 			if ((directions.length === 0) || (directions.includes('n'))) {
-				const n = map.squares.find(sq => (sq.x === square.x) && (sq.y === square.y - 1));
+				const n = map.find(sq => (sq.x === square.x) && (sq.y === square.y - 1));
 				if (n) {
 					adj.push(n);
 				}
 			}
 			if ((directions.length === 0) || (directions.includes('ne'))) {
-				const ne = map.squares.find(sq => (sq.x === square.x + 1) && (sq.y === square.y - 1));
+				const ne = map.find(sq => (sq.x === square.x + 1) && (sq.y === square.y - 1));
 				if (ne) {
 					adj.push(ne);
 				}
 			}
 			if ((directions.length === 0) || (directions.includes('e'))) {
-				const e = map.squares.find(sq => (sq.x === square.x + 1) && (sq.y === square.y));
+				const e = map.find(sq => (sq.x === square.x + 1) && (sq.y === square.y));
 				if (e) {
 					adj.push(e);
 				}
 			}
 			if ((directions.length === 0) || (directions.includes('se'))) {
-				const se = map.squares.find(sq => (sq.x === square.x + 1) && (sq.y === square.y + 1));
+				const se = map.find(sq => (sq.x === square.x + 1) && (sq.y === square.y + 1));
 				if (se) {
 					adj.push(se);
 				}
 			}
 			if ((directions.length === 0) || (directions.includes('s'))) {
-				const s = map.squares.find(sq => (sq.x === square.x) && (sq.y === square.y + 1));
+				const s = map.find(sq => (sq.x === square.x) && (sq.y === square.y + 1));
 				if (s) {
 					adj.push(s);
 				}
 			}
 			if ((directions.length === 0) || (directions.includes('sw'))) {
-				const sw = map.squares.find(sq => (sq.x === square.x - 1) && (sq.y === square.y + 1));
+				const sw = map.find(sq => (sq.x === square.x - 1) && (sq.y === square.y + 1));
 				if (sw) {
 					adj.push(sw);
 				}
 			}
 			if ((directions.length === 0) || (directions.includes('w'))) {
-				const w = map.squares.find(sq => (sq.x === square.x - 1) && (sq.y === square.y));
+				const w = map.find(sq => (sq.x === square.x - 1) && (sq.y === square.y));
 				if (w) {
 					adj.push(w);
 				}
 			}
 			if ((directions.length === 0) || (directions.includes('nw'))) {
-				const nw = map.squares.find(sq => (sq.x === square.x - 1) && (sq.y === square.y - 1));
+				const nw = map.find(sq => (sq.x === square.x - 1) && (sq.y === square.y - 1));
 				if (nw) {
 					adj.push(nw);
 				}
@@ -170,7 +154,7 @@ export class EncounterMapLogic {
 		return adj.filter(sq => !squares.find(s => (s.x === sq.x) && (s.y === sq.y)));
 	};
 
-	static getEdges = (map: EncounterMapModel, squares: { x: number; y: number }[], direction: 'n' | 'e' | 's' | 'w') => {
+	static getEdges = (map: EncounterMapSquareModel[], squares: { x: number; y: number }[], direction: 'n' | 'e' | 's' | 'w') => {
 		const adj: { x: number; y: number }[] = [];
 
 		squares.forEach(square => {
@@ -189,7 +173,7 @@ export class EncounterMapLogic {
 					sq.x -= 1;
 					break;
 			}
-			if (!map.squares.find(s => (s.x === sq.x) && (s.y === sq.y))) {
+			if (!map.find(s => (s.x === sq.x) && (s.y === sq.y))) {
 				adj.push(sq);
 			}
 		});

@@ -8,6 +8,7 @@ export interface GameModel {
 	heroes: CombatantModel[];
 	items: ItemModel[];
 	boons: BoonModel[];
+	money: number;
 	map: CampaignMapModel;
 	encounter: EncounterModel | null;
 }

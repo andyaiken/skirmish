@@ -7,10 +7,9 @@ import { EncounterState } from '../enums/encounter-state';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
 
+import type { EncounterMapSquareModel, EncounterModel } from '../models/encounter';
 import type { CombatantModel } from '../models/combatant';
 import type { ConditionModel } from '../models/condition';
-import type { EncounterMapSquareModel } from '../models/encounter-map';
-import type { EncounterModel } from '../models/encounter';
 
 import { Collections } from '../utils/collections';
 import { Random } from '../utils/random';
@@ -65,7 +64,7 @@ export class EncounterLogic {
 				const squares = EncounterLogic.getCombatantSquares(encounter, c);
 				occupied.push(...squares);
 			});
-		encounter.map.loot.forEach(lp => occupied.push(lp.position));
+		encounter.loot.forEach(lp => occupied.push(lp.position));
 
 		return occupied.find(s => (s.x === square.x) && (s.y === square.y)) === undefined;
 	};
@@ -231,7 +230,7 @@ export class EncounterLogic {
 		});
 
 		const destinationMapSquares = movingTo
-			.map(sq => encounter.map.squares.find(ms => (ms.x === sq.x) && (ms.y === sq.y)) ?? null)
+			.map(sq => encounter.mapSquares.find(ms => (ms.x === sq.x) && (ms.y === sq.y)) ?? null)
 			.filter(ms => ms !== null) as EncounterMapSquareModel[];
 
 		// Can't move off the map
@@ -258,7 +257,7 @@ export class EncounterLogic {
 			.filter(c => c.combat.state === CombatantState.Standing)
 			.forEach(c => {
 				const current = EncounterLogic.getCombatantSquares(encounter, c);
-				const squares = EncounterMapLogic.getAdjacentSquares(encounter.map, current);
+				const squares = EncounterMapLogic.getAdjacentSquares(encounter.mapSquares, current);
 				adjacent.push(...squares);
 			});
 		if (movingFrom.some(sq => adjacent.find(os => (os.x === sq.x) && (os.y === sq.y)))) {
@@ -358,7 +357,7 @@ export class EncounterLogic {
 					loot.items.push(...combatant.items, ...combatant.carried);
 					loot.position.x = combatant.combat.position.x;
 					loot.position.y = combatant.combat.position.y;
-					encounter.map.loot.push(loot);
+					encounter.loot.push(loot);
 				}
 			}
 		}

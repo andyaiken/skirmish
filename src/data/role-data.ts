@@ -14,6 +14,31 @@ export class RoleData {
 	static getList = (): RoleModel[] => {
 		return [
 			{
+				id: 'role-arcanist',
+				name: 'Arcanist',
+				traits: [
+					TraitType.Resolve
+				],
+				skills: [
+					SkillType.Spellcasting
+				],
+				proficiencies: [
+					ItemProficiencyType.Implements
+				],
+				features: [
+					FeatureLogic.createTraitFeature('arcanist-feature-1', TraitType.Resolve, 1),
+					FeatureLogic.createSkillFeature('arcanist-feature-2', SkillType.Spellcasting, 2),
+					FeatureLogic.createDamageCategoryBonusFeature('arcanist-feature-3', DamageCategoryType.Energy, 1)
+				],
+				actions: [
+					ActionLogic.createActionPlaceholder('arcanist-action-1', 'XXX (shield self, resist all damage)'),
+					ActionLogic.createActionPlaceholder('arcanist-action-2', 'XXX (shield other, resist all damage)'),
+					ActionLogic.createActionPlaceholder('arcanist-action-3', 'XXX (push)'),
+					ActionLogic.createActionPlaceholder('arcanist-action-4', 'Magic missile'),
+					ActionLogic.createActionPlaceholder('arcanist-action-5', 'Swap positions')
+				]
+			},
+			{
 				id: 'role-barbarian',
 				name: 'Barbarian',
 				traits: [
@@ -195,6 +220,30 @@ export class RoleData {
 				]
 			},
 			{
+				id: 'role-necromancer',
+				name: 'Necromancer',
+				traits: [
+					TraitType.Resolve
+				],
+				skills: [
+					SkillType.Spellcasting
+				],
+				proficiencies: [
+					ItemProficiencyType.Implements
+				],
+				features: [
+					FeatureLogic.createTraitFeature('necromancer-feature-1', TraitType.Resolve, 1),
+					FeatureLogic.createSkillFeature('necromancer-feature-2', SkillType.Spellcasting, 2),
+					FeatureLogic.createAuraDamageFeature('necromancer-feature-3', ConditionType.AutoDamage, DamageType.Decay, 1)
+				],
+				actions: [
+					ActionLogic.createActionPlaceholder('necromancer-action-1', 'Transfer damage (self to enemy)'),
+					ActionLogic.createActionPlaceholder('necromancer-action-2', 'Transfer wounds (self to enemy'),
+					ActionLogic.createActionPlaceholder('necromancer-action-3', 'Transfer damage (ally to enemy)'),
+					ActionLogic.createActionPlaceholder('necromancer-action-4', 'Transfer wounds (ally to enemy')
+				]
+			},
+			{
 				id: 'role-soldier',
 				name: 'Soldier',
 				traits: [
@@ -276,31 +325,6 @@ export class RoleData {
 					ActionLogic.createActionPlaceholder('warmage-action-3', 'Shocking blade (stuns)'),
 					ActionLogic.createActionPlaceholder('warmage-action-4', 'Armor enhancement'),
 					ActionLogic.createActionPlaceholder('warmage-action-5', 'XXX (attack at range)')
-				]
-			},
-			{
-				id: 'role-wizard',
-				name: 'Wizard',
-				traits: [
-					TraitType.Resolve
-				],
-				skills: [
-					SkillType.Spellcasting
-				],
-				proficiencies: [
-					ItemProficiencyType.Implements
-				],
-				features: [
-					FeatureLogic.createTraitFeature('wizard-feature-1', TraitType.Resolve, 1),
-					FeatureLogic.createSkillFeature('wizard-feature-2', SkillType.Spellcasting, 2),
-					FeatureLogic.createDamageCategoryBonusFeature('wizard-feature-3', DamageCategoryType.Energy, 1)
-				],
-				actions: [
-					ActionLogic.createActionPlaceholder('wizard-action-1', 'XXX (shield self, resist all damage)'),
-					ActionLogic.createActionPlaceholder('wizard-action-2', 'XXX (shield other, resist all damage)'),
-					ActionLogic.createActionPlaceholder('wizard-action-3', 'XXX (push)'),
-					ActionLogic.createActionPlaceholder('wizard-action-4', 'Magic missile'),
-					ActionLogic.createActionPlaceholder('wizard-action-5', 'Swap positions')
 				]
 			}
 		];

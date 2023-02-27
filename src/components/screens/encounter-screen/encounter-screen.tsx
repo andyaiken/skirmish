@@ -4,11 +4,11 @@ import { EncounterState } from '../../../enums/encounter-state';
 
 import { EncounterLogic } from '../../../logic/encounter-logic';
 
-import type { CampaignMapRegionModel } from '../../../models/campaign-map';
 import type { CombatantModel } from '../../../models/combatant';
 import type { EncounterModel } from '../../../models/encounter';
 import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
+import type { RegionModel } from '../../../models/campaign-map';
 
 import { CharacterSheetPanel, EncounterMapPanel, InitiativeListPanel } from '../../panels';
 import { Dialog, Text, TextType } from '../../controls';
@@ -126,11 +126,11 @@ export class EncounterScreen extends Component<Props, State> {
 				break;
 			}
 			case EncounterState.Victory: {
-				const region = this.props.game.map.regions.find(r => r.id === this.props.encounter.regionID) as CampaignMapRegionModel;
+				const region = this.props.game.map.regions.find(r => r.id === this.props.encounter.regionID) as RegionModel;
 				controls = (
 					<div className='encounter-right-panel'>
-						<Text type={TextType.SubHeading}>Victory</Text>
-						<Text>You won the encounter in {region.name}!</Text>
+						<Text type={TextType.Heading}>Victory</Text>
+						<Text type={TextType.MinorHeading}>You won the encounter in {region.name}!</Text>
 						<Text>Each surviving hero who took part in this encounter gains 1 XP.</Text>
 						<Text>Any heroes who died have been lost.</Text>
 						<button onClick={() => this.props.finishEncounter(EncounterState.Victory)}>OK</button>
@@ -139,11 +139,11 @@ export class EncounterScreen extends Component<Props, State> {
 				break;
 			}
 			case EncounterState.Defeat: {
-				const region = this.props.game.map.regions.find(r => r.id === this.props.encounter.regionID) as CampaignMapRegionModel;
+				const region = this.props.game.map.regions.find(r => r.id === this.props.encounter.regionID) as RegionModel;
 				controls = (
 					<div className='encounter-right-panel'>
-						<Text type={TextType.SubHeading}>Defeated</Text>
-						<Text>You lost the encounter in {region.name}.</Text>
+						<Text type={TextType.Heading}>Defeated</Text>
+						<Text type={TextType.MinorHeading}>You lost the encounter in {region.name}.</Text>
 						<Text>Those heroes who took part have been lost, along with all their equipment.</Text>
 						<button onClick={() => this.props.finishEncounter(EncounterState.Defeat)}>OK</button>
 					</div>
@@ -151,11 +151,11 @@ export class EncounterScreen extends Component<Props, State> {
 				break;
 			}
 			case EncounterState.Retreat: {
-				const region = this.props.game.map.regions.find(r => r.id === this.props.encounter.regionID) as CampaignMapRegionModel;
+				const region = this.props.game.map.regions.find(r => r.id === this.props.encounter.regionID) as RegionModel;
 				controls = (
 					<div className='encounter-right-panel empty'>
-						<Text type={TextType.SubHeading}>Retreat</Text>
-						<Text>You retreated from the encounter in {region.name}.</Text>
+						<Text type={TextType.Heading}>Retreat</Text>
+						<Text type={TextType.MinorHeading}>You retreated from the encounter in {region.name}.</Text>
 						<Text>Any heroes who fell have been lost, along with all their equipment.</Text>
 						<button onClick={() => this.props.finishEncounter(EncounterState.Retreat)}>OK</button>
 					</div>

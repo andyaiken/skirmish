@@ -305,80 +305,35 @@ export class GameLogic {
 
 	///////////////////////////////////////////////////////////////////////////////
 
-	static getBackground = (id: string) => {
-		return BackgroundData.getList().find(b => b.id === id);
-	};
-
-	static getBackgroundDeck = (game: GameModel | null = null) => {
-		if (game) {
-			const used = game.heroes.map(h => h.backgroundID);
-
-			const deck = BackgroundData
-				.getList()
-				.filter(background => !used.includes(background.id))
-				.map(background => background.id);
-
-			if (deck.length >= 3) {
-				return deck;
-			}
-		}
-
-		return BackgroundData
+	static getSpeciesDeck = (type: CombatantType) => {
+		return SpeciesData
 			.getList()
-			.map(background => background.id);
+			.filter(s => s.type === type)
+			.map(species => species.id);
 	};
 
-	static getRole = (id: string) => {
-		return RoleData.getList().find(r => r.id === id);
-	};
-
-	static getRoleDeck = (game: GameModel | null = null) => {
-		if (game) {
-			const used = game.heroes.map(h => h.roleID);
-
-			const deck = RoleData
-				.getList()
-				.filter(role => !used.includes(role.id))
-				.map(role => role.id);
-
-			if (deck.length >= 3) {
-				return deck;
-			}
-		}
-
+	static getRoleDeck = () => {
 		return RoleData
 			.getList()
 			.map(role => role.id);
+	};
+
+	static getBackgroundDeck = () => {
+		return BackgroundData
+			.getList()
+			.map(background => background.id);
 	};
 
 	static getSpecies = (id: string) => {
 		return SpeciesData.getList().find(s => s.id === id);
 	};
 
-	static getSpeciesDeck = (game: GameModel | null = null) => {
-		if (game) {
-			const used = game.heroes.map(h => h.speciesID);
+	static getRole = (id: string) => {
+		return RoleData.getList().find(r => r.id === id);
+	};
 
-			const deck = SpeciesData
-				.getList()
-				.filter(s => s.type === CombatantType.Hero)
-				.filter(species => !used.includes(species.id))
-				.map(species => species.id);
-
-			if (deck.length >= 3) {
-				return deck;
-			}
-
-			return SpeciesData
-				.getList()
-				.filter(s => s.type === CombatantType.Hero)
-				.map(species => species.id);
-		}
-
-		return SpeciesData
-			.getList()
-			.filter(s => s.type === CombatantType.Monster)
-			.map(species => species.id);
+	static getBackground = (id: string) => {
+		return BackgroundData.getList().find(b => b.id === id);
 	};
 
 	static getItem = (id: string) => {

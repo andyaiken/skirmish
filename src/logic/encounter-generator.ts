@@ -2,9 +2,9 @@ import { CombatantState } from '../enums/combatant-state';
 import { CombatantType } from '../enums/combatant-type';
 import { EncounterMapSquareType } from '../enums/encounter-map-square-type';
 
-import type { CampaignMapRegionModel } from '../models/campaign-map';
 import type { CombatantModel } from '../models/combatant';
 import type { EncounterModel } from '../models/encounter';
+import type { RegionModel } from '../models/campaign-map';
 
 import { Collections } from '../utils/collections';
 import { Random } from '../utils/random';
@@ -17,7 +17,7 @@ import { GameLogic } from './game-logic';
 import { MagicItemGenerator } from './magic-item-generator';
 
 export class EncounterGenerator {
-	static createEncounter = (region: CampaignMapRegionModel, heroes: CombatantModel[]): EncounterModel => {
+	static createEncounter = (region: RegionModel, heroes: CombatantModel[]): EncounterModel => {
 		const seed = region.encounters[0];
 		const rng = Random.getSeededRNG(seed);
 
@@ -26,7 +26,7 @@ export class EncounterGenerator {
 			switch (Random.randomNumber(10, rng)) {
 				case 0: {
 					// Add a random monster
-					const speciesID = Collections.draw(GameLogic.getSpeciesDeck(), rng);
+					const speciesID = Collections.draw(GameLogic.getSpeciesDeck(CombatantType.Monster), rng);
 					const roleID = Collections.draw(GameLogic.getRoleDeck(), rng);
 					const backgroundID = Collections.draw(GameLogic.getBackgroundDeck(), rng);
 					const monster = Factory.createCombatant(CombatantType.Monster);
@@ -113,8 +113,20 @@ export class EncounterGenerator {
 			regionID: region.id,
 			round: 0,
 			combatants: [],
-			map: EncounterMapLogic.generateEncounterMap(rng)
+			loot: [],
+			mapSquares: EncounterMapLogic.generateEncounterMap(rng)
 		};
+
+		while (Random.randomNumber(10, rng) !== 0) {
+			const lp = Factory.createLootPile();
+			lp.items.push(MagicItemGenerator.generateMagicItem());
+
+			const square = Collections.draw(encounter.mapSquares.filter(c => c.type === EncounterMapSquareType.Clear), rng);
+			lp.position.x = square.x;
+			lp.position.y = square.y;
+
+			encounter.loot.push(lp);
+		}
 
 		encounter.combatants.push(...heroes);
 		encounter.combatants.push(...monsters);
@@ -144,7 +156,7 @@ export class EncounterGenerator {
 	static placeCombatants = (encounter: EncounterModel, rng: () => number) => {
 		encounter.combatants.forEach(combatant => {
 			for (let i = 0; i <= 1000; ++i) {
-				const square = Collections.draw(encounter.map.squares, rng);
+				const square = Collections.draw(encounter.mapSquares, rng);
 
 				const squares = [];
 				for (let x = square.x; x <= square.x + combatant.size - 1; ++x) {
@@ -155,10 +167,10 @@ export class EncounterGenerator {
 
 				const occupiedSquares: { x: number; y: number }[] = [];
 				encounter.combatants.forEach(combatant => occupiedSquares.push(...EncounterLogic.getCombatantSquares(encounter, combatant)));
-				encounter.map.loot.forEach(lp => occupiedSquares.push(lp.position));
+				encounter.loot.forEach(lp => occupiedSquares.push(lp.position));
 
 				const canPlace = squares.every(sq => {
-					const mapSquare = encounter.map.squares.find(ms => (ms.x === sq.x) && (ms.y === sq.y));
+					const mapSquare = encounter.mapSquares.find(ms => (ms.x === sq.x) && (ms.y === sq.y));
 					if (!mapSquare) {
 						// Off the map
 						return false;

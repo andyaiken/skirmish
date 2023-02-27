@@ -10,7 +10,7 @@ import type { ItemModel } from '../../../../models/item';
 
 import { Collections } from '../../../../utils/collections';
 
-import { Box, CardList, Dialog, IconType, IconValue, PlayingCard, PlayingCardSide, Text, TextType } from '../../../controls';
+import { Box, CardList, Dialog, IconType, IconValue, PlayingCard, Text, TextType } from '../../../controls';
 import { ItemCard, PlaceholderCard } from '../../../cards';
 
 import './items.scss';
@@ -70,19 +70,19 @@ export class Items extends Component<Props, State> {
 					);
 				}
 
-				let back: JSX.Element | null = (
-					<div className='item-options'>
+				let footer: JSX.Element | null = (
+					<div>
 						<button disabled={this.props.hero.carried.length >= 6} onClick={() => this.props.unequipItem(item)}>{unequip}</button>
 						<button onClick={() => this.props.dropItem(item)}>Drop</button>
 					</div>
 				);
 				if (!!this.props.game.encounter && !this.props.hero.combat.current) {
-					back = null;
+					footer = null;
 				}
 
 				return (
 					<div key={item.id} className='item'>
-						<Card item={item} back={back} />
+						<PlayingCard front={<ItemCard item={item} />} footer={footer} />
 					</div>
 				);
 			});
@@ -91,7 +91,7 @@ export class Items extends Component<Props, State> {
 			if (cards.length === 0) {
 				cards.push(
 					<div key='empty' className='item'>
-						<PlayingCard front={<PlaceholderCard text='No items' />} />
+						<PlayingCard front={<PlaceholderCard>No items</PlaceholderCard>} />
 					</div>
 				);
 			}
@@ -113,7 +113,7 @@ export class Items extends Component<Props, State> {
 			if (slotsAvailable > 0) {
 				cards.push(
 					<div key='add' className='item'>
-						<PlayingCard front={<PlaceholderCard text='Choose an item' />} onClick={() => this.setState({ selectedLocation: location })} />
+						<PlayingCard front={<PlaceholderCard>Choose an Item</PlaceholderCard>} onClick={() => this.setState({ selectedLocation: location })} />
 					</div>
 				);
 			}
@@ -140,39 +140,38 @@ export class Items extends Component<Props, State> {
 					);
 				}
 
-				let back: JSX.Element | null = (
+				let footer: JSX.Element | null = (
 					<div className='item-options'>
+						<Text type={TextType.SubHeading}>Item</Text>
 						<button disabled={!CombatantLogic.canEquip(this.props.hero, item)} onClick={() => this.props.equipItem(item)}>{equip}</button>
 						<button onClick={() => this.props.dropItem(item)}>Drop</button>
 					</div>
 				);
 				if (!!this.props.game.encounter && !this.props.hero.combat.current) {
-					back = null;
+					footer = null;
 				}
 
 				return (
 					<div key={item.id} className='item'>
-						<Card item={item} back={back} />
+						<PlayingCard front={<ItemCard item={item} />} footer={footer} />
 					</div>
 				);
 			});
 
-		if (this.props.game.encounter && !this.props.hero.combat.current) {
-			if (cards.length === 0) {
+		if (this.props.game.encounter) {
+			if (this.props.hero.carried.length === 0) {
 				cards.push(
 					<div key='empty' className='item'>
-						<PlayingCard front={<PlaceholderCard text='No items' />} />
+						<PlayingCard front={<PlaceholderCard>No Items</PlaceholderCard>} />
 					</div>
 				);
 			}
-		} else {
-			if (this.props.hero.carried.length < 6) {
-				cards.push(
-					<div key='add' className='item'>
-						<PlayingCard front={<PlaceholderCard text='Choose an item' />} onClick={() => this.setState({ selectedLocation: ItemLocationType.Carried })} />
-					</div>
-				);
-			}
+		} else if (this.props.hero.carried.length < 6) {
+			cards.push(
+				<div key='add' className='item'>
+					<PlayingCard front={<PlaceholderCard>Choose an Item</PlaceholderCard>} onClick={() => this.setState({ selectedLocation: ItemLocationType.Carried })} />
+				</div>
+			);
 		}
 
 		return (
@@ -294,42 +293,3 @@ export class Items extends Component<Props, State> {
 		);
 	};
 }
-
-//#region Card
-
-interface CardProps {
-	item: ItemModel;
-	back: JSX.Element | null;
-}
-
-interface CardState {
-	showFront: boolean;
-}
-
-class Card extends Component<CardProps, CardState> {
-	constructor(props: CardProps) {
-		super(props);
-		this.state = {
-			showFront: true
-		};
-	}
-
-	flip = () => {
-		this.setState({
-			showFront: !this.state.showFront
-		});
-	};
-
-	render = () => {
-		return (
-			<PlayingCard
-				front={<ItemCard item={this.props.item} />}
-				back={this.props.back}
-				display={this.state.showFront ? PlayingCardSide.Front : PlayingCardSide.Back}
-				onClick={this.props.back === null ? null : this.flip}
-			/>
-		);
-	};
-}
-
-//#endregion

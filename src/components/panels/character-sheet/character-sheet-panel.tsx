@@ -46,13 +46,7 @@ export class CharacterSheetPanel extends Component<Props, State> {
 	}
 
 	drawFeatures = (hero: CombatantModel) => {
-		return Collections.shuffle(CombatantLogic.getFeatureDeck(hero))
-			.splice(0, 3)
-			.map(f => {
-				const copy = JSON.parse(JSON.stringify(f)) as FeatureModel;
-				copy.id = Utils.guid();
-				return copy;
-			});
+		return Collections.shuffle(CombatantLogic.getFeatureDeck(hero)).splice(0, 3);
 	};
 
 	equipItem = (item: ItemModel) => {
@@ -75,7 +69,9 @@ export class CharacterSheetPanel extends Component<Props, State> {
 		this.setState({
 			features: this.drawFeatures(this.props.hero)
 		}, () => {
-			this.props.levelUp(feature, this.props.hero);
+			const copy = JSON.parse(JSON.stringify(feature)) as FeatureModel;
+			copy.id = Utils.guid();
+			this.props.levelUp(copy, this.props.hero);
 		});
 	};
 
@@ -158,9 +154,12 @@ interface FeaturesPageProps {
 class FeaturesPage extends Component<FeaturesPageProps> {
 	public render() {
 		const featureCards = CombatantLogic.getFeatureDeck(this.props.hero).map(feature => {
-			const source = CombatantLogic.getCardSource(this.props.hero, feature.id, 'feature');
 			return (
-				<PlayingCard key={feature.id} front={<FeatureCard feature={feature} />} footer={source} />
+				<PlayingCard
+					key={feature.id}
+					front={<FeatureCard feature={feature} />}
+					footer={CombatantLogic.getCardSource(this.props.hero, feature.id, 'feature')}
+				/>
 			);
 		});
 
@@ -182,9 +181,12 @@ interface ActionsPageProps {
 class ActionsPage extends Component<ActionsPageProps> {
 	public render() {
 		const actionCards = CombatantLogic.getActionDeck(this.props.hero).map(action => {
-			const source = CombatantLogic.getCardSource(this.props.hero, action.id, 'action');
 			return (
-				<PlayingCard key={action.id} front={<ActionCard action={action} />} footer={source} />
+				<PlayingCard
+					key={action.id}
+					front={<ActionCard action={action} />}
+					footer={CombatantLogic.getCardSource(this.props.hero, action.id, 'action')}
+				/>
 			);
 		});
 

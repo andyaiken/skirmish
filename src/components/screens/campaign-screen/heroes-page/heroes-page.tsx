@@ -57,6 +57,13 @@ export class HeroesPage extends Component<Props, State> {
 		}
 	};
 
+	selectHero = (e: React.MouseEvent, hero: CombatantModel) => {
+		e.stopPropagation();
+		this.setState({
+			selectedHero: hero
+		});
+	};
+
 	public render() {
 		let boons = null;
 		if (this.props.game.boons.length > 0) {
@@ -74,7 +81,7 @@ export class HeroesPage extends Component<Props, State> {
 		if (this.props.game.heroes.some(h => !h.name)) {
 			const cards = this.props.game.heroes.filter(h => !h.name).map(h => {
 				return (
-					<PlayingCard key={h.id} front={<PlaceholderCard text='Hero' />} onClick={() => this.setState({ selectedHero: h })} />
+					<PlayingCard key={h.id} front={<PlaceholderCard>Hero</PlaceholderCard>} onClick={() => this.setState({ selectedHero: h })} />
 				);
 			});
 			blankHeroes = (
@@ -107,7 +114,10 @@ export class HeroesPage extends Component<Props, State> {
 			const cards = this.props.game.heroes.filter(h => !!h.name).map(hero => {
 				return (
 					<div key={hero.id}>
-						<PlayingCard front={<HeroCard hero={hero} />} onClick={() => this.setState({ selectedHero: hero })} />
+						<PlayingCard
+							front={<HeroCard hero={hero} />}
+							footer={<button onClick={e => this.selectHero(e, hero)}>Character Sheet</button>}
+						/>
 						{this.props.developer ? <button className='developer' onClick={() => this.props.incrementXP(hero)}>Add XP</button> : null}
 					</div>
 				);

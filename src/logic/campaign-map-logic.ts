@@ -1,4 +1,4 @@
-import type { CampaignMapModel, CampaignMapRegionModel, CampaignMapSquareModel } from '../models/campaign-map';
+import type { CampaignMapModel, CampaignMapSquareModel, RegionModel } from '../models/campaign-map';
 
 import { Collections } from '../utils/collections';
 import { Random } from '../utils/random';
@@ -51,12 +51,6 @@ export class CampaignMapLogic {
 
 		const regionCount = map.squares.length / 20;
 		while (map.regions.length !== regionCount) {
-			const count = Random.dice(1);
-			const encounters: string[] = [];
-			while (encounters.length < count) {
-				encounters.push(Utils.guid());
-			}
-
 			// The lightest colour we will allow is rgb(229, 229, 229)
 			// This is so that the player (white) stands out
 			const max = 230;
@@ -68,8 +62,13 @@ export class CampaignMapLogic {
 				id: Utils.guid(),
 				name: NameGenerator.generateName(),
 				color: `rgb(${r}, ${g}, ${b})`,
-				encounters: encounters,
-				boon: GameLogic.generateBoon()
+				encounters: [],
+				boon: GameLogic.generateBoon(),
+				demographics: {
+					size: 0,
+					population: 0,
+					terrain: ''
+				}
 			});
 		}
 
@@ -99,6 +98,38 @@ export class CampaignMapLogic {
 				}
 			});
 		} while (map.squares.filter(sq => sq.regionID === '').length !== 0);
+
+		map.regions.forEach(region => {
+			const terrains = [
+				'Volcanic',
+				'Plateaus',
+				'Mountains',
+				'Plains',
+				'Valleys',
+				'Marshland',
+				'Fens',
+				'Steppe',
+				'Desert',
+				'Jungle',
+				'Rainforest',
+				'Scrubland',
+				'Forest',
+				'Urbanized',
+				'Canyons',
+				'Salt flats'
+			];
+
+			const size = CampaignMapLogic.getSquares(map, region).length;
+
+			const count = Random.dice(Math.floor(size / 3));
+			while (region.encounters.length < count) {
+				region.encounters.push(Utils.guid());
+			}
+
+			region.demographics.size = size;
+			region.demographics.population = Random.dice(size);
+			region.demographics.terrain = Collections.draw(terrains);
+		});
 
 		return map;
 	};
@@ -144,18 +175,18 @@ export class CampaignMapLogic {
 		return dims;
 	};
 
-	static getSquares = (map: CampaignMapModel, region: CampaignMapRegionModel) => {
+	static getSquares = (map: CampaignMapModel, region: RegionModel) => {
 		return map.squares.filter(sq => sq.regionID === region.id);
 	};
 
-	static canAttackRegion = (map: CampaignMapModel, region: CampaignMapRegionModel) => {
+	static canAttackRegion = (map: CampaignMapModel, region: RegionModel) => {
 		const squares = CampaignMapLogic.getSquares(map, region);
 		const coastal = squares.some(sq => CampaignMapLogic.getAdjacentSquares(map, sq.x, sq.y).length !== 4);
 		const bordering = squares.some(sq => CampaignMapLogic.getAdjacentSquares(map, sq.x, sq.y).some(a => a.regionID === ''));
 		return coastal || bordering;
 	};
 
-	static removeRegion = (map: CampaignMapModel, region: CampaignMapRegionModel) => {
+	static removeRegion = (map: CampaignMapModel, region: RegionModel) => {
 		map.squares.forEach(sq => {
 			if (sq.regionID === region.id) {
 				sq.regionID = '';

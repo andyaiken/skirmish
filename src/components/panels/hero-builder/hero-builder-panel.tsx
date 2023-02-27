@@ -1,5 +1,8 @@
 import { Component } from 'react';
 
+import { CombatantType } from '../../../enums/combatant-type';
+import { ItemProficiencyType } from '../../../enums/item-proficiency-type';
+
 import { CombatantLogic } from '../../../logic/combatant-logic';
 import { GameLogic } from '../../../logic/game-logic';
 import { NameGenerator } from '../../../logic/name-generator';
@@ -7,6 +10,7 @@ import { NameGenerator } from '../../../logic/name-generator';
 import type { CombatantModel } from '../../../models/combatant';
 import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
+import { RoleModel } from '../../../models/role';
 
 import { Collections } from '../../../utils/collections';
 import { Utils } from '../../../utils/utils';
@@ -152,9 +156,9 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 	constructor(props: CardSelectorProps) {
 		super(props);
 		this.state = {
-			speciesIDs: Collections.shuffle(GameLogic.getSpeciesDeck(this.props.game)).splice(0, 3),
-			roleIDs: Collections.shuffle(GameLogic.getRoleDeck(this.props.game)).splice(0, 3),
-			backgroundIDs: Collections.shuffle(GameLogic.getBackgroundDeck(this.props.game)).splice(0, 3),
+			speciesIDs: Collections.shuffle(GameLogic.getSpeciesDeck(CombatantType.Hero)).splice(0, 3),
+			roleIDs: Collections.shuffle(GameLogic.getRoleDeck()).splice(0, 3),
+			backgroundIDs: Collections.shuffle(GameLogic.getBackgroundDeck()).splice(0, 3),
 			selectedSpeciesID: '',
 			selectedRoleID: '',
 			selectedBackgroundID: ''
@@ -197,7 +201,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 					<div key={species.id}>
 						<PlayingCard
 							front={<SpeciesCard species={species} />}
-							back={<PlaceholderCard text='Species' />}
+							back={<PlaceholderCard>Species</PlaceholderCard>}
 							display={(this.state.selectedSpeciesID !== '') && (this.state.selectedSpeciesID !== species.id) ? PlayingCardSide.Back : PlayingCardSide.Front}
 							onClick={(this.state.selectedSpeciesID !== '') ? null : () => this.selectSpecies(species.id)}
 						/>
@@ -215,7 +219,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 					<div key={role.id}>
 						<PlayingCard
 							front={<RoleCard role={role} />}
-							back={<PlaceholderCard text='Role' />}
+							back={<PlaceholderCard>Role</PlaceholderCard>}
 							display={(this.state.selectedRoleID !== '') && (this.state.selectedRoleID !== role.id) ? PlayingCardSide.Back : PlayingCardSide.Front}
 							onClick={(this.state.selectedRoleID !== '') ? null : () => this.selectRole(role.id)}
 						/>
@@ -233,7 +237,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 					<div key={background.id}>
 						<PlayingCard
 							front={<BackgroundCard background={background} />}
-							back={<PlaceholderCard text='Background' />}
+							back={<PlaceholderCard>Background</PlaceholderCard>}
 							display={(this.state.selectedBackgroundID !== '') && (this.state.selectedBackgroundID !== background.id) ? PlayingCardSide.Back : PlayingCardSide.Front}
 							onClick={(this.state.selectedBackgroundID !== '') ? null : () => this.selectBackground(background.id)}
 						/>
@@ -282,32 +286,47 @@ interface EquipmentSelectorProps {
 }
 
 interface EquipmentSelectorState {
-	items: ItemModel[];
+	slots: {
+		proficiency: ItemProficiencyType;
+		candidates: ItemModel[];
+		selected: ItemModel | null;
+	}[];
 }
 
 class EquipmentSelector extends Component<EquipmentSelectorProps, EquipmentSelectorState> {
 	constructor(props: EquipmentSelectorProps) {
 		super(props);
+
+		const role = GameLogic.getRole(this.props.hero.roleID) as RoleModel;
+		const slots = role.proficiencies.map(prof => {
+			return {
+				proficiency: prof,
+				candidates: Collections.shuffle(GameLogic.getItemsForProficiency(prof)).splice(0, 3),
+				selected: null
+			};
+		});
+
 		this.state = {
-			items: []
+			slots: slots
 		};
 	}
 
-	private selectItem(id: string) {
-		const item = GameLogic.getItem(id);
-		if (item) {
-			const slotFilled = this.state.items.find(i => i.proficiency === item.proficiency);
-			if (!slotFilled) {
-				const items = this.state.items;
-				const copy = JSON.parse(JSON.stringify(item)) as ItemModel;
-				copy.id = Utils.guid();
-				items.push(copy);
-				this.setState({
-					items: items
-				});
-			}
+	private selectItem(item: ItemModel) {
+		const slot = this.state.slots.find(s => s.proficiency === item.proficiency);
+		if (slot) {
+			const copy = JSON.parse(JSON.stringify(item)) as ItemModel;
+			copy.id = Utils.guid();
+			slot.selected = copy;
+			this.setState({
+				slots: this.state.slots
+			});
 		}
 	}
+
+	addItems = () => {
+		const items = this.state.slots.map(s => s.selected).filter(i => i !== null) as ItemModel[];
+		this.props.addItems(items);
+	};
 
 	public render() {
 		const role = GameLogic.getRole(this.props.hero.roleID);
@@ -315,31 +334,27 @@ class EquipmentSelector extends Component<EquipmentSelectorProps, EquipmentSelec
 			return null;
 		}
 
-		const slots = role.proficiencies.map((prof, n) => {
-			const currentItemNames = this.state.items
-				.filter(item => item.proficiency === prof)
-				.map(item => item.name);
-
-			const items = GameLogic.getItemsForProficiency(prof).map(item => (
+		const slots = this.state.slots.map((slot, n) => {
+			const items = slot.candidates.map(item => (
 				<div key={item.id}>
 					<PlayingCard
 						front={<ItemCard item={item} />}
-						back={<PlaceholderCard text='Item' />}
-						display={(currentItemNames.length !== 0) && (!currentItemNames.includes(item.name)) ? PlayingCardSide.Back : PlayingCardSide.Front}
-						onClick={(currentItemNames.length !== 0) ? null : () => this.selectItem(item.id)}
+						back={<PlaceholderCard>Item</PlaceholderCard>}
+						display={(slot.selected !== null) && (slot.selected.name !== item.name) ? PlayingCardSide.Back : PlayingCardSide.Front}
+						onClick={(slot.selected !== null) ? null : () => this.selectItem(item)}
 					/>
 				</div>
 			));
 
 			return (
-				<div key={n}>
-					<Text>Choose an item for <b>{prof}</b>:</Text>
+				<div key={n} className='card-selection-row'>
+					<Text>Choose an item for <b>{slot.proficiency}</b>:</Text>
 					<CardList cards={items} />
 				</div>
 			);
 		});
 
-		const canSelect = (this.state.items.length === role.proficiencies.length);
+		const canSelect = this.state.slots.every(s => s.selected !== null);
 
 		return (
 			<div className='equipment-page'>
@@ -348,7 +363,7 @@ class EquipmentSelector extends Component<EquipmentSelectorProps, EquipmentSelec
 					{slots}
 				</div>
 				<div className='footer'>
-					<button disabled={!canSelect} onClick={() => this.props.addItems(this.state.items)}>Select these items</button>
+					<button disabled={!canSelect} onClick={() => this.addItems()}>Select these items</button>
 				</div>
 			</div>
 		);

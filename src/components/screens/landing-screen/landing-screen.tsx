@@ -1,5 +1,9 @@
 import { Component } from 'react';
+
 import type { GameModel } from '../../../models/game';
+
+import { PlaceholderCard } from '../../cards';
+import { PlayingCard } from '../../controls';
 
 import './landing-screen.scss';
 
@@ -14,15 +18,14 @@ export class LandingScreen extends Component<Props> {
 		let continueBtn = null;
 		if (this.props.game?.map) {
 			continueBtn = (
-				<button onClick={this.props.continueCampaign}>Continue your current campaign</button>
+				<PlayingCard front={<PlaceholderCard>Continue your campaign</PlaceholderCard>} onClick={this.props.continueCampaign} />
 			);
 		}
-
 
 		return (
 			<div className='landing-screen'>
 				{ continueBtn }
-				<button onClick={this.props.startCampaign}>Start a new campaign</button>
+				<PlayingCard front={<PlaceholderCard>Start a new campaign</PlaceholderCard>} onClick={this.props.startCampaign} />
 			</div>
 		);
 	}

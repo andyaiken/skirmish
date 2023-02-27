@@ -14,12 +14,12 @@ import { Factory } from '../../logic/factory';
 import { GameLogic } from '../../logic/game-logic';
 
 import type { BoonModel } from '../../models/boon';
-import type { CampaignMapRegionModel } from '../../models/campaign-map';
 import type { CombatantModel } from '../../models/combatant';
 import type { EncounterModel } from '../../models/encounter';
 import type { FeatureModel } from '../../models/feature';
 import type { GameModel } from '../../models/game';
 import type { ItemModel } from '../../models/item';
+import type { RegionModel } from '../../models/campaign-map';
 
 import { Collections } from '../../utils/collections';
 import { Utils } from '../../utils/utils';
@@ -67,6 +67,19 @@ export class Main extends Component<Props, State> {
 					h.carried = [];
 				}
 			});
+
+			if (game.money === undefined) {
+				game.money = 0;
+			}
+
+			if (game.encounter) {
+				if (game.encounter.loot === undefined) {
+					game.encounter.loot = [];
+				}
+				if (game.encounter.mapSquares === undefined) {
+					game.encounter.mapSquares = [];
+				}
+			}
 		}
 
 		this.state = {
@@ -180,9 +193,51 @@ export class Main extends Component<Props, State> {
 
 	//#endregion
 
+	//#region Items
+
+	buyItem = (item: ItemModel) => {
+		const game = this.state.game as GameModel;
+
+		game.items.push(item);
+		game.money = Math.max(0, game.money - 100);
+
+		this.setState({
+			game: game
+		});
+	};
+
+	sellItem = (item: ItemModel, all: boolean) => {
+		const game = this.state.game as GameModel;
+
+		if (all) {
+			const items = game.items.filter(i => i.name === item.name);
+			game.items = game.items.filter(i => i.name !== item.name);
+			game.money += items.length;
+		} else {
+			game.items = game.items.filter(i => i !== item);
+			game.money += 1;
+		}
+
+		this.setState({
+			game: game
+		});
+	};
+
+	addMoney = () => {
+		const game = this.state.game as GameModel;
+
+		game.money += 100;
+
+		this.setState({
+			game: game
+		});
+	};
+
+	//#endregion
+
 	//#region Campaign map page
 
-	startEncounter = (region: CampaignMapRegionModel, heroes: CombatantModel[]) => {
+	startEncounter = (region: RegionModel, heroes: CombatantModel[]) => {
 		if (this.state.game) {
 			const game = this.state.game;
 			game.encounter = EncounterGenerator.createEncounter(region, heroes);
@@ -193,7 +248,7 @@ export class Main extends Component<Props, State> {
 		}
 	};
 
-	conquer = (region: CampaignMapRegionModel) => {
+	conquer = (region: RegionModel) => {
 		if (this.state.game) {
 			const game = this.state.game;
 
@@ -324,13 +379,13 @@ export class Main extends Component<Props, State> {
 		}
 
 		if (game.encounter) {
-			const adj = EncounterMapLogic.getAdjacentSquares(game.encounter.map, [ combatant.combat.position ]);
-			const piles = game.encounter.map.loot.filter(lp => adj.find(sq => (sq.x === lp.position.x) && (sq.y === lp.position.y)));
+			const adj = EncounterMapLogic.getAdjacentSquares(game.encounter.mapSquares, [ combatant.combat.position ]);
+			const piles = game.encounter.loot.filter(lp => adj.find(sq => (sq.x === lp.position.x) && (sq.y === lp.position.y)));
 			const lp = piles.find(l => l.items.find(i => i === item));
 			if (lp) {
 				lp.items = lp.items.filter(i => i.id !== item.id);
 				if (lp.items.length === 0) {
-					game.encounter.map.loot = game.encounter.map.loot.filter(l => l.id !== lp.id);
+					game.encounter.loot = game.encounter.loot.filter(l => l.id !== lp.id);
 				}
 			}
 		} else {
@@ -356,8 +411,8 @@ export class Main extends Component<Props, State> {
 
 		if (game.encounter) {
 			// See if we're beside any loot piles
-			const adj = EncounterMapLogic.getAdjacentSquares(game.encounter.map, [ combatant.combat.position ]);
-			const piles = game.encounter.map.loot.filter(lp => adj.find(sq => (sq.x === lp.position.x) && (sq.y === lp.position.y)));
+			const adj = EncounterMapLogic.getAdjacentSquares(game.encounter.mapSquares, [ combatant.combat.position ]);
+			const piles = game.encounter.loot.filter(lp => adj.find(sq => (sq.x === lp.position.x) && (sq.y === lp.position.y)));
 
 			let lp = null;
 			if (piles.length === 0) {
@@ -368,7 +423,7 @@ export class Main extends Component<Props, State> {
 					const sq = Collections.draw(empty);
 					lp.position.x = sq.x;
 					lp.position.y = sq.y;
-					game.encounter.map.loot.push(lp);
+					game.encounter.loot.push(lp);
 				}
 			} else {
 				lp = Collections.draw(piles);
@@ -396,7 +451,7 @@ export class Main extends Component<Props, State> {
 		loot.items.push(...combatant.items, ...combatant.carried);
 		loot.position.x = combatant.combat.position.x;
 		loot.position.y = combatant.combat.position.y;
-		encounter.map.loot.push(loot);
+		encounter.loot.push(loot);
 
 		this.setState({
 			game: this.state.game
@@ -425,10 +480,10 @@ export class Main extends Component<Props, State> {
 				// Remove dead heroes from the game
 				const deadHeroes = EncounterLogic.getDeadHeroes(encounter);
 				game.heroes = game.heroes.filter(h => !deadHeroes.includes(h));
-				// Get equipment from dead heroes, add it to game loot
+				// Get equipment from dead heroes, add to game items
 				deadHeroes.forEach(h => game.items.push(...h.items));
-				// Get equipment from loot piles, add it to game loot
-				encounter.map.loot.forEach(lp => game.items.push(...lp.items));
+				// Get equipment from loot piles, add to game items
+				encounter.loot.forEach(lp => game.items.push(...lp.items));
 				// Increment XP for surviving heroes
 				EncounterLogic.getSurvivingHeroes(encounter).forEach(h => h.xp += 1);
 				// Remove the first encounter for this region
@@ -456,7 +511,7 @@ export class Main extends Component<Props, State> {
 							<div>
 								<Text type={TextType.Heading}>Victory</Text>
 								<Text type={TextType.SubHeading}>You have taken control of {region.name}!</Text>
-								<Text>Each hero who took part in this encounter gains 1 XP, you can recruit a new hero, and you have earned a reward:</Text>
+								<Text>You can recruit a new hero, and you have earned a reward:</Text>
 								<PlayingCard front={<BoonCard boon={region.boon} />} />
 								<Text>Any heroes who died have been lost.</Text>
 								<button onClick={() => this.setScreen(ScreenType.Campaign)}>OK</button>
@@ -530,6 +585,9 @@ export class Main extends Component<Props, State> {
 						dropItem={this.dropItem}
 						levelUp={this.levelUp}
 						redeemBoon={this.redeemBoon}
+						buyItem={this.buyItem}
+						sellItem={this.sellItem}
+						addMoney={this.addMoney}
 						startEncounter={this.startEncounter}
 						conquer={this.conquer}
 						endCampaign={this.endCampaign}

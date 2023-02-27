@@ -2,14 +2,14 @@ import { Component } from 'react';
 
 import { CampaignMapLogic } from '../../../logic/campaign-map-logic';
 
-import type { CampaignMapModel, CampaignMapRegionModel, CampaignMapSquareModel } from '../../../models/campaign-map';
+import type { CampaignMapModel, CampaignMapSquareModel, RegionModel } from '../../../models/campaign-map';
 
 import './campaign-map-panel.scss';
 
 interface Props {
 	map: CampaignMapModel;
-	selectedRegion: CampaignMapRegionModel | null;
-	onSelectRegion: (region: CampaignMapRegionModel | null) => void;
+	selectedRegion: RegionModel | null;
+	onSelectRegion: (region: RegionModel | null) => void;
 }
 
 export class CampaignMapPanel extends Component<Props> {

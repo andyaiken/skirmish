@@ -26,20 +26,13 @@
   * Potions (add conditions when used)
   * Magic items could gain additional attributes when wielder levels up
     * Dormant => awakened => Exalted
-* Campaign screen, Heroes page:
-  * Allow grouping by species, role, background, level
-  * Also do this in the hero selection dialog
 * Campaign screen, Items page:
-  * Allow mundane items to be filtered out or sold
-    * You could then use money buy magic items / hero slots, or to add enhancements to items
-    * Loot piles could include money
   * Click on magic item / mundane item to see heroes with the correct proficiency
 * Character sheet panel:
   * Show ranks as filled circles
   * Show the XP required as a gauge
 * Campaign maps:
   * The island should include mountain ranges, lakes etc, which are impassable
-  * Regions could have population, terrain types, etc
 * Mountebank, Thief and Pixie should have an attack redirection aura
 * Noble should have trait buffing / skill buffing auras
 * Monster species:
@@ -78,7 +71,6 @@
     * Chaos magic
     * Evoker
     * Illusionist
-    * Necromancer
 
 ## Tech Debt
 

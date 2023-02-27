@@ -1,15 +1,16 @@
 import { Component } from 'react';
 
 import { BackgroundData } from '../../../../data/background-data';
+import { ItemData } from '../../../../data/item-data';
 import { RoleData } from '../../../../data/role-data';
 import { SpeciesData } from '../../../../data/species-data';
 
-import { BackgroundCard, PlaceholderCard, RoleCard, SpeciesCard } from '../../../cards';
+import { BackgroundCard, ItemCard, PlaceholderCard, RoleCard, SpeciesCard } from '../../../cards';
 import { CardList, Dialog, PlayingCard, Text, TextType } from '../../../controls';
 
 import './options-page.scss';
 
-type DeckType = '' | 'background' | 'role' | 'species';
+type DeckType = '' | 'background' | 'role' | 'species' | 'item';
 
 interface Props {
 	developer: boolean;
@@ -53,6 +54,9 @@ export class OptionsPage extends Component<Props, State> {
 					heading = 'Background Deck';
 					cards = BackgroundData.getList().map(b => (<PlayingCard key={b.id} front={<BackgroundCard background={b} />} />));
 					break;
+				case 'item':
+					heading = 'Item Deck';
+					cards = ItemData.getList().map(i => (<PlayingCard key={i.id} front={<ItemCard item={i} />} />));
 			}
 			const content = (
 				<div>
@@ -71,9 +75,10 @@ export class OptionsPage extends Component<Props, State> {
 		return (
 			<div className='options-page'>
 				<div className='cards'>
-					<PlayingCard front={<PlaceholderCard text={<div>Species<br/>Deck</div>} />} onClick={() => this.setDeck('species')} />
-					<PlayingCard front={<PlaceholderCard text={<div>Role<br/>Deck</div>} />} onClick={() => this.setDeck('role')} />
-					<PlayingCard front={<PlaceholderCard text={<div>Background<br/>Deck</div>} />} onClick={() => this.setDeck('background')} />
+					<PlayingCard front={<PlaceholderCard><Text type={TextType.SubHeading}>Species<br/>Deck</Text></PlaceholderCard>} onClick={() => this.setDeck('species')} />
+					<PlayingCard front={<PlaceholderCard><Text type={TextType.SubHeading}>Role<br/>Deck</Text></PlaceholderCard>} onClick={() => this.setDeck('role')} />
+					<PlayingCard front={<PlaceholderCard><Text type={TextType.SubHeading}>Background<br/>Deck</Text></PlaceholderCard>} onClick={() => this.setDeck('background')} />
+					<PlayingCard front={<PlaceholderCard><Text type={TextType.SubHeading}>Item<br/>Deck</Text></PlaceholderCard>} onClick={() => this.setDeck('item')} />
 				</div>
 				<hr />
 				<button className='danger' onClick={() => this.props.setDeveloper(!this.props.developer)}>Developer Mode: {this.props.developer ? 'On' : 'Off'}</button>

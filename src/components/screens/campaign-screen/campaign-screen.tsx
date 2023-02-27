@@ -1,11 +1,11 @@
 import { Component } from 'react';
 
 import type { BoonModel } from '../../../models/boon';
-import type { CampaignMapRegionModel } from '../../../models/campaign-map';
 import type { CombatantModel } from '../../../models/combatant';
 import type { FeatureModel } from '../../../models/feature';
 import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
+import type { RegionModel } from '../../../models/campaign-map';
 
 import { Selector } from '../../controls';
 
@@ -27,8 +27,11 @@ interface Props {
 	dropItem: (item: ItemModel, hero: CombatantModel) => void;
 	levelUp: (feature: FeatureModel, hero: CombatantModel) => void;
 	redeemBoon: (boon: BoonModel, hero: CombatantModel | null) => void;
-	startEncounter: (region: CampaignMapRegionModel, heroes: CombatantModel[]) => void;
-	conquer: (region: CampaignMapRegionModel) => void;
+	buyItem: (item: ItemModel) => void;
+	sellItem: (item: ItemModel, all: boolean) => void;
+	addMoney: () => void;
+	startEncounter: (region: RegionModel, heroes: CombatantModel[]) => void;
+	conquer: (region: RegionModel) => void;
 	endCampaign: () => void;
 	setDeveloper: (value: boolean) => void;
 }
@@ -79,6 +82,10 @@ export class CampaignScreen extends Component<Props, State> {
 				content = (
 					<ItemsPage
 						game={this.props.game}
+						developer={this.props.developer}
+						buyItem={this.props.buyItem}
+						sellItem={this.props.sellItem}
+						addMoney={this.props.addMoney}
 					/>
 				);
 				break;

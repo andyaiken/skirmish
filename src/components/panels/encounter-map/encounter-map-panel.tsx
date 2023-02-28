@@ -8,6 +8,8 @@ import { EncounterMapLogic } from '../../../logic/encounter-map-logic';
 import type { EncounterModel, LootPileModel } from '../../../models/encounter';
 import type { CombatantModel } from '../../../models/combatant';
 
+import { Collections } from '../../../utils/collections';
+
 import './encounter-map-panel.scss';
 
 interface Props {
@@ -21,7 +23,12 @@ interface Props {
 
 export class EncounterMapPanel extends Component<Props> {
 	render = () => {
+		// Get dimensions, adding a 1-square border
 		const dims = EncounterMapLogic.getDimensions(this.props.encounter.mapSquares);
+		dims.left -= 1;
+		dims.top -= 1;
+		dims.right += 1;
+		dims.bottom += 1;
 
 		let combatants = this.props.encounter.combatants.filter(combatant => combatant.combat.state !== CombatantState.Dead);
 		const current = combatants.find(c => c.combat.current);
@@ -33,7 +40,7 @@ export class EncounterMapPanel extends Component<Props> {
 			const className = `encounter-map-square ${sq.type.toLowerCase()}`;
 			return (
 				<div
-					key={`${sq.x} ${sq.y}`}
+					key={`square ${sq.x} ${sq.y}`}
 					className={className}
 					style={{
 						width: `${this.props.squareSize}px`,
@@ -87,6 +94,30 @@ export class EncounterMapPanel extends Component<Props> {
 			);
 		});
 
+		const edges = ([] as { x: number, y: number }[])
+			.concat(EncounterMapLogic.getEdges(this.props.encounter.mapSquares, this.props.encounter.mapSquares, 'n'))
+			.concat(EncounterMapLogic.getEdges(this.props.encounter.mapSquares, this.props.encounter.mapSquares, 'ne'))
+			.concat(EncounterMapLogic.getEdges(this.props.encounter.mapSquares, this.props.encounter.mapSquares, 'e'))
+			.concat(EncounterMapLogic.getEdges(this.props.encounter.mapSquares, this.props.encounter.mapSquares, 'se'))
+			.concat(EncounterMapLogic.getEdges(this.props.encounter.mapSquares, this.props.encounter.mapSquares, 's'))
+			.concat(EncounterMapLogic.getEdges(this.props.encounter.mapSquares, this.props.encounter.mapSquares, 'sw'))
+			.concat(EncounterMapLogic.getEdges(this.props.encounter.mapSquares, this.props.encounter.mapSquares, 'w'))
+			.concat(EncounterMapLogic.getEdges(this.props.encounter.mapSquares, this.props.encounter.mapSquares, 'nw'));
+		const walls = Collections.distinct(edges, sq => `${sq.x} ${sq.y}`).map(sq => {
+			return (
+				<div
+					key={`wall ${sq.x} ${sq.y}`}
+					className='encounter-map-square wall'
+					style={{
+						width: `${this.props.squareSize}px`,
+						height: `${this.props.squareSize}px`,
+						left: `${((sq.x - dims.left) * this.props.squareSize)}px`,
+						top: `${((sq.y - dims.top) * this.props.squareSize)}px`
+					}}
+				/>
+			);
+		});
+
 		const width = dims.right - dims.left + 1;
 		const height = dims.bottom - dims.top + 1;
 		return (
@@ -96,6 +127,7 @@ export class EncounterMapPanel extends Component<Props> {
 					{loot}
 					{auras}
 					{minis}
+					{walls}
 				</div>
 			</div>
 		);

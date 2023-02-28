@@ -8,11 +8,16 @@
 
 		.encounter-map-square {
 			position: absolute;
-			border: 1px solid rgb(150, 150, 150);
+			border: 0.5px solid rgb(150, 150, 150);
 			background-color: rgb(255, 255, 255);
 
 			&.obstructed {
 				background-color: rgb(220, 220, 220);
+			}
+
+			&.wall {
+				background-color: rgb(50, 50, 50);
+				border-color: rgb(80, 80, 80);
 			}
 		}
 

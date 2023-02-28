@@ -154,7 +154,7 @@ export class EncounterMapLogic {
 		return adj.filter(sq => !squares.find(s => (s.x === sq.x) && (s.y === sq.y)));
 	};
 
-	static getEdges = (map: EncounterMapSquareModel[], squares: { x: number; y: number }[], direction: 'n' | 'e' | 's' | 'w') => {
+	static getEdges = (map: EncounterMapSquareModel[], squares: { x: number; y: number }[], direction: 'n' | 'ne' | 'e' | 'se' | 's' | 'sw' | 'w' | 'nw') => {
 		const adj: { x: number; y: number }[] = [];
 
 		squares.forEach(square => {
@@ -163,14 +163,30 @@ export class EncounterMapLogic {
 				case 'n':
 					sq.y -= 1;
 					break;
+				case 'ne':
+					sq.x += 1;
+					sq.y -= 1;
+					break;
 				case 'e':
 					sq.x += 1;
+					break;
+				case 'se':
+					sq.x += 1;
+					sq.y += 1;
 					break;
 				case 's':
 					sq.y += 1;
 					break;
+				case 'sw':
+					sq.x -= 1;
+					sq.y += 1;
+					break;
 				case 'w':
 					sq.x -= 1;
+					break;
+				case 'nw':
+					sq.x -= 1;
+					sq.y -= 1;
 					break;
 			}
 			if (!map.find(s => (s.x === sq.x) && (s.y === sq.y))) {

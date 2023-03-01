@@ -24,6 +24,7 @@ import './combatant-controls.scss';
 interface Props {
 	combatant: CombatantModel;
 	encounter: EncounterModel;
+	developer: boolean;
 	endTurn: (encounter: EncounterModel) => void;
 	move: (encounter: EncounterModel, combatant: CombatantModel, dir: string, cost: number) => void;
 	standUp: (encounter: EncounterModel, combatant: CombatantModel) => void;
@@ -158,6 +159,7 @@ export class CombatantControls extends Component<Props, State> {
 						</Text>
 					);
 				}
+
 				if (this.props.combatant.combat.state === CombatantState.Dead) {
 					return (
 						<Text type={TextType.SubHeading}>
@@ -165,6 +167,12 @@ export class CombatantControls extends Component<Props, State> {
 						</Text>
 					);
 				}
+
+				const options = [ { id: 'overview', display: 'Overview' }, { id: 'move', display: 'Move' } ];
+				if (this.props.developer) {
+					options.push({ id: 'actions', display: 'Actions' });
+				}
+
 				return (
 					<div className='combatant-controls'>
 						<Text type={TextType.SubHeading}>{this.props.combatant.name}</Text>
@@ -177,7 +185,7 @@ export class CombatantControls extends Component<Props, State> {
 						{prone ? <Text type={TextType.Information}><b>{this.props.combatant.name} is Prone.</b> Their skill ranks are halved and moving costs are doubled.</Text> : null}
 						{this.props.combatant.combat.hidden > 0 ? <Text type={TextType.Information}><b>{this.props.combatant.name} is Hidden.</b> Their moving costs are doubled.</Text> : null}
 						<Selector
-							options={[ { id: 'overview', display: 'Overview' }, { id: 'move', display: 'Move' }, { id: 'actions', display: 'Actions' } ]}
+							options={options}
 							selectedID={this.state.controls}
 							onSelect={this.setControls}
 						/>

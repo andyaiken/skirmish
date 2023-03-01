@@ -122,6 +122,7 @@ export class EncounterScreen extends Component<Props, State> {
 							<CombatantControls
 								combatant={currentCombatant}
 								encounter={this.props.encounter}
+								developer={this.props.developer}
 								endTurn={this.props.endTurn}
 								move={this.props.move}
 								standUp={this.props.standUp}

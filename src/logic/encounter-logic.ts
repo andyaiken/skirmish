@@ -69,6 +69,14 @@ export class EncounterLogic {
 		return occupied.find(s => (s.x === square.x) && (s.y === square.y)) === undefined;
 	};
 
+	static setActionData = <T>(encounter: EncounterModel, key: string, value: T) => {
+		encounter.actionData[key] = value;
+	};
+
+	static getActionData = <T>(encounter: EncounterModel, key: string): T => {
+		return encounter.actionData[key] as T;
+	};
+
 	static rollInitiative = (encounter: EncounterModel) => {
 		encounter.round += 1;
 
@@ -161,14 +169,15 @@ export class EncounterLogic {
 					combatant.combat.movement = Math.max(0, combatant.combat.movement - condition.rank);
 				});
 
-			const deck = CombatantLogic.getActionDeck(combatant).filter(action => action.isAvailable(combatant, encounter));
+			const deck = CombatantLogic.getActionDeck(combatant).filter(action => action.prerequisites.every(p => p.satisfied(encounter, combatant, action)));
 			combatant.combat.actions = Collections.shuffle(deck).splice(0, 3);
 		}
 	};
 
 	static endOfTurn = (encounter: EncounterModel, combatant: CombatantModel) => {
-		combatant.combat.current = false;
+		encounter.actionData = {};
 
+		combatant.combat.current = false;
 		combatant.combat.initiative = Number.MIN_VALUE;
 		combatant.combat.senses = 0;
 		combatant.combat.movement = 0;

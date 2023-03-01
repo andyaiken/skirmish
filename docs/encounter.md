@@ -30,6 +30,16 @@
 
 # Things You Can Do
 
+## Actions
+
+* Action flow:
+  * Select targets
+  * Apply prologue effects
+  * Attack roll
+    * Apply hit effects
+    * Apply miss effects
+  * Apply epilogue effects
+
 ## Moving
 
 * ~~Move into any adjacent empty square, including diagonals, for 1 movement point~~

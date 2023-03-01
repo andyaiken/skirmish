@@ -21,8 +21,24 @@ export class BackgroundData {
 					FeatureLogic.createTraitFeature('acrobat-feature-1', TraitType.Speed, 1)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('acrobat-action-1', 'Move through occupied spaces'),
-					ActionLogic.createActionPlaceholder('acrobat-action-2', 'Burst of speed (roll speed again and add)')
+					{
+						id: 'acrobat-action-1',
+						name: 'Move through occupied spaces',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'acrobat-action-2',
+						name: 'Burst of speed (roll speed again and add)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					}
 				]
 			},
 			{
@@ -33,8 +49,24 @@ export class BackgroundData {
 					FeatureLogic.createProficiencyFeature('artificer-feature-2', ItemProficiencyType.Any)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('artificer-action-1', 'Infuse item'),
-					ActionLogic.createActionPlaceholder('artificer-action-2', 'Drain item')
+					{
+						id: 'artificer-action-1',
+						name: 'Infuse item',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'artificer-action-2',
+						name: 'Drain item',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					}
 				]
 			},
 			{
@@ -45,8 +77,24 @@ export class BackgroundData {
 					FeatureLogic.createProficiencyFeature('bard-feature-2', ItemProficiencyType.Any)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('bard-action-1', 'Song of health (AOE heal)'),
-					ActionLogic.createActionPlaceholder('bard-action-2', 'Song of inspiration (AOE buff)')
+					{
+						id: 'bard-action-1',
+						name: 'Song of health (AOE heal)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'bard-action-1',
+						name: 'Song of inspiration (AOE buff)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					}
 				]
 			},
 			{
@@ -58,9 +106,33 @@ export class BackgroundData {
 					FeatureLogic.createAuraDamageCategoryFeature('commander-feature-3', ConditionType.DamageCategoryBonus, DamageCategoryType.Physical, 1)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('commander-action-1', 'Knock prone'),
-					ActionLogic.createActionPlaceholder('commander-action-2', 'Extra move'),
-					ActionLogic.createActionPlaceholder('commander-action-3', 'Reveal hidden enemies')
+					{
+						id: 'commander-action-1',
+						name: 'Ally makes attack',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'commander-action-1',
+						name: 'Ally moves',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'commander-action-1',
+						name: 'Reveal hidden enemies',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					}
 				]
 			},
 			{
@@ -72,9 +144,15 @@ export class BackgroundData {
 					FeatureLogic.createAuraDamageCategoryFeature('mountebank-feature-3', ConditionType.DamageCategoryVulnerability, DamageCategoryType.Physical, 1)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('mountebank-action-1', 'Command attack'),
-					ActionLogic.createActionPlaceholder('mountebank-action-2', 'Command move'),
-					ActionLogic.createActionPlaceholder('mountebank-action-3', 'Buff ally')
+					{
+						id: 'mountebank-action-1',
+						name: 'Buff ally',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					}
 				]
 			},
 			{
@@ -87,10 +165,42 @@ export class BackgroundData {
 					FeatureLogic.createDamageCategoryResistFeature('mystic-feature-4', DamageCategoryType.Corruption, 1)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('mystic-action-1', 'Confusion (target makes attack)'),
-					ActionLogic.createActionPlaceholder('mystic-action-2', 'Stun (target loses action)'),
-					ActionLogic.createActionPlaceholder('mystic-action-3', 'Transfer a condition'),
-					ActionLogic.createActionPlaceholder('mystic-action-4', 'Invert a condition')
+					{
+						id: 'mystic-action-1',
+						name: 'Confusion (target makes attack)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'mystic-action-1',
+						name: 'Stun (target loses action)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'mystic-action-1',
+						name: 'Transfer a condition',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'mystic-action-1',
+						name: 'Invert a condition',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					}
 				]
 			},
 			{
@@ -103,9 +213,33 @@ export class BackgroundData {
 					FeatureLogic.createAuraTraitFeature('noble-feature-3', ConditionType.TraitBonus, TraitType.Speed, 1)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('noble-action-1', 'Buff ally'),
-					ActionLogic.createActionPlaceholder('noble-action-2', 'Debuff enemy'),
-					ActionLogic.createActionPlaceholder('noble-action-3', 'Taunt')
+					{
+						id: 'noble-action-1',
+						name: 'Buff ally',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'noble-action-2',
+						name: 'Debuff enemy',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'noble-action-3',
+						name: 'Taunt',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					}
 				]
 			},
 			{
@@ -115,9 +249,33 @@ export class BackgroundData {
 					FeatureLogic.createAuraFeature('physician-feature-1', ConditionType.AutoHeal, 1)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('physician-action-1', 'Remove condition (ally)'),
-					ActionLogic.createActionPlaceholder('physician-action-2', 'Healing (damage)'),
-					ActionLogic.createActionPlaceholder('physician-action-3', 'Healing (wounds)')
+					{
+						id: 'physician-action-1',
+						name: 'Remove condition (ally)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'physician-action-2',
+						name: 'Healing (damage)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'physician-action-3',
+						name: 'Healing (wounds)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					}
 				]
 			},
 			{
@@ -133,9 +291,33 @@ export class BackgroundData {
 					FeatureLogic.createAuraDamageFeature('reaver-feature-7', ConditionType.AutoDamage, DamageType.Piercing, 1)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('reaver-action-1', 'Frenzy (adds to damage)'),
-					ActionLogic.createActionPlaceholder('reaver-action-2', 'Speed boost'),
-					ActionLogic.createActionPlaceholder('reaver-action-3', 'Endurance boost')
+					{
+						id: 'reaver-action-1',
+						name: 'Frenzy (adds to damage)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'reaver-action-2',
+						name: 'Speed boost',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'reaver-action-3',
+						name: 'Endurance boost',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					}
 				]
 			},
 			{
@@ -148,8 +330,33 @@ export class BackgroundData {
 					FeatureLogic.createAuraFeature('sentinel-feature-4', ConditionType.MovementPenalty, 1)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('sentinel-action-1', 'Mark enemy'),
-					ActionLogic.createActionPlaceholder('sentinel-action-2', 'Interposing stance')
+					{
+						id: 'sentinel-action-1',
+						name: 'Mark enemy',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'sentinel-action-2',
+						name: 'Interposing stance',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'sentinel-action-3',
+						name: 'Pull enemy',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					}
 				]
 			},
 			{
@@ -160,9 +367,33 @@ export class BackgroundData {
 					FeatureLogic.createSkillFeature('thief-feature-2', SkillType.Stealth, 2)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('thief-action-1', 'Steal item'),
-					ActionLogic.createActionPlaceholder('thief-action-2', 'Disable trap'),
-					ActionLogic.createActionPlaceholder('thief-action-3', 'Set trap')
+					{
+						id: 'thief-action-1',
+						name: 'Steal item',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'thief-action-1',
+						name: 'Disable trap',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'thief-action-1',
+						name: 'Set trap',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					}
 				]
 			}
 		];

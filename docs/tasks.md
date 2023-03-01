@@ -11,6 +11,11 @@
 
 * Encounters:
   * Implement actions
+    * Add prerequisites for weapon / implement actions
+      * Add 'select weapon / implement' prologue effects
+    * Add targets
+      * Add 'select target' prologue effects
+    * Add effects
   * Implement AI so that monsters can take their turns
   * Show turn log for current combatant, if it's a monster
     * With a button to take each action in turn
@@ -69,4 +74,3 @@
 
 * Convert to functional components
 * Use hooks
-* Use CSS modules

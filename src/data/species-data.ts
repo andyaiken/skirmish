@@ -22,12 +22,18 @@ export class SpeciesData {
 					TraitType.All
 				],
 				features: [
-					FeatureLogic.createSkillFeature('human-feature-1', SkillType.Any, 2),
-					FeatureLogic.createDamageBonusFeature('human-feature-2', DamageType.Any, 1),
-					FeatureLogic.createDamageResistFeature('human-feature-3', DamageType.Any, 1)
+					FeatureLogic.createSkillFeature('human-feature-1', SkillType.Any, 2)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('human-action-1', 'Resilient (remove condition on self)')
+					{
+						id: 'human-action-1',
+						name: 'Resilient (remove condition on self)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					}
 				]
 			},
 			{
@@ -44,8 +50,24 @@ export class SpeciesData {
 					FeatureLogic.createDamageResistFeature('construct-feature-3', DamageType.Psychic, 1)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('construct-action-1', 'Knockdown attack'),
-					ActionLogic.createActionPlaceholder('construct-action-2', 'Repair (heal self damage)')
+					{
+						id: 'construct-action-1',
+						name: 'Knockdown attack',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'construct-action-2',
+						name: 'Repair (heal self damage)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					}
 				]
 			},
 			{
@@ -64,8 +86,24 @@ export class SpeciesData {
 					FeatureLogic.createAuraDamageFeature('deva-feature-5', ConditionType.AutoDamage, DamageType.Light, 1)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('deva-action-1', 'Insight (see opponent stats)'),
-					ActionLogic.createActionPlaceholder('deva-action-2', 'Divine light (spell vs resolve, stuns)')
+					{
+						id: 'deva-action-1',
+						name: 'Insight (see opponent stats)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'deva-action-2',
+						name: 'Divine light (spell vs resolve, stuns)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					}
 				]
 			},
 			{
@@ -83,8 +121,24 @@ export class SpeciesData {
 					FeatureLogic.createDamageResistFeature('dwarf-feature-4', DamageType.Psychic, 1)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('dwarf-action-1', 'Remove endurance condition on self'),
-					ActionLogic.createActionPlaceholder('dwarf-action-5', 'Remove resolve condition on self')
+					{
+						id: 'dwarf-action-1',
+						name: 'Remove endurance condition on self',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'dwarf-action-2',
+						name: 'Remove resolve condition on self',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					}
 				]
 			},
 			{
@@ -102,8 +156,24 @@ export class SpeciesData {
 					FeatureLogic.createSkillFeature('elf-feature-4', SkillType.Stealth, 2)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('elf-action-1', 'Detect hidden opponents'),
-					ActionLogic.createActionPlaceholder('elf-action-2', 'Elven Step (teleport self)')
+					{
+						id: 'elf-action-1',
+						name: 'Detect hidden opponents',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'elf-action-2',
+						name: 'Elven Step (teleport self)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					}
 				]
 			},
 			{
@@ -120,8 +190,24 @@ export class SpeciesData {
 					FeatureLogic.createSkillFeature('gnome-feature-3', SkillType.Stealth, 2)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('gnome-action-1', 'Trip attack'),
-					ActionLogic.createActionPlaceholder('gnome-action-2', 'Disable trap')
+					{
+						id: 'gnome-action-1',
+						name: 'Trip attack',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'gnome-action-2',
+						name: 'Disable trap',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					}
 				]
 			},
 			{
@@ -138,9 +224,33 @@ export class SpeciesData {
 					FeatureLogic.createDamageCategoryBonusFeature('minotaur-feature-3', DamageCategoryType.Physical, 1)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('minotaur-action-1', 'Gore attack'),
-					ActionLogic.createActionPlaceholder('minotaur-action-2', 'Charge attack'),
-					ActionLogic.createActionPlaceholder('minotaur-action-3', 'Intimidate')
+					{
+						id: 'minotaur-action-1',
+						name: 'Gore attack',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'minotaur-action-2',
+						name: 'Charge attack',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'minotaur-action-3',
+						name: 'Intimidate',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					}
 				]
 			},
 			{
@@ -157,9 +267,33 @@ export class SpeciesData {
 					FeatureLogic.createDamageCategoryResistFeature('pixie-feature-3', DamageCategoryType.Corruption, 1)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('pixie-action-1', 'Confusion (target makes attack)'),
-					ActionLogic.createActionPlaceholder('pixie-action-2', 'Teleport'),
-					ActionLogic.createActionPlaceholder('pixie-action-3', 'Teleport attack')
+					{
+						id: 'pixie-action-1',
+						name: 'Confusion (target makes attack)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'pixie-action-2',
+						name: 'Teleport',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'pixie-action-3',
+						name: 'Teleport attack',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					}
 				]
 			},
 			{
@@ -177,9 +311,33 @@ export class SpeciesData {
 					FeatureLogic.createDamageResistFeature('reptilian-feature-4', DamageType.Psychic, 1)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('reptilian-action-1', 'Poison bite'),
-					ActionLogic.createActionPlaceholder('reptilian-action-2', 'Fear snarl'),
-					ActionLogic.createActionPlaceholder('reptilian-action-3', 'Regeneration')
+					{
+						id: 'reptilian-action-1',
+						name: 'Poison bite',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'reptilian-action-2',
+						name: 'Fear snarl',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'reptilian-action-3',
+						name: 'Regeneration',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					}
 				]
 			},
 			{
@@ -198,9 +356,33 @@ export class SpeciesData {
 					FeatureLogic.createAuraDamageFeature('shadowborn-feature-5', ConditionType.AutoDamage, DamageType.Decay, 1)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('shadowborn-action-1', 'Transfer a condition'),
-					ActionLogic.createActionPlaceholder('shadowborn-action-2', 'Induce fear'),
-					ActionLogic.createActionPlaceholder('shadowborn-action-3', 'Drain energy')
+					{
+						id: 'shadowborn-action-1',
+						name: 'Transfer a condition',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'shadowborn-action-2',
+						name: 'Induce fear',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'shadowborn-action-3',
+						name: 'Drain energy',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					}
 				]
 			},
 			{
@@ -218,9 +400,33 @@ export class SpeciesData {
 					FeatureLogic.createSkillFeature('werewolf-feature-4', SkillType.Stealth, 2)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('werewolf-action-1', 'Regeneration'),
-					ActionLogic.createActionPlaceholder('werewolf-action-2', 'Bite attack'),
-					ActionLogic.createActionPlaceholder('werewolf-action-3', 'Claw attack')
+					{
+						id: 'werewolf-action-1',
+						name: 'Regeneration',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'werewolf-action-2',
+						name: 'Bite attack',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'werewolf-action-3',
+						name: 'Claw attack',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					}
 				]
 			},
 			{
@@ -238,8 +444,24 @@ export class SpeciesData {
 					FeatureLogic.createSkillFeature('orc-feature-4', SkillType.Weapon, 2)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('human-action-1', 'Fury'),
-					ActionLogic.createActionPlaceholder('human-action-2', 'Ignore damage')
+					{
+						id: 'orc-action-1',
+						name: 'Fury',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'orc-action-2',
+						name: 'Ignore damage',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					}
 				]
 			},
 			{
@@ -256,7 +478,15 @@ export class SpeciesData {
 					FeatureLogic.createSkillFeature('goblin-feature-3', SkillType.Stealth, 1)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('goblin-action-1', 'Sneak attack')
+					{
+						id: 'goblin-action-1',
+						name: 'Sneak attack',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					}
 				]
 			},
 			{
@@ -276,8 +506,24 @@ export class SpeciesData {
 					FeatureLogic.createDamageCategoryResistFeature('troll-feature-5', DamageCategoryType.Corruption, 1)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('troll-action-1', 'Slam'),
-					ActionLogic.createActionPlaceholder('troll-action-2', 'Regeneration')
+					{
+						id: 'troll-action-1',
+						name: 'Slam',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'troll-action-2',
+						name: 'Regeneration',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					}
 				]
 			}
 		];

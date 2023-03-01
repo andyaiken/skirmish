@@ -31,11 +31,51 @@ export class RoleData {
 					FeatureLogic.createDamageCategoryBonusFeature('arcanist-feature-3', DamageCategoryType.Energy, 1)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('arcanist-action-1', 'XXX (shield self, resist all damage)'),
-					ActionLogic.createActionPlaceholder('arcanist-action-2', 'XXX (shield other, resist all damage)'),
-					ActionLogic.createActionPlaceholder('arcanist-action-3', 'XXX (push)'),
-					ActionLogic.createActionPlaceholder('arcanist-action-4', 'Magic missile'),
-					ActionLogic.createActionPlaceholder('arcanist-action-5', 'Swap positions')
+					{
+						id: 'arcanist-action-1',
+						name: 'Arcane Shield (self, resist all damage)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'arcanist-action-2',
+						name: 'Arcane Armor (other, resist all damage)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'arcanist-action-3',
+						name: 'Arcane Force (push)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'arcanist-action-4',
+						name: 'Arcane Arrow',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'arcanist-action-5',
+						name: 'Swap positions',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					}
 				]
 			},
 			{
@@ -58,10 +98,51 @@ export class RoleData {
 					FeatureLogic.createDamageCategoryResistFeature('barbarian-feature-4', DamageCategoryType.Physical, 1)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('barbarian-action-1', 'Overhead strike'),
-					ActionLogic.createActionPlaceholder('barbarian-action-2', 'Knockdown strike'),
-					ActionLogic.createActionPlaceholder('barbarian-action-3', 'Stunning strike'),
-					ActionLogic.createActionPlaceholder('barbarian-action-4', 'Haymaker strike')
+					{
+						id: 'barbarian-action-1',
+						name: 'Overhead strike',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'barbarian-action-2',
+						name: 'Knockdown strike',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'barbarian-action-3',
+						name: 'Stunning strike',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'barbarian-action-4',
+						name: 'Haymaker strike',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'barbarian-action-5',
+						name: 'Burst through wall',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					}
 				]
 			},
 			{
@@ -82,11 +163,51 @@ export class RoleData {
 					FeatureLogic.createSkillFeature('dervish-feature-2', SkillType.Weapon, 2)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('dervish-action-1', 'Dual strike (one target)'),
-					ActionLogic.createActionPlaceholder('dervish-action-2', 'Dual strike (two targets)'),
-					ActionLogic.createActionPlaceholder('dervish-action-3', 'Whirlwind strike'),
-					ActionLogic.createActionPlaceholder('dervish-action-4', 'Leaping strike'),
-					ActionLogic.createActionPlaceholder('dervish-action-5', 'Dodging stance (adds physical damage resistance)')
+					{
+						id: 'dervish-action-1',
+						name: 'Dual strike (one target)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'dervish-action-2',
+						name: 'Dual strike (two targets)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'dervish-action-3',
+						name: 'Whirlwind strike',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'dervish-action-4',
+						name: 'Leaping strike',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'dervish-action-5',
+						name: 'Dodging stance (adds physical damage resistance)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					}
 				]
 			},
 			{
@@ -108,11 +229,51 @@ export class RoleData {
 					FeatureLogic.createDamageResistFeature('enchanter-feature-4', DamageType.Psychic, 1)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('enchanter-action-1', 'Confusion (target makes attack)'),
-					ActionLogic.createActionPlaceholder('enchanter-action-2', 'Stun (target loses action)'),
-					ActionLogic.createActionPlaceholder('enchanter-action-3', 'Fear (target loses speed)'),
-					ActionLogic.createActionPlaceholder('enchanter-action-4', 'Mental shield (add psychic damage resistance)'),
-					ActionLogic.createActionPlaceholder('enchanter-action-5', 'Weaken (reduce target\'s damage)')
+					{
+						id: 'enchanter-action-1',
+						name: 'Confusion (target makes attack)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'enchanter-action-2',
+						name: 'Stun (target loses action)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'enchanter-action-3',
+						name: 'Fear (target loses speed)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'enchanter-action-4',
+						name: 'Mental shield (add psychic damage resistance)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'enchanter-action-5',
+						name: 'Weaken (reduce target\'s damage)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					}
 				]
 			},
 			{
@@ -134,11 +295,51 @@ export class RoleData {
 					FeatureLogic.createAuraFeature('geomancer-feature-4', ConditionType.MovementPenalty, 1)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('geomancer-action-1', 'Create difficult terrain'),
-					ActionLogic.createActionPlaceholder('geomancer-action-2', 'Create clear terrain'),
-					ActionLogic.createActionPlaceholder('geomancer-action-3', 'Destroy ground'),
-					ActionLogic.createActionPlaceholder('geomancer-action-4', 'Create ground'),
-					ActionLogic.createActionPlaceholder('geomancer-action-5', 'Earthbind (reduce target\'s speed)')
+					{
+						id: 'geomancer-action-1',
+						name: 'Create difficult terrain',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'geomancer-action-2',
+						name: 'Create clear terrain',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'geomancer-action-3',
+						name: 'Destroy ground',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'geomancer-action-4',
+						name: 'Create ground',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'geomancer-action-5',
+						name: 'Earthbind (reduce target\'s speed)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					}
 				]
 			},
 			{
@@ -161,11 +362,51 @@ export class RoleData {
 					FeatureLogic.createDamageCategoryBonusFeature('ninja-feature-4', DamageCategoryType.Physical, 1)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('ninja-action-1', 'Roundhouse kick'),
-					ActionLogic.createActionPlaceholder('ninja-action-2', 'Flurry (single target)'),
-					ActionLogic.createActionPlaceholder('ninja-action-3', 'Leaping kick'),
-					ActionLogic.createActionPlaceholder('ninja-action-4', 'Lightning speed (move)'),
-					ActionLogic.createActionPlaceholder('ninja-action-5', 'Adrenal boost (adds to attack / damage)')
+					{
+						id: 'ninja-action-1',
+						name: 'Roundhouse kick',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'ninja-action-2',
+						name: 'Flurry (single target)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'ninja-action-3',
+						name: 'Leaping kick',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'ninja-action-4',
+						name: 'Lightning speed (move)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'ninja-action-5',
+						name: 'Adrenal boost (adds to attack / damage)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					}
 				]
 			},
 			{
@@ -185,12 +426,51 @@ export class RoleData {
 					FeatureLogic.createSkillFeature('gunslinger-feature-2', SkillType.Weapon, 2)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('gunslinger-action-1', 'Deadeye (adds to next attack)'),
-					ActionLogic.createActionPlaceholder('gunslinger-action-2', 'Fire'),
-					ActionLogic.createActionPlaceholder('gunslinger-action-3', 'Pommel strike'),
-					ActionLogic.createActionPlaceholder('gunslinger-action-4', 'Quickfire (two attacks, low accuracy)'),
-					ActionLogic.createActionPlaceholder('gunslinger-action-5', 'Careful shot'),
-					ActionLogic.createActionPlaceholder('gunslinger-action-6', 'Fusilade (area, low damage)')
+					{
+						id: 'gunslinger-action-1',
+						name: 'Fusilade (area, low damage)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'gunslinger-action-2',
+						name: 'Fire',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'gunslinger-action-3',
+						name: 'Pommel strike',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'gunslinger-action-4',
+						name: 'Quickfire (two attacks, low accuracy)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'gunslinger-action-5',
+						name: 'Careful shot',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					}
 				]
 			},
 			{
@@ -212,11 +492,42 @@ export class RoleData {
 					FeatureLogic.createSkillFeature('ranger-feature-3', SkillType.Weapon, 2)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('ranger-action-1', 'Quick shot'),
-					ActionLogic.createActionPlaceholder('ranger-action-2', 'Sure shot'),
-					ActionLogic.createActionPlaceholder('ranger-action-3', 'Pinning shot (slows)'),
-					ActionLogic.createActionPlaceholder('ranger-action-4', 'Barrage (area, low damage)'),
-					ActionLogic.createActionPlaceholder('ranger-action-5', 'Aim (adds to next attack)')
+					{
+						id: 'ranger-action-1',
+						name: 'Quick shot',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'ranger-action-2',
+						name: 'Sure shot',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'ranger-action-3',
+						name: 'Pinning shot (slows)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'ranger-action-4',
+						name: 'Barrage (area, low damage)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					}
 				]
 			},
 			{
@@ -237,10 +548,42 @@ export class RoleData {
 					FeatureLogic.createAuraDamageFeature('necromancer-feature-3', ConditionType.AutoDamage, DamageType.Decay, 1)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('necromancer-action-1', 'Transfer damage (self to enemy)'),
-					ActionLogic.createActionPlaceholder('necromancer-action-2', 'Transfer wounds (self to enemy'),
-					ActionLogic.createActionPlaceholder('necromancer-action-3', 'Transfer damage (ally to enemy)'),
-					ActionLogic.createActionPlaceholder('necromancer-action-4', 'Transfer wounds (ally to enemy')
+					{
+						id: 'necromancer-action-1',
+						name: 'Transfer damage (self to enemy)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'necromancer-action-2',
+						name: 'Transfer wounds (self to enemy)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'necromancer-action-3',
+						name: 'Transfer damage (ally to enemy)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'necromancer-action-4',
+						name: 'Transfer wounds (ally to enemy)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					}
 				]
 			},
 			{
@@ -263,11 +606,51 @@ export class RoleData {
 					FeatureLogic.createDamageCategoryBonusFeature('soldier-feature-3', DamageCategoryType.Physical, 1)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('soldier-action-1', 'Charge attack'),
-					ActionLogic.createActionPlaceholder('soldier-action-2', 'Precise attack'),
-					ActionLogic.createActionPlaceholder('soldier-action-3', 'Disarming attack'),
-					ActionLogic.createActionPlaceholder('soldier-action-4', 'Parrying stance'),
-					ActionLogic.createActionPlaceholder('soldier-action-5', 'Shield bash (push)')
+					{
+						id: 'soldier-action-1',
+						name: 'Charge attack',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'soldier-action-2',
+						name: 'Precise attack',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'soldier-action-3',
+						name: 'Disarming attack',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'soldier-action-4',
+						name: 'Parrying stance',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'soldier-action-5',
+						name: 'Shield bash (push)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					}
 				]
 			},
 			{
@@ -292,12 +675,60 @@ export class RoleData {
 					FeatureLogic.createAuraDamageFeature('sorcerer-feature-7', ConditionType.AutoDamage, DamageType.Electricity, 1)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('sorcerer-action-1', 'Lightning bolt (single target, damage and stuns)'),
-					ActionLogic.createActionPlaceholder('sorcerer-action-2', 'Fireball (area, ongoing fire damage)'),
-					ActionLogic.createActionPlaceholder('sorcerer-action-3', 'Ice storm (area, damage and reduced speed)'),
-					ActionLogic.createActionPlaceholder('sorcerer-action-4', 'Elemental resistance: fire'),
-					ActionLogic.createActionPlaceholder('sorcerer-action-5', 'Elemental resistance: cold'),
-					ActionLogic.createActionPlaceholder('sorcerer-action-6', 'Elemental resistance: electricity')
+					{
+						id: 'sorcerer-action-1',
+						name: 'Lightning bolt (single target, damage and stuns)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'sorcerer-action-2',
+						name: 'Fireball (area, ongoing fire damage)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'sorcerer-action-3',
+						name: 'Ice storm (area, damage and reduced speed)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'sorcerer-action-4',
+						name: 'Elemental resistance: fire',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'sorcerer-action-5',
+						name: 'Elemental resistance: cold',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'sorcerer-action-6',
+						name: 'Elemental resistance: electricity',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					}
 				]
 			},
 			{
@@ -320,11 +751,51 @@ export class RoleData {
 					FeatureLogic.createDamageCategoryBonusFeature('warmage-feature-4', DamageCategoryType.Physical, 1)
 				],
 				actions: [
-					ActionLogic.createActionPlaceholder('warmage-action-1', 'Flaming blade (ongoing fire)'),
-					ActionLogic.createActionPlaceholder('warmage-action-2', 'Frost blade (slows)'),
-					ActionLogic.createActionPlaceholder('warmage-action-3', 'Shocking blade (stuns)'),
-					ActionLogic.createActionPlaceholder('warmage-action-4', 'Armor enhancement'),
-					ActionLogic.createActionPlaceholder('warmage-action-5', 'XXX (attack at range)')
+					{
+						id: 'warmage-action-1',
+						name: 'Flaming blade (ongoing fire)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'warmage-action-2',
+						name: 'Frost blade (slows)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'warmage-action-3',
+						name: 'Shocking blade (stuns)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'warmage-action-4',
+						name: 'Armor enhancement',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					},
+					{
+						id: 'warmage-action-5',
+						name: 'Arcane Whip (attack at range)',
+						prerequisites: [],
+						target: ActionLogic.targetSelf(),
+						prologue: [],
+						attack: null,
+						epilogue: []
+					}
 				]
 			}
 		];

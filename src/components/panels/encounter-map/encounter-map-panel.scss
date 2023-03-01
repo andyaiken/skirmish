@@ -57,12 +57,15 @@
 				background-color: red;
 			}
 
-			&:hover {
-				outline: 3px solid rgb(200, 230, 255);
-			}
-
 			&.current {
 				outline: 3px solid rgb(60, 170, 255);
+			}
+		}
+
+		.encounter-map-loot-token,
+		.encounter-map-mini-token {
+			&:hover {
+				outline: 3px solid rgb(200, 230, 255);
 			}
 
 			&.selected {

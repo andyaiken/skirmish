@@ -16,9 +16,8 @@ interface Props {
 	encounter: EncounterModel;
 	squareSize: number;
 	selectedIDs: string[];
-	onSelect: (combatant: CombatantModel | null) => void;
-	onCombatantDetails: (combatant: CombatantModel) => void;
-	onLootDetails: (loot: LootPileModel) => void;
+	onSelect: (item: CombatantModel | LootPileModel | null) => void;
+	onDetails: (item: CombatantModel | LootPileModel) => void;
 }
 
 export class EncounterMapPanel extends Component<Props> {
@@ -60,7 +59,9 @@ export class EncounterMapPanel extends Component<Props> {
 						loot={lp}
 						squareSize={this.props.squareSize}
 						mapDimensions={dims}
-						onDetails={this.props.onLootDetails}
+						selected={this.props.selectedIDs.includes(lp.id)}
+						onSelect={this.props.onSelect}
+						onDetails={this.props.onDetails}
 					/>
 				);
 			});
@@ -89,7 +90,7 @@ export class EncounterMapPanel extends Component<Props> {
 					mapDimensions={dims}
 					selected={this.props.selectedIDs.includes(combatant.id)}
 					onSelect={this.props.onSelect}
-					onDetails={this.props.onCombatantDetails}
+					onDetails={this.props.onDetails}
 				/>
 			);
 		});
@@ -139,7 +140,7 @@ interface MiniTokenProps {
 	squareSize: number;
 	mapDimensions: { left: number, top: number };
 	selected: boolean;
-	onSelect: (combatant: CombatantModel | null) => void;
+	onSelect: (combatant: CombatantModel) => void;
 	onDetails: (combatant: CombatantModel) => void;
 }
 
@@ -203,19 +204,27 @@ interface LootTokenProps {
 	loot: LootPileModel;
 	squareSize: number;
 	mapDimensions: { left: number, top: number };
+	selected: boolean;
+	onSelect: (loot: LootPileModel | null) => void;
 	onDetails: (loot: LootPileModel) => void;
 }
 
 class LootToken extends Component<LootTokenProps> {
+	onClick = (e: React.MouseEvent) => {
+		e.stopPropagation();
+		this.props.onSelect(this.props.loot);
+	};
+
 	onDoubleClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
 		this.props.onDetails(this.props.loot);
 	};
 
 	render = () => {
+		const className = `encounter-map-loot-token ${this.props.selected ? 'selected' : ''}`;
 		return (
 			<div
-				className='encounter-map-loot-token'
+				className={className}
 				style={{
 					width: `${this.props.squareSize}px`,
 					height: `${this.props.squareSize}px`,
@@ -223,6 +232,7 @@ class LootToken extends Component<LootTokenProps> {
 					top: `${((this.props.loot.position.y - this.props.mapDimensions.top) * this.props.squareSize)}px`
 				}}
 				title='Treasure'
+				onClick={e => this.onClick(e)}
 				onDoubleClick={e => this.onDoubleClick(e)}
 			>
 			</div>

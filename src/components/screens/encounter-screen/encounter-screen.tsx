@@ -62,9 +62,9 @@ export class EncounterScreen extends Component<Props, State> {
 		});
 	};
 
-	selectCombatant = (combatant: CombatantModel | null) => {
+	selectCombatant = (item: CombatantModel | LootPileModel | null) => {
 		this.setState({
-			selectedIDs: combatant ? [ combatant.id ] : []
+			selectedIDs: item ? [ item.id ] : []
 		});
 	};
 
@@ -74,16 +74,19 @@ export class EncounterScreen extends Component<Props, State> {
 		});
 	};
 
-	showDetailsCombatant = (combatant: CombatantModel | null) => {
+	showDetails = (item: CombatantModel | LootPileModel | null) => {
+		let combatant = null;
+		let loot = null;
+		if (item) {
+			if ((item as CombatantModel).name !== undefined) {
+				combatant = item as CombatantModel;
+			} else {
+				loot = item as LootPileModel;
+			}
+		}
+
 		this.setState({
 			detailsCombatant: combatant,
-			detailsLoot: null
-		});
-	};
-
-	showDetailsLoot = (loot: LootPileModel | null) => {
-		this.setState({
-			detailsCombatant: null,
 			detailsLoot: loot
 		});
 	};
@@ -113,7 +116,7 @@ export class EncounterScreen extends Component<Props, State> {
 								encounter={this.props.encounter}
 								selectedIDs={this.state.selectedIDs}
 								onSelect={this.selectCombatant}
-								onDetails={this.showDetailsCombatant}
+								onDetails={this.showDetails}
 							/>
 						</div>
 					);
@@ -129,7 +132,7 @@ export class EncounterScreen extends Component<Props, State> {
 								scan={this.props.scan}
 								hide={this.props.hide}
 								pickUpItem={this.props.pickUpItem}
-								showCharacterSheet={this.showDetailsCombatant}
+								showCharacterSheet={this.showDetails}
 								kill={this.props.kill}
 							/>
 						</div>
@@ -194,7 +197,7 @@ export class EncounterScreen extends Component<Props, State> {
 							levelUp={() => null}
 						/>
 					}
-					onClickOff={() => this.showDetailsCombatant(null)}
+					onClickOff={() => this.showDetails(null)}
 				/>
 			);
 		}
@@ -207,7 +210,7 @@ export class EncounterScreen extends Component<Props, State> {
 							<CardList cards={this.state.detailsLoot.items.map(i => <PlayingCard key={i.id} front={<ItemCard item={i} />} />)} />
 						</div>
 					}
-					onClickOff={() => this.showDetailsLoot(null)}
+					onClickOff={() => this.showDetails(null)}
 				/>
 			);
 		}
@@ -221,8 +224,7 @@ export class EncounterScreen extends Component<Props, State> {
 						squareSize={this.state.mapSquareSize}
 						selectedIDs={this.state.selectedIDs}
 						onSelect={this.selectCombatant}
-						onCombatantDetails={this.showDetailsCombatant}
-						onLootDetails={this.showDetailsLoot}
+						onDetails={this.showDetails}
 					/>
 					<div className='map-controls'>
 						<div className='zoom'>

@@ -51,10 +51,10 @@ export class OptionsPage extends Component<Props, State> {
 		return (
 			<div className='options-page'>
 				<div className='cards'>
-					<PlayingCard front={<PlaceholderCard><Text type={TextType.SubHeading}>Species<br/>Deck</Text></PlaceholderCard>} onClick={() => this.setDeck('species')} />
-					<PlayingCard front={<PlaceholderCard><Text type={TextType.SubHeading}>Role<br/>Deck</Text></PlaceholderCard>} onClick={() => this.setDeck('role')} />
-					<PlayingCard front={<PlaceholderCard><Text type={TextType.SubHeading}>Background<br/>Deck</Text></PlaceholderCard>} onClick={() => this.setDeck('background')} />
-					<PlayingCard front={<PlaceholderCard><Text type={TextType.SubHeading}>Item<br/>Deck</Text></PlaceholderCard>} onClick={() => this.setDeck('item')} />
+					<PlayingCard type='species' front={<PlaceholderCard><Text type={TextType.SubHeading}>Species<br/>Deck</Text></PlaceholderCard>} onClick={() => this.setDeck('species')} />
+					<PlayingCard type='role' front={<PlaceholderCard><Text type={TextType.SubHeading}>Role<br/>Deck</Text></PlaceholderCard>} onClick={() => this.setDeck('role')} />
+					<PlayingCard type='background' front={<PlaceholderCard><Text type={TextType.SubHeading}>Background<br/>Deck</Text></PlaceholderCard>} onClick={() => this.setDeck('background')} />
+					<PlayingCard type='item' front={<PlaceholderCard><Text type={TextType.SubHeading}>Item<br/>Deck</Text></PlaceholderCard>} onClick={() => this.setDeck('item')} />
 				</div>
 				<hr />
 				<button className='danger' onClick={() => this.props.endCampaign()}>Abandon This Campaign</button>
@@ -93,25 +93,25 @@ class Deck extends Component<DeckProps, DeckState> {
 		switch (this.props.type) {
 			case 'species':
 				heading = 'Species Deck';
-				cards = SpeciesData.getList().map(s => (<PlayingCard key={s.id} front={<SpeciesCard species={s} />} onClick={() => this.setActions(s.actions)} />));
+				cards = SpeciesData.getList().map(s => (<PlayingCard key={s.id} type='species' front={<SpeciesCard species={s} />} onClick={() => this.setActions(s.actions)} />));
 				break;
 			case 'role':
 				heading = 'Role Deck';
-				cards = RoleData.getList().map(r => (<PlayingCard key={r.id} front={<RoleCard role={r} />} onClick={() => this.setActions(r.actions)} />));
+				cards = RoleData.getList().map(r => (<PlayingCard key={r.id} type='role' front={<RoleCard role={r} />} onClick={() => this.setActions(r.actions)} />));
 				break;
 			case 'background':
 				heading = 'Background Deck';
-				cards = BackgroundData.getList().map(b => (<PlayingCard key={b.id} front={<BackgroundCard background={b} />} onClick={() => this.setActions(b.actions)} />));
+				cards = BackgroundData.getList().map(b => (<PlayingCard key={b.id} type='background' front={<BackgroundCard background={b} />} onClick={() => this.setActions(b.actions)} />));
 				break;
 			case 'item':
 				heading = 'Item Deck';
-				cards = ItemData.getList().map(i => (<PlayingCard key={i.id} front={<ItemCard item={i} />} />));
+				cards = ItemData.getList().map(i => (<PlayingCard key={i.id} type='item' front={<ItemCard item={i} />} />));
 				break;
 		}
 
 		let dialog = null;
 		if (this.state.actions.length > 0) {
-			const actionCards = this.state.actions.map(a => (<PlayingCard key={a.id} front={<ActionCard action={a} />} />));
+			const actionCards = this.state.actions.map(a => (<PlayingCard key={a.id} type='action' front={<ActionCard action={a} />} />));
 			const content = (
 				<div>
 					<Text type={TextType.Heading}>Actions</Text>

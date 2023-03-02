@@ -15,26 +15,13 @@
       * Add effects
     * In the UI:
       * Handle parameters
-      * Handle effects
+      * Run effects
       * Only draw action cards when you ask to
         * That way the prerequisites are based on your current state
   * Implement AI so that monsters can take their turns
   * Show turn log for current combatant, if it's a monster
     * With a button to take each action in turn
 * Add help / documentation to explain game rules
-* Card colors:
-
-|Card        |Colour                          |
-|------------|--------------------------------|
-|Hero        |Grey                            |
-|Species     |Red                             |
-|Role        |Blue                            |
-|Background  |Green                           |
-|Item        |Yellow                          |
-|Magic item  |Purple                          |
-|Boon        |Orange                          |
-|Feature     |White; footer colour by source  |
-|Action      |White; footer colour by source  |
 
 ## Ideas for Future Work
 

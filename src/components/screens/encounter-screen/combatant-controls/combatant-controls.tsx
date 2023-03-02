@@ -15,7 +15,7 @@ import { ItemModel } from '../../../../models/item';
 
 import { Collections } from '../../../../utils/collections';
 
-import { Box, CardList, Developer, IconType, IconValue, NotImplemented, PlayingCard, Selector, StatValue, Tag, Text, TextType } from '../../../controls';
+import { Box, CardList, Developer, IconType, IconValue, PlayingCard, Selector, StatValue, Tag, Text, TextType } from '../../../controls';
 import { ActionCard } from '../../../cards';
 import { CombatStatsPanel } from '../../../panels/combat-stats/combat-stats-panel';
 import { DirectionPanel } from '../../../panels';
@@ -128,24 +128,22 @@ export class CombatantControls extends Component<Props, State> {
 			}
 			case 'actions': {
 				const actionCards = this.props.combatant.combat.actions.map(a => {
-					const source = CombatantLogic.getCardSource(this.props.combatant, a.id, 'action');
 					return (
 						<PlayingCard
 							key={a.id}
+							type='action'
 							front={<ActionCard action={a} />}
-							footer={source}
+							footer={CombatantLogic.getCardSource(this.props.combatant, a.id, 'action')}
+							footerType={CombatantLogic.getCardSourceType(this.props.combatant, a.id, 'action')}
 							onClick={null}
 						/>
 					);
 				});
 
 				controls = (
-					<NotImplemented>
-						<Text type={TextType.Information}><b>Actions are not yet implemented.</b></Text>
-						<div className='actions'>
-							<CardList cards={actionCards} />
-						</div>
-					</NotImplemented>
+					<div className='actions'>
+						<CardList cards={actionCards} />
+					</div>
 				);
 				break;
 			}

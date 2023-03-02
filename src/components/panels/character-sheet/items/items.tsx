@@ -82,7 +82,7 @@ export class Items extends Component<Props, State> {
 
 				return (
 					<div key={item.id} className='item'>
-						<PlayingCard front={<ItemCard item={item} />} footer={footer} />
+						<PlayingCard type='item' front={<ItemCard item={item} />} footer={footer} />
 					</div>
 				);
 			});
@@ -153,7 +153,7 @@ export class Items extends Component<Props, State> {
 
 				return (
 					<div key={item.id} className='item'>
-						<PlayingCard front={<ItemCard item={item} />} footer={footer} />
+						<PlayingCard type='item' front={<ItemCard item={item} />} footer={footer} />
 					</div>
 				);
 			});
@@ -217,6 +217,7 @@ export class Items extends Component<Props, State> {
 				return (
 					<PlayingCard
 						key={item.id}
+						type='item'
 						front={<ItemCard item={item} />}
 						onClick={() => this.pickUpItem(item)}
 					/>
@@ -241,6 +242,7 @@ export class Items extends Component<Props, State> {
 				return (
 					<PlayingCard
 						key={item.id}
+						type='item'
 						front={<ItemCard item={copy} />}
 						onClick={() => this.pickUpItem(item)}
 					/>

@@ -18,7 +18,7 @@ export class ActionCard extends Component<Props> {
 			return null;
 		}
 
-		return prerequisites.map((p, n) => <Text key={n}>{p.description}</Text>);
+		return prerequisites.map((p, n) => <div key={n} className='prerequisite'>{p.description}</div>);
 	};
 
 	getParameters = (parameters: (ActionTargetModel | ActionWeaponModel)[]) => {
@@ -38,7 +38,7 @@ export class ActionCard extends Component<Props> {
 			}
 		};
 
-		return parameters.map((p, n) => <Text key={n}>{getParameterDescription(p)}</Text>);
+		return parameters.map((p, n) => <div key={n} className='parameter'>{getParameterDescription(p)}</div>);
 	};
 
 	getEffects = (effects: ActionEffectModel[]) => {
@@ -54,7 +54,7 @@ export class ActionCard extends Component<Props> {
 
 			return (
 				<div>
-					<Text>{effect.description}</Text>
+					<div className='effect'>{effect.description}</div>
 					{children ? <div className='indent'>{children}</div> : null}
 				</div>
 			);

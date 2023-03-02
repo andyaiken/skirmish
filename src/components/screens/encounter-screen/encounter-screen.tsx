@@ -208,7 +208,7 @@ export class EncounterScreen extends Component<Props, State> {
 					content={
 						<div>
 							<Text type={TextType.Heading}>Treasure</Text>
-							<CardList cards={this.state.detailsLoot.items.map(i => <PlayingCard key={i.id} front={<ItemCard item={i} />} />)} />
+							<CardList cards={this.state.detailsLoot.items.map(i => <PlayingCard key={i.id} type='item' front={<ItemCard item={i} />} />)} />
 						</div>
 					}
 					onClickOff={() => this.showDetails(null)}
@@ -236,9 +236,9 @@ export class EncounterScreen extends Component<Props, State> {
 							<button disabled={this.state.mapSquareSize <= 5} className='zoom-btn' onClick={() => this.nudgeMapSize(-5)}>-</button>
 							<button disabled={this.state.mapSquareSize >= 50} className='zoom-btn' onClick={() => this.nudgeMapSize(+5)}>+</button>
 						</div>
-						{this.props.developer ? <Developer><button className='finish-btn' onClick={() => this.setManualEncounterState(EncounterState.Victory)}>Victory</button></Developer> : null}
 						<button className='finish-btn danger' onClick={() => this.setManualEncounterState(EncounterState.Retreat)}>Retreat</button>
 						<button className='finish-btn danger' onClick={() => this.setManualEncounterState(EncounterState.Defeat)}>Surrender</button>
+						{this.props.developer ? <Developer><button className='finish-btn' onClick={() => this.setManualEncounterState(EncounterState.Victory)}>Victory</button></Developer> : null}
 					</div>
 				</div>
 				{controls}

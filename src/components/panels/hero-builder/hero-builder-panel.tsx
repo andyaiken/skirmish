@@ -200,6 +200,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 				return (
 					<div key={species.id}>
 						<PlayingCard
+							type='species'
 							front={<SpeciesCard species={species} />}
 							back={<PlaceholderCard>Species</PlaceholderCard>}
 							display={(this.state.selectedSpeciesID !== '') && (this.state.selectedSpeciesID !== species.id) ? PlayingCardSide.Back : PlayingCardSide.Front}
@@ -218,6 +219,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 				return (
 					<div key={role.id}>
 						<PlayingCard
+							type='role'
 							front={<RoleCard role={role} />}
 							back={<PlaceholderCard>Role</PlaceholderCard>}
 							display={(this.state.selectedRoleID !== '') && (this.state.selectedRoleID !== role.id) ? PlayingCardSide.Back : PlayingCardSide.Front}
@@ -236,6 +238,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 				return (
 					<div key={background.id}>
 						<PlayingCard
+							type='background'
 							front={<BackgroundCard background={background} />}
 							back={<PlaceholderCard>Background</PlaceholderCard>}
 							display={(this.state.selectedBackgroundID !== '') && (this.state.selectedBackgroundID !== background.id) ? PlayingCardSide.Back : PlayingCardSide.Front}
@@ -338,6 +341,7 @@ class EquipmentSelector extends Component<EquipmentSelectorProps, EquipmentSelec
 			const items = slot.candidates.map(item => (
 				<div key={item.id}>
 					<PlayingCard
+						type='item'
 						front={<ItemCard item={item} />}
 						back={<PlaceholderCard>Item</PlaceholderCard>}
 						display={(slot.selected !== null) && (slot.selected.name !== item.name) ? PlayingCardSide.Back : PlayingCardSide.Front}

@@ -67,7 +67,7 @@ export class HeroesPage extends Component<Props, State> {
 	render = () => {
 		let boons = null;
 		if (this.props.game.boons.length > 0) {
-			const cards = this.props.game.boons.map(b => (<PlayingCard key={b.id} front={<BoonCard boon={b} />} onClick={() => this.selectBoon(b)} />));
+			const cards = this.props.game.boons.map(b => (<PlayingCard key={b.id} type='boon' front={<BoonCard boon={b} />} onClick={() => this.selectBoon(b)} />));
 			boons = (
 				<div>
 					<Text type={TextType.SubHeading}>Rewards ({cards.length})</Text>
@@ -97,7 +97,7 @@ export class HeroesPage extends Component<Props, State> {
 		if (this.props.game.heroes.some(h => h.xp >= h.level)) {
 			const cards = this.props.game.heroes.filter(h => h.xp >= h.level).map(h => {
 				return (
-					<PlayingCard key={h.id} front={<HeroCard hero={h} />} onClick={() => this.setState({ selectedHero: h })} />
+					<PlayingCard key={h.id} type='hero' front={<HeroCard hero={h} />} onClick={() => this.setState({ selectedHero: h })} />
 				);
 			});
 			levelUp = (
@@ -115,6 +115,7 @@ export class HeroesPage extends Component<Props, State> {
 				return (
 					<div key={hero.id}>
 						<PlayingCard
+							type='hero'
 							front={<HeroCard hero={hero} />}
 							footer={<button onClick={e => this.selectHero(e, hero)}>Character Sheet</button>}
 						/>
@@ -187,6 +188,7 @@ export class HeroesPage extends Component<Props, State> {
 					return (
 						<PlayingCard
 							key={h.id}
+							type='hero'
 							front={<HeroCard hero={h} />}
 							onClick={() => {
 								const boon = this.state.selectedBoon as BoonModel;

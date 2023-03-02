@@ -63,6 +63,7 @@ export class ItemsPage extends Component<Props, State> {
 				return (
 					<PlayingCard
 						key={item.id}
+						type='item'
 						front={<ItemCard item={item} />}
 					/>
 				);
@@ -96,6 +97,7 @@ export class ItemsPage extends Component<Props, State> {
 				return (
 					<PlayingCard
 						key={item.id}
+						type='item'
 						front={<ItemCard item={item} />}
 						footer={back}
 					/>
@@ -131,6 +133,7 @@ export class ItemsPage extends Component<Props, State> {
 			const cards = this.state.magicItems.map(item => (
 				<PlayingCard
 					key={item.id}
+					type='item'
 					front={<ItemCard item={item} />}
 					onClick={() => this.buyItem(item)}
 				/>

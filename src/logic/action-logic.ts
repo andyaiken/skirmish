@@ -310,7 +310,7 @@ export class ActionEffects {
 		}
 	): ActionEffectModel => {
 		return {
-			description: `Roll ${data.skill} vs ${data.target}`,
+			description: `Skill check: ${data.skill} vs ${data.target}`,
 			children: data.then,
 			run: (encounter, combatant, parameters) => {
 				const targetsSucceeded: string[] = [];
@@ -346,7 +346,7 @@ export class ActionEffects {
 		}
 	): ActionEffectModel => {
 		return {
-			description: (data.skillBonus === 0) ? `Attack ${data.skill} vs ${data.trait}` : `Attack ${data.skill} ${data.skillBonus >= 0 ? '+' : ''}${data.skillBonus} vs ${data.trait}`,
+			description: (data.skillBonus === 0) ? `Attack: ${data.skill} vs ${data.trait}` : `Attack: ${data.skill} ${data.skillBonus >= 0 ? '+' : ''}${data.skillBonus} vs ${data.trait}`,
 			children: data.hit,
 			run: (encounter, combatant, parameters) => {
 				const targetsSucceeded: string[] = [];
@@ -484,7 +484,7 @@ export class ActionEffects {
 
 	static addCondition = (condition: ConditionModel): ActionEffectModel => {
 		return {
-			description: `Add a condition (${ConditionLogic.getConditionDescription(condition)})`,
+			description: `Add a condition (${ConditionLogic.getConditionDescription(condition)}, rank ${condition.rank})`,
 			children: [],
 			run: (encounter, combatant, parameters) => {
 				const targetParameter = parameters.find(p => p.name === 'targets');

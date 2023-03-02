@@ -175,8 +175,10 @@ class FeaturesPage extends Component<FeaturesPageProps> {
 			return (
 				<PlayingCard
 					key={feature.id}
+					type='feature'
 					front={<FeatureCard feature={feature} />}
 					footer={CombatantLogic.getCardSource(this.props.hero, feature.id, 'feature')}
+					footerType={CombatantLogic.getCardSourceType(this.props.hero, feature.id, 'feature')}
 				/>
 			);
 		});
@@ -202,8 +204,10 @@ class ActionsPage extends Component<ActionsPageProps> {
 			return (
 				<PlayingCard
 					key={action.id}
+					type='action'
 					front={<ActionCard action={action} />}
 					footer={CombatantLogic.getCardSource(this.props.hero, action.id, 'action')}
+					footerType={CombatantLogic.getCardSourceType(this.props.hero, action.id, 'action')}
 				/>
 			);
 		});

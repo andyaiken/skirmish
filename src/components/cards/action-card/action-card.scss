@@ -1,6 +1,21 @@
 .action-card {
 	margin: 10px;
 
+	.prerequisite {
+		margin: 5px 0;
+		font-size: 14px;
+	}
+
+	.parameter {
+		margin: 5px 0;
+		font-size: 14px;
+	}
+
+	.effect {
+		margin: 5px 0;
+		font-size: 14px;
+	}
+
 	.indent {
 		margin-left: 20px;
 	}

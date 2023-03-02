@@ -265,6 +265,69 @@ export class CombatantLogic {
 		return '';
 	};
 
+	static getCardSourceType = (combatant: CombatantModel, cardID: string, cardType: 'action' | 'feature') => {
+		switch (cardType) {
+			case 'action': {
+				if (UniversalData.getUniversalActions().find(a => a.id === cardID)) {
+					return 'universal';
+				}
+
+				const s = GameLogic.getSpecies(combatant.speciesID);
+				if (!!s && s.actions.find(c => c.id === cardID)) {
+					return 'species';
+				}
+
+				const r = GameLogic.getRole(combatant.roleID);
+				if (!!r && r.actions.find(c => c.id === cardID)) {
+					return 'role';
+				}
+
+				const b = GameLogic.getBackground(combatant.backgroundID);
+				if (!!b && b.actions.find(c => c.id === cardID)) {
+					return 'background';
+				}
+
+				combatant.items.forEach(item => {
+					if (item.actions.find(a => a.id === cardID)) {
+						return 'item';
+					}
+				});
+
+				break;
+			}
+			case 'feature': {
+				if (UniversalData.getUniversalFeatures().find(f => f.id === cardID)) {
+					return 'universal';
+				}
+
+				const s = GameLogic.getSpecies(combatant.speciesID);
+				if (!!s && s.features.find(c => c.id === cardID)) {
+					return 'species';
+				}
+
+				const r = GameLogic.getRole(combatant.roleID);
+				if (!!r && r.features.find(c => c.id === cardID)) {
+					return 'role';
+				}
+
+				const b = GameLogic.getBackground(combatant.backgroundID);
+				if (!!b && b.features.find(c => c.id === cardID)) {
+					return 'background';
+				}
+
+				combatant.items.forEach(item => {
+					if (item.features.find(f => f.id === cardID)) {
+						return 'item';
+					}
+				});
+
+				break;
+			}
+		}
+
+		return 'default';
+	};
+
 	static getFeatures = (combatant: CombatantModel) => {
 		let list = ([] as FeatureModel[]).concat(combatant.features);
 		combatant.items.forEach(i => {

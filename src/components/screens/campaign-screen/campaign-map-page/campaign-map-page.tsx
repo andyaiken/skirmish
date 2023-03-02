@@ -85,7 +85,7 @@ export class CampaignMapPage extends Component<Props, State> {
 				.map(h => {
 					return (
 						<div key={h.id}>
-							<PlayingCard front={<HeroCard hero={h} />} onClick={canAdd ? () => this.selectHero(h) : null} />
+							<PlayingCard type='hero' front={<HeroCard hero={h} />} onClick={canAdd ? () => this.selectHero(h) : null} />
 						</div>
 					);
 				});
@@ -94,7 +94,7 @@ export class CampaignMapPage extends Component<Props, State> {
 				.map(h => {
 					return (
 						<div key={h.id}>
-							<PlayingCard front={<HeroCard hero={h} />} onClick={() => this.deselectHero(h)} />
+							<PlayingCard type='hero' front={<HeroCard hero={h} />} onClick={() => this.deselectHero(h)} />
 						</div>
 					);
 				});
@@ -156,7 +156,7 @@ export class CampaignMapPage extends Component<Props, State> {
 					<hr />
 					<Text>If you take control of {this.state.selectedRegion.name}, you will recieve:</Text>
 					<div className='boon'>
-						<PlayingCard front={<BoonCard boon={this.state.selectedRegion.boon} />} />
+						<PlayingCard type='boon' front={<BoonCard boon={this.state.selectedRegion.boon} />} />
 					</div>
 					<hr />
 					{canAttack ? null : <Text type={TextType.Information}>You can&apos;t attack {this.state.selectedRegion.name} because it&apos;s not on the coast or adjacent to your land.</Text>}

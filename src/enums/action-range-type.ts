@@ -3,5 +3,6 @@ export enum ActionRangeType {
 	Adjacent = 'Adjacent',
 	Burst = 'Burst',
 	Weapon = 'Weapon',
-	Area = 'Area'
+	Area = 'Area',
+	WeaponArea = 'WeaponArea'
 }

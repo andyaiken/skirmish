@@ -114,11 +114,10 @@ export class EncounterGenerator {
 			round: 0,
 			combatants: [],
 			loot: [],
-			mapSquares: EncounterMapLogic.generateEncounterMap(rng),
-			actionData: {}
+			mapSquares: EncounterMapLogic.generateEncounterMap(rng)
 		};
 
-		while (Random.randomNumber(10, rng) !== 0) {
+		if (Random.randomNumber(10, rng) !== 0) {
 			const lp = Factory.createLootPile();
 			lp.items.push(MagicItemGenerator.generateMagicItem());
 

@@ -24,15 +24,15 @@
 		.encounter-map-loot-token {
 			position: absolute;
 			border-radius: 50%;
-			border: 1px solid darkgoldenrod;
-			background-color: goldenrod;
+			border: 1px solid rgb(180, 130, 10);
+			background: radial-gradient(rgb(230, 175, 40), rgb(210, 155, 20));
 		}
 
 		.encounter-map-aura-token {
 			position: absolute;
 			border-radius: 33%;
-			border: 1px solid rgb(100, 100, 100);
-			background-color: rgb(150, 150, 150);
+			border: 1px solid rgb(80, 80, 80);
+			background: radial-gradient(rgb(160, 160, 160), rgb(140, 140, 140));
 			opacity: 0.25;
 		}
 
@@ -43,18 +43,18 @@
 			justify-content: center;
 			border-radius: 50%;
 			border: 1px solid rgb(100, 100, 100);
-			background-color: rgb(150, 150, 150);
+			background: rgb(150, 150, 150);
 			color: white;
 			font-weight: 600;
 
 			&.hero {
-				border-color: darkgreen;
-				background-color: green;
+				border-color: rgb(0, 70, 0);
+				background: radial-gradient(rgb(0, 150, 0), rgb(0, 100, 0));
 			}
 
 			&.monster {
-				border-color: darkred;
-				background-color: red;
+				border-color: rgb(100, 0, 0);
+				background: radial-gradient(rgb(240, 0, 0), rgb(220, 0, 0));
 			}
 
 			&.current {

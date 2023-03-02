@@ -1,11 +1,14 @@
+import { ActionTargetType } from '../enums/action-target-type';
 import { ConditionType } from '../enums/condition-type';
 import { DamageCategoryType } from '../enums/damage-category-type';
 import { DamageType } from '../enums/damage-type';
 import { ItemProficiencyType } from '../enums/item-proficiency-type';
+import { SkillCategoryType } from '../enums/skill-category-type';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
 
-import { ActionLogic } from '../logic/action-logic';
+import { ActionEffects, ActionPrerequisites, ActionTargetParameters, ActionWeaponParameters } from '../logic/action-logic';
+import { ConditionLogic } from '../logic/condition-logic';
 import { FeatureLogic } from '../logic/feature-logic';
 
 import type { RoleModel } from '../models/role';
@@ -33,48 +36,69 @@ export class RoleData {
 				actions: [
 					{
 						id: 'arcanist-action-1',
-						name: 'Arcane Shield (self, resist all damage)',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						name: 'Arcane Shield',
+						prerequisites: [
+							ActionPrerequisites.implement()
+						],
+						parameters: [
+							ActionTargetParameters.self()
+						],
+						effects: [
+							ActionEffects.addCondition(ConditionLogic.createDamageResistanceCondition(TraitType.Resolve, 5, DamageType.All))
+						]
 					},
 					{
 						id: 'arcanist-action-2',
-						name: 'Arcane Armor (other, resist all damage)',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						name: 'Arcane Armor',
+						prerequisites: [
+							ActionPrerequisites.implement()
+						],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Allies, 1, 5)
+						],
+						effects: [
+							ActionEffects.addCondition(ConditionLogic.createDamageResistanceCondition(TraitType.Resolve, 5, DamageType.All))
+						]
 					},
 					{
 						id: 'arcanist-action-3',
 						name: 'Arcane Force (push)',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.implement()
+						],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+						],
+						effects: [
+							// TODO: Move selected target away
+						]
 					},
 					{
 						id: 'arcanist-action-4',
 						name: 'Arcane Arrow',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.implement()
+						],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+						],
+						effects: [
+							ActionEffects.dealDamage(DamageType.Electricity, 1),
+							ActionEffects.dealDamage(DamageType.Piercing, 1)
+						]
 					},
 					{
 						id: 'arcanist-action-5',
 						name: 'Swap positions',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.implement()
+						],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Combatants, 1, 5)
+						],
+						effects: [
+							// TODO: Swap position with selected target
+						]
 					}
 				]
 			},
@@ -101,47 +125,107 @@ export class RoleData {
 					{
 						id: 'barbarian-action-1',
 						name: 'Overhead strike',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.meleeWeapon()
+						],
+						parameters: [
+							ActionWeaponParameters.melee(),
+							ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: true,
+								skill: SkillType.Weapon,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealWeaponDamage(),
+									ActionEffects.dealWeaponDamage()
+								]
+							})
+						]
 					},
 					{
 						id: 'barbarian-action-2',
 						name: 'Knockdown strike',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.meleeWeapon()
+						],
+						parameters: [
+							ActionWeaponParameters.melee(),
+							ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: true,
+								skill: SkillType.Weapon,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealWeaponDamage(),
+									ActionEffects.knockDown()
+								]
+							})
+						]
 					},
 					{
 						id: 'barbarian-action-3',
 						name: 'Stunning strike',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.meleeWeapon()
+						],
+						parameters: [
+							ActionWeaponParameters.melee(),
+							ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: true,
+								skill: SkillType.Weapon,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealWeaponDamage(),
+									ActionEffects.loseTurn()
+								]
+							})
+						]
 					},
 					{
 						id: 'barbarian-action-4',
 						name: 'Haymaker strike',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.meleeWeapon()
+						],
+						parameters: [
+							ActionWeaponParameters.melee(),
+							ActionTargetParameters.weapon(ActionTargetType.Enemies, Number.MAX_VALUE, 0)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: true,
+								skill: SkillType.Weapon,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealWeaponDamage()
+								]
+							})
+						]
 					},
 					{
 						id: 'barbarian-action-5',
 						name: 'Burst through wall',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.meleeWeapon()
+						],
+						parameters: [
+							ActionWeaponParameters.melee(),
+							ActionTargetParameters.weapon(ActionTargetType.Walls, 1, 0)
+						],
+						effects: [
+							// TODO: Destroy selected walls
+						]
 					}
 				]
 			},
@@ -166,47 +250,112 @@ export class RoleData {
 					{
 						id: 'dervish-action-1',
 						name: 'Dual strike (one target)',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.meleeWeapon()
+						],
+						parameters: [
+							ActionWeaponParameters.melee(),
+							ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: true,
+								skill: SkillType.Weapon,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealWeaponDamage()
+								]
+							}),
+							ActionEffects.attack({
+								weapon: true,
+								skill: SkillType.Weapon,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealWeaponDamage()
+								]
+							})
+						]
 					},
 					{
 						id: 'dervish-action-2',
 						name: 'Dual strike (two targets)',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.meleeWeapon()
+						],
+						parameters: [
+							ActionWeaponParameters.melee(),
+							ActionTargetParameters.weapon(ActionTargetType.Enemies, 2, 0)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: true,
+								skill: SkillType.Weapon,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealWeaponDamage()
+								]
+							})
+						]
 					},
 					{
 						id: 'dervish-action-3',
 						name: 'Whirlwind strike',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.meleeWeapon()
+						],
+						parameters: [
+							ActionWeaponParameters.melee(),
+							ActionTargetParameters.weapon(ActionTargetType.Enemies, Number.MAX_VALUE, 0)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: true,
+								skill: SkillType.Weapon,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealWeaponDamage()
+								]
+							})
+						]
 					},
 					{
 						id: 'dervish-action-4',
 						name: 'Leaping strike',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.meleeWeapon()
+						],
+						parameters: [
+							ActionWeaponParameters.melee(),
+							ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 2)
+						],
+						effects: [
+							// TODO: Move adjacent to selected target
+							ActionEffects.attack({
+								weapon: true,
+								skill: SkillType.Weapon,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealWeaponDamage()
+								]
+							})
+						]
 					},
 					{
 						id: 'dervish-action-5',
-						name: 'Dodging stance (adds physical damage resistance)',
+						name: 'Dodging stance',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.self()
+						],
+						effects: [
+							ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Endurance, 5, TraitType.Speed)),
+							ActionEffects.addCondition(ConditionLogic.createDamageResistanceCondition(TraitType.Endurance, 5, DamageType.All))
+						]
 					}
 				]
 			},
@@ -231,48 +380,68 @@ export class RoleData {
 				actions: [
 					{
 						id: 'enchanter-action-1',
-						name: 'Confusion (target makes attack)',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						name: 'Confusion',
+						prerequisites: [
+							ActionPrerequisites.implement()
+						],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 10)
+						],
+						effects: [
+							// TODO: Target makes attack
+						]
 					},
 					{
 						id: 'enchanter-action-2',
-						name: 'Stun (target loses action)',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						name: 'Stun',
+						prerequisites: [
+							ActionPrerequisites.implement()
+						],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 10)
+						],
+						effects: [
+							ActionEffects.loseTurn()
+						]
 					},
 					{
 						id: 'enchanter-action-3',
-						name: 'Fear (target loses speed)',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						name: 'Fear',
+						prerequisites: [
+							ActionPrerequisites.implement()
+						],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 10)
+						],
+						effects: [
+							ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 5, TraitType.Speed))
+						]
 					},
 					{
 						id: 'enchanter-action-4',
-						name: 'Mental shield (add psychic damage resistance)',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						name: 'Mental shield',
+						prerequisites: [
+							ActionPrerequisites.implement()
+						],
+						parameters: [
+							ActionTargetParameters.self()
+						],
+						effects: [
+							ActionEffects.addCondition(ConditionLogic.createDamageCategoryResistanceCondition(TraitType.Resolve, 5, DamageCategoryType.Corruption))
+						]
 					},
 					{
 						id: 'enchanter-action-5',
-						name: 'Weaken (reduce target\'s damage)',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						name: 'Weaken',
+						prerequisites: [
+							ActionPrerequisites.implement()
+						],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 10)
+						],
+						effects: [
+							ActionEffects.addCondition(ConditionLogic.createDamagePenaltyCondition(TraitType.Endurance, 5, DamageType.All))
+						]
 					}
 				]
 			},
@@ -298,47 +467,128 @@ export class RoleData {
 					{
 						id: 'geomancer-action-1',
 						name: 'Create difficult terrain',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.implement()
+						],
+						parameters: [
+							ActionTargetParameters.area(ActionTargetType.Squares, Number.MAX_VALUE, 3, 10)
+						],
+						effects: [
+							// TODO: Turn selected squares into difficult terrain
+						]
 					},
 					{
 						id: 'geomancer-action-2',
 						name: 'Create clear terrain',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.implement()
+						],
+						parameters: [
+							ActionTargetParameters.area(ActionTargetType.Squares, Number.MAX_VALUE, 3, 10)
+						],
+						effects: [
+							// TODO: Turn selected squares into clear terrain
+						]
 					},
 					{
 						id: 'geomancer-action-3',
 						name: 'Destroy ground',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.implement()
+						],
+						parameters: [
+							ActionTargetParameters.area(ActionTargetType.Squares, Number.MAX_VALUE, 3, 10)
+						],
+						effects: [
+							// TODO: Remove selected squares from map
+						]
 					},
 					{
 						id: 'geomancer-action-4',
 						name: 'Create ground',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.implement()
+						],
+						parameters: [
+							ActionTargetParameters.area(ActionTargetType.Walls, Number.MAX_VALUE, 3, 10)
+						],
+						effects: [
+							// TODO: Turn selected walls into squares
+						]
 					},
 					{
 						id: 'geomancer-action-5',
 						name: 'Earthbind (reduce target\'s speed)',
+						prerequisites: [
+							ActionPrerequisites.implement()
+						],
+						parameters: [
+							ActionTargetParameters.area(ActionTargetType.Enemies, Number.MAX_VALUE, 3, 10)
+						],
+						effects: [
+							ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Endurance, 5, TraitType.Speed)),
+							ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Endurance, 5))
+						]
+					}
+				]
+			},
+			{
+				id: 'role-luckweaver',
+				name: 'Luckweaver',
+				traits: [
+					TraitType.Speed
+				],
+				skills: [
+					SkillType.Spellcasting
+				],
+				proficiencies: [],
+				features: [
+					FeatureLogic.createSkillFeature('luckweaver-feature-1', SkillType.Spellcasting, 2),
+					FeatureLogic.createSkillCategoryFeature('luckweaver-feature-2', SkillCategoryType.Any, 1),
+					FeatureLogic.createDamageCategoryBonusFeature('luckweaver-feature-3', DamageCategoryType.Any, 1),
+					FeatureLogic.createDamageCategoryResistFeature('luckweaver-feature-4', DamageCategoryType.Any, 1)
+				],
+				actions: [
+					{
+						id: 'luckweaver-action-1',
+						name: 'Chaos bolt',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 10)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Spellcasting,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Any, 3)
+								]
+							})
+						]
+					},
+					{
+						id: 'luckweaver-action-2',
+						name: 'Warp space',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 10)
+						],
+						effects: [
+							// TODO: Selected target moves to a different empty square
+						]
+					},
+					{
+						id: 'luckweaver-action-3',
+						name: 'Probability wave',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 10)
+						],
+						effects: [
+							// TODO: Selected target's conditions invert
+						]
 					}
 				]
 			},
@@ -352,9 +602,7 @@ export class RoleData {
 					SkillType.Brawl,
 					SkillType.Stealth
 				],
-				proficiencies: [
-					// None
-				],
+				proficiencies: [],
 				features: [
 					FeatureLogic.createTraitFeature('ninja-feature-1', TraitType.Speed, 1),
 					FeatureLogic.createSkillFeature('ninja-feature-2', SkillType.Brawl, 2),
@@ -366,46 +614,101 @@ export class RoleData {
 						id: 'ninja-action-1',
 						name: 'Roundhouse kick',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Speed,
+								skillBonus: 2,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Impact, 2)
+								]
+							})
+						]
 					},
 					{
 						id: 'ninja-action-2',
-						name: 'Flurry (single target)',
+						name: 'Flurry',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Impact, 2)
+								]
+							}),
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Impact, 2)
+								]
+							}),
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Impact, 2)
+								]
+							})
+						]
 					},
 					{
 						id: 'ninja-action-3',
-						name: 'Leaping kick',
+						name: 'Split kick',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 2)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Impact, 2)
+								]
+							})
+						]
 					},
 					{
 						id: 'ninja-action-4',
-						name: 'Lightning speed (move)',
+						name: 'Lightning Speed',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.self()
+						],
+						effects: [
+							ActionEffects.grantMovement()
+						]
 					},
 					{
 						id: 'ninja-action-5',
-						name: 'Adrenal boost (adds to attack / damage)',
+						name: 'Adrenal boost',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.self()
+						],
+						effects: [
+							ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Endurance, 3, TraitType.Speed)),
+							ActionEffects.addCondition(ConditionLogic.createMovementBonusCondition(TraitType.Endurance, 3)),
+							ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Endurance, 3, SkillType.Brawl)),
+							ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Endurance, 3, DamageCategoryType.Physical))
+						]
 					}
 				]
 			},
@@ -428,48 +731,121 @@ export class RoleData {
 				actions: [
 					{
 						id: 'gunslinger-action-1',
-						name: 'Fusilade (area, low damage)',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						name: 'Fusilade',
+						prerequisites: [
+							ActionPrerequisites.rangedWeapon()
+						],
+						parameters: [
+							ActionWeaponParameters.ranged(),
+							ActionTargetParameters.weaponArea(ActionTargetType.Combatants, Number.MAX_VALUE, 3)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: true,
+								skill: SkillType.Weapon,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealWeaponDamage(-2)
+								]
+							})
+						]
 					},
 					{
 						id: 'gunslinger-action-2',
 						name: 'Fire',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.rangedWeapon()
+						],
+						parameters: [
+							ActionWeaponParameters.ranged(),
+							ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: true,
+								skill: SkillType.Weapon,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealWeaponDamage()
+								]
+							})
+						]
 					},
 					{
 						id: 'gunslinger-action-3',
 						name: 'Pommel strike',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.rangedWeapon()
+						],
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Weapon,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Impact, 2)
+								]
+							})
+						]
 					},
 					{
 						id: 'gunslinger-action-4',
-						name: 'Quickfire (two attacks, low accuracy)',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						name: 'Quickfire',
+						prerequisites: [
+							ActionPrerequisites.rangedWeapon()
+						],
+						parameters: [
+							ActionWeaponParameters.ranged(),
+							ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: true,
+								skill: SkillType.Weapon,
+								trait: TraitType.Speed,
+								skillBonus: -2,
+								hit: [
+									ActionEffects.dealWeaponDamage()
+								]
+							}),
+							ActionEffects.attack({
+								weapon: true,
+								skill: SkillType.Weapon,
+								trait: TraitType.Speed,
+								skillBonus: -2,
+								hit: [
+									ActionEffects.dealWeaponDamage()
+								]
+							})
+						]
 					},
 					{
 						id: 'gunslinger-action-5',
 						name: 'Careful shot',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.rangedWeapon()
+						],
+						parameters: [
+							ActionWeaponParameters.ranged(),
+							ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: true,
+								skill: SkillType.Weapon,
+								trait: TraitType.Speed,
+								skillBonus: 2,
+								hit: [
+									ActionEffects.dealWeaponDamage()
+								]
+							})
+						]
 					}
 				]
 			},
@@ -494,39 +870,84 @@ export class RoleData {
 				actions: [
 					{
 						id: 'ranger-action-1',
-						name: 'Quick shot',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						name: 'Careful aim',
+						prerequisites: [
+							ActionPrerequisites.rangedWeapon()
+						],
+						parameters: [
+							ActionWeaponParameters.ranged()
+						],
+						effects: [
+							ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Resolve, 5, SkillType.Weapon))
+						]
 					},
 					{
 						id: 'ranger-action-2',
 						name: 'Sure shot',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.rangedWeapon()
+						],
+						parameters: [
+							ActionWeaponParameters.ranged(),
+							ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: true,
+								skill: SkillType.Weapon,
+								trait: TraitType.Speed,
+								skillBonus: 2,
+								hit: [
+									ActionEffects.dealWeaponDamage()
+								]
+							})
+						]
 					},
 					{
 						id: 'ranger-action-3',
 						name: 'Pinning shot (slows)',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.rangedWeapon()
+						],
+						parameters: [
+							ActionWeaponParameters.ranged(),
+							ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: true,
+								skill: SkillType.Weapon,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealWeaponDamage(),
+									ActionEffects.loseTurn(),
+									ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Endurance, 5, TraitType.Speed))
+								]
+							})
+						]
 					},
 					{
 						id: 'ranger-action-4',
 						name: 'Barrage (area, low damage)',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.rangedWeapon()
+						],
+						parameters: [
+							ActionWeaponParameters.ranged(),
+							ActionTargetParameters.weaponArea(ActionTargetType.Enemies, Number.MAX_VALUE, 3)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: true,
+								skill: SkillType.Weapon,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealWeaponDamage(-2)
+								]
+							})
+						]
 					}
 				]
 			},
@@ -551,38 +972,74 @@ export class RoleData {
 					{
 						id: 'necromancer-action-1',
 						name: 'Transfer damage (self to enemy)',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.implement(),
+							ActionPrerequisites.damage()
+						],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+						],
+						effects: [
+							// TODO: Heal damage from self
+							ActionEffects.dealDamage(DamageType.Decay, 3)
+						]
 					},
 					{
 						id: 'necromancer-action-2',
 						name: 'Transfer wounds (self to enemy)',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.implement()
+						],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+						],
+						effects: [
+							// TODO: Heal wound from self
+							ActionEffects.inflictWounds(1)
+						]
 					},
 					{
 						id: 'necromancer-action-3',
 						name: 'Transfer damage (ally to enemy)',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.implement()
+						],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Allies, 1, 5)
+						],
+						effects: [
+							ActionEffects.healDamage(3)
+							// TODO: Inflict damage on nearby enemy
+						]
 					},
 					{
 						id: 'necromancer-action-4',
 						name: 'Transfer wounds (ally to enemy)',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.implement()
+						],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Allies, 1, 5)
+						],
+						effects: [
+							ActionEffects.healWounds(1)
+							// TODO: Inflict wound on nearby enemy
+						]
+					},
+					{
+						id: 'necromancer-action-5',
+						name: 'Strength from pain',
+						prerequisites: [
+							ActionPrerequisites.implement()
+						],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Allies, 1, 5)
+						],
+						effects: [
+							ActionEffects.healDamage(3),
+							ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Resolve, 3, TraitType.Endurance)),
+							ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Resolve, 3, TraitType.Resolve))
+						]
 					}
 				]
 			},
@@ -609,47 +1066,102 @@ export class RoleData {
 					{
 						id: 'soldier-action-1',
 						name: 'Charge attack',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.meleeWeapon()
+						],
+						parameters: [
+							ActionWeaponParameters.melee(),
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+						],
+						effects: [
+							// TODO: Move adjacent to selected target
+							ActionEffects.attack({
+								weapon: true,
+								skill: SkillType.Weapon,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealWeaponDamage()
+								]
+							})
+						]
 					},
 					{
 						id: 'soldier-action-2',
 						name: 'Precise attack',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.meleeWeapon()
+						],
+						parameters: [
+							ActionWeaponParameters.melee(),
+							ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: true,
+								skill: SkillType.Weapon,
+								trait: TraitType.Speed,
+								skillBonus: 2,
+								hit: [
+									ActionEffects.dealWeaponDamage()
+								]
+							})
+						]
 					},
 					{
 						id: 'soldier-action-3',
 						name: 'Disarming attack',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.meleeWeapon()
+						],
+						parameters: [
+							ActionWeaponParameters.melee(),
+							ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: true,
+								skill: SkillType.Weapon,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									// TODO: Remove selected target's weapon
+								]
+							})
+						]
 					},
 					{
 						id: 'soldier-action-4',
 						name: 'Parrying stance',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.self()
+						],
+						effects: [
+							ActionEffects.addCondition(ConditionLogic.createDamageResistanceCondition(TraitType.Endurance, 5, DamageType.All))
+						]
 					},
 					{
 						id: 'soldier-action-5',
 						name: 'Shield bash (push)',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.shield()
+						],
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Weapon,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Impact, 3)
+									// TODO: Push selected target away
+								]
+							})
+						]
 					}
 				]
 			},
@@ -677,57 +1189,82 @@ export class RoleData {
 				actions: [
 					{
 						id: 'sorcerer-action-1',
-						name: 'Lightning bolt (single target, damage and stuns)',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						name: 'Lightning bolt',
+						prerequisites: [
+							ActionPrerequisites.implement()
+						],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 10)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Spellcasting,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Electricity, 3),
+									ActionEffects.loseTurn()
+								]
+							})
+						]
 					},
 					{
 						id: 'sorcerer-action-2',
 						name: 'Fireball (area, ongoing fire damage)',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.implement()
+						],
+						parameters: [
+							ActionTargetParameters.area(ActionTargetType.Combatants, Number.MAX_VALUE, 3, 10)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Spellcasting,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Fire, 3),
+									ActionEffects.addCondition(ConditionLogic.createAutoDamageCondition(TraitType.Endurance, 5, DamageType.Fire))
+								]
+							})
+						]
 					},
 					{
 						id: 'sorcerer-action-3',
-						name: 'Ice storm (area, damage and reduced speed)',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						name: 'Ice storm',
+						prerequisites: [
+							ActionPrerequisites.implement()
+						],
+						parameters: [
+							ActionTargetParameters.area(ActionTargetType.Combatants, Number.MAX_VALUE, 3, 10)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Spellcasting,
+								trait: TraitType.Endurance,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Cold, 3),
+									ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Endurance, 5, TraitType.Speed))
+								]
+							})
+						]
 					},
 					{
 						id: 'sorcerer-action-4',
-						name: 'Elemental resistance: fire',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
-					},
-					{
-						id: 'sorcerer-action-5',
-						name: 'Elemental resistance: cold',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
-					},
-					{
-						id: 'sorcerer-action-6',
-						name: 'Elemental resistance: electricity',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						name: 'Elemental resistance: fire / ice / electricity',
+						prerequisites: [
+							ActionPrerequisites.implement()
+						],
+						parameters: [
+							ActionTargetParameters.self()
+						],
+						effects: [
+							ActionEffects.addCondition(ConditionLogic.createDamageCategoryResistanceCondition(TraitType.Resolve, 5, DamageCategoryType.Energy))
+						]
 					}
 				]
 			},
@@ -753,48 +1290,108 @@ export class RoleData {
 				actions: [
 					{
 						id: 'warmage-action-1',
-						name: 'Flaming blade (ongoing fire)',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						name: 'Flaming blade',
+						prerequisites: [
+							ActionPrerequisites.meleeWeapon()
+						],
+						parameters: [
+							ActionWeaponParameters.melee(),
+							ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: true,
+								skill: SkillType.Weapon,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Fire, 3),
+									ActionEffects.addCondition(ConditionLogic.createAutoDamageCondition(TraitType.Endurance, 5, DamageType.Fire))
+								]
+							})
+						]
 					},
 					{
 						id: 'warmage-action-2',
-						name: 'Frost blade (slows)',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						name: 'Frost blade',
+						prerequisites: [
+							ActionPrerequisites.meleeWeapon()
+						],
+						parameters: [
+							ActionWeaponParameters.melee(),
+							ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: true,
+								skill: SkillType.Weapon,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Cold, 3),
+									ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Endurance, 5, TraitType.Speed))
+								]
+							})
+						]
 					},
 					{
 						id: 'warmage-action-3',
-						name: 'Shocking blade (stuns)',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						name: 'Shocking blade',
+						prerequisites: [
+							ActionPrerequisites.meleeWeapon()
+						],
+						parameters: [
+							ActionWeaponParameters.melee(),
+							ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: true,
+								skill: SkillType.Weapon,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Electricity, 3),
+									ActionEffects.loseTurn()
+								]
+							})
+						]
 					},
 					{
 						id: 'warmage-action-4',
 						name: 'Armor enhancement',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.armor()
+						],
+						parameters: [
+							ActionTargetParameters.self()
+						],
+						effects: [
+							ActionEffects.addCondition(ConditionLogic.createDamageResistanceCondition(TraitType.Resolve, 8, DamageType.All))
+						]
 					},
 					{
 						id: 'warmage-action-5',
-						name: 'Arcane Whip (attack at range)',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						name: 'Arcane whip',
+						prerequisites: [
+							ActionPrerequisites.meleeWeapon()
+						],
+						parameters: [
+							ActionWeaponParameters.melee(),
+							ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 2)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: true,
+								skill: SkillType.Weapon,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealWeaponDamage()
+									// TODO: move selected target adjacent to me
+								]
+							})
+						]
 					}
 				]
 			}

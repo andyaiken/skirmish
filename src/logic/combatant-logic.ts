@@ -408,9 +408,7 @@ export class CombatantLogic {
 				if (original) {
 					original.rank += 1;
 				} else {
-					const aura = Factory.createCondition();
-					aura.type = f.aura;
-					aura.rank = f.rank;
+					const aura = Factory.createCondition(f.aura, TraitType.None, f.rank);
 					aura.details.trait = f.trait;
 					aura.details.skill = f.skill;
 					aura.details.skillCategory = f.skillCategory;

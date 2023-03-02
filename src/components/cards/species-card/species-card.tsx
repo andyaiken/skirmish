@@ -1,6 +1,7 @@
 import { Component } from 'react';
 
-import { GameLogic } from '../../../logic/game-logic';
+import { ActionLogic } from '../../../logic/action-logic';
+import { FeatureLogic } from '../../../logic/feature-logic';
 
 import type { SpeciesModel } from '../../../models/species';
 
@@ -19,7 +20,7 @@ export class SpeciesCard extends Component<Props> {
 			features = (
 				<div>
 					<Text type={TextType.MinorHeading}>Features</Text>
-					{this.props.species.features.map(f => <Text key={f.id} type={TextType.ListItem}>{GameLogic.getFeatureDescription(f)}</Text>)}
+					{this.props.species.features.map(f => <Text key={f.id} type={TextType.ListItem}>{FeatureLogic.getFeatureDescription(f)}</Text>)}
 				</div>
 			);
 		}
@@ -29,7 +30,7 @@ export class SpeciesCard extends Component<Props> {
 			actions = (
 				<div>
 					<Text type={TextType.MinorHeading}>Actions</Text>
-					{this.props.species.actions.map(a => <Text key={a.id} type={TextType.ListItem}>{GameLogic.getActionDescription(a)}</Text>)}
+					{this.props.species.actions.map(a => <Text key={a.id} type={TextType.ListItem}>{ActionLogic.getActionDescription(a)}</Text>)}
 				</div>
 			);
 		}

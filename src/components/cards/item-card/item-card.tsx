@@ -2,7 +2,8 @@ import { Component } from 'react';
 
 import { ItemProficiencyType } from '../../../enums/item-proficiency-type';
 
-import { GameLogic } from '../../../logic/game-logic';
+import { ActionLogic } from '../../../logic/action-logic';
+import { FeatureLogic } from '../../../logic/feature-logic';
 
 import type { ItemModel } from '../../../models/item';
 
@@ -29,7 +30,7 @@ export class ItemCard extends Component<Props> {
 					{this.props.item.weapon ?<StatValue label='Damage' value={`${this.props.item.weapon.damage.rank} (${this.props.item.weapon.damage.type})`}/> : null}
 					{this.props.item.weapon && (this.props.item.weapon.range > 0) ? <StatValue label='Range' value={this.props.item.weapon.range}/> : null}
 					{this.props.item.weapon && (this.props.item.weapon.unreliable > 0) ? <StatValue label='Unreliable' value={this.props.item.weapon.unreliable}/> : null}
-					{this.props.item.features.map(f => <Text key={f.id} type={TextType.ListItem}>{GameLogic.getFeatureDescription(f)}</Text>)}
+					{this.props.item.features.map(f => <Text key={f.id} type={TextType.ListItem}>{FeatureLogic.getFeatureDescription(f)}</Text>)}
 				</div>
 			);
 		}
@@ -39,7 +40,7 @@ export class ItemCard extends Component<Props> {
 			actions = (
 				<div>
 					<Text type={TextType.MinorHeading}>Actions</Text>
-					{this.props.item.actions.map(a => <Text key={a.id} type={TextType.ListItem}>{GameLogic.getActionDescription(a)}</Text>)}
+					{this.props.item.actions.map(a => <Text key={a.id} type={TextType.ListItem}>{ActionLogic.getActionDescription(a)}</Text>)}
 				</div>
 			);
 		}

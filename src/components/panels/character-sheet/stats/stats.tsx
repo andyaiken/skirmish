@@ -5,14 +5,14 @@ import { SkillType } from '../../../../enums/skill-type';
 import { TraitType } from '../../../../enums/trait-type';
 
 import { CombatantLogic } from '../../../../logic/combatant-logic';
+import { ConditionLogic } from '../../../../logic/condition-logic';
 import { EncounterLogic } from '../../../../logic/encounter-logic';
-import { GameLogic } from '../../../../logic/game-logic';
 
 import type { CombatantModel } from '../../../../models/combatant';
 import type { ConditionModel } from '../../../../models/condition';
 import type { EncounterModel } from '../../../../models/encounter';
 
-import { Box, StatValue, Tag, Text } from '../../../controls';
+import { Box, IconType, IconValue, StatValue, Tag, Text } from '../../../controls';
 import { CombatStatsPanel } from '../../combat-stats/combat-stats-panel';
 
 import './stats.scss';
@@ -69,7 +69,7 @@ export class Stats extends Component<Props> {
 		if (auras.length > 0) {
 			auraSection = (
 				<div>
-					{auras.map(a => (<StatValue key={a.id} label={GameLogic.getConditionDescription(a)} value={a.rank} />))}
+					{auras.map(a => (<StatValue key={a.id} label={ConditionLogic.getConditionDescription(a)} value={a.rank} />))}
 				</div>
 			);
 		} else {
@@ -101,8 +101,8 @@ export class Stats extends Component<Props> {
 						{auraSection}
 					</Box>
 					<Box label='XP'>
-						<StatValue label='Earned' value={this.props.hero.xp} />
-						<StatValue label={`Required for level ${this.props.hero.level + 1}`} value={this.props.hero.level} />
+						<StatValue label='Earned' value={<IconValue type={IconType.XP} value={this.props.hero.xp} />} />
+						<StatValue label={`Required for level ${this.props.hero.level + 1}`} value={<IconValue type={IconType.XP} value={this.props.hero.level} />} />
 					</Box>
 				</div>
 				<div className='column'>

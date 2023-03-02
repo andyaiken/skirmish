@@ -15,9 +15,9 @@ import { Collections } from '../utils/collections';
 import { Random } from '../utils/random';
 
 import { CombatantLogic } from './combatant-logic';
+import { ConditionLogic } from './condition-logic';
 import { EncounterMapLogic } from './encounter-map-logic';
 import { Factory } from './factory';
-import { GameLogic } from './game-logic';
 
 export class EncounterLogic {
 	static getCombatantSquares = (encounter: EncounterModel, combatant: CombatantModel) => {
@@ -69,25 +69,13 @@ export class EncounterLogic {
 		return occupied.find(s => (s.x === square.x) && (s.y === square.y)) === undefined;
 	};
 
-	static setActionData = <T>(encounter: EncounterModel, key: string, value: T) => {
-		encounter.actionData[key] = value;
-	};
-
-	static getActionData = <T>(encounter: EncounterModel, key: string): T => {
-		return encounter.actionData[key] as T;
-	};
-
 	static rollInitiative = (encounter: EncounterModel) => {
 		encounter.round += 1;
 
 		encounter.combatants.forEach(c => {
 			c.combat.initiative = Number.MIN_VALUE;
 
-			const conditions = ([] as ConditionModel[])
-				.concat(c.combat.conditions)
-				.concat(EncounterLogic.getAuraConditions(encounter, c));
-
-			const speed = CombatantLogic.getTraitValue(c, conditions, TraitType.Speed);
+			const speed = EncounterLogic.getTraitRank(encounter, c, TraitType.Speed);
 			c.combat.initiative = Random.dice(speed);
 		});
 
@@ -97,14 +85,8 @@ export class EncounterLogic {
 
 			if (result === 0) {
 				// Sort by Speed
-				const conditionsA = ([] as ConditionModel[])
-					.concat(a.combat.conditions)
-					.concat(EncounterLogic.getAuraConditions(encounter, a));
-				const conditionsB = ([] as ConditionModel[])
-					.concat(b.combat.conditions)
-					.concat(EncounterLogic.getAuraConditions(encounter, b));
-				const speedA = CombatantLogic.getTraitValue(a, conditionsA, TraitType.Speed);
-				const speedB = CombatantLogic.getTraitValue(b, conditionsB, TraitType.Speed);
+				const speedA = EncounterLogic.getTraitRank(encounter, a, TraitType.Speed);
+				const speedB = EncounterLogic.getTraitRank(encounter, b, TraitType.Speed);
 				result = speedB - speedA;
 			}
 
@@ -169,14 +151,12 @@ export class EncounterLogic {
 					combatant.combat.movement = Math.max(0, combatant.combat.movement - condition.rank);
 				});
 
-			const deck = CombatantLogic.getActionDeck(combatant).filter(action => action.prerequisites.every(p => p.satisfied(encounter, combatant, action)));
+			const deck = CombatantLogic.getActionDeck(combatant).filter(action => action.prerequisites.every(p => p.isSatisfied(encounter)));
 			combatant.combat.actions = Collections.shuffle(deck).splice(0, 3);
 		}
 	};
 
 	static endOfTurn = (encounter: EncounterModel, combatant: CombatantModel) => {
-		encounter.actionData = {};
-
 		combatant.combat.current = false;
 		combatant.combat.initiative = Number.MIN_VALUE;
 		combatant.combat.senses = 0;
@@ -187,7 +167,7 @@ export class EncounterLogic {
 			.concat(EncounterLogic.getAuraConditions(encounter, combatant));
 
 		combatant.combat.conditions.forEach(condition => {
-			if (GameLogic.getConditionIsBeneficial(condition)) {
+			if (ConditionLogic.getConditionIsBeneficial(condition)) {
 				condition.rank -= 1;
 			} else {
 				const trait = CombatantLogic.getTraitValue(combatant, conditions, condition.trait);
@@ -321,13 +301,9 @@ export class EncounterLogic {
 	};
 
 	static healWounds = (encounter: EncounterModel, combatant: CombatantModel, value: number) => {
-		const conditions = ([] as ConditionModel[])
-			.concat(combatant.combat.conditions)
-			.concat(EncounterLogic.getAuraConditions(encounter, combatant));
-
 		combatant.combat.wounds = Math.max(0, combatant.combat.wounds - value);
 
-		const resolve = CombatantLogic.getTraitValue(combatant, conditions, TraitType.Resolve);
+		const resolve = EncounterLogic.getTraitRank(encounter, combatant, TraitType.Resolve);
 		if ((combatant.combat.wounds < resolve) && (combatant.combat.state === CombatantState.Unconscious)) {
 			combatant.combat.state = CombatantState.Prone;
 		}
@@ -340,35 +316,34 @@ export class EncounterLogic {
 	};
 
 	static damage = (encounter: EncounterModel, combatant: CombatantModel, value: number, type: DamageType) => {
-		const conditions = ([] as ConditionModel[])
-			.concat(combatant.combat.conditions)
-			.concat(EncounterLogic.getAuraConditions(encounter, combatant));
-
-		const resistance = CombatantLogic.getDamageResistanceValue(combatant, conditions, type);
+		const resistance = EncounterLogic.getDamageResistance(encounter, combatant, type);
 		const damage = value - resistance;
 		if (damage > 0) {
 			combatant.combat.damage += damage;
 
-			const endurance = CombatantLogic.getTraitValue(combatant, conditions, TraitType.Endurance);
-			const resolve = CombatantLogic.getTraitValue(combatant, conditions, TraitType.Resolve);
-
+			const endurance = EncounterLogic.getTraitRank(encounter, combatant, TraitType.Endurance);
 			if (Random.dice(endurance) < combatant.combat.damage) {
-				combatant.combat.damage = 0;
-				combatant.combat.wounds += 1;
-
-				if (combatant.combat.wounds === resolve) {
-					combatant.combat.state = CombatantState.Unconscious;
-				}
-				if (combatant.combat.wounds > resolve) {
-					combatant.combat.state = CombatantState.Dead;
-
-					const loot = Factory.createLootPile();
-					loot.items.push(...combatant.items, ...combatant.carried);
-					loot.position.x = combatant.combat.position.x;
-					loot.position.y = combatant.combat.position.y;
-					encounter.loot.push(loot);
-				}
+				EncounterLogic.wound(encounter, combatant, 1);
 			}
+		}
+	};
+
+	static wound = (encounter: EncounterModel, combatant: CombatantModel, value: number) => {
+		combatant.combat.damage = 0;
+		combatant.combat.wounds += 1;
+
+		const resolve = EncounterLogic.getTraitRank(encounter, combatant, TraitType.Resolve);
+		if (combatant.combat.wounds === resolve) {
+			combatant.combat.state = CombatantState.Unconscious;
+		}
+		if (combatant.combat.wounds > resolve) {
+			combatant.combat.state = CombatantState.Dead;
+
+			const loot = Factory.createLootPile();
+			loot.items.push(...combatant.items, ...combatant.carried);
+			loot.position.x = combatant.combat.position.x;
+			loot.position.y = combatant.combat.position.y;
+			encounter.loot.push(loot);
 		}
 	};
 
@@ -386,22 +361,14 @@ export class EncounterLogic {
 	};
 
 	static scan = (encounter: EncounterModel, combatant: CombatantModel) => {
-		const conditions = ([] as ConditionModel[])
-			.concat(combatant.combat.conditions)
-			.concat(EncounterLogic.getAuraConditions(encounter, combatant));
-
-		const perception = CombatantLogic.getSkillValue(combatant, conditions, SkillType.Perception);
+		const perception = EncounterLogic.getSkillRank(encounter, combatant, SkillType.Perception);
 
 		combatant.combat.movement -= 4;
 		combatant.combat.senses = Random.dice(perception);
 	};
 
 	static hide = (encounter: EncounterModel, combatant: CombatantModel) => {
-		const conditions = ([] as ConditionModel[])
-			.concat(combatant.combat.conditions)
-			.concat(EncounterLogic.getAuraConditions(encounter, combatant));
-
-		const stealth = CombatantLogic.getSkillValue(combatant, conditions, SkillType.Stealth);
+		const stealth = EncounterLogic.getSkillRank(encounter, combatant, SkillType.Stealth);
 
 		combatant.combat.movement -= 4;
 		combatant.combat.hidden = Random.dice(stealth);
@@ -439,7 +406,7 @@ export class EncounterLogic {
 			.filter(c => c.type === combatant.type)
 			.filter(c => squares.some(sq => EncounterLogic.getCombatantAuraSquares(encounter, c).find(s => (s.x === sq.x) && (s.y === sq.y))))
 			.flatMap(c => CombatantLogic.getAuras(EncounterLogic.getCombatant(encounter, c.id) as CombatantModel))
-			.filter(aura => GameLogic.getConditionIsBeneficial(aura))
+			.filter(aura => ConditionLogic.getConditionIsBeneficial(aura))
 			.forEach(aura => auras.push(aura));
 
 		// Get all non-beneficial aura conditions from adjacent enemies
@@ -448,7 +415,7 @@ export class EncounterLogic {
 			.filter(c => c.type !== combatant.type)
 			.filter(c => squares.some(sq => EncounterLogic.getCombatantAuraSquares(encounter, c).find(s => (s.x === sq.x) && (s.y === sq.y))))
 			.flatMap(c => CombatantLogic.getAuras(EncounterLogic.getCombatant(encounter, c.id) as CombatantModel))
-			.filter(aura => !GameLogic.getConditionIsBeneficial(aura))
+			.filter(aura => !ConditionLogic.getConditionIsBeneficial(aura))
 			.forEach(aura => auras.push(aura));
 
 		return auras;
@@ -480,5 +447,33 @@ export class EncounterLogic {
 		return EncounterLogic.getAllHeroesInEncounter(encounter).filter(h => {
 			return (h.combat.state === CombatantState.Dead);
 		});
+	};
+
+	static getTraitRank = (encounter: EncounterModel, combatant: CombatantModel, trait: TraitType) => {
+		const conditions = ([] as ConditionModel[])
+			.concat(combatant.combat.conditions)
+			.concat(EncounterLogic.getAuraConditions(encounter, combatant));
+		return CombatantLogic.getTraitValue(combatant, conditions, trait);
+	};
+
+	static getSkillRank = (encounter: EncounterModel, combatant: CombatantModel, skill: SkillType) => {
+		const conditions = ([] as ConditionModel[])
+			.concat(combatant.combat.conditions)
+			.concat(EncounterLogic.getAuraConditions(encounter, combatant));
+		return CombatantLogic.getSkillValue(combatant, conditions, skill);
+	};
+
+	static getDamageBonus = (encounter: EncounterModel, combatant: CombatantModel, damage: DamageType) => {
+		const conditions = ([] as ConditionModel[])
+			.concat(combatant.combat.conditions)
+			.concat(EncounterLogic.getAuraConditions(encounter, combatant));
+		return CombatantLogic.getDamageBonusValue(combatant, conditions, damage);
+	};
+
+	static getDamageResistance = (encounter: EncounterModel, combatant: CombatantModel, damage: DamageType) => {
+		const conditions = ([] as ConditionModel[])
+			.concat(combatant.combat.conditions)
+			.concat(EncounterLogic.getAuraConditions(encounter, combatant));
+		return CombatantLogic.getDamageResistanceValue(combatant, conditions, damage);
 	};
 }

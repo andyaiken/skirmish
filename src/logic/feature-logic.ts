@@ -12,6 +12,7 @@ import type { FeatureModel } from '../models/feature';
 import { Random } from '../utils/random';
 import { Utils } from '../utils/utils';
 
+import { ConditionLogic } from './condition-logic';
 import { Factory } from './factory';
 import { GameLogic } from './game-logic';
 
@@ -207,6 +208,12 @@ export class FeatureLogic {
 		}
 	};
 
+	static getFeatureDescription = (feature: FeatureModel) => {
+		const title = FeatureLogic.getFeatureTitle(feature).toString();
+		const desc = FeatureLogic.getFeatureInformation(feature).toString();
+		return `${title}: ${desc}`;
+	};
+
 	static getFeatureTitle = (feature: FeatureModel) => {
 		switch (feature.type) {
 			case FeatureType.Trait:
@@ -246,16 +253,13 @@ export class FeatureLogic {
 			case FeatureType.DamageCategoryResist:
 				return `All ${feature.damageCategory} types ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
 			case FeatureType.Aura: {
-				const aura = Factory.createCondition();
-				aura.type = feature.aura;
-				aura.trait = TraitType.None;
-				aura.rank = feature.rank;
+				const aura = Factory.createCondition(feature.aura, TraitType.None, feature.rank);
 				aura.details.trait = feature.trait;
 				aura.details.skill = feature.skill;
 				aura.details.skillCategory = feature.skillCategory;
 				aura.details.damage = feature.damage;
 				aura.details.damageCategory = feature.damageCategory;
-				return `${GameLogic.getConditionDescription(aura)} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
+				return `${ConditionLogic.getConditionDescription(aura)} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
 			}
 		}
 	};

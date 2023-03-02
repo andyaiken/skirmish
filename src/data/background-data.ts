@@ -1,3 +1,4 @@
+import { ActionTargetType } from '../enums/action-target-type';
 import { ConditionType } from '../enums/condition-type';
 import { DamageCategoryType } from '../enums/damage-category-type';
 import { DamageType } from '../enums/damage-type';
@@ -6,7 +7,8 @@ import { SkillCategoryType } from '../enums/skill-category-type';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
 
-import { ActionLogic } from '../logic/action-logic';
+import { ActionEffects, ActionPrerequisites, ActionTargetParameters } from '../logic/action-logic';
+import { ConditionLogic } from '../logic/condition-logic';
 import { FeatureLogic } from '../logic/feature-logic';
 
 import type { BackgroundModel } from '../models/background';
@@ -25,19 +27,23 @@ export class BackgroundData {
 						id: 'acrobat-action-1',
 						name: 'Move through occupied spaces',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.self()
+						],
+						effects: [
+							// TODO: Move through occupied spaces
+						]
 					},
 					{
 						id: 'acrobat-action-2',
-						name: 'Burst of speed (roll speed again and add)',
+						name: 'Burst of Speed',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.self()
+						],
+						effects: [
+							ActionEffects.grantMovement()
+						]
 					}
 				]
 			},
@@ -53,19 +59,23 @@ export class BackgroundData {
 						id: 'artificer-action-1',
 						name: 'Infuse item',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Allies, 1)
+						],
+						effects: [
+							// TODO: Infuse item with magic
+						]
 					},
 					{
 						id: 'artificer-action-2',
 						name: 'Drain item',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+						],
+						effects: [
+							// TODO: Drain item of magic
+						]
 					}
 				]
 			},
@@ -79,21 +89,36 @@ export class BackgroundData {
 				actions: [
 					{
 						id: 'bard-action-1',
-						name: 'Song of health (AOE heal)',
+						name: 'Song of Health',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 10)
+						],
+						effects: [
+							ActionEffects.healDamage(3)
+						]
 					},
 					{
-						id: 'bard-action-1',
-						name: 'Song of inspiration (AOE buff)',
+						id: 'bard-action-2',
+						name: 'Song of Inspiration',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 10)
+						],
+						effects: [
+							ActionEffects.addCondition(ConditionLogic.createSkillCategoryBonusCondition(TraitType.Resolve, 5, SkillCategoryType.Physical))
+						]
+					},
+					{
+						id: 'bard-action-3',
+						name: 'Song of Courage',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 10)
+						],
+						effects: [
+							ActionEffects.addCondition(ConditionLogic.createSkillCategoryBonusCondition(TraitType.Resolve, 5, SkillCategoryType.Mental))
+						]
 					}
 				]
 			},
@@ -108,30 +133,36 @@ export class BackgroundData {
 				actions: [
 					{
 						id: 'commander-action-1',
-						name: 'Ally makes attack',
+						name: 'Command attack',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Allies, 1, 10)
+						],
+						effects: [
+							// TODO: Selected target makes attack
+						]
 					},
 					{
-						id: 'commander-action-1',
-						name: 'Ally moves',
+						id: 'commander-action-2',
+						name: 'Command move',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Allies, 1, 10)
+						],
+						effects: [
+							// TODO: Selected target moves
+						]
 					},
 					{
-						id: 'commander-action-1',
-						name: 'Reveal hidden enemies',
+						id: 'commander-action-3',
+						name: 'Battlefield instinct',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 10)
+						],
+						effects: [
+							// TODO: Reveal hidden enemies
+						]
 					}
 				]
 			},
@@ -146,12 +177,25 @@ export class BackgroundData {
 				actions: [
 					{
 						id: 'mountebank-action-1',
-						name: 'Buff ally',
+						name: 'Jinx',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+						],
+						effects: [
+							ActionEffects.addCondition(ConditionLogic.createSkillPenaltyCondition(TraitType.Resolve, 5, SkillType.All))
+						]
+					},
+					{
+						id: 'mountebank-action-2',
+						name: 'Expose weakness',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+						],
+						effects: [
+							ActionEffects.addCondition(ConditionLogic.createDamageVulnerabilityCondition(TraitType.Resolve, 5, DamageType.All))
+						]
 					}
 				]
 			},
@@ -167,39 +211,56 @@ export class BackgroundData {
 				actions: [
 					{
 						id: 'mystic-action-1',
-						name: 'Confusion (target makes attack)',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						name: 'Confusion',
+						prerequisites: [
+							ActionPrerequisites.implement()
+						],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+						],
+						effects: [
+							// TODO: Selected target makes attack
+						]
 					},
 					{
-						id: 'mystic-action-1',
-						name: 'Stun (target loses action)',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						id: 'mystic-action-2',
+						name: 'Stun',
+						prerequisites: [
+							ActionPrerequisites.implement()
+						],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+						],
+						effects: [
+							ActionEffects.loseTurn()
+						]
 					},
 					{
-						id: 'mystic-action-1',
+						id: 'mystic-action-3',
 						name: 'Transfer a condition',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.implement(),
+							ActionPrerequisites.condition(TraitType.Any)
+						],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+						],
+						effects: [
+							// TODO: Transfer selected condition to selected target
+						]
 					},
 					{
-						id: 'mystic-action-1',
+						id: 'mystic-action-4',
 						name: 'Invert a condition',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.implement()
+						],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Combatants, 1, 5)
+						],
+						effects: [
+							// TODO: Invert selected condition
+						]
 					}
 				]
 			},
@@ -209,36 +270,50 @@ export class BackgroundData {
 				features: [
 					FeatureLogic.createAuraFeature('noble-feature-1', ConditionType.MovementBonus, 1),
 					FeatureLogic.createAuraTraitFeature('noble-feature-2', ConditionType.TraitBonus, TraitType.Endurance, 1),
-					FeatureLogic.createAuraTraitFeature('noble-feature-2', ConditionType.TraitBonus, TraitType.Resolve, 1),
-					FeatureLogic.createAuraTraitFeature('noble-feature-3', ConditionType.TraitBonus, TraitType.Speed, 1)
+					FeatureLogic.createAuraTraitFeature('noble-feature-3', ConditionType.TraitBonus, TraitType.Resolve, 1),
+					FeatureLogic.createAuraTraitFeature('noble-feature-4', ConditionType.TraitBonus, TraitType.Speed, 1)
 				],
 				actions: [
 					{
 						id: 'noble-action-1',
-						name: 'Buff ally',
+						name: 'Morale',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 5)
+						],
+						effects: [
+							// TODO: Add buff condition
+						]
 					},
 					{
 						id: 'noble-action-2',
-						name: 'Debuff enemy',
+						name: 'Dishearten',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+						],
+						effects: [
+							// TODO: Add debuff condition
+						]
 					},
 					{
 						id: 'noble-action-3',
 						name: 'Taunt',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 5)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Perception,
+								trait: TraitType.Resolve,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.loseTurn()
+								]
+							})
+						]
 					}
 				]
 			},
@@ -251,30 +326,36 @@ export class BackgroundData {
 				actions: [
 					{
 						id: 'physician-action-1',
-						name: 'Remove condition (ally)',
+						name: 'Remove affliction',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Allies, 1)
+						],
+						effects: [
+							ActionEffects.removeCondition(TraitType.Any)
+						]
 					},
 					{
 						id: 'physician-action-2',
-						name: 'Healing (damage)',
+						name: 'First aid',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Allies, 1)
+						],
+						effects: [
+							ActionEffects.healDamage(3)
+						]
 					},
 					{
 						id: 'physician-action-3',
-						name: 'Healing (wounds)',
+						name: 'Cure wounds',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Allies, 1)
+						],
+						effects: [
+							ActionEffects.healWounds(1)
+						]
 					}
 				]
 			},
@@ -293,30 +374,38 @@ export class BackgroundData {
 				actions: [
 					{
 						id: 'reaver-action-1',
-						name: 'Frenzy (adds to damage)',
+						name: 'Frenzy',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.self()
+						],
+						effects: [
+							ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Resolve, 5, DamageCategoryType.Physical))
+						]
 					},
 					{
 						id: 'reaver-action-2',
-						name: 'Speed boost',
+						name: 'Adrenaline',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.self()
+						],
+						effects: [
+							ActionEffects.addCondition(ConditionLogic.createMovementBonusCondition(TraitType.Endurance, 5)),
+							ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Endurance, 3, TraitType.Speed))
+						]
 					},
 					{
 						id: 'reaver-action-3',
-						name: 'Endurance boost',
+						name: 'Fortitude',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.self()
+						],
+						effects: [
+							ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Endurance, 3, TraitType.Endurance)),
+							ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Endurance, 3, TraitType.Resolve))
+						]
 					}
 				]
 			},
@@ -334,28 +423,35 @@ export class BackgroundData {
 						id: 'sentinel-action-1',
 						name: 'Mark enemy',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+						],
+						effects: [
+							// TODO: Mark selected target
+						]
 					},
 					{
 						id: 'sentinel-action-2',
-						name: 'Interposing stance',
+						name: 'Imposing stance',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.self()
+						],
+						effects: [
+							ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Endurance, 3, TraitType.Endurance)),
+							ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Endurance, 3, TraitType.Resolve))
+						]
 					},
 					{
 						id: 'sentinel-action-3',
-						name: 'Pull enemy',
+						name: 'Keep close',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+						],
+						effects: [
+							// TODO: Move selected target adjacent
+						]
 					}
 				]
 			},
@@ -370,29 +466,15 @@ export class BackgroundData {
 					{
 						id: 'thief-action-1',
 						name: 'Steal item',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
-					},
-					{
-						id: 'thief-action-1',
-						name: 'Disable trap',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
-					},
-					{
-						id: 'thief-action-1',
-						name: 'Set trap',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.carryingCapacity()
+						],
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+						],
+						effects: [
+							// TODO: Take item from selected target
+						]
 					}
 				]
 			}

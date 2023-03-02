@@ -5,7 +5,7 @@ import { BoonType } from '../../../enums/boon-type';
 import type { BoonModel } from '../../../models/boon';
 import type { ItemModel } from '../../../models/item';
 
-import { StatValue, Text, TextType } from '../../controls';
+import { IconType, IconValue, StatValue, Text, TextType } from '../../controls';
 import { ItemCard } from '../item-card/item-card';
 
 import './boon-card.scss';
@@ -28,10 +28,14 @@ export class BoonCard extends Component<Props> {
 				break;
 			case BoonType.ExtraXP:
 				desc = 'Choose one of your heroes to gain bonus XP.';
-				extra = <StatValue orientation='vertical' label='XP' value={this.props.boon.data as number} />;
+				extra = <StatValue orientation='vertical' label='XP' value={<IconValue type={IconType.XP} value={this.props.boon.data as number} />} />;
 				break;
 			case BoonType.LevelUp:
 				desc = 'Choose one of your heroes to level up.';
+				break;
+			case BoonType.Money:
+				desc = 'Gain extra money.';
+				extra = <StatValue orientation='vertical' label='Money' value={<IconValue type={IconType.Money} value={this.props.boon.data as number} />} />;
 				break;
 		}
 

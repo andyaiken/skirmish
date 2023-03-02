@@ -1,3 +1,4 @@
+import { ActionTargetType } from '../enums/action-target-type';
 import { CombatantType } from '../enums/combatant-type';
 import { ConditionType } from '../enums/condition-type';
 import { DamageCategoryType } from '../enums/damage-category-type';
@@ -5,7 +6,8 @@ import { DamageType } from '../enums/damage-type';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
 
-import { ActionLogic } from '../logic/action-logic';
+import { ActionEffects, ActionPrerequisites, ActionTargetParameters, ActionWeaponParameters } from '../logic/action-logic';
+import { ConditionLogic } from '../logic/condition-logic';
 import { FeatureLogic } from '../logic/feature-logic';
 
 import type { SpeciesModel } from '../models/species';
@@ -27,12 +29,25 @@ export class SpeciesData {
 				actions: [
 					{
 						id: 'human-action-1',
-						name: 'Resilient (remove condition on self)',
+						name: 'Resilient',
+						prerequisites: [
+							ActionPrerequisites.condition(TraitType.Any)
+						],
+						parameters: [
+							ActionTargetParameters.self()
+						],
+						effects: [
+							ActionEffects.removeCondition(TraitType.Any)
+						]
+					},
+					{
+						id: 'human-action-2',
+						name: 'Resourceful',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [],
+						effects: [
+							// TODO: Draw action cards again
+						]
 					}
 				]
 			},
@@ -54,19 +69,33 @@ export class SpeciesData {
 						id: 'construct-action-1',
 						name: 'Knockdown attack',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Endurance,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.knockDown()
+								]
+							})
+						]
 					},
 					{
 						id: 'construct-action-2',
 						name: 'Repair (heal self damage)',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.damage()
+						],
+						parameters: [
+							ActionTargetParameters.self()
+						],
+						effects: [
+							ActionEffects.healDamage(1)
+						]
 					}
 				]
 			},
@@ -88,21 +117,33 @@ export class SpeciesData {
 				actions: [
 					{
 						id: 'deva-action-1',
-						name: 'Insight (see opponent stats)',
+						name: 'Insight',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+						],
+						effects: [
+							// TODO: See opponent stats
+						]
 					},
 					{
 						id: 'deva-action-2',
-						name: 'Divine light (spell vs resolve, stuns)',
+						name: 'Divine light',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 5)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Spellcasting,
+								trait: TraitType.Resolve,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.loseTurn()
+								]
+							})
+						]
 					}
 				]
 			},
@@ -124,20 +165,28 @@ export class SpeciesData {
 					{
 						id: 'dwarf-action-1',
 						name: 'Remove endurance condition on self',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.condition(TraitType.Endurance)
+						],
+						parameters: [
+							ActionTargetParameters.self()
+						],
+						effects: [
+							ActionEffects.removeCondition(TraitType.Endurance)
+						]
 					},
 					{
 						id: 'dwarf-action-2',
 						name: 'Remove resolve condition on self',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.condition(TraitType.Resolve)
+						],
+						parameters: [
+							ActionTargetParameters.self()
+						],
+						effects: [
+							ActionEffects.removeCondition(TraitType.Resolve)
+						]
 					}
 				]
 			},
@@ -158,21 +207,14 @@ export class SpeciesData {
 				actions: [
 					{
 						id: 'elf-action-1',
-						name: 'Detect hidden opponents',
+						name: 'Elfsight',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
-					},
-					{
-						id: 'elf-action-2',
-						name: 'Elven Step (teleport self)',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 10)
+						],
+						effects: [
+							// TODO: Reveal hidden
+						]
 					}
 				]
 			},
@@ -194,19 +236,20 @@ export class SpeciesData {
 						id: 'gnome-action-1',
 						name: 'Trip attack',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
-					},
-					{
-						id: 'gnome-action-2',
-						name: 'Disable trap',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Endurance,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.knockDown()
+								]
+							})
+						]
 					}
 				]
 			},
@@ -226,30 +269,53 @@ export class SpeciesData {
 				actions: [
 					{
 						id: 'minotaur-action-1',
-						name: 'Gore attack',
+						name: 'Gore',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Piercing, 3)
+								]
+							})
+						]
 					},
 					{
 						id: 'minotaur-action-2',
-						name: 'Charge attack',
+						name: 'Bull rush',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+						],
+						effects: [
+							// TODO: Move up to selected target
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Piercing, 2)
+								]
+							})
+						]
 					},
 					{
 						id: 'minotaur-action-3',
-						name: 'Intimidate',
+						name: 'Bellow',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 5)
+						],
+						effects: [
+							// TODO: Intimidate
+						]
 					}
 				]
 			},
@@ -269,30 +335,25 @@ export class SpeciesData {
 				actions: [
 					{
 						id: 'pixie-action-1',
-						name: 'Confusion (target makes attack)',
+						name: 'Confusion',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+						],
+						effects: [
+							// TODO: Target makes attack
+						]
 					},
 					{
 						id: 'pixie-action-2',
 						name: 'Teleport',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
-					},
-					{
-						id: 'pixie-action-3',
-						name: 'Teleport attack',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Squares, 1, 10)
+						],
+						effects: [
+							// TODO: Move to selected square
+						]
 					}
 				]
 			},
@@ -313,30 +374,47 @@ export class SpeciesData {
 				actions: [
 					{
 						id: 'reptilian-action-1',
-						name: 'Poison bite',
+						name: 'Venomous Bite',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Piercing, 1),
+									ActionEffects.dealDamage(DamageType.Poison, 2)
+								]
+							})
+						]
 					},
 					{
 						id: 'reptilian-action-2',
-						name: 'Fear snarl',
+						name: 'Snarl',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, Number.MAX_VALUE)
+						],
+						effects: [
+							// TODO: Intimidate
+						]
 					},
 					{
 						id: 'reptilian-action-3',
 						name: 'Regeneration',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.damage()
+						],
+						parameters: [
+							ActionTargetParameters.self()
+						],
+						effects: [
+							ActionEffects.healDamage(2)
+						]
 					}
 				]
 			},
@@ -359,29 +437,47 @@ export class SpeciesData {
 					{
 						id: 'shadowborn-action-1',
 						name: 'Transfer a condition',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.condition(TraitType.Any)
+						],
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+						],
+						effects: [
+							// TODO: Transfer a condition to the selected target
+						]
 					},
 					{
 						id: 'shadowborn-action-2',
 						name: 'Induce fear',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, Number.MAX_VALUE)
+						],
+						effects: [
+							// TODO: Intimidate
+						]
 					},
 					{
 						id: 'shadowborn-action-3',
 						name: 'Drain energy',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Spellcasting,
+								trait: TraitType.Resolve,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Resolve, 5)),
+									ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 2, TraitType.All)),
+									ActionEffects.addCondition(ConditionLogic.createSkillPenaltyCondition(TraitType.Resolve, 2, SkillType.All))
+								]
+							})
+						]
 					}
 				]
 			},
@@ -403,29 +499,55 @@ export class SpeciesData {
 					{
 						id: 'werewolf-action-1',
 						name: 'Regeneration',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.damage()
+						],
+						parameters: [
+							ActionTargetParameters.self()
+						],
+						effects: [
+							ActionEffects.healDamage(3)
+						]
 					},
 					{
 						id: 'werewolf-action-2',
-						name: 'Bite attack',
+						name: 'Bite',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Piercing, 3)
+								]
+							})
+						]
 					},
 					{
 						id: 'werewolf-action-3',
-						name: 'Claw attack',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						name: 'Rending Claws',
+						prerequisites: [
+							ActionPrerequisites.emptyHand()
+						],
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Edged, 3)
+								]
+							})
+						]
 					}
 				]
 			},
@@ -446,21 +568,16 @@ export class SpeciesData {
 				actions: [
 					{
 						id: 'orc-action-1',
-						name: 'Fury',
+						name: 'Bloodlust',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
-					},
-					{
-						id: 'orc-action-2',
-						name: 'Ignore damage',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.self()
+						],
+						effects: [
+							ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Endurance, 5, SkillType.Brawl)),
+							ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Endurance, 5, SkillType.Weapon)),
+							ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Endurance, 5, DamageCategoryType.Physical))
+						]
 					}
 				]
 			},
@@ -481,11 +598,24 @@ export class SpeciesData {
 					{
 						id: 'goblin-action-1',
 						name: 'Sneak attack',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.hidden()
+						],
+						parameters: [
+							ActionWeaponParameters.melee(),
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: true,
+								skill: SkillType.Weapon,
+								trait: TraitType.Speed,
+								skillBonus: 2,
+								hit: [
+									ActionEffects.dealWeaponDamage()
+								]
+							})
+						]
 					}
 				]
 			},
@@ -510,19 +640,34 @@ export class SpeciesData {
 						id: 'troll-action-1',
 						name: 'Slam',
 						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Endurance,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Impact, 2),
+									ActionEffects.knockDown()
+								]
+							})
+						]
 					},
 					{
 						id: 'troll-action-2',
 						name: 'Regeneration',
-						prerequisites: [],
-						target: ActionLogic.targetSelf(),
-						prologue: [],
-						attack: null,
-						epilogue: []
+						prerequisites: [
+							ActionPrerequisites.wound()
+						],
+						parameters: [
+							ActionTargetParameters.self()
+						],
+						effects: [
+							ActionEffects.healWounds(1)
+						]
 					}
 				]
 			}

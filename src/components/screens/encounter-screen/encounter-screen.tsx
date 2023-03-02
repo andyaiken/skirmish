@@ -21,6 +21,7 @@ interface Props {
 	encounter: EncounterModel;
 	game: GameModel;
 	developer: boolean;
+	rotateMap: (encounter: EncounterModel, dir: 'l' | 'r') => void;
 	rollInitiative: (encounter: EncounterModel) => void;
 	endTurn: (encounter: EncounterModel) => void;
 	move: (encounter: EncounterModel, combatant: CombatantModel, dir: string, cost: number) => void;
@@ -227,6 +228,10 @@ export class EncounterScreen extends Component<Props, State> {
 						onDetails={this.showDetails}
 					/>
 					<div className='map-controls'>
+						<div className='zoom'>
+							<button className='zoom-btn' onClick={() => this.props.rotateMap(this.props.encounter, 'l')}>L</button>
+							<button className='zoom-btn' onClick={() => this.props.rotateMap(this.props.encounter, 'r')}>R</button>
+						</div>
 						<div className='zoom'>
 							<button disabled={this.state.mapSquareSize <= 5} className='zoom-btn' onClick={() => this.nudgeMapSize(-5)}>-</button>
 							<button disabled={this.state.mapSquareSize >= 50} className='zoom-btn' onClick={() => this.nudgeMapSize(+5)}>+</button>

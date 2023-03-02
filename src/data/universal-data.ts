@@ -7,7 +7,7 @@ import { TraitType } from '../enums/trait-type';
 import type { ActionModel } from '../models/action';
 import type { FeatureModel } from '../models/feature';
 
-import { ActionLogic } from '../logic/action-logic';
+import { ActionEffects, ActionPrerequisites, ActionTargetParameters, ActionWeaponParameters } from '../logic/action-logic';
 import { FeatureLogic } from '../logic/feature-logic';
 
 export class UniversalData {
@@ -22,23 +22,69 @@ export class UniversalData {
 	static getUniversalActions = (): ActionModel[] => {
 		return [
 			{
-				id: 'universal-punch',
+				id: 'universal-1',
 				name: 'Unarmed Attack',
 				prerequisites: [
-					ActionLogic.prerequisiteEmptyHand()
+					ActionPrerequisites.emptyHand()
 				],
-				target: ActionLogic.targetAdjacent(ActionTargetType.Enemies, 1),
-				prologue: [
-					ActionLogic.effectSelectTargets()
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
 				],
-				attack: {
-					roll: ActionLogic.attack(SkillType.Brawl, TraitType.Speed),
-					hit: [
-						ActionLogic.effectDamage(DamageType.Impact, 1)
-					],
-					miss: []
-				},
-				epilogue: []
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Brawl,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Impact, 1)
+						]
+					})
+				]
+			},
+			{
+				id: 'universal-2',
+				name: 'Melee Weapon Attack',
+				prerequisites: [
+					ActionPrerequisites.meleeWeapon()
+				],
+				parameters: [
+					ActionWeaponParameters.melee(),
+					ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: true,
+						skill: SkillType.Weapon,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealWeaponDamage()
+						]
+					})
+				]
+			},
+			{
+				id: 'universal-3',
+				name: 'Ranged Weapon Attack',
+				prerequisites: [
+					ActionPrerequisites.rangedWeapon()
+				],
+				parameters: [
+					ActionWeaponParameters.ranged(),
+					ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: true,
+						skill: SkillType.Weapon,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealWeaponDamage()
+						]
+					})
+				]
 			}
 		];
 	};

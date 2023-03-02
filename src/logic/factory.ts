@@ -70,12 +70,12 @@ export class Factory {
 		};
 	};
 
-	static createCondition = (): ConditionModel => {
+	static createCondition = (type: ConditionType, trait: TraitType, rank: number): ConditionModel => {
 		return {
 			id: Utils.guid(),
-			type: ConditionType.None,
-			trait: TraitType.None,
-			rank: 1,
+			type: type,
+			trait: trait,
+			rank: rank,
 			details: {
 				trait: TraitType.None,
 				skill: SkillType.None,

@@ -85,7 +85,7 @@ export class Main extends Component<Props, State> {
 		this.state = {
 			screen: ScreenType.Landing,
 			game: game,
-			developer: false,
+			developer: (window.location.href.includes('localhost')),
 			dialog: null
 		};
 	}
@@ -98,12 +98,6 @@ export class Main extends Component<Props, State> {
 		this.setState({
 			screen: screen,
 			dialog: null
-		});
-	};
-
-	setDeveloper = (value: boolean) => {
-		this.setState({
-			developer: value
 		});
 	};
 
@@ -277,6 +271,48 @@ export class Main extends Component<Props, State> {
 	//#endregion
 
 	//#region Encounter page
+
+	rotateMap = (encounter: EncounterModel, dir: 'l' | 'r') => {
+		const move = (position: { x: number, y: number }, size: number): { x: number, y: number } => {
+			const result = {
+				x: position.x,
+				y: position.y
+			};
+
+			switch (dir) {
+				case 'l':
+					result.x = position.y;
+					result.y = -position.x - size;
+					break;
+				case 'r':
+					result.x = -position.y - size;
+					result.y = position.x;
+					break;
+			}
+
+			return result;
+		};
+
+		encounter.mapSquares.forEach(sq => {
+			const pos = move(sq, 1);
+			sq.x = pos.x;
+			sq.y = pos.y;
+		});
+		encounter.combatants.forEach(c => {
+			const pos = move(c.combat.position, c.size);
+			c.combat.position.x = pos.x;
+			c.combat.position.y = pos.y;
+		});
+		encounter.loot.forEach(lp => {
+			const pos = move(lp.position, 1);
+			lp.position.x = pos.x;
+			lp.position.y = pos.y;
+		});
+
+		this.setState({
+			game: this.state.game
+		});
+	};
 
 	rollInitiative = (encounter: EncounterModel) => {
 		EncounterLogic.rollInitiative(encounter);
@@ -591,7 +627,6 @@ export class Main extends Component<Props, State> {
 						startEncounter={this.startEncounter}
 						conquer={this.conquer}
 						endCampaign={this.endCampaign}
-						setDeveloper={this.setDeveloper}
 					/>
 				);
 			case 'encounter':
@@ -600,6 +635,7 @@ export class Main extends Component<Props, State> {
 						encounter={this.state.game?.encounter as EncounterModel}
 						game={this.state.game as GameModel}
 						developer={this.state.developer}
+						rotateMap={this.rotateMap}
 						rollInitiative={this.rollInitiative}
 						endTurn={this.endTurn}
 						move={this.move}

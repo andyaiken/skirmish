@@ -4,6 +4,7 @@ import { CombatantState } from '../../../../enums/combatant-state';
 import { CombatantType } from '../../../../enums/combatant-type';
 
 import { CombatantLogic } from '../../../../logic/combatant-logic';
+import { ConditionLogic } from '../../../../logic/condition-logic';
 import { EncounterLogic } from '../../../../logic/encounter-logic';
 import { EncounterMapLogic } from '../../../../logic/encounter-map-logic';
 import { GameLogic } from '../../../../logic/game-logic';
@@ -72,7 +73,7 @@ export class CombatantControls extends Component<Props, State> {
 				if (auras.length > 0) {
 					auraSection = (
 						<Box label='Affected by Auras'>
-							{auras.map(c => <StatValue key={c.id} label={GameLogic.getConditionDescription(c)} value={c.rank} />)}
+							{auras.map(c => <StatValue key={c.id} label={ConditionLogic.getConditionDescription(c)} value={c.rank} />)}
 						</Box>
 					);
 				}

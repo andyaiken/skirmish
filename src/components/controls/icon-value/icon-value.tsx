@@ -6,7 +6,8 @@ import './icon-value.scss';
 
 export enum IconType {
 	Movement = 'Movement',
-	Money = 'Money'
+	Money = 'Money',
+	XP = 'XP'
 }
 
 interface Props {
@@ -22,6 +23,9 @@ export class IconValue extends Component<Props> {
 				icon = '▶︎';
 				break;
 			case IconType.Money:
+				icon = '𑁍';
+				break;
+			case IconType.XP:
 				icon = '⬥';
 				break;
 			default:

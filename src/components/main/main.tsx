@@ -13,6 +13,7 @@ import { EncounterMapLogic } from '../../logic/encounter-map-logic';
 import { Factory } from '../../logic/factory';
 import { GameLogic } from '../../logic/game-logic';
 
+import type { ActionModel } from '../../models/action';
 import type { BoonModel } from '../../models/boon';
 import type { CombatantModel } from '../../models/combatant';
 import type { EncounterModel } from '../../models/encounter';
@@ -360,6 +361,22 @@ export class Main extends Component<Props, State> {
 		});
 	};
 
+	drawActions = (encounter: EncounterModel, combatant: CombatantModel) => {
+		EncounterLogic.drawActions(encounter, combatant);
+
+		this.setState({
+			game: this.state.game
+		});
+	};
+
+	selectAction = (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => {
+		EncounterLogic.selectAction(encounter, combatant, action);
+
+		this.setState({
+			game: this.state.game
+		});
+	};
+
 	endTurn = (encounter: EncounterModel) => {
 		const acting = EncounterLogic.getActiveCombatants(encounter);
 		const current = acting.length > 0 ? acting[0] : null;
@@ -642,6 +659,8 @@ export class Main extends Component<Props, State> {
 						standUp={this.standUp}
 						scan={this.scan}
 						hide={this.hide}
+						drawActions={this.drawActions}
+						selectAction={this.selectAction}
 						equipItem={this.equipItem}
 						unequipItem={this.unequipItem}
 						pickUpItem={this.pickUpItem}

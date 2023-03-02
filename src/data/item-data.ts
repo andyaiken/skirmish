@@ -32,8 +32,65 @@ export class ItemData {
 				actions: []
 			},
 			{
+				id: 'item-katana',
+				name: 'Katana',
+				baseItem: '',
+				magic: false,
+				proficiency: ItemProficiencyType.MilitaryWeapons,
+				location: ItemLocationType.Hand,
+				slots: 1,
+				weapon: {
+					damage: {
+						type: DamageType.Edged,
+						rank: 3
+					},
+					range: 0,
+					unreliable: 0
+				},
+				features: [],
+				actions: []
+			},
+			{
+				id: 'item-scimitar',
+				name: 'Scimitar',
+				baseItem: '',
+				magic: false,
+				proficiency: ItemProficiencyType.MilitaryWeapons,
+				location: ItemLocationType.Hand,
+				slots: 1,
+				weapon: {
+					damage: {
+						type: DamageType.Edged,
+						rank: 3
+					},
+					range: 0,
+					unreliable: 0
+				},
+				features: [],
+				actions: []
+			},
+			{
 				id: 'item-handaxe',
 				name: 'Handaxe',
+				baseItem: '',
+				magic: false,
+				proficiency: ItemProficiencyType.MilitaryWeapons,
+				location: ItemLocationType.Hand,
+				slots: 1,
+				weapon: {
+					damage: {
+						type: DamageType.Edged,
+						rank: 3
+					},
+					range: 0,
+					unreliable: 0
+				},
+				features: [],
+				actions: []
+			},
+			{
+				id: 'item-khopesh',
+				name: 'Khopesh',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.MilitaryWeapons,
@@ -308,6 +365,25 @@ export class ItemData {
 				weapon: {
 					damage: {
 						type: DamageType.Piercing,
+						rank: 2
+					},
+					range: 0,
+					unreliable: 0
+				},
+				features: [],
+				actions: []
+			},
+			{
+				id: 'item-tonfas',
+				name: 'Tonfas',
+				baseItem: '',
+				magic: false,
+				proficiency: ItemProficiencyType.PairedWeapons,
+				location: ItemLocationType.Hand,
+				slots: 2,
+				weapon: {
+					damage: {
+						type: DamageType.Impact,
 						rank: 2
 					},
 					range: 0,

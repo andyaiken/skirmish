@@ -14,10 +14,8 @@
     * In the data:
       * Add effects
     * In the UI:
-      * Handle parameters
-      * Run effects
-      * Only draw action cards when you ask to
-        * That way the prerequisites are based on your current state
+      * Handle the selected action's parameters, in order
+      * Run the selected action's effects
   * Implement AI so that monsters can take their turns
   * Show turn log for current combatant, if it's a monster
     * With a button to take each action in turn

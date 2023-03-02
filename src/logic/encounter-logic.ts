@@ -8,6 +8,7 @@ import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
 
 import type { EncounterMapSquareModel, EncounterModel } from '../models/encounter';
+import type { ActionModel } from '../models/action';
 import type { CombatantModel } from '../models/combatant';
 import type { ConditionModel } from '../models/condition';
 
@@ -112,6 +113,7 @@ export class EncounterLogic {
 		combatant.combat.hidden = 0;
 		combatant.combat.senses = 0;
 		combatant.combat.movement = 0;
+		combatant.combat.actions = [];
 
 		const conditions = ([] as ConditionModel[])
 			.concat(combatant.combat.conditions)
@@ -150,9 +152,6 @@ export class EncounterLogic {
 				.forEach(condition => {
 					combatant.combat.movement = Math.max(0, combatant.combat.movement - condition.rank);
 				});
-
-			const deck = CombatantLogic.getActionDeck(combatant).filter(action => action.prerequisites.every(p => p.isSatisfied(encounter)));
-			combatant.combat.actions = Collections.shuffle(deck).splice(0, 3);
 		}
 	};
 
@@ -179,6 +178,15 @@ export class EncounterLogic {
 			}
 		});
 		combatant.combat.conditions = combatant.combat.conditions.filter(c => c.rank > 0);
+	};
+
+	static drawActions = (encounter: EncounterModel, combatant: CombatantModel) => {
+		const deck = CombatantLogic.getActionDeck(combatant).filter(action => action.prerequisites.every(p => p.isSatisfied(encounter)));
+		combatant.combat.actions = Collections.shuffle(deck).splice(0, 3);
+	};
+
+	static selectAction = (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => {
+		combatant.combat.actions = [ action ];
 	};
 
 	static getMoveCost = (encounter: EncounterModel, combatant: CombatantModel, dir: string) => {

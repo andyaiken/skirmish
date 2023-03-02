@@ -9,9 +9,10 @@ import { EncounterLogic } from '../../../../logic/encounter-logic';
 import { EncounterMapLogic } from '../../../../logic/encounter-map-logic';
 import { GameLogic } from '../../../../logic/game-logic';
 
-import { CombatantModel } from '../../../../models/combatant';
-import { EncounterModel } from '../../../../models/encounter';
-import { ItemModel } from '../../../../models/item';
+import type { ActionModel } from '../../../../models/action';
+import type { CombatantModel } from '../../../../models/combatant';
+import type { EncounterModel } from '../../../../models/encounter';
+import type { ItemModel } from '../../../../models/item';
 
 import { Collections } from '../../../../utils/collections';
 
@@ -31,6 +32,8 @@ interface Props {
 	standUp: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	scan: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	hide: (encounter: EncounterModel, combatant: CombatantModel) => void;
+	drawActions: (encounter: EncounterModel, combatant: CombatantModel) => void;
+	selectAction: (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => void;
 	pickUpItem: (item: ItemModel, combatant: CombatantModel) => void;
 	showCharacterSheet: (combatant: CombatantModel) => void;
 	kill: (encounter: EncounterModel, combatant: CombatantModel) => void;
@@ -127,24 +130,48 @@ export class CombatantControls extends Component<Props, State> {
 				break;
 			}
 			case 'actions': {
-				const actionCards = this.props.combatant.combat.actions.map(a => {
-					return (
-						<PlayingCard
-							key={a.id}
-							type='action'
-							front={<ActionCard action={a} />}
-							footer={CombatantLogic.getCardSource(this.props.combatant, a.id, 'action')}
-							footerType={CombatantLogic.getCardSourceType(this.props.combatant, a.id, 'action')}
-							onClick={null}
-						/>
+				if (this.props.combatant.combat.actions.length === 0) {
+					controls = (
+						<div className='actions'>
+							<Text type={TextType.Information}>
+								<b>You haven&apos;t yet drawn any action cards this turn.</b> When you&apos;re ready, tap the button below to draw three cards, then choose the action you want to use.
+							</Text>
+							<button onClick={() => this.props.drawActions(this.props.encounter, this.props.combatant)}>Draw action cards</button>
+						</div>
 					);
-				});
+				} else if (this.props.combatant.combat.actions.length > 1) {
+					const actionCards = this.props.combatant.combat.actions.map(a => {
+						return (
+							<PlayingCard
+								key={a.id}
+								type='action'
+								front={<ActionCard action={a} />}
+								footer={CombatantLogic.getCardSource(this.props.combatant, a.id, 'action')}
+								footerType={CombatantLogic.getCardSourceType(this.props.combatant, a.id, 'action')}
+								onClick={() => this.props.selectAction(this.props.encounter, this.props.combatant, a)}
+							/>
+						);
+					});
 
-				controls = (
-					<div className='actions'>
-						<CardList cards={actionCards} />
-					</div>
-				);
+					controls = (
+						<div className='actions'>
+							<CardList cards={actionCards} />
+						</div>
+					);
+				} else {
+					const action = this.props.combatant.combat.actions[0];
+					controls = (
+						<div className='actions action-selected'>
+							<PlayingCard
+								key={action.id}
+								type='action'
+								front={<ActionCard action={action} />}
+								footer={CombatantLogic.getCardSource(this.props.combatant, action.id, 'action')}
+								footerType={CombatantLogic.getCardSourceType(this.props.combatant, action.id, 'action')}
+							/>
+						</div>
+					);
+				}
 				break;
 			}
 		}

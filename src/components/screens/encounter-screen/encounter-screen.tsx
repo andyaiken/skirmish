@@ -5,6 +5,7 @@ import { EncounterState } from '../../../enums/encounter-state';
 import { EncounterLogic } from '../../../logic/encounter-logic';
 
 import type { EncounterModel, LootPileModel } from '../../../models/encounter';
+import type { ActionModel } from '../../../models/action';
 import type { CombatantModel } from '../../../models/combatant';
 import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
@@ -28,6 +29,8 @@ interface Props {
 	standUp: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	scan: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	hide: (encounter: EncounterModel, combatant: CombatantModel) => void;
+	drawActions: (encounter: EncounterModel, combatant: CombatantModel) => void;
+	selectAction: (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => void;
 	equipItem: (item: ItemModel, combatant: CombatantModel) => void;
 	unequipItem: (item: ItemModel, combatant: CombatantModel) => void;
 	pickUpItem: (item: ItemModel, hero: CombatantModel) => void;
@@ -132,6 +135,8 @@ export class EncounterScreen extends Component<Props, State> {
 								standUp={this.props.standUp}
 								scan={this.props.scan}
 								hide={this.props.hide}
+								drawActions={this.props.drawActions}
+								selectAction={this.props.selectAction}
 								pickUpItem={this.props.pickUpItem}
 								showCharacterSheet={this.showDetails}
 								kill={this.props.kill}

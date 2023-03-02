@@ -12,4 +12,12 @@
 			margin-top: 30px;
 		}
 	}
+
+	.actions {
+		&.action-selected {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+	}
 }

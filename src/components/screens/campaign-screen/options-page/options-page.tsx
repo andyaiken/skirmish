@@ -14,7 +14,6 @@ import { CardList, Dialog, PlayingCard, Text, TextType } from '../../../controls
 
 import './options-page.scss';
 
-type DeckType = '' | 'background' | 'role' | 'species' | 'item';
 
 interface Props {
 	developer: boolean;
@@ -22,18 +21,18 @@ interface Props {
 }
 
 interface State {
-	deck: DeckType;
+	deck: CardType;
 }
 
 export class OptionsPage extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
-			deck: ''
+			deck: CardType.Default
 		};
 	}
 
-	setDeck = (deck: DeckType) => {
+	setDeck = (deck: CardType) => {
 		this.setState({
 			deck: deck
 		});
@@ -41,11 +40,11 @@ export class OptionsPage extends Component<Props, State> {
 
 	render = () => {
 		let dialog = null;
-		if (this.state.deck !== '') {
+		if (this.state.deck !== CardType.Default) {
 			dialog = (
 				<Dialog
 					content={<Deck type={this.state.deck} />}
-					onClickOff={() => this.setDeck('')}
+					onClickOff={() => this.setDeck(CardType.Default)}
 				/>
 			);
 		}
@@ -57,25 +56,25 @@ export class OptionsPage extends Component<Props, State> {
 						stack={true}
 						type={CardType.Species}
 						front={<PlaceholderCard><Text type={TextType.SubHeading}>Species<br/>Deck</Text></PlaceholderCard>}
-						onClick={() => this.setDeck('species')}
+						onClick={() => this.setDeck(CardType.Species)}
 					/>
 					<PlayingCard
 						stack={true}
 						type={CardType.Role}
 						front={<PlaceholderCard><Text type={TextType.SubHeading}>Role<br/>Deck</Text></PlaceholderCard>}
-						onClick={() => this.setDeck('role')}
+						onClick={() => this.setDeck(CardType.Role)}
 					/>
 					<PlayingCard
 						stack={true}
 						type={CardType.Background}
 						front={<PlaceholderCard><Text type={TextType.SubHeading}>Background<br/>Deck</Text></PlaceholderCard>}
-						onClick={() => this.setDeck('background')}
+						onClick={() => this.setDeck(CardType.Background)}
 					/>
 					<PlayingCard
 						stack={true}
 						type={CardType.Item}
 						front={<PlaceholderCard><Text type={TextType.SubHeading}>Item<br/>Deck</Text></PlaceholderCard>}
-						onClick={() => this.setDeck('item')}
+						onClick={() => this.setDeck(CardType.Item)}
 					/>
 				</div>
 				<hr />
@@ -87,11 +86,12 @@ export class OptionsPage extends Component<Props, State> {
 }
 
 interface DeckProps {
-	type: DeckType;
+	type: CardType;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface DeckState {
+	source: string;
 	actions: ActionModel[];
 }
 
@@ -99,12 +99,14 @@ class Deck extends Component<DeckProps, DeckState> {
 	constructor(props: DeckProps) {
 		super(props);
 		this.state = {
+			source: '',
 			actions: []
 		};
 	}
 
-	setActions = (actions: ActionModel[]) => {
+	setActions = (source: string, actions: ActionModel[]) => {
 		this.setState({
+			source: source,
 			actions: actions
 		});
 	};
@@ -113,25 +115,25 @@ class Deck extends Component<DeckProps, DeckState> {
 		let heading = '';
 		let cards: JSX.Element[] = [];
 		switch (this.props.type) {
-			case 'species':
+			case CardType.Species:
 				heading = 'Species Deck';
 				cards = SpeciesData.getList().map(s => (
-					<PlayingCard key={s.id} type={CardType.Species} front={<SpeciesCard species={s} />} onClick={() => this.setActions(s.actions)} />
+					<PlayingCard key={s.id} type={CardType.Species} front={<SpeciesCard species={s} />} onClick={() => this.setActions(s.name, s.actions)} />
 				));
 				break;
-			case 'role':
+			case CardType.Role:
 				heading = 'Role Deck';
 				cards = RoleData.getList().map(r => (
-					<PlayingCard key={r.id} type={CardType.Role} front={<RoleCard role={r} />} onClick={() => this.setActions(r.actions)} />
+					<PlayingCard key={r.id} type={CardType.Role} front={<RoleCard role={r} />} onClick={() => this.setActions(r.name, r.actions)} />
 				));
 				break;
-			case 'background':
+			case CardType.Background:
 				heading = 'Background Deck';
 				cards = BackgroundData.getList().map(b => (
-					<PlayingCard key={b.id} type={CardType.Background} front={<BackgroundCard background={b} />} onClick={() => this.setActions(b.actions)} />
+					<PlayingCard key={b.id} type={CardType.Background} front={<BackgroundCard background={b} />} onClick={() => this.setActions(b.name, b.actions)} />
 				));
 				break;
-			case 'item':
+			case CardType.Item:
 				heading = 'Item Deck';
 				cards = ItemData.getList().map(i => (
 					<PlayingCard key={i.id} type={CardType.Item} front={<ItemCard item={i} />} />
@@ -140,8 +142,16 @@ class Deck extends Component<DeckProps, DeckState> {
 		}
 
 		let dialog = null;
-		if (this.state.actions.length > 0) {
-			const actionCards = this.state.actions.map(a => (<PlayingCard key={a.id} type={CardType.Action} front={<ActionCard action={a} />} />));
+		if (this.state.source !== '') {
+			const actionCards = this.state.actions.map(a => (
+				<PlayingCard
+					key={a.id}
+					type={CardType.Action}
+					front={<ActionCard action={a} />}
+					footer={this.state.source}
+					footerType={this.props.type}
+				/>
+			));
 			const content = (
 				<div>
 					<Text type={TextType.Heading}>Actions</Text>
@@ -151,7 +161,7 @@ class Deck extends Component<DeckProps, DeckState> {
 			dialog = (
 				<Dialog
 					content={content}
-					onClickOff={() => this.setActions([])}
+					onClickOff={() => this.setActions('', [])}
 				/>
 			);
 		}

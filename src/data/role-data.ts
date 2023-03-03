@@ -221,7 +221,7 @@ export class RoleData {
 						],
 						parameters: [
 							ActionWeaponParameters.melee(),
-							ActionTargetParameters.weapon(ActionTargetType.Walls, 1, 0)
+							ActionTargetParameters.weapon(ActionTargetType.Walls, Number.MAX_VALUE, 0)
 						],
 						effects: [
 							// TODO: Destroy selected walls

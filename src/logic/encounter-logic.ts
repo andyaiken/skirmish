@@ -1,3 +1,4 @@
+import { ActionRangeType } from '../enums/action-range-type';
 import { CombatantState } from '../enums/combatant-state';
 import { CombatantType } from '../enums/combatant-type';
 import { ConditionType } from '../enums/condition-type';
@@ -7,8 +8,8 @@ import { EncounterState } from '../enums/encounter-state';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
 
+import type { ActionModel, ActionTargetParameterModel, ActionWeaponParameterModel } from '../models/action';
 import type { EncounterMapSquareModel, EncounterModel } from '../models/encounter';
-import type { ActionModel } from '../models/action';
 import type { CombatantModel } from '../models/combatant';
 import type { ConditionModel } from '../models/condition';
 
@@ -19,6 +20,8 @@ import { CombatantLogic } from './combatant-logic';
 import { ConditionLogic } from './condition-logic';
 import { EncounterMapLogic } from './encounter-map-logic';
 import { Factory } from './factory';
+import { ItemModel } from '../models/item';
+import { ItemProficiencyType } from '../enums/item-proficiency-type';
 
 export class EncounterLogic {
 	static getCombatantSquares = (encounter: EncounterModel, combatant: CombatantModel) => {
@@ -154,6 +157,9 @@ export class EncounterLogic {
 					combatant.combat.movement = Math.max(0, combatant.combat.movement - condition.rank);
 				});
 		}
+
+		const deck = CombatantLogic.getActionDeck(combatant);
+		combatant.combat.actions = Collections.shuffle(deck).splice(0, 3);
 	};
 
 	static endOfTurn = (encounter: EncounterModel, combatant: CombatantModel) => {
@@ -161,6 +167,8 @@ export class EncounterLogic {
 		combatant.combat.initiative = Number.MIN_VALUE;
 		combatant.combat.senses = 0;
 		combatant.combat.movement = 0;
+		combatant.combat.actions = [];
+		combatant.combat.actionParameters = [];
 
 		const conditions = ([] as ConditionModel[])
 			.concat(combatant.combat.conditions)
@@ -181,28 +189,83 @@ export class EncounterLogic {
 		combatant.combat.conditions = combatant.combat.conditions.filter(c => c.rank > 0);
 	};
 
-	static drawActions = (encounter: EncounterModel, combatant: CombatantModel) => {
-		const deck = CombatantLogic.getActionDeck(combatant); // .filter(action => action.prerequisites.every(p => p.isSatisfied(encounter)));
-		combatant.combat.actions = Collections.shuffle(deck).splice(0, 3);
-	};
-
 	static selectAction = (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => {
 		combatant.combat.actions = [ action ];
+		EncounterLogic.checkActionParameters(encounter, combatant);
+	};
 
-		// TODO: Do this whenever the combatant moves / equips / stands etc
-		combatant.combat.actionParameters = action.parameters.map(param => {
-			const value = null;
-			switch (param.name) {
-				case 'targets':
-					// TODO: Try to auto-select targets
-					// Depends on target type
-					break;
-				case 'weapon':
-					// TODO: Try to auto-select appropriate weapon
-					break;
-			}
-			return { name: param.name, value: value };
-		});
+	static runAction = (encounter: EncounterModel, combatant: CombatantModel) => {
+		if (combatant.combat.actions.length === 1) {
+			const action = combatant.combat.actions[0];
+			action.effects.forEach(effect => effect.run(encounter, combatant, combatant.combat.actionParameters));
+			combatant.combat.actions = [];
+			combatant.combat.actionParameters = [];
+		}
+	};
+
+	static checkActionParameters = (encounter: EncounterModel, combatant: CombatantModel) => {
+		if (combatant.combat.actions.length === 1) {
+			const action = combatant.combat.actions[0];
+			combatant.combat.actionParameters = action.parameters.map(parameter => {
+				const candidates: unknown[] = [];
+				let selected: unknown | null = null;
+
+				switch (parameter.name) {
+					case 'targets': {
+						const targetParam = parameter as ActionTargetParameterModel;
+						switch (targetParam.range.type) {
+							case ActionRangeType.Self:
+								candidates.push(combatant.id);
+								selected = [ combatant.id ];
+								break;
+							case ActionRangeType.Adjacent:
+								// TODO: Adjacent targets
+								break;
+							case ActionRangeType.Burst:
+								// TODO: Burst targets
+								break;
+							case ActionRangeType.Area:
+								// TODO: Area targets
+								break;
+							case ActionRangeType.Weapon:
+								// TODO: Weapon targets
+								break;
+							case ActionRangeType.WeaponArea:
+								// TODO: Weapon area targets
+								break;
+						}
+						break;
+					}
+					case 'weapon': {
+						const proficiencies: ItemProficiencyType[] = [];
+						switch ((parameter as ActionWeaponParameterModel).type) {
+							case 'melee':
+								proficiencies.push(ItemProficiencyType.LargeWeapons);
+								proficiencies.push(ItemProficiencyType.PairedWeapons);
+								proficiencies.push(ItemProficiencyType.MilitaryWeapons);
+								break;
+							case 'ranged':
+								proficiencies.push(ItemProficiencyType.RangedWeapons);
+								proficiencies.push(ItemProficiencyType.PowderWeapons);
+								break;
+						}
+						combatant.items
+							.filter(i => proficiencies.includes(i.proficiency))
+							.forEach(i => candidates.push(i));
+						if (candidates.length > 0) {
+							selected = candidates[0];
+						}
+						break;
+					}
+				}
+
+				return {
+					name: parameter.name,
+					candidates: candidates,
+					value: selected
+				};
+			});
+		}
 	};
 
 	static getMoveCost = (encounter: EncounterModel, combatant: CombatantModel, dir: string) => {
@@ -318,10 +381,14 @@ export class EncounterLogic {
 				combatant.combat.position.y -= 1;
 				break;
 		}
+
+		EncounterLogic.checkActionParameters(encounter, combatant);
 	};
 
 	static healDamage = (encounter: EncounterModel, combatant: CombatantModel, value: number) => {
 		combatant.combat.damage = Math.max(0, combatant.combat.damage - value);
+
+		EncounterLogic.checkActionParameters(encounter, combatant);
 	};
 
 	static healWounds = (encounter: EncounterModel, combatant: CombatantModel, value: number) => {
@@ -337,6 +404,8 @@ export class EncounterLogic {
 		if (combatant.combat.wounds > resolve) {
 			combatant.combat.state = CombatantState.Dead;
 		}
+
+		EncounterLogic.checkActionParameters(encounter, combatant);
 	};
 
 	static damage = (encounter: EncounterModel, combatant: CombatantModel, value: number, type: DamageType) => {
@@ -350,6 +419,8 @@ export class EncounterLogic {
 				EncounterLogic.wound(encounter, combatant, 1);
 			}
 		}
+
+		EncounterLogic.checkActionParameters(encounter, combatant);
 	};
 
 	static wound = (encounter: EncounterModel, combatant: CombatantModel, value: number) => {
@@ -369,9 +440,11 @@ export class EncounterLogic {
 			loot.position.y = combatant.combat.position.y;
 			encounter.loot.push(loot);
 		}
+
+		EncounterLogic.checkActionParameters(encounter, combatant);
 	};
 
-	static standUpSitDown = (combatant: CombatantModel) => {
+	static standUpSitDown = (encounter: EncounterModel, combatant: CombatantModel) => {
 		switch (combatant.combat.state) {
 			case CombatantState.Standing:
 				combatant.combat.movement -= 1;
@@ -382,6 +455,8 @@ export class EncounterLogic {
 				combatant.combat.state = CombatantState.Standing;
 				break;
 		}
+
+		EncounterLogic.checkActionParameters(encounter, combatant);
 	};
 
 	static scan = (encounter: EncounterModel, combatant: CombatantModel) => {
@@ -389,6 +464,8 @@ export class EncounterLogic {
 
 		combatant.combat.movement -= 4;
 		combatant.combat.senses = Random.dice(perception);
+
+		EncounterLogic.checkActionParameters(encounter, combatant);
 	};
 
 	static hide = (encounter: EncounterModel, combatant: CombatantModel) => {
@@ -396,6 +473,74 @@ export class EncounterLogic {
 
 		combatant.combat.movement -= 4;
 		combatant.combat.hidden = Random.dice(stealth);
+
+		EncounterLogic.checkActionParameters(encounter, combatant);
+	};
+
+	static equipItem = (encounter: EncounterModel, combatant: CombatantModel, item: ItemModel) => {
+		combatant.combat.movement = Math.max(0, combatant.combat.movement - 1);
+
+		combatant.carried = combatant.carried.filter(i => i.id !== item.id);
+
+		combatant.items.push(item);
+
+		EncounterLogic.checkActionParameters(encounter, combatant);
+	};
+
+	static unequipItem = (encounter: EncounterModel, combatant: CombatantModel, item: ItemModel) => {
+		combatant.combat.movement = Math.max(0, combatant.combat.movement - 1);
+
+		combatant.items = combatant.items.filter(i => i.id !== item.id);
+
+		combatant.carried.push(item);
+
+		EncounterLogic.checkActionParameters(encounter, combatant);
+	};
+
+	static pickUpItem = (encounter: EncounterModel, combatant: CombatantModel, item: ItemModel) => {
+		combatant.combat.movement = Math.max(0, combatant.combat.movement - 1);
+
+		const adj = EncounterMapLogic.getAdjacentSquares(encounter.mapSquares, [ combatant.combat.position ]);
+		const piles = encounter.loot.filter(lp => adj.find(sq => (sq.x === lp.position.x) && (sq.y === lp.position.y)));
+		const lp = piles.find(l => l.items.find(i => i === item));
+		if (lp) {
+			lp.items = lp.items.filter(i => i.id !== item.id);
+			if (lp.items.length === 0) {
+				encounter.loot = encounter.loot.filter(l => l.id !== lp.id);
+			}
+		}
+
+		combatant.carried.push(item);
+
+		EncounterLogic.checkActionParameters(encounter, combatant);
+	};
+
+	static dropItem = (encounter: EncounterModel, combatant: CombatantModel, item: ItemModel) => {
+		combatant.items = combatant.items.filter(i => i.id !== item.id);
+		combatant.carried = combatant.carried.filter(i => i.id !== item.id);
+
+		// See if we're beside any loot piles
+		const adj = EncounterMapLogic.getAdjacentSquares(encounter.mapSquares, [ combatant.combat.position ]);
+		const piles = encounter.loot.filter(lp => adj.find(sq => (sq.x === lp.position.x) && (sq.y === lp.position.y)));
+
+		let lp = null;
+		if (piles.length === 0) {
+			lp = Factory.createLootPile();
+
+			const empty = adj.filter(sq => EncounterLogic.getSquareIsEmpty(encounter as EncounterModel, sq));
+			if (empty.length > 0) {
+				const sq = Collections.draw(empty);
+				lp.position.x = sq.x;
+				lp.position.y = sq.y;
+				encounter.loot.push(lp);
+			}
+		} else {
+			lp = Collections.draw(piles);
+		}
+
+		lp.items.push(item);
+
+		EncounterLogic.checkActionParameters(encounter, combatant);
 	};
 
 	static getEncounterState = (encounter: EncounterModel): EncounterState => {

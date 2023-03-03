@@ -7,11 +7,11 @@ import { ItemProficiencyType } from '../enums/item-proficiency-type';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
 
-import type { ActionEffectModel, ActionModel, ActionParameterValueModel, ActionPrerequisiteModel, ActionTargetModel, ActionWeaponModel } from '../models/action';
+import type { ActionEffectModel, ActionModel, ActionParameterValueModel, ActionPrerequisiteModel, ActionTargetParameterModel, ActionWeaponParameterModel } from '../models/action';
+import type { ItemModel, WeaponModel } from '../models/item';
 import type { CombatantModel } from '../models/combatant';
 import type { ConditionModel } from '../models/condition';
 import type { EncounterModel } from '../models/encounter';
-import type { WeaponModel } from '../models/item';
 
 import { Collections } from '../utils/collections';
 import { Random } from '../utils/random';
@@ -177,7 +177,7 @@ export class ActionPrerequisites {
 }
 
 export class ActionTargetParameters {
-	static self = (): ActionTargetModel => {
+	static self = (): ActionTargetParameterModel => {
 		return {
 			name: 'targets',
 			range: {
@@ -189,7 +189,7 @@ export class ActionTargetParameters {
 		};
 	};
 
-	static adjacent = (type: ActionTargetType, count: number): ActionTargetModel => {
+	static adjacent = (type: ActionTargetType, count: number): ActionTargetParameterModel => {
 		return {
 			name: 'targets',
 			range: {
@@ -204,7 +204,7 @@ export class ActionTargetParameters {
 		};
 	};
 
-	static burst = (type: ActionTargetType, count: number, radius: number): ActionTargetModel => {
+	static burst = (type: ActionTargetType, count: number, radius: number): ActionTargetParameterModel => {
 		return {
 			name: 'targets',
 			range: {
@@ -219,7 +219,7 @@ export class ActionTargetParameters {
 		};
 	};
 
-	static weapon = (type: ActionTargetType, count: number, bonus: number): ActionTargetModel => {
+	static weapon = (type: ActionTargetType, count: number, bonus: number): ActionTargetParameterModel => {
 		return {
 			name: 'targets',
 			range: {
@@ -234,7 +234,7 @@ export class ActionTargetParameters {
 		};
 	};
 
-	static area = (type: ActionTargetType, radius: number, distance: number): ActionTargetModel => {
+	static area = (type: ActionTargetType, radius: number, distance: number): ActionTargetParameterModel => {
 		return {
 			name: 'targets',
 			range: {
@@ -249,7 +249,7 @@ export class ActionTargetParameters {
 		};
 	};
 
-	static weaponArea = (type: ActionTargetType, radius: number): ActionTargetModel => {
+	static weaponArea = (type: ActionTargetType, radius: number): ActionTargetParameterModel => {
 		return {
 			name: 'targets',
 			range: {
@@ -266,14 +266,14 @@ export class ActionTargetParameters {
 }
 
 export class ActionWeaponParameters {
-	static melee = (): ActionWeaponModel => {
+	static melee = (): ActionWeaponParameterModel => {
 		return {
 			name: 'weapon',
 			type: 'melee'
 		};
 	};
 
-	static ranged = (): ActionWeaponModel => {
+	static ranged = (): ActionWeaponParameterModel => {
 		return {
 			name: 'weapon',
 			type: 'ranged'
@@ -330,7 +330,7 @@ export class ActionEffects {
 
 				let copy = JSON.parse(JSON.stringify(parameters)) as ActionParameterValueModel[];
 				copy = copy.filter(p => p.name !== 'targets');
-				copy.push({ name: 'targets', value: targetsSucceeded });
+				copy.push({ name: 'targets', candidates: [], value: targetsSucceeded });
 				data.then.forEach(effect => effect.run(encounter, combatant, copy));
 			}
 		};
@@ -360,7 +360,8 @@ export class ActionEffects {
 						let success = true;
 						const weaponParam = parameters.find(p => p.name === 'weapon');
 						if (weaponParam) {
-							const weapon = weaponParam.value as WeaponModel;
+							const item = weaponParam.value as ItemModel;
+							const weapon = item.weapon as WeaponModel;
 							if (weapon.unreliable > 0) {
 								if (Random.dice(weapon.unreliable) > 10) {
 									success = false;
@@ -386,7 +387,7 @@ export class ActionEffects {
 
 				let copy = JSON.parse(JSON.stringify(parameters)) as ActionParameterValueModel[];
 				copy = copy.filter(p => p.name !== 'targets');
-				copy.push({ name: 'targets', value: targetsSucceeded });
+				copy.push({ name: 'targets', candidates: [], value: targetsSucceeded });
 				data.hit.forEach(effect => effect.run(encounter, combatant, copy));
 			}
 		};
@@ -418,7 +419,8 @@ export class ActionEffects {
 				const weaponParameter = parameters.find(p => p.name === 'weapon');
 				const targetParameter = parameters.find(p => p.name === 'targets');
 				if (weaponParameter && targetParameter) {
-					const weapon = weaponParameter.value as WeaponModel;
+					const item = weaponParameter.value as ItemModel;
+					const weapon = item.weapon as WeaponModel;
 					const targetIDs = targetParameter.value as string[];
 					targetIDs.forEach(id => {
 						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
@@ -584,7 +586,7 @@ export class ActionLogic {
 		return action.name;
 	};
 
-	static getTargetDescription = (target: ActionTargetModel): string => {
+	static getTargetDescription = (target: ActionTargetParameterModel): string => {
 		let count = '';
 		let type = '';
 		if (target.targets) {

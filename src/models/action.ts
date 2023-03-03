@@ -9,20 +9,25 @@ export interface ActionPrerequisiteModel {
 	isSatisfied: (encounter: EncounterModel) => boolean;
 }
 
-export interface ActionTargetModel {
+export interface ActionParameterModel {
+	name: string;
+}
+
+export interface ActionTargetParameterModel extends ActionParameterModel {
 	name: 'targets';
 	range: { type: ActionRangeType, radius: number, distance: number };
 	targets: { type: ActionTargetType, count: number } | null;
 }
 
-export interface ActionWeaponModel {
+export interface ActionWeaponParameterModel extends ActionParameterModel {
 	name: 'weapon';
 	type: 'melee' | 'ranged';
 }
 
 export interface ActionParameterValueModel {
-	name: 'targets' | 'weapon';
-	value: unknown;
+	name: string;
+	candidates: unknown[];
+	value: unknown | null;
 }
 
 export interface ActionEffectModel {
@@ -35,6 +40,6 @@ export interface ActionModel {
 	id: string;
 	name: string;
 	prerequisites: ActionPrerequisiteModel[];
-	parameters: (ActionTargetModel | ActionWeaponModel)[];
+	parameters: ActionParameterModel[];
 	effects: ActionEffectModel[];
 }

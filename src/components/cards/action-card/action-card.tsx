@@ -2,7 +2,7 @@ import { Component } from 'react';
 
 import { ActionLogic } from '../../../logic/action-logic';
 
-import type { ActionEffectModel, ActionModel, ActionTargetModel, ActionWeaponModel } from '../../../models/action';
+import type { ActionEffectModel, ActionModel, ActionParameterModel, ActionTargetParameterModel, ActionWeaponParameterModel } from '../../../models/action';
 import type { EncounterModel } from '../../../models/encounter';
 
 import { Text, TextType } from '../../controls';
@@ -26,17 +26,17 @@ export class ActionCard extends Component<Props> {
 
 		return this.props.action.prerequisites
 			.filter(p => !p.isSatisfied(this.props.encounter as EncounterModel))
-			.map((p, n) => <div key={n} className='prerequisite'>{p.description}</div>);
+			.map((p, n) => <div key={n} className='prerequisite highlighted'>{p.description}</div>);
 	};
 
 	getParameters = () => {
-		const getParameterDescription = (parameter: ActionTargetModel | ActionWeaponModel) => {
+		const getParameterDescription = (parameter: ActionParameterModel) => {
 			switch (parameter.name) {
 				case 'targets': {
-					return `Targets: ${ActionLogic.getTargetDescription(parameter as ActionTargetModel)}`;
+					return `Targets: ${ActionLogic.getTargetDescription(parameter as ActionTargetParameterModel)}`;
 				}
 				case 'weapon': {
-					const wpn = parameter as ActionWeaponModel;
+					const wpn = parameter as ActionWeaponParameterModel;
 					return `Weapon: ${wpn.type}`;
 				}
 			}

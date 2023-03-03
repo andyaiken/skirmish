@@ -17,8 +17,8 @@ import type { ItemModel } from '../../../../models/item';
 
 import { Collections } from '../../../../utils/collections';
 
-import { ActionCard, PlaceholderCard } from '../../../cards';
 import { Box, CardList, IconType, IconValue, PlayingCard, Selector, StatValue, Tag, Text, TextType } from '../../../controls';
+import { ActionCard } from '../../../cards';
 import { CombatStatsPanel } from '../../../panels/combat-stats/combat-stats-panel';
 import { DirectionPanel } from '../../../panels';
 
@@ -33,8 +33,8 @@ interface Props {
 	standUp: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	scan: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	hide: (encounter: EncounterModel, combatant: CombatantModel) => void;
-	drawActions: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	selectAction: (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => void;
+	runAction: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	pickUpItem: (item: ItemModel, combatant: CombatantModel) => void;
 	showCharacterSheet: (combatant: CombatantModel) => void;
 	kill: (encounter: EncounterModel, combatant: CombatantModel) => void;
@@ -133,22 +133,11 @@ export class CombatantControls extends Component<Props, State> {
 			case 'actions': {
 				if (this.props.combatant.combat.actions.length === 0) {
 					controls = (
-						<div className='actions'>
-							<PlayingCard
-								stack={true}
-								type={CardType.Action}
-								front={
-									<PlaceholderCard>
-										<Text type={TextType.SubHeading}>Action<br/>Deck</Text>
-										<Text type={TextType.Small}>Tap to draw action cards for this turn.</Text>
-									</PlaceholderCard>
-								}
-								onClick={() => this.props.drawActions(this.props.encounter, this.props.combatant)}
-							/>
+						<div>
+							<Text type={TextType.Information}>You have taken your action for this turn.</Text>
 						</div>
 					);
 				} else if (this.props.combatant.combat.actions.length > 1) {
-					// TODO: Add the option to use a universal action instead
 					const actionCards = this.props.combatant.combat.actions.map(a => {
 						const prerequisitesMet = a.prerequisites.every(p => p.isSatisfied(this.props.encounter));
 						return (
@@ -186,26 +175,36 @@ export class CombatantControls extends Component<Props, State> {
 					const parameters: JSX.Element[] = [];
 					action.parameters.forEach((parameter, n) => {
 						const param = this.props.combatant.combat.actionParameters.find(p => p.name === parameter.name) as ActionParameterValueModel;
-						if (param.value) {
-							// TODO: Convert parameter value to string
-							// TODO: Allow parameter to be un-set, if it can be changed
-							const description = param.value.toString();
-							parameters.push(
-								<div key={n} className='action-parameter'>
-									<div className='action-parameter-name'>Select {param.name}</div>
-									<div className='action-parameter-value'>{description}</div>
-								</div>
-							);
-						} else {
-							// TODO: Show parameter selection, if parameter has multiple options
+						let description = '';
+						if (param.value === null) {
 							parametersSet = false;
-							parameters.push(
-								<div key={n} className='action-parameter'>
-									<div className='action-parameter-name'>Select {parameter.name}</div>
-									<div className='action-parameter-value'>[Not set]</div>
-								</div>
-							);
+							description = '[None]';
+						} else {
+							switch (param.name) {
+								case 'targets': {
+									// TODO: This could be {x, y}[] instead
+									const list = param.value as string[];
+									description = list
+										.map(id => EncounterLogic.getCombatant(this.props.encounter, id) as CombatantModel)
+										.map(target => target.name)
+										.join(', ');
+									break;
+								}
+								case'weapon': {
+									const item = param.value as ItemModel;
+									description = item.name;
+									break;
+								}
+							}
 						}
+
+						parameters.push(
+							<div key={n} className='action-parameter'>
+								<div className='action-parameter-name'>Select {param.name}</div>
+								<div className='action-parameter-value'>{description}</div>
+								{param.candidates.length > 1 ? <div className='action-parameter-change'>Change</div> : null}
+							</div>
+						);
 					});
 
 					controls = (
@@ -222,10 +221,7 @@ export class CombatantControls extends Component<Props, State> {
 							<div className='action-details'>
 								{prerequisites}
 								{parameters}
-								<button
-									disabled={!(prerequisitesMet && parametersSet)}
-									onClick={() => action.effects.forEach(effect => effect.run(this.props.encounter, this.props.combatant, this.props.combatant.combat.actionParameters))}
-								>
+								<button disabled={!(prerequisitesMet && parametersSet)} onClick={() => this.props.runAction(this.props.encounter, this.props.combatant)}>
 									Run
 								</button>
 							</div>

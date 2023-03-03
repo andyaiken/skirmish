@@ -30,8 +30,8 @@ interface Props {
 	standUp: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	scan: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	hide: (encounter: EncounterModel, combatant: CombatantModel) => void;
-	drawActions: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	selectAction: (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => void;
+	runAction: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	equipItem: (item: ItemModel, combatant: CombatantModel) => void;
 	unequipItem: (item: ItemModel, combatant: CombatantModel) => void;
 	pickUpItem: (item: ItemModel, hero: CombatantModel) => void;
@@ -136,8 +136,8 @@ export class EncounterScreen extends Component<Props, State> {
 								standUp={this.props.standUp}
 								scan={this.props.scan}
 								hide={this.props.hide}
-								drawActions={this.props.drawActions}
 								selectAction={this.props.selectAction}
+								runAction={this.props.runAction}
 								pickUpItem={this.props.pickUpItem}
 								showCharacterSheet={this.showDetails}
 								kill={this.props.kill}

@@ -11,18 +11,20 @@
 
 * Encounters:
   * Implement actions
-    * In the data:
-      * Add effects
-    * In the UI:
-      * Handle the selected action's parameters, in order
-      * Run the selected action's effects
+    * Add missing effects
+    * Handle the selected action's parameters, in order
+    * Run the selected action's effects
+    * Allow the user to opt for a universal action instead
   * Implement AI so that monsters can take their turns
   * Show turn log for current combatant, if it's a monster
     * With a button to take each action in turn
+* Add a system for evaluating each action to ensure none is too powerful
+  * Then extend this to ensure species / roles / backgrounds are equally matched
 * Add help / documentation to explain game rules
 
 ## Ideas for Future Work
 
+* Minions
 * Items:
   * Potions (add conditions when used)
   * Magic items could gain additional attributes when wielder levels up

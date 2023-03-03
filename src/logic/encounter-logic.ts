@@ -114,6 +114,7 @@ export class EncounterLogic {
 		combatant.combat.senses = 0;
 		combatant.combat.movement = 0;
 		combatant.combat.actions = [];
+		combatant.combat.actionParameters = [];
 
 		const conditions = ([] as ConditionModel[])
 			.concat(combatant.combat.conditions)
@@ -181,12 +182,27 @@ export class EncounterLogic {
 	};
 
 	static drawActions = (encounter: EncounterModel, combatant: CombatantModel) => {
-		const deck = CombatantLogic.getActionDeck(combatant).filter(action => action.prerequisites.every(p => p.isSatisfied(encounter)));
+		const deck = CombatantLogic.getActionDeck(combatant); // .filter(action => action.prerequisites.every(p => p.isSatisfied(encounter)));
 		combatant.combat.actions = Collections.shuffle(deck).splice(0, 3);
 	};
 
 	static selectAction = (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => {
 		combatant.combat.actions = [ action ];
+
+		// TODO: Do this whenever the combatant moves / equips / stands etc
+		combatant.combat.actionParameters = action.parameters.map(param => {
+			const value = null;
+			switch (param.name) {
+				case 'targets':
+					// TODO: Try to auto-select targets
+					// Depends on target type
+					break;
+				case 'weapon':
+					// TODO: Try to auto-select appropriate weapon
+					break;
+			}
+			return { name: param.name, value: value };
+		});
 	};
 
 	static getMoveCost = (encounter: EncounterModel, combatant: CombatantModel, dir: string) => {

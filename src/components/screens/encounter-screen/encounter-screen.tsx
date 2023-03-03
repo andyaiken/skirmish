@@ -1,5 +1,6 @@
 import { Component } from 'react';
 
+import { CardType } from '../../../enums/card-type';
 import { EncounterState } from '../../../enums/encounter-state';
 
 import { EncounterLogic } from '../../../logic/encounter-logic';
@@ -11,7 +12,7 @@ import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
 import type { RegionModel } from '../../../models/campaign-map';
 
-import { CardList, Developer, Dialog, PlayingCard, Text, TextType } from '../../controls';
+import { CardList, Dialog, PlayingCard, Text, TextType } from '../../controls';
 import { CharacterSheetPanel, EncounterMapPanel, InitiativeListPanel } from '../../panels';
 import { CombatantControls } from './combatant-controls/combatant-controls';
 import { ItemCard } from '../../cards';
@@ -213,7 +214,7 @@ export class EncounterScreen extends Component<Props, State> {
 					content={
 						<div>
 							<Text type={TextType.Heading}>Treasure</Text>
-							<CardList cards={this.state.detailsLoot.items.map(i => <PlayingCard key={i.id} type='item' front={<ItemCard item={i} />} />)} />
+							<CardList cards={this.state.detailsLoot.items.map(i => <PlayingCard key={i.id} type={CardType.Item} front={<ItemCard item={i} />} />)} />
 						</div>
 					}
 					onClickOff={() => this.showDetails(null)}
@@ -243,7 +244,7 @@ export class EncounterScreen extends Component<Props, State> {
 						</div>
 						<button className='finish-btn danger' onClick={() => this.setManualEncounterState(EncounterState.Retreat)}>Retreat</button>
 						<button className='finish-btn danger' onClick={() => this.setManualEncounterState(EncounterState.Defeat)}>Surrender</button>
-						{this.props.developer ? <Developer><button className='finish-btn' onClick={() => this.setManualEncounterState(EncounterState.Victory)}>Victory</button></Developer> : null}
+						{this.props.developer ? <button className='finish-btn developer' onClick={() => this.setManualEncounterState(EncounterState.Victory)}>Victory</button> : null}
 					</div>
 				</div>
 				{controls}

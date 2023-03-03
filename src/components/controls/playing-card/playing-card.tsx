@@ -1,8 +1,9 @@
 import { Component } from 'react';
 
-import './playing-card.scss';
+import { CardType } from '../../../enums/card-type';
+import { Random } from '../../../utils/random';
 
-type CardType = 'default' | 'hero' | 'species' | 'role' | 'background' | 'item' | 'boon' | 'feature' | 'action' | 'universal';
+import './playing-card.scss';
 
 export enum PlayingCardSide {
 	Front = 'front',
@@ -10,6 +11,7 @@ export enum PlayingCardSide {
 }
 
 interface Props {
+	stack: boolean;
 	type: CardType;
 	front: JSX.Element | string | null;
 	back: JSX.Element | string | null;
@@ -21,6 +23,7 @@ interface Props {
 
 export class PlayingCard extends Component<Props> {
 	static defaultProps = {
+		stack: false,
 		type: 'default',
 		back: null,
 		footer: null,
@@ -50,16 +53,41 @@ export class PlayingCard extends Component<Props> {
 		if (this.props.display === PlayingCardSide.Back) {
 			className += ' flipped';
 		}
+
+		const stack = [];
+		if (this.props.stack) {
+			for (let n = 0; n !== 3; ++n) {
+				const degrees = (Random.randomDecimal() * 10) - 5;
+				const offsetX = (Random.randomDecimal() * 10) - 5;
+				const offsetY = (Random.randomDecimal() * 10) - 5;
+				stack.push(
+					<div
+						key={n}
+						className={`stack-card ${this.props.type.toLowerCase()}`}
+						style={
+							{
+								transform: `rotate(${degrees}deg)`,
+								left: `${offsetX}px`,
+								top: `${offsetY}px`
+							}
+						}
+					/>
+				);
+			}
+		}
+
 		const hasFront = (this.props.front !== null) && (this.props.front !== '');
 		const hasFooter = (this.props.footer !== null) && (this.props.footer !== '');
+
 		return (
 			<div className={className} onClick={this.onClick}>
+				{stack}
 				<div className='playing-card-inner'>
-					<div className={`playing-card-front ${this.props.type}`}>
+					<div className={`playing-card-front ${this.props.type.toLowerCase()}`}>
 						{hasFront ? <div className='front-content'>{this.props.front}</div> : null }
-						{hasFooter ? <div className={`front-footer ${this.props.footerType}`}>{this.props.footer}</div> : null }
+						{hasFooter ? <div className={`front-footer ${this.props.footerType.toLowerCase()}`}>{this.props.footer}</div> : null }
 					</div>
-					<div className={`playing-card-back ${this.props.type}`}>
+					<div className={`playing-card-back ${this.props.type.toLowerCase()}`}>
 						{this.props.back}
 					</div>
 				</div>

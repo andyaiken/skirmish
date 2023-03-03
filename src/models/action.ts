@@ -20,7 +20,7 @@ export interface ActionWeaponModel {
 	type: 'melee' | 'ranged';
 }
 
-export interface ActionParameterModel {
+export interface ActionParameterValueModel {
 	name: 'targets' | 'weapon';
 	value: unknown;
 }
@@ -28,7 +28,7 @@ export interface ActionParameterModel {
 export interface ActionEffectModel {
 	description: string;
 	children: ActionEffectModel[];
-	run: (encounter: EncounterModel, combatant: CombatantModel, parameters: ActionParameterModel[]) => void;
+	run: (encounter: EncounterModel, combatant: CombatantModel, parameters: ActionParameterValueModel[]) => void;
 }
 
 export interface ActionModel {

@@ -8,7 +8,8 @@ export enum TextType {
 	SubHeading = 'subheading',
 	MinorHeading = 'minorheading',
 	ListItem = 'listitem',
-	Information = 'information'
+	Information = 'information',
+	Small = 'small'
 }
 
 interface Props {

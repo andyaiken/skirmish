@@ -471,7 +471,7 @@ export class RoleData {
 							ActionPrerequisites.implement()
 						],
 						parameters: [
-							ActionTargetParameters.area(ActionTargetType.Squares, Number.MAX_VALUE, 3, 10)
+							ActionTargetParameters.area(ActionTargetType.Squares, 3, 10)
 						],
 						effects: [
 							// TODO: Turn selected squares into difficult terrain
@@ -484,7 +484,7 @@ export class RoleData {
 							ActionPrerequisites.implement()
 						],
 						parameters: [
-							ActionTargetParameters.area(ActionTargetType.Squares, Number.MAX_VALUE, 3, 10)
+							ActionTargetParameters.area(ActionTargetType.Squares, 3, 10)
 						],
 						effects: [
 							// TODO: Turn selected squares into clear terrain
@@ -497,7 +497,7 @@ export class RoleData {
 							ActionPrerequisites.implement()
 						],
 						parameters: [
-							ActionTargetParameters.area(ActionTargetType.Squares, Number.MAX_VALUE, 3, 10)
+							ActionTargetParameters.area(ActionTargetType.Squares, 3, 10)
 						],
 						effects: [
 							// TODO: Remove selected squares from map
@@ -510,7 +510,7 @@ export class RoleData {
 							ActionPrerequisites.implement()
 						],
 						parameters: [
-							ActionTargetParameters.area(ActionTargetType.Walls, Number.MAX_VALUE, 3, 10)
+							ActionTargetParameters.area(ActionTargetType.Walls, 3, 10)
 						],
 						effects: [
 							// TODO: Turn selected walls into squares
@@ -523,7 +523,7 @@ export class RoleData {
 							ActionPrerequisites.implement()
 						],
 						parameters: [
-							ActionTargetParameters.area(ActionTargetType.Enemies, Number.MAX_VALUE, 3, 10)
+							ActionTargetParameters.area(ActionTargetType.Enemies, 3, 10)
 						],
 						effects: [
 							ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Endurance, 5, TraitType.Speed)),
@@ -737,7 +737,7 @@ export class RoleData {
 						],
 						parameters: [
 							ActionWeaponParameters.ranged(),
-							ActionTargetParameters.weaponArea(ActionTargetType.Combatants, Number.MAX_VALUE, 3)
+							ActionTargetParameters.weaponArea(ActionTargetType.Combatants, 3)
 						],
 						effects: [
 							ActionEffects.attack({
@@ -935,7 +935,7 @@ export class RoleData {
 						],
 						parameters: [
 							ActionWeaponParameters.ranged(),
-							ActionTargetParameters.weaponArea(ActionTargetType.Enemies, Number.MAX_VALUE, 3)
+							ActionTargetParameters.weaponArea(ActionTargetType.Enemies, 3)
 						],
 						effects: [
 							ActionEffects.attack({
@@ -1216,7 +1216,7 @@ export class RoleData {
 							ActionPrerequisites.implement()
 						],
 						parameters: [
-							ActionTargetParameters.area(ActionTargetType.Combatants, Number.MAX_VALUE, 3, 10)
+							ActionTargetParameters.area(ActionTargetType.Combatants, 3, 10)
 						],
 						effects: [
 							ActionEffects.attack({
@@ -1238,7 +1238,7 @@ export class RoleData {
 							ActionPrerequisites.implement()
 						],
 						parameters: [
-							ActionTargetParameters.area(ActionTargetType.Combatants, Number.MAX_VALUE, 3, 10)
+							ActionTargetParameters.area(ActionTargetType.Combatants, 3, 10)
 						],
 						effects: [
 							ActionEffects.attack({

@@ -1,5 +1,6 @@
 import { Component } from 'react';
 
+import { CardType } from '../../../../enums/card-type';
 import { DamageCategoryType } from '../../../../enums/damage-category-type';
 import { DamageType } from '../../../../enums/damage-type';
 import { FeatureType } from '../../../../enums/feature-type';
@@ -58,7 +59,7 @@ export class LevelUp extends Component<Props, State> {
 			return (
 				<div key={feature.id}>
 					<PlayingCard
-						type='feature'
+						type={CardType.Feature}
 						front={<FeatureCard feature={(this.state.selectedFeature !== null) && (this.state.selectedFeature.id === feature.id) ? this.state.selectedFeature : feature} />}
 						back={<PlaceholderCard>Feature</PlaceholderCard>}
 						footer={CombatantLogic.getCardSource(this.props.hero, feature.id, 'feature')}

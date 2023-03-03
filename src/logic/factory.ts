@@ -48,7 +48,8 @@ export class Factory {
 				senses: 0,
 				hidden: 0,
 				conditions: [],
-				actions: []
+				actions: [],
+				actionParameters: []
 			}
 		};
 	};

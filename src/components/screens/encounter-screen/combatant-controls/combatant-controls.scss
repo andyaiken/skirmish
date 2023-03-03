@@ -14,10 +14,31 @@
 	}
 
 	.actions {
-		&.action-selected {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.action-details {
+		margin-top: 20px;
+
+		.action-prerequisite {
+			margin: 5px;
+		}
+
+		.action-parameter {
+			padding: 5px;
 			display: flex;
-			flex-direction: column;
 			align-items: center;
+
+			.action-parameter-name {
+				flex: 1 1 0;
+			}
+
+			.action-parameter-value {
+				flex: 1 1 0;
+				text-align: right;
+			}
 		}
 	}
 }

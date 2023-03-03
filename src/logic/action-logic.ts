@@ -7,7 +7,7 @@ import { ItemProficiencyType } from '../enums/item-proficiency-type';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
 
-import type { ActionEffectModel, ActionModel, ActionParameterModel, ActionPrerequisiteModel, ActionTargetModel, ActionWeaponModel } from '../models/action';
+import type { ActionEffectModel, ActionModel, ActionParameterValueModel, ActionPrerequisiteModel, ActionTargetModel, ActionWeaponModel } from '../models/action';
 import type { CombatantModel } from '../models/combatant';
 import type { ConditionModel } from '../models/condition';
 import type { EncounterModel } from '../models/encounter';
@@ -234,7 +234,7 @@ export class ActionTargetParameters {
 		};
 	};
 
-	static area = (type: ActionTargetType, count: number, radius: number, distance: number): ActionTargetModel => {
+	static area = (type: ActionTargetType, radius: number, distance: number): ActionTargetModel => {
 		return {
 			name: 'targets',
 			range: {
@@ -244,12 +244,12 @@ export class ActionTargetParameters {
 			},
 			targets: {
 				type: type,
-				count: count
+				count: Number.MAX_VALUE
 			}
 		};
 	};
 
-	static weaponArea = (type: ActionTargetType, count: number, radius: number): ActionTargetModel => {
+	static weaponArea = (type: ActionTargetType, radius: number): ActionTargetModel => {
 		return {
 			name: 'targets',
 			range: {
@@ -259,7 +259,7 @@ export class ActionTargetParameters {
 			},
 			targets: {
 				type: type,
-				count: count
+				count: Number.MAX_VALUE
 			}
 		};
 	};
@@ -285,7 +285,7 @@ export class ActionEffects {
 	static if = (
 		data: {
 			description: string,
-			check: (encounter: EncounterModel, combatant: CombatantModel, parameters: ActionParameterModel[]) => boolean,
+			check: (encounter: EncounterModel, combatant: CombatantModel, parameters: ActionParameterValueModel[]) => boolean,
 			then: ActionEffectModel[]
 		}
 	): ActionEffectModel => {
@@ -328,7 +328,7 @@ export class ActionEffects {
 					});
 				}
 
-				let copy = JSON.parse(JSON.stringify(parameters)) as ActionParameterModel[];
+				let copy = JSON.parse(JSON.stringify(parameters)) as ActionParameterValueModel[];
 				copy = copy.filter(p => p.name !== 'targets');
 				copy.push({ name: 'targets', value: targetsSucceeded });
 				data.then.forEach(effect => effect.run(encounter, combatant, copy));
@@ -384,7 +384,7 @@ export class ActionEffects {
 					});
 				}
 
-				let copy = JSON.parse(JSON.stringify(parameters)) as ActionParameterModel[];
+				let copy = JSON.parse(JSON.stringify(parameters)) as ActionParameterValueModel[];
 				copy = copy.filter(p => p.name !== 'targets');
 				copy.push({ name: 'targets', value: targetsSucceeded });
 				data.hit.forEach(effect => effect.run(encounter, combatant, copy));

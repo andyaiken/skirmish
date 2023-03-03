@@ -1,7 +1,7 @@
 import type { CombatantState } from '../enums/combatant-state';
 import type { CombatantType } from '../enums/combatant-type';
 
-import type { ActionModel } from './action';
+import type { ActionModel, ActionParameterValueModel } from './action';
 import type { ConditionModel } from './condition';
 import type { FeatureModel } from './feature';
 import type { ItemModel } from './item';
@@ -38,5 +38,6 @@ export interface CombatantModel {
 		hidden: number;
 		conditions: ConditionModel[];
 		actions: ActionModel[];
+		actionParameters: ActionParameterValueModel[];
 	}
 }

@@ -1,5 +1,7 @@
 import { Component } from 'react';
 
+import { CardType } from '../../../../enums/card-type';
+
 import { MagicItemGenerator } from '../../../../logic/magic-item-generator';
 
 import type { GameModel } from '../../../../models/game';
@@ -7,7 +9,7 @@ import type { ItemModel } from '../../../../models/item';
 
 import { Collections } from '../../../../utils/collections';
 
-import { CardList, Developer, Dialog, IconType, IconValue, PlayingCard, StatValue, Text, TextType } from '../../../controls';
+import { CardList, Dialog, IconType, IconValue, PlayingCard, StatValue, Text, TextType } from '../../../controls';
 import { ItemCard } from '../../../cards';
 
 import './items-page.scss';
@@ -63,7 +65,7 @@ export class ItemsPage extends Component<Props, State> {
 				return (
 					<PlayingCard
 						key={item.id}
-						type='item'
+						type={CardType.Item}
 						front={<ItemCard item={item} />}
 					/>
 				);
@@ -97,7 +99,7 @@ export class ItemsPage extends Component<Props, State> {
 				return (
 					<PlayingCard
 						key={item.id}
-						type='item'
+						type={CardType.Item}
 						front={<ItemCard item={item} />}
 						footer={back}
 					/>
@@ -124,7 +126,7 @@ export class ItemsPage extends Component<Props, State> {
 				<button disabled={this.props.game.money < 100} onClick={() => this.setShowMarket(true)}>
 					Buy a magic item<br/><IconValue type={IconType.Money} value={100} />
 				</button>
-				{this.props.developer ? <Developer><button onClick={() => this.props.addMoney()}>Add money</button></Developer> : null}
+				{this.props.developer ? <button className='developer' onClick={() => this.props.addMoney()}>Add money</button> : null}
 			</div>
 		);
 
@@ -133,7 +135,7 @@ export class ItemsPage extends Component<Props, State> {
 			const cards = this.state.magicItems.map(item => (
 				<PlayingCard
 					key={item.id}
-					type='item'
+					type={CardType.Item}
 					front={<ItemCard item={item} />}
 					onClick={() => this.buyItem(item)}
 				/>

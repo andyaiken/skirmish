@@ -1,5 +1,6 @@
 import { Component } from 'react';
 
+import { CardType } from '../../../../enums/card-type';
 import { CombatantState } from '../../../../enums/combatant-state';
 import { CombatantType } from '../../../../enums/combatant-type';
 
@@ -9,15 +10,15 @@ import { EncounterLogic } from '../../../../logic/encounter-logic';
 import { EncounterMapLogic } from '../../../../logic/encounter-map-logic';
 import { GameLogic } from '../../../../logic/game-logic';
 
-import type { ActionModel } from '../../../../models/action';
+import type { ActionModel, ActionParameterValueModel } from '../../../../models/action';
 import type { CombatantModel } from '../../../../models/combatant';
 import type { EncounterModel } from '../../../../models/encounter';
 import type { ItemModel } from '../../../../models/item';
 
 import { Collections } from '../../../../utils/collections';
 
-import { Box, CardList, Developer, IconType, IconValue, PlayingCard, Selector, StatValue, Tag, Text, TextType } from '../../../controls';
-import { ActionCard } from '../../../cards';
+import { ActionCard, PlaceholderCard } from '../../../cards';
+import { Box, CardList, IconType, IconValue, PlayingCard, Selector, StatValue, Tag, Text, TextType } from '../../../controls';
 import { CombatStatsPanel } from '../../../panels/combat-stats/combat-stats-panel';
 import { DirectionPanel } from '../../../panels';
 
@@ -133,22 +134,31 @@ export class CombatantControls extends Component<Props, State> {
 				if (this.props.combatant.combat.actions.length === 0) {
 					controls = (
 						<div className='actions'>
-							<Text type={TextType.Information}>
-								<b>You haven&apos;t yet drawn any action cards this turn.</b> When you&apos;re ready, tap the button below to draw three cards, then choose the action you want to use.
-							</Text>
-							<button onClick={() => this.props.drawActions(this.props.encounter, this.props.combatant)}>Draw action cards</button>
+							<PlayingCard
+								stack={true}
+								type={CardType.Action}
+								front={
+									<PlaceholderCard>
+										<Text type={TextType.SubHeading}>Action<br/>Deck</Text>
+										<Text type={TextType.Small}>Tap to draw action cards for this turn.</Text>
+									</PlaceholderCard>
+								}
+								onClick={() => this.props.drawActions(this.props.encounter, this.props.combatant)}
+							/>
 						</div>
 					);
 				} else if (this.props.combatant.combat.actions.length > 1) {
+					// TODO: Add the option to use a universal action instead
 					const actionCards = this.props.combatant.combat.actions.map(a => {
+						const prerequisitesMet = a.prerequisites.every(p => p.isSatisfied(this.props.encounter));
 						return (
 							<PlayingCard
 								key={a.id}
-								type='action'
-								front={<ActionCard action={a} />}
+								type={CardType.Action}
+								front={<ActionCard action={a} encounter={this.props.encounter} />}
 								footer={CombatantLogic.getCardSource(this.props.combatant, a.id, 'action')}
 								footerType={CombatantLogic.getCardSourceType(this.props.combatant, a.id, 'action')}
-								onClick={() => this.props.selectAction(this.props.encounter, this.props.combatant, a)}
+								onClick={prerequisitesMet ? () => this.props.selectAction(this.props.encounter, this.props.combatant, a) : null}
 							/>
 						);
 					});
@@ -160,15 +170,65 @@ export class CombatantControls extends Component<Props, State> {
 					);
 				} else {
 					const action = this.props.combatant.combat.actions[0];
+
+					let prerequisitesMet = true;
+					const prerequisites: JSX.Element[] = [];
+					action.prerequisites.forEach((prerequisite, n) => {
+						if (!prerequisite.isSatisfied(this.props.encounter)) {
+							prerequisitesMet = false;
+							prerequisites.push(
+								<div key={n} className='action-prerequisite'>{prerequisite.description}</div>
+							);
+						}
+					});
+
+					let parametersSet = true;
+					const parameters: JSX.Element[] = [];
+					action.parameters.forEach((parameter, n) => {
+						const param = this.props.combatant.combat.actionParameters.find(p => p.name === parameter.name) as ActionParameterValueModel;
+						if (param.value) {
+							// TODO: Convert parameter value to string
+							// TODO: Allow parameter to be un-set, if it can be changed
+							const description = param.value.toString();
+							parameters.push(
+								<div key={n} className='action-parameter'>
+									<div className='action-parameter-name'>Select {param.name}</div>
+									<div className='action-parameter-value'>{description}</div>
+								</div>
+							);
+						} else {
+							// TODO: Show parameter selection, if parameter has multiple options
+							parametersSet = false;
+							parameters.push(
+								<div key={n} className='action-parameter'>
+									<div className='action-parameter-name'>Select {parameter.name}</div>
+									<div className='action-parameter-value'>[Not set]</div>
+								</div>
+							);
+						}
+					});
+
 					controls = (
-						<div className='actions action-selected'>
-							<PlayingCard
-								key={action.id}
-								type='action'
-								front={<ActionCard action={action} />}
-								footer={CombatantLogic.getCardSource(this.props.combatant, action.id, 'action')}
-								footerType={CombatantLogic.getCardSourceType(this.props.combatant, action.id, 'action')}
-							/>
+						<div>
+							<div className='actions'>
+								<PlayingCard
+									key={action.id}
+									type={CardType.Action}
+									front={<ActionCard action={action} encounter={this.props.encounter} />}
+									footer={CombatantLogic.getCardSource(this.props.combatant, action.id, 'action')}
+									footerType={CombatantLogic.getCardSourceType(this.props.combatant, action.id, 'action')}
+								/>
+							</div>
+							<div className='action-details'>
+								{prerequisites}
+								{parameters}
+								<button
+									disabled={!(prerequisitesMet && parametersSet)}
+									onClick={() => action.effects.forEach(effect => effect.run(this.props.encounter, this.props.combatant, this.props.combatant.combat.actionParameters))}
+								>
+									Run
+								</button>
+							</div>
 						</div>
 					);
 				}
@@ -236,7 +296,7 @@ export class CombatantControls extends Component<Props, State> {
 						{this.props.combatant.combat.hidden > 0 ? <Text type={TextType.Information}><b>{this.props.combatant.name} is Hidden.</b> Their moving costs are doubled.</Text> : null}
 						<hr />
 						<button onClick={() => this.props.showCharacterSheet(this.props.combatant)}>Character Sheet</button>
-						<Developer><button onClick={this.kill}>Kill</button></Developer>
+						<button className='developer' onClick={this.kill}>Kill</button>
 						<button onClick={this.endTurn}>End Turn</button>
 					</div>
 				);

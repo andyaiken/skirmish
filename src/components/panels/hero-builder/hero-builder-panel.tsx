@@ -1,5 +1,6 @@
 import { Component } from 'react';
 
+import { CardType } from '../../../enums/card-type';
 import { CombatantType } from '../../../enums/combatant-type';
 import { ItemProficiencyType } from '../../../enums/item-proficiency-type';
 
@@ -7,10 +8,12 @@ import { CombatantLogic } from '../../../logic/combatant-logic';
 import { GameLogic } from '../../../logic/game-logic';
 import { NameGenerator } from '../../../logic/name-generator';
 
+import type { BackgroundModel } from '../../../models/background';
 import type { CombatantModel } from '../../../models/combatant';
 import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
-import { RoleModel } from '../../../models/role';
+import type { RoleModel } from '../../../models/role';
+import type { SpeciesModel } from '../../../models/species';
 
 import { Collections } from '../../../utils/collections';
 import { Utils } from '../../../utils/utils';
@@ -156,14 +159,32 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 	constructor(props: CardSelectorProps) {
 		super(props);
 		this.state = {
-			speciesIDs: Collections.shuffle(GameLogic.getSpeciesDeck(CombatantType.Hero)).splice(0, 3),
-			roleIDs: Collections.shuffle(GameLogic.getRoleDeck()).splice(0, 3),
-			backgroundIDs: Collections.shuffle(GameLogic.getBackgroundDeck()).splice(0, 3),
+			speciesIDs: [],
+			roleIDs: [],
+			backgroundIDs: [],
 			selectedSpeciesID: '',
 			selectedRoleID: '',
 			selectedBackgroundID: ''
 		};
 	}
+
+	drawSpeciesCards = () => {
+		this.setState({
+			speciesIDs: Collections.shuffle(GameLogic.getSpeciesDeck(CombatantType.Hero)).splice(0, 3)
+		});
+	};
+
+	drawRoleCards = () => {
+		this.setState({
+			roleIDs: Collections.shuffle(GameLogic.getRoleDeck()).splice(0, 3)
+		});
+	};
+
+	drawBackgroundCards = () => {
+		this.setState({
+			backgroundIDs: Collections.shuffle(GameLogic.getBackgroundDeck()).splice(0, 3)
+		});
+	};
 
 	selectSpecies = (id: string) => {
 		if (this.state.selectedSpeciesID === '') {
@@ -193,82 +214,142 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 		this.props.select(this.state.selectedSpeciesID, this.state.selectedRoleID, this.state.selectedBackgroundID);
 	};
 
-	render = () => {
-		const speciesCards = this.state.speciesIDs.map(id => {
-			const species = GameLogic.getSpecies(id);
-			if (species) {
-				return (
-					<div key={species.id}>
-						<PlayingCard
-							type='species'
-							front={<SpeciesCard species={species} />}
-							back={<PlaceholderCard>Species</PlaceholderCard>}
-							display={(this.state.selectedSpeciesID !== '') && (this.state.selectedSpeciesID !== species.id) ? PlayingCardSide.Back : PlayingCardSide.Front}
-							onClick={(this.state.selectedSpeciesID !== '') ? null : () => this.selectSpecies(species.id)}
-						/>
-					</div>
-				);
-			}
+	getSpeciesSection = () => {
+		if (this.state.speciesIDs.length === 0) {
+			return (
+				<div className='deck-row'>
+					<PlayingCard
+						stack={true}
+						type={CardType.Species}
+						front={
+							<PlaceholderCard>
+								<Text type={TextType.SubHeading}>Species<br/>Deck</Text>
+								<Text type={TextType.Small}>Tap to draw three cards.</Text>
+							</PlaceholderCard>
+						}
+						onClick={() => this.drawSpeciesCards()}
+					/>
+				</div>
+			);
+		}
 
-			return null;
+		const speciesCards = this.state.speciesIDs.map(id => {
+			const species = GameLogic.getSpecies(id) as SpeciesModel;
+			return (
+				<div key={species.id}>
+					<PlayingCard
+						type={CardType.Species}
+						front={<SpeciesCard species={species} />}
+						back={<PlaceholderCard>Species</PlaceholderCard>}
+						display={(this.state.selectedSpeciesID !== '') && (this.state.selectedSpeciesID !== species.id) ? PlayingCardSide.Back : PlayingCardSide.Front}
+						onClick={(this.state.selectedSpeciesID !== '') ? null : () => this.selectSpecies(species.id)}
+					/>
+				</div>
+			);
 		});
+
+		return (
+			<div className='card-selection-row'>
+				<Text>Select one of these <b>species</b> cards:</Text>
+				<CardList cards={speciesCards} />
+			</div>
+		);
+	};
+
+	getRoleSection = () => {
+		if (this.state.roleIDs.length === 0) {
+			return (
+				<div className='deck-row'>
+					<PlayingCard
+						stack={true}
+						type={CardType.Role}
+						front={
+							<PlaceholderCard>
+								<Text type={TextType.SubHeading}>Role<br/>Deck</Text>
+								<Text type={TextType.Small}>Tap to draw three cards.</Text>
+							</PlaceholderCard>
+						}
+						onClick={() => this.drawRoleCards()}
+					/>
+				</div>
+			);
+		}
 
 		const roleCards = this.state.roleIDs.map(id => {
-			const role = GameLogic.getRole(id);
-			if (role) {
-				return (
-					<div key={role.id}>
-						<PlayingCard
-							type='role'
-							front={<RoleCard role={role} />}
-							back={<PlaceholderCard>Role</PlaceholderCard>}
-							display={(this.state.selectedRoleID !== '') && (this.state.selectedRoleID !== role.id) ? PlayingCardSide.Back : PlayingCardSide.Front}
-							onClick={(this.state.selectedRoleID !== '') ? null : () => this.selectRole(role.id)}
-						/>
-					</div>
-				);
-			}
-
-			return null;
+			const role = GameLogic.getRole(id) as RoleModel;
+			return (
+				<div key={role.id}>
+					<PlayingCard
+						type={CardType.Role}
+						front={<RoleCard role={role} />}
+						back={<PlaceholderCard>Role</PlaceholderCard>}
+						display={(this.state.selectedRoleID !== '') && (this.state.selectedRoleID !== role.id) ? PlayingCardSide.Back : PlayingCardSide.Front}
+						onClick={(this.state.selectedRoleID !== '') ? null : () => this.selectRole(role.id)}
+					/>
+				</div>
+			);
 		});
+
+		return (
+			<div className='card-selection-row'>
+				<Text>Select one of these <b>role</b> cards:</Text>
+				<CardList cards={roleCards} />
+			</div>
+		);
+	};
+
+	getBackgroundSection = () => {
+		if (this.state.backgroundIDs.length === 0) {
+			return (
+				<div className='deck-row'>
+					<PlayingCard
+						stack={true}
+						type={CardType.Background}
+						front={
+							<PlaceholderCard>
+								<Text type={TextType.SubHeading}>Background<br/>Deck</Text>
+								<Text type={TextType.Small}>Tap to draw three cards.</Text>
+							</PlaceholderCard>
+						}
+						onClick={() => this.drawBackgroundCards()}
+					/>
+				</div>
+			);
+		}
 
 		const backgroundCards = this.state.backgroundIDs.map(id => {
-			const background = GameLogic.getBackground(id);
-			if (background) {
-				return (
-					<div key={background.id}>
-						<PlayingCard
-							type='background'
-							front={<BackgroundCard background={background} />}
-							back={<PlaceholderCard>Background</PlaceholderCard>}
-							display={(this.state.selectedBackgroundID !== '') && (this.state.selectedBackgroundID !== background.id) ? PlayingCardSide.Back : PlayingCardSide.Front}
-							onClick={(this.state.selectedBackgroundID !== '') ? null : () => this.selectBackground(background.id)}
-						/>
-					</div>
-				);
-			}
-
-			return null;
+			const background = GameLogic.getBackground(id) as BackgroundModel;
+			return (
+				<div key={background.id}>
+					<PlayingCard
+						type={CardType.Background}
+						front={<BackgroundCard background={background} />}
+						back={<PlaceholderCard>Background</PlaceholderCard>}
+						display={(this.state.selectedBackgroundID !== '') && (this.state.selectedBackgroundID !== background.id) ? PlayingCardSide.Back : PlayingCardSide.Front}
+						onClick={(this.state.selectedBackgroundID !== '') ? null : () => this.selectBackground(background.id)}
+					/>
+				</div>
+			);
 		});
 
+		return (
+			<div className='card-selection-row'>
+				<Text>Select one of these <b>background</b> cards:</Text>
+				<CardList cards={backgroundCards} />
+			</div>
+		);
+	};
+
+	render = () => {
 		const canSelect = (this.state.selectedSpeciesID !== '') && (this.state.selectedRoleID !== '') && (this.state.selectedBackgroundID !== '');
 
 		return (
 			<div className='card-selector-page'>
 				{this.props.header}
 				<div className='content'>
-					<div className='card-selection-row'>
-						<Text>Select one of these <b>species</b> cards:</Text>
-						<CardList cards={speciesCards} />
-					</div>
-					<div className='card-selection-row'>
-						<Text>Select one of these <b>role</b> cards:</Text>
-						<CardList cards={roleCards} />
-					</div>
-					<div className='card-selection-row'>
-						<Text>Select one of these <b>background</b> cards:</Text>
-						<CardList cards={backgroundCards} />
-					</div>
+					{this.getSpeciesSection()}
+					{this.getRoleSection()}
+					{this.getBackgroundSection()}
 				</div>
 				<div className='footer'>
 					<button disabled={!canSelect} onClick={() => this.select()}>Select these cards</button>
@@ -341,7 +422,7 @@ class EquipmentSelector extends Component<EquipmentSelectorProps, EquipmentSelec
 			const items = slot.candidates.map(item => (
 				<div key={item.id}>
 					<PlayingCard
-						type='item'
+						type={CardType.Item}
 						front={<ItemCard item={item} />}
 						back={<PlaceholderCard>Item</PlaceholderCard>}
 						display={(slot.selected !== null) && (slot.selected.name !== item.name) ? PlayingCardSide.Back : PlayingCardSide.Front}

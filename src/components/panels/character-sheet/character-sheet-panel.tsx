@@ -1,5 +1,6 @@
 import { Component } from 'react';
 
+import { CardType } from '../../../enums/card-type';
 import { FeatureType } from '../../../enums/feature-type';
 
 import { CombatantLogic } from '../../../logic/combatant-logic';
@@ -175,7 +176,7 @@ class FeaturesPage extends Component<FeaturesPageProps> {
 			return (
 				<PlayingCard
 					key={feature.id}
-					type='feature'
+					type={CardType.Feature}
 					front={<FeatureCard feature={feature} />}
 					footer={CombatantLogic.getCardSource(this.props.hero, feature.id, 'feature')}
 					footerType={CombatantLogic.getCardSourceType(this.props.hero, feature.id, 'feature')}
@@ -204,7 +205,7 @@ class ActionsPage extends Component<ActionsPageProps> {
 			return (
 				<PlayingCard
 					key={action.id}
-					type='action'
+					type={CardType.Action}
 					front={<ActionCard action={action} />}
 					footer={CombatantLogic.getCardSource(this.props.hero, action.id, 'action')}
 					footerType={CombatantLogic.getCardSourceType(this.props.hero, action.id, 'action')}

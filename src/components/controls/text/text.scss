@@ -44,4 +44,10 @@
 		background-color: rgb(200, 230, 255);
 		padding: 10px;
 	}
+
+	&.small {
+		margin: 5px 0;
+		font-size: 12px;
+		opacity: 0.7;
+	}
 }

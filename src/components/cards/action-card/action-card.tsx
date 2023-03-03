@@ -2,7 +2,8 @@ import { Component } from 'react';
 
 import { ActionLogic } from '../../../logic/action-logic';
 
-import type { ActionEffectModel, ActionModel, ActionPrerequisiteModel, ActionTargetModel, ActionWeaponModel } from '../../../models/action';
+import type { ActionEffectModel, ActionModel, ActionTargetModel, ActionWeaponModel } from '../../../models/action';
+import type { EncounterModel } from '../../../models/encounter';
 
 import { Text, TextType } from '../../controls';
 
@@ -10,22 +11,25 @@ import './action-card.scss';
 
 interface Props {
 	action: ActionModel;
+	encounter: EncounterModel | null;
 }
 
 export class ActionCard extends Component<Props> {
-	getPrerequisites = (prerequisites: ActionPrerequisiteModel[]) => {
-		if (prerequisites.length === 0) {
-			return null;
-		}
-
-		return prerequisites.map((p, n) => <div key={n} className='prerequisite'>{p.description}</div>);
+	static defaultProps = {
+		encounter: null
 	};
 
-	getParameters = (parameters: (ActionTargetModel | ActionWeaponModel)[]) => {
-		if (parameters.length === 0) {
-			return null;
+	getPrerequisites = () => {
+		if (this.props.encounter === null) {
+			return [];
 		}
 
+		return this.props.action.prerequisites
+			.filter(p => !p.isSatisfied(this.props.encounter as EncounterModel))
+			.map((p, n) => <div key={n} className='prerequisite'>{p.description}</div>);
+	};
+
+	getParameters = () => {
 		const getParameterDescription = (parameter: ActionTargetModel | ActionWeaponModel) => {
 			switch (parameter.name) {
 				case 'targets': {
@@ -38,14 +42,10 @@ export class ActionCard extends Component<Props> {
 			}
 		};
 
-		return parameters.map((p, n) => <div key={n} className='parameter'>{getParameterDescription(p)}</div>);
+		return this.props.action.parameters.map((p, n) => <div key={n} className='parameter'>{getParameterDescription(p)}</div>);
 	};
 
-	getEffects = (effects: ActionEffectModel[]) => {
-		if (effects.length === 0) {
-			return null;
-		}
-
+	getEffects = () => {
 		const getEffectDescription = (effect: ActionEffectModel) => {
 			let children = null;
 			if (effect.children.length > 0) {
@@ -60,16 +60,16 @@ export class ActionCard extends Component<Props> {
 			);
 		};
 
-		return effects.map((e, n) => <div key={n}>{getEffectDescription(e)}</div>);
+		return this.props.action.effects.map((e, n) => <div key={n}>{getEffectDescription(e)}</div>);
 	};
 
 	render = () => {
 		return (
 			<div className='action-card'>
 				<Text type={TextType.SubHeading}>{this.props.action.name}</Text>
-				{this.getPrerequisites(this.props.action.prerequisites)}
-				{this.getParameters(this.props.action.parameters)}
-				{this.getEffects(this.props.action.effects)}
+				{this.getPrerequisites()}
+				{this.getParameters()}
+				{this.getEffects()}
 			</div>
 		);
 	};

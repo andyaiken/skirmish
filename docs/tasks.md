@@ -32,7 +32,8 @@
 * Character sheet panel:
   * Show ranks as filled circles
   * Show the XP required as a gauge
-* Human should have an action to clear and redraw actions
+* Encounter:
+  * Movement trails
 * Mountebank, Thief and Pixie should have an attack redirection aura
 * Gnome, Thief should be able to set / disable traps
 * Monster species:

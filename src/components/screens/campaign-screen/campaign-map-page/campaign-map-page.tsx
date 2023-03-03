@@ -1,5 +1,7 @@
 import { Component } from 'react';
 
+import { CardType } from '../../../../enums/card-type';
+
 import { CampaignMapLogic } from '../../../../logic/campaign-map-logic';
 
 import type { CombatantModel } from '../../../../models/combatant';
@@ -7,7 +9,7 @@ import type { GameModel } from '../../../../models/game';
 import type { RegionModel } from '../../../../models/campaign-map';
 
 import { BoonCard, HeroCard } from '../../../cards';
-import { CardList, Developer, Dialog, PlayingCard, Selector, StatValue, Text, TextType } from '../../../controls';
+import { CardList, Dialog, PlayingCard, Selector, StatValue, Text, TextType } from '../../../controls';
 import { CampaignMapPanel } from '../../../panels';
 
 import './campaign-map-page.scss';
@@ -85,7 +87,7 @@ export class CampaignMapPage extends Component<Props, State> {
 				.map(h => {
 					return (
 						<div key={h.id}>
-							<PlayingCard type='hero' front={<HeroCard hero={h} />} onClick={canAdd ? () => this.selectHero(h) : null} />
+							<PlayingCard type={CardType.Hero} front={<HeroCard hero={h} />} onClick={canAdd ? () => this.selectHero(h) : null} />
 						</div>
 					);
 				});
@@ -94,7 +96,7 @@ export class CampaignMapPage extends Component<Props, State> {
 				.map(h => {
 					return (
 						<div key={h.id}>
-							<PlayingCard type='hero' front={<HeroCard hero={h} />} onClick={() => this.deselectHero(h)} />
+							<PlayingCard type={CardType.Hero} front={<HeroCard hero={h} />} onClick={() => this.deselectHero(h)} />
 						</div>
 					);
 				});
@@ -156,13 +158,13 @@ export class CampaignMapPage extends Component<Props, State> {
 					<hr />
 					<Text>If you take control of {this.state.selectedRegion.name}, you will recieve:</Text>
 					<div className='boon'>
-						<PlayingCard type='boon' front={<BoonCard boon={this.state.selectedRegion.boon} />} />
+						<PlayingCard type={CardType.Boon} front={<BoonCard boon={this.state.selectedRegion.boon} />} />
 					</div>
 					<hr />
 					{canAttack ? null : <Text type={TextType.Information}>You can&apos;t attack {this.state.selectedRegion.name} because it&apos;s not on the coast or adjacent to your land.</Text>}
 					{heroesExist ? null : <Text type={TextType.Information}>You can&apos;t attack {this.state.selectedRegion.name} because you don&apos;t have any heroes.</Text>}
 					{canAttack && heroesExist ? <button onClick={() => this.setState({ showHeroSelection: true })}>Start an encounter here</button> : null}
-					{this.props.developer ? <Developer><button onClick={() => this.props.conquer(this.state.selectedRegion as RegionModel)}>Conquer</button></Developer> : null}
+					{this.props.developer ? <button className='developer' onClick={() => this.props.conquer(this.state.selectedRegion as RegionModel)}>Conquer</button> : null}
 				</div>
 			);
 		} else {

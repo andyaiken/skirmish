@@ -1,5 +1,6 @@
 .encounter-screen {
 	height: 100%;
+	padding: 10px;
 	display: flex;
 	gap: 10px;
 
@@ -15,6 +16,10 @@
 
 	.encounter-left-panel {
 		flex: 0 0 250px;
+
+		&.empty {
+			background-color: rgb(240, 240, 240);
+		}
 	}
 
 	.encounter-central-panel {

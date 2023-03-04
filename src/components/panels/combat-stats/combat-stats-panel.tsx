@@ -1,6 +1,5 @@
 import { Component } from 'react';
 
-import { CombatantState } from '../../../enums/combatant-state';
 import { TraitType } from '../../../enums/trait-type';
 
 import { CombatantLogic } from '../../../logic/combatant-logic';
@@ -46,52 +45,6 @@ export class CombatStatsPanel extends Component<Props> {
 			.concat(this.props.combatant.combat.conditions)
 			.concat(EncounterLogic.getAuraConditions(this.props.encounter, this.props.combatant));
 
-		const movement = (
-			<StatValue orientation='vertical' label='Movement' value={<IconValue value={this.props.combatant.combat.movement} type={IconType.Movement} />} />
-		);
-
-		let senses = (
-			<StatValue orientation='vertical' label='Senses' value={this.props.combatant.combat.senses} />
-		);
-		if (this.props.scan) {
-			senses = (
-				<div>
-					<StatValue orientation='vertical' label='Senses' value={this.props.combatant.combat.senses} />
-					<button disabled={this.props.combatant.combat.movement < 4} onClick={() => this.scan(this.props.combatant)}>
-						Scan<br/><IconValue value={4} type={IconType.Movement} />
-					</button>
-				</div>
-			);
-		}
-
-		let hidden = (
-			<StatValue orientation='vertical' label='Hidden' value={this.props.combatant.combat.hidden} />
-		);
-		if (this.props.hide) {
-			hidden = (
-				<div>
-					<StatValue orientation='vertical' label='Hidden' value={this.props.combatant.combat.hidden} />
-					<button disabled={this.props.combatant.combat.movement < 4} onClick={() => this.hide(this.props.combatant)}>
-						Hide<br/><IconValue value={4} type={IconType.Movement} />
-					</button>
-				</div>
-			);
-		}
-
-		let stand = (
-			<StatValue orientation='vertical' label='State' value={this.props.combatant.combat.state} />
-		);
-		if (this.props.standUp && (this.props.combatant.combat.state === CombatantState.Prone)) {
-			stand = (
-				<div>
-					<StatValue orientation='vertical' label='State' value={this.props.combatant.combat.state} />
-					<button disabled={this.props.combatant.combat.movement < 8} onClick={() => this.standUp(this.props.combatant)}>
-						Stand<br/><IconValue value={8} type={IconType.Movement} />
-					</button>
-				</div>
-			);
-		}
-
 		let wounds = '';
 		for (let n = 0; n < this.props.combatant.combat.wounds; ++n) {
 			wounds += '♥︎';
@@ -113,16 +66,15 @@ export class CombatStatsPanel extends Component<Props> {
 			<div className='combat-stats-panel'>
 				<Box label='This Round'>
 					<div className='stats-row'>
-						{movement}
-						{senses}
-						{hidden}
+						<StatValue orientation='vertical' label='Movement' value={<IconValue value={this.props.combatant.combat.movement} type={IconType.Movement} />} />
+						<StatValue orientation='vertical' label='Senses' value={this.props.combatant.combat.senses} />
+						<StatValue orientation='vertical' label='Hidden' value={this.props.combatant.combat.hidden} />
 					</div>
 				</Box>
-				<Box label='Status'>
+				<Box label='Health'>
 					<div className='stats-row'>
 						<StatValue orientation='vertical' label='Damage' value={this.props.combatant.combat.damage} />
 						<StatValue orientation='vertical' label='Wounds' value={<div>{woundsInRows}</div>} />
-						{stand}
 					</div>
 				</Box>
 				<Box label='Traits and Conditions'>

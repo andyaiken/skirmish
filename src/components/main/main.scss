@@ -1,18 +1,5 @@
 .skirmish {
 	height: 100%;
 	background-color: rgb(240, 240, 240);
-	display: flex;
-	flex-direction: column;
-
-	.skirmish-top-bar {
-		flex: 0 0 auto;
-		background-color: rgb(230, 230, 230);
-		border-bottom: 2px solid rgb(220, 220, 220);
-	}
-
-	.skirmish-content {
-		flex: 1 1 0;
-		padding: 15px;
-		overflow-y: auto;
-	}
+	overflow: hidden;
 }

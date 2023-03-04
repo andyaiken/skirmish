@@ -3,6 +3,12 @@
 		text-align: center;
 	}
 
+	.quick-actions {
+		display: flex;
+		align-items: flex-start;
+		gap: 5px;
+	}
+
 	.movement {
 		display: flex;
 		flex-direction: column;

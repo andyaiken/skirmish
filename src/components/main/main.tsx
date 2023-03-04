@@ -646,12 +646,7 @@ export class Main extends Component<Props, State> {
 	render = () => {
 		return (
 			<div className='skirmish'>
-				<div className='skirmish-top-bar'>
-					<Text type={TextType.Heading}>Skirmish</Text>
-				</div>
-				<div className='skirmish-content'>
-					{this.getContent()}
-				</div>
+				{this.getContent()}
 				{this.state.dialog ? <Dialog content={this.state.dialog} /> : null}
 			</div>
 		);

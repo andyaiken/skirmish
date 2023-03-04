@@ -7,7 +7,7 @@ import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
 import type { RegionModel } from '../../../models/campaign-map';
 
-import { Selector } from '../../controls';
+import { Selector, Text, TextType } from '../../controls';
 
 import { CampaignMapPage } from './campaign-map-page/campaign-map-page';
 import { HeroesPage } from './heroes-page/heroes-page';
@@ -116,8 +116,13 @@ export class CampaignScreen extends Component<Props, State> {
 		];
 		return (
 			<div className='campaign-screen'>
-				<Selector options={options} selectedID={this.state.page} onSelect={this.setPage} />
-				{content}
+				<div className='campaign-top-bar'>
+					<Text type={TextType.SubHeading}>Skirmish</Text>
+					<Selector options={options} selectedID={this.state.page} onSelect={this.setPage} />
+				</div>
+				<div className='campaign-content'>
+					{content}
+				</div>
 			</div>
 		);
 	};

@@ -2,8 +2,8 @@ import { Component } from 'react';
 
 import type { GameModel } from '../../../models/game';
 
+import { PlayingCard, Text, TextType } from '../../controls';
 import { PlaceholderCard } from '../../cards';
-import { PlayingCard } from '../../controls';
 
 import './landing-screen.scss';
 
@@ -24,8 +24,13 @@ export class LandingScreen extends Component<Props> {
 
 		return (
 			<div className='landing-screen'>
-				{ continueBtn }
-				<PlayingCard front={<PlaceholderCard>Start a new campaign</PlaceholderCard>} onClick={this.props.startCampaign} />
+				<div className='landing-top-bar'>
+					<Text type={TextType.Heading}>Skirmish</Text>
+				</div>
+				<div className='landing-content'>
+					{ continueBtn }
+					<PlayingCard front={<PlaceholderCard>Start a new campaign</PlaceholderCard>} onClick={this.props.startCampaign} />
+				</div>
 			</div>
 		);
 	};

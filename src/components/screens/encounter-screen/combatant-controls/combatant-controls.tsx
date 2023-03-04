@@ -92,6 +92,21 @@ export class CombatantControls extends Component<Props, State> {
 							hide={this.props.hide}
 						/>
 						{auraSection}
+						<div className='quick-actions'>
+							<button disabled={this.props.combatant.combat.movement < 4} onClick={() => this.props.scan(this.props.encounter, this.props.combatant)}>
+								Scan<br/><IconValue value={4} type={IconType.Movement} />
+							</button>
+							<button disabled={this.props.combatant.combat.movement < 4} onClick={() => this.props.hide(this.props.encounter, this.props.combatant)}>
+								Hide<br/><IconValue value={4} type={IconType.Movement} />
+							</button>
+							{
+								this.props.combatant.combat.state === CombatantState.Prone ?
+									<button disabled={this.props.combatant.combat.movement < 8} onClick={() => this.props.standUp(this.props.encounter, this.props.combatant)}>
+										Stand<br/><IconValue value={8} type={IconType.Movement} />
+									</button>
+									: null
+							}
+						</div>
 					</div>
 				);
 				break;
@@ -264,7 +279,7 @@ export class CombatantControls extends Component<Props, State> {
 							<Tag>{GameLogic.getBackground(this.props.combatant.backgroundID)?.name ?? 'Unknown background'}</Tag>
 							<Tag>Level {this.props.combatant.level}</Tag>
 						</div>
-						{prone ? <Text type={TextType.Information}><b>{this.props.combatant.name} is Prone.</b> Their skill ranks are halved and moving costs are doubled.</Text> : null}
+						{prone ? <Text type={TextType.Information}><b>{this.props.combatant.name} is Prone.</b> Their skill ranks are halved and their moving costs are doubled.</Text> : null}
 						{this.props.combatant.combat.hidden > 0 ? <Text type={TextType.Information}><b>{this.props.combatant.name} is Hidden.</b> Their moving costs are doubled.</Text> : null}
 						<Selector
 							options={options}

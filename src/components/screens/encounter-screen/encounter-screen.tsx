@@ -108,6 +108,10 @@ export class EncounterScreen extends Component<Props, State> {
 			case EncounterState.Active: {
 				const currentCombatant = EncounterLogic.getActiveCombatants(this.props.encounter).find(c => c.combat.current) || null;
 				if (currentCombatant === null) {
+					initiative = (
+						<div className='encounter-left-panel empty'>
+						</div>
+					);
 					controls = (
 						<div className='encounter-right-panel'>
 							<Text type={TextType.SubHeading}>Round {this.props.encounter.round + 1}</Text>

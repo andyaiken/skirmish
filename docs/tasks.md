@@ -11,6 +11,7 @@
 
 * Encounters:
   * Implement actions
+    * Separate targets, radius, and origin square
     * Add missing effects
     * Handle the selected action's parameters, in order
     * Run the selected action's effects

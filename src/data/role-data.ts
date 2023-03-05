@@ -7,7 +7,7 @@ import { SkillCategoryType } from '../enums/skill-category-type';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
 
-import { ActionEffects, ActionPrerequisites, ActionTargetParameters, ActionWeaponParameters } from '../logic/action-logic';
+import { ActionEffects, ActionOriginParameters, ActionPrerequisites, ActionTargetParameters, ActionWeaponParameters } from '../logic/action-logic';
 import { ConditionLogic } from '../logic/condition-logic';
 import { FeatureLogic } from '../logic/feature-logic';
 
@@ -471,7 +471,8 @@ export class RoleData {
 							ActionPrerequisites.implement()
 						],
 						parameters: [
-							ActionTargetParameters.area(ActionTargetType.Squares, 3, 10)
+							ActionOriginParameters.distance(10),
+							ActionTargetParameters.burst(ActionTargetType.Squares, Number.MAX_VALUE, 3)
 						],
 						effects: [
 							// TODO: Turn selected squares into difficult terrain
@@ -484,7 +485,8 @@ export class RoleData {
 							ActionPrerequisites.implement()
 						],
 						parameters: [
-							ActionTargetParameters.area(ActionTargetType.Squares, 3, 10)
+							ActionOriginParameters.distance(10),
+							ActionTargetParameters.burst(ActionTargetType.Squares, Number.MAX_VALUE, 3)
 						],
 						effects: [
 							// TODO: Turn selected squares into clear terrain
@@ -497,7 +499,8 @@ export class RoleData {
 							ActionPrerequisites.implement()
 						],
 						parameters: [
-							ActionTargetParameters.area(ActionTargetType.Squares, 3, 10)
+							ActionOriginParameters.distance(10),
+							ActionTargetParameters.burst(ActionTargetType.Squares, Number.MAX_VALUE, 3)
 						],
 						effects: [
 							// TODO: Remove selected squares from map
@@ -510,7 +513,8 @@ export class RoleData {
 							ActionPrerequisites.implement()
 						],
 						parameters: [
-							ActionTargetParameters.area(ActionTargetType.Walls, 3, 10)
+							ActionOriginParameters.distance(10),
+							ActionTargetParameters.burst(ActionTargetType.Squares, Number.MAX_VALUE, 3)
 						],
 						effects: [
 							// TODO: Turn selected walls into squares
@@ -523,7 +527,7 @@ export class RoleData {
 							ActionPrerequisites.implement()
 						],
 						parameters: [
-							ActionTargetParameters.area(ActionTargetType.Enemies, 3, 10)
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 10)
 						],
 						effects: [
 							ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Endurance, 5, TraitType.Speed)),
@@ -737,7 +741,8 @@ export class RoleData {
 						],
 						parameters: [
 							ActionWeaponParameters.ranged(),
-							ActionTargetParameters.weaponArea(ActionTargetType.Combatants, 3)
+							ActionOriginParameters.weapon(),
+							ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 3)
 						],
 						effects: [
 							ActionEffects.attack({
@@ -935,7 +940,8 @@ export class RoleData {
 						],
 						parameters: [
 							ActionWeaponParameters.ranged(),
-							ActionTargetParameters.weaponArea(ActionTargetType.Enemies, 3)
+							ActionOriginParameters.weapon(),
+							ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 3)
 						],
 						effects: [
 							ActionEffects.attack({
@@ -1216,7 +1222,8 @@ export class RoleData {
 							ActionPrerequisites.implement()
 						],
 						parameters: [
-							ActionTargetParameters.area(ActionTargetType.Combatants, 3, 10)
+							ActionOriginParameters.distance(10),
+							ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 3)
 						],
 						effects: [
 							ActionEffects.attack({
@@ -1238,7 +1245,8 @@ export class RoleData {
 							ActionPrerequisites.implement()
 						],
 						parameters: [
-							ActionTargetParameters.area(ActionTargetType.Combatants, 3, 10)
+							ActionOriginParameters.distance(10),
+							ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 3)
 						],
 						effects: [
 							ActionEffects.attack({

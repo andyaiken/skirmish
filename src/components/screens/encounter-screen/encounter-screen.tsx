@@ -102,16 +102,29 @@ export class EncounterScreen extends Component<Props, State> {
 			state = EncounterLogic.getEncounterState(this.props.encounter);
 		}
 
-		let initiative = null;
+		let initiative = (
+			<div className='encounter-left-panel empty'>
+			</div>
+		);
+		if ((state === EncounterState.Active) && (EncounterLogic.getActiveCombatants(this.props.encounter).find(c => c.combat.current))) {
+			initiative = (
+				<div className='encounter-left-panel'>
+					<InitiativeListPanel
+						encounter={this.props.encounter}
+						selectedIDs={this.state.selectedIDs}
+						onSelect={this.selectCombatant}
+						onDetails={this.showDetails}
+					/>
+				</div>
+			);
+		}
+
 		let controls = null;
+		let mapControls = null;
 		switch (state) {
 			case EncounterState.Active: {
 				const currentCombatant = EncounterLogic.getActiveCombatants(this.props.encounter).find(c => c.combat.current) || null;
 				if (currentCombatant === null) {
-					initiative = (
-						<div className='encounter-left-panel empty'>
-						</div>
-					);
 					controls = (
 						<div className='encounter-right-panel'>
 							<Text type={TextType.SubHeading}>Round {this.props.encounter.round + 1}</Text>
@@ -119,16 +132,6 @@ export class EncounterScreen extends Component<Props, State> {
 						</div>
 					);
 				} else {
-					initiative = (
-						<div className='encounter-left-panel'>
-							<InitiativeListPanel
-								encounter={this.props.encounter}
-								selectedIDs={this.state.selectedIDs}
-								onSelect={this.selectCombatant}
-								onDetails={this.showDetails}
-							/>
-						</div>
-					);
 					controls = (
 						<div className='encounter-right-panel'>
 							<CombatantControls
@@ -149,6 +152,21 @@ export class EncounterScreen extends Component<Props, State> {
 						</div>
 					);
 				}
+				mapControls = (
+					<div className='map-controls'>
+						<div className='zoom'>
+							<button className='zoom-btn' onClick={() => this.props.rotateMap(this.props.encounter, 'l')}>L</button>
+							<button className='zoom-btn' onClick={() => this.props.rotateMap(this.props.encounter, 'r')}>R</button>
+						</div>
+						<div className='zoom'>
+							<button disabled={this.state.mapSquareSize <= 5} className='zoom-btn' onClick={() => this.nudgeMapSize(-5)}>-</button>
+							<button disabled={this.state.mapSquareSize >= 50} className='zoom-btn' onClick={() => this.nudgeMapSize(+5)}>+</button>
+						</div>
+						<button className='finish-btn danger' onClick={() => this.setManualEncounterState(EncounterState.Retreat)}>Retreat</button>
+						<button className='finish-btn danger' onClick={() => this.setManualEncounterState(EncounterState.Defeat)}>Surrender</button>
+						{this.props.developer ? <button className='finish-btn developer' onClick={() => this.setManualEncounterState(EncounterState.Victory)}>Victory</button> : null}
+					</div>
+				);
 				break;
 			}
 			case EncounterState.Victory: {
@@ -237,19 +255,7 @@ export class EncounterScreen extends Component<Props, State> {
 						onSelect={this.selectCombatant}
 						onDetails={this.showDetails}
 					/>
-					<div className='map-controls'>
-						<div className='zoom'>
-							<button className='zoom-btn' onClick={() => this.props.rotateMap(this.props.encounter, 'l')}>L</button>
-							<button className='zoom-btn' onClick={() => this.props.rotateMap(this.props.encounter, 'r')}>R</button>
-						</div>
-						<div className='zoom'>
-							<button disabled={this.state.mapSquareSize <= 5} className='zoom-btn' onClick={() => this.nudgeMapSize(-5)}>-</button>
-							<button disabled={this.state.mapSquareSize >= 50} className='zoom-btn' onClick={() => this.nudgeMapSize(+5)}>+</button>
-						</div>
-						<button className='finish-btn danger' onClick={() => this.setManualEncounterState(EncounterState.Retreat)}>Retreat</button>
-						<button className='finish-btn danger' onClick={() => this.setManualEncounterState(EncounterState.Defeat)}>Surrender</button>
-						{this.props.developer ? <button className='finish-btn developer' onClick={() => this.setManualEncounterState(EncounterState.Victory)}>Victory</button> : null}
-					</div>
+					{mapControls}
 				</div>
 				{controls}
 				{dialog}

@@ -11,11 +11,18 @@ export interface ActionPrerequisiteModel {
 
 export interface ActionParameterModel {
 	name: string;
+	candidates: unknown[];
+	value: unknown | null;
+}
+
+export interface ActionOriginParameterModel extends ActionParameterModel {
+	name: 'origin';
+	distance: number | 'weapon';
 }
 
 export interface ActionTargetParameterModel extends ActionParameterModel {
 	name: 'targets';
-	range: { type: ActionRangeType, radius: number, distance: number };
+	range: { type: ActionRangeType, radius: number };
 	targets: { type: ActionTargetType, count: number } | null;
 }
 
@@ -24,16 +31,10 @@ export interface ActionWeaponParameterModel extends ActionParameterModel {
 	type: 'melee' | 'ranged';
 }
 
-export interface ActionParameterValueModel {
-	name: string;
-	candidates: unknown[];
-	value: unknown | null;
-}
-
 export interface ActionEffectModel {
 	description: string;
 	children: ActionEffectModel[];
-	run: (encounter: EncounterModel, combatant: CombatantModel, parameters: ActionParameterValueModel[]) => void;
+	run: (encounter: EncounterModel, combatant: CombatantModel, parameters: ActionParameterModel[]) => void;
 }
 
 export interface ActionModel {

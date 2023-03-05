@@ -10,7 +10,7 @@ import { EncounterLogic } from '../../../../logic/encounter-logic';
 import { EncounterMapLogic } from '../../../../logic/encounter-map-logic';
 import { GameLogic } from '../../../../logic/game-logic';
 
-import type { ActionModel, ActionParameterValueModel } from '../../../../models/action';
+import type { ActionModel } from '../../../../models/action';
 import type { CombatantModel } from '../../../../models/combatant';
 import type { EncounterModel } from '../../../../models/encounter';
 import type { ItemModel } from '../../../../models/item';
@@ -87,9 +87,6 @@ export class CombatantControls extends Component<Props, State> {
 						<CombatStatsPanel
 							combatant={this.props.combatant}
 							encounter={this.props.encounter}
-							standUp={this.props.standUp}
-							scan={this.props.scan}
-							hide={this.props.hide}
 						/>
 						{auraSection}
 						<div className='quick-actions'>
@@ -102,7 +99,7 @@ export class CombatantControls extends Component<Props, State> {
 							{
 								this.props.combatant.combat.state === CombatantState.Prone ?
 									<button disabled={this.props.combatant.combat.movement < 8} onClick={() => this.props.standUp(this.props.encounter, this.props.combatant)}>
-										Stand<br/><IconValue value={8} type={IconType.Movement} />
+										Stand Up<br/><IconValue value={8} type={IconType.Movement} />
 									</button>
 									: null
 							}
@@ -189,25 +186,28 @@ export class CombatantControls extends Component<Props, State> {
 					let parametersSet = true;
 					const parameters: JSX.Element[] = [];
 					action.parameters.forEach((parameter, n) => {
-						const param = this.props.combatant.combat.actionParameters.find(p => p.name === parameter.name) as ActionParameterValueModel;
 						let description = '';
-						if (param.value === null) {
+						if (parameter.value === null) {
 							parametersSet = false;
 							description = '[None]';
 						} else {
-							switch (param.name) {
+							switch (parameter.name) {
+								case'weapon': {
+									const item = parameter.value as ItemModel;
+									description = item.name;
+									break;
+								}
+								case 'origin': {
+									// TODO: Select a square on the map within (distance) or (weapon range) squares of the current combatant
+									break;
+								}
 								case 'targets': {
 									// TODO: This could be {x, y}[] instead
-									const list = param.value as string[];
+									const list = parameter.value as string[];
 									description = list
 										.map(id => EncounterLogic.getCombatant(this.props.encounter, id) as CombatantModel)
 										.map(target => target.name)
 										.join(', ');
-									break;
-								}
-								case'weapon': {
-									const item = param.value as ItemModel;
-									description = item.name;
 									break;
 								}
 							}
@@ -215,9 +215,9 @@ export class CombatantControls extends Component<Props, State> {
 
 						parameters.push(
 							<div key={n} className='action-parameter'>
-								<div className='action-parameter-name'>Select {param.name}</div>
+								<div className='action-parameter-name'>Select {parameter.name}</div>
 								<div className='action-parameter-value'>{description}</div>
-								{param.candidates.length > 1 ? <div className='action-parameter-change'>Change</div> : null}
+								{parameter.candidates.length > 1 ? <div className='action-parameter-change'>Change</div> : null}
 							</div>
 						);
 					});

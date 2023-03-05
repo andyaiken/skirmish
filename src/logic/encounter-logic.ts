@@ -1,4 +1,5 @@
 import { ActionRangeType } from '../enums/action-range-type';
+import { ActionTargetType } from '../enums/action-target-type';
 import { CombatantState } from '../enums/combatant-state';
 import { CombatantType } from '../enums/combatant-type';
 import { ConditionType } from '../enums/condition-type';
@@ -117,7 +118,6 @@ export class EncounterLogic {
 		combatant.combat.senses = 0;
 		combatant.combat.movement = 0;
 		combatant.combat.actions = [];
-		combatant.combat.actionParameters = [];
 
 		const conditions = ([] as ConditionModel[])
 			.concat(combatant.combat.conditions)
@@ -168,7 +168,6 @@ export class EncounterLogic {
 		combatant.combat.senses = 0;
 		combatant.combat.movement = 0;
 		combatant.combat.actions = [];
-		combatant.combat.actionParameters = [];
 
 		const conditions = ([] as ConditionModel[])
 			.concat(combatant.combat.conditions)
@@ -197,45 +196,19 @@ export class EncounterLogic {
 	static runAction = (encounter: EncounterModel, combatant: CombatantModel) => {
 		if (combatant.combat.actions.length === 1) {
 			const action = combatant.combat.actions[0];
-			action.effects.forEach(effect => effect.run(encounter, combatant, combatant.combat.actionParameters));
+			action.effects.forEach(effect => effect.run(encounter, combatant, action.parameters));
 			combatant.combat.actions = [];
-			combatant.combat.actionParameters = [];
 		}
 	};
 
 	static checkActionParameters = (encounter: EncounterModel, combatant: CombatantModel) => {
 		if (combatant.combat.actions.length === 1) {
 			const action = combatant.combat.actions[0];
-			combatant.combat.actionParameters = action.parameters.map(parameter => {
-				const candidates: unknown[] = [];
-				let selected: unknown | null = null;
+			action.parameters.forEach(parameter => {
+				parameter.candidates = [];
+				parameter.value = null;
 
 				switch (parameter.name) {
-					case 'targets': {
-						const targetParam = parameter as ActionTargetParameterModel;
-						switch (targetParam.range.type) {
-							case ActionRangeType.Self:
-								candidates.push(combatant.id);
-								selected = [ combatant.id ];
-								break;
-							case ActionRangeType.Adjacent:
-								// TODO: Adjacent targets
-								break;
-							case ActionRangeType.Burst:
-								// TODO: Burst targets
-								break;
-							case ActionRangeType.Area:
-								// TODO: Area targets
-								break;
-							case ActionRangeType.Weapon:
-								// TODO: Weapon targets
-								break;
-							case ActionRangeType.WeaponArea:
-								// TODO: Weapon area targets
-								break;
-						}
-						break;
-					}
 					case 'weapon': {
 						const proficiencies: ItemProficiencyType[] = [];
 						switch ((parameter as ActionWeaponParameterModel).type) {
@@ -251,19 +224,85 @@ export class EncounterLogic {
 						}
 						combatant.items
 							.filter(i => proficiencies.includes(i.proficiency))
-							.forEach(i => candidates.push(i));
-						if (candidates.length > 0) {
-							selected = candidates[0];
+							.forEach(i => parameter.candidates.push(i));
+						if (parameter.candidates.length > 0) {
+							parameter.value = parameter.candidates[0];
+						}
+						break;
+					}
+					case 'origin': {
+						// Origin needs to be selected manually on the map
+						break;
+					}
+					case 'targets': {
+						const targetParam = parameter as ActionTargetParameterModel;
+						if (targetParam.range.type === ActionRangeType.Self) {
+							parameter.candidates.push(combatant.id);
+							parameter.value = [ combatant.id ];
+						} else {
+							let radius = 0;
+							let originSquares = EncounterLogic.getCombatantSquares(encounter, combatant);
+
+							switch (targetParam.range.type) {
+								case ActionRangeType.Adjacent: {
+									radius = 1;
+									break;
+								}
+								case ActionRangeType.Burst: {
+									radius = targetParam.range.radius;
+									break;
+								}
+								case ActionRangeType.Weapon: {
+									const wpnParam = action.parameters.find(p => p.name === 'weapon') as ActionWeaponParameterModel;
+									if (wpnParam && (wpnParam.value !== null)) {
+										const weapon = wpnParam.value as ItemModel;
+										if (weapon.weapon) {
+											radius = weapon.weapon.range;
+										}
+									}
+									break;
+								}
+							}
+
+							const originParam = action.parameters.find(p => p.name === 'origin');
+							if (originParam) {
+								originSquares = [ (originParam.value as { x: number, y: number }) ];
+							}
+
+							if (targetParam.targets) {
+								switch (targetParam.targets.type) {
+									case ActionTargetType.Combatants: {
+										// TODO: Find all combatants within (radius) of (originSquares)
+										break;
+									}
+									case ActionTargetType.Enemies: {
+										// TODO: Find all enemy combatants within (radius) of (originSquares)
+										break;
+									}
+									case ActionTargetType.Allies: {
+										// TODO: Find all ally combatants within (radius) of (originSquares)
+										break;
+									}
+									case ActionTargetType.Squares: {
+										// TODO: Find all squares within (radius) of (originSquares)
+										break;
+									}
+									case ActionTargetType.Walls: {
+										// TODO: Find all walls within (radius) of (originSquares)
+										break;
+									}
+								}
+
+								if (targetParam.targets.count === Number.MAX_VALUE) {
+									targetParam.value = targetParam.candidates;
+								} else {
+									targetParam.value = targetParam.candidates.slice(0, targetParam.targets.count);
+								}
+							}
 						}
 						break;
 					}
 				}
-
-				return {
-					name: parameter.name,
-					candidates: candidates,
-					value: selected
-				};
 			});
 		}
 	};

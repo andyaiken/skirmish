@@ -11,9 +11,11 @@
 
 * Encounters:
   * Implement actions
-    * Separate targets, radius, and origin square
-    * Add missing effects
     * Handle the selected action's parameters, in order
+    * Add missing effects
+    * Lose turn should set a flag on the combatant
+      * On start of turn, notify and end turn
+      * This flag should be reflected in the initiative list
     * Run the selected action's effects
     * Allow the user to opt for a universal action instead
   * Implement AI so that monsters can take their turns

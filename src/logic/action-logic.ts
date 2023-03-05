@@ -7,7 +7,15 @@ import { ItemProficiencyType } from '../enums/item-proficiency-type';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
 
-import type { ActionEffectModel, ActionModel, ActionParameterValueModel, ActionPrerequisiteModel, ActionTargetParameterModel, ActionWeaponParameterModel } from '../models/action';
+import type {
+	ActionEffectModel,
+	ActionModel,
+	ActionOriginParameterModel,
+	ActionParameterModel,
+	ActionPrerequisiteModel,
+	ActionTargetParameterModel,
+	ActionWeaponParameterModel
+} from '../models/action';
 import type { ItemModel, WeaponModel } from '../models/item';
 import type { CombatantModel } from '../models/combatant';
 import type { ConditionModel } from '../models/condition';
@@ -176,16 +184,37 @@ export class ActionPrerequisites {
 	};
 }
 
+export class ActionOriginParameters {
+	static distance = (value: number): ActionOriginParameterModel => {
+		return {
+			name: 'origin',
+			distance: value,
+			candidates: [],
+			value: null
+		};
+	};
+
+	static weapon = (): ActionOriginParameterModel => {
+		return {
+			name: 'origin',
+			distance: 'weapon',
+			candidates: [],
+			value: null
+		};
+	};
+}
+
 export class ActionTargetParameters {
 	static self = (): ActionTargetParameterModel => {
 		return {
 			name: 'targets',
 			range: {
 				type: ActionRangeType.Self,
-				radius: 0,
-				distance: 0
+				radius: 0
 			},
-			targets: null
+			targets: null,
+			candidates: [],
+			value: null
 		};
 	};
 
@@ -194,13 +223,14 @@ export class ActionTargetParameters {
 			name: 'targets',
 			range: {
 				type: ActionRangeType.Adjacent,
-				radius: 0,
-				distance: 0
+				radius: 0
 			},
 			targets: {
 				type: type,
 				count: count
-			}
+			},
+			candidates: [],
+			value: null
 		};
 	};
 
@@ -209,13 +239,14 @@ export class ActionTargetParameters {
 			name: 'targets',
 			range: {
 				type: ActionRangeType.Burst,
-				radius: radius,
-				distance: 0
+				radius: radius
 			},
 			targets: {
 				type: type,
 				count: count
-			}
+			},
+			candidates: [],
+			value: null
 		};
 	};
 
@@ -224,43 +255,14 @@ export class ActionTargetParameters {
 			name: 'targets',
 			range: {
 				type: ActionRangeType.Weapon,
-				radius: bonus,
-				distance: 0
+				radius: bonus
 			},
 			targets: {
 				type: type,
 				count: count
-			}
-		};
-	};
-
-	static area = (type: ActionTargetType, radius: number, distance: number): ActionTargetParameterModel => {
-		return {
-			name: 'targets',
-			range: {
-				type: ActionRangeType.Area,
-				radius: radius,
-				distance: distance
 			},
-			targets: {
-				type: type,
-				count: Number.MAX_VALUE
-			}
-		};
-	};
-
-	static weaponArea = (type: ActionTargetType, radius: number): ActionTargetParameterModel => {
-		return {
-			name: 'targets',
-			range: {
-				type: ActionRangeType.WeaponArea,
-				radius: radius,
-				distance: 0
-			},
-			targets: {
-				type: type,
-				count: Number.MAX_VALUE
-			}
+			candidates: [],
+			value: null
 		};
 	};
 }
@@ -269,14 +271,18 @@ export class ActionWeaponParameters {
 	static melee = (): ActionWeaponParameterModel => {
 		return {
 			name: 'weapon',
-			type: 'melee'
+			type: 'melee',
+			candidates: [],
+			value: null
 		};
 	};
 
 	static ranged = (): ActionWeaponParameterModel => {
 		return {
 			name: 'weapon',
-			type: 'ranged'
+			type: 'ranged',
+			candidates: [],
+			value: null
 		};
 	};
 }
@@ -285,7 +291,7 @@ export class ActionEffects {
 	static if = (
 		data: {
 			description: string,
-			check: (encounter: EncounterModel, combatant: CombatantModel, parameters: ActionParameterValueModel[]) => boolean,
+			check: (encounter: EncounterModel, combatant: CombatantModel, parameters: ActionParameterModel[]) => boolean,
 			then: ActionEffectModel[]
 		}
 	): ActionEffectModel => {
@@ -328,7 +334,7 @@ export class ActionEffects {
 					});
 				}
 
-				let copy = JSON.parse(JSON.stringify(parameters)) as ActionParameterValueModel[];
+				let copy = JSON.parse(JSON.stringify(parameters)) as ActionParameterModel[];
 				copy = copy.filter(p => p.name !== 'targets');
 				copy.push({ name: 'targets', candidates: [], value: targetsSucceeded });
 				data.then.forEach(effect => effect.run(encounter, combatant, copy));
@@ -385,7 +391,7 @@ export class ActionEffects {
 					});
 				}
 
-				let copy = JSON.parse(JSON.stringify(parameters)) as ActionParameterValueModel[];
+				let copy = JSON.parse(JSON.stringify(parameters)) as ActionParameterModel[];
 				copy = copy.filter(p => p.name !== 'targets');
 				copy.push({ name: 'targets', candidates: [], value: targetsSucceeded });
 				data.hit.forEach(effect => effect.run(encounter, combatant, copy));
@@ -638,16 +644,6 @@ export class ActionLogic {
 				} else {
 					str = `${count} ${type} within weapon range`;
 				}
-				break;
-			case ActionRangeType.Area:
-				if (target.range.radius > 0) {
-					str = `${count} ${type} in a radius of ${target.range.radius} squares centered on a square within ${target.range.distance} squares`;
-				} else {
-					str = `${count} ${type} within ${target.range.distance} squares`;
-				}
-				break;
-			case ActionRangeType.WeaponArea:
-				str = `${count} ${type} in a radius of ${target.range.radius} squares centered on a square within weapon range`;
 				break;
 		}
 

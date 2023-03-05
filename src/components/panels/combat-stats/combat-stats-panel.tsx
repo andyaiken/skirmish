@@ -3,6 +3,7 @@ import { Component } from 'react';
 import { TraitType } from '../../../enums/trait-type';
 
 import { CombatantLogic } from '../../../logic/combatant-logic';
+import { ConditionLogic } from '../../../logic/condition-logic';
 import { EncounterLogic } from '../../../logic/encounter-logic';
 
 import { CombatantModel } from '../../../models/combatant';
@@ -16,28 +17,19 @@ import './combat-stats-panel.scss';
 interface Props {
 	combatant: CombatantModel;
 	encounter: EncounterModel;
-	standUp: ((encounter: EncounterModel, combatant: CombatantModel) => void) | null;
-	scan: ((encounter: EncounterModel, combatant: CombatantModel) => void) | null;
-	hide: ((encounter: EncounterModel, combatant: CombatantModel) => void) | null;
 }
 
 export class CombatStatsPanel extends Component<Props> {
-	scan = (combatant: CombatantModel) => {
-		if (this.props.scan) {
-			this.props.scan(this.props.encounter, combatant);
-		}
-	};
-
-	hide = (combatant: CombatantModel) => {
-		if (this.props.hide) {
-			this.props.hide(this.props.encounter, combatant);
-		}
-	};
-
-	standUp = (combatant: CombatantModel) => {
-		if (this.props.standUp) {
-			this.props.standUp(this.props.encounter, combatant);
-		}
+	getConditions = (trait: TraitType) => {
+		return this.props.combatant.combat.conditions
+			.filter(c => c.trait === trait)
+			.map(c => {
+				return (
+					<div key={c.id} className='condition'>
+						<StatValue label={ConditionLogic.getConditionDescription(c)} value={c.rank} />
+					</div>
+				);
+			});
 	};
 
 	render = () => {
@@ -81,15 +73,15 @@ export class CombatStatsPanel extends Component<Props> {
 					<div className='stats-row'>
 						<div>
 							<StatValue orientation='vertical' label='Endurance' value={CombatantLogic.getTraitValue(this.props.combatant, conditions, TraitType.Endurance)} />
-							<div>{this.props.combatant.combat.conditions.filter(c => c.trait === TraitType.Endurance).map(c => c.type)}</div>
+							<div>{this.getConditions(TraitType.Endurance)}</div>
 						</div>
 						<div>
 							<StatValue orientation='vertical' label='Resolve' value={CombatantLogic.getTraitValue(this.props.combatant, conditions, TraitType.Resolve)} />
-							<div>{this.props.combatant.combat.conditions.filter(c => c.trait === TraitType.Resolve).map(c => c.type)}</div>
+							<div>{this.getConditions(TraitType.Resolve)}</div>
 						</div>
 						<div>
 							<StatValue orientation='vertical' label='Speed' value={CombatantLogic.getTraitValue(this.props.combatant, conditions, TraitType.Speed)} />
-							<div>{this.props.combatant.combat.conditions.filter(c => c.trait === TraitType.Speed).map(c => c.type)}</div>
+							<div>{this.getConditions(TraitType.Speed)}</div>
 						</div>
 					</div>
 				</Box>

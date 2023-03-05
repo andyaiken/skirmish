@@ -1,5 +1,6 @@
 import { Component } from 'react';
 
+import { CombatantType } from '../../../../enums/combatant-type';
 import { DamageType } from '../../../../enums/damage-type';
 import { SkillType } from '../../../../enums/skill-type';
 import { TraitType } from '../../../../enums/trait-type';
@@ -34,7 +35,7 @@ export class Stats extends Component<Props> {
 		let traitsSection = null;
 		if (this.props.encounter) {
 			traitsSection = (
-				<CombatStatsPanel combatant={this.props.hero} encounter={this.props.encounter} standUp={null} scan={null} hide={null} />
+				<CombatStatsPanel combatant={this.props.hero} encounter={this.props.encounter} />
 			);
 		} else {
 			traitsSection = (
@@ -84,6 +85,11 @@ export class Stats extends Component<Props> {
 			<div className='stats'>
 				<div className='column'>
 					{traitsSection}
+					<Box label='Auras'>
+						{auraSection}
+					</Box>
+				</div>
+				<div className='column'>
 					<Box label='Skills'>
 						<StatValue label='Brawl' value={CombatantLogic.getSkillValue(this.props.hero, conditions, SkillType.Brawl)}/>
 						<StatValue label='Perception' value={CombatantLogic.getSkillValue(this.props.hero, conditions, SkillType.Perception)}/>
@@ -92,18 +98,13 @@ export class Stats extends Component<Props> {
 						<StatValue label='Stealth' value={CombatantLogic.getSkillValue(this.props.hero, conditions, SkillType.Stealth)}/>
 						<StatValue label='Weapon' value={CombatantLogic.getSkillValue(this.props.hero, conditions, SkillType.Weapon)}/>
 					</Box>
-				</div>
-				<div className='column'>
 					<Box label='Proficiencies'>
 						{proficiencySection}
 					</Box>
-					<Box label='Auras'>
-						{auraSection}
-					</Box>
-					<Box label='XP'>
+					{this.props.hero.type === CombatantType.Hero ? <Box label='XP'>
 						<StatValue label='Earned' value={<IconValue type={IconType.XP} value={this.props.hero.xp} />} />
 						<StatValue label={`Required for level ${this.props.hero.level + 1}`} value={<IconValue type={IconType.XP} value={this.props.hero.level} />} />
-					</Box>
+					</Box> : null}
 				</div>
 				<div className='column'>
 					<Box label='Damage Bonuses'>

@@ -96,14 +96,14 @@ export class EncounterMapPanel extends Component<Props> {
 		});
 
 		const edges = ([] as { x: number, y: number }[])
-			.concat(EncounterMapLogic.getEdges(this.props.encounter.mapSquares, this.props.encounter.mapSquares, 'n'))
-			.concat(EncounterMapLogic.getEdges(this.props.encounter.mapSquares, this.props.encounter.mapSquares, 'ne'))
-			.concat(EncounterMapLogic.getEdges(this.props.encounter.mapSquares, this.props.encounter.mapSquares, 'e'))
-			.concat(EncounterMapLogic.getEdges(this.props.encounter.mapSquares, this.props.encounter.mapSquares, 'se'))
-			.concat(EncounterMapLogic.getEdges(this.props.encounter.mapSquares, this.props.encounter.mapSquares, 's'))
-			.concat(EncounterMapLogic.getEdges(this.props.encounter.mapSquares, this.props.encounter.mapSquares, 'sw'))
-			.concat(EncounterMapLogic.getEdges(this.props.encounter.mapSquares, this.props.encounter.mapSquares, 'w'))
-			.concat(EncounterMapLogic.getEdges(this.props.encounter.mapSquares, this.props.encounter.mapSquares, 'nw'));
+			.concat(EncounterMapLogic.getEdges(this.props.encounter.mapSquares, 'n'))
+			.concat(EncounterMapLogic.getEdges(this.props.encounter.mapSquares, 'ne'))
+			.concat(EncounterMapLogic.getEdges(this.props.encounter.mapSquares, 'e'))
+			.concat(EncounterMapLogic.getEdges(this.props.encounter.mapSquares, 'se'))
+			.concat(EncounterMapLogic.getEdges(this.props.encounter.mapSquares, 's'))
+			.concat(EncounterMapLogic.getEdges(this.props.encounter.mapSquares, 'sw'))
+			.concat(EncounterMapLogic.getEdges(this.props.encounter.mapSquares, 'w'))
+			.concat(EncounterMapLogic.getEdges(this.props.encounter.mapSquares, 'nw'));
 		const walls = Collections.distinct(edges, sq => `${sq.x} ${sq.y}`).map(sq => {
 			return (
 				<div

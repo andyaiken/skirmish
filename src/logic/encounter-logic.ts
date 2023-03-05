@@ -1,5 +1,3 @@
-import { ActionRangeType } from '../enums/action-range-type';
-import { ActionTargetType } from '../enums/action-target-type';
 import { CombatantState } from '../enums/combatant-state';
 import { CombatantType } from '../enums/combatant-type';
 import { ConditionType } from '../enums/condition-type';
@@ -9,7 +7,9 @@ import { EncounterState } from '../enums/encounter-state';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
 
-import type { ActionModel, ActionTargetParameterModel, ActionWeaponParameterModel } from '../models/action';
+import { ActionLogic } from './action-logic';
+
+import type { ActionModel, ActionOriginParameterModel, ActionTargetParameterModel, ActionWeaponParameterModel } from '../models/action';
 import type { EncounterMapSquareModel, EncounterModel } from '../models/encounter';
 import type { CombatantModel } from '../models/combatant';
 import type { ConditionModel } from '../models/condition';
@@ -22,7 +22,6 @@ import { ConditionLogic } from './condition-logic';
 import { EncounterMapLogic } from './encounter-map-logic';
 import { Factory } from './factory';
 import { ItemModel } from '../models/item';
-import { ItemProficiencyType } from '../enums/item-proficiency-type';
 
 export class EncounterLogic {
 	static getCombatantSquares = (encounter: EncounterModel, combatant: CombatantModel) => {
@@ -205,101 +204,15 @@ export class EncounterLogic {
 		if (combatant.combat.actions.length === 1) {
 			const action = combatant.combat.actions[0];
 			action.parameters.forEach(parameter => {
-				parameter.candidates = [];
-				parameter.value = null;
-
 				switch (parameter.name) {
-					case 'weapon': {
-						const proficiencies: ItemProficiencyType[] = [];
-						switch ((parameter as ActionWeaponParameterModel).type) {
-							case 'melee':
-								proficiencies.push(ItemProficiencyType.LargeWeapons);
-								proficiencies.push(ItemProficiencyType.PairedWeapons);
-								proficiencies.push(ItemProficiencyType.MilitaryWeapons);
-								break;
-							case 'ranged':
-								proficiencies.push(ItemProficiencyType.RangedWeapons);
-								proficiencies.push(ItemProficiencyType.PowderWeapons);
-								break;
-						}
-						combatant.items
-							.filter(i => proficiencies.includes(i.proficiency))
-							.forEach(i => parameter.candidates.push(i));
-						if (parameter.candidates.length > 0) {
-							parameter.value = parameter.candidates[0];
-						}
+					case 'weapon':
+						ActionLogic.checkWeaponParameter(parameter as ActionWeaponParameterModel, combatant);
 						break;
-					}
-					case 'origin': {
-						// Origin needs to be selected manually on the map
+					case 'origin':
+						ActionLogic.checkOriginParameter(parameter as ActionOriginParameterModel, encounter, combatant, action);
 						break;
-					}
 					case 'targets': {
-						const targetParam = parameter as ActionTargetParameterModel;
-						if (targetParam.range.type === ActionRangeType.Self) {
-							parameter.candidates.push(combatant.id);
-							parameter.value = [ combatant.id ];
-						} else {
-							let radius = 0;
-							let originSquares = EncounterLogic.getCombatantSquares(encounter, combatant);
-
-							switch (targetParam.range.type) {
-								case ActionRangeType.Adjacent: {
-									radius = 1;
-									break;
-								}
-								case ActionRangeType.Burst: {
-									radius = targetParam.range.radius;
-									break;
-								}
-								case ActionRangeType.Weapon: {
-									const wpnParam = action.parameters.find(p => p.name === 'weapon') as ActionWeaponParameterModel;
-									if (wpnParam && (wpnParam.value !== null)) {
-										const weapon = wpnParam.value as ItemModel;
-										if (weapon.weapon) {
-											radius = weapon.weapon.range;
-										}
-									}
-									break;
-								}
-							}
-
-							const originParam = action.parameters.find(p => p.name === 'origin');
-							if (originParam) {
-								originSquares = [ (originParam.value as { x: number, y: number }) ];
-							}
-
-							if (targetParam.targets) {
-								switch (targetParam.targets.type) {
-									case ActionTargetType.Combatants: {
-										// TODO: Find all combatants within (radius) of (originSquares)
-										break;
-									}
-									case ActionTargetType.Enemies: {
-										// TODO: Find all enemy combatants within (radius) of (originSquares)
-										break;
-									}
-									case ActionTargetType.Allies: {
-										// TODO: Find all ally combatants within (radius) of (originSquares)
-										break;
-									}
-									case ActionTargetType.Squares: {
-										// TODO: Find all squares within (radius) of (originSquares)
-										break;
-									}
-									case ActionTargetType.Walls: {
-										// TODO: Find all walls within (radius) of (originSquares)
-										break;
-									}
-								}
-
-								if (targetParam.targets.count === Number.MAX_VALUE) {
-									targetParam.value = targetParam.candidates;
-								} else {
-									targetParam.value = targetParam.candidates.slice(0, targetParam.targets.count);
-								}
-							}
-						}
+						ActionLogic.checkTargetParameter(parameter as ActionTargetParameterModel, encounter, combatant, action);
 						break;
 					}
 				}
@@ -386,6 +299,8 @@ export class EncounterLogic {
 
 		return cost;
 	};
+
+	///////////////////////////////////////////////////////////////////////////
 
 	static move = (encounter: EncounterModel, combatant: CombatantModel, dir: string, cost: number) => {
 		combatant.combat.movement = Math.max(0, combatant.combat.movement - cost);
@@ -582,6 +497,8 @@ export class EncounterLogic {
 		EncounterLogic.checkActionParameters(encounter, combatant);
 	};
 
+	///////////////////////////////////////////////////////////////////////////
+
 	static getEncounterState = (encounter: EncounterModel): EncounterState => {
 		const allMonstersDead = encounter.combatants
 			.filter(c => c.type === CombatantType.Monster)
@@ -629,6 +546,8 @@ export class EncounterLogic {
 		return auras;
 	};
 
+	///////////////////////////////////////////////////////////////////////////
+
 	static getActiveCombatants = (encounter: EncounterModel) => {
 		return encounter.combatants
 			.filter(c => c.combat.state !== CombatantState.Dead)
@@ -657,6 +576,8 @@ export class EncounterLogic {
 		});
 	};
 
+	///////////////////////////////////////////////////////////////////////////
+
 	static getTraitRank = (encounter: EncounterModel, combatant: CombatantModel, trait: TraitType) => {
 		const conditions = ([] as ConditionModel[])
 			.concat(combatant.combat.conditions)
@@ -683,5 +604,46 @@ export class EncounterLogic {
 			.concat(combatant.combat.conditions)
 			.concat(EncounterLogic.getAuraConditions(encounter, combatant));
 		return CombatantLogic.getDamageResistanceValue(combatant, conditions, damage);
+	};
+
+	///////////////////////////////////////////////////////////////////////////
+
+	static findCombatants = (encounter: EncounterModel, originSquares: { x: number, y: number }[], radius: number) => {
+		return encounter.combatants.filter(combatant => {
+			const destSquares = EncounterLogic.getCombatantSquares(encounter, combatant);
+			const distances: number[] = [];
+			originSquares.forEach(os => {
+				destSquares.forEach(ds => {
+					distances.push(EncounterMapLogic.getDistance(os, ds));
+				});
+			});
+			const min = Math.min(...distances);
+			return (min <= radius);
+		});
+	};
+
+	static findSquares = (encounter: EncounterModel, originSquares: { x: number, y: number }[], radius: number) => {
+		return encounter.mapSquares.filter(square => {
+			const distances = originSquares.map(os => EncounterMapLogic.getDistance(os, square));
+			const min = Math.min(...distances);
+			return (min <= radius);
+		});
+	};
+
+	static findWalls = (encounter: EncounterModel, originSquares: { x: number, y: number }[], radius: number) => {
+		const walls = ([] as { x: number, y: number }[])
+			.concat(EncounterMapLogic.getEdges(encounter.mapSquares, 'n'))
+			.concat(EncounterMapLogic.getEdges(encounter.mapSquares, 'ne'))
+			.concat(EncounterMapLogic.getEdges(encounter.mapSquares, 'e'))
+			.concat(EncounterMapLogic.getEdges(encounter.mapSquares, 'se'))
+			.concat(EncounterMapLogic.getEdges(encounter.mapSquares, 's'))
+			.concat(EncounterMapLogic.getEdges(encounter.mapSquares, 'sw'))
+			.concat(EncounterMapLogic.getEdges(encounter.mapSquares, 'w'))
+			.concat(EncounterMapLogic.getEdges(encounter.mapSquares, 'nw'));
+		return walls.filter(wall => {
+			const distances = originSquares.map(os => EncounterMapLogic.getDistance(os, wall));
+			const min = Math.min(...distances);
+			return (min <= radius);
+		});
 	};
 }

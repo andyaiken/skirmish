@@ -649,4 +649,124 @@ export class ActionLogic {
 
 		return str;
 	};
+
+	static checkWeaponParameter = (parameter: ActionWeaponParameterModel, combatant: CombatantModel) => {
+		const candidates: ItemModel[] = [];
+		let value: ItemModel | null = null;
+
+		const proficiencies: ItemProficiencyType[] = [];
+		switch (parameter.type) {
+			case 'melee':
+				proficiencies.push(ItemProficiencyType.LargeWeapons);
+				proficiencies.push(ItemProficiencyType.PairedWeapons);
+				proficiencies.push(ItemProficiencyType.MilitaryWeapons);
+				break;
+			case 'ranged':
+				proficiencies.push(ItemProficiencyType.RangedWeapons);
+				proficiencies.push(ItemProficiencyType.PowderWeapons);
+				break;
+		}
+
+		combatant.items
+			.filter(i => proficiencies.includes(i.proficiency))
+			.forEach(i => candidates.push(i));
+
+		if (candidates.length > 0) {
+			value = candidates[0];
+		}
+
+		parameter.candidates = candidates;
+		parameter.value = value;
+	};
+
+	static checkOriginParameter = (parameter: ActionOriginParameterModel, encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => {
+		const candidates: { x: number, y: number }[] = [];
+		let value: { x: number, y: number } | null = null;
+
+		let radius = 0;
+		if (parameter.distance === 'weapon') {
+			const wpnParam = action.parameters.find(p => p.name === 'weapon') as ActionWeaponParameterModel;
+			if (wpnParam && (wpnParam.value !== null)) {
+				const weapon = wpnParam.value as ItemModel;
+				if (weapon.weapon) {
+					radius = weapon.weapon.range;
+				}
+			}
+		} else {
+			radius = parameter.distance;
+		}
+
+		candidates.push(...EncounterLogic.findSquares(encounter, EncounterLogic.getCombatantSquares(encounter, combatant), radius));
+		if (candidates.length > 0) {
+			value = candidates[0];
+		}
+
+		parameter.candidates = candidates;
+		parameter.value = value;
+	};
+
+	static checkTargetParameter = (parameter: ActionTargetParameterModel, encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => {
+		const candidates: (string | { x: number, y: number })[] = [];
+		const value: (string | { x: number, y: number })[] = [];
+
+		if (parameter.range.type === ActionRangeType.Self) {
+			candidates.push(combatant.id);
+			value.push(combatant.id);
+		} else {
+			let radius = 0;
+			switch (parameter.range.type) {
+				case ActionRangeType.Adjacent:
+					radius = 1;
+					break;
+				case ActionRangeType.Burst:
+					radius = parameter.range.radius;
+					break;
+				case ActionRangeType.Weapon: {
+					const wpnParam = action.parameters.find(p => p.name === 'weapon') as ActionWeaponParameterModel;
+					if (wpnParam && (wpnParam.value !== null)) {
+						const weapon = wpnParam.value as ItemModel;
+						if (weapon.weapon) {
+							radius = weapon.weapon.range;
+						}
+					}
+					break;
+				}
+			}
+
+			let originSquares = EncounterLogic.getCombatantSquares(encounter, combatant);
+			const originParam = action.parameters.find(p => p.name === 'origin');
+			if (originParam) {
+				originSquares = [ (originParam.value as { x: number, y: number }) ];
+			}
+
+			if (parameter.targets) {
+				switch (parameter.targets.type) {
+					case ActionTargetType.Combatants:
+						candidates.push(...EncounterLogic.findCombatants(encounter, originSquares, radius).map(c => c.id));
+						break;
+					case ActionTargetType.Enemies:
+						candidates.push(...EncounterLogic.findCombatants(encounter, originSquares, radius).filter(c => c.type !== combatant.type).map(c => c.id));
+						break;
+					case ActionTargetType.Allies:
+						candidates.push(...EncounterLogic.findCombatants(encounter, originSquares, radius).filter(c => c.type === combatant.type).map(c => c.id));
+						break;
+					case ActionTargetType.Squares:
+						candidates.push(...EncounterLogic.findSquares(encounter, originSquares, radius));
+						break;
+					case ActionTargetType.Walls:
+						candidates.push(...EncounterLogic.findWalls(encounter, originSquares, radius));
+						break;
+				}
+
+				if (parameter.targets.count === Number.MAX_VALUE) {
+					value.push(...candidates);
+				} else {
+					value.push(...candidates.slice(0, parameter.targets.count));
+				}
+			}
+		}
+
+		parameter.candidates = candidates;
+		parameter.value = value;
+	};
 }

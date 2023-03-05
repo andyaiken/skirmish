@@ -10,7 +10,7 @@ import { EncounterLogic } from '../../../../logic/encounter-logic';
 import { EncounterMapLogic } from '../../../../logic/encounter-map-logic';
 import { GameLogic } from '../../../../logic/game-logic';
 
-import type { ActionModel } from '../../../../models/action';
+import type { ActionModel, ActionOriginParameterModel, ActionTargetParameterModel, ActionWeaponParameterModel } from '../../../../models/action';
 import type { CombatantModel } from '../../../../models/combatant';
 import type { EncounterModel } from '../../../../models/encounter';
 import type { ItemModel } from '../../../../models/item';
@@ -186,30 +186,61 @@ export class CombatantControls extends Component<Props, State> {
 					let parametersSet = true;
 					const parameters: JSX.Element[] = [];
 					action.parameters.forEach((parameter, n) => {
+						if (!parametersSet) {
+							// A previous parameter isn't finished yet
+							return;
+						}
+
 						let description = '';
-						if (parameter.value === null) {
-							parametersSet = false;
-							description = '[None]';
-						} else {
-							switch (parameter.name) {
-								case'weapon': {
+						let canChange = false;
+						switch (parameter.name) {
+							case'weapon': {
+								const weaponParam = parameter as ActionWeaponParameterModel;
+								if (weaponParam.value) {
 									const item = parameter.value as ItemModel;
 									description = item.name;
-									break;
+								} else {
+									parametersSet = false;
+									description = '[Not set]';
 								}
-								case 'origin': {
-									// TODO: Select a square on the map within (distance) or (weapon range) squares of the current combatant
-									break;
+								canChange = weaponParam.candidates.length > 1;
+								break;
+							}
+							case 'origin': {
+								const originParam = parameter as ActionOriginParameterModel;
+								if (originParam.value) {
+									description = '[Map square]';
+								} else {
+									parametersSet = false;
+									description = '[Not set]';
 								}
-								case 'targets': {
-									// TODO: This could be {x, y}[] instead
-									const list = parameter.value as string[];
-									description = list
-										.map(id => EncounterLogic.getCombatant(this.props.encounter, id) as CombatantModel)
-										.map(target => target.name)
-										.join(', ');
-									break;
+								canChange = originParam.candidates.length > 1;
+								break;
+							}
+							case 'targets': {
+								const targetParam = parameter as ActionTargetParameterModel;
+								if (targetParam.targets) {
+									if (targetParam.targets.count === Number.MAX_VALUE) {
+										// Targets all possible candidates
+										// TODO: This could be {x, y}[] instead
+										description = `[${(targetParam.value as string[]).length} targets]`;
+										canChange = false;
+									} else {
+										// Targets specific candidates
+										// TODO: This could be {x, y}[] instead
+										const list = targetParam.value as string[];
+										description = list
+											.map(id => EncounterLogic.getCombatant(this.props.encounter, id) as CombatantModel)
+											.map(target => target.name)
+											.join(', ') || '[None]';
+										canChange = targetParam.candidates.length > targetParam.targets.count;
+									}
+								} else {
+									// Targets self
+									description = '[Self]';
+									canChange = false;
 								}
+								break;
 							}
 						}
 
@@ -217,7 +248,7 @@ export class CombatantControls extends Component<Props, State> {
 							<div key={n} className='action-parameter'>
 								<div className='action-parameter-name'>Select {parameter.name}</div>
 								<div className='action-parameter-value'>{description}</div>
-								{parameter.candidates.length > 1 ? <div className='action-parameter-change'>Change</div> : null}
+								{canChange ? <div className='action-parameter-change'>Change</div> : null}
 							</div>
 						);
 					});

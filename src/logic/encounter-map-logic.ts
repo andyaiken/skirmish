@@ -23,7 +23,7 @@ export class EncounterMapLogic {
 
 			const position = { x: 0, y: 0 };
 			if (map.length > 0) {
-				const adj = EncounterMapLogic.getEdges(map, map, dir as 'n' | 'e' | 's' | 'w');
+				const adj = EncounterMapLogic.getEdges(map, dir as 'n' | 'e' | 's' | 'w');
 				const sq = adj[Random.randomNumber(adj.length, rng)];
 				if (dir === 'n') {
 					sq.y -= (size.height - 1);
@@ -154,7 +154,7 @@ export class EncounterMapLogic {
 		return adj.filter(sq => !squares.find(s => (s.x === sq.x) && (s.y === sq.y)));
 	};
 
-	static getEdges = (map: EncounterMapSquareModel[], squares: { x: number; y: number }[], direction: 'n' | 'ne' | 'e' | 'se' | 's' | 'sw' | 'w' | 'nw') => {
+	static getEdges = (squares: EncounterMapSquareModel[], direction: 'n' | 'ne' | 'e' | 'se' | 's' | 'sw' | 'w' | 'nw') => {
 		const adj: { x: number; y: number }[] = [];
 
 		squares.forEach(square => {
@@ -189,11 +189,18 @@ export class EncounterMapLogic {
 					sq.y -= 1;
 					break;
 			}
-			if (!map.find(s => (s.x === sq.x) && (s.y === sq.y))) {
+			if (!squares.find(s => (s.x === sq.x) && (s.y === sq.y))) {
 				adj.push(sq);
 			}
 		});
 
 		return adj;
+	};
+
+	static getDistance = (a: { x: number, y: number }, b: { x: number, y: number }) => {
+		const x2 = Math.pow(a.x - b.x, 2);
+		const y2 = Math.pow(a.y - b.y, 2);
+		const hyp = Math.sqrt(x2 + y2);
+		return Math.floor(hyp);
 	};
 }

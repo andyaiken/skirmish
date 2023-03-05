@@ -192,7 +192,6 @@ export class CombatantLogic {
 		const b = GameLogic.getBackground(combatant.backgroundID);
 
 		let list = ([] as ActionModel[])
-			// .concat(UniversalData.getUniversalActions())
 			.concat(s ? s.actions : [])
 			.concat(r ? r.actions : [])
 			.concat(b ? b.actions : []);

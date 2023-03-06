@@ -28,7 +28,7 @@ export class ItemCard extends Component<Props> {
 				<div>
 					<Text type={TextType.MinorHeading}>Features</Text>
 					{this.props.item.weapon ?<StatValue label='Damage' value={`${this.props.item.weapon.damage.rank} (${this.props.item.weapon.damage.type})`}/> : null}
-					{this.props.item.weapon && (this.props.item.weapon.range > 0) ? <StatValue label='Range' value={this.props.item.weapon.range}/> : null}
+					{this.props.item.weapon && (this.props.item.weapon.range > 1) ? <StatValue label='Range' value={this.props.item.weapon.range}/> : null}
 					{this.props.item.weapon && (this.props.item.weapon.unreliable > 0) ? <StatValue label='Unreliable' value={this.props.item.weapon.unreliable}/> : null}
 					{this.props.item.features.map(f => <Text key={f.id} type={TextType.ListItem}>{FeatureLogic.getFeatureDescription(f)}</Text>)}
 				</div>

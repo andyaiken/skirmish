@@ -28,159 +28,140 @@ import { Utils } from '../utils/utils';
 import { CombatantLogic } from './combatant-logic';
 import { ConditionLogic } from './condition-logic';
 import { EncounterLogic } from './encounter-logic';
+import { EncounterMapLogic } from './encounter-map-logic';
 
 export class ActionPrerequisites {
-	static emptyHand = (): ActionPrerequisiteModel => {
-		return {
-			description: 'Requires a free hand',
-			isSatisfied: encounter => {
-				const combatant = encounter.combatants.find(c => c.combat.current);
-				if (combatant) {
-					const slotsUsed = combatant.items
-						.filter(i => i.location === ItemLocationType.Hand)
-						.map(i => i.slots)
-						.reduce((sum, value) => sum + value, 0);
-					return slotsUsed < 2;
-				}
-
-				return false;
-			}
-		};
-	};
-
 	static meleeWeapon = (): ActionPrerequisiteModel => {
 		return {
+			id: 'item',
 			description: 'Requires a melee weapon',
-			isSatisfied: encounter => {
-				return ActionPrerequisites.item([ ItemProficiencyType.LargeWeapons, ItemProficiencyType.MilitaryWeapons, ItemProficiencyType.PairedWeapons ]).isSatisfied(encounter);
-			}
+			data: [ ItemProficiencyType.LargeWeapons, ItemProficiencyType.MilitaryWeapons, ItemProficiencyType.PairedWeapons ]
 		};
 	};
 
 	static rangedWeapon = (): ActionPrerequisiteModel => {
 		return {
+			id: 'item',
 			description: 'Requires a ranged weapon',
-			isSatisfied: encounter => {
-				return ActionPrerequisites.item([ ItemProficiencyType.PowderWeapons, ItemProficiencyType.RangedWeapons ]).isSatisfied(encounter);
-			}
+			data: [ ItemProficiencyType.PowderWeapons, ItemProficiencyType.RangedWeapons ]
 		};
 	};
 
 	static armor = (): ActionPrerequisiteModel => {
 		return {
+			id: 'item',
 			description: 'Requires armor',
-			isSatisfied: encounter => {
-				return ActionPrerequisites.item([ ItemProficiencyType.LightArmor, ItemProficiencyType.HeavyArmor ]).isSatisfied(encounter);
-			}
+			data: [ ItemProficiencyType.LightArmor, ItemProficiencyType.HeavyArmor ]
 		};
 	};
 
 	static shield = (): ActionPrerequisiteModel => {
 		return {
+			id: 'item',
 			description: 'Requires a shield',
-			isSatisfied: encounter => {
-				return ActionPrerequisites.item([ ItemProficiencyType.Shields ]).isSatisfied(encounter);
-			}
+			data: [ ItemProficiencyType.Shields ]
 		};
 	};
 
 	static implement = (): ActionPrerequisiteModel => {
 		return {
+			id: 'item',
 			description: 'Requires an implement',
-			isSatisfied: encounter => {
-				return ActionPrerequisites.item([ ItemProficiencyType.Implements ]).isSatisfied(encounter);
-			}
+			data: [ ItemProficiencyType.Implements ]
 		};
 	};
 
-	static item = (proficiencies: ItemProficiencyType[]): ActionPrerequisiteModel => {
+	static emptyHand = (): ActionPrerequisiteModel => {
 		return {
-			description: `Requires an item with one of the following proficiencies: ${proficiencies.join(', ')}`,
-			isSatisfied: encounter => {
-				const combatant = encounter.combatants.find(c => c.combat.current);
-				if (combatant) {
-					return proficiencies.some(prof => {
-						return combatant.items.some(i => i.proficiency === prof) && CombatantLogic.getProficiencies(combatant).includes(prof);
-					});
-				}
-
-				return false;
-			}
+			id: 'emptyhand',
+			description: 'Requires a free hand',
+			data: null
 		};
 	};
 
 	static damage = (): ActionPrerequisiteModel => {
 		return {
+			id: 'damage',
 			description: 'Requires at least 1 point of damage',
-			isSatisfied: encounter => {
-				const combatant = encounter.combatants.find(c => c.combat.current);
-				if (combatant) {
-					return combatant.combat.damage > 0;
-				}
-
-				return false;
-			}
+			data: null
 		};
 	};
 
 	static wound = (): ActionPrerequisiteModel => {
 		return {
+			id: 'wound',
 			description: 'Requires at least 1 wound',
-			isSatisfied: encounter => {
-				const combatant = encounter.combatants.find(c => c.combat.current);
-				if (combatant) {
-					return combatant.combat.wounds > 0;
-				}
-
-				return false;
-			}
+			data: null
 		};
 	};
 
 	static condition = (trait: TraitType): ActionPrerequisiteModel => {
 		return {
-			description: trait === TraitType.Any ? 'Requires a condition': `Requires a ${trait} condition'`,
-			isSatisfied: encounter => {
-				const combatant = encounter.combatants.find(c => c.combat.current);
-				if (combatant) {
-					if (trait === TraitType.Any) {
-						return combatant.combat.conditions.length > 0;
-					}
-
-					return combatant.combat.conditions.filter(c => c.trait === trait).length > 0;
-				}
-
-				return false;
-			}
+			id: 'condition',
+			description: trait === TraitType.Any ? 'Requires a condition': `Requires a ${trait} condition`,
+			data: null
 		};
 	};
 
 	static carryingCapacity = (): ActionPrerequisiteModel => {
 		return {
+			id: 'carryingcapacity',
 			description: 'Requires spare carrying capacity',
-			isSatisfied: encounter => {
-				const combatant = encounter.combatants.find(c => c.combat.current);
-				if (combatant) {
-					return combatant.carried.length < 6;
-				}
-
-				return false;
-			}
+			data: null
 		};
 	};
 
 	static hidden = (): ActionPrerequisiteModel => {
 		return {
+			id: 'hidden',
 			description: 'Requires hiding',
-			isSatisfied: encounter => {
-				const combatant = encounter.combatants.find(c => c.combat.current);
-				if (combatant) {
-					return combatant.combat.hidden > 0;
+			data: null
+		};
+	};
+
+	static isSatisfied = (prerequisite: ActionPrerequisiteModel, encounter: EncounterModel) => {
+		const combatant = encounter.combatants.find(c => c.combat.current);
+		if (!combatant) {
+			return false;
+		}
+
+		switch (prerequisite.id) {
+			case 'item': {
+				const proficiencies = prerequisite.data as ItemProficiencyType[];
+				return proficiencies.some(prof => {
+					return combatant.items.some(i => i.proficiency === prof) && CombatantLogic.getProficiencies(combatant).includes(prof);
+				});
+			}
+			case 'emptyhand': {
+				const slotsUsed = combatant.items
+					.filter(i => i.location === ItemLocationType.Hand)
+					.map(i => i.slots)
+					.reduce((sum, value) => sum + value, 0);
+				return slotsUsed < 2;
+			}
+			case 'damage': {
+				return combatant.combat.damage > 0;
+			}
+			case 'wound': {
+				return combatant.combat.wounds > 0;
+			}
+			case 'condition': {
+				const trait = prerequisite.data as TraitType;
+				if (trait === TraitType.Any) {
+					return combatant.combat.conditions.length > 0;
 				}
 
-				return false;
+				return combatant.combat.conditions.filter(c => c.trait === trait).length > 0;
 			}
-		};
+			case 'carryingcapacity': {
+				return combatant.carried.length < 6;
+			}
+			case 'hidden': {
+				return combatant.combat.hidden > 0;
+			}
+		}
+
+		return true;
 	};
 }
 
@@ -288,60 +269,6 @@ export class ActionWeaponParameters {
 }
 
 export class ActionEffects {
-	static if = (
-		data: {
-			description: string,
-			check: (encounter: EncounterModel, combatant: CombatantModel, parameters: ActionParameterModel[]) => boolean,
-			then: ActionEffectModel[]
-		}
-	): ActionEffectModel => {
-		return {
-			description: data.description,
-			children: data.then,
-			run: (encounter, combatant, parameters) => {
-				const result = data.check(encounter, combatant, parameters);
-				if (result) {
-					data.then.forEach(effect => effect.run(encounter, combatant, parameters));
-				}
-			}
-		};
-	};
-
-	static skillCheck = (
-		data: {
-			skill: SkillType,
-			skillBonus: number,
-			target: number,
-			then: ActionEffectModel[]
-		}
-	): ActionEffectModel => {
-		return {
-			description: `Skill check: ${data.skill} vs ${data.target}`,
-			children: data.then,
-			run: (encounter, combatant, parameters) => {
-				const targetsSucceeded: string[] = [];
-
-				const targetParameter = parameters.find(p => p.name === 'targets');
-				if (targetParameter) {
-					const targetIDs = targetParameter.value as string[];
-					targetIDs.forEach(id => {
-						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
-						const rank = EncounterLogic.getSkillRank(encounter, target, data.skill) + data.skillBonus;
-						const roll = Random.dice(rank);
-						if (roll >= data.target) {
-							targetsSucceeded.push(target.id);
-						}
-					});
-				}
-
-				let copy = JSON.parse(JSON.stringify(parameters)) as ActionParameterModel[];
-				copy = copy.filter(p => p.name !== 'targets');
-				copy.push({ name: 'targets', candidates: [], value: targetsSucceeded });
-				data.then.forEach(effect => effect.run(encounter, combatant, copy));
-			}
-		};
-	};
-
 	static attack = (
 		data: {
 			weapon: boolean,
@@ -352,9 +279,114 @@ export class ActionEffects {
 		}
 	): ActionEffectModel => {
 		return {
+			id: 'attack',
 			description: (data.skillBonus === 0) ? `Attack: ${data.skill} vs ${data.trait}` : `Attack: ${data.skill} ${data.skillBonus >= 0 ? '+' : ''}${data.skillBonus} vs ${data.trait}`,
-			children: data.hit,
-			run: (encounter, combatant, parameters) => {
+			data: data,
+			children: data.hit
+		};
+	};
+
+	static dealDamage = (type: DamageType, rank: number): ActionEffectModel => {
+		return {
+			id: 'damage',
+			description: `Deal ${type} damage (rank ${rank})`,
+			data: { type: type, rank: rank },
+			children: []
+		};
+	};
+
+	static dealWeaponDamage = (rankModifier = 0): ActionEffectModel => {
+		return {
+			id: 'weapondamage',
+			description: 'Deal weapon damage',
+			data: rankModifier,
+			children: []
+		};
+	};
+
+	static inflictWounds = (value: number): ActionEffectModel => {
+		return {
+			id: 'wounds',
+			description: `Inflict ${value} wounds`,
+			data: value,
+			children: []
+		};
+	};
+
+	static healDamage = (rank: number): ActionEffectModel => {
+		return {
+			id: 'healdamage',
+			description: `Heal damage (rank ${rank})`,
+			data: rank,
+			children: []
+		};
+	};
+
+	static healWounds = (value: number): ActionEffectModel => {
+		return {
+			id: 'healwounds',
+			description: `Heal ${value} wound(s)`,
+			data: value,
+			children: []
+		};
+	};
+
+	static addCondition = (condition: ConditionModel): ActionEffectModel => {
+		return {
+			id: 'addcondition',
+			description: `Add a condition (${ConditionLogic.getConditionDescription(condition)}, rank ${condition.rank})`,
+			data: condition,
+			children: []
+		};
+	};
+
+	static removeCondition = (trait: TraitType): ActionEffectModel => {
+		return {
+			id: 'removecondition',
+			description: trait === TraitType.Any ? 'Remove a condition' : `Remove a ${trait} condition`,
+			data: trait,
+			children: []
+		};
+	};
+
+	static grantMovement = (): ActionEffectModel => {
+		return {
+			id: 'grantmovement',
+			description: 'Grant movement',
+			data: null,
+			children: []
+		};
+	};
+
+	static knockDown = (): ActionEffectModel => {
+		return {
+			id: 'knockdown',
+			description: 'Knock down',
+			data: null,
+			children: []
+		};
+	};
+
+	static loseTurn = (): ActionEffectModel => {
+		return {
+			id: 'loseturn',
+			description: 'Lose turn',
+			data: null,
+			children: []
+		};
+	};
+
+	static run = (effect: ActionEffectModel, encounter: EncounterModel, combatant: CombatantModel, parameters: ActionParameterModel[]) => {
+		switch (effect.id) {
+			case 'attack': {
+				const data = effect.data as {
+					weapon: boolean,
+					skill: SkillType,
+					trait: TraitType,
+					skillBonus: number,
+					hit: ActionEffectModel[]
+				};
+
 				const targetsSucceeded: string[] = [];
 
 				const targetParameter = parameters.find(p => p.name === 'targets');
@@ -394,34 +426,24 @@ export class ActionEffects {
 				let copy = JSON.parse(JSON.stringify(parameters)) as ActionParameterModel[];
 				copy = copy.filter(p => p.name !== 'targets');
 				copy.push({ name: 'targets', candidates: [], value: targetsSucceeded });
-				data.hit.forEach(effect => effect.run(encounter, combatant, copy));
+				data.hit.forEach(effect => ActionEffects.run(effect, encounter, combatant, copy));
+				break;
 			}
-		};
-	};
-
-	static dealDamage = (type: DamageType, rank: number): ActionEffectModel => {
-		return {
-			description: `Deal ${type} damage (rank ${rank})`,
-			children: [],
-			run: (encounter, combatant, parameters) => {
+			case 'damage': {
+				const data = effect.data as { type: DamageType, rank: number };
 				const targetParameter = parameters.find(p => p.name === 'targets');
 				if (targetParameter) {
 					const targetIDs = targetParameter.value as string[];
 					targetIDs.forEach(id => {
 						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
-						const value = Random.dice(rank) + EncounterLogic.getDamageBonus(encounter, combatant, type);
-						EncounterLogic.damage(encounter, target, value, type);
+						const value = Random.dice(data.rank) + EncounterLogic.getDamageBonus(encounter, combatant, data.type);
+						EncounterLogic.damage(encounter, target, value, data.type);
 					});
 				}
+				break;
 			}
-		};
-	};
-
-	static dealWeaponDamage = (rankModifier = 0): ActionEffectModel => {
-		return {
-			description: 'Deal weapon damage',
-			children: [],
-			run: (encounter, combatant, parameters) => {
+			case 'weapondamage': {
+				const rankModifier = effect.data as number;
 				const weaponParameter = parameters.find(p => p.name === 'weapon');
 				const targetParameter = parameters.find(p => p.name === 'targets');
 				if (weaponParameter && targetParameter) {
@@ -434,15 +456,10 @@ export class ActionEffects {
 						EncounterLogic.damage(encounter, target, value, weapon.damage.type);
 					});
 				}
+				break;
 			}
-		};
-	};
-
-	static inflictWounds = (value: number): ActionEffectModel => {
-		return {
-			description: `Inflict ${value} wounds`,
-			children: [],
-			run: (encounter, combatant, parameters) => {
+			case 'wounds': {
+				const value = effect.data as number;
 				const targetParameter = parameters.find(p => p.name === 'targets');
 				if (targetParameter) {
 					const targetIDs = targetParameter.value as string[];
@@ -451,15 +468,10 @@ export class ActionEffects {
 						EncounterLogic.wound(encounter, target, value);
 					});
 				}
+				break;
 			}
-		};
-	};
-
-	static healDamage = (rank: number): ActionEffectModel => {
-		return {
-			description: `Heal damage (rank ${rank})`,
-			children: [],
-			run: (encounter, combatant, parameters) => {
+			case 'healdamage': {
+				const rank = effect.data as number;
 				const targetParameter = parameters.find(p => p.name === 'targets');
 				if (targetParameter) {
 					const targetIDs = targetParameter.value as string[];
@@ -469,15 +481,10 @@ export class ActionEffects {
 						EncounterLogic.healDamage(encounter, target, value);
 					});
 				}
+				break;
 			}
-		};
-	};
-
-	static healWounds = (value: number): ActionEffectModel => {
-		return {
-			description: `Heal ${value} wound(s)`,
-			children: [],
-			run: (encounter, combatant, parameters) => {
+			case 'healwounds': {
+				const value = effect.data as number;
 				const targetParameter = parameters.find(p => p.name === 'targets');
 				if (targetParameter) {
 					const targetIDs = targetParameter.value as string[];
@@ -486,15 +493,10 @@ export class ActionEffects {
 						EncounterLogic.healWounds(encounter, target, value);
 					});
 				}
+				break;
 			}
-		};
-	};
-
-	static addCondition = (condition: ConditionModel): ActionEffectModel => {
-		return {
-			description: `Add a condition (${ConditionLogic.getConditionDescription(condition)}, rank ${condition.rank})`,
-			children: [],
-			run: (encounter, combatant, parameters) => {
+			case 'addcondition': {
+				const condition = effect.data as ConditionModel;
 				const targetParameter = parameters.find(p => p.name === 'targets');
 				if (targetParameter) {
 					const targetIDs = targetParameter.value as string[];
@@ -505,15 +507,10 @@ export class ActionEffects {
 						target.combat.conditions.push(copy);
 					});
 				}
+				break;
 			}
-		};
-	};
-
-	static removeCondition = (trait: TraitType): ActionEffectModel => {
-		return {
-			description: trait === TraitType.Any ? 'Remove a condition' : `Remove a ${trait} condition`,
-			children: [],
-			run: (encounter, combatant, parameters) => {
+			case 'removecondition': {
+				const trait = effect.data as TraitType;
 				const targetParameter = parameters.find(p => p.name === 'targets');
 				if (targetParameter) {
 					const targetIDs = targetParameter.value as string[];
@@ -528,15 +525,9 @@ export class ActionEffects {
 						}
 					});
 				}
+				break;
 			}
-		};
-	};
-
-	static grantMovement = (): ActionEffectModel => {
-		return {
-			description: 'Grant movement',
-			children: [],
-			run: (encounter, combatant, parameters) => {
+			case 'grantmovement': {
 				const targetParameter = parameters.find(p => p.name === 'targets');
 				if (targetParameter) {
 					const targetIDs = targetParameter.value as string[];
@@ -546,15 +537,9 @@ export class ActionEffects {
 						target.combat.movement += Random.dice(rank);
 					});
 				}
+				break;
 			}
-		};
-	};
-
-	static knockDown = (): ActionEffectModel => {
-		return {
-			description: 'Knock down',
-			children: [],
-			run: (encounter, combatant, parameters) => {
+			case 'knockdown': {
 				const targetParameter = parameters.find(p => p.name === 'targets');
 				if (targetParameter) {
 					const targetIDs = targetParameter.value as string[];
@@ -565,15 +550,9 @@ export class ActionEffects {
 						}
 					});
 				}
+				break;
 			}
-		};
-	};
-
-	static loseTurn = (): ActionEffectModel => {
-		return {
-			description: 'Lose turn',
-			children: [],
-			run: (encounter, combatant, parameters) => {
+			case 'loseturn': {
 				const targetParameter = parameters.find(p => p.name === 'targets');
 				if (targetParameter) {
 					const targetIDs = targetParameter.value as string[];
@@ -582,8 +561,9 @@ export class ActionEffects {
 						target.combat.initiative = Number.MIN_VALUE;
 					});
 				}
+				break;
 			}
-		};
+		}
 	};
 }
 
@@ -742,19 +722,43 @@ export class ActionLogic {
 			if (parameter.targets) {
 				switch (parameter.targets.type) {
 					case ActionTargetType.Combatants:
-						candidates.push(...EncounterLogic.findCombatants(encounter, originSquares, radius).map(c => c.id));
+						candidates.push(
+							...EncounterLogic.findCombatants(encounter, originSquares, radius)
+								.filter(c => c.id !== combatant.id)
+								.filter(c => c.combat.state !== CombatantState.Dead)
+								.filter(c => combatant.combat.senses >= c.combat.hidden)
+								.filter(c => EncounterMapLogic.canSeeAny(originSquares, EncounterLogic.getCombatantSquares(encounter, c)))
+								.map(c => c.id));
 						break;
 					case ActionTargetType.Enemies:
-						candidates.push(...EncounterLogic.findCombatants(encounter, originSquares, radius).filter(c => c.type !== combatant.type).map(c => c.id));
+						candidates.push(
+							...EncounterLogic.findCombatants(encounter, originSquares, radius)
+								.filter(c => c.id !== combatant.id)
+								.filter(c => c.combat.state !== CombatantState.Dead)
+								.filter(c => combatant.combat.senses >= c.combat.hidden)
+								.filter(c => c.type !== combatant.type)
+								.filter(c => EncounterMapLogic.canSeeAny(originSquares, EncounterLogic.getCombatantSquares(encounter, c)))
+								.map(c => c.id));
 						break;
 					case ActionTargetType.Allies:
-						candidates.push(...EncounterLogic.findCombatants(encounter, originSquares, radius).filter(c => c.type === combatant.type).map(c => c.id));
+						candidates.push(
+							...EncounterLogic.findCombatants(encounter, originSquares, radius)
+								.filter(c => c.id !== combatant.id)
+								.filter(c => c.combat.state !== CombatantState.Dead)
+								.filter(c => combatant.combat.senses >= c.combat.hidden)
+								.filter(c => c.type === combatant.type)
+								.filter(c => EncounterMapLogic.canSeeAny(originSquares, EncounterLogic.getCombatantSquares(encounter, c)))
+								.map(c => c.id));
 						break;
 					case ActionTargetType.Squares:
-						candidates.push(...EncounterLogic.findSquares(encounter, originSquares, radius));
+						candidates.push(
+							...EncounterLogic.findSquares(encounter, originSquares, radius)
+								.filter(sq => EncounterMapLogic.canSeeAny(originSquares, [ sq ])));
 						break;
 					case ActionTargetType.Walls:
-						candidates.push(...EncounterLogic.findWalls(encounter, originSquares, radius));
+						candidates.push(
+							...EncounterLogic.findWalls(encounter, originSquares, radius)
+								.filter(sq => EncounterMapLogic.canSeeAny(originSquares, [ sq ])));
 						break;
 				}
 

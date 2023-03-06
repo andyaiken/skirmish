@@ -5,8 +5,8 @@ import { EncounterState } from '../../../enums/encounter-state';
 
 import { EncounterLogic } from '../../../logic/encounter-logic';
 
-import type { EncounterModel, LootPileModel } from '../../../models/encounter';
-import type { ActionModel } from '../../../models/action';
+import type { ActionModel, ActionParameterModel } from '../../../models/action';
+import type { EncounterMapSquareModel, EncounterModel, LootPileModel } from '../../../models/encounter';
 import type { CombatantModel } from '../../../models/combatant';
 import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
@@ -27,10 +27,12 @@ interface Props {
 	rollInitiative: (encounter: EncounterModel) => void;
 	endTurn: (encounter: EncounterModel) => void;
 	move: (encounter: EncounterModel, combatant: CombatantModel, dir: string, cost: number) => void;
+	addMovement: (encounter: EncounterModel, combatant: CombatantModel, value: number) => void;
 	standUp: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	scan: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	hide: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	selectAction: (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => void;
+	setActionParameter: (parameter: ActionParameterModel, value: unknown) => void;
 	runAction: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	equipItem: (item: ItemModel, combatant: CombatantModel) => void;
 	unequipItem: (item: ItemModel, combatant: CombatantModel) => void;
@@ -43,6 +45,7 @@ interface Props {
 interface State {
 	mapSquareSize: number;
 	selectedIDs: string[];
+	selectedSquares: { x: number, y: number }[];
 	manualEncounterState: EncounterState;
 	detailsCombatant: CombatantModel | null;
 	detailsLoot: LootPileModel | null;
@@ -54,6 +57,7 @@ export class EncounterScreen extends Component<Props, State> {
 		this.state = {
 			mapSquareSize: 10,
 			selectedIDs: [],
+			selectedSquares: [],
 			manualEncounterState: EncounterState.Active,
 			detailsCombatant: null,
 			detailsLoot: null
@@ -70,6 +74,12 @@ export class EncounterScreen extends Component<Props, State> {
 	selectCombatant = (item: CombatantModel | LootPileModel | null) => {
 		this.setState({
 			selectedIDs: item ? [ item.id ] : []
+		});
+	};
+
+	selectSquare = (square: EncounterMapSquareModel) => {
+		this.setState({
+			selectedSquares: [ square ]
 		});
 	};
 
@@ -140,10 +150,12 @@ export class EncounterScreen extends Component<Props, State> {
 								developer={this.props.developer}
 								endTurn={this.props.endTurn}
 								move={this.props.move}
+								addMovement={this.props.addMovement}
 								standUp={this.props.standUp}
 								scan={this.props.scan}
 								hide={this.props.hide}
 								selectAction={this.props.selectAction}
+								setActionParameter={this.props.setActionParameter}
 								runAction={this.props.runAction}
 								pickUpItem={this.props.pickUpItem}
 								showCharacterSheet={this.showDetails}
@@ -252,8 +264,9 @@ export class EncounterScreen extends Component<Props, State> {
 						encounter={this.props.encounter}
 						squareSize={this.state.mapSquareSize}
 						selectedIDs={this.state.selectedIDs}
-						onSelect={this.selectCombatant}
-						onDetails={this.showDetails}
+						selectedSquares={[]}
+						onClick={this.selectCombatant}
+						onDoubleClick={this.showDetails}
 					/>
 					{mapControls}
 				</div>

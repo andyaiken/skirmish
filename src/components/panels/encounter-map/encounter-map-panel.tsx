@@ -16,8 +16,9 @@ interface Props {
 	encounter: EncounterModel;
 	squareSize: number;
 	selectedIDs: string[];
-	onSelect: (item: CombatantModel | LootPileModel | null) => void;
-	onDetails: (item: CombatantModel | LootPileModel) => void;
+	selectedSquares: { x: number, y: number }[];
+	onClick: (item: CombatantModel | LootPileModel | null) => void;
+	onDoubleClick: (item: CombatantModel | LootPileModel) => void;
 }
 
 export class EncounterMapPanel extends Component<Props> {
@@ -60,8 +61,8 @@ export class EncounterMapPanel extends Component<Props> {
 						squareSize={this.props.squareSize}
 						mapDimensions={dims}
 						selected={this.props.selectedIDs.includes(lp.id)}
-						onSelect={this.props.onSelect}
-						onDetails={this.props.onDetails}
+						onClick={this.props.onClick}
+						onDoubleClick={this.props.onDoubleClick}
 					/>
 				);
 			});
@@ -81,6 +82,20 @@ export class EncounterMapPanel extends Component<Props> {
 			return null;
 		});
 
+		const trails = combatants.flatMap(combatant => {
+			return combatant.combat.trail.map((pos, n) => {
+				return (
+					<TrailToken
+						key={`trail ${combatant.id} ${n}`}
+						position={pos}
+						size={combatant.size}
+						squareSize={this.props.squareSize}
+						mapDimensions={dims}
+					/>
+				);
+			});
+		});
+
 		const minis = combatants.map(combatant => {
 			return (
 				<MiniToken
@@ -89,8 +104,8 @@ export class EncounterMapPanel extends Component<Props> {
 					squareSize={this.props.squareSize}
 					mapDimensions={dims}
 					selected={this.props.selectedIDs.includes(combatant.id)}
-					onSelect={this.props.onSelect}
-					onDetails={this.props.onDetails}
+					onClick={this.props.onClick}
+					onDoubleClick={this.props.onDoubleClick}
 				/>
 			);
 		});
@@ -122,11 +137,12 @@ export class EncounterMapPanel extends Component<Props> {
 		const width = dims.right - dims.left + 1;
 		const height = dims.bottom - dims.top + 1;
 		return (
-			<div className='encounter-map' onClick={e => this.props.onSelect(null)}>
+			<div className='encounter-map' onClick={e => this.props.onClick(null)}>
 				<div className='encounter-map-square-container' style={{ maxWidth: `${this.props.squareSize * width}px`, maxHeight: `${this.props.squareSize * height}px` }}>
 					{squares}
 					{loot}
 					{auras}
+					{trails}
 					{minis}
 					{walls}
 				</div>
@@ -140,23 +156,38 @@ interface MiniTokenProps {
 	squareSize: number;
 	mapDimensions: { left: number, top: number };
 	selected: boolean;
-	onSelect: (combatant: CombatantModel) => void;
-	onDetails: (combatant: CombatantModel) => void;
+	onClick: (combatant: CombatantModel) => void;
+	onDoubleClick: (combatant: CombatantModel) => void;
 }
 
 class MiniToken extends Component<MiniTokenProps> {
 	onClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
-		this.props.onSelect(this.props.combatant);
+		this.props.onClick(this.props.combatant);
 	};
 
 	onDoubleClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
-		this.props.onDetails(this.props.combatant);
+		this.props.onDoubleClick(this.props.combatant);
 	};
 
 	render = () => {
 		const className = `encounter-map-mini-token ${this.props.combatant.type.toLowerCase()} ${this.props.combatant.combat.current ? 'current' : ''} ${this.props.selected ? 'selected' : ''}`;
+
+		let tooltip = this.props.combatant.name;
+		if (this.props.combatant.combat.state === CombatantState.Dead) {
+			tooltip += ' (dead)';
+		} else if (this.props.combatant.combat.state === CombatantState.Unconscious) {
+			tooltip += ' (unconscious)';
+		} else if (this.props.combatant.combat.wounds > 0) {
+			tooltip += ' (wounded)';
+		} else if (this.props.combatant.combat.damage > 0) {
+			tooltip += ' (damaged)';
+		}
+		if (this.props.combatant.combat.state === CombatantState.Prone) {
+			tooltip += ' (prone)';
+		}
+
 		return (
 			<div
 				className={className}
@@ -167,11 +198,37 @@ class MiniToken extends Component<MiniTokenProps> {
 					top: `${((this.props.combatant.combat.position.y - this.props.mapDimensions.top) * this.props.squareSize)}px`,
 					fontSize: `${this.props.squareSize * 0.8}px`
 				}}
-				title={this.props.combatant.name}
+				title={tooltip}
 				onClick={e => this.onClick(e)}
 				onDoubleClick={e => this.onDoubleClick(e)}
 			>
 				{this.props.combatant.name[0]}
+			</div>
+		);
+	};
+}
+
+
+
+interface TrailTokenProps {
+	position: { x: number, y: number };
+	size: number;
+	squareSize: number;
+	mapDimensions: { left: number, top: number };
+}
+
+class TrailToken extends Component<TrailTokenProps> {
+	render = () => {
+		return (
+			<div
+				className='encounter-map-trail-token'
+				style={{
+					width: `${this.props.squareSize * this.props.size}px`,
+					height: `${this.props.squareSize * this.props.size}px`,
+					left: `${((this.props.position.x - this.props.mapDimensions.left) * this.props.squareSize)}px`,
+					top: `${((this.props.position.y - this.props.mapDimensions.top) * this.props.squareSize)}px`
+				}}
+			>
 			</div>
 		);
 	};
@@ -205,19 +262,19 @@ interface LootTokenProps {
 	squareSize: number;
 	mapDimensions: { left: number, top: number };
 	selected: boolean;
-	onSelect: (loot: LootPileModel | null) => void;
-	onDetails: (loot: LootPileModel) => void;
+	onClick: (loot: LootPileModel | null) => void;
+	onDoubleClick: (loot: LootPileModel) => void;
 }
 
 class LootToken extends Component<LootTokenProps> {
 	onClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
-		this.props.onSelect(this.props.loot);
+		this.props.onClick(this.props.loot);
 	};
 
 	onDoubleClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
-		this.props.onDetails(this.props.loot);
+		this.props.onDoubleClick(this.props.loot);
 	};
 
 	render = () => {

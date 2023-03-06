@@ -7,7 +7,7 @@ import { EncounterState } from '../enums/encounter-state';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
 
-import { ActionLogic } from './action-logic';
+import { ActionEffects, ActionLogic } from './action-logic';
 
 import type { ActionModel, ActionOriginParameterModel, ActionTargetParameterModel, ActionWeaponParameterModel } from '../models/action';
 import type { EncounterMapSquareModel, EncounterModel } from '../models/encounter';
@@ -111,11 +111,13 @@ export class EncounterLogic {
 	};
 
 	static startOfTurn = (encounter: EncounterModel, combatant: CombatantModel) => {
+		encounter.combatants.forEach(c => c.combat.current = false);
 		combatant.combat.current = true;
 
 		combatant.combat.hidden = 0;
 		combatant.combat.senses = 0;
 		combatant.combat.movement = 0;
+		combatant.combat.trail = [];
 		combatant.combat.actions = [];
 
 		const conditions = ([] as ConditionModel[])
@@ -166,6 +168,7 @@ export class EncounterLogic {
 		combatant.combat.initiative = Number.MIN_VALUE;
 		combatant.combat.senses = 0;
 		combatant.combat.movement = 0;
+		combatant.combat.trail = [];
 		combatant.combat.actions = [];
 
 		const conditions = ([] as ConditionModel[])
@@ -195,7 +198,7 @@ export class EncounterLogic {
 	static runAction = (encounter: EncounterModel, combatant: CombatantModel) => {
 		if (combatant.combat.actions.length === 1) {
 			const action = combatant.combat.actions[0];
-			action.effects.forEach(effect => effect.run(encounter, combatant, action.parameters));
+			action.effects.forEach(effect => ActionEffects.run(effect, encounter, combatant, action.parameters));
 			combatant.combat.actions = [];
 		}
 	};
@@ -304,6 +307,8 @@ export class EncounterLogic {
 
 	static move = (encounter: EncounterModel, combatant: CombatantModel, dir: string, cost: number) => {
 		combatant.combat.movement = Math.max(0, combatant.combat.movement - cost);
+
+		combatant.combat.trail.push({ x: combatant.combat.position.x, y: combatant.combat.position.y });
 
 		switch (dir) {
 			case 'n':

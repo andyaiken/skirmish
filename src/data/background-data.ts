@@ -83,7 +83,7 @@ export class BackgroundData {
 				id: 'background-bard',
 				name: 'Bard',
 				features: [
-					FeatureLogic.createSkillCategoryFeature('bard-feature-1', SkillCategoryType.Mental, 2),
+					FeatureLogic.createSkillCategoryFeature('bard-feature-1', SkillCategoryType.Mental, 1),
 					FeatureLogic.createProficiencyFeature('bard-feature-2', ItemProficiencyType.Any)
 				],
 				actions: [

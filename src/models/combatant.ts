@@ -30,6 +30,10 @@ export interface CombatantModel {
 			x: number;
 			y: number;
 		};
+		trail: {
+			x: number;
+			y: number;
+		}[];
 		damage: number;
 		wounds: number;
 		initiative: number;

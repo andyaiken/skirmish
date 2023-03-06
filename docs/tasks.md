@@ -11,11 +11,16 @@
 
 * Encounters:
   * Implement actions
+    * Allow users to change parameter selections
+      * Weapons
+      * Combatants
+      * Squares
+      * Walls
     * Lose turn should set a flag on the combatant
       * On start of turn, notify and end turn
       * This flag should be reflected in the initiative list
     * Allow the user to opt for a universal action instead
-    * Show log of action's logic
+    * Show log of action's logic and calculations
     * Add missing effects
   * Implement AI so that monsters can take their turns
   * Show turn log for current combatant, if it's a monster
@@ -36,8 +41,6 @@
 * Character sheet panel:
   * Show ranks as filled circles
   * Show the XP required as a gauge
-* Encounter:
-  * Movement trails
 * Mountebank, Thief and Pixie should have an attack redirection aura
 * Gnome, Thief should be able to set / disable traps
 * Monster species:

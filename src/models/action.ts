@@ -1,12 +1,10 @@
 import { ActionRangeType } from '../enums/action-range-type';
 import { ActionTargetType } from '../enums/action-target-type';
-import { CombatantModel } from './combatant';
-
-import type { EncounterModel } from './encounter';
 
 export interface ActionPrerequisiteModel {
+	id: string;
 	description: string;
-	isSatisfied: (encounter: EncounterModel) => boolean;
+	data: unknown;
 }
 
 export interface ActionParameterModel {
@@ -32,9 +30,10 @@ export interface ActionWeaponParameterModel extends ActionParameterModel {
 }
 
 export interface ActionEffectModel {
+	id: string;
 	description: string;
+	data: unknown;
 	children: ActionEffectModel[];
-	run: (encounter: EncounterModel, combatant: CombatantModel, parameters: ActionParameterModel[]) => void;
 }
 
 export interface ActionModel {

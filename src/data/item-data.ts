@@ -25,7 +25,7 @@ export class ItemData {
 						type: DamageType.Edged,
 						rank: 3
 					},
-					range: 0,
+					range: 1,
 					unreliable: 0
 				},
 				features: [],
@@ -44,7 +44,7 @@ export class ItemData {
 						type: DamageType.Edged,
 						rank: 3
 					},
-					range: 0,
+					range: 1,
 					unreliable: 0
 				},
 				features: [],
@@ -63,7 +63,7 @@ export class ItemData {
 						type: DamageType.Edged,
 						rank: 3
 					},
-					range: 0,
+					range: 1,
 					unreliable: 0
 				},
 				features: [],
@@ -82,7 +82,7 @@ export class ItemData {
 						type: DamageType.Edged,
 						rank: 3
 					},
-					range: 0,
+					range: 1,
 					unreliable: 0
 				},
 				features: [],
@@ -101,7 +101,7 @@ export class ItemData {
 						type: DamageType.Edged,
 						rank: 3
 					},
-					range: 0,
+					range: 1,
 					unreliable: 0
 				},
 				features: [],
@@ -120,7 +120,7 @@ export class ItemData {
 						type: DamageType.Impact,
 						rank: 3
 					},
-					range: 0,
+					range: 1,
 					unreliable: 0
 				},
 				features: [],
@@ -139,7 +139,7 @@ export class ItemData {
 						type: DamageType.Impact,
 						rank: 4
 					},
-					range: 0,
+					range: 1,
 					unreliable: 1
 				},
 				features: [],
@@ -158,7 +158,7 @@ export class ItemData {
 						type: DamageType.Piercing,
 						rank: 2
 					},
-					range: 1,
+					range: 2,
 					unreliable: 0
 				},
 				features: [],
@@ -177,7 +177,7 @@ export class ItemData {
 						type: DamageType.Piercing,
 						rank: 3
 					},
-					range: 0,
+					range: 1,
 					unreliable: 0
 				},
 				features: [],
@@ -196,7 +196,7 @@ export class ItemData {
 						type: DamageType.Piercing,
 						rank: 3
 					},
-					range: 0,
+					range: 1,
 					unreliable: 0
 				},
 				features: [],
@@ -215,7 +215,7 @@ export class ItemData {
 						type: DamageType.Edged,
 						rank: 5
 					},
-					range: 0,
+					range: 1,
 					unreliable: 0
 				},
 				features: [],
@@ -234,7 +234,7 @@ export class ItemData {
 						type: DamageType.Edged,
 						rank: 5
 					},
-					range: 0,
+					range: 1,
 					unreliable: 0
 				},
 				features: [],
@@ -253,7 +253,7 @@ export class ItemData {
 						type: DamageType.Edged,
 						rank: 4
 					},
-					range: 1,
+					range: 2,
 					unreliable: 0
 				},
 				features: [],
@@ -272,7 +272,7 @@ export class ItemData {
 						type: DamageType.Impact,
 						rank: 5
 					},
-					range: 0,
+					range: 1,
 					unreliable: 0
 				},
 				features: [],
@@ -291,7 +291,7 @@ export class ItemData {
 						type: DamageType.Impact,
 						rank: 5
 					},
-					range: 0,
+					range: 1,
 					unreliable: 0
 				},
 				features: [],
@@ -310,7 +310,7 @@ export class ItemData {
 						type: DamageType.Piercing,
 						rank: 4
 					},
-					range: 1,
+					range: 2,
 					unreliable: 0
 				},
 				features: [],
@@ -329,7 +329,7 @@ export class ItemData {
 						type: DamageType.Piercing,
 						rank: 5
 					},
-					range: 0,
+					range: 1,
 					unreliable: 0
 				},
 				features: [],
@@ -348,7 +348,7 @@ export class ItemData {
 						type: DamageType.Edged,
 						rank: 2
 					},
-					range: 0,
+					range: 1,
 					unreliable: 0
 				},
 				features: [],
@@ -367,7 +367,7 @@ export class ItemData {
 						type: DamageType.Piercing,
 						rank: 2
 					},
-					range: 0,
+					range: 1,
 					unreliable: 0
 				},
 				features: [],
@@ -386,7 +386,7 @@ export class ItemData {
 						type: DamageType.Impact,
 						rank: 2
 					},
-					range: 0,
+					range: 1,
 					unreliable: 0
 				},
 				features: [],

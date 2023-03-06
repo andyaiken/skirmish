@@ -1,8 +1,8 @@
 import { Component } from 'react';
 
-import { ActionLogic } from '../../../logic/action-logic';
+import { ActionLogic, ActionPrerequisites } from '../../../logic/action-logic';
 
-import type { ActionEffectModel, ActionModel, ActionParameterModel, ActionTargetParameterModel, ActionWeaponParameterModel } from '../../../models/action';
+import type { ActionEffectModel, ActionModel, ActionOriginParameterModel, ActionParameterModel, ActionTargetParameterModel, ActionWeaponParameterModel } from '../../../models/action';
 import type { EncounterModel } from '../../../models/encounter';
 
 import { Text, TextType } from '../../controls';
@@ -25,19 +25,27 @@ export class ActionCard extends Component<Props> {
 		}
 
 		return this.props.action.prerequisites
-			.filter(p => !p.isSatisfied(this.props.encounter as EncounterModel))
+			.filter(p => !ActionPrerequisites.isSatisfied(p, this.props.encounter as EncounterModel))
 			.map((p, n) => <div key={n} className='prerequisite highlighted'>{p.description}</div>);
 	};
 
 	getParameters = () => {
 		const getParameterDescription = (parameter: ActionParameterModel) => {
 			switch (parameter.name) {
-				case 'targets': {
-					return `Targets: ${ActionLogic.getTargetDescription(parameter as ActionTargetParameterModel)}`;
+				case 'origin': {
+					const originParam = parameter as ActionOriginParameterModel;
+					if (originParam.distance === 'weapon') {
+						return 'Origin: within weapon range';
+					}
+					return `Origin: within ${originParam.distance} squares`;
 				}
 				case 'weapon': {
-					const wpn = parameter as ActionWeaponParameterModel;
-					return `Weapon: ${wpn.type}`;
+					const weaponParam = parameter as ActionWeaponParameterModel;
+					return `Weapon: ${weaponParam.type}`;
+				}
+				case 'targets': {
+					const targetParam = parameter as ActionTargetParameterModel;
+					return `Targets: ${ActionLogic.getTargetDescription(targetParam)}`;
 				}
 			}
 		};

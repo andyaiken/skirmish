@@ -13,7 +13,7 @@ import { EncounterLogic } from '../../logic/encounter-logic';
 import { Factory } from '../../logic/factory';
 import { GameLogic } from '../../logic/game-logic';
 
-import type { ActionModel } from '../../models/action';
+import type { ActionModel, ActionParameterModel } from '../../models/action';
 import type { BoonModel } from '../../models/boon';
 import type { CombatantModel } from '../../models/combatant';
 import type { EncounterModel } from '../../models/encounter';
@@ -79,6 +79,12 @@ export class Main extends Component<Props, State> {
 				if (game.encounter.mapSquares === undefined) {
 					game.encounter.mapSquares = [];
 				}
+
+				game.encounter.combatants.forEach(c => {
+					if (c.combat.trail === undefined) {
+						c.combat.trail = [];
+					}
+				});
 			}
 		}
 
@@ -336,6 +342,14 @@ export class Main extends Component<Props, State> {
 		});
 	};
 
+	addMovement = (encounter:EncounterModel, combatant: CombatantModel, value: number) => {
+		combatant.combat.movement += value;
+
+		this.setState({
+			game: this.state.game
+		});
+	};
+
 	standUp = (encounter: EncounterModel, combatant: CombatantModel) => {
 		EncounterLogic.standUpSitDown(encounter, combatant);
 
@@ -368,6 +382,14 @@ export class Main extends Component<Props, State> {
 		});
 	};
 
+	setActionParameter = (parameter: ActionParameterModel, value: unknown) => {
+		parameter.value = value;
+
+		this.setState({
+			game: this.state.game
+		});
+	};
+
 	runAction = (encounter: EncounterModel, combatant: CombatantModel) => {
 		EncounterLogic.runAction(encounter, combatant);
 
@@ -377,15 +399,15 @@ export class Main extends Component<Props, State> {
 	};
 
 	endTurn = (encounter: EncounterModel) => {
-		const acting = EncounterLogic.getActiveCombatants(encounter);
-		const current = acting.length > 0 ? acting[0] : null;
-		const next = acting.length > 1 ? acting[1] : null;
-		if (current) {
-			EncounterLogic.endOfTurn(encounter, current);
+		encounter.combatants.filter(c => c.combat.current).forEach(c => {
+			EncounterLogic.endOfTurn(encounter, c);
+		});
+
+		const active = EncounterLogic.getActiveCombatants(encounter);
+		if (active.length > 0) {
+			EncounterLogic.startOfTurn(encounter, active[0]);
 		}
-		if (next) {
-			EncounterLogic.startOfTurn(encounter, next);
-		}
+
 		this.setState({
 			game: this.state.game
 		});
@@ -621,10 +643,12 @@ export class Main extends Component<Props, State> {
 						rollInitiative={this.rollInitiative}
 						endTurn={this.endTurn}
 						move={this.move}
+						addMovement={this.addMovement}
 						standUp={this.standUp}
 						scan={this.scan}
 						hide={this.hide}
 						selectAction={this.selectAction}
+						setActionParameter={this.setActionParameter}
 						runAction={this.runAction}
 						equipItem={this.equipItem}
 						unequipItem={this.unequipItem}

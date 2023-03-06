@@ -1,16 +1,18 @@
 import { Component } from 'react';
 
+import { ActionTargetType } from '../../../../enums/action-target-type';
 import { CardType } from '../../../../enums/card-type';
 import { CombatantState } from '../../../../enums/combatant-state';
 import { CombatantType } from '../../../../enums/combatant-type';
 
+import { ActionPrerequisites } from '../../../../logic/action-logic';
 import { CombatantLogic } from '../../../../logic/combatant-logic';
 import { ConditionLogic } from '../../../../logic/condition-logic';
 import { EncounterLogic } from '../../../../logic/encounter-logic';
 import { EncounterMapLogic } from '../../../../logic/encounter-map-logic';
 import { GameLogic } from '../../../../logic/game-logic';
 
-import type { ActionModel, ActionOriginParameterModel, ActionTargetParameterModel, ActionWeaponParameterModel } from '../../../../models/action';
+import type { ActionModel, ActionOriginParameterModel, ActionParameterModel, ActionTargetParameterModel, ActionWeaponParameterModel } from '../../../../models/action';
 import type { CombatantModel } from '../../../../models/combatant';
 import type { EncounterModel } from '../../../../models/encounter';
 import type { ItemModel } from '../../../../models/item';
@@ -30,10 +32,12 @@ interface Props {
 	developer: boolean;
 	endTurn: (encounter: EncounterModel) => void;
 	move: (encounter: EncounterModel, combatant: CombatantModel, dir: string, cost: number) => void;
+	addMovement: (encounter: EncounterModel, combatant: CombatantModel, value: number) => void;
 	standUp: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	scan: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	hide: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	selectAction: (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => void;
+	setActionParameter: (parameter: ActionParameterModel, value: unknown) => void;
 	runAction: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	pickUpItem: (item: ItemModel, combatant: CombatantModel) => void;
 	showCharacterSheet: (combatant: CombatantModel) => void;
@@ -136,6 +140,7 @@ export class CombatantControls extends Component<Props, State> {
 				controls = (
 					<div className='movement'>
 						<DirectionPanel combatant={this.props.combatant} costs={moveCosts} onMove={(dir, cost) => this.props.move(this.props.encounter, this.props.combatant, dir, cost)} />
+						{this.props.developer ? <button className='developer' onClick={() => this.props.addMovement(this.props.encounter, this.props.combatant, 10)}>Add Movement</button> : null}
 						{pickUpButtons.length > 0 ? <hr /> : null}
 						{pickUpButtons}
 					</div>
@@ -151,7 +156,7 @@ export class CombatantControls extends Component<Props, State> {
 					);
 				} else if (this.props.combatant.combat.actions.length > 1) {
 					const actionCards = this.props.combatant.combat.actions.map(a => {
-						const prerequisitesMet = a.prerequisites.every(p => p.isSatisfied(this.props.encounter));
+						const prerequisitesMet = a.prerequisites.every(p => ActionPrerequisites.isSatisfied(p, this.props.encounter));
 						return (
 							<PlayingCard
 								key={a.id}
@@ -175,7 +180,7 @@ export class CombatantControls extends Component<Props, State> {
 					let prerequisitesMet = true;
 					const prerequisites: JSX.Element[] = [];
 					action.prerequisites.forEach((prerequisite, n) => {
-						if (!prerequisite.isSatisfied(this.props.encounter)) {
+						if (!ActionPrerequisites.isSatisfied(prerequisite, this.props.encounter)) {
 							prerequisitesMet = false;
 							prerequisites.push(
 								<div key={n} className='action-prerequisite'>{prerequisite.description}</div>
@@ -192,7 +197,7 @@ export class CombatantControls extends Component<Props, State> {
 						}
 
 						let description = '';
-						let canChange = false;
+						let change = null;
 						switch (parameter.name) {
 							case'weapon': {
 								const weaponParam = parameter as ActionWeaponParameterModel;
@@ -203,7 +208,18 @@ export class CombatantControls extends Component<Props, State> {
 									parametersSet = false;
 									description = '[Not set]';
 								}
-								canChange = weaponParam.candidates.length > 1;
+								if (weaponParam.candidates.length > 1) {
+									change = (
+										<Selector
+											options={weaponParam.candidates.map(candidate => candidate as ItemModel).map(item => ({ id: item.id, display: item.name }))}
+											selectedID={(weaponParam.value as ItemModel).id}
+											onSelect={id => {
+												const item = weaponParam.candidates.find(i => (i as ItemModel).id === id);
+												this.props.setActionParameter(parameter, item);
+											}}
+										/>
+									);
+								}
 								break;
 							}
 							case 'origin': {
@@ -214,31 +230,82 @@ export class CombatantControls extends Component<Props, State> {
 									parametersSet = false;
 									description = '[Not set]';
 								}
-								canChange = originParam.candidates.length > 1;
+								if (originParam.candidates.length > 1) {
+									// TODO: Button to toggle 'square selection mode' on the map
+									change = (
+										<button onClick={() => null}>Select squares</button>
+									);
+								}
 								break;
 							}
 							case 'targets': {
 								const targetParam = parameter as ActionTargetParameterModel;
 								if (targetParam.targets) {
-									if (targetParam.targets.count === Number.MAX_VALUE) {
-										// Targets all possible candidates
-										// TODO: This could be {x, y}[] instead
-										description = `[${(targetParam.value as string[]).length} targets]`;
-										canChange = false;
-									} else {
-										// Targets specific candidates
-										// TODO: This could be {x, y}[] instead
-										const list = targetParam.value as string[];
-										description = list
-											.map(id => EncounterLogic.getCombatant(this.props.encounter, id) as CombatantModel)
-											.map(target => target.name)
-											.join(', ') || '[None]';
-										canChange = targetParam.candidates.length > targetParam.targets.count;
+									switch (targetParam.targets.type) {
+										case ActionTargetType.Combatants:
+										case ActionTargetType.Enemies:
+										case ActionTargetType.Allies: {
+											const list = targetParam.value as string[];
+											if (targetParam.targets.count === Number.MAX_VALUE) {
+												// Targets all possible candidates
+												description = `[${list.length} ${targetParam.targets.type.toLowerCase()}]`;
+											} else {
+												// Targets specific candidates
+												description = list
+													.map(id => EncounterLogic.getCombatant(this.props.encounter, id) as CombatantModel)
+													.map(target => target.name)
+													.join(', ') || '[None]';
+												if (targetParam.candidates.length > targetParam.targets.count) {
+													// TODO: Button to toggle 'combatant selection mode' on the map
+													change = (
+														<button onClick={() => null}>Select {targetParam.targets.type.toLowerCase()}</button>
+													);
+												}
+											}
+											break;
+										}
+										case ActionTargetType.Squares: {
+											const list = targetParam.value as { x: number, y: number }[];
+											if (targetParam.targets.count === Number.MAX_VALUE) {
+												// Targets all possible candidates
+												description = `[${list.length} squares]`;
+											} else {
+												// Targets specific candidates
+												description = list
+													.map(square => `(${square.x}, ${square.y})`)
+													.join(', ') || '[None]';
+												if (targetParam.candidates.length > targetParam.targets.count) {
+													// TODO: Button to toggle 'square selection mode' on the map
+													change = (
+														<button onClick={() => null}>Select squares</button>
+													);
+												}
+											}
+											break;
+										}
+										case ActionTargetType.Walls: {
+											const list = targetParam.value as { x: number, y: number }[];
+											if (targetParam.targets.count === Number.MAX_VALUE) {
+												// Targets all possible candidates
+												description = `[${list.length} walls]`;
+											} else {
+												// Targets specific candidates
+												description = list
+													.map(square => `(${square.x}, ${square.y})`)
+													.join(', ') || '[None]';
+												if (targetParam.candidates.length > targetParam.targets.count) {
+													// TODO: Button to toggle 'wall selection mode' on the map
+													change = (
+														<button onClick={() => null}>Select walls</button>
+													);
+												}
+											}
+											break;
+										}
 									}
 								} else {
 									// Targets self
 									description = '[Self]';
-									canChange = false;
 								}
 								break;
 							}
@@ -246,9 +313,11 @@ export class CombatantControls extends Component<Props, State> {
 
 						parameters.push(
 							<div key={n} className='action-parameter'>
-								<div className='action-parameter-name'>Select {parameter.name}</div>
-								<div className='action-parameter-value'>{description}</div>
-								{canChange ? <div className='action-parameter-change'>Change</div> : null}
+								<div className='action-parameter-top-line'>
+									<div className='action-parameter-name'>Select {parameter.name}</div>
+									<div className='action-parameter-value'>{description}</div>
+								</div>
+								{change !== null ? <div className='action-parameter-change'>{change}</div> : null}
 							</div>
 						);
 					});

@@ -203,4 +203,13 @@ export class EncounterMapLogic {
 		const hyp = Math.sqrt(x2 + y2);
 		return Math.floor(hyp);
 	};
+
+	static canSeeAny = (aSquares: { x: number, y: number }[], bSquares: { x: number, y: number }[]) => {
+		return aSquares.some(a => bSquares.some(b => EncounterMapLogic.canSee(a, b)));
+	};
+
+	static canSee = (a: { x: number, y: number }, b: { x: number, y: number }) => {
+		// TODO: Calculate LOS
+		return true;
+	};
 }

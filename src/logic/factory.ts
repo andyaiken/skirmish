@@ -41,6 +41,7 @@ export class Factory {
 					x: 0,
 					y: 0
 				},
+				trail: [],
 				damage: 0,
 				wounds: 0,
 				initiative: Number.MIN_VALUE,

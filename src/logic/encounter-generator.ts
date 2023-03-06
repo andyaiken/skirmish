@@ -135,6 +135,7 @@ export class EncounterGenerator {
 			c.combat.current = false;
 			c.combat.state = CombatantState.Standing;
 			c.combat.position = { x: 0, y: 0 };
+			c.combat.trail = [];
 			c.combat.damage = 0;
 			c.combat.wounds = 0;
 			c.combat.initiative = Number.MIN_VALUE;

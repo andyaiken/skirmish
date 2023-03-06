@@ -706,7 +706,7 @@ export class ActionLogic {
 					if (wpnParam && (wpnParam.value !== null)) {
 						const weapon = wpnParam.value as ItemModel;
 						if (weapon.weapon) {
-							radius = weapon.weapon.range;
+							radius = weapon.weapon.range + parameter.range.radius;
 						}
 					}
 					break;

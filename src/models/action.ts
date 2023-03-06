@@ -13,6 +13,11 @@ export interface ActionParameterModel {
 	value: unknown | null;
 }
 
+export interface ActionWeaponParameterModel extends ActionParameterModel {
+	name: 'weapon';
+	type: 'melee' | 'ranged';
+}
+
 export interface ActionOriginParameterModel extends ActionParameterModel {
 	name: 'origin';
 	distance: number | 'weapon';
@@ -22,11 +27,6 @@ export interface ActionTargetParameterModel extends ActionParameterModel {
 	name: 'targets';
 	range: { type: ActionRangeType, radius: number };
 	targets: { type: ActionTargetType, count: number } | null;
-}
-
-export interface ActionWeaponParameterModel extends ActionParameterModel {
-	name: 'weapon';
-	type: 'melee' | 'ranged';
 }
 
 export interface ActionEffectModel {

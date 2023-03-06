@@ -35,7 +35,8 @@
 			border-radius: 33%;
 			border: 1px solid rgb(80, 80, 80);
 			background: radial-gradient(rgb(160, 160, 160), rgb(140, 140, 140));
-			opacity: 0.25;
+			opacity: 0.3;
+			pointer-events: none;
 		}
 
 		.encounter-map-mini-token {
@@ -61,6 +62,9 @@
 
 			&.current {
 				outline: 3px solid rgb(60, 170, 255);
+				background: rgb(255, 255, 255);
+				color: rgb(0, 0, 0);
+				font-weight: 600;
 			}
 		}
 
@@ -68,19 +72,44 @@
 			position: absolute;
 			border-radius: 50%;
 			border: 1px solid rgb(100, 100, 100);
-			background: rgb(150, 150, 150);
+			background: rgb(240, 240, 240);
 			opacity: 0.3;
 			pointer-events: none;
 		}
 
+		.encounter-map-square {
+			&.selectable {
+				border-color: rgb(60, 170, 255);
+				background-color: rgb(200, 230, 255);
+				cursor: pointer;
+
+				&:hover {
+					outline: 3px solid rgb(60, 170, 255);
+					z-index: 100;
+				}
+
+				&.selected {
+					background-color: rgb(60, 170, 255);
+					z-index: 100;
+				}
+			}
+		}
+
 		.encounter-map-loot-token,
 		.encounter-map-mini-token {
-			&:hover {
-				outline: 3px solid rgb(200, 230, 255);
+			&.selectable {
+				&:hover {
+					border-color: rgb(200, 230, 255);
+				}
+
+				&.selected {
+					outline: 3px solid rgb(60, 170, 255);
+				}
 			}
 
-			&.selected {
-				outline: 3px solid rgb(60, 170, 255);
+			&:not(.selectable) {
+				opacity: 0.3;
+				pointer-events: none;
 			}
 		}
 	}

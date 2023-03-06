@@ -14,7 +14,7 @@ import './initiative-list-panel.scss';
 interface Props {
 	encounter: EncounterModel;
 	selectedIDs: string[];
-	onSelect: (combatant: CombatantModel | null) => void;
+	onSelect: (combatant: CombatantModel) => void;
 	onDetails: (combatant: CombatantModel) => void;
 }
 

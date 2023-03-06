@@ -2,6 +2,7 @@
 
 ## Bugs
 
+* Ity's possible to select all potential targets for an action, rather than the maximum specified
 * It's possible for some squares on the encounter map to be detatched from the rest
   * When generating the map, remove unattached areas
   * Or, when removing squares, check whether this would result in an unattached area
@@ -11,11 +12,7 @@
 
 * Encounters:
   * Implement actions
-    * Allow users to change parameter selections
-      * Weapons
-      * Combatants
-      * Squares
-      * Walls
+    * Parameter selection should happen in the card itself
     * Lose turn should set a flag on the combatant
       * On start of turn, notify and end turn
       * This flag should be reflected in the initiative list

@@ -1,12 +1,13 @@
 import { Component } from 'react';
 
+import { ActionTargetType } from '../../../enums/action-target-type';
 import { CardType } from '../../../enums/card-type';
 import { EncounterState } from '../../../enums/encounter-state';
 
 import { EncounterLogic } from '../../../logic/encounter-logic';
 
-import type { ActionModel, ActionParameterModel } from '../../../models/action';
-import type { EncounterMapSquareModel, EncounterModel, LootPileModel } from '../../../models/encounter';
+import type { ActionModel, ActionOriginParameterModel, ActionParameterModel, ActionTargetParameterModel } from '../../../models/action';
+import type { EncounterModel, LootPileModel } from '../../../models/encounter';
 import type { CombatantModel } from '../../../models/combatant';
 import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
@@ -32,7 +33,7 @@ interface Props {
 	scan: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	hide: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	selectAction: (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => void;
-	setActionParameter: (parameter: ActionParameterModel, value: unknown) => void;
+	setActionParameterValue: (parameter: ActionParameterModel, value: unknown) => void;
 	runAction: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	equipItem: (item: ItemModel, combatant: CombatantModel) => void;
 	unequipItem: (item: ItemModel, combatant: CombatantModel) => void;
@@ -44,7 +45,12 @@ interface Props {
 
 interface State {
 	mapSquareSize: number;
-	selectedIDs: string[];
+	currentActionParameter: ActionParameterModel | null;
+	selectableCombatantIDs: string[];
+	selectableLootIDs: string[];
+	selectableSquares: { x: number, y: number }[];
+	selectedCombatantIDs: string[];
+	selectedLootIDs: string[];
 	selectedSquares: { x: number, y: number }[];
 	manualEncounterState: EncounterState;
 	detailsCombatant: CombatantModel | null;
@@ -56,7 +62,12 @@ export class EncounterScreen extends Component<Props, State> {
 		super(props);
 		this.state = {
 			mapSquareSize: 10,
-			selectedIDs: [],
+			currentActionParameter: null,
+			selectableCombatantIDs: [],
+			selectableLootIDs: [],
+			selectableSquares: [],
+			selectedCombatantIDs: [],
+			selectedLootIDs: [],
 			selectedSquares: [],
 			manualEncounterState: EncounterState.Active,
 			detailsCombatant: null,
@@ -71,16 +82,110 @@ export class EncounterScreen extends Component<Props, State> {
 		});
 	};
 
-	selectCombatant = (item: CombatantModel | LootPileModel | null) => {
+	selectCombatant = (combatant: CombatantModel) => {
+		let ids = this.state.selectedCombatantIDs;
+		if (ids.includes(combatant.id)) {
+			ids = ids.filter(id => id !== combatant.id);
+		} else {
+			ids.push(combatant.id);
+		}
+
+		const parameter = this.state.currentActionParameter;
+		if (parameter) {
+			let usesCombatantIDs = false;
+			switch (parameter.name) {
+				case 'targets': {
+					const targetParam = parameter as ActionTargetParameterModel;
+					if (targetParam.targets) {
+						switch (targetParam.targets.type) {
+							case ActionTargetType.Combatants:
+							case ActionTargetType.Enemies:
+							case ActionTargetType.Allies:
+								usesCombatantIDs = true;
+								break;
+						}
+					}
+				}
+			}
+			if (usesCombatantIDs) {
+				parameter.value = ids;
+			}
+		}
+
 		this.setState({
-			selectedIDs: item ? [ item.id ] : []
+			currentActionParameter: parameter,
+			selectedCombatantIDs: ids
 		});
 	};
 
-	selectSquare = (square: EncounterMapSquareModel) => {
+	selectLoot = (loot: LootPileModel) => {
+		let ids = this.state.selectedLootIDs;
+		if (ids.includes(loot.id)) {
+			ids = ids.filter(id => id !== loot.id);
+		} else {
+			ids.push(loot.id);
+		}
+
 		this.setState({
-			selectedSquares: [ square ]
+			selectedLootIDs: ids
 		});
+	};
+
+	selectSquare = (square: { x: number, y: number }) => {
+		let squares = this.state.selectedSquares;
+		if (squares.includes(square)) {
+			squares = squares.filter(sq => sq !== square);
+		} else {
+			squares.push(square);
+		}
+
+		const parameter = this.state.currentActionParameter;
+		if (parameter) {
+			let usesSquares = false;
+			switch (parameter.name) {
+				case 'origin':
+					usesSquares = true;
+					break;
+				case 'targets': {
+					const targetParam = parameter as ActionTargetParameterModel;
+					if (targetParam.targets) {
+						switch (targetParam.targets.type) {
+							case ActionTargetType.Squares:
+							case ActionTargetType.Walls:
+								usesSquares = true;
+								break;
+						}
+					}
+				}
+			}
+			if (usesSquares) {
+				parameter.value = squares.map(sq => {
+					return { x: sq.x, y: sq.y };
+				});
+			}
+		}
+
+		this.setState({
+			currentActionParameter: parameter,
+			selectedSquares: squares
+		});
+	};
+
+	clearSelection = () => {
+		if (this.state.currentActionParameter) {
+			this.setState({
+				currentActionParameter: null,
+				selectableCombatantIDs: [],
+				selectableLootIDs: [],
+				selectableSquares: []
+			});
+		} else {
+			this.setState({
+				selectedCombatantIDs: [],
+				selectedLootIDs: [],
+				selectedSquares: []
+			});
+		}
 	};
 
 	setManualEncounterState = (state: EncounterState) => {
@@ -89,20 +194,93 @@ export class EncounterScreen extends Component<Props, State> {
 		});
 	};
 
-	showDetails = (item: CombatantModel | LootPileModel | null) => {
-		let combatant = null;
-		let loot = null;
-		if (item) {
-			if ((item as CombatantModel).name !== undefined) {
-				combatant = item as CombatantModel;
-			} else {
-				loot = item as LootPileModel;
+	showDetailsCombatant = (combatant: CombatantModel) => {
+		this.setState({
+			detailsCombatant: combatant,
+			detailsLoot: null
+		});
+	};
+
+	showDetailsLoot = (loot: LootPileModel) => {
+		this.setState({
+			detailsCombatant: null,
+			detailsLoot: loot
+		});
+	};
+
+	clearDetails = () => {
+		this.setState({
+			detailsCombatant: null,
+			detailsLoot: null
+		});
+	};
+
+	selectAction = (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => {
+		this.setState({
+			selectedCombatantIDs: [],
+			selectedLootIDs: [],
+			selectedSquares: []
+		}, () => {
+			this.props.selectAction(encounter, combatant, action);
+		});
+	};
+
+	setActionParameter = (parameter: ActionParameterModel) => {
+		let selectableCombatantIDs: string[] = [];
+		let selectableSquares: { x: number, y: number }[] = [];
+		let selectedCombatantIDs: string[] = [];
+		let selectedSquares: { x: number, y: number }[] = [];
+
+		switch (parameter.name) {
+			case 'origin': {
+				const originParam = parameter as ActionOriginParameterModel;
+				selectableSquares = (originParam.candidates as { x: number, y: number }[]);
+				selectedSquares = [ originParam.value as { x: number, y: number } ];
+				break;
+			}
+			case 'targets': {
+				const targetParam = parameter as ActionTargetParameterModel;
+				if (targetParam.targets !== null) {
+					switch (targetParam.targets.type) {
+						case ActionTargetType.Combatants:
+						case ActionTargetType.Enemies:
+						case ActionTargetType.Allies:
+							selectableCombatantIDs = targetParam.candidates as string[];
+							selectedCombatantIDs = targetParam.value as string[];
+							break;
+						case ActionTargetType.Squares:
+							selectableSquares = (targetParam.candidates as { x: number, y: number }[]);
+							selectedSquares = [ targetParam.value as { x: number, y: number } ];
+							break;
+						case ActionTargetType.Walls:
+							selectableSquares = (targetParam.candidates as { x: number, y: number }[]);
+							selectedSquares = [ targetParam.value as { x: number, y: number } ];
+							break;
+					}
+				}
+				break;
 			}
 		}
 
 		this.setState({
-			detailsCombatant: combatant,
-			detailsLoot: loot
+			currentActionParameter: parameter,
+			selectableCombatantIDs: selectableCombatantIDs,
+			selectableLootIDs: [],
+			selectableSquares: selectableSquares,
+			selectedCombatantIDs: selectedCombatantIDs,
+			selectedLootIDs: [],
+			selectedSquares: selectedSquares
+		});
+	};
+
+	runAction = (encounter: EncounterModel, combatant: CombatantModel) => {
+		this.setState({
+			currentActionParameter: null,
+			selectableCombatantIDs: [],
+			selectableLootIDs: [],
+			selectableSquares: []
+		}, () => {
+			this.props.runAction(encounter, combatant);
 		});
 	};
 
@@ -121,9 +299,9 @@ export class EncounterScreen extends Component<Props, State> {
 				<div className='encounter-left-panel'>
 					<InitiativeListPanel
 						encounter={this.props.encounter}
-						selectedIDs={this.state.selectedIDs}
+						selectedIDs={this.state.selectedCombatantIDs}
 						onSelect={this.selectCombatant}
-						onDetails={this.showDetails}
+						onDetails={this.showDetailsCombatant}
 					/>
 				</div>
 			);
@@ -147,6 +325,7 @@ export class EncounterScreen extends Component<Props, State> {
 							<CombatantControls
 								combatant={currentCombatant}
 								encounter={this.props.encounter}
+								currentActionParameter={this.state.currentActionParameter}
 								developer={this.props.developer}
 								endTurn={this.props.endTurn}
 								move={this.props.move}
@@ -154,11 +333,12 @@ export class EncounterScreen extends Component<Props, State> {
 								standUp={this.props.standUp}
 								scan={this.props.scan}
 								hide={this.props.hide}
-								selectAction={this.props.selectAction}
-								setActionParameter={this.props.setActionParameter}
-								runAction={this.props.runAction}
+								selectAction={this.selectAction}
+								setActionParameter={this.setActionParameter}
+								setActionParameterValue={this.props.setActionParameterValue}
+								runAction={this.runAction}
 								pickUpItem={this.props.pickUpItem}
-								showCharacterSheet={this.showDetails}
+								showCharacterSheet={this.showDetailsCombatant}
 								kill={this.props.kill}
 							/>
 						</div>
@@ -238,7 +418,7 @@ export class EncounterScreen extends Component<Props, State> {
 							levelUp={() => null}
 						/>
 					}
-					onClickOff={() => this.showDetails(null)}
+					onClickOff={() => this.clearDetails()}
 				/>
 			);
 		}
@@ -251,7 +431,7 @@ export class EncounterScreen extends Component<Props, State> {
 							<CardList cards={this.state.detailsLoot.items.map(i => <PlayingCard key={i.id} type={CardType.Item} front={<ItemCard item={i} />} />)} />
 						</div>
 					}
-					onClickOff={() => this.showDetails(null)}
+					onClickOff={() => this.clearDetails()}
 				/>
 			);
 		}
@@ -263,10 +443,18 @@ export class EncounterScreen extends Component<Props, State> {
 					<EncounterMapPanel
 						encounter={this.props.encounter}
 						squareSize={this.state.mapSquareSize}
-						selectedIDs={this.state.selectedIDs}
-						selectedSquares={[]}
-						onClick={this.selectCombatant}
-						onDoubleClick={this.showDetails}
+						selectableCombatantIDs={this.state.selectableCombatantIDs}
+						selectableLootIDs={this.state.selectableLootIDs}
+						selectableSquares={this.state.selectableSquares}
+						selectedCombatantIDs={this.state.selectedCombatantIDs}
+						selectedLootIDs={this.state.selectedLootIDs}
+						selectedSquares={this.state.selectedSquares}
+						onClickCombatant={this.selectCombatant}
+						onClickLoot={this.selectLoot}
+						onClickSquare={this.selectSquare}
+						onClickOff={this.clearSelection}
+						onDoubleClickCombatant={this.showDetailsCombatant}
+						onDoubleClickLoot={this.showDetailsLoot}
 					/>
 					{mapControls}
 				</div>

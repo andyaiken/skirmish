@@ -29,6 +29,7 @@ import './combatant-controls.scss';
 interface Props {
 	combatant: CombatantModel;
 	encounter: EncounterModel;
+	currentActionParameter: ActionParameterModel | null;
 	developer: boolean;
 	endTurn: (encounter: EncounterModel) => void;
 	move: (encounter: EncounterModel, combatant: CombatantModel, dir: string, cost: number) => void;
@@ -37,7 +38,8 @@ interface Props {
 	scan: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	hide: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	selectAction: (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => void;
-	setActionParameter: (parameter: ActionParameterModel, value: unknown) => void;
+	setActionParameter: (parameter: ActionParameterModel) => void;
+	setActionParameterValue: (parameter: ActionParameterModel, value: unknown) => void;
 	runAction: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	pickUpItem: (item: ItemModel, combatant: CombatantModel) => void;
 	showCharacterSheet: (combatant: CombatantModel) => void;
@@ -197,7 +199,8 @@ export class CombatantControls extends Component<Props, State> {
 						}
 
 						let description = '';
-						let change = null;
+						let changeButton = null;
+						let changeControls = null;
 						switch (parameter.name) {
 							case'weapon': {
 								const weaponParam = parameter as ActionWeaponParameterModel;
@@ -209,13 +212,13 @@ export class CombatantControls extends Component<Props, State> {
 									description = '[Not set]';
 								}
 								if (weaponParam.candidates.length > 1) {
-									change = (
+									changeControls = (
 										<Selector
 											options={weaponParam.candidates.map(candidate => candidate as ItemModel).map(item => ({ id: item.id, display: item.name }))}
 											selectedID={(weaponParam.value as ItemModel).id}
 											onSelect={id => {
 												const item = weaponParam.candidates.find(i => (i as ItemModel).id === id);
-												this.props.setActionParameter(parameter, item);
+												this.props.setActionParameterValue(parameter, item);
 											}}
 										/>
 									);
@@ -231,9 +234,10 @@ export class CombatantControls extends Component<Props, State> {
 									description = '[Not set]';
 								}
 								if (originParam.candidates.length > 1) {
-									// TODO: Button to toggle 'square selection mode' on the map
-									change = (
-										<button onClick={() => null}>Select squares</button>
+									changeButton = (
+										<button onClick={() => this.props.setActionParameter(originParam)}>
+											Select origin
+										</button>
 									);
 								}
 								break;
@@ -246,6 +250,9 @@ export class CombatantControls extends Component<Props, State> {
 										case ActionTargetType.Enemies:
 										case ActionTargetType.Allies: {
 											const list = targetParam.value as string[];
+											if (list.length === 0) {
+												parametersSet = false;
+											}
 											if (targetParam.targets.count === Number.MAX_VALUE) {
 												// Targets all possible candidates
 												description = `[${list.length} ${targetParam.targets.type.toLowerCase()}]`;
@@ -256,9 +263,10 @@ export class CombatantControls extends Component<Props, State> {
 													.map(target => target.name)
 													.join(', ') || '[None]';
 												if (targetParam.candidates.length > targetParam.targets.count) {
-													// TODO: Button to toggle 'combatant selection mode' on the map
-													change = (
-														<button onClick={() => null}>Select {targetParam.targets.type.toLowerCase()}</button>
+													changeButton = (
+														<button onClick={() => this.props.setActionParameter(targetParam)}>
+															Select {targetParam.targets.type.toLowerCase()}
+														</button>
 													);
 												}
 											}
@@ -266,18 +274,23 @@ export class CombatantControls extends Component<Props, State> {
 										}
 										case ActionTargetType.Squares: {
 											const list = targetParam.value as { x: number, y: number }[];
+											if (list.length === 0) {
+												parametersSet = false;
+											}
 											if (targetParam.targets.count === Number.MAX_VALUE) {
 												// Targets all possible candidates
 												description = `[${list.length} squares]`;
 											} else {
 												// Targets specific candidates
+												// TODO: Draw an arrow showing direction from the combatant and list the distance
 												description = list
 													.map(square => `(${square.x}, ${square.y})`)
 													.join(', ') || '[None]';
 												if (targetParam.candidates.length > targetParam.targets.count) {
-													// TODO: Button to toggle 'square selection mode' on the map
-													change = (
-														<button onClick={() => null}>Select squares</button>
+													changeButton = (
+														<button onClick={() => this.props.setActionParameter(targetParam)}>
+															Select squares
+														</button>
 													);
 												}
 											}
@@ -285,6 +298,9 @@ export class CombatantControls extends Component<Props, State> {
 										}
 										case ActionTargetType.Walls: {
 											const list = targetParam.value as { x: number, y: number }[];
+											if (list.length === 0) {
+												parametersSet = false;
+											}
 											if (targetParam.targets.count === Number.MAX_VALUE) {
 												// Targets all possible candidates
 												description = `[${list.length} walls]`;
@@ -294,9 +310,10 @@ export class CombatantControls extends Component<Props, State> {
 													.map(square => `(${square.x}, ${square.y})`)
 													.join(', ') || '[None]';
 												if (targetParam.candidates.length > targetParam.targets.count) {
-													// TODO: Button to toggle 'wall selection mode' on the map
-													change = (
-														<button onClick={() => null}>Select walls</button>
+													changeButton = (
+														<button onClick={() => this.props.setActionParameter(targetParam)}>
+															Select walls
+														</button>
 													);
 												}
 											}
@@ -312,12 +329,13 @@ export class CombatantControls extends Component<Props, State> {
 						}
 
 						parameters.push(
-							<div key={n} className='action-parameter'>
+							<div key={n} className={`action-parameter ${this.props.currentActionParameter === parameter ? 'current' : ''}`}>
 								<div className='action-parameter-top-line'>
 									<div className='action-parameter-name'>Select {parameter.name}</div>
 									<div className='action-parameter-value'>{description}</div>
+									{changeButton !== null ? <div className='action-parameter-change'>{changeButton}</div> : null}
 								</div>
-								{change !== null ? <div className='action-parameter-change'>{change}</div> : null}
+								{changeControls !== null ? <div className='action-parameter-change'>{changeControls}</div> : null}
 							</div>
 						);
 					});

@@ -471,11 +471,10 @@ export class RoleData {
 							ActionPrerequisites.implement()
 						],
 						parameters: [
-							ActionOriginParameters.distance(10),
-							ActionTargetParameters.burst(ActionTargetType.Squares, Number.MAX_VALUE, 3)
+							ActionTargetParameters.burst(ActionTargetType.Squares, 1, 10)
 						],
 						effects: [
-							// TODO: Turn selected squares into difficult terrain
+							// TODO: Create a blob of difficult terrain
 						]
 					},
 					{
@@ -485,11 +484,10 @@ export class RoleData {
 							ActionPrerequisites.implement()
 						],
 						parameters: [
-							ActionOriginParameters.distance(10),
-							ActionTargetParameters.burst(ActionTargetType.Squares, Number.MAX_VALUE, 3)
+							ActionTargetParameters.burst(ActionTargetType.Squares, 1, 10)
 						],
 						effects: [
-							// TODO: Turn selected squares into clear terrain
+							// TODO: Create a blob of clear terrain
 						]
 					},
 					{
@@ -499,11 +497,10 @@ export class RoleData {
 							ActionPrerequisites.implement()
 						],
 						parameters: [
-							ActionOriginParameters.distance(10),
-							ActionTargetParameters.burst(ActionTargetType.Squares, Number.MAX_VALUE, 3)
+							ActionTargetParameters.burst(ActionTargetType.Squares, 1, 10)
 						],
 						effects: [
-							// TODO: Remove selected squares from map
+							// TODO: Destroy a blob of floor squares
 						]
 					},
 					{
@@ -513,11 +510,10 @@ export class RoleData {
 							ActionPrerequisites.implement()
 						],
 						parameters: [
-							ActionOriginParameters.distance(10),
-							ActionTargetParameters.burst(ActionTargetType.Squares, Number.MAX_VALUE, 3)
+							ActionTargetParameters.burst(ActionTargetType.Squares, 1, 10)
 						],
 						effects: [
-							// TODO: Turn selected walls into squares
+							// TODO: Create a blob of floor squares
 						]
 					},
 					{

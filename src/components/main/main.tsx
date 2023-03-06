@@ -382,7 +382,7 @@ export class Main extends Component<Props, State> {
 		});
 	};
 
-	setActionParameter = (parameter: ActionParameterModel, value: unknown) => {
+	setActionParameterValue = (parameter: ActionParameterModel, value: unknown) => {
 		parameter.value = value;
 
 		this.setState({
@@ -648,7 +648,7 @@ export class Main extends Component<Props, State> {
 						scan={this.scan}
 						hide={this.hide}
 						selectAction={this.selectAction}
-						setActionParameter={this.setActionParameter}
+						setActionParameterValue={this.setActionParameterValue}
 						runAction={this.runAction}
 						equipItem={this.equipItem}
 						unequipItem={this.unequipItem}

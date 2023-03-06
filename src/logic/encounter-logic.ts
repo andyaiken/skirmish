@@ -143,24 +143,40 @@ export class EncounterLogic {
 				EncounterLogic.damage(encounter, combatant, condition.rank, condition.details.damage);
 			});
 
-		if ((combatant.combat.state === CombatantState.Standing) || (combatant.combat.state === CombatantState.Prone)) {
-			combatant.combat.senses = Random.dice(CombatantLogic.getSkillValue(combatant, conditions, SkillType.Perception));
-			combatant.combat.movement = Random.dice(CombatantLogic.getTraitValue(combatant, conditions, TraitType.Speed));
+		switch (combatant.combat.state) {
+			case CombatantState.Standing:
+			case CombatantState.Prone: {
+				combatant.combat.senses = Random.dice(CombatantLogic.getSkillValue(combatant, conditions, SkillType.Perception));
+				combatant.combat.movement = Random.dice(CombatantLogic.getTraitValue(combatant, conditions, TraitType.Speed));
 
-			conditions
-				.filter(condition => condition.type === ConditionType.MovementBonus)
-				.forEach(condition => {
-					combatant.combat.movement += condition.rank;
-				});
-			conditions
-				.filter(condition => condition.type === ConditionType.MovementPenalty)
-				.forEach(condition => {
-					combatant.combat.movement = Math.max(0, combatant.combat.movement - condition.rank);
-				});
+				conditions
+					.filter(condition => condition.type === ConditionType.MovementBonus)
+					.forEach(condition => {
+						combatant.combat.movement += condition.rank;
+					});
+				conditions
+					.filter(condition => condition.type === ConditionType.MovementPenalty)
+					.forEach(condition => {
+						combatant.combat.movement = Math.max(0, combatant.combat.movement - condition.rank);
+					});
+
+				const deck = CombatantLogic.getActionDeck(combatant);
+				combatant.combat.actions = Collections.shuffle(deck).splice(0, 3);
+				break;
+			}
+			case CombatantState.Unconscious:
+				// Unconscious
+				break;
+			case CombatantState.Dead: {
+				EncounterLogic.endOfTurn(encounter, combatant);
+
+				const active = EncounterLogic.getActiveCombatants(encounter);
+				if (active.length > 0) {
+					EncounterLogic.startOfTurn(encounter, active[0]);
+				}
+				break;
+			}
 		}
-
-		const deck = CombatantLogic.getActionDeck(combatant);
-		combatant.combat.actions = Collections.shuffle(deck).splice(0, 3);
 	};
 
 	static endOfTurn = (encounter: EncounterModel, combatant: CombatantModel) => {
@@ -393,11 +409,13 @@ export class EncounterLogic {
 		if (combatant.combat.wounds > resolve) {
 			combatant.combat.state = CombatantState.Dead;
 
-			const loot = Factory.createLootPile();
-			loot.items.push(...combatant.items, ...combatant.carried);
-			loot.position.x = combatant.combat.position.x;
-			loot.position.y = combatant.combat.position.y;
-			encounter.loot.push(loot);
+			if (combatant.items.length + combatant.carried.length > 0) {
+				const loot = Factory.createLootPile();
+				loot.items.push(...combatant.items, ...combatant.carried);
+				loot.position.x = combatant.combat.position.x;
+				loot.position.y = combatant.combat.position.y;
+				encounter.loot.push(loot);
+			}
 		}
 
 		EncounterLogic.checkActionParameters(encounter, combatant);

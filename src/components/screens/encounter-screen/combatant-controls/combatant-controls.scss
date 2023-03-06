@@ -38,6 +38,10 @@
 			border-radius: 5px;
 			padding: 10px;
 
+			&.current {
+				background-color: rgb(220, 220, 220);
+			}
+
 			.action-parameter-top-line {
 				display: flex;
 				align-items: center;
@@ -50,6 +54,10 @@
 				.action-parameter-value {
 					flex: 1 1 0;
 					text-align: right;
+				}
+
+				.action-parameter-change {
+					flex: 1 1 0;
 				}
 			}
 		}

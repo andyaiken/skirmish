@@ -5,7 +5,7 @@ import { CombatantState } from '../../../enums/combatant-state';
 import { CombatantLogic } from '../../../logic/combatant-logic';
 import { EncounterMapLogic } from '../../../logic/encounter-map-logic';
 
-import type { EncounterModel, LootPileModel } from '../../../models/encounter';
+import type { EncounterMapSquareModel, EncounterModel, LootPileModel } from '../../../models/encounter';
 import type { CombatantModel } from '../../../models/combatant';
 
 import { Collections } from '../../../utils/collections';
@@ -15,10 +15,18 @@ import './encounter-map-panel.scss';
 interface Props {
 	encounter: EncounterModel;
 	squareSize: number;
-	selectedIDs: string[];
+	selectableCombatantIDs: string[];
+	selectableLootIDs: string[];
+	selectableSquares: { x: number, y: number }[];
+	selectedCombatantIDs: string[];
+	selectedLootIDs: string[];
 	selectedSquares: { x: number, y: number }[];
-	onClick: (item: CombatantModel | LootPileModel | null) => void;
-	onDoubleClick: (item: CombatantModel | LootPileModel) => void;
+	onClickCombatant: (combatant: CombatantModel) => void;
+	onClickLoot: (loot: LootPileModel) => void;
+	onClickSquare: (square: EncounterMapSquareModel) => void;
+	onClickOff: () => void;
+	onDoubleClickCombatant: (combatant: CombatantModel) => void;
+	onDoubleClickLoot: (loot: LootPileModel) => void;
 }
 
 export class EncounterMapPanel extends Component<Props> {
@@ -37,35 +45,33 @@ export class EncounterMapPanel extends Component<Props> {
 		}
 
 		const squares = this.props.encounter.mapSquares.map(sq => {
-			const className = `encounter-map-square ${sq.type.toLowerCase()}`;
 			return (
-				<div
+				<Square
 					key={`square ${sq.x} ${sq.y}`}
-					className={className}
-					style={{
-						width: `${this.props.squareSize}px`,
-						height: `${this.props.squareSize}px`,
-						left: `${((sq.x - dims.left) * this.props.squareSize)}px`,
-						top: `${((sq.y - dims.top) * this.props.squareSize)}px`
-					}}
+					square={sq}
+					squareSize={this.props.squareSize}
+					mapDimensions={dims}
+					selectable={!!this.props.selectableSquares.find(s => (s.x === sq.x) && (s.y === sq.y))}
+					selected={!!this.props.selectedSquares.find(s => (s.x === sq.x) && (s.y === sq.y))}
+					onClick={this.props.onClickSquare}
 				/>
 			);
 		});
 
-		const loot = this.props.encounter.loot
-			.map(lp => {
-				return (
-					<LootToken
-						key={lp.id}
-						loot={lp}
-						squareSize={this.props.squareSize}
-						mapDimensions={dims}
-						selected={this.props.selectedIDs.includes(lp.id)}
-						onClick={this.props.onClick}
-						onDoubleClick={this.props.onDoubleClick}
-					/>
-				);
-			});
+		const loot = this.props.encounter.loot.map(lp => {
+			return (
+				<LootToken
+					key={lp.id}
+					loot={lp}
+					squareSize={this.props.squareSize}
+					mapDimensions={dims}
+					selectable={(this.props.selectableLootIDs.length === 0) || this.props.selectableLootIDs.includes(lp.id)}
+					selected={this.props.selectedLootIDs.includes(lp.id)}
+					onClick={this.props.onClickLoot}
+					onDoubleClick={this.props.onDoubleClickLoot}
+				/>
+			);
+		});
 
 		const auras = combatants.map(combatant => {
 			if (CombatantLogic.getAuras(combatant).length > 0) {
@@ -103,9 +109,10 @@ export class EncounterMapPanel extends Component<Props> {
 					combatant={combatant}
 					squareSize={this.props.squareSize}
 					mapDimensions={dims}
-					selected={this.props.selectedIDs.includes(combatant.id)}
-					onClick={this.props.onClick}
-					onDoubleClick={this.props.onDoubleClick}
+					selectable={(this.props.selectableCombatantIDs.length === 0) || this.props.selectableCombatantIDs.includes(combatant.id)}
+					selected={this.props.selectedCombatantIDs.includes(combatant.id)}
+					onClick={this.props.onClickCombatant}
+					onDoubleClick={this.props.onDoubleClickCombatant}
 				/>
 			);
 		});
@@ -137,7 +144,7 @@ export class EncounterMapPanel extends Component<Props> {
 		const width = dims.right - dims.left + 1;
 		const height = dims.bottom - dims.top + 1;
 		return (
-			<div className='encounter-map' onClick={e => this.props.onClick(null)}>
+			<div className='encounter-map' onClick={e => this.props.onClickOff()}>
 				<div className='encounter-map-square-container' style={{ maxWidth: `${this.props.squareSize * width}px`, maxHeight: `${this.props.squareSize * height}px` }}>
 					{squares}
 					{loot}
@@ -151,10 +158,47 @@ export class EncounterMapPanel extends Component<Props> {
 	};
 }
 
+interface SquareProps {
+	square: EncounterMapSquareModel;
+	squareSize: number;
+	mapDimensions: { left: number, top: number };
+	selectable: boolean;
+	selected: boolean;
+	onClick: (square: EncounterMapSquareModel) => void;
+}
+
+class Square extends Component<SquareProps> {
+	onClick = (e: React.MouseEvent) => {
+		e.stopPropagation();
+		this.props.onClick(this.props.square);
+	};
+
+	render = () => {
+		const type = this.props.square.type.toLowerCase();
+		const selectable = this.props.selectable ? 'selectable' : '';
+		const selected = this.props.selected ? 'selected' : '';
+		const className = `encounter-map-square ${type} ${selectable} ${selected}`;
+
+		return (
+			<div
+				key={`square ${this.props.square.x} ${this.props.square.y}`}
+				className={className}
+				style={{
+					width: `${this.props.squareSize}px`,
+					height: `${this.props.squareSize}px`,
+					left: `${((this.props.square.x - this.props.mapDimensions.left) * this.props.squareSize)}px`,
+					top: `${((this.props.square.y - this.props.mapDimensions.top) * this.props.squareSize)}px`
+				}}
+			/>
+		);
+	};
+}
+
 interface MiniTokenProps {
 	combatant: CombatantModel;
 	squareSize: number;
 	mapDimensions: { left: number, top: number };
+	selectable: boolean;
 	selected: boolean;
 	onClick: (combatant: CombatantModel) => void;
 	onDoubleClick: (combatant: CombatantModel) => void;
@@ -171,8 +215,20 @@ class MiniToken extends Component<MiniTokenProps> {
 		this.props.onDoubleClick(this.props.combatant);
 	};
 
+	getMonogram = () => {
+		return this.props.combatant.name
+			.split(' ')
+			.filter(token => token.length > 0)
+			.map(token => token[0])
+			.join('');
+	};
+
 	render = () => {
-		const className = `encounter-map-mini-token ${this.props.combatant.type.toLowerCase()} ${this.props.combatant.combat.current ? 'current' : ''} ${this.props.selected ? 'selected' : ''}`;
+		const type = this.props.combatant.type.toLowerCase();
+		const current = this.props.combatant.combat.current ? 'current' : '';
+		const selectable = this.props.selectable ? 'selectable' : '';
+		const selected = this.props.selected ? 'selected' : '';
+		const className = `encounter-map-mini-token ${type} ${current} ${selectable} ${selected}`;
 
 		let tooltip = this.props.combatant.name;
 		if (this.props.combatant.combat.state === CombatantState.Dead) {
@@ -196,19 +252,17 @@ class MiniToken extends Component<MiniTokenProps> {
 					height: `${this.props.squareSize * this.props.combatant.size}px`,
 					left: `${((this.props.combatant.combat.position.x - this.props.mapDimensions.left) * this.props.squareSize)}px`,
 					top: `${((this.props.combatant.combat.position.y - this.props.mapDimensions.top) * this.props.squareSize)}px`,
-					fontSize: `${this.props.squareSize * 0.8}px`
+					fontSize: `${this.props.squareSize * 0.35}px`
 				}}
 				title={tooltip}
 				onClick={e => this.onClick(e)}
 				onDoubleClick={e => this.onDoubleClick(e)}
 			>
-				{this.props.combatant.name[0]}
+				{this.getMonogram()}
 			</div>
 		);
 	};
 }
-
-
 
 interface TrailTokenProps {
 	position: { x: number, y: number };
@@ -261,8 +315,9 @@ interface LootTokenProps {
 	loot: LootPileModel;
 	squareSize: number;
 	mapDimensions: { left: number, top: number };
+	selectable: boolean;
 	selected: boolean;
-	onClick: (loot: LootPileModel | null) => void;
+	onClick: (loot: LootPileModel) => void;
 	onDoubleClick: (loot: LootPileModel) => void;
 }
 
@@ -278,7 +333,7 @@ class LootToken extends Component<LootTokenProps> {
 	};
 
 	render = () => {
-		const className = `encounter-map-loot-token ${this.props.selected ? 'selected' : ''}`;
+		const className = `encounter-map-loot-token ${this.props.selected ? 'selected' : ''} ${this.props.selectable ? 'selectable' : ''}`;
 		return (
 			<div
 				className={className}

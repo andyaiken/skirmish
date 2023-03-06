@@ -1,5 +1,6 @@
 import { Component } from 'react';
 
+import { CombatantState } from '../../../../enums/combatant-state';
 import { CombatantType } from '../../../../enums/combatant-type';
 import { DamageType } from '../../../../enums/damage-type';
 import { SkillType } from '../../../../enums/skill-type';
@@ -13,7 +14,7 @@ import type { CombatantModel } from '../../../../models/combatant';
 import type { ConditionModel } from '../../../../models/condition';
 import type { EncounterModel } from '../../../../models/encounter';
 
-import { Box, IconType, IconValue, StatValue, Tag, Text } from '../../../controls';
+import { Box, IconType, IconValue, StatValue, Tag, Text, TextType } from '../../../controls';
 import { CombatStatsPanel } from '../../combat-stats/combat-stats-panel';
 
 import './stats.scss';
@@ -84,6 +85,11 @@ export class Stats extends Component<Props> {
 		return (
 			<div className='stats'>
 				<div className='column'>
+					{
+						this.props.encounter && (this.props.hero.combat.state !== CombatantState.Standing) ?
+							<Text type={TextType.Information}>{this.props.hero.name} is <b>{this.props.hero.combat.state}</b>.</Text>
+							: null
+					}
 					{traitsSection}
 					<Box label='Auras'>
 						{auraSection}

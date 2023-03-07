@@ -73,6 +73,13 @@ export class EncounterLogic {
 		return occupied.find(s => (s.x === square.x) && (s.y === square.y)) === undefined;
 	};
 
+	static log = (encounter: EncounterModel, message: string) => {
+		encounter.log.unshift(message);
+
+		// eslint-disable-next-line no-console
+		console.log(message);
+	};
+
 	static rollInitiative = (encounter: EncounterModel) => {
 		encounter.round += 1;
 
@@ -108,9 +115,13 @@ export class EncounterLogic {
 
 			return result;
 		});
+
+		EncounterLogic.log(encounter, `Rolled initiative for round ${encounter.round}`);
 	};
 
 	static startOfTurn = (encounter: EncounterModel, combatant: CombatantModel) => {
+		EncounterLogic.log(encounter, `Start of turn for ${combatant.name}`);
+
 		encounter.combatants.forEach(c => c.combat.current = false);
 		combatant.combat.current = true;
 
@@ -120,43 +131,56 @@ export class EncounterLogic {
 		combatant.combat.trail = [];
 		combatant.combat.actions = [];
 
+		if (combatant.combat.state === CombatantState.Unconscious) {
+			const rank = EncounterLogic.getTraitRank(encounter, combatant, TraitType.Resolve);
+			const result = Random.dice(rank);
+			EncounterLogic.log(encounter, `${combatant.name} is unconscious: rolls Resolve (${rank}) and gets ${result}`);
+			if (result < 8) {
+				combatant.combat.state = CombatantState.Dead;
+				EncounterLogic.log(encounter, 'Failure: now dead');
+			} else {
+				EncounterLogic.log(encounter, 'Success');
+			}
+		}
+
 		const conditions = ([] as ConditionModel[])
 			.concat(combatant.combat.conditions)
 			.concat(EncounterLogic.getAuraConditions(encounter, combatant));
 
-		if (combatant.combat.state === CombatantState.Unconscious) {
-			const result = Random.dice(CombatantLogic.getTraitValue(combatant, conditions, TraitType.Resolve));
-			if (result < 8) {
-				combatant.combat.state = CombatantState.Dead;
-			}
-		}
+		conditions.forEach(condition => {
+			EncounterLogic.log(encounter, `${combatant.name} is currently affected by ${ConditionLogic.getConditionDescription(condition)}, rank ${condition.rank}`);
+		});
 
 		conditions
 			.filter(condition => condition.type === ConditionType.AutoHeal)
 			.forEach(condition => {
+				EncounterLogic.log(encounter, `Healing condition (${condition.rank})`);
 				EncounterLogic.healDamage(encounter, combatant, condition.rank);
 			});
 
 		conditions
 			.filter(condition => condition.type === ConditionType.AutoDamage)
 			.forEach(condition => {
+				EncounterLogic.log(encounter, `Damage condition (${condition.details.damage}, ${condition.rank})`);
 				EncounterLogic.damage(encounter, combatant, condition.rank, condition.details.damage);
 			});
 
 		switch (combatant.combat.state) {
 			case CombatantState.Standing:
 			case CombatantState.Prone: {
-				combatant.combat.senses = Random.dice(CombatantLogic.getSkillValue(combatant, conditions, SkillType.Perception));
-				combatant.combat.movement = Random.dice(CombatantLogic.getTraitValue(combatant, conditions, TraitType.Speed));
+				combatant.combat.senses = Random.dice(EncounterLogic.getSkillRank(encounter, combatant, SkillType.Perception));
+				combatant.combat.movement = Random.dice(EncounterLogic.getTraitRank(encounter, combatant, TraitType.Speed));
 
 				conditions
 					.filter(condition => condition.type === ConditionType.MovementBonus)
 					.forEach(condition => {
-						combatant.combat.movement += condition.rank;
+						EncounterLogic.log(encounter, `Movement bonus condition (${condition.rank})`);
+						combatant.combat.movement += Random.dice(condition.rank);
 					});
 				conditions
 					.filter(condition => condition.type === ConditionType.MovementPenalty)
 					.forEach(condition => {
+						EncounterLogic.log(encounter, `Movement penalty condition (${condition.rank})`);
 						combatant.combat.movement = Math.max(0, combatant.combat.movement - condition.rank);
 					});
 
@@ -187,23 +211,23 @@ export class EncounterLogic {
 		combatant.combat.trail = [];
 		combatant.combat.actions = [];
 
-		const conditions = ([] as ConditionModel[])
-			.concat(combatant.combat.conditions)
-			.concat(EncounterLogic.getAuraConditions(encounter, combatant));
-
 		combatant.combat.conditions.forEach(condition => {
 			if (ConditionLogic.getConditionIsBeneficial(condition)) {
 				condition.rank -= 1;
+				EncounterLogic.log(encounter, `Condition '${ConditionLogic.getConditionDescription(condition)}' reduced to rank ${condition.rank}`);
 			} else {
-				const trait = CombatantLogic.getTraitValue(combatant, conditions, condition.trait);
+				const trait = EncounterLogic.getTraitRank(encounter, combatant, condition.trait);
 				if (Random.dice(trait) >= Random.dice(condition.rank)) {
 					condition.rank = 0;
 				} else {
 					condition.rank -= 1;
 				}
+				EncounterLogic.log(encounter, `Condition '${ConditionLogic.getConditionDescription(condition)}' reduced to rank ${condition.rank}`);
 			}
 		});
 		combatant.combat.conditions = combatant.combat.conditions.filter(c => c.rank > 0);
+
+		EncounterLogic.log(encounter, `End of turn for ${combatant.name}`);
 	};
 
 	static selectAction = (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => {
@@ -214,6 +238,7 @@ export class EncounterLogic {
 	static runAction = (encounter: EncounterModel, combatant: CombatantModel) => {
 		if (combatant.combat.actions.length === 1) {
 			const action = combatant.combat.actions[0];
+			EncounterLogic.log(encounter, `${combatant.name} uses ${action.name}`);
 			action.effects.forEach(effect => ActionEffects.run(effect, encounter, combatant, action.parameters));
 			combatant.combat.actions = [];
 		}
@@ -364,33 +389,41 @@ export class EncounterLogic {
 		combatant.combat.damage = Math.max(0, combatant.combat.damage - value);
 
 		EncounterLogic.checkActionParameters(encounter, combatant);
+
+		EncounterLogic.log(encounter, `${combatant.name} heals damage (${value} pts) and is now at ${combatant.combat.damage}`);
 	};
 
 	static healWounds = (encounter: EncounterModel, combatant: CombatantModel, value: number) => {
 		combatant.combat.wounds = Math.max(0, combatant.combat.wounds - value);
 
+		EncounterLogic.log(encounter, `${combatant.name} heals wounds (${value}) and is now at ${combatant.combat.wounds}`);
+
 		const resolve = EncounterLogic.getTraitRank(encounter, combatant, TraitType.Resolve);
 		if ((combatant.combat.wounds < resolve) && (combatant.combat.state === CombatantState.Unconscious)) {
 			combatant.combat.state = CombatantState.Prone;
-		}
-		if (combatant.combat.wounds === resolve) {
-			combatant.combat.state = CombatantState.Unconscious;
-		}
-		if (combatant.combat.wounds > resolve) {
-			combatant.combat.state = CombatantState.Dead;
+			EncounterLogic.log(encounter, `${combatant.name} is now ${combatant.combat.state}`);
 		}
 
 		EncounterLogic.checkActionParameters(encounter, combatant);
 	};
 
 	static damage = (encounter: EncounterModel, combatant: CombatantModel, value: number, type: DamageType) => {
+		EncounterLogic.log(encounter, `${combatant.name} suffers damage (${type}, ${value} pts)`);
+
 		const resistance = EncounterLogic.getDamageResistance(encounter, combatant, type);
+		if (resistance > 0) {
+			EncounterLogic.log(encounter, `${combatant.name} has damage resistance (${type}, ${resistance} pts)`);
+		}
+
 		const damage = value - resistance;
 		if (damage > 0) {
 			combatant.combat.damage += damage;
+			EncounterLogic.log(encounter, `${combatant.name} takes damage (${damage} pts) and is now at ${combatant.combat.damage}`);
 
-			const endurance = EncounterLogic.getTraitRank(encounter, combatant, TraitType.Endurance);
-			if (Random.dice(endurance) < combatant.combat.damage) {
+			const rank = EncounterLogic.getTraitRank(encounter, combatant, TraitType.Endurance);
+			const result = Random.dice(rank);
+			EncounterLogic.log(encounter, `${combatant.name} rolls Endurance (${rank}) and gets ${result}`);
+			if (result < combatant.combat.damage) {
 				EncounterLogic.wound(encounter, combatant, 1);
 			}
 		}
@@ -400,14 +433,17 @@ export class EncounterLogic {
 
 	static wound = (encounter: EncounterModel, combatant: CombatantModel, value: number) => {
 		combatant.combat.damage = 0;
-		combatant.combat.wounds += 1;
+		combatant.combat.wounds += value;
+		EncounterLogic.log(encounter, `${combatant.name} takes wounds (${value}) and is now at ${combatant.combat.damage} damage, ${combatant.combat.wounds} wounds`);
 
 		const resolve = EncounterLogic.getTraitRank(encounter, combatant, TraitType.Resolve);
 		if (combatant.combat.wounds === resolve) {
 			combatant.combat.state = CombatantState.Unconscious;
+			EncounterLogic.log(encounter, `${combatant.name} is now ${combatant.combat.state}`);
 		}
 		if (combatant.combat.wounds > resolve) {
 			combatant.combat.state = CombatantState.Dead;
+			EncounterLogic.log(encounter, `${combatant.name} is now ${combatant.combat.state}`);
 
 			if (combatant.items.length + combatant.carried.length > 0) {
 				const loot = Factory.createLootPile();
@@ -434,24 +470,32 @@ export class EncounterLogic {
 		}
 
 		EncounterLogic.checkActionParameters(encounter, combatant);
+
+		EncounterLogic.log(encounter, `${combatant.name} is now ${combatant.combat.state}`);
 	};
 
 	static scan = (encounter: EncounterModel, combatant: CombatantModel) => {
-		const perception = EncounterLogic.getSkillRank(encounter, combatant, SkillType.Perception);
+		const rank = EncounterLogic.getSkillRank(encounter, combatant, SkillType.Perception);
+		const result = Random.dice(rank);
 
 		combatant.combat.movement -= 4;
-		combatant.combat.senses = Random.dice(perception);
+		combatant.combat.senses = result;
 
 		EncounterLogic.checkActionParameters(encounter, combatant);
+
+		EncounterLogic.log(encounter, `${combatant.name} rolls Perception (${rank}) and gets ${result}`);
 	};
 
 	static hide = (encounter: EncounterModel, combatant: CombatantModel) => {
-		const stealth = EncounterLogic.getSkillRank(encounter, combatant, SkillType.Stealth);
+		const rank = EncounterLogic.getSkillRank(encounter, combatant, SkillType.Stealth);
+		const result = Random.dice(rank);
 
 		combatant.combat.movement -= 4;
-		combatant.combat.hidden = Random.dice(stealth);
+		combatant.combat.hidden = result;
 
 		EncounterLogic.checkActionParameters(encounter, combatant);
+
+		EncounterLogic.log(encounter, `${combatant.name} rolls Stealth (${rank}) and gets ${result}`);
 	};
 
 	static equipItem = (encounter: EncounterModel, combatant: CombatantModel, item: ItemModel) => {
@@ -462,6 +506,8 @@ export class EncounterLogic {
 		combatant.items.push(item);
 
 		EncounterLogic.checkActionParameters(encounter, combatant);
+
+		EncounterLogic.log(encounter, `${combatant.name} equips ${item.name}`);
 	};
 
 	static unequipItem = (encounter: EncounterModel, combatant: CombatantModel, item: ItemModel) => {
@@ -472,6 +518,8 @@ export class EncounterLogic {
 		combatant.carried.push(item);
 
 		EncounterLogic.checkActionParameters(encounter, combatant);
+
+		EncounterLogic.log(encounter, `${combatant.name} unequips ${item.name}`);
 	};
 
 	static pickUpItem = (encounter: EncounterModel, combatant: CombatantModel, item: ItemModel) => {
@@ -490,6 +538,8 @@ export class EncounterLogic {
 		combatant.carried.push(item);
 
 		EncounterLogic.checkActionParameters(encounter, combatant);
+
+		EncounterLogic.log(encounter, `${combatant.name} picks up ${item.name}`);
 	};
 
 	static dropItem = (encounter: EncounterModel, combatant: CombatantModel, item: ItemModel) => {
@@ -518,6 +568,8 @@ export class EncounterLogic {
 		lp.items.push(item);
 
 		EncounterLogic.checkActionParameters(encounter, combatant);
+
+		EncounterLogic.log(encounter, `${combatant.name} drops ${item.name}`);
 	};
 
 	///////////////////////////////////////////////////////////////////////////
@@ -609,28 +661,28 @@ export class EncounterLogic {
 		const conditions = ([] as ConditionModel[])
 			.concat(combatant.combat.conditions)
 			.concat(EncounterLogic.getAuraConditions(encounter, combatant));
-		return CombatantLogic.getTraitValue(combatant, conditions, trait);
+		return CombatantLogic.getTraitRank(combatant, conditions, trait);
 	};
 
 	static getSkillRank = (encounter: EncounterModel, combatant: CombatantModel, skill: SkillType) => {
 		const conditions = ([] as ConditionModel[])
 			.concat(combatant.combat.conditions)
 			.concat(EncounterLogic.getAuraConditions(encounter, combatant));
-		return CombatantLogic.getSkillValue(combatant, conditions, skill);
+		return CombatantLogic.getSkillRank(combatant, conditions, skill);
 	};
 
 	static getDamageBonus = (encounter: EncounterModel, combatant: CombatantModel, damage: DamageType) => {
 		const conditions = ([] as ConditionModel[])
 			.concat(combatant.combat.conditions)
 			.concat(EncounterLogic.getAuraConditions(encounter, combatant));
-		return CombatantLogic.getDamageBonusValue(combatant, conditions, damage);
+		return CombatantLogic.getDamageBonus(combatant, conditions, damage);
 	};
 
 	static getDamageResistance = (encounter: EncounterModel, combatant: CombatantModel, damage: DamageType) => {
 		const conditions = ([] as ConditionModel[])
 			.concat(combatant.combat.conditions)
 			.concat(EncounterLogic.getAuraConditions(encounter, combatant));
-		return CombatantLogic.getDamageResistanceValue(combatant, conditions, damage);
+		return CombatantLogic.getDamageResistance(combatant, conditions, damage);
 	};
 
 	///////////////////////////////////////////////////////////////////////////

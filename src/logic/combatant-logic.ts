@@ -346,7 +346,7 @@ export class CombatantLogic {
 		return list;
 	};
 
-	static getTraitValue = (combatant: CombatantModel, conditions: ConditionModel[], trait: TraitType) => {
+	static getTraitRank = (combatant: CombatantModel, conditions: ConditionModel[], trait: TraitType) => {
 		let value = 1;
 
 		CombatantLogic.getFeatures(combatant)
@@ -365,7 +365,7 @@ export class CombatantLogic {
 		return Math.max(value, 0);
 	};
 
-	static getSkillValue = (combatant: CombatantModel, conditions: ConditionModel[], skill: SkillType) => {
+	static getSkillRank = (combatant: CombatantModel, conditions: ConditionModel[], skill: SkillType) => {
 		let value = 0;
 
 		CombatantLogic.getFeatures(combatant)
@@ -397,7 +397,7 @@ export class CombatantLogic {
 		return Math.max(value, 0);
 	};
 
-	static getDamageBonusValue = (combatant: CombatantModel, conditions: ConditionModel[], damage: DamageType) => {
+	static getDamageBonus = (combatant: CombatantModel, conditions: ConditionModel[], damage: DamageType) => {
 		let value = 0;
 
 		CombatantLogic.getFeatures(combatant)
@@ -426,7 +426,7 @@ export class CombatantLogic {
 		return value;
 	};
 
-	static getDamageResistanceValue = (combatant: CombatantModel, conditions: ConditionModel[], damage: DamageType) => {
+	static getDamageResistance = (combatant: CombatantModel, conditions: ConditionModel[], damage: DamageType) => {
 		let value = 0;
 
 		CombatantLogic.getFeatures(combatant)

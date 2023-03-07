@@ -1,5 +1,5 @@
 export enum CombatantState {
-	Standing = 'Stand',
+	Standing = 'Standing',
 	Prone = 'Prone',
 	Unconscious = 'Unconscious',
 	Dead = 'Dead'

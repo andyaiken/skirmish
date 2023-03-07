@@ -114,7 +114,8 @@ export class EncounterGenerator {
 			round: 0,
 			combatants: [],
 			loot: [],
-			mapSquares: EncounterMapLogic.generateEncounterMap(rng)
+			mapSquares: EncounterMapLogic.generateEncounterMap(rng),
+			log: []
 		};
 
 		if (Random.randomNumber(10, rng) !== 0) {

@@ -39,9 +39,9 @@ export class HeroCard extends Component<Props> {
 					<Tag>Level {this.props.hero.level}</Tag>
 				</div>
 				<div className='traits'>
-					<StatValue orientation='vertical' label='End' value={CombatantLogic.getTraitValue(this.props.hero, [], TraitType.Endurance)} />
-					<StatValue orientation='vertical' label='Res' value={CombatantLogic.getTraitValue(this.props.hero, [], TraitType.Resolve)} />
-					<StatValue orientation='vertical' label='Spd' value={CombatantLogic.getTraitValue(this.props.hero, [], TraitType.Speed)} />
+					<StatValue orientation='vertical' label='End' value={CombatantLogic.getTraitRank(this.props.hero, [], TraitType.Endurance)} />
+					<StatValue orientation='vertical' label='Res' value={CombatantLogic.getTraitRank(this.props.hero, [], TraitType.Resolve)} />
+					<StatValue orientation='vertical' label='Spd' value={CombatantLogic.getTraitRank(this.props.hero, [], TraitType.Speed)} />
 				</div>
 				{itemSection}
 			</div>

@@ -79,6 +79,9 @@ export class Main extends Component<Props, State> {
 				if (game.encounter.mapSquares === undefined) {
 					game.encounter.mapSquares = [];
 				}
+				if (game.encounter.log === undefined) {
+					game.encounter.log = [];
+				}
 
 				game.encounter.combatants.forEach(c => {
 					if (c.combat.trail === undefined) {

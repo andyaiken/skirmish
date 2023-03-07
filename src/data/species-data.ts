@@ -506,7 +506,7 @@ export class SpeciesData {
 							ActionTargetParameters.self()
 						],
 						effects: [
-							ActionEffects.healDamage(3)
+							ActionEffects.addCondition(ConditionLogic.createAutoHealCondition(TraitType.Endurance, 2))
 						]
 					},
 					{

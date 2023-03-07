@@ -395,14 +395,21 @@ export class ActionEffects {
 					targetIDs.forEach(id => {
 						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
 
+						EncounterLogic.log(encounter, `${combatant.name} attacks ${target.name}`);
+
 						let success = true;
 						const weaponParam = parameters.find(p => p.name === 'weapon');
 						if (weaponParam) {
 							const item = weaponParam.value as ItemModel;
 							const weapon = item.weapon as WeaponModel;
 							if (weapon.unreliable > 0) {
-								if (Random.dice(weapon.unreliable) > 10) {
+								EncounterLogic.log(encounter, `${item.name} is Unreliable (rank ${weapon.unreliable})`);
+								const roll = Random.dice(weapon.unreliable);
+								if (roll >= 10) {
 									success = false;
+									EncounterLogic.log(encounter, `It fails (rolled ${roll})`);
+								} else {
+									EncounterLogic.log(encounter, `It works (rolled ${roll})`);
 								}
 							}
 						}
@@ -414,11 +421,16 @@ export class ActionEffects {
 							const attackRoll = Random.dice(attackRank);
 							const defenceRoll = Random.dice(defenceRank);
 
+							EncounterLogic.log(encounter, `${combatant.name} rolls ${data.skill} (${attackRank}), ${target.name} rolls ${data.trait} (${defenceRank})`);
+
 							success = attackRoll >= defenceRoll;
 						}
 
 						if (success) {
 							targetsSucceeded.push(target.id);
+							EncounterLogic.log(encounter, 'Hit');
+						} else {
+							EncounterLogic.log(encounter, 'Miss');
 						}
 					});
 				}
@@ -436,8 +448,13 @@ export class ActionEffects {
 					const targetIDs = targetParameter.value as string[];
 					targetIDs.forEach(id => {
 						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
-						const value = Random.dice(data.rank) + EncounterLogic.getDamageBonus(encounter, combatant, data.type);
-						EncounterLogic.damage(encounter, target, value, data.type);
+						const result = Random.dice(data.rank);
+						EncounterLogic.log(encounter, `${combatant.name} rolls damage for ${target.name} (${data.rank}) and gets ${result}`);
+						const bonus = EncounterLogic.getDamageBonus(encounter, combatant, data.type);
+						if (bonus > 0) {
+							EncounterLogic.log(encounter, `${combatant.name} deals a bonus ${bonus} damage`);
+						}
+						EncounterLogic.damage(encounter, target, result + bonus, data.type);
 					});
 				}
 				break;
@@ -452,8 +469,14 @@ export class ActionEffects {
 					const targetIDs = targetParameter.value as string[];
 					targetIDs.forEach(id => {
 						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
-						const value = Random.dice(weapon.damage.rank + rankModifier) + EncounterLogic.getDamageBonus(encounter, combatant, weapon.damage.type);
-						EncounterLogic.damage(encounter, target, value, weapon.damage.type);
+						const rank = weapon.damage.rank + rankModifier;
+						const result = Random.dice(rank);
+						EncounterLogic.log(encounter, `${combatant.name} rolls damage for ${target.name} (${rank}) and gets ${result}`);
+						const bonus = EncounterLogic.getDamageBonus(encounter, combatant, weapon.damage.type);
+						if (bonus > 0) {
+							EncounterLogic.log(encounter, `${combatant.name} deals a bonus ${bonus} damage`);
+						}
+						EncounterLogic.damage(encounter, target, result + bonus, weapon.damage.type);
 					});
 				}
 				break;
@@ -505,6 +528,7 @@ export class ActionEffects {
 						const copy = JSON.parse(JSON.stringify(condition)) as ConditionModel;
 						copy.id = Utils.guid();
 						target.combat.conditions.push(copy);
+						EncounterLogic.log(encounter, `${target.name} is now affected by ${ConditionLogic.getConditionDescription(condition)}, rank ${condition.rank}`);
 					});
 				}
 				break;
@@ -517,11 +541,14 @@ export class ActionEffects {
 					targetIDs.forEach(id => {
 						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
 						const t = trait === TraitType.Any ? Collections.draw([ TraitType.Endurance, TraitType.Resolve, TraitType.Speed ]) : trait;
-						const conditions = target.combat.conditions.filter(condition => condition.trait === t);
+						const conditions = target.combat.conditions
+							.filter(condition => condition.trait === t)
+							.filter(condition => ConditionLogic.getConditionIsBeneficial(condition) === (combatant.type === target.type));
 						if (conditions.length !== 0) {
 							const maxRank = Math.max(...conditions.map(c => c.rank));
 							const condition = conditions.find(c => c.rank === maxRank) as ConditionModel;
 							target.combat.conditions = target.combat.conditions.filter(c => c.id !== condition.id);
+							EncounterLogic.log(encounter, `${target.name} is no longer affected by ${ConditionLogic.getConditionDescription(condition)}`);
 						}
 					});
 				}
@@ -534,7 +561,9 @@ export class ActionEffects {
 					targetIDs.forEach(id => {
 						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
 						const rank = EncounterLogic.getTraitRank(encounter, target, TraitType.Speed);
-						target.combat.movement += Random.dice(rank);
+						const result = Random.dice(rank);
+						target.combat.movement += result;
+						EncounterLogic.log(encounter, `${target.name} rolls Speed (rank ${rank}) and gets ${result} additional movement`);
 					});
 				}
 				break;
@@ -547,6 +576,7 @@ export class ActionEffects {
 						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
 						if (target.combat.state === CombatantState.Standing) {
 							target.combat.state = CombatantState.Prone;
+							EncounterLogic.log(encounter, `${target.name} is now ${target.combat.state}`);
 						}
 					});
 				}
@@ -559,6 +589,7 @@ export class ActionEffects {
 					targetIDs.forEach(id => {
 						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
 						target.combat.initiative = Number.MIN_VALUE;
+						EncounterLogic.log(encounter, `${target.name} loses their turn`);
 					});
 				}
 				break;

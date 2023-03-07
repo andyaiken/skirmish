@@ -3,12 +3,10 @@ import { Component } from 'react';
 
 import { TraitType } from '../../../enums/trait-type';
 
-import { CombatantLogic } from '../../../logic/combatant-logic';
 import { ConditionLogic } from '../../../logic/condition-logic';
 import { EncounterLogic } from '../../../logic/encounter-logic';
 
 import { CombatantModel } from '../../../models/combatant';
-import { ConditionModel } from '../../../models/condition';
 import { EncounterModel } from '../../../models/encounter';
 
 import { Box, IconType, IconValue, StatValue } from '../../controls';
@@ -34,15 +32,11 @@ export class CombatStatsPanel extends Component<Props> {
 	};
 
 	render = () => {
-		const conditions = ([] as ConditionModel[])
-			.concat(this.props.combatant.combat.conditions)
-			.concat(EncounterLogic.getAuraConditions(this.props.encounter, this.props.combatant));
-
 		let wounds: JSX.Element[] = [];
 		for (let n = 0; n < this.props.combatant.combat.wounds; ++n) {
 			wounds.push(<IconHeartOff key={n} />);
 		}
-		while (wounds.length < CombatantLogic.getTraitValue(this.props.combatant, conditions, TraitType.Resolve)) {
+		while (wounds.length < EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Resolve)) {
 			wounds.push(<IconHeartFilled key={wounds.length} />);
 		}
 		const woundsPerRow = (wounds.length < 6) || (wounds.length > 8) ? 5 : 4;
@@ -73,15 +67,15 @@ export class CombatStatsPanel extends Component<Props> {
 				<Box label='Traits and Conditions'>
 					<div className='stats-row'>
 						<div>
-							<StatValue orientation='vertical' label='Endurance' value={CombatantLogic.getTraitValue(this.props.combatant, conditions, TraitType.Endurance)} />
+							<StatValue orientation='vertical' label='Endurance' value={EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Endurance)} />
 							<div>{this.getConditions(TraitType.Endurance)}</div>
 						</div>
 						<div>
-							<StatValue orientation='vertical' label='Resolve' value={CombatantLogic.getTraitValue(this.props.combatant, conditions, TraitType.Resolve)} />
+							<StatValue orientation='vertical' label='Resolve' value={EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Resolve)} />
 							<div>{this.getConditions(TraitType.Resolve)}</div>
 						</div>
 						<div>
-							<StatValue orientation='vertical' label='Speed' value={CombatantLogic.getTraitValue(this.props.combatant, conditions, TraitType.Speed)} />
+							<StatValue orientation='vertical' label='Speed' value={EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Speed)} />
 							<div>{this.getConditions(TraitType.Speed)}</div>
 						</div>
 					</div>

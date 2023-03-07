@@ -11,7 +11,6 @@ import { ConditionLogic } from '../../../../logic/condition-logic';
 import { EncounterLogic } from '../../../../logic/encounter-logic';
 
 import type { CombatantModel } from '../../../../models/combatant';
-import type { ConditionModel } from '../../../../models/condition';
 import type { EncounterModel } from '../../../../models/encounter';
 
 import { Box, IconType, IconValue, StatValue, Tag, Text, TextType } from '../../../controls';
@@ -25,14 +24,31 @@ interface Props {
 }
 
 export class Stats extends Component<Props> {
-	render = () => {
-		let conditions: ConditionModel[] = [];
+	getSkillRank = (skill: SkillType) => {
 		if (this.props.encounter) {
-			conditions = ([] as ConditionModel[])
-				.concat(this.props.hero.combat.conditions)
-				.concat(EncounterLogic.getAuraConditions(this.props.encounter, this.props.hero));
+			return EncounterLogic.getSkillRank(this.props.encounter, this.props.hero, skill);
 		}
 
+		return CombatantLogic.getSkillRank(this.props.hero, [], skill);
+	};
+
+	getDamageBonusValue = (damage: DamageType) => {
+		if (this.props.encounter) {
+			return EncounterLogic.getDamageBonus(this.props.encounter, this.props.hero, damage);
+		}
+
+		return CombatantLogic.getDamageBonus(this.props.hero, [], damage);
+	};
+
+	getDamageResistanceValue = (damage: DamageType) => {
+		if (this.props.encounter) {
+			return EncounterLogic.getDamageResistance(this.props.encounter, this.props.hero, damage);
+		}
+
+		return CombatantLogic.getDamageResistance(this.props.hero, [], damage);
+	};
+
+	render = () => {
 		let traitsSection = null;
 		if (this.props.encounter) {
 			traitsSection = (
@@ -42,9 +58,9 @@ export class Stats extends Component<Props> {
 			traitsSection = (
 				<Box label='Traits'>
 					<div className='stats-row'>
-						<StatValue orientation='vertical' label='Endure' value={CombatantLogic.getTraitValue(this.props.hero, conditions, TraitType.Endurance)}/>
-						<StatValue orientation='vertical' label='Resolve' value={CombatantLogic.getTraitValue(this.props.hero, conditions, TraitType.Resolve)}/>
-						<StatValue orientation='vertical' label='Speed' value={CombatantLogic.getTraitValue(this.props.hero, conditions, TraitType.Speed)}/>
+						<StatValue orientation='vertical' label='Endure' value={CombatantLogic.getTraitRank(this.props.hero, [], TraitType.Endurance)}/>
+						<StatValue orientation='vertical' label='Resolve' value={CombatantLogic.getTraitRank(this.props.hero, [], TraitType.Resolve)}/>
+						<StatValue orientation='vertical' label='Speed' value={CombatantLogic.getTraitRank(this.props.hero, [], TraitType.Speed)}/>
 					</div>
 				</Box>
 			);
@@ -97,12 +113,12 @@ export class Stats extends Component<Props> {
 				</div>
 				<div className='column'>
 					<Box label='Skills'>
-						<StatValue label='Brawl' value={CombatantLogic.getSkillValue(this.props.hero, conditions, SkillType.Brawl)}/>
-						<StatValue label='Perception' value={CombatantLogic.getSkillValue(this.props.hero, conditions, SkillType.Perception)}/>
-						<StatValue label='Reactions' value={CombatantLogic.getSkillValue(this.props.hero, conditions, SkillType.Reactions)}/>
-						<StatValue label='Spellcasting' value={CombatantLogic.getSkillValue(this.props.hero, conditions, SkillType.Spellcasting)}/>
-						<StatValue label='Stealth' value={CombatantLogic.getSkillValue(this.props.hero, conditions, SkillType.Stealth)}/>
-						<StatValue label='Weapon' value={CombatantLogic.getSkillValue(this.props.hero, conditions, SkillType.Weapon)}/>
+						<StatValue label='Brawl' value={this.getSkillRank(SkillType.Brawl)}/>
+						<StatValue label='Perception' value={this.getSkillRank(SkillType.Perception)}/>
+						<StatValue label='Reactions' value={this.getSkillRank(SkillType.Reactions)}/>
+						<StatValue label='Spellcasting' value={this.getSkillRank(SkillType.Spellcasting)}/>
+						<StatValue label='Stealth' value={this.getSkillRank(SkillType.Stealth)}/>
+						<StatValue label='Weapon' value={this.getSkillRank(SkillType.Weapon)}/>
 					</Box>
 					<Box label='Proficiencies'>
 						{proficiencySection}
@@ -114,38 +130,38 @@ export class Stats extends Component<Props> {
 				</div>
 				<div className='column'>
 					<Box label='Damage Bonuses'>
-						<StatValue label='Acid' value={CombatantLogic.getDamageBonusValue(this.props.hero, conditions, DamageType.Acid)}/>
-						<StatValue label='Edged' value={CombatantLogic.getDamageBonusValue(this.props.hero, conditions, DamageType.Edged)}/>
-						<StatValue label='Impact' value={CombatantLogic.getDamageBonusValue(this.props.hero, conditions, DamageType.Impact)}/>
-						<StatValue label='Piercing' value={CombatantLogic.getDamageBonusValue(this.props.hero, conditions, DamageType.Piercing)}/>
+						<StatValue label='Acid' value={this.getDamageBonusValue(DamageType.Acid)}/>
+						<StatValue label='Edged' value={this.getDamageBonusValue(DamageType.Edged)}/>
+						<StatValue label='Impact' value={this.getDamageBonusValue(DamageType.Impact)}/>
+						<StatValue label='Piercing' value={this.getDamageBonusValue(DamageType.Piercing)}/>
 						<hr />
-						<StatValue label='Cold' value={CombatantLogic.getDamageBonusValue(this.props.hero, conditions, DamageType.Cold)}/>
-						<StatValue label='Electricity' value={CombatantLogic.getDamageBonusValue(this.props.hero, conditions, DamageType.Electricity)}/>
-						<StatValue label='Fire' value={CombatantLogic.getDamageBonusValue(this.props.hero, conditions, DamageType.Fire)}/>
-						<StatValue label='Light' value={CombatantLogic.getDamageBonusValue(this.props.hero, conditions, DamageType.Light)}/>
-						<StatValue label='Sonic' value={CombatantLogic.getDamageBonusValue(this.props.hero, conditions, DamageType.Sonic)}/>
+						<StatValue label='Cold' value={this.getDamageBonusValue(DamageType.Cold)}/>
+						<StatValue label='Electricity' value={this.getDamageBonusValue(DamageType.Electricity)}/>
+						<StatValue label='Fire' value={this.getDamageBonusValue(DamageType.Fire)}/>
+						<StatValue label='Light' value={this.getDamageBonusValue(DamageType.Light)}/>
+						<StatValue label='Sonic' value={this.getDamageBonusValue(DamageType.Sonic)}/>
 						<hr />
-						<StatValue label='Decay' value={CombatantLogic.getDamageBonusValue(this.props.hero, conditions, DamageType.Decay)}/>
-						<StatValue label='Poison' value={CombatantLogic.getDamageBonusValue(this.props.hero, conditions, DamageType.Poison)}/>
-						<StatValue label='Psychic' value={CombatantLogic.getDamageBonusValue(this.props.hero, conditions, DamageType.Psychic)}/>
+						<StatValue label='Decay' value={this.getDamageBonusValue(DamageType.Decay)}/>
+						<StatValue label='Poison' value={this.getDamageBonusValue(DamageType.Poison)}/>
+						<StatValue label='Psychic' value={this.getDamageBonusValue(DamageType.Psychic)}/>
 					</Box>
 				</div>
 				<div className='column'>
 					<Box label='Resistances'>
-						<StatValue label='Acid' value={CombatantLogic.getDamageResistanceValue(this.props.hero, conditions, DamageType.Acid)}/>
-						<StatValue label='Edged' value={CombatantLogic.getDamageResistanceValue(this.props.hero, conditions, DamageType.Edged)}/>
-						<StatValue label='Impact' value={CombatantLogic.getDamageResistanceValue(this.props.hero, conditions, DamageType.Impact)}/>
-						<StatValue label='Piercing' value={CombatantLogic.getDamageResistanceValue(this.props.hero, conditions, DamageType.Piercing)}/>
+						<StatValue label='Acid' value={this.getDamageResistanceValue(DamageType.Acid)}/>
+						<StatValue label='Edged' value={this.getDamageResistanceValue(DamageType.Edged)}/>
+						<StatValue label='Impact' value={this.getDamageResistanceValue(DamageType.Impact)}/>
+						<StatValue label='Piercing' value={this.getDamageResistanceValue(DamageType.Piercing)}/>
 						<hr />
-						<StatValue label='Cold' value={CombatantLogic.getDamageResistanceValue(this.props.hero, conditions, DamageType.Cold)}/>
-						<StatValue label='Electricity' value={CombatantLogic.getDamageResistanceValue(this.props.hero, conditions, DamageType.Electricity)}/>
-						<StatValue label='Fire' value={CombatantLogic.getDamageResistanceValue(this.props.hero, conditions, DamageType.Fire)}/>
-						<StatValue label='Light' value={CombatantLogic.getDamageResistanceValue(this.props.hero, conditions, DamageType.Light)}/>
-						<StatValue label='Sonic' value={CombatantLogic.getDamageResistanceValue(this.props.hero, conditions, DamageType.Sonic)}/>
+						<StatValue label='Cold' value={this.getDamageResistanceValue(DamageType.Cold)}/>
+						<StatValue label='Electricity' value={this.getDamageResistanceValue(DamageType.Electricity)}/>
+						<StatValue label='Fire' value={this.getDamageResistanceValue(DamageType.Fire)}/>
+						<StatValue label='Light' value={this.getDamageResistanceValue(DamageType.Light)}/>
+						<StatValue label='Sonic' value={this.getDamageResistanceValue(DamageType.Sonic)}/>
 						<hr />
-						<StatValue label='Decay' value={CombatantLogic.getDamageResistanceValue(this.props.hero, conditions, DamageType.Decay)}/>
-						<StatValue label='Poison' value={CombatantLogic.getDamageResistanceValue(this.props.hero, conditions, DamageType.Poison)}/>
-						<StatValue label='Psychic' value={CombatantLogic.getDamageResistanceValue(this.props.hero, conditions, DamageType.Psychic)}/>
+						<StatValue label='Decay' value={this.getDamageResistanceValue(DamageType.Decay)}/>
+						<StatValue label='Poison' value={this.getDamageResistanceValue(DamageType.Poison)}/>
+						<StatValue label='Psychic' value={this.getDamageResistanceValue(DamageType.Psychic)}/>
 					</Box>
 				</div>
 			</div>

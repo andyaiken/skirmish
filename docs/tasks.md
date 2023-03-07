@@ -2,7 +2,8 @@
 
 ## Bugs
 
-* Ity's possible to select all potential targets for an action, rather than the maximum specified
+* If you select a 'square' parameter, and move, the highlighted squares do not move
+  * Presumably this is the same for other parameter types
 * It's possible for some squares on the encounter map to be detatched from the rest
   * When generating the map, remove unattached areas
   * Or, when removing squares, check whether this would result in an unattached area
@@ -11,13 +12,14 @@
 ## To Do
 
 * Encounters:
+  * Show log of action's logic and calculations
+  * Allow the user to opt for a universal action instead
+  * In bottom / right panels, hide 'character sheet' button for monsters
   * Implement actions
-    * Parameter selection should happen in the card itself
+    * Parameter selection / 'go' button / etc, should happen in the card itself
     * Lose turn should set a flag on the combatant
       * On start of turn, notify and end turn
       * This flag should be reflected in the initiative list
-    * Allow the user to opt for a universal action instead
-    * Show log of action's logic and calculations
     * Add missing effects
   * Implement AI so that monsters can take their turns
   * Show turn log for current combatant, if it's a monster
@@ -38,6 +40,8 @@
 * Character sheet panel:
   * Show ranks as filled circles
   * Show the XP required as a gauge
+* Encounters
+  * Implement line-of-sight
 * Mountebank, Thief and Pixie should have an attack redirection aura
 * Gnome, Thief should be able to set / disable traps
 * Monster species:

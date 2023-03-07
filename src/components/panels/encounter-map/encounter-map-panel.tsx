@@ -133,7 +133,6 @@ export class EncounterMapPanel extends Component<Props> {
 					className='encounter-map-square wall'
 					style={{
 						width: `${this.props.squareSize}px`,
-						height: `${this.props.squareSize}px`,
 						left: `${((sq.x - dims.left) * this.props.squareSize)}px`,
 						top: `${((sq.y - dims.top) * this.props.squareSize)}px`
 					}}
@@ -169,8 +168,10 @@ interface SquareProps {
 
 class Square extends Component<SquareProps> {
 	onClick = (e: React.MouseEvent) => {
-		e.stopPropagation();
-		this.props.onClick(this.props.square);
+		if (this.props.selectable) {
+			e.stopPropagation();
+			this.props.onClick(this.props.square);
+		}
 	};
 
 	render = () => {
@@ -185,10 +186,10 @@ class Square extends Component<SquareProps> {
 				className={className}
 				style={{
 					width: `${this.props.squareSize}px`,
-					height: `${this.props.squareSize}px`,
 					left: `${((this.props.square.x - this.props.mapDimensions.left) * this.props.squareSize)}px`,
 					top: `${((this.props.square.y - this.props.mapDimensions.top) * this.props.squareSize)}px`
 				}}
+				onClick={e => this.onClick(e)}
 			/>
 		);
 	};
@@ -206,13 +207,17 @@ interface MiniTokenProps {
 
 class MiniToken extends Component<MiniTokenProps> {
 	onClick = (e: React.MouseEvent) => {
-		e.stopPropagation();
-		this.props.onClick(this.props.combatant);
+		if (this.props.selectable) {
+			e.stopPropagation();
+			this.props.onClick(this.props.combatant);
+		}
 	};
 
 	onDoubleClick = (e: React.MouseEvent) => {
-		e.stopPropagation();
-		this.props.onDoubleClick(this.props.combatant);
+		if (this.props.selectable) {
+			e.stopPropagation();
+			this.props.onDoubleClick(this.props.combatant);
+		}
 	};
 
 	getMonogram = () => {
@@ -249,7 +254,6 @@ class MiniToken extends Component<MiniTokenProps> {
 				className={className}
 				style={{
 					width: `${this.props.squareSize * this.props.combatant.size}px`,
-					height: `${this.props.squareSize * this.props.combatant.size}px`,
 					left: `${((this.props.combatant.combat.position.x - this.props.mapDimensions.left) * this.props.squareSize)}px`,
 					top: `${((this.props.combatant.combat.position.y - this.props.mapDimensions.top) * this.props.squareSize)}px`,
 					fontSize: `${this.props.squareSize * 0.35}px`
@@ -278,7 +282,6 @@ class TrailToken extends Component<TrailTokenProps> {
 				className='encounter-map-trail-token'
 				style={{
 					width: `${this.props.squareSize * this.props.size}px`,
-					height: `${this.props.squareSize * this.props.size}px`,
 					left: `${((this.props.position.x - this.props.mapDimensions.left) * this.props.squareSize)}px`,
 					top: `${((this.props.position.y - this.props.mapDimensions.top) * this.props.squareSize)}px`
 				}}
@@ -301,7 +304,6 @@ class AuraToken extends Component<AuraTokenProps> {
 				className='encounter-map-aura-token'
 				style={{
 					width: `${this.props.squareSize * (this.props.combatant.size + 2)}px`,
-					height: `${this.props.squareSize * (this.props.combatant.size + 2)}px`,
 					left: `${((this.props.combatant.combat.position.x - this.props.mapDimensions.left - 1) * this.props.squareSize)}px`,
 					top: `${((this.props.combatant.combat.position.y - this.props.mapDimensions.top - 1) * this.props.squareSize)}px`
 				}}
@@ -323,13 +325,17 @@ interface LootTokenProps {
 
 class LootToken extends Component<LootTokenProps> {
 	onClick = (e: React.MouseEvent) => {
-		e.stopPropagation();
-		this.props.onClick(this.props.loot);
+		if (this.props.selectable) {
+			e.stopPropagation();
+			this.props.onClick(this.props.loot);
+		}
 	};
 
 	onDoubleClick = (e: React.MouseEvent) => {
-		e.stopPropagation();
-		this.props.onDoubleClick(this.props.loot);
+		if (this.props.selectable) {
+			e.stopPropagation();
+			this.props.onDoubleClick(this.props.loot);
+		}
 	};
 
 	render = () => {
@@ -339,7 +345,6 @@ class LootToken extends Component<LootTokenProps> {
 				className={className}
 				style={{
 					width: `${this.props.squareSize}px`,
-					height: `${this.props.squareSize}px`,
 					left: `${((this.props.loot.position.x - this.props.mapDimensions.left) * this.props.squareSize)}px`,
 					top: `${((this.props.loot.position.y - this.props.mapDimensions.top) * this.props.squareSize)}px`
 				}}

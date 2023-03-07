@@ -197,6 +197,11 @@ export class EncounterMapLogic {
 		return adj;
 	};
 
+	static getDistanceAny = (aSquares: { x: number, y: number }[], bSquares: { x: number, y: number }[]) => {
+		const distances = aSquares.flatMap(a => bSquares.map(b => EncounterMapLogic.getDistance(a, b)));
+		return Math.min(...distances);
+	};
+
 	static getDistance = (a: { x: number, y: number }, b: { x: number, y: number }) => {
 		const x2 = Math.pow(a.x - b.x, 2);
 		const y2 = Math.pow(a.y - b.y, 2);
@@ -204,12 +209,20 @@ export class EncounterMapLogic {
 		return Math.floor(hyp);
 	};
 
+	static getDirection = (a: { x: number, y: number }, b: { x: number, y: number }) => {
+		const y = -(b.y) - -(a.y);
+		const x = b.x - a.x;
+		const radians = Math.atan2(y, x);
+		const degrees = radians * 180 / Math.PI;
+		return 90 - degrees;
+	};
+
 	static canSeeAny = (aSquares: { x: number, y: number }[], bSquares: { x: number, y: number }[]) => {
 		return aSquares.some(a => bSquares.some(b => EncounterMapLogic.canSee(a, b)));
 	};
 
 	static canSee = (a: { x: number, y: number }, b: { x: number, y: number }) => {
-		// TODO: Calculate LOS
+		// For now, assume line-of-sight is always OK
 		return true;
 	};
 }

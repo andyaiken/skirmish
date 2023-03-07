@@ -1,3 +1,4 @@
+import { IconHeartFilled, IconHeartOff } from '@tabler/icons-react';
 import { Component } from 'react';
 
 import { TraitType } from '../../../enums/trait-type';
@@ -37,21 +38,21 @@ export class CombatStatsPanel extends Component<Props> {
 			.concat(this.props.combatant.combat.conditions)
 			.concat(EncounterLogic.getAuraConditions(this.props.encounter, this.props.combatant));
 
-		let wounds = '';
+		let wounds: JSX.Element[] = [];
 		for (let n = 0; n < this.props.combatant.combat.wounds; ++n) {
-			wounds += '♥︎';
+			wounds.push(<IconHeartOff key={n} />);
 		}
 		while (wounds.length < CombatantLogic.getTraitValue(this.props.combatant, conditions, TraitType.Resolve)) {
-			wounds += '♡';
+			wounds.push(<IconHeartFilled key={wounds.length} />);
 		}
 		const woundsPerRow = (wounds.length < 6) || (wounds.length > 8) ? 5 : 4;
 		const woundsInRows: JSX.Element[] = [];
 		while (wounds.length > woundsPerRow) {
-			woundsInRows.push(<div key={woundsInRows.length}>{wounds.substring(0, woundsPerRow)}</div>);
-			wounds = wounds.substring(woundsPerRow);
+			woundsInRows.push(<div key={woundsInRows.length} className='wounds'>{wounds.slice(0, woundsPerRow)}</div>);
+			wounds = wounds.slice(woundsPerRow);
 		}
-		if (wounds !== '') {
-			woundsInRows.push(<div key={woundsInRows.length}>{wounds}</div>);
+		if (wounds.length !== 0) {
+			woundsInRows.push(<div key={woundsInRows.length} className='wounds'>{wounds}</div>);
 		}
 
 		return (

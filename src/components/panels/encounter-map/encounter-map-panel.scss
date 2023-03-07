@@ -9,6 +9,7 @@
 		margin: 0 auto;
 
 		.encounter-map-square {
+			aspect-ratio: 1 / 1;
 			position: absolute;
 			border: 0.5px solid rgb(150, 150, 150);
 			background-color: rgb(255, 255, 255);
@@ -21,9 +22,26 @@
 				background-color: rgb(50, 50, 50);
 				border-color: rgb(80, 80, 80);
 			}
+
+			&.selectable {
+				border-color: rgb(60, 170, 255);
+				background-color: rgb(200, 230, 255);
+				cursor: pointer;
+
+				&:hover {
+					outline: 3px solid rgb(60, 170, 255);
+					z-index: 100;
+				}
+			}
+
+			&.selected {
+				background-color: rgb(60, 170, 255);
+				z-index: 100;
+			}
 		}
 
 		.encounter-map-loot-token {
+			aspect-ratio: 1 / 1;
 			position: absolute;
 			border-radius: 50%;
 			border: 1px solid rgb(180, 130, 10);
@@ -31,6 +49,7 @@
 		}
 
 		.encounter-map-aura-token {
+			aspect-ratio: 1 / 1;
 			position: absolute;
 			border-radius: 33%;
 			border: 1px solid rgb(80, 80, 80);
@@ -40,6 +59,7 @@
 		}
 
 		.encounter-map-mini-token {
+			aspect-ratio: 1 / 1;
 			position: absolute;
 			display: flex;
 			align-items: center;
@@ -53,22 +73,31 @@
 			&.hero {
 				border-color: rgb(0, 70, 0);
 				background: radial-gradient(rgb(0, 150, 0), rgb(0, 100, 0));
+
+				&.current {
+					outline: 5px solid rgb(0, 125, 0);
+				}
 			}
 
 			&.monster {
 				border-color: rgb(100, 0, 0);
 				background: radial-gradient(rgb(240, 0, 0), rgb(220, 0, 0));
+
+				&.current {
+					outline: 5px solid rgb(230, 0, 0);
+				}
 			}
 
 			&.current {
-				outline: 3px solid rgb(60, 170, 255);
 				background: rgb(255, 255, 255);
 				color: rgb(0, 0, 0);
 				font-weight: 600;
+				pointer-events: none;
 			}
 		}
 
 		.encounter-map-trail-token {
+			aspect-ratio: 1 / 1;
 			position: absolute;
 			border-radius: 50%;
 			border: 1px solid rgb(100, 100, 100);
@@ -77,34 +106,16 @@
 			pointer-events: none;
 		}
 
-		.encounter-map-square {
-			&.selectable {
-				border-color: rgb(60, 170, 255);
-				background-color: rgb(200, 230, 255);
-				cursor: pointer;
-
-				&:hover {
-					outline: 3px solid rgb(60, 170, 255);
-					z-index: 100;
-				}
-
-				&.selected {
-					background-color: rgb(60, 170, 255);
-					z-index: 100;
-				}
-			}
-		}
-
 		.encounter-map-loot-token,
 		.encounter-map-mini-token {
-			&.selectable {
+			&.selectable:not(.selected) {
 				&:hover {
-					border-color: rgb(200, 230, 255);
+					outline: 2px solid rgb(60, 170, 255);
 				}
+			}
 
-				&.selected {
-					outline: 3px solid rgb(60, 170, 255);
-				}
+			&.selected {
+				outline: 5px solid rgb(60, 170, 255);
 			}
 
 			&:not(.selectable) {

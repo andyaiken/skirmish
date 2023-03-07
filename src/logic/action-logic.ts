@@ -716,7 +716,7 @@ export class ActionLogic {
 			let originSquares = EncounterLogic.getCombatantSquares(encounter, combatant);
 			const originParam = action.parameters.find(p => p.name === 'origin');
 			if (originParam) {
-				originSquares = [ (originParam.value as { x: number, y: number }) ];
+				originSquares = originParam.value as { x: number, y: number }[];
 			}
 
 			if (parameter.targets) {

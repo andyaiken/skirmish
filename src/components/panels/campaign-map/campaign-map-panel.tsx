@@ -48,7 +48,6 @@ export class CampaignMapPanel extends Component<Props> {
 					className='campaign-map-square'
 					style={{
 						width: `${squareSizePC}%`,
-						height: `${squareSizePC}%`,
 						left: `${((square.x - dims.left) * squareSizePC)}%`,
 						top: `${((square.y - dims.top) * squareSizePC)}%`,
 						backgroundColor: (this.props.selectedRegion === region) ? 'white' : color,

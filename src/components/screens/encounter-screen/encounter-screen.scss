@@ -28,30 +28,50 @@
 		display: flex;
 		flex-direction: column;
 
-		.map-controls {
+		.encounter-bottom-panel {
 			display: flex;
 			align-items: center;
-			justify-content: center;
+			justify-content: space-between;
 			gap: 10px;
 			margin-top: 10px;
 			border: 2px solid rgb(220, 220, 220);
 			border-radius: 10px;
+			height: 80px;
 			padding: 0 10px;
 			background-color: white;
 
-			.zoom,
-			.finish-btn {
+			.section {
 				flex: 1 1 0;
-			}
-
-			.zoom {
 				display: flex;
+				align-items: center;
 				justify-content: center;
 
-				.zoom-btn {
-					width: 50px;
+				&.stack {
+					flex: 0 0 50px;
+					flex-direction: column;
+
+					.stack-label {
+						font-size: 12px;
+					}
+
+					.stack-value {
+						margin-top: 5px;
+						font-weight: 600;
+					}
+				}
+
+				&.compact {
+					flex: 0 0 auto;
+				}
+
+				&.text {
+					flex: 1 1 auto;
+					justify-content: flex-start;
+				}
+
+				.icon-btn {
+					width: 45px;
 					border: none;
-					font-size: 20px;
 				}
 			}
 		}

@@ -10,7 +10,7 @@ import { TraitType } from '../enums/trait-type';
 import { ActionEffects, ActionLogic } from './action-logic';
 
 import type { ActionModel, ActionOriginParameterModel, ActionTargetParameterModel, ActionWeaponParameterModel } from '../models/action';
-import type { EncounterMapSquareModel, EncounterModel } from '../models/encounter';
+import type { EncounterMapSquareModel, EncounterModel, LootPileModel } from '../models/encounter';
 import type { CombatantModel } from '../models/combatant';
 import type { ConditionModel } from '../models/condition';
 
@@ -543,6 +543,10 @@ export class EncounterLogic {
 		return encounter.combatants.find(c => c.id === id) ?? null;
 	};
 
+	static getLoot = (encounter: EncounterModel, id: string): LootPileModel | null => {
+		return encounter.loot.find(lp => lp.id === id) ?? null;
+	};
+
 	static getAuraConditions = (encounter: EncounterModel, combatant: CombatantModel) => {
 		const auras: ConditionModel[] = [];
 
@@ -634,22 +638,15 @@ export class EncounterLogic {
 	static findCombatants = (encounter: EncounterModel, originSquares: { x: number, y: number }[], radius: number) => {
 		return encounter.combatants.filter(combatant => {
 			const destSquares = EncounterLogic.getCombatantSquares(encounter, combatant);
-			const distances: number[] = [];
-			originSquares.forEach(os => {
-				destSquares.forEach(ds => {
-					distances.push(EncounterMapLogic.getDistance(os, ds));
-				});
-			});
-			const min = Math.min(...distances);
-			return (min <= radius);
+			const distance = EncounterMapLogic.getDistanceAny(originSquares, destSquares);
+			return (distance <= radius);
 		});
 	};
 
 	static findSquares = (encounter: EncounterModel, originSquares: { x: number, y: number }[], radius: number) => {
 		return encounter.mapSquares.filter(square => {
-			const distances = originSquares.map(os => EncounterMapLogic.getDistance(os, square));
-			const min = Math.min(...distances);
-			return (min <= radius);
+			const distance = EncounterMapLogic.getDistanceAny(originSquares, [ square ]);
+			return (distance <= radius);
 		});
 	};
 
@@ -664,9 +661,8 @@ export class EncounterLogic {
 			.concat(EncounterMapLogic.getEdges(encounter.mapSquares, 'w'))
 			.concat(EncounterMapLogic.getEdges(encounter.mapSquares, 'nw'));
 		return walls.filter(wall => {
-			const distances = originSquares.map(os => EncounterMapLogic.getDistance(os, wall));
-			const min = Math.min(...distances);
-			return (min <= radius);
+			const distance = EncounterMapLogic.getDistanceAny(originSquares, [ wall ]);
+			return (distance <= radius);
 		});
 	};
 }

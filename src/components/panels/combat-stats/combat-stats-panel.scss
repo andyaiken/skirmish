@@ -1,4 +1,8 @@
 .combat-stats-panel {
+	.wounds {
+		color: darkred;
+	}
+
 	.stats-row {
 		display: flex;
 		align-items: flex-start;

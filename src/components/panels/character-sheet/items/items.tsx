@@ -67,7 +67,7 @@ export class Items extends Component<Props, State> {
 				let unequip: JSX.Element | string = 'Carry';
 				if (this.props.game.encounter) {
 					unequip = (
-						<div>Carry<br/><IconValue type={IconType.Movement} value={1} /></div>
+						<div>Carry<br/><IconValue type={IconType.Movement} value={1} iconSize={12} /></div>
 					);
 				}
 
@@ -137,7 +137,7 @@ export class Items extends Component<Props, State> {
 				let equip: JSX.Element | string = 'Equip';
 				if (this.props.game.encounter) {
 					equip = (
-						<div>Equip<br/><IconValue type={IconType.Movement} value={1} /></div>
+						<div>Equip<br/><IconValue type={IconType.Movement} value={1} iconSize={12} /></div>
 					);
 				}
 

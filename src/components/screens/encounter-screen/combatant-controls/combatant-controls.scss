@@ -1,6 +1,19 @@
 .combatant-controls {
-	.tags {
-		text-align: center;
+	.header-row {
+		display: flex;
+		align-items: center;
+
+		.name {
+			flex: 1 1 0;
+		}
+
+		.character-sheet-btn {
+			flex: 0 0 50px;
+			aspect-ratio: 1 / 1;
+			border: none;
+			margin: 0;
+			padding: 0;
+		}
 	}
 
 	.quick-actions {
@@ -34,7 +47,7 @@
 
 		.action-parameter {
 			margin: 5px 0;
-			border: 1px solid rgb(220, 220, 220);
+			border: 2px solid rgb(220, 220, 220);
 			border-radius: 5px;
 			padding: 10px;
 
@@ -54,10 +67,29 @@
 				.action-parameter-value {
 					flex: 1 1 0;
 					text-align: right;
+
+					.square-indicator {
+						margin: 0 5px;
+						border: 1px solid rgb(220, 220, 220);
+						border-radius: 5px;
+						background-color: rgb(255, 255, 255);
+						padding: 5px;
+						display: inline-flex;
+						align-items: center;
+						gap: 3px;
+					}
 				}
 
 				.action-parameter-change {
-					flex: 1 1 0;
+					flex: 0 0 auto;
+
+					.map-btn {
+						width: 45px;
+						aspect-ratio: 1 / 1;
+						border: none;
+						margin: 0;
+						padding: 0;
+					}
 				}
 			}
 		}

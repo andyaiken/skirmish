@@ -108,8 +108,8 @@ export class Stats extends Component<Props> {
 						{proficiencySection}
 					</Box>
 					{this.props.hero.type === CombatantType.Hero ? <Box label='XP'>
-						<StatValue label='Earned' value={<IconValue type={IconType.XP} value={this.props.hero.xp} />} />
-						<StatValue label={`Required for level ${this.props.hero.level + 1}`} value={<IconValue type={IconType.XP} value={this.props.hero.level} />} />
+						<StatValue label='Earned' value={<IconValue type={IconType.XP} value={this.props.hero.xp} iconSize={12} />} />
+						<StatValue label={`Required for level ${this.props.hero.level + 1}`} value={<IconValue type={IconType.XP} value={this.props.hero.level} iconSize={12} />} />
 					</Box> : null}
 				</div>
 				<div className='column'>

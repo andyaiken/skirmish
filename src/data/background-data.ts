@@ -77,6 +77,7 @@ export class BackgroundData {
 							// TODO: Drain item of magic
 						]
 					}
+					// TODO: Convert loot pile to energy?
 				]
 			},
 			{

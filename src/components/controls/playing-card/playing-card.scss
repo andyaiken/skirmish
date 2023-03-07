@@ -1,6 +1,6 @@
 .playing-card {
 	width: 200px;
-	height: 300px;
+	aspect-ratio: 2 / 3;
 	perspective: 1000px;
 
 	.stack-card {

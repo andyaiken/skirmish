@@ -1,8 +1,10 @@
+import { IconId, IconNotes, IconRotate2, IconRotateClockwise2, IconX, IconZoomIn, IconZoomOut } from '@tabler/icons-react';
 import { Component } from 'react';
 
 import { ActionTargetType } from '../../../enums/action-target-type';
 import { CardType } from '../../../enums/card-type';
 import { EncounterState } from '../../../enums/encounter-state';
+import { TraitType } from '../../../enums/trait-type';
 
 import { EncounterLogic } from '../../../logic/encounter-logic';
 
@@ -83,16 +85,10 @@ export class EncounterScreen extends Component<Props, State> {
 	};
 
 	selectCombatant = (combatant: CombatantModel) => {
-		let ids = this.state.selectedCombatantIDs;
-		if (ids.includes(combatant.id)) {
-			ids = ids.filter(id => id !== combatant.id);
-		} else {
-			ids.push(combatant.id);
-		}
-
 		const parameter = this.state.currentActionParameter;
 		if (parameter) {
 			let usesCombatantIDs = false;
+			let count = Number.MAX_VALUE;
 			switch (parameter.name) {
 				case 'targets': {
 					const targetParam = parameter as ActionTargetParameterModel;
@@ -102,49 +98,59 @@ export class EncounterScreen extends Component<Props, State> {
 							case ActionTargetType.Enemies:
 							case ActionTargetType.Allies:
 								usesCombatantIDs = true;
+								count = targetParam.targets.count;
 								break;
 						}
 					}
 				}
 			}
-			if (usesCombatantIDs) {
-				parameter.value = ids;
-			}
-		}
 
-		this.setState({
-			currentActionParameter: parameter,
-			selectedCombatantIDs: ids
-		});
+			if (usesCombatantIDs) {
+				let ids = this.state.selectedCombatantIDs;
+				if (ids.includes(combatant.id)) {
+					ids = ids.filter(id => id !== combatant.id);
+				} else {
+					if (ids.length < count) {
+						ids.push(combatant.id);
+					}
+				}
+
+				parameter.value = ids;
+
+				this.setState({
+					currentActionParameter: parameter,
+					selectedCombatantIDs: ids,
+					selectedLootIDs: [],
+					selectedSquares: []
+				});
+			}
+		} else {
+			this.setState({
+				currentActionParameter: parameter,
+				selectedCombatantIDs: [ combatant.id ],
+				selectedLootIDs: [],
+				selectedSquares: []
+			});
+		}
 	};
 
 	selectLoot = (loot: LootPileModel) => {
-		let ids = this.state.selectedLootIDs;
-		if (ids.includes(loot.id)) {
-			ids = ids.filter(id => id !== loot.id);
-		} else {
-			ids.push(loot.id);
-		}
-
 		this.setState({
-			selectedLootIDs: ids
+			selectedCombatantIDs: [],
+			selectedLootIDs: [ loot.id ],
+			selectedSquares: []
 		});
 	};
 
 	selectSquare = (square: { x: number, y: number }) => {
-		let squares = this.state.selectedSquares;
-		if (squares.includes(square)) {
-			squares = squares.filter(sq => sq !== square);
-		} else {
-			squares.push(square);
-		}
-
 		const parameter = this.state.currentActionParameter;
 		if (parameter) {
 			let usesSquares = false;
+			let count = Number.MAX_VALUE;
 			switch (parameter.name) {
 				case 'origin':
 					usesSquares = true;
+					count = 1;
 					break;
 				case 'targets': {
 					const targetParam = parameter as ActionTargetParameterModel;
@@ -153,22 +159,40 @@ export class EncounterScreen extends Component<Props, State> {
 							case ActionTargetType.Squares:
 							case ActionTargetType.Walls:
 								usesSquares = true;
+								count = targetParam.targets.count;
 								break;
 						}
 					}
 				}
 			}
+
 			if (usesSquares) {
-				parameter.value = squares.map(sq => {
-					return { x: sq.x, y: sq.y };
+				let squares = this.state.selectedSquares;
+				if (squares.includes(square)) {
+					squares = squares.filter(sq => !((sq.x === square.x) && (sq.y === square.y)));
+				} else {
+					if (squares.length < count) {
+						squares.push(square);
+					}
+				}
+
+				parameter.value = squares;
+
+				this.setState({
+					currentActionParameter: parameter,
+					selectedCombatantIDs: [],
+					selectedLootIDs: [],
+					selectedSquares: squares
 				});
 			}
+		} else {
+			this.setState({
+				currentActionParameter: parameter,
+				selectedCombatantIDs: [],
+				selectedLootIDs: [],
+				selectedSquares: [ square ]
+			});
 		}
-
-		this.setState({
-			currentActionParameter: parameter,
-			selectedSquares: squares
-		});
 	};
 
 	clearSelection = () => {
@@ -194,7 +218,7 @@ export class EncounterScreen extends Component<Props, State> {
 		});
 	};
 
-	showDetailsCombatant = (combatant: CombatantModel) => {
+	showDetailsCombatant = (combatant: CombatantModel)=> {
 		this.setState({
 			detailsCombatant: combatant,
 			detailsLoot: null
@@ -226,51 +250,60 @@ export class EncounterScreen extends Component<Props, State> {
 	};
 
 	setActionParameter = (parameter: ActionParameterModel) => {
-		let selectableCombatantIDs: string[] = [];
-		let selectableSquares: { x: number, y: number }[] = [];
-		let selectedCombatantIDs: string[] = [];
-		let selectedSquares: { x: number, y: number }[] = [];
+		if (this.state.currentActionParameter !== null) {
+			this.setState({
+				currentActionParameter: null,
+				selectableCombatantIDs: [],
+				selectableLootIDs: [],
+				selectableSquares: []
+			});
+		} else {
+			let selectableCombatantIDs: string[] = [];
+			let selectableSquares: { x: number, y: number }[] = [];
+			let selectedCombatantIDs: string[] = [];
+			let selectedSquares: { x: number, y: number }[] = [];
 
-		switch (parameter.name) {
-			case 'origin': {
-				const originParam = parameter as ActionOriginParameterModel;
-				selectableSquares = (originParam.candidates as { x: number, y: number }[]);
-				selectedSquares = [ originParam.value as { x: number, y: number } ];
-				break;
-			}
-			case 'targets': {
-				const targetParam = parameter as ActionTargetParameterModel;
-				if (targetParam.targets !== null) {
-					switch (targetParam.targets.type) {
-						case ActionTargetType.Combatants:
-						case ActionTargetType.Enemies:
-						case ActionTargetType.Allies:
-							selectableCombatantIDs = targetParam.candidates as string[];
-							selectedCombatantIDs = targetParam.value as string[];
-							break;
-						case ActionTargetType.Squares:
-							selectableSquares = (targetParam.candidates as { x: number, y: number }[]);
-							selectedSquares = [ targetParam.value as { x: number, y: number } ];
-							break;
-						case ActionTargetType.Walls:
-							selectableSquares = (targetParam.candidates as { x: number, y: number }[]);
-							selectedSquares = [ targetParam.value as { x: number, y: number } ];
-							break;
-					}
+			switch (parameter.name) {
+				case 'origin': {
+					const originParam = parameter as ActionOriginParameterModel;
+					selectableSquares = originParam.candidates as { x: number, y: number }[];
+					selectedSquares = originParam.value as { x: number, y: number }[];
+					break;
 				}
-				break;
+				case 'targets': {
+					const targetParam = parameter as ActionTargetParameterModel;
+					if (targetParam.targets !== null) {
+						switch (targetParam.targets.type) {
+							case ActionTargetType.Combatants:
+							case ActionTargetType.Enemies:
+							case ActionTargetType.Allies:
+								selectableCombatantIDs = targetParam.candidates as string[];
+								selectedCombatantIDs = targetParam.value as string[];
+								break;
+							case ActionTargetType.Squares:
+								selectableSquares = targetParam.candidates as { x: number, y: number }[];
+								selectedSquares = targetParam.value as { x: number, y: number }[];
+								break;
+							case ActionTargetType.Walls:
+								selectableSquares = targetParam.candidates as { x: number, y: number }[];
+								selectedSquares = targetParam.value as { x: number, y: number }[];
+								break;
+						}
+					}
+					break;
+				}
 			}
-		}
 
-		this.setState({
-			currentActionParameter: parameter,
-			selectableCombatantIDs: selectableCombatantIDs,
-			selectableLootIDs: [],
-			selectableSquares: selectableSquares,
-			selectedCombatantIDs: selectedCombatantIDs,
-			selectedLootIDs: [],
-			selectedSquares: selectedSquares
-		});
+			this.setState({
+				currentActionParameter: parameter,
+				selectableCombatantIDs: selectableCombatantIDs,
+				selectableLootIDs: [],
+				selectableSquares: selectableSquares,
+				selectedCombatantIDs: selectedCombatantIDs,
+				selectedLootIDs: [],
+				selectedSquares: selectedSquares
+			});
+		}
 	};
 
 	runAction = (encounter: EncounterModel, combatant: CombatantModel) => {
@@ -284,18 +317,19 @@ export class EncounterScreen extends Component<Props, State> {
 		});
 	};
 
-	render = () => {
-		let state = this.state.manualEncounterState;
-		if (state === EncounterState.Active) {
-			state = EncounterLogic.getEncounterState(this.props.encounter);
-		}
+	endTurn = (encounter: EncounterModel) => {
+		this.setState({
+			currentActionParameter: null,
+			selectableSquares: [],
+			selectedSquares: []
+		}, () => {
+			this.props.endTurn(encounter);
+		});
+	};
 
-		let initiative = (
-			<div className='encounter-left-panel empty'>
-			</div>
-		);
+	getLeftControls = (state: EncounterState) => {
 		if ((state === EncounterState.Active) && (EncounterLogic.getActiveCombatants(this.props.encounter).find(c => c.combat.current))) {
-			initiative = (
+			return (
 				<div className='encounter-left-panel'>
 					<InitiativeListPanel
 						encounter={this.props.encounter}
@@ -307,63 +341,144 @@ export class EncounterScreen extends Component<Props, State> {
 			);
 		}
 
-		let controls = null;
-		let mapControls = null;
-		switch (state) {
-			case EncounterState.Active: {
-				const currentCombatant = EncounterLogic.getActiveCombatants(this.props.encounter).find(c => c.combat.current) || null;
-				if (currentCombatant === null) {
-					controls = (
-						<div className='encounter-right-panel'>
-							<Text type={TextType.SubHeading}>Round {this.props.encounter.round + 1}</Text>
-							<button onClick={() => this.props.rollInitiative(this.props.encounter)}>Roll Initiative</button>
-						</div>
-					);
-				} else {
-					controls = (
-						<div className='encounter-right-panel'>
-							<CombatantControls
-								combatant={currentCombatant}
-								encounter={this.props.encounter}
-								currentActionParameter={this.state.currentActionParameter}
-								developer={this.props.developer}
-								endTurn={this.props.endTurn}
-								move={this.props.move}
-								addMovement={this.props.addMovement}
-								standUp={this.props.standUp}
-								scan={this.props.scan}
-								hide={this.props.hide}
-								selectAction={this.selectAction}
-								setActionParameter={this.setActionParameter}
-								setActionParameterValue={this.props.setActionParameterValue}
-								runAction={this.runAction}
-								pickUpItem={this.props.pickUpItem}
-								showCharacterSheet={this.showDetailsCombatant}
-								kill={this.props.kill}
-							/>
-						</div>
-					);
-				}
-				mapControls = (
-					<div className='map-controls'>
-						<div className='zoom'>
-							<button className='zoom-btn' onClick={() => this.props.rotateMap(this.props.encounter, 'l')}>L</button>
-							<button className='zoom-btn' onClick={() => this.props.rotateMap(this.props.encounter, 'r')}>R</button>
-						</div>
-						<div className='zoom'>
-							<button disabled={this.state.mapSquareSize <= 5} className='zoom-btn' onClick={() => this.nudgeMapSize(-5)}>-</button>
-							<button disabled={this.state.mapSquareSize >= 50} className='zoom-btn' onClick={() => this.nudgeMapSize(+5)}>+</button>
-						</div>
-						<button className='finish-btn danger' onClick={() => this.setManualEncounterState(EncounterState.Retreat)}>Retreat</button>
-						<button className='finish-btn danger' onClick={() => this.setManualEncounterState(EncounterState.Defeat)}>Surrender</button>
-						{this.props.developer ? <button className='finish-btn developer' onClick={() => this.setManualEncounterState(EncounterState.Victory)}>Victory</button> : null}
+		return (
+			<div className='encounter-left-panel empty'>
+			</div>
+		);
+	};
+
+	getBottomControls = (state: EncounterState) => {
+		if (state !== EncounterState.Active) {
+			return null;
+		}
+
+		if (this.state.selectedCombatantIDs.length === 1) {
+			const combatant = EncounterLogic.getCombatant(this.props.encounter, this.state.selectedCombatantIDs[0]) as CombatantModel;
+			return (
+				<div className='encounter-bottom-panel'>
+					<div className='section text'>
+						<b>{combatant.name}</b>
 					</div>
-				);
-				break;
-			}
-			case EncounterState.Victory: {
-				const region = this.props.game.map.regions.find(r => r.id === this.props.encounter.regionID) as RegionModel;
-				controls = (
+					<div className='section stack'>
+						<div className='stack-label'>Endurance</div>
+						<div className='stack-value'>{EncounterLogic.getTraitRank(this.props.encounter, combatant, TraitType.Endurance)}</div>
+					</div>
+					<div className='section stack'>
+						<div className='stack-label'>Resolve</div>
+						<div className='stack-value'>{EncounterLogic.getTraitRank(this.props.encounter, combatant, TraitType.Resolve)}</div>
+					</div>
+					<div className='section stack'>
+						<div className='stack-label'>Speed</div>
+						<div className='stack-value'>{EncounterLogic.getTraitRank(this.props.encounter, combatant, TraitType.Speed)}</div>
+					</div>
+					<div className='section stack'>
+						<div className='stack-label'>Damage</div>
+						<div className='stack-value'>{combatant.combat.damage}</div>
+					</div>
+					<div className='section stack'>
+						<div className='stack-label'>Wounds</div>
+						<div className='stack-value'>{combatant.combat.wounds} / {EncounterLogic.getTraitRank(this.props.encounter, combatant, TraitType.Resolve)}</div>
+					</div>
+					<div className='section compact'>
+						<button className='icon-btn' title='Close' onClick={() => this.showDetailsCombatant(combatant)}>
+							<IconId />
+						</button>
+					</div>
+					<div className='section compact'>
+						<button className='icon-btn' title='Close' onClick={() => this.clearSelection()}>
+							<IconX />
+						</button>
+					</div>
+				</div>
+			);
+		}
+
+		if (this.state.selectedCombatantIDs.length > 1) {
+			return (
+				<div className='encounter-bottom-panel'>
+					<div className='section text'>
+						<b>{this.state.selectedCombatantIDs.length} combatants selected</b>
+					</div>
+					<div className='section compact'>
+						<button className='icon-btn' title='Close' onClick={() => this.clearSelection()}>
+							<IconX />
+						</button>
+					</div>
+				</div>
+			);
+		}
+
+		if (this.state.selectedLootIDs.length === 1) {
+			const loot = EncounterLogic.getLoot(this.props.encounter, this.state.selectedLootIDs[0]) as LootPileModel;
+			return (
+				<div className='encounter-bottom-panel'>
+					<div className='section text'>
+						<b>{loot.items.map(item => item.name).join(', ')}</b>
+					</div>
+					<div className='section compact'>
+						<button className='icon-btn' title='Close' onClick={() => this.showDetailsLoot(loot)}>
+							<IconNotes />
+						</button>
+					</div>
+					<div className='section compact'>
+						<button className='icon-btn' title='Close' onClick={() => this.clearSelection()}>
+							<IconX />
+						</button>
+					</div>
+				</div>
+			);
+		}
+
+		if (this.state.selectedLootIDs.length > 1) {
+			return (
+				<div className='encounter-bottom-panel'>
+					<div className='section text'>
+						<b>{this.state.selectedLootIDs.length} treasure piles selected</b>
+					</div>
+					<div className='section compact'>
+						<button className='icon-btn' title='Close' onClick={() => this.clearSelection()}>
+							<IconX />
+						</button>
+					</div>
+				</div>
+			);
+		}
+
+		return (
+			<div className='encounter-bottom-panel'>
+				<div className='section'>
+					<button className='icon-btn' title='Rotate Left' onClick={() => this.props.rotateMap(this.props.encounter, 'l')}>
+						<IconRotate2 />
+					</button>
+					<button className='icon-btn' title='Rotate Right' onClick={() => this.props.rotateMap(this.props.encounter, 'r')}>
+						<IconRotateClockwise2 />
+					</button>
+				</div>
+				<div className='section'>
+					<button disabled={this.state.mapSquareSize <= 5} className='icon-btn' title='Zoom Out' onClick={() => this.nudgeMapSize(-5)}>
+						<IconZoomOut />
+					</button>
+					<button disabled={this.state.mapSquareSize >= 50} className='icon-btn' title='Zoom In' onClick={() => this.nudgeMapSize(+5)}>
+						<IconZoomIn />
+					</button>
+				</div>
+				<div className='section'>
+					<button className='danger' onClick={() => this.setManualEncounterState(EncounterState.Retreat)}>Retreat</button>
+				</div>
+				<div className='section'>
+					<button className='danger' onClick={() => this.setManualEncounterState(EncounterState.Defeat)}>Surrender</button>
+				</div>
+				{this.props.developer ? <div className='section'><button className='developer' onClick={() => this.setManualEncounterState(EncounterState.Victory)}>Victory</button></div> : null}
+			</div>
+		);
+	};
+
+	getRightControls = (state: EncounterState) => {
+		const region = this.props.game.map.regions.find(r => r.id === this.props.encounter.regionID) as RegionModel;
+
+		switch (state) {
+			case EncounterState.Victory:
+				return (
 					<div className='encounter-right-panel'>
 						<Text type={TextType.Heading}>Victory</Text>
 						<hr />
@@ -373,11 +488,8 @@ export class EncounterScreen extends Component<Props, State> {
 						<button onClick={() => this.props.finishEncounter(EncounterState.Victory)}>OK</button>
 					</div>
 				);
-				break;
-			}
-			case EncounterState.Defeat: {
-				const region = this.props.game.map.regions.find(r => r.id === this.props.encounter.regionID) as RegionModel;
-				controls = (
+			case EncounterState.Defeat:
+				return (
 					<div className='encounter-right-panel'>
 						<Text type={TextType.Heading}>Defeated</Text>
 						<hr />
@@ -386,11 +498,8 @@ export class EncounterScreen extends Component<Props, State> {
 						<button onClick={() => this.props.finishEncounter(EncounterState.Defeat)}>OK</button>
 					</div>
 				);
-				break;
-			}
-			case EncounterState.Retreat: {
-				const region = this.props.game.map.regions.find(r => r.id === this.props.encounter.regionID) as RegionModel;
-				controls = (
+			case EncounterState.Retreat:
+				return (
 					<div className='encounter-right-panel empty'>
 						<Text type={TextType.Heading}>Retreat</Text>
 						<hr />
@@ -399,8 +508,47 @@ export class EncounterScreen extends Component<Props, State> {
 						<button onClick={() => this.props.finishEncounter(EncounterState.Retreat)}>OK</button>
 					</div>
 				);
-				break;
-			}
+		}
+
+		const currentCombatant = EncounterLogic.getActiveCombatants(this.props.encounter).find(c => c.combat.current) || null;
+		if (currentCombatant === null) {
+			return (
+				<div className='encounter-right-panel'>
+					<Text type={TextType.SubHeading}>Round {this.props.encounter.round + 1}</Text>
+					<button onClick={() => this.props.rollInitiative(this.props.encounter)}>Roll Initiative</button>
+				</div>
+			);
+		}
+
+		return (
+			<div className='encounter-right-panel'>
+				<CombatantControls
+					combatant={currentCombatant}
+					encounter={this.props.encounter}
+					currentActionParameter={this.state.currentActionParameter}
+					developer={this.props.developer}
+					endTurn={this.endTurn}
+					move={this.props.move}
+					addMovement={this.props.addMovement}
+					standUp={this.props.standUp}
+					scan={this.props.scan}
+					hide={this.props.hide}
+					selectAction={this.selectAction}
+					setActionParameter={this.setActionParameter}
+					setActionParameterValue={this.props.setActionParameterValue}
+					runAction={this.runAction}
+					pickUpItem={this.props.pickUpItem}
+					showCharacterSheet={this.showDetailsCombatant}
+					kill={this.props.kill}
+				/>
+			</div>
+		);
+	};
+
+	render = () => {
+		let state = this.state.manualEncounterState;
+		if (state === EncounterState.Active) {
+			state = EncounterLogic.getEncounterState(this.props.encounter);
 		}
 
 		let dialog = null;
@@ -438,7 +586,7 @@ export class EncounterScreen extends Component<Props, State> {
 
 		return (
 			<div className='encounter-screen'>
-				{initiative}
+				{this.getLeftControls(state)}
 				<div className='encounter-central-panel'>
 					<EncounterMapPanel
 						encounter={this.props.encounter}
@@ -456,9 +604,9 @@ export class EncounterScreen extends Component<Props, State> {
 						onDoubleClickCombatant={this.showDetailsCombatant}
 						onDoubleClickLoot={this.showDetailsLoot}
 					/>
-					{mapControls}
+					{this.getBottomControls(state)}
 				</div>
-				{controls}
+				{this.getRightControls(state)}
 				{dialog}
 			</div>
 		);

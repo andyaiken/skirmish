@@ -1,3 +1,4 @@
+import { IconArrowUp, IconId, IconMapPin } from '@tabler/icons-react';
 import { Component } from 'react';
 
 import { ActionTargetType } from '../../../../enums/action-target-type';
@@ -73,6 +74,23 @@ export class CombatantControls extends Component<Props, State> {
 	};
 
 	render = () => {
+		const header = (
+			<div className='header-row'>
+				<div className='name'>
+					<Text type={TextType.SubHeading}>{this.props.combatant.name}</Text>
+					<div className='tags'>
+						<Tag>{GameLogic.getSpecies(this.props.combatant.speciesID)?.name ?? 'Unknown species'}</Tag>
+						<Tag>{GameLogic.getRole(this.props.combatant.roleID)?.name ?? 'Unknown role'}</Tag>
+						<Tag>{GameLogic.getBackground(this.props.combatant.backgroundID)?.name ?? 'Unknown background'}</Tag>
+						<Tag>Level {this.props.combatant.level}</Tag>
+					</div>
+				</div>
+				<button className='character-sheet-btn' onClick={() => this.props.showCharacterSheet(this.props.combatant)}>
+					<IconId size={40} />
+				</button>
+			</div>
+		);
+
 		const prone = this.props.combatant.combat.state === CombatantState.Prone;
 
 		let controls = null;
@@ -97,15 +115,15 @@ export class CombatantControls extends Component<Props, State> {
 						{auraSection}
 						<div className='quick-actions'>
 							<button disabled={this.props.combatant.combat.movement < 4} onClick={() => this.props.scan(this.props.encounter, this.props.combatant)}>
-								Scan<br/><IconValue value={4} type={IconType.Movement} />
+								Scan<br/><IconValue value={4} type={IconType.Movement} iconSize={12} />
 							</button>
 							<button disabled={this.props.combatant.combat.movement < 4} onClick={() => this.props.hide(this.props.encounter, this.props.combatant)}>
-								Hide<br/><IconValue value={4} type={IconType.Movement} />
+								Hide<br/><IconValue value={4} type={IconType.Movement} iconSize={12} />
 							</button>
 							{
 								this.props.combatant.combat.state === CombatantState.Prone ?
 									<button disabled={this.props.combatant.combat.movement < 8} onClick={() => this.props.standUp(this.props.encounter, this.props.combatant)}>
-										Stand Up<br/><IconValue value={8} type={IconType.Movement} />
+										Stand Up<br/><IconValue value={8} type={IconType.Movement} iconSize={12} />
 									</button>
 									: null
 							}
@@ -198,7 +216,7 @@ export class CombatantControls extends Component<Props, State> {
 							return;
 						}
 
-						let description = '';
+						let description: JSX.Element[] | string = '';
 						let changeButton = null;
 						let changeControls = null;
 						switch (parameter.name) {
@@ -235,8 +253,8 @@ export class CombatantControls extends Component<Props, State> {
 								}
 								if (originParam.candidates.length > 1) {
 									changeButton = (
-										<button onClick={() => this.props.setActionParameter(originParam)}>
-											Select origin
+										<button className='map-btn' title='Select Origin Square' onClick={() => this.props.setActionParameter(originParam)}>
+											<IconMapPin />
 										</button>
 									);
 								}
@@ -257,15 +275,16 @@ export class CombatantControls extends Component<Props, State> {
 												// Targets all possible candidates
 												description = `[${list.length} ${targetParam.targets.type.toLowerCase()}]`;
 											} else {
-												// Targets specific candidates
+												// Targets a specific number of candidates
 												description = list
 													.map(id => EncounterLogic.getCombatant(this.props.encounter, id) as CombatantModel)
 													.map(target => target.name)
 													.join(', ') || '[None]';
 												if (targetParam.candidates.length > targetParam.targets.count) {
+													const title = `Select ${targetParam.targets.type.toLowerCase()}`;
 													changeButton = (
-														<button onClick={() => this.props.setActionParameter(targetParam)}>
-															Select {targetParam.targets.type.toLowerCase()}
+														<button className='map-btn' title={title} onClick={() => this.props.setActionParameter(targetParam)}>
+															<IconMapPin />
 														</button>
 													);
 												}
@@ -281,15 +300,23 @@ export class CombatantControls extends Component<Props, State> {
 												// Targets all possible candidates
 												description = `[${list.length} squares]`;
 											} else {
-												// Targets specific candidates
-												// TODO: Draw an arrow showing direction from the combatant and list the distance
+												// Targets a specific number of candidates
 												description = list
-													.map(square => `(${square.x}, ${square.y})`)
-													.join(', ') || '[None]';
+													.map(square => {
+														const combatantSquares = EncounterLogic.getCombatantSquares(this.props.encounter, this.props.combatant);
+														const distance = EncounterMapLogic.getDistanceAny(combatantSquares, [ square ]);
+														const angle = EncounterMapLogic.getDirection(this.props.combatant.combat.position, square);
+														return (
+															<div key={`${square.x} ${square.y}`} className='square-indicator'>
+																<IconArrowUp style={{ transform: `rotate(${angle}deg)` }} />
+																<span>{distance}</span>
+															</div>
+														);
+													});
 												if (targetParam.candidates.length > targetParam.targets.count) {
 													changeButton = (
-														<button onClick={() => this.props.setActionParameter(targetParam)}>
-															Select squares
+														<button className='map-btn' title='Select Squares' onClick={() => this.props.setActionParameter(targetParam)}>
+															<IconMapPin />
 														</button>
 													);
 												}
@@ -305,14 +332,23 @@ export class CombatantControls extends Component<Props, State> {
 												// Targets all possible candidates
 												description = `[${list.length} walls]`;
 											} else {
-												// Targets specific candidates
+												// Targets a specific number of candidates
 												description = list
-													.map(square => `(${square.x}, ${square.y})`)
-													.join(', ') || '[None]';
+													.map(square => {
+														const combatantSquares = EncounterLogic.getCombatantSquares(this.props.encounter, this.props.combatant);
+														const distance = EncounterMapLogic.getDistanceAny(combatantSquares, [ square ]);
+														const angle = EncounterMapLogic.getDirection(this.props.combatant.combat.position, square);
+														return (
+															<div key={`${square.x} ${square.y}`} className='square-indicator'>
+																<IconArrowUp style={{ transform: `rotate(${angle}deg)` }} />
+																<span>{distance}</span>
+															</div>
+														);
+													});
 												if (targetParam.candidates.length > targetParam.targets.count) {
 													changeButton = (
-														<button onClick={() => this.props.setActionParameter(targetParam)}>
-															Select walls
+														<button className='map-btn' title='Select Walls' onClick={() => this.props.setActionParameter(targetParam)}>
+															<IconMapPin />
 														</button>
 													);
 												}
@@ -354,7 +390,10 @@ export class CombatantControls extends Component<Props, State> {
 							<div className='action-details'>
 								{prerequisites}
 								{parameters}
-								<button disabled={!(prerequisitesMet && parametersSet)} onClick={() => this.props.runAction(this.props.encounter, this.props.combatant)}>
+								<button
+									disabled={!(prerequisitesMet && parametersSet && (this.props.currentActionParameter === null))}
+									onClick={() => this.props.runAction(this.props.encounter, this.props.combatant)}
+								>
 									Run
 								</button>
 							</div>
@@ -390,13 +429,7 @@ export class CombatantControls extends Component<Props, State> {
 
 				return (
 					<div className='combatant-controls'>
-						<Text type={TextType.SubHeading}>{this.props.combatant.name}</Text>
-						<div className='tags'>
-							<Tag>{GameLogic.getSpecies(this.props.combatant.speciesID)?.name ?? 'Unknown species'}</Tag>
-							<Tag>{GameLogic.getRole(this.props.combatant.roleID)?.name ?? 'Unknown role'}</Tag>
-							<Tag>{GameLogic.getBackground(this.props.combatant.backgroundID)?.name ?? 'Unknown background'}</Tag>
-							<Tag>Level {this.props.combatant.level}</Tag>
-						</div>
+						{header}
 						{prone ? <Text type={TextType.Information}><b>{this.props.combatant.name} is Prone.</b> Their skill ranks are halved and their moving costs are doubled.</Text> : null}
 						{this.props.combatant.combat.hidden > 0 ? <Text type={TextType.Information}><b>{this.props.combatant.name} is Hidden.</b> Their moving costs are doubled.</Text> : null}
 						<Selector
@@ -406,7 +439,6 @@ export class CombatantControls extends Component<Props, State> {
 						/>
 						{controls}
 						<hr />
-						<button onClick={() => this.props.showCharacterSheet(this.props.combatant)}>Character Sheet</button>
 						<button onClick={this.endTurn}>End Turn</button>
 					</div>
 				);
@@ -414,17 +446,10 @@ export class CombatantControls extends Component<Props, State> {
 			case CombatantType.Monster: {
 				return (
 					<div className='combatant-controls'>
-						<Text type={TextType.SubHeading}>{this.props.combatant.name}</Text>
-						<div className='tags'>
-							<Tag>{GameLogic.getSpecies(this.props.combatant.speciesID)?.name ?? 'Unknown species'}</Tag>
-							<Tag>{GameLogic.getRole(this.props.combatant.roleID)?.name ?? 'Unknown role'}</Tag>
-							<Tag>{GameLogic.getBackground(this.props.combatant.backgroundID)?.name ?? 'Unknown background'}</Tag>
-							<Tag>Level {this.props.combatant.level}</Tag>
-						</div>
+						{header}
 						{prone ? <Text type={TextType.Information}><b>{this.props.combatant.name} is Prone.</b> Their skill ranks are halved and moving costs are doubled.</Text> : null}
 						{this.props.combatant.combat.hidden > 0 ? <Text type={TextType.Information}><b>{this.props.combatant.name} is Hidden.</b> Their moving costs are doubled.</Text> : null}
 						<hr />
-						<button onClick={() => this.props.showCharacterSheet(this.props.combatant)}>Character Sheet</button>
 						<button className='developer' onClick={this.kill}>Kill</button>
 						<button onClick={this.endTurn}>End Turn</button>
 					</div>

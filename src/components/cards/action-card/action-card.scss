@@ -11,8 +11,8 @@
 		padding: 5px;
 
 		&.highlighted {
-			background-color: rgb(250, 50, 50);
-			color: rgb(255, 255, 255);
+			border-color: rgb(200, 50, 50);
+			color: rgb(200, 50, 50);
 			font-weight: 600;
 		}
 	}

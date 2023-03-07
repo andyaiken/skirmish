@@ -124,7 +124,7 @@ export class ItemsPage extends Component<Props, State> {
 			<div>
 				<StatValue orientation='vertical' label='Money' value={<IconValue type={IconType.Money} value={this.props.game.money} />} />
 				<button disabled={this.props.game.money < 100} onClick={() => this.setShowMarket(true)}>
-					Buy a magic item<br/><IconValue type={IconType.Money} value={100} />
+					Buy a magic item<br/><IconValue type={IconType.Money} value={100} iconSize={12} />
 				</button>
 				{this.props.developer ? <button className='developer' onClick={() => this.props.addMoney()}>Add money</button> : null}
 			</div>

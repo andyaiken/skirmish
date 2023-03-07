@@ -1,6 +1,10 @@
+import {
+	IconAccessPoint, IconArrowBigRightLinesFilled, IconAwardFilled, IconBolt, IconBrain, IconCoins, IconFlame,
+	IconGrillFork, IconHammer, IconSkull, IconSlice, IconSnowflake, IconSpiral, IconSun, IconVaccineBottle
+} from '@tabler/icons-react';
 import { Component } from 'react';
 
-import type { DamageType } from '../../../enums/damage-type';
+import { DamageType } from '../../../enums/damage-type';
 
 import './icon-value.scss';
 
@@ -13,23 +17,61 @@ export enum IconType {
 interface Props {
 	value: number | string;
 	type: DamageType | IconType;
+	iconSize: number;
 }
 
 export class IconValue extends Component<Props> {
+	static defaultProps = {
+		iconSize: 24
+	};
+
 	render = () => {
 		let icon = null;
 		switch (this.props.type) {
 			case IconType.Movement:
-				icon = '▶︎';
+				icon = <IconArrowBigRightLinesFilled size={this.props.iconSize} />;
 				break;
 			case IconType.Money:
-				icon = '𑁍';
+				icon = <IconCoins size={this.props.iconSize} />;
 				break;
 			case IconType.XP:
-				icon = '⬥';
+				icon = <IconAwardFilled size={this.props.iconSize} />;
 				break;
-			default:
-				icon = '';
+			case DamageType.Acid:
+				icon = <IconVaccineBottle size={this.props.iconSize} />;
+				break;
+			case DamageType.Cold:
+				icon = <IconSnowflake size={this.props.iconSize} />;
+				break;
+			case DamageType.Decay:
+				icon = <IconSpiral size={this.props.iconSize} />;
+				break;
+			case DamageType.Edged:
+				icon = <IconSlice size={this.props.iconSize} />;
+				break;
+			case DamageType.Electricity:
+				icon = <IconBolt size={this.props.iconSize} />;
+				break;
+			case DamageType.Fire:
+				icon = <IconFlame size={this.props.iconSize} />;
+				break;
+			case DamageType.Impact:
+				icon = <IconHammer size={this.props.iconSize} />;
+				break;
+			case DamageType.Light:
+				icon = <IconSun size={this.props.iconSize} />;
+				break;
+			case DamageType.Piercing:
+				icon = <IconGrillFork size={this.props.iconSize} />;
+				break;
+			case DamageType.Poison:
+				icon = <IconSkull size={this.props.iconSize} />;
+				break;
+			case DamageType.Psychic:
+				icon = <IconBrain size={this.props.iconSize} />;
+				break;
+			case DamageType.Sonic:
+				icon = <IconAccessPoint size={this.props.iconSize} />;
 				break;
 		}
 

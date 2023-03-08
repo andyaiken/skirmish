@@ -133,13 +133,13 @@
 
 				&.pulse-one {
 					z-index: 30;
-					opacity: 0.4;
+					opacity: 0.6;
 					animation: 2s linear 1s infinite backwards pulse-1;
 				}
 
 				&.pulse-two {
 					z-index: 20;
-					opacity: 0.6;
+					opacity: 0.7;
 					animation: 2s linear 1s infinite backwards pulse-2;
 				}
 
@@ -187,7 +187,7 @@
 	}
 
 	70% {
-		transform: scale(3);
+		transform: scale(5);
 		opacity: 0;
 	}
 
@@ -203,7 +203,7 @@
 	}
 
 	80% {
-		transform: scale(3);
+		transform: scale(5);
 		opacity: 0;
 	}
 
@@ -219,7 +219,7 @@
 	}
 
 	90% {
-		transform: scale(3);
+		transform: scale(5);
 		opacity: 0;
 	}
 

@@ -7,7 +7,7 @@ import { GameLogic } from '../../../../logic/game-logic';
 
 import type { CombatantModel } from '../../../../models/combatant';
 
-import { Selector, Tag, Text, TextType } from '../../../controls';
+import { Tabs, Tag, Text, TextType } from '../../../controls';
 
 import './combatant-header.scss';
 
@@ -22,7 +22,7 @@ interface Props {
 export class CombatantHeader extends Component<Props> {
 	render = () => {
 		let charSheetBtn = null;
-		let selector = null;
+		let tabs = null;
 		if (this.props.combatant.type === CombatantType.Hero) {
 			charSheetBtn = (
 				<button className='character-sheet-btn' onClick={() => this.props.showCharacterSheet(this.props.combatant)}>
@@ -35,11 +35,11 @@ export class CombatantHeader extends Component<Props> {
 				{ id: 'move', display: <div>Move</div> }
 			];
 			if (this.props.developer) {
-				options.push({ id: 'action', display: <div>Action</div> });
+				options.push({ id: 'action', display: <div className='developer' style={{ width: '100%', textAlign: 'center' }}>Action</div> });
 			}
 
-			selector = (
-				<Selector
+			tabs = (
+				<Tabs
 					options={options}
 					selectedID={this.props.tabID}
 					onSelect={this.props.onSelectTab}
@@ -61,7 +61,7 @@ export class CombatantHeader extends Component<Props> {
 					</div>
 					{charSheetBtn}
 				</div>
-				{selector}
+				{tabs}
 			</div>
 		);
 	};

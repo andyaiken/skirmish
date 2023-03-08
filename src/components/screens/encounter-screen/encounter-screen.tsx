@@ -16,7 +16,7 @@ import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
 import type { RegionModel } from '../../../models/campaign-map';
 
-import { CardList, Dialog, PlayingCard, Selector, Text, TextType } from '../../controls';
+import { CardList, Dialog, PlayingCard, Tabs, Text, TextType } from '../../controls';
 import { CharacterSheetPanel, EncounterLogPanel, EncounterMapPanel, InitiativeListPanel } from '../../panels';
 import { CombatantAction } from './combatant-action/combatant-action';
 import { CombatantHeader } from './combatant-header/combatant-header';
@@ -354,10 +354,10 @@ export class EncounterScreen extends Component<Props, State> {
 		if (this.props.developer) {
 			header = (
 				<div className='panel-header'>
-					<Selector
+					<Tabs
 						options={[
 							{ id: 'init', display: 'Initiative' },
-							{ id: 'log', display: <div className='developer' style={{ width: '100%', padding: '7px', textAlign: 'center' }}>Log</div> }
+							{ id: 'log', display: <div className='developer' style={{ width: '100%', textAlign: 'center' }}>Log</div> }
 						]}
 						selectedID={this.state.leftID}
 						onSelect={id => this.setLeftID(id)}

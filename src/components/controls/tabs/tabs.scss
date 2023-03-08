@@ -1,0 +1,35 @@
+.tabs {
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+	margin: 10px 0;
+
+	.spacer {
+		flex: 0 0 20px;
+		border-bottom: 1px solid rgb(220, 220, 220);
+	}
+
+	.option {
+		flex: 1 1 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border: 1px solid rgb(220, 220, 220);
+		border-top-left-radius: 3px;
+		border-top-right-radius: 3px;
+		background-color: rgb(240, 240, 240);
+		padding: 10px 5px;
+		cursor: pointer;
+
+		&.selected {
+			border-bottom-color: transparent;
+			background-color: rgb(255, 255, 255);
+			font-weight: 600;
+			pointer-events: none;
+		}
+
+		&:hover {
+			background-color: rgb(240, 240, 240);
+		}
+	}
+}

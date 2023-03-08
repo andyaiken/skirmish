@@ -6,6 +6,7 @@ import { CardList } from './card-list/card-list';
 import { Dialog } from './dialog/dialog';
 import { Selector } from './selector/selector';
 import { StatValue } from './stat-value/stat-value';
+import { Tabs } from './tabs/tabs';
 import { Tag } from './tag/tag';
 
 export {
@@ -16,6 +17,7 @@ export {
 	PlayingCard, PlayingCardSide,
 	Selector,
 	StatValue,
+	Tabs,
 	Tag,
 	Text, TextType
 };

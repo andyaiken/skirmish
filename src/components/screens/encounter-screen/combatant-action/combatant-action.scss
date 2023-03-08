@@ -1,37 +1,4 @@
-.combatant-controls {
-	.header-row {
-		display: flex;
-		align-items: center;
-
-		.name {
-			flex: 1 1 0;
-		}
-
-		.character-sheet-btn {
-			flex: 0 0 50px;
-			aspect-ratio: 1 / 1;
-			border: none;
-			margin: 0;
-			padding: 0;
-		}
-	}
-
-	.quick-actions {
-		display: flex;
-		align-items: flex-start;
-		gap: 5px;
-	}
-
-	.movement {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-
-		.direction-panel {
-			margin-top: 30px;
-		}
-	}
-
+.combatant-action {
 	.actions {
 		display: flex;
 		flex-direction: column;

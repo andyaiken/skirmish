@@ -74,14 +74,13 @@ export class EncounterLogic {
 	};
 
 	static log = (encounter: EncounterModel, message: string) => {
-		encounter.log.unshift(message);
-
-		// eslint-disable-next-line no-console
-		console.log(message);
+		encounter.log.push(message);
 	};
 
 	static rollInitiative = (encounter: EncounterModel) => {
 		encounter.round += 1;
+
+		encounter.log = [];
 
 		encounter.combatants.forEach(c => {
 			c.combat.initiative = Number.MIN_VALUE;
@@ -115,8 +114,6 @@ export class EncounterLogic {
 
 			return result;
 		});
-
-		EncounterLogic.log(encounter, `Rolled initiative for round ${encounter.round}`);
 	};
 
 	static startOfTurn = (encounter: EncounterModel, combatant: CombatantModel) => {
@@ -162,7 +159,8 @@ export class EncounterLogic {
 			.filter(condition => condition.type === ConditionType.AutoDamage)
 			.forEach(condition => {
 				EncounterLogic.log(encounter, `Damage condition (${condition.details.damage}, ${condition.rank})`);
-				EncounterLogic.damage(encounter, combatant, condition.rank, condition.details.damage);
+				const value = Random.dice(condition.rank);
+				EncounterLogic.damage(encounter, combatant, value, condition.details.damage);
 			});
 
 		switch (combatant.combat.state) {

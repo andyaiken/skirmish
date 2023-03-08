@@ -12,9 +12,9 @@
 ## To Do
 
 * Encounters:
-  * Show log of action's logic and calculations
+  * Indicate to the user whether a hero's movement / actions have been spent
+    * On the move / action tabs?
   * Allow the user to opt for a universal action instead
-  * In bottom / right panels, hide 'character sheet' button for monsters
   * Implement actions
     * Parameter selection / 'go' button / etc, should happen in the card itself
     * Lose turn should set a flag on the combatant
@@ -22,8 +22,7 @@
       * This flag should be reflected in the initiative list
     * Add missing effects
   * Implement AI so that monsters can take their turns
-  * Show turn log for current combatant, if it's a monster
-    * With a button to take each action in turn
+    * Add a button so that the user can perform each action in turn
 * Add a system for evaluating each action to ensure none is too powerful
   * Then extend this to ensure species / roles / backgrounds are equally matched
 * Add help / documentation to explain game rules
@@ -42,6 +41,10 @@
   * Show the XP required as a gauge
 * Encounters
   * Implement line-of-sight
+  * Allow other victory conditions
+    * Get a certain number of heroes to a particular area
+    * Get one hero to a particular area and stay there for a certain number of rounds
+    * Defeat a specific opponent within a certain number of rounds
 * Mountebank, Thief and Pixie should have an attack redirection aura
 * Gnome, Thief should be able to set / disable traps
 * Monster species:

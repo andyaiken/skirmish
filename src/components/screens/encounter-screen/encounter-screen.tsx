@@ -3,6 +3,7 @@ import { Component } from 'react';
 
 import { ActionTargetType } from '../../../enums/action-target-type';
 import { CardType } from '../../../enums/card-type';
+import { CombatantType } from '../../../enums/combatant-type';
 import { EncounterState } from '../../../enums/encounter-state';
 import { TraitType } from '../../../enums/trait-type';
 
@@ -15,9 +16,13 @@ import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
 import type { RegionModel } from '../../../models/campaign-map';
 
-import { CardList, Dialog, PlayingCard, Text, TextType } from '../../controls';
-import { CharacterSheetPanel, EncounterMapPanel, InitiativeListPanel } from '../../panels';
-import { CombatantControls } from './combatant-controls/combatant-controls';
+import { CardList, Dialog, PlayingCard, Selector, Text, TextType } from '../../controls';
+import { CharacterSheetPanel, EncounterLogPanel, EncounterMapPanel, InitiativeListPanel } from '../../panels';
+import { CombatantAction } from './combatant-action/combatant-action';
+import { CombatantHeader } from './combatant-header/combatant-header';
+import { CombatantMonster } from './combatant-monster/combatant-monster';
+import { CombatantMove } from './combatant-move/combatant-move';
+import { CombatantOverview } from './combatant-overview/combatant-overview';
 import { ItemCard } from '../../cards';
 
 import './encounter-screen.scss';
@@ -46,6 +51,8 @@ interface Props {
 }
 
 interface State {
+	leftID: string;
+	rightID: string;
 	mapSquareSize: number;
 	currentActionParameter: ActionParameterModel | null;
 	selectableCombatantIDs: string[];
@@ -63,6 +70,8 @@ export class EncounterScreen extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
+			leftID: 'init',
+			rightID: 'overview',
 			mapSquareSize: 10,
 			currentActionParameter: null,
 			selectableCombatantIDs: [],
@@ -76,6 +85,18 @@ export class EncounterScreen extends Component<Props, State> {
 			detailsLoot: null
 		};
 	}
+
+	setLeftID = (id: string) => {
+		this.setState({
+			leftID: id
+		});
+	};
+
+	setRightID = (id: string) => {
+		this.setState({
+			rightID: id
+		});
+	};
 
 	nudgeMapSize = (delta: number) => {
 		const size = Math.max(this.state.mapSquareSize + delta, 5);
@@ -319,6 +340,7 @@ export class EncounterScreen extends Component<Props, State> {
 
 	endTurn = (encounter: EncounterModel) => {
 		this.setState({
+			rightID: 'overview',
 			currentActionParameter: null,
 			selectableSquares: [],
 			selectedSquares: []
@@ -328,21 +350,51 @@ export class EncounterScreen extends Component<Props, State> {
 	};
 
 	getLeftControls = (state: EncounterState) => {
-		if ((state === EncounterState.Active) && (EncounterLogic.getActiveCombatants(this.props.encounter).find(c => c.combat.current))) {
-			return (
-				<div className='encounter-left-panel'>
-					<InitiativeListPanel
-						encounter={this.props.encounter}
-						selectedIDs={this.state.selectedCombatantIDs}
-						onSelect={this.selectCombatant}
-						onDetails={this.showDetailsCombatant}
+		let header = null;
+		if (this.props.developer) {
+			header = (
+				<div className='panel-header'>
+					<Selector
+						options={[
+							{ id: 'init', display: 'Initiative' },
+							{ id: 'log', display: <div className='developer' style={{ width: '100%', padding: '7px', textAlign: 'center' }}>Log</div> }
+						]}
+						selectedID={this.state.leftID}
+						onSelect={id => this.setLeftID(id)}
 					/>
 				</div>
 			);
 		}
 
+		let content = null;
+		switch (this.state.leftID) {
+			case 'init': {
+				if ((state === EncounterState.Active) && (EncounterLogic.getActiveCombatants(this.props.encounter).find(c => c.combat.current))) {
+					content = (
+						<InitiativeListPanel
+							encounter={this.props.encounter}
+							selectedIDs={this.state.selectedCombatantIDs}
+							onSelect={this.selectCombatant}
+							onDetails={this.showDetailsCombatant}
+						/>
+					);
+				}
+				break;
+			}
+			case 'log': {
+				content = (
+					<EncounterLogPanel encounter={this.props.encounter} />
+				);
+				break;
+			}
+		}
+
 		return (
-			<div className='encounter-left-panel empty'>
+			<div className='encounter-left-panel'>
+				{header}
+				<div className='panel-content'>
+					{content}
+				</div>
 			</div>
 		);
 	};
@@ -354,6 +406,18 @@ export class EncounterScreen extends Component<Props, State> {
 
 		if (this.state.selectedCombatantIDs.length === 1) {
 			const combatant = EncounterLogic.getCombatant(this.props.encounter, this.state.selectedCombatantIDs[0]) as CombatantModel;
+
+			let charSheetBtn = null;
+			if (combatant.type === CombatantType.Hero) {
+				charSheetBtn = (
+					<div className='section compact'>
+						<button className='icon-btn' title='Close' onClick={() => this.showDetailsCombatant(combatant)}>
+							<IconId />
+						</button>
+					</div>
+				);
+			}
+
 			return (
 				<div className='encounter-bottom-panel'>
 					<div className='section text'>
@@ -379,11 +443,7 @@ export class EncounterScreen extends Component<Props, State> {
 						<div className='stack-label'>Wounds</div>
 						<div className='stack-value'>{combatant.combat.wounds} / {EncounterLogic.getTraitRank(this.props.encounter, combatant, TraitType.Resolve)}</div>
 					</div>
-					<div className='section compact'>
-						<button className='icon-btn' title='Close' onClick={() => this.showDetailsCombatant(combatant)}>
-							<IconId />
-						</button>
-					</div>
+					{charSheetBtn}
 					<div className='section compact'>
 						<button className='icon-btn' title='Close' onClick={() => this.clearSelection()}>
 							<IconX />
@@ -480,32 +540,41 @@ export class EncounterScreen extends Component<Props, State> {
 			case EncounterState.Victory:
 				return (
 					<div className='encounter-right-panel'>
-						<Text type={TextType.Heading}>Victory</Text>
-						<hr />
-						<Text type={TextType.MinorHeading}>You won the encounter in {region.name}!</Text>
-						<Text>Each surviving hero who took part in this encounter gains 1 XP.</Text>
-						<Text>Any heroes who died have been lost.</Text>
-						<button onClick={() => this.props.finishEncounter(EncounterState.Victory)}>OK</button>
+						<div className='panel-header'>
+							<Text type={TextType.Heading}>Victory</Text>
+						</div>
+						<div className='panel-content'>
+							<Text type={TextType.MinorHeading}>You won the encounter in {region.name}!</Text>
+							<Text>Each surviving hero who took part in this encounter gains 1 XP.</Text>
+							<Text>Any heroes who died have been lost.</Text>
+							<button onClick={() => this.props.finishEncounter(EncounterState.Victory)}>OK</button>
+						</div>
 					</div>
 				);
 			case EncounterState.Defeat:
 				return (
 					<div className='encounter-right-panel'>
-						<Text type={TextType.Heading}>Defeated</Text>
-						<hr />
-						<Text type={TextType.MinorHeading}>You lost the encounter in {region.name}.</Text>
-						<Text>Those heroes who took part have been lost, along with all their equipment.</Text>
-						<button onClick={() => this.props.finishEncounter(EncounterState.Defeat)}>OK</button>
+						<div className='panel-header'>
+							<Text type={TextType.Heading}>Defeated</Text>
+						</div>
+						<div className='panel-content'>
+							<Text type={TextType.MinorHeading}>You lost the encounter in {region.name}.</Text>
+							<Text>Those heroes who took part have been lost, along with all their equipment.</Text>
+							<button onClick={() => this.props.finishEncounter(EncounterState.Defeat)}>OK</button>
+						</div>
 					</div>
 				);
 			case EncounterState.Retreat:
 				return (
 					<div className='encounter-right-panel empty'>
-						<Text type={TextType.Heading}>Retreat</Text>
-						<hr />
-						<Text type={TextType.MinorHeading}>You retreated from the encounter in {region.name}.</Text>
-						<Text>Any heroes who fell have been lost, along with all their equipment.</Text>
-						<button onClick={() => this.props.finishEncounter(EncounterState.Retreat)}>OK</button>
+						<div className='panel-header'>
+							<Text type={TextType.Heading}>Retreat</Text>
+						</div>
+						<div className='panel-content'>
+							<Text type={TextType.MinorHeading}>You retreated from the encounter in {region.name}.</Text>
+							<Text>Any heroes who fell have been lost, along with all their equipment.</Text>
+							<button onClick={() => this.props.finishEncounter(EncounterState.Retreat)}>OK</button>
+						</div>
 					</div>
 				);
 		}
@@ -514,33 +583,89 @@ export class EncounterScreen extends Component<Props, State> {
 		if (currentCombatant === null) {
 			return (
 				<div className='encounter-right-panel'>
-					<Text type={TextType.SubHeading}>Round {this.props.encounter.round + 1}</Text>
-					<button onClick={() => this.props.rollInitiative(this.props.encounter)}>Roll Initiative</button>
+					<div className='panel-header'>
+						<Text type={TextType.SubHeading}>Round {this.props.encounter.round + 1}</Text>
+					</div>
+					<div className='panel-content'>
+						<button onClick={() => this.props.rollInitiative(this.props.encounter)}>Roll Initiative</button>
+					</div>
 				</div>
 			);
 		}
 
-		return (
-			<div className='encounter-right-panel'>
-				<CombatantControls
+		let content = null;
+
+		if (currentCombatant.type === CombatantType.Monster) {
+			content = (
+				<CombatantMonster
 					combatant={currentCombatant}
 					encounter={this.props.encounter}
-					currentActionParameter={this.state.currentActionParameter}
 					developer={this.props.developer}
-					endTurn={this.endTurn}
-					move={this.props.move}
-					addMovement={this.props.addMovement}
-					standUp={this.props.standUp}
-					scan={this.props.scan}
-					hide={this.props.hide}
-					selectAction={this.selectAction}
-					setActionParameter={this.setActionParameter}
-					setActionParameterValue={this.props.setActionParameterValue}
-					runAction={this.runAction}
-					pickUpItem={this.props.pickUpItem}
 					showCharacterSheet={this.showDetailsCombatant}
 					kill={this.props.kill}
 				/>
+			);
+		} else {
+			switch (this.state.rightID) {
+				case 'overview':
+					content = (
+						<CombatantOverview
+							combatant={currentCombatant}
+							encounter={this.props.encounter}
+							developer={this.props.developer}
+							standUp={this.props.standUp}
+							scan={this.props.scan}
+							hide={this.props.hide}
+						/>
+					);
+					break;
+				case 'move':
+					content = (
+						<CombatantMove
+							combatant={currentCombatant}
+							encounter={this.props.encounter}
+							developer={this.props.developer}
+							move={this.props.move}
+							addMovement={this.props.addMovement}
+							pickUpItem={this.props.pickUpItem}
+						/>
+					);
+					break;
+				case 'action':
+					content = (
+						<CombatantAction
+							combatant={currentCombatant}
+							encounter={this.props.encounter}
+							currentActionParameter={this.state.currentActionParameter}
+							developer={this.props.developer}
+							selectAction={this.selectAction}
+							setActionParameter={this.setActionParameter}
+							setActionParameterValue={this.props.setActionParameterValue}
+							runAction={this.runAction}
+						/>
+					);
+					break;
+			}
+		}
+
+
+		return (
+			<div className='encounter-right-panel'>
+				<div className='panel-header'>
+					<CombatantHeader
+						combatant={currentCombatant}
+						developer={this.props.developer}
+						tabID={this.state.rightID}
+						onSelectTab={this.setRightID}
+						showCharacterSheet={this.showDetailsCombatant}
+					/>
+				</div>
+				<div className='panel-content'>
+					{content}
+				</div>
+				<div className='panel-footer'>
+					<button onClick={() => this.endTurn(this.props.encounter)}>End Turn</button>
+				</div>
 			</div>
 		);
 	};

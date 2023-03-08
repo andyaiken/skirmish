@@ -35,6 +35,10 @@ button {
 	border: 2px solid rgb(230, 230, 230);
 	border-radius: 5px;
 	background-color: rgb(255, 255, 255);
+	display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 
 	&:not(:disabled) {
 		border-color: rgb(60, 170, 255);

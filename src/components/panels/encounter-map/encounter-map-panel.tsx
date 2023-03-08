@@ -230,10 +230,9 @@ class MiniToken extends Component<MiniTokenProps> {
 
 	render = () => {
 		const type = this.props.combatant.type.toLowerCase();
-		const current = this.props.combatant.combat.current ? 'current' : '';
 		const selectable = this.props.selectable ? 'selectable' : '';
 		const selected = this.props.selected ? 'selected' : '';
-		const className = `encounter-map-mini-token ${type} ${current} ${selectable} ${selected}`;
+		const className = `encounter-map-mini-token ${type} ${selectable} ${selected}`;
 
 		let tooltip = this.props.combatant.name;
 		if (this.props.combatant.combat.state === CombatantState.Dead) {
@@ -262,7 +261,12 @@ class MiniToken extends Component<MiniTokenProps> {
 				onClick={e => this.onClick(e)}
 				onDoubleClick={e => this.onDoubleClick(e)}
 			>
-				{this.getMonogram()}
+				<div className={this.props.combatant.combat.current ? 'mini-token-face current' : 'mini-token-face'}>
+					{this.getMonogram()}
+				</div>
+				{this.props.combatant.combat.current ? <div className='pulse pulse-one' /> : null}
+				{this.props.combatant.combat.current ? <div className='pulse pulse-two' /> : null}
+				{this.props.combatant.combat.current ? <div className='pulse pulse-three' /> : null}
 			</div>
 		);
 	};
@@ -352,6 +356,7 @@ class LootToken extends Component<LootTokenProps> {
 				onClick={e => this.onClick(e)}
 				onDoubleClick={e => this.onDoubleClick(e)}
 			>
+				<div className='loot-token-face' />
 			</div>
 		);
 	};

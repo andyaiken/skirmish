@@ -421,7 +421,8 @@ export class ActionEffects {
 							const attackRoll = Random.dice(attackRank);
 							const defenceRoll = Random.dice(defenceRank);
 
-							EncounterLogic.log(encounter, `${combatant.name} rolls ${data.skill} (${attackRank}), ${target.name} rolls ${data.trait} (${defenceRank})`);
+							EncounterLogic.log(encounter, `${combatant.name} rolls ${data.skill} (${attackRank}) and gets ${attackRoll}`);
+							EncounterLogic.log(encounter, `${target.name} rolls ${data.trait} (${defenceRank}) and gets ${defenceRoll}`);
 
 							success = attackRoll >= defenceRoll;
 						}

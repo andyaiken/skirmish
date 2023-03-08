@@ -1,0 +1,29 @@
+# Development
+
+## Building and Running
+
+After downloading the repository, open a terminal in the root directory and type:
+
+`npm start`
+
+This will build the project and open it in your default browser.
+
+## Contributing
+
+This project uses:
+
+* [Typescript](https://www.typescriptlang.org)
+* [Sass](https://sass-lang.com)
+* [React](https://reactjs.org)
+* [Tabler Icons](https://tabler-icons.io)
+* [ESLint](https://eslint.org)
+
+Before making any changes, ensure dependencies are up-to-date:
+
+`npm run update`
+
+Make your changes, and ensure they don't contain any obvious issues:
+
+`npm run lint`
+
+Finally, submit your changes in a pull request.

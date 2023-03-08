@@ -1,6 +1,6 @@
 import {
 	IconAccessPoint, IconArrowBigRightLinesFilled, IconAwardFilled, IconBolt, IconBrain, IconCoins, IconFlame,
-	IconGrillFork, IconHammer, IconSkull, IconSlice, IconSnowflake, IconSpiral, IconSun, IconVaccineBottle
+	IconHammer, IconSkull, IconSlice, IconSnowflake, IconSpiral, IconSun, IconTrident, IconVaccineBottle
 } from '@tabler/icons-react';
 import { Component } from 'react';
 
@@ -62,7 +62,7 @@ export class IconValue extends Component<Props> {
 				icon = <IconSun size={this.props.iconSize} />;
 				break;
 			case DamageType.Piercing:
-				icon = <IconGrillFork size={this.props.iconSize} />;
+				icon = <IconTrident size={this.props.iconSize} />;
 				break;
 			case DamageType.Poison:
 				icon = <IconSkull size={this.props.iconSize} />;

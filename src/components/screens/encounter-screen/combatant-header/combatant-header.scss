@@ -1,0 +1,19 @@
+.combatant-header {
+	.header-row {
+		display: flex;
+		align-items: center;
+
+		.name {
+			flex: 1 1 0;
+		}
+
+		.character-sheet-btn {
+			flex: 0 0 50px;
+			aspect-ratio: 1 / 1;
+			border: none;
+			border-radius: 10px;
+			margin: 0;
+			padding: 0;
+		}
+	}
+}

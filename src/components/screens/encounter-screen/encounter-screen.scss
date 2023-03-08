@@ -56,6 +56,10 @@
 				align-items: center;
 				justify-content: center;
 
+				* {
+					transition: none;
+				}
+
 				&.stack {
 					flex: 0 0 50px;
 					flex-direction: column;
@@ -81,7 +85,6 @@
 
 				.icon-btn {
 					width: 45px;
-					border: none;
 				}
 			}
 		}

@@ -143,7 +143,6 @@ export class Items extends Component<Props, State> {
 
 				let footer: JSX.Element | null = (
 					<div className='item-options'>
-						<Text type={TextType.SubHeading}>Item</Text>
 						<button disabled={!CombatantLogic.canEquip(this.props.hero, item)} onClick={() => this.props.equipItem(item)}>{equip}</button>
 						<button onClick={() => this.props.dropItem(item)}>Drop</button>
 					</div>

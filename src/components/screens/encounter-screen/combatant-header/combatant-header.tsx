@@ -25,7 +25,7 @@ export class CombatantHeader extends Component<Props> {
 		let tabs = null;
 		if (this.props.combatant.type === CombatantType.Hero) {
 			charSheetBtn = (
-				<button className='character-sheet-btn' onClick={() => this.props.showCharacterSheet(this.props.combatant)}>
+				<button className='icon-btn character-sheet-btn' onClick={() => this.props.showCharacterSheet(this.props.combatant)}>
 					<IconId size={40} />
 				</button>
 			);

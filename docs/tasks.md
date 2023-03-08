@@ -97,4 +97,5 @@
 ## Tech Debt
 
 * Convert to functional components
+* Add error boundaries
 * Use hooks

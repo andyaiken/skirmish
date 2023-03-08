@@ -44,7 +44,7 @@ export class CombatantMove extends Component<Props> {
 			const name = item.magic ? `${item.name} (${item.baseItem})` : item.name;
 			return (
 				<button key={item.id} disabled={!canPickUp} onClick={() => this.props.pickUpItem(item, this.props.combatant)}>
-					Pick Up {name}<br/><IconValue value={1} type={IconType.Movement} />
+					Pick Up {name}<br/><IconValue value={1} type={IconType.Movement} iconSize={12} />
 				</button>
 			);
 		});

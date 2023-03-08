@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import { IconSettings } from '@tabler/icons-react';
 
 import type { BoonModel } from '../../../models/boon';
 import type { CombatantModel } from '../../../models/combatant';
@@ -111,14 +112,16 @@ export class CampaignScreen extends Component<Props, State> {
 		const options = [
 			{ id: 'heroes', display: 'Your Team' },
 			{ id: 'items', display: 'Your Equipment' },
-			{ id: 'map', display: 'The Island' },
-			{ id: 'options', display: 'Options' }
+			{ id: 'map', display: 'The Island' }
 		];
 		return (
 			<div className='campaign-screen'>
 				<div className='campaign-top-bar'>
 					<Text type={TextType.SubHeading}>Skirmish</Text>
 					<Selector options={options} selectedID={this.state.page} onSelect={this.setPage} />
+					<button className='icon-btn' onClick={() => this.setPage('options')}>
+						<IconSettings />
+					</button>
 				</div>
 				<div className='campaign-content'>
 					{content}

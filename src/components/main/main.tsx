@@ -187,6 +187,9 @@ export class Main extends Component<Props, State> {
 			case BoonType.MagicItem:
 				game.items.push(boon.data as ItemModel);
 				break;
+			case BoonType.Money:
+				game.money += boon.data as number;
+				break;
 		}
 
 		this.setState({

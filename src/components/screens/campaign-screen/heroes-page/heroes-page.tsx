@@ -45,7 +45,8 @@ export class HeroesPage extends Component<Props, State> {
 	selectBoon = (boon: BoonModel) => {
 		switch (boon.type) {
 			case BoonType.ExtraHero:
-			case BoonType.MagicItem: {
+			case BoonType.MagicItem:
+			case BoonType.Money: {
 				this.props.redeemBoon(boon, null);
 				break;
 			}

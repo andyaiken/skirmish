@@ -120,7 +120,7 @@ export class CombatantAction extends Component<Props> {
 					}
 					if (originParam.candidates.length > 1) {
 						changeButton = (
-							<button className='map-btn' title='Select Origin Square' onClick={() => this.props.setActionParameter(originParam)}>
+							<button className='icon-btn map-btn' title='Select Origin Square' onClick={() => this.props.setActionParameter(originParam)}>
 								<IconMapPin />
 							</button>
 						);
@@ -150,7 +150,7 @@ export class CombatantAction extends Component<Props> {
 									if (targetParam.candidates.length > targetParam.targets.count) {
 										const title = `Select ${targetParam.targets.type.toLowerCase()}`;
 										changeButton = (
-											<button className='map-btn' title={title} onClick={() => this.props.setActionParameter(targetParam)}>
+											<button className='icon-btn map-btn' title={title} onClick={() => this.props.setActionParameter(targetParam)}>
 												<IconMapPin />
 											</button>
 										);
@@ -182,7 +182,7 @@ export class CombatantAction extends Component<Props> {
 										});
 									if (targetParam.candidates.length > targetParam.targets.count) {
 										changeButton = (
-											<button className='map-btn' title='Select Squares' onClick={() => this.props.setActionParameter(targetParam)}>
+											<button className='icon-btn map-btn' title='Select Squares' onClick={() => this.props.setActionParameter(targetParam)}>
 												<IconMapPin />
 											</button>
 										);
@@ -214,7 +214,7 @@ export class CombatantAction extends Component<Props> {
 										});
 									if (targetParam.candidates.length > targetParam.targets.count) {
 										changeButton = (
-											<button className='map-btn' title='Select Walls' onClick={() => this.props.setActionParameter(targetParam)}>
+											<button className='icon-btn map-btn' title='Select Walls' onClick={() => this.props.setActionParameter(targetParam)}>
 												<IconMapPin />
 											</button>
 										);

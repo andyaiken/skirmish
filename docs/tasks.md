@@ -8,6 +8,10 @@
   * When generating the map, remove unattached areas
   * Or, when removing squares, check whether this would result in an unattached area
 * The campaign map (sometimes) has odd lines on it
+* It's possible to close out of dialogs; this should be forbidden for:
+  * The character sheet dialog, when levelling up
+  * The hero builder dialog
+  * The magic item selection dialog
 
 ## To Do
 

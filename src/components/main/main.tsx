@@ -213,15 +213,19 @@ export class Main extends Component<Props, State> {
 	};
 
 	sellItem = (item: ItemModel, all: boolean) => {
+		const sell = (item: ItemModel) => {
+			game.items = game.items.filter(i => i !== item);
+			game.money += item.magic ? 50 : 1;
+		};
+
 		const game = this.state.game as GameModel;
 
 		if (all) {
-			const items = game.items.filter(i => i.name === item.name);
-			game.items = game.items.filter(i => i.name !== item.name);
-			game.money += items.length;
+			game.items
+				.filter(i => i.name === item.name)
+				.forEach(i => sell(i));
 		} else {
-			game.items = game.items.filter(i => i !== item);
-			game.money += 1;
+			sell(item);
 		}
 
 		this.setState({

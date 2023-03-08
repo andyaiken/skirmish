@@ -67,6 +67,7 @@ export class ItemsPage extends Component<Props, State> {
 						key={item.id}
 						type={CardType.Item}
 						front={<ItemCard item={item} />}
+						footer={<button onClick={() => this.props.sellItem(item, true)}>Sell</button>}
 					/>
 				);
 			});
@@ -83,12 +84,12 @@ export class ItemsPage extends Component<Props, State> {
 			const cards = Collections.distinct(mundaneItems, i => i.name).map(item => {
 				const count = mundaneItems.filter(i => i.name === item.name).length;
 
-				let back = (
+				let footer = (
 					<button onClick={() => this.props.sellItem(item, true)}>Sell</button>
 				);
 
 				if (count > 1) {
-					back = (
+					footer = (
 						<div>
 							<button onClick={() => this.props.sellItem(item, false)}>Sell One</button>
 							<button onClick={() => this.props.sellItem(item, true)}>Sell All ({count})</button>
@@ -101,7 +102,7 @@ export class ItemsPage extends Component<Props, State> {
 						key={item.id}
 						type={CardType.Item}
 						front={<ItemCard item={item} />}
-						footer={back}
+						footer={footer}
 					/>
 				);
 			});

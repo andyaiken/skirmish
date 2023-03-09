@@ -8,6 +8,7 @@ import { ActionPrerequisites } from '../../../../logic/action-logic';
 import { CombatantLogic } from '../../../../logic/combatant-logic';
 import { EncounterLogic } from '../../../../logic/encounter-logic';
 import { EncounterMapLogic } from '../../../../logic/encounter-map-logic';
+import { GameLogic } from '../../../../logic/game-logic';
 
 import type { ActionModel, ActionOriginParameterModel, ActionParameterModel, ActionTargetParameterModel, ActionWeaponParameterModel } from '../../../../models/action';
 import type { CombatantModel } from '../../../../models/combatant';
@@ -24,22 +25,40 @@ interface Props {
 	encounter: EncounterModel;
 	currentActionParameter: ActionParameterModel | null;
 	developer: boolean;
+	drawActions: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	selectAction: (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => void;
 	setActionParameter: (parameter: ActionParameterModel) => void;
 	setActionParameterValue: (parameter: ActionParameterModel, value: unknown) => void;
 	runAction: (encounter: EncounterModel, combatant: CombatantModel) => void;
 }
 
-export class CombatantAction extends Component<Props> {
+interface State {
+	showAllActions: boolean;
+}
+
+export class CombatantAction extends Component<Props, State> {
+	constructor(props: Props) {
+		super(props);
+		this.state = {
+			showAllActions: false
+		};
+	}
+
 	render = () => {
 		if (this.props.combatant.combat.actions.length === 0) {
 			return (
 				<div className='combatant-action'>
 					<Text type={TextType.Information}>You have taken your action for this turn.</Text>
+					{this.props.developer ? <button onClick={() => this.props.drawActions(this.props.encounter, this.props.combatant)}>Act Again</button> : null}
 				</div>
 			);
 		} else if (this.props.combatant.combat.actions.length > 1) {
-			const actionCards = this.props.combatant.combat.actions.map(a => {
+			let actions = ([] as ActionModel[]).concat(this.props.combatant.combat.actions);
+			if (this.state.showAllActions) {
+				actions = GameLogic.getAllActions();
+			}
+
+			const actionCards = actions.map(a => {
 				const prerequisitesMet = a.prerequisites.every(p => ActionPrerequisites.isSatisfied(p, this.props.encounter));
 				return (
 					<PlayingCard
@@ -56,6 +75,7 @@ export class CombatantAction extends Component<Props> {
 			return (
 				<div className='combatant-action'>
 					<div className='actions'>
+						{this.props.developer ? <button onClick={() => this.setState({ showAllActions: !this.state.showAllActions })}>All Actions</button> : null}
 						<CardList cards={actionCards} />
 					</div>
 				</div>

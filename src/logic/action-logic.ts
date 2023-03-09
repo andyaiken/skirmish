@@ -2,8 +2,10 @@ import { ActionRangeType } from '../enums/action-range-type';
 import { ActionTargetType } from '../enums/action-target-type';
 import { CombatantState } from '../enums/combatant-state';
 import { DamageType } from '../enums/damage-type';
+import { EncounterMapSquareType } from '../enums/encounter-map-square-type';
 import { ItemLocationType } from '../enums/item-location-type';
 import { ItemProficiencyType } from '../enums/item-proficiency-type';
+import { MovementType } from '../enums/movement-type';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
 
@@ -29,6 +31,7 @@ import { CombatantLogic } from './combatant-logic';
 import { ConditionLogic } from './condition-logic';
 import { EncounterLogic } from './encounter-logic';
 import { EncounterMapLogic } from './encounter-map-logic';
+import { Factory } from './factory';
 
 export class ActionPrerequisites {
 	static meleeWeapon = (): ActionPrerequisiteModel => {
@@ -331,6 +334,24 @@ export class ActionEffects {
 		};
 	};
 
+	static healDamageSelf = (rank: number): ActionEffectModel => {
+		return {
+			id: 'healdamageSelf',
+			description: `Heal damage on self (rank ${rank})`,
+			data: rank,
+			children: []
+		};
+	};
+
+	static healWoundsSelf = (value: number): ActionEffectModel => {
+		return {
+			id: 'healwoundsSelf',
+			description: `Heal ${value} wound(s) on self`,
+			data: value,
+			children: []
+		};
+	};
+
 	static addCondition = (condition: ConditionModel): ActionEffectModel => {
 		return {
 			id: 'addcondition',
@@ -349,10 +370,10 @@ export class ActionEffects {
 		};
 	};
 
-	static grantMovement = (): ActionEffectModel => {
+	static addMovement = (): ActionEffectModel => {
 		return {
-			id: 'grantmovement',
-			description: 'Grant movement',
+			id: 'addMovementSelf',
+			description: 'Add movement points',
 			data: null,
 			children: []
 		};
@@ -367,10 +388,130 @@ export class ActionEffects {
 		};
 	};
 
-	static loseTurn = (): ActionEffectModel => {
+	static stun = (): ActionEffectModel => {
 		return {
-			id: 'loseturn',
-			description: 'Lose turn',
+			id: 'stun',
+			description: 'Stun',
+			data: null,
+			children: []
+		};
+	};
+
+	static reveal = (): ActionEffectModel => {
+		return {
+			id: 'reveal',
+			description: 'Reveal if hidden',
+			data: null,
+			children: []
+		};
+	};
+
+	static redrawActions = (): ActionEffectModel => {
+		return {
+			id: 'redraw',
+			description: 'Redraw action cards',
+			data: null,
+			children: []
+		};
+	};
+
+	static invertConditions = (all: boolean): ActionEffectModel => {
+		return {
+			id: 'invertCondition',
+			description: all ? 'Invert conditions' : 'Invert a condition',
+			data: all,
+			children: []
+		};
+	};
+
+	static transferCondition = (): ActionEffectModel => {
+		return {
+			id: 'transferCondition',
+			description: 'Transfer a condition',
+			data: null,
+			children: []
+		};
+	};
+
+	static commandAction = (): ActionEffectModel => {
+		return {
+			id: 'commandAction',
+			description: 'Command target to attack',
+			data: null,
+			children: []
+		};
+	};
+
+	static commandMove = (): ActionEffectModel => {
+		return {
+			id: 'commandMove',
+			description: 'Command target to move',
+			data: null,
+			children: []
+		};
+	};
+
+	static forceMovement = (type: MovementType, rank: number): ActionEffectModel => {
+		return {
+			id: 'forceMovement',
+			description: `Forced movement (${type}), rank ${rank}`,
+			data: {
+				type: type,
+				rank: rank
+			},
+			children: []
+		};
+	};
+
+	static moveToTargetSquare = (): ActionEffectModel => {
+		return {
+			id: 'moveSelfTo',
+			description: 'Move to square',
+			data: null,
+			children: []
+		};
+	};
+
+	static disarm = (): ActionEffectModel => {
+		return {
+			id: 'disarm',
+			description: 'Disarm',
+			data: null,
+			children: []
+		};
+	};
+
+	static steal = (): ActionEffectModel => {
+		return {
+			id: 'steal',
+			description: 'Steal',
+			data: null,
+			children: []
+		};
+	};
+
+	static createTerrain = (type: EncounterMapSquareType): ActionEffectModel => {
+		return {
+			id: 'createTerrain',
+			description: `Create ${type.toLowerCase()} terrain`,
+			data: type,
+			children: []
+		};
+	};
+
+	static addSquares = (): ActionEffectModel => {
+		return {
+			id: 'addSquares',
+			description: 'Create map squares',
+			data: null,
+			children: []
+		};
+	};
+
+	static removeSquares = (): ActionEffectModel => {
+		return {
+			id: 'removeSquares',
+			description: 'Destroy map squares',
 			data: null,
 			children: []
 		};
@@ -519,6 +660,17 @@ export class ActionEffects {
 				}
 				break;
 			}
+			case 'healdamageSelf': {
+				const rank = effect.data as number;
+				const value = Random.dice(rank);
+				EncounterLogic.healDamage(encounter, combatant, value);
+				break;
+			}
+			case 'healwoundsSelf': {
+				const value = effect.data as number;
+				EncounterLogic.healWounds(encounter, combatant, value);
+				break;
+			}
 			case 'addcondition': {
 				const condition = effect.data as ConditionModel;
 				const targetParameter = parameters.find(p => p.name === 'targets');
@@ -555,18 +707,12 @@ export class ActionEffects {
 				}
 				break;
 			}
-			case 'grantmovement': {
-				const targetParameter = parameters.find(p => p.name === 'targets');
-				if (targetParameter) {
-					const targetIDs = targetParameter.value as string[];
-					targetIDs.forEach(id => {
-						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
-						const rank = EncounterLogic.getTraitRank(encounter, target, TraitType.Speed);
-						const result = Random.dice(rank);
-						target.combat.movement += result;
-						EncounterLogic.log(encounter, `${target.name} rolls Speed (rank ${rank}) and gets ${result} additional movement`);
-					});
-				}
+			case 'addMovementSelf': {
+				// This only applies to the current combatant
+				const rank = EncounterLogic.getTraitRank(encounter, combatant, TraitType.Speed);
+				const result = Random.dice(rank);
+				combatant.combat.movement += result;
+				EncounterLogic.log(encounter, `${combatant.name} rolls Speed (rank ${rank}) and gets ${result} additional movement`);
 				break;
 			}
 			case 'knockdown': {
@@ -583,14 +729,294 @@ export class ActionEffects {
 				}
 				break;
 			}
-			case 'loseturn': {
+			case 'stun': {
 				const targetParameter = parameters.find(p => p.name === 'targets');
 				if (targetParameter) {
 					const targetIDs = targetParameter.value as string[];
 					targetIDs.forEach(id => {
 						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
-						target.combat.initiative = Number.MIN_VALUE;
-						EncounterLogic.log(encounter, `${target.name} loses their turn`);
+						target.combat.stunned = true;
+						EncounterLogic.log(encounter, `${target.name} is stunned`);
+					});
+				}
+				break;
+			}
+			case 'reveal': {
+				const targetParameter = parameters.find(p => p.name === 'targets');
+				if (targetParameter) {
+					const targetIDs = targetParameter.value as string[];
+					targetIDs.forEach(id => {
+						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
+						if (target.combat.hidden > 0) {
+							target.combat.hidden = 0;
+							EncounterLogic.log(encounter, `${target.name} is no longer hidden`);
+						}
+					});
+				}
+				break;
+			}
+			case 'redraw': {
+				// This only applies to the current combatant
+				const deck = CombatantLogic.getActionDeck(combatant);
+				combatant.combat.actions = Collections.shuffle(deck).splice(0, 3);
+				break;
+			}
+			case 'invertConditions': {
+				const all = effect.data as boolean;
+				const invert = (target: CombatantModel, condition: ConditionModel) => {
+					condition.type = ConditionLogic.getOppositeType(condition.type);
+					EncounterLogic.log(encounter, `${target.name} is now affected by ${ConditionLogic.getConditionDescription(condition)}`);
+				};
+				const targetParameter = parameters.find(p => p.name === 'targets');
+				if (targetParameter) {
+					const targetIDs = targetParameter.value as string[];
+					targetIDs.forEach(id => {
+						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
+						const conditions = target.combat.conditions.filter(c => (combatant.type === target.type) !== ConditionLogic.getConditionIsBeneficial(c));
+						if (all) {
+							conditions.forEach(condition => invert(target, condition));
+						} else if (conditions.length > 0) {
+							const condition = Collections.draw(conditions);
+							invert(target, condition);
+						}
+					});
+				}
+				break;
+			}
+			case 'transferCondition': {
+				const targetParameter = parameters.find(p => p.name === 'targets');
+				if (targetParameter) {
+					const targetIDs = targetParameter.value as string[];
+					targetIDs.forEach(id => {
+						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
+						const conditions = combatant.combat.conditions.filter(c => (combatant.type === target.type) === ConditionLogic.getConditionIsBeneficial(c));
+						if (conditions.length > 0) {
+							const condition = Collections.draw(conditions);
+							combatant.combat.conditions = combatant.combat.conditions.filter(c => c !== condition);
+							const copy = JSON.parse(JSON.stringify(condition)) as ConditionModel;
+							target.combat.conditions.push(copy);
+							EncounterLogic.log(encounter, `${combatant.name} is no longer affected by ${ConditionLogic.getConditionDescription(condition)}`);
+							EncounterLogic.log(encounter, `${target.name} is now affected by ${ConditionLogic.getConditionDescription(copy)}`);
+						}
+					});
+				}
+				break;
+			}
+			case 'commandAction': {
+				const targetParameter = parameters.find(p => p.name === 'targets');
+				if (targetParameter) {
+					const targetIDs = targetParameter.value as string[];
+					targetIDs.forEach(id => {
+						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
+						// TODO: Target uses an action
+						// Select an action that we can meet the prerequisites of and set the parameters of
+						// Perform it
+					});
+				}
+				break;
+			}
+			case 'commandMove': {
+				const targetParameter = parameters.find(p => p.name === 'targets');
+				if (targetParameter) {
+					const targetIDs = targetParameter.value as string[];
+					targetIDs.forEach(id => {
+						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
+						const distance = Random.dice(EncounterLogic.getTraitRank(encounter, target, TraitType.Speed));
+						// TODO: Target moves
+						// Select a location we can move to within range
+						// Perform it
+					});
+				}
+				break;
+			}
+			case 'forceMovement': {
+				const data = effect.data as { type: MovementType, rank: number };
+				const targetParameter = parameters.find(p => p.name === 'targets');
+				if (targetParameter) {
+					const targetIDs = targetParameter.value as string[];
+					targetIDs.forEach(id => {
+						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
+						switch (data.type) {
+							case MovementType.Pull: {
+								const moveDistance = Random.dice(data.rank);
+								for (let n = 0; n < moveDistance; ++n) {
+									const distance = EncounterMapLogic.getDistance(combatant.combat.position, target.combat.position);
+									const squares = EncounterLogic.getPossibleMoveSquares(encounter, target).filter(square => {
+										return EncounterMapLogic.getDistance(combatant.combat.position, square) < distance;
+									});
+									if (squares.length > 0) {
+										const square = Collections.draw(squares);
+										target.combat.trail.push({ x: target.combat.position.x, y: target.combat.position.y });
+										target.combat.position.x = square.x;
+										target.combat.position.y = square.y;
+									}
+								}
+								EncounterLogic.log(encounter, `${target.name} has been pulled`);
+								break;
+							}
+							case MovementType.Push: {
+								const moveDistance = Random.dice(data.rank);
+								for (let n = 0; n < moveDistance; ++n) {
+									const distance = EncounterMapLogic.getDistance(combatant.combat.position, target.combat.position);
+									const squares = EncounterLogic.getPossibleMoveSquares(encounter, target).filter(square => {
+										return EncounterMapLogic.getDistance(combatant.combat.position, square) > distance;
+									});
+									if (squares.length > 0) {
+										const square = Collections.draw(squares);
+										target.combat.trail.push({ x: target.combat.position.x, y: target.combat.position.y });
+										target.combat.position.x = square.x;
+										target.combat.position.y = square.y;
+									}
+								}
+								EncounterLogic.log(encounter, `${target.name} has been pushed`);
+								break;
+							}
+							case MovementType.Swap: {
+								const currentX = combatant.combat.position.x;
+								const currentY = combatant.combat.position.y;
+								combatant.combat.position.x = target.combat.position.x;
+								combatant.combat.position.y = target.combat.position.y;
+								target.combat.position.x = currentX;
+								target.combat.position.y = currentY;
+								EncounterLogic.log(encounter, `${combatant.name} and ${target.name} have swapped positions`);
+								break;
+							}
+							case MovementType.ToTarget: {
+								const squares = EncounterMapLogic.getAdjacentSquares(encounter.mapSquares, EncounterLogic.getCombatantSquares(encounter, target))
+									.filter(square => {
+										return EncounterLogic.getCombatantSquares(encounter, combatant, square).every(sq => EncounterLogic.getSquareIsEmpty(encounter, sq));
+									});
+								if (squares.length > 0) {
+									const square = Collections.draw(squares);
+									combatant.combat.trail.push({ x: target.combat.position.x, y: target.combat.position.y });
+									combatant.combat.position.x = square.x;
+									combatant.combat.position.y = square.y;
+								}
+								EncounterLogic.log(encounter, `${combatant.name} has moved to ${target.name}`);
+								break;
+							}
+							case MovementType.Random: {
+								const moveDistance = Random.dice(data.rank);
+								const squares = encounter.mapSquares
+									.filter(square => {
+										return EncounterMapLogic.getDistance(target.combat.position, square) <= moveDistance;
+									})
+									.filter(square => {
+										return EncounterLogic.getCombatantSquares(encounter, target, square).every(sq => EncounterLogic.getSquareIsEmpty(encounter, sq));
+									});
+								if (squares.length > 0) {
+									const square = Collections.draw(squares);
+									target.combat.trail.push({ x: target.combat.position.x, y: target.combat.position.y });
+									target.combat.position.x = square.x;
+									target.combat.position.y = square.y;
+								}
+								EncounterLogic.log(encounter, `${target.name} has been moved to a random square`);
+								break;
+							}
+						}
+					});
+				}
+				break;
+			}
+			case 'moveSelfTo': {
+				const targetParameter = parameters.find(p => p.name === 'targets');
+				if (targetParameter) {
+					const squares = targetParameter.value as { x: number, y: number }[];
+					const candidates = squares.filter(square => {
+						return EncounterLogic.getCombatantSquares(encounter, combatant, square).every(sq => EncounterLogic.getSquareIsEmpty(encounter, sq));
+					});
+					if (candidates.length > 0) {
+						const square = Collections.draw(candidates);
+						combatant.combat.trail.push({ x: combatant.combat.position.x, y: combatant.combat.position.y });
+						combatant.combat.position.x = square.x;
+						combatant.combat.position.y = square.y;
+					}
+					EncounterLogic.log(encounter, `${combatant.name} has moved`);
+				}
+				break;
+			}
+			case 'disarm': {
+				const targetParameter = parameters.find(p => p.name === 'targets');
+				if (targetParameter) {
+					const targetIDs = targetParameter.value as string[];
+					targetIDs.forEach(id => {
+						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
+						const items = target.items.filter(i => i.location === ItemLocationType.Hand);
+						if (items.length > 0) {
+							const item = Collections.draw(items);
+							target.items.filter(i => i !== item);
+							target.carried.filter(i => i !== item);
+							const squares = EncounterMapLogic.getAdjacentSquares(encounter.mapSquares, EncounterLogic.getCombatantSquares(encounter, target))
+								.filter(square => EncounterLogic.getSquareIsEmpty(encounter, square));
+							if (squares.length > 0) {
+								const square = Collections.draw(squares);
+								const loot = Factory.createLootPile();
+								loot.items.push(item);
+								loot.position.x = square.x;
+								loot.position.y = square.y;
+								encounter.loot.push(loot);
+							}
+							EncounterLogic.log(encounter, `${target.name} has lost ${item.name}`);
+						}
+					});
+				}
+				break;
+			}
+			case 'steal': {
+				const targetParameter = parameters.find(p => p.name === 'targets');
+				if (targetParameter) {
+					const targetIDs = targetParameter.value as string[];
+					targetIDs.forEach(id => {
+						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
+						const items = ([] as ItemModel[]).concat(target.items).concat(target.carried);
+						if (items.length > 0) {
+							const item = Collections.draw(items);
+							target.items.filter(i => i !== item);
+							target.carried.filter(i => i !== item);
+							combatant.carried.push(item);
+							EncounterLogic.log(encounter, `${target.name} has lost ${item.name}`);
+						}
+					});
+				}
+				break;
+			}
+			case 'createTerrain': {
+				const type = effect.data as EncounterMapSquareType;
+				const targetParameter = parameters.find(p => p.name === 'targets');
+				if (targetParameter) {
+					const squares = targetParameter.value as { x: number, y: number }[];
+					squares.forEach(square => {
+						// TODO: Start at the selected square
+						const blob = EncounterMapLogic.getBlob(encounter.mapSquares);
+						blob.forEach(sq => sq.type = type);
+						EncounterLogic.log(encounter, `${combatant.name} has created an area of ${type.toLowerCase()} terrain`);
+					});
+				}
+				break;
+			}
+			case 'addSquares': {
+				const targetParameter = parameters.find(p => p.name === 'targets');
+				if (targetParameter) {
+					const walls = targetParameter.value as { x: number, y: number }[];
+					walls.forEach(wall => {
+						// TODO: Start at the selected wall
+						// TODO: This will only select existing squares
+						const blob = EncounterMapLogic.getBlob(encounter.mapSquares);
+						blob.forEach(sq => sq.type = EncounterMapSquareType.Obstructed);
+						EncounterLogic.log(encounter, `${combatant.name} has created map squares`);
+					});
+				}
+				break;
+			}
+			case 'removeSquares': {
+				const targetParameter = parameters.find(p => p.name === 'targets');
+				if (targetParameter) {
+					const squares = targetParameter.value as { x: number, y: number }[];
+					squares.forEach(square => {
+						// TODO: Start at the selected square
+						const blob = EncounterMapLogic.getBlob(encounter.mapSquares);
+						encounter.mapSquares = encounter.mapSquares.filter(sq => !blob.includes(sq));
+						EncounterLogic.log(encounter, `${combatant.name} has destroyed map squares`);
 					});
 				}
 				break;

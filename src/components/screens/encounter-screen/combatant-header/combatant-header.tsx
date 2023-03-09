@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import { IconId } from '@tabler/icons-react';
 
+import { CombatantState } from '../../../../enums/combatant-state';
 import { CombatantType } from '../../../../enums/combatant-type';
 
 import { GameLogic } from '../../../../logic/game-logic';
@@ -61,6 +62,21 @@ export class CombatantHeader extends Component<Props> {
 					</div>
 					{charSheetBtn}
 				</div>
+				{
+					this.props.combatant.combat.stunned ?
+						<Text type={TextType.Information}><b>{this.props.combatant.name} is Stunned.</b> They cannot spend movement points or take any actions.</Text>
+						: null
+				}
+				{
+					this.props.combatant.combat.state === CombatantState.Prone ?
+						<Text type={TextType.Information}><b>{this.props.combatant.name} is Prone.</b> Their skill ranks are halved and moving costs are doubled.</Text>
+						: null
+				}
+				{
+					this.props.combatant.combat.hidden > 0 ?
+						<Text type={TextType.Information}><b>{this.props.combatant.name} is Hidden.</b> Their moving costs are doubled.</Text>
+						: null
+				}
 				{tabs}
 			</div>
 		);

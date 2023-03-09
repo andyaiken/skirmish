@@ -44,7 +44,7 @@ export class OptionsPage extends Component<Props, State> {
 			dialog = (
 				<Dialog
 					content={<Deck type={this.state.deck} />}
-					onClickOff={() => this.setDeck(CardType.Default)}
+					onClose={() => this.setDeck(CardType.Default)}
 				/>
 			);
 		}
@@ -161,7 +161,7 @@ class Deck extends Component<DeckProps, DeckState> {
 			dialog = (
 				<Dialog
 					content={content}
-					onClickOff={() => this.setActions('', [])}
+					onClose={() => this.setActions('', [])}
 				/>
 			);
 		}

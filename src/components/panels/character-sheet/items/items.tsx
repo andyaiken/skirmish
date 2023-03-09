@@ -290,7 +290,7 @@ export class Items extends Component<Props, State> {
 				<hr />
 				<Text type={TextType.SubHeading}>Carried ({this.props.hero.carried.length} / 6)</Text>
 				{this.getCarriedItemSection()}
-				{dialogContent ? <Dialog content={dialogContent} onClickOff={() => this.setState({ selectedLocation: ItemLocationType.None })} /> : null}
+				{dialogContent ? <Dialog content={dialogContent} onClose={() => this.setState({ selectedLocation: ItemLocationType.None })} /> : null}
 			</div>
 		);
 	};

@@ -2,7 +2,9 @@ import { ActionTargetType } from '../enums/action-target-type';
 import { ConditionType } from '../enums/condition-type';
 import { DamageCategoryType } from '../enums/damage-category-type';
 import { DamageType } from '../enums/damage-type';
+import { EncounterMapSquareType } from '../enums/encounter-map-square-type';
 import { ItemProficiencyType } from '../enums/item-proficiency-type';
+import { MovementType } from '../enums/movement-type';
 import { SkillCategoryType } from '../enums/skill-category-type';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
@@ -62,7 +64,7 @@ export class RoleData {
 					},
 					{
 						id: 'arcanist-action-3',
-						name: 'Arcane Force (push)',
+						name: 'Arcane Force',
 						prerequisites: [
 							ActionPrerequisites.implement()
 						],
@@ -70,7 +72,7 @@ export class RoleData {
 							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
 						],
 						effects: [
-							// TODO: Move selected target away
+							ActionEffects.forceMovement(MovementType.Push, 3)
 						]
 					},
 					{
@@ -97,7 +99,7 @@ export class RoleData {
 							ActionTargetParameters.burst(ActionTargetType.Combatants, 1, 5)
 						],
 						effects: [
-							// TODO: Swap position with selected target
+							ActionEffects.forceMovement(MovementType.Swap, 0)
 						]
 					}
 				]
@@ -186,7 +188,7 @@ export class RoleData {
 								skillBonus: 0,
 								hit: [
 									ActionEffects.dealWeaponDamage(),
-									ActionEffects.loseTurn()
+									ActionEffects.stun()
 								]
 							})
 						]
@@ -224,7 +226,7 @@ export class RoleData {
 							ActionTargetParameters.weapon(ActionTargetType.Walls, Number.MAX_VALUE, 0)
 						],
 						effects: [
-							// TODO: Destroy selected walls
+							ActionEffects.addSquares()
 						]
 					}
 				]
@@ -333,7 +335,7 @@ export class RoleData {
 							ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 2)
 						],
 						effects: [
-							// TODO: Move adjacent to selected target
+							ActionEffects.forceMovement(MovementType.ToTarget, 1),
 							ActionEffects.attack({
 								weapon: true,
 								skill: SkillType.Weapon,
@@ -388,7 +390,7 @@ export class RoleData {
 							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 10)
 						],
 						effects: [
-							// TODO: Target makes attack
+							ActionEffects.commandAction()
 						]
 					},
 					{
@@ -401,7 +403,7 @@ export class RoleData {
 							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 10)
 						],
 						effects: [
-							ActionEffects.loseTurn()
+							ActionEffects.stun()
 						]
 					},
 					{
@@ -474,7 +476,7 @@ export class RoleData {
 							ActionTargetParameters.burst(ActionTargetType.Squares, 1, 10)
 						],
 						effects: [
-							// TODO: Create a blob of difficult terrain
+							ActionEffects.createTerrain(EncounterMapSquareType.Obstructed)
 						]
 					},
 					{
@@ -487,7 +489,7 @@ export class RoleData {
 							ActionTargetParameters.burst(ActionTargetType.Squares, 1, 10)
 						],
 						effects: [
-							// TODO: Create a blob of clear terrain
+							ActionEffects.createTerrain(EncounterMapSquareType.Clear)
 						]
 					},
 					{
@@ -500,7 +502,7 @@ export class RoleData {
 							ActionTargetParameters.burst(ActionTargetType.Squares, 1, 10)
 						],
 						effects: [
-							// TODO: Destroy a blob of floor squares
+							ActionEffects.removeSquares()
 						]
 					},
 					{
@@ -510,10 +512,10 @@ export class RoleData {
 							ActionPrerequisites.implement()
 						],
 						parameters: [
-							ActionTargetParameters.burst(ActionTargetType.Squares, 1, 10)
+							ActionTargetParameters.burst(ActionTargetType.Walls, 1, 10)
 						],
 						effects: [
-							// TODO: Create a blob of floor squares
+							ActionEffects.addSquares()
 						]
 					},
 					{
@@ -576,7 +578,7 @@ export class RoleData {
 							ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 10)
 						],
 						effects: [
-							// TODO: Selected target moves to a different empty square
+							ActionEffects.forceMovement(MovementType.Random, 3)
 						]
 					},
 					{
@@ -587,7 +589,7 @@ export class RoleData {
 							ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 10)
 						],
 						effects: [
-							// TODO: Selected target's conditions invert
+							ActionEffects.invertConditions(true)
 						]
 					}
 				]
@@ -693,7 +695,7 @@ export class RoleData {
 							ActionTargetParameters.self()
 						],
 						effects: [
-							ActionEffects.grantMovement()
+							ActionEffects.addMovement()
 						]
 					},
 					{
@@ -922,7 +924,7 @@ export class RoleData {
 								skillBonus: 0,
 								hit: [
 									ActionEffects.dealWeaponDamage(),
-									ActionEffects.loseTurn(),
+									ActionEffects.stun(),
 									ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Endurance, 5, TraitType.Speed))
 								]
 							})
@@ -982,7 +984,7 @@ export class RoleData {
 							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
 						],
 						effects: [
-							// TODO: Heal damage from self
+							ActionEffects.healDamageSelf(3),
 							ActionEffects.dealDamage(DamageType.Decay, 3)
 						]
 					},
@@ -996,7 +998,7 @@ export class RoleData {
 							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
 						],
 						effects: [
-							// TODO: Heal wound from self
+							ActionEffects.healWoundsSelf(1),
 							ActionEffects.inflictWounds(1)
 						]
 					},
@@ -1076,7 +1078,7 @@ export class RoleData {
 							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
 						],
 						effects: [
-							// TODO: Move adjacent to selected target
+							ActionEffects.forceMovement(MovementType.ToTarget, 1),
 							ActionEffects.attack({
 								weapon: true,
 								skill: SkillType.Weapon,
@@ -1127,7 +1129,7 @@ export class RoleData {
 								trait: TraitType.Speed,
 								skillBonus: 0,
 								hit: [
-									// TODO: Remove selected target's weapon
+									ActionEffects.disarm()
 								]
 							})
 						]
@@ -1145,7 +1147,7 @@ export class RoleData {
 					},
 					{
 						id: 'soldier-action-5',
-						name: 'Shield bash (push)',
+						name: 'Shield bash',
 						prerequisites: [
 							ActionPrerequisites.shield()
 						],
@@ -1159,8 +1161,8 @@ export class RoleData {
 								trait: TraitType.Speed,
 								skillBonus: 0,
 								hit: [
-									ActionEffects.dealDamage(DamageType.Impact, 3)
-									// TODO: Push selected target away
+									ActionEffects.dealDamage(DamageType.Impact, 3),
+									ActionEffects.forceMovement(MovementType.Push, 1)
 								]
 							})
 						]
@@ -1206,7 +1208,7 @@ export class RoleData {
 								skillBonus: 0,
 								hit: [
 									ActionEffects.dealDamage(DamageType.Electricity, 3),
-									ActionEffects.loseTurn()
+									ActionEffects.stun()
 								]
 							})
 						]
@@ -1356,7 +1358,7 @@ export class RoleData {
 								skillBonus: 0,
 								hit: [
 									ActionEffects.dealDamage(DamageType.Electricity, 3),
-									ActionEffects.loseTurn()
+									ActionEffects.stun()
 								]
 							})
 						]
@@ -1391,8 +1393,8 @@ export class RoleData {
 								trait: TraitType.Speed,
 								skillBonus: 0,
 								hit: [
-									ActionEffects.dealWeaponDamage()
-									// TODO: move selected target adjacent to me
+									ActionEffects.dealWeaponDamage(),
+									ActionEffects.forceMovement(MovementType.Pull, 3)
 								]
 							})
 						]

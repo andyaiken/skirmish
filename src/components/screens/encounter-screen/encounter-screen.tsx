@@ -39,6 +39,7 @@ interface Props {
 	standUp: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	scan: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	hide: (encounter: EncounterModel, combatant: CombatantModel) => void;
+	drawActions: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	selectAction: (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => void;
 	setActionParameterValue: (parameter: ActionParameterModel, value: unknown) => void;
 	runAction: (encounter: EncounterModel, combatant: CombatantModel) => void;
@@ -584,7 +585,7 @@ export class EncounterScreen extends Component<Props, State> {
 			return (
 				<div className='encounter-right-panel'>
 					<div className='panel-header'>
-						<Text type={TextType.SubHeading}>Round {this.props.encounter.round + 1}</Text>
+						<Text type={TextType.Heading}>Round {this.props.encounter.round + 1}</Text>
 					</div>
 					<div className='panel-content'>
 						<button onClick={() => this.props.rollInitiative(this.props.encounter)}>Roll Initiative</button>
@@ -595,59 +596,61 @@ export class EncounterScreen extends Component<Props, State> {
 
 		let content = null;
 
-		if (currentCombatant.type === CombatantType.Monster) {
-			content = (
-				<CombatantMonster
-					combatant={currentCombatant}
-					encounter={this.props.encounter}
-					developer={this.props.developer}
-					showCharacterSheet={this.showDetailsCombatant}
-					kill={this.props.kill}
-				/>
-			);
-		} else {
-			switch (this.state.rightID) {
-				case 'overview':
-					content = (
-						<CombatantOverview
-							combatant={currentCombatant}
-							encounter={this.props.encounter}
-							developer={this.props.developer}
-							standUp={this.props.standUp}
-							scan={this.props.scan}
-							hide={this.props.hide}
-						/>
-					);
-					break;
-				case 'move':
-					content = (
-						<CombatantMove
-							combatant={currentCombatant}
-							encounter={this.props.encounter}
-							developer={this.props.developer}
-							move={this.props.move}
-							addMovement={this.props.addMovement}
-							pickUpItem={this.props.pickUpItem}
-						/>
-					);
-					break;
-				case 'action':
-					content = (
-						<CombatantAction
-							combatant={currentCombatant}
-							encounter={this.props.encounter}
-							currentActionParameter={this.state.currentActionParameter}
-							developer={this.props.developer}
-							selectAction={this.selectAction}
-							setActionParameter={this.setActionParameter}
-							setActionParameterValue={this.props.setActionParameterValue}
-							runAction={this.runAction}
-						/>
-					);
-					break;
+		if (!currentCombatant.combat.stunned) {
+			if (currentCombatant.type === CombatantType.Monster) {
+				content = (
+					<CombatantMonster
+						combatant={currentCombatant}
+						encounter={this.props.encounter}
+						developer={this.props.developer}
+						showCharacterSheet={this.showDetailsCombatant}
+						kill={this.props.kill}
+					/>
+				);
+			} else {
+				switch (this.state.rightID) {
+					case 'overview':
+						content = (
+							<CombatantOverview
+								combatant={currentCombatant}
+								encounter={this.props.encounter}
+								developer={this.props.developer}
+								standUp={this.props.standUp}
+								scan={this.props.scan}
+								hide={this.props.hide}
+							/>
+						);
+						break;
+					case 'move':
+						content = (
+							<CombatantMove
+								combatant={currentCombatant}
+								encounter={this.props.encounter}
+								developer={this.props.developer}
+								move={this.props.move}
+								addMovement={this.props.addMovement}
+								pickUpItem={this.props.pickUpItem}
+							/>
+						);
+						break;
+					case 'action':
+						content = (
+							<CombatantAction
+								combatant={currentCombatant}
+								encounter={this.props.encounter}
+								currentActionParameter={this.state.currentActionParameter}
+								developer={this.props.developer}
+								drawActions={this.props.drawActions}
+								selectAction={this.selectAction}
+								setActionParameter={this.setActionParameter}
+								setActionParameterValue={this.props.setActionParameterValue}
+								runAction={this.runAction}
+							/>
+						);
+						break;
+				}
 			}
 		}
-
 
 		return (
 			<div className='encounter-right-panel'>
@@ -691,7 +694,7 @@ export class EncounterScreen extends Component<Props, State> {
 							levelUp={() => null}
 						/>
 					}
-					onClickOff={() => this.clearDetails()}
+					onClose={() => this.clearDetails()}
 				/>
 			);
 		}
@@ -704,7 +707,7 @@ export class EncounterScreen extends Component<Props, State> {
 							<CardList cards={this.state.detailsLoot.items.map(i => <PlayingCard key={i.id} type={CardType.Item} front={<ItemCard item={i} />} />)} />
 						</div>
 					}
-					onClickOff={() => this.clearDetails()}
+					onClose={() => this.clearDetails()}
 				/>
 			);
 		}

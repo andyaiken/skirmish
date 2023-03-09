@@ -154,11 +154,6 @@ export class HeroesPage extends Component<Props, State> {
 								}}
 							/>
 						)}
-						onClickOff={() => {
-							this.setState({
-								selectedHero: null
-							});
-						}}
 					/>
 				);
 			} else {
@@ -175,7 +170,7 @@ export class HeroesPage extends Component<Props, State> {
 								levelUp={this.props.levelUp}
 							/>
 						)}
-						onClickOff={() => {
+						onClose={this.state.selectedHero.xp >= this.state.selectedHero.level ? null : () => {
 							this.setState({
 								selectedHero: null
 							});
@@ -213,7 +208,7 @@ export class HeroesPage extends Component<Props, State> {
 							<CardList cards={heroCards} />
 						</div>
 					)}
-					onClickOff={() => {
+					onClose={() => {
 						this.setState({
 							selectedBoon: null
 						});

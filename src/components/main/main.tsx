@@ -384,6 +384,14 @@ export class Main extends Component<Props, State> {
 		});
 	};
 
+	drawActions = (encounter: EncounterModel, combatant: CombatantModel) => {
+		EncounterLogic.drawActions(encounter, combatant);
+
+		this.setState({
+			game: this.state.game
+		});
+	};
+
 	selectAction = (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => {
 		EncounterLogic.selectAction(encounter, combatant, action);
 
@@ -657,6 +665,7 @@ export class Main extends Component<Props, State> {
 						standUp={this.standUp}
 						scan={this.scan}
 						hide={this.hide}
+						drawActions={this.drawActions}
 						selectAction={this.selectAction}
 						setActionParameterValue={this.setActionParameterValue}
 						runAction={this.runAction}

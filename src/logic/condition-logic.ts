@@ -157,6 +157,31 @@ export class ConditionLogic {
 
 		return '';
 	};
+	static getOppositeType = (type: ConditionType) => {
+		const pairs: { a: ConditionType, b: ConditionType }[] = [
+			{ a: ConditionType.AutoHeal, b: ConditionType.AutoDamage },
+			{ a: ConditionType.TraitBonus, b: ConditionType.TraitPenalty },
+			{ a: ConditionType.SkillBonus, b: ConditionType.SkillPenalty },
+			{ a: ConditionType.SkillCategoryBonus, b: ConditionType.SkillCategoryPenalty },
+			{ a: ConditionType.DamageBonus, b: ConditionType.DamagePenalty },
+			{ a: ConditionType.DamageCategoryBonus, b: ConditionType.DamageCategoryPenalty },
+			{ a: ConditionType.DamageResistance, b: ConditionType.DamageVulnerability },
+			{ a: ConditionType.DamageCategoryResistance, b: ConditionType.DamageCategoryVulnerability },
+			{ a: ConditionType.MovementBonus, b: ConditionType.MovementPenalty }
+		];
+
+		let opposite = type;
+		pairs.forEach(pair => {
+			if (type === pair.a) {
+				opposite = pair.b;
+			}
+			if (type === pair.b) {
+				opposite = pair.a;
+			}
+		});
+
+		return opposite;
+	};
 
 	static getConditionIsBeneficial = (condition: ConditionModel) => {
 		switch (condition.type) {

@@ -24,14 +24,21 @@ import { Utils } from '../utils/utils';
 import { MagicItemGenerator } from './magic-item-generator';
 
 export class GameLogic {
-	static getRandomAction = () => {
+	static getAllActions = () => {
 		const actions: ActionModel[] = [];
 
 		SpeciesData.getList().forEach(s => actions.push(...s.actions));
 		RoleData.getList().forEach(r => actions.push(...r.actions));
 		BackgroundData.getList().forEach(b => actions.push(...b.actions));
 
-		const copy = JSON.parse(JSON.stringify(Collections.draw(actions))) as ActionModel;
+		return actions;
+	};
+
+	static getRandomAction = () => {
+		const actions = GameLogic.getAllActions();
+		const action = Collections.draw(actions);
+
+		const copy = JSON.parse(JSON.stringify(action)) as ActionModel;
 		copy.id = Utils.guid();
 
 		return copy;

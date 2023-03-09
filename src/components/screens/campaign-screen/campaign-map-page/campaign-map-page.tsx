@@ -58,6 +58,14 @@ export class CampaignMapPage extends Component<Props, State> {
 		this.props.startEncounter(this.state.selectedRegion as RegionModel, this.state.selectedHeroes);
 	};
 
+	conquer = (region: RegionModel) => {
+		this.setState({
+			selectedRegion: null
+		}, () => {
+			this.props.conquer(region);
+		});
+	};
+
 	getDialog = () => {
 		if (this.state.showHeroSelection) {
 			const canAdd = this.state.selectedHeroes.length < 5;
@@ -130,7 +138,7 @@ export class CampaignMapPage extends Component<Props, State> {
 							</div>
 						</div>
 					)}
-					onClickOff={() => {
+					onClose={() => {
 						this.setState({
 							showHeroSelection: false
 						});
@@ -164,7 +172,7 @@ export class CampaignMapPage extends Component<Props, State> {
 					{canAttack ? null : <Text type={TextType.Information}>You can&apos;t attack {this.state.selectedRegion.name} because it&apos;s not on the coast or adjacent to your land.</Text>}
 					{heroesExist ? null : <Text type={TextType.Information}>You can&apos;t attack {this.state.selectedRegion.name} because you don&apos;t have any heroes.</Text>}
 					{canAttack && heroesExist ? <button onClick={() => this.setState({ showHeroSelection: true })}>Start an encounter here</button> : null}
-					{this.props.developer ? <button className='developer' onClick={() => this.props.conquer(this.state.selectedRegion as RegionModel)}>Conquer</button> : null}
+					{this.props.developer ? <button className='developer' onClick={() => this.conquer(this.state.selectedRegion as RegionModel)}>Conquer</button> : null}
 				</div>
 			);
 		} else {

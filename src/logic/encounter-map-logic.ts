@@ -50,7 +50,7 @@ export class EncounterMapLogic {
 		}
 
 		while (Random.randomNumber(3, rng) !== 0) {
-			// Add a blob of blocked terrain
+			// Add a blob of solid rock
 			const blob = EncounterMapLogic.getBlob(map, rng);
 			map = map.filter(sq => !blob.includes(sq));
 		}
@@ -64,7 +64,7 @@ export class EncounterMapLogic {
 		return map;
 	};
 
-	static getBlob = (map: EncounterMapSquareModel[], rng: () => number) => {
+	static getBlob = (map: EncounterMapSquareModel[], rng: () => number = Math.random) => {
 		const blob: EncounterMapSquareModel[] = [];
 		while ((blob.length < 5) || (Random.randomNumber(10, rng) !== 0)) {
 			const candidates = ((blob.length === 0) ? map : EncounterMapLogic.getAdjacentSquares(map, blob, [ 'n', 'e', 's', 'w' ])).filter(c => c.type === EncounterMapSquareType.Clear);

@@ -26,6 +26,7 @@ export interface CombatantModel {
 	combat: {
 		current: boolean;
 		state: CombatantState;
+		stunned: boolean;
 		position: {
 			x: number;
 			y: number;

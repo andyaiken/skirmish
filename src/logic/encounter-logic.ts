@@ -24,12 +24,16 @@ import { Factory } from './factory';
 import { ItemModel } from '../models/item';
 
 export class EncounterLogic {
-	static getCombatantSquares = (encounter: EncounterModel, combatant: CombatantModel) => {
+	static getCombatantSquares = (encounter: EncounterModel, combatant: CombatantModel, position: { x: number, y: number } | null = null) => {
 		const squares = [];
 
-		const left = combatant.combat.position.x;
+		if (!position) {
+			position = combatant.combat.position;
+		}
+
+		const left = position.x;
 		const right = left + combatant.size - 1;
-		const top = combatant.combat.position.y;
+		const top = position.y;
 		const bottom = top + combatant.size - 1;
 
 		for (let x = left; x <= right; ++x) {
@@ -148,6 +152,10 @@ export class EncounterLogic {
 			EncounterLogic.log(encounter, `${combatant.name} is currently affected by ${ConditionLogic.getConditionDescription(condition)}, rank ${condition.rank}`);
 		});
 
+		if (combatant.combat.stunned) {
+			EncounterLogic.log(encounter, `${combatant.name} is stunned`);
+		}
+
 		conditions
 			.filter(condition => condition.type === ConditionType.AutoHeal)
 			.forEach(condition => {
@@ -182,8 +190,7 @@ export class EncounterLogic {
 						combatant.combat.movement = Math.max(0, combatant.combat.movement - condition.rank);
 					});
 
-				const deck = CombatantLogic.getActionDeck(combatant);
-				combatant.combat.actions = Collections.shuffle(deck).splice(0, 3);
+				EncounterLogic.drawActions(encounter, combatant);
 				break;
 			}
 			case CombatantState.Unconscious:
@@ -202,12 +209,16 @@ export class EncounterLogic {
 	};
 
 	static endOfTurn = (encounter: EncounterModel, combatant: CombatantModel) => {
-		combatant.combat.current = false;
+		encounter.combatants.forEach(c => {
+			c.combat.current = false;
+			c.combat.senses = 0;
+			c.combat.movement = 0;
+			c.combat.trail = [];
+			c.combat.actions = [];
+		});
+
+		combatant.combat.stunned = false;
 		combatant.combat.initiative = Number.MIN_VALUE;
-		combatant.combat.senses = 0;
-		combatant.combat.movement = 0;
-		combatant.combat.trail = [];
-		combatant.combat.actions = [];
 
 		combatant.combat.conditions.forEach(condition => {
 			if (ConditionLogic.getConditionIsBeneficial(condition)) {
@@ -228,6 +239,11 @@ export class EncounterLogic {
 		EncounterLogic.log(encounter, `End of turn for ${combatant.name}`);
 	};
 
+	static drawActions = (encounter: EncounterModel, combatant: CombatantModel) => {
+		const deck = CombatantLogic.getActionDeck(combatant);
+		combatant.combat.actions = Collections.shuffle(deck).splice(0, 3);
+	};
+
 	static selectAction = (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => {
 		combatant.combat.actions = [ action ];
 		EncounterLogic.checkActionParameters(encounter, combatant);
@@ -238,7 +254,10 @@ export class EncounterLogic {
 			const action = combatant.combat.actions[0];
 			EncounterLogic.log(encounter, `${combatant.name} uses ${action.name}`);
 			action.effects.forEach(effect => ActionEffects.run(effect, encounter, combatant, action.parameters));
-			combatant.combat.actions = [];
+
+			if (combatant.combat.actions.length === 1) {
+				combatant.combat.actions = [];
+			}
 		}
 	};
 
@@ -340,6 +359,24 @@ export class EncounterLogic {
 		}
 
 		return cost;
+	};
+
+	static getPossibleMoveSquares = (encounter: EncounterModel, combatant: CombatantModel) => {
+		const squares = [
+			{ dir: 'n', x: combatant.combat.position.x, y: combatant.combat.position.y - 1 },
+			{ dir: 'ne', x: combatant.combat.position.x + 1, y: combatant.combat.position.y - 1 },
+			{ dir: 'e', x: combatant.combat.position.x + 1, y: combatant.combat.position.y },
+			{ dir: 'se', x: combatant.combat.position.x + 1, y: combatant.combat.position.y + 1 },
+			{ dir: 's', x: combatant.combat.position.x, y: combatant.combat.position.y + 1 },
+			{ dir: 'sw', x: combatant.combat.position.x - 1, y: combatant.combat.position.y + 1 },
+			{ dir: 'w', x: combatant.combat.position.x - 1, y: combatant.combat.position.y },
+			{ dir: 'nw', x: combatant.combat.position.x - 1, y: combatant.combat.position.y - 1 }
+		];
+
+		return squares.filter(square => {
+			const cost = EncounterLogic.getMoveCost(encounter, combatant, square.dir);
+			return cost !== Number.MAX_VALUE;
+		});
 	};
 
 	///////////////////////////////////////////////////////////////////////////

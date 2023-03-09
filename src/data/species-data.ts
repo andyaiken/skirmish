@@ -3,6 +3,7 @@ import { CombatantType } from '../enums/combatant-type';
 import { ConditionType } from '../enums/condition-type';
 import { DamageCategoryType } from '../enums/damage-category-type';
 import { DamageType } from '../enums/damage-type';
+import { MovementType } from '../enums/movement-type';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
 
@@ -46,7 +47,7 @@ export class SpeciesData {
 						prerequisites: [],
 						parameters: [],
 						effects: [
-							// TODO: Draw action cards again
+							ActionEffects.redrawActions()
 						]
 					}
 				]
@@ -117,18 +118,7 @@ export class SpeciesData {
 				actions: [
 					{
 						id: 'deva-action-1',
-						name: 'Insight',
-						prerequisites: [],
-						parameters: [
-							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
-						],
-						effects: [
-							// TODO: See opponent stats
-						]
-					},
-					{
-						id: 'deva-action-2',
-						name: 'Divine light',
+						name: 'Divine Radiance',
 						prerequisites: [],
 						parameters: [
 							ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 5)
@@ -140,7 +130,26 @@ export class SpeciesData {
 								trait: TraitType.Resolve,
 								skillBonus: 0,
 								hit: [
-									ActionEffects.loseTurn()
+									ActionEffects.stun()
+								]
+							})
+						]
+					},
+					{
+						id: 'deva-action-2',
+						name: 'Divine Light',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 5)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Spellcasting,
+								trait: TraitType.Resolve,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Light, 2)
 								]
 							})
 						]
@@ -213,7 +222,7 @@ export class SpeciesData {
 							ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 10)
 						],
 						effects: [
-							// TODO: Reveal hidden
+							ActionEffects.reveal()
 						]
 					}
 				]
@@ -294,7 +303,7 @@ export class SpeciesData {
 							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
 						],
 						effects: [
-							// TODO: Move up to selected target
+							ActionEffects.forceMovement(MovementType.ToTarget, 1),
 							ActionEffects.attack({
 								weapon: false,
 								skill: SkillType.Brawl,
@@ -311,10 +320,10 @@ export class SpeciesData {
 						name: 'Bellow',
 						prerequisites: [],
 						parameters: [
-							ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 5)
+							ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 5)
 						],
 						effects: [
-							// TODO: Intimidate
+							ActionEffects.dealDamage(DamageType.Sonic, 1)
 						]
 					}
 				]
@@ -341,7 +350,7 @@ export class SpeciesData {
 							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
 						],
 						effects: [
-							// TODO: Target makes attack
+							ActionEffects.commandAction()
 						]
 					},
 					{
@@ -352,7 +361,7 @@ export class SpeciesData {
 							ActionTargetParameters.burst(ActionTargetType.Squares, 1, 10)
 						],
 						effects: [
-							// TODO: Move to selected square
+							ActionEffects.moveToTargetSquare()
 						]
 					}
 				]
@@ -394,17 +403,6 @@ export class SpeciesData {
 					},
 					{
 						id: 'reptilian-action-2',
-						name: 'Snarl',
-						prerequisites: [],
-						parameters: [
-							ActionTargetParameters.adjacent(ActionTargetType.Enemies, Number.MAX_VALUE)
-						],
-						effects: [
-							// TODO: Intimidate
-						]
-					},
-					{
-						id: 'reptilian-action-3',
 						name: 'Regeneration',
 						prerequisites: [
 							ActionPrerequisites.damage()
@@ -444,22 +442,11 @@ export class SpeciesData {
 							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
 						],
 						effects: [
-							// TODO: Transfer a condition to the selected target
+							ActionEffects.transferCondition()
 						]
 					},
 					{
 						id: 'shadowborn-action-2',
-						name: 'Induce fear',
-						prerequisites: [],
-						parameters: [
-							ActionTargetParameters.adjacent(ActionTargetType.Enemies, Number.MAX_VALUE)
-						],
-						effects: [
-							// TODO: Intimidate
-						]
-					},
-					{
-						id: 'shadowborn-action-3',
 						name: 'Drain energy',
 						prerequisites: [],
 						parameters: [

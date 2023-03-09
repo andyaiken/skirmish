@@ -37,6 +37,7 @@ export class Factory {
 			combat: {
 				current: false,
 				state: CombatantState.Standing,
+				stunned: false,
 				position: {
 					x: 0,
 					y: 0

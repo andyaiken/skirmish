@@ -34,13 +34,12 @@ export class ItemsPage extends Component<Props, State> {
 		};
 	}
 
-	setShowMarket = (show: boolean) => {
-		const items = [];
-		if (show) {
-			items.push(MagicItemGenerator.generateMagicItem());
-			items.push(MagicItemGenerator.generateMagicItem());
-			items.push(MagicItemGenerator.generateMagicItem());
-		}
+	showMarket = () => {
+		const items = [
+			MagicItemGenerator.generateMagicItem(),
+			MagicItemGenerator.generateMagicItem(),
+			MagicItemGenerator.generateMagicItem()
+		];
 
 		this.setState({
 			magicItems: items
@@ -124,7 +123,7 @@ export class ItemsPage extends Component<Props, State> {
 		const moneySection = (
 			<div>
 				<StatValue orientation='vertical' label='Money' value={<IconValue type={IconType.Money} value={this.props.game.money} />} />
-				<button disabled={this.props.game.money < 100} onClick={() => this.setShowMarket(true)}>
+				<button disabled={this.props.game.money < 100} onClick={() => this.showMarket()}>
 					Buy a magic item<br/><IconValue type={IconType.Money} value={100} iconSize={12} />
 				</button>
 				{this.props.developer ? <button className='developer' onClick={() => this.props.addMoney()}>Add money</button> : null}
@@ -152,7 +151,6 @@ export class ItemsPage extends Component<Props, State> {
 							</div>
 						</div>
 					)}
-					onClickOff={() => this.setShowMarket(false)}
 				/>
 			);
 		}

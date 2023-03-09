@@ -3,6 +3,7 @@ import { ConditionType } from '../enums/condition-type';
 import { DamageCategoryType } from '../enums/damage-category-type';
 import { DamageType } from '../enums/damage-type';
 import { ItemProficiencyType } from '../enums/item-proficiency-type';
+import { MovementType } from '../enums/movement-type';
 import { SkillCategoryType } from '../enums/skill-category-type';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
@@ -16,70 +17,6 @@ import type { BackgroundModel } from '../models/background';
 export class BackgroundData {
 	static getList = (): BackgroundModel[] => {
 		return [
-			{
-				id: 'background-acrobat',
-				name: 'Acrobat',
-				features: [
-					FeatureLogic.createTraitFeature('acrobat-feature-1', TraitType.Speed, 1)
-				],
-				actions: [
-					{
-						id: 'acrobat-action-1',
-						name: 'Move through occupied spaces',
-						prerequisites: [],
-						parameters: [
-							ActionTargetParameters.self()
-						],
-						effects: [
-							// TODO: Move through occupied spaces
-						]
-					},
-					{
-						id: 'acrobat-action-2',
-						name: 'Burst of Speed',
-						prerequisites: [],
-						parameters: [
-							ActionTargetParameters.self()
-						],
-						effects: [
-							ActionEffects.grantMovement()
-						]
-					}
-				]
-			},
-			{
-				id: 'background-artificer',
-				name: 'Artificer',
-				features: [
-					FeatureLogic.createSkillFeature('artificer-feature-1', SkillType.Perception, 2),
-					FeatureLogic.createProficiencyFeature('artificer-feature-2', ItemProficiencyType.Any)
-				],
-				actions: [
-					{
-						id: 'artificer-action-1',
-						name: 'Infuse item',
-						prerequisites: [],
-						parameters: [
-							ActionTargetParameters.adjacent(ActionTargetType.Allies, 1)
-						],
-						effects: [
-							// TODO: Infuse item with magic
-						]
-					},
-					{
-						id: 'artificer-action-2',
-						name: 'Drain item',
-						prerequisites: [],
-						parameters: [
-							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
-						],
-						effects: [
-							// TODO: Drain item of magic
-						]
-					}
-					// TODO: Convert loot pile to energy?
-				]
-			},
 			{
 				id: 'background-bard',
 				name: 'Bard',
@@ -140,7 +77,7 @@ export class BackgroundData {
 							ActionTargetParameters.burst(ActionTargetType.Allies, 1, 10)
 						],
 						effects: [
-							// TODO: Selected target makes attack
+							ActionEffects.commandAction()
 						]
 					},
 					{
@@ -151,7 +88,7 @@ export class BackgroundData {
 							ActionTargetParameters.burst(ActionTargetType.Allies, 1, 10)
 						],
 						effects: [
-							// TODO: Selected target moves
+							ActionEffects.commandMove()
 						]
 					},
 					{
@@ -162,7 +99,7 @@ export class BackgroundData {
 							ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 10)
 						],
 						effects: [
-							// TODO: Reveal hidden enemies
+							ActionEffects.reveal()
 						]
 					}
 				]
@@ -220,7 +157,7 @@ export class BackgroundData {
 							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
 						],
 						effects: [
-							// TODO: Selected target makes attack
+							ActionEffects.commandAction()
 						]
 					},
 					{
@@ -233,12 +170,12 @@ export class BackgroundData {
 							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
 						],
 						effects: [
-							ActionEffects.loseTurn()
+							ActionEffects.stun()
 						]
 					},
 					{
 						id: 'mystic-action-3',
-						name: 'Transfer a condition',
+						name: 'Sympathetic Affliction',
 						prerequisites: [
 							ActionPrerequisites.implement(),
 							ActionPrerequisites.condition(TraitType.Any)
@@ -247,12 +184,12 @@ export class BackgroundData {
 							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
 						],
 						effects: [
-							// TODO: Transfer selected condition to selected target
+							ActionEffects.transferCondition()
 						]
 					},
 					{
 						id: 'mystic-action-4',
-						name: 'Invert a condition',
+						name: 'Eldritch Reversal',
 						prerequisites: [
 							ActionPrerequisites.implement()
 						],
@@ -260,7 +197,7 @@ export class BackgroundData {
 							ActionTargetParameters.burst(ActionTargetType.Combatants, 1, 5)
 						],
 						effects: [
-							// TODO: Invert selected condition
+							ActionEffects.invertConditions(false)
 						]
 					}
 				]
@@ -283,7 +220,7 @@ export class BackgroundData {
 							ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 5)
 						],
 						effects: [
-							// TODO: Add buff condition
+							ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Resolve, 2, SkillType.All))
 						]
 					},
 					{
@@ -294,7 +231,7 @@ export class BackgroundData {
 							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
 						],
 						effects: [
-							// TODO: Add debuff condition
+							ActionEffects.addCondition(ConditionLogic.createSkillPenaltyCondition(TraitType.Resolve, 2, SkillType.All))
 						]
 					},
 					{
@@ -311,7 +248,7 @@ export class BackgroundData {
 								trait: TraitType.Resolve,
 								skillBonus: 0,
 								hit: [
-									ActionEffects.loseTurn()
+									ActionEffects.stun()
 								]
 							})
 						]
@@ -422,13 +359,13 @@ export class BackgroundData {
 				actions: [
 					{
 						id: 'sentinel-action-1',
-						name: 'Mark enemy',
+						name: 'Mark Enemy',
 						prerequisites: [],
 						parameters: [
 							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
 						],
 						effects: [
-							// TODO: Mark selected target
+							ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Speed, 10))
 						]
 					},
 					{
@@ -451,7 +388,7 @@ export class BackgroundData {
 							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
 						],
 						effects: [
-							// TODO: Move selected target adjacent
+							ActionEffects.forceMovement(MovementType.Pull, 3)
 						]
 					}
 				]
@@ -461,7 +398,8 @@ export class BackgroundData {
 				name: 'Thief',
 				features: [
 					FeatureLogic.createSkillFeature('thief-feature-1', SkillType.Reactions, 2),
-					FeatureLogic.createSkillFeature('thief-feature-2', SkillType.Stealth, 2)
+					FeatureLogic.createSkillFeature('thief-feature-2', SkillType.Stealth, 2),
+					FeatureLogic.createTraitFeature('thief-feature-3', TraitType.Speed, 1)
 				],
 				actions: [
 					{
@@ -474,7 +412,18 @@ export class BackgroundData {
 							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
 						],
 						effects: [
-							// TODO: Take item from selected target
+							ActionEffects.steal()
+						]
+					},
+					{
+						id: 'thief-action-2',
+						name: 'Burst of Speed',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.self()
+						],
+						effects: [
+							ActionEffects.addMovement()
 						]
 					}
 				]

@@ -738,16 +738,7 @@ export class EncounterLogic {
 	};
 
 	static findWalls = (encounter: EncounterModel, originSquares: { x: number, y: number }[], radius: number) => {
-		const walls = ([] as { x: number, y: number }[])
-			.concat(EncounterMapLogic.getEdges(encounter.mapSquares, 'n'))
-			.concat(EncounterMapLogic.getEdges(encounter.mapSquares, 'ne'))
-			.concat(EncounterMapLogic.getEdges(encounter.mapSquares, 'e'))
-			.concat(EncounterMapLogic.getEdges(encounter.mapSquares, 'se'))
-			.concat(EncounterMapLogic.getEdges(encounter.mapSquares, 's'))
-			.concat(EncounterMapLogic.getEdges(encounter.mapSquares, 'sw'))
-			.concat(EncounterMapLogic.getEdges(encounter.mapSquares, 'w'))
-			.concat(EncounterMapLogic.getEdges(encounter.mapSquares, 'nw'));
-		return walls.filter(wall => {
+		return EncounterMapLogic.getAdjacentWalls(encounter.mapSquares, encounter.mapSquares).filter(wall => {
 			const distance = EncounterMapLogic.getDistanceAny(originSquares, [ wall ]);
 			return (distance <= radius);
 		});

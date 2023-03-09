@@ -190,7 +190,7 @@ export class EncounterScreen extends Component<Props, State> {
 
 			if (usesSquares) {
 				let squares = this.state.selectedSquares;
-				if (squares.includes(square)) {
+				if (squares.find(s => (s.x === square.x) && (s.y === square.y))) {
 					squares = squares.filter(sq => !((sq.x === square.x) && (sq.y === square.y)));
 				} else {
 					if (squares.length < count) {
@@ -333,7 +333,8 @@ export class EncounterScreen extends Component<Props, State> {
 			currentActionParameter: null,
 			selectableCombatantIDs: [],
 			selectableLootIDs: [],
-			selectableSquares: []
+			selectableSquares: [],
+			selectedSquares: []
 		}, () => {
 			this.props.runAction(encounter, combatant);
 		});

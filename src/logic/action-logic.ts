@@ -18,10 +18,10 @@ import type {
 	ActionTargetParameterModel,
 	ActionWeaponParameterModel
 } from '../models/action';
+import type { EncounterMapSquareModel, EncounterModel } from '../models/encounter';
 import type { ItemModel, WeaponModel } from '../models/item';
 import type { CombatantModel } from '../models/combatant';
 import type { ConditionModel } from '../models/condition';
-import type { EncounterModel } from '../models/encounter';
 
 import { Collections } from '../utils/collections';
 import { Random } from '../utils/random';
@@ -986,8 +986,7 @@ export class ActionEffects {
 				if (targetParameter) {
 					const squares = targetParameter.value as { x: number, y: number }[];
 					squares.forEach(square => {
-						// TODO: Start at the selected square
-						const blob = EncounterMapLogic.getBlob(encounter.mapSquares);
+						const blob = EncounterMapLogic.getFloorBlob(encounter.mapSquares, square);
 						blob.forEach(sq => sq.type = type);
 						EncounterLogic.log(encounter, `${combatant.name} has created an area of ${type.toLowerCase()} terrain`);
 					});
@@ -999,10 +998,15 @@ export class ActionEffects {
 				if (targetParameter) {
 					const walls = targetParameter.value as { x: number, y: number }[];
 					walls.forEach(wall => {
-						// TODO: Start at the selected wall
-						// TODO: This will only select existing squares
-						const blob = EncounterMapLogic.getBlob(encounter.mapSquares);
-						blob.forEach(sq => sq.type = EncounterMapSquareType.Obstructed);
+						const blob = EncounterMapLogic.getWallBlob(encounter.mapSquares, wall);
+						blob.forEach(sq => {
+							const square: EncounterMapSquareModel = {
+								x: sq.x,
+								y: sq.y,
+								type: EncounterMapSquareType.Clear
+							};
+							encounter.mapSquares.push(square);
+						});
 						EncounterLogic.log(encounter, `${combatant.name} has created map squares`);
 					});
 				}
@@ -1013,8 +1017,7 @@ export class ActionEffects {
 				if (targetParameter) {
 					const squares = targetParameter.value as { x: number, y: number }[];
 					squares.forEach(square => {
-						// TODO: Start at the selected square
-						const blob = EncounterMapLogic.getBlob(encounter.mapSquares);
+						const blob = EncounterMapLogic.getFloorBlob(encounter.mapSquares, square).filter(sq => EncounterLogic.getSquareIsEmpty(encounter, sq));
 						encounter.mapSquares = encounter.mapSquares.filter(sq => !blob.includes(sq));
 						EncounterLogic.log(encounter, `${combatant.name} has destroyed map squares`);
 					});

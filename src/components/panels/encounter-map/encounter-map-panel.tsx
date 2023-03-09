@@ -8,8 +8,6 @@ import { EncounterMapLogic } from '../../../logic/encounter-map-logic';
 import type { EncounterMapSquareModel, EncounterModel, LootPileModel } from '../../../models/encounter';
 import type { CombatantModel } from '../../../models/combatant';
 
-import { Collections } from '../../../utils/collections';
-
 import './encounter-map-panel.scss';
 
 interface Props {
@@ -23,7 +21,7 @@ interface Props {
 	selectedSquares: { x: number, y: number }[];
 	onClickCombatant: (combatant: CombatantModel) => void;
 	onClickLoot: (loot: LootPileModel) => void;
-	onClickSquare: (square: EncounterMapSquareModel) => void;
+	onClickSquare: (square: { x: number, y: number }) => void;
 	onClickOff: () => void;
 	onDoubleClickCombatant: (combatant: CombatantModel) => void;
 	onDoubleClickLoot: (loot: LootPileModel) => void;
@@ -43,6 +41,20 @@ export class EncounterMapPanel extends Component<Props> {
 		if (current) {
 			combatants = combatants.filter(c => (c === current) || (c.combat.senses >= c.combat.hidden));
 		}
+
+		const walls = EncounterMapLogic.getAdjacentWalls(this.props.encounter.mapSquares, this.props.encounter.mapSquares).map(wall => {
+			return (
+				<Wall
+					key={`wall ${wall.x} ${wall.y}`}
+					wall={wall}
+					squareSize={this.props.squareSize}
+					mapDimensions={dims}
+					selectable={!!this.props.selectableSquares.find(s => (s.x === wall.x) && (s.y === wall.y))}
+					selected={!!this.props.selectedSquares.find(s => (s.x === wall.x) && (s.y === wall.y))}
+					onClick={this.props.onClickSquare}
+				/>
+			);
+		});
 
 		const squares = this.props.encounter.mapSquares.map(sq => {
 			return (
@@ -117,42 +129,56 @@ export class EncounterMapPanel extends Component<Props> {
 			);
 		});
 
-		const edges = ([] as { x: number, y: number }[])
-			.concat(EncounterMapLogic.getEdges(this.props.encounter.mapSquares, 'n'))
-			.concat(EncounterMapLogic.getEdges(this.props.encounter.mapSquares, 'ne'))
-			.concat(EncounterMapLogic.getEdges(this.props.encounter.mapSquares, 'e'))
-			.concat(EncounterMapLogic.getEdges(this.props.encounter.mapSquares, 'se'))
-			.concat(EncounterMapLogic.getEdges(this.props.encounter.mapSquares, 's'))
-			.concat(EncounterMapLogic.getEdges(this.props.encounter.mapSquares, 'sw'))
-			.concat(EncounterMapLogic.getEdges(this.props.encounter.mapSquares, 'w'))
-			.concat(EncounterMapLogic.getEdges(this.props.encounter.mapSquares, 'nw'));
-		const walls = Collections.distinct(edges, sq => `${sq.x} ${sq.y}`).map(sq => {
-			return (
-				<div
-					key={`wall ${sq.x} ${sq.y}`}
-					className='encounter-map-square wall'
-					style={{
-						width: `${this.props.squareSize}px`,
-						left: `${((sq.x - dims.left) * this.props.squareSize)}px`,
-						top: `${((sq.y - dims.top) * this.props.squareSize)}px`
-					}}
-				/>
-			);
-		});
-
 		const width = dims.right - dims.left + 1;
 		const height = dims.bottom - dims.top + 1;
 		return (
 			<div className='encounter-map' onClick={e => this.props.onClickOff()}>
 				<div className='encounter-map-square-container' style={{ maxWidth: `${this.props.squareSize * width}px`, maxHeight: `${this.props.squareSize * height}px` }}>
+					{walls}
 					{squares}
 					{loot}
 					{auras}
 					{trails}
 					{minis}
-					{walls}
 				</div>
 			</div>
+		);
+	};
+}
+
+interface WallProps {
+	wall: { x: number, y: number };
+	squareSize: number;
+	mapDimensions: { left: number, top: number };
+	selectable: boolean;
+	selected: boolean;
+	onClick: (square: { x: number, y: number }) => void;
+}
+
+class Wall extends Component<WallProps> {
+	onClick = (e: React.MouseEvent) => {
+		if (this.props.selectable) {
+			e.stopPropagation();
+			this.props.onClick(this.props.wall);
+		}
+	};
+
+	render = () => {
+		const selectable = this.props.selectable ? 'selectable' : '';
+		const selected = this.props.selected ? 'selected' : '';
+		const className = `encounter-map-square wall ${selectable} ${selected}`;
+
+		return (
+			<div
+				key={`square ${this.props.wall.x} ${this.props.wall.y}`}
+				className={className}
+				style={{
+					width: `${this.props.squareSize}px`,
+					left: `${((this.props.wall.x - this.props.mapDimensions.left) * this.props.squareSize)}px`,
+					top: `${((this.props.wall.y - this.props.mapDimensions.top) * this.props.squareSize)}px`
+				}}
+				onClick={e => this.onClick(e)}
+			/>
 		);
 	};
 }
@@ -163,7 +189,7 @@ interface SquareProps {
 	mapDimensions: { left: number, top: number };
 	selectable: boolean;
 	selected: boolean;
-	onClick: (square: EncounterMapSquareModel) => void;
+	onClick: (square: { x: number, y: number }) => void;
 }
 
 class Square extends Component<SquareProps> {

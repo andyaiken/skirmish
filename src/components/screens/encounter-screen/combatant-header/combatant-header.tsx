@@ -33,11 +33,9 @@ export class CombatantHeader extends Component<Props> {
 
 			const options = [
 				{ id: 'overview', display: 'Overview' },
-				{ id: 'move', display: <div>Move</div> }
+				{ id: 'move', display: 'Move' },
+				{ id: 'action', display: 'Action' }
 			];
-			if (this.props.developer) {
-				options.push({ id: 'action', display: <div className='developer' style={{ width: '100%', textAlign: 'center' }}>Action</div> });
-			}
 
 			tabs = (
 				<Tabs

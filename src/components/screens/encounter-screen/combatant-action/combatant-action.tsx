@@ -57,6 +57,7 @@ export class CombatantAction extends Component<Props, State> {
 			if (this.state.showAllActions) {
 				actions = GameLogic.getAllActions();
 			}
+			actions.sort((a, b) => a.name.localeCompare(b.name));
 
 			const actionCards = actions.map(a => {
 				const prerequisitesMet = a.prerequisites.every(p => ActionPrerequisites.isSatisfied(p, this.props.encounter));
@@ -103,164 +104,181 @@ export class CombatantAction extends Component<Props, State> {
 				return;
 			}
 
-			let description: JSX.Element[] | string = '';
-			let changeButton = null;
-			let changeControls = null;
-			switch (parameter.name) {
-				case'weapon': {
-					const weaponParam = parameter as ActionWeaponParameterModel;
-					if (weaponParam.value) {
-						const item = parameter.value as ItemModel;
-						description = item.name;
-					} else {
-						parametersSet = false;
-						description = '[Not set]';
-					}
-					if (weaponParam.candidates.length > 1) {
-						changeControls = (
-							<Selector
-								options={weaponParam.candidates.map(candidate => candidate as ItemModel).map(item => ({ id: item.id, display: item.name }))}
-								selectedID={(weaponParam.value as ItemModel).id}
-								onSelect={id => {
-									const item = weaponParam.candidates.find(i => (i as ItemModel).id === id);
-									this.props.setActionParameterValue(parameter, item);
-								}}
-							/>
-						);
-					}
-					break;
-				}
-				case 'origin': {
-					const originParam = parameter as ActionOriginParameterModel;
-					if (originParam.value) {
-						description = '[Map square]';
-					} else {
-						parametersSet = false;
-						description = '[Not set]';
-					}
-					if (originParam.candidates.length > 1) {
-						changeButton = (
-							<button className='icon-btn map-btn' title='Select Origin Square' onClick={() => this.props.setActionParameter(originParam)}>
-								<IconMapPin />
-							</button>
-						);
-					}
-					break;
-				}
-				case 'targets': {
-					const targetParam = parameter as ActionTargetParameterModel;
-					if (targetParam.targets) {
-						switch (targetParam.targets.type) {
-							case ActionTargetType.Combatants:
-							case ActionTargetType.Enemies:
-							case ActionTargetType.Allies: {
-								const list = targetParam.value as string[];
-								if (list.length === 0) {
-									parametersSet = false;
-								}
-								if (targetParam.targets.count === Number.MAX_VALUE) {
-									// Targets all possible candidates
-									description = `[${list.length} ${targetParam.targets.type.toLowerCase()}]`;
-								} else {
-									// Targets a specific number of candidates
-									description = list
-										.map(id => EncounterLogic.getCombatant(this.props.encounter, id) as CombatantModel)
-										.map(target => target.name)
-										.join(', ') || '[None]';
-									if (targetParam.candidates.length > targetParam.targets.count) {
-										const title = `Select ${targetParam.targets.type.toLowerCase()}`;
-										changeButton = (
-											<button className='icon-btn map-btn' title={title} onClick={() => this.props.setActionParameter(targetParam)}>
-												<IconMapPin />
-											</button>
-										);
-									}
-								}
-								break;
-							}
-							case ActionTargetType.Squares: {
-								const list = targetParam.value as { x: number, y: number }[];
-								if (list.length === 0) {
-									parametersSet = false;
-								}
-								if (targetParam.targets.count === Number.MAX_VALUE) {
-									// Targets all possible candidates
-									description = `[${list.length} squares]`;
-								} else {
-									// Targets a specific number of candidates
-									description = list
-										.map(square => {
-											const combatantSquares = EncounterLogic.getCombatantSquares(this.props.encounter, this.props.combatant);
-											const distance = EncounterMapLogic.getDistanceAny(combatantSquares, [ square ]);
-											const angle = EncounterMapLogic.getDirection(this.props.combatant.combat.position, square);
-											return (
-												<div key={`${square.x} ${square.y}`} className='square-indicator'>
-													<IconArrowUp style={{ transform: `rotate(${angle}deg)` }} />
-													<span>{distance}</span>
-												</div>
-											);
-										});
-									if (targetParam.candidates.length > targetParam.targets.count) {
-										changeButton = (
-											<button className='icon-btn map-btn' title='Select Squares' onClick={() => this.props.setActionParameter(targetParam)}>
-												<IconMapPin />
-											</button>
-										);
-									}
-								}
-								break;
-							}
-							case ActionTargetType.Walls: {
-								const list = targetParam.value as { x: number, y: number }[];
-								if (list.length === 0) {
-									parametersSet = false;
-								}
-								if (targetParam.targets.count === Number.MAX_VALUE) {
-									// Targets all possible candidates
-									description = `[${list.length} walls]`;
-								} else {
-									// Targets a specific number of candidates
-									description = list
-										.map(square => {
-											const combatantSquares = EncounterLogic.getCombatantSquares(this.props.encounter, this.props.combatant);
-											const distance = EncounterMapLogic.getDistanceAny(combatantSquares, [ square ]);
-											const angle = EncounterMapLogic.getDirection(this.props.combatant.combat.position, square);
-											return (
-												<div key={`${square.x} ${square.y}`} className='square-indicator'>
-													<IconArrowUp style={{ transform: `rotate(${angle}deg)` }} />
-													<span>{distance}</span>
-												</div>
-											);
-										});
-									if (targetParam.candidates.length > targetParam.targets.count) {
-										changeButton = (
-											<button className='icon-btn map-btn' title='Select Walls' onClick={() => this.props.setActionParameter(targetParam)}>
-												<IconMapPin />
-											</button>
-										);
-									}
-								}
-								break;
-							}
+			if (parameter.value) {
+				let description: JSX.Element[] | string = '';
+				let changeButton = null;
+				let changeControls = null;
+				switch (parameter.name) {
+					case'weapon': {
+						const weaponParam = parameter as ActionWeaponParameterModel;
+						if (weaponParam.value) {
+							const item = parameter.value as ItemModel;
+							description = item.name;
+						} else {
+							parametersSet = false;
+							description = '[Not set]';
 						}
-					} else {
-						// Targets self
-						description = '[Self]';
+						if (weaponParam.candidates.length > 1) {
+							changeControls = (
+								<Selector
+									options={weaponParam.candidates.map(candidate => candidate as ItemModel).map(item => ({ id: item.id, display: item.name }))}
+									selectedID={(weaponParam.value as ItemModel).id}
+									onSelect={id => {
+										const item = weaponParam.candidates.find(i => (i as ItemModel).id === id);
+										this.props.setActionParameterValue(parameter, item);
+									}}
+								/>
+							);
+						}
+						break;
 					}
-					break;
+					case 'origin': {
+						const originParam = parameter as ActionOriginParameterModel;
+						if (originParam.value) {
+							const list = originParam.value as { x: number, y: number }[];
+							if (list.length > 0) {
+								const square = list[0];
+								const combatantSquares = EncounterLogic.getCombatantSquares(this.props.encounter, this.props.combatant);
+								const distance = EncounterMapLogic.getDistanceAny(combatantSquares, [ square ]);
+								const angle = EncounterMapLogic.getDirection(this.props.combatant.combat.position, square);
+								description = [
+									<div key={`${square.x} ${square.y}`} className='square-indicator'>
+										<IconArrowUp style={{ transform: `rotate(${angle}deg)` }} />
+										<span>{distance}</span>
+									</div>
+								];
+							} else {
+								parametersSet = false;
+								description = '[Not set]';
+							}
+						} else {
+							parametersSet = false;
+							description = '[Not set]';
+						}
+						if (originParam.candidates.length > 1) {
+							changeButton = (
+								<button className='icon-btn map-btn' title='Select Origin Square' onClick={() => this.props.setActionParameter(originParam)}>
+									<IconMapPin />
+								</button>
+							);
+						}
+						break;
+					}
+					case 'targets': {
+						const targetParam = parameter as ActionTargetParameterModel;
+						if (targetParam.targets) {
+							switch (targetParam.targets.type) {
+								case ActionTargetType.Combatants:
+								case ActionTargetType.Enemies:
+								case ActionTargetType.Allies: {
+									const list = targetParam.value as string[];
+									if (!list || (list.length === 0)) {
+										parametersSet = false;
+									}
+									if (targetParam.targets.count === Number.MAX_VALUE) {
+										// Targets all possible candidates
+										description = `[${list.length} ${targetParam.targets.type.toLowerCase()}]`;
+									} else {
+										// Targets a specific number of candidates
+										description = list
+											.map(id => EncounterLogic.getCombatant(this.props.encounter, id) as CombatantModel)
+											.map(target => target.name)
+											.join(', ') || '[None]';
+										if (targetParam.candidates.length > targetParam.targets.count) {
+											const title = `Select ${targetParam.targets.type.toLowerCase()}`;
+											changeButton = (
+												<button className='icon-btn map-btn' title={title} onClick={() => this.props.setActionParameter(targetParam)}>
+													<IconMapPin />
+												</button>
+											);
+										}
+									}
+									break;
+								}
+								case ActionTargetType.Squares: {
+									const list = targetParam.value as { x: number, y: number }[];
+									if (list.length === 0) {
+										parametersSet = false;
+									}
+									if (targetParam.targets.count === Number.MAX_VALUE) {
+										// Targets all possible candidates
+										description = `[${list.length} squares]`;
+									} else {
+										// Targets a specific number of candidates
+										description = list
+											.map(square => {
+												const combatantSquares = EncounterLogic.getCombatantSquares(this.props.encounter, this.props.combatant);
+												const distance = EncounterMapLogic.getDistanceAny(combatantSquares, [ square ]);
+												const angle = EncounterMapLogic.getDirection(this.props.combatant.combat.position, square);
+												return (
+													<div key={`${square.x} ${square.y}`} className='square-indicator'>
+														<IconArrowUp style={{ transform: `rotate(${angle}deg)` }} />
+														<span>{distance}</span>
+													</div>
+												);
+											});
+										if (targetParam.candidates.length > targetParam.targets.count) {
+											changeButton = (
+												<button className='icon-btn map-btn' title='Select Squares' onClick={() => this.props.setActionParameter(targetParam)}>
+													<IconMapPin />
+												</button>
+											);
+										}
+									}
+									break;
+								}
+								case ActionTargetType.Walls: {
+									const list = targetParam.value as { x: number, y: number }[];
+									if (list.length === 0) {
+										parametersSet = false;
+									}
+									if (targetParam.targets.count === Number.MAX_VALUE) {
+										// Targets all possible candidates
+										description = `[${list.length} walls]`;
+									} else {
+										// Targets a specific number of candidates
+										description = list
+											.map(square => {
+												const combatantSquares = EncounterLogic.getCombatantSquares(this.props.encounter, this.props.combatant);
+												const distance = EncounterMapLogic.getDistanceAny(combatantSquares, [ square ]);
+												const angle = EncounterMapLogic.getDirection(this.props.combatant.combat.position, square);
+												return (
+													<div key={`${square.x} ${square.y}`} className='square-indicator'>
+														<IconArrowUp style={{ transform: `rotate(${angle}deg)` }} />
+														<span>{distance}</span>
+													</div>
+												);
+											});
+										if (targetParam.candidates.length > targetParam.targets.count) {
+											changeButton = (
+												<button className='icon-btn map-btn' title='Select Walls' onClick={() => this.props.setActionParameter(targetParam)}>
+													<IconMapPin />
+												</button>
+											);
+										}
+									}
+									break;
+								}
+							}
+						} else {
+							// Targets self
+							description = '[Self]';
+						}
+						break;
+					}
 				}
-			}
 
-			parameters.push(
-				<div key={n} className={`action-parameter ${this.props.currentActionParameter === parameter ? 'current' : ''}`}>
-					<div className='action-parameter-top-line'>
-						<div className='action-parameter-name'>Select {parameter.name}</div>
-						<div className='action-parameter-value'>{description}</div>
-						{changeButton !== null ? <div className='action-parameter-change'>{changeButton}</div> : null}
+				parameters.push(
+					<div key={n} className={`action-parameter ${this.props.currentActionParameter === parameter ? 'current' : ''}`}>
+						<div className='action-parameter-top-line'>
+							<div className='action-parameter-name'>Select {parameter.name}</div>
+							<div className='action-parameter-value'>{description}</div>
+							{changeButton !== null ? <div className='action-parameter-change'>{changeButton}</div> : null}
+						</div>
+						{changeControls !== null ? <div className='action-parameter-change'>{changeControls}</div> : null}
 					</div>
-					{changeControls !== null ? <div className='action-parameter-change'>{changeControls}</div> : null}
-				</div>
-			);
+				);
+			}
 		});
 
 		return (

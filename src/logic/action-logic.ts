@@ -289,15 +289,6 @@ export class ActionEffects {
 		};
 	};
 
-	static dealDamage = (type: DamageType, rank: number): ActionEffectModel => {
-		return {
-			id: 'damage',
-			description: `Deal ${type} damage (rank ${rank})`,
-			data: { type: type, rank: rank },
-			children: []
-		};
-	};
-
 	static dealWeaponDamage = (rankModifier = 0): ActionEffectModel => {
 		return {
 			id: 'weapondamage',
@@ -307,10 +298,37 @@ export class ActionEffects {
 		};
 	};
 
+	static dealDamage = (type: DamageType, rank: number): ActionEffectModel => {
+		return {
+			id: 'damage',
+			description: `Deal ${type} damage (rank ${rank})`,
+			data: { type: type, rank: rank },
+			children: []
+		};
+	};
+
 	static inflictWounds = (value: number): ActionEffectModel => {
 		return {
 			id: 'wounds',
 			description: `Inflict ${value} wounds`,
+			data: value,
+			children: []
+		};
+	};
+
+	static dealDamageSelf = (type: DamageType, rank: number): ActionEffectModel => {
+		return {
+			id: 'damageSelf',
+			description: `Deal ${type} damage to self (rank ${rank})`,
+			data: { type: type, rank: rank },
+			children: []
+		};
+	};
+
+	static inflictWoundsSelf = (value: number): ActionEffectModel => {
+		return {
+			id: 'woundsSelf',
+			description: `Inflict ${value} wounds on self`,
 			data: value,
 			children: []
 		};
@@ -583,24 +601,6 @@ export class ActionEffects {
 				data.hit.forEach(effect => ActionEffects.run(effect, encounter, combatant, copy));
 				break;
 			}
-			case 'damage': {
-				const data = effect.data as { type: DamageType, rank: number };
-				const targetParameter = parameters.find(p => p.name === 'targets');
-				if (targetParameter) {
-					const targetIDs = targetParameter.value as string[];
-					targetIDs.forEach(id => {
-						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
-						const result = Random.dice(data.rank);
-						EncounterLogic.log(encounter, `${combatant.name} rolls damage for ${target.name} (${data.rank}) and gets ${result}`);
-						const bonus = EncounterLogic.getDamageBonus(encounter, combatant, data.type);
-						if (bonus > 0) {
-							EncounterLogic.log(encounter, `${combatant.name} deals a bonus ${bonus} damage`);
-						}
-						EncounterLogic.damage(encounter, target, result + bonus, data.type);
-					});
-				}
-				break;
-			}
 			case 'weapondamage': {
 				const rankModifier = effect.data as number;
 				const weaponParameter = parameters.find(p => p.name === 'weapon');
@@ -623,6 +623,24 @@ export class ActionEffects {
 				}
 				break;
 			}
+			case 'damage': {
+				const data = effect.data as { type: DamageType, rank: number };
+				const targetParameter = parameters.find(p => p.name === 'targets');
+				if (targetParameter) {
+					const targetIDs = targetParameter.value as string[];
+					targetIDs.forEach(id => {
+						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
+						const result = Random.dice(data.rank);
+						EncounterLogic.log(encounter, `${combatant.name} rolls damage for ${target.name} (${data.rank}) and gets ${result}`);
+						const bonus = EncounterLogic.getDamageBonus(encounter, combatant, data.type);
+						if (bonus > 0) {
+							EncounterLogic.log(encounter, `${combatant.name} deals a bonus ${bonus} damage`);
+						}
+						EncounterLogic.damage(encounter, target, result + bonus, data.type);
+					});
+				}
+				break;
+			}
 			case 'wounds': {
 				const value = effect.data as number;
 				const targetParameter = parameters.find(p => p.name === 'targets');
@@ -633,6 +651,22 @@ export class ActionEffects {
 						EncounterLogic.wound(encounter, target, value);
 					});
 				}
+				break;
+			}
+			case 'damageSelf': {
+				const data = effect.data as { type: DamageType, rank: number };
+				const result = Random.dice(data.rank);
+				EncounterLogic.log(encounter, `${combatant.name} rolls damage for self (${data.rank}) and gets ${result}`);
+				const bonus = EncounterLogic.getDamageBonus(encounter, combatant, data.type);
+				if (bonus > 0) {
+					EncounterLogic.log(encounter, `${combatant.name} deals a bonus ${bonus} damage`);
+				}
+				EncounterLogic.damage(encounter, combatant, result + bonus, data.type);
+				break;
+			}
+			case 'woundsSelf': {
+				const value = effect.data as number;
+				EncounterLogic.wound(encounter, combatant, value);
 				break;
 			}
 			case 'healdamage': {
@@ -1093,7 +1127,7 @@ export class ActionLogic {
 
 	static checkWeaponParameter = (parameter: ActionWeaponParameterModel, combatant: CombatantModel) => {
 		const candidates: ItemModel[] = [];
-		let value: ItemModel | null = null;
+		let value = parameter.value as ItemModel | null;
 
 		const proficiencies: ItemProficiencyType[] = [];
 		switch (parameter.type) {
@@ -1113,7 +1147,9 @@ export class ActionLogic {
 			.forEach(i => candidates.push(i));
 
 		if (candidates.length > 0) {
-			value = candidates[0];
+			if ((value === null) || !candidates.includes(value)) {
+				value = candidates[0];
+			}
 		}
 
 		parameter.candidates = candidates;
@@ -1122,7 +1158,7 @@ export class ActionLogic {
 
 	static checkOriginParameter = (parameter: ActionOriginParameterModel, encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => {
 		const candidates: { x: number, y: number }[] = [];
-		let value: { x: number, y: number } | null = null;
+		let value = parameter.value as { x: number, y: number }[];
 
 		let radius = 0;
 		if (parameter.distance === 'weapon') {
@@ -1139,7 +1175,9 @@ export class ActionLogic {
 
 		candidates.push(...EncounterLogic.findSquares(encounter, EncounterLogic.getCombatantSquares(encounter, combatant), radius));
 		if (candidates.length > 0) {
-			value = candidates[0];
+			if ((value === null) || (value.length === 0) || value.some(v => !candidates.includes(v))) {
+				value = [ candidates[0] ];
+			}
 		}
 
 		parameter.candidates = candidates;
@@ -1148,7 +1186,7 @@ export class ActionLogic {
 
 	static checkTargetParameter = (parameter: ActionTargetParameterModel, encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => {
 		const candidates: (string | { x: number, y: number })[] = [];
-		const value: (string | { x: number, y: number })[] = [];
+		const value = parameter.value as (string | { x: number, y: number })[];
 
 		if (parameter.range.type === ActionRangeType.Self) {
 			candidates.push(combatant.id);
@@ -1226,7 +1264,11 @@ export class ActionLogic {
 				if (parameter.targets.count === Number.MAX_VALUE) {
 					value.push(...candidates);
 				} else {
-					value.push(...candidates.slice(0, parameter.targets.count));
+					if (candidates.length > 0) {
+						if ((value === null) || (value.length === 0) || value.some(v => !candidates.includes(v))) {
+							value.push(...candidates.slice(0, parameter.targets.count));
+						}
+					}
 				}
 			}
 		}

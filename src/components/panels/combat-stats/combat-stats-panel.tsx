@@ -37,7 +37,7 @@ export class CombatStatsPanel extends Component<Props> {
 			wounds.push(<IconHeartOff key={n} />);
 		}
 		while (wounds.length < EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Resolve)) {
-			wounds.push(<IconHeartFilled key={wounds.length} />);
+			wounds.push(<IconHeartFilled key={wounds.length} className='heartbeat' />);
 		}
 		const woundsPerRow = (wounds.length < 6) || (wounds.length > 8) ? 5 : 4;
 		const woundsInRows: JSX.Element[] = [];

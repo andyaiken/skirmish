@@ -71,7 +71,7 @@ export class BackgroundData {
 				actions: [
 					{
 						id: 'commander-action-1',
-						name: 'Command attack',
+						name: 'Direct the Attack',
 						prerequisites: [],
 						parameters: [
 							ActionTargetParameters.burst(ActionTargetType.Allies, 1, 10)
@@ -82,10 +82,10 @@ export class BackgroundData {
 					},
 					{
 						id: 'commander-action-2',
-						name: 'Command move',
+						name: 'Tactical Positioning',
 						prerequisites: [],
 						parameters: [
-							ActionTargetParameters.burst(ActionTargetType.Allies, 1, 10)
+							ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 10)
 						],
 						effects: [
 							ActionEffects.commandMove()

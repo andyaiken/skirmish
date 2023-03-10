@@ -2,17 +2,15 @@
 
 ## Bugs
 
-* It's possible for some squares on the encounter map to be detatched from the rest
-  * When generating the map, remove unattached areas
-  * Or, when removing squares, check whether this would result in an unattached area
 * If you select a 'square' parameter, and move, the candidate squares do not move
   * Presumably this is the same for other parameter types
 * The campaign map (sometimes) has odd lines on it
 
-## To Do
+## Priority
 
 * Encounters:
-  * Implement missing action effects
+  * Improve the UI for selecting combatants / squares / walls on the map
+  * Implement final action effects (command action / command move)
   * Allow the user to opt for a universal action instead
   * Implement AI so that monsters can take their turns
     * Add a button so that the user can perform each action in turn
@@ -20,7 +18,7 @@
   * Then extend this to ensure species / roles / backgrounds are equally matched
 * Add help / documentation to explain game rules
 
-## Ideas for Future Work
+## Future Work
 
 * Minions
 * Items:
@@ -32,10 +30,7 @@
 * Character sheet panel:
   * Show ranks as filled circles
   * Show the XP required as a gauge
-* Aura cards should specify whether the condition affects allies (beneficial) or enemies (otherwise)
 * Encounters
-  * Cavern map type
-    * Use blobs to create areas
   * Traps
     * Pit traps
     * Fire traps
@@ -45,10 +40,17 @@
   * Action parameter selection / 'go' button / etc, should happen in the card itself
   * Indicate to the user whether a hero's movement / actions have been spent
     * On the move / action tabs?
+  * Indicate combatant's damage / wounds / conditions on the map token / in the initiative list
+  * Show combatants that have already acted in the initiative list (in a separate section below)
   * Allow other victory conditions
     * Get a certain number of heroes to a particular area
     * Get one hero to a particular area and stay there for a certain number of rounds
     * Defeat a specific opponent within a certain number of rounds
+* Dark mode
+* Undo movement
+
+## Ideas for Species / Roles / Backgrounds
+
 * Mountebank, Thief, and Pixie should have an attack redirection aura
 * Gnome, Thief should be able to set / disable traps
 * Minotaur, Reptilian, and Shadowborn should be able to intimidate
@@ -101,8 +103,6 @@
   * Wizard types
     * Evoker
     * Illusionist
-* Dark mode
-* Undo movement
 
 ## Tech Debt
 

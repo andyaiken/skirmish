@@ -44,14 +44,16 @@
 			aspect-ratio: 1 / 1;
 			position: absolute;
 			border-radius: 50%;
-			background-color: rgb(170, 130, 10);
+			background-color: rgb(160, 120, 10);
+			transform: scale(0.6);
 
 			.loot-token-face {
 				position: absolute;
-				top: 5%;
-				left: 5%;
-				right: 6%;
-				bottom: 6%;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				transform: scale(0.9);
 				display: flex;
 				align-items: center;
 				justify-content: center;
@@ -84,10 +86,11 @@
 
 			.mini-token-face {
 				position: absolute;
-				top: 5%;
-				left: 5%;
-				right: 6%;
-				bottom: 6%;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				transform: scale(0.9);
 				display: flex;
 				align-items: center;
 				justify-content: center;

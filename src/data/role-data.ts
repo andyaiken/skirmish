@@ -992,7 +992,8 @@ export class RoleData {
 						id: 'necromancer-action-2',
 						name: 'Transfer wounds (self to enemy)',
 						prerequisites: [
-							ActionPrerequisites.implement()
+							ActionPrerequisites.implement(),
+							ActionPrerequisites.wound()
 						],
 						parameters: [
 							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
@@ -1004,7 +1005,7 @@ export class RoleData {
 					},
 					{
 						id: 'necromancer-action-3',
-						name: 'Transfer damage (ally to enemy)',
+						name: 'Transfer damage (ally to self)',
 						prerequisites: [
 							ActionPrerequisites.implement()
 						],
@@ -1012,13 +1013,13 @@ export class RoleData {
 							ActionTargetParameters.burst(ActionTargetType.Allies, 1, 5)
 						],
 						effects: [
-							ActionEffects.healDamage(3)
-							// TODO: Inflict damage on nearby enemy
+							ActionEffects.healDamage(3),
+							ActionEffects.dealDamageSelf(DamageType.Decay, 3)
 						]
 					},
 					{
 						id: 'necromancer-action-4',
-						name: 'Transfer wounds (ally to enemy)',
+						name: 'Transfer wounds (ally to self)',
 						prerequisites: [
 							ActionPrerequisites.implement()
 						],
@@ -1026,15 +1027,16 @@ export class RoleData {
 							ActionTargetParameters.burst(ActionTargetType.Allies, 1, 5)
 						],
 						effects: [
-							ActionEffects.healWounds(1)
-							// TODO: Inflict wound on nearby enemy
+							ActionEffects.healWounds(1),
+							ActionEffects.inflictWoundsSelf(1)
 						]
 					},
 					{
 						id: 'necromancer-action-5',
 						name: 'Strength from pain',
 						prerequisites: [
-							ActionPrerequisites.implement()
+							ActionPrerequisites.implement(),
+							ActionPrerequisites.damage()
 						],
 						parameters: [
 							ActionTargetParameters.burst(ActionTargetType.Allies, 1, 5)

@@ -7,6 +7,7 @@ import { CombatantType } from '../../../enums/combatant-type';
 import { EncounterState } from '../../../enums/encounter-state';
 import { TraitType } from '../../../enums/trait-type';
 
+import { ActionLogic } from '../../../logic/action-logic';
 import { EncounterLogic } from '../../../logic/encounter-logic';
 
 import type { ActionModel, ActionOriginParameterModel, ActionParameterModel, ActionTargetParameterModel } from '../../../models/action';
@@ -131,10 +132,10 @@ export class EncounterScreen extends Component<Props, State> {
 				let ids = this.state.selectedCombatantIDs;
 				if (ids.includes(combatant.id)) {
 					ids = ids.filter(id => id !== combatant.id);
-				} else {
-					if (ids.length < count) {
-						ids.push(combatant.id);
-					}
+				} else if (count === 1) {
+					ids = [ combatant.id ];
+				} else if (ids.length < count) {
+					ids.push(combatant.id);
 				}
 
 				parameter.value = ids;
@@ -144,6 +145,8 @@ export class EncounterScreen extends Component<Props, State> {
 					selectedCombatantIDs: ids,
 					selectedLootIDs: [],
 					selectedSquares: []
+				}, () => {
+					this.props.setActionParameterValue(parameter, ids);
 				});
 			}
 		} else {
@@ -192,19 +195,28 @@ export class EncounterScreen extends Component<Props, State> {
 				let squares = this.state.selectedSquares;
 				if (squares.find(s => (s.x === square.x) && (s.y === square.y))) {
 					squares = squares.filter(sq => !((sq.x === square.x) && (sq.y === square.y)));
-				} else {
-					if (squares.length < count) {
-						squares.push(square);
-					}
+				} else if (count === 1) {
+					squares = [ square ];
+				} else if (squares.length < count) {
+					squares.push(square);
 				}
 
 				parameter.value = squares;
+
+				if (parameter.name === 'origin') {
+					const combatant = this.props.encounter.combatants.find(c => c.combat.current) as CombatantModel;
+					const action = combatant.combat.actions[0];
+					const targetParam = action.parameters.find(a => a.name === 'targets') as ActionTargetParameterModel;
+					ActionLogic.checkTargetParameter(targetParam, this.props.encounter, combatant, action);
+				}
 
 				this.setState({
 					currentActionParameter: parameter,
 					selectedCombatantIDs: [],
 					selectedLootIDs: [],
 					selectedSquares: squares
+				}, () => {
+					this.props.setActionParameterValue(parameter, squares);
 				});
 			}
 		} else {
@@ -288,8 +300,8 @@ export class EncounterScreen extends Component<Props, State> {
 			switch (parameter.name) {
 				case 'origin': {
 					const originParam = parameter as ActionOriginParameterModel;
-					selectableSquares = originParam.candidates as { x: number, y: number }[];
-					selectedSquares = originParam.value as { x: number, y: number }[];
+					selectableSquares = originParam.candidates as { x: number, y: number }[] ?? [];
+					selectedSquares = originParam.value as { x: number, y: number }[] ?? [];
 					break;
 				}
 				case 'targets': {
@@ -303,12 +315,12 @@ export class EncounterScreen extends Component<Props, State> {
 								selectedCombatantIDs = targetParam.value as string[];
 								break;
 							case ActionTargetType.Squares:
-								selectableSquares = targetParam.candidates as { x: number, y: number }[];
-								selectedSquares = targetParam.value as { x: number, y: number }[];
+								selectableSquares = targetParam.candidates as { x: number, y: number }[] ?? [];
+								selectedSquares = targetParam.value as { x: number, y: number }[] ?? [];
 								break;
 							case ActionTargetType.Walls:
-								selectableSquares = targetParam.candidates as { x: number, y: number }[];
-								selectedSquares = targetParam.value as { x: number, y: number }[];
+								selectableSquares = targetParam.candidates as { x: number, y: number }[] ?? [];
+								selectedSquares = targetParam.value as { x: number, y: number }[] ?? [];
 								break;
 						}
 					}

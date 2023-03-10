@@ -1,6 +1,10 @@
 .combat-stats-panel {
 	.wounds {
-		color: darkred;
+		color: rgb(150, 0, 24);
+
+		.heartbeat {
+			animation: heartbeat 1s infinite ease-in-out;
+		}
 	}
 
 	.stats-row {
@@ -19,3 +23,36 @@
 		border-top: 1px solid rgb(220, 220, 220);
 	}
 }
+
+@keyframes heartbeat {
+	0% {
+	  transform: scale(1);
+	}
+	10% {
+	  transform: scale(1);
+	}
+	20% {
+	  transform: scale(1.05);
+	}
+	40% {
+	  transform: scale(1);
+	}
+	50% {
+	  transform: scale(1.05);
+	}
+	60% {
+	  transform: scale(1);
+	}
+	70% {
+	  transform: scale(1);
+	}
+	80% {
+	  transform: scale(1);
+	}
+	90% {
+	  transform: scale(1);
+	}
+	100% {
+	  transform: scale(1);
+	}
+  }

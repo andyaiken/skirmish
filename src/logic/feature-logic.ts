@@ -259,7 +259,8 @@ export class FeatureLogic {
 				aura.details.skillCategory = feature.skillCategory;
 				aura.details.damage = feature.damage;
 				aura.details.damageCategory = feature.damageCategory;
-				return `${ConditionLogic.getConditionDescription(aura)} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
+				const affects = ConditionLogic.getConditionIsBeneficial(aura) ? 'allies' : 'enemies';
+				return `${ConditionLogic.getConditionDescription(aura)} (affects ${affects}) ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
 			}
 		}
 	};

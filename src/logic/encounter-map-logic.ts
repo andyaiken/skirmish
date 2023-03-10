@@ -7,7 +7,11 @@ import { Random } from '../utils/random';
 
 export class EncounterMapLogic {
 	static generateEncounterMap = (rng: () => number): EncounterMapSquareModel[] => {
-		let map: EncounterMapSquareModel[] = [];
+		return Random.randomBoolean(rng) ? EncounterMapLogic.generateDungeonMap(rng) : EncounterMapLogic.generateCavernMap(rng);
+	};
+
+	static generateDungeonMap = (rng: () => number): EncounterMapSquareModel[] => {
+		const map: EncounterMapSquareModel[] = [];
 
 		while (map.length < 1000) {
 			const dirs = [ 'n', 'e', 's', 'w' ];
@@ -50,10 +54,37 @@ export class EncounterMapLogic {
 		}
 
 		while (Random.randomNumber(3, rng) !== 0) {
-			// Add a blob of solid rock
+			// Add a blob of obstructed terrain
 			const start = Collections.draw(map);
 			const blob = EncounterMapLogic.getFloorBlob(map, start, rng);
-			map = map.filter(sq => !blob.includes(sq));
+			blob.forEach(sq => sq.type = EncounterMapSquareType.Obstructed);
+		}
+
+		return map;
+	};
+
+	static generateCavernMap = (rng: () => number): EncounterMapSquareModel[] => {
+		const map: EncounterMapSquareModel[] = [
+			{
+				x: 0,
+				y: 0,
+				type: EncounterMapSquareType.Clear
+			}
+		];
+
+		while (map.length < 1000) {
+			const walls = EncounterMapLogic.getAdjacentWalls(map, map, [ 'n', 'e', 's', 'w' ]);
+			const wall = Collections.draw(walls);
+
+			const blob = EncounterMapLogic.getWallBlob(map, wall);
+			blob.forEach(sq => {
+				const square: EncounterMapSquareModel = {
+					x: sq.x,
+					y: sq.y,
+					type: EncounterMapSquareType.Clear
+				};
+				map.push(square);
+			});
 		}
 
 		while (Random.randomNumber(3, rng) !== 0) {

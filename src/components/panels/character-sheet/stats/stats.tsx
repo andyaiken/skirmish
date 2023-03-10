@@ -87,7 +87,13 @@ export class Stats extends Component<Props> {
 		if (auras.length > 0) {
 			auraSection = (
 				<div>
-					{auras.map(a => (<StatValue key={a.id} label={ConditionLogic.getConditionDescription(a)} value={a.rank} />))}
+					{
+						auras.map(aura => {
+							const affects = ConditionLogic.getConditionIsBeneficial(aura) ? 'allies' : 'enemies';
+							const desc = `${ConditionLogic.getConditionDescription(aura)} (affects ${affects})`;
+							return <StatValue key={aura.id} label={desc} value={aura.rank} />;
+						})
+					}
 				</div>
 			);
 		} else {

@@ -8,6 +8,8 @@ import { EncounterMapLogic } from '../../../logic/encounter-map-logic';
 import type { EncounterMapSquareModel, EncounterModel, LootPileModel } from '../../../models/encounter';
 import type { CombatantModel } from '../../../models/combatant';
 
+import { Collections } from '../../../utils/collections';
+
 import './encounter-map-panel.scss';
 
 interface Props {
@@ -42,7 +44,7 @@ export class EncounterMapPanel extends Component<Props> {
 			combatants = combatants.filter(c => (c === current) || (c.combat.senses >= c.combat.hidden));
 		}
 
-		const walls = EncounterMapLogic.getAdjacentWalls(this.props.encounter.mapSquares, this.props.encounter.mapSquares).map(wall => {
+		const walls = Collections.distinct(EncounterMapLogic.getAdjacentWalls(this.props.encounter.mapSquares, this.props.encounter.mapSquares), sq => `${sq.x} ${sq.y}`).map(wall => {
 			return (
 				<Wall
 					key={`wall ${wall.x} ${wall.y}`}
@@ -56,7 +58,7 @@ export class EncounterMapPanel extends Component<Props> {
 			);
 		});
 
-		const squares = this.props.encounter.mapSquares.map(sq => {
+		const squares = Collections.distinct(this.props.encounter.mapSquares, sq => `${sq.x} ${sq.y}`).map(sq => {
 			return (
 				<Square
 					key={`square ${sq.x} ${sq.y}`}

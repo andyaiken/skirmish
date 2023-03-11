@@ -9,9 +9,10 @@
 ## Priority
 
 * Encounters:
-  * Improve the UI for selecting combatants / squares / walls on the map
-  * Implement final action effects (command action / command move)
-  * Allow the user to opt for a universal action instead
+  * Actions
+    * Improve the UI for selecting combatants / squares / walls on the map
+    * Implement final action effects (command action / command move)
+    * Allow the user to opt for a universal action instead
   * Implement AI so that monsters can take their turns
     * Add a button so that the user can perform each action in turn
 * Add a system for evaluating each action to ensure none is too powerful
@@ -21,6 +22,8 @@
 ## Future Work
 
 * Minions
+  * Die as soon as they take any damage
+  * Convert one monster into 4 minions
 * Items:
   * Potions (add conditions when used)
   * Magic items could gain additional attributes when wielder levels up

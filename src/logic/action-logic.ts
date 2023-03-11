@@ -535,6 +535,15 @@ export class ActionEffects {
 		};
 	};
 
+	static destroyWalls = (): ActionEffectModel => {
+		return {
+			id: 'destroyWalls',
+			description: 'Destroy walls',
+			data: null,
+			children: []
+		};
+	};
+
 	static run = (effect: ActionEffectModel, encounter: EncounterModel, combatant: CombatantModel, parameters: ActionParameterModel[]) => {
 		switch (effect.id) {
 			case 'attack': {
@@ -916,28 +925,33 @@ export class ActionEffects {
 								break;
 							}
 							case MovementType.ToTarget: {
-								const squares = EncounterMapLogic.getAdjacentSquares(encounter.mapSquares, EncounterLogic.getCombatantSquares(encounter, target))
-									.filter(square => {
-										return EncounterLogic.getCombatantSquares(encounter, combatant, square).every(sq => EncounterLogic.getSquareIsEmpty(encounter, sq));
+								const combatantSquares = EncounterLogic.getCombatantSquares(encounter, combatant);
+								const targetAdjacentSquares = EncounterMapLogic.getAdjacentSquares(encounter.mapSquares, EncounterLogic.getCombatantSquares(encounter, target));
+								if (combatantSquares.some(sq => targetAdjacentSquares.find(s => (s.x === sq.x) && (s.y === sq.y)))) {
+									// Already adjacent
+								} else {
+									const candidates = encounter.mapSquares.filter(sq => {
+										const combatantSquares = EncounterLogic.getCombatantSquares(encounter, combatant);
+										const targetAdjacentSquares = EncounterMapLogic.getAdjacentSquares(encounter.mapSquares, EncounterLogic.getCombatantSquares(encounter, target));
+										const canMoveHere = combatantSquares.every(sq => EncounterLogic.getSquareIsEmpty(encounter, sq));
+										const wouldBeAdjacent = combatantSquares.some(sq => targetAdjacentSquares.find(s => (s.x === sq.x) && (s.y === sq.y)));
+										return canMoveHere && wouldBeAdjacent;
 									});
-								if (squares.length > 0) {
-									const square = Collections.draw(squares);
-									combatant.combat.trail.push({ x: target.combat.position.x, y: target.combat.position.y });
-									combatant.combat.position.x = square.x;
-									combatant.combat.position.y = square.y;
+									if (candidates.length > 0) {
+										const square = Collections.draw(candidates);
+										combatant.combat.trail.push({ x: target.combat.position.x, y: target.combat.position.y });
+										combatant.combat.position.x = square.x;
+										combatant.combat.position.y = square.y;
+										EncounterLogic.log(encounter, `${combatant.name} has moved to ${target.name}`);
+									}
 								}
-								EncounterLogic.log(encounter, `${combatant.name} has moved to ${target.name}`);
 								break;
 							}
 							case MovementType.Random: {
 								const moveDistance = Random.dice(data.rank);
 								const squares = encounter.mapSquares
-									.filter(square => {
-										return EncounterMapLogic.getDistance(target.combat.position, square) <= moveDistance;
-									})
-									.filter(square => {
-										return EncounterLogic.getCombatantSquares(encounter, target, square).every(sq => EncounterLogic.getSquareIsEmpty(encounter, sq));
-									});
+									.filter(square => EncounterMapLogic.getDistance(target.combat.position, square) <= moveDistance)
+									.filter(square => EncounterLogic.getCombatantSquares(encounter, target, square).every(sq => EncounterLogic.getSquareIsEmpty(encounter, sq)));
 								if (squares.length > 0) {
 									const square = Collections.draw(squares);
 									target.combat.trail.push({ x: target.combat.position.x, y: target.combat.position.y });
@@ -1022,8 +1036,8 @@ export class ActionEffects {
 					squares.forEach(square => {
 						const blob = EncounterMapLogic.getFloorBlob(encounter.mapSquares, square);
 						blob.forEach(sq => sq.type = type);
-						EncounterLogic.log(encounter, `${combatant.name} has created an area of ${type.toLowerCase()} terrain`);
 					});
+					EncounterLogic.log(encounter, `${combatant.name} has created an area of ${type.toLowerCase()} terrain`);
 				}
 				break;
 			}
@@ -1041,8 +1055,8 @@ export class ActionEffects {
 							};
 							encounter.mapSquares.push(square);
 						});
-						EncounterLogic.log(encounter, `${combatant.name} has created map squares`);
 					});
+					EncounterLogic.log(encounter, `${combatant.name} has created map squares`);
 				}
 				break;
 			}
@@ -1053,8 +1067,24 @@ export class ActionEffects {
 					squares.forEach(square => {
 						const blob = EncounterMapLogic.getFloorBlob(encounter.mapSquares, square).filter(sq => EncounterLogic.getSquareIsEmpty(encounter, sq));
 						encounter.mapSquares = encounter.mapSquares.filter(sq => !blob.includes(sq));
-						EncounterLogic.log(encounter, `${combatant.name} has destroyed map squares`);
 					});
+					EncounterLogic.log(encounter, `${combatant.name} has destroyed map squares`);
+				}
+				break;
+			}
+			case 'destroyWalls': {
+				const targetParameter = parameters.find(p => p.name === 'targets');
+				if (targetParameter) {
+					const walls = targetParameter.value as { x: number, y: number }[];
+					walls.forEach(wall => {
+						const square: EncounterMapSquareModel = {
+							x: wall.x,
+							y: wall.y,
+							type: EncounterMapSquareType.Obstructed
+						};
+						encounter.mapSquares.push(square);
+					});
+					EncounterLogic.log(encounter, `${combatant.name} has destroyed walls`);
 				}
 				break;
 			}
@@ -1186,7 +1216,7 @@ export class ActionLogic {
 
 	static checkTargetParameter = (parameter: ActionTargetParameterModel, encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => {
 		const candidates: (string | { x: number, y: number })[] = [];
-		const value = parameter.value as (string | { x: number, y: number })[];
+		let value = parameter.value as (string | { x: number, y: number })[] ?? [];
 
 		if (parameter.range.type === ActionRangeType.Self) {
 			candidates.push(combatant.id);
@@ -1262,10 +1292,12 @@ export class ActionLogic {
 				}
 
 				if (parameter.targets.count === Number.MAX_VALUE) {
+					value = [];
 					value.push(...candidates);
 				} else {
 					if (candidates.length > 0) {
-						if ((value === null) || (value.length === 0) || value.some(v => !candidates.includes(v))) {
+						if ((value.length === 0) || value.some(v => !candidates.includes(v))) {
+							value = [];
 							value.push(...candidates.slice(0, parameter.targets.count));
 						}
 					}

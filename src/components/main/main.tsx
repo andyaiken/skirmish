@@ -570,7 +570,9 @@ export class Main extends Component<Props, State> {
 								<Text type={TextType.Heading}>Victory</Text>
 								<Text type={TextType.SubHeading}>You have taken control of {region.name}!</Text>
 								<Text>You can recruit a new hero, and you have earned a reward:</Text>
-								<PlayingCard type={CardType.Boon} front={<BoonCard boon={region.boon} />} />
+								<div className='boon-panel'>
+									<PlayingCard type={CardType.Boon} front={<BoonCard boon={region.boon} />} />
+								</div>
 								<Text>Any heroes who died have been lost.</Text>
 								<button onClick={() => this.setScreen(ScreenType.Campaign)}>OK</button>
 							</div>

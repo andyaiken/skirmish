@@ -11,67 +11,361 @@ export class NameGenerator {
 	};
 
 	static generateWord = () => {
-		const startHuman1 = 'As Has Khe Zash Gl Ig Iv Kos Miv Pav Ser Dar Even Gor Rand Sto Tam Barer Keth Mum Ford Cam';
-		const startHuman2 = 'Mar Burg Al Hel Wrayt S Eag Eath Joan Answ L Ot Ced At Tal Ham Jasm Mail Yash Row';
-		const startDwarf = 'Adr Alber Ba Bar Gar Kildr Kath Dies Eld Gurd Har Morg Or Rur Mar Vis Jen Torg Tak Thor End Ris Em Gunn';
-		const startElf = 'Ad All Aram Berri Car Enial Gann Im Per Sorvi Var Adr An Beth Bir Jelen Key Lesh Mer Mia Naiv Quel Sar Shan';
-		const startHalfling = 'Al An C Cor Eld Er Finn Gar Lin Mer Os Per Ros An Cal Cor Kith Lav Ned Pae Seraph T V Chen';
-		const startDragonborn = 'Are Bala Bhar Don Gh Hesk Med Meh Nad Pand Patr Sham Shed Ak Bir Farid Fla Ka Ko Mish Thav Uad Eder Hener';
-		const startMisc = 'Alu Stos Fa Ravay Leo Stok Vic El Yeng Car Ric Ar Guir Es My Pey';
-
-		const maleHuman = 'Eir Eid Eed El Ar An Or Ef Al Vin Orn Dur Stag Elm Ur Us For';
-		const maleDwarf = 'Ik Ich Ern End Tor Nor In Rak Gen Sik Gran Linn Vok Brek Dal Gar';
-		const maleElf = 'An Ar Il Rian Ric Is Dan Arai Meral Cian En Rion Ialis Ior Nan Kas';
-		const maleHalfling = 'Ton Der Ade Rin Don Rich Nan Ret Al Born Coe By Fire Yas Dal Yle';
-		const maleDragonborn = 'Han Asar Ash Aar Esch An Rash En Arr Jed Rin Gar Ash Dinn Hun Rek';
-		const maleMisc = 'Orel Aadi Ahn Aver Eiros Kain Retor Lannan Pet Ikos';
-
-		const femaleHuman = 'Er Ey A E Il Elia Ya Ed Eue Ild Oane Yne Orna Ie Ala Erri Ea Ia';
-		const femaleDwarf = 'Ber Tin Hild Dryn A Eth Runn Ellen Loda Dis Ja Lin Ra Tyrd De Rasa';
-		const femaleElf = 'Rie Aea Striana Inua Rynna Ilia Na Neth Leth Iel Lee Qui Astra Ia Ania Ynn';
-		const femaleHalfling = 'Dry Ree Lie Ora Emia Ian Ri Inia Ina Aena Ani Erna Lyse La Da Aela';
-		const femaleDragonborn = 'Ra Ir Eh Ann Ilar Rinn Ann La Ra A Ina Va Hit Ederei Ere Eila';
-		const femaleMisc = 'Ina Ceryn Vyn Ella Aella Vyre';
-
 		const starts = [
-			startHuman1,
-			startHuman2,
-			startDwarf,
-			startElf,
-			startHalfling,
-			startDragonborn,
-			startMisc
-		]
-			.join(' ')
-			.toLowerCase()
-			.split(' ');
-		const ends = [
-			maleHuman,
-			maleDwarf,
-			maleElf,
-			maleHalfling,
-			maleDragonborn,
-			maleMisc,
-			femaleHuman,
-			femaleDwarf,
-			femaleElf,
-			femaleHalfling,
-			femaleDragonborn,
-			femaleMisc
-		]
-			.join(' ')
-			.toLowerCase()
-			.split(' ');
+			'ad',
+			'adr',
+			'ak',
+			'al',
+			'alber',
+			'all',
+			'alu',
+			'an',
+			'answ',
+			'ar',
+			'aram',
+			'are',
+			'as',
+			'at',
+			'ba',
+			'bala',
+			'bar',
+			'barer',
+			'berri',
+			'beth',
+			'bhar',
+			'bir',
+			'burg',
+			'c',
+			'cal',
+			'cam',
+			'car',
+			'ced',
+			'chen',
+			'cor',
+			'dar',
+			'dies',
+			'don',
+			'eag',
+			'eath',
+			'eder',
+			'el',
+			'eld',
+			'em',
+			'end',
+			'enial',
+			'er',
+			'es',
+			'even',
+			'fa',
+			'farid',
+			'finn',
+			'fitz',
+			'fla',
+			'ford',
+			'gann',
+			'gar',
+			'gh',
+			'gl',
+			'gor',
+			'guir',
+			'gunn',
+			'gurd',
+			'ham',
+			'har',
+			'has',
+			'hel',
+			'hener',
+			'hesk',
+			'ig',
+			'im',
+			'iv',
+			'jasm',
+			'jelen',
+			'jen',
+			'joan',
+			'ka',
+			'kath',
+			'keth',
+			'key',
+			'khe',
+			'kildr',
+			'kith',
+			'ko',
+			'kos',
+			'l',
+			'lav',
+			'leo',
+			'lesh',
+			'lin',
+			'mac',
+			'mail',
+			'mar',
+			'med',
+			'meh',
+			'mer',
+			'mia',
+			'mish',
+			'miv',
+			'morg',
+			'mum',
+			'my',
+			'nad',
+			'naiv',
+			'ned',
+			'or',
+			'os',
+			'ot',
+			'pae',
+			'pand',
+			'patr',
+			'pav',
+			'pen',
+			'per',
+			'pey',
+			'pol',
+			'quel',
+			'rand',
+			'ravay',
+			'ric',
+			'ris',
+			'ros',
+			'row',
+			'rur',
+			's',
+			'sar',
+			'ser',
+			'seraph',
+			'sham',
+			'shan',
+			'shed',
+			'sorvi',
+			'sto',
+			'stok',
+			'stos',
+			't',
+			'tak',
+			'tal',
+			'tam',
+			'thav',
+			'thor',
+			'torg',
+			'tre',
+			'uad',
+			'v',
+			'var',
+			'vic',
+			'vis',
+			'wrayt',
+			'yash',
+			'yeng',
+			'zash'
+		];
 
-		let separator = '';
-		if (Random.randomNumber(10) === 0) {
-			const separators = [ '-', '\'' ];
-			separator = Collections.draw(separators);
+		const ends = [
+			'a',
+			'aadi',
+			'aar',
+			'ade',
+			'aea',
+			'aela',
+			'aella',
+			'aena',
+			'ahn',
+			'al',
+			'ala',
+			'an',
+			'ani',
+			'ania',
+			'ann',
+			'ar',
+			'arai',
+			'arr',
+			'asar',
+			'ash',
+			'astra',
+			'aver',
+			'ber',
+			'born',
+			'brek',
+			'by',
+			'ceryn',
+			'cian',
+			'coe',
+			'da',
+			'dal',
+			'dan',
+			'de',
+			'der',
+			'dinn',
+			'dis',
+			'don',
+			'dry',
+			'dryn',
+			'dur',
+			'e',
+			'ea',
+			'ed',
+			'ederei',
+			'eed',
+			'ef',
+			'eh',
+			'eid',
+			'eila',
+			'eir',
+			'eiros',
+			'el',
+			'elia',
+			'ella',
+			'ellen',
+			'elm',
+			'emia',
+			'en',
+			'end',
+			'er',
+			'ere',
+			'ern',
+			'erna',
+			'erri',
+			'esch',
+			'eth',
+			'eue',
+			'ey',
+			'fire',
+			'for',
+			'gar',
+			'gen',
+			'gran',
+			'han',
+			'hild',
+			'hit',
+			'hun',
+			'ia',
+			'ia',
+			'ialis',
+			'ian',
+			'ich',
+			'ie',
+			'iel',
+			'ik',
+			'ikos,',
+			'il',
+			'ilar',
+			'ild',
+			'ilia',
+			'in',
+			'ina',
+			'inia',
+			'inua',
+			'ior',
+			'ir',
+			'is',
+			'ja',
+			'jed',
+			'kain',
+			'kaston',
+			'la',
+			'lannan',
+			'lee',
+			'leth',
+			'lie',
+			'lin',
+			'linn',
+			'loda',
+			'lyse',
+			'meral',
+			'na',
+			'nan',
+			'neth',
+			'nor',
+			'oane',
+			'or',
+			'ora',
+			'orel',
+			'orn',
+			'orna',
+			'pet',
+			'qui',
+			'ra',
+			'rak',
+			'rasa',
+			'rash',
+			'ree',
+			'rek',
+			'ret',
+			'retor',
+			'ri',
+			'rian',
+			'ric',
+			'rich',
+			'rie',
+			'rin',
+			'rinn',
+			'rion',
+			'runn',
+			'rynna',
+			'sen',
+			'sik',
+			'son',
+			'stag',
+			'striana',
+			'tin',
+			'tor',
+			'tyrd',
+			'ur',
+			'us',
+			'va',
+			'vin',
+			'vok',
+			'vyn',
+			'vyre',
+			'ya',
+			'yas',
+			'yle',
+			'yne',
+			'ynn'
+		];
+
+		const separators = [
+			'-',
+			'\''
+		];
+
+		switch (Random.randomNumber(20)) {
+			case 0:
+			case 1:
+			case 2:
+			case 3:
+			case 4:
+			case 5:
+			case 6:
+			case 7:
+			case 8:
+			case 9:
+				return `${Collections.draw(starts)}${Collections.draw(ends)}`;
+			case 10:
+			case 11:
+			case 12:
+			case 13:
+				return `${Collections.draw(starts)}${Collections.draw(separators)}${Collections.draw(ends)}`;
+			case 14:
+				return `${Collections.draw(starts)}${Collections.draw(starts)}${Collections.draw(separators)}${Collections.draw(ends)}`;
+			case 15:
+				return `${Collections.draw(starts)}${Collections.draw(separators)}${Collections.draw(ends)}${Collections.draw(ends)}`;
+			case 16:
+				return `${Collections.draw(starts)}${Collections.draw(separators)}${Collections.draw(starts)}${Collections.draw(ends)}`;
+			case 17:
+				return `${Collections.draw(starts)}${Collections.draw(ends)}${Collections.draw(separators)}${Collections.draw(ends)}`;
+			case 18: {
+				const separator = Collections.draw(separators);
+				return `${Collections.draw(starts)}${separator}${Collections.draw(starts)}${separator}${Collections.draw(ends)}`;
+			}
+			case 19: {
+				const separator = Collections.draw(separators);
+				return `${Collections.draw(starts)}${separator}${Collections.draw(ends)}${separator}${Collections.draw(ends)}`;
+			}
 		}
 
-		const startIndex = Random.randomNumber(starts.length);
-		const endIndex = Random.randomNumber(ends.length);
-		return starts[startIndex] + separator + ends[endIndex];
+		return '';
 	};
 
 	static capitalise = (str: string) => {

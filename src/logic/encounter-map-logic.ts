@@ -215,8 +215,7 @@ export class EncounterMapLogic {
 
 		const checkSquare = (sq: { x: number, y: number }) => {
 			if (!squares.find(s => (s.x === sq.x) && (s.y === sq.y)) && !adj.find(s => (s.x === sq.x) && (s.y === sq.y))) {
-				const mapSquare = map.find(s => (s.x === sq.x) && (s.y === sq.y));
-				if (!mapSquare) {
+				if (!map.find(s => (s.x === sq.x) && (s.y === sq.y))) {
 					adj.push(sq);
 				}
 			}

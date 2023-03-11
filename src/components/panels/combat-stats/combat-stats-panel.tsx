@@ -52,20 +52,20 @@ export class CombatStatsPanel extends Component<Props> {
 		return (
 			<div className='combat-stats-panel'>
 				<Box label='This Round'>
-					<div className='stats-row'>
+					<div className='stats-row align-bottom'>
 						<StatValue orientation='vertical' label='Movement' value={<IconValue value={this.props.combatant.combat.movement} type={IconType.Movement} />} />
 						<StatValue orientation='vertical' label='Senses' value={this.props.combatant.combat.senses} />
 						<StatValue orientation='vertical' label='Hidden' value={this.props.combatant.combat.hidden} />
 					</div>
 				</Box>
 				<Box label='Health'>
-					<div className='stats-row'>
+					<div className='stats-row align-bottom'>
 						<StatValue orientation='vertical' label='Damage' value={this.props.combatant.combat.damage} />
 						<StatValue orientation='vertical' label='Wounds' value={<div>{woundsInRows}</div>} />
 					</div>
 				</Box>
 				<Box label='Traits and Conditions'>
-					<div className='stats-row'>
+					<div className='stats-row align-top'>
 						<div>
 							<StatValue orientation='vertical' label='Endurance' value={EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Endurance)} />
 							<div>{this.getConditions(TraitType.Endurance)}</div>

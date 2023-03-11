@@ -226,7 +226,7 @@ export class RoleData {
 							ActionTargetParameters.weapon(ActionTargetType.Walls, Number.MAX_VALUE, 0)
 						],
 						effects: [
-							ActionEffects.addSquares()
+							ActionEffects.destroyWalls()
 						]
 					}
 				]

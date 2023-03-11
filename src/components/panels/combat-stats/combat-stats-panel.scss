@@ -13,6 +13,14 @@
 		justify-content: center;
 		gap: 10px;
 
+		&.align-top {
+			align-items: flex-start;
+		}
+
+		&.align-bottom {
+			align-items: flex-end;
+		}
+
 		&>* {
 			flex: 1 1 0;
 		}

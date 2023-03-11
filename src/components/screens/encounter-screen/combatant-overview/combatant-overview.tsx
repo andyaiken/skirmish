@@ -26,7 +26,7 @@ export class CombatantOverview extends Component<Props> {
 	render = () => {
 		if (this.props.combatant.combat.state === CombatantState.Unconscious) {
 			return (
-				<Text type={TextType.SubHeading}>
+				<Text type={TextType.Information}>
 					{this.props.combatant.name} is <b>Unconscious</b>.
 				</Text>
 			);
@@ -34,7 +34,7 @@ export class CombatantOverview extends Component<Props> {
 
 		if (this.props.combatant.combat.state === CombatantState.Dead) {
 			return (
-				<Text type={TextType.SubHeading}>
+				<Text type={TextType.Information}>
 					{this.props.combatant.name} is <b>Dead</b>.
 				</Text>
 			);

@@ -101,22 +101,21 @@ export class CampaignMapLogic {
 
 		map.regions.forEach(region => {
 			const terrains = [
-				'Volcanic',
-				'Plateaus',
+				'Canyons',
+				'Desert',
+				'Fens',
+				'Forest',
+				'Jungle',
+				'Marshland',
 				'Mountains',
 				'Plains',
-				'Valleys',
-				'Marshland',
-				'Fens',
-				'Steppe',
-				'Desert',
-				'Jungle',
+				'Plateaus',
 				'Rainforest',
+				'Salt flats',
 				'Scrubland',
-				'Forest',
-				'Urbanized',
-				'Canyons',
-				'Salt flats'
+				'Steppe',
+				'Valleys',
+				'Volcanic'
 			];
 
 			const size = CampaignMapLogic.getSquares(map, region).length;

@@ -74,7 +74,7 @@ export class EncounterLogic {
 			});
 		encounter.loot.forEach(lp => occupied.push(lp.position));
 
-		return occupied.find(s => (s.x === square.x) && (s.y === square.y)) === undefined;
+		return encounter.mapSquares.find(s => (s.x === square.x) && (s.y === square.y)) && !occupied.find(s => (s.x === square.x) && (s.y === square.y));
 	};
 
 	static log = (encounter: EncounterModel, message: string) => {

@@ -13,6 +13,10 @@
 			margin-bottom: 30px;
 		}
 
+		&.acted {
+			color: rgb(150, 150, 150);
+		}
+
 		&.selected {
 			border-color: rgb(60, 170, 255);
 			background-color: rgb(200, 230, 255);

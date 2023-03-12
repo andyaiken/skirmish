@@ -668,6 +668,12 @@ export class EncounterLogic {
 			.filter(c => c.combat.initiative !== Number.MIN_VALUE);
 	};
 
+	static getActedCombatants = (encounter: EncounterModel) => {
+		return encounter.combatants
+			.filter(c => c.combat.state !== CombatantState.Dead)
+			.filter(c => c.combat.initiative === Number.MIN_VALUE);
+	};
+
 	static getAllHeroesInEncounter = (encounter: EncounterModel) => {
 		return encounter.combatants.filter(c => c.type === CombatantType.Hero);
 	};

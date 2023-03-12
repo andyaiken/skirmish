@@ -20,7 +20,19 @@ interface Props {
 
 export class InitiativeListPanel extends Component<Props> {
 	render = () => {
-		const entries = EncounterLogic.getActiveCombatants(this.props.encounter).map(combatant => {
+		const activeEntries = EncounterLogic.getActiveCombatants(this.props.encounter).map(combatant => {
+			return (
+				<Entry
+					key={combatant.id}
+					combatant={combatant}
+					selected={this.props.selectedIDs.includes(combatant.id)}
+					onSelect={this.props.onSelect}
+					onDetails={this.props.onDetails}
+				/>
+			);
+		});
+
+		const actedEntries = EncounterLogic.getActedCombatants(this.props.encounter).map(combatant => {
 			return (
 				<Entry
 					key={combatant.id}
@@ -34,7 +46,9 @@ export class InitiativeListPanel extends Component<Props> {
 
 		return (
 			<div className='initiative-list-panel'>
-				{entries}
+				{activeEntries}
+				{(activeEntries.length > 0) && (actedEntries.length > 0) ? <hr /> : null}
+				{actedEntries}
 			</div>
 		);
 	};
@@ -65,7 +79,10 @@ class Entry extends Component<EntryProps> {
 			);
 		}
 
-		const className = `initiative-entry ${this.props.combatant.combat.current ? 'current' : ''} ${this.props.selected ? 'selected' : ''}`;
+		const current = this.props.combatant.combat.current ? 'current' : '';
+		const acted = this.props.combatant.combat.initiative === Number.MIN_VALUE ? 'acted' : '';
+		const selected = this.props.selected ? 'selected' : '';
+		const className = `initiative-entry ${current} ${acted} ${selected}`;
 		const label = (
 			<div className='initiative-entry-details'>
 				<div className='initiative-entry-name'>{this.props.combatant.name}</div>
@@ -76,7 +93,7 @@ class Entry extends Component<EntryProps> {
 		return (
 			<div className={className} onClick={() => this.props.onSelect(this.props.combatant)} onDoubleClick={() => this.props.onDetails(this.props.combatant)}>
 				<div className={`initiative-entry-token ${this.props.combatant.type.toLowerCase()}`}></div>
-				<StatValue label={label} value={this.props.combatant.combat.initiative} />
+				<StatValue label={label} value={this.props.combatant.combat.initiative !== Number.MIN_VALUE ? this.props.combatant.combat.initiative : ''} />
 			</div>
 		);
 	};

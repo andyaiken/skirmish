@@ -253,6 +253,10 @@ export class EncounterScreen extends Component<Props, State> {
 	};
 
 	showDetailsCombatant = (combatant: CombatantModel)=> {
+		if ((combatant.type === CombatantType.Monster) && !this.props.developer) {
+			return;
+		}
+
 		this.setState({
 			detailsCombatant: combatant,
 			detailsLoot: null
@@ -383,16 +387,14 @@ export class EncounterScreen extends Component<Props, State> {
 		let content = null;
 		switch (this.state.leftID) {
 			case 'init': {
-				if ((state === EncounterState.Active) && (EncounterLogic.getActiveCombatants(this.props.encounter).find(c => c.combat.current))) {
-					content = (
-						<InitiativeListPanel
-							encounter={this.props.encounter}
-							selectedIDs={this.state.selectedCombatantIDs}
-							onSelect={this.selectCombatant}
-							onDetails={this.showDetailsCombatant}
-						/>
-					);
-				}
+				content = (
+					<InitiativeListPanel
+						encounter={this.props.encounter}
+						selectedIDs={this.state.selectedCombatantIDs}
+						onSelect={this.selectCombatant}
+						onDetails={this.showDetailsCombatant}
+					/>
+				);
 				break;
 			}
 			case 'log': {

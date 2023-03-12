@@ -15,6 +15,7 @@
     * Allow the user to opt for a universal action instead
   * Implement AI so that monsters can take their turns
     * Add a button so that the user can perform each action in turn
+  * Implement line-of-sight when selecting combatants / squares / walls
 * Add a system for evaluating each action to ensure none is too powerful
   * Then extend this to ensure species / roles / backgrounds are equally matched
 * Add help / documentation to explain game rules
@@ -33,18 +34,17 @@
 * Character sheet panel:
   * Show ranks as filled circles
   * Show the XP required as a gauge
+* Display features / actions more attractively on species / role / background / item cards
 * Encounters
   * Traps
     * Pit traps
     * Fire traps
     * Dart traps
     * Poison dart traps
-  * Implement line-of-sight
   * Action parameter selection / 'go' button / etc, should happen in the card itself
   * Indicate to the user whether a hero's movement / actions have been spent
     * On the move / action tabs?
   * Indicate combatant's damage / wounds / conditions on the map token / in the initiative list
-  * Show combatants that have already acted in the initiative list (in a separate section below)
   * Allow other victory conditions
     * Get a certain number of heroes to a particular area
     * Get one hero to a particular area and stay there for a certain number of rounds
@@ -59,6 +59,8 @@
 * Minotaur, Reptilian, and Shadowborn should be able to intimidate
   * Use the same skill as the Noble's Taunt action
 * Deva should have the ability to see opponent character sheet
+* Shadowborn should be monster species
+* Necromancer should be monster role
 * Monster species:
   * Humanoids
     * Kobold

@@ -614,125 +614,16 @@ export class RoleData {
 						effects: [
 							ActionEffects.invertConditions(true)
 						]
-					}
-				]
-			},
-			{
-				id: 'role-ninja',
-				name: 'Ninja',
-				traits: [
-					TraitType.Speed
-				],
-				skills: [
-					SkillType.Brawl,
-					SkillType.Stealth
-				],
-				proficiencies: [],
-				features: [
-					FeatureLogic.createTraitFeature('ninja-feature-1', TraitType.Speed, 1),
-					FeatureLogic.createSkillFeature('ninja-feature-2', SkillType.Brawl, 2),
-					FeatureLogic.createSkillFeature('ninja-feature-3', SkillType.Stealth, 2),
-					FeatureLogic.createDamageCategoryBonusFeature('ninja-feature-4', DamageCategoryType.Physical, 1)
-				],
-				actions: [
-					{
-						id: 'ninja-action-1',
-						name: 'Roundhouse kick',
-						prerequisites: [],
-						parameters: [
-							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
-						],
-						effects: [
-							ActionEffects.attack({
-								weapon: false,
-								skill: SkillType.Brawl,
-								trait: TraitType.Speed,
-								skillBonus: 2,
-								hit: [
-									ActionEffects.dealDamage(DamageType.Impact, 2)
-								]
-							})
-						]
 					},
 					{
-						id: 'ninja-action-2',
-						name: 'Flurry',
+						id: 'luckweaver-action-4',
+						name: 'Banish',
 						prerequisites: [],
 						parameters: [
-							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+							ActionTargetParameters.burst(ActionTargetType.Combatants, 1, 5)
 						],
 						effects: [
-							ActionEffects.attack({
-								weapon: false,
-								skill: SkillType.Brawl,
-								trait: TraitType.Speed,
-								skillBonus: 0,
-								hit: [
-									ActionEffects.dealDamage(DamageType.Impact, 1)
-								]
-							}),
-							ActionEffects.attack({
-								weapon: false,
-								skill: SkillType.Brawl,
-								trait: TraitType.Speed,
-								skillBonus: 0,
-								hit: [
-									ActionEffects.dealDamage(DamageType.Impact, 1)
-								]
-							}),
-							ActionEffects.attack({
-								weapon: false,
-								skill: SkillType.Brawl,
-								trait: TraitType.Speed,
-								skillBonus: 0,
-								hit: [
-									ActionEffects.dealDamage(DamageType.Impact, 1)
-								]
-							})
-						]
-					},
-					{
-						id: 'ninja-action-3',
-						name: 'Split Kick',
-						prerequisites: [],
-						parameters: [
-							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 2)
-						],
-						effects: [
-							ActionEffects.attack({
-								weapon: false,
-								skill: SkillType.Brawl,
-								trait: TraitType.Speed,
-								skillBonus: 0,
-								hit: [
-									ActionEffects.dealDamage(DamageType.Impact, 2)
-								]
-							})
-						]
-					},
-					{
-						id: 'ninja-action-4',
-						name: 'Lightning Speed',
-						prerequisites: [],
-						parameters: [
-							ActionTargetParameters.self()
-						],
-						effects: [
-							ActionEffects.addMovement()
-						]
-					},
-					{
-						id: 'ninja-action-5',
-						name: 'Adrenal Boost',
-						prerequisites: [],
-						parameters: [
-							ActionTargetParameters.self()
-						],
-						effects: [
-							ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Endurance, 3, TraitType.Speed)),
-							ActionEffects.addCondition(ConditionLogic.createMovementBonusCondition(TraitType.Endurance, 3)),
-							ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Endurance, 3, SkillType.Brawl)),
-							ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Endurance, 3, DamageCategoryType.Physical))
+							ActionEffects.forceMovement(MovementType.Random, 20)
 						]
 					}
 				]
@@ -871,6 +762,220 @@ export class RoleData {
 									ActionEffects.dealWeaponDamage()
 								]
 							})
+						]
+					}
+				]
+			},
+			{
+				id: 'role-necromancer',
+				name: 'Necromancer',
+				traits: [
+					TraitType.Resolve
+				],
+				skills: [
+					SkillType.Spellcasting
+				],
+				proficiencies: [
+					ItemProficiencyType.Implements
+				],
+				features: [
+					FeatureLogic.createTraitFeature('necromancer-feature-1', TraitType.Resolve, 1),
+					FeatureLogic.createSkillFeature('necromancer-feature-2', SkillType.Spellcasting, 2),
+					FeatureLogic.createAuraDamageFeature('necromancer-feature-3', ConditionType.AutoDamage, DamageType.Decay, 1)
+				],
+				actions: [
+					{
+						id: 'necromancer-action-1',
+						name: 'Transfer Damage',
+						prerequisites: [
+							ActionPrerequisites.implement(),
+							ActionPrerequisites.damage()
+						],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+						],
+						effects: [
+							ActionEffects.healDamageSelf(3),
+							ActionEffects.dealDamage(DamageType.Decay, 3)
+						]
+					},
+					{
+						id: 'necromancer-action-2',
+						name: 'Transfer Wounds',
+						prerequisites: [
+							ActionPrerequisites.implement(),
+							ActionPrerequisites.wound()
+						],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+						],
+						effects: [
+							ActionEffects.healWoundsSelf(1),
+							ActionEffects.inflictWounds(1)
+						]
+					},
+					{
+						id: 'necromancer-action-3',
+						name: 'Accept Damage',
+						prerequisites: [
+							ActionPrerequisites.implement()
+						],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Allies, 1, 5)
+						],
+						effects: [
+							ActionEffects.healDamage(3),
+							ActionEffects.dealDamageSelf(DamageType.Decay, 3)
+						]
+					},
+					{
+						id: 'necromancer-action-4',
+						name: 'Accept Wounds',
+						prerequisites: [
+							ActionPrerequisites.implement()
+						],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Allies, 1, 5)
+						],
+						effects: [
+							ActionEffects.healWounds(1),
+							ActionEffects.inflictWoundsSelf(1)
+						]
+					},
+					{
+						id: 'necromancer-action-5',
+						name: 'Strength from Pain',
+						prerequisites: [
+							ActionPrerequisites.implement(),
+							ActionPrerequisites.damage()
+						],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Allies, 1, 5)
+						],
+						effects: [
+							ActionEffects.healDamage(3),
+							ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Resolve, 3, TraitType.Endurance)),
+							ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Resolve, 3, TraitType.Resolve))
+						]
+					}
+				]
+			},
+			{
+				id: 'role-ninja',
+				name: 'Ninja',
+				traits: [
+					TraitType.Speed
+				],
+				skills: [
+					SkillType.Brawl,
+					SkillType.Stealth
+				],
+				proficiencies: [],
+				features: [
+					FeatureLogic.createTraitFeature('ninja-feature-1', TraitType.Speed, 1),
+					FeatureLogic.createSkillFeature('ninja-feature-2', SkillType.Brawl, 2),
+					FeatureLogic.createSkillFeature('ninja-feature-3', SkillType.Stealth, 2),
+					FeatureLogic.createDamageCategoryBonusFeature('ninja-feature-4', DamageCategoryType.Physical, 1)
+				],
+				actions: [
+					{
+						id: 'ninja-action-1',
+						name: 'Roundhouse kick',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Speed,
+								skillBonus: 2,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Impact, 2)
+								]
+							})
+						]
+					},
+					{
+						id: 'ninja-action-2',
+						name: 'Flurry',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Impact, 1)
+								]
+							}),
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Impact, 1)
+								]
+							}),
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Impact, 1)
+								]
+							})
+						]
+					},
+					{
+						id: 'ninja-action-3',
+						name: 'Split Kick',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 2)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Impact, 2)
+								]
+							})
+						]
+					},
+					{
+						id: 'ninja-action-4',
+						name: 'Lightning Speed',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.self()
+						],
+						effects: [
+							ActionEffects.addMovement()
+						]
+					},
+					{
+						id: 'ninja-action-5',
+						name: 'Adrenal Boost',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.self()
+						],
+						effects: [
+							ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Endurance, 3, TraitType.Speed)),
+							ActionEffects.addCondition(ConditionLogic.createMovementBonusCondition(TraitType.Endurance, 3)),
+							ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Endurance, 3, SkillType.Brawl)),
+							ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Endurance, 3, DamageCategoryType.Physical))
 						]
 					}
 				]
@@ -1019,100 +1124,6 @@ export class RoleData {
 									ActionEffects.dealWeaponDamage(2)
 								]
 							})
-						]
-					}
-				]
-			},
-			{
-				id: 'role-necromancer',
-				name: 'Necromancer',
-				traits: [
-					TraitType.Resolve
-				],
-				skills: [
-					SkillType.Spellcasting
-				],
-				proficiencies: [
-					ItemProficiencyType.Implements
-				],
-				features: [
-					FeatureLogic.createTraitFeature('necromancer-feature-1', TraitType.Resolve, 1),
-					FeatureLogic.createSkillFeature('necromancer-feature-2', SkillType.Spellcasting, 2),
-					FeatureLogic.createAuraDamageFeature('necromancer-feature-3', ConditionType.AutoDamage, DamageType.Decay, 1)
-				],
-				actions: [
-					{
-						id: 'necromancer-action-1',
-						name: 'Transfer Damage',
-						prerequisites: [
-							ActionPrerequisites.implement(),
-							ActionPrerequisites.damage()
-						],
-						parameters: [
-							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
-						],
-						effects: [
-							ActionEffects.healDamageSelf(3),
-							ActionEffects.dealDamage(DamageType.Decay, 3)
-						]
-					},
-					{
-						id: 'necromancer-action-2',
-						name: 'Transfer Wounds',
-						prerequisites: [
-							ActionPrerequisites.implement(),
-							ActionPrerequisites.wound()
-						],
-						parameters: [
-							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
-						],
-						effects: [
-							ActionEffects.healWoundsSelf(1),
-							ActionEffects.inflictWounds(1)
-						]
-					},
-					{
-						id: 'necromancer-action-3',
-						name: 'Accept Damage',
-						prerequisites: [
-							ActionPrerequisites.implement()
-						],
-						parameters: [
-							ActionTargetParameters.burst(ActionTargetType.Allies, 1, 5)
-						],
-						effects: [
-							ActionEffects.healDamage(3),
-							ActionEffects.dealDamageSelf(DamageType.Decay, 3)
-						]
-					},
-					{
-						id: 'necromancer-action-4',
-						name: 'Accept Wounds',
-						prerequisites: [
-							ActionPrerequisites.implement()
-						],
-						parameters: [
-							ActionTargetParameters.burst(ActionTargetType.Allies, 1, 5)
-						],
-						effects: [
-							ActionEffects.healWounds(1),
-							ActionEffects.inflictWoundsSelf(1)
-						]
-					},
-					{
-						id: 'necromancer-action-5',
-						name: 'Strength from Pain',
-						prerequisites: [
-							ActionPrerequisites.implement(),
-							ActionPrerequisites.damage()
-						],
-						parameters: [
-							ActionTargetParameters.burst(ActionTargetType.Allies, 1, 5)
-						],
-						effects: [
-							ActionEffects.healDamage(3),
-							ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Resolve, 3, TraitType.Endurance)),
-							ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Resolve, 3, TraitType.Resolve))
 						]
 					}
 				]

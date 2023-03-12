@@ -13,7 +13,7 @@ export class EncounterMapLogic {
 	static generateDungeonMap = (rng: () => number): EncounterMapSquareModel[] => {
 		const map: EncounterMapSquareModel[] = [];
 
-		while (map.length < 1000) {
+		while (map.length < 500) {
 			const dirs = [ 'n', 'e', 's', 'w' ];
 			const dir = dirs[Random.randomNumber(4, rng)];
 
@@ -21,8 +21,8 @@ export class EncounterMapLogic {
 			const type = Random.randomNumber(3, rng);
 
 			const size = {
-				width: (type === 2) && ((dir === 'n') || (dir === 's')) ? 2 : Random.dice(3, rng),
-				height: (type === 2) && ((dir === 'e') || (dir === 'w')) ? 2 : Random.dice(3, rng)
+				width: (type === 2) && ((dir === 'n') || (dir === 's')) ? 2 : Random.dice(2, rng),
+				height: (type === 2) && ((dir === 'e') || (dir === 'w')) ? 2 : Random.dice(2, rng)
 			};
 
 			const position = { x: 0, y: 0 };

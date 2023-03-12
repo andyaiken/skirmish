@@ -18,6 +18,41 @@ export class BackgroundData {
 	static getList = (): BackgroundModel[] => {
 		return [
 			{
+				id: 'background-acrobat',
+				name: 'Acrobat',
+				features: [
+					FeatureLogic.createTraitFeature('acrobat-feature-2', TraitType.Speed, 1),
+					FeatureLogic.createSkillFeature('acrobat-feature-3', SkillType.Reactions, 2)
+				],
+				actions: [
+					{
+						id: 'acrobat-action-1',
+						name: 'Jump Up',
+						prerequisites: [
+							ActionPrerequisites.prone()
+						],
+						parameters: [
+							ActionTargetParameters.self()
+						],
+						effects: [
+							ActionEffects.stand(),
+							ActionEffects.redrawActions()
+						]
+					},
+					{
+						id: 'acrobat-action-2',
+						name: 'Burst of Speed',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.self()
+						],
+						effects: [
+							ActionEffects.addMovement()
+						]
+					}
+				]
+			},
+			{
 				id: 'background-bard',
 				name: 'Bard',
 				features: [
@@ -126,7 +161,7 @@ export class BackgroundData {
 					},
 					{
 						id: 'mountebank-action-2',
-						name: 'Expose weakness',
+						name: 'Expose Weakness',
 						prerequisites: [],
 						parameters: [
 							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
@@ -264,7 +299,7 @@ export class BackgroundData {
 				actions: [
 					{
 						id: 'physician-action-1',
-						name: 'Remove affliction',
+						name: 'Remove Affliction',
 						prerequisites: [],
 						parameters: [
 							ActionTargetParameters.adjacent(ActionTargetType.Allies, 1)
@@ -275,7 +310,7 @@ export class BackgroundData {
 					},
 					{
 						id: 'physician-action-2',
-						name: 'First aid',
+						name: 'First Aid',
 						prerequisites: [],
 						parameters: [
 							ActionTargetParameters.adjacent(ActionTargetType.Allies, 1)
@@ -286,7 +321,7 @@ export class BackgroundData {
 					},
 					{
 						id: 'physician-action-3',
-						name: 'Cure wounds',
+						name: 'Cure Wounds',
 						prerequisites: [],
 						parameters: [
 							ActionTargetParameters.adjacent(ActionTargetType.Allies, 1)
@@ -370,7 +405,7 @@ export class BackgroundData {
 					},
 					{
 						id: 'sentinel-action-2',
-						name: 'Imposing stance',
+						name: 'Imposing Stance',
 						prerequisites: [],
 						parameters: [
 							ActionTargetParameters.self()
@@ -382,7 +417,7 @@ export class BackgroundData {
 					},
 					{
 						id: 'sentinel-action-3',
-						name: 'Keep close',
+						name: 'Keep Close',
 						prerequisites: [],
 						parameters: [
 							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
@@ -404,7 +439,7 @@ export class BackgroundData {
 				actions: [
 					{
 						id: 'thief-action-1',
-						name: 'Steal item',
+						name: 'Steal',
 						prerequisites: [
 							ActionPrerequisites.carryingCapacity()
 						],
@@ -413,17 +448,6 @@ export class BackgroundData {
 						],
 						effects: [
 							ActionEffects.steal()
-						]
-					},
-					{
-						id: 'thief-action-2',
-						name: 'Burst of Speed',
-						prerequisites: [],
-						parameters: [
-							ActionTargetParameters.self()
-						],
-						effects: [
-							ActionEffects.addMovement()
 						]
 					}
 				]

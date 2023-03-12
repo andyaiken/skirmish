@@ -122,6 +122,14 @@ export class ActionPrerequisites {
 		};
 	};
 
+	static prone = (): ActionPrerequisiteModel => {
+		return {
+			id: 'prone',
+			description: 'Requires prone',
+			data: null
+		};
+	};
+
 	static isSatisfied = (prerequisite: ActionPrerequisiteModel, encounter: EncounterModel) => {
 		const combatant = encounter.combatants.find(c => c.combat.current);
 		if (!combatant) {
@@ -161,6 +169,9 @@ export class ActionPrerequisites {
 			}
 			case 'hidden': {
 				return combatant.combat.hidden > 0;
+			}
+			case 'prone': {
+				return combatant.combat.state === CombatantState.Prone;
 			}
 		}
 
@@ -410,6 +421,15 @@ export class ActionEffects {
 		return {
 			id: 'stun',
 			description: 'Stun',
+			data: null,
+			children: []
+		};
+	};
+
+	static stand = (): ActionEffectModel => {
+		return {
+			id: 'stand',
+			description: 'Stand Up',
 			data: null,
 			children: []
 		};
@@ -780,6 +800,20 @@ export class ActionEffects {
 						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
 						target.combat.stunned = true;
 						EncounterLogic.log(encounter, `${target.name} is stunned`);
+					});
+				}
+				break;
+			}
+			case 'stand': {
+				const targetParameter = parameters.find(p => p.name === 'targets');
+				if (targetParameter) {
+					const targetIDs = targetParameter.value as string[];
+					targetIDs.forEach(id => {
+						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
+						if (target.combat.state === CombatantState.Prone) {
+							target.combat.state = CombatantState.Standing;
+							EncounterLogic.log(encounter, `${target.name} stands up`);
+						}
 					});
 				}
 				break;

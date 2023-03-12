@@ -68,7 +68,7 @@ export class SpeciesData {
 				actions: [
 					{
 						id: 'construct-action-1',
-						name: 'Knockdown attack',
+						name: 'Knockdown',
 						prerequisites: [],
 						parameters: [
 							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
@@ -87,7 +87,7 @@ export class SpeciesData {
 					},
 					{
 						id: 'construct-action-2',
-						name: 'Repair (heal self damage)',
+						name: 'Repair',
 						prerequisites: [
 							ActionPrerequisites.damage()
 						],
@@ -173,7 +173,7 @@ export class SpeciesData {
 				actions: [
 					{
 						id: 'dwarf-action-1',
-						name: 'Remove endurance condition on self',
+						name: 'Constitution',
 						prerequisites: [
 							ActionPrerequisites.condition(TraitType.Endurance)
 						],
@@ -186,7 +186,7 @@ export class SpeciesData {
 					},
 					{
 						id: 'dwarf-action-2',
-						name: 'Remove resolve condition on self',
+						name: 'Discipline',
 						prerequisites: [
 							ActionPrerequisites.condition(TraitType.Resolve)
 						],
@@ -224,6 +224,17 @@ export class SpeciesData {
 						effects: [
 							ActionEffects.reveal()
 						]
+					},
+					{
+						id: 'pixie-action-2',
+						name: 'Seelie Step',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Squares, 1, 10)
+						],
+						effects: [
+							ActionEffects.moveToTargetSquare()
+						]
 					}
 				]
 			},
@@ -243,7 +254,7 @@ export class SpeciesData {
 				actions: [
 					{
 						id: 'gnome-action-1',
-						name: 'Trip attack',
+						name: 'Trip',
 						prerequisites: [],
 						parameters: [
 							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
@@ -297,7 +308,7 @@ export class SpeciesData {
 					},
 					{
 						id: 'minotaur-action-2',
-						name: 'Bull rush',
+						name: 'Bull Rush',
 						prerequisites: [],
 						parameters: [
 							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
@@ -355,13 +366,14 @@ export class SpeciesData {
 					},
 					{
 						id: 'pixie-action-2',
-						name: 'Teleport',
+						name: 'Blink',
 						prerequisites: [],
 						parameters: [
-							ActionTargetParameters.burst(ActionTargetType.Squares, 1, 10)
+							ActionTargetParameters.burst(ActionTargetType.Squares, 1, 3)
 						],
 						effects: [
-							ActionEffects.moveToTargetSquare()
+							ActionEffects.moveToTargetSquare(),
+							ActionEffects.redrawActions()
 						]
 					}
 				]
@@ -434,7 +446,7 @@ export class SpeciesData {
 				actions: [
 					{
 						id: 'shadowborn-action-1',
-						name: 'Transfer a condition',
+						name: 'Transference',
 						prerequisites: [
 							ActionPrerequisites.condition(TraitType.Any)
 						],
@@ -447,7 +459,7 @@ export class SpeciesData {
 					},
 					{
 						id: 'shadowborn-action-2',
-						name: 'Drain energy',
+						name: 'Drain Energy',
 						prerequisites: [],
 						parameters: [
 							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
@@ -584,7 +596,7 @@ export class SpeciesData {
 				actions: [
 					{
 						id: 'goblin-action-1',
-						name: 'Sneak attack',
+						name: 'Sneak Attack',
 						prerequisites: [
 							ActionPrerequisites.hidden()
 						],

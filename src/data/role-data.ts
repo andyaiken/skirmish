@@ -91,7 +91,7 @@ export class RoleData {
 					},
 					{
 						id: 'arcanist-action-5',
-						name: 'Swap positions',
+						name: 'Arcane Displacement',
 						prerequisites: [
 							ActionPrerequisites.implement()
 						],
@@ -126,7 +126,7 @@ export class RoleData {
 				actions: [
 					{
 						id: 'barbarian-action-1',
-						name: 'Overhead strike',
+						name: 'Overhead Strike',
 						prerequisites: [
 							ActionPrerequisites.meleeWeapon()
 						],
@@ -149,7 +149,7 @@ export class RoleData {
 					},
 					{
 						id: 'barbarian-action-2',
-						name: 'Knockdown strike',
+						name: 'Knockdown Strike',
 						prerequisites: [
 							ActionPrerequisites.meleeWeapon()
 						],
@@ -172,7 +172,7 @@ export class RoleData {
 					},
 					{
 						id: 'barbarian-action-3',
-						name: 'Stunning strike',
+						name: 'Stunning Strike',
 						prerequisites: [
 							ActionPrerequisites.meleeWeapon()
 						],
@@ -195,7 +195,7 @@ export class RoleData {
 					},
 					{
 						id: 'barbarian-action-4',
-						name: 'Haymaker strike',
+						name: 'Haymaker',
 						prerequisites: [
 							ActionPrerequisites.meleeWeapon()
 						],
@@ -217,7 +217,7 @@ export class RoleData {
 					},
 					{
 						id: 'barbarian-action-5',
-						name: 'Burst through wall',
+						name: 'Burst Through',
 						prerequisites: [
 							ActionPrerequisites.meleeWeapon()
 						],
@@ -251,7 +251,7 @@ export class RoleData {
 				actions: [
 					{
 						id: 'dervish-action-1',
-						name: 'Dual strike (one target)',
+						name: 'Dual Strike',
 						prerequisites: [
 							ActionPrerequisites.meleeWeapon()
 						],
@@ -282,7 +282,7 @@ export class RoleData {
 					},
 					{
 						id: 'dervish-action-2',
-						name: 'Dual strike (two targets)',
+						name: 'Twin Attack',
 						prerequisites: [
 							ActionPrerequisites.meleeWeapon()
 						],
@@ -304,7 +304,7 @@ export class RoleData {
 					},
 					{
 						id: 'dervish-action-3',
-						name: 'Whirlwind strike',
+						name: 'Whirlwind Strike',
 						prerequisites: [
 							ActionPrerequisites.meleeWeapon()
 						],
@@ -326,7 +326,7 @@ export class RoleData {
 					},
 					{
 						id: 'dervish-action-4',
-						name: 'Leaping strike',
+						name: 'Leaping Strike',
 						prerequisites: [
 							ActionPrerequisites.meleeWeapon()
 						],
@@ -349,7 +349,7 @@ export class RoleData {
 					},
 					{
 						id: 'dervish-action-5',
-						name: 'Dodging stance',
+						name: 'Dodging Stance',
 						prerequisites: [],
 						parameters: [
 							ActionTargetParameters.self()
@@ -357,6 +357,29 @@ export class RoleData {
 						effects: [
 							ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Endurance, 5, TraitType.Speed)),
 							ActionEffects.addCondition(ConditionLogic.createDamageResistanceCondition(TraitType.Endurance, 5, DamageType.All))
+						]
+					},
+					{
+						id: 'dervish-action-6',
+						name: 'Off-Hand Strike',
+						prerequisites: [
+							ActionPrerequisites.meleeWeapon()
+						],
+						parameters: [
+							ActionWeaponParameters.melee(),
+							ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: true,
+								skill: SkillType.Weapon,
+								trait: TraitType.Speed,
+								skillBonus: -2,
+								hit: [
+									ActionEffects.dealWeaponDamage()
+								]
+							}),
+							ActionEffects.redrawActions()
 						]
 					}
 				]
@@ -421,7 +444,7 @@ export class RoleData {
 					},
 					{
 						id: 'enchanter-action-4',
-						name: 'Mental shield',
+						name: 'Intellect Shield',
 						prerequisites: [
 							ActionPrerequisites.implement()
 						],
@@ -468,7 +491,7 @@ export class RoleData {
 				actions: [
 					{
 						id: 'geomancer-action-1',
-						name: 'Create difficult terrain',
+						name: 'Obstruct Terrain',
 						prerequisites: [
 							ActionPrerequisites.implement()
 						],
@@ -481,7 +504,7 @@ export class RoleData {
 					},
 					{
 						id: 'geomancer-action-2',
-						name: 'Create clear terrain',
+						name: 'Clear Terrain',
 						prerequisites: [
 							ActionPrerequisites.implement()
 						],
@@ -494,7 +517,7 @@ export class RoleData {
 					},
 					{
 						id: 'geomancer-action-3',
-						name: 'Destroy ground',
+						name: 'Destroy Ground',
 						prerequisites: [
 							ActionPrerequisites.implement()
 						],
@@ -507,7 +530,7 @@ export class RoleData {
 					},
 					{
 						id: 'geomancer-action-4',
-						name: 'Create ground',
+						name: 'Create Ground',
 						prerequisites: [
 							ActionPrerequisites.implement()
 						],
@@ -520,7 +543,7 @@ export class RoleData {
 					},
 					{
 						id: 'geomancer-action-5',
-						name: 'Earthbind (reduce target\'s speed)',
+						name: 'Earthbind',
 						prerequisites: [
 							ActionPrerequisites.implement()
 						],
@@ -553,7 +576,7 @@ export class RoleData {
 				actions: [
 					{
 						id: 'luckweaver-action-1',
-						name: 'Chaos bolt',
+						name: 'Chaos Bolt',
 						prerequisites: [],
 						parameters: [
 							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 10)
@@ -572,7 +595,7 @@ export class RoleData {
 					},
 					{
 						id: 'luckweaver-action-2',
-						name: 'Warp space',
+						name: 'Warp Space',
 						prerequisites: [],
 						parameters: [
 							ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 10)
@@ -583,7 +606,7 @@ export class RoleData {
 					},
 					{
 						id: 'luckweaver-action-3',
-						name: 'Probability wave',
+						name: 'Probability Wave',
 						prerequisites: [],
 						parameters: [
 							ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 10)
@@ -645,7 +668,7 @@ export class RoleData {
 								trait: TraitType.Speed,
 								skillBonus: 0,
 								hit: [
-									ActionEffects.dealDamage(DamageType.Impact, 2)
+									ActionEffects.dealDamage(DamageType.Impact, 1)
 								]
 							}),
 							ActionEffects.attack({
@@ -654,7 +677,7 @@ export class RoleData {
 								trait: TraitType.Speed,
 								skillBonus: 0,
 								hit: [
-									ActionEffects.dealDamage(DamageType.Impact, 2)
+									ActionEffects.dealDamage(DamageType.Impact, 1)
 								]
 							}),
 							ActionEffects.attack({
@@ -663,14 +686,14 @@ export class RoleData {
 								trait: TraitType.Speed,
 								skillBonus: 0,
 								hit: [
-									ActionEffects.dealDamage(DamageType.Impact, 2)
+									ActionEffects.dealDamage(DamageType.Impact, 1)
 								]
 							})
 						]
 					},
 					{
 						id: 'ninja-action-3',
-						name: 'Split kick',
+						name: 'Split Kick',
 						prerequisites: [],
 						parameters: [
 							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 2)
@@ -700,7 +723,7 @@ export class RoleData {
 					},
 					{
 						id: 'ninja-action-5',
-						name: 'Adrenal boost',
+						name: 'Adrenal Boost',
 						prerequisites: [],
 						parameters: [
 							ActionTargetParameters.self()
@@ -778,7 +801,7 @@ export class RoleData {
 					},
 					{
 						id: 'gunslinger-action-3',
-						name: 'Pommel strike',
+						name: 'Pommel Strike',
 						prerequisites: [
 							ActionPrerequisites.rangedWeapon()
 						],
@@ -830,7 +853,7 @@ export class RoleData {
 					},
 					{
 						id: 'gunslinger-action-5',
-						name: 'Careful shot',
+						name: 'Careful Shot',
 						prerequisites: [
 							ActionPrerequisites.rangedWeapon()
 						],
@@ -873,7 +896,7 @@ export class RoleData {
 				actions: [
 					{
 						id: 'ranger-action-1',
-						name: 'Careful aim',
+						name: 'Deadeye',
 						prerequisites: [
 							ActionPrerequisites.rangedWeapon()
 						],
@@ -886,7 +909,7 @@ export class RoleData {
 					},
 					{
 						id: 'ranger-action-2',
-						name: 'Sure shot',
+						name: 'Sure Shot',
 						prerequisites: [
 							ActionPrerequisites.rangedWeapon()
 						],
@@ -908,7 +931,7 @@ export class RoleData {
 					},
 					{
 						id: 'ranger-action-3',
-						name: 'Pinning shot (slows)',
+						name: 'Pinning Shot',
 						prerequisites: [
 							ActionPrerequisites.rangedWeapon()
 						],
@@ -932,7 +955,7 @@ export class RoleData {
 					},
 					{
 						id: 'ranger-action-4',
-						name: 'Barrage (area, low damage)',
+						name: 'Barrage',
 						prerequisites: [
 							ActionPrerequisites.rangedWeapon()
 						],
@@ -949,6 +972,51 @@ export class RoleData {
 								skillBonus: 0,
 								hit: [
 									ActionEffects.dealWeaponDamage(-2)
+								]
+							})
+						]
+					},
+					{
+						id: 'ranger-action-5',
+						name: 'Quick Shot',
+						prerequisites: [
+							ActionPrerequisites.rangedWeapon()
+						],
+						parameters: [
+							ActionWeaponParameters.ranged(),
+							ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: true,
+								skill: SkillType.Weapon,
+								trait: TraitType.Speed,
+								skillBonus: -1,
+								hit: [
+									ActionEffects.dealWeaponDamage(-1)
+								]
+							}),
+							ActionEffects.redrawActions()
+						]
+					},
+					{
+						id: 'ranger-action-6',
+						name: 'Called Shot',
+						prerequisites: [
+							ActionPrerequisites.rangedWeapon()
+						],
+						parameters: [
+							ActionWeaponParameters.ranged(),
+							ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: true,
+								skill: SkillType.Weapon,
+								trait: TraitType.Speed,
+								skillBonus: -2,
+								hit: [
+									ActionEffects.dealWeaponDamage(2)
 								]
 							})
 						]
@@ -975,7 +1043,7 @@ export class RoleData {
 				actions: [
 					{
 						id: 'necromancer-action-1',
-						name: 'Transfer damage (self to enemy)',
+						name: 'Transfer Damage',
 						prerequisites: [
 							ActionPrerequisites.implement(),
 							ActionPrerequisites.damage()
@@ -990,7 +1058,7 @@ export class RoleData {
 					},
 					{
 						id: 'necromancer-action-2',
-						name: 'Transfer wounds (self to enemy)',
+						name: 'Transfer Wounds',
 						prerequisites: [
 							ActionPrerequisites.implement(),
 							ActionPrerequisites.wound()
@@ -1005,7 +1073,7 @@ export class RoleData {
 					},
 					{
 						id: 'necromancer-action-3',
-						name: 'Transfer damage (ally to self)',
+						name: 'Accept Damage',
 						prerequisites: [
 							ActionPrerequisites.implement()
 						],
@@ -1019,7 +1087,7 @@ export class RoleData {
 					},
 					{
 						id: 'necromancer-action-4',
-						name: 'Transfer wounds (ally to self)',
+						name: 'Accept Wounds',
 						prerequisites: [
 							ActionPrerequisites.implement()
 						],
@@ -1033,7 +1101,7 @@ export class RoleData {
 					},
 					{
 						id: 'necromancer-action-5',
-						name: 'Strength from pain',
+						name: 'Strength from Pain',
 						prerequisites: [
 							ActionPrerequisites.implement(),
 							ActionPrerequisites.damage()
@@ -1071,7 +1139,7 @@ export class RoleData {
 				actions: [
 					{
 						id: 'soldier-action-1',
-						name: 'Charge attack',
+						name: 'Charge',
 						prerequisites: [
 							ActionPrerequisites.meleeWeapon()
 						],
@@ -1094,7 +1162,7 @@ export class RoleData {
 					},
 					{
 						id: 'soldier-action-2',
-						name: 'Precise attack',
+						name: 'Precise Attack',
 						prerequisites: [
 							ActionPrerequisites.meleeWeapon()
 						],
@@ -1116,7 +1184,7 @@ export class RoleData {
 					},
 					{
 						id: 'soldier-action-3',
-						name: 'Disarming attack',
+						name: 'Disarm',
 						prerequisites: [
 							ActionPrerequisites.meleeWeapon()
 						],
@@ -1138,7 +1206,7 @@ export class RoleData {
 					},
 					{
 						id: 'soldier-action-4',
-						name: 'Parrying stance',
+						name: 'Parrying Stance',
 						prerequisites: [],
 						parameters: [
 							ActionTargetParameters.self()
@@ -1149,7 +1217,7 @@ export class RoleData {
 					},
 					{
 						id: 'soldier-action-5',
-						name: 'Shield bash',
+						name: 'Shield Bash',
 						prerequisites: [
 							ActionPrerequisites.shield()
 						],
@@ -1195,7 +1263,7 @@ export class RoleData {
 				actions: [
 					{
 						id: 'sorcerer-action-1',
-						name: 'Lightning bolt',
+						name: 'Lightning Bolt',
 						prerequisites: [
 							ActionPrerequisites.implement()
 						],
@@ -1217,7 +1285,7 @@ export class RoleData {
 					},
 					{
 						id: 'sorcerer-action-2',
-						name: 'Fireball (area, ongoing fire damage)',
+						name: 'Fireball',
 						prerequisites: [
 							ActionPrerequisites.implement()
 						],
@@ -1240,7 +1308,7 @@ export class RoleData {
 					},
 					{
 						id: 'sorcerer-action-3',
-						name: 'Ice storm',
+						name: 'Ice Storm',
 						prerequisites: [
 							ActionPrerequisites.implement()
 						],
@@ -1263,7 +1331,7 @@ export class RoleData {
 					},
 					{
 						id: 'sorcerer-action-4',
-						name: 'Elemental resistance: fire / ice / electricity',
+						name: 'Elemental Resistance',
 						prerequisites: [
 							ActionPrerequisites.implement()
 						],
@@ -1298,7 +1366,7 @@ export class RoleData {
 				actions: [
 					{
 						id: 'warmage-action-1',
-						name: 'Flaming blade',
+						name: 'Flaming Blade',
 						prerequisites: [
 							ActionPrerequisites.meleeWeapon()
 						],
@@ -1321,7 +1389,7 @@ export class RoleData {
 					},
 					{
 						id: 'warmage-action-2',
-						name: 'Frost blade',
+						name: 'Frost Blade',
 						prerequisites: [
 							ActionPrerequisites.meleeWeapon()
 						],
@@ -1344,7 +1412,7 @@ export class RoleData {
 					},
 					{
 						id: 'warmage-action-3',
-						name: 'Shocking blade',
+						name: 'Shocking Blade',
 						prerequisites: [
 							ActionPrerequisites.meleeWeapon()
 						],
@@ -1367,7 +1435,7 @@ export class RoleData {
 					},
 					{
 						id: 'warmage-action-4',
-						name: 'Armor enhancement',
+						name: 'Armor Enhancement',
 						prerequisites: [
 							ActionPrerequisites.armor()
 						],
@@ -1375,12 +1443,13 @@ export class RoleData {
 							ActionTargetParameters.self()
 						],
 						effects: [
-							ActionEffects.addCondition(ConditionLogic.createDamageResistanceCondition(TraitType.Resolve, 8, DamageType.All))
+							ActionEffects.addCondition(ConditionLogic.createDamageCategoryResistanceCondition(TraitType.Resolve, 6, DamageCategoryType.Physical)),
+							ActionEffects.addCondition(ConditionLogic.createDamageCategoryResistanceCondition(TraitType.Resolve, 6, DamageCategoryType.Energy))
 						]
 					},
 					{
 						id: 'warmage-action-5',
-						name: 'Arcane whip',
+						name: 'Arcane Whip',
 						prerequisites: [
 							ActionPrerequisites.meleeWeapon()
 						],

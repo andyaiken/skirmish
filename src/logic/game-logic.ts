@@ -207,6 +207,17 @@ export class GameLogic {
 		};
 	};
 
+	static getBoonIsHeroType = (boon: BoonModel) => {
+		switch (boon.type) {
+			case BoonType.ExtraHero:
+			case BoonType.ExtraXP:
+			case BoonType.LevelUp:
+				return true;
+		}
+
+		return false;
+	};
+
 	static getDamageCategoryType = (type: DamageType) => {
 		switch (type) {
 			case DamageType.All:

@@ -151,11 +151,11 @@ export class CampaignMapPage extends Component<Props, State> {
 	};
 
 	render = () => {
-		let info = null;
+		let sidebar = null;
 		if (this.state.selectedRegion) {
 			const canAttack = CampaignMapLogic.canAttackRegion(this.props.game.map, this.state.selectedRegion);
 			const heroesExist = this.props.game.heroes.filter(h => h.name !== '').length > 0;
-			info = (
+			sidebar = (
 				<div className='region'>
 					<Text type={TextType.SubHeading}>{this.state.selectedRegion.name}</Text>
 					<hr />
@@ -177,8 +177,9 @@ export class CampaignMapPage extends Component<Props, State> {
 			);
 		} else {
 			const owned = this.props.game.map.squares.filter(sq => sq.regionID === '');
-			info = (
+			sidebar = (
 				<div>
+					<Text type={TextType.SubHeading}>The Island</Text>
 					<Text>This is the map of the island.</Text>
 					{owned.length > 0 ? <Text>The white area is land you already control.</Text> : null}
 					<Text>Select a region to learn more about it.</Text>
@@ -190,17 +191,15 @@ export class CampaignMapPage extends Component<Props, State> {
 
 		return (
 			<div className='campaign-map-page'>
-				<div className='row'>
-					<div className='map'>
-						<CampaignMapPanel
-							map={this.props.game.map}
-							selectedRegion={this.state.selectedRegion}
-							onSelectRegion={region => this.setState({ selectedRegion: region })}
-						/>
-					</div>
-					<div className='info'>
-						{info}
-					</div>
+				<div className='map-content' onClick={() => this.setState({ selectedRegion: null })}>
+					<CampaignMapPanel
+						map={this.props.game.map}
+						selectedRegion={this.state.selectedRegion}
+						onSelectRegion={region => this.setState({ selectedRegion: region })}
+					/>
+				</div>
+				<div className='sidebar'>
+					{sidebar}
 				</div>
 				{this.getDialog()}
 			</div>

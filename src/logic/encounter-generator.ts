@@ -118,7 +118,7 @@ export class EncounterGenerator {
 			log: []
 		};
 
-		if (Random.randomNumber(10, rng) !== 0) {
+		if (Random.randomNumber(10, rng) === 0) {
 			const lp = Factory.createLootPile();
 			lp.items.push(MagicItemGenerator.generateMagicItem());
 

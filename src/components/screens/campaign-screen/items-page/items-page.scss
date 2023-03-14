@@ -1,19 +1,21 @@
 .items-page {
-	margin-top: 20px;
+	height: 100%;
+	padding: 20px;
 	display: flex;
+	gap: 20px;
 
-	.items-column {
+	.items-content {
 		flex: 1 1 0;
+		overflow-y: auto;
 	}
 
-	.divider {
-		flex: 0 0 2px;
-		margin: 0 10px;
-		border: 1px solid rgb(220, 220, 220);
-	}
-
-	.wealth-column {
-		flex: 0 0 300px;
+	.sidebar {
+		flex: 0 0 400px;
+		border: 2px solid rgb(210, 210, 210);
+		border-radius: 10px;
+		padding: 20px;
+		background-color: white;
+		overflow-y: auto;
 	}
 
 	.card-selection-row {

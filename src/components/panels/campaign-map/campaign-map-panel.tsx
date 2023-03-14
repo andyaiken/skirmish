@@ -32,35 +32,43 @@ export class CampaignMapPanel extends Component<Props> {
 		const height = 1 + (dims.bottom - dims.top);
 		const squareSizePC = 100 / Math.max(width, height);
 
-		const squares: JSX.Element[] = this.props.map.squares.map(square => {
-			const region = this.props.map.regions.find(r => r.id === square.regionID);
-			const color = region ? region.color : 'white';
+		const squares: JSX.Element[] = this.props.map.squares
+			.sort((a, b) => {
+				let result = a.x - b.x;
+				if (result === 0) {
+					result = a.y - b.y;
+				}
+				return result;
+			})
+			.map(square => {
+				const region = this.props.map.regions.find(r => r.id === square.regionID);
+				const color = region ? region.color : 'white';
 
-			// Which borders do we need?
-			const top = this.props.map.squares.find(s => (s.x === square.x) && (s.y === square.y - 1) && (s.regionID !== square.regionID));
-			const right = this.props.map.squares.find(s => (s.x === square.x + 1) && (s.y === square.y) && (s.regionID !== square.regionID));
-			const bottom = this.props.map.squares.find(s => (s.x === square.x) && (s.y === square.y + 1) && (s.regionID !== square.regionID));
-			const left = this.props.map.squares.find(s => (s.x === square.x - 1) && (s.y === square.y) && (s.regionID !== square.regionID));
+				// Which borders do we need?
+				const top = this.props.map.squares.find(s => (s.x === square.x) && (s.y === square.y - 1) && (s.regionID !== square.regionID));
+				const right = this.props.map.squares.find(s => (s.x === square.x + 1) && (s.y === square.y) && (s.regionID !== square.regionID));
+				const bottom = this.props.map.squares.find(s => (s.x === square.x) && (s.y === square.y + 1) && (s.regionID !== square.regionID));
+				const left = this.props.map.squares.find(s => (s.x === square.x - 1) && (s.y === square.y) && (s.regionID !== square.regionID));
 
-			return (
-				<div
-					key={`${square.x} ${square.y}`}
-					className='campaign-map-square'
-					style={{
-						width: `${squareSizePC}%`,
-						left: `${((square.x - dims.left) * squareSizePC)}%`,
-						top: `${((square.y - dims.top) * squareSizePC)}%`,
-						backgroundColor: (this.props.selectedRegion === region) ? 'white' : color,
-						borderTopWidth: top ? 1 : 0,
-						borderRightWidth: right ? 1 : 0,
-						borderBottomWidth: bottom ? 1 : 0,
-						borderLeftWidth: left ? 1 : 0
-					}}
-					title={region ? region.name : 'Conquered'}
-					onClick={e => this.onClick(e, square)}
-				/>
-			);
-		});
+				return (
+					<div
+						key={`${square.x} ${square.y}`}
+						className='campaign-map-square'
+						style={{
+							width: `calc(${squareSizePC}% + 2px)`,
+							left: `calc(${((square.x - dims.left) * squareSizePC)}% - 1px)`,
+							top: `calc(${((square.y - dims.top) * squareSizePC)}% - 1px)`,
+							backgroundColor: (this.props.selectedRegion === region) ? 'white' : color,
+							borderTopWidth: top ? 1 : 0,
+							borderRightWidth: right ? 1 : 0,
+							borderBottomWidth: bottom ? 1 : 0,
+							borderLeftWidth: left ? 1 : 0
+						}}
+						title={region ? region.name : 'Conquered'}
+						onClick={e => this.onClick(e, square)}
+					/>
+				);
+			});
 
 		return (
 			<div className='campaign-map' onClick={() => this.props.onSelectRegion(null)}>

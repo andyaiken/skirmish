@@ -3,6 +3,7 @@ import { Component } from 'react';
 import { CombatantState } from '../../../enums/combatant-state';
 
 import { CombatantLogic } from '../../../logic/combatant-logic';
+import { EncounterLogic } from '../../../logic/encounter-logic';
 import { EncounterMapLogic } from '../../../logic/encounter-map-logic';
 
 import type { EncounterMapSquareModel, EncounterModel, LootPileModel } from '../../../models/encounter';
@@ -131,17 +132,40 @@ export class EncounterMapPanel extends Component<Props> {
 			);
 		});
 
+		const currentCombatant = this.props.encounter.combatants.find(c => c.combat.current);
+		const currentCombatantSquares = currentCombatant ? EncounterLogic.getCombatantSquares(this.props.encounter, currentCombatant) : [];
+		const edges = EncounterMapLogic.getMapEdges(this.props.encounter.mapSquares);
+		const fog = Collections.distinct(this.props.encounter.mapSquares, sq => `${sq.x} ${sq.y}`)
+			.filter(sq => {
+				if (currentCombatant) {
+					return !EncounterMapLogic.canSeeAny(edges, currentCombatantSquares, [ sq ]);
+				}
+
+				return false;
+			})
+			.map(sq => {
+				return (
+					<Fog
+						key={`square ${sq.x} ${sq.y}`}
+						square={sq}
+						squareSize={this.props.squareSize}
+						mapDimensions={dims}
+					/>
+				);
+			});
+
 		const width = dims.right - dims.left + 1;
 		const height = dims.bottom - dims.top + 1;
 		return (
 			<div className='encounter-map' onClick={e => this.props.onClickOff()}>
 				<div className='encounter-map-square-container' style={{ maxWidth: `${this.props.squareSize * width}px`, maxHeight: `${this.props.squareSize * height}px` }}>
-					{walls}
 					{squares}
 					{loot}
 					{auras}
 					{trails}
+					{walls}
 					{minis}
+					{fog}
 				</div>
 			</div>
 		);
@@ -386,6 +410,28 @@ class LootToken extends Component<LootTokenProps> {
 			>
 				<div className='loot-token-face' />
 			</div>
+		);
+	};
+}
+
+interface FogProps {
+	square: EncounterMapSquareModel;
+	squareSize: number;
+	mapDimensions: { left: number, top: number };
+}
+
+class Fog extends Component<FogProps> {
+	render = () => {
+		return (
+			<div
+				key={`square ${this.props.square.x} ${this.props.square.y}`}
+				className='encounter-map-fog'
+				style={{
+					width: `${this.props.squareSize}px`,
+					left: `${((this.props.square.x - this.props.mapDimensions.left) * this.props.squareSize)}px`,
+					top: `${((this.props.square.y - this.props.mapDimensions.top) * this.props.squareSize)}px`
+				}}
+			/>
 		);
 	};
 }

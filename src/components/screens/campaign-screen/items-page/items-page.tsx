@@ -1,16 +1,19 @@
 import { Component } from 'react';
 
 import { CardType } from '../../../../enums/card-type';
+import { GameLogic } from '../../../../logic/game-logic';
 
 import { MagicItemGenerator } from '../../../../logic/magic-item-generator';
 
+import type { BoonModel } from '../../../../models/boon';
+import { CombatantModel } from '../../../../models/combatant';
 import type { GameModel } from '../../../../models/game';
 import type { ItemModel } from '../../../../models/item';
 
 import { Collections } from '../../../../utils/collections';
 
+import { BoonCard, ItemCard } from '../../../cards';
 import { CardList, Dialog, IconType, IconValue, PlayingCard, StatValue, Text, TextType } from '../../../controls';
-import { ItemCard } from '../../../cards';
 
 import './items-page.scss';
 
@@ -19,6 +22,7 @@ interface Props {
 	developer: boolean;
 	buyItem: (item: ItemModel) => void;
 	sellItem: (item: ItemModel, all: boolean) => void;
+	redeemBoon: (boon: BoonModel, combatant: CombatantModel | null) => void;
 	addMoney: () => void;
 }
 
@@ -55,10 +59,22 @@ export class ItemsPage extends Component<Props, State> {
 	};
 
 	render = () => {
-		const magicItems = this.props.game.items.filter(i => i.magic).sort((a, b) => a.name.localeCompare(b.name));
-		const mundaneItems = this.props.game.items.filter(i => !i.magic).sort((a, b) => a.name.localeCompare(b.name));
+		let boons = null;
+		if (this.props.game.boons.filter(boon => !GameLogic.getBoonIsHeroType(boon)).length > 0) {
+			const cards = this.props.game.boons
+				.filter(boon => !GameLogic.getBoonIsHeroType(boon))
+				.map(b => (<PlayingCard key={b.id} type={CardType.Boon} front={<BoonCard boon={b} />} onClick={() => this.props.redeemBoon(b, null)} />));
+			boons = (
+				<div>
+					<Text type={TextType.SubHeading}>Rewards ({cards.length})</Text>
+					<Text type={TextType.Information}><b>You have won these rewards.</b> Select a card to redeem a reward.</Text>
+					<CardList cards={cards} />
+				</div>
+			);
+		}
 
 		let magicItemSection = null;
+		const magicItems = this.props.game.items.filter(i => i.magic).sort((a, b) => a.name.localeCompare(b.name));
 		if (magicItems.length > 0) {
 			const cards = magicItems.map(item => {
 				return (
@@ -79,6 +95,7 @@ export class ItemsPage extends Component<Props, State> {
 		}
 
 		let mundaneItemSection = null;
+		const mundaneItems = this.props.game.items.filter(i => !i.magic).sort((a, b) => a.name.localeCompare(b.name));
 		if (mundaneItems.length > 0) {
 			const cards = Collections.distinct(mundaneItems, i => i.name).map(item => {
 				const count = mundaneItems.filter(i => i.name === item.name).length;
@@ -157,13 +174,14 @@ export class ItemsPage extends Component<Props, State> {
 
 		return (
 			<div className='items-page'>
-				<div className='items-column'>
+				<div className='items-content'>
 					{magicItemSection}
 					{mundaneItemSection}
 				</div>
-				<div className='divider' />
-				<div className='wealth-column'>
+				<div className='sidebar'>
 					{moneySection}
+					{boons !== null ? <hr /> : null}
+					{boons}
 				</div>
 				{dialog}
 			</div>

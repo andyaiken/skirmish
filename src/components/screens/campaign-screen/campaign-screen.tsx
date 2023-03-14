@@ -85,6 +85,7 @@ export class CampaignScreen extends Component<Props, State> {
 						developer={this.props.developer}
 						buyItem={this.props.buyItem}
 						sellItem={this.props.sellItem}
+						redeemBoon={this.props.redeemBoon}
 						addMoney={this.props.addMoney}
 					/>
 				);

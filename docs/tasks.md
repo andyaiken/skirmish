@@ -4,18 +4,17 @@
 
 * If you select a 'square' parameter, and move, the candidate squares do not move
   * Presumably this is the same for other parameter types
-* The campaign map (sometimes) has odd lines on it
 
 ## Priority
 
 * Encounters:
-  * Actions
-    * Improve the UI for selecting combatants / squares / walls on the map
-    * Implement final action effects (command action / command move)
-    * Allow the user to opt for a universal action instead
   * Implement AI so that monsters can take their turns
     * Add a button so that the user can perform each action in turn
-  * Implement line-of-sight when selecting combatants / squares / walls
+  * Actions
+    * Allow the user to opt for a universal action instead
+    * Allow the user to see the log for a given action
+    * Improve the UI for selecting combatants / squares / walls on the map
+    * Implement final action effects (command action / command move)
 * Add a system for evaluating each action to ensure none is too powerful
   * Then extend this to ensure species / roles / backgrounds are equally matched
 * Add help / documentation to explain game rules

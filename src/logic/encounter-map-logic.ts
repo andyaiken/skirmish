@@ -4,6 +4,7 @@ import type { EncounterMapSquareModel } from '../models/encounter';
 
 import { Collections } from '../utils/collections';
 import { Random } from '../utils/random';
+import { Utils } from '../utils/utils';
 
 export class EncounterMapLogic {
 	static generateEncounterMap = (rng: () => number): EncounterMapSquareModel[] => {
@@ -55,7 +56,7 @@ export class EncounterMapLogic {
 
 		while (Random.randomNumber(3, rng) !== 0) {
 			// Add a blob of obstructed terrain
-			const start = Collections.draw(map);
+			const start = Collections.draw(map, rng);
 			const blob = EncounterMapLogic.getFloorBlob(map, start, rng);
 			blob.forEach(sq => sq.type = EncounterMapSquareType.Obstructed);
 		}
@@ -74,9 +75,9 @@ export class EncounterMapLogic {
 
 		while (map.length < 1000) {
 			const walls = EncounterMapLogic.getAdjacentWalls(map, map, [ 'n', 'e', 's', 'w' ]);
-			const wall = Collections.draw(walls);
+			const wall = Collections.draw(walls, rng);
 
-			const blob = EncounterMapLogic.getWallBlob(map, wall);
+			const blob = EncounterMapLogic.getWallBlob(map, wall, rng);
 			blob.forEach(sq => {
 				const square: EncounterMapSquareModel = {
 					x: sq.x,
@@ -89,7 +90,7 @@ export class EncounterMapLogic {
 
 		while (Random.randomNumber(3, rng) !== 0) {
 			// Add a blob of obstructed terrain
-			const start = Collections.draw(map);
+			const start = Collections.draw(map, rng);
 			const blob = EncounterMapLogic.getFloorBlob(map, start, rng);
 			blob.forEach(sq => sq.type = EncounterMapSquareType.Obstructed);
 		}
@@ -115,7 +116,7 @@ export class EncounterMapLogic {
 				return blob;
 			}
 
-			const square = Collections.draw(candidates);
+			const square = Collections.draw(candidates, rng);
 			blob.push(square);
 		}
 
@@ -135,7 +136,7 @@ export class EncounterMapLogic {
 				return blob;
 			}
 
-			const square = Collections.draw(candidates);
+			const square = Collections.draw(candidates, rng);
 			blob.push(square);
 		}
 
@@ -279,12 +280,57 @@ export class EncounterMapLogic {
 		return 90 - degrees;
 	};
 
-	static canSeeAny = (aSquares: { x: number, y: number }[], bSquares: { x: number, y: number }[]) => {
-		return aSquares.some(a => bSquares.some(b => EncounterMapLogic.canSee(a, b)));
+	static canSeeAny = (
+		edges: { horizontal: { start: number, end: number, y: number }[], vertical: { start: number, end: number, x: number }[] },
+		aSquares: { x: number, y: number }[],
+		bSquares: { x: number, y: number }[]
+	) => {
+		return aSquares.some(a => bSquares.some(b => EncounterMapLogic.canSee(edges, a, b)));
 	};
 
-	static canSee = (a: { x: number, y: number }, b: { x: number, y: number }) => {
-		// For now, assume line-of-sight is always OK
-		return true;
+	static canSee = (
+		edges: { horizontal: { start: number, end: number, y: number }[], vertical: { start: number, end: number, x: number }[] },
+		a: { x: number, y: number },
+		b: { x: number, y: number }
+	) => {
+		const midA = { x: a.x + 0.5, y: a.y + 0.5 };
+		const midB = { x: b.x + 0.5, y: b.y + 0.5 };
+		return !(edges.horizontal.some(edge => Utils.intersects({ a: midA, b: midB }, { a: { x: edge.start, y: edge.y }, b: { x: edge.end, y: edge.y } }))
+			|| edges.vertical.some(edge => Utils.intersects({ a: midA, b: midB }, { a: { x: edge.x, y: edge.start }, b: { x: edge.x, y: edge.end } })));
+	};
+
+	static getMapEdges = (map: EncounterMapSquareModel[]) => {
+		const horizontal: { start: number, end: number, y: number }[] = [];
+		EncounterMapLogic.getAdjacentWalls(map, map, [ 'n' ]).forEach(wall => horizontal.push({ start: wall.x, end: wall.x + 1, y: wall.y + 1 }));
+		EncounterMapLogic.getAdjacentWalls(map, map, [ 's' ]).forEach(wall => horizontal.push({ start: wall.x, end: wall.x + 1, y: wall.y }));
+
+		const vertical: { start: number, end: number, x: number }[] = [];
+		EncounterMapLogic.getAdjacentWalls(map, map, [ 'e' ]).forEach(wall => vertical.push({ start: wall.y, end: wall.y + 1, x: wall.x }));
+		EncounterMapLogic.getAdjacentWalls(map, map, [ 'w' ]).forEach(wall => vertical.push({ start: wall.y, end: wall.y + 1, x: wall.x + 1 }));
+
+		const horizontalReduced: { start: number, end: number, y: number }[] = [];
+		horizontal.sort((a, b) => a.start - b.start).forEach(edge => {
+			const e = horizontalReduced.find(e => (e.y === edge.y) && (e.end === edge.start));
+			if (e) {
+				e.end = edge.end;
+			} else {
+				horizontalReduced.push(edge);
+			}
+		});
+
+		const verticalReduced: { start: number, end: number, x: number }[] = [];
+		vertical.sort((a, b) => a.start - b.start).forEach(edge => {
+			const e = verticalReduced.find(e => (e.x === edge.x) && (e.end === edge.start));
+			if (e) {
+				e.end = edge.end;
+			} else {
+				verticalReduced.push(edge);
+			}
+		});
+
+		return {
+			horizontal: horizontalReduced,
+			vertical: verticalReduced
+		};
 	};
 }

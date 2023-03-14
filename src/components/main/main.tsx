@@ -318,6 +318,12 @@ export class Main extends Component<Props, State> {
 			const pos = move(c.combat.position, c.size);
 			c.combat.position.x = pos.x;
 			c.combat.position.y = pos.y;
+
+			c.combat.trail.forEach(step => {
+				const pos = move(step, c.size);
+				step.x = pos.x;
+				step.y = pos.y;
+			});
 		});
 		encounter.loot.forEach(lp => {
 			const pos = move(lp.position, 1);

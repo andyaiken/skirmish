@@ -2,6 +2,7 @@ import { Component } from 'react';
 
 import { BoonType } from '../../../../enums/boon-type';
 import { CardType } from '../../../../enums/card-type';
+import { GameLogic } from '../../../../logic/game-logic';
 
 import type { BoonModel } from '../../../../models/boon';
 import type { CombatantModel } from '../../../../models/combatant';
@@ -69,8 +70,10 @@ export class HeroesPage extends Component<Props, State> {
 
 	render = () => {
 		let boons = null;
-		if (this.props.game.boons.length > 0) {
-			const cards = this.props.game.boons.map(b => (<PlayingCard key={b.id} type={CardType.Boon} front={<BoonCard boon={b} />} onClick={() => this.selectBoon(b)} />));
+		if (this.props.game.boons.filter(boon => GameLogic.getBoonIsHeroType(boon)).length > 0) {
+			const cards = this.props.game.boons
+				.filter(boon => GameLogic.getBoonIsHeroType(boon))
+				.map(b => (<PlayingCard key={b.id} type={CardType.Boon} front={<BoonCard boon={b} />} onClick={() => this.selectBoon(b)} />));
 			boons = (
 				<div>
 					<Text type={TextType.SubHeading}>Rewards ({cards.length})</Text>
@@ -100,7 +103,7 @@ export class HeroesPage extends Component<Props, State> {
 		if (this.props.game.heroes.some(h => h.xp >= h.level)) {
 			const cards = this.props.game.heroes.filter(h => h.xp >= h.level).map(h => {
 				return (
-					<PlayingCard key={h.id} type={CardType.Hero} front={<HeroCard hero={h} />} onClick={() => this.setState({ selectedHero: h })} />
+					<button key={h.id} onClick={() => this.setState({ selectedHero: h })}>{h.name}</button>
 				);
 			});
 			levelUp = (
@@ -133,6 +136,13 @@ export class HeroesPage extends Component<Props, State> {
 				</div>
 			);
 		}
+
+		const sidebar = (
+			<div>
+				<Text type={TextType.SubHeading}>Your Heroes</Text>
+				<Text>These are your heroes.</Text>
+			</div>
+		);
 
 		let dialog = null;
 		if (this.state.selectedHero) {
@@ -219,11 +229,17 @@ export class HeroesPage extends Component<Props, State> {
 
 		return (
 			<div className='heroes-page'>
-				{boons}
-				{blankHeroes}
-				{levelUp}
-				{heroes}
-				{dialog}
+				<div className='heroes-content'>
+					{blankHeroes}
+					{heroes}
+					{dialog}
+				</div>
+				<div className='sidebar'>
+					{(boons === null) && (levelUp == null) ? sidebar : null}
+					{boons}
+					{(boons !== null) && (levelUp !== null) ? <hr /> : null}
+					{levelUp}
+				</div>
 			</div>
 		);
 	};

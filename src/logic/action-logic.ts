@@ -1237,7 +1237,12 @@ export class ActionLogic {
 			radius = parameter.distance;
 		}
 
-		candidates.push(...EncounterLogic.findSquares(encounter, EncounterLogic.getCombatantSquares(encounter, combatant), radius));
+		const edges = EncounterMapLogic.getMapEdges(encounter.mapSquares);
+		const originSquares = EncounterLogic.getCombatantSquares(encounter, combatant);
+		candidates.push(
+			...EncounterLogic.findSquares(encounter, EncounterLogic.getCombatantSquares(encounter, combatant), radius)
+				.filter(sq => EncounterMapLogic.canSeeAny(edges, originSquares, [ sq ]))
+		);
 		if (candidates.length > 0) {
 			if ((value === null) || (value.length === 0) || value.some(v => !candidates.includes(v))) {
 				value = [ candidates[0] ];
@@ -1292,7 +1297,8 @@ export class ActionLogic {
 								.filter(c => c.combat.state !== CombatantState.Dead)
 								.filter(c => combatant.combat.senses >= c.combat.hidden)
 								.filter(c => EncounterMapLogic.canSeeAny(edges, originSquares, EncounterLogic.getCombatantSquares(encounter, c)))
-								.map(c => c.id));
+								.map(c => c.id)
+						);
 						break;
 					case ActionTargetType.Enemies:
 						candidates.push(
@@ -1302,7 +1308,8 @@ export class ActionLogic {
 								.filter(c => combatant.combat.senses >= c.combat.hidden)
 								.filter(c => c.type !== combatant.type)
 								.filter(c => EncounterMapLogic.canSeeAny(edges, originSquares, EncounterLogic.getCombatantSquares(encounter, c)))
-								.map(c => c.id));
+								.map(c => c.id)
+						);
 						break;
 					case ActionTargetType.Allies:
 						candidates.push(
@@ -1312,13 +1319,19 @@ export class ActionLogic {
 								.filter(c => combatant.combat.senses >= c.combat.hidden)
 								.filter(c => c.type === combatant.type)
 								.filter(c => EncounterMapLogic.canSeeAny(edges, originSquares, EncounterLogic.getCombatantSquares(encounter, c)))
-								.map(c => c.id));
+								.map(c => c.id)
+						);
 						break;
 					case ActionTargetType.Squares:
-						candidates.push(...EncounterLogic.findSquares(encounter, originSquares, radius).filter(sq => EncounterMapLogic.canSeeAny(edges, originSquares, [ sq ])));
+						candidates.push(
+							...EncounterLogic.findSquares(encounter, originSquares, radius)
+								.filter(sq => EncounterMapLogic.canSeeAny(edges, originSquares, [ sq ]))
+						);
 						break;
 					case ActionTargetType.Walls:
-						candidates.push(...EncounterLogic.findWalls(encounter, originSquares, radius));
+						candidates.push(
+							...EncounterLogic.findWalls(encounter, originSquares, radius)
+						);
 						break;
 				}
 

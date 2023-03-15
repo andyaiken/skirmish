@@ -1,15 +1,17 @@
 import { Component } from 'react';
+import { IconX } from '@tabler/icons-react';
 
 import { CardType } from '../../../../enums/card-type';
 
 import { CampaignMapLogic } from '../../../../logic/campaign-map-logic';
+import { GameLogic } from '../../../../logic/game-logic';
 
 import type { CombatantModel } from '../../../../models/combatant';
 import type { GameModel } from '../../../../models/game';
 import type { RegionModel } from '../../../../models/campaign-map';
 
 import { BoonCard, HeroCard } from '../../../cards';
-import { CardList, Dialog, PlayingCard, Selector, StatValue, Text, TextType } from '../../../controls';
+import { CardList, Dialog, PlayingCard, Selector, StatValue, Tag, Text, TextType } from '../../../controls';
 import { CampaignMapPanel } from '../../../panels';
 
 import './campaign-map-page.scss';
@@ -42,6 +44,7 @@ export class CampaignMapPage extends Component<Props, State> {
 	selectHero = (hero: CombatantModel) => {
 		const selected = this.state.selectedHeroes;
 		selected.push(hero);
+		selected.sort((a, b) => a.name.localeCompare(b.name));
 		this.setState({
 			selectedHeroes: selected
 		});
@@ -103,11 +106,29 @@ export class CampaignMapPage extends Component<Props, State> {
 			const selected = this.state.selectedHeroes
 				.map(h => {
 					return (
-						<div key={h.id}>
-							<PlayingCard type={CardType.Hero} front={<HeroCard hero={h} />} onClick={() => this.deselectHero(h)} />
+						<div key={h.id} className='selected-hero'>
+							<div className='name'>
+								<Text type={TextType.SubHeading}>{h.name}</Text>
+							</div>
+							<div className='tags'>
+								<Tag>{GameLogic.getSpecies(h.speciesID)?.name ?? 'Unknown species'}</Tag>
+								<Tag>{GameLogic.getRole(h.roleID)?.name ?? 'Unknown role'}</Tag>
+								<Tag>{GameLogic.getBackground(h.backgroundID)?.name ?? 'Unknown background'}</Tag>
+								<Tag>Level {h.level}</Tag>
+							</div>
+							<button className='icon-btn' onClick={() => this.deselectHero(h)}>
+								<IconX />
+							</button>
 						</div>
 					);
 				});
+			while (selected.length < 5) {
+				selected.push(
+					<div key={selected.length} className='selected-hero placeholder'>
+						[No hero selected]
+					</div>
+				);
+			}
 
 			return (
 				<Dialog
@@ -129,8 +150,8 @@ export class CampaignMapPage extends Component<Props, State> {
 								<div className='divider' />
 								<div className='hero-list-column'>
 									<Text type={TextType.SubHeading}>Selected heroes ({selected.length} / 5)</Text>
-									{selected.length === 0 ? <Text type={TextType.Information}>Select <b>up to 5 heroes</b> from the left to take part in this encounter.</Text> : null}
-									<CardList cards={selected} />
+									<Text type={TextType.Information}>Select <b>up to 5 heroes</b> from the left to take part in this encounter.</Text>
+									{selected}
 								</div>
 							</div>
 							<div className='footer'>

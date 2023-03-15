@@ -9,7 +9,7 @@ import type { CombatantModel } from '../../../../models/combatant';
 import type { EncounterModel } from '../../../../models/encounter';
 
 import { Box, IconType, IconValue, StatValue, Text, TextType } from '../../../controls';
-import { CombatStatsPanel } from '../../../panels/combat-stats/combat-stats-panel';
+import { CombatStatsPanel } from '../../../panels';
 
 import './combatant-overview.scss';
 

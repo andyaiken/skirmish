@@ -14,7 +14,7 @@ import type { CombatantModel } from '../../../../models/combatant';
 import type { EncounterModel } from '../../../../models/encounter';
 
 import { Box, IconType, IconValue, StatValue, Tag, Text, TextType } from '../../../controls';
-import { CombatStatsPanel } from '../../combat-stats/combat-stats-panel';
+import { CombatStatsPanel } from '../..';
 
 import './stats.scss';
 

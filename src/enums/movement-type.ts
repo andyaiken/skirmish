@@ -2,6 +2,6 @@ export enum MovementType {
 	Push = 'push',
 	Pull = 'pull',
 	Swap = 'swap',
-	ToTarget = 'to target',
+	ToTarget = 'up to target',
 	Random = 'random'
 }

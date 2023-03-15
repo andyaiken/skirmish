@@ -76,7 +76,7 @@ export class IconValue extends Component<Props> {
 		}
 
 		return (
-			<div className='icon-value'>
+			<div className='icon-value' title={`${this.props.value} ${this.props.type}`}>
 				{this.props.value} {icon}
 			</div>
 		);

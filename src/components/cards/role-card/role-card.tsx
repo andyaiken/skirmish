@@ -1,11 +1,10 @@
 import { Component } from 'react';
 
-import { ActionLogic } from '../../../logic/action-logic';
-import { FeatureLogic } from '../../../logic/feature-logic';
-
 import type { RoleModel } from '../../../models/role';
 
-import { StatValue, Text, TextType } from '../../controls';
+import { ActionListItemPanel, FeatureListItemPanel, TextListItemPanel } from '../../panels';
+
+import { Text, TextType } from '../../controls';
 
 import './role-card.scss';
 
@@ -15,12 +14,42 @@ interface Props {
 
 export class RoleCard extends Component<Props> {
 	render = () => {
+		let traits = null;
+		if (this.props.role.traits.length > 0) {
+			traits = (
+				<div>
+					<Text type={TextType.MinorHeading}>Traits</Text>
+					{this.props.role.traits.map((t, n) => <TextListItemPanel key={n} item={t} />)}
+				</div>
+			);
+		}
+
+		let skills = null;
+		if (this.props.role.skills.length > 0) {
+			skills = (
+				<div>
+					<Text type={TextType.MinorHeading}>Skills</Text>
+					{this.props.role.skills.map((s, n) => <TextListItemPanel key={n} item={s} />)}
+				</div>
+			);
+		}
+
+		let profs = null;
+		if (this.props.role.proficiencies.length > 0) {
+			profs = (
+				<div>
+					<Text type={TextType.MinorHeading}>Proficiencies</Text>
+					{this.props.role.proficiencies.map((p, n) => <TextListItemPanel key={n} item={p} />)}
+				</div>
+			);
+		}
+
 		let features = null;
 		if (this.props.role.features.length > 0) {
 			features = (
 				<div>
 					<Text type={TextType.MinorHeading}>Features</Text>
-					{this.props.role.features.map(f => <Text key={f.id} type={TextType.ListItem}>{FeatureLogic.getFeatureDescription(f)}</Text>)}
+					{this.props.role.features.map(f => <FeatureListItemPanel key={f.id} item={f} />)}
 				</div>
 			);
 		}
@@ -30,7 +59,7 @@ export class RoleCard extends Component<Props> {
 			actions = (
 				<div>
 					<Text type={TextType.MinorHeading}>Actions</Text>
-					{this.props.role.actions.map(a => <Text key={a.id} type={TextType.ListItem}>{ActionLogic.getActionDescription(a)}</Text>)}
+					{this.props.role.actions.map(a => <ActionListItemPanel key={a.id} item={a} />)}
 				</div>
 			);
 		}
@@ -39,9 +68,9 @@ export class RoleCard extends Component<Props> {
 			<div className='role-card'>
 				<Text type={TextType.SubHeading}>{this.props.role.name}</Text>
 				<hr />
-				<StatValue label='Trait bonus' value={this.props.role.traits.map(t => t.toString()).join(', ') || '-'}/>
-				<StatValue label='Skill bonus' value={this.props.role.skills.map(s => s.toString()).join(', ') || '-'}/>
-				<StatValue label='Proficiencies' value={this.props.role.proficiencies.length > 0 ? this.props.role.proficiencies.map(p => p.toString()) : '-'}/>
+				{traits}
+				{skills}
+				{profs}
 				{features}
 				{actions}
 			</div>

@@ -33,7 +33,6 @@
 * Character sheet panel:
   * Show ranks as filled circles
   * Show the XP required as a gauge
-* Display features / actions more attractively on species / role / background / item cards
 * Encounters
   * Traps
     * Pit traps
@@ -41,9 +40,11 @@
     * Dart traps
     * Poison dart traps
   * Action parameter selection / 'go' button / etc, should happen in the card itself
-  * Indicate to the user whether a hero's movement / actions have been spent
-    * On the move / action tabs?
-  * Indicate combatant's damage / wounds / conditions on the map token / in the initiative list
+  * Indicate combatant's info on the map token / in the initiative list
+    * Damage
+    * Stunned
+    * Standing / prone / unconscious
+    * Conditions exist
   * Allow other victory conditions
     * Get a certain number of heroes to a particular area
     * Get one hero to a particular area and stay there for a certain number of rounds

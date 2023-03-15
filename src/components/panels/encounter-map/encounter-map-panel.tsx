@@ -1,6 +1,7 @@
 import { Component } from 'react';
 
 import { CombatantState } from '../../../enums/combatant-state';
+import { TraitType } from '../../../enums/trait-type';
 
 import { CombatantLogic } from '../../../logic/combatant-logic';
 import { EncounterLogic } from '../../../logic/encounter-logic';
@@ -122,6 +123,7 @@ export class EncounterMapPanel extends Component<Props> {
 				<MiniToken
 					key={combatant.id}
 					combatant={combatant}
+					encounter={this.props.encounter}
 					squareSize={this.props.squareSize}
 					mapDimensions={dims}
 					selectable={(this.props.selectableCombatantIDs.length === 0) || this.props.selectableCombatantIDs.includes(combatant.id)}
@@ -249,6 +251,7 @@ class Square extends Component<SquareProps> {
 
 interface MiniTokenProps {
 	combatant: CombatantModel;
+	encounter: EncounterModel;
 	squareSize: number;
 	mapDimensions: { left: number, top: number };
 	selectable: boolean;
@@ -300,6 +303,17 @@ class MiniToken extends Component<MiniTokenProps> {
 			tooltip += ' (prone)';
 		}
 
+		let healthBar = null;
+		if (this.props.combatant.combat.wounds > 0) {
+			const resolve = EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Resolve);
+			const barWidth = 1 - (this.props.combatant.combat.wounds / resolve);
+			healthBar = (
+				<div className='health-bar' style={{ height: `${this.props.squareSize / 5}px` }}>
+					<div className='health-bar-gauge' style={{ width: `${100 * barWidth}%` }} />
+				</div>
+			);
+		}
+
 		return (
 			<div
 				className={className}
@@ -316,6 +330,7 @@ class MiniToken extends Component<MiniTokenProps> {
 				<div className={this.props.combatant.combat.current ? 'mini-token-face current' : 'mini-token-face'}>
 					{this.getMonogram()}
 				</div>
+				{healthBar}
 				{this.props.combatant.combat.current ? <div className='pulse pulse-one' /> : null}
 				{this.props.combatant.combat.current ? <div className='pulse pulse-two' /> : null}
 				{this.props.combatant.combat.current ? <div className='pulse pulse-three' /> : null}

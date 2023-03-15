@@ -599,6 +599,7 @@ export class Main extends Component<Props, State> {
 					// Show message
 					dialog = (
 						<div>
+							<Text type={TextType.Heading}>Defeat</Text>
 							<Text type={TextType.SubHeading}>You lost the encounter in {region.name}, and have no more heroes.</Text>
 							<Text>Better luck next time.</Text>
 							<button onClick={() => this.endCampaign()}>OK</button>

@@ -2,12 +2,11 @@ import { Component } from 'react';
 
 import { ItemProficiencyType } from '../../../enums/item-proficiency-type';
 
-import { ActionLogic } from '../../../logic/action-logic';
-import { FeatureLogic } from '../../../logic/feature-logic';
-
 import type { ItemModel } from '../../../models/item';
 
-import { StatValue, Tag, Text, TextType } from '../../controls';
+import { ActionListItemPanel, FeatureListItemPanel } from '../../panels';
+
+import { IconValue, StatValue, Tag, Text, TextType } from '../../controls';
 
 import './item-card.scss';
 
@@ -22,15 +21,26 @@ export class ItemCard extends Component<Props> {
 			location = `${this.props.item.slots} ${location}s`;
 		}
 
+		let weapon = null;
+		if (this.props.item.weapon) {
+			weapon = (
+				<div>
+					<Text type={TextType.MinorHeading}>Weapon</Text>
+					{this.props.item.weapon ?<StatValue orientation='compact' label='Damage' value={
+						<IconValue type={this.props.item.weapon.damage.type} value={this.props.item.weapon.damage.rank} iconSize={12} />
+					}/> : null}
+					{this.props.item.weapon && (this.props.item.weapon.range > 1) ? <StatValue orientation='compact' label='Range' value={this.props.item.weapon.range}/> : null}
+					{this.props.item.weapon && (this.props.item.weapon.unreliable > 0) ? <StatValue orientation='compact' label='Unreliable' value={this.props.item.weapon.unreliable}/> : null}
+				</div>
+			);
+		}
+
 		let features = null;
-		if (this.props.item.weapon || (this.props.item.features.length > 0)) {
+		if (this.props.item.features.length > 0) {
 			features = (
 				<div>
 					<Text type={TextType.MinorHeading}>Features</Text>
-					{this.props.item.weapon ?<StatValue label='Damage' value={`${this.props.item.weapon.damage.rank} (${this.props.item.weapon.damage.type})`}/> : null}
-					{this.props.item.weapon && (this.props.item.weapon.range > 1) ? <StatValue label='Range' value={this.props.item.weapon.range}/> : null}
-					{this.props.item.weapon && (this.props.item.weapon.unreliable > 0) ? <StatValue label='Unreliable' value={this.props.item.weapon.unreliable}/> : null}
-					{this.props.item.features.map(f => <Text key={f.id} type={TextType.ListItem}>{FeatureLogic.getFeatureDescription(f)}</Text>)}
+					{this.props.item.features.map(f => <FeatureListItemPanel key={f.id} item={f} />)}
 				</div>
 			);
 		}
@@ -40,7 +50,7 @@ export class ItemCard extends Component<Props> {
 			actions = (
 				<div>
 					<Text type={TextType.MinorHeading}>Actions</Text>
-					{this.props.item.actions.map(a => <Text key={a.id} type={TextType.ListItem}>{ActionLogic.getActionDescription(a)}</Text>)}
+					{this.props.item.actions.map(a => <ActionListItemPanel key={a.id} item={a} />)}
 				</div>
 			);
 		}
@@ -54,6 +64,7 @@ export class ItemCard extends Component<Props> {
 					{this.props.item.proficiency !== ItemProficiencyType.None ? <Tag>{this.props.item.proficiency}</Tag> : null}
 					<Tag>{location}</Tag>
 				</div>
+				{weapon}
 				{features}
 				{actions}
 			</div>

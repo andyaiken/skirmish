@@ -63,10 +63,11 @@ export class EncounterLogic {
 		return squares.filter(sq => !combatantSquares.find(s => (s.x === sq.x) && (s.y === sq.y)));
 	};
 
-	static getSquareIsEmpty = (encounter: EncounterModel, square: { x: number, y: number }) => {
+	static getSquareIsEmpty = (encounter: EncounterModel, square: { x: number, y: number }, ignore: CombatantModel[] = []) => {
 		const occupied: { x: number; y: number }[] = [];
 
 		encounter.combatants
+			.filter(c => !ignore.includes(c))
 			.filter(c => c.combat.state !== CombatantState.Dead)
 			.forEach(c => {
 				const squares = EncounterLogic.getCombatantSquares(encounter, c);
@@ -328,7 +329,7 @@ export class EncounterLogic {
 		}
 
 		// Can't move into an occupied square
-		if (movingTo.some(sq => !EncounterLogic.getSquareIsEmpty(encounter, sq))) {
+		if (movingTo.some(sq => !EncounterLogic.getSquareIsEmpty(encounter, sq, [ combatant ]))) {
 			return Number.MAX_VALUE;
 		}
 

@@ -1006,7 +1006,7 @@ export class RoleData {
 							ActionPrerequisites.rangedWeapon()
 						],
 						parameters: [
-							ActionWeaponParameters.ranged()
+							ActionTargetParameters.self()
 						],
 						effects: [
 							ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Resolve, 5, SkillType.Weapon))

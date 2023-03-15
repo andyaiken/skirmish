@@ -109,7 +109,7 @@ export class HeroesPage extends Component<Props, State> {
 			levelUp = (
 				<div>
 					<Text type={TextType.SubHeading}>Level Up ({cards.length})</Text>
-					<Text type={TextType.Information}><b>Some of your heroes have gained enough XP to level up.</b> Select their card to upgrade them.</Text>
+					<Text type={TextType.Information}><b>Some of your heroes have gained enough XP to level up.</b> Click on their name to upgrade them.</Text>
 					<CardList cards={cards} />
 				</div>
 			);
@@ -214,6 +214,7 @@ export class HeroesPage extends Component<Props, State> {
 				<Dialog
 					content={(
 						<div>
+							<Text type={TextType.Heading}>Choose a Hero</Text>
 							<Text type={TextType.Information}>Choose a hero to receive this reward:</Text>
 							<CardList cards={heroCards} />
 						</div>

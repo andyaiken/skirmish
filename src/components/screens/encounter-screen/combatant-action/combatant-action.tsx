@@ -9,6 +9,7 @@ import { CombatantLogic } from '../../../../logic/combatant-logic';
 import { EncounterLogic } from '../../../../logic/encounter-logic';
 import { EncounterMapLogic } from '../../../../logic/encounter-map-logic';
 import { GameLogic } from '../../../../logic/game-logic';
+import { NameGenerator } from '../../../../logic/name-generator';
 
 import type { ActionModel, ActionOriginParameterModel, ActionParameterModel, ActionTargetParameterModel, ActionWeaponParameterModel } from '../../../../models/action';
 import type { CombatantModel } from '../../../../models/combatant';
@@ -49,7 +50,7 @@ export class CombatantAction extends Component<Props, State> {
 			return (
 				<div className='combatant-action'>
 					<Text type={TextType.Information}>You have taken your action for this turn.</Text>
-					{this.props.developer ? <button onClick={() => this.props.drawActions(this.props.encounter, this.props.combatant)}>Act Again</button> : null}
+					{this.props.developer ? <button className='developer' onClick={() => this.props.drawActions(this.props.encounter, this.props.combatant)}>Act Again</button> : null}
 				</div>
 			);
 		} else if (this.props.combatant.combat.actions.length > 1) {
@@ -76,7 +77,8 @@ export class CombatantAction extends Component<Props, State> {
 			return (
 				<div className='combatant-action'>
 					<div className='actions'>
-						{this.props.developer ? <button onClick={() => this.setState({ showAllActions: !this.state.showAllActions })}>All Actions</button> : null}
+						{this.props.developer ? <button className='developer' onClick={() => this.props.drawActions(this.props.encounter, this.props.combatant)}>Draw Again</button> : null}
+						{this.props.developer ? <button className='developer' onClick={() => this.setState({ showAllActions: !this.state.showAllActions })}>All Actions</button> : null}
 						<CardList cards={actionCards} />
 					</div>
 				</div>
@@ -271,7 +273,7 @@ export class CombatantAction extends Component<Props, State> {
 				parameters.push(
 					<div key={n} className={`action-parameter ${this.props.currentActionParameter === parameter ? 'current' : ''}`}>
 						<div className='action-parameter-top-line'>
-							<div className='action-parameter-name'>Select {parameter.name}</div>
+							<div className='action-parameter-name'>{NameGenerator.capitalise(parameter.name)}</div>
 							<div className='action-parameter-value'>{description}</div>
 							{changeButton !== null ? <div className='action-parameter-change'>{changeButton}</div> : null}
 						</div>
@@ -299,7 +301,7 @@ export class CombatantAction extends Component<Props, State> {
 						disabled={!(prerequisitesMet && parametersSet && (this.props.currentActionParameter === null))}
 						onClick={() => this.props.runAction(this.props.encounter, this.props.combatant)}
 					>
-						Run
+						Run this Action
 					</button>
 				</div>
 			</div>

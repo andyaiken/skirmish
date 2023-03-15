@@ -2,8 +2,8 @@ import { Component } from 'react';
 
 import type { GameModel } from '../../../models/game';
 
-import { PlayingCard, Text, TextType } from '../../controls';
 import { PlaceholderCard } from '../../cards';
+import { PlayingCard } from '../../controls';
 
 import './landing-screen.scss';
 
@@ -25,7 +25,7 @@ export class LandingScreen extends Component<Props> {
 		return (
 			<div className='landing-screen'>
 				<div className='landing-top-bar'>
-					<Text type={TextType.Heading}>Skirmish</Text>
+					<div className='logo-text inset-text'>Skirmish</div>
 				</div>
 				<div className='landing-content'>
 					{ continueBtn }

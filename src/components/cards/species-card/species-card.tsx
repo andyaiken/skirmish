@@ -1,11 +1,10 @@
 import { Component } from 'react';
 
-import { ActionLogic } from '../../../logic/action-logic';
-import { FeatureLogic } from '../../../logic/feature-logic';
-
 import type { SpeciesModel } from '../../../models/species';
 
-import { StatValue, Text, TextType } from '../../controls';
+import { ActionListItemPanel, FeatureListItemPanel, TextListItemPanel } from '../../panels';
+
+import { Text, TextType } from '../../controls';
 
 import './species-card.scss';
 
@@ -15,12 +14,22 @@ interface Props {
 
 export class SpeciesCard extends Component<Props> {
 	render = () => {
+		let traits = null;
+		if (this.props.species.traits.length > 0) {
+			traits = (
+				<div>
+					<Text type={TextType.MinorHeading}>Traits</Text>
+					{this.props.species.traits.map((t, n) => <TextListItemPanel key={n} item={t} />)}
+				</div>
+			);
+		}
+
 		let features = null;
 		if (this.props.species.features.length > 0) {
 			features = (
 				<div>
 					<Text type={TextType.MinorHeading}>Features</Text>
-					{this.props.species.features.map(f => <Text key={f.id} type={TextType.ListItem}>{FeatureLogic.getFeatureDescription(f)}</Text>)}
+					{this.props.species.features.map(f => <FeatureListItemPanel key={f.id} item={f} />)}
 				</div>
 			);
 		}
@@ -30,7 +39,7 @@ export class SpeciesCard extends Component<Props> {
 			actions = (
 				<div>
 					<Text type={TextType.MinorHeading}>Actions</Text>
-					{this.props.species.actions.map(a => <Text key={a.id} type={TextType.ListItem}>{ActionLogic.getActionDescription(a)}</Text>)}
+					{this.props.species.actions.map(a => <ActionListItemPanel key={a.id} item={a} />)}
 				</div>
 			);
 		}
@@ -39,7 +48,7 @@ export class SpeciesCard extends Component<Props> {
 			<div className='species-card'>
 				<Text type={TextType.SubHeading}>{this.props.species.name}</Text>
 				<hr />
-				<StatValue label='Trait bonus' value={this.props.species.traits.map(t => t.toString()).join(', ') || '-'}/>
+				{traits}
 				{features}
 				{actions}
 			</div>

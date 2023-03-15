@@ -610,8 +610,14 @@ export class EncounterScreen extends Component<Props, State> {
 		}
 
 		let content = null;
-
-		if (!currentCombatant.combat.stunned) {
+		let footer = null;
+		if (currentCombatant.combat.stunned) {
+			content = (
+				<div>
+					<button onClick={() => this.endTurn(this.props.encounter)}>End Turn</button>
+				</div>
+			);
+		} else {
 			if (currentCombatant.type === CombatantType.Monster) {
 				content = (
 					<CombatantMonster
@@ -620,6 +626,7 @@ export class EncounterScreen extends Component<Props, State> {
 						developer={this.props.developer}
 						showCharacterSheet={this.showDetailsCombatant}
 						kill={this.props.kill}
+						endTurn={this.endTurn}
 					/>
 				);
 			} else {
@@ -664,6 +671,13 @@ export class EncounterScreen extends Component<Props, State> {
 						);
 						break;
 				}
+
+				footer = (
+					<div>
+						{currentCombatant.combat.actions.length !== 0 ? <Text type={TextType.Information}><b>You have not taken an action.</b></Text> : null}
+						<button onClick={() => this.endTurn(this.props.encounter)}>End Turn</button>
+					</div>
+				);
 			}
 		}
 
@@ -682,7 +696,7 @@ export class EncounterScreen extends Component<Props, State> {
 					{content}
 				</div>
 				<div className='panel-footer'>
-					<button onClick={() => this.endTurn(this.props.encounter)}>End Turn</button>
+					{footer}
 				</div>
 			</div>
 		);

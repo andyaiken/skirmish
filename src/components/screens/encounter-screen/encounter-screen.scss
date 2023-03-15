@@ -92,5 +92,17 @@
 
 	.encounter-right-panel {
 		flex: 1 1 0;
+
+		.end-turn-info {
+			width: 100%;
+			display: flex;
+			justify-content: center;
+			gap: 10px;
+
+			.end-turn-move,
+			.end-turn-action {
+				flex: 1 1 0;
+			}
+		}
 	}
 }

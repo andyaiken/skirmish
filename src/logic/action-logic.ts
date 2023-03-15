@@ -303,7 +303,7 @@ export class ActionEffects {
 	static dealWeaponDamage = (rankModifier = 0): ActionEffectModel => {
 		return {
 			id: 'weapondamage',
-			description: 'Deal weapon damage',
+			description: rankModifier === 0 ? 'Deal weapon damage' : `Deal weapon damage ${rankModifier > 0 ? '+' : ''}${rankModifier}`,
 			data: rankModifier,
 			children: []
 		};
@@ -959,16 +959,18 @@ export class ActionEffects {
 								break;
 							}
 							case MovementType.ToTarget: {
+								// TODO: This can make you move through obstacles
+								// Instead we should try to move closer, one square at a time
 								const combatantSquares = EncounterLogic.getCombatantSquares(encounter, combatant);
-								const targetAdjacentSquares = EncounterMapLogic.getAdjacentSquares(encounter.mapSquares, EncounterLogic.getCombatantSquares(encounter, target));
-								if (combatantSquares.some(sq => targetAdjacentSquares.find(s => (s.x === sq.x) && (s.y === sq.y)))) {
-									// Already adjacent
+								const targetSquares = EncounterLogic.getCombatantSquares(encounter, target);
+								const targetAdjacentSquares = EncounterMapLogic.getAdjacentSquares(encounter.mapSquares, targetSquares);
+								if (combatantSquares.some(square => targetAdjacentSquares.find(s => (s.x === square.x) && (s.y === square.y)))) {
+									EncounterLogic.log(encounter, `${combatant.name} is already beside ${target.name}`);
 								} else {
-									const candidates = encounter.mapSquares.filter(sq => {
-										const combatantSquares = EncounterLogic.getCombatantSquares(encounter, combatant);
-										const targetAdjacentSquares = EncounterMapLogic.getAdjacentSquares(encounter.mapSquares, EncounterLogic.getCombatantSquares(encounter, target));
-										const canMoveHere = combatantSquares.every(sq => EncounterLogic.getSquareIsEmpty(encounter, sq));
-										const wouldBeAdjacent = combatantSquares.some(sq => targetAdjacentSquares.find(s => (s.x === sq.x) && (s.y === sq.y)));
+									const candidates = encounter.mapSquares.filter(square => {
+										const squares = EncounterLogic.getCombatantSquares(encounter, combatant, square);
+										const canMoveHere = squares.every(sq => EncounterLogic.getSquareIsEmpty(encounter, sq, [ combatant ]));
+										const wouldBeAdjacent = squares.some(sq => targetAdjacentSquares.find(s => (s.x === sq.x) && (s.y === sq.y)));
 										return canMoveHere && wouldBeAdjacent;
 									});
 									if (candidates.length > 0) {
@@ -977,6 +979,8 @@ export class ActionEffects {
 										combatant.combat.position.x = square.x;
 										combatant.combat.position.y = square.y;
 										EncounterLogic.log(encounter, `${combatant.name} has moved to ${target.name}`);
+									} else {
+										EncounterLogic.log(encounter, `${combatant.name} can't move to ${target.name}`);
 									}
 								}
 								break;
@@ -985,7 +989,7 @@ export class ActionEffects {
 								const moveDistance = Random.dice(data.rank);
 								const squares = encounter.mapSquares
 									.filter(square => EncounterMapLogic.getDistance(target.combat.position, square) <= moveDistance)
-									.filter(square => EncounterLogic.getCombatantSquares(encounter, target, square).every(sq => EncounterLogic.getSquareIsEmpty(encounter, sq)));
+									.filter(square => EncounterLogic.getCombatantSquares(encounter, target, square).every(sq => EncounterLogic.getSquareIsEmpty(encounter, sq, [ target ])));
 								if (squares.length > 0) {
 									const square = Collections.draw(squares);
 									target.combat.trail.push({ x: target.combat.position.x, y: target.combat.position.y });
@@ -1003,17 +1007,19 @@ export class ActionEffects {
 			case 'moveSelfTo': {
 				const targetParameter = parameters.find(p => p.name === 'targets');
 				if (targetParameter) {
-					const squares = targetParameter.value as { x: number, y: number }[];
-					const candidates = squares.filter(square => {
-						return EncounterLogic.getCombatantSquares(encounter, combatant, square).every(sq => EncounterLogic.getSquareIsEmpty(encounter, sq));
+					const targetSquares = targetParameter.value as { x: number, y: number }[];
+					const candidates = targetSquares.filter(square => {
+						return EncounterLogic.getCombatantSquares(encounter, combatant, square).every(sq => EncounterLogic.getSquareIsEmpty(encounter, sq, [ combatant ]));
 					});
 					if (candidates.length > 0) {
 						const square = Collections.draw(candidates);
 						combatant.combat.trail.push({ x: combatant.combat.position.x, y: combatant.combat.position.y });
 						combatant.combat.position.x = square.x;
 						combatant.combat.position.y = square.y;
+						EncounterLogic.log(encounter, `${combatant.name} has moved`);
+					} else {
+						EncounterLogic.log(encounter, `${combatant.name} can't move`);
 					}
-					EncounterLogic.log(encounter, `${combatant.name} has moved`);
 				}
 				break;
 			}

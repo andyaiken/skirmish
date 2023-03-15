@@ -3,7 +3,7 @@ import { Component } from 'react';
 import './stat-value.scss';
 
 interface Props {
-	orientation: 'horizontal' | 'vertical';
+	orientation: 'horizontal' | 'vertical' | 'compact';
 	label: JSX.Element | number | string;
 	value: (JSX.Element | number | string)[] | JSX.Element | number | string;
 }
@@ -35,6 +35,19 @@ export class StatValue extends Component<Props> {
 					</div>
 					<div className='stat-value-label'>
 						{this.props.label}
+					</div>
+				</div>
+			);
+		}
+
+		if (this.props.orientation === 'compact') {
+			return (
+				<div className='stat-value compact'>
+					<div className='stat-value-label'>
+						{this.props.label}
+					</div>
+					<div className='stat-value-value'>
+						{this.props.value}
 					</div>
 				</div>
 			);

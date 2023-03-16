@@ -120,7 +120,7 @@ export class CampaignScreen extends Component<Props, State> {
 				<div className='campaign-top-bar'>
 					<div className='logo-text inset-text'>Skirmish</div>
 					<Selector options={options} selectedID={this.state.page} onSelect={this.setPage} />
-					<button className='icon-btn' onClick={() => this.setPage('options')}>
+					<button className={`icon-btn ${this.state.page === 'options' ? 'checked' : ''}`} onClick={() => this.setPage('options')}>
 						<IconSettings />
 					</button>
 				</div>

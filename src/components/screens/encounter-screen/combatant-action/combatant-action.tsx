@@ -1,15 +1,14 @@
-import { IconArrowUp, IconMapPin } from '@tabler/icons-react';
+import { IconArrowUp, IconViewfinder } from '@tabler/icons-react';
 import { Component } from 'react';
 
 import { ActionTargetType } from '../../../../enums/action-target-type';
 import { CardType } from '../../../../enums/card-type';
 
-import { ActionPrerequisites } from '../../../../logic/action-logic';
+import { ActionLogic, ActionPrerequisites } from '../../../../logic/action-logic';
 import { CombatantLogic } from '../../../../logic/combatant-logic';
 import { EncounterLogic } from '../../../../logic/encounter-logic';
 import { EncounterMapLogic } from '../../../../logic/encounter-map-logic';
 import { GameLogic } from '../../../../logic/game-logic';
-import { NameGenerator } from '../../../../logic/name-generator';
 
 import type { ActionModel, ActionOriginParameterModel, ActionParameterModel, ActionTargetParameterModel, ActionWeaponParameterModel } from '../../../../models/action';
 import type { CombatantModel } from '../../../../models/combatant';
@@ -159,8 +158,12 @@ export class CombatantAction extends Component<Props, State> {
 						}
 						if (originParam.candidates.length > 1) {
 							changeButton = (
-								<button className='icon-btn map-btn' title='Select Origin Square' onClick={() => this.props.setActionParameter(originParam)}>
-									<IconMapPin />
+								<button
+									className={`icon-btn map-btn ${this.props.currentActionParameter === parameter ? 'checked' : ''}`}
+									title='Select Origin Square'
+									onClick={() => this.props.setActionParameter(originParam)}
+								>
+									<IconViewfinder />
 								</button>
 							);
 						}
@@ -189,8 +192,12 @@ export class CombatantAction extends Component<Props, State> {
 										if (targetParam.candidates.length > targetParam.targets.count) {
 											const title = `Select ${targetParam.targets.type.toLowerCase()}`;
 											changeButton = (
-												<button className='icon-btn map-btn' title={title} onClick={() => this.props.setActionParameter(targetParam)}>
-													<IconMapPin />
+												<button
+													className={`icon-btn map-btn ${this.props.currentActionParameter === parameter ? 'checked' : ''}`}
+													title={title}
+													onClick={() => this.props.setActionParameter(targetParam)}
+												>
+													<IconViewfinder />
 												</button>
 											);
 										}
@@ -221,8 +228,12 @@ export class CombatantAction extends Component<Props, State> {
 											});
 										if (targetParam.candidates.length > targetParam.targets.count) {
 											changeButton = (
-												<button className='icon-btn map-btn' title='Select Squares' onClick={() => this.props.setActionParameter(targetParam)}>
-													<IconMapPin />
+												<button
+													className={`icon-btn map-btn ${this.props.currentActionParameter === parameter ? 'checked' : ''}`}
+													title='Select Squares'
+													onClick={() => this.props.setActionParameter(targetParam)}
+												>
+													<IconViewfinder />
 												</button>
 											);
 										}
@@ -253,8 +264,12 @@ export class CombatantAction extends Component<Props, State> {
 											});
 										if (targetParam.candidates.length > targetParam.targets.count) {
 											changeButton = (
-												<button className='icon-btn map-btn' title='Select Walls' onClick={() => this.props.setActionParameter(targetParam)}>
-													<IconMapPin />
+												<button
+													className={`icon-btn map-btn ${this.props.currentActionParameter === parameter ? 'checked' : ''}`}
+													title='Select Walls'
+													onClick={() => this.props.setActionParameter(targetParam)}
+												>
+													<IconViewfinder />
 												</button>
 											);
 										}
@@ -271,12 +286,23 @@ export class CombatantAction extends Component<Props, State> {
 				}
 
 				parameters.push(
-					<div key={n} className={`action-parameter ${this.props.currentActionParameter === parameter ? 'current' : ''}`}>
+					<div key={n} className='action-parameter'>
 						<div className='action-parameter-top-line'>
-							<div className='action-parameter-name'>{NameGenerator.capitalise(parameter.name)}</div>
-							<div className='action-parameter-value'>{description}</div>
+							<div className='action-parameter-name'>
+								{ActionLogic.getParameterDescription(parameter)}
+							</div>
+							<div className='action-parameter-value'>
+								{description}
+							</div>
 							{changeButton !== null ? <div className='action-parameter-change'>{changeButton}</div> : null}
 						</div>
+						{
+							this.props.currentActionParameter === parameter ?
+								<Text type={TextType.Information}>
+									Select targets on the map, then press the <IconViewfinder size={13} /> button again to finalize your selection and run the action.
+								</Text>
+								: null
+						}
 						{changeControls !== null ? <div className='action-parameter-change'>{changeControls}</div> : null}
 					</div>
 				);

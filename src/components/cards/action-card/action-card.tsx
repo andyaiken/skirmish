@@ -2,7 +2,7 @@ import { Component } from 'react';
 
 import { ActionLogic, ActionPrerequisites } from '../../../logic/action-logic';
 
-import type { ActionEffectModel, ActionModel, ActionOriginParameterModel, ActionParameterModel, ActionTargetParameterModel, ActionWeaponParameterModel } from '../../../models/action';
+import type { ActionEffectModel, ActionModel } from '../../../models/action';
 import type { EncounterModel } from '../../../models/encounter';
 
 import { Text, TextType } from '../../controls';
@@ -30,27 +30,7 @@ export class ActionCard extends Component<Props> {
 	};
 
 	getParameters = () => {
-		const getParameterDescription = (parameter: ActionParameterModel) => {
-			switch (parameter.name) {
-				case 'origin': {
-					const originParam = parameter as ActionOriginParameterModel;
-					if (originParam.distance === 'weapon') {
-						return 'Origin: within weapon range';
-					}
-					return `Origin: within ${originParam.distance} squares`;
-				}
-				case 'weapon': {
-					const weaponParam = parameter as ActionWeaponParameterModel;
-					return `Weapon: ${weaponParam.type}`;
-				}
-				case 'targets': {
-					const targetParam = parameter as ActionTargetParameterModel;
-					return `Targets: ${ActionLogic.getTargetDescription(targetParam)}`;
-				}
-			}
-		};
-
-		return this.props.action.parameters.map((p, n) => <div key={n} className='parameter'>{getParameterDescription(p)}</div>);
+		return this.props.action.parameters.map((p, n) => <div key={n} className='parameter'>{ActionLogic.getParameterDescription(p)}</div>);
 	};
 
 	getEffects = () => {

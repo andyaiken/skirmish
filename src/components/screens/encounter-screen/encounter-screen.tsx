@@ -674,7 +674,11 @@ export class EncounterScreen extends Component<Props, State> {
 
 				footer = (
 					<div>
-						{currentCombatant.combat.actions.length !== 0 ? <Text type={TextType.Information}><b>You have not taken an action.</b></Text> : null}
+						{
+							currentCombatant.combat.actions.length !== 0 ?
+								<Text type={TextType.Information}><b>You have not taken an action.</b> You probably want to take an action before you end your turn.</Text>
+								: null
+						}
 						<button onClick={() => this.endTurn(this.props.encounter)}>End Turn</button>
 					</div>
 				);

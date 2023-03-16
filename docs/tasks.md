@@ -13,8 +13,7 @@
   * Actions
     * Allow the user to opt for a universal action instead
     * Allow the user to see the log for a given action
-    * Improve the UI for selecting combatants / squares / walls on the map
-    * Implement final action effects (command action / command move)
+    * Implement the last action effects (command action / command move)
 * Add a system for evaluating each action to ensure none is too powerful
   * Then extend this to ensure species / roles / backgrounds are equally matched
 * Add help / documentation to explain game rules

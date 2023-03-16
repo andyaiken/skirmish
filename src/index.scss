@@ -51,6 +51,10 @@ button {
 		padding: 0;
 	}
 
+	&.checked {
+		background-color: rgb(200, 230, 255);
+	}
+
 	&:not(:disabled) {
 		border-color: rgb(60, 170, 255);
 		cursor: pointer;

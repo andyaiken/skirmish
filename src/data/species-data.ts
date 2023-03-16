@@ -314,7 +314,7 @@ export class SpeciesData {
 							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
 						],
 						effects: [
-							ActionEffects.forceMovement(MovementType.ToTarget, 1),
+							ActionEffects.forceMovement(MovementType.TowardsTarget, 2),
 							ActionEffects.attack({
 								weapon: false,
 								skill: SkillType.Brawl,

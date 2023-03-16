@@ -880,6 +880,7 @@ export class ActionEffects {
 				break;
 			}
 			case 'commandAction': {
+				/*
 				const targetParameter = parameters.find(p => p.name === 'targets');
 				if (targetParameter) {
 					const targetIDs = targetParameter.value as string[];
@@ -890,9 +891,11 @@ export class ActionEffects {
 						// Perform it
 					});
 				}
+				*/
 				break;
 			}
 			case 'commandMove': {
+				/*
 				const targetParameter = parameters.find(p => p.name === 'targets');
 				if (targetParameter) {
 					const targetIDs = targetParameter.value as string[];
@@ -904,6 +907,7 @@ export class ActionEffects {
 						// Perform it
 					});
 				}
+				*/
 				break;
 			}
 			case 'forceMovement': {
@@ -958,9 +962,24 @@ export class ActionEffects {
 								EncounterLogic.log(encounter, `${combatant.name} and ${target.name} have swapped positions`);
 								break;
 							}
-							case MovementType.ToTarget: {
-								// TODO: This can make you move through obstacles
-								// Instead we should try to move closer, one square at a time
+							case MovementType.TowardsTarget: {
+								const moveDistance = Random.dice(data.rank);
+								for (let n = 0; n < moveDistance; ++n) {
+									const distance = EncounterMapLogic.getDistance(combatant.combat.position, target.combat.position);
+									const squares = EncounterLogic.getPossibleMoveSquares(encounter, combatant).filter(square => {
+										return EncounterMapLogic.getDistance(target.combat.position, square) < distance;
+									});
+									if (squares.length > 0) {
+										const square = Collections.draw(squares);
+										combatant.combat.trail.push({ x: combatant.combat.position.x, y: combatant.combat.position.y });
+										combatant.combat.position.x = square.x;
+										combatant.combat.position.y = square.y;
+									}
+								}
+								EncounterLogic.log(encounter, `${combatant.name} has moved towards ${target.name}`);
+								break;
+							}
+							case MovementType.BesideTarget: {
 								const combatantSquares = EncounterLogic.getCombatantSquares(encounter, combatant);
 								const targetSquares = EncounterLogic.getCombatantSquares(encounter, target);
 								const targetAdjacentSquares = EncounterMapLogic.getAdjacentSquares(encounter.mapSquares, targetSquares);
@@ -1135,6 +1154,28 @@ export class ActionEffects {
 export class ActionLogic {
 	static getActionDescription = (action: ActionModel) => {
 		return action.name;
+	};
+
+	static getParameterDescription = (parameter: ActionParameterModel) => {
+		switch (parameter.name) {
+			case 'origin': {
+				const originParam = parameter as ActionOriginParameterModel;
+				if (originParam.distance === 'weapon') {
+					return 'Origin: within weapon range';
+				}
+				return `Origin: within ${originParam.distance} squares`;
+			}
+			case 'weapon': {
+				const weaponParam = parameter as ActionWeaponParameterModel;
+				return `Weapon: ${weaponParam.type}`;
+			}
+			case 'targets': {
+				const targetParam = parameter as ActionTargetParameterModel;
+				return `Target(s): ${ActionLogic.getTargetDescription(targetParam)}`;
+			}
+		}
+
+		return '';
 	};
 
 	static getTargetDescription = (target: ActionTargetParameterModel): string => {

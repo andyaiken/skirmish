@@ -22,15 +22,8 @@ interface Props {
 
 export class CombatantHeader extends Component<Props> {
 	render = () => {
-		let charSheetBtn = null;
 		let tabs = null;
 		if (this.props.combatant.type === CombatantType.Hero) {
-			charSheetBtn = (
-				<button className='icon-btn character-sheet-btn' onClick={() => this.props.showCharacterSheet(this.props.combatant)}>
-					<IconId size={40} />
-				</button>
-			);
-
 			const options = [
 				{ id: 'overview', display: 'Overview' },
 				{ id: 'move', display: 'Move' },
@@ -58,7 +51,9 @@ export class CombatantHeader extends Component<Props> {
 							<Tag>Level {this.props.combatant.level}</Tag>
 						</div>
 					</div>
-					{charSheetBtn}
+					<button className='icon-btn character-sheet-btn' onClick={() => this.props.showCharacterSheet(this.props.combatant)}>
+						<IconId size={40} />
+					</button>
 				</div>
 				{
 					this.props.combatant.combat.stunned ?

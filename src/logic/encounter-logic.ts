@@ -79,13 +79,14 @@ export class EncounterLogic {
 	};
 
 	static log = (encounter: EncounterModel, message: string) => {
-		encounter.log.push(message);
+		const combatant = encounter.combatants.find(c => c.combat.current);
+		if (combatant) {
+			combatant.combat.actionLog.push(message);
+		}
 	};
 
 	static rollInitiative = (encounter: EncounterModel) => {
 		encounter.round += 1;
-
-		encounter.log = [];
 
 		encounter.combatants.forEach(c => {
 			c.combat.initiative = Number.MIN_VALUE;
@@ -121,9 +122,18 @@ export class EncounterLogic {
 		});
 	};
 
-	static startOfTurn = (encounter: EncounterModel, combatant: CombatantModel) => {
-		EncounterLogic.log(encounter, `Start of turn for ${combatant.name}`);
+	static endTurn = (encounter: EncounterModel) => {
+		encounter.combatants.filter(c => c.combat.current).forEach(c => {
+			EncounterLogic.endOfTurn(encounter, c);
+		});
 
+		const active = EncounterLogic.getActiveCombatants(encounter);
+		if (active.length > 0) {
+			EncounterLogic.startOfTurn(encounter, active[0]);
+		}
+	};
+
+	static startOfTurn = (encounter: EncounterModel, combatant: CombatantModel) => {
 		encounter.combatants.forEach(c => c.combat.current = false);
 		combatant.combat.current = true;
 
@@ -132,6 +142,7 @@ export class EncounterLogic {
 		combatant.combat.movement = 0;
 		combatant.combat.trail = [];
 		combatant.combat.actions = [];
+		combatant.combat.actionLog = [];
 
 		if (combatant.combat.state === CombatantState.Unconscious) {
 			const rank = EncounterLogic.getTraitRank(encounter, combatant, TraitType.Resolve);
@@ -216,6 +227,7 @@ export class EncounterLogic {
 			c.combat.movement = 0;
 			c.combat.trail = [];
 			c.combat.actions = [];
+			c.combat.actionLog = [];
 		});
 
 		combatant.combat.stunned = false;
@@ -236,8 +248,6 @@ export class EncounterLogic {
 			}
 		});
 		combatant.combat.conditions = combatant.combat.conditions.filter(c => c.rank > 0);
-
-		EncounterLogic.log(encounter, `End of turn for ${combatant.name}`);
 	};
 
 	static drawActions = (encounter: EncounterModel, combatant: CombatantModel) => {

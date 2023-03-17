@@ -128,7 +128,7 @@ export class BackgroundData {
 					},
 					{
 						id: 'commander-action-3',
-						name: 'Battlefield instinct',
+						name: 'Battlefield Instinct',
 						prerequisites: [],
 						parameters: [
 							ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 10)

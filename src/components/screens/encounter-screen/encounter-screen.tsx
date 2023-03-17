@@ -14,11 +14,12 @@ import type { ActionModel, ActionOriginParameterModel, ActionParameterModel, Act
 import type { EncounterModel, LootPileModel } from '../../../models/encounter';
 import type { CombatantModel } from '../../../models/combatant';
 import type { GameModel } from '../../../models/game';
+import type { IntentModel } from '../../../models/intent';
 import type { ItemModel } from '../../../models/item';
 import type { RegionModel } from '../../../models/campaign-map';
 
-import { CardList, Dialog, PlayingCard, Tabs, Text, TextType } from '../../controls';
-import { CharacterSheetPanel, EncounterLogPanel, EncounterMapPanel, InitiativeListPanel } from '../../panels';
+import { CardList, Dialog, PlayingCard, Text, TextType } from '../../controls';
+import { CharacterSheetPanel, EncounterMapPanel, InitiativeListPanel } from '../../panels';
 import { CombatantAction } from './combatant-action/combatant-action';
 import { CombatantHeader } from './combatant-header/combatant-header';
 import { CombatantMonster } from './combatant-monster/combatant-monster';
@@ -35,6 +36,7 @@ interface Props {
 	rotateMap: (encounter: EncounterModel, dir: 'l' | 'r') => void;
 	rollInitiative: (encounter: EncounterModel) => void;
 	endTurn: (encounter: EncounterModel) => void;
+	performIntent: (encounter: EncounterModel, combatant: CombatantModel, intent: IntentModel) => IntentModel;
 	move: (encounter: EncounterModel, combatant: CombatantModel, dir: string, cost: number) => void;
 	addMovement: (encounter: EncounterModel, combatant: CombatantModel, value: number) => void;
 	standUp: (encounter: EncounterModel, combatant: CombatantModel) => void;
@@ -53,7 +55,6 @@ interface Props {
 }
 
 interface State {
-	leftID: string;
 	rightID: string;
 	mapSquareSize: number;
 	currentActionParameter: ActionParameterModel | null;
@@ -72,9 +73,8 @@ export class EncounterScreen extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
-			leftID: 'init',
 			rightID: 'overview',
-			mapSquareSize: 10,
+			mapSquareSize: 15,
 			currentActionParameter: null,
 			selectableCombatantIDs: [],
 			selectableLootIDs: [],
@@ -87,12 +87,6 @@ export class EncounterScreen extends Component<Props, State> {
 			detailsLoot: null
 		};
 	}
-
-	setLeftID = (id: string) => {
-		this.setState({
-			leftID: id
-		});
-	};
 
 	setRightID = (id: string) => {
 		this.setState({
@@ -277,6 +271,15 @@ export class EncounterScreen extends Component<Props, State> {
 		});
 	};
 
+	move = (encounter: EncounterModel, combatant: CombatantModel, dir: string, cost: number) => {
+		this.setState({
+			currentActionParameter: null,
+			selectedSquares: []
+		}, () => {
+			this.props.move(encounter, combatant, dir, cost);
+		});
+	};
+
 	selectAction = (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => {
 		this.setState({
 			selectedCombatantIDs: [],
@@ -367,49 +370,16 @@ export class EncounterScreen extends Component<Props, State> {
 		});
 	};
 
-	getLeftControls = (state: EncounterState) => {
-		let header = null;
-		if (this.props.developer) {
-			header = (
-				<div className='panel-header'>
-					<Tabs
-						options={[
-							{ id: 'init', display: 'Initiative' },
-							{ id: 'log', display: <div className='developer' style={{ width: '100%', textAlign: 'center' }}>Log</div> }
-						]}
-						selectedID={this.state.leftID}
-						onSelect={id => this.setLeftID(id)}
-					/>
-				</div>
-			);
-		}
-
-		let content = null;
-		switch (this.state.leftID) {
-			case 'init': {
-				content = (
+	getLeftControls = () => {
+		return (
+			<div className='encounter-left-panel'>
+				<div className='panel-content'>
 					<InitiativeListPanel
 						encounter={this.props.encounter}
 						selectedIDs={this.state.selectedCombatantIDs}
 						onSelect={this.selectCombatant}
 						onDetails={this.showDetailsCombatant}
 					/>
-				);
-				break;
-			}
-			case 'log': {
-				content = (
-					<EncounterLogPanel encounter={this.props.encounter} />
-				);
-				break;
-			}
-		}
-
-		return (
-			<div className='encounter-left-panel'>
-				{header}
-				<div className='panel-content'>
-					{content}
 				</div>
 			</div>
 		);
@@ -422,17 +392,6 @@ export class EncounterScreen extends Component<Props, State> {
 
 		if (this.state.selectedCombatantIDs.length === 1) {
 			const combatant = EncounterLogic.getCombatant(this.props.encounter, this.state.selectedCombatantIDs[0]) as CombatantModel;
-
-			let charSheetBtn = null;
-			if (combatant.type === CombatantType.Hero) {
-				charSheetBtn = (
-					<div className='section compact'>
-						<button className='icon-btn' title='Close' onClick={() => this.showDetailsCombatant(combatant)}>
-							<IconId />
-						</button>
-					</div>
-				);
-			}
 
 			return (
 				<div className='encounter-bottom-panel'>
@@ -459,7 +418,11 @@ export class EncounterScreen extends Component<Props, State> {
 						<div className='stack-label'>Wounds</div>
 						<div className='stack-value'>{combatant.combat.wounds} / {EncounterLogic.getTraitRank(this.props.encounter, combatant, TraitType.Resolve)}</div>
 					</div>
-					{charSheetBtn}
+					<div className='section compact'>
+						<button className='icon-btn' title='Close' onClick={() => this.showDetailsCombatant(combatant)}>
+							<IconId />
+						</button>
+					</div>
 					<div className='section compact'>
 						<button className='icon-btn' title='Close' onClick={() => this.clearSelection()}>
 							<IconX />
@@ -624,9 +587,9 @@ export class EncounterScreen extends Component<Props, State> {
 						combatant={currentCombatant}
 						encounter={this.props.encounter}
 						developer={this.props.developer}
+						performIntent={this.props.performIntent}
 						showCharacterSheet={this.showDetailsCombatant}
 						kill={this.props.kill}
-						endTurn={this.endTurn}
 					/>
 				);
 			} else {
@@ -649,7 +612,7 @@ export class EncounterScreen extends Component<Props, State> {
 								combatant={currentCombatant}
 								encounter={this.props.encounter}
 								developer={this.props.developer}
-								move={this.props.move}
+								move={this.move}
 								addMovement={this.props.addMovement}
 								pickUpItem={this.props.pickUpItem}
 							/>
@@ -720,6 +683,7 @@ export class EncounterScreen extends Component<Props, State> {
 						<CharacterSheetPanel
 							hero={this.state.detailsCombatant}
 							game={this.props.game}
+							developer={this.props.developer}
 							equipItem={this.props.equipItem}
 							unequipItem={this.props.unequipItem}
 							pickUpItem={this.props.pickUpItem}
@@ -747,7 +711,7 @@ export class EncounterScreen extends Component<Props, State> {
 
 		return (
 			<div className='encounter-screen'>
-				{this.getLeftControls(state)}
+				{this.getLeftControls()}
 				<div className='encounter-central-panel'>
 					<EncounterMapPanel
 						encounter={this.props.encounter}

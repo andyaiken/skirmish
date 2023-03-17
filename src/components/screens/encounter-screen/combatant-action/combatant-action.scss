@@ -1,4 +1,16 @@
 .combatant-action {
+	.action-log {
+		margin: 10px 0;
+		border: 2px solid rgb(220, 220, 220);
+		border-radius: 10px;
+		padding: 10px;
+
+		.action-log-item {
+			margin: 5px 0;
+			font-size: 13px;
+		}
+	}
+
 	.actions {
 		display: flex;
 		flex-direction: column;

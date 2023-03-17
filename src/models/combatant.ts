@@ -43,5 +43,6 @@ export interface CombatantModel {
 		hidden: number;
 		conditions: ConditionModel[];
 		actions: ActionModel[];
+		actionLog: string[];
 	}
 }

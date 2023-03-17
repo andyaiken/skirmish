@@ -110,7 +110,7 @@ export class HeroesPage extends Component<Props, State> {
 				<div>
 					<Text type={TextType.SubHeading}>Level Up ({cards.length})</Text>
 					<Text type={TextType.Information}><b>Some of your heroes have gained enough XP to level up.</b> Click on their name to upgrade them.</Text>
-					<CardList cards={cards} />
+					{cards}
 				</div>
 			);
 		}
@@ -173,6 +173,7 @@ export class HeroesPage extends Component<Props, State> {
 							<CharacterSheetPanel
 								hero={this.state.selectedHero}
 								game={this.props.game}
+								developer={this.props.developer}
 								equipItem={this.props.equipItem}
 								unequipItem={this.props.unequipItem}
 								pickUpItem={this.props.pickUpItem}

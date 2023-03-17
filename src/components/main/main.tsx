@@ -12,6 +12,7 @@ import { EncounterGenerator } from '../../logic/encounter-generator';
 import { EncounterLogic } from '../../logic/encounter-logic';
 import { Factory } from '../../logic/factory';
 import { GameLogic } from '../../logic/game-logic';
+import { MonsterLogic } from '../../logic/monster-logic';
 
 import type { ActionModel, ActionParameterModel } from '../../models/action';
 import type { BoonModel } from '../../models/boon';
@@ -19,6 +20,7 @@ import type { CombatantModel } from '../../models/combatant';
 import type { EncounterModel } from '../../models/encounter';
 import type { FeatureModel } from '../../models/feature';
 import type { GameModel } from '../../models/game';
+import type { IntentModel } from '../../models/intent';
 import type { ItemModel } from '../../models/item';
 import type { RegionModel } from '../../models/campaign-map';
 
@@ -79,13 +81,13 @@ export class Main extends Component<Props, State> {
 				if (game.encounter.mapSquares === undefined) {
 					game.encounter.mapSquares = [];
 				}
-				if (game.encounter.log === undefined) {
-					game.encounter.log = [];
-				}
 
 				game.encounter.combatants.forEach(c => {
 					if (c.combat.trail === undefined) {
 						c.combat.trail = [];
+					}
+					if (c.combat.actionLog === undefined) {
+						c.combat.actionLog = [];
 					}
 				});
 			}
@@ -423,18 +425,21 @@ export class Main extends Component<Props, State> {
 	};
 
 	endTurn = (encounter: EncounterModel) => {
-		encounter.combatants.filter(c => c.combat.current).forEach(c => {
-			EncounterLogic.endOfTurn(encounter, c);
-		});
-
-		const active = EncounterLogic.getActiveCombatants(encounter);
-		if (active.length > 0) {
-			EncounterLogic.startOfTurn(encounter, active[0]);
-		}
+		EncounterLogic.endTurn(encounter);
 
 		this.setState({
 			game: this.state.game
 		});
+	};
+
+	performIntent = (encounter: EncounterModel, combatant: CombatantModel, intent: IntentModel) => {
+		const nextIntent = MonsterLogic.performIntent(encounter, combatant, intent);
+
+		this.setState({
+			game: this.state.game
+		});
+
+		return nextIntent;
 	};
 
 	equipItem = (item: ItemModel, combatant: CombatantModel) => {
@@ -669,6 +674,7 @@ export class Main extends Component<Props, State> {
 						rotateMap={this.rotateMap}
 						rollInitiative={this.rollInitiative}
 						endTurn={this.endTurn}
+						performIntent={this.performIntent}
 						move={this.move}
 						addMovement={this.addMovement}
 						standUp={this.standUp}

@@ -21,6 +21,7 @@ import './stats.scss';
 interface Props {
 	hero: CombatantModel;
 	encounter: EncounterModel | null;
+	developer: boolean;
 }
 
 export class Stats extends Component<Props> {
@@ -49,6 +50,8 @@ export class Stats extends Component<Props> {
 	};
 
 	render = () => {
+		const cutDown = (this.props.hero.type === CombatantType.Monster) && !this.props.developer;
+
 		let traitsSection = null;
 		if (this.props.encounter) {
 			traitsSection = (
@@ -67,26 +70,28 @@ export class Stats extends Component<Props> {
 		}
 
 		let proficiencySection = null;
-		const profs = CombatantLogic.getProficiencies(this.props.hero);
-		if (profs.length > 0) {
-			proficiencySection = (
-				<div>
-					{profs.map((p, n) => (<Tag key={n}>{p}</Tag>))}
-				</div>
-			);
-		} else {
-			proficiencySection = (
-				<div>
-					<Text>None</Text>
-				</div>
-			);
+		if (!cutDown) {
+			const profs = CombatantLogic.getProficiencies(this.props.hero);
+			if (profs.length > 0) {
+				proficiencySection = (
+					<Box label='Proficiencies'>
+						{profs.map((p, n) => (<Tag key={n}>{p}</Tag>))}
+					</Box>
+				);
+			} else {
+				proficiencySection = (
+					<Box label='Proficiencies'>
+						<Text>None</Text>
+					</Box>
+				);
+			}
 		}
 
 		let auraSection = null;
 		const auras = CombatantLogic.getAuras(this.props.hero);
 		if (auras.length > 0) {
 			auraSection = (
-				<div>
+				<Box label='Auras'>
 					{
 						auras.map(aura => {
 							const affects = ConditionLogic.getConditionIsBeneficial(aura) ? 'allies' : 'enemies';
@@ -94,15 +99,57 @@ export class Stats extends Component<Props> {
 							return <StatValue key={aura.id} label={desc} value={aura.rank} />;
 						})
 					}
-				</div>
+				</Box>
 			);
 		} else {
 			auraSection = (
-				<div>
+				<Box label='Auras'>
 					<Text>None</Text>
-				</div>
+				</Box>
 			);
 		}
+
+		const damageBonusesColumn = (
+			<div className='column'>
+				<Box label='Damage Bonuses'>
+					<StatValue label='Acid' value={this.getDamageBonusValue(DamageType.Acid)}/>
+					<StatValue label='Edged' value={this.getDamageBonusValue(DamageType.Edged)}/>
+					<StatValue label='Impact' value={this.getDamageBonusValue(DamageType.Impact)}/>
+					<StatValue label='Piercing' value={this.getDamageBonusValue(DamageType.Piercing)}/>
+					<hr />
+					<StatValue label='Cold' value={this.getDamageBonusValue(DamageType.Cold)}/>
+					<StatValue label='Electricity' value={this.getDamageBonusValue(DamageType.Electricity)}/>
+					<StatValue label='Fire' value={this.getDamageBonusValue(DamageType.Fire)}/>
+					<StatValue label='Light' value={this.getDamageBonusValue(DamageType.Light)}/>
+					<StatValue label='Sonic' value={this.getDamageBonusValue(DamageType.Sonic)}/>
+					<hr />
+					<StatValue label='Decay' value={this.getDamageBonusValue(DamageType.Decay)}/>
+					<StatValue label='Poison' value={this.getDamageBonusValue(DamageType.Poison)}/>
+					<StatValue label='Psychic' value={this.getDamageBonusValue(DamageType.Psychic)}/>
+				</Box>
+			</div>
+		);
+
+		const damageResistancesColumn = (
+			<div className='column'>
+				<Box label='Resistances'>
+					<StatValue label='Acid' value={this.getDamageResistanceValue(DamageType.Acid)}/>
+					<StatValue label='Edged' value={this.getDamageResistanceValue(DamageType.Edged)}/>
+					<StatValue label='Impact' value={this.getDamageResistanceValue(DamageType.Impact)}/>
+					<StatValue label='Piercing' value={this.getDamageResistanceValue(DamageType.Piercing)}/>
+					<hr />
+					<StatValue label='Cold' value={this.getDamageResistanceValue(DamageType.Cold)}/>
+					<StatValue label='Electricity' value={this.getDamageResistanceValue(DamageType.Electricity)}/>
+					<StatValue label='Fire' value={this.getDamageResistanceValue(DamageType.Fire)}/>
+					<StatValue label='Light' value={this.getDamageResistanceValue(DamageType.Light)}/>
+					<StatValue label='Sonic' value={this.getDamageResistanceValue(DamageType.Sonic)}/>
+					<hr />
+					<StatValue label='Decay' value={this.getDamageResistanceValue(DamageType.Decay)}/>
+					<StatValue label='Poison' value={this.getDamageResistanceValue(DamageType.Poison)}/>
+					<StatValue label='Psychic' value={this.getDamageResistanceValue(DamageType.Psychic)}/>
+				</Box>
+			</div>
+		);
 
 		return (
 			<div className='stats'>
@@ -112,10 +159,13 @@ export class Stats extends Component<Props> {
 							<Text type={TextType.Information}>{this.props.hero.name} is <b>{this.props.hero.combat.state}</b>.</Text>
 							: null
 					}
+					{
+						this.props.encounter && this.props.hero.combat.stunned ?
+							<Text type={TextType.Information}>{this.props.hero.name} is <b>stunned</b>.</Text>
+							: null
+					}
 					{traitsSection}
-					<Box label='Auras'>
-						{auraSection}
-					</Box>
+					{auraSection}
 				</div>
 				<div className='column'>
 					<Box label='Skills'>
@@ -126,50 +176,14 @@ export class Stats extends Component<Props> {
 						<StatValue label='Stealth' value={this.getSkillRank(SkillType.Stealth)}/>
 						<StatValue label='Weapon' value={this.getSkillRank(SkillType.Weapon)}/>
 					</Box>
-					<Box label='Proficiencies'>
-						{proficiencySection}
-					</Box>
+					{proficiencySection}
 					{this.props.hero.type === CombatantType.Hero ? <Box label='XP'>
 						<StatValue label='Earned' value={<IconValue type={IconType.XP} value={this.props.hero.xp} iconSize={12} />} />
 						<StatValue label={`Required for level ${this.props.hero.level + 1}`} value={<IconValue type={IconType.XP} value={this.props.hero.level} iconSize={12} />} />
 					</Box> : null}
 				</div>
-				<div className='column'>
-					<Box label='Damage Bonuses'>
-						<StatValue label='Acid' value={this.getDamageBonusValue(DamageType.Acid)}/>
-						<StatValue label='Edged' value={this.getDamageBonusValue(DamageType.Edged)}/>
-						<StatValue label='Impact' value={this.getDamageBonusValue(DamageType.Impact)}/>
-						<StatValue label='Piercing' value={this.getDamageBonusValue(DamageType.Piercing)}/>
-						<hr />
-						<StatValue label='Cold' value={this.getDamageBonusValue(DamageType.Cold)}/>
-						<StatValue label='Electricity' value={this.getDamageBonusValue(DamageType.Electricity)}/>
-						<StatValue label='Fire' value={this.getDamageBonusValue(DamageType.Fire)}/>
-						<StatValue label='Light' value={this.getDamageBonusValue(DamageType.Light)}/>
-						<StatValue label='Sonic' value={this.getDamageBonusValue(DamageType.Sonic)}/>
-						<hr />
-						<StatValue label='Decay' value={this.getDamageBonusValue(DamageType.Decay)}/>
-						<StatValue label='Poison' value={this.getDamageBonusValue(DamageType.Poison)}/>
-						<StatValue label='Psychic' value={this.getDamageBonusValue(DamageType.Psychic)}/>
-					</Box>
-				</div>
-				<div className='column'>
-					<Box label='Resistances'>
-						<StatValue label='Acid' value={this.getDamageResistanceValue(DamageType.Acid)}/>
-						<StatValue label='Edged' value={this.getDamageResistanceValue(DamageType.Edged)}/>
-						<StatValue label='Impact' value={this.getDamageResistanceValue(DamageType.Impact)}/>
-						<StatValue label='Piercing' value={this.getDamageResistanceValue(DamageType.Piercing)}/>
-						<hr />
-						<StatValue label='Cold' value={this.getDamageResistanceValue(DamageType.Cold)}/>
-						<StatValue label='Electricity' value={this.getDamageResistanceValue(DamageType.Electricity)}/>
-						<StatValue label='Fire' value={this.getDamageResistanceValue(DamageType.Fire)}/>
-						<StatValue label='Light' value={this.getDamageResistanceValue(DamageType.Light)}/>
-						<StatValue label='Sonic' value={this.getDamageResistanceValue(DamageType.Sonic)}/>
-						<hr />
-						<StatValue label='Decay' value={this.getDamageResistanceValue(DamageType.Decay)}/>
-						<StatValue label='Poison' value={this.getDamageResistanceValue(DamageType.Poison)}/>
-						<StatValue label='Psychic' value={this.getDamageResistanceValue(DamageType.Psychic)}/>
-					</Box>
-				</div>
+				{cutDown ? null : damageBonusesColumn}
+				{cutDown ? null : damageResistancesColumn}
 			</div>
 		);
 	};

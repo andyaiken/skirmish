@@ -44,11 +44,24 @@ export class CombatantAction extends Component<Props, State> {
 		};
 	}
 
+	getLog = () => {
+		if (this.props.combatant.combat.actionLog.length === 0) {
+			return null;
+		}
+
+		return (
+			<div className='action-log'>
+				{this.props.combatant.combat.actionLog.map((msg, n) => <div key={n} className='action-log-item'>{msg}</div>)}
+			</div>
+		);
+	};
+
 	render = () => {
 		if (this.props.combatant.combat.actions.length === 0) {
 			return (
 				<div className='combatant-action'>
 					<Text type={TextType.Information}>You have taken your action for this turn.</Text>
+					{this.getLog()}
 					{this.props.developer ? <button className='developer' onClick={() => this.props.drawActions(this.props.encounter, this.props.combatant)}>Act Again</button> : null}
 				</div>
 			);
@@ -75,9 +88,10 @@ export class CombatantAction extends Component<Props, State> {
 
 			return (
 				<div className='combatant-action'>
+					{this.getLog()}
+					{this.props.developer ? <button className='developer' onClick={() => this.props.drawActions(this.props.encounter, this.props.combatant)}>Draw Again</button> : null}
+					{this.props.developer ? <button className='developer' onClick={() => this.setState({ showAllActions: !this.state.showAllActions })}>All Actions</button> : null}
 					<div className='actions'>
-						{this.props.developer ? <button className='developer' onClick={() => this.props.drawActions(this.props.encounter, this.props.combatant)}>Draw Again</button> : null}
-						{this.props.developer ? <button className='developer' onClick={() => this.setState({ showAllActions: !this.state.showAllActions })}>All Actions</button> : null}
 						<CardList cards={actionCards} />
 					</div>
 				</div>
@@ -311,6 +325,7 @@ export class CombatantAction extends Component<Props, State> {
 
 		return (
 			<div className='combatant-action'>
+				{this.getLog()}
 				<div className='actions'>
 					<PlayingCard
 						key={action.id}

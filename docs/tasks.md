@@ -12,7 +12,6 @@
     * Add a button so that the user can perform each action in turn
   * Actions
     * Allow the user to opt for a universal action instead
-    * Allow the user to see the log for a given action
     * Implement the last action effects (command action / command move)
 * Add a system for evaluating each action to ensure none is too powerful
   * Then extend this to ensure species / roles / backgrounds are equally matched

@@ -3,11 +3,25 @@ import { Random } from '../utils/random';
 
 export class NameGenerator {
 	static generateName = () => {
-		if (Random.randomNumber(10) === 0) {
-			return `${NameGenerator.capitalise(NameGenerator.generateWord())} ${NameGenerator.capitalise(NameGenerator.generateWord())}`;
+		let count = 1;
+		switch (Random.randomNumber(20)) {
+			case 15:
+			case 16:
+			case 17:
+			case 18:
+				count = 2;
+				break;
+			case 19:
+				count = 3;
+				break;
 		}
 
-		return NameGenerator.capitalise(NameGenerator.generateWord());
+		const names = [];
+		while (names.length < count) {
+			names.push(NameGenerator.capitalise(NameGenerator.generateWord()));
+		}
+
+		return names.join(' ');
 	};
 
 	static generateWord = () => {

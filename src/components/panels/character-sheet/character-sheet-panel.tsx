@@ -1,6 +1,7 @@
 import { Component } from 'react';
 
 import { CardType } from '../../../enums/card-type';
+import { CombatantType } from '../../../enums/combatant-type';
 import { FeatureType } from '../../../enums/feature-type';
 
 import { CombatantLogic } from '../../../logic/combatant-logic';
@@ -27,6 +28,7 @@ type ViewType = 'actions' | 'features' | 'items' | 'stats';
 interface Props {
 	hero: CombatantModel;
 	game: GameModel;
+	developer: boolean;
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
 	unequipItem: (item: ItemModel, hero: CombatantModel) => void;
 	pickUpItem: (item: ItemModel, hero: CombatantModel) => void;
@@ -95,10 +97,27 @@ export class CharacterSheetPanel extends Component<Props, State> {
 	};
 
 	render = () => {
+		const cutDown = (this.props.hero.type === CombatantType.Monster) && !this.props.developer;
+
+		const options = [
+			{ id: 'stats', display: 'Statistics' },
+			{ id: 'items', display: 'Equipment' }
+		];
+		if (!cutDown) {
+			options.push({ id: 'features', display: 'Feature Deck' });
+			options.push({ id: 'actions', display: 'Action Deck' });
+		}
+
 		let content = null;
 		switch (this.state.view) {
 			case 'stats':
-				content = <Stats hero={this.props.hero} encounter={this.props.game.encounter} />;
+				content = (
+					<Stats
+						hero={this.props.hero}
+						encounter={this.props.game.encounter}
+						developer={this.props.developer}
+					/>
+				);
 				break;
 			case 'items':
 				content = (
@@ -132,12 +151,7 @@ export class CharacterSheetPanel extends Component<Props, State> {
 			selector = (
 				<Selector
 					selectedID={this.state.view}
-					options={[
-						{ id: 'stats', display: 'Statistics' },
-						{ id: 'items', display: 'Equipment' },
-						{ id: 'features', display: 'Feature Deck' },
-						{ id: 'actions', display: 'Action Deck' }
-					]}
+					options={options}
 					onSelect={id => this.setState({ view: id as ViewType })}
 				/>
 			);

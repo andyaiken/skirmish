@@ -1,5 +1,10 @@
 export interface IntentModel {
-	name: string;
-	description: string;
+	id: string;
 	data: unknown;
+}
+
+export interface IntentsModel {
+	description: string;
+	intents: IntentModel[];
+	weight: number;
 }

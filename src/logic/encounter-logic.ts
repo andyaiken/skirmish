@@ -22,6 +22,7 @@ import { ConditionLogic } from './condition-logic';
 import { EncounterMapLogic } from './encounter-map-logic';
 import { Factory } from './factory';
 import { ItemModel } from '../models/item';
+import { MonsterLogic } from './monster-logic';
 
 export class EncounterLogic {
 	static getCombatantSquares = (encounter: EncounterModel, combatant: CombatantModel, position: { x: number, y: number } | null = null) => {
@@ -143,6 +144,11 @@ export class EncounterLogic {
 		combatant.combat.trail = [];
 		combatant.combat.actions = [];
 		combatant.combat.actionLog = [];
+		combatant.combat.intents = null;
+
+		if (combatant.type === CombatantType.Monster) {
+			combatant.combat.intents = MonsterLogic.getIntents(encounter, combatant);
+		}
 
 		if (combatant.combat.state === CombatantState.Unconscious) {
 			const rank = EncounterLogic.getTraitRank(encounter, combatant, TraitType.Resolve);
@@ -228,6 +234,7 @@ export class EncounterLogic {
 			c.combat.trail = [];
 			c.combat.actions = [];
 			c.combat.actionLog = [];
+			c.combat.intents = null;
 		});
 
 		combatant.combat.stunned = false;
@@ -276,7 +283,7 @@ export class EncounterLogic {
 		if (combatant.combat.actions.length === 1) {
 			const action = combatant.combat.actions[0];
 			action.parameters.forEach(parameter => {
-				switch (parameter.name) {
+				switch (parameter.id) {
 					case 'weapon':
 						ActionLogic.checkWeaponParameter(parameter as ActionWeaponParameterModel, combatant);
 						break;
@@ -292,8 +299,8 @@ export class EncounterLogic {
 		}
 	};
 
-	static getMoveCost = (encounter: EncounterModel, combatant: CombatantModel, dir: string) => {
-		const movingFrom = EncounterLogic.getCombatantSquares(encounter, combatant);
+	static getMoveCost = (encounter: EncounterModel, combatant: CombatantModel, position: { x: number, y: number }, dir: string) => {
+		const movingFrom = EncounterLogic.getCombatantSquares(encounter, combatant, position);
 		const movingTo = movingFrom.map(sq => {
 			const dest = { x: sq.x, y: sq.y };
 			switch (dir) {
@@ -385,7 +392,7 @@ export class EncounterLogic {
 		];
 
 		return squares.filter(square => {
-			const cost = EncounterLogic.getMoveCost(encounter, combatant, square.dir);
+			const cost = EncounterLogic.getMoveCost(encounter, combatant, combatant.combat.position, square.dir);
 			return cost !== Number.MAX_VALUE;
 		});
 	};

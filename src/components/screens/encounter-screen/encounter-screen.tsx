@@ -14,7 +14,6 @@ import type { ActionModel, ActionOriginParameterModel, ActionParameterModel, Act
 import type { EncounterModel, LootPileModel } from '../../../models/encounter';
 import type { CombatantModel } from '../../../models/combatant';
 import type { GameModel } from '../../../models/game';
-import type { IntentModel } from '../../../models/intent';
 import type { ItemModel } from '../../../models/item';
 import type { RegionModel } from '../../../models/campaign-map';
 
@@ -36,7 +35,7 @@ interface Props {
 	rotateMap: (encounter: EncounterModel, dir: 'l' | 'r') => void;
 	rollInitiative: (encounter: EncounterModel) => void;
 	endTurn: (encounter: EncounterModel) => void;
-	performIntent: (encounter: EncounterModel, combatant: CombatantModel, intent: IntentModel) => IntentModel;
+	performIntents: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	move: (encounter: EncounterModel, combatant: CombatantModel, dir: string, cost: number) => void;
 	addMovement: (encounter: EncounterModel, combatant: CombatantModel, value: number) => void;
 	standUp: (encounter: EncounterModel, combatant: CombatantModel) => void;
@@ -50,7 +49,6 @@ interface Props {
 	unequipItem: (item: ItemModel, combatant: CombatantModel) => void;
 	pickUpItem: (item: ItemModel, hero: CombatantModel) => void;
 	dropItem: (item: ItemModel, combatant: CombatantModel) => void;
-	kill: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	finishEncounter: (state: EncounterState) => void;
 }
 
@@ -106,7 +104,7 @@ export class EncounterScreen extends Component<Props, State> {
 		if (parameter) {
 			let usesCombatantIDs = false;
 			let count = Number.MAX_VALUE;
-			switch (parameter.name) {
+			switch (parameter.id) {
 				case 'targets': {
 					const targetParam = parameter as ActionTargetParameterModel;
 					if (targetParam.targets) {
@@ -166,7 +164,7 @@ export class EncounterScreen extends Component<Props, State> {
 		if (parameter) {
 			let usesSquares = false;
 			let count = Number.MAX_VALUE;
-			switch (parameter.name) {
+			switch (parameter.id) {
 				case 'origin':
 					usesSquares = true;
 					count = 1;
@@ -197,10 +195,10 @@ export class EncounterScreen extends Component<Props, State> {
 
 				parameter.value = squares;
 
-				if (parameter.name === 'origin') {
+				if (parameter.id === 'origin') {
 					const combatant = this.props.encounter.combatants.find(c => c.combat.current) as CombatantModel;
 					const action = combatant.combat.actions[0];
-					const targetParam = action.parameters.find(a => a.name === 'targets') as ActionTargetParameterModel;
+					const targetParam = action.parameters.find(a => a.id === 'targets') as ActionTargetParameterModel;
 					ActionLogic.checkTargetParameter(targetParam, this.props.encounter, combatant, action);
 				}
 
@@ -304,7 +302,7 @@ export class EncounterScreen extends Component<Props, State> {
 			let selectedCombatantIDs: string[] = [];
 			let selectedSquares: { x: number, y: number }[] = [];
 
-			switch (parameter.name) {
+			switch (parameter.id) {
 				case 'origin': {
 					const originParam = parameter as ActionOriginParameterModel;
 					selectableSquares = originParam.candidates as { x: number, y: number }[] ?? [];
@@ -587,9 +585,7 @@ export class EncounterScreen extends Component<Props, State> {
 						combatant={currentCombatant}
 						encounter={this.props.encounter}
 						developer={this.props.developer}
-						performIntent={this.props.performIntent}
-						showCharacterSheet={this.showDetailsCombatant}
-						kill={this.props.kill}
+						performIntents={this.props.performIntents}
 					/>
 				);
 			} else {

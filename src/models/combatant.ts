@@ -4,6 +4,7 @@ import type { CombatantType } from '../enums/combatant-type';
 import type { ActionModel } from './action';
 import type { ConditionModel } from './condition';
 import type { FeatureModel } from './feature';
+import type { IntentsModel } from './intent';
 import type { ItemModel } from './item';
 
 export interface CombatantModel {
@@ -44,5 +45,6 @@ export interface CombatantModel {
 		conditions: ConditionModel[];
 		actions: ActionModel[];
 		actionLog: string[];
+		intents: IntentsModel | null;
 	}
 }

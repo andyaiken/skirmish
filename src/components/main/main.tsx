@@ -2,7 +2,6 @@ import { Component } from 'react';
 
 import { BoonType } from '../../enums/boon-type';
 import { CardType } from '../../enums/card-type';
-import { CombatantState } from '../../enums/combatant-state';
 import { CombatantType } from '../../enums/combatant-type';
 import { EncounterState } from '../../enums/encounter-state';
 
@@ -20,7 +19,6 @@ import type { CombatantModel } from '../../models/combatant';
 import type { EncounterModel } from '../../models/encounter';
 import type { FeatureModel } from '../../models/feature';
 import type { GameModel } from '../../models/game';
-import type { IntentModel } from '../../models/intent';
 import type { ItemModel } from '../../models/item';
 import type { RegionModel } from '../../models/campaign-map';
 
@@ -88,6 +86,9 @@ export class Main extends Component<Props, State> {
 					}
 					if (c.combat.actionLog === undefined) {
 						c.combat.actionLog = [];
+					}
+					if (c.combat.intents === undefined) {
+						c.combat.intents = null;
 					}
 				});
 			}
@@ -432,14 +433,12 @@ export class Main extends Component<Props, State> {
 		});
 	};
 
-	performIntent = (encounter: EncounterModel, combatant: CombatantModel, intent: IntentModel) => {
-		const nextIntent = MonsterLogic.performIntent(encounter, combatant, intent);
+	performIntents = (encounter: EncounterModel, combatant: CombatantModel) => {
+		MonsterLogic.performIntents(encounter, combatant);
 
 		this.setState({
 			game: this.state.game
 		});
-
-		return nextIntent;
 	};
 
 	equipItem = (item: ItemModel, combatant: CombatantModel) => {
@@ -505,25 +504,6 @@ export class Main extends Component<Props, State> {
 
 		this.setState({
 			game: game
-		});
-	};
-
-	kill = (encounter: EncounterModel, combatant: CombatantModel) => {
-		const active = EncounterLogic.getActiveCombatants(encounter);
-		if (combatant === active[0]) {
-			this.endTurn(encounter);
-		}
-
-		combatant.combat.state = CombatantState.Dead;
-
-		const loot = Factory.createLootPile();
-		loot.items.push(...combatant.items, ...combatant.carried);
-		loot.position.x = combatant.combat.position.x;
-		loot.position.y = combatant.combat.position.y;
-		encounter.loot.push(loot);
-
-		this.setState({
-			game: this.state.game
 		});
 	};
 
@@ -674,7 +654,7 @@ export class Main extends Component<Props, State> {
 						rotateMap={this.rotateMap}
 						rollInitiative={this.rollInitiative}
 						endTurn={this.endTurn}
-						performIntent={this.performIntent}
+						performIntents={this.performIntents}
 						move={this.move}
 						addMovement={this.addMovement}
 						standUp={this.standUp}
@@ -688,7 +668,6 @@ export class Main extends Component<Props, State> {
 						unequipItem={this.unequipItem}
 						pickUpItem={this.pickUpItem}
 						dropItem={this.dropItem}
-						kill={this.kill}
 						finishEncounter={this.finishEncounter}
 					/>
 				);

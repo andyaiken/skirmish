@@ -26,14 +26,14 @@ interface Props {
 export class CombatantMove extends Component<Props> {
 	render = () => {
 		const moveCosts: Record<string, number> = {};
-		moveCosts.n = EncounterLogic.getMoveCost(this.props.encounter, this.props.combatant, 'n');
-		moveCosts.ne = EncounterLogic.getMoveCost(this.props.encounter, this.props.combatant, 'ne');
-		moveCosts.e = EncounterLogic.getMoveCost(this.props.encounter, this.props.combatant, 'e');
-		moveCosts.se = EncounterLogic.getMoveCost(this.props.encounter, this.props.combatant, 'se');
-		moveCosts.s = EncounterLogic.getMoveCost(this.props.encounter, this.props.combatant, 's');
-		moveCosts.sw = EncounterLogic.getMoveCost(this.props.encounter, this.props.combatant, 'sw');
-		moveCosts.w = EncounterLogic.getMoveCost(this.props.encounter, this.props.combatant, 'w');
-		moveCosts.nw = EncounterLogic.getMoveCost(this.props.encounter, this.props.combatant, 'nw');
+		moveCosts.n = EncounterLogic.getMoveCost(this.props.encounter, this.props.combatant, this.props.combatant.combat.position, 'n');
+		moveCosts.ne = EncounterLogic.getMoveCost(this.props.encounter, this.props.combatant, this.props.combatant.combat.position, 'ne');
+		moveCosts.e = EncounterLogic.getMoveCost(this.props.encounter, this.props.combatant, this.props.combatant.combat.position, 'e');
+		moveCosts.se = EncounterLogic.getMoveCost(this.props.encounter, this.props.combatant, this.props.combatant.combat.position, 'se');
+		moveCosts.s = EncounterLogic.getMoveCost(this.props.encounter, this.props.combatant, this.props.combatant.combat.position, 's');
+		moveCosts.sw = EncounterLogic.getMoveCost(this.props.encounter, this.props.combatant, this.props.combatant.combat.position, 'sw');
+		moveCosts.w = EncounterLogic.getMoveCost(this.props.encounter, this.props.combatant, this.props.combatant.combat.position, 'w');
+		moveCosts.nw = EncounterLogic.getMoveCost(this.props.encounter, this.props.combatant, this.props.combatant.combat.position, 'nw');
 
 		const canPickUp = (this.props.combatant.combat.movement >= 1) && (this.props.combatant.carried.length < 6);
 

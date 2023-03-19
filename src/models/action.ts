@@ -8,23 +8,23 @@ export interface ActionPrerequisiteModel {
 }
 
 export interface ActionParameterModel {
-	name: string;
+	id: string;
 	candidates: unknown[];
 	value: unknown | null;
 }
 
 export interface ActionWeaponParameterModel extends ActionParameterModel {
-	name: 'weapon';
+	id: 'weapon';
 	type: 'melee' | 'ranged';
 }
 
 export interface ActionOriginParameterModel extends ActionParameterModel {
-	name: 'origin';
+	id: 'origin';
 	distance: number | 'weapon';
 }
 
 export interface ActionTargetParameterModel extends ActionParameterModel {
-	name: 'targets';
+	id: 'targets';
 	range: { type: ActionRangeType, radius: number };
 	targets: { type: ActionTargetType, count: number } | null;
 }

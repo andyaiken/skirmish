@@ -182,7 +182,7 @@ export class ActionPrerequisites {
 export class ActionOriginParameters {
 	static distance = (value: number): ActionOriginParameterModel => {
 		return {
-			name: 'origin',
+			id: 'origin',
 			distance: value,
 			candidates: [],
 			value: null
@@ -191,7 +191,7 @@ export class ActionOriginParameters {
 
 	static weapon = (): ActionOriginParameterModel => {
 		return {
-			name: 'origin',
+			id: 'origin',
 			distance: 'weapon',
 			candidates: [],
 			value: null
@@ -202,7 +202,7 @@ export class ActionOriginParameters {
 export class ActionTargetParameters {
 	static self = (): ActionTargetParameterModel => {
 		return {
-			name: 'targets',
+			id: 'targets',
 			range: {
 				type: ActionRangeType.Self,
 				radius: 0
@@ -215,7 +215,7 @@ export class ActionTargetParameters {
 
 	static adjacent = (type: ActionTargetType, count: number): ActionTargetParameterModel => {
 		return {
-			name: 'targets',
+			id: 'targets',
 			range: {
 				type: ActionRangeType.Adjacent,
 				radius: 0
@@ -231,7 +231,7 @@ export class ActionTargetParameters {
 
 	static burst = (type: ActionTargetType, count: number, radius: number): ActionTargetParameterModel => {
 		return {
-			name: 'targets',
+			id: 'targets',
 			range: {
 				type: ActionRangeType.Burst,
 				radius: radius
@@ -247,7 +247,7 @@ export class ActionTargetParameters {
 
 	static weapon = (type: ActionTargetType, count: number, bonus: number): ActionTargetParameterModel => {
 		return {
-			name: 'targets',
+			id: 'targets',
 			range: {
 				type: ActionRangeType.Weapon,
 				radius: bonus
@@ -265,7 +265,7 @@ export class ActionTargetParameters {
 export class ActionWeaponParameters {
 	static melee = (): ActionWeaponParameterModel => {
 		return {
-			name: 'weapon',
+			id: 'weapon',
 			type: 'melee',
 			candidates: [],
 			value: null
@@ -274,7 +274,7 @@ export class ActionWeaponParameters {
 
 	static ranged = (): ActionWeaponParameterModel => {
 		return {
-			name: 'weapon',
+			id: 'weapon',
 			type: 'ranged',
 			candidates: [],
 			value: null
@@ -581,7 +581,7 @@ export class ActionEffects {
 
 				const targetsSucceeded: string[] = [];
 
-				const targetParameter = parameters.find(p => p.name === 'targets');
+				const targetParameter = parameters.find(p => p.id === 'targets');
 				if (targetParameter) {
 					const targetIDs = targetParameter.value as string[];
 					targetIDs.forEach(id => {
@@ -590,7 +590,7 @@ export class ActionEffects {
 						log(`${combatant.name} attacks ${target.name}`);
 
 						let success = true;
-						const weaponParam = parameters.find(p => p.name === 'weapon');
+						const weaponParam = parameters.find(p => p.id === 'weapon');
 						if (weaponParam) {
 							const item = weaponParam.value as ItemModel;
 							const weapon = item.weapon as WeaponModel;
@@ -629,8 +629,8 @@ export class ActionEffects {
 				}
 
 				let copy = JSON.parse(JSON.stringify(parameters)) as ActionParameterModel[];
-				copy = copy.filter(p => p.name !== 'targets');
-				copy.push({ name: 'targets', candidates: [], value: targetsSucceeded });
+				copy = copy.filter(p => p.id !== 'targets');
+				copy.push({ id: 'targets', candidates: [], value: targetsSucceeded });
 				data.hit.forEach(effect => {
 					ActionEffects.run(effect, encounter, combatant, copy);
 				});
@@ -638,8 +638,8 @@ export class ActionEffects {
 			}
 			case 'weapondamage': {
 				const rankModifier = effect.data as number;
-				const weaponParameter = parameters.find(p => p.name === 'weapon');
-				const targetParameter = parameters.find(p => p.name === 'targets');
+				const weaponParameter = parameters.find(p => p.id === 'weapon');
+				const targetParameter = parameters.find(p => p.id === 'targets');
 				if (weaponParameter && targetParameter) {
 					const item = weaponParameter.value as ItemModel;
 					const weapon = item.weapon as WeaponModel;
@@ -660,7 +660,7 @@ export class ActionEffects {
 			}
 			case 'damage': {
 				const data = effect.data as { type: DamageType, rank: number };
-				const targetParameter = parameters.find(p => p.name === 'targets');
+				const targetParameter = parameters.find(p => p.id === 'targets');
 				if (targetParameter) {
 					const targetIDs = targetParameter.value as string[];
 					targetIDs.forEach(id => {
@@ -678,7 +678,7 @@ export class ActionEffects {
 			}
 			case 'wounds': {
 				const value = effect.data as number;
-				const targetParameter = parameters.find(p => p.name === 'targets');
+				const targetParameter = parameters.find(p => p.id === 'targets');
 				if (targetParameter) {
 					const targetIDs = targetParameter.value as string[];
 					targetIDs.forEach(id => {
@@ -706,7 +706,7 @@ export class ActionEffects {
 			}
 			case 'healdamage': {
 				const rank = effect.data as number;
-				const targetParameter = parameters.find(p => p.name === 'targets');
+				const targetParameter = parameters.find(p => p.id === 'targets');
 				if (targetParameter) {
 					const targetIDs = targetParameter.value as string[];
 					targetIDs.forEach(id => {
@@ -719,7 +719,7 @@ export class ActionEffects {
 			}
 			case 'healwounds': {
 				const value = effect.data as number;
-				const targetParameter = parameters.find(p => p.name === 'targets');
+				const targetParameter = parameters.find(p => p.id === 'targets');
 				if (targetParameter) {
 					const targetIDs = targetParameter.value as string[];
 					targetIDs.forEach(id => {
@@ -742,7 +742,7 @@ export class ActionEffects {
 			}
 			case 'addcondition': {
 				const condition = effect.data as ConditionModel;
-				const targetParameter = parameters.find(p => p.name === 'targets');
+				const targetParameter = parameters.find(p => p.id === 'targets');
 				if (targetParameter) {
 					const targetIDs = targetParameter.value as string[];
 					targetIDs.forEach(id => {
@@ -757,7 +757,7 @@ export class ActionEffects {
 			}
 			case 'removecondition': {
 				const trait = effect.data as TraitType;
-				const targetParameter = parameters.find(p => p.name === 'targets');
+				const targetParameter = parameters.find(p => p.id === 'targets');
 				if (targetParameter) {
 					const targetIDs = targetParameter.value as string[];
 					targetIDs.forEach(id => {
@@ -785,7 +785,7 @@ export class ActionEffects {
 				break;
 			}
 			case 'knockdown': {
-				const targetParameter = parameters.find(p => p.name === 'targets');
+				const targetParameter = parameters.find(p => p.id === 'targets');
 				if (targetParameter) {
 					const targetIDs = targetParameter.value as string[];
 					targetIDs.forEach(id => {
@@ -799,7 +799,7 @@ export class ActionEffects {
 				break;
 			}
 			case 'stun': {
-				const targetParameter = parameters.find(p => p.name === 'targets');
+				const targetParameter = parameters.find(p => p.id === 'targets');
 				if (targetParameter) {
 					const targetIDs = targetParameter.value as string[];
 					targetIDs.forEach(id => {
@@ -811,7 +811,7 @@ export class ActionEffects {
 				break;
 			}
 			case 'stand': {
-				const targetParameter = parameters.find(p => p.name === 'targets');
+				const targetParameter = parameters.find(p => p.id === 'targets');
 				if (targetParameter) {
 					const targetIDs = targetParameter.value as string[];
 					targetIDs.forEach(id => {
@@ -825,7 +825,7 @@ export class ActionEffects {
 				break;
 			}
 			case 'reveal': {
-				const targetParameter = parameters.find(p => p.name === 'targets');
+				const targetParameter = parameters.find(p => p.id === 'targets');
 				if (targetParameter) {
 					const targetIDs = targetParameter.value as string[];
 					targetIDs.forEach(id => {
@@ -850,7 +850,7 @@ export class ActionEffects {
 					condition.type = ConditionLogic.getOppositeType(condition.type);
 					log(`${target.name} is now affected by ${ConditionLogic.getConditionDescription(condition)}`);
 				};
-				const targetParameter = parameters.find(p => p.name === 'targets');
+				const targetParameter = parameters.find(p => p.id === 'targets');
 				if (targetParameter) {
 					const targetIDs = targetParameter.value as string[];
 					targetIDs.forEach(id => {
@@ -867,7 +867,7 @@ export class ActionEffects {
 				break;
 			}
 			case 'transferCondition': {
-				const targetParameter = parameters.find(p => p.name === 'targets');
+				const targetParameter = parameters.find(p => p.id === 'targets');
 				if (targetParameter) {
 					const targetIDs = targetParameter.value as string[];
 					targetIDs.forEach(id => {
@@ -918,7 +918,7 @@ export class ActionEffects {
 			}
 			case 'forceMovement': {
 				const data = effect.data as { type: MovementType, rank: number };
-				const targetParameter = parameters.find(p => p.name === 'targets');
+				const targetParameter = parameters.find(p => p.id === 'targets');
 				if (targetParameter) {
 					const targetIDs = targetParameter.value as string[];
 					targetIDs.forEach(id => {
@@ -1030,7 +1030,7 @@ export class ActionEffects {
 				break;
 			}
 			case 'moveSelfTo': {
-				const targetParameter = parameters.find(p => p.name === 'targets');
+				const targetParameter = parameters.find(p => p.id === 'targets');
 				if (targetParameter) {
 					const targetSquares = targetParameter.value as { x: number, y: number }[];
 					const candidates = targetSquares.filter(square => {
@@ -1049,7 +1049,7 @@ export class ActionEffects {
 				break;
 			}
 			case 'disarm': {
-				const targetParameter = parameters.find(p => p.name === 'targets');
+				const targetParameter = parameters.find(p => p.id === 'targets');
 				if (targetParameter) {
 					const targetIDs = targetParameter.value as string[];
 					targetIDs.forEach(id => {
@@ -1076,7 +1076,7 @@ export class ActionEffects {
 				break;
 			}
 			case 'steal': {
-				const targetParameter = parameters.find(p => p.name === 'targets');
+				const targetParameter = parameters.find(p => p.id === 'targets');
 				if (targetParameter) {
 					const targetIDs = targetParameter.value as string[];
 					targetIDs.forEach(id => {
@@ -1095,7 +1095,7 @@ export class ActionEffects {
 			}
 			case 'createTerrain': {
 				const type = effect.data as EncounterMapSquareType;
-				const targetParameter = parameters.find(p => p.name === 'targets');
+				const targetParameter = parameters.find(p => p.id === 'targets');
 				if (targetParameter) {
 					const squares = targetParameter.value as { x: number, y: number }[];
 					squares.forEach(square => {
@@ -1107,7 +1107,7 @@ export class ActionEffects {
 				break;
 			}
 			case 'addSquares': {
-				const targetParameter = parameters.find(p => p.name === 'targets');
+				const targetParameter = parameters.find(p => p.id === 'targets');
 				if (targetParameter) {
 					const walls = targetParameter.value as { x: number, y: number }[];
 					walls.forEach(wall => {
@@ -1126,7 +1126,7 @@ export class ActionEffects {
 				break;
 			}
 			case 'removeSquares': {
-				const targetParameter = parameters.find(p => p.name === 'targets');
+				const targetParameter = parameters.find(p => p.id === 'targets');
 				if (targetParameter) {
 					const squares = targetParameter.value as { x: number, y: number }[];
 					squares.forEach(square => {
@@ -1138,7 +1138,7 @@ export class ActionEffects {
 				break;
 			}
 			case 'destroyWalls': {
-				const targetParameter = parameters.find(p => p.name === 'targets');
+				const targetParameter = parameters.find(p => p.id === 'targets');
 				if (targetParameter) {
 					const walls = targetParameter.value as { x: number, y: number }[];
 					walls.forEach(wall => {
@@ -1163,7 +1163,7 @@ export class ActionLogic {
 	};
 
 	static getParameterDescription = (parameter: ActionParameterModel) => {
-		switch (parameter.name) {
+		switch (parameter.id) {
 			case 'origin': {
 				const originParam = parameter as ActionOriginParameterModel;
 				if (originParam.distance === 'weapon') {
@@ -1279,7 +1279,7 @@ export class ActionLogic {
 
 		let radius = 0;
 		if (parameter.distance === 'weapon') {
-			const wpnParam = action.parameters.find(p => p.name === 'weapon') as ActionWeaponParameterModel;
+			const wpnParam = action.parameters.find(p => p.id === 'weapon') as ActionWeaponParameterModel;
 			if (wpnParam && (wpnParam.value !== null)) {
 				const weapon = wpnParam.value as ItemModel;
 				if (weapon.weapon) {
@@ -1323,7 +1323,7 @@ export class ActionLogic {
 					radius = parameter.range.radius;
 					break;
 				case ActionRangeType.Weapon: {
-					const wpnParam = action.parameters.find(p => p.name === 'weapon') as ActionWeaponParameterModel;
+					const wpnParam = action.parameters.find(p => p.id === 'weapon') as ActionWeaponParameterModel;
 					if (wpnParam && (wpnParam.value !== null)) {
 						const weapon = wpnParam.value as ItemModel;
 						if (weapon.weapon) {
@@ -1335,7 +1335,7 @@ export class ActionLogic {
 			}
 
 			let originSquares = EncounterLogic.getCombatantSquares(encounter, combatant);
-			const originParam = action.parameters.find(p => p.name === 'origin');
+			const originParam = action.parameters.find(p => p.id === 'origin');
 			if (originParam) {
 				originSquares = originParam.value as { x: number, y: number }[];
 			}

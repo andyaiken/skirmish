@@ -123,7 +123,7 @@ export class CombatantAction extends Component<Props, State> {
 				let description: JSX.Element[] | string = '';
 				let changeButton = null;
 				let changeControls = null;
-				switch (parameter.name) {
+				switch (parameter.id) {
 					case'weapon': {
 						const weaponParam = parameter as ActionWeaponParameterModel;
 						if (weaponParam.value) {

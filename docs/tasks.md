@@ -9,10 +9,9 @@
 
 * Encounters:
   * Implement AI so that monsters can take their turns
-    * Add a button so that the user can perform each action in turn
   * Actions
     * Allow the user to opt for a universal action instead
-    * Implement the last action effects (command action / command move)
+    * Implement the last remaining action effects (command action / command move)
 * Add a system for evaluating each action to ensure none is too powerful
   * Then extend this to ensure species / roles / backgrounds are equally matched
 * Add help / documentation to explain game rules

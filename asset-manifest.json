@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/skirmish/static/css/main.119f4ebf.css",
-    "main.js": "/skirmish/static/js/main.192c5331.js",
+    "main.js": "/skirmish/static/js/main.19986562.js",
     "index.html": "/skirmish/index.html",
     "main.119f4ebf.css.map": "/skirmish/static/css/main.119f4ebf.css.map",
-    "main.192c5331.js.map": "/skirmish/static/js/main.192c5331.js.map"
+    "main.19986562.js.map": "/skirmish/static/js/main.19986562.js.map"
   },
   "entrypoints": [
     "static/css/main.119f4ebf.css",
-    "static/js/main.192c5331.js"
+    "static/js/main.19986562.js"
   ]
 }

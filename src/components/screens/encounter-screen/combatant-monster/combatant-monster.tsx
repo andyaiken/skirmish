@@ -36,7 +36,7 @@ export class CombatantMonster extends Component<Props> {
 			<div className='combatant-monster'>
 				<Text type={TextType.Information}><b>{this.props.combatant.name} is a monster.</b> You cannot control their actions.</Text>
 				{this.getLog()}
-				<button onClick={this.performIntents}>{this.props.combatant.combat.intents?.description || 'End Turn'}</button>
+				<button onClick={this.performIntents}>{this.props.combatant.combat.intents ? this.props.combatant.combat.intents.description : 'End Turn'}</button>
 			</div>
 		);
 	};

@@ -27,4 +27,38 @@ export class Collections {
 			return seen.has(k) ? false : seen.add(k);
 		});
 	};
+
+	static sum = <T>(collection: T[], callback: (item: T) => number): number => {
+		return collection.reduce((sum, item) => sum + callback(item), 0);
+	};
+
+	static min = <T>(collection: T[], callback: (item: T) => number): T | null => {
+		let item = null;
+		let min = Number.MAX_VALUE;
+
+		collection.forEach(i => {
+			const value = callback(i);
+			if (value < min) {
+				item = i;
+				min = value;
+			}
+		});
+
+		return item;
+	};
+
+	static max = <T>(collection: T[], callback: (item: T) => number): T | null => {
+		let item = null;
+		let max = Number.MIN_VALUE;
+
+		collection.forEach(i => {
+			const value = callback(i);
+			if (value > max) {
+				item = i;
+				max = value;
+			}
+		});
+
+		return item;
+	};
 }

@@ -22,7 +22,7 @@ export class EncounterGenerator {
 		const rng = Random.getSeededRNG(seed);
 
 		const monsters: CombatantModel[] = [];
-		while (monsters.reduce((value, m) => value + m.level, 0) < heroes.reduce((value, h) => value + h.level, 0)) {
+		while (Collections.sum(monsters, m => m.level) < Collections.sum(heroes, h => h.level)) {
 			switch (Random.randomNumber(10, rng)) {
 				case 0: {
 					// Add a random monster

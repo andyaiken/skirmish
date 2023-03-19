@@ -146,10 +146,6 @@ export class EncounterLogic {
 		combatant.combat.actionLog = [];
 		combatant.combat.intents = null;
 
-		if (combatant.type === CombatantType.Monster) {
-			combatant.combat.intents = MonsterLogic.getIntents(encounter, combatant);
-		}
-
 		if (combatant.combat.state === CombatantState.Unconscious) {
 			const rank = EncounterLogic.getTraitRank(encounter, combatant, TraitType.Resolve);
 			const result = Random.dice(rank);
@@ -209,6 +205,11 @@ export class EncounterLogic {
 					});
 
 				EncounterLogic.drawActions(encounter, combatant);
+
+				if (combatant.type === CombatantType.Monster) {
+					combatant.combat.intents = MonsterLogic.getIntents(encounter, combatant);
+				}
+
 				break;
 			}
 			case CombatantState.Unconscious:

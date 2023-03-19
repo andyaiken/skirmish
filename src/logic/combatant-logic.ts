@@ -153,11 +153,7 @@ export class CombatantLogic {
 					break;
 			}
 
-			const slotsUsed = combatant.items
-				.filter(i => i.location === item.location)
-				.map(i => i.slots)
-				.reduce((sum, value) => sum + value, 0);
-
+			const slotsUsed = Collections.sum(combatant.items.filter(i => i.location === item.location), i => i.slots);
 			const slotsAvailable = slotsTotal - slotsUsed;
 
 			if (item.slots > slotsAvailable) {

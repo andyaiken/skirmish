@@ -13,6 +13,7 @@ import type { ActionModel } from '../models/action';
 import type { CombatantModel } from '../models/combatant';
 import type { EncounterModel } from '../models/encounter';
 
+import { Collections } from '../utils/collections';
 import { Random } from '../utils/random';
 
 interface PathModel {
@@ -47,69 +48,41 @@ export class Intents {
 
 	static action = (action: ActionModel): IntentModel => {
 		return {
-			id: 'move',
+			id: 'action',
 			data: action
 		};
 	};
 }
 
 export class MonsterLogic {
-	static getIntents = (encounter: EncounterModel, combatant: CombatantModel): IntentsModel => {
+	static getIntents = (encounter: EncounterModel, combatant: CombatantModel) => {
 		const options: IntentsModel[] = [];
-
-		const edges = EncounterMapLogic.getMapEdges(encounter.mapSquares);
-		const allPaths = MonsterLogic.findPaths(encounter, combatant);
 
 		if (combatant.combat.actions.length > 0) {
 			const actions = combatant.combat.actions.filter(a => a.prerequisites.every(p => ActionPrerequisites.isSatisfied(p, encounter)));
 			if (actions.length === 0) {
 				actions.push(...UniversalData.getUniversalActions().filter(a => a.prerequisites.every(p => ActionPrerequisites.isSatisfied(p, encounter))));
 			}
-			actions.forEach(a => {
+			actions.forEach(action => {
 				// This assumes we want to target an enemy
 				// TODO: Determine what we want to be in range of
 				// TODO: Handle actions that target self, allies, squares, or walls
-				encounter.combatants
-					.filter(c => c.type !== combatant.type)
-					.forEach(enemy => {
-						const enemySquares = EncounterLogic.getCombatantSquares(encounter, enemy);
-						const paths = encounter.mapSquares
-							.filter(sq => EncounterMapLogic.canSeeAny(edges, enemySquares, [ sq ]))
-							.filter(sq => {
-								// TODO: Limit this to squares which would put us within range for this action
-								return true;
-							})
-							.map(sq => {
-								// Find the cheapest path to this square
-								return allPaths.find(path => (sq.x === path.x) && (sq.y === path.y)) || null;
-							})
-							.filter(p => {
-								const cost = p ? p.cost : Number.MAX_VALUE;
-								return cost <= combatant.combat.movement;
-							});
-						if (paths.length > 0) {
-							const path = paths
-								.reduce((best, current) => {
-									const costBest = best ? best.cost : Number.MAX_VALUE;
-									const costCurrent = current ? current.cost : Number.MAX_VALUE;
-									return (costCurrent < costBest) ? current : best;
-								});
-							if (path) {
-								options.push({
-									description: '',
-									intents: [
-										...path.steps.map(step => Intents.move(step)),
-										Intents.action(a)
-									],
-									// TODO: Weight this based on how many targets we can hit with it
-									weight: 1
-								});
-							}
-						}
-					});
+				options.push(...MonsterLogic.getAttackIntents(encounter, combatant, action));
 			});
 		} else {
 			// TODO: If we're adjacent to an enemy, and we have enough movement, move out of melee
+		}
+
+		const paths = MonsterLogic.findPaths(encounter, combatant).filter(p => (p.cost > 0) && (p.cost <= combatant.combat.movement));
+		if (paths.length > 0) {
+			const path = Collections.draw(paths);
+			options.push({
+				description: 'Move',
+				intents: [
+					...path.steps.map(step => Intents.move(step))
+				],
+				weight: 0
+			});
 		}
 
 		if ((combatant.combat.damage > 0) && (combatant.combat.wounds + 1 > EncounterLogic.getTraitRank(encounter, combatant, TraitType.Resolve))) {
@@ -117,40 +90,72 @@ export class MonsterLogic {
 			// TODO: Otherwise, move to safety
 		}
 
-		if ((EncounterLogic.getSkillRank(encounter, combatant, SkillType.Stealth) > 0) && (combatant.combat.movement >= 4)) {
+		const hide = EncounterLogic.getSkillRank(encounter, combatant, SkillType.Stealth);
+		if ((hide > 0) && (combatant.combat.movement >= 4)) {
 			options.push({
-				description: '',
+				description: 'Hide',
 				intents: [ Intents.hide() ],
-				weight: 1
+				weight: hide
 			});
 		}
 
 		if ((combatant.combat.state === CombatantState.Prone) && (combatant.combat.movement >= 8)) {
 			options.push({
-				description: '',
+				description: 'Stand Up',
 				intents: [ Intents.standUp() ],
-				weight: 2
+				weight: 5
 			});
 		}
 
-		let option = null;
-		let max = Number.MIN_VALUE;
-		options.forEach(o => {
-			const roll = Random.dice(o.weight);
-			if (roll > max) {
-				option = o;
-				max = roll;
-			}
-		});
-		if (option) {
-			return option;
-		}
+		return Collections.max(options, o => Random.dice(o.weight));
+	};
 
-		return {
-			description: 'End Turn',
-			intents: [],
-			weight: 0
-		};
+	static getAttackIntents = (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => {
+		const edges = EncounterMapLogic.getMapEdges(encounter.mapSquares);
+		const allPaths = MonsterLogic.findPaths(encounter, combatant);
+
+		const options: IntentsModel[] = [];
+
+		encounter.combatants
+			.filter(c => c.type !== combatant.type)
+			.forEach(enemy => {
+				const enemySquares = EncounterLogic.getCombatantSquares(encounter, enemy);
+				const paths = encounter.mapSquares
+					.filter(sq => EncounterMapLogic.canSeeAny(edges, enemySquares, [ sq ]))
+					.filter(sq => {
+						// TODO: Limit this to squares which would put us within range for this action
+						return true;
+					})
+					.map(sq => {
+						// Find the cheapest path to this square
+						return allPaths.find(path => (sq.x === path.x) && (sq.y === path.y)) || null;
+					})
+					.filter(p => {
+						const cost = p ? p.cost : Number.MAX_VALUE;
+						return cost <= combatant.combat.movement;
+					});
+				if (paths.length > 0) {
+					const path = paths
+						.reduce((best, current) => {
+							const costBest = best ? best.cost : Number.MAX_VALUE;
+							const costCurrent = current ? current.cost : Number.MAX_VALUE;
+							return (costCurrent < costBest) ? current : best;
+						});
+					if (path) {
+						options.push({
+							description: action.name,
+							intents: [
+								...path.steps.map(step => Intents.move(step)),
+								Intents.action(action)
+							],
+							// TODO: Weight this based on how many targets we can hit with it
+							weight: 1
+						});
+					}
+				}
+			});
+
+		return options;
 	};
 
 	static performIntents = (encounter: EncounterModel, combatant: CombatantModel): void => {
@@ -244,13 +249,15 @@ export class MonsterLogic {
 				const discovered = paths.find(p => (p.x === pos.x) && (p.y === pos.y));
 				if (!discovered) {
 					if (cost !== Number.MAX_VALUE) {
-						paths.push({
+						const newPath = {
 							x: pos.x,
 							y: pos.y,
 							steps: JSON.parse(JSON.stringify(path.steps)) as string[],
 							cost: path.cost + cost,
 							working: true
-						});
+						};
+						newPath.steps.push(dir);
+						paths.push(newPath);
 					}
 				} else {
 					if (cost < discovered.cost) {

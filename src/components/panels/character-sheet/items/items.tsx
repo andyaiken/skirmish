@@ -105,10 +105,7 @@ export class Items extends Component<Props, State> {
 					break;
 			}
 
-			const slotsUsed = this.props.hero.items
-				.filter(i => i.location === location)
-				.map(i => i.slots)
-				.reduce((sum, value) => sum + value, 0);
+			const slotsUsed = Collections.sum(this.props.hero.items.filter(i => i.location === location), i => i.slots);
 
 			const slotsAvailable = slotsTotal - slotsUsed;
 			if (slotsAvailable > 0) {

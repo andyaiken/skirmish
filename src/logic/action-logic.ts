@@ -144,10 +144,7 @@ export class ActionPrerequisites {
 				});
 			}
 			case 'emptyhand': {
-				const slotsUsed = combatant.items
-					.filter(i => i.location === ItemLocationType.Hand)
-					.map(i => i.slots)
-					.reduce((sum, value) => sum + value, 0);
+				const slotsUsed = Collections.sum(combatant.items.filter(i => i.location === ItemLocationType.Hand), i => i.slots);
 				return slotsUsed < 2;
 			}
 			case 'damage': {

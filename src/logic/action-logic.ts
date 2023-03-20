@@ -32,6 +32,8 @@ import { ConditionLogic } from './condition-logic';
 import { EncounterLogic } from './encounter-logic';
 import { EncounterMapLogic } from './encounter-map-logic';
 import { Factory } from './factory';
+import { IntentsLogic } from './intents-logic';
+import { PathLogic } from './path-logic';
 
 export class ActionPrerequisites {
 	static meleeWeapon = (): ActionPrerequisiteModel => {
@@ -130,12 +132,7 @@ export class ActionPrerequisites {
 		};
 	};
 
-	static isSatisfied = (prerequisite: ActionPrerequisiteModel, encounter: EncounterModel) => {
-		const combatant = encounter.combatants.find(c => c.combat.current);
-		if (!combatant) {
-			return false;
-		}
-
+	static isSatisfied = (prerequisite: ActionPrerequisiteModel, encounter: EncounterModel, combatant: CombatantModel) => {
 		switch (prerequisite.id) {
 			case 'item': {
 				const proficiencies = prerequisite.data as ItemProficiencyType[];
@@ -215,7 +212,7 @@ export class ActionTargetParameters {
 			id: 'targets',
 			range: {
 				type: ActionRangeType.Adjacent,
-				radius: 0
+				radius: 1
 			},
 			targets: {
 				type: type,
@@ -563,7 +560,8 @@ export class ActionEffects {
 
 	static run = (effect: ActionEffectModel, encounter: EncounterModel, combatant: CombatantModel, parameters: ActionParameterModel[]) => {
 		const log = (msg: string) => {
-			combatant.combat.actionLog.push(msg);
+			const current = encounter.combatants.find(c => c.combat.current) as CombatantModel;
+			current.combat.actionLog.push(msg);
 		};
 
 		switch (effect.id) {
@@ -762,7 +760,7 @@ export class ActionEffects {
 						const t = trait === TraitType.Any ? Collections.draw([ TraitType.Endurance, TraitType.Resolve, TraitType.Speed ]) : trait;
 						const conditions = target.combat.conditions
 							.filter(condition => condition.trait === t)
-							.filter(condition => ConditionLogic.getConditionIsBeneficial(condition) === (combatant.type === target.type));
+							.filter(condition => ConditionLogic.getConditionIsBeneficial(condition) === (combatant.type !== target.type));
 						if (conditions.length !== 0) {
 							const maxRank = Math.max(...conditions.map(c => c.rank));
 							const condition = conditions.find(c => c.rank === maxRank) as ConditionModel;
@@ -883,34 +881,43 @@ export class ActionEffects {
 				break;
 			}
 			case 'commandAction': {
-				/*
-				const targetParameter = parameters.find(p => p.name === 'targets');
+				const targetParameter = parameters.find(p => p.id === 'targets');
 				if (targetParameter) {
 					const targetIDs = targetParameter.value as string[];
 					targetIDs.forEach(id => {
 						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
-						// TODO: Target uses an action
-						// Select an action that we can meet the prerequisites of and set the parameters of
-						// Perform it
+						log(`${combatant.name} commands ${target.name} to attack`);
+						target.combat.actions = CombatantLogic.getActionDeck(target).filter(action => ActionLogic.getActionType(action) === 'Attack');
+						EncounterLogic.checkActionParameters(encounter, target);
+						const intents = IntentsLogic.getAttackIntents(encounter, target);
+						if (intents.length > 0) {
+							target.combat.intents = Collections.draw(intents);
+							IntentsLogic.performIntents(encounter, target);
+						} else {
+							log(`${target.name} cannot attack`);
+						}
 					});
 				}
-				*/
 				break;
 			}
 			case 'commandMove': {
-				/*
-				const targetParameter = parameters.find(p => p.name === 'targets');
+				const targetParameter = parameters.find(p => p.id === 'targets');
 				if (targetParameter) {
 					const targetIDs = targetParameter.value as string[];
 					targetIDs.forEach(id => {
 						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
-						const distance = Random.dice(EncounterLogic.getTraitRank(encounter, target, TraitType.Speed));
-						// TODO: Target moves
-						// Select a location we can move to within range
-						// Perform it
+						log(`${combatant.name} commands ${target.name} to move`);
+						target.combat.movement = Random.dice(EncounterLogic.getTraitRank(encounter, target, TraitType.Speed));
+						const paths = PathLogic.findPaths(encounter, target);
+						const intents = IntentsLogic.getMovementIntents(encounter, target, paths);
+						if (intents.length > 0) {
+							target.combat.intents = Collections.draw(intents);
+							IntentsLogic.performIntents(encounter, target);
+						} else {
+							log(`${target.name} cannot move`);
+						}
 					});
 				}
-				*/
 				break;
 			}
 			case 'forceMovement': {
@@ -1118,6 +1125,7 @@ export class ActionEffects {
 							encounter.mapSquares.push(square);
 						});
 					});
+					EncounterMapLogic.visibilityCache = {};
 					log(`${combatant.name} has created map squares`);
 				}
 				break;
@@ -1130,6 +1138,7 @@ export class ActionEffects {
 						const blob = EncounterMapLogic.getFloorBlob(encounter.mapSquares, square).filter(sq => EncounterLogic.getSquareIsEmpty(encounter, sq));
 						encounter.mapSquares = encounter.mapSquares.filter(sq => !blob.includes(sq));
 					});
+					EncounterMapLogic.visibilityCache = {};
 					log(`${combatant.name} has destroyed map squares`);
 				}
 				break;
@@ -1146,6 +1155,7 @@ export class ActionEffects {
 						};
 						encounter.mapSquares.push(square);
 					});
+					EncounterMapLogic.visibilityCache = {};
 					log(`${combatant.name} has destroyed walls`);
 				}
 				break;
@@ -1155,6 +1165,10 @@ export class ActionEffects {
 }
 
 export class ActionLogic {
+	static getActionType = (action: ActionModel) => {
+		return action.effects.some(e => e.id === 'attack') ? 'Attack' : 'Utility';
+	};
+
 	static getActionDescription = (action: ActionModel) => {
 		return action.name;
 	};
@@ -1239,6 +1253,42 @@ export class ActionLogic {
 		return str;
 	};
 
+	static getActionRange = (action: ActionModel) => {
+		let range = 0;
+
+		action.parameters.forEach(param => {
+			if (param.id === 'targets') {
+				const targetParam = param as ActionTargetParameterModel;
+				switch (targetParam.range.type) {
+					case ActionRangeType.Self: {
+						range = 0;
+						break;
+					}
+					case ActionRangeType.Adjacent: {
+						range = 1;
+						break;
+					}
+					case ActionRangeType.Burst: {
+						range = targetParam.range.radius;
+						break;
+					}
+					case ActionRangeType.Weapon: {
+						const wpnParam = action.parameters.find(p => p.id === 'weapon') as ActionWeaponParameterModel;
+						if (wpnParam && (wpnParam.value !== null)) {
+							const weapon = wpnParam.value as ItemModel;
+							if (weapon.weapon) {
+								range = weapon.weapon.range + targetParam.range.radius;
+							}
+						}
+						break;
+					}
+				}
+			}
+		});
+
+		return range;
+	};
+
 	static checkWeaponParameter = (parameter: ActionWeaponParameterModel, combatant: CombatantModel) => {
 		const candidates: ItemModel[] = [];
 		let value = parameter.value as ItemModel | null;
@@ -1311,25 +1361,7 @@ export class ActionLogic {
 			candidates.push(combatant.id);
 			value.push(combatant.id);
 		} else {
-			let radius = 0;
-			switch (parameter.range.type) {
-				case ActionRangeType.Adjacent:
-					radius = 1;
-					break;
-				case ActionRangeType.Burst:
-					radius = parameter.range.radius;
-					break;
-				case ActionRangeType.Weapon: {
-					const wpnParam = action.parameters.find(p => p.id === 'weapon') as ActionWeaponParameterModel;
-					if (wpnParam && (wpnParam.value !== null)) {
-						const weapon = wpnParam.value as ItemModel;
-						if (weapon.weapon) {
-							radius = weapon.weapon.range + parameter.range.radius;
-						}
-					}
-					break;
-				}
-			}
+			const radius = ActionLogic.getActionRange(action);
 
 			let originSquares = EncounterLogic.getCombatantSquares(encounter, combatant);
 			const originParam = action.parameters.find(p => p.id === 'origin');
@@ -1347,6 +1379,14 @@ export class ActionLogic {
 								.filter(c => c.combat.state !== CombatantState.Dead)
 								.filter(c => combatant.combat.senses >= c.combat.hidden)
 								.filter(c => EncounterMapLogic.canSeeAny(edges, originSquares, EncounterLogic.getCombatantSquares(encounter, c)))
+								.sort((a, b) => {
+									const squaresCombatant = EncounterLogic.getCombatantSquares(encounter, combatant);
+									const squaresA = EncounterLogic.getCombatantSquares(encounter, a);
+									const squaresB = EncounterLogic.getCombatantSquares(encounter, b);
+									const distanceA = EncounterMapLogic.getDistanceAny(squaresA, squaresCombatant);
+									const distanceB = EncounterMapLogic.getDistanceAny(squaresB, squaresCombatant);
+									return distanceA - distanceB;
+								})
 								.map(c => c.id)
 						);
 						break;
@@ -1358,6 +1398,14 @@ export class ActionLogic {
 								.filter(c => combatant.combat.senses >= c.combat.hidden)
 								.filter(c => c.type !== combatant.type)
 								.filter(c => EncounterMapLogic.canSeeAny(edges, originSquares, EncounterLogic.getCombatantSquares(encounter, c)))
+								.sort((a, b) => {
+									const squaresCombatant = EncounterLogic.getCombatantSquares(encounter, combatant);
+									const squaresA = EncounterLogic.getCombatantSquares(encounter, a);
+									const squaresB = EncounterLogic.getCombatantSquares(encounter, b);
+									const distanceA = EncounterMapLogic.getDistanceAny(squaresA, squaresCombatant);
+									const distanceB = EncounterMapLogic.getDistanceAny(squaresB, squaresCombatant);
+									return distanceA - distanceB;
+								})
 								.map(c => c.id)
 						);
 						break;
@@ -1369,6 +1417,14 @@ export class ActionLogic {
 								.filter(c => combatant.combat.senses >= c.combat.hidden)
 								.filter(c => c.type === combatant.type)
 								.filter(c => EncounterMapLogic.canSeeAny(edges, originSquares, EncounterLogic.getCombatantSquares(encounter, c)))
+								.sort((a, b) => {
+									const squaresCombatant = EncounterLogic.getCombatantSquares(encounter, combatant);
+									const squaresA = EncounterLogic.getCombatantSquares(encounter, a);
+									const squaresB = EncounterLogic.getCombatantSquares(encounter, b);
+									const distanceA = EncounterMapLogic.getDistanceAny(squaresA, squaresCombatant);
+									const distanceB = EncounterMapLogic.getDistanceAny(squaresB, squaresCombatant);
+									return distanceA - distanceB;
+								})
 								.map(c => c.id)
 						);
 						break;
@@ -1376,11 +1432,21 @@ export class ActionLogic {
 						candidates.push(
 							...EncounterLogic.findSquares(encounter, originSquares, radius)
 								.filter(sq => EncounterMapLogic.canSeeAny(edges, originSquares, [ sq ]))
+								.sort((a, b) => {
+									const distanceA = EncounterMapLogic.getDistance(a, combatant.combat.position);
+									const distanceB = EncounterMapLogic.getDistance(b, combatant.combat.position);
+									return distanceA - distanceB;
+								})
 						);
 						break;
 					case ActionTargetType.Walls:
 						candidates.push(
 							...EncounterLogic.findWalls(encounter, originSquares, radius)
+								.sort((a, b) => {
+									const distanceA = EncounterMapLogic.getDistance(a, combatant.combat.position);
+									const distanceB = EncounterMapLogic.getDistance(b, combatant.combat.position);
+									return distanceA - distanceB;
+								})
 						);
 						break;
 				}

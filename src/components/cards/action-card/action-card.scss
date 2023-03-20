@@ -1,6 +1,11 @@
 .action-card {
 	margin: 10px;
 
+	.tags {
+		margin: 10px 0;
+		text-align: center;
+	}
+
 	.prerequisite,
 	.parameter,
 	.effect {

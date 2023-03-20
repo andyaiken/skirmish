@@ -8,10 +8,7 @@
 ## Priority
 
 * Encounters:
-  * Implement AI so that monsters can take their turns
-  * Actions
-    * Allow the user to opt for a universal action instead
-    * Implement the last remaining action effects (command action / command move)
+  * Allow the user to opt for a universal action instead
 * Add a system for evaluating each action to ensure none is too powerful
   * Then extend this to ensure species / roles / backgrounds are equally matched
 * Add help / documentation to explain game rules

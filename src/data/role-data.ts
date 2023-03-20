@@ -72,7 +72,16 @@ export class RoleData {
 							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
 						],
 						effects: [
-							ActionEffects.forceMovement(MovementType.Push, 3)
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Spellcasting,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Impact, 1),
+									ActionEffects.forceMovement(MovementType.Push, 3)
+								]
+							})
 						]
 					},
 					{
@@ -85,8 +94,16 @@ export class RoleData {
 							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
 						],
 						effects: [
-							ActionEffects.dealDamage(DamageType.Electricity, 1),
-							ActionEffects.dealDamage(DamageType.Piercing, 1)
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Spellcasting,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Electricity, 2),
+									ActionEffects.dealDamage(DamageType.Piercing, 2)
+								]
+							})
 						]
 					},
 					{
@@ -551,8 +568,16 @@ export class RoleData {
 							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 10)
 						],
 						effects: [
-							ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Endurance, 5, TraitType.Speed)),
-							ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Endurance, 5))
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Spellcasting,
+								trait: TraitType.Endurance,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Endurance, 5, TraitType.Speed)),
+									ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Endurance, 5))
+								]
+							})
 						]
 					}
 				]

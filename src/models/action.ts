@@ -8,7 +8,7 @@ export interface ActionPrerequisiteModel {
 }
 
 export interface ActionParameterModel {
-	id: string;
+	id: 'weapon' | 'origin' | 'targets';
 	candidates: unknown[];
 	value: unknown | null;
 }

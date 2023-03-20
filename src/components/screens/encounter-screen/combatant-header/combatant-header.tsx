@@ -56,11 +56,6 @@ export class CombatantHeader extends Component<Props> {
 					</button>
 				</div>
 				{
-					this.props.combatant.combat.stunned ?
-						<Text type={TextType.Information}><b>{this.props.combatant.name} is Stunned.</b> They cannot spend movement points or take any actions.</Text>
-						: null
-				}
-				{
 					this.props.combatant.combat.state === CombatantState.Prone ?
 						<Text type={TextType.Information}><b>{this.props.combatant.name} is Prone.</b> Their skill ranks are halved and moving costs are doubled.</Text>
 						: null

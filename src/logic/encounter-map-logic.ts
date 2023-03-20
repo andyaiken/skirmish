@@ -1,6 +1,6 @@
 import { EncounterMapSquareType } from '../enums/encounter-map-square-type';
 
-import type { EncounterMapSquareModel } from '../models/encounter';
+import type { EncounterMapEdgeModel, EncounterMapSquareModel } from '../models/encounter';
 
 import { Collections } from '../utils/collections';
 import { Random } from '../utils/random';
@@ -8,6 +8,7 @@ import { Utils } from '../utils/utils';
 
 export class EncounterMapLogic {
 	static generateEncounterMap = (rng: () => number): EncounterMapSquareModel[] => {
+		EncounterMapLogic.visibilityCache = {};
 		return Random.randomBoolean(rng) ? EncounterMapLogic.generateDungeonMap(rng) : EncounterMapLogic.generateCavernMap(rng);
 	};
 
@@ -280,26 +281,33 @@ export class EncounterMapLogic {
 		return 90 - degrees;
 	};
 
-	static canSeeAny = (
-		edges: { horizontal: { start: number, end: number, y: number }[], vertical: { start: number, end: number, x: number }[] },
-		aSquares: { x: number, y: number }[],
-		bSquares: { x: number, y: number }[]
-	) => {
+	static canSeeAny = (edges: EncounterMapEdgeModel, aSquares: { x: number, y: number }[], bSquares: { x: number, y: number }[]) => {
 		return aSquares.some(a => bSquares.some(b => EncounterMapLogic.canSee(edges, a, b)));
 	};
 
-	static canSee = (
-		edges: { horizontal: { start: number, end: number, y: number }[], vertical: { start: number, end: number, x: number }[] },
-		a: { x: number, y: number },
-		b: { x: number, y: number }
-	) => {
+	static visibilityCache: Record<string, boolean> = {};
+
+	static canSee = (edges: EncounterMapEdgeModel, a: { x: number, y: number }, b: { x: number, y: number }) => {
+		// Check the cache
+		const cached = EncounterMapLogic.visibilityCache[`${a.x} ${a.y} - ${b.x} ${b.y}`];
+		if (cached !== undefined) {
+			return cached;
+		}
+
+		// Do the calculation
 		const midA = { x: a.x + 0.5, y: a.y + 0.5 };
 		const midB = { x: b.x + 0.5, y: b.y + 0.5 };
-		return !(edges.horizontal.some(edge => Utils.intersects({ a: midA, b: midB }, { a: { x: edge.start, y: edge.y }, b: { x: edge.end, y: edge.y } }))
+		const visible = !(edges.horizontal.some(edge => Utils.intersects({ a: midA, b: midB }, { a: { x: edge.start, y: edge.y }, b: { x: edge.end, y: edge.y } }))
 			|| edges.vertical.some(edge => Utils.intersects({ a: midA, b: midB }, { a: { x: edge.x, y: edge.start }, b: { x: edge.x, y: edge.end } })));
+
+		// Cache this value
+		EncounterMapLogic.visibilityCache[`${a.x} ${a.y} - ${b.x} ${b.y}`] = visible;
+		EncounterMapLogic.visibilityCache[`${b.x} ${b.y} - ${a.x} ${a.y}`] = visible;
+
+		return visible;
 	};
 
-	static getMapEdges = (map: EncounterMapSquareModel[]) => {
+	static getMapEdges = (map: EncounterMapSquareModel[]): EncounterMapEdgeModel => {
 		const horizontal: { start: number, end: number, y: number }[] = [];
 		EncounterMapLogic.getAdjacentWalls(map, map, [ 'n' ]).forEach(wall => horizontal.push({ start: wall.x, end: wall.x + 1, y: wall.y + 1 }));
 		EncounterMapLogic.getAdjacentWalls(map, map, [ 's' ]).forEach(wall => horizontal.push({ start: wall.x, end: wall.x + 1, y: wall.y }));

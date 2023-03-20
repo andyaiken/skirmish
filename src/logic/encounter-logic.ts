@@ -1,3 +1,5 @@
+import { UniversalData } from '../data/universal-data';
+
 import { CombatantState } from '../enums/combatant-state';
 import { CombatantType } from '../enums/combatant-type';
 import { ConditionType } from '../enums/condition-type';
@@ -13,6 +15,7 @@ import type { ActionModel, ActionOriginParameterModel, ActionTargetParameterMode
 import type { EncounterMapSquareModel, EncounterModel, LootPileModel } from '../models/encounter';
 import type { CombatantModel } from '../models/combatant';
 import type { ConditionModel } from '../models/condition';
+import type { ItemModel } from '../models/item';
 
 import { Collections } from '../utils/collections';
 import { Random } from '../utils/random';
@@ -21,8 +24,7 @@ import { CombatantLogic } from './combatant-logic';
 import { ConditionLogic } from './condition-logic';
 import { EncounterMapLogic } from './encounter-map-logic';
 import { Factory } from './factory';
-import { ItemModel } from '../models/item';
-import { MonsterLogic } from './monster-logic';
+import { IntentsLogic } from './intents-logic';
 
 export class EncounterLogic {
 	static getCombatantSquares = (encounter: EncounterModel, combatant: CombatantModel, position: { x: number, y: number } | null = null) => {
@@ -207,7 +209,7 @@ export class EncounterLogic {
 				EncounterLogic.drawActions(encounter, combatant);
 
 				if (combatant.type === CombatantType.Monster) {
-					combatant.combat.intents = MonsterLogic.getIntents(encounter, combatant);
+					combatant.combat.intents = IntentsLogic.getIntents(encounter, combatant);
 				}
 
 				break;
@@ -260,7 +262,16 @@ export class EncounterLogic {
 
 	static drawActions = (encounter: EncounterModel, combatant: CombatantModel) => {
 		const deck = CombatantLogic.getActionDeck(combatant);
-		combatant.combat.actions = Collections.shuffle(deck).splice(0, 3);
+		switch (combatant.type) {
+			case CombatantType.Hero:
+				combatant.combat.actions = Collections.shuffle(deck).splice(0, 3);
+				break;
+			case CombatantType.Monster:
+				combatant.combat.actions = deck;
+				combatant.combat.actions.push(...UniversalData.getUniversalActions());
+				EncounterLogic.checkActionParameters(encounter, combatant);
+				break;
+		}
 	};
 
 	static selectAction = (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => {
@@ -268,21 +279,8 @@ export class EncounterLogic {
 		EncounterLogic.checkActionParameters(encounter, combatant);
 	};
 
-	static runAction = (encounter: EncounterModel, combatant: CombatantModel) => {
-		if (combatant.combat.actions.length === 1) {
-			const action = combatant.combat.actions[0];
-			EncounterLogic.log(encounter, `${combatant.name} uses ${action.name}`);
-			action.effects.forEach(effect => ActionEffects.run(effect, encounter, combatant, action.parameters));
-
-			if (combatant.combat.actions.length === 1) {
-				combatant.combat.actions = [];
-			}
-		}
-	};
-
 	static checkActionParameters = (encounter: EncounterModel, combatant: CombatantModel) => {
-		if (combatant.combat.actions.length === 1) {
-			const action = combatant.combat.actions[0];
+		combatant.combat.actions.forEach(action => {
 			action.parameters.forEach(parameter => {
 				switch (parameter.id) {
 					case 'weapon':
@@ -297,6 +295,18 @@ export class EncounterLogic {
 					}
 				}
 			});
+		});
+	};
+
+	static runAction = (encounter: EncounterModel, combatant: CombatantModel) => {
+		if (combatant.combat.actions.length === 1) {
+			const action = combatant.combat.actions[0];
+			EncounterLogic.log(encounter, `${combatant.name} uses ${action.name}`);
+			action.effects.forEach(effect => ActionEffects.run(effect, encounter, combatant, action.parameters));
+
+			if (combatant.combat.actions.length === 1) {
+				combatant.combat.actions = [];
+			}
 		}
 	};
 

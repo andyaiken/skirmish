@@ -334,7 +334,15 @@ export class SpeciesData {
 							ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 5)
 						],
 						effects: [
-							ActionEffects.dealDamage(DamageType.Sonic, 1)
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Endurance,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Sonic, 1)
+								]
+							})
 						]
 					}
 				]

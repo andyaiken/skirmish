@@ -22,3 +22,8 @@ export interface EncounterModel {
 	loot: LootPileModel[];
 	mapSquares: EncounterMapSquareModel[];
 }
+
+export interface EncounterMapEdgeModel {
+	horizontal: { start: number, end: number, y: number }[];
+	vertical: { start: number, end: number, x: number }[];
+}

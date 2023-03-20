@@ -9,9 +9,10 @@ import { CampaignMapLogic } from '../../logic/campaign-map-logic';
 import { CombatantLogic } from '../../logic/combatant-logic';
 import { EncounterGenerator } from '../../logic/encounter-generator';
 import { EncounterLogic } from '../../logic/encounter-logic';
+import { EncounterMapLogic } from '../../logic/encounter-map-logic';
 import { Factory } from '../../logic/factory';
 import { GameLogic } from '../../logic/game-logic';
-import { MonsterLogic } from '../../logic/monster-logic';
+import { IntentsLogic } from '../../logic/intents-logic';
 
 import type { ActionModel, ActionParameterModel } from '../../models/action';
 import type { BoonModel } from '../../models/boon';
@@ -333,6 +334,7 @@ export class Main extends Component<Props, State> {
 			lp.position.x = pos.x;
 			lp.position.y = pos.y;
 		});
+		EncounterMapLogic.visibilityCache = {};
 
 		this.setState({
 			game: this.state.game
@@ -434,7 +436,7 @@ export class Main extends Component<Props, State> {
 	};
 
 	performIntents = (encounter: EncounterModel, combatant: CombatantModel) => {
-		MonsterLogic.performIntents(encounter, combatant);
+		IntentsLogic.performIntents(encounter, combatant);
 
 		this.setState({
 			game: this.state.game

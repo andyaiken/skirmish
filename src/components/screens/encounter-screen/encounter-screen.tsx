@@ -18,7 +18,7 @@ import type { ItemModel } from '../../../models/item';
 import type { RegionModel } from '../../../models/campaign-map';
 
 import { CardList, Dialog, PlayingCard, Text, TextType } from '../../controls';
-import { CharacterSheetPanel, EncounterMapPanel, InitiativeListPanel } from '../../panels';
+import { CharacterSheetPanel, EncounterMapPanel, InitiativeListPanel, TurnLogPanel } from '../../panels';
 import { CombatantAction } from './combatant-action/combatant-action';
 import { CombatantHeader } from './combatant-header/combatant-header';
 import { CombatantMonster } from './combatant-monster/combatant-monster';
@@ -575,6 +575,7 @@ export class EncounterScreen extends Component<Props, State> {
 		if (currentCombatant.combat.stunned) {
 			content = (
 				<div>
+					<Text type={TextType.Information}><b>{currentCombatant.name} is Stunned.</b> They cannot spend movement points or take any actions.</Text>
 					<button onClick={() => this.endTurn(this.props.encounter)}>End Turn</button>
 				</div>
 			);
@@ -583,10 +584,16 @@ export class EncounterScreen extends Component<Props, State> {
 				content = (
 					<CombatantMonster
 						combatant={currentCombatant}
-						encounter={this.props.encounter}
 						developer={this.props.developer}
-						performIntents={this.props.performIntents}
 					/>
+				);
+				footer = (
+					<div>
+						<TurnLogPanel combatant={currentCombatant} />
+						<button onClick={() => this.props.performIntents(this.props.encounter, currentCombatant)}>
+							{currentCombatant.combat.intents ? currentCombatant.combat.intents.description : 'End Turn'}
+						</button>
+					</div>
 				);
 			} else {
 				switch (this.state.rightID) {
@@ -633,6 +640,7 @@ export class EncounterScreen extends Component<Props, State> {
 
 				footer = (
 					<div>
+						<TurnLogPanel combatant={currentCombatant} />
 						{
 							currentCombatant.combat.actions.length !== 0 ?
 								<Text type={TextType.Information}><b>You have not taken an action.</b> You probably want to take an action before you end your turn.</Text>

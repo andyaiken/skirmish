@@ -2,7 +2,8 @@ import { Component } from 'react';
 
 import { CampaignMapLogic } from '../../../logic/campaign-map-logic';
 
-import type { CampaignMapModel, CampaignMapSquareModel, RegionModel } from '../../../models/campaign-map';
+import type { CampaignMapModel, CampaignMapSquareModel } from '../../../models/campaign-map';
+import type { RegionModel } from '../../../models/region';
 
 import './campaign-map-panel.scss';
 

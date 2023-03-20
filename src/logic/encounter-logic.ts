@@ -276,10 +276,10 @@ export class EncounterLogic {
 
 	static selectAction = (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => {
 		combatant.combat.actions = [ action ];
-		EncounterLogic.checkActionParameters(encounter, combatant);
+		EncounterLogic.checkActionParameters(encounter, combatant, false);
 	};
 
-	static checkActionParameters = (encounter: EncounterModel, combatant: CombatantModel) => {
+	static checkActionParameters = (encounter: EncounterModel, combatant: CombatantModel, invertTargets = false) => {
 		combatant.combat.actions.forEach(action => {
 			action.parameters.forEach(parameter => {
 				switch (parameter.id) {
@@ -290,7 +290,7 @@ export class EncounterLogic {
 						ActionLogic.checkOriginParameter(parameter as ActionOriginParameterModel, encounter, combatant, action);
 						break;
 					case 'targets': {
-						ActionLogic.checkTargetParameter(parameter as ActionTargetParameterModel, encounter, combatant, action);
+						ActionLogic.checkTargetParameter(parameter as ActionTargetParameterModel, encounter, combatant, action, invertTargets);
 						break;
 					}
 				}
@@ -368,11 +368,12 @@ export class EncounterLogic {
 			cost += 1;
 		}
 
-		// Moving out of a space adjacent to standing opponent: +4
+		// Moving out of a space adjacent to (standing, not stunned) opponent: +4
 		const adjacent: { x: number; y: number }[] = [];
 		encounter.combatants
 			.filter(c => c.type !== combatant.type)
 			.filter(c => c.combat.state === CombatantState.Standing)
+			.filter(c => !c.combat.stunned)
 			.forEach(c => {
 				const current = EncounterLogic.getCombatantSquares(encounter, c);
 				const squares = EncounterMapLogic.getAdjacentSquares(encounter.mapSquares, current);
@@ -701,28 +702,6 @@ export class EncounterLogic {
 		return encounter.combatants
 			.filter(c => c.combat.state !== CombatantState.Dead)
 			.filter(c => c.combat.initiative === Number.MIN_VALUE);
-	};
-
-	static getAllHeroesInEncounter = (encounter: EncounterModel) => {
-		return encounter.combatants.filter(c => c.type === CombatantType.Hero);
-	};
-
-	static getSurvivingHeroes = (encounter: EncounterModel): CombatantModel[] => {
-		return EncounterLogic.getAllHeroesInEncounter(encounter).filter(h => {
-			return (h.combat.state !== CombatantState.Dead) && (h.combat.state !== CombatantState.Unconscious);
-		});
-	};
-
-	static getFallenHeroes = (encounter: EncounterModel): CombatantModel[] => {
-		return EncounterLogic.getAllHeroesInEncounter(encounter).filter(h => {
-			return (h.combat.state === CombatantState.Dead) || (h.combat.state === CombatantState.Unconscious);
-		});
-	};
-
-	static getDeadHeroes = (encounter: EncounterModel): CombatantModel[] => {
-		return EncounterLogic.getAllHeroesInEncounter(encounter).filter(h => {
-			return (h.combat.state === CombatantState.Dead);
-		});
 	};
 
 	///////////////////////////////////////////////////////////////////////////

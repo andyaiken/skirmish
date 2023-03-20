@@ -249,7 +249,7 @@ export class BackgroundData {
 				actions: [
 					{
 						id: 'noble-action-1',
-						name: 'Morale',
+						name: 'Boost Morale',
 						prerequisites: [],
 						parameters: [
 							ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 5)

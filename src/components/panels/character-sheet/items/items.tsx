@@ -1,6 +1,7 @@
 import { Component } from 'react';
 
 import { CardType } from '../../../../enums/card-type';
+import { CombatantType } from '../../../../enums/combatant-type';
 import { ItemLocationType } from '../../../../enums/item-location-type';
 
 import { CombatantLogic } from '../../../../logic/combatant-logic';
@@ -65,7 +66,7 @@ export class Items extends Component<Props, State> {
 			.filter(item => location === item.location)
 			.map(item => {
 				let unequip: JSX.Element | string = 'Carry';
-				if (this.props.game.encounter) {
+				if (this.props.game.encounter && (this.props.hero.type === CombatantType.Hero)) {
 					unequip = (
 						<div>Carry<br/><IconValue type={IconType.Movement} value={1} iconSize={12} /></div>
 					);
@@ -77,6 +78,9 @@ export class Items extends Component<Props, State> {
 						<button onClick={() => this.props.dropItem(item)}>Drop</button>
 					</div>
 				);
+				if (this.props.hero.type !== CombatantType.Hero) {
+					footer = null;
+				}
 				if (!!this.props.game.encounter && !this.props.hero.combat.current) {
 					footer = null;
 				}
@@ -88,7 +92,7 @@ export class Items extends Component<Props, State> {
 				);
 			});
 
-		if (this.props.game.encounter && !this.props.hero.combat.current) {
+		if ((this.props.game.encounter && !this.props.hero.combat.current) || (this.props.hero.type !== CombatantType.Hero)) {
 			if (cards.length === 0) {
 				cards.push(
 					<div key='empty' className='item'>
@@ -96,7 +100,7 @@ export class Items extends Component<Props, State> {
 					</div>
 				);
 			}
-		} else {
+		} else if (this.props.hero.type === CombatantType.Hero) {
 			let slotsTotal = 1;
 			switch (location) {
 				case ItemLocationType.Hand:
@@ -132,7 +136,7 @@ export class Items extends Component<Props, State> {
 		const cards = this.props.hero.carried
 			.map(item => {
 				let equip: JSX.Element | string = 'Equip';
-				if (this.props.game.encounter) {
+				if (this.props.game.encounter && (this.props.hero.type === CombatantType.Hero)) {
 					equip = (
 						<div>Equip<br/><IconValue type={IconType.Movement} value={1} iconSize={12} /></div>
 					);
@@ -144,6 +148,9 @@ export class Items extends Component<Props, State> {
 						<button onClick={() => this.props.dropItem(item)}>Drop</button>
 					</div>
 				);
+				if (this.props.hero.type !== CombatantType.Hero) {
+					footer = null;
+				}
 				if (!!this.props.game.encounter && !this.props.hero.combat.current) {
 					footer = null;
 				}
@@ -163,7 +170,7 @@ export class Items extends Component<Props, State> {
 					</div>
 				);
 			}
-		} else if (this.props.hero.carried.length < 6) {
+		} else if ((this.props.hero.type === CombatantType.Hero) && (this.props.hero.carried.length < 6)) {
 			cards.push(
 				<div key='add' className='item'>
 					<PlayingCard front={<PlaceholderCard>Choose an Item</PlaceholderCard>} onClick={() => this.setState({ selectedLocation: ItemLocationType.Carried })} />

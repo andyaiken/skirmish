@@ -1,0 +1,9 @@
+.encounter-map-trail-token {
+	aspect-ratio: 1 / 1;
+	position: absolute;
+	border-radius: 50%;
+	border: 1px solid rgb(100, 100, 100);
+	background: rgb(220, 220, 220);
+	transform: scale(0.5);
+	pointer-events: none;
+}

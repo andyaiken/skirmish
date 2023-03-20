@@ -64,14 +64,16 @@ interface EntryProps {
 class Entry extends Component<EntryProps> {
 	render = () => {
 		const currentTag = this.props.combatant.combat.current ? <Tag>Current Turn</Tag> : null;
+		const hiddenTag = (this.props.combatant.combat.hidden > 0) ? <Tag>Hidden</Tag> : null;
 		const stunnedTag = this.props.combatant.combat.stunned ? <Tag>Stunned</Tag> : null;
 		const unconsciousTag = this.props.combatant.combat.state === CombatantState.Unconscious ? <Tag>Unconscious</Tag> : null;
 		const deadTag = this.props.combatant.combat.state === CombatantState.Dead ? <Tag>Dead</Tag> : null;
 		let tags = null;
-		if (currentTag || unconsciousTag || deadTag) {
+		if (currentTag || hiddenTag || stunnedTag || unconsciousTag || deadTag) {
 			tags = (
 				<div className='initiative-entry-tags'>
 					{currentTag}
+					{hiddenTag}
 					{stunnedTag}
 					{unconsciousTag}
 					{deadTag}

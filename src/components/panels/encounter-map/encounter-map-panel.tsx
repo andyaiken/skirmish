@@ -1,16 +1,23 @@
 import { Component } from 'react';
 
 import { CombatantState } from '../../../enums/combatant-state';
-import { TraitType } from '../../../enums/trait-type';
 
 import { CombatantLogic } from '../../../logic/combatant-logic';
 import { EncounterLogic } from '../../../logic/encounter-logic';
 import { EncounterMapLogic } from '../../../logic/encounter-map-logic';
 
-import type { EncounterMapSquareModel, EncounterModel, LootPileModel } from '../../../models/encounter';
+import type { EncounterModel, LootPileModel } from '../../../models/encounter';
 import type { CombatantModel } from '../../../models/combatant';
 
 import { Collections } from '../../../utils/collections';
+
+import { AuraToken } from './aura-token/aura-token';
+import { Fog } from './fog/fog';
+import { LootToken } from './loot-token/loot-token';
+import { MiniToken } from './mini-token/mini-token';
+import { Square } from './floor/floor';
+import { TrailToken } from './trail-token/trail-token';
+import { Wall } from './wall/wall';
 
 import './encounter-map-panel.scss';
 
@@ -170,283 +177,6 @@ export class EncounterMapPanel extends Component<Props> {
 					{fog}
 				</div>
 			</div>
-		);
-	};
-}
-
-interface WallProps {
-	wall: { x: number, y: number };
-	squareSize: number;
-	mapDimensions: { left: number, top: number };
-	selectable: boolean;
-	selected: boolean;
-	onClick: (square: { x: number, y: number }) => void;
-}
-
-class Wall extends Component<WallProps> {
-	onClick = (e: React.MouseEvent) => {
-		if (this.props.selectable) {
-			e.stopPropagation();
-			this.props.onClick(this.props.wall);
-		}
-	};
-
-	render = () => {
-		const selectable = this.props.selectable ? 'selectable' : '';
-		const selected = this.props.selected ? 'selected' : '';
-		const className = `encounter-map-square wall ${selectable} ${selected}`;
-
-		return (
-			<div
-				key={`square ${this.props.wall.x} ${this.props.wall.y}`}
-				className={className}
-				style={{
-					width: `${this.props.squareSize}px`,
-					left: `${((this.props.wall.x - this.props.mapDimensions.left) * this.props.squareSize)}px`,
-					top: `${((this.props.wall.y - this.props.mapDimensions.top) * this.props.squareSize)}px`
-				}}
-				onClick={e => this.onClick(e)}
-			/>
-		);
-	};
-}
-
-interface SquareProps {
-	square: EncounterMapSquareModel;
-	squareSize: number;
-	mapDimensions: { left: number, top: number };
-	selectable: boolean;
-	selected: boolean;
-	onClick: (square: { x: number, y: number }) => void;
-}
-
-class Square extends Component<SquareProps> {
-	onClick = (e: React.MouseEvent) => {
-		if (this.props.selectable) {
-			e.stopPropagation();
-			this.props.onClick(this.props.square);
-		}
-	};
-
-	render = () => {
-		const type = this.props.square.type.toLowerCase();
-		const selectable = this.props.selectable ? 'selectable' : '';
-		const selected = this.props.selected ? 'selected' : '';
-		const className = `encounter-map-square ${type} ${selectable} ${selected}`;
-
-		return (
-			<div
-				key={`square ${this.props.square.x} ${this.props.square.y}`}
-				className={className}
-				style={{
-					width: `${this.props.squareSize}px`,
-					left: `${((this.props.square.x - this.props.mapDimensions.left) * this.props.squareSize)}px`,
-					top: `${((this.props.square.y - this.props.mapDimensions.top) * this.props.squareSize)}px`
-				}}
-				onClick={e => this.onClick(e)}
-			/>
-		);
-	};
-}
-
-interface MiniTokenProps {
-	combatant: CombatantModel;
-	encounter: EncounterModel;
-	squareSize: number;
-	mapDimensions: { left: number, top: number };
-	selectable: boolean;
-	selected: boolean;
-	onClick: (combatant: CombatantModel) => void;
-	onDoubleClick: (combatant: CombatantModel) => void;
-}
-
-class MiniToken extends Component<MiniTokenProps> {
-	onClick = (e: React.MouseEvent) => {
-		if (this.props.selectable) {
-			e.stopPropagation();
-			this.props.onClick(this.props.combatant);
-		}
-	};
-
-	onDoubleClick = (e: React.MouseEvent) => {
-		if (this.props.selectable) {
-			e.stopPropagation();
-			this.props.onDoubleClick(this.props.combatant);
-		}
-	};
-
-	getMonogram = () => {
-		return this.props.combatant.name
-			.split(' ')
-			.filter(token => token.length > 0)
-			.map(token => token[0])
-			.join('');
-	};
-
-	render = () => {
-		const type = this.props.combatant.type.toLowerCase();
-		const selectable = this.props.selectable ? 'selectable' : '';
-		const selected = this.props.selected ? 'selected' : '';
-		const className = `encounter-map-mini-token ${type} ${selectable} ${selected}`;
-
-		let tooltip = this.props.combatant.name;
-		if (this.props.combatant.combat.state === CombatantState.Dead) {
-			tooltip += ' (dead)';
-		} else if (this.props.combatant.combat.state === CombatantState.Unconscious) {
-			tooltip += ' (unconscious)';
-		} else if (this.props.combatant.combat.wounds > 0) {
-			tooltip += ' (wounded)';
-		} else if (this.props.combatant.combat.damage > 0) {
-			tooltip += ' (damaged)';
-		}
-		if (this.props.combatant.combat.state === CombatantState.Prone) {
-			tooltip += ' (prone)';
-		}
-
-		let healthBar = null;
-		if (this.props.combatant.combat.wounds > 0) {
-			const resolve = EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Resolve);
-			const barWidth = 1 - (this.props.combatant.combat.wounds / resolve);
-			healthBar = (
-				<div className='health-bar' style={{ height: `${this.props.squareSize / 5}px` }}>
-					<div className='health-bar-gauge' style={{ width: `${100 * barWidth}%` }} />
-				</div>
-			);
-		}
-
-		return (
-			<div
-				className={className}
-				style={{
-					width: `${this.props.squareSize * this.props.combatant.size}px`,
-					left: `${((this.props.combatant.combat.position.x - this.props.mapDimensions.left) * this.props.squareSize)}px`,
-					top: `${((this.props.combatant.combat.position.y - this.props.mapDimensions.top) * this.props.squareSize)}px`,
-					fontSize: `${this.props.squareSize * 0.35}px`
-				}}
-				title={tooltip}
-				onClick={e => this.onClick(e)}
-				onDoubleClick={e => this.onDoubleClick(e)}
-			>
-				<div className={this.props.combatant.combat.current ? 'mini-token-face current' : 'mini-token-face'}>
-					{this.getMonogram()}
-				</div>
-				{healthBar}
-				{this.props.combatant.combat.current ? <div className='pulse pulse-one' /> : null}
-				{this.props.combatant.combat.current ? <div className='pulse pulse-two' /> : null}
-				{this.props.combatant.combat.current ? <div className='pulse pulse-three' /> : null}
-			</div>
-		);
-	};
-}
-
-interface TrailTokenProps {
-	position: { x: number, y: number };
-	size: number;
-	squareSize: number;
-	mapDimensions: { left: number, top: number };
-}
-
-class TrailToken extends Component<TrailTokenProps> {
-	render = () => {
-		return (
-			<div
-				className='encounter-map-trail-token'
-				style={{
-					width: `${this.props.squareSize * this.props.size}px`,
-					left: `${((this.props.position.x - this.props.mapDimensions.left) * this.props.squareSize)}px`,
-					top: `${((this.props.position.y - this.props.mapDimensions.top) * this.props.squareSize)}px`
-				}}
-			>
-			</div>
-		);
-	};
-}
-
-interface AuraTokenProps {
-	combatant: CombatantModel;
-	squareSize: number;
-	mapDimensions: { left: number, top: number };
-}
-
-class AuraToken extends Component<AuraTokenProps> {
-	render = () => {
-		return (
-			<div
-				className='encounter-map-aura-token'
-				style={{
-					width: `${this.props.squareSize * (this.props.combatant.size + 2)}px`,
-					left: `${((this.props.combatant.combat.position.x - this.props.mapDimensions.left - 1) * this.props.squareSize)}px`,
-					top: `${((this.props.combatant.combat.position.y - this.props.mapDimensions.top - 1) * this.props.squareSize)}px`
-				}}
-			>
-			</div>
-		);
-	};
-}
-
-interface LootTokenProps {
-	loot: LootPileModel;
-	squareSize: number;
-	mapDimensions: { left: number, top: number };
-	selectable: boolean;
-	selected: boolean;
-	onClick: (loot: LootPileModel) => void;
-	onDoubleClick: (loot: LootPileModel) => void;
-}
-
-class LootToken extends Component<LootTokenProps> {
-	onClick = (e: React.MouseEvent) => {
-		if (this.props.selectable) {
-			e.stopPropagation();
-			this.props.onClick(this.props.loot);
-		}
-	};
-
-	onDoubleClick = (e: React.MouseEvent) => {
-		if (this.props.selectable) {
-			e.stopPropagation();
-			this.props.onDoubleClick(this.props.loot);
-		}
-	};
-
-	render = () => {
-		const className = `encounter-map-loot-token ${this.props.selected ? 'selected' : ''} ${this.props.selectable ? 'selectable' : ''}`;
-		return (
-			<div
-				className={className}
-				style={{
-					width: `${this.props.squareSize}px`,
-					left: `${((this.props.loot.position.x - this.props.mapDimensions.left) * this.props.squareSize)}px`,
-					top: `${((this.props.loot.position.y - this.props.mapDimensions.top) * this.props.squareSize)}px`
-				}}
-				title='Treasure'
-				onClick={e => this.onClick(e)}
-				onDoubleClick={e => this.onDoubleClick(e)}
-			>
-				<div className='loot-token-face' />
-			</div>
-		);
-	};
-}
-
-interface FogProps {
-	square: EncounterMapSquareModel;
-	squareSize: number;
-	mapDimensions: { left: number, top: number };
-}
-
-class Fog extends Component<FogProps> {
-	render = () => {
-		return (
-			<div
-				key={`square ${this.props.square.x} ${this.props.square.y}`}
-				className='encounter-map-fog'
-				style={{
-					width: `${this.props.squareSize}px`,
-					left: `${((this.props.square.x - this.props.mapDimensions.left) * this.props.squareSize)}px`,
-					top: `${((this.props.square.y - this.props.mapDimensions.top) * this.props.squareSize)}px`
-				}}
-			/>
 		);
 	};
 }

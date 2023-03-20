@@ -8,7 +8,7 @@ import { EncounterLogic } from '../../../../logic/encounter-logic';
 import type { CombatantModel } from '../../../../models/combatant';
 import type { EncounterModel } from '../../../../models/encounter';
 
-import { Box, IconType, IconValue, StatValue, Text, TextType } from '../../../controls';
+import { Box, IconType, IconValue, StatValue } from '../../../controls';
 import { CombatStatsPanel } from '../../../panels';
 
 import './combatant-overview.scss';
@@ -24,22 +24,6 @@ interface Props {
 
 export class CombatantOverview extends Component<Props> {
 	render = () => {
-		if (this.props.combatant.combat.state === CombatantState.Unconscious) {
-			return (
-				<Text type={TextType.Information}>
-					{this.props.combatant.name} is <b>Unconscious</b>.
-				</Text>
-			);
-		}
-
-		if (this.props.combatant.combat.state === CombatantState.Dead) {
-			return (
-				<Text type={TextType.Information}>
-					{this.props.combatant.name} is <b>Dead</b>.
-				</Text>
-			);
-		}
-
 		let auraSection = null;
 		const auras = EncounterLogic.getAuraConditions(this.props.encounter, this.props.combatant);
 		if (auras.length > 0) {

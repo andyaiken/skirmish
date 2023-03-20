@@ -8,7 +8,7 @@ import { GameLogic } from '../../../../logic/game-logic';
 
 import type { CombatantModel } from '../../../../models/combatant';
 import type { GameModel } from '../../../../models/game';
-import type { RegionModel } from '../../../../models/campaign-map';
+import type { RegionModel } from '../../../../models/region';
 
 import { BoonCard, HeroCard } from '../../../cards';
 import { CardList, Dialog, PlayingCard, Selector, StatValue, Tag, Text, TextType } from '../../../controls';

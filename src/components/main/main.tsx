@@ -2,6 +2,7 @@ import { Component } from 'react';
 
 import { BoonType } from '../../enums/boon-type';
 import { CardType } from '../../enums/card-type';
+import { CombatantState } from '../../enums/combatant-state';
 import { CombatantType } from '../../enums/combatant-type';
 import { EncounterState } from '../../enums/encounter-state';
 
@@ -21,7 +22,7 @@ import type { EncounterModel } from '../../models/encounter';
 import type { FeatureModel } from '../../models/feature';
 import type { GameModel } from '../../models/game';
 import type { ItemModel } from '../../models/item';
-import type { RegionModel } from '../../models/campaign-map';
+import type { RegionModel } from '../../models/region';
 
 import { Utils } from '../../utils/utils';
 
@@ -92,6 +93,17 @@ export class Main extends Component<Props, State> {
 						c.combat.intents = null;
 					}
 				});
+
+				for (let n = 0; n !== game.encounter.combatants.length; ++n) {
+					const combatant = game.encounter.combatants[n];
+					if (combatant.type === CombatantType.Hero) {
+						const original = game.heroes.find(h => h.id === combatant.id);
+						if (original) {
+							original.combat = combatant.combat;
+							game.encounter.combatants[n] = original;
+						}
+					}
+				}
 			}
 		}
 
@@ -529,14 +541,17 @@ export class Main extends Component<Props, State> {
 		switch (state) {
 			case EncounterState.Victory: {
 				// Remove dead heroes from the game
-				const deadHeroes = EncounterLogic.getDeadHeroes(encounter);
+				const deadHeroes = encounter.combatants.filter(c => c.type === CombatantType.Hero).filter(h => h.combat.state === CombatantState.Dead);
 				game.heroes = game.heroes.filter(h => !deadHeroes.includes(h));
 				// Get equipment from dead heroes, add to game items
 				deadHeroes.forEach(h => game.items.push(...h.items));
 				// Get equipment from loot piles, add to game items
 				encounter.loot.forEach(lp => game.items.push(...lp.items));
 				// Increment XP for surviving heroes
-				EncounterLogic.getSurvivingHeroes(encounter).forEach(h => h.xp += 1);
+				encounter.combatants
+					.filter(c => c.type === CombatantType.Hero)
+					.filter(h => (h.combat.state === CombatantState.Standing) || (h.combat.state === CombatantState.Prone))
+					.forEach(h => h.xp += 1);
 				// Remove the first encounter for this region
 				region.encounters.splice(0, 1);
 				if (region.encounters.length === 0) {
@@ -578,7 +593,7 @@ export class Main extends Component<Props, State> {
 			}
 			case EncounterState.Defeat: {
 				// Remove all participating heroes from the game
-				const heroes = EncounterLogic.getAllHeroesInEncounter(encounter);
+				const heroes = encounter.combatants.filter(c => c.type === CombatantType.Hero);
 				game.heroes = game.heroes.filter(h => !heroes.includes(h));
 				// Clear the current encounter
 				game.encounter = null;
@@ -597,7 +612,9 @@ export class Main extends Component<Props, State> {
 			}
 			case EncounterState.Retreat: {
 				// Remove fallen heroes from the game
-				const fallenHeroes = EncounterLogic.getFallenHeroes(encounter);
+				const fallenHeroes = encounter.combatants
+					.filter(c => c.type === CombatantType.Hero)
+					.filter(h => (h.combat.state === CombatantState.Dead) || (h.combat.state === CombatantState.Unconscious));
 				game.heroes = game.heroes.filter(h => !fallenHeroes.includes(h));
 				// Clear the current encounter
 				game.encounter = null;

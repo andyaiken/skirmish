@@ -6,7 +6,7 @@ import type { CombatantModel } from '../../../models/combatant';
 import type { FeatureModel } from '../../../models/feature';
 import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
-import type { RegionModel } from '../../../models/campaign-map';
+import type { RegionModel } from '../../../models/region';
 
 import { Selector } from '../../controls';
 

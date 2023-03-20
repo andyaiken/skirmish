@@ -1,0 +1,152 @@
+.encounter-map-mini-token {
+	aspect-ratio: 1 / 1;
+	position: absolute;
+	border-radius: 50%;
+	background-color: black;
+
+	.mini-token-face {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		transform: scale(0.9);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 50%;
+		background: rgb(150, 150, 150);
+		color: white;
+		font-weight: 600;
+		z-index: 40;
+
+		&.current {
+			background: rgb(255, 255, 255) !important;
+			color: rgb(0, 0, 0) !important;
+			pointer-events: none;
+		}
+	}
+
+	&.hero {
+		background-color: rgb(0, 70, 0);
+
+		.mini-token-face {
+			background: radial-gradient(rgb(0, 150, 0), rgb(0, 100, 0));
+		}
+	}
+
+	&.monster {
+		background-color: rgb(100, 0, 0);
+
+		.mini-token-face {
+			background: radial-gradient(rgb(240, 0, 0), rgb(220, 0, 0));
+		}
+	}
+
+	.health-bar {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		background-color: rgb(200, 200, 200);
+		z-index: 100;
+
+		.health-bar-gauge {
+			background-color: rgb(150, 0, 24);
+			height: 100%;
+		}
+	}
+
+	.pulse {
+		position: absolute;
+		top: 5%;
+		left: 5%;
+		right: 5%;
+		bottom: 5%;
+		border: 1px solid rgb(60, 170, 255);
+		border-radius: 50%;
+		background: rgb(60, 170, 255);
+		pointer-events: none;
+
+		&.pulse-one {
+			z-index: 30;
+			opacity: 0.6;
+			animation: 2s linear 1s infinite backwards pulse-1;
+		}
+
+		&.pulse-two {
+			z-index: 20;
+			opacity: 0.7;
+			animation: 2s linear 1s infinite backwards pulse-2;
+		}
+
+		&.pulse-three {
+			z-index: 10;
+			opacity: 0.8;
+			animation: 2s linear 1s infinite backwards pulse-3;
+		}
+	}
+
+	&.selectable:not(.selected) {
+		&:hover {
+			background-color: rgb(60, 170, 255);
+		}
+	}
+
+	&.selected {
+		outline: 3px solid rgb(60, 170, 255);
+	}
+
+	&:not(.selectable) {
+		opacity: 0.3;
+		pointer-events: none;
+	}
+}
+
+@keyframes pulse-1 {
+	10% {
+		transform: scale(1);
+	}
+
+	70% {
+		transform: scale(5);
+		opacity: 0;
+	}
+
+	100% {
+		transform: scale(1);
+		opacity: 0;
+	}
+}
+
+@keyframes pulse-2 {
+	30% {
+		transform: scale(1);
+	}
+
+	80% {
+		transform: scale(5);
+		opacity: 0;
+	}
+
+	100% {
+		transform: scale(1);
+		opacity: 0;
+	}
+}
+
+@keyframes pulse-3 {
+	50% {
+		transform: scale(1);
+	}
+
+	90% {
+		transform: scale(5);
+		opacity: 0;
+	}
+
+	100% {
+		transform: scale(1);
+		opacity: 0;
+	}
+}

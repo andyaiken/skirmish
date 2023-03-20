@@ -888,7 +888,7 @@ export class ActionEffects {
 						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
 						log(`${combatant.name} commands ${target.name} to attack`);
 						target.combat.actions = CombatantLogic.getActionDeck(target).filter(action => ActionLogic.getActionType(action) === 'Attack');
-						EncounterLogic.checkActionParameters(encounter, target);
+						EncounterLogic.checkActionParameters(encounter, target, (combatant.type !== target.type));
 						const intents = IntentsLogic.getAttackIntents(encounter, target);
 						if (intents.length > 0) {
 							target.combat.intents = Collections.draw(intents);
@@ -1061,8 +1061,7 @@ export class ActionEffects {
 						const items = target.items.filter(i => i.location === ItemLocationType.Hand);
 						if (items.length > 0) {
 							const item = Collections.draw(items);
-							target.items.filter(i => i !== item);
-							target.carried.filter(i => i !== item);
+							target.items = target.items.filter(i => i.id !== item.id);
 							const squares = EncounterMapLogic.getAdjacentSquares(encounter.mapSquares, EncounterLogic.getCombatantSquares(encounter, target))
 								.filter(square => EncounterLogic.getSquareIsEmpty(encounter, square));
 							if (squares.length > 0) {
@@ -1088,10 +1087,10 @@ export class ActionEffects {
 						const items = ([] as ItemModel[]).concat(target.items).concat(target.carried);
 						if (items.length > 0) {
 							const item = Collections.draw(items);
-							target.items.filter(i => i !== item);
-							target.carried.filter(i => i !== item);
+							target.items = target.items.filter(i => i.id !== item.id);
+							target.carried = target.carried.filter(i => i.id !== item.id);
 							combatant.carried.push(item);
-							log(`${target.name} has lost ${item.name}`);
+							log(`${combatant.name} has stolen ${item.name} from ${target.name}`);
 						}
 					});
 				}
@@ -1353,13 +1352,13 @@ export class ActionLogic {
 		parameter.value = value;
 	};
 
-	static checkTargetParameter = (parameter: ActionTargetParameterModel, encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => {
+	static checkTargetParameter = (parameter: ActionTargetParameterModel, encounter: EncounterModel, combatant: CombatantModel, action: ActionModel, invertTargets: boolean) => {
 		const candidates: (string | { x: number, y: number })[] = [];
 		let value = parameter.value as (string | { x: number, y: number })[] ?? [];
 
 		if (parameter.range.type === ActionRangeType.Self) {
 			candidates.push(combatant.id);
-			value.push(combatant.id);
+			value = [ combatant.id ];
 		} else {
 			const radius = ActionLogic.getActionRange(action);
 
@@ -1396,7 +1395,7 @@ export class ActionLogic {
 								.filter(c => c.id !== combatant.id)
 								.filter(c => c.combat.state !== CombatantState.Dead)
 								.filter(c => combatant.combat.senses >= c.combat.hidden)
-								.filter(c => c.type !== combatant.type)
+								.filter(c => invertTargets ? c.type === combatant.type : c.type !== combatant.type)
 								.filter(c => EncounterMapLogic.canSeeAny(edges, originSquares, EncounterLogic.getCombatantSquares(encounter, c)))
 								.sort((a, b) => {
 									const squaresCombatant = EncounterLogic.getCombatantSquares(encounter, combatant);
@@ -1415,7 +1414,7 @@ export class ActionLogic {
 								.filter(c => c.id !== combatant.id)
 								.filter(c => c.combat.state !== CombatantState.Dead)
 								.filter(c => combatant.combat.senses >= c.combat.hidden)
-								.filter(c => c.type === combatant.type)
+								.filter(c => invertTargets ? c.type !== combatant.type : c.type === combatant.type)
 								.filter(c => EncounterMapLogic.canSeeAny(edges, originSquares, EncounterLogic.getCombatantSquares(encounter, c)))
 								.sort((a, b) => {
 									const squaresCombatant = EncounterLogic.getCombatantSquares(encounter, combatant);
@@ -1452,13 +1451,11 @@ export class ActionLogic {
 				}
 
 				if (parameter.targets.count === Number.MAX_VALUE) {
-					value = [];
-					value.push(...candidates);
+					value = [ ...candidates ];
 				} else {
 					if (candidates.length > 0) {
 						if ((value.length === 0) || value.some(v => !candidates.includes(v))) {
-							value = [];
-							value.push(...candidates.slice(0, parameter.targets.count));
+							value = [ ...candidates.slice(0, parameter.targets.count) ];
 						}
 					}
 				}

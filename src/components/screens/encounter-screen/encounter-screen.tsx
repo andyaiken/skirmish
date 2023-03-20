@@ -3,6 +3,7 @@ import { Component } from 'react';
 
 import { ActionTargetType } from '../../../enums/action-target-type';
 import { CardType } from '../../../enums/card-type';
+import { CombatantState } from '../../../enums/combatant-state';
 import { CombatantType } from '../../../enums/combatant-type';
 import { EncounterState } from '../../../enums/encounter-state';
 import { TraitType } from '../../../enums/trait-type';
@@ -15,7 +16,7 @@ import type { EncounterModel, LootPileModel } from '../../../models/encounter';
 import type { CombatantModel } from '../../../models/combatant';
 import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
-import type { RegionModel } from '../../../models/campaign-map';
+import type { RegionModel } from '../../../models/region';
 
 import { CardList, Dialog, PlayingCard, Text, TextType } from '../../controls';
 import { CharacterSheetPanel, EncounterMapPanel, InitiativeListPanel, TurnLogPanel } from '../../panels';
@@ -199,7 +200,7 @@ export class EncounterScreen extends Component<Props, State> {
 					const combatant = this.props.encounter.combatants.find(c => c.combat.current) as CombatantModel;
 					const action = combatant.combat.actions[0];
 					const targetParam = action.parameters.find(a => a.id === 'targets') as ActionTargetParameterModel;
-					ActionLogic.checkTargetParameter(targetParam, this.props.encounter, combatant, action);
+					ActionLogic.checkTargetParameter(targetParam, this.props.encounter, combatant, action, false);
 				}
 
 				this.setState({
@@ -572,10 +573,36 @@ export class EncounterScreen extends Component<Props, State> {
 
 		let content = null;
 		let footer = null;
-		if (currentCombatant.combat.stunned) {
+		if (currentCombatant.combat.state === CombatantState.Dead) {
 			content = (
 				<div>
-					<Text type={TextType.Information}><b>{currentCombatant.name} is Stunned.</b> They cannot spend movement points or take any actions.</Text>
+					<Text type={TextType.Information}><b>{currentCombatant.name} is Dead.</b> They cannot spend movement points or take any actions.</Text>
+				</div>
+			);
+			footer = (
+				<div>
+					<button onClick={() => this.endTurn(this.props.encounter)}>End Turn</button>
+				</div>
+			);
+		} else if (currentCombatant.combat.state === CombatantState.Unconscious) {
+			content = (
+				<div>
+					<Text type={TextType.Information}><b>{currentCombatant.name} is Unconscious.</b> They cannot spend movement points or take any actions until their wounds are healed.</Text>
+				</div>
+			);
+			footer = (
+				<div>
+					<button onClick={() => this.endTurn(this.props.encounter)}>End Turn</button>
+				</div>
+			);
+		} else if (currentCombatant.combat.stunned) {
+			content = (
+				<div>
+					<Text type={TextType.Information}><b>{currentCombatant.name} is Stunned.</b> They cannot spend movement points or take any actions this round.</Text>
+				</div>
+			);
+			footer = (
+				<div>
 					<button onClick={() => this.endTurn(this.props.encounter)}>End Turn</button>
 				</div>
 			);

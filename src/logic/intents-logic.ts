@@ -92,7 +92,7 @@ export class IntentsLogic {
 		options.push(...IntentsLogic.getAttackIntents(encounter, combatant));
 
 		const hide = EncounterLogic.getSkillRank(encounter, combatant, SkillType.Stealth);
-		if ((hide > 0) && (combatant.combat.movement >= 4)) {
+		if ((hide > 0) && (combatant.combat.hidden === 0) && (combatant.combat.movement >= 4)) {
 			options.push({
 				description: 'Hide',
 				intents: [ Intents.hide() ],
@@ -374,7 +374,8 @@ export class IntentsLogic {
 				}
 				case 'action': {
 					const action = intent.data as ActionModel;
-					EncounterLogic.selectAction(encounter, combatant, action);
+					// EncounterLogic.selectAction(encounter, combatant, action);
+					combatant.combat.actions = [ action ];
 					EncounterLogic.runAction(encounter, combatant);
 					break;
 				}

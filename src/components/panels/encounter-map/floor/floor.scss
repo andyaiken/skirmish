@@ -1,0 +1,31 @@
+.encounter-map-square {
+	aspect-ratio: 1 / 1;
+	position: absolute;
+	border: 0.5px solid rgb(240, 240, 240);
+	background-color: rgb(255, 255, 255);
+
+	&.obstructed {
+		background-color: rgb(220, 220, 220);
+	}
+
+	&.wall {
+		background-color: rgb(50, 50, 50);
+		border-color: rgb(80, 80, 80);
+	}
+
+	&.selectable {
+		border-color: rgb(60, 170, 255);
+		background-color: rgb(200, 230, 255);
+		cursor: pointer;
+
+		&:hover {
+			outline: 3px solid rgb(60, 170, 255);
+			z-index: 100;
+		}
+	}
+
+	&.selected {
+		background-color: rgb(60, 170, 255);
+		z-index: 100;
+	}
+}

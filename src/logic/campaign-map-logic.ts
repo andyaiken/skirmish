@@ -1,4 +1,5 @@
-import type { CampaignMapModel, CampaignMapSquareModel, RegionModel } from '../models/campaign-map';
+import type { CampaignMapModel, CampaignMapSquareModel } from '../models/campaign-map';
+import type { RegionModel } from '../models/region';
 
 import { Collections } from '../utils/collections';
 import { Random } from '../utils/random';
@@ -111,6 +112,7 @@ export class CampaignMapLogic {
 				'Plains',
 				'Plateaus',
 				'Rainforest',
+				'Riverlands',
 				'Salt flats',
 				'Scrubland',
 				'Steppe',

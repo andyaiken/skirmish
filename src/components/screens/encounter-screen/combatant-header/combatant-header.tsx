@@ -21,24 +21,35 @@ interface Props {
 }
 
 export class CombatantHeader extends Component<Props> {
-	render = () => {
-		let tabs = null;
-		if (this.props.combatant.type === CombatantType.Hero) {
-			const options = [
-				{ id: 'overview', display: 'Overview' },
-				{ id: 'move', display: 'Move' },
-				{ id: 'action', display: 'Action' }
-			];
-
-			tabs = (
-				<Tabs
-					options={options}
-					selectedID={this.props.tabID}
-					onSelect={this.props.onSelectTab}
-				/>
-			);
+	getTabs = () => {
+		if (this.props.combatant.type === CombatantType.Monster) {
+			return null;
 		}
 
+		if ((this.props.combatant.combat.state === CombatantState.Dead) || (this.props.combatant.combat.state === CombatantState.Unconscious)) {
+			return null;
+		}
+
+		if (this.props.combatant.combat.stunned) {
+			return null;
+		}
+
+		const options = [
+			{ id: 'overview', display: 'Overview' },
+			{ id: 'move', display: 'Move' },
+			{ id: 'action', display: 'Action' }
+		];
+
+		return (
+			<Tabs
+				options={options}
+				selectedID={this.props.tabID}
+				onSelect={this.props.onSelectTab}
+			/>
+		);
+	};
+
+	render = () => {
 		return (
 			<div className='combatant-header'>
 				<div className='header-row'>
@@ -65,7 +76,7 @@ export class CombatantHeader extends Component<Props> {
 						<Text type={TextType.Information}><b>{this.props.combatant.name} is Hidden.</b> Their moving costs are doubled.</Text>
 						: null
 				}
-				{tabs}
+				{this.getTabs()}
 			</div>
 		);
 	};

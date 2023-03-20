@@ -7,8 +7,15 @@
 
 ## Priority
 
+* You shouldn't be able to buy magic items until you control a region
+* Regions should specify monster types found there
+  * This should then be used for 
 * Encounters:
   * Allow the user to opt for a universal action instead
+* Add a Presence (mental) skill
+  * Used for intimidate, taunt, etc
+  * Used (like Hide, Scan) to give a morale bonus to nearby allies
+    * Need to rename the Boost Morale action
 * Add a system for evaluating each action to ensure none is too powerful
   * Then extend this to ensure species / roles / backgrounds are equally matched
 * Add help / documentation to explain game rules

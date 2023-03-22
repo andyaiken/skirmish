@@ -122,6 +122,77 @@ export class RoleData {
 				]
 			},
 			{
+				id: 'role-assassin',
+				name: 'Assassin',
+				traits: [
+					TraitType.Speed
+				],
+				skills: [
+					SkillType.Stealth,
+					SkillType.Weapon
+				],
+				proficiencies: [
+					ItemProficiencyType.PairedWeapons
+				],
+				features: [
+					FeatureLogic.createTraitFeature('assassin-feature-1', TraitType.Speed, 1),
+					FeatureLogic.createSkillFeature('assassin-feature-2', SkillType.Stealth, 2),
+					FeatureLogic.createSkillFeature('assassin-feature-3', SkillType.Weapon, 2),
+					FeatureLogic.createDamageBonusFeature('assassin-feature-4', DamageType.Poison, 1)
+				],
+				actions: [
+					{
+						id: 'assassin-action-1',
+						name: 'Poison Strike',
+						prerequisites: [
+							ActionPrerequisites.meleeWeapon()
+						],
+						parameters: [
+							ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+						],
+						effects: [
+						]
+					},
+					{
+						id: 'assassin-action-2',
+						name: 'Vanish',
+						prerequisites: [
+							ActionPrerequisites.meleeWeapon()
+						],
+						parameters: [
+							ActionTargetParameters.self()
+						],
+						effects: [
+							ActionEffects.hide(),
+							ActionEffects.redrawActions()
+						]
+					},
+					{
+						id: 'assassin-action-3',
+						name: 'Sneak Attack',
+						prerequisites: [
+							ActionPrerequisites.meleeWeapon(),
+							ActionPrerequisites.hidden()
+						],
+						parameters: [
+							ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: true,
+								skill: SkillType.Weapon,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealWeaponDamage(2),
+									ActionEffects.dealDamage(DamageType.Poison, 2)
+								]
+							})
+						]
+					}
+				]
+			},
+			{
 				id: 'role-barbarian',
 				name: 'Barbarian',
 				traits: [
@@ -484,6 +555,19 @@ export class RoleData {
 						effects: [
 							ActionEffects.addCondition(ConditionLogic.createDamagePenaltyCondition(TraitType.Endurance, 5, DamageType.All))
 						]
+					},
+					{
+						id: 'enchanter-action-6',
+						name: 'Cloak',
+						prerequisites: [
+							ActionPrerequisites.implement()
+						],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 5)
+						],
+						effects: [
+							ActionEffects.hide()
+						]
 					}
 				]
 			},
@@ -547,7 +631,7 @@ export class RoleData {
 					},
 					{
 						id: 'geomancer-action-4',
-						name: 'Create Ground',
+						name: 'Raze',
 						prerequisites: [
 							ActionPrerequisites.implement()
 						],
@@ -980,17 +1064,6 @@ export class RoleData {
 					},
 					{
 						id: 'ninja-action-4',
-						name: 'Lightning Speed',
-						prerequisites: [],
-						parameters: [
-							ActionTargetParameters.self()
-						],
-						effects: [
-							ActionEffects.addMovement()
-						]
-					},
-					{
-						id: 'ninja-action-5',
 						name: 'Adrenal Boost',
 						prerequisites: [],
 						parameters: [
@@ -1149,6 +1222,108 @@ export class RoleData {
 									ActionEffects.dealWeaponDamage(2)
 								]
 							})
+						]
+					}
+				]
+			},
+			{
+				id: 'role-sensei',
+				name: 'Sensei',
+				traits: [
+					TraitType.Speed
+				],
+				skills: [
+					SkillType.Brawl
+				],
+				proficiencies: [],
+				features: [
+					FeatureLogic.createTraitFeature('sensei-feature-1', TraitType.Speed, 1),
+					FeatureLogic.createSkillFeature('sensei-feature-2', SkillType.Brawl, 2),
+					FeatureLogic.createDamageCategoryBonusFeature('sensei-feature-4', DamageCategoryType.Energy, 1)
+				],
+				actions: [
+					{
+						id: 'sensei-action-1',
+						name: 'Typhoon Step',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 3)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Endurance,
+								skillBonus: 2,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Impact, 1),
+									ActionEffects.forceMovement(MovementType.Push, 1),
+									ActionEffects.knockDown()
+								]
+							})
+						]
+					},
+					{
+						id: 'sensei-action-2',
+						name: 'Dragon Palm Technique',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Fire, 3)
+								]
+							})
+						]
+					},
+					{
+						id: 'sensei-action-3',
+						name: 'Kinetic Flow',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 3)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Endurance,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Impact, 2),
+									ActionEffects.forceMovement(MovementType.Swap, 0)
+								]
+							})
+						]
+					},
+					{
+						id: 'sensei-action-4',
+						name: 'Lightning Speed',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.self()
+						],
+						effects: [
+							ActionEffects.addMovement()
+						]
+					},
+					{
+						id: 'sensei-action-5',
+						name: 'Focus Chi',
+						prerequisites: [
+							ActionPrerequisites.condition(TraitType.Any)
+						],
+						parameters: [
+							ActionTargetParameters.self()
+						],
+						effects: [
+							ActionEffects.removeCondition(TraitType.Any)
 						]
 					}
 				]

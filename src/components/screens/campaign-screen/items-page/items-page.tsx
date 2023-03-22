@@ -63,7 +63,7 @@ export class ItemsPage extends Component<Props, State> {
 		if (this.props.game.boons.filter(boon => !GameLogic.getBoonIsHeroType(boon)).length > 0) {
 			const cards = this.props.game.boons
 				.filter(boon => !GameLogic.getBoonIsHeroType(boon))
-				.map(b => (<PlayingCard key={b.id} type={CardType.Boon} front={<BoonCard boon={b} />} onClick={() => this.props.redeemBoon(b, null)} />));
+				.map(b => (<PlayingCard key={b.id} type={CardType.Boon} front={<BoonCard boon={b} />} footer='Reward' onClick={() => this.props.redeemBoon(b, null)} />));
 			boons = (
 				<div>
 					<Text type={TextType.SubHeading}>Rewards ({cards.length})</Text>
@@ -137,12 +137,15 @@ export class ItemsPage extends Component<Props, State> {
 			);
 		}
 
+		const controlLand = this.props.game.map.squares.some(sq => sq.regionID === '');
+		const enoughMoney = (this.props.game.money >= 100);
 		const moneySection = (
 			<div>
 				<StatValue orientation='vertical' label='Money' value={<IconValue type={IconType.Money} value={this.props.game.money} />} />
-				<button disabled={this.props.game.money < 100} onClick={() => this.showMarket()}>
-					Buy a magic item<br/><IconValue type={IconType.Money} value={100} iconSize={12} />
+				<button disabled={!controlLand || !enoughMoney} onClick={() => this.showMarket()}>
+					Buy a magic item<br /><IconValue type={IconType.Money} value={100} iconSize={12} />
 				</button>
+				{!controlLand ? <Text type={TextType.Information}>You can&apos;t buy anything until you control part of the island.</Text> : null}
 				{this.props.developer ? <button className='developer' onClick={() => this.props.addMoney()}>Add money</button> : null}
 			</div>
 		);
@@ -154,6 +157,7 @@ export class ItemsPage extends Component<Props, State> {
 					key={item.id}
 					type={CardType.Item}
 					front={<ItemCard item={item} />}
+					footer='Item'
 					onClick={() => this.buyItem(item)}
 				/>
 			));

@@ -1,4 +1,4 @@
-import { UniversalData } from '../data/universal-data';
+import { BaseData } from '../data/base-data';
 
 import { CombatantState } from '../enums/combatant-state';
 import { CombatantType } from '../enums/combatant-type';
@@ -268,7 +268,7 @@ export class EncounterLogic {
 				break;
 			case CombatantType.Monster:
 				combatant.combat.actions = deck;
-				combatant.combat.actions.push(...UniversalData.getUniversalActions());
+				combatant.combat.actions.push(...BaseData.getBaseActions());
 				EncounterLogic.checkActionParameters(encounter, combatant);
 				break;
 		}
@@ -491,6 +491,8 @@ export class EncounterLogic {
 			if (result < combatant.combat.damage) {
 				EncounterLogic.wound(encounter, combatant, 1);
 			}
+		} else {
+			EncounterLogic.log(encounter, `${combatant.name} takes no damage`);
 		}
 
 		EncounterLogic.checkActionParameters(encounter, combatant);
@@ -537,6 +539,28 @@ export class EncounterLogic {
 		EncounterLogic.checkActionParameters(encounter, combatant);
 
 		EncounterLogic.log(encounter, `${combatant.name} is now ${combatant.combat.state}`);
+	};
+
+	static inspire = (encounter: EncounterModel, combatant: CombatantModel) => {
+		const rank = EncounterLogic.getSkillRank(encounter, combatant, SkillType.Presence);
+		const result = Random.dice(rank);
+
+		combatant.combat.movement -= 4;
+		if (result > 8) {
+			// Any allies you can see will be no longer stunned
+			const edges = EncounterMapLogic.getMapEdges(encounter.mapSquares);
+			const combatantSquares = EncounterLogic.getCombatantSquares(encounter, combatant);
+			encounter.combatants.filter(c => c.type === combatant.type).forEach(ally => {
+				const allySquares = EncounterLogic.getCombatantSquares(encounter, ally);
+				if (EncounterMapLogic.canSeeAny(edges, combatantSquares, allySquares)) {
+					ally.combat.stunned = false;
+				}
+			});
+		}
+
+		EncounterLogic.checkActionParameters(encounter, combatant);
+
+		EncounterLogic.log(encounter, `${combatant.name} rolls Presence (${rank}) and gets ${result}`);
 	};
 
 	static scan = (encounter: EncounterModel, combatant: CombatantModel) => {

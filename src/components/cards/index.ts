@@ -5,6 +5,7 @@ import { FeatureCard } from './feature-card/feature-card';
 import { HeroCard } from './hero-card/hero-card';
 import { ItemCard } from './item-card/item-card';
 import { PlaceholderCard } from './placeholder-card/placeholder-card';
+import { RegionCard } from './region-card/region-card';
 import { RoleCard } from './role-card/role-card';
 import { SpeciesCard } from './species-card/species-card';
 
@@ -16,6 +17,7 @@ export {
 	HeroCard,
 	ItemCard,
 	PlaceholderCard,
+	RegionCard,
 	RoleCard,
 	SpeciesCard
 };

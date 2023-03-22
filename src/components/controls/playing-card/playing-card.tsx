@@ -16,7 +16,7 @@ interface Props {
 	front: JSX.Element | string | null;
 	back: JSX.Element | string | null;
 	footer: JSX.Element | string | null;
-	footerType: CardType;
+	footerType: CardType | null;
 	display: PlayingCardSide;
 	onClick: (() => void) | null;
 }
@@ -24,10 +24,10 @@ interface Props {
 export class PlayingCard extends Component<Props> {
 	static defaultProps = {
 		stack: false,
-		type: 'default',
+		type: CardType.Default,
 		back: null,
 		footer: null,
-		footerType: 'default',
+		footerType: null,
 		display: PlayingCardSide.Front,
 		onClick: null
 	};
@@ -78,6 +78,7 @@ export class PlayingCard extends Component<Props> {
 
 		const hasFront = (this.props.front !== null) && (this.props.front !== '');
 		const hasFooter = (this.props.footer !== null) && (this.props.footer !== '');
+		const footerType = this.props.footerType || this.props.type;
 
 		return (
 			<div className={className} onClick={this.onClick}>
@@ -85,7 +86,7 @@ export class PlayingCard extends Component<Props> {
 				<div className='playing-card-inner'>
 					<div className={`playing-card-front ${this.props.type.toLowerCase()}`}>
 						{hasFront ? <div className='front-content'>{this.props.front}</div> : null }
-						{hasFooter ? <div className={`front-footer ${this.props.footerType.toLowerCase()}`}>{this.props.footer}</div> : null }
+						{hasFooter ? <div className={`front-footer ${footerType.toLowerCase()}`}>{this.props.footer}</div> : null }
 					</div>
 					<div className={`playing-card-back ${this.props.type.toLowerCase()}`}>
 						{this.props.back}

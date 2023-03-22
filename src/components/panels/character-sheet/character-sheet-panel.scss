@@ -21,18 +21,16 @@
 
 	.header {
 		flex: 0 0 auto;
-		border-bottom: 2px solid rgb(220, 220, 220);
-		margin-bottom: 20px;
+
+		.tags {
+			display: flex;
+			justify-content: center;
+			margin-bottom: 10px;
+		}
 	}
 
 	.content {
 		flex: 1 1 0;
 		overflow-y: auto;
-	}
-
-	.tags {
-		display: flex;
-		justify-content: center;
-		margin: 20px 0;
 	}
 }

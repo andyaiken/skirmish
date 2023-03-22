@@ -10,7 +10,7 @@ import type { CombatantModel } from '../../../../models/combatant';
 import type { GameModel } from '../../../../models/game';
 import type { RegionModel } from '../../../../models/region';
 
-import { BoonCard, HeroCard } from '../../../cards';
+import { BoonCard, HeroCard, RegionCard } from '../../../cards';
 import { CardList, Dialog, PlayingCard, Selector, StatValue, Tag, Text, TextType } from '../../../controls';
 import { CampaignMapPanel } from '../../../panels';
 
@@ -178,16 +178,13 @@ export class CampaignMapPage extends Component<Props, State> {
 			const heroesExist = this.props.game.heroes.filter(h => h.name !== '').length > 0;
 			sidebar = (
 				<div className='region'>
-					<Text type={TextType.SubHeading}>{this.state.selectedRegion.name}</Text>
-					<hr />
-					<StatValue label='Area' value={`${this.state.selectedRegion.demographics.size} sq mi`} />
-					<StatValue label='Population' value={`${this.state.selectedRegion.demographics.population},000`} />
-					<StatValue label='Terrain' value={this.state.selectedRegion.demographics.terrain} />
-					<StatValue label='Number of Encounters' value={this.state.selectedRegion.encounters.length} />
+					<div className='card'>
+						<PlayingCard type={CardType.Region} front={<RegionCard region={this.state.selectedRegion} />} footer='Region' />
+					</div>
 					<hr />
 					<Text>If you take control of {this.state.selectedRegion.name}, you will recieve:</Text>
 					<div className='boon'>
-						<PlayingCard type={CardType.Boon} front={<BoonCard boon={this.state.selectedRegion.boon} />} />
+						<PlayingCard type={CardType.Boon} front={<BoonCard boon={this.state.selectedRegion.boon} />} footer='Reward' />
 					</div>
 					<hr />
 					{canAttack ? null : <Text type={TextType.Information}>You can&apos;t attack {this.state.selectedRegion.name} because it&apos;s not on the coast or adjacent to your land.</Text>}
@@ -201,9 +198,8 @@ export class CampaignMapPage extends Component<Props, State> {
 			sidebar = (
 				<div>
 					<Text type={TextType.SubHeading}>The Island</Text>
-					<Text>This is the map of the island.</Text>
-					{owned.length > 0 ? <Text>The white area is land you already control.</Text> : null}
-					<Text>Select a region to learn more about it.</Text>
+					<Text>This is the map of the island. Select a region to learn more about it.</Text>
+					{owned.length > 0 ? <hr /> : null}
 					{owned.length > 0 ? <StatValue label='Controlled' value={`${Math.floor(100 * owned.length / this.props.game.map.squares.length)}%`} /> : null}
 				</div>
 			);

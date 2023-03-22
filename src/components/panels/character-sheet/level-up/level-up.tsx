@@ -21,7 +21,7 @@ import { FeatureCard, PlaceholderCard } from '../../../cards';
 import './level-up.scss';
 
 interface Props {
-	hero: CombatantModel;
+	combatant: CombatantModel;
 	features: FeatureModel[];
 	levelUp: (feature: FeatureModel) => void;
 }
@@ -62,8 +62,8 @@ export class LevelUp extends Component<Props, State> {
 						type={CardType.Feature}
 						front={<FeatureCard feature={(this.state.selectedFeature !== null) && (this.state.selectedFeature.id === feature.id) ? this.state.selectedFeature : feature} />}
 						back={<PlaceholderCard>Feature</PlaceholderCard>}
-						footer={CombatantLogic.getCardSource(this.props.hero, feature.id, 'feature')}
-						footerType={CombatantLogic.getCardSourceType(this.props.hero, feature.id, 'feature')}
+						footer={CombatantLogic.getCardSource(this.props.combatant, feature.id, 'feature')}
+						footerType={CombatantLogic.getCardSourceType(this.props.combatant, feature.id, 'feature')}
 						display={(this.state.selectedFeature !== null) && (this.state.selectedFeature.id !== feature.id) ? PlayingCardSide.Back : PlayingCardSide.Front}
 						onClick={(this.state.selectedFeature !== null) ? null : () => this.setState({ selectedFeature: feature })}
 					/>
@@ -74,14 +74,14 @@ export class LevelUp extends Component<Props, State> {
 		let choice = null;
 		let canFinish = false;
 		if (this.state.selectedFeature !== null) {
-			choice = FeatureLogic.hasChoice(this.state.selectedFeature) ? <ChoicePanel feature={this.state.selectedFeature} hero={this.props.hero} onChange={this.setFeature} /> : null;
+			choice = FeatureLogic.hasChoice(this.state.selectedFeature) ? <ChoicePanel feature={this.state.selectedFeature} hero={this.props.combatant} onChange={this.setFeature} /> : null;
 			canFinish = !FeatureLogic.hasChoice(this.state.selectedFeature);
 		}
 
 		return (
 			<div className='level-up'>
 				<div className='content'>
-					<Text type={TextType.SubHeading}>Choose a feature for level {this.props.hero.level + 1}</Text>
+					<Text type={TextType.SubHeading}>Choose a feature for level {this.props.combatant.level + 1}</Text>
 					<CardList cards={featureCards} />
 					{choice}
 				</div>
@@ -202,6 +202,7 @@ class ChoicePanel extends Component<ChoicePanelProps, ChoicePanelState> {
 							options={[
 								{ id: SkillType.Brawl },
 								{ id: SkillType.Perception },
+								{ id: SkillType.Presence },
 								{ id: SkillType.Reactions },
 								{ id: SkillType.Spellcasting },
 								{ id: SkillType.Stealth },

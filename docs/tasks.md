@@ -7,21 +7,23 @@
 
 ## Priority
 
-* You shouldn't be able to buy magic items until you control a region
-* Regions should specify monster types found there
-  * This should then be used for 
-* Encounters:
-  * Allow the user to opt for a universal action instead
-* Add a Presence (mental) skill
-  * Used for intimidate, taunt, etc
-  * Used (like Hide, Scan) to give a morale bonus to nearby allies
-    * Need to rename the Boost Morale action
 * Add a system for evaluating each action to ensure none is too powerful
   * Then extend this to ensure species / roles / backgrounds are equally matched
+  * Also check that the different effect types are all used
 * Add help / documentation to explain game rules
 
 ## Future Work
 
+* Add encounter map types
+  * Street
+  * Building interior
+* Regions could specify monster types found there
+  * This should then be used for building encounters
+* Improve the turn log
+  * It should be more than just a block of text
+  * Indentation
+  * Colours
+  * Highlighting names, values
 * Minions
   * Die as soon as they take any damage
   * Convert one monster into 4 minions
@@ -42,23 +44,23 @@
     * Poison dart traps
   * Action parameter selection / 'go' button / etc, should happen in the card itself
   * Indicate combatant's info on the map token / in the initiative list
-    * Damage
+    * Damage / wounds
     * Stunned
     * Standing / prone / unconscious
-    * Conditions exist
+    * Conditions exist (beneficial / not beneficial)
   * Allow other victory conditions
     * Get a certain number of heroes to a particular area
     * Get one hero to a particular area and stay there for a certain number of rounds
     * Defeat a specific opponent within a certain number of rounds
 * Dark mode
+* Sound effects
+* Action animations (fireball etc)
 * Undo movement
 
 ## Ideas for Species / Roles / Backgrounds
 
 * Mountebank, Thief, and Pixie should have an attack redirection aura
 * Gnome, Thief should be able to set / disable traps
-* Minotaur, Reptilian, and Shadowborn should be able to intimidate
-  * Use the same skill as the Noble's Taunt action
 * Deva should have the ability to see opponent character sheet
 * Shadowborn should be monster species
 * Necromancer should be monster role
@@ -92,12 +94,7 @@
     * Knight
     * Warrior
     * Warlord
-    * Grenadier
-    * Martial artist / sensei?
-      * Melee elemental attacks
-      * Ability to remove conditions on self
   * Thief types
-    * Assassin / poisoner
     * Bandit
     * Scout
     * Spy

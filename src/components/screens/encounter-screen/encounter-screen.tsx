@@ -40,6 +40,7 @@ interface Props {
 	move: (encounter: EncounterModel, combatant: CombatantModel, dir: string, cost: number) => void;
 	addMovement: (encounter: EncounterModel, combatant: CombatantModel, value: number) => void;
 	standUp: (encounter: EncounterModel, combatant: CombatantModel) => void;
+	inspire: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	scan: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	hide: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	drawActions: (encounter: EncounterModel, combatant: CombatantModel) => void;
@@ -631,6 +632,7 @@ export class EncounterScreen extends Component<Props, State> {
 								encounter={this.props.encounter}
 								developer={this.props.developer}
 								standUp={this.props.standUp}
+								inspire={this.props.inspire}
 								scan={this.props.scan}
 								hide={this.props.hide}
 							/>
@@ -712,7 +714,7 @@ export class EncounterScreen extends Component<Props, State> {
 				<Dialog
 					content={
 						<CharacterSheetPanel
-							hero={this.state.detailsCombatant}
+							combatant={this.state.detailsCombatant}
 							game={this.props.game}
 							developer={this.props.developer}
 							equipItem={this.props.equipItem}
@@ -732,7 +734,7 @@ export class EncounterScreen extends Component<Props, State> {
 					content={
 						<div>
 							<Text type={TextType.Heading}>Treasure</Text>
-							<CardList cards={this.state.detailsLoot.items.map(i => <PlayingCard key={i.id} type={CardType.Item} front={<ItemCard item={i} />} />)} />
+							<CardList cards={this.state.detailsLoot.items.map(i => <PlayingCard key={i.id} type={CardType.Item} front={<ItemCard item={i} />} footer='Item' />)} />
 						</div>
 					}
 					onClose={() => this.clearDetails()}

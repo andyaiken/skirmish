@@ -73,7 +73,7 @@ export class HeroesPage extends Component<Props, State> {
 		if (this.props.game.boons.filter(boon => GameLogic.getBoonIsHeroType(boon)).length > 0) {
 			const cards = this.props.game.boons
 				.filter(boon => GameLogic.getBoonIsHeroType(boon))
-				.map(b => (<PlayingCard key={b.id} type={CardType.Boon} front={<BoonCard boon={b} />} onClick={() => this.selectBoon(b)} />));
+				.map(b => (<PlayingCard key={b.id} type={CardType.Boon} front={<BoonCard boon={b} />} footer='Reward' onClick={() => this.selectBoon(b)} />));
 			boons = (
 				<div>
 					<Text type={TextType.SubHeading}>Rewards ({cards.length})</Text>
@@ -171,7 +171,7 @@ export class HeroesPage extends Component<Props, State> {
 					<Dialog
 						content={(
 							<CharacterSheetPanel
-								hero={this.state.selectedHero}
+								combatant={this.state.selectedHero}
 								game={this.props.game}
 								developer={this.props.developer}
 								equipItem={this.props.equipItem}

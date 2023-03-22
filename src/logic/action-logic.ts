@@ -429,6 +429,15 @@ export class ActionEffects {
 		};
 	};
 
+	static hide = (): ActionEffectModel => {
+		return {
+			id: 'hide',
+			description: 'Hide',
+			data: null,
+			children: []
+		};
+	};
+
 	static reveal = (): ActionEffectModel => {
 		return {
 			id: 'reveal',
@@ -801,6 +810,18 @@ export class ActionEffects {
 						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
 						target.combat.stunned = true;
 						log(`${target.name} is stunned`);
+					});
+				}
+				break;
+			}
+			case 'hide': {
+				const targetParameter = parameters.find(p => p.id === 'targets');
+				if (targetParameter) {
+					const targetIDs = targetParameter.value as string[];
+					targetIDs.forEach(id => {
+						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
+						EncounterLogic.hide(encounter, target);
+						log(`${target.name} hides`);
 					});
 				}
 				break;

@@ -18,6 +18,7 @@ interface Props {
 	encounter: EncounterModel;
 	developer: boolean;
 	standUp: (encounter: EncounterModel, combatant: CombatantModel) => void;
+	inspire: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	scan: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	hide: (encounter: EncounterModel, combatant: CombatantModel) => void;
 }
@@ -41,20 +42,23 @@ export class CombatantOverview extends Component<Props> {
 					encounter={this.props.encounter}
 				/>
 				{auraSection}
+				{
+					this.props.combatant.combat.state === CombatantState.Prone ?
+						<button disabled={this.props.combatant.combat.movement < 8} onClick={() => this.props.standUp(this.props.encounter, this.props.combatant)}>
+							Stand Up<br /><IconValue value={8} type={IconType.Movement} iconSize={12} />
+						</button>
+						: null
+				}
 				<div className='quick-actions'>
+					<button disabled={this.props.combatant.combat.movement < 4} onClick={() => this.props.inspire(this.props.encounter, this.props.combatant)}>
+						Inspire<br /><IconValue value={4} type={IconType.Movement} iconSize={12} />
+					</button>
 					<button disabled={this.props.combatant.combat.movement < 4} onClick={() => this.props.scan(this.props.encounter, this.props.combatant)}>
-						Scan<br/><IconValue value={4} type={IconType.Movement} iconSize={12} />
+						Scan<br /><IconValue value={4} type={IconType.Movement} iconSize={12} />
 					</button>
 					<button disabled={this.props.combatant.combat.movement < 4} onClick={() => this.props.hide(this.props.encounter, this.props.combatant)}>
-						Hide<br/><IconValue value={4} type={IconType.Movement} iconSize={12} />
+						Hide<br /><IconValue value={4} type={IconType.Movement} iconSize={12} />
 					</button>
-					{
-						this.props.combatant.combat.state === CombatantState.Prone ?
-							<button disabled={this.props.combatant.combat.movement < 8} onClick={() => this.props.standUp(this.props.encounter, this.props.combatant)}>
-								Stand Up<br/><IconValue value={8} type={IconType.Movement} iconSize={12} />
-							</button>
-							: null
-					}
 				</div>
 			</div>
 		);

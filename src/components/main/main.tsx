@@ -110,7 +110,7 @@ export class Main extends Component<Props, State> {
 		this.state = {
 			screen: ScreenType.Landing,
 			game: game,
-			developer: (window.location.href.includes('localhost')),
+			developer: window.location.href.includes('localhost'),
 			dialog: null
 		};
 	}
@@ -391,6 +391,14 @@ export class Main extends Component<Props, State> {
 		});
 	};
 
+	inspire = (encounter: EncounterModel, combatant: CombatantModel) => {
+		EncounterLogic.inspire(encounter, combatant);
+
+		this.setState({
+			game: this.state.game
+		});
+	};
+
 	scan = (encounter: EncounterModel, combatant: CombatantModel) => {
 		EncounterLogic.scan(encounter, combatant);
 
@@ -579,7 +587,7 @@ export class Main extends Component<Props, State> {
 								<Text type={TextType.SubHeading}>You have taken control of {region.name}!</Text>
 								<Text>You can recruit a new hero, and you have earned a reward:</Text>
 								<div className='boon-panel'>
-									<PlayingCard type={CardType.Boon} front={<BoonCard boon={region.boon} />} />
+									<PlayingCard type={CardType.Boon} front={<BoonCard boon={region.boon} />} footer='Reward' />
 								</div>
 								<Text>Any heroes who died have been lost.</Text>
 								<button onClick={() => this.setScreen(ScreenType.Campaign)}>OK</button>
@@ -677,6 +685,7 @@ export class Main extends Component<Props, State> {
 						move={this.move}
 						addMovement={this.addMovement}
 						standUp={this.standUp}
+						inspire={this.inspire}
 						scan={this.scan}
 						hide={this.hide}
 						drawActions={this.drawActions}

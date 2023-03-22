@@ -16,7 +16,7 @@ import { Collections } from '../../../utils/collections';
 import { Utils } from '../../../utils/utils';
 
 import { ActionCard, FeatureCard } from '../../cards';
-import { CardList, PlayingCard, Selector, Tag, Text, TextType } from '../../controls';
+import { CardList, PlayingCard, Tabs, Tag, Text, TextType } from '../../controls';
 import { Items } from './items/items';
 import { LevelUp } from './level-up/level-up';
 import { Stats } from './stats/stats';
@@ -26,14 +26,14 @@ import './character-sheet-panel.scss';
 type ViewType = 'actions' | 'features' | 'items' | 'stats';
 
 interface Props {
-	hero: CombatantModel;
+	combatant: CombatantModel;
 	game: GameModel;
 	developer: boolean;
-	equipItem: (item: ItemModel, hero: CombatantModel) => void;
-	unequipItem: (item: ItemModel, hero: CombatantModel) => void;
-	pickUpItem: (item: ItemModel, hero: CombatantModel) => void;
-	dropItem: (item: ItemModel, hero: CombatantModel) => void;
-	levelUp: (feature: FeatureModel, hero: CombatantModel) => void;
+	equipItem: (item: ItemModel, combatant: CombatantModel) => void;
+	unequipItem: (item: ItemModel, combatant: CombatantModel) => void;
+	pickUpItem: (item: ItemModel, combatant: CombatantModel) => void;
+	dropItem: (item: ItemModel, combatant: CombatantModel) => void;
+	levelUp: (feature: FeatureModel, combatant: CombatantModel) => void;
 }
 
 interface State {
@@ -46,16 +46,16 @@ export class CharacterSheetPanel extends Component<Props, State> {
 		super(props);
 		this.state = {
 			view: 'stats',
-			features: this.drawFeatures(props.hero)
+			features: this.drawFeatures(props.combatant)
 		};
 	}
 
-	drawFeatures = (hero: CombatantModel) => {
-		const features = CombatantLogic.getFeatureDeck(hero)
+	drawFeatures = (combatant: CombatantModel) => {
+		const features = CombatantLogic.getFeatureDeck(combatant)
 			.filter(feature => {
 				// Make sure we can select this feature
 				if (feature.type === FeatureType.Proficiency) {
-					const profs = CombatantLogic.getProficiencies(hero);
+					const profs = CombatantLogic.getProficiencies(combatant);
 					if (profs.length <= 9) {
 						// We already have all proficiencies
 						return false;
@@ -71,33 +71,33 @@ export class CharacterSheetPanel extends Component<Props, State> {
 	};
 
 	equipItem = (item: ItemModel) => {
-		this.props.equipItem(item, this.props.hero);
+		this.props.equipItem(item, this.props.combatant);
 	};
 
 	unequipItem = (item: ItemModel) => {
-		this.props.unequipItem(item, this.props.hero);
+		this.props.unequipItem(item, this.props.combatant);
 	};
 
 	dropItem = (item: ItemModel) => {
-		this.props.dropItem(item, this.props.hero);
+		this.props.dropItem(item, this.props.combatant);
 	};
 
 	pickUpItem = (item: ItemModel) => {
-		this.props.pickUpItem(item, this.props.hero);
+		this.props.pickUpItem(item, this.props.combatant);
 	};
 
 	levelUp = (feature: FeatureModel) => {
 		this.setState({
-			features: this.drawFeatures(this.props.hero)
+			features: this.drawFeatures(this.props.combatant)
 		}, () => {
 			const copy = JSON.parse(JSON.stringify(feature)) as FeatureModel;
 			copy.id = Utils.guid();
-			this.props.levelUp(copy, this.props.hero);
+			this.props.levelUp(copy, this.props.combatant);
 		});
 	};
 
 	render = () => {
-		const cutDown = (this.props.hero.type === CombatantType.Monster) && !this.props.developer;
+		const cutDown = (this.props.combatant.type === CombatantType.Monster) && !this.props.developer;
 
 		const options = [
 			{ id: 'stats', display: 'Statistics' },
@@ -113,7 +113,7 @@ export class CharacterSheetPanel extends Component<Props, State> {
 			case 'stats':
 				content = (
 					<Stats
-						hero={this.props.hero}
+						combatant={this.props.combatant}
 						encounter={this.props.game.encounter}
 						developer={this.props.developer}
 					/>
@@ -122,7 +122,7 @@ export class CharacterSheetPanel extends Component<Props, State> {
 			case 'items':
 				content = (
 					<Items
-						hero={this.props.hero}
+						combatant={this.props.combatant}
 						game={this.props.game}
 						equipItem={this.equipItem}
 						unequipItem={this.unequipItem}
@@ -132,26 +132,26 @@ export class CharacterSheetPanel extends Component<Props, State> {
 				);
 				break;
 			case 'features':
-				content = <FeaturesPage hero={this.props.hero} />;
+				content = <FeaturesPage combatant={this.props.combatant} />;
 				break;
 			case 'actions':
-				content = <ActionsPage hero={this.props.hero} />;
+				content = <ActionsPage combatant={this.props.combatant} />;
 				break;
 		}
 
 		let selector = null;
 		let sidebar = null;
-		if (this.props.hero.xp >= this.props.hero.level) {
+		if (this.props.combatant.xp >= this.props.combatant.level) {
 			sidebar = (
 				<div className='sidebar-section'>
-					<LevelUp hero={this.props.hero} features={this.state.features} levelUp={this.levelUp} />
+					<LevelUp combatant={this.props.combatant} features={this.state.features} levelUp={this.levelUp} />
 				</div>
 			);
 		} else {
 			selector = (
-				<Selector
-					selectedID={this.state.view}
+				<Tabs
 					options={options}
+					selectedID={this.state.view}
 					onSelect={id => this.setState({ view: id as ViewType })}
 				/>
 			);
@@ -161,12 +161,12 @@ export class CharacterSheetPanel extends Component<Props, State> {
 			<div className='character-sheet-panel'>
 				<div className='main-section'>
 					<div className='header'>
-						<Text type={TextType.Heading}>{this.props.hero.name || 'unnamed hero'}</Text>
+						<Text type={TextType.Heading}>{this.props.combatant.name || 'unnamed hero'}</Text>
 						<div className='tags'>
-							<Tag>{GameLogic.getSpecies(this.props.hero.speciesID)?.name ?? 'Unknown species'}</Tag>
-							<Tag>{GameLogic.getRole(this.props.hero.roleID)?.name ?? 'Unknown role'}</Tag>
-							<Tag>{GameLogic.getBackground(this.props.hero.backgroundID)?.name ?? 'Unknown background'}</Tag>
-							<Tag>Level {this.props.hero.level}</Tag>
+							<Tag>{GameLogic.getSpecies(this.props.combatant.speciesID)?.name ?? 'Unknown species'}</Tag>
+							<Tag>{GameLogic.getRole(this.props.combatant.roleID)?.name ?? 'Unknown role'}</Tag>
+							<Tag>{GameLogic.getBackground(this.props.combatant.backgroundID)?.name ?? 'Unknown background'}</Tag>
+							<Tag>Level {this.props.combatant.level}</Tag>
 						</div>
 					</div>
 					{selector}
@@ -181,19 +181,19 @@ export class CharacterSheetPanel extends Component<Props, State> {
 }
 
 interface FeaturesPageProps {
-	hero: CombatantModel;
+	combatant: CombatantModel;
 }
 
 class FeaturesPage extends Component<FeaturesPageProps> {
 	render = () => {
-		const featureCards = CombatantLogic.getFeatureDeck(this.props.hero).map(feature => {
+		const featureCards = CombatantLogic.getFeatureDeck(this.props.combatant).map(feature => {
 			return (
 				<PlayingCard
 					key={feature.id}
 					type={CardType.Feature}
 					front={<FeatureCard feature={feature} />}
-					footer={CombatantLogic.getCardSource(this.props.hero, feature.id, 'feature')}
-					footerType={CombatantLogic.getCardSourceType(this.props.hero, feature.id, 'feature')}
+					footer={CombatantLogic.getCardSource(this.props.combatant, feature.id, 'feature')}
+					footerType={CombatantLogic.getCardSourceType(this.props.combatant, feature.id, 'feature')}
 				/>
 			);
 		});
@@ -201,7 +201,7 @@ class FeaturesPage extends Component<FeaturesPageProps> {
 		return (
 			<div className='features-page'>
 				<div className='column'>
-					<Text>Each time {this.props.hero.name} levels up, they get to choose one of these features.</Text>
+					<Text>Each time {this.props.combatant.name} levels up, they get to choose one of these features.</Text>
 					<CardList cards={featureCards} />
 				</div>
 			</div>
@@ -210,19 +210,19 @@ class FeaturesPage extends Component<FeaturesPageProps> {
 }
 
 interface ActionsPageProps {
-	hero: CombatantModel;
+	combatant: CombatantModel;
 }
 
 class ActionsPage extends Component<ActionsPageProps> {
 	render = () => {
-		const actionCards = CombatantLogic.getActionDeck(this.props.hero).map(action => {
+		const actionCards = CombatantLogic.getActionDeck(this.props.combatant).map(action => {
 			return (
 				<PlayingCard
 					key={action.id}
 					type={CardType.Action}
 					front={<ActionCard action={action} />}
-					footer={CombatantLogic.getCardSource(this.props.hero, action.id, 'action')}
-					footerType={CombatantLogic.getCardSourceType(this.props.hero, action.id, 'action')}
+					footer={CombatantLogic.getCardSource(this.props.combatant, action.id, 'action')}
+					footerType={CombatantLogic.getCardSourceType(this.props.combatant, action.id, 'action')}
 				/>
 			);
 		});
@@ -230,7 +230,7 @@ class ActionsPage extends Component<ActionsPageProps> {
 		return (
 			<div className='actions-page'>
 				<div className='column'>
-					<Text>In an encounter, {this.props.hero.name} will be able to choose from these actions.</Text>
+					<Text>In an encounter, {this.props.combatant.name} will be able to choose from these actions.</Text>
 					<CardList cards={actionCards} />
 				</div>
 			</div>

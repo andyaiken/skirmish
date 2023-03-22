@@ -19,7 +19,7 @@ import { CombatStatsPanel } from '../..';
 import './stats.scss';
 
 interface Props {
-	hero: CombatantModel;
+	combatant: CombatantModel;
 	encounter: EncounterModel | null;
 	developer: boolean;
 }
@@ -27,43 +27,51 @@ interface Props {
 export class Stats extends Component<Props> {
 	getSkillRank = (skill: SkillType) => {
 		if (this.props.encounter) {
-			return EncounterLogic.getSkillRank(this.props.encounter, this.props.hero, skill);
+			return EncounterLogic.getSkillRank(this.props.encounter, this.props.combatant, skill);
 		}
 
-		return CombatantLogic.getSkillRank(this.props.hero, [], skill);
+		return CombatantLogic.getSkillRank(this.props.combatant, [], skill);
 	};
 
 	getDamageBonusValue = (damage: DamageType) => {
 		if (this.props.encounter) {
-			return EncounterLogic.getDamageBonus(this.props.encounter, this.props.hero, damage);
+			return EncounterLogic.getDamageBonus(this.props.encounter, this.props.combatant, damage);
 		}
 
-		return CombatantLogic.getDamageBonus(this.props.hero, [], damage);
+		return CombatantLogic.getDamageBonus(this.props.combatant, [], damage);
 	};
 
 	getDamageResistanceValue = (damage: DamageType) => {
 		if (this.props.encounter) {
-			return EncounterLogic.getDamageResistance(this.props.encounter, this.props.hero, damage);
+			return EncounterLogic.getDamageResistance(this.props.encounter, this.props.combatant, damage);
 		}
 
-		return CombatantLogic.getDamageResistance(this.props.hero, [], damage);
+		return CombatantLogic.getDamageResistance(this.props.combatant, [], damage);
 	};
 
 	render = () => {
-		const cutDown = (this.props.hero.type === CombatantType.Monster) && !this.props.developer;
+		let cutDown = false;
+		switch (this.props.combatant.type) {
+			case CombatantType.Hero:
+				cutDown = (this.props.combatant.xp >= this.props.combatant.level);
+				break;
+			case CombatantType.Monster:
+				cutDown = !this.props.developer;
+				break;
+		}
 
 		let traitsSection = null;
 		if (this.props.encounter) {
 			traitsSection = (
-				<CombatStatsPanel combatant={this.props.hero} encounter={this.props.encounter} />
+				<CombatStatsPanel combatant={this.props.combatant} encounter={this.props.encounter} />
 			);
 		} else {
 			traitsSection = (
 				<Box label='Traits'>
 					<div className='stats-row'>
-						<StatValue orientation='vertical' label='Endure' value={CombatantLogic.getTraitRank(this.props.hero, [], TraitType.Endurance)}/>
-						<StatValue orientation='vertical' label='Resolve' value={CombatantLogic.getTraitRank(this.props.hero, [], TraitType.Resolve)}/>
-						<StatValue orientation='vertical' label='Speed' value={CombatantLogic.getTraitRank(this.props.hero, [], TraitType.Speed)}/>
+						<StatValue orientation='vertical' label='Endure' value={CombatantLogic.getTraitRank(this.props.combatant, [], TraitType.Endurance)}/>
+						<StatValue orientation='vertical' label='Resolve' value={CombatantLogic.getTraitRank(this.props.combatant, [], TraitType.Resolve)}/>
+						<StatValue orientation='vertical' label='Speed' value={CombatantLogic.getTraitRank(this.props.combatant, [], TraitType.Speed)}/>
 					</div>
 				</Box>
 			);
@@ -71,7 +79,7 @@ export class Stats extends Component<Props> {
 
 		let proficiencySection = null;
 		if (!cutDown) {
-			const profs = CombatantLogic.getProficiencies(this.props.hero);
+			const profs = CombatantLogic.getProficiencies(this.props.combatant);
 			if (profs.length > 0) {
 				proficiencySection = (
 					<Box label='Proficiencies'>
@@ -88,7 +96,7 @@ export class Stats extends Component<Props> {
 		}
 
 		let auraSection = null;
-		const auras = CombatantLogic.getAuras(this.props.hero);
+		const auras = CombatantLogic.getAuras(this.props.combatant);
 		if (auras.length > 0) {
 			auraSection = (
 				<Box label='Auras'>
@@ -155,31 +163,30 @@ export class Stats extends Component<Props> {
 			<div className='stats'>
 				<div className='column'>
 					{
-						this.props.encounter && (this.props.hero.combat.state !== CombatantState.Standing) ?
-							<Text type={TextType.Information}>{this.props.hero.name} is <b>{this.props.hero.combat.state}</b>.</Text>
+						this.props.encounter && (this.props.combatant.combat.state !== CombatantState.Standing) ?
+							<Text type={TextType.Information}>{this.props.combatant.name} is <b>{this.props.combatant.combat.state}</b>.</Text>
 							: null
 					}
 					{
-						this.props.encounter && this.props.hero.combat.stunned ?
-							<Text type={TextType.Information}>{this.props.hero.name} is <b>stunned</b>.</Text>
+						this.props.encounter && this.props.combatant.combat.stunned ?
+							<Text type={TextType.Information}>{this.props.combatant.name} is <b>stunned</b>.</Text>
 							: null
 					}
 					{traitsSection}
 					{auraSection}
-				</div>
-				<div className='column'>
 					<Box label='Skills'>
 						<StatValue label='Brawl' value={this.getSkillRank(SkillType.Brawl)}/>
 						<StatValue label='Perception' value={this.getSkillRank(SkillType.Perception)}/>
+						<StatValue label='Presence' value={this.getSkillRank(SkillType.Presence)}/>
 						<StatValue label='Reactions' value={this.getSkillRank(SkillType.Reactions)}/>
 						<StatValue label='Spellcasting' value={this.getSkillRank(SkillType.Spellcasting)}/>
 						<StatValue label='Stealth' value={this.getSkillRank(SkillType.Stealth)}/>
 						<StatValue label='Weapon' value={this.getSkillRank(SkillType.Weapon)}/>
 					</Box>
 					{proficiencySection}
-					{this.props.hero.type === CombatantType.Hero ? <Box label='XP'>
-						<StatValue label='Earned' value={<IconValue type={IconType.XP} value={this.props.hero.xp} iconSize={12} />} />
-						<StatValue label={`Required for level ${this.props.hero.level + 1}`} value={<IconValue type={IconType.XP} value={this.props.hero.level} iconSize={12} />} />
+					{this.props.combatant.type === CombatantType.Hero ? <Box label='XP'>
+						<StatValue label='Earned' value={<IconValue type={IconType.XP} value={this.props.combatant.xp} iconSize={12} />} />
+						<StatValue label={`Required for level ${this.props.combatant.level + 1}`} value={<IconValue type={IconType.XP} value={this.props.combatant.level} iconSize={12} />} />
 					</Box> : null}
 				</div>
 				{cutDown ? null : damageBonusesColumn}

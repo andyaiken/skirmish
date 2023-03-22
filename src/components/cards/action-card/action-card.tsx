@@ -58,7 +58,7 @@ export class ActionCard extends Component<Props> {
 			<div className='action-card'>
 				<Text type={TextType.SubHeading}>{this.props.action.name}</Text>
 				<div className='tags'>
-					<Tag>{ActionLogic.getActionType(this.props.action)}</Tag>
+					<Tag>{ActionLogic.getActionType(this.props.action)} Action</Tag>
 				</div>
 				{this.getPrerequisites()}
 				{this.getParameters()}

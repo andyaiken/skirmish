@@ -422,7 +422,7 @@ export class ItemData {
 				weapon: {
 					damage: {
 						type: DamageType.Piercing,
-						rank: 3
+						rank: 4
 					},
 					range: 15,
 					unreliable: 1
@@ -441,7 +441,7 @@ export class ItemData {
 				weapon: {
 					damage: {
 						type: DamageType.Piercing,
-						rank: 5
+						rank: 7
 					},
 					range: 15,
 					unreliable: 2
@@ -460,7 +460,7 @@ export class ItemData {
 				weapon: {
 					damage: {
 						type: DamageType.Piercing,
-						rank: 4
+						rank: 6
 					},
 					range: 10,
 					unreliable: 2

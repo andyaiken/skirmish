@@ -206,7 +206,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 				type={CardType.Species}
 				front={
 					<PlaceholderCard>
-						<Text type={TextType.SubHeading}>Species<br/>Deck</Text>
+						<Text type={TextType.SubHeading}>Species<br />Deck</Text>
 						<Text type={TextType.Small}>Select one of these cards.</Text>
 					</PlaceholderCard>
 				}
@@ -414,6 +414,7 @@ class EquipmentSelector extends Component<EquipmentSelectorProps, EquipmentSelec
 						<PlayingCard
 							type={CardType.Item}
 							front={<ItemCard item={item} />}
+							footer='Item'
 							back={<PlaceholderCard>Item</PlaceholderCard>}
 							display={(slot.selected !== null) && (slot.selected.name !== item.name) ? PlayingCardSide.Back : PlayingCardSide.Front}
 							onClick={(slot.selected !== null) ? null : () => this.selectItem(item)}

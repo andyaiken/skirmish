@@ -10,19 +10,19 @@ import type { FeatureModel } from '../models/feature';
 import { ActionEffects, ActionPrerequisites, ActionTargetParameters, ActionWeaponParameters } from '../logic/action-logic';
 import { FeatureLogic } from '../logic/feature-logic';
 
-export class UniversalData {
-	static getUniversalFeatures = (): FeatureModel[] => {
+export class BaseData {
+	static getBaseFeatures = (): FeatureModel[] => {
 		return [
-			FeatureLogic.createTraitFeature('universal-trait', TraitType.Any, 1),
-			FeatureLogic.createSkillFeature('universal-skill', SkillType.Any, 1),
-			FeatureLogic.createProficiencyFeature('universal-prof', ItemProficiencyType.Any)
+			FeatureLogic.createTraitFeature('base-trait', TraitType.Any, 1),
+			FeatureLogic.createSkillFeature('base-skill', SkillType.Any, 1),
+			FeatureLogic.createProficiencyFeature('base-prof', ItemProficiencyType.Any)
 		];
 	};
 
-	static getUniversalActions = (): ActionModel[] => {
+	static getBaseActions = (): ActionModel[] => {
 		return [
 			{
-				id: 'universal-1',
+				id: 'base-1',
 				name: 'Unarmed Attack',
 				prerequisites: [
 					ActionPrerequisites.emptyHand()
@@ -43,7 +43,7 @@ export class UniversalData {
 				]
 			},
 			{
-				id: 'universal-2',
+				id: 'base-2',
 				name: 'Melee Weapon Attack',
 				prerequisites: [
 					ActionPrerequisites.meleeWeapon()
@@ -65,7 +65,7 @@ export class UniversalData {
 				]
 			},
 			{
-				id: 'universal-3',
+				id: 'base-3',
 				name: 'Ranged Weapon Attack',
 				prerequisites: [
 					ActionPrerequisites.rangedWeapon()

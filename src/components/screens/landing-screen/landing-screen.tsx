@@ -2,8 +2,8 @@ import { Component } from 'react';
 
 import type { GameModel } from '../../../models/game';
 
+import { PlayingCard, Text, TextType } from '../../controls';
 import { PlaceholderCard } from '../../cards';
-import { PlayingCard } from '../../controls';
 
 import './landing-screen.scss';
 
@@ -18,7 +18,7 @@ export class LandingScreen extends Component<Props> {
 		let continueBtn = null;
 		if (this.props.game?.map) {
 			continueBtn = (
-				<PlayingCard front={<PlaceholderCard>Continue your campaign</PlaceholderCard>} onClick={this.props.continueCampaign} />
+				<PlayingCard front={<PlaceholderCard><Text type={TextType.SubHeading}>Continue<br />Your<br />Campaign</Text></PlaceholderCard>} onClick={this.props.continueCampaign} />
 			);
 		}
 
@@ -29,7 +29,7 @@ export class LandingScreen extends Component<Props> {
 				</div>
 				<div className='landing-content'>
 					{ continueBtn }
-					<PlayingCard front={<PlaceholderCard>Start a new campaign</PlaceholderCard>} onClick={this.props.startCampaign} />
+					<PlayingCard front={<PlaceholderCard><Text type={TextType.SubHeading}>Start<br />A New<br />Campaign</Text></PlaceholderCard>} onClick={this.props.startCampaign} />
 				</div>
 			</div>
 		);

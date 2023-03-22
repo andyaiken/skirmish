@@ -6,7 +6,8 @@ export enum CardType {
 	Background = 'Background',
 	Item = 'Item',
 	Boon = 'Boon',
+	Region = 'Region',
 	Feature = 'Feature',
 	Action = 'Action',
-	Universal = 'Universal'
+	Base = 'Base'
 }

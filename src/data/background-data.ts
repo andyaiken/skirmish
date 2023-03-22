@@ -8,7 +8,7 @@ import { SkillCategoryType } from '../enums/skill-category-type';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
 
-import { ActionEffects, ActionPrerequisites, ActionTargetParameters } from '../logic/action-logic';
+import { ActionEffects, ActionOriginParameters, ActionPrerequisites, ActionTargetParameters } from '../logic/action-logic';
 import { ConditionLogic } from '../logic/condition-logic';
 import { FeatureLogic } from '../logic/feature-logic';
 
@@ -99,9 +99,10 @@ export class BackgroundData {
 				id: 'background-commander',
 				name: 'Commander',
 				features: [
-					FeatureLogic.createAuraDamageCategoryFeature('commander-feature-1', ConditionType.DamageCategoryBonus, DamageCategoryType.Corruption, 1),
-					FeatureLogic.createAuraDamageCategoryFeature('commander-feature-2', ConditionType.DamageCategoryBonus, DamageCategoryType.Energy, 1),
-					FeatureLogic.createAuraDamageCategoryFeature('commander-feature-3', ConditionType.DamageCategoryBonus, DamageCategoryType.Physical, 1)
+					FeatureLogic.createSkillFeature('commander-feature-1', SkillType.Presence, 2),
+					FeatureLogic.createAuraDamageCategoryFeature('commander-feature-2', ConditionType.DamageCategoryBonus, DamageCategoryType.Corruption, 1),
+					FeatureLogic.createAuraDamageCategoryFeature('commander-feature-3', ConditionType.DamageCategoryBonus, DamageCategoryType.Energy, 1),
+					FeatureLogic.createAuraDamageCategoryFeature('commander-feature-4', ConditionType.DamageCategoryBonus, DamageCategoryType.Physical, 1)
 				],
 				actions: [
 					{
@@ -140,12 +141,78 @@ export class BackgroundData {
 				]
 			},
 			{
+				id: 'background-grenadier',
+				name: 'Grenadier',
+				features: [],
+				actions: [
+					{
+						id: 'grenadier-action-1',
+						name: 'Demolitions',
+						prerequisites: [
+							ActionPrerequisites.emptyHand()
+						],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Walls, 1, 10)
+						],
+						effects: [
+							ActionEffects.addSquares()
+						]
+					},
+					{
+						id: 'grenadier-action-2',
+						name: 'Grenade',
+						prerequisites: [
+							ActionPrerequisites.emptyHand()
+						],
+						parameters: [
+							ActionOriginParameters.distance(10),
+							ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 3)
+						],
+						effects: [
+							ActionEffects.dealDamage(DamageType.Impact, 2),
+							ActionEffects.knockDown()
+						]
+					},
+					{
+						id: 'grenadier-action-3',
+						name: 'Molotov',
+						prerequisites: [
+							ActionPrerequisites.emptyHand()
+						],
+						parameters: [
+							ActionOriginParameters.distance(10),
+							ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 3)
+						],
+						effects: [
+							ActionEffects.dealDamage(DamageType.Fire, 3)
+						]
+					},
+					{
+						id: 'grenadier-action-4',
+						name: 'Flashbang',
+						prerequisites: [
+							ActionPrerequisites.emptyHand()
+						],
+						parameters: [
+							ActionOriginParameters.distance(10),
+							ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 3)
+						],
+						effects: [
+							ActionEffects.dealDamage(DamageType.Light, 1),
+							ActionEffects.dealDamage(DamageType.Sonic, 1),
+							ActionEffects.stun()
+						]
+					}
+				]
+			},
+			{
 				id: 'background-mountebank',
 				name: 'Mountebank',
 				features: [
-					FeatureLogic.createAuraDamageCategoryFeature('mountebank-feature-1', ConditionType.DamageCategoryVulnerability, DamageCategoryType.Corruption, 1),
-					FeatureLogic.createAuraDamageCategoryFeature('mountebank-feature-2', ConditionType.DamageCategoryVulnerability, DamageCategoryType.Energy, 1),
-					FeatureLogic.createAuraDamageCategoryFeature('mountebank-feature-3', ConditionType.DamageCategoryVulnerability, DamageCategoryType.Physical, 1)
+					FeatureLogic.createSkillFeature('mountebank-feature-1', SkillType.Presence, 2),
+					FeatureLogic.createAuraDamageCategoryFeature('mountebank-feature-2', ConditionType.DamageCategoryVulnerability, DamageCategoryType.Corruption, 1),
+					FeatureLogic.createAuraDamageCategoryFeature('mountebank-feature-3', ConditionType.DamageCategoryVulnerability, DamageCategoryType.Energy, 1),
+					FeatureLogic.createAuraDamageCategoryFeature('mountebank-feature-4', ConditionType.DamageCategoryVulnerability, DamageCategoryType.Physical, 1)
 				],
 				actions: [
 					{
@@ -241,10 +308,11 @@ export class BackgroundData {
 				id: 'background-noble',
 				name: 'Noble',
 				features: [
-					FeatureLogic.createAuraFeature('noble-feature-1', ConditionType.MovementBonus, 1),
-					FeatureLogic.createAuraTraitFeature('noble-feature-2', ConditionType.TraitBonus, TraitType.Endurance, 1),
-					FeatureLogic.createAuraTraitFeature('noble-feature-3', ConditionType.TraitBonus, TraitType.Resolve, 1),
-					FeatureLogic.createAuraTraitFeature('noble-feature-4', ConditionType.TraitBonus, TraitType.Speed, 1)
+					FeatureLogic.createSkillFeature('noble-feature-1', SkillType.Presence, 2),
+					FeatureLogic.createAuraFeature('noble-feature-2', ConditionType.MovementBonus, 1),
+					FeatureLogic.createAuraTraitFeature('noble-feature-3', ConditionType.TraitBonus, TraitType.Endurance, 1),
+					FeatureLogic.createAuraTraitFeature('noble-feature-4', ConditionType.TraitBonus, TraitType.Resolve, 1),
+					FeatureLogic.createAuraTraitFeature('noble-feature-5', ConditionType.TraitBonus, TraitType.Speed, 1)
 				],
 				actions: [
 					{
@@ -279,7 +347,7 @@ export class BackgroundData {
 						effects: [
 							ActionEffects.attack({
 								weapon: false,
-								skill: SkillType.Perception,
+								skill: SkillType.Presence,
 								trait: TraitType.Resolve,
 								skillBonus: 0,
 								hit: [

@@ -19,6 +19,13 @@ import { Collections } from '../utils/collections';
 import { Random } from '../utils/random';
 
 export class Intents {
+	static inspire = (): IntentModel => {
+		return {
+			id: 'inspire',
+			data: null
+		};
+	};
+
 	static hide = (): IntentModel => {
 		return {
 			id: 'hide',
@@ -91,12 +98,21 @@ export class IntentsLogic {
 		options.push(...IntentsLogic.getMovementIntents(encounter, combatant, paths));
 		options.push(...IntentsLogic.getAttackIntents(encounter, combatant));
 
-		const hide = EncounterLogic.getSkillRank(encounter, combatant, SkillType.Stealth);
-		if ((hide > 0) && (combatant.combat.hidden === 0) && (combatant.combat.movement >= 4)) {
+		const presense = EncounterLogic.getSkillRank(encounter, combatant, SkillType.Presence);
+		if ((presense > 0) && (combatant.combat.movement >= 4)) {
+			options.push({
+				description: 'Inspire',
+				intents: [ Intents.inspire() ],
+				weight: presense
+			});
+		}
+
+		const stealth = EncounterLogic.getSkillRank(encounter, combatant, SkillType.Stealth);
+		if ((stealth > 0) && (combatant.combat.hidden === 0) && (combatant.combat.movement >= 4)) {
 			options.push({
 				description: 'Hide',
 				intents: [ Intents.hide() ],
-				weight: hide
+				weight: stealth
 			});
 		}
 
@@ -374,7 +390,6 @@ export class IntentsLogic {
 				}
 				case 'action': {
 					const action = intent.data as ActionModel;
-					// EncounterLogic.selectAction(encounter, combatant, action);
 					combatant.combat.actions = [ action ];
 					EncounterLogic.runAction(encounter, combatant);
 					break;

@@ -80,6 +80,7 @@ export class SpeciesData {
 								trait: TraitType.Endurance,
 								skillBonus: 0,
 								hit: [
+									ActionEffects.dealDamage(DamageType.Impact, 1),
 									ActionEffects.knockDown()
 								]
 							})
@@ -110,10 +111,11 @@ export class SpeciesData {
 				],
 				features: [
 					FeatureLogic.createTraitFeature('deva-feature-1', TraitType.Resolve, 1),
-					FeatureLogic.createSkillFeature('deva-feature-2', SkillType.Spellcasting, 2),
-					FeatureLogic.createDamageCategoryResistFeature('deva-feature-3', DamageCategoryType.Corruption, 1),
-					FeatureLogic.createDamageCategoryResistFeature('deva-feature-4', DamageCategoryType.Energy, 1),
-					FeatureLogic.createAuraDamageFeature('deva-feature-5', ConditionType.AutoDamage, DamageType.Light, 1)
+					FeatureLogic.createSkillFeature('deva-feature-2', SkillType.Presence, 2),
+					FeatureLogic.createSkillFeature('deva-feature-3', SkillType.Spellcasting, 2),
+					FeatureLogic.createDamageCategoryResistFeature('deva-feature-4', DamageCategoryType.Corruption, 1),
+					FeatureLogic.createDamageCategoryResistFeature('deva-feature-5', DamageCategoryType.Energy, 1),
+					FeatureLogic.createAuraDamageFeature('deva-feature-6', ConditionType.AutoDamage, DamageType.Light, 1)
 				],
 				actions: [
 					{
@@ -344,6 +346,26 @@ export class SpeciesData {
 								]
 							})
 						]
+					},
+					{
+						id: 'minotaur-action-4',
+						name: 'Intimidate',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Presence,
+								trait: TraitType.Resolve,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.forceMovement(MovementType.Push, 1),
+									ActionEffects.stun()
+								]
+							})
+						]
 					}
 				]
 			},
@@ -433,6 +455,26 @@ export class SpeciesData {
 						effects: [
 							ActionEffects.healDamage(2)
 						]
+					},
+					{
+						id: 'reptilian-action-3',
+						name: 'Intimidate',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Presence,
+								trait: TraitType.Resolve,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.forceMovement(MovementType.Push, 1),
+									ActionEffects.stun()
+								]
+							})
+						]
 					}
 				]
 			},
@@ -482,6 +524,26 @@ export class SpeciesData {
 									ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Resolve, 5)),
 									ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 2, TraitType.All)),
 									ActionEffects.addCondition(ConditionLogic.createSkillPenaltyCondition(TraitType.Resolve, 2, SkillType.All))
+								]
+							})
+						]
+					},
+					{
+						id: 'shadowborn-action-3',
+						name: 'Intimidate',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Presence,
+								trait: TraitType.Resolve,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.forceMovement(MovementType.Push, 1),
+									ActionEffects.stun()
 								]
 							})
 						]

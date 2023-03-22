@@ -1,6 +1,8 @@
 import { IconArrowUp, IconViewfinder } from '@tabler/icons-react';
 import { Component } from 'react';
 
+import { BaseData } from '../../../../data/base-data';
+
 import { ActionTargetType } from '../../../../enums/action-target-type';
 import { CardType } from '../../../../enums/card-type';
 
@@ -8,7 +10,6 @@ import { ActionLogic, ActionPrerequisites } from '../../../../logic/action-logic
 import { CombatantLogic } from '../../../../logic/combatant-logic';
 import { EncounterLogic } from '../../../../logic/encounter-logic';
 import { EncounterMapLogic } from '../../../../logic/encounter-map-logic';
-import { GameLogic } from '../../../../logic/game-logic';
 
 import type { ActionModel, ActionOriginParameterModel, ActionParameterModel, ActionTargetParameterModel, ActionWeaponParameterModel } from '../../../../models/action';
 import type { CombatantModel } from '../../../../models/combatant';
@@ -33,14 +34,14 @@ interface Props {
 }
 
 interface State {
-	showAllActions: boolean;
+	showActions: string;
 }
 
 export class CombatantAction extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
-			showAllActions: false
+			showActions: 'default'
 		};
 	}
 
@@ -53,9 +54,25 @@ export class CombatantAction extends Component<Props, State> {
 				</div>
 			);
 		} else if (this.props.combatant.combat.actions.length > 1) {
-			let actions = ([] as ActionModel[]).concat(this.props.combatant.combat.actions);
-			if (this.state.showAllActions) {
-				actions = GameLogic.getAllActions();
+			const options = [
+				{ id: 'default', display: 'Drawn Actions' },
+				{ id: 'base', display: 'Base Actions' }
+			];
+			if (this.props.developer) {
+				options.push({ id: 'character', display: 'Action Deck' });
+			}
+
+			let actions: ActionModel[] = [];
+			switch (this.state.showActions) {
+				case 'default':
+					actions = this.props.combatant.combat.actions;
+					break;
+				case 'base':
+					actions = BaseData.getBaseActions();
+					break;
+				case 'character':
+					actions = CombatantLogic.getActionDeck(this.props.combatant);
+					break;
 			}
 			actions.sort((a, b) => a.name.localeCompare(b.name));
 
@@ -75,8 +92,8 @@ export class CombatantAction extends Component<Props, State> {
 
 			return (
 				<div className='combatant-action'>
+					<Selector options={options} selectedID={this.state.showActions} onSelect={id => this.setState({ showActions: id })} />
 					{this.props.developer ? <button className='developer' onClick={() => this.props.drawActions(this.props.encounter, this.props.combatant)}>Draw Again</button> : null}
-					{this.props.developer ? <button className='developer' onClick={() => this.setState({ showAllActions: !this.state.showAllActions })}>All Actions</button> : null}
 					<div className='actions'>
 						<CardList cards={actionCards} />
 					</div>

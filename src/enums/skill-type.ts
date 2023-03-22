@@ -4,6 +4,7 @@ export enum SkillType {
 	All = 'All skills',
 	Brawl = 'Brawl',
 	Perception = 'Perception',
+	Presence = 'Presence',
 	Reactions = 'Reactions',
 	Spellcasting = 'Spellcasting',
 	Stealth = 'Stealth',

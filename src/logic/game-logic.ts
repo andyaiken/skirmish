@@ -118,6 +118,7 @@ export class GameLogic {
 			case SkillCategoryType.Any:
 				options.push(SkillType.Brawl);
 				options.push(SkillType.Perception);
+				options.push(SkillType.Presence);
 				options.push(SkillType.Reactions);
 				options.push(SkillType.Spellcasting);
 				options.push(SkillType.Stealth);
@@ -130,6 +131,7 @@ export class GameLogic {
 				break;
 			case SkillCategoryType.Mental:
 				options.push(SkillType.Perception);
+				options.push(SkillType.Presence);
 				options.push(SkillType.Reactions);
 				options.push(SkillType.Spellcasting);
 				break;
@@ -261,6 +263,7 @@ export class GameLogic {
 			case SkillType.Weapon:
 				return SkillCategoryType.Physical;
 			case SkillType.Perception:
+			case SkillType.Presence:
 			case SkillType.Reactions:
 			case SkillType.Spellcasting:
 				return SkillCategoryType.Mental;

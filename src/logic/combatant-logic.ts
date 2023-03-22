@@ -1,4 +1,4 @@
-import { UniversalData } from '../data/universal-data';
+import { BaseData } from '../data/base-data';
 
 import { CardType } from '../enums/card-type';
 import { CombatantState } from '../enums/combatant-state';
@@ -74,6 +74,7 @@ export class CombatantLogic {
 				const options = [
 					SkillType.Brawl,
 					SkillType.Perception,
+					SkillType.Presence,
 					SkillType.Reactions,
 					SkillType.Spellcasting,
 					SkillType.Stealth,
@@ -176,7 +177,7 @@ export class CombatantLogic {
 		const b = GameLogic.getBackground(combatant.backgroundID);
 
 		return ([] as FeatureModel[])
-			.concat(UniversalData.getUniversalFeatures())
+			.concat(BaseData.getBaseFeatures())
 			.concat(s ? s.features : [])
 			.concat(r ? r.features : [])
 			.concat(b ? b.features : []);
@@ -202,8 +203,8 @@ export class CombatantLogic {
 	static getCardSource = (combatant: CombatantModel, cardID: string, cardType: 'action' | 'feature') => {
 		switch (cardType) {
 			case 'action': {
-				if (UniversalData.getUniversalActions().find(a => a.id === cardID)) {
-					return 'Universal';
+				if (BaseData.getBaseActions().find(a => a.id === cardID)) {
+					return 'Base';
 				}
 
 				const s = GameLogic.getSpecies(combatant.speciesID);
@@ -230,8 +231,8 @@ export class CombatantLogic {
 				break;
 			}
 			case 'feature': {
-				if (UniversalData.getUniversalFeatures().find(f => f.id === cardID)) {
-					return 'Universal';
+				if (BaseData.getBaseFeatures().find(f => f.id === cardID)) {
+					return 'Base';
 				}
 
 				const s = GameLogic.getSpecies(combatant.speciesID);
@@ -265,8 +266,8 @@ export class CombatantLogic {
 	static getCardSourceType = (combatant: CombatantModel, cardID: string, cardType: 'action' | 'feature'): CardType => {
 		switch (cardType) {
 			case 'action': {
-				if (UniversalData.getUniversalActions().find(a => a.id === cardID)) {
-					return CardType.Universal;
+				if (BaseData.getBaseActions().find(a => a.id === cardID)) {
+					return CardType.Base;
 				}
 
 				const s = GameLogic.getSpecies(combatant.speciesID);
@@ -297,8 +298,8 @@ export class CombatantLogic {
 				break;
 			}
 			case 'feature': {
-				if (UniversalData.getUniversalFeatures().find(f => f.id === cardID)) {
-					return CardType.Universal;
+				if (BaseData.getBaseFeatures().find(f => f.id === cardID)) {
+					return CardType.Base;
 				}
 
 				const s = GameLogic.getSpecies(combatant.speciesID);

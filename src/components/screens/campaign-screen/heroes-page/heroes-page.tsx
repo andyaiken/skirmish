@@ -137,13 +137,6 @@ export class HeroesPage extends Component<Props, State> {
 			);
 		}
 
-		const sidebar = (
-			<div>
-				<Text type={TextType.SubHeading}>Your Heroes</Text>
-				<Text>These are your heroes.</Text>
-			</div>
-		);
-
 		let dialog = null;
 		if (this.state.selectedHero) {
 			if (!this.state.selectedHero.name) {
@@ -237,9 +230,11 @@ export class HeroesPage extends Component<Props, State> {
 					{dialog}
 				</div>
 				<div className='sidebar'>
-					{(boons === null) && (levelUp == null) ? sidebar : null}
+					<Text type={TextType.SubHeading}>Your Heroes</Text>
+					<Text>These are your heroes.</Text>
+					{boons !== null ? <hr /> : null}
 					{boons}
-					{(boons !== null) && (levelUp !== null) ? <hr /> : null}
+					{levelUp !== null ? <hr /> : null}
 					{levelUp}
 				</div>
 			</div>

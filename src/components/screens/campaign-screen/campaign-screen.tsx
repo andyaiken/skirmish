@@ -34,6 +34,7 @@ interface Props {
 	startEncounter: (region: RegionModel, heroes: CombatantModel[]) => void;
 	conquer: (region: RegionModel) => void;
 	endCampaign: () => void;
+	setDeveloperMode: (value: boolean) => void;
 }
 
 interface State {
@@ -105,6 +106,7 @@ export class CampaignScreen extends Component<Props, State> {
 					<OptionsPage
 						developer={this.props.developer}
 						endCampaign={this.props.endCampaign}
+						setDeveloperMode={this.props.setDeveloperMode}
 					/>
 				);
 				break;

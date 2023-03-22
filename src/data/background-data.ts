@@ -143,7 +143,10 @@ export class BackgroundData {
 			{
 				id: 'background-grenadier',
 				name: 'Grenadier',
-				features: [],
+				features: [
+					FeatureLogic.createSkillFeature('grenadier-feature-1', SkillType.Perception, 2),
+					FeatureLogic.createSkillFeature('grenadier-feature-2', SkillType.Any, 1)
+				],
 				actions: [
 					{
 						id: 'grenadier-action-1',

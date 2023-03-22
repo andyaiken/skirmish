@@ -18,9 +18,11 @@ import './options-page.scss';
 interface Props {
 	developer: boolean;
 	endCampaign: () => void;
+	setDeveloperMode: (value: boolean) => void;
 }
 
 interface State {
+	local: boolean;
 	deck: CardType;
 }
 
@@ -28,6 +30,7 @@ export class OptionsPage extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
+			local: window.location.href.includes('localhost'),
 			deck: CardType.Default
 		};
 	}
@@ -79,6 +82,7 @@ export class OptionsPage extends Component<Props, State> {
 				</div>
 				<hr />
 				<button className='danger' onClick={() => this.props.endCampaign()}>Abandon This Campaign</button>
+				{this.state.local ? <button className='developer' onClick={() => this.props.setDeveloperMode(!this.props.developer)}>Developer Mode</button> : null}
 				{dialog}
 			</div>
 		);

@@ -110,7 +110,7 @@ export class Main extends Component<Props, State> {
 		this.state = {
 			screen: ScreenType.Landing,
 			game: game,
-			developer: window.location.href.includes('localhost'),
+			developer: false,
 			dialog: null
 		};
 	}
@@ -123,6 +123,12 @@ export class Main extends Component<Props, State> {
 		this.setState({
 			screen: screen,
 			dialog: null
+		});
+	};
+
+	setDeveloperMode = (value: boolean) => {
+		this.setState({
+			developer: value
 		});
 	};
 
@@ -670,6 +676,7 @@ export class Main extends Component<Props, State> {
 						startEncounter={this.startEncounter}
 						conquer={this.conquer}
 						endCampaign={this.endCampaign}
+						setDeveloperMode={this.setDeveloperMode}
 					/>
 				);
 			case 'encounter':

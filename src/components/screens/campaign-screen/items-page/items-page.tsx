@@ -183,6 +183,9 @@ export class ItemsPage extends Component<Props, State> {
 					{mundaneItemSection}
 				</div>
 				<div className='sidebar'>
+					<Text type={TextType.SubHeading}>Your Items</Text>
+					<Text>This page lists the items that your heroes aren&apos;t currently using.</Text>
+					<hr />
 					{moneySection}
 					{boons !== null ? <hr /> : null}
 					{boons}

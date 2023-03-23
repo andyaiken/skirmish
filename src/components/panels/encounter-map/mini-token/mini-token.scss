@@ -23,18 +23,18 @@
 	}
 
 	&.hero {
-		background-image: linear-gradient(to bottom right, rgb(0, 100, 0), rgb(0, 70, 0));
+		background-image: linear-gradient(135deg, rgb(0, 100, 0), rgb(0, 70, 0));
 
 		.mini-token-face {
-			background-image: linear-gradient(to bottom right, rgb(0, 150, 0), rgb(0, 100, 0));
+			background-image: linear-gradient(135deg, rgb(0, 150, 0), rgb(0, 100, 0));
 		}
 	}
 
 	&.monster {
-		background-image: linear-gradient(to bottom right, rgb(200, 0, 0), rgb(100, 0, 0));
+		background-image: linear-gradient(135deg, rgb(200, 0, 0), rgb(100, 0, 0));
 
 		.mini-token-face {
-			background-image: linear-gradient(to bottom right, rgb(240, 0, 0), rgb(200, 0, 0));
+			background-image: linear-gradient(135deg, rgb(240, 0, 0), rgb(200, 0, 0));
 		}
 	}
 

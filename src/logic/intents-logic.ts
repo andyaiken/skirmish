@@ -380,6 +380,12 @@ export class IntentsLogic {
 
 		combatant.combat.intents.intents.forEach(intent => {
 			switch (intent.id) {
+				case 'inspire': {
+					if (combatant.combat.movement >= 4) {
+						EncounterLogic.inspire(encounter, combatant);
+					}
+					break;
+				}
 				case 'hide': {
 					if (combatant.combat.movement >= 4) {
 						EncounterLogic.hide(encounter, combatant);

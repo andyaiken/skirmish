@@ -12,10 +12,10 @@ import type { CombatantModel } from '../../../models/combatant';
 import { Collections } from '../../../utils/collections';
 
 import { AuraToken } from './aura-token/aura-token';
+import { Floor } from './floor/floor';
 import { Fog } from './fog/fog';
 import { LootToken } from './loot-token/loot-token';
 import { MiniToken } from './mini-token/mini-token';
-import { Square } from './floor/floor';
 import { TrailToken } from './trail-token/trail-token';
 import { Wall } from './wall/wall';
 
@@ -53,33 +53,49 @@ export class EncounterMapPanel extends Component<Props> {
 			combatants = combatants.filter(c => (c === current) || (c.type === current.type) || (current.combat.senses >= c.combat.hidden));
 		}
 
-		const walls = Collections.distinct(EncounterMapLogic.getAdjacentWalls(this.props.encounter.mapSquares, this.props.encounter.mapSquares), sq => `${sq.x} ${sq.y}`).map(wall => {
-			return (
-				<Wall
-					key={`wall ${wall.x} ${wall.y}`}
-					wall={wall}
-					squareSize={this.props.squareSize}
-					mapDimensions={dims}
-					selectable={!!this.props.selectableSquares.find(s => (s.x === wall.x) && (s.y === wall.y))}
-					selected={!!this.props.selectedSquares.find(s => (s.x === wall.x) && (s.y === wall.y))}
-					onClick={this.props.onClickSquare}
-				/>
-			);
-		});
+		const walls = Collections.distinct(EncounterMapLogic.getAdjacentWalls(this.props.encounter.mapSquares, this.props.encounter.mapSquares), sq => `${sq.x} ${sq.y}`)
+			.sort((a, b) => {
+				let result = a.y - b.y;
+				if (result === 0) {
+					result = a.x - b.x;
+				}
+				return result;
+			})
+			.map(wall => {
+				return (
+					<Wall
+						key={`wall ${wall.x} ${wall.y}`}
+						wall={wall}
+						squareSize={this.props.squareSize}
+						mapDimensions={dims}
+						selectable={!!this.props.selectableSquares.find(s => (s.x === wall.x) && (s.y === wall.y))}
+						selected={!!this.props.selectedSquares.find(s => (s.x === wall.x) && (s.y === wall.y))}
+						onClick={this.props.onClickSquare}
+					/>
+				);
+			});
 
-		const squares = Collections.distinct(this.props.encounter.mapSquares, sq => `${sq.x} ${sq.y}`).map(sq => {
-			return (
-				<Square
-					key={`square ${sq.x} ${sq.y}`}
-					square={sq}
-					squareSize={this.props.squareSize}
-					mapDimensions={dims}
-					selectable={!!this.props.selectableSquares.find(s => (s.x === sq.x) && (s.y === sq.y))}
-					selected={!!this.props.selectedSquares.find(s => (s.x === sq.x) && (s.y === sq.y))}
-					onClick={this.props.onClickSquare}
-				/>
-			);
-		});
+		const floor = Collections.distinct(this.props.encounter.mapSquares, sq => `${sq.x} ${sq.y}`)
+			.sort((a, b) => {
+				let result = a.y - b.y;
+				if (result === 0) {
+					result = a.x - b.x;
+				}
+				return result;
+			})
+			.map(sq => {
+				return (
+					<Floor
+						key={`square ${sq.x} ${sq.y}`}
+						square={sq}
+						squareSize={this.props.squareSize}
+						mapDimensions={dims}
+						selectable={!!this.props.selectableSquares.find(s => (s.x === sq.x) && (s.y === sq.y))}
+						selected={!!this.props.selectedSquares.find(s => (s.x === sq.x) && (s.y === sq.y))}
+						onClick={this.props.onClickSquare}
+					/>
+				);
+			});
 
 		const loot = this.props.encounter.loot.map(lp => {
 			return (
@@ -168,7 +184,7 @@ export class EncounterMapPanel extends Component<Props> {
 		return (
 			<div className='encounter-map' onClick={e => this.props.onClickOff()}>
 				<div className='encounter-map-square-container' style={{ maxWidth: `${this.props.squareSize * width}px`, maxHeight: `${this.props.squareSize * height}px` }}>
-					{squares}
+					{floor}
 					{loot}
 					{auras}
 					{trails}

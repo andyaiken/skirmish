@@ -65,7 +65,9 @@ export class MiniToken extends Component<Props, State> {
 	};
 
 	getPopover = () => {
-		const tags = [];
+		const tags = [
+			<Tag key='level'>Level {this.props.combatant.level}</Tag>
+		];
 		if (this.props.combatant.combat.state !== CombatantState.Standing) {
 			tags.push(<Tag key='state'>{this.props.combatant.combat.state}</Tag>);
 		}

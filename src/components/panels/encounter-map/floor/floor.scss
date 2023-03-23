@@ -1,11 +1,11 @@
-.encounter-map-square {
+.encounter-map-floor {
 	aspect-ratio: 1 / 1;
 	position: absolute;
 	border: 0.5px solid rgb(240, 240, 240);
 	background-color: rgb(255, 255, 255);
 
 	&.obstructed {
-		background-color: rgb(220, 220, 220);
+		background-image: linear-gradient(135deg, rgb(230, 230, 230), rgb(210, 210, 210));
 	}
 
 	&.selectable {

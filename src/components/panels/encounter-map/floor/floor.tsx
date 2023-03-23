@@ -13,7 +13,7 @@ interface Props {
 	onClick: (square: { x: number, y: number }) => void;
 }
 
-export class Square extends Component<Props> {
+export class Floor extends Component<Props> {
 	onClick = (e: React.MouseEvent) => {
 		if (this.props.selectable) {
 			e.stopPropagation();
@@ -25,7 +25,7 @@ export class Square extends Component<Props> {
 		const type = this.props.square.type.toLowerCase();
 		const selectable = this.props.selectable ? 'selectable' : '';
 		const selected = this.props.selected ? 'selected' : '';
-		const className = `encounter-map-square ${type} ${selectable} ${selected}`;
+		const className = `encounter-map-floor ${type} ${selectable} ${selected}`;
 
 		return (
 			<div

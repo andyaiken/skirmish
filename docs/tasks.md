@@ -28,7 +28,14 @@
   * Die as soon as they take any damage
   * Convert one monster into 4 minions
 * Items:
-  * Potions (add conditions when used)
+  * Potions
+    * Could be found on the map (as a loot pile)
+    * An extra section in the items page
+    * 1M to drink
+      * Then destroyed
+      * Health (heals wounds)
+      * Luck (grants skill bonuses)
+    * Buy for 25 money
   * Magic items could gain additional attributes when wielder levels up
     * Dormant => awakened => Exalted
 * Campaign screen, Items page:
@@ -79,7 +86,7 @@
     * Giant snake
     * Dragon
 * Roles / backgrounds:
-  * Artificer (infuse item with magic, drain item of magic, convert item / loot pile into energy, shocking grasp)
+  * Artificer (infuse item with magic, drain item of magic, convert item / loot pile into energy, create potion, shocking grasp)
   * Blackguard
   * Shaman
   * Warlock

@@ -542,23 +542,26 @@ export class EncounterLogic {
 	static inspire = (encounter: EncounterModel, combatant: CombatantModel) => {
 		const rank = EncounterLogic.getSkillRank(encounter, combatant, SkillType.Presence);
 		const result = Random.dice(rank);
+		EncounterLogic.log(encounter, `${combatant.name} rolls Presence (${rank}) and gets ${result}`);
 
 		combatant.combat.movement -= 4;
 		if (result > 8) {
-			// Any allies you can see will be no longer stunned
 			const edges = EncounterMapLogic.getMapEdges(encounter.mapSquares);
 			const combatantSquares = EncounterLogic.getCombatantSquares(encounter, combatant);
-			encounter.combatants.filter(c => c.type === combatant.type).forEach(ally => {
-				const allySquares = EncounterLogic.getCombatantSquares(encounter, ally);
-				if (EncounterMapLogic.canSeeAny(edges, combatantSquares, allySquares)) {
-					ally.combat.stunned = false;
-				}
-			});
+			encounter.combatants
+				.filter(c => c.type === combatant.type)
+				.filter(c => c.combat.stunned)
+				.forEach(ally => {
+					const allySquares = EncounterLogic.getCombatantSquares(encounter, ally);
+					if (EncounterMapLogic.canSeeAny(edges, combatantSquares, allySquares)) {
+						ally.combat.stunned = false;
+						EncounterLogic.log(encounter, `${ally.name} is no longer stunned`);
+					}
+				});
 		}
 
 		EncounterLogic.checkActionParameters(encounter, combatant);
 
-		EncounterLogic.log(encounter, `${combatant.name} rolls Presence (${rank}) and gets ${result}`);
 	};
 
 	static scan = (encounter: EncounterModel, combatant: CombatantModel) => {

@@ -39,7 +39,7 @@ export class ActionPrerequisites {
 	static meleeWeapon = (): ActionPrerequisiteModel => {
 		return {
 			id: 'item',
-			description: 'Requires a melee weapon',
+			description: 'Requires you to have a melee weapon',
 			data: [ ItemProficiencyType.LargeWeapons, ItemProficiencyType.MilitaryWeapons, ItemProficiencyType.PairedWeapons ]
 		};
 	};
@@ -47,7 +47,7 @@ export class ActionPrerequisites {
 	static rangedWeapon = (): ActionPrerequisiteModel => {
 		return {
 			id: 'item',
-			description: 'Requires a ranged weapon',
+			description: 'Requires your to have a ranged weapon',
 			data: [ ItemProficiencyType.PowderWeapons, ItemProficiencyType.RangedWeapons ]
 		};
 	};
@@ -55,7 +55,7 @@ export class ActionPrerequisites {
 	static armor = (): ActionPrerequisiteModel => {
 		return {
 			id: 'item',
-			description: 'Requires armor',
+			description: 'Requires you to be wearing armor',
 			data: [ ItemProficiencyType.LightArmor, ItemProficiencyType.HeavyArmor ]
 		};
 	};
@@ -63,7 +63,7 @@ export class ActionPrerequisites {
 	static shield = (): ActionPrerequisiteModel => {
 		return {
 			id: 'item',
-			description: 'Requires a shield',
+			description: 'Requires you to have a shield',
 			data: [ ItemProficiencyType.Shields ]
 		};
 	};
@@ -71,7 +71,7 @@ export class ActionPrerequisites {
 	static implement = (): ActionPrerequisiteModel => {
 		return {
 			id: 'item',
-			description: 'Requires an implement',
+			description: 'Requires you to have an implement',
 			data: [ ItemProficiencyType.Implements ]
 		};
 	};
@@ -79,7 +79,7 @@ export class ActionPrerequisites {
 	static emptyHand = (): ActionPrerequisiteModel => {
 		return {
 			id: 'emptyhand',
-			description: 'Requires a free hand',
+			description: 'Requires you to have a free hand',
 			data: null
 		};
 	};
@@ -87,7 +87,7 @@ export class ActionPrerequisites {
 	static damage = (): ActionPrerequisiteModel => {
 		return {
 			id: 'damage',
-			description: 'Requires at least 1 point of damage',
+			description: 'Requires you to have at least 1 point of damage',
 			data: null
 		};
 	};
@@ -95,7 +95,7 @@ export class ActionPrerequisites {
 	static wound = (): ActionPrerequisiteModel => {
 		return {
 			id: 'wound',
-			description: 'Requires at least 1 wound',
+			description: 'Requires you to have at least 1 wound',
 			data: null
 		};
 	};
@@ -103,7 +103,7 @@ export class ActionPrerequisites {
 	static condition = (trait: TraitType): ActionPrerequisiteModel => {
 		return {
 			id: 'condition',
-			description: trait === TraitType.Any ? 'Requires a condition': `Requires a ${trait} condition`,
+			description: trait === TraitType.Any ? 'Requires you to have a condition': `Requires you to have a ${trait} condition`,
 			data: null
 		};
 	};
@@ -111,7 +111,7 @@ export class ActionPrerequisites {
 	static carryingCapacity = (): ActionPrerequisiteModel => {
 		return {
 			id: 'carryingcapacity',
-			description: 'Requires spare carrying capacity',
+			description: 'Requires you to have spare carrying capacity',
 			data: null
 		};
 	};
@@ -119,7 +119,7 @@ export class ActionPrerequisites {
 	static hidden = (): ActionPrerequisiteModel => {
 		return {
 			id: 'hidden',
-			description: 'Requires hiding',
+			description: 'Requires you to be hidden',
 			data: null
 		};
 	};
@@ -127,7 +127,7 @@ export class ActionPrerequisites {
 	static prone = (): ActionPrerequisiteModel => {
 		return {
 			id: 'prone',
-			description: 'Requires prone',
+			description: 'Requires you to be prone',
 			data: null
 		};
 	};
@@ -655,7 +655,10 @@ export class ActionEffects {
 						log(`${combatant.name} rolls weapon damage for ${target.name} (rank ${rank}) and gets ${result}`);
 						const bonus = EncounterLogic.getDamageBonus(encounter, combatant, weapon.damage.type);
 						if (bonus > 0) {
-							log(`${combatant.name} deals a bonus ${bonus} damage`);
+							log(`${combatant.name} deals ${bonus} additional damage`);
+						}
+						if (bonus < 0) {
+							log(`${combatant.name} deals ${bonus} less damage`);
 						}
 						EncounterLogic.damage(encounter, target, result + bonus, weapon.damage.type);
 					});
@@ -673,7 +676,10 @@ export class ActionEffects {
 						log(`${combatant.name} rolls damage for ${target.name} (rank ${data.rank}) and gets ${result}`);
 						const bonus = EncounterLogic.getDamageBonus(encounter, combatant, data.type);
 						if (bonus > 0) {
-							log(`${combatant.name} deals a bonus ${bonus} damage`);
+							log(`${combatant.name} deals ${bonus} additional damage`);
+						}
+						if (bonus < 0) {
+							log(`${combatant.name} deals ${bonus} less damage`);
 						}
 						EncounterLogic.damage(encounter, target, result + bonus, data.type);
 					});
@@ -698,7 +704,10 @@ export class ActionEffects {
 				log(`${combatant.name} rolls damage for self (rank ${data.rank}) and gets ${result}`);
 				const bonus = EncounterLogic.getDamageBonus(encounter, combatant, data.type);
 				if (bonus > 0) {
-					log(`${combatant.name} deals a bonus ${bonus} damage`);
+					log(`${combatant.name} deals ${bonus} additional damage`);
+				}
+				if (bonus < 0) {
+					log(`${combatant.name} deals ${bonus} less damage`);
 				}
 				EncounterLogic.damage(encounter, combatant, result + bonus, data.type);
 				break;

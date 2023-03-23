@@ -1,7 +1,5 @@
 import { Component } from 'react';
 
-import { CardType } from '../../../enums/card-type';
-import { CombatantType } from '../../../enums/combatant-type';
 import { FeatureType } from '../../../enums/feature-type';
 
 import { CombatantLogic } from '../../../logic/combatant-logic';
@@ -15,15 +13,12 @@ import type { ItemModel } from '../../../models/item';
 import { Collections } from '../../../utils/collections';
 import { Utils } from '../../../utils/utils';
 
-import { ActionCard, FeatureCard } from '../../cards';
-import { CardList, PlayingCard, Tabs, Tag, Text, TextType } from '../../controls';
+import { Tabs, Tag, Text, TextType } from '../../controls';
 import { Items } from './items/items';
 import { LevelUp } from './level-up/level-up';
 import { Stats } from './stats/stats';
 
 import './character-sheet-panel.scss';
-
-type ViewType = 'actions' | 'features' | 'items' | 'stats';
 
 interface Props {
 	combatant: CombatantModel;
@@ -37,7 +32,7 @@ interface Props {
 }
 
 interface State {
-	view: ViewType;
+	view: string;
 	features: FeatureModel[];
 }
 
@@ -97,17 +92,6 @@ export class CharacterSheetPanel extends Component<Props, State> {
 	};
 
 	render = () => {
-		const cutDown = (this.props.combatant.type === CombatantType.Monster) && !this.props.developer;
-
-		const options = [
-			{ id: 'stats', display: 'Statistics' },
-			{ id: 'items', display: 'Equipment' }
-		];
-		if (!cutDown) {
-			options.push({ id: 'features', display: 'Feature Deck' });
-			options.push({ id: 'actions', display: 'Action Deck' });
-		}
-
 		let content = null;
 		switch (this.state.view) {
 			case 'stats':
@@ -131,12 +115,6 @@ export class CharacterSheetPanel extends Component<Props, State> {
 					/>
 				);
 				break;
-			case 'features':
-				content = <FeaturesPage combatant={this.props.combatant} />;
-				break;
-			case 'actions':
-				content = <ActionsPage combatant={this.props.combatant} />;
-				break;
 		}
 
 		let selector = null;
@@ -150,9 +128,9 @@ export class CharacterSheetPanel extends Component<Props, State> {
 		} else {
 			selector = (
 				<Tabs
-					options={options}
+					options={[ { id: 'stats', display: 'Statistics' }, { id: 'items', display: 'Equipment' } ]}
 					selectedID={this.state.view}
-					onSelect={id => this.setState({ view: id as ViewType })}
+					onSelect={id => this.setState({ view: id })}
 				/>
 			);
 		}
@@ -175,64 +153,6 @@ export class CharacterSheetPanel extends Component<Props, State> {
 					</div>
 				</div>
 				{sidebar}
-			</div>
-		);
-	};
-}
-
-interface FeaturesPageProps {
-	combatant: CombatantModel;
-}
-
-class FeaturesPage extends Component<FeaturesPageProps> {
-	render = () => {
-		const featureCards = CombatantLogic.getFeatureDeck(this.props.combatant).map(feature => {
-			return (
-				<PlayingCard
-					key={feature.id}
-					type={CardType.Feature}
-					front={<FeatureCard feature={feature} />}
-					footer={CombatantLogic.getCardSource(this.props.combatant, feature.id, 'feature')}
-					footerType={CombatantLogic.getCardSourceType(this.props.combatant, feature.id, 'feature')}
-				/>
-			);
-		});
-
-		return (
-			<div className='features-page'>
-				<div className='column'>
-					<Text>Each time {this.props.combatant.name} levels up, they get to choose one of these features.</Text>
-					<CardList cards={featureCards} />
-				</div>
-			</div>
-		);
-	};
-}
-
-interface ActionsPageProps {
-	combatant: CombatantModel;
-}
-
-class ActionsPage extends Component<ActionsPageProps> {
-	render = () => {
-		const actionCards = CombatantLogic.getActionDeck(this.props.combatant).map(action => {
-			return (
-				<PlayingCard
-					key={action.id}
-					type={CardType.Action}
-					front={<ActionCard action={action} />}
-					footer={CombatantLogic.getCardSource(this.props.combatant, action.id, 'action')}
-					footerType={CombatantLogic.getCardSourceType(this.props.combatant, action.id, 'action')}
-				/>
-			);
-		});
-
-		return (
-			<div className='actions-page'>
-				<div className='column'>
-					<Text>In an encounter, {this.props.combatant.name} will be able to choose from these actions.</Text>
-					<CardList cards={actionCards} />
-				</div>
 			</div>
 		);
 	};

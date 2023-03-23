@@ -43,11 +43,6 @@
     * Dart traps
     * Poison dart traps
   * Action parameter selection / 'go' button / etc, should happen in the card itself
-  * Indicate combatant's info on the map token / in the initiative list
-    * Damage / wounds
-    * Stunned
-    * Standing / prone / unconscious
-    * Conditions exist (beneficial / not beneficial)
   * Allow other victory conditions
     * Get a certain number of heroes to a particular area
     * Get one hero to a particular area and stay there for a certain number of rounds
@@ -84,7 +79,7 @@
     * Giant snake
     * Dragon
 * Roles / backgrounds:
-  * Artificer (infuse item with magic, drain item of magic, convert item / loot pile into energy)
+  * Artificer (infuse item with magic, drain item of magic, convert item / loot pile into energy, shocking grasp)
   * Blackguard
   * Shaman
   * Warlock

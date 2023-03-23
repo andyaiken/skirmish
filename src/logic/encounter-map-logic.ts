@@ -74,7 +74,7 @@ export class EncounterMapLogic {
 			}
 		];
 
-		while (map.length < 1000) {
+		while (map.length < 500) {
 			const walls = EncounterMapLogic.getAdjacentWalls(map, map, [ 'n', 'e', 's', 'w' ]);
 			const wall = Collections.draw(walls, rng);
 

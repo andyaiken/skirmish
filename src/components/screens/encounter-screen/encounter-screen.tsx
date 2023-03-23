@@ -247,10 +247,6 @@ export class EncounterScreen extends Component<Props, State> {
 	};
 
 	showDetailsCombatant = (combatant: CombatantModel)=> {
-		if ((combatant.type === CombatantType.Monster) && !this.props.developer) {
-			return;
-		}
-
 		this.setState({
 			detailsCombatant: combatant,
 			detailsLoot: null

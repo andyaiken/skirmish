@@ -22,7 +22,7 @@ export class Wall extends Component<Props> {
 	render = () => {
 		const selectable = this.props.selectable ? 'selectable' : '';
 		const selected = this.props.selected ? 'selected' : '';
-		const className = `encounter-map-square wall ${selectable} ${selected}`;
+		const className = `encounter-map-wall ${selectable} ${selected}`;
 
 		return (
 			<div

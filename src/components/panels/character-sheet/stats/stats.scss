@@ -1,7 +1,13 @@
 .stats {
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(232px, 1fr));
-	gap: 10px;
+	.grid {
+		display: flex;
+		align-items: flex-start;
+		gap: 10px;
+
+		.column {
+			flex: 1 1 220px;
+		}
+	}
 
 	.stats-row {
 		display: flex;

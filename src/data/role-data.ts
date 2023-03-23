@@ -56,7 +56,7 @@ export class RoleData {
 							ActionPrerequisites.implement()
 						],
 						parameters: [
-							ActionTargetParameters.burst(ActionTargetType.Allies, 1, 5)
+							ActionTargetParameters.burst(ActionTargetType.Allies, 1, 10)
 						],
 						effects: [
 							ActionEffects.addCondition(ConditionLogic.createDamageResistanceCondition(TraitType.Resolve, 5, DamageType.All))
@@ -69,7 +69,7 @@ export class RoleData {
 							ActionPrerequisites.implement()
 						],
 						parameters: [
-							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 10)
 						],
 						effects: [
 							ActionEffects.attack({
@@ -91,7 +91,7 @@ export class RoleData {
 							ActionPrerequisites.implement()
 						],
 						parameters: [
-							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 10)
 						],
 						effects: [
 							ActionEffects.attack({
@@ -113,7 +113,7 @@ export class RoleData {
 							ActionPrerequisites.implement()
 						],
 						parameters: [
-							ActionTargetParameters.burst(ActionTargetType.Combatants, 1, 5)
+							ActionTargetParameters.burst(ActionTargetType.Combatants, 1, 10)
 						],
 						effects: [
 							ActionEffects.forceMovement(MovementType.Swap, 0)
@@ -148,17 +148,27 @@ export class RoleData {
 							ActionPrerequisites.meleeWeapon()
 						],
 						parameters: [
+							ActionWeaponParameters.melee(),
 							ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
 						],
 						effects: [
+							ActionEffects.attack({
+								weapon: true,
+								skill: SkillType.Weapon,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealWeaponDamage(),
+									ActionEffects.dealDamage(DamageType.Poison, 2),
+									ActionEffects.addCondition(ConditionLogic.createAutoDamageCondition(TraitType.Endurance, 3, DamageType.Poison))
+								]
+							})
 						]
 					},
 					{
 						id: 'assassin-action-2',
 						name: 'Vanish',
-						prerequisites: [
-							ActionPrerequisites.meleeWeapon()
-						],
+						prerequisites: [],
 						parameters: [
 							ActionTargetParameters.self()
 						],
@@ -175,6 +185,7 @@ export class RoleData {
 							ActionPrerequisites.hidden()
 						],
 						parameters: [
+							ActionWeaponParameters.melee(),
 							ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
 						],
 						effects: [

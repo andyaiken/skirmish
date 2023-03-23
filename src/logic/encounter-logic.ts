@@ -215,8 +215,6 @@ export class EncounterLogic {
 				break;
 			}
 			case CombatantState.Unconscious:
-				// Unconscious
-				break;
 			case CombatantState.Dead: {
 				EncounterLogic.endOfTurn(encounter, combatant);
 

@@ -22,13 +22,9 @@ export class CombatStatsPanel extends Component<Props> {
 	getConditions = (trait: TraitType) => {
 		return this.props.combatant.combat.conditions
 			.filter(c => c.trait === trait)
-			.map(c => {
-				return (
-					<div key={c.id} className='condition'>
-						<StatValue label={ConditionLogic.getConditionDescription(c)} value={c.rank} />
-					</div>
-				);
-			});
+			.map(c => (
+				<StatValue key={c.id} orientation='compact' label={ConditionLogic.getConditionDescription(c)} value={c.rank} />
+			));
 	};
 
 	render = () => {
@@ -68,14 +64,17 @@ export class CombatStatsPanel extends Component<Props> {
 					<div className='stats-row align-top'>
 						<div>
 							<StatValue orientation='vertical' label='Endurance' value={EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Endurance)} />
+							{this.getConditions(TraitType.Endurance).length > 0 ? <hr /> : null}
 							<div>{this.getConditions(TraitType.Endurance)}</div>
 						</div>
 						<div>
 							<StatValue orientation='vertical' label='Resolve' value={EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Resolve)} />
+							{this.getConditions(TraitType.Resolve).length > 0 ? <hr /> : null}
 							<div>{this.getConditions(TraitType.Resolve)}</div>
 						</div>
 						<div>
 							<StatValue orientation='vertical' label='Speed' value={EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Speed)} />
+							{this.getConditions(TraitType.Speed).length > 0 ? <hr /> : null}
 							<div>{this.getConditions(TraitType.Speed)}</div>
 						</div>
 					</div>

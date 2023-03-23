@@ -2,7 +2,7 @@
 	aspect-ratio: 1 / 1;
 	position: absolute;
 	border-radius: 50%;
-	background-color: rgb(160, 120, 10);
+	background-image: linear-gradient(to bottom right, rgb(210, 155, 20), rgb(160, 120, 10));
 	box-shadow: 2px 2px 2px 0 rgba(0, 0, 0, 0.4);
 	transform: scale(0.6);
 
@@ -17,7 +17,7 @@
 		align-items: center;
 		justify-content: center;
 		border-radius: 50%;
-		background: radial-gradient(rgb(230, 175, 40), rgb(210, 155, 20));
+		background-image: linear-gradient(to bottom right, rgb(230, 175, 40), rgb(210, 155, 20));
 
 		&.current {
 			background: rgb(255, 255, 255) !important;

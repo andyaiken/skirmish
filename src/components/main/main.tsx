@@ -653,8 +653,11 @@ export class Main extends Component<Props, State> {
 				return (
 					<LandingScreen
 						game={this.state.game}
+						developer={this.state.developer}
 						startCampaign={this.startCampaign}
 						continueCampaign={this.continueCampaign}
+						endCampaign={this.endCampaign}
+						setDeveloperMode={this.setDeveloperMode}
 					/>
 				);
 			case 'campaign':
@@ -704,6 +707,8 @@ export class Main extends Component<Props, State> {
 						pickUpItem={this.pickUpItem}
 						dropItem={this.dropItem}
 						finishEncounter={this.finishEncounter}
+						endCampaign={this.endCampaign}
+						setDeveloperMode={this.setDeveloperMode}
 					/>
 				);
 		}

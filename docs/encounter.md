@@ -18,8 +18,10 @@
     * Draw three action cards
 
 * During turn:
-  * Combatant uses movement points / takes an action
-  * When (action taken and movement points are gone) or (combatant chooses), end turn
+  * If you're stunned, you can't do anything
+  * If you're not stunned, you can:
+    * Combatant uses movement points / takes an action
+    * When (action taken and movement points are gone) or (combatant chooses), end turn
 
 * At end of turn:
   * Set Senses, Hidden to 0
@@ -41,7 +43,7 @@
 
 ## Using an action
 
-* Select targets (self / allies / opponents, within range of weapon / implement, cannot target opponents whose Stealth beats your Perception)
+* Select targets (self / allies / enemies, floor squares, wall squares, within range of weapon / implement, cannot target enemies whose Hidden beats your Senses)
 * Apply initial effects
 * If attack:
   * If requires weapon, and Unreliable weapon, roll Unreliable; if 10 or over, attack ends
@@ -55,8 +57,9 @@
 
 ## Other options
 
-* **Scan**: spend 4 movement pts, roll Perception, set Senses
-* **Hide**: spend 4 movement pts, roll Stealth, set Hide
+* **Inspire**: spend 4 movement points, roll Presense; on a result of 8 or higher, any allies you can see are no longer stunned
+* **Scan**: spend 4 movement pts, roll Perception, add result to Senses
+* **Hide**: spend 4 movement pts, roll Stealth, add result to Hide
 * **Stand up**: spend 8 movement points
   * When prone: skill ranks are halved
 * **Pick up adjacent object**: 1 movement pt

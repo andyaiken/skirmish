@@ -14,6 +14,10 @@ export interface WeaponModel {
 	unreliable: number;
 }
 
+export interface ArmorModel {
+	features: FeatureModel[];
+}
+
 export interface ItemModel {
 	id: string;
 	name: string;
@@ -23,6 +27,7 @@ export interface ItemModel {
 	location: ItemLocationType;
 	slots: number;
 	weapon: WeaponModel | null;
+	armor: ArmorModel | null;
 	features: FeatureModel[];
 	actions: ActionModel[];
 }

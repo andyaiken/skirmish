@@ -1161,7 +1161,6 @@ export class RoleData {
 								skillBonus: 0,
 								hit: [
 									ActionEffects.dealWeaponDamage(),
-									ActionEffects.stun(),
 									ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Endurance, 5, TraitType.Speed))
 								]
 							})

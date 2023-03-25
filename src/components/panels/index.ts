@@ -6,6 +6,7 @@ import { DirectionPanel } from './direction/direction-panel';
 import { EncounterMapPanel } from './encounter-map/encounter-map-panel';
 import { HeroBuilderPanel } from './hero-builder/hero-builder-panel';
 import { InitiativeListPanel } from './initiative-list/initiative-list-panel';
+import { SettingsPanel } from './settings/settings-panel';
 import { TurnLogPanel } from './turn-log/turn-log';
 
 export {
@@ -17,5 +18,6 @@ export {
 	HeroBuilderPanel,
 	InitiativeListPanel,
 	ActionListItemPanel, FeatureListItemPanel, TextListItemPanel,
+	SettingsPanel,
 	TurnLogPanel
 };

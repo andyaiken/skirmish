@@ -24,6 +24,16 @@ export class SpeciesCard extends Component<Props> {
 			);
 		}
 
+		let skills = null;
+		if (this.props.species.skills.length > 0) {
+			skills = (
+				<div>
+					<Text type={TextType.MinorHeading}>Skills</Text>
+					{this.props.species.skills.map((s, n) => <TextListItemPanel key={n} item={s} />)}
+				</div>
+			);
+		}
+
 		let features = null;
 		if (this.props.species.features.length > 0) {
 			features = (
@@ -49,6 +59,7 @@ export class SpeciesCard extends Component<Props> {
 				<Text type={TextType.SubHeading}>{this.props.species.name}</Text>
 				<hr />
 				{traits}
+				{skills}
 				{features}
 				{actions}
 			</div>

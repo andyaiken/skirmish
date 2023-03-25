@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { IconSettings } from '@tabler/icons-react';
+import { IconInfoCircle } from '@tabler/icons-react';
 
 import type { BoonModel } from '../../../models/boon';
 import type { CombatantModel } from '../../../models/combatant';
@@ -8,12 +8,12 @@ import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
 import type { RegionModel } from '../../../models/region';
 
-import { Selector } from '../../controls';
+import { Dialog, Selector } from '../../controls';
 
 import { CampaignMapPage } from './campaign-map-page/campaign-map-page';
 import { HeroesPage } from './heroes-page/heroes-page';
 import { ItemsPage } from './items-page/items-page';
-import { OptionsPage } from './options-page/options-page';
+import { SettingsPanel } from '../../panels';
 
 import './campaign-screen.scss';
 
@@ -39,6 +39,7 @@ interface Props {
 
 interface State {
 	page: string;
+	showSettings: boolean;
 }
 
 export class CampaignScreen extends Component<Props, State> {
@@ -50,13 +51,20 @@ export class CampaignScreen extends Component<Props, State> {
 			page = 'heroes';
 		}
 		this.state = {
-			page: page
+			page: page,
+			showSettings: false
 		};
 	}
 
 	setPage = (page: string) => {
 		this.setState({
 			page: page
+		});
+	};
+
+	setShowSettings = (show: boolean) => {
+		this.setState({
+			showSettings: show
 		});
 	};
 
@@ -101,15 +109,6 @@ export class CampaignScreen extends Component<Props, State> {
 					/>
 				);
 				break;
-			case 'options':
-				content = (
-					<OptionsPage
-						developer={this.props.developer}
-						endCampaign={this.props.endCampaign}
-						setDeveloperMode={this.props.setDeveloperMode}
-					/>
-				);
-				break;
 		}
 
 		const options = [
@@ -117,18 +116,36 @@ export class CampaignScreen extends Component<Props, State> {
 			{ id: 'items', display: 'Your Equipment' },
 			{ id: 'map', display: 'The Island' }
 		];
+
+		let dialog = null;
+		if (this.state.showSettings) {
+			dialog = (
+				<Dialog
+					content={
+						<SettingsPanel
+							game={this.props.game}
+							developer={this.props.developer}
+							endCampaign={this.props.endCampaign}
+							setDeveloperMode={this.props.setDeveloperMode}
+						/>}
+					onClose={() => this.setShowSettings(false)}
+				/>
+			);
+		}
+
 		return (
 			<div className='campaign-screen'>
 				<div className='campaign-top-bar'>
 					<div className='logo-text inset-text'>Skirmish</div>
 					<Selector options={options} selectedID={this.state.page} onSelect={this.setPage} />
-					<button className={`icon-btn ${this.state.page === 'options' ? 'checked' : ''}`} onClick={() => this.setPage('options')}>
-						<IconSettings />
+					<button className='icon-btn' title='Information' onClick={() => this.setShowSettings(true)}>
+						<IconInfoCircle />
 					</button>
 				</div>
 				<div className='campaign-content'>
 					{content}
 				</div>
+				{dialog}
 			</div>
 		);
 	};

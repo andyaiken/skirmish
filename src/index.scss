@@ -11,6 +11,7 @@ body {
 	font-size: 15px;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+	transition: all 0s;
 }
 
 * {
@@ -51,6 +52,7 @@ button {
 	}
 
 	&.checked {
+		border: 2px solid rgb(60, 170, 255);
 		background-color: rgb(200, 230, 255);
 	}
 
@@ -77,5 +79,5 @@ button {
 	background-color: rgb(100, 100, 100);
 	background-clip: text;
 	color: transparent;
-	text-shadow: rgba(255, 255, 255, 0.5) 0 3px 3px;
+	text-shadow: rgba(255, 255, 255, 0.5) 2px 2px 5px;
 }

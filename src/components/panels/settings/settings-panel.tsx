@@ -1,21 +1,24 @@
 import { Component } from 'react';
 
-import { BackgroundData } from '../../../../data/background-data';
-import { ItemData } from '../../../../data/item-data';
-import { RoleData } from '../../../../data/role-data';
-import { SpeciesData } from '../../../../data/species-data';
+import { BackgroundData } from '../../../data/background-data';
+import { ItemData } from '../../../data/item-data';
+import { RoleData } from '../../../data/role-data';
+import { SpeciesData } from '../../../data/species-data';
 
-import { CardType } from '../../../../enums/card-type';
+import { CardType } from '../../../enums/card-type';
 
-import { ActionModel } from '../../../../models/action';
+import type { ActionModel } from '../../../models/action';
+import type { GameModel } from '../../../models/game';
 
-import { ActionCard, BackgroundCard, ItemCard, PlaceholderCard, RoleCard, SpeciesCard } from '../../../cards';
-import { CardList, Dialog, PlayingCard, Text, TextType } from '../../../controls';
+import { ActionCard, BackgroundCard, ItemCard, PlaceholderCard, RoleCard, SpeciesCard } from '../../cards';
+import { CardList, Dialog, PlayingCard, Text, TextType } from '../../controls';
 
-import './options-page.scss';
+import pkg from '../../../../package.json';
 
+import './settings-panel.scss';
 
 interface Props {
+	game: GameModel | null;
 	developer: boolean;
 	endCampaign: () => void;
 	setDeveloperMode: (value: boolean) => void;
@@ -26,7 +29,7 @@ interface State {
 	deck: CardType;
 }
 
-export class OptionsPage extends Component<Props, State> {
+export class SettingsPanel extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
@@ -53,7 +56,9 @@ export class OptionsPage extends Component<Props, State> {
 		}
 
 		return (
-			<div className='options-page'>
+			<div className='settings-panel'>
+				<Text type={TextType.Heading}>Information</Text>
+				<hr />
 				<div className='cards'>
 					<PlayingCard
 						stack={true}
@@ -80,9 +85,15 @@ export class OptionsPage extends Component<Props, State> {
 						onClick={() => this.setDeck(CardType.Item)}
 					/>
 				</div>
+				{this.state.local ? <hr /> : null }
+				{
+					this.state.local ?
+						<button className='developer' onClick={() => this.props.setDeveloperMode(!this.props.developer)}>Developer Mode: {this.props.developer ? 'On' : 'Off'}</button>
+						: null
+				}
+				{this.props.game ? <button className='danger' onClick={() => this.props.endCampaign()}>Abandon this Campaign</button> : null}
 				<hr />
-				<button className='danger' onClick={() => this.props.endCampaign()}>Abandon This Campaign</button>
-				{this.state.local ? <button className='developer' onClick={() => this.props.setDeveloperMode(!this.props.developer)}>Developer Mode</button> : null}
+				<Text>Version {pkg.version}</Text>
 				{dialog}
 			</div>
 		);
@@ -93,7 +104,6 @@ interface DeckProps {
 	type: CardType;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface DeckState {
 	source: string;
 	actions: ActionModel[];

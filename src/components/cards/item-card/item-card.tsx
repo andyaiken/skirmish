@@ -35,6 +35,16 @@ export class ItemCard extends Component<Props> {
 			);
 		}
 
+		let armor = null;
+		if (this.props.item.armor) {
+			armor = (
+				<div>
+					<Text type={TextType.MinorHeading}>Armor</Text>
+					{this.props.item.armor.features.map(f => <FeatureListItemPanel key={f.id} item={f} />)}
+				</div>
+			);
+		}
+
 		let features = null;
 		if (this.props.item.features.length > 0) {
 			features = (
@@ -65,6 +75,7 @@ export class ItemCard extends Component<Props> {
 					<Tag>{location}</Tag>
 				</div>
 				{weapon}
+				{armor}
 				{features}
 				{actions}
 			</div>

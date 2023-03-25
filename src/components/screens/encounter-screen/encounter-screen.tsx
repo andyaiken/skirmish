@@ -1,4 +1,4 @@
-import { IconId, IconNotes, IconRotate2, IconRotateClockwise2, IconX, IconZoomIn, IconZoomOut } from '@tabler/icons-react';
+import { IconInfoCircle, IconRotate2, IconRotateClockwise2, IconZoomIn, IconZoomOut } from '@tabler/icons-react';
 import { Component } from 'react';
 
 import { ActionTargetType } from '../../../enums/action-target-type';
@@ -6,7 +6,6 @@ import { CardType } from '../../../enums/card-type';
 import { CombatantState } from '../../../enums/combatant-state';
 import { CombatantType } from '../../../enums/combatant-type';
 import { EncounterState } from '../../../enums/encounter-state';
-import { TraitType } from '../../../enums/trait-type';
 
 import { ActionLogic } from '../../../logic/action-logic';
 import { EncounterLogic } from '../../../logic/encounter-logic';
@@ -19,7 +18,7 @@ import type { ItemModel } from '../../../models/item';
 import type { RegionModel } from '../../../models/region';
 
 import { CardList, Dialog, PlayingCard, Text, TextType } from '../../controls';
-import { CharacterSheetPanel, EncounterMapPanel, InitiativeListPanel, TurnLogPanel } from '../../panels';
+import { CharacterSheetPanel, EncounterMapPanel, InitiativeListPanel, SettingsPanel, TurnLogPanel } from '../../panels';
 import { CombatantAction } from './combatant-action/combatant-action';
 import { CombatantHeader } from './combatant-header/combatant-header';
 import { CombatantMonster } from './combatant-monster/combatant-monster';
@@ -52,6 +51,8 @@ interface Props {
 	pickUpItem: (item: ItemModel, hero: CombatantModel) => void;
 	dropItem: (item: ItemModel, combatant: CombatantModel) => void;
 	finishEncounter: (state: EncounterState) => void;
+	endCampaign: () => void;
+	setDeveloperMode: (value: boolean) => void;
 }
 
 interface State {
@@ -67,6 +68,7 @@ interface State {
 	manualEncounterState: EncounterState;
 	detailsCombatant: CombatantModel | null;
 	detailsLoot: LootPileModel | null;
+	showSettings: boolean;
 }
 
 export class EncounterScreen extends Component<Props, State> {
@@ -84,7 +86,8 @@ export class EncounterScreen extends Component<Props, State> {
 			selectedSquares: [],
 			manualEncounterState: EncounterState.Active,
 			detailsCombatant: null,
-			detailsLoot: null
+			detailsLoot: null,
+			showSettings: false
 		};
 	}
 
@@ -267,6 +270,12 @@ export class EncounterScreen extends Component<Props, State> {
 		});
 	};
 
+	setShowSettings = (show: boolean) => {
+		this.setState({
+			showSettings: show
+		});
+	};
+
 	move = (encounter: EncounterModel, combatant: CombatantModel, dir: string, cost: number) => {
 		this.setState({
 			currentActionParameter: null,
@@ -381,102 +390,14 @@ export class EncounterScreen extends Component<Props, State> {
 		);
 	};
 
-	getBottomControls = (state: EncounterState) => {
+	getBottomControls = () => {
+		let state = this.state.manualEncounterState;
+		if (state === EncounterState.Active) {
+			state = EncounterLogic.getEncounterState(this.props.encounter);
+		}
+
 		if (state !== EncounterState.Active) {
 			return null;
-		}
-
-		if (this.state.selectedCombatantIDs.length === 1) {
-			const combatant = EncounterLogic.getCombatant(this.props.encounter, this.state.selectedCombatantIDs[0]) as CombatantModel;
-
-			return (
-				<div className='encounter-bottom-panel'>
-					<div className='section text'>
-						<b>{combatant.name}</b>
-					</div>
-					<div className='section stack'>
-						<div className='stack-label'>Endurance</div>
-						<div className='stack-value'>{EncounterLogic.getTraitRank(this.props.encounter, combatant, TraitType.Endurance)}</div>
-					</div>
-					<div className='section stack'>
-						<div className='stack-label'>Resolve</div>
-						<div className='stack-value'>{EncounterLogic.getTraitRank(this.props.encounter, combatant, TraitType.Resolve)}</div>
-					</div>
-					<div className='section stack'>
-						<div className='stack-label'>Speed</div>
-						<div className='stack-value'>{EncounterLogic.getTraitRank(this.props.encounter, combatant, TraitType.Speed)}</div>
-					</div>
-					<div className='section stack'>
-						<div className='stack-label'>Damage</div>
-						<div className='stack-value'>{combatant.combat.damage}</div>
-					</div>
-					<div className='section stack'>
-						<div className='stack-label'>Wounds</div>
-						<div className='stack-value'>{combatant.combat.wounds} / {EncounterLogic.getTraitRank(this.props.encounter, combatant, TraitType.Resolve)}</div>
-					</div>
-					<div className='section compact'>
-						<button className='icon-btn' title='Close' onClick={() => this.showDetailsCombatant(combatant)}>
-							<IconId />
-						</button>
-					</div>
-					<div className='section compact'>
-						<button className='icon-btn' title='Close' onClick={() => this.clearSelection()}>
-							<IconX />
-						</button>
-					</div>
-				</div>
-			);
-		}
-
-		if (this.state.selectedCombatantIDs.length > 1) {
-			return (
-				<div className='encounter-bottom-panel'>
-					<div className='section text'>
-						<b>{this.state.selectedCombatantIDs.length} combatants selected</b>
-					</div>
-					<div className='section compact'>
-						<button className='icon-btn' title='Close' onClick={() => this.clearSelection()}>
-							<IconX />
-						</button>
-					</div>
-				</div>
-			);
-		}
-
-		if (this.state.selectedLootIDs.length === 1) {
-			const loot = EncounterLogic.getLoot(this.props.encounter, this.state.selectedLootIDs[0]) as LootPileModel;
-			return (
-				<div className='encounter-bottom-panel'>
-					<div className='section text'>
-						<b>{loot.items.map(item => item.name).join(', ')}</b>
-					</div>
-					<div className='section compact'>
-						<button className='icon-btn' title='Close' onClick={() => this.showDetailsLoot(loot)}>
-							<IconNotes />
-						</button>
-					</div>
-					<div className='section compact'>
-						<button className='icon-btn' title='Close' onClick={() => this.clearSelection()}>
-							<IconX />
-						</button>
-					</div>
-				</div>
-			);
-		}
-
-		if (this.state.selectedLootIDs.length > 1) {
-			return (
-				<div className='encounter-bottom-panel'>
-					<div className='section text'>
-						<b>{this.state.selectedLootIDs.length} treasure piles selected</b>
-					</div>
-					<div className='section compact'>
-						<button className='icon-btn' title='Close' onClick={() => this.clearSelection()}>
-							<IconX />
-						</button>
-					</div>
-				</div>
-			);
 		}
 
 		return (
@@ -504,11 +425,21 @@ export class EncounterScreen extends Component<Props, State> {
 					<button className='danger' onClick={() => this.setManualEncounterState(EncounterState.Defeat)}>Surrender</button>
 				</div>
 				{this.props.developer ? <div className='section'><button className='developer' onClick={() => this.setManualEncounterState(EncounterState.Victory)}>Victory</button></div> : null}
+				<div className='section compact'>
+					<button className='icon-btn' title='Information' onClick={() => this.setShowSettings(true)}>
+						<IconInfoCircle />
+					</button>
+				</div>
 			</div>
 		);
 	};
 
-	getRightControls = (state: EncounterState) => {
+	getRightControls = () => {
+		let state = this.state.manualEncounterState;
+		if (state === EncounterState.Active) {
+			state = EncounterLogic.getEncounterState(this.props.encounter);
+		}
+
 		const region = this.props.game.map.regions.find(r => r.id === this.props.encounter.regionID) as RegionModel;
 
 		switch (state) {
@@ -523,6 +454,7 @@ export class EncounterScreen extends Component<Props, State> {
 							<Text>Each surviving hero who took part in this encounter gains 1 XP.</Text>
 							<Text>Any heroes who died have been lost.</Text>
 							<button onClick={() => this.props.finishEncounter(EncounterState.Victory)}>OK</button>
+							{state !== EncounterLogic.getEncounterState(this.props.encounter) ? <button onClick={() => this.props.finishEncounter(EncounterState.Active)}>Cancel</button> : null}
 						</div>
 					</div>
 				);
@@ -536,6 +468,7 @@ export class EncounterScreen extends Component<Props, State> {
 							<Text type={TextType.MinorHeading}>You lost the encounter in {region.name}.</Text>
 							<Text>Those heroes who took part have been lost, along with all their equipment.</Text>
 							<button onClick={() => this.props.finishEncounter(EncounterState.Defeat)}>OK</button>
+							{state !== EncounterLogic.getEncounterState(this.props.encounter) ? <button onClick={() => this.props.finishEncounter(EncounterState.Active)}>Cancel</button> : null}
 						</div>
 					</div>
 				);
@@ -549,6 +482,7 @@ export class EncounterScreen extends Component<Props, State> {
 							<Text type={TextType.MinorHeading}>You retreated from the encounter in {region.name}.</Text>
 							<Text>Any heroes who fell have been lost, along with all their equipment.</Text>
 							<button onClick={() => this.props.finishEncounter(EncounterState.Retreat)}>OK</button>
+							{state !== EncounterLogic.getEncounterState(this.props.encounter) ? <button onClick={() => this.props.finishEncounter(EncounterState.Active)}>Cancel</button> : null}
 						</div>
 					</div>
 				);
@@ -699,11 +633,6 @@ export class EncounterScreen extends Component<Props, State> {
 	};
 
 	render = () => {
-		let state = this.state.manualEncounterState;
-		if (state === EncounterState.Active) {
-			state = EncounterLogic.getEncounterState(this.props.encounter);
-		}
-
 		let dialog = null;
 		if (this.state.detailsCombatant) {
 			dialog = (
@@ -737,6 +666,20 @@ export class EncounterScreen extends Component<Props, State> {
 				/>
 			);
 		}
+		if (this.state.showSettings) {
+			dialog = (
+				<Dialog
+					content={
+						<SettingsPanel
+							game={this.props.game}
+							developer={this.props.developer}
+							endCampaign={this.props.endCampaign}
+							setDeveloperMode={this.props.setDeveloperMode}
+						/>}
+					onClose={() => this.setShowSettings(false)}
+				/>
+			);
+		}
 
 		return (
 			<div className='encounter-screen'>
@@ -758,9 +701,9 @@ export class EncounterScreen extends Component<Props, State> {
 						onDoubleClickCombatant={this.showDetailsCombatant}
 						onDoubleClickLoot={this.showDetailsLoot}
 					/>
-					{this.getBottomControls(state)}
+					{this.getBottomControls()}
 				</div>
-				{this.getRightControls(state)}
+				{this.getRightControls()}
 				{dialog}
 			</div>
 		);

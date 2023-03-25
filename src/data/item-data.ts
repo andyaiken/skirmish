@@ -28,6 +28,7 @@ export class ItemData {
 					range: 1,
 					unreliable: 0
 				},
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -47,6 +48,7 @@ export class ItemData {
 					range: 1,
 					unreliable: 0
 				},
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -66,6 +68,7 @@ export class ItemData {
 					range: 1,
 					unreliable: 0
 				},
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -85,6 +88,7 @@ export class ItemData {
 					range: 1,
 					unreliable: 0
 				},
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -104,6 +108,7 @@ export class ItemData {
 					range: 1,
 					unreliable: 0
 				},
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -123,6 +128,7 @@ export class ItemData {
 					range: 1,
 					unreliable: 0
 				},
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -142,6 +148,7 @@ export class ItemData {
 					range: 1,
 					unreliable: 1
 				},
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -161,6 +168,7 @@ export class ItemData {
 					range: 2,
 					unreliable: 0
 				},
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -180,6 +188,7 @@ export class ItemData {
 					range: 1,
 					unreliable: 0
 				},
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -199,6 +208,7 @@ export class ItemData {
 					range: 1,
 					unreliable: 0
 				},
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -218,6 +228,7 @@ export class ItemData {
 					range: 1,
 					unreliable: 0
 				},
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -237,6 +248,7 @@ export class ItemData {
 					range: 1,
 					unreliable: 0
 				},
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -256,6 +268,7 @@ export class ItemData {
 					range: 2,
 					unreliable: 0
 				},
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -275,6 +288,7 @@ export class ItemData {
 					range: 1,
 					unreliable: 0
 				},
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -294,6 +308,7 @@ export class ItemData {
 					range: 1,
 					unreliable: 0
 				},
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -313,6 +328,7 @@ export class ItemData {
 					range: 2,
 					unreliable: 0
 				},
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -332,6 +348,7 @@ export class ItemData {
 					range: 1,
 					unreliable: 0
 				},
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -351,6 +368,7 @@ export class ItemData {
 					range: 1,
 					unreliable: 0
 				},
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -370,6 +388,7 @@ export class ItemData {
 					range: 1,
 					unreliable: 0
 				},
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -389,6 +408,7 @@ export class ItemData {
 					range: 1,
 					unreliable: 0
 				},
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -408,6 +428,7 @@ export class ItemData {
 					range: 10,
 					unreliable: 0
 				},
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -427,6 +448,7 @@ export class ItemData {
 					range: 15,
 					unreliable: 1
 				},
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -446,6 +468,7 @@ export class ItemData {
 					range: 15,
 					unreliable: 2
 				},
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -465,6 +488,7 @@ export class ItemData {
 					range: 10,
 					unreliable: 2
 				},
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -477,6 +501,7 @@ export class ItemData {
 				location: ItemLocationType.Hand,
 				slots: 1,
 				weapon: null,
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -489,6 +514,7 @@ export class ItemData {
 				location: ItemLocationType.Hand,
 				slots: 1,
 				weapon: null,
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -501,6 +527,7 @@ export class ItemData {
 				location: ItemLocationType.Hand,
 				slots: 2,
 				weapon: null,
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -513,6 +540,7 @@ export class ItemData {
 				location: ItemLocationType.Neck,
 				slots: 1,
 				weapon: null,
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -525,6 +553,7 @@ export class ItemData {
 				location: ItemLocationType.Hand,
 				slots: 2,
 				weapon: null,
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -537,9 +566,12 @@ export class ItemData {
 				location: ItemLocationType.Body,
 				slots: 1,
 				weapon: null,
-				features: [
-					FeatureLogic.createDamageCategoryResistFeature('leatherarmour-1', DamageCategoryType.Physical, 1)
-				],
+				armor: {
+					features: [
+						FeatureLogic.createDamageCategoryResistFeature('leatherarmour-1', DamageCategoryType.Physical, 1)
+					]
+				},
+				features: [],
 				actions: []
 			},
 			{
@@ -551,10 +583,13 @@ export class ItemData {
 				location: ItemLocationType.Body,
 				slots: 1,
 				weapon: null,
-				features: [
-					FeatureLogic.createDamageCategoryResistFeature('hidearmour-1', DamageCategoryType.Physical, 2),
-					FeatureLogic.createSkillCategoryFeature('hidearmour-2', SkillCategoryType.Physical, -1)
-				],
+				armor: {
+					features: [
+						FeatureLogic.createDamageCategoryResistFeature('hidearmour-1', DamageCategoryType.Physical, 2),
+						FeatureLogic.createSkillCategoryFeature('hidearmour-2', SkillCategoryType.Physical, -1)
+					]
+				},
+				features: [],
 				actions: []
 			},
 			{
@@ -566,11 +601,14 @@ export class ItemData {
 				location: ItemLocationType.Body,
 				slots: 1,
 				weapon: null,
-				features: [
-					FeatureLogic.createDamageCategoryResistFeature('brigandinearmour-1', DamageCategoryType.Physical, 3),
-					FeatureLogic.createSkillCategoryFeature('brigandinearmour-2', SkillCategoryType.Physical, -1),
-					FeatureLogic.createTraitFeature('brigandinearmour-3', TraitType.Speed, -1)
-				],
+				armor: {
+					features: [
+						FeatureLogic.createDamageCategoryResistFeature('brigandinearmour-1', DamageCategoryType.Physical, 3),
+						FeatureLogic.createSkillCategoryFeature('brigandinearmour-2', SkillCategoryType.Physical, -1),
+						FeatureLogic.createTraitFeature('brigandinearmour-3', TraitType.Speed, -1)
+					]
+				},
+				features: [],
 				actions: []
 			},
 			{
@@ -582,11 +620,14 @@ export class ItemData {
 				location: ItemLocationType.Body,
 				slots: 1,
 				weapon: null,
-				features: [
-					FeatureLogic.createDamageCategoryResistFeature('chainarmour-1', DamageCategoryType.Physical, 4),
-					FeatureLogic.createSkillCategoryFeature('chainarmour-2', SkillCategoryType.Physical, -2),
-					FeatureLogic.createTraitFeature('chainarmour-3', TraitType.Speed, -1)
-				],
+				armor: {
+					features: [
+						FeatureLogic.createDamageCategoryResistFeature('chainarmour-1', DamageCategoryType.Physical, 4),
+						FeatureLogic.createSkillCategoryFeature('chainarmour-2', SkillCategoryType.Physical, -2),
+						FeatureLogic.createTraitFeature('chainarmour-3', TraitType.Speed, -1)
+					]
+				},
+				features: [],
 				actions: []
 			},
 			{
@@ -598,11 +639,14 @@ export class ItemData {
 				location: ItemLocationType.Body,
 				slots: 1,
 				weapon: null,
-				features: [
-					FeatureLogic.createDamageCategoryResistFeature('platearmor-1', DamageCategoryType.Physical, 5),
-					FeatureLogic.createSkillCategoryFeature('platearmor-2', SkillCategoryType.Physical, -2),
-					FeatureLogic.createTraitFeature('platearmor-3', TraitType.Speed, -2)
-				],
+				armor: {
+					features: [
+						FeatureLogic.createDamageCategoryResistFeature('platearmor-1', DamageCategoryType.Physical, 5),
+						FeatureLogic.createSkillCategoryFeature('platearmor-2', SkillCategoryType.Physical, -2),
+						FeatureLogic.createTraitFeature('platearmor-3', TraitType.Speed, -2)
+					]
+				},
+				features: [],
 				actions: []
 			},
 			{
@@ -614,9 +658,12 @@ export class ItemData {
 				location: ItemLocationType.Hand,
 				slots: 1,
 				weapon: null,
-				features: [
-					FeatureLogic.createDamageCategoryResistFeature('shield-1', DamageCategoryType.Physical, 1)
-				],
+				armor: {
+					features: [
+						FeatureLogic.createDamageCategoryResistFeature('shield-1', DamageCategoryType.Physical, 1)
+					]
+				},
+				features: [],
 				actions: []
 			},
 			{
@@ -628,10 +675,13 @@ export class ItemData {
 				location: ItemLocationType.Hand,
 				slots: 1,
 				weapon: null,
-				features: [
-					FeatureLogic.createDamageCategoryResistFeature('towershield-1', DamageCategoryType.Physical, 2),
-					FeatureLogic.createSkillCategoryFeature('towershield-2', SkillCategoryType.Physical, -1)
-				],
+				armor: {
+					features: [
+						FeatureLogic.createDamageCategoryResistFeature('towershield-1', DamageCategoryType.Physical, 2),
+						FeatureLogic.createSkillCategoryFeature('towershield-2', SkillCategoryType.Physical, -1)
+					]
+				},
+				features: [],
 				actions: []
 			},
 			{
@@ -643,6 +693,7 @@ export class ItemData {
 				location: ItemLocationType.Head,
 				slots: 1,
 				weapon: null,
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -655,6 +706,7 @@ export class ItemData {
 				location: ItemLocationType.Head,
 				slots: 1,
 				weapon: null,
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -667,6 +719,7 @@ export class ItemData {
 				location: ItemLocationType.Head,
 				slots: 1,
 				weapon: null,
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -679,6 +732,7 @@ export class ItemData {
 				location: ItemLocationType.Head,
 				slots: 1,
 				weapon: null,
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -691,6 +745,7 @@ export class ItemData {
 				location: ItemLocationType.Neck,
 				slots: 1,
 				weapon: null,
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -703,6 +758,7 @@ export class ItemData {
 				location: ItemLocationType.Body,
 				slots: 1,
 				weapon: null,
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -715,6 +771,7 @@ export class ItemData {
 				location: ItemLocationType.Body,
 				slots: 1,
 				weapon: null,
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -727,6 +784,7 @@ export class ItemData {
 				location: ItemLocationType.Body,
 				slots: 1,
 				weapon: null,
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -739,6 +797,7 @@ export class ItemData {
 				location: ItemLocationType.Neck,
 				slots: 1,
 				weapon: null,
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -751,6 +810,7 @@ export class ItemData {
 				location: ItemLocationType.Neck,
 				slots: 1,
 				weapon: null,
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -763,6 +823,7 @@ export class ItemData {
 				location: ItemLocationType.Ring,
 				slots: 1,
 				weapon: null,
+				armor: null,
 				features: [],
 				actions: []
 			},
@@ -775,6 +836,7 @@ export class ItemData {
 				location: ItemLocationType.Feet,
 				slots: 1,
 				weapon: null,
+				armor: null,
 				features: [],
 				actions: []
 			}

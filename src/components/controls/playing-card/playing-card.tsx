@@ -83,7 +83,7 @@ export class PlayingCard extends Component<Props> {
 		return (
 			<div className={className} onClick={this.onClick}>
 				{stack}
-				<div className='playing-card-inner'>
+				<div className='playing-card-inner' style={this.props.stack ? { transform: `rotate(${(Random.randomDecimal() * 6) - 3}deg)` } : {}}>
 					<div className={`playing-card-front ${this.props.type.toLowerCase()}`}>
 						{hasFront ? <div className='front-content'>{this.props.front}</div> : null }
 						{hasFooter ? <div className={`front-footer ${footerType.toLowerCase()}`}>{this.props.footer}</div> : null }

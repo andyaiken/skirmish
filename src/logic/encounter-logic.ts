@@ -569,7 +569,7 @@ export class EncounterLogic {
 		const result = Random.dice(rank);
 
 		combatant.combat.movement -= 4;
-		combatant.combat.senses = result;
+		combatant.combat.senses += result;
 
 		EncounterLogic.checkActionParameters(encounter, combatant);
 
@@ -581,7 +581,7 @@ export class EncounterLogic {
 		const result = Random.dice(rank);
 
 		combatant.combat.movement -= 4;
-		combatant.combat.hidden = result;
+		combatant.combat.hidden += result;
 
 		EncounterLogic.checkActionParameters(encounter, combatant);
 

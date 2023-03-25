@@ -22,8 +22,11 @@ export class SpeciesData {
 				type: CombatantType.Hero,
 				size: 1,
 				traits: [
-					TraitType.All
+					TraitType.Endurance,
+					TraitType.Resolve,
+					TraitType.Speed
 				],
+				skills: [],
 				features: [
 					FeatureLogic.createSkillFeature('human-feature-1', SkillType.Any, 2)
 				],
@@ -60,6 +63,7 @@ export class SpeciesData {
 				traits: [
 					TraitType.Endurance
 				],
+				skills: [],
 				features: [
 					FeatureLogic.createTraitFeature('construct-feature-1', TraitType.Endurance, 1),
 					FeatureLogic.createDamageResistFeature('construct-feature-2', DamageType.Poison, 1),
@@ -108,6 +112,9 @@ export class SpeciesData {
 				size: 1,
 				traits: [
 					TraitType.Resolve
+				],
+				skills: [
+					SkillType.Presence
 				],
 				features: [
 					FeatureLogic.createTraitFeature('deva-feature-1', TraitType.Resolve, 1),
@@ -165,6 +172,7 @@ export class SpeciesData {
 				traits: [
 					TraitType.Endurance
 				],
+				skills: [],
 				features: [
 					FeatureLogic.createTraitFeature('dwarf-feature-1', TraitType.Endurance, 1),
 					FeatureLogic.createTraitFeature('dwarf-feature-2', TraitType.Resolve, 1),
@@ -208,6 +216,11 @@ export class SpeciesData {
 				traits: [
 					TraitType.Speed
 				],
+				skills: [
+					SkillType.Perception,
+					SkillType.Reactions,
+					SkillType.Stealth
+				],
 				features: [
 					FeatureLogic.createTraitFeature('elf-feature-1', TraitType.Speed, 1),
 					FeatureLogic.createSkillFeature('elf-feature-2', SkillType.Perception, 2),
@@ -247,6 +260,10 @@ export class SpeciesData {
 				traits: [
 					TraitType.Speed
 				],
+				skills: [
+					SkillType.Reactions,
+					SkillType.Stealth
+				],
 				features: [
 					FeatureLogic.createTraitFeature('gnome-feature-1', TraitType.Speed, 1),
 					FeatureLogic.createSkillFeature('gnome-feature-2', SkillType.Reactions, 2),
@@ -281,6 +298,9 @@ export class SpeciesData {
 				size: 1,
 				traits: [
 					TraitType.Endurance
+				],
+				skills: [
+					SkillType.Brawl
 				],
 				features: [
 					FeatureLogic.createTraitFeature('minotaur-feature-1', TraitType.Endurance, 1),
@@ -376,6 +396,9 @@ export class SpeciesData {
 				traits: [
 					TraitType.Speed
 				],
+				skills: [
+					SkillType.Stealth
+				],
 				features: [
 					FeatureLogic.createTraitFeature('pixie-feature-1', TraitType.Speed, 1),
 					FeatureLogic.createSkillFeature('pixie-feature-2', SkillType.Stealth, 2),
@@ -414,6 +437,9 @@ export class SpeciesData {
 				size: 1,
 				traits: [
 					TraitType.Speed
+				],
+				skills: [
+					SkillType.Brawl
 				],
 				features: [
 					FeatureLogic.createTraitFeature('reptilian-feature-1', TraitType.Speed, 1),
@@ -484,6 +510,10 @@ export class SpeciesData {
 				size: 1,
 				traits: [
 					TraitType.Resolve
+				],
+				skills: [
+					SkillType.Brawl,
+					SkillType.Stealth
 				],
 				features: [
 					FeatureLogic.createTraitFeature('shadowborn-feature-1', TraitType.Resolve, 1),
@@ -557,6 +587,11 @@ export class SpeciesData {
 				traits: [
 					TraitType.Resolve
 				],
+				skills: [
+					SkillType.Brawl,
+					SkillType.Perception,
+					SkillType.Stealth
+				],
 				features: [
 					FeatureLogic.createTraitFeature('werewolf-feature-1', TraitType.Resolve, 1),
 					FeatureLogic.createSkillFeature('werewolf-feature-2', SkillType.Brawl, 2),
@@ -627,6 +662,10 @@ export class SpeciesData {
 				traits: [
 					TraitType.All
 				],
+				skills: [
+					SkillType.Brawl,
+					SkillType.Weapon
+				],
 				features: [
 					FeatureLogic.createTraitFeature('orc-feature-1', TraitType.Any, 1),
 					FeatureLogic.createDamageResistFeature('orc-feature-2', DamageType.All, 1),
@@ -657,10 +696,15 @@ export class SpeciesData {
 				traits: [
 					TraitType.Speed
 				],
+				skills: [
+					SkillType.Reactions,
+					SkillType.Reactions,
+					SkillType.Stealth
+				],
 				features: [
 					FeatureLogic.createTraitFeature('goblin-feature-1', TraitType.Speed, 1),
-					FeatureLogic.createSkillFeature('goblin-feature-2', SkillType.Reactions, 1),
-					FeatureLogic.createSkillFeature('goblin-feature-3', SkillType.Stealth, 1)
+					FeatureLogic.createSkillFeature('goblin-feature-2', SkillType.Reactions, 2),
+					FeatureLogic.createSkillFeature('goblin-feature-3', SkillType.Stealth, 2)
 				],
 				actions: [
 					{
@@ -696,6 +740,7 @@ export class SpeciesData {
 					TraitType.Endurance,
 					TraitType.Resolve
 				],
+				skills: [],
 				features: [
 					FeatureLogic.createTraitFeature('troll-feature-1', TraitType.Endurance, 1),
 					FeatureLogic.createTraitFeature('troll-feature-2', TraitType.Resolve, 1),

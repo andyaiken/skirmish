@@ -33,6 +33,7 @@ export class CombatantLogic {
 			combatant.speciesID = species.id;
 			combatant.size = species.size;
 			species.traits.forEach(t => combatant.features.push(FeatureLogic.createTraitFeature(Utils.guid(), t, 1)));
+			species.skills.forEach(s => combatant.features.push(FeatureLogic.createSkillFeature(Utils.guid(), s, 2)));
 		}
 
 		const role = GameLogic.getRole(roleID);
@@ -251,6 +252,11 @@ export class CombatantLogic {
 				}
 
 				combatant.items.forEach(item => {
+					if (item.armor) {
+						if (item.armor.features.find(f => f.id === cardID)) {
+							return item.name;
+						}
+					}
 					if (item.features.find(f => f.id === cardID)) {
 						return item.name;
 					}
@@ -319,6 +325,11 @@ export class CombatantLogic {
 
 				let isItem = false;
 				combatant.items.forEach(item => {
+					if (item.armor) {
+						if (item.armor.features.find(f => f.id === cardID)) {
+							isItem = true;
+						}
+					}
 					if (item.features.find(f => f.id === cardID)) {
 						isItem = true;
 					}
@@ -337,6 +348,9 @@ export class CombatantLogic {
 	static getFeatures = (combatant: CombatantModel) => {
 		let list = ([] as FeatureModel[]).concat(combatant.features);
 		combatant.items.forEach(i => {
+			if (i.armor) {
+				list = list.concat(i.armor.features);
+			}
 			list = list.concat(i.features);
 		});
 

@@ -5,14 +5,11 @@ export class NameGenerator {
 	static generateName = () => {
 		let count = 1;
 		switch (Random.randomNumber(20)) {
-			case 15:
 			case 16:
 			case 17:
 			case 18:
-				count = 2;
-				break;
 			case 19:
-				count = 3;
+				count = 2;
 				break;
 		}
 
@@ -344,7 +341,7 @@ export class NameGenerator {
 			'\''
 		];
 
-		switch (Random.randomNumber(20)) {
+		switch (Random.randomNumber(12)) {
 			case 0:
 			case 1:
 			case 2:
@@ -358,25 +355,7 @@ export class NameGenerator {
 				return `${Collections.draw(starts)}${Collections.draw(ends)}`;
 			case 10:
 			case 11:
-			case 12:
-			case 13:
 				return `${Collections.draw(starts)}${Collections.draw(separators)}${Collections.draw(ends)}`;
-			case 14:
-				return `${Collections.draw(starts)}${Collections.draw(starts)}${Collections.draw(separators)}${Collections.draw(ends)}`;
-			case 15:
-				return `${Collections.draw(starts)}${Collections.draw(separators)}${Collections.draw(ends)}${Collections.draw(ends)}`;
-			case 16:
-				return `${Collections.draw(starts)}${Collections.draw(separators)}${Collections.draw(starts)}${Collections.draw(ends)}`;
-			case 17:
-				return `${Collections.draw(starts)}${Collections.draw(ends)}${Collections.draw(separators)}${Collections.draw(ends)}`;
-			case 18: {
-				const separator = Collections.draw(separators);
-				return `${Collections.draw(starts)}${separator}${Collections.draw(starts)}${separator}${Collections.draw(ends)}`;
-			}
-			case 19: {
-				const separator = Collections.draw(separators);
-				return `${Collections.draw(starts)}${separator}${Collections.draw(ends)}${separator}${Collections.draw(ends)}`;
-			}
 		}
 
 		return '';

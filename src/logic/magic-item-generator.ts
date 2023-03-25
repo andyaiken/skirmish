@@ -8,7 +8,8 @@ import { SkillCategoryType } from '../enums/skill-category-type';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
 
-import type { ItemModel, WeaponModel } from '../models/item';
+import type { ArmorModel, ItemModel, WeaponModel } from '../models/item';
+import type { FeatureModel } from '../models/feature';
 
 import { Collections } from '../utils/collections';
 import { Random } from '../utils/random';
@@ -74,6 +75,47 @@ export class MagicItemGenerator {
 			}
 		}
 
+		if (item.armor) {
+			// Increase damage resistance rank
+			const copy1 = JSON.parse(JSON.stringify(item)) as ItemModel;
+			const arm1 = copy1.armor as ArmorModel;
+			const f1 = arm1.features.find(f => f.type === FeatureType.DamageCategoryResist);
+			if (f1) {
+				f1.rank += Random.randomBonus();
+				options.push(copy1);
+			}
+
+			// Apply damage resistance to more damage categories
+			const copy2 = JSON.parse(JSON.stringify(item)) as ItemModel;
+			const arm2 = copy1.armor as ArmorModel;
+			const f2 = arm2.features.find(f => f.type === FeatureType.DamageCategoryResist);
+			if (f2) {
+				const f2Copy = JSON.parse(JSON.stringify(f2)) as FeatureModel;
+				f2Copy.id = Utils.guid();
+				f2Copy.damageCategory = Random.randomBoolean() ? DamageCategoryType.Energy : DamageCategoryType.Corruption;
+				arm2.features.push(f2Copy);
+				options.push(copy2);
+			}
+
+			// Negate skill penalty
+			const copy3 = JSON.parse(JSON.stringify(item)) as ItemModel;
+			const arm3 = copy1.armor as ArmorModel;
+			const f3 = arm3.features.find(f => f.type === FeatureType.SkillCategory);
+			if (f3) {
+				arm3.features = arm3.features.filter(f => f.id !== f3.id);
+				options.push(copy3);
+			}
+
+			// Negate speed penalty
+			const copy4 = JSON.parse(JSON.stringify(item)) as ItemModel;
+			const arm4 = copy1.armor as ArmorModel;
+			const f4 = arm4.features.find(f => f.type === FeatureType.Trait);
+			if (f4) {
+				arm4.features = arm4.features.filter(f => f.id !== f4.id);
+				options.push(copy4);
+			}
+		}
+
 		if (item.proficiency === ItemProficiencyType.Implements) {
 			// Increase Spellcasting skill
 			const copy1 = JSON.parse(JSON.stringify(item)) as ItemModel;
@@ -89,16 +131,6 @@ export class MagicItemGenerator {
 			const copy3 = JSON.parse(JSON.stringify(item)) as ItemModel;
 			copy3.features.push(FeatureLogic.createDamageCategoryBonusFeature(Utils.guid(), DamageCategoryType.Corruption, Random.randomBonus()));
 			options.push(copy3);
-		}
-
-		if ((item.proficiency === ItemProficiencyType.LightArmor) || (item.proficiency === ItemProficiencyType.HeavyArmor) || (item.proficiency === ItemProficiencyType.Shields)) {
-			// Increase damage resistance rank
-			const copy = JSON.parse(JSON.stringify(item)) as ItemModel;
-			const feature = copy.features.find(f => f.type === FeatureType.DamageCategoryResist);
-			if (feature) {
-				feature.rank += Random.randomBonus();
-				options.push(copy);
-			}
 		}
 
 		item.features.filter(f => f.rank < 0).forEach(penalty => {

@@ -84,7 +84,7 @@ export class EncounterLogic {
 	static log = (encounter: EncounterModel, message: string) => {
 		const combatant = encounter.combatants.find(c => c.combat.current);
 		if (combatant) {
-			combatant.combat.actionLog.push(message);
+			combatant.combat.log.push(message);
 		}
 	};
 
@@ -145,14 +145,15 @@ export class EncounterLogic {
 		combatant.combat.movement = 0;
 		combatant.combat.trail = [];
 		combatant.combat.actions = [];
-		combatant.combat.actionLog = [];
+		combatant.combat.selectedAction = null;
+		combatant.combat.log = [];
 		combatant.combat.intents = null;
 
 		if (combatant.combat.state === CombatantState.Unconscious) {
 			const rank = EncounterLogic.getTraitRank(encounter, combatant, TraitType.Resolve);
 			const result = Random.dice(rank);
 			EncounterLogic.log(encounter, `${combatant.name} is unconscious: rolls Resolve (${rank}) and gets ${result}`);
-			if (result < 8) {
+			if (result === 1) {
 				combatant.combat.state = CombatantState.Dead;
 				EncounterLogic.log(encounter, 'Failure: now dead');
 			} else {
@@ -234,7 +235,8 @@ export class EncounterLogic {
 			c.combat.movement = 0;
 			c.combat.trail = [];
 			c.combat.actions = [];
-			c.combat.actionLog = [];
+			c.combat.selectedAction = null;
+			c.combat.log = [];
 			c.combat.intents = null;
 		});
 
@@ -263,6 +265,7 @@ export class EncounterLogic {
 		switch (combatant.type) {
 			case CombatantType.Hero:
 				combatant.combat.actions = Collections.shuffle(deck).splice(0, 3);
+				combatant.combat.actions.push(...BaseData.getBaseActions());
 				break;
 			case CombatantType.Monster:
 				combatant.combat.actions = deck;
@@ -273,7 +276,15 @@ export class EncounterLogic {
 	};
 
 	static selectAction = (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => {
-		combatant.combat.actions = [ action ];
+		combatant.combat.selectedAction = {
+			action: action,
+			used: false
+		};
+		EncounterLogic.checkActionParameters(encounter, combatant, false);
+	};
+
+	static deselectAction = (encounter: EncounterModel, combatant: CombatantModel) => {
+		combatant.combat.selectedAction = null;
 		EncounterLogic.checkActionParameters(encounter, combatant, false);
 	};
 
@@ -297,14 +308,11 @@ export class EncounterLogic {
 	};
 
 	static runAction = (encounter: EncounterModel, combatant: CombatantModel) => {
-		if (combatant.combat.actions.length === 1) {
-			const action = combatant.combat.actions[0];
+		if (combatant.combat.selectedAction !== null) {
+			const action = combatant.combat.selectedAction.action;
+			combatant.combat.selectedAction.used = true;
 			EncounterLogic.log(encounter, `${combatant.name} uses ${action.name}`);
 			action.effects.forEach(effect => ActionEffects.run(effect, encounter, combatant, action.parameters));
-
-			if (combatant.combat.actions.length === 1) {
-				combatant.combat.actions = [];
-			}
 		}
 	};
 
@@ -522,21 +530,24 @@ export class EncounterLogic {
 		EncounterLogic.checkActionParameters(encounter, combatant);
 	};
 
-	static standUpSitDown = (encounter: EncounterModel, combatant: CombatantModel) => {
-		switch (combatant.combat.state) {
-			case CombatantState.Standing:
-				combatant.combat.movement -= 1;
-				combatant.combat.state = CombatantState.Prone;
-				break;
-			case CombatantState.Prone:
-				combatant.combat.movement -= 8;
-				combatant.combat.state = CombatantState.Standing;
-				break;
+	static goProne = (encounter: EncounterModel, combatant: CombatantModel) => {
+		if (combatant.combat.state === CombatantState.Standing) {
+			combatant.combat.state = CombatantState.Prone;
+
+			EncounterLogic.checkActionParameters(encounter, combatant);
+
+			EncounterLogic.log(encounter, `${combatant.name} is now ${combatant.combat.state}`);
 		}
+	};
 
-		EncounterLogic.checkActionParameters(encounter, combatant);
+	static standUp = (encounter: EncounterModel, combatant: CombatantModel) => {
+		if (combatant.combat.state === CombatantState.Prone) {
+			combatant.combat.state = CombatantState.Standing;
 
-		EncounterLogic.log(encounter, `${combatant.name} is now ${combatant.combat.state}`);
+			EncounterLogic.checkActionParameters(encounter, combatant);
+
+			EncounterLogic.log(encounter, `${combatant.name} is now ${combatant.combat.state}`);
+		}
 	};
 
 	static inspire = (encounter: EncounterModel, combatant: CombatantModel) => {

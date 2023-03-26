@@ -10,7 +10,7 @@
   * Set Senses, Hidden, Movement to 0
   * Apply auto-healing effects from conditions / auras
   * Apply auto-damage effects from conditions / auras
-  * If unconscious, roll resolve vs 5; on failure, dead
+  * If unconscious, roll resolve vs 1; on failure, dead
   * If standing or prone
     * Roll Perception to set Senses
     * Roll Speed to set movement points
@@ -60,7 +60,7 @@
 * **Inspire**: spend 4 movement points, roll Presense; on a result of 8 or higher, any allies you can see are no longer stunned
 * **Scan**: spend 4 movement pts, roll Perception, add result to Senses
 * **Hide**: spend 4 movement pts, roll Stealth, add result to Hide
-* **Stand up**: spend 8 movement points
+* **Stand up**: spend your action
   * When prone: skill ranks are halved
 * **Pick up adjacent object**: 1 movement pt
 * **Equip / unequip carried object**: 1 movement pt

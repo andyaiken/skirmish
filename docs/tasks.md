@@ -7,9 +7,6 @@
 
 ## Priority
 
-* On campaign failure, allow the user to continue with a new team or abandon the island
-* Allow action selection to be undone - go back to drawn cards
-* Show area of effect when selecting square / wall on map
 * Add help / documentation to explain game rules
   * Use information panel for this
 * Add a system for evaluating each action to ensure none is too powerful
@@ -18,6 +15,7 @@
 
 ## Future Work
 
+* Show area of effect when selecting a square / wall on the map
 * Add encounter map types
   * Street
   * Building interior
@@ -42,6 +40,9 @@
     * Buy for 25 money
   * Magic items could gain additional attributes when wielder levels up
     * Dormant => awakened => Exalted
+* Keys
+  * Another sort of consumable item
+  * Doors on the map
 * Campaign screen, Items page:
   * Click on magic item / mundane item to see heroes with the correct proficiency
 * Character sheet panel:

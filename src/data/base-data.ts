@@ -85,6 +85,19 @@ export class BaseData {
 						]
 					})
 				]
+			},
+			{
+				id: 'base-4',
+				name: 'Stand Up',
+				prerequisites: [
+					ActionPrerequisites.prone()
+				],
+				parameters: [
+					ActionTargetParameters.self()
+				],
+				effects: [
+					ActionEffects.stand()
+				]
 			}
 		];
 	};

@@ -44,7 +44,11 @@ export interface CombatantModel {
 		hidden: number;
 		conditions: ConditionModel[];
 		actions: ActionModel[];
-		actionLog: string[];
+		selectedAction: {
+			action: ActionModel;
+			used: boolean;
+		} | null;
+		log: string[];
 		intents: IntentsModel | null;
 	}
 }

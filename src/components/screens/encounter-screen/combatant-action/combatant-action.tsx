@@ -1,8 +1,6 @@
 import { IconArrowUp, IconViewfinder } from '@tabler/icons-react';
 import { Component } from 'react';
 
-import { BaseData } from '../../../../data/base-data';
-
 import { ActionTargetType } from '../../../../enums/action-target-type';
 import { CardType } from '../../../../enums/card-type';
 
@@ -28,6 +26,7 @@ interface Props {
 	developer: boolean;
 	drawActions: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	selectAction: (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => void;
+	deselectAction: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	setActionParameter: (parameter: ActionParameterModel) => void;
 	setActionParameterValue: (parameter: ActionParameterModel, value: unknown) => void;
 	runAction: (encounter: EncounterModel, combatant: CombatantModel) => void;
@@ -45,64 +44,67 @@ export class CombatantAction extends Component<Props, State> {
 		};
 	}
 
-	render = () => {
-		if (this.props.combatant.combat.actions.length === 0) {
-			return (
-				<div className='combatant-action'>
-					<Text type={TextType.Information}>You have taken your action for this turn.</Text>
-					{this.props.developer ? <button className='developer' onClick={() => this.props.drawActions(this.props.encounter, this.props.combatant)}>Act Again</button> : null}
-				</div>
-			);
-		} else if (this.props.combatant.combat.actions.length > 1) {
-			const options = [
-				{ id: 'default', display: 'Drawn Actions' },
-				{ id: 'base', display: 'Base Actions' }
-			];
-			if (this.props.developer) {
-				options.push({ id: 'character', display: 'Action Deck' });
-			}
+	getNotSelected = () => {
+		const options = [
+			{ id: 'default', display: 'Drawn Actions' },
+			{ id: 'base', display: 'Base Actions' }
+		];
 
-			let actions: ActionModel[] = [];
-			switch (this.state.showActions) {
-				case 'default':
-					actions = this.props.combatant.combat.actions;
-					break;
-				case 'base':
-					actions = BaseData.getBaseActions();
-					break;
-				case 'character':
-					actions = CombatantLogic.getActionDeck(this.props.combatant);
-					break;
-			}
-			actions.sort((a, b) => a.name.localeCompare(b.name));
-
-			const actionCards = actions.map(a => {
-				const prerequisitesMet = a.prerequisites.every(p => ActionPrerequisites.isSatisfied(p, this.props.encounter, this.props.combatant));
-				return (
-					<PlayingCard
-						key={a.id}
-						type={CardType.Action}
-						front={<ActionCard action={a} encounter={this.props.encounter} />}
-						footer={CombatantLogic.getCardSource(this.props.combatant, a.id, 'action')}
-						footerType={CombatantLogic.getCardSourceType(this.props.combatant, a.id, 'action')}
-						onClick={prerequisitesMet ? () => this.props.selectAction(this.props.encounter, this.props.combatant, a) : null}
-					/>
-				);
-			});
-
-			return (
-				<div className='combatant-action'>
-					<Selector options={options} selectedID={this.state.showActions} onSelect={id => this.setState({ showActions: id })} />
-					{this.props.developer ? <button className='developer' onClick={() => this.props.drawActions(this.props.encounter, this.props.combatant)}>Draw Again</button> : null}
-					<div className='actions'>
-						<CardList cards={actionCards} />
-					</div>
-				</div>
-			);
+		let actions: ActionModel[] = [];
+		switch (this.state.showActions) {
+			case 'default':
+				actions = this.props.combatant.combat.actions.filter(a => CombatantLogic.getCardSourceType(this.props.combatant, a.id, 'action') !== CardType.Base);
+				break;
+			case 'base':
+				actions = this.props.combatant.combat.actions.filter(a => CombatantLogic.getCardSourceType(this.props.combatant, a.id, 'action') === CardType.Base);
+				break;
 		}
+		actions.sort((a, b) => a.name.localeCompare(b.name));
 
-		const action = this.props.combatant.combat.actions[0];
+		const actionCards = actions.map(a => {
+			const prerequisitesMet = a.prerequisites.every(p => ActionPrerequisites.isSatisfied(p, this.props.encounter, this.props.combatant));
+			return (
+				<PlayingCard
+					key={a.id}
+					type={CardType.Action}
+					front={<ActionCard action={a} encounter={this.props.encounter} />}
+					footer={CombatantLogic.getCardSource(this.props.combatant, a.id, 'action')}
+					footerType={CombatantLogic.getCardSourceType(this.props.combatant, a.id, 'action')}
+					onClick={prerequisitesMet ? () => this.props.selectAction(this.props.encounter, this.props.combatant, a) : null}
+				/>
+			);
+		});
 
+		return (
+			<div className='combatant-action'>
+				<Selector options={options} selectedID={this.state.showActions} onSelect={id => this.setState({ showActions: id })} />
+				{this.props.developer ? <button className='developer' onClick={() => this.props.drawActions(this.props.encounter, this.props.combatant)}>Draw Again</button> : null}
+				<div className='actions'>
+					<CardList cards={actionCards} />
+				</div>
+			</div>
+		);
+	};
+
+	getUsed = (action: ActionModel) => {
+		return (
+			<div className='combatant-action'>
+				<Text type={TextType.Information}>You have taken your action for this turn.</Text>
+				<div className='actions'>
+					<PlayingCard
+						key={action.id}
+						type={CardType.Action}
+						front={<ActionCard action={action} encounter={this.props.encounter} />}
+						footer={CombatantLogic.getCardSource(this.props.combatant, action.id, 'action')}
+						footerType={CombatantLogic.getCardSourceType(this.props.combatant, action.id, 'action')}
+					/>
+				</div>
+				{this.props.developer ? <button className='developer' onClick={() => this.props.drawActions(this.props.encounter, this.props.combatant)}>Act Again</button> : null}
+			</div>
+		);
+	};
+
+	getInProgress = (action: ActionModel) => {
 		let prerequisitesMet = true;
 		const prerequisites: JSX.Element[] = [];
 		action.prerequisites.forEach((prerequisite, n) => {
@@ -341,13 +343,31 @@ export class CombatantAction extends Component<Props, State> {
 					{prerequisites}
 					{parameters}
 					<button
-						disabled={!(prerequisitesMet && parametersSet && (this.props.currentActionParameter === null))}
+						disabled={!prerequisitesMet || !parametersSet || (this.props.currentActionParameter !== null)}
 						onClick={() => this.props.runAction(this.props.encounter, this.props.combatant)}
 					>
 						Run this Action
 					</button>
+					<button
+						disabled={this.props.currentActionParameter !== null}
+						onClick={() => this.props.deselectAction(this.props.encounter, this.props.combatant)}
+					>
+						Cancel
+					</button>
 				</div>
 			</div>
 		);
+	};
+
+	render = () => {
+		if (!this.props.combatant.combat.selectedAction) {
+			return this.getNotSelected();
+		} else {
+			if (this.props.combatant.combat.selectedAction.used) {
+				return this.getUsed(this.props.combatant.combat.selectedAction.action);
+			} else {
+				return this.getInProgress(this.props.combatant.combat.selectedAction.action);
+			}
+		}
 	};
 }

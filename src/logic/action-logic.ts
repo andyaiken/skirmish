@@ -570,7 +570,7 @@ export class ActionEffects {
 	static run = (effect: ActionEffectModel, encounter: EncounterModel, combatant: CombatantModel, parameters: ActionParameterModel[]) => {
 		const log = (msg: string) => {
 			const current = encounter.combatants.find(c => c.combat.current) as CombatantModel;
-			current.combat.actionLog.push(msg);
+			current.combat.log.push(msg);
 		};
 
 		switch (effect.id) {
@@ -803,10 +803,7 @@ export class ActionEffects {
 					const targetIDs = targetParameter.value as string[];
 					targetIDs.forEach(id => {
 						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
-						if (target.combat.state === CombatantState.Standing) {
-							target.combat.state = CombatantState.Prone;
-							log(`${target.name} is now ${target.combat.state}`);
-						}
+						EncounterLogic.goProne(encounter, target);
 					});
 				}
 				break;
@@ -841,10 +838,7 @@ export class ActionEffects {
 					const targetIDs = targetParameter.value as string[];
 					targetIDs.forEach(id => {
 						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
-						if (target.combat.state === CombatantState.Prone) {
-							target.combat.state = CombatantState.Standing;
-							log(`${target.name} stands up`);
-						}
+						EncounterLogic.standUp(encounter, target);
 					});
 				}
 				break;
@@ -867,6 +861,7 @@ export class ActionEffects {
 				// This only applies to the current combatant
 				const deck = CombatantLogic.getActionDeck(combatant);
 				combatant.combat.actions = Collections.shuffle(deck).splice(0, 3);
+				combatant.combat.selectedAction = null;
 				break;
 			}
 			case 'invertConditions': {
@@ -1103,6 +1098,8 @@ export class ActionEffects {
 								encounter.loot.push(loot);
 							}
 							log(`${target.name} has lost ${item.name}`);
+						} else {
+							log(`${target.name} is not holding anything`);
 						}
 					});
 				}
@@ -1406,7 +1403,7 @@ export class ActionLogic {
 							...EncounterLogic.findCombatants(encounter, originSquares, radius)
 								.filter(c => c.id !== combatant.id)
 								.filter(c => c.combat.state !== CombatantState.Dead)
-								.filter(c => combatant.combat.senses >= c.combat.hidden)
+								.filter(c => (combatant.type === c.type) || (combatant.combat.senses >= c.combat.hidden))
 								.filter(c => EncounterMapLogic.canSeeAny(edges, originSquares, EncounterLogic.getCombatantSquares(encounter, c)))
 								.sort((a, b) => {
 									const squaresCombatant = EncounterLogic.getCombatantSquares(encounter, combatant);
@@ -1443,7 +1440,6 @@ export class ActionLogic {
 							...EncounterLogic.findCombatants(encounter, originSquares, radius)
 								.filter(c => c.id !== combatant.id)
 								.filter(c => c.combat.state !== CombatantState.Dead)
-								.filter(c => combatant.combat.senses >= c.combat.hidden)
 								.filter(c => invertTargets ? c.type !== combatant.type : c.type === combatant.type)
 								.filter(c => EncounterMapLogic.canSeeAny(edges, originSquares, EncounterLogic.getCombatantSquares(encounter, c)))
 								.sort((a, b) => {

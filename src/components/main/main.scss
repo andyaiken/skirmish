@@ -3,9 +3,11 @@
 	background-color: rgb(240, 240, 240);
 	overflow: hidden;
 
-	.boon-panel {
+	.card-row {
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		gap: 50px;
+		margin-top: 50px;
 	}
 }

@@ -26,9 +26,9 @@ import type { RegionModel } from '../../models/region';
 
 import { Utils } from '../../utils/utils';
 
+import { BoonCard, PlaceholderCard } from '../cards';
 import { CampaignScreen, EncounterScreen, LandingScreen } from '../screens';
 import { Dialog, PlayingCard, Text, TextType } from '../controls';
-import { BoonCard } from '../cards';
 
 import './main.scss';
 
@@ -86,8 +86,11 @@ export class Main extends Component<Props, State> {
 					if (c.combat.trail === undefined) {
 						c.combat.trail = [];
 					}
-					if (c.combat.actionLog === undefined) {
-						c.combat.actionLog = [];
+					if (c.combat.selectedAction === undefined) {
+						c.combat.selectedAction = null;
+					}
+					if (c.combat.log === undefined) {
+						c.combat.log = [];
 					}
 					if (c.combat.intents === undefined) {
 						c.combat.intents = null;
@@ -147,7 +150,7 @@ export class Main extends Component<Props, State> {
 
 	//#endregion
 
-	//#region Landing page
+	//#region Campaign
 
 	startCampaign = () => {
 		this.setState({
@@ -159,6 +162,34 @@ export class Main extends Component<Props, State> {
 	continueCampaign = () => {
 		this.setState({
 			screen: !this.state.game?.encounter ? ScreenType.Campaign : ScreenType.Encounter
+		});
+	};
+
+	restartCampaign = () => {
+		const game = this.state.game as GameModel;
+		game.heroes = [
+			Factory.createCombatant(CombatantType.Hero),
+			Factory.createCombatant(CombatantType.Hero),
+			Factory.createCombatant(CombatantType.Hero),
+			Factory.createCombatant(CombatantType.Hero),
+			Factory.createCombatant(CombatantType.Hero)
+		];
+		game.items = [];
+		game.boons = [];
+		game.money = 0;
+
+		this.setState({
+			game: null,
+			screen: ScreenType.Campaign,
+			dialog: null
+		});
+	};
+
+	endCampaign = () => {
+		this.setState({
+			game: null,
+			screen: ScreenType.Landing,
+			dialog: null
 		});
 	};
 
@@ -296,18 +327,6 @@ export class Main extends Component<Props, State> {
 
 	//#endregion
 
-	//#region Options page
-
-	endCampaign = () => {
-		this.setState({
-			game: null,
-			screen: ScreenType.Landing,
-			dialog: null
-		});
-	};
-
-	//#endregion
-
 	//#region Encounter page
 
 	rotateMap = (encounter: EncounterModel, dir: 'l' | 'r') => {
@@ -389,14 +408,6 @@ export class Main extends Component<Props, State> {
 		});
 	};
 
-	standUp = (encounter: EncounterModel, combatant: CombatantModel) => {
-		EncounterLogic.standUpSitDown(encounter, combatant);
-
-		this.setState({
-			game: this.state.game
-		});
-	};
-
 	inspire = (encounter: EncounterModel, combatant: CombatantModel) => {
 		EncounterLogic.inspire(encounter, combatant);
 
@@ -431,6 +442,14 @@ export class Main extends Component<Props, State> {
 
 	selectAction = (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => {
 		EncounterLogic.selectAction(encounter, combatant, action);
+
+		this.setState({
+			game: this.state.game
+		});
+	};
+
+	deselectAction = (encounter: EncounterModel, combatant: CombatantModel) => {
+		EncounterLogic.deselectAction(encounter, combatant);
 
 		this.setState({
 			game: this.state.game
@@ -592,7 +611,7 @@ export class Main extends Component<Props, State> {
 								<Text type={TextType.Heading}>Victory</Text>
 								<Text type={TextType.SubHeading}>You have taken control of {region.name}!</Text>
 								<Text>You can recruit a new hero, and you have earned a reward:</Text>
-								<div className='boon-panel'>
+								<div className='card-row'>
 									<PlayingCard type={CardType.Boon} front={<BoonCard boon={region.boon} />} footer='Reward' />
 								</div>
 								<Text>Any heroes who died have been lost.</Text>
@@ -617,8 +636,11 @@ export class Main extends Component<Props, State> {
 						<div>
 							<Text type={TextType.Heading}>Defeat</Text>
 							<Text type={TextType.SubHeading}>You lost the encounter in {region.name}, and have no more heroes.</Text>
-							<Text>Better luck next time.</Text>
-							<button onClick={() => this.endCampaign()}>OK</button>
+							<Text>You can either continue with a new group of heroes, or abandon this campaign.</Text>
+							<div className='card-row'>
+								<PlayingCard front={<PlaceholderCard>Continue</PlaceholderCard>} onClick={() => this.restartCampaign()} />
+								<PlayingCard front={<PlaceholderCard>Abandon</PlaceholderCard>} onClick={() => this.endCampaign()} />
+							</div>
 						</div>
 					);
 				}
@@ -694,12 +716,12 @@ export class Main extends Component<Props, State> {
 						performIntents={this.performIntents}
 						move={this.move}
 						addMovement={this.addMovement}
-						standUp={this.standUp}
 						inspire={this.inspire}
 						scan={this.scan}
 						hide={this.hide}
 						drawActions={this.drawActions}
 						selectAction={this.selectAction}
+						deselectAction={this.deselectAction}
 						setActionParameterValue={this.setActionParameterValue}
 						runAction={this.runAction}
 						equipItem={this.equipItem}

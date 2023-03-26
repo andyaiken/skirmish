@@ -38,12 +38,12 @@ interface Props {
 	performIntents: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	move: (encounter: EncounterModel, combatant: CombatantModel, dir: string, cost: number) => void;
 	addMovement: (encounter: EncounterModel, combatant: CombatantModel, value: number) => void;
-	standUp: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	inspire: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	scan: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	hide: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	drawActions: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	selectAction: (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => void;
+	deselectAction: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	setActionParameterValue: (parameter: ActionParameterModel, value: unknown) => void;
 	runAction: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	equipItem: (item: ItemModel, combatant: CombatantModel) => void;
@@ -202,9 +202,11 @@ export class EncounterScreen extends Component<Props, State> {
 
 				if (parameter.id === 'origin') {
 					const combatant = this.props.encounter.combatants.find(c => c.combat.current) as CombatantModel;
-					const action = combatant.combat.actions[0];
-					const targetParam = action.parameters.find(a => a.id === 'targets') as ActionTargetParameterModel;
-					ActionLogic.checkTargetParameter(targetParam, this.props.encounter, combatant, action, false);
+					const action = combatant.combat.selectedAction ? combatant.combat.selectedAction.action : null;
+					if (action) {
+						const targetParam = action.parameters.find(a => a.id === 'targets') as ActionTargetParameterModel;
+						ActionLogic.checkTargetParameter(targetParam, this.props.encounter, combatant, action, false);
+					}
 				}
 
 				this.setState({
@@ -454,7 +456,7 @@ export class EncounterScreen extends Component<Props, State> {
 							<Text>Each surviving hero who took part in this encounter gains 1 XP.</Text>
 							<Text>Any heroes who died have been lost.</Text>
 							<button onClick={() => this.props.finishEncounter(EncounterState.Victory)}>OK</button>
-							{state !== EncounterLogic.getEncounterState(this.props.encounter) ? <button onClick={() => this.props.finishEncounter(EncounterState.Active)}>Cancel</button> : null}
+							{state !== EncounterLogic.getEncounterState(this.props.encounter) ? <button onClick={() => this.setManualEncounterState(EncounterState.Active)}>Cancel</button> : null}
 						</div>
 					</div>
 				);
@@ -468,7 +470,7 @@ export class EncounterScreen extends Component<Props, State> {
 							<Text type={TextType.MinorHeading}>You lost the encounter in {region.name}.</Text>
 							<Text>Those heroes who took part have been lost, along with all their equipment.</Text>
 							<button onClick={() => this.props.finishEncounter(EncounterState.Defeat)}>OK</button>
-							{state !== EncounterLogic.getEncounterState(this.props.encounter) ? <button onClick={() => this.props.finishEncounter(EncounterState.Active)}>Cancel</button> : null}
+							{state !== EncounterLogic.getEncounterState(this.props.encounter) ? <button onClick={() => this.setManualEncounterState(EncounterState.Active)}>Cancel</button> : null}
 						</div>
 					</div>
 				);
@@ -482,7 +484,7 @@ export class EncounterScreen extends Component<Props, State> {
 							<Text type={TextType.MinorHeading}>You retreated from the encounter in {region.name}.</Text>
 							<Text>Any heroes who fell have been lost, along with all their equipment.</Text>
 							<button onClick={() => this.props.finishEncounter(EncounterState.Retreat)}>OK</button>
-							{state !== EncounterLogic.getEncounterState(this.props.encounter) ? <button onClick={() => this.props.finishEncounter(EncounterState.Active)}>Cancel</button> : null}
+							{state !== EncounterLogic.getEncounterState(this.props.encounter) ? <button onClick={() => this.setManualEncounterState(EncounterState.Active)}>Cancel</button> : null}
 						</div>
 					</div>
 				);
@@ -561,7 +563,6 @@ export class EncounterScreen extends Component<Props, State> {
 								combatant={currentCombatant}
 								encounter={this.props.encounter}
 								developer={this.props.developer}
-								standUp={this.props.standUp}
 								inspire={this.props.inspire}
 								scan={this.props.scan}
 								hide={this.props.hide}
@@ -589,6 +590,7 @@ export class EncounterScreen extends Component<Props, State> {
 								developer={this.props.developer}
 								drawActions={this.props.drawActions}
 								selectAction={this.selectAction}
+								deselectAction={this.props.deselectAction}
 								setActionParameter={this.setActionParameter}
 								setActionParameterValue={this.props.setActionParameterValue}
 								runAction={this.runAction}
@@ -601,9 +603,8 @@ export class EncounterScreen extends Component<Props, State> {
 					<div>
 						<TurnLogPanel combatant={currentCombatant} />
 						{
-							currentCombatant.combat.actions.length !== 0 ?
+							(currentCombatant.combat.selectedAction && currentCombatant.combat.selectedAction.used) ? null :
 								<Text type={TextType.Information}><b>You have not taken an action.</b> You probably want to take an action before you end your turn.</Text>
-								: null
 						}
 						<button onClick={() => this.endTurn(this.props.encounter)}>End Turn</button>
 					</div>

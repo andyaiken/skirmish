@@ -6,8 +6,8 @@ import { TraitType } from '../../../enums/trait-type';
 import { ConditionLogic } from '../../../logic/condition-logic';
 import { EncounterLogic } from '../../../logic/encounter-logic';
 
-import { CombatantModel } from '../../../models/combatant';
-import { EncounterModel } from '../../../models/encounter';
+import type { CombatantModel } from '../../../models/combatant';
+import type { EncounterModel } from '../../../models/encounter';
 
 import { Box, IconType, IconValue, StatValue } from '../../controls';
 

@@ -258,7 +258,7 @@ export class NameGenerator {
 			'ie',
 			'iel',
 			'ik',
-			'ikos,',
+			'ikos',
 			'il',
 			'ilar',
 			'ild',

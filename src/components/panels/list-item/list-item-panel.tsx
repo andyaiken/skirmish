@@ -3,8 +3,8 @@ import { Component } from 'react';
 import { ActionLogic } from '../../../logic/action-logic';
 import { FeatureLogic } from '../../../logic/feature-logic';
 
-import { ActionModel } from '../../../models/action';
-import { FeatureModel } from '../../../models/feature';
+import type { ActionModel } from '../../../models/action';
+import type { FeatureModel } from '../../../models/feature';
 
 import './list-item-panel.scss';
 

@@ -33,13 +33,6 @@ export class Intents {
 		};
 	};
 
-	static standUp = (): IntentModel => {
-		return {
-			id: 'stand-up',
-			data: null
-		};
-	};
-
 	static move = (dir: string): IntentModel => {
 		return {
 			id: 'move',
@@ -62,38 +55,40 @@ export class IntentsLogic {
 
 		const options: IntentsModel[] = [];
 
-		combatant.combat.actions
-			.filter(a => a.prerequisites.every(p => ActionPrerequisites.isSatisfied(p, encounter, combatant)))
-			.forEach(action => {
-				action.parameters.forEach(param => {
-					if (param.id === 'targets') {
-						const targetParam = param as ActionTargetParameterModel;
-						if (targetParam.targets === null) {
-							options.push({
-								description: action.name,
-								intents: [ Intents.action(action) ],
-								weight: 2
-							});
-						} else {
-							switch (targetParam.targets.type) {
-								case ActionTargetType.Enemies:
-								case ActionTargetType.Combatants:
-									options.push(...IntentsLogic.getCombatantTargetIntents(encounter, combatant, action, CombatantType.Hero, paths, edges));
-									break;
-								case ActionTargetType.Allies:
-									options.push(...IntentsLogic.getCombatantTargetIntents(encounter, combatant, action, CombatantType.Monster, paths, edges));
-									break;
-								case ActionTargetType.Squares:
-									options.push(...IntentsLogic.getSquareTargetIntents(encounter, combatant, action, paths, edges));
-									break;
-								case ActionTargetType.Walls:
-									options.push(...IntentsLogic.getWallTargetIntents(encounter, combatant, action, paths));
-									break;
+		if (!combatant.combat.selectedAction) {
+			combatant.combat.actions
+				.filter(a => a.prerequisites.every(p => ActionPrerequisites.isSatisfied(p, encounter, combatant)))
+				.forEach(action => {
+					action.parameters.forEach(param => {
+						if (param.id === 'targets') {
+							const targetParam = param as ActionTargetParameterModel;
+							if (targetParam.targets === null) {
+								options.push({
+									description: action.name,
+									intents: [ Intents.action(action) ],
+									weight: 2
+								});
+							} else {
+								switch (targetParam.targets.type) {
+									case ActionTargetType.Enemies:
+									case ActionTargetType.Combatants:
+										options.push(...IntentsLogic.getCombatantTargetIntents(encounter, combatant, action, CombatantType.Hero, paths, edges));
+										break;
+									case ActionTargetType.Allies:
+										options.push(...IntentsLogic.getCombatantTargetIntents(encounter, combatant, action, CombatantType.Monster, paths, edges));
+										break;
+									case ActionTargetType.Squares:
+										options.push(...IntentsLogic.getSquareTargetIntents(encounter, combatant, action, paths, edges));
+										break;
+									case ActionTargetType.Walls:
+										options.push(...IntentsLogic.getWallTargetIntents(encounter, combatant, action, paths));
+										break;
+								}
 							}
 						}
-					}
+					});
 				});
-			});
+		}
 
 		options.push(...IntentsLogic.getMovementIntents(encounter, combatant, paths));
 		options.push(...IntentsLogic.getAttackIntents(encounter, combatant));
@@ -113,14 +108,6 @@ export class IntentsLogic {
 				description: 'Hide',
 				intents: [ Intents.hide() ],
 				weight: stealth
-			});
-		}
-
-		if ((combatant.combat.state === CombatantState.Prone) && (combatant.combat.movement >= 8)) {
-			options.push({
-				description: 'Stand Up',
-				intents: [ Intents.standUp() ],
-				weight: 10
 			});
 		}
 
@@ -253,29 +240,31 @@ export class IntentsLogic {
 	static getAttackIntents = (encounter: EncounterModel, combatant: CombatantModel) => {
 		const intents: IntentsModel[] = [];
 
-		combatant.combat.actions
-			.filter(action => ActionLogic.getActionType(action) === 'Attack')
-			.forEach(action => {
-				const prerequisitesMet = action.prerequisites.every(prerequisite => ActionPrerequisites.isSatisfied(prerequisite, encounter, combatant));
-				const parametersSet = action.parameters.every(param => {
-					switch (param.id) {
-						case 'origin':
-						case 'targets':
-							return (param.value as []).length > 0;
-					}
+		if (!combatant.combat.selectedAction) {
+			combatant.combat.actions
+				.filter(action => ActionLogic.getActionType(action) === 'Attack')
+				.forEach(action => {
+					const prerequisitesMet = action.prerequisites.every(prerequisite => ActionPrerequisites.isSatisfied(prerequisite, encounter, combatant));
+					const parametersSet = action.parameters.every(param => {
+						switch (param.id) {
+							case 'origin':
+							case 'targets':
+								return (param.value as []).length > 0;
+						}
 
-					return param.value !== null;
-				});
-				if (prerequisitesMet && parametersSet) {
-					intents.push({
-						description: action.name,
-						intents: [
-							Intents.action(action)
-						],
-						weight: 4
+						return param.value !== null;
 					});
-				}
-			});
+					if (prerequisitesMet && parametersSet) {
+						intents.push({
+							description: action.name,
+							intents: [
+								Intents.action(action)
+							],
+							weight: 4
+						});
+					}
+				});
+		}
 
 		return intents;
 	};
@@ -392,12 +381,6 @@ export class IntentsLogic {
 					}
 					break;
 				}
-				case 'stand-up': {
-					if (combatant.combat.movement >= 8) {
-						EncounterLogic.standUpSitDown(encounter, combatant);
-					}
-					break;
-				}
 				case 'move': {
 					const dir = intent.data as string;
 					const cost = EncounterLogic.getMoveCost(encounter, combatant, combatant.combat.position, dir);
@@ -408,7 +391,7 @@ export class IntentsLogic {
 				}
 				case 'action': {
 					const action = intent.data as ActionModel;
-					combatant.combat.actions = [ action ];
+					EncounterLogic.selectAction(encounter, combatant, action);
 					EncounterLogic.runAction(encounter, combatant);
 					break;
 				}

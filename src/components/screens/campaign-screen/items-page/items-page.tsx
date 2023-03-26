@@ -6,7 +6,7 @@ import { GameLogic } from '../../../../logic/game-logic';
 import { MagicItemGenerator } from '../../../../logic/magic-item-generator';
 
 import type { BoonModel } from '../../../../models/boon';
-import { CombatantModel } from '../../../../models/combatant';
+import type { CombatantModel } from '../../../../models/combatant';
 import type { GameModel } from '../../../../models/game';
 import type { ItemModel } from '../../../../models/item';
 

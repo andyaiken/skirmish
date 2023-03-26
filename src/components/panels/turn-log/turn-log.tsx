@@ -1,6 +1,6 @@
 import { Component, createRef } from 'react';
 
-import { CombatantModel } from '../../../models/combatant';
+import type { CombatantModel } from '../../../models/combatant';
 
 import './turn-log.scss';
 
@@ -25,13 +25,13 @@ export class TurnLogPanel extends Component<Props> {
 	};
 
 	render = () => {
-		if (this.props.combatant.combat.actionLog.length === 0) {
+		if (this.props.combatant.combat.log.length === 0) {
 			return null;
 		}
 
 		return (
 			<div className='turn-log'>
-				{this.props.combatant.combat.actionLog.map((msg, n) => <div key={n} className='turn-log-message'>{msg}</div>)}
+				{this.props.combatant.combat.log.map((msg, n) => <div key={n} className='turn-log-message'>{msg}</div>)}
 				<div ref={this.messagesEndRef} />
 			</div>
 		);

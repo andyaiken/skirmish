@@ -3,7 +3,7 @@ import { Component } from 'react';
 import { ActionLogic, ActionPrerequisites } from '../../../logic/action-logic';
 
 import type { ActionEffectModel, ActionModel } from '../../../models/action';
-import { CombatantModel } from '../../../models/combatant';
+import type { CombatantModel } from '../../../models/combatant';
 import type { EncounterModel } from '../../../models/encounter';
 
 import { Tag, Text, TextType } from '../../controls';

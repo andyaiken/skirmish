@@ -16,6 +16,7 @@ import { Floor } from './floor/floor';
 import { Fog } from './fog/fog';
 import { LootToken } from './loot-token/loot-token';
 import { MiniToken } from './mini-token/mini-token';
+import { Overlay } from './overlay/overlay';
 import { TrailToken } from './trail-token/trail-token';
 import { Wall } from './wall/wall';
 
@@ -30,6 +31,7 @@ interface Props {
 	selectedCombatantIDs: string[];
 	selectedLootIDs: string[];
 	selectedSquares: { x: number, y: number }[];
+	effect: { x: number, y: number, size: number, radius: number } | null;
 	onClickCombatant: (combatant: CombatantModel) => void;
 	onClickLoot: (loot: LootPileModel) => void;
 	onClickSquare: (square: { x: number, y: number }) => void;
@@ -55,7 +57,7 @@ export class EncounterMapPanel extends Component<Props> {
 
 		const walls = Collections.distinct(EncounterMapLogic.getAdjacentWalls(this.props.encounter.mapSquares, this.props.encounter.mapSquares), sq => `${sq.x} ${sq.y}`)
 			.sort((a, b) => {
-				let result = a.y - b.y;
+				let result: number = a.y - b.y;
 				if (result === 0) {
 					result = a.x - b.x;
 				}
@@ -179,6 +181,21 @@ export class EncounterMapPanel extends Component<Props> {
 				);
 			});
 
+		const overlays = [];
+		if (this.props.effect) {
+			overlays.push(
+				<Overlay
+					key='effect'
+					x={this.props.effect.x}
+					y={this.props.effect.y}
+					size={this.props.effect.size}
+					radius={this.props.effect.radius}
+					squareSize={this.props.squareSize}
+					mapDimensions={dims}
+				/>
+			);
+		}
+
 		const width = dims.right - dims.left + 1;
 		const height = dims.bottom - dims.top + 1;
 		return (
@@ -191,6 +208,7 @@ export class EncounterMapPanel extends Component<Props> {
 					{walls}
 					{minis}
 					{fog}
+					{overlays}
 				</div>
 			</div>
 		);

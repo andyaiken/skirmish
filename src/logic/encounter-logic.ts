@@ -156,6 +156,7 @@ export class EncounterLogic {
 			if (result === 1) {
 				combatant.combat.state = CombatantState.Dead;
 				EncounterLogic.log(encounter, 'Failure: now dead');
+				EncounterLogic.dropAllItems(encounter, combatant);
 			} else {
 				EncounterLogic.log(encounter, 'Success');
 			}
@@ -517,14 +518,7 @@ export class EncounterLogic {
 		if (combatant.combat.wounds > resolve) {
 			combatant.combat.state = CombatantState.Dead;
 			EncounterLogic.log(encounter, `${combatant.name} is now ${combatant.combat.state}`);
-
-			if (combatant.items.length + combatant.carried.length > 0) {
-				const loot = Factory.createLootPile();
-				loot.items.push(...combatant.items, ...combatant.carried);
-				loot.position.x = combatant.combat.position.x;
-				loot.position.y = combatant.combat.position.y;
-				encounter.loot.push(loot);
-			}
+			EncounterLogic.dropAllItems(encounter, combatant);
 		}
 
 		EncounterLogic.checkActionParameters(encounter, combatant);
@@ -671,6 +665,13 @@ export class EncounterLogic {
 		EncounterLogic.checkActionParameters(encounter, combatant);
 
 		EncounterLogic.log(encounter, `${combatant.name} drops ${item.name}`);
+	};
+
+	static dropAllItems = (encounter: EncounterModel, combatant: CombatantModel) => {
+		const allItems = ([] as ItemModel[]).concat(combatant.items).concat(combatant.carried);
+		allItems.forEach(item => {
+			EncounterLogic.dropItem(encounter, combatant, item);
+		});
 	};
 
 	///////////////////////////////////////////////////////////////////////////

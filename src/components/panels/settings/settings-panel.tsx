@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import ReactMarkdown from 'react-markdown';
 
 import { BackgroundData } from '../../../data/background-data';
 import { ItemData } from '../../../data/item-data';
@@ -11,20 +12,22 @@ import type { ActionModel } from '../../../models/action';
 import type { GameModel } from '../../../models/game';
 
 import { ActionCard, BackgroundCard, ItemCard, PlaceholderCard, RoleCard, SpeciesCard } from '../../cards';
-import { CardList, Dialog, PlayingCard, Text, TextType } from '../../controls';
-
-import pkg from '../../../../package.json';
+import { CardList, Dialog, PlayingCard, Switch, Tabs, Text, TextType } from '../../controls';
 
 import './settings-panel.scss';
 
+import pkg from '../../../../package.json';
+
 interface Props {
 	game: GameModel | null;
+	rules: string;
 	developer: boolean;
 	endCampaign: () => void;
 	setDeveloperMode: (value: boolean) => void;
 }
 
 interface State {
+	selectedTab: string;
 	local: boolean;
 	deck: CardType;
 }
@@ -33,6 +36,7 @@ export class SettingsPanel extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
+			selectedTab: 'rules',
 			local: window.location.href.includes('localhost'),
 			deck: CardType.Default
 		};
@@ -45,6 +49,63 @@ export class SettingsPanel extends Component<Props, State> {
 	};
 
 	render = () => {
+		const tabs = [
+			{ id: 'rules', display: 'Rules' },
+			{ id: 'decks', display: 'Decks' },
+			{ id: 'options', display: 'Options' }
+		];
+
+		let content = null;
+		switch (this.state.selectedTab) {
+			case 'rules':
+				content = (
+					<div className='content'>
+						<ReactMarkdown>{this.props.rules}</ReactMarkdown>
+					</div>
+				);
+				break;
+			case 'decks':
+				content = (
+					<div className='content cards'>
+						<PlayingCard
+							stack={true}
+							type={CardType.Species}
+							front={<PlaceholderCard><Text type={TextType.SubHeading}>Species<br />Deck</Text></PlaceholderCard>}
+							onClick={() => this.setDeck(CardType.Species)}
+						/>
+						<PlayingCard
+							stack={true}
+							type={CardType.Role}
+							front={<PlaceholderCard><Text type={TextType.SubHeading}>Role<br />Deck</Text></PlaceholderCard>}
+							onClick={() => this.setDeck(CardType.Role)}
+						/>
+						<PlayingCard
+							stack={true}
+							type={CardType.Background}
+							front={<PlaceholderCard><Text type={TextType.SubHeading}>Background<br />Deck</Text></PlaceholderCard>}
+							onClick={() => this.setDeck(CardType.Background)}
+						/>
+						<PlayingCard
+							stack={true}
+							type={CardType.Item}
+							front={<PlaceholderCard><Text type={TextType.SubHeading}>Item<br />Deck</Text></PlaceholderCard>}
+							onClick={() => this.setDeck(CardType.Item)}
+						/>
+					</div>
+				);
+				break;
+			case 'options':
+				content = (
+					<div className='content'>
+						{this.state.local ? <Switch label='Developer Mode' checked={this.props.developer} onChange={this.props.setDeveloperMode} /> : null}
+						{this.props.game ? <button className='danger' onClick={() => this.props.endCampaign()}>Abandon this Campaign</button> : null}
+						<hr />
+						<Text>Version {pkg.version}</Text>
+					</div>
+				);
+				break;
+		}
+
 		let dialog = null;
 		if (this.state.deck !== CardType.Default) {
 			dialog = (
@@ -58,42 +119,8 @@ export class SettingsPanel extends Component<Props, State> {
 		return (
 			<div className='settings-panel'>
 				<Text type={TextType.Heading}>Information</Text>
-				<hr />
-				<div className='cards'>
-					<PlayingCard
-						stack={true}
-						type={CardType.Species}
-						front={<PlaceholderCard><Text type={TextType.SubHeading}>Species<br />Deck</Text></PlaceholderCard>}
-						onClick={() => this.setDeck(CardType.Species)}
-					/>
-					<PlayingCard
-						stack={true}
-						type={CardType.Role}
-						front={<PlaceholderCard><Text type={TextType.SubHeading}>Role<br />Deck</Text></PlaceholderCard>}
-						onClick={() => this.setDeck(CardType.Role)}
-					/>
-					<PlayingCard
-						stack={true}
-						type={CardType.Background}
-						front={<PlaceholderCard><Text type={TextType.SubHeading}>Background<br />Deck</Text></PlaceholderCard>}
-						onClick={() => this.setDeck(CardType.Background)}
-					/>
-					<PlayingCard
-						stack={true}
-						type={CardType.Item}
-						front={<PlaceholderCard><Text type={TextType.SubHeading}>Item<br />Deck</Text></PlaceholderCard>}
-						onClick={() => this.setDeck(CardType.Item)}
-					/>
-				</div>
-				{this.state.local ? <hr /> : null }
-				{
-					this.state.local ?
-						<button className='developer' onClick={() => this.props.setDeveloperMode(!this.props.developer)}>Developer Mode: {this.props.developer ? 'On' : 'Off'}</button>
-						: null
-				}
-				{this.props.game ? <button className='danger' onClick={() => this.props.endCampaign()}>Abandon this Campaign</button> : null}
-				<hr />
-				<Text>Version {pkg.version}</Text>
+				<Tabs options={tabs} selectedID={this.state.selectedTab} onSelect={id => this.setState({ selectedTab: id })} />
+				{content}
 				{dialog}
 			</div>
 		);

@@ -73,6 +73,11 @@ export class MagicItemGenerator {
 				wpn5.unreliable = 0;
 				options.push(copy5);
 			}
+
+			// Bonus damage
+			const copy6 = JSON.parse(JSON.stringify(item)) as ItemModel;
+			copy6.features.push(FeatureLogic.createDamageBonusFeature(Utils.guid(), (copy6.weapon as WeaponModel).damage.type, Random.randomBonus()));
+			options.push(copy6);
 		}
 
 		if (item.armor) {

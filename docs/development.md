@@ -12,11 +12,12 @@ This will build the project and open it in your default browser.
 
 This project uses:
 
-* [Typescript](https://www.typescriptlang.org)
-* [Sass](https://sass-lang.com)
-* [React](https://reactjs.org)
-* [Tabler Icons](https://tabler-icons.io)
-* [ESLint](https://eslint.org)
+* [Typescript](https://www.typescriptlang.org/)
+* [Sass](https://sass-lang.com/)
+* [React](https://reactjs.org/)
+* [Tabler Icons](https://tabler-icons.io/)
+* [React Markdown](https://remarkjs.github.io/react-markdown/)
+* [ESLint](https://eslint.org/)
 
 Before making any changes, ensure dependencies are up-to-date:
 

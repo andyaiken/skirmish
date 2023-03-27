@@ -29,8 +29,16 @@ import { Utils } from '../../utils/utils';
 import { BoonCard, PlaceholderCard } from '../cards';
 import { CampaignScreen, EncounterScreen, LandingScreen } from '../screens';
 import { Dialog, PlayingCard, Text, TextType } from '../controls';
+import { SettingsPanel } from '../panels';
 
 import './main.scss';
+
+import encounters from '../../docs/encounters.md';
+import game from '../../docs/game.md';
+import heroes from '../../docs/heroes.md';
+import island from '../../docs/island.md';
+import items from '../../docs/items.md';
+const rules: Record<string, string> = {};
 
 enum ScreenType {
 	Landing = 'landing',
@@ -43,8 +51,9 @@ interface Props {
 }
 
 interface State {
-	screen: ScreenType;
 	game: GameModel | null;
+	screen: ScreenType;
+	showHelp: string | null;
 	developer: boolean;
 	dialog: JSX.Element | null;
 }
@@ -111,11 +120,30 @@ export class Main extends Component<Props, State> {
 		}
 
 		this.state = {
-			screen: ScreenType.Landing,
 			game: game,
+			screen: ScreenType.Landing,
+			showHelp: null,
 			developer: false,
 			dialog: null
 		};
+	}
+
+	componentDidMount(): void {
+		fetch(encounters).then(response => response.text()).then(text => {
+			rules['encounters'] = text;
+		});
+		fetch(game).then(response => response.text()).then(text => {
+			rules['game'] = text;
+		});
+		fetch(heroes).then(response => response.text()).then(text => {
+			rules['heroes'] = text;
+		});
+		fetch(island).then(response => response.text()).then(text => {
+			rules['island'] = text;
+		});
+		fetch(items).then(response => response.text()).then(text => {
+			rules['items'] = text;
+		});
 	}
 
 	componentDidUpdate = () => {
@@ -126,6 +154,12 @@ export class Main extends Component<Props, State> {
 		this.setState({
 			screen: screen,
 			dialog: null
+		});
+	};
+
+	showHelp = (filename: string) => {
+		this.setState({
+			showHelp: filename
 		});
 	};
 
@@ -570,14 +604,12 @@ export class Main extends Component<Props, State> {
 			return;
 		}
 
-		let dialog = null;
+		let dialogContent = null;
 		switch (state) {
 			case EncounterState.Victory: {
 				// Remove dead heroes from the game
 				const deadHeroes = encounter.combatants.filter(c => c.type === CombatantType.Hero).filter(h => h.combat.state === CombatantState.Dead);
 				game.heroes = game.heroes.filter(h => !deadHeroes.includes(h));
-				// Get equipment from dead heroes, add to game items
-				deadHeroes.forEach(h => game.items.push(...h.items));
 				// Get equipment from loot piles, add to game items
 				encounter.loot.forEach(lp => game.items.push(...lp.items));
 				// Increment XP for surviving heroes
@@ -592,7 +624,7 @@ export class Main extends Component<Props, State> {
 					CampaignMapLogic.removeRegion(game.map, region);
 					if (game.map.squares.every(sq => sq.regionID === '')) {
 						// Show message
-						dialog = (
+						dialogContent = (
 							<div>
 								<Text type={TextType.Heading}>Victory</Text>
 								<Text type={TextType.SubHeading}>You control the island!</Text>
@@ -606,7 +638,7 @@ export class Main extends Component<Props, State> {
 						// Add the region's boon
 						game.boons.push(region.boon);
 						// Show message
-						dialog = (
+						dialogContent = (
 							<div>
 								<Text type={TextType.Heading}>Victory</Text>
 								<Text type={TextType.SubHeading}>You have taken control of {region.name}!</Text>
@@ -632,7 +664,7 @@ export class Main extends Component<Props, State> {
 				game.encounter = null;
 				if ((game.heroes.length === 0) && (!game.boons.some(b => b.type === BoonType.ExtraHero))) {
 					// Show message
-					dialog = (
+					dialogContent = (
 						<div>
 							<Text type={TextType.Heading}>Defeat</Text>
 							<Text type={TextType.SubHeading}>You lost the encounter in {region.name}, and have no more heroes.</Text>
@@ -661,7 +693,7 @@ export class Main extends Component<Props, State> {
 		this.setState({
 			screen: ScreenType.Campaign,
 			game: game,
-			dialog: dialog
+			dialog: dialogContent
 		});
 	};
 
@@ -676,10 +708,9 @@ export class Main extends Component<Props, State> {
 					<LandingScreen
 						game={this.state.game}
 						developer={this.state.developer}
+						showHelp={this.showHelp}
 						startCampaign={this.startCampaign}
 						continueCampaign={this.continueCampaign}
-						endCampaign={this.endCampaign}
-						setDeveloperMode={this.setDeveloperMode}
 					/>
 				);
 			case 'campaign':
@@ -687,6 +718,7 @@ export class Main extends Component<Props, State> {
 					<CampaignScreen
 						game={this.state.game as GameModel}
 						developer={this.state.developer}
+						showHelp={this.showHelp}
 						addHero={this.addHero}
 						incrementXP={this.incrementXP}
 						equipItem={this.equipItem}
@@ -700,8 +732,6 @@ export class Main extends Component<Props, State> {
 						addMoney={this.addMoney}
 						startEncounter={this.startEncounter}
 						conquer={this.conquer}
-						endCampaign={this.endCampaign}
-						setDeveloperMode={this.setDeveloperMode}
 					/>
 				);
 			case 'encounter':
@@ -710,6 +740,7 @@ export class Main extends Component<Props, State> {
 						encounter={this.state.game?.encounter as EncounterModel}
 						game={this.state.game as GameModel}
 						developer={this.state.developer}
+						showHelp={this.showHelp}
 						rotateMap={this.rotateMap}
 						rollInitiative={this.rollInitiative}
 						endTurn={this.endTurn}
@@ -729,8 +760,6 @@ export class Main extends Component<Props, State> {
 						pickUpItem={this.pickUpItem}
 						dropItem={this.dropItem}
 						finishEncounter={this.finishEncounter}
-						endCampaign={this.endCampaign}
-						setDeveloperMode={this.setDeveloperMode}
 					/>
 				);
 		}
@@ -743,10 +772,29 @@ export class Main extends Component<Props, State> {
 	};
 
 	render = () => {
+		let help = null;
+		if (this.state.showHelp !== null) {
+			help = (
+				<Dialog
+					content={
+						<SettingsPanel
+							game={this.state.game}
+							rules={rules[this.state.showHelp]}
+							developer={this.state.developer}
+							endCampaign={this.endCampaign}
+							setDeveloperMode={this.setDeveloperMode}
+						/>
+					}
+					onClose={() => this.setState({ showHelp: null })}
+				/>
+			);
+		}
+
 		return (
 			<div className='skirmish'>
 				{this.getContent()}
 				{this.state.dialog ? <Dialog content={this.state.dialog} /> : null}
+				{help}
 			</div>
 		);
 	};

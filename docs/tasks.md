@@ -2,20 +2,17 @@
 
 ## Bugs
 
-* If you select a 'square' parameter, and move, the candidate squares do not move
+* If you select a 'square' parameter, and move, the origin candidate squares do not move
   * Presumably this is the same for other parameter types
 
 ## Priority
 
-* Add help / documentation to explain game rules
-  * Use information panel for this
 * Add a system for evaluating each action to ensure none is too powerful
   * Then extend this to ensure species / roles / backgrounds are equally matched
   * Also check that the different effect types are all used
 
 ## Future Work
 
-* Show area of effect when selecting a square / wall on the map
 * Add encounter map types
   * Street
   * Building interior

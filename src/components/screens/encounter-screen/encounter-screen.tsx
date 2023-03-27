@@ -18,7 +18,7 @@ import type { ItemModel } from '../../../models/item';
 import type { RegionModel } from '../../../models/region';
 
 import { CardList, Dialog, PlayingCard, Text, TextType } from '../../controls';
-import { CharacterSheetPanel, EncounterMapPanel, InitiativeListPanel, SettingsPanel, TurnLogPanel } from '../../panels';
+import { CharacterSheetPanel, EncounterMapPanel, InitiativeListPanel, TurnLogPanel } from '../../panels';
 import { CombatantAction } from './combatant-action/combatant-action';
 import { CombatantHeader } from './combatant-header/combatant-header';
 import { CombatantMonster } from './combatant-monster/combatant-monster';
@@ -32,6 +32,7 @@ interface Props {
 	encounter: EncounterModel;
 	game: GameModel;
 	developer: boolean;
+	showHelp: (file: string) => void;
 	rotateMap: (encounter: EncounterModel, dir: 'l' | 'r') => void;
 	rollInitiative: (encounter: EncounterModel) => void;
 	endTurn: (encounter: EncounterModel) => void;
@@ -51,8 +52,6 @@ interface Props {
 	pickUpItem: (item: ItemModel, hero: CombatantModel) => void;
 	dropItem: (item: ItemModel, combatant: CombatantModel) => void;
 	finishEncounter: (state: EncounterState) => void;
-	endCampaign: () => void;
-	setDeveloperMode: (value: boolean) => void;
 }
 
 interface State {
@@ -68,7 +67,6 @@ interface State {
 	manualEncounterState: EncounterState;
 	detailsCombatant: CombatantModel | null;
 	detailsLoot: LootPileModel | null;
-	showSettings: boolean;
 }
 
 export class EncounterScreen extends Component<Props, State> {
@@ -86,8 +84,7 @@ export class EncounterScreen extends Component<Props, State> {
 			selectedSquares: [],
 			manualEncounterState: EncounterState.Active,
 			detailsCombatant: null,
-			detailsLoot: null,
-			showSettings: false
+			detailsLoot: null
 		};
 	}
 
@@ -272,12 +269,6 @@ export class EncounterScreen extends Component<Props, State> {
 		});
 	};
 
-	setShowSettings = (show: boolean) => {
-		this.setState({
-			showSettings: show
-		});
-	};
-
 	move = (encounter: EncounterModel, combatant: CombatantModel, dir: string, cost: number) => {
 		this.setState({
 			currentActionParameter: null,
@@ -428,7 +419,7 @@ export class EncounterScreen extends Component<Props, State> {
 				</div>
 				{this.props.developer ? <div className='section'><button className='developer' onClick={() => this.setManualEncounterState(EncounterState.Victory)}>Victory</button></div> : null}
 				<div className='section compact'>
-					<button className='icon-btn' title='Information' onClick={() => this.setShowSettings(true)}>
+					<button className='icon-btn' title='Information' onClick={() => this.props.showHelp('encounters')}>
 						<IconInfoCircle />
 					</button>
 				</div>
@@ -633,6 +624,43 @@ export class EncounterScreen extends Component<Props, State> {
 		);
 	};
 
+	getEffect = () => {
+		let effect = null;
+
+		const combatant = this.props.encounter.combatants.find(c => c.combat.current);
+		if (combatant) {
+			if (combatant.combat.selectedAction && !combatant.combat.selectedAction.used) {
+				const action = combatant.combat.selectedAction.action;
+
+				const range = ActionLogic.getActionRange(action);
+				const param = action.parameters.find(p => p.id === 'origin');
+				if (param) {
+					if (range > 0) {
+						const originParam = param as ActionOriginParameterModel;
+						const origin = (originParam.value as { x: number, y: number }[])[0];
+						effect = {
+							x: origin.x,
+							y: origin.y,
+							size: 1,
+							radius: range
+						};
+					}
+				} else {
+					if (range > 1) {
+						effect = {
+							x: combatant.combat.position.x,
+							y: combatant.combat.position.y,
+							size: combatant.size,
+							radius: range
+						};
+					}
+				}
+			}
+		}
+
+		return effect;
+	};
+
 	render = () => {
 		let dialog = null;
 		if (this.state.detailsCombatant) {
@@ -667,20 +695,6 @@ export class EncounterScreen extends Component<Props, State> {
 				/>
 			);
 		}
-		if (this.state.showSettings) {
-			dialog = (
-				<Dialog
-					content={
-						<SettingsPanel
-							game={this.props.game}
-							developer={this.props.developer}
-							endCampaign={this.props.endCampaign}
-							setDeveloperMode={this.props.setDeveloperMode}
-						/>}
-					onClose={() => this.setShowSettings(false)}
-				/>
-			);
-		}
 
 		return (
 			<div className='encounter-screen'>
@@ -695,6 +709,7 @@ export class EncounterScreen extends Component<Props, State> {
 						selectedCombatantIDs={this.state.selectedCombatantIDs}
 						selectedLootIDs={this.state.selectedLootIDs}
 						selectedSquares={this.state.selectedSquares}
+						effect={this.getEffect()}
 						onClickCombatant={this.selectCombatant}
 						onClickLoot={this.selectLoot}
 						onClickSquare={this.selectSquare}

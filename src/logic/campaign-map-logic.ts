@@ -122,7 +122,7 @@ export class CampaignMapLogic {
 
 			const size = CampaignMapLogic.getSquares(map, region).length;
 
-			const count = Random.dice(3);
+			const count = Random.dice(1);
 			while (region.encounters.length < count) {
 				region.encounters.push(Utils.guid());
 			}

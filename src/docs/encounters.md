@@ -1,4 +1,6 @@
-# Encounter
+# Encounters
+
+Encounters take place in rounds
 
 * Each round:
   * Roll reactions to get initiative score
@@ -80,6 +82,4 @@
 
 ## Healing
 
-* Healing damage reduces target's Damage
-* Healing wounds reduces target's Wounds
 * If unconscious and Wounds reduced to below Resolve, prone

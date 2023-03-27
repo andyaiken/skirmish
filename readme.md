@@ -8,8 +8,6 @@ As you control more and more of the island your heroes will get more powerful, a
 
 [**Play the Game**](https://andyaiken.github.io/skirmish/)
 |
-[Game Rules (encounters)](./docs/encounter.md)
-|
 [Development](./docs/development.md)
 |
 [Future Plans](./docs/tasks.md)

@@ -20,6 +20,37 @@ body {
 	transition: all ease-in-out 0.2s;
 }
 
+h1 {
+	font-size: 18px;
+	text-transform: uppercase;
+	letter-spacing: 3px;
+	margin: 10px 0;
+	font-weight: 600;
+}
+
+h2 {
+	font-size: 15px;
+	text-transform: uppercase;
+	letter-spacing: 2px;
+	margin: 10px 0 5px 0;
+	font-weight: 600;
+}
+
+p {
+	font-size: 15px;
+	margin: 10px 0;
+	text-transform: none;
+	font-weight: normal;
+}
+
+code {
+	border: 1px solid rgb(220, 220, 220);
+	border-radius: 3px;
+	background-color: rgb(240, 240, 240);
+	padding: 0 3px;
+	font-family: unset;
+}
+
 hr {
 	border: none;
 	border-top: 2px solid rgb(220, 220, 220);
@@ -29,7 +60,7 @@ hr {
 
 button {
 	margin: 10px 0;
-	padding: 8px 5px;
+	padding: 10px 5px;
 	text-transform: uppercase;
 	font-weight: 600;
 	width: 100%;

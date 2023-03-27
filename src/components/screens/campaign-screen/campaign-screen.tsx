@@ -8,18 +8,18 @@ import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
 import type { RegionModel } from '../../../models/region';
 
-import { Dialog, Selector } from '../../controls';
+import { Selector } from '../../controls';
 
 import { CampaignMapPage } from './campaign-map-page/campaign-map-page';
 import { HeroesPage } from './heroes-page/heroes-page';
 import { ItemsPage } from './items-page/items-page';
-import { SettingsPanel } from '../../panels';
 
 import './campaign-screen.scss';
 
 interface Props {
 	game: GameModel;
 	developer: boolean;
+	showHelp: (file: string) => void;
 	addHero: (hero: CombatantModel) => void;
 	incrementXP: (hero: CombatantModel) => void;
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
@@ -33,38 +33,28 @@ interface Props {
 	addMoney: () => void;
 	startEncounter: (region: RegionModel, heroes: CombatantModel[]) => void;
 	conquer: (region: RegionModel) => void;
-	endCampaign: () => void;
-	setDeveloperMode: (value: boolean) => void;
 }
 
 interface State {
 	page: string;
-	showSettings: boolean;
 }
 
 export class CampaignScreen extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 
-		let page = 'map';
+		let page = 'island';
 		if (props.game.heroes.some(h => h.name === '') || props.game.heroes.some(h => h.xp >= h.level)) {
 			page = 'heroes';
 		}
 		this.state = {
-			page: page,
-			showSettings: false
+			page: page
 		};
 	}
 
 	setPage = (page: string) => {
 		this.setState({
 			page: page
-		});
-	};
-
-	setShowSettings = (show: boolean) => {
-		this.setState({
-			showSettings: show
 		});
 	};
 
@@ -99,7 +89,7 @@ export class CampaignScreen extends Component<Props, State> {
 					/>
 				);
 				break;
-			case 'map':
+			case 'island':
 				content = (
 					<CampaignMapPage
 						game={this.props.game}
@@ -114,38 +104,21 @@ export class CampaignScreen extends Component<Props, State> {
 		const options = [
 			{ id: 'heroes', display: 'Your Team' },
 			{ id: 'items', display: 'Your Equipment' },
-			{ id: 'map', display: 'The Island' }
+			{ id: 'island', display: 'The Island' }
 		];
-
-		let dialog = null;
-		if (this.state.showSettings) {
-			dialog = (
-				<Dialog
-					content={
-						<SettingsPanel
-							game={this.props.game}
-							developer={this.props.developer}
-							endCampaign={this.props.endCampaign}
-							setDeveloperMode={this.props.setDeveloperMode}
-						/>}
-					onClose={() => this.setShowSettings(false)}
-				/>
-			);
-		}
 
 		return (
 			<div className='campaign-screen'>
 				<div className='campaign-top-bar'>
 					<div className='logo-text inset-text'>Skirmish</div>
 					<Selector options={options} selectedID={this.state.page} onSelect={this.setPage} />
-					<button className='icon-btn' title='Information' onClick={() => this.setShowSettings(true)}>
+					<button className='icon-btn' title='Information' onClick={() => this.props.showHelp(this.state.page)}>
 						<IconInfoCircle />
 					</button>
 				</div>
 				<div className='campaign-content'>
 					{content}
 				</div>
-				{dialog}
 			</div>
 		);
 	};

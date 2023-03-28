@@ -40,25 +40,27 @@ export class MagicItemGenerator {
 			// Increase damage rank
 			const copy1 = JSON.parse(JSON.stringify(item)) as ItemModel;
 			const wpn1 = copy1.weapon as WeaponModel;
-			wpn1.damage.rank += Random.randomBonus();
+			const dmg = Collections.draw(wpn1.damage);
+			dmg.rank += Random.randomBonus();
 			options.push(copy1);
 
 			// Increase range
 			const copy2 = JSON.parse(JSON.stringify(item)) as ItemModel;
 			const wpn2 = copy2.weapon as WeaponModel;
-			if (wpn2.range === 0) {
-				wpn2.range = 1;
+			if (wpn2.range <= 1) {
+				wpn2.range += 1;
 			} else {
 				wpn2.range += Math.floor(wpn2.range * Random.randomBonus() / 10);
 			}
 			options.push(copy2);
 
-			// Change damage type
-			// This assumes that it's currently Physical, which is probably a safe assumption
-			const type = Random.randomBoolean() ? DamageCategoryType.Energy : DamageCategoryType.Corruption;
+			// Add an additional damage type
 			const copy3 = JSON.parse(JSON.stringify(item)) as ItemModel;
 			const wpn3 = copy3.weapon as WeaponModel;
-			wpn3.damage.type = GameLogic.getRandomDamageType(type);
+			wpn3.damage.push({
+				type: GameLogic.getRandomDamageType(Random.randomBoolean() ? DamageCategoryType.Energy : DamageCategoryType.Corruption),
+				rank: Random.randomBonus()
+			});
 			options.push(copy3);
 
 			// Increase Weapon skill
@@ -73,11 +75,6 @@ export class MagicItemGenerator {
 				wpn5.unreliable = 0;
 				options.push(copy5);
 			}
-
-			// Bonus damage
-			const copy6 = JSON.parse(JSON.stringify(item)) as ItemModel;
-			copy6.features.push(FeatureLogic.createDamageBonusFeature(Utils.guid(), (copy6.weapon as WeaponModel).damage.type, Random.randomBonus()));
-			options.push(copy6);
 		}
 
 		if (item.armor) {

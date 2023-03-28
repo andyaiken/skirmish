@@ -87,7 +87,7 @@ export class HeroesPage extends Component<Props, State> {
 		if (this.props.game.heroes.some(h => !h.name)) {
 			const cards = this.props.game.heroes.filter(h => !h.name).map(h => {
 				return (
-					<PlayingCard key={h.id} front={<PlaceholderCard>Hero</PlaceholderCard>} onClick={() => this.setState({ selectedHero: h })} />
+					<PlayingCard key={h.id} front={<PlaceholderCard text='Hero' />} onClick={() => this.setState({ selectedHero: h })} />
 				);
 			});
 			blankHeroes = (

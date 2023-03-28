@@ -4,7 +4,6 @@
 	border-radius: 50%;
 	background-image: linear-gradient(135deg, rgb(210, 155, 20), rgb(160, 120, 10));
 	box-shadow: 2px 2px 2px 0 rgba(0, 0, 0, 0.4);
-	transform: scale(0.6);
 
 	.loot-token-face {
 		position: absolute;
@@ -39,5 +38,30 @@
 	&:not(.selectable) {
 		opacity: 0.3;
 		pointer-events: none;
+	}
+
+	.token-popover {
+		position: absolute;
+		z-index: 200;
+		opacity: 0;
+		transform: scale(0.9);
+		pointer-events: none;
+
+		&.shown {
+			opacity: 1;
+			transform: scale(1);
+		}
+
+		.playing-card {
+			aspect-ratio: unset;
+
+			.playing-card-inner {
+				.playing-card-front,
+				.playing-card-back {
+					bottom: unset;
+					min-height: 300px;
+				}
+			}
+		}
 	}
 }

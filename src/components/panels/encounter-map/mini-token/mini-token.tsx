@@ -1,15 +1,15 @@
 import { Component } from 'react';
 
-import { CombatantState } from '../../../../enums/combatant-state';
+import { CardType } from '../../../../enums/card-type';
 import { TraitType } from '../../../../enums/trait-type';
 
-import { ConditionLogic } from '../../../../logic/condition-logic';
 import { EncounterLogic } from '../../../../logic/encounter-logic';
 
 import type { CombatantModel } from '../../../../models/combatant';
 import type { EncounterModel } from '../../../../models/encounter';
 
-import { StatValue, Tag, Text, TextType } from '../../../controls';
+import { HeroCard } from '../../../cards';
+import { PlayingCard } from '../../../controls';
 
 import './mini-token.scss';
 
@@ -65,42 +65,15 @@ export class MiniToken extends Component<Props, State> {
 	};
 
 	getPopover = () => {
-		const tags = [
-			<Tag key='level'>Level {this.props.combatant.level}</Tag>
-		];
-		if (this.props.combatant.combat.state !== CombatantState.Standing) {
-			tags.push(<Tag key='state'>{this.props.combatant.combat.state}</Tag>);
-		}
-		if (this.props.combatant.combat.stunned) {
-			tags.push(<Tag key='stunned'>Stunned</Tag>);
-		}
-		if (this.props.combatant.combat.hidden > 0) {
-			tags.push(<Tag key='hidden'>Hidden</Tag>);
-		}
-
 		return (
 			<div
 				className={this.state.mouseOver ? 'token-popover shown' : 'token-popover'}
 				style={{
-					left: `-${80 - (this.props.squareSize * this.props.combatant.size / 2)}px`,
+					left: `-${100 - (this.props.squareSize * this.props.combatant.size / 2)}px`,
 					top: `${this.props.squareSize * this.props.combatant.size}px`
 				}}
 			>
-				<Text type={TextType.SubHeading}>{this.props.combatant.name}</Text>
-				{tags}
-				<hr />
-				<StatValue orientation='compact' label='Endurance' value={EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Endurance)} />
-				<StatValue orientation='compact' label='Resolve' value={EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Resolve)} />
-				<StatValue orientation='compact' label='Speed' value={EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Speed)} />
-				<hr />
-				<StatValue orientation='compact' label='Damage' value={this.props.combatant.combat.damage} />
-				<StatValue
-					orientation='compact'
-					label='Wounds'
-					value={`${this.props.combatant.combat.wounds} / ${EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Resolve)}`}
-				/>
-				{this.props.combatant.combat.conditions.length > 0 ? <hr /> : null}
-				{this.props.combatant.combat.conditions.map(c => <StatValue key={c.id} orientation='compact' label={ConditionLogic.getConditionDescription(c)} value={c.rank} />)}
+				<PlayingCard type={CardType.Hero} front={<HeroCard hero={this.props.combatant} encounter={this.props.encounter} />} />
 			</div>
 		);
 	};

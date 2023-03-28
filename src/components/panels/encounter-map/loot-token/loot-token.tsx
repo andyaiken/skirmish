@@ -1,6 +1,11 @@
 import { Component } from 'react';
 
+import { CardType } from '../../../../enums/card-type';
+
 import type { LootPileModel } from '../../../../models/encounter';
+
+import { ItemCard, LootPileCard } from '../../../cards';
+import { PlayingCard } from '../../../controls';
 
 import './loot-token.scss';
 
@@ -14,7 +19,18 @@ interface Props {
 	onDoubleClick: (loot: LootPileModel) => void;
 }
 
-export class LootToken extends Component<Props> {
+interface State {
+	mouseOver: boolean;
+}
+
+export class LootToken extends Component<Props, State> {
+	constructor(props: Props) {
+		super(props);
+		this.state = {
+			mouseOver: false
+		};
+	}
+
 	onClick = (e: React.MouseEvent) => {
 		if (this.props.selectable) {
 			e.stopPropagation();
@@ -27,6 +43,32 @@ export class LootToken extends Component<Props> {
 			e.stopPropagation();
 			this.props.onDoubleClick(this.props.loot);
 		}
+	};
+
+	setMouseOver = (value: boolean) => {
+		this.setState({
+			mouseOver: value
+		});
+	};
+
+	getPopover = () => {
+		let content = <LootPileCard loot={this.props.loot} />;
+		if (this.props.loot.items.length === 1) {
+			const item = this.props.loot.items[0];
+			content = <ItemCard item={item} />;
+		}
+
+		return (
+			<div
+				className={this.state.mouseOver ? 'token-popover shown' : 'token-popover'}
+				style={{
+					left: `-${100 - (this.props.squareSize / 2)}px`,
+					top: `${this.props.squareSize}px`
+				}}
+			>
+				<PlayingCard type={CardType.Item} front={content} footer='Item' />
+			</div>
+		);
 	};
 
 	render = () => {
@@ -42,8 +84,11 @@ export class LootToken extends Component<Props> {
 				title='Treasure'
 				onClick={e => this.onClick(e)}
 				onDoubleClick={e => this.onDoubleClick(e)}
+				onMouseEnter={() => this.setMouseOver(true)}
+				onMouseLeave={() => this.setMouseOver(false)}
 			>
 				<div className='loot-token-face' />
+				{this.getPopover()}
 			</div>
 		);
 	};

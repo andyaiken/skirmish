@@ -61,7 +61,7 @@ export class LevelUp extends Component<Props, State> {
 					<PlayingCard
 						type={CardType.Feature}
 						front={<FeatureCard feature={(this.state.selectedFeature !== null) && (this.state.selectedFeature.id === feature.id) ? this.state.selectedFeature : feature} />}
-						back={<PlaceholderCard>Feature</PlaceholderCard>}
+						back={<PlaceholderCard text='Feature' />}
 						footer={CombatantLogic.getCardSource(this.props.combatant, feature.id, 'feature')}
 						footerType={CombatantLogic.getCardSourceType(this.props.combatant, feature.id, 'feature')}
 						display={(this.state.selectedFeature !== null) && (this.state.selectedFeature.id !== feature.id) ? PlayingCardSide.Back : PlayingCardSide.Front}

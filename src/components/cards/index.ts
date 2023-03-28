@@ -4,6 +4,7 @@ import { BoonCard } from './boon-card/boon-card';
 import { FeatureCard } from './feature-card/feature-card';
 import { HeroCard } from './hero-card/hero-card';
 import { ItemCard } from './item-card/item-card';
+import { LootPileCard } from './loot-pile-card/loot-pile-card';
 import { PlaceholderCard } from './placeholder-card/placeholder-card';
 import { RegionCard } from './region-card/region-card';
 import { RoleCard } from './role-card/role-card';
@@ -16,6 +17,7 @@ export {
 	FeatureCard,
 	HeroCard,
 	ItemCard,
+	LootPileCard,
 	PlaceholderCard,
 	RegionCard,
 	RoleCard,

@@ -202,10 +202,10 @@ export class EncounterMapPanel extends Component<Props> {
 			<div className='encounter-map' onClick={e => this.props.onClickOff()}>
 				<div className='encounter-map-square-container' style={{ maxWidth: `${this.props.squareSize * width}px`, maxHeight: `${this.props.squareSize * height}px` }}>
 					{floor}
-					{loot}
 					{auras}
 					{trails}
 					{walls}
+					{loot}
 					{minis}
 					{fog}
 					{overlays}

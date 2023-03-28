@@ -14,8 +14,8 @@ import type { CombatantModel } from '../../../../models/combatant';
 import type { EncounterModel } from '../../../../models/encounter';
 import type { ItemModel } from '../../../../models/item';
 
-import { CardList, PlayingCard, Selector, Text, TextType } from '../../../controls';
-import { ActionCard } from '../../../cards';
+import { ActionCard, PlaceholderCard } from '../../../cards';
+import { CardList, Dialog, PlayingCard, Selector, Tabs, Text, TextType } from '../../../controls';
 
 import './combatant-action.scss';
 
@@ -33,6 +33,7 @@ interface Props {
 }
 
 interface State {
+	showDialog: boolean;
 	showActions: string;
 }
 
@@ -40,13 +41,27 @@ export class CombatantAction extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
+			showDialog: false,
 			showActions: 'default'
 		};
 	}
 
-	getNotSelected = () => {
+	selectAction = (action: ActionModel) => {
+		this.setState({
+			showDialog: false,
+			showActions: 'default'
+		}, () => {
+			this.props.selectAction(this.props.encounter, this.props.combatant, action);
+		});
+	};
+
+	getDialog = () => {
+		if (!this.state.showDialog) {
+			return null;
+		}
+
 		const options = [
-			{ id: 'default', display: 'Drawn Actions' },
+			{ id: 'default', display: 'Action Deck' },
 			{ id: 'base', display: 'Base Actions' }
 		];
 
@@ -61,27 +76,62 @@ export class CombatantAction extends Component<Props, State> {
 		}
 		actions.sort((a, b) => a.name.localeCompare(b.name));
 
-		const actionCards = actions.map(a => {
+		const actionCards = [];
+		if (this.state.showActions === 'default') {
+			actionCards.push(
+				<PlayingCard
+					key='deck'
+					type={CardType.Action}
+					stack={true}
+					front={<PlaceholderCard text={<div>Action<br />Deck</div>} />}
+				/>
+			);
+		}
+		actions.forEach(a => {
 			const prerequisitesMet = a.prerequisites.every(p => ActionPrerequisites.isSatisfied(p, this.props.encounter, this.props.combatant));
-			return (
+			actionCards.push(
 				<PlayingCard
 					key={a.id}
 					type={CardType.Action}
 					front={<ActionCard action={a} encounter={this.props.encounter} />}
 					footer={CombatantLogic.getCardSource(this.props.combatant, a.id, 'action')}
 					footerType={CombatantLogic.getCardSourceType(this.props.combatant, a.id, 'action')}
-					onClick={prerequisitesMet ? () => this.props.selectAction(this.props.encounter, this.props.combatant, a) : null}
+					onClick={prerequisitesMet ? () => this.selectAction(a) : null}
 				/>
 			);
 		});
 
-		return (
-			<div className='combatant-action'>
-				<Selector options={options} selectedID={this.state.showActions} onSelect={id => this.setState({ showActions: id })} />
+		const content = (
+			<div>
+				<Text type={TextType.Heading}>Choose an Action</Text>
+				<Tabs options={options} selectedID={this.state.showActions} onSelect={id => this.setState({ showActions: id })} />
 				{this.props.developer ? <button className='developer' onClick={() => this.props.drawActions(this.props.encounter, this.props.combatant)}>Draw Again</button> : null}
-				<div className='actions'>
+				<div className='action-selection'>
 					<CardList cards={actionCards} />
 				</div>
+			</div>
+		);
+
+		return (
+			<Dialog
+				content={content}
+				onClose={() => this.setState({ showDialog: false })}
+			/>
+		);
+	};
+
+	getNotSelected = () => {
+		return (
+			<div className='combatant-action'>
+				<div className='action-selected-card'>
+					<PlayingCard
+						type={CardType.Action}
+						stack={true}
+						front={<PlaceholderCard text={<div>Action<br />Deck</div>} subtext='Click to select an action' />}
+						onClick={() => this.setState({ showDialog: true })}
+					/>
+				</div>
+				{this.getDialog()}
 			</div>
 		);
 	};
@@ -90,7 +140,7 @@ export class CombatantAction extends Component<Props, State> {
 		return (
 			<div className='combatant-action'>
 				<Text type={TextType.Information}>You have taken your action for this turn.</Text>
-				<div className='actions'>
+				<div className='action-selected-card'>
 					<PlayingCard
 						key={action.id}
 						type={CardType.Action}
@@ -330,7 +380,7 @@ export class CombatantAction extends Component<Props, State> {
 
 		return (
 			<div className='combatant-action'>
-				<div className='actions'>
+				<div className='action-selected-card'>
 					<PlayingCard
 						key={action.id}
 						type={CardType.Action}

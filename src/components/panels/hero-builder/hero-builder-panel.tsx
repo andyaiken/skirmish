@@ -204,12 +204,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 				key='deck'
 				stack={true}
 				type={CardType.Species}
-				front={
-					<PlaceholderCard>
-						<Text type={TextType.SubHeading}>Species<br />Deck</Text>
-						<Text type={TextType.Small}>Select one of these cards.</Text>
-					</PlaceholderCard>
-				}
+				front={<PlaceholderCard text={<div>Species<br />Deck</div>} subtext='Select one of these cards.' />}
 			/>
 		);
 
@@ -220,7 +215,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 					<PlayingCard
 						type={CardType.Species}
 						front={<SpeciesCard species={species} />}
-						back={<PlaceholderCard>Species</PlaceholderCard>}
+						back={<PlaceholderCard text='Species' />}
 						display={(this.state.selectedSpeciesID !== '') && (this.state.selectedSpeciesID !== species.id) ? PlayingCardSide.Back : PlayingCardSide.Front}
 						onClick={(this.state.selectedSpeciesID !== '') ? null : () => this.selectSpecies(species.id)}
 					/>
@@ -243,12 +238,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 				key='deck'
 				stack={true}
 				type={CardType.Role}
-				front={
-					<PlaceholderCard>
-						<Text type={TextType.SubHeading}>Role<br/>Deck</Text>
-						<Text type={TextType.Small}>Select one of these cards.</Text>
-					</PlaceholderCard>
-				}
+				front={<PlaceholderCard text={<div>Role<br />Deck</div>} subtext='Select one of these cards.' />}
 			/>
 		);
 
@@ -259,7 +249,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 					<PlayingCard
 						type={CardType.Role}
 						front={<RoleCard role={role} />}
-						back={<PlaceholderCard>Role</PlaceholderCard>}
+						back={<PlaceholderCard text='Role' />}
 						display={(this.state.selectedRoleID !== '') && (this.state.selectedRoleID !== role.id) ? PlayingCardSide.Back : PlayingCardSide.Front}
 						onClick={(this.state.selectedRoleID !== '') ? null : () => this.selectRole(role.id)}
 					/>
@@ -282,12 +272,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 				key='deck'
 				stack={true}
 				type={CardType.Background}
-				front={
-					<PlaceholderCard>
-						<Text type={TextType.SubHeading}>Background<br/>Deck</Text>
-						<Text type={TextType.Small}>Select one of these cards.</Text>
-					</PlaceholderCard>
-				}
+				front={<PlaceholderCard text={<div>Background<br />Deck</div>} subtext='Select one of these cards.' />}
 			/>
 		);
 
@@ -298,7 +283,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 					<PlayingCard
 						type={CardType.Background}
 						front={<BackgroundCard background={background} />}
-						back={<PlaceholderCard>Background</PlaceholderCard>}
+						back={<PlaceholderCard text='Background' />}
 						display={(this.state.selectedBackgroundID !== '') && (this.state.selectedBackgroundID !== background.id) ? PlayingCardSide.Back : PlayingCardSide.Front}
 						onClick={(this.state.selectedBackgroundID !== '') ? null : () => this.selectBackground(background.id)}
 					/>
@@ -399,12 +384,7 @@ class EquipmentSelector extends Component<EquipmentSelectorProps, EquipmentSelec
 					key='deck'
 					stack={true}
 					type={CardType.Item}
-					front={
-						<PlaceholderCard>
-							<Text type={TextType.SubHeading}>Item<br/>Deck</Text>
-							<Text type={TextType.Small}>Select one of these <b>{slot.proficiency}</b> cards.</Text>
-						</PlaceholderCard>
-					}
+					front={<PlaceholderCard text={<div>Item<br />Deck</div>} subtext={`Select one of these ${slot.proficiency} cards.`} />}
 				/>
 			);
 
@@ -415,7 +395,7 @@ class EquipmentSelector extends Component<EquipmentSelectorProps, EquipmentSelec
 							type={CardType.Item}
 							front={<ItemCard item={item} />}
 							footer='Item'
-							back={<PlaceholderCard>Item</PlaceholderCard>}
+							back={<PlaceholderCard text='Item' />}
 							display={(slot.selected !== null) && (slot.selected.name !== item.name) ? PlayingCardSide.Back : PlayingCardSide.Front}
 							onClick={(slot.selected !== null) ? null : () => this.selectItem(item)}
 						/>

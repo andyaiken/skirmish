@@ -5,22 +5,20 @@ import { Text, TextType } from '../../controls';
 import './placeholder-card.scss';
 
 interface Props {
-	children: string | JSX.Element | JSX.Element[];
+	text: string | JSX.Element;
+	subtext: string | JSX.Element | null;
 }
 
 export class PlaceholderCard extends Component<Props> {
-	render = () => {
-		if (typeof(this.props.children) === 'string') {
-			return (
-				<div className='placeholder-card'>
-					<Text type={TextType.SubHeading}>{this.props.children}</Text>
-				</div>
-			);
-		}
+	static defaultProps = {
+		subtext: null
+	};
 
+	render = () => {
 		return (
 			<div className='placeholder-card'>
-				{this.props.children}
+				{this.props.text ? <Text type={TextType.SubHeading}>{this.props.text}</Text> : null}
+				{this.props.subtext ? <Text type={TextType.Small}>{this.props.subtext}</Text> : null}
 			</div>
 		);
 	};

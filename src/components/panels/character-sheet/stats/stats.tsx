@@ -178,14 +178,14 @@ export class Stats extends Component<Props, State> {
 						key='features'
 						stack={true}
 						type={CardType.Feature}
-						front={<PlaceholderCard><Text type={TextType.SubHeading}>Feature<br />Deck</Text></PlaceholderCard>}
+						front={<PlaceholderCard text={<div>Feature<br />Deck</div>} />}
 						onClick={() => this.setDeck('features')}
 					/>,
 					<PlayingCard
 						key='actions'
 						stack={true}
 						type={CardType.Action}
-						front={<PlaceholderCard><Text type={TextType.SubHeading}>Action<br />Deck</Text></PlaceholderCard>}
+						front={<PlaceholderCard text={<div>Action<br />Deck</div>} />}
 						onClick={() => this.setDeck('actions')}
 					/>
 				]} />

@@ -97,7 +97,7 @@ export class Items extends Component<Props, State> {
 			if (cards.length === 0) {
 				cards.push(
 					<div key='empty' className='item'>
-						<PlayingCard front={<PlaceholderCard>No items</PlaceholderCard>} />
+						<PlayingCard front={<PlaceholderCard text='No Items' />} />
 					</div>
 				);
 			}
@@ -116,7 +116,7 @@ export class Items extends Component<Props, State> {
 			if (slotsAvailable > 0) {
 				cards.push(
 					<div key='add' className='item'>
-						<PlayingCard front={<PlaceholderCard>Choose an Item</PlaceholderCard>} onClick={() => this.setState({ selectedLocation: location })} />
+						<PlayingCard front={<PlaceholderCard text='Choose An Item' />} onClick={() => this.setState({ selectedLocation: location })} />
 					</div>
 				);
 			}
@@ -167,7 +167,7 @@ export class Items extends Component<Props, State> {
 			if (this.props.combatant.carried.length === 0) {
 				cards.push(
 					<div key='empty' className='item'>
-						<PlayingCard front={<PlaceholderCard>No Items</PlaceholderCard>} />
+						<PlayingCard front={<PlaceholderCard text='No Items' />} />
 					</div>
 				);
 			}
@@ -175,7 +175,7 @@ export class Items extends Component<Props, State> {
 			cards.push(
 				<div key='add' className='item'>
 					<PlayingCard
-						front={<PlaceholderCard>Choose an Item</PlaceholderCard>}
+						front={<PlaceholderCard text='Choose An Item' />}
 						onClick={() => this.setState({ selectedLocation: ItemLocationType.Carried })}
 					/>
 				</div>

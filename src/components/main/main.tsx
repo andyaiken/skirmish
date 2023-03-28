@@ -14,6 +14,7 @@ import { EncounterMapLogic } from '../../logic/encounter-map-logic';
 import { Factory } from '../../logic/factory';
 import { GameLogic } from '../../logic/game-logic';
 import { IntentsLogic } from '../../logic/intents-logic';
+import { MagicItemGenerator } from '../../logic/magic-item-generator';
 
 import type { ActionModel, ActionParameterModel } from '../../models/action';
 import type { BoonModel } from '../../models/boon';
@@ -251,6 +252,10 @@ export class Main extends Component<Props, State> {
 		hero.xp -= hero.level;
 		hero.level += 1;
 		hero.features.push(feature);
+
+		hero.items.filter(i => i.magic).forEach(item => {
+			MagicItemGenerator.addMagicItemFeature(item);
+		});
 
 		this.setState({
 			game: this.state.game
@@ -670,8 +675,8 @@ export class Main extends Component<Props, State> {
 							<Text type={TextType.SubHeading}>You lost the encounter in {region.name}, and have no more heroes.</Text>
 							<Text>You can either continue with a new group of heroes, or abandon this campaign.</Text>
 							<div className='card-row'>
-								<PlayingCard front={<PlaceholderCard>Continue</PlaceholderCard>} onClick={() => this.restartCampaign()} />
-								<PlayingCard front={<PlaceholderCard>Abandon</PlaceholderCard>} onClick={() => this.endCampaign()} />
+								<PlayingCard front={<PlaceholderCard text='Continue' />} onClick={() => this.restartCampaign()} />
+								<PlayingCard front={<PlaceholderCard text='Abandon' />} onClick={() => this.endCampaign()} />
 							</div>
 						</div>
 					);

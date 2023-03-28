@@ -9,7 +9,7 @@ export interface WeaponModel {
 	damage: {
 		type: DamageType;
 		rank: number;
-	};
+	}[];
 	range: number;
 	unreliable: number;
 }

@@ -1,0 +1,60 @@
+{
+    "title": "Kanban",
+    "cols": [
+        {
+            "title": "Bugs",
+            "tasks": [
+                {
+                    "text": "If you select a 'square' parameter, and move, the origin candidate squares do not move\n* Presumably this is the same for other parameter types",
+                    "id": "clfsfd4fm000c4663kesucij0"
+                }
+            ],
+            "id": "clfsf94tt000a4663bmulc2y4",
+            "color": "#eb144c"
+        },
+        {
+            "title": "Ideas",
+            "tasks": [
+                {
+                    "text": "Add encounter map types\n* Street\n* Building interior",
+                    "id": "clfsfg6hn000i4663634wlb0n"
+                },
+                {
+                    "text": "Regions could specify monster types found there\n* This should then be used for building encounters",
+                    "id": "clfsfg67h000h4663b2pwnhmh"
+                },
+                {
+                    "text": "Improve the turn log\n* It should be more than just a block of text\n* Indentation\n* Colours\n* Highlighting names, values",
+                    "id": "clfsfg5y8000g46634cwvhy82"
+                },
+                {
+                    "text": "Minions\n* Die as soon as they take any damage\n* Convert one monster into 4 minions",
+                    "id": "clfsfg5oh000f4663v4m27o49"
+                },
+                {
+                    "text": "Potions\n* Could be found on the map (as a loot pile)\n* An extra section in the items page\n* 1M to drink\n  * Then destroyed\n  * Health (heals wounds)\n  * Luck (grants skill bonuses)\n* Buy for 25 money",
+                    "id": "clfsfg5gn000e4663k0ldpiyn"
+                },
+                {
+                    "text": "Keys\n* Another sort of consumable item\n* Lockable doors on the map\n* Destroyed when used to lock / unlock",
+                    "id": "clfsfg58q000d4663c4bfqpi2"
+                },
+                {
+                    "text": "Add a system for evaluating each action to ensure none is too powerful\n* Then extend this to ensure species / roles / backgrounds are equally matched\n* Also check that the different effect types are all used equally",
+                    "id": "clfsf94tt000b4663r2eanus1"
+                }
+            ],
+            "id": "clfsf94tt000c46635zrvsuea",
+            "color": "#fcb900"
+        },
+        {
+            "title": "In Progress",
+            "tasks": [],
+            "id": "clfsf94tt000d4663flbyuwg7",
+            "color": "#0693e3"
+        }
+    ],
+    "autosave": true,
+    "saveToFile": true,
+    "timestamp": 1680019051282
+}

@@ -70,25 +70,25 @@ export class SettingsPanel extends Component<Props, State> {
 						<PlayingCard
 							stack={true}
 							type={CardType.Species}
-							front={<PlaceholderCard><Text type={TextType.SubHeading}>Species<br />Deck</Text></PlaceholderCard>}
+							front={<PlaceholderCard text={<div>Species<br />Deck</div>} />}
 							onClick={() => this.setDeck(CardType.Species)}
 						/>
 						<PlayingCard
 							stack={true}
 							type={CardType.Role}
-							front={<PlaceholderCard><Text type={TextType.SubHeading}>Role<br />Deck</Text></PlaceholderCard>}
+							front={<PlaceholderCard text={<div>Role<br />Deck</div>} />}
 							onClick={() => this.setDeck(CardType.Role)}
 						/>
 						<PlayingCard
 							stack={true}
 							type={CardType.Background}
-							front={<PlaceholderCard><Text type={TextType.SubHeading}>Background<br />Deck</Text></PlaceholderCard>}
+							front={<PlaceholderCard text={<div>Background<br />Deck</div>} />}
 							onClick={() => this.setDeck(CardType.Background)}
 						/>
 						<PlayingCard
 							stack={true}
 							type={CardType.Item}
-							front={<PlaceholderCard><Text type={TextType.SubHeading}>Item<br />Deck</Text></PlaceholderCard>}
+							front={<PlaceholderCard text={<div>Item<br />Deck</div>} />}
 							onClick={() => this.setDeck(CardType.Item)}
 						/>
 					</div>

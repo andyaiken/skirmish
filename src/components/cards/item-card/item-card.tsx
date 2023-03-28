@@ -27,7 +27,9 @@ export class ItemCard extends Component<Props> {
 				<div>
 					<Text type={TextType.MinorHeading}>Weapon</Text>
 					{this.props.item.weapon ?<StatValue orientation='compact' label='Damage' value={
-						<IconValue type={this.props.item.weapon.damage.type} value={this.props.item.weapon.damage.rank} iconSize={12} />
+						this.props.item.weapon.damage.map((dmg, n) => (
+							<IconValue key={n} type={dmg.type} value={dmg.rank} iconSize={12} />
+						))
 					}/> : null}
 					{this.props.item.weapon && (this.props.item.weapon.range > 1) ? <StatValue orientation='compact' label='Range' value={this.props.item.weapon.range}/> : null}
 					{this.props.item.weapon && (this.props.item.weapon.unreliable > 0) ? <StatValue orientation='compact' label='Unreliable' value={this.props.item.weapon.unreliable}/> : null}

@@ -1,6 +1,6 @@
 {
 	"name": "skirmish",
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"repository": "https://github.com/andyaiken/skirmish.git",
 	"homepage": "https://andyaiken.github.io/skirmish/",
 	"dependencies": {
@@ -10,10 +10,10 @@
 		"react-markdown": "^8.0.6"
 	},
 	"devDependencies": {
-		"@types/react": "^18.0.29",
+		"@types/react": "^18.0.30",
 		"@types/react-dom": "^18.0.11",
-		"@typescript-eslint/eslint-plugin": "^5.56.0",
-		"@typescript-eslint/parser": "^5.56.0",
+		"@typescript-eslint/eslint-plugin": "^5.57.0",
+		"@typescript-eslint/parser": "^5.57.0",
 		"eslint": "^8.36.0",
 		"eslint-config-react-app": "^7.0.1",
 		"gh-pages": "^5.0.0",

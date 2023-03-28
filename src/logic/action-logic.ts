@@ -650,17 +650,19 @@ export class ActionEffects {
 					const targetIDs = targetParameter.value as string[];
 					targetIDs.forEach(id => {
 						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
-						const rank = weapon.damage.rank + rankModifier;
-						const result = Random.dice(rank);
-						log(`${combatant.name} rolls weapon damage for ${target.name} (rank ${rank}) and gets ${result}`);
-						const bonus = EncounterLogic.getDamageBonus(encounter, combatant, weapon.damage.type);
-						if (bonus > 0) {
-							log(`${combatant.name} deals ${bonus} additional damage`);
-						}
-						if (bonus < 0) {
-							log(`${combatant.name} deals ${bonus} less damage`);
-						}
-						EncounterLogic.damage(encounter, target, result + bonus, weapon.damage.type);
+						weapon.damage.forEach(dmg => {
+							const rank = dmg.rank + rankModifier;
+							const result = Random.dice(rank);
+							log(`${combatant.name} rolls weapon damage for ${target.name} (rank ${rank}) and gets ${result}`);
+							const bonus = EncounterLogic.getDamageBonus(encounter, combatant, dmg.type);
+							if (bonus > 0) {
+								log(`${combatant.name} deals ${bonus} additional ${dmg.type} damage`);
+							}
+							if (bonus < 0) {
+								log(`${combatant.name} deals ${bonus} less ${dmg.type} damage`);
+							}
+							EncounterLogic.damage(encounter, target, result + bonus, dmg.type);
+						});
 					});
 				}
 				break;
@@ -676,10 +678,10 @@ export class ActionEffects {
 						log(`${combatant.name} rolls damage for ${target.name} (rank ${data.rank}) and gets ${result}`);
 						const bonus = EncounterLogic.getDamageBonus(encounter, combatant, data.type);
 						if (bonus > 0) {
-							log(`${combatant.name} deals ${bonus} additional damage`);
+							log(`${combatant.name} deals ${bonus} additional ${data.type} damage`);
 						}
 						if (bonus < 0) {
-							log(`${combatant.name} deals ${bonus} less damage`);
+							log(`${combatant.name} deals ${bonus} less ${data.type} damage`);
 						}
 						EncounterLogic.damage(encounter, target, result + bonus, data.type);
 					});
@@ -1193,6 +1195,10 @@ export class ActionEffects {
 export class ActionLogic {
 	static getActionType = (action: ActionModel) => {
 		return action.effects.some(e => e.id === 'attack') ? 'Attack' : 'Utility';
+	};
+
+	static getActionSpeed = (action: ActionModel) => {
+		return action.effects.some(e => e.id === 'redraw') ? 'Quick' : 'Full';
 	};
 
 	static getActionDescription = (action: ActionModel) => {

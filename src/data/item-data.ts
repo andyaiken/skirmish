@@ -21,10 +21,12 @@ export class ItemData {
 				location: ItemLocationType.Hand,
 				slots: 1,
 				weapon: {
-					damage: {
-						type: DamageType.Edged,
-						rank: 3
-					},
+					damage: [
+						{
+							type: DamageType.Edged,
+							rank: 3
+						}
+					],
 					range: 1,
 					unreliable: 0
 				},
@@ -41,10 +43,12 @@ export class ItemData {
 				location: ItemLocationType.Hand,
 				slots: 1,
 				weapon: {
-					damage: {
-						type: DamageType.Edged,
-						rank: 3
-					},
+					damage: [
+						{
+							type: DamageType.Edged,
+							rank: 3
+						}
+					],
 					range: 1,
 					unreliable: 0
 				},
@@ -61,10 +65,12 @@ export class ItemData {
 				location: ItemLocationType.Hand,
 				slots: 1,
 				weapon: {
-					damage: {
-						type: DamageType.Edged,
-						rank: 3
-					},
+					damage: [
+						{
+							type: DamageType.Edged,
+							rank: 3
+						}
+					],
 					range: 1,
 					unreliable: 0
 				},
@@ -81,10 +87,12 @@ export class ItemData {
 				location: ItemLocationType.Hand,
 				slots: 1,
 				weapon: {
-					damage: {
-						type: DamageType.Edged,
-						rank: 3
-					},
+					damage: [
+						{
+							type: DamageType.Edged,
+							rank: 3
+						}
+					],
 					range: 1,
 					unreliable: 0
 				},
@@ -101,10 +109,12 @@ export class ItemData {
 				location: ItemLocationType.Hand,
 				slots: 1,
 				weapon: {
-					damage: {
-						type: DamageType.Edged,
-						rank: 3
-					},
+					damage: [
+						{
+							type: DamageType.Edged,
+							rank: 3
+						}
+					],
 					range: 1,
 					unreliable: 0
 				},
@@ -121,10 +131,12 @@ export class ItemData {
 				location: ItemLocationType.Hand,
 				slots: 1,
 				weapon: {
-					damage: {
-						type: DamageType.Impact,
-						rank: 3
-					},
+					damage: [
+						{
+							type: DamageType.Impact,
+							rank: 3
+						}
+					],
 					range: 1,
 					unreliable: 0
 				},
@@ -141,10 +153,12 @@ export class ItemData {
 				location: ItemLocationType.Hand,
 				slots: 1,
 				weapon: {
-					damage: {
-						type: DamageType.Impact,
-						rank: 4
-					},
+					damage: [
+						{
+							type: DamageType.Impact,
+							rank: 4
+						}
+					],
 					range: 1,
 					unreliable: 1
 				},
@@ -161,10 +175,12 @@ export class ItemData {
 				location: ItemLocationType.Hand,
 				slots: 1,
 				weapon: {
-					damage: {
-						type: DamageType.Piercing,
-						rank: 2
-					},
+					damage: [
+						{
+							type: DamageType.Piercing,
+							rank: 2
+						}
+					],
 					range: 2,
 					unreliable: 0
 				},
@@ -181,10 +197,12 @@ export class ItemData {
 				location: ItemLocationType.Hand,
 				slots: 1,
 				weapon: {
-					damage: {
-						type: DamageType.Piercing,
-						rank: 3
-					},
+					damage: [
+						{
+							type: DamageType.Piercing,
+							rank: 3
+						}
+					],
 					range: 1,
 					unreliable: 0
 				},
@@ -201,10 +219,12 @@ export class ItemData {
 				location: ItemLocationType.Hand,
 				slots: 1,
 				weapon: {
-					damage: {
-						type: DamageType.Piercing,
-						rank: 3
-					},
+					damage: [
+						{
+							type: DamageType.Piercing,
+							rank: 3
+						}
+					],
 					range: 1,
 					unreliable: 0
 				},
@@ -221,10 +241,12 @@ export class ItemData {
 				location: ItemLocationType.Hand,
 				slots: 2,
 				weapon: {
-					damage: {
-						type: DamageType.Edged,
-						rank: 5
-					},
+					damage: [
+						{
+							type: DamageType.Edged,
+							rank: 5
+						}
+					],
 					range: 1,
 					unreliable: 0
 				},
@@ -241,10 +263,12 @@ export class ItemData {
 				location: ItemLocationType.Hand,
 				slots: 2,
 				weapon: {
-					damage: {
-						type: DamageType.Edged,
-						rank: 5
-					},
+					damage: [
+						{
+							type: DamageType.Edged,
+							rank: 5
+						}
+					],
 					range: 1,
 					unreliable: 0
 				},
@@ -261,10 +285,12 @@ export class ItemData {
 				location: ItemLocationType.Hand,
 				slots: 2,
 				weapon: {
-					damage: {
-						type: DamageType.Edged,
-						rank: 4
-					},
+					damage: [
+						{
+							type: DamageType.Edged,
+							rank: 4
+						}
+					],
 					range: 2,
 					unreliable: 0
 				},
@@ -281,10 +307,12 @@ export class ItemData {
 				location: ItemLocationType.Hand,
 				slots: 2,
 				weapon: {
-					damage: {
-						type: DamageType.Impact,
-						rank: 5
-					},
+					damage: [
+						{
+							type: DamageType.Impact,
+							rank: 5
+						}
+					],
 					range: 1,
 					unreliable: 0
 				},
@@ -301,10 +329,12 @@ export class ItemData {
 				location: ItemLocationType.Hand,
 				slots: 2,
 				weapon: {
-					damage: {
-						type: DamageType.Impact,
-						rank: 5
-					},
+					damage: [
+						{
+							type: DamageType.Impact,
+							rank: 5
+						}
+					],
 					range: 1,
 					unreliable: 0
 				},
@@ -321,10 +351,12 @@ export class ItemData {
 				location: ItemLocationType.Hand,
 				slots: 2,
 				weapon: {
-					damage: {
-						type: DamageType.Piercing,
-						rank: 4
-					},
+					damage: [
+						{
+							type: DamageType.Piercing,
+							rank: 4
+						}
+					],
 					range: 2,
 					unreliable: 0
 				},
@@ -341,10 +373,12 @@ export class ItemData {
 				location: ItemLocationType.Hand,
 				slots: 2,
 				weapon: {
-					damage: {
-						type: DamageType.Piercing,
-						rank: 5
-					},
+					damage: [
+						{
+							type: DamageType.Piercing,
+							rank: 5
+						}
+					],
 					range: 1,
 					unreliable: 0
 				},
@@ -361,10 +395,12 @@ export class ItemData {
 				location: ItemLocationType.Hand,
 				slots: 2,
 				weapon: {
-					damage: {
-						type: DamageType.Edged,
-						rank: 2
-					},
+					damage: [
+						{
+							type: DamageType.Edged,
+							rank: 2
+						}
+					],
 					range: 1,
 					unreliable: 0
 				},
@@ -381,10 +417,12 @@ export class ItemData {
 				location: ItemLocationType.Hand,
 				slots: 2,
 				weapon: {
-					damage: {
-						type: DamageType.Piercing,
-						rank: 2
-					},
+					damage: [
+						{
+							type: DamageType.Piercing,
+							rank: 2
+						}
+					],
 					range: 1,
 					unreliable: 0
 				},
@@ -401,10 +439,12 @@ export class ItemData {
 				location: ItemLocationType.Hand,
 				slots: 2,
 				weapon: {
-					damage: {
-						type: DamageType.Impact,
-						rank: 2
-					},
+					damage: [
+						{
+							type: DamageType.Impact,
+							rank: 2
+						}
+					],
 					range: 1,
 					unreliable: 0
 				},
@@ -421,10 +461,12 @@ export class ItemData {
 				location: ItemLocationType.Hand,
 				slots: 2,
 				weapon: {
-					damage: {
-						type: DamageType.Piercing,
-						rank: 3
-					},
+					damage: [
+						{
+							type: DamageType.Piercing,
+							rank: 3
+						}
+					],
 					range: 10,
 					unreliable: 0
 				},
@@ -441,10 +483,12 @@ export class ItemData {
 				location: ItemLocationType.Hand,
 				slots: 2,
 				weapon: {
-					damage: {
-						type: DamageType.Piercing,
-						rank: 4
-					},
+					damage: [
+						{
+							type: DamageType.Piercing,
+							rank: 4
+						}
+					],
 					range: 15,
 					unreliable: 1
 				},
@@ -461,10 +505,12 @@ export class ItemData {
 				location: ItemLocationType.Hand,
 				slots: 2,
 				weapon: {
-					damage: {
-						type: DamageType.Piercing,
-						rank: 7
-					},
+					damage: [
+						{
+							type: DamageType.Piercing,
+							rank: 7
+						}
+					],
 					range: 15,
 					unreliable: 2
 				},
@@ -481,10 +527,12 @@ export class ItemData {
 				location: ItemLocationType.Hand,
 				slots: 1,
 				weapon: {
-					damage: {
-						type: DamageType.Piercing,
-						rank: 6
-					},
+					damage: [
+						{
+							type: DamageType.Piercing,
+							rank: 6
+						}
+					],
 					range: 10,
 					unreliable: 2
 				},

@@ -74,39 +74,7 @@ export class Main extends Component<Props, State> {
 		}
 
 		if (game) {
-			game.heroes.forEach(h => {
-				if (h.carried === undefined) {
-					h.carried = [];
-				}
-			});
-
-			if (game.money === undefined) {
-				game.money = 0;
-			}
-
 			if (game.encounter) {
-				if (game.encounter.loot === undefined) {
-					game.encounter.loot = [];
-				}
-				if (game.encounter.mapSquares === undefined) {
-					game.encounter.mapSquares = [];
-				}
-
-				game.encounter.combatants.forEach(c => {
-					if (c.combat.trail === undefined) {
-						c.combat.trail = [];
-					}
-					if (c.combat.selectedAction === undefined) {
-						c.combat.selectedAction = null;
-					}
-					if (c.combat.log === undefined) {
-						c.combat.log = [];
-					}
-					if (c.combat.intents === undefined) {
-						c.combat.intents = null;
-					}
-				});
-
 				for (let n = 0; n !== game.encounter.combatants.length; ++n) {
 					const combatant = game.encounter.combatants[n];
 					if (combatant.type === CombatantType.Hero) {

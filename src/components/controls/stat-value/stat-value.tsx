@@ -14,15 +14,23 @@ export class StatValue extends Component<Props> {
 	};
 
 	render = () => {
+		const label = (
+			<div className='stat-value-label'>
+				{this.props.label}
+			</div>
+		);
+
+		let value = null;
 		if (Array.isArray(this.props.value)) {
-			return (
-				<div className='stat-value horizontal'>
-					<div className='stat-value-label'>
-						{this.props.label}
-					</div>
-					<div className='stat-value-list'>
-						{this.props.value.map((v, n) => (<div key={n} className='stat-value-value'>{v}</div>))}
-					</div>
+			value = (
+				<div className='stat-value-list'>
+					{this.props.value.map((v, n) => (<div key={n} className='stat-value-value'>{v}</div>))}
+				</div>
+			);
+		} else {
+			value = (
+				<div className='stat-value-value'>
+					{this.props.value}
 				</div>
 			);
 		}
@@ -30,12 +38,8 @@ export class StatValue extends Component<Props> {
 		if (this.props.orientation === 'vertical') {
 			return (
 				<div className='stat-value vertical'>
-					<div className='stat-value-value'>
-						{this.props.value}
-					</div>
-					<div className='stat-value-label'>
-						{this.props.label}
-					</div>
+					{value}
+					{label}
 				</div>
 			);
 		}
@@ -43,24 +47,16 @@ export class StatValue extends Component<Props> {
 		if (this.props.orientation === 'compact') {
 			return (
 				<div className='stat-value compact'>
-					<div className='stat-value-label'>
-						{this.props.label}
-					</div>
-					<div className='stat-value-value'>
-						{this.props.value}
-					</div>
+					{label}
+					{value}
 				</div>
 			);
 		}
 
 		return (
 			<div className='stat-value horizontal'>
-				<div className='stat-value-label'>
-					{this.props.label}
-				</div>
-				<div className='stat-value-value'>
-					{this.props.value}
-				</div>
+				{label}
+				{value}
 			</div>
 		);
 	};

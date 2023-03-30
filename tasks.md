@@ -39,6 +39,14 @@
 * Extend this to ensure species / roles / backgrounds are equally matched
 * Also check that the different effect types are all used equally
 
+## Water / Ice
+* Squares of water / ice would be difficult terrain
+* Add a water animation
+* Standing in water gives resistance to fire damage
+* Dealing poison / acid / electricity damage to a target in water deals the same damage to any combatant in adjacent water
+* Dealing cold damage to a target on a water square turns all adjacent water squares into ice
+* Dealing fire damage to a target on an ice square turns all adjacent ice squares into water
+
 ## Doors
 * Present on the map - 2 squares wide
 * Can be open / closed
@@ -46,6 +54,9 @@
   * When closed, blocks LOS
 * Can be broken down
   * Counts as a wall
+
+## Chests
+* Like a loot pile
 
 ## Potions
 * Could be found on the map (as a loot pile)
@@ -58,16 +69,8 @@
 
 ## Keys
 * Another sort of consumable item
-* Make doors lockable
+* Make doors / chests lockable
 * Destroyed when used to lock / unlock
-
-## Minions
-* Die as soon as they take any damage
-* Convert one monster into 4 minions
-
-## Chests
-* Like a loot pile
-* Lockable
 
 ## Traps
 * Types of trap:
@@ -80,9 +83,13 @@
 * Traps should have a set Hidden score
 * Gnome, Thief should be able to set / disable traps
 
+## Lighting
+* General light level
+* Sources of light
+* Species with darkvision
+
 ## Victory Conditions
-* Get a certain number of heroes to a particular area
-* Get one hero to a particular area and stay there for a certain number of rounds
+* Get a certain number of heroes to a specific area and stay there for a certain number of rounds
 * Defeat a specific opponent within a certain number of rounds
 
 ## Ideas for Roles / Backgrounds
@@ -99,6 +106,7 @@
   * Champion
   * Guard / warden
   * Knight
+  * Ravager
   * Warrior
   * Warlord
 * Thief types
@@ -116,15 +124,36 @@
   * Psionicist
 
 ## Ideas for Species
-* Humanoids:
-  * Kobold
-  * Ogre
-  * Giant
-  * Elemental
+* Quirks:
+  * Swarm / amorphous / ooze
+    * Takes half damage from physical damage
+  * Insubstantial / phasing / ghostly
+    * Takes half damage from physical damage
+    * Move through / see through walls
+    * No movement penalty for obstructed terrain
+  * Undead
+    * Double damage from light damage
+    * Easily rise from Unconscious
+  * Aquatic
+    * No movement penalty for water terrain
+* Kobold
+* Ogre
+* Giant
+* Gnoll
+* Lizardfolk
+* Elemental:
+  * Air Elemental
+    * Thunderclap
+  * Water Elemental
+  * Earth Elemental
+    * Some powers similar to geomancer
+* Undead:
   * Wraith
   * Zombie
-  * Ghoul
+  * Skeleton
+  * Ghoul / wight
   * Vampire
+* Demon
 * Beasts:
   * Basilisk / medusa / gorgon
   * Bear
@@ -134,6 +163,8 @@
   * Giant rat
   * Giant snake
   * Dragon
+  * Kruthik / Ankheg
+* Ooze
 
 ## Styling
 * Dark mode

@@ -1,6 +1,7 @@
 import { Component } from 'react';
 
 import { FeatureType } from '../../../enums/feature-type';
+import { QuirkType } from '../../../enums/quirk-type';
 
 import { CombatantLogic } from '../../../logic/combatant-logic';
 import { GameLogic } from '../../../logic/game-logic';
@@ -135,16 +136,25 @@ export class CharacterSheetPanel extends Component<Props, State> {
 			);
 		}
 
+		const species = GameLogic.getSpecies(this.props.combatant.speciesID);
+		const role = GameLogic.getRole(this.props.combatant.roleID);
+		const background = GameLogic.getBackground(this.props.combatant.backgroundID);
+
+		if (this.props.combatant.quirks.includes(QuirkType.Beast)) {
+			selector = null;
+		}
+
 		return (
 			<div className='character-sheet-panel'>
 				<div className='main-section'>
 					<div className='header'>
 						<Text type={TextType.Heading}>{this.props.combatant.name || 'unnamed hero'}</Text>
 						<div className='tags'>
-							<Tag>{GameLogic.getSpecies(this.props.combatant.speciesID)?.name ?? 'Unknown species'}</Tag>
-							<Tag>{GameLogic.getRole(this.props.combatant.roleID)?.name ?? 'Unknown role'}</Tag>
-							<Tag>{GameLogic.getBackground(this.props.combatant.backgroundID)?.name ?? 'Unknown background'}</Tag>
+							{species ? <Tag>{species.name}</Tag> : null}
+							{role ? <Tag>{role.name}</Tag> : null}
+							{background ? <Tag>{background.name}</Tag> : null}
 							<Tag>Level {this.props.combatant.level}</Tag>
+							{species ? species.quirks.map((q, n) => (<Tag key={n}>{q}</Tag>)) : null}
 						</div>
 					</div>
 					{selector}

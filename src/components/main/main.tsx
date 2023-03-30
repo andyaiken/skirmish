@@ -74,6 +74,12 @@ export class Main extends Component<Props, State> {
 		}
 
 		if (game) {
+			game.heroes.forEach(h => {
+				if (h.quirks === undefined) {
+					h.quirks = [];
+				}
+			});
+
 			if (game.encounter) {
 				for (let n = 0; n !== game.encounter.combatants.length; ++n) {
 					const combatant = game.encounter.combatants[n];
@@ -182,7 +188,7 @@ export class Main extends Component<Props, State> {
 		game.money = 0;
 
 		this.setState({
-			game: null,
+			game: game,
 			screen: ScreenType.Campaign,
 			dialog: null
 		});

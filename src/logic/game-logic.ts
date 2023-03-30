@@ -294,19 +294,19 @@ export class GameLogic {
 	};
 
 	static getSpecies = (id: string) => {
-		return SpeciesData.getList().find(s => s.id === id);
+		return SpeciesData.getList().find(s => s.id === id) || null;
 	};
 
 	static getRole = (id: string) => {
-		return RoleData.getList().find(r => r.id === id);
+		return RoleData.getList().find(r => r.id === id) || null;
 	};
 
 	static getBackground = (id: string) => {
-		return BackgroundData.getList().find(b => b.id === id);
+		return BackgroundData.getList().find(b => b.id === id) || null;
 	};
 
 	static getItem = (id: string) => {
-		return ItemData.getList().find(b => b.id === id);
+		return ItemData.getList().find(b => b.id === id) || null;
 	};
 
 	static getItemsForProficiency = (proficiency: ItemProficiencyType) => {

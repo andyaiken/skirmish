@@ -4,6 +4,7 @@ import { ConditionType } from '../enums/condition-type';
 import { DamageCategoryType } from '../enums/damage-category-type';
 import { DamageType } from '../enums/damage-type';
 import { MovementType } from '../enums/movement-type';
+import { QuirkType } from '../enums/quirk-type';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
 
@@ -21,6 +22,7 @@ export class SpeciesData {
 				name: 'Human',
 				type: CombatantType.Hero,
 				size: 1,
+				quirks: [],
 				traits: [
 					TraitType.Endurance,
 					TraitType.Resolve,
@@ -60,6 +62,7 @@ export class SpeciesData {
 				name: 'Construct',
 				type: CombatantType.Hero,
 				size: 1,
+				quirks: [],
 				traits: [
 					TraitType.Endurance
 				],
@@ -110,6 +113,7 @@ export class SpeciesData {
 				name: 'Deva',
 				type: CombatantType.Hero,
 				size: 1,
+				quirks: [],
 				traits: [
 					TraitType.Resolve
 				],
@@ -169,6 +173,7 @@ export class SpeciesData {
 				name: 'Dwarf',
 				type: CombatantType.Hero,
 				size: 1,
+				quirks: [],
 				traits: [
 					TraitType.Endurance
 				],
@@ -213,6 +218,7 @@ export class SpeciesData {
 				name: 'Elf',
 				type: CombatantType.Hero,
 				size: 1,
+				quirks: [],
 				traits: [
 					TraitType.Speed
 				],
@@ -257,6 +263,7 @@ export class SpeciesData {
 				name: 'Gnome',
 				type: CombatantType.Hero,
 				size: 1,
+				quirks: [],
 				traits: [
 					TraitType.Speed
 				],
@@ -288,6 +295,18 @@ export class SpeciesData {
 								]
 							})
 						]
+					},
+					{
+						id: 'gnome-action-2',
+						name: 'Fade Away',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.self()
+						],
+						effects: [
+							ActionEffects.hide(),
+							ActionEffects.redrawActions()
+						]
 					}
 				]
 			},
@@ -296,6 +315,7 @@ export class SpeciesData {
 				name: 'Minotaur',
 				type: CombatantType.Hero,
 				size: 1,
+				quirks: [],
 				traits: [
 					TraitType.Endurance
 				],
@@ -393,6 +413,7 @@ export class SpeciesData {
 				name: 'Pixie',
 				type: CombatantType.Hero,
 				size: 1,
+				quirks: [],
 				traits: [
 					TraitType.Speed
 				],
@@ -435,6 +456,7 @@ export class SpeciesData {
 				name: 'Reptilian',
 				type: CombatantType.Hero,
 				size: 1,
+				quirks: [],
 				traits: [
 					TraitType.Speed
 				],
@@ -508,6 +530,7 @@ export class SpeciesData {
 				name: 'Shadowborn',
 				type: CombatantType.Hero,
 				size: 1,
+				quirks: [],
 				traits: [
 					TraitType.Resolve
 				],
@@ -584,6 +607,7 @@ export class SpeciesData {
 				name: 'Werewolf',
 				type: CombatantType.Hero,
 				size: 1,
+				quirks: [],
 				traits: [
 					TraitType.Resolve
 				],
@@ -659,18 +683,20 @@ export class SpeciesData {
 				name: 'Orc',
 				type: CombatantType.Monster,
 				size: 1,
+				quirks: [],
 				traits: [
-					TraitType.All
+					TraitType.Endurance,
+					TraitType.Resolve,
+					TraitType.Speed
 				],
 				skills: [
 					SkillType.Brawl,
 					SkillType.Weapon
 				],
 				features: [
-					FeatureLogic.createTraitFeature('orc-feature-1', TraitType.Any, 1),
-					FeatureLogic.createDamageResistFeature('orc-feature-2', DamageType.All, 1),
-					FeatureLogic.createSkillFeature('orc-feature-3', SkillType.Brawl, 2),
-					FeatureLogic.createSkillFeature('orc-feature-4', SkillType.Weapon, 2)
+					FeatureLogic.createDamageResistFeature('orc-feature-1', DamageType.All, 1),
+					FeatureLogic.createSkillFeature('orc-feature-2', SkillType.Brawl, 2),
+					FeatureLogic.createSkillFeature('orc-feature-3', SkillType.Weapon, 2)
 				],
 				actions: [
 					{
@@ -685,6 +711,27 @@ export class SpeciesData {
 							ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Endurance, 5, SkillType.Weapon)),
 							ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Endurance, 5, DamageCategoryType.Physical))
 						]
+					},
+					{
+						id: 'orc-action-2',
+						name: 'Bloodfury',
+						prerequisites: [
+							ActionPrerequisites.wound()
+						],
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Endurance,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Impact, 3)
+								]
+							})
+						]
 					}
 				]
 			},
@@ -693,7 +740,9 @@ export class SpeciesData {
 				name: 'Goblin',
 				type: CombatantType.Monster,
 				size: 1,
+				quirks: [],
 				traits: [
+					TraitType.Speed,
 					TraitType.Speed
 				],
 				skills: [
@@ -728,6 +777,19 @@ export class SpeciesData {
 								]
 							})
 						]
+					},
+					{
+						id: 'goblin-action-2',
+						name: 'Skitter',
+						prerequisites: [
+						],
+						parameters: [
+							ActionTargetParameters.self()
+						],
+						effects: [
+							ActionEffects.forceMovement(MovementType.Random, 1),
+							ActionEffects.redrawActions()
+						]
 					}
 				]
 			},
@@ -736,6 +798,7 @@ export class SpeciesData {
 				name: 'Troll',
 				type: CombatantType.Monster,
 				size: 2,
+				quirks: [],
 				traits: [
 					TraitType.Endurance,
 					TraitType.Resolve
@@ -780,6 +843,144 @@ export class SpeciesData {
 						],
 						effects: [
 							ActionEffects.healWounds(1)
+						]
+					}
+				]
+			},
+			{
+				id: 'species-elemental-fire',
+				name: 'Fire Elemental',
+				type: CombatantType.Monster,
+				size: 1,
+				quirks: [],
+				traits: [],
+				skills: [
+					SkillType.Brawl
+				],
+				features: [
+					FeatureLogic.createSkillFeature('elemental-fire-feature-1', SkillType.Brawl, 2),
+					FeatureLogic.createDamageBonusFeature('elemental-fire-feature-2', DamageType.Fire, 1),
+					FeatureLogic.createDamageResistFeature('elemental-fire-feature-3', DamageType.Fire, 5),
+					FeatureLogic.createAuraDamageFeature('elemental-fire-feature-4', ConditionType.AutoDamage, DamageType.Fire, 1)
+				],
+				actions: [
+					{
+						id: 'elemental-fire-action-1',
+						name: 'Volcanic Flare',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Endurance,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Fire, 1),
+									ActionEffects.dealDamage(DamageType.Light, 1)
+								]
+							})
+						]
+					},
+					{
+						id: 'elemental-fire-action-2',
+						name: 'Hurl Fire',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Speed,
+								skillBonus: 2,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Fire, 2)
+								]
+							})
+						]
+					},
+					{
+						id: 'elemental-fire-action-3',
+						name: 'Immolation',
+						prerequisites: [
+							ActionPrerequisites.wound()
+						],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 2)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Endurance,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Fire, 3)
+								]
+							})
+						]
+					}
+				]
+			},
+			{
+				id: 'species-scarab',
+				name: 'Scarab',
+				type: CombatantType.Monster,
+				size: 1,
+				quirks: [
+					QuirkType.Beast
+				],
+				traits: [],
+				skills: [
+					SkillType.Brawl
+				],
+				features: [
+					FeatureLogic.createSkillFeature('scarab-feature-1', SkillType.Brawl, 2),
+					FeatureLogic.createDamageBonusFeature('scarab-feature-2', DamageType.Acid, 1)
+				],
+				actions: [
+					{
+						id: 'scarab-action-1',
+						name: 'Mandible',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Endurance,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Edged, 2),
+									ActionEffects.dealDamage(DamageType.Acid, 2)
+								]
+							})
+						]
+					},
+					{
+						id: 'scarab-action-2',
+						name: 'Stinger',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 2)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Endurance,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Piercing, 2),
+									ActionEffects.dealDamage(DamageType.Acid, 2)
+								]
+							})
 						]
 					}
 				]

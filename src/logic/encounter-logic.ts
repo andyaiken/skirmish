@@ -6,6 +6,7 @@ import { ConditionType } from '../enums/condition-type';
 import { DamageType } from '../enums/damage-type';
 import { EncounterMapSquareType } from '../enums/encounter-map-square-type';
 import { EncounterState } from '../enums/encounter-state';
+import { QuirkType } from '../enums/quirk-type';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
 
@@ -489,14 +490,19 @@ export class EncounterLogic {
 
 		const damage = value - resistance;
 		if (damage > 0) {
-			combatant.combat.damage += damage;
-			EncounterLogic.log(encounter, `${combatant.name} takes damage (${damage} pts) and is now at ${combatant.combat.damage}`);
+			if (combatant.quirks.includes(QuirkType.Drone)) {
+				// Drones die if they take any damage
+				EncounterLogic.kill(encounter, combatant);
+			} else {
+				combatant.combat.damage += damage;
+				EncounterLogic.log(encounter, `${combatant.name} takes damage (${damage} pts) and is now at ${combatant.combat.damage}`);
 
-			const rank = EncounterLogic.getTraitRank(encounter, combatant, TraitType.Endurance);
-			const result = Random.dice(rank);
-			EncounterLogic.log(encounter, `${combatant.name} rolls Endurance (${rank}) and gets ${result}`);
-			if (result < combatant.combat.damage) {
-				EncounterLogic.wound(encounter, combatant, 1);
+				const rank = EncounterLogic.getTraitRank(encounter, combatant, TraitType.Endurance);
+				const result = Random.dice(rank);
+				EncounterLogic.log(encounter, `${combatant.name} rolls Endurance (${rank}) and gets ${result}`);
+				if (result < combatant.combat.damage) {
+					EncounterLogic.wound(encounter, combatant, 1);
+				}
 			}
 		} else {
 			EncounterLogic.log(encounter, `${combatant.name} takes no damage`);
@@ -510,18 +516,26 @@ export class EncounterLogic {
 		combatant.combat.wounds += value;
 		EncounterLogic.log(encounter, `${combatant.name} takes wounds (${value}) and is now at ${combatant.combat.damage} damage, ${combatant.combat.wounds} wounds`);
 
-		const resolve = EncounterLogic.getTraitRank(encounter, combatant, TraitType.Resolve);
-		if (combatant.combat.wounds === resolve) {
-			combatant.combat.state = CombatantState.Unconscious;
-			EncounterLogic.log(encounter, `${combatant.name} is now ${combatant.combat.state}`);
-		}
-		if (combatant.combat.wounds > resolve) {
-			combatant.combat.state = CombatantState.Dead;
-			EncounterLogic.log(encounter, `${combatant.name} is now ${combatant.combat.state}`);
-			EncounterLogic.dropAllItems(encounter, combatant);
+		if (combatant.quirks.includes(QuirkType.Drone)) {
+			EncounterLogic.kill(encounter, combatant);
+		} else {
+			const resolve = EncounterLogic.getTraitRank(encounter, combatant, TraitType.Resolve);
+			if (combatant.combat.wounds === resolve) {
+				combatant.combat.state = CombatantState.Unconscious;
+				EncounterLogic.log(encounter, `${combatant.name} is now ${combatant.combat.state}`);
+			}
+			if (combatant.combat.wounds > resolve) {
+				EncounterLogic.kill(encounter, combatant);
+			}
 		}
 
 		EncounterLogic.checkActionParameters(encounter, combatant);
+	};
+
+	static kill = (encounter: EncounterModel, combatant: CombatantModel) => {
+		combatant.combat.state = CombatantState.Dead;
+		EncounterLogic.log(encounter, `${combatant.name} is now ${combatant.combat.state}`);
+		EncounterLogic.dropAllItems(encounter, combatant);
 	};
 
 	static goProne = (encounter: EncounterModel, combatant: CombatantModel) => {
@@ -594,6 +608,11 @@ export class EncounterLogic {
 	};
 
 	static equipItem = (encounter: EncounterModel, combatant: CombatantModel, item: ItemModel) => {
+		if (combatant.quirks.includes(QuirkType.Beast)) {
+			// Beasts can't use items
+			return;
+		}
+
 		combatant.combat.movement = Math.max(0, combatant.combat.movement - 1);
 
 		combatant.carried = combatant.carried.filter(i => i.id !== item.id);
@@ -606,6 +625,11 @@ export class EncounterLogic {
 	};
 
 	static unequipItem = (encounter: EncounterModel, combatant: CombatantModel, item: ItemModel) => {
+		if (combatant.quirks.includes(QuirkType.Beast)) {
+			// Beasts can't use items
+			return;
+		}
+
 		combatant.combat.movement = Math.max(0, combatant.combat.movement - 1);
 
 		combatant.items = combatant.items.filter(i => i.id !== item.id);
@@ -618,6 +642,11 @@ export class EncounterLogic {
 	};
 
 	static pickUpItem = (encounter: EncounterModel, combatant: CombatantModel, item: ItemModel) => {
+		if (combatant.quirks.includes(QuirkType.Beast)) {
+			// Beasts can't use items
+			return;
+		}
+
 		combatant.combat.movement = Math.max(0, combatant.combat.movement - 1);
 
 		const adj = EncounterMapLogic.getAdjacentSquares(encounter.mapSquares, [ combatant.combat.position ]);
@@ -638,6 +667,11 @@ export class EncounterLogic {
 	};
 
 	static dropItem = (encounter: EncounterModel, combatant: CombatantModel, item: ItemModel) => {
+		if (combatant.quirks.includes(QuirkType.Beast)) {
+			// Beasts can't use items
+			return;
+		}
+
 		combatant.items = combatant.items.filter(i => i.id !== item.id);
 		combatant.carried = combatant.carried.filter(i => i.id !== item.id);
 
@@ -668,6 +702,11 @@ export class EncounterLogic {
 	};
 
 	static dropAllItems = (encounter: EncounterModel, combatant: CombatantModel) => {
+		if (combatant.quirks.includes(QuirkType.Beast)) {
+			// Beasts can't use items
+			return;
+		}
+
 		const allItems = ([] as ItemModel[]).concat(combatant.items).concat(combatant.carried);
 		allItems.forEach(item => {
 			EncounterLogic.dropItem(encounter, combatant, item);

@@ -9,6 +9,7 @@ import { DamageType } from '../enums/damage-type';
 import { FeatureType } from '../enums/feature-type';
 import { ItemLocationType } from '../enums/item-location-type';
 import { ItemProficiencyType } from '../enums/item-proficiency-type';
+import { QuirkType } from '../enums/quirk-type';
 import { SkillCategoryType } from '../enums/skill-category-type';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
@@ -32,25 +33,34 @@ export class CombatantLogic {
 		if (species) {
 			combatant.speciesID = species.id;
 			combatant.size = species.size;
+			species.quirks.forEach(q => combatant.quirks.push(q));
 			species.traits.forEach(t => combatant.features.push(FeatureLogic.createTraitFeature(Utils.guid(), t, 1)));
 			species.skills.forEach(s => combatant.features.push(FeatureLogic.createSkillFeature(Utils.guid(), s, 2)));
+
+			if (combatant.type === CombatantType.Monster) {
+				combatant.name = species.name;
+			}
 		}
 
-		const role = GameLogic.getRole(roleID);
-		if (role) {
-			combatant.roleID = role.id;
-			role.traits.forEach(t => combatant.features.push(FeatureLogic.createTraitFeature(Utils.guid(), t, 1)));
-			role.skills.forEach(s => combatant.features.push(FeatureLogic.createSkillFeature(Utils.guid(), s, 2)));
-			role.proficiencies.forEach(p => combatant.features.push(FeatureLogic.createProficiencyFeature(Utils.guid(), p)));
-		}
+		if (combatant.quirks.includes(QuirkType.Beast)) {
+			// Beasts don't have a role or background
+		} else {
+			const role = GameLogic.getRole(roleID);
+			if (role) {
+				combatant.roleID = role.id;
+				role.traits.forEach(t => combatant.features.push(FeatureLogic.createTraitFeature(Utils.guid(), t, 1)));
+				role.skills.forEach(s => combatant.features.push(FeatureLogic.createSkillFeature(Utils.guid(), s, 2)));
+				role.proficiencies.forEach(p => combatant.features.push(FeatureLogic.createProficiencyFeature(Utils.guid(), p)));
 
-		const background = GameLogic.getBackground(backgroundID);
-		if (background) {
-			combatant.backgroundID = background.id;
-		}
+				if (combatant.type === CombatantType.Monster) {
+					combatant.name += ` ${role.name}`;
+				}
+			}
 
-		if (combatant.type === CombatantType.Monster) {
-			combatant.name = `${species?.name ?? ''} ${role?.name ?? ''}`;
+			const background = GameLogic.getBackground(backgroundID);
+			if (background) {
+				combatant.backgroundID = background.id;
+			}
 		}
 	};
 
@@ -137,6 +147,11 @@ export class CombatantLogic {
 	};
 
 	static addItems = (combatant: CombatantModel) => {
+		if (combatant.quirks.includes(QuirkType.Beast)) {
+			// Beasts can't use items
+			return;
+		}
+
 		CombatantLogic.getProficiencies(combatant).forEach(prof => {
 			const items = GameLogic.getItemsForProficiency(prof);
 			const item = JSON.parse(JSON.stringify(Collections.draw(items))) as ItemModel;
@@ -146,6 +161,11 @@ export class CombatantLogic {
 	};
 
 	static canEquip = (combatant: CombatantModel, item: ItemModel) => {
+		if (combatant.quirks.includes(QuirkType.Beast)) {
+			// Beasts can't use items
+			return false;
+		}
+
 		if (item.location !== ItemLocationType.None) {
 			let slotsTotal = 1;
 			switch (item.location) {

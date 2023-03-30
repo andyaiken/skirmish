@@ -28,6 +28,8 @@
 		position: absolute;
 		right: 25px;
 		top: 25px;
+		z-index: 100;
+		background-color: rgb(255, 255, 255);
 	}
 
 	.dialog-content {

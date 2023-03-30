@@ -1,6 +1,7 @@
 import { CombatantState } from '../enums/combatant-state';
 import { CombatantType } from '../enums/combatant-type';
 import { EncounterMapSquareType } from '../enums/encounter-map-square-type';
+import { QuirkType } from '../enums/quirk-type';
 
 import type { CombatantModel } from '../models/combatant';
 import type { EncounterModel } from '../models/encounter';
@@ -21,6 +22,21 @@ export class EncounterGenerator {
 		const seed = region.encounters[0];
 		const rng = Random.getSeededRNG(seed);
 
+		const addMonster = (speciesID: string, roleID: string, backgroundID: string) => {
+			const isDrone = Random.dice(2, rng) > 10;
+			const count = isDrone ? 3 : 1;
+			for (let n = 0; n < count; ++n) {
+				const monster = Factory.createCombatant(CombatantType.Monster);
+				if (isDrone) {
+					monster.quirks.push(QuirkType.Drone);
+				}
+				CombatantLogic.applyCombatantCards(monster, speciesID, roleID, backgroundID);
+				CombatantLogic.makeFeatureChoices(monster);
+				CombatantLogic.addItems(monster);
+				monsters.push(monster);
+			}
+		};
+
 		const monsters: CombatantModel[] = [];
 		while (Collections.sum(monsters, m => m.level) < Collections.sum(heroes, h => h.level)) {
 			switch (Random.randomNumber(10, rng)) {
@@ -29,11 +45,7 @@ export class EncounterGenerator {
 					const speciesID = Collections.draw(GameLogic.getSpeciesDeck(CombatantType.Monster), rng);
 					const roleID = Collections.draw(GameLogic.getRoleDeck(), rng);
 					const backgroundID = Collections.draw(GameLogic.getBackgroundDeck(), rng);
-					const monster = Factory.createCombatant(CombatantType.Monster);
-					CombatantLogic.applyCombatantCards(monster, speciesID, roleID, backgroundID);
-					CombatantLogic.makeFeatureChoices(monster);
-					CombatantLogic.addItems(monster);
-					monsters.push(monster);
+					addMonster(speciesID, roleID, backgroundID);
 					break;
 				}
 				case 1: {
@@ -43,11 +55,7 @@ export class EncounterGenerator {
 						const speciesID = original.speciesID;
 						const roleID = Collections.draw(GameLogic.getRoleDeck(), rng);
 						const backgroundID = Collections.draw(GameLogic.getBackgroundDeck(), rng);
-						const monster = Factory.createCombatant(CombatantType.Monster);
-						CombatantLogic.applyCombatantCards(monster, speciesID, roleID, backgroundID);
-						CombatantLogic.makeFeatureChoices(monster);
-						CombatantLogic.addItems(monster);
-						monsters.push(monster);
+						addMonster(speciesID, roleID, backgroundID);
 					}
 					break;
 				}
@@ -59,11 +67,7 @@ export class EncounterGenerator {
 						const speciesID = original.speciesID;
 						const roleID = original.roleID;
 						const backgroundID = Collections.draw(GameLogic.getBackgroundDeck(), rng);
-						const monster = Factory.createCombatant(CombatantType.Monster);
-						CombatantLogic.applyCombatantCards(monster, speciesID, roleID, backgroundID);
-						CombatantLogic.makeFeatureChoices(monster);
-						CombatantLogic.addItems(monster);
-						monsters.push(monster);
+						addMonster(speciesID, roleID, backgroundID);
 					}
 					break;
 				}

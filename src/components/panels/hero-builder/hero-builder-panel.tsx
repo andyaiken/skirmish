@@ -215,6 +215,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 					<PlayingCard
 						type={CardType.Species}
 						front={<SpeciesCard species={species} />}
+						footer='Species'
 						back={<PlaceholderCard text='Species' />}
 						display={(this.state.selectedSpeciesID !== '') && (this.state.selectedSpeciesID !== species.id) ? PlayingCardSide.Back : PlayingCardSide.Front}
 						onClick={(this.state.selectedSpeciesID !== '') ? null : () => this.selectSpecies(species.id)}
@@ -249,6 +250,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 					<PlayingCard
 						type={CardType.Role}
 						front={<RoleCard role={role} />}
+						footer='Role'
 						back={<PlaceholderCard text='Role' />}
 						display={(this.state.selectedRoleID !== '') && (this.state.selectedRoleID !== role.id) ? PlayingCardSide.Back : PlayingCardSide.Front}
 						onClick={(this.state.selectedRoleID !== '') ? null : () => this.selectRole(role.id)}
@@ -283,6 +285,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 					<PlayingCard
 						type={CardType.Background}
 						front={<BackgroundCard background={background} />}
+						footer='Background'
 						back={<PlaceholderCard text='Background' />}
 						display={(this.state.selectedBackgroundID !== '') && (this.state.selectedBackgroundID !== background.id) ? PlayingCardSide.Back : PlayingCardSide.Front}
 						onClick={(this.state.selectedBackgroundID !== '') ? null : () => this.selectBackground(background.id)}

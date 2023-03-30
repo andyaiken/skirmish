@@ -61,8 +61,7 @@ export class HeroesPage extends Component<Props, State> {
 		}
 	};
 
-	selectHero = (e: React.MouseEvent, hero: CombatantModel) => {
-		e.stopPropagation();
+	selectHero = (hero: CombatantModel) => {
 		this.setState({
 			selectedHero: hero
 		});
@@ -123,7 +122,7 @@ export class HeroesPage extends Component<Props, State> {
 						<PlayingCard
 							type={CardType.Hero}
 							front={<HeroCard hero={hero} />}
-							footer={<button onClick={e => this.selectHero(e, hero)}>Character Sheet</button>}
+							onClick={() => this.selectHero(hero)}
 						/>
 						{this.props.developer ? <button className='developer' onClick={() => this.props.incrementXP(hero)}>Add XP</button> : null}
 					</div>

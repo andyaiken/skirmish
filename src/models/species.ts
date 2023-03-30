@@ -1,4 +1,5 @@
 import type { CombatantType } from '../enums/combatant-type';
+import type { QuirkType } from '../enums/quirk-type';
 import type { SkillType } from '../enums/skill-type';
 import type { TraitType } from '../enums/trait-type';
 
@@ -10,6 +11,7 @@ export interface SpeciesModel {
 	name: string;
 	type: CombatantType
 	size: number;
+	quirks: QuirkType[];
 	traits: TraitType[];
 	skills: SkillType[];
 	features: FeatureModel[];

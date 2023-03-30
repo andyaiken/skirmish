@@ -31,6 +31,7 @@ export class Factory {
 			size: 1,
 			level: 1,
 			xp: 0,
+			quirks: [],
 			features: [],
 			items: [],
 			carried: [],

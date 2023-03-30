@@ -1,10 +1,12 @@
 import { Component } from 'react';
 
+import { CombatantType } from '../../../enums/combatant-type';
+
 import type { SpeciesModel } from '../../../models/species';
 
 import { ActionListItemPanel, FeatureListItemPanel, TextListItemPanel } from '../../panels';
 
-import { Text, TextType } from '../../controls';
+import { Tag, Text, TextType } from '../../controls';
 
 import './species-card.scss';
 
@@ -58,6 +60,10 @@ export class SpeciesCard extends Component<Props> {
 			<div className='species-card'>
 				<Text type={TextType.SubHeading}>{this.props.species.name}</Text>
 				<hr />
+				<div className='tags'>
+					{this.props.species.type === CombatantType.Monster ? <Tag>Monster</Tag> : null}
+					{this.props.species.quirks.map((q, n) => (<Tag key={n}>{q}</Tag>))}
+				</div>
 				{traits}
 				{skills}
 				{features}

@@ -159,25 +159,25 @@ class Deck extends Component<DeckProps, DeckState> {
 			case CardType.Species:
 				heading = 'Species Deck';
 				cards = SpeciesData.getList().map(s => (
-					<PlayingCard key={s.id} type={CardType.Species} front={<SpeciesCard species={s} />} onClick={() => this.setActions(s.name, s.actions)} />
+					<PlayingCard key={s.id} type={CardType.Species} front={<SpeciesCard species={s} />} footer='Species' onClick={() => this.setActions(s.name, s.actions)} />
 				));
 				break;
 			case CardType.Role:
 				heading = 'Role Deck';
 				cards = RoleData.getList().map(r => (
-					<PlayingCard key={r.id} type={CardType.Role} front={<RoleCard role={r} />} onClick={() => this.setActions(r.name, r.actions)} />
+					<PlayingCard key={r.id} type={CardType.Role} front={<RoleCard role={r} />} footer='Role' onClick={() => this.setActions(r.name, r.actions)} />
 				));
 				break;
 			case CardType.Background:
 				heading = 'Background Deck';
 				cards = BackgroundData.getList().map(b => (
-					<PlayingCard key={b.id} type={CardType.Background} front={<BackgroundCard background={b} />} onClick={() => this.setActions(b.name, b.actions)} />
+					<PlayingCard key={b.id} type={CardType.Background} front={<BackgroundCard background={b} />} footer='Background' onClick={() => this.setActions(b.name, b.actions)} />
 				));
 				break;
 			case CardType.Item:
 				heading = 'Item Deck';
 				cards = ItemData.getList().map(i => (
-					<PlayingCard key={i.id} type={CardType.Item} front={<ItemCard item={i} />} />
+					<PlayingCard key={i.id} type={CardType.Item} front={<ItemCard item={i} />} footer='Item' />
 				));
 				break;
 		}

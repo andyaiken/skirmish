@@ -1,5 +1,6 @@
 import type { CombatantState } from '../enums/combatant-state';
 import type { CombatantType } from '../enums/combatant-type';
+import type { QuirkType } from '../enums/quirk-type';
 
 import type { ActionModel } from './action';
 import type { ConditionModel } from './condition';
@@ -20,6 +21,7 @@ export interface CombatantModel {
 	level: number;
 	xp: number;
 
+	quirks: QuirkType[];
 	features: FeatureModel[];
 	items: ItemModel[];
 	carried: ItemModel[];

@@ -32,6 +32,7 @@ import { ConditionLogic } from './condition-logic';
 import { EncounterLogic } from './encounter-logic';
 import { EncounterMapLogic } from './encounter-map-logic';
 import { Factory } from './factory';
+import { GameLogic } from './game-logic';
 import { IntentsLogic } from './intents-logic';
 import { PathLogic } from './path-logic';
 
@@ -47,7 +48,7 @@ export class ActionPrerequisites {
 	static rangedWeapon = (): ActionPrerequisiteModel => {
 		return {
 			id: 'item',
-			description: 'Requires your to have a ranged weapon',
+			description: 'Requires you to have a ranged weapon',
 			data: [ ItemProficiencyType.PowderWeapons, ItemProficiencyType.RangedWeapons ]
 		};
 	};
@@ -669,6 +670,9 @@ export class ActionEffects {
 			}
 			case 'damage': {
 				const data = effect.data as { type: DamageType, rank: number };
+				if (data.type === DamageType.Any) {
+					data.type = GameLogic.getRandomDamageType();
+				}
 				const targetParameter = parameters.find(p => p.id === 'targets');
 				if (targetParameter) {
 					const targetIDs = targetParameter.value as string[];

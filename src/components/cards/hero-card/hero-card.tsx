@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import { QuirkType } from '../../../enums/quirk-type';
 
 import { TraitType } from '../../../enums/trait-type';
 
@@ -43,7 +44,7 @@ export class HeroCard extends Component<Props> {
 		}
 
 		let damage = null;
-		if (this.props.encounter) {
+		if (this.props.encounter && !this.props.hero.quirks.includes(QuirkType.Drone)) {
 			damage = (
 				<div className='damage'>
 					<StatValue orientation='vertical' label='Dmg' value={this.props.hero.combat.damage} />
@@ -78,15 +79,20 @@ export class HeroCard extends Component<Props> {
 			);
 		}
 
+		const species = GameLogic.getSpecies(this.props.hero.speciesID);
+		const role = GameLogic.getRole(this.props.hero.roleID);
+		const background = GameLogic.getBackground(this.props.hero.backgroundID);
+
 		return (
 			<div className='hero-card'>
 				<Text type={TextType.SubHeading}>{this.props.hero.name || 'unnamed hero'}</Text>
 				<hr />
 				<div className='tags'>
-					<Tag>{GameLogic.getSpecies(this.props.hero.speciesID)?.name ?? 'Unknown species'}</Tag>
-					<Tag>{GameLogic.getRole(this.props.hero.roleID)?.name ?? 'Unknown role'}</Tag>
-					<Tag>{GameLogic.getBackground(this.props.hero.backgroundID)?.name ?? 'Unknown background'}</Tag>
+					{species ? <Tag>{species.name}</Tag> : null}
+					{role ? <Tag>{role.name}</Tag> : null}
+					{background ? <Tag>{background.name}</Tag> : null}
 					<Tag>Level {this.props.hero.level}</Tag>
+					{this.props.hero.quirks.map((q, n) => <Tag key={n}>{q}</Tag>)}
 				</div>
 				{traits}
 				{damage}

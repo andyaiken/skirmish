@@ -154,12 +154,14 @@ export class EncounterLogic {
 			const rank = EncounterLogic.getTraitRank(encounter, combatant, TraitType.Resolve);
 			const result = Random.dice(rank);
 			EncounterLogic.log(encounter, `${combatant.name} is unconscious: rolls Resolve (${rank}) and gets ${result}`);
-			if (result === 1) {
+			if (result <= 1) {
 				combatant.combat.state = CombatantState.Dead;
-				EncounterLogic.log(encounter, 'Failure: now dead');
+				EncounterLogic.log(encounter, `${combatant.name} is now ${combatant.combat.state}`);
 				EncounterLogic.dropAllItems(encounter, combatant);
-			} else {
-				EncounterLogic.log(encounter, 'Success');
+			} else if ((result >= 10) && (combatant.quirks.includes(QuirkType.Undead))) {
+				combatant.combat.wounds = rank - 1;
+				combatant.combat.state = CombatantState.Prone;
+				EncounterLogic.log(encounter, `${combatant.name} is now ${combatant.combat.state}`);
 			}
 		}
 

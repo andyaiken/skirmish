@@ -131,9 +131,6 @@
     * Takes half damage from physical damage
     * Move through / see through walls
     * No movement penalty for obstructed terrain
-  * Undead
-    * Double damage from light damage
-    * Easily rise from Unconscious
   * Aquatic
     * No movement penalty for water terrain
 * Kobold
@@ -149,9 +146,7 @@
     * Some powers similar to geomancer
 * Undead:
   * Wraith
-  * Zombie
   * Skeleton
-  * Ghoul / wight
   * Vampire
 * Demon
 * Beasts:

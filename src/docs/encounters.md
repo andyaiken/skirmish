@@ -31,8 +31,6 @@ When it's a hero's turn to act, you'll see the following information:
 * The `Action` tab:
   * This tab allows you to select and perform one of your actions.
 
-When you've done something, a log of your turn will appear towards the bottom of the screen. This lets you see the details of how an action went, for example.
-
 At the bottom you'll see an `End Turn` button; when you're finished with this hero's turn, press this to move on to the next combatant.
 
 ## Monster Controls

@@ -832,6 +832,7 @@ export class ActionEffects {
 					const targetIDs = targetParameter.value as string[];
 					targetIDs.forEach(id => {
 						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
+						target.combat.movement += 4;
 						EncounterLogic.hide(encounter, target);
 						log(`${target.name} hides`);
 					});
@@ -865,8 +866,7 @@ export class ActionEffects {
 			}
 			case 'redraw': {
 				// This only applies to the current combatant
-				const deck = CombatantLogic.getActionDeck(combatant);
-				combatant.combat.actions = Collections.shuffle(deck).splice(0, 3);
+				EncounterLogic.drawActions(encounter, combatant);
 				combatant.combat.selectedAction = null;
 				break;
 			}

@@ -369,6 +369,8 @@ export class EncounterScreen extends Component<Props, State> {
 	};
 
 	getLeftControls = () => {
+		const currentCombatant = EncounterLogic.getActiveCombatants(this.props.encounter).find(c => c.combat.current) || null;
+
 		return (
 			<div className='encounter-left-panel'>
 				<div className='panel-content'>
@@ -378,6 +380,9 @@ export class EncounterScreen extends Component<Props, State> {
 						onSelect={this.selectCombatant}
 						onDetails={this.showDetailsCombatant}
 					/>
+				</div>
+				<div className='panel-footer'>
+					{currentCombatant ? <TurnLogPanel combatant={currentCombatant} /> : null}
 				</div>
 			</div>
 		);
@@ -540,7 +545,6 @@ export class EncounterScreen extends Component<Props, State> {
 				);
 				footer = (
 					<div>
-						<TurnLogPanel combatant={currentCombatant} />
 						<button onClick={() => this.props.performIntents(this.props.encounter, currentCombatant)}>
 							{currentCombatant.combat.intents ? currentCombatant.combat.intents.description : 'End Turn'}
 						</button>
@@ -592,7 +596,6 @@ export class EncounterScreen extends Component<Props, State> {
 
 				footer = (
 					<div>
-						<TurnLogPanel combatant={currentCombatant} />
 						{
 							(currentCombatant.combat.selectedAction && currentCombatant.combat.selectedAction.used) ? null :
 								<Text type={TextType.Information}><b>You have not taken an action.</b> You probably want to take an action before you end your turn.</Text>

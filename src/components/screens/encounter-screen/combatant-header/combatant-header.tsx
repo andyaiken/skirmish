@@ -60,6 +60,7 @@ export class CombatantHeader extends Component<Props> {
 							<Tag>{GameLogic.getRole(this.props.combatant.roleID)?.name ?? 'Unknown role'}</Tag>
 							<Tag>{GameLogic.getBackground(this.props.combatant.backgroundID)?.name ?? 'Unknown background'}</Tag>
 							<Tag>Level {this.props.combatant.level}</Tag>
+							{this.props.combatant.quirks.map((q, n) => <Tag key={n}>{q}</Tag>)}
 						</div>
 					</div>
 					<button className='icon-btn character-sheet-btn' onClick={() => this.props.showCharacterSheet(this.props.combatant)}>

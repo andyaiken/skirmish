@@ -75,23 +75,13 @@ export class EncounterGenerator {
 				case 5:
 				case 6:
 				case 7:
-				case 8: {
+				case 8:
+				case 9: {
 					// Level up a random monster
 					if (monsters.length > 0) {
 						const monster = Collections.draw(monsters, rng);
 						CombatantLogic.incrementCombatantLevel(monster);
 						CombatantLogic.makeFeatureChoices(monster);
-					}
-					break;
-				}
-				case 9: {
-					// Add a magic item
-					if (monsters.length > 0) {
-						const monster = Collections.draw(monsters, rng);
-						if (monster.items.length > 0) {
-							const item = Collections.draw(monster.items, rng);
-							MagicItemGenerator.addMagicItemFeature(item);
-						}
 					}
 					break;
 				}

@@ -64,16 +64,29 @@ export class HeroCard extends Component<Props> {
 			conditions = (
 				<div className='conditions'>
 					<hr />
+					<Text type={TextType.MinorHeading}>Conditions</Text>
 					{this.props.hero.combat.conditions.map(c => <StatValue key={c.id} orientation='compact' label={ConditionLogic.getConditionDescription(c)} value={c.rank} />)}
+				</div>
+			);
+		}
+
+		let auras = null;
+		if (this.props.encounter && (CombatantLogic.getAuras(this.props.hero).length > 0)) {
+			auras = (
+				<div className='auras'>
+					<hr />
+					<Text type={TextType.MinorHeading}>Auras</Text>
+					{CombatantLogic.getAuras(this.props.hero).map(a => <StatValue key={a.id} orientation='compact' label={ConditionLogic.getConditionDescription(a)} value={a.rank} />)}
 				</div>
 			);
 		}
 
 		let items = null;
 		const magicItems = this.props.hero.items.filter(i => i.magic);
-		if (magicItems.length > 0) {
+		if (!this.props.encounter && (magicItems.length > 0)) {
 			items = (
 				<div className='items'>
+					<Text type={TextType.MinorHeading}>Magic Items</Text>
 					{magicItems.map(i => (<div key={i.id} className='item'>{i.name} ({i.baseItem})</div>))}
 				</div>
 			);
@@ -97,6 +110,7 @@ export class HeroCard extends Component<Props> {
 				{traits}
 				{damage}
 				{conditions}
+				{auras}
 				{items}
 			</div>
 		);

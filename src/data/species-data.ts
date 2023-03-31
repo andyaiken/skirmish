@@ -798,7 +798,9 @@ export class SpeciesData {
 				name: 'Troll',
 				type: CombatantType.Monster,
 				size: 2,
-				quirks: [],
+				quirks: [
+					QuirkType.Mindless
+				],
 				traits: [
 					TraitType.Endurance,
 					TraitType.Resolve
@@ -968,7 +970,7 @@ export class SpeciesData {
 						name: 'Stinger',
 						prerequisites: [],
 						parameters: [
-							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 2)
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
 						],
 						effects: [
 							ActionEffects.attack({
@@ -979,6 +981,47 @@ export class SpeciesData {
 								hit: [
 									ActionEffects.dealDamage(DamageType.Piercing, 2),
 									ActionEffects.dealDamage(DamageType.Acid, 2)
+								]
+							})
+						]
+					}
+				]
+			},
+			{
+				id: 'species-zombie',
+				name: 'Zombie',
+				type: CombatantType.Monster,
+				size: 1,
+				quirks: [
+					QuirkType.Mindless,
+					QuirkType.Undead
+				],
+				traits: [],
+				skills: [
+					SkillType.Brawl
+				],
+				features: [
+					FeatureLogic.createSkillFeature('zombie-feature-1', SkillType.Brawl, 2),
+					FeatureLogic.createDamageCategoryResistFeature('zombie-feature-2', DamageCategoryType.Corruption, 1)
+				],
+				actions: [
+					{
+						id: 'zombie-action-1',
+						name: 'Rend',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Endurance,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Piercing, 1),
+									ActionEffects.dealDamage(DamageType.Decay, 1),
+									ActionEffects.healDamageSelf(1)
 								]
 							})
 						]

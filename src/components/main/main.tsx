@@ -227,9 +227,12 @@ export class Main extends Component<Props, State> {
 		hero.level += 1;
 		hero.features.push(feature);
 
-		hero.items.filter(i => i.magic).forEach(item => {
-			MagicItemGenerator.addMagicItemFeature(item);
-		});
+		for (let n = 0; n !== hero.items.length; ++n) {
+			const item = hero.items[n];
+			if (item.magic) {
+				hero.items[n] = MagicItemGenerator.addMagicItemFeature(item);
+			}
+		}
 
 		this.setState({
 			game: this.state.game

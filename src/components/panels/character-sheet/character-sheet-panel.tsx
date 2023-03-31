@@ -154,7 +154,7 @@ export class CharacterSheetPanel extends Component<Props, State> {
 							{role ? <Tag>{role.name}</Tag> : null}
 							{background ? <Tag>{background.name}</Tag> : null}
 							<Tag>Level {this.props.combatant.level}</Tag>
-							{species ? species.quirks.map((q, n) => (<Tag key={n}>{q}</Tag>)) : null}
+							{this.props.combatant.quirks.map((q, n) => (<Tag key={n}>{q}</Tag>))}
 						</div>
 					</div>
 					{selector}

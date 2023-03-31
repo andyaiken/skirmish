@@ -42,8 +42,8 @@ export class CombatantLogic {
 			}
 		}
 
-		if (combatant.quirks.includes(QuirkType.Beast)) {
-			// Beasts don't have a role or background
+		if (combatant.quirks.includes(QuirkType.Beast) || combatant.quirks.includes(QuirkType.Mindless)) {
+			// Beasts / Mindless monsters don't have a role or background
 		} else {
 			const role = GameLogic.getRole(roleID);
 			if (role) {
@@ -499,27 +499,29 @@ export class CombatantLogic {
 	static getAuras = (combatant: CombatantModel) => {
 		const auras: ConditionModel[] = [];
 
-		CombatantLogic.getFeatures(combatant)
-			.filter(f => f.type === FeatureType.Aura)
-			.forEach(f => {
-				const original = auras.find(a => (a.type === f.aura)
-					&& (a.details.trait === f.trait)
-					&& (a.details.skill === f.skill)
-					&& (a.details.skillCategory === f.skillCategory)
-					&& (a.details.damage === f.damage)
-					&& (a.details.damageCategory === f.damageCategory));
-				if (original) {
-					original.rank += 1;
-				} else {
-					const aura = Factory.createCondition(f.aura, TraitType.None, f.rank);
-					aura.details.trait = f.trait;
-					aura.details.skill = f.skill;
-					aura.details.skillCategory = f.skillCategory;
-					aura.details.damage = f.damage;
-					aura.details.damageCategory = f.damageCategory;
-					auras.push(aura);
-				}
-			});
+		if ((combatant.combat.state === CombatantState.Standing) || (combatant.combat.state === CombatantState.Prone)) {
+			CombatantLogic.getFeatures(combatant)
+				.filter(f => f.type === FeatureType.Aura)
+				.forEach(f => {
+					const original = auras.find(a => (a.type === f.aura)
+						&& (a.details.trait === f.trait)
+						&& (a.details.skill === f.skill)
+						&& (a.details.skillCategory === f.skillCategory)
+						&& (a.details.damage === f.damage)
+						&& (a.details.damageCategory === f.damageCategory));
+					if (original) {
+						original.rank += 1;
+					} else {
+						const aura = Factory.createCondition(f.aura, TraitType.None, f.rank);
+						aura.details.trait = f.trait;
+						aura.details.skill = f.skill;
+						aura.details.skillCategory = f.skillCategory;
+						aura.details.damage = f.damage;
+						aura.details.damageCategory = f.damageCategory;
+						auras.push(aura);
+					}
+				});
+		}
 
 		return auras;
 	};

@@ -13,7 +13,7 @@ import type { ItemModel } from '../../../../models/item';
 
 import { Collections } from '../../../../utils/collections';
 
-import { Box, CardList, Dialog, IconType, IconValue, PlayingCard, Text, TextType } from '../../../controls';
+import { Box, CardList, IconType, IconValue, PlayingCard, Text, TextType } from '../../../controls';
 import { ItemCard, PlaceholderCard } from '../../../cards';
 
 import './items.scss';
@@ -27,34 +27,7 @@ interface Props {
 	dropItem: (item: ItemModel) => void;
 }
 
-interface State {
-	selectedLocation: ItemLocationType;
-}
-
-export class Items extends Component<Props, State> {
-	constructor(props: Props) {
-		super(props);
-		this.state = {
-			selectedLocation: ItemLocationType.None
-		};
-	}
-
-	equipItem = (item: ItemModel) => {
-		this.setState({
-			selectedLocation: ItemLocationType.None
-		}, () => {
-			this.props.equipItem(item);
-		});
-	};
-
-	pickUpItem = (item: ItemModel) => {
-		this.setState({
-			selectedLocation: ItemLocationType.None
-		}, () => {
-			this.props.pickUpItem(item);
-		});
-	};
-
+export class Items extends Component<Props> {
 	getLocationSection = (location: ItemLocationType) => {
 		let className = 'location-section';
 		switch (location) {
@@ -93,33 +66,12 @@ export class Items extends Component<Props, State> {
 				);
 			});
 
-		if ((this.props.game.encounter && !this.props.combatant.combat.current) || (this.props.combatant.type !== CombatantType.Hero)) {
-			if (cards.length === 0) {
-				cards.push(
-					<div key='empty' className='item'>
-						<PlayingCard front={<PlaceholderCard text='No Items' />} />
-					</div>
-				);
-			}
-		} else if (this.props.combatant.type === CombatantType.Hero) {
-			let slotsTotal = 1;
-			switch (location) {
-				case ItemLocationType.Hand:
-				case ItemLocationType.Ring:
-					slotsTotal = 2;
-					break;
-			}
-
-			const slotsUsed = Collections.sum(this.props.combatant.items.filter(i => i.location === location), i => i.slots);
-
-			const slotsAvailable = slotsTotal - slotsUsed;
-			if (slotsAvailable > 0) {
-				cards.push(
-					<div key='add' className='item'>
-						<PlayingCard front={<PlaceholderCard text='Choose An Item' />} onClick={() => this.setState({ selectedLocation: location })} />
-					</div>
-				);
-			}
+		if (cards.length === 0) {
+			cards.push(
+				<div key='empty' className='item'>
+					<PlayingCard front={<PlaceholderCard text='No Item' />} />
+				</div>
+			);
 		}
 
 		return (
@@ -135,6 +87,7 @@ export class Items extends Component<Props, State> {
 
 	getCarriedItemSection = () => {
 		const cards = this.props.combatant.carried
+			.sort((a, b) => a.name.localeCompare(b.name))
 			.map(item => {
 				let equip: JSX.Element | string = 'Equip';
 				if (this.props.game.encounter && (this.props.combatant.type === CombatantType.Hero)) {
@@ -163,24 +116,52 @@ export class Items extends Component<Props, State> {
 				);
 			});
 
-		if (this.props.game.encounter) {
-			if (this.props.combatant.carried.length === 0) {
-				cards.push(
-					<div key='empty' className='item'>
-						<PlayingCard front={<PlaceholderCard text='No Items' />} />
-					</div>
-				);
-			}
-		} else if ((this.props.combatant.type === CombatantType.Hero) && (this.props.combatant.carried.length < 6)) {
+		if (this.props.combatant.carried.length === 0) {
 			cards.push(
-				<div key='add' className='item'>
-					<PlayingCard
-						front={<PlaceholderCard text='Choose An Item' />}
-						onClick={() => this.setState({ selectedLocation: ItemLocationType.Carried })}
-					/>
+				<div key='empty' className='item'>
+					<PlayingCard front={<PlaceholderCard text='No Item' />} />
 				</div>
 			);
 		}
+
+		return (
+			<CardList cards={cards} />
+		);
+	};
+
+	getPartyItemSection = () => {
+		if (this.props.game.encounter !== null) {
+			return null;
+		}
+
+		if (this.props.combatant.type !== CombatantType.Hero) {
+			return null;
+		}
+
+		if (this.props.game.items.length === 0) {
+			return null;
+		}
+
+		const cards = this.props.game.items
+			.sort((a, b) => a.name.localeCompare(b.name))
+			.map(item => {
+				const footer = (
+					<div className='item-options'>
+						<button disabled={!CombatantLogic.canEquip(this.props.combatant, item)} onClick={() => this.props.equipItem(item)}>
+							Equip
+						</button>
+						<button disabled={this.props.combatant.carried.length >= 6} onClick={() => this.props.pickUpItem(item)}>
+							Pick Up
+						</button>
+					</div>
+				);
+
+				return (
+					<div key={item.id} className='item'>
+						<PlayingCard type={CardType.Item} front={<ItemCard item={item} />} footer={footer} />
+					</div>
+				);
+			});
 
 		return (
 			<CardList cards={cards} />
@@ -192,17 +173,18 @@ export class Items extends Component<Props, State> {
 			return null;
 		}
 
-		if (this.props.combatant.type !== CombatantType.Hero) {
+		if (!this.props.combatant.combat.current) {
 			return null;
 		}
 
-		if (!this.props.combatant.combat.current) {
+		if (this.props.combatant.type !== CombatantType.Hero) {
 			return null;
 		}
 
 		const adj = EncounterMapLogic.getAdjacentSquares(this.props.game.encounter.mapSquares, [ this.props.combatant.combat.position ]);
 		const piles = this.props.game.encounter.loot.filter(lp => adj.find(sq => (sq.x === lp.position.x) && (sq.y === lp.position.y)));
-		const items = Collections.distinct(piles.flatMap(pile => pile.items), i => i.id);
+		const items = Collections.distinct(piles.flatMap(pile => pile.items), i => i.id)
+			.sort((a, b) => a.name.localeCompare(b.name));
 
 		if (items.length === 0) {
 			return null;
@@ -230,106 +212,14 @@ export class Items extends Component<Props, State> {
 		);
 	};
 
-	getDialogContent = () => {
-		if (this.state.selectedLocation === ItemLocationType.None) {
-			return null;
-		}
-
-		let items: ItemModel[] = [];
-		if (this.props.game.encounter) {
-			// Get items we're carrying
-			items = items.concat(this.props.combatant.carried);
-		} else {
-			// Get game items
-			items = items.concat(this.props.game.items);
-		}
-
-		if (this.state.selectedLocation !== ItemLocationType.Carried) {
-			// We only want items for this location
-			items = items.filter(item => item.location === this.state.selectedLocation);
-
-			// Ignore items we can't equip
-			items = items.filter(item => CombatantLogic.canEquip(this.props.combatant, item));
-		}
-
-		if (items.length === 0) {
-			return (
-				<div>
-					<Text type={TextType.Heading}>Choose An Item</Text>
-					<Text type={TextType.Information}>No available items.</Text>
-				</div>
-			);
-		}
-
-		items.sort((a, b) => a.name.localeCompare(b.name));
-		const magicItems = items.filter(i => i.magic);
-		const mundaneItems = items.filter(i => !i.magic);
-
-		let magic = null;
-		if (magicItems.length > 0) {
-			const magicCards = magicItems.map(item => {
-				return (
-					<PlayingCard
-						key={item.id}
-						type={CardType.Item}
-						front={<ItemCard item={item} />}
-						footer='Item'
-						onClick={() => this.pickUpItem(item)}
-					/>
-				);
-			});
-
-			magic = (
-				<div>
-					<Text type={TextType.SubHeading}>Magic Items</Text>
-					<CardList cards={magicCards} />
-				</div>
-			);
-		}
-
-		let mundane = null;
-		if (mundaneItems.length > 0) {
-			const mundaneCards = Collections.distinct(mundaneItems, i => i.name).map(item => {
-				const copy = JSON.parse(JSON.stringify(item)) as ItemModel;
-				const count = items.filter(i => i.id === item.id).length;
-				copy.name = count > 1 ? `${copy.name} (${count})` : copy.name;
-
-				return (
-					<PlayingCard
-						key={item.id}
-						type={CardType.Item}
-						front={<ItemCard item={copy} />}
-						footer='Item'
-						onClick={() => this.pickUpItem(item)}
-					/>
-				);
-			});
-
-			mundane = (
-				<div>
-					<Text type={TextType.SubHeading}>Items</Text>
-					<CardList cards={mundaneCards} />
-				</div>
-			);
-		}
-
-		return (
-			<div>
-				<Text type={TextType.Heading}>Choose An Item</Text>
-				{magic}
-				{mundane}
-			</div>
-		);
-	};
-
 	render = () => {
 		const carried = this.getCarriedItemSection();
+		const party = this.getPartyItemSection();
 		const nearby = this.getNearbyItemSection();
-		const dialogContent = this.getDialogContent();
 
 		return (
 			<div className='items'>
-				<Text type={TextType.SubHeading}>Equipped</Text>
+				<Text type={TextType.SubHeading}>Equipped Items</Text>
 				<div className='equipped'>
 					<div className='grid-cell'>
 						{this.getLocationSection(ItemLocationType.Hand)}
@@ -347,11 +237,13 @@ export class Items extends Component<Props, State> {
 					</div>
 				</div>
 				<hr />
-				<Text type={TextType.SubHeading}>Carried ({this.props.combatant.carried.length} / 6)</Text>
+				<Text type={TextType.SubHeading}>Carried Items ({this.props.combatant.carried.length} / 6)</Text>
 				{carried}
+				<hr />
+				{party !== null ? <Text type={TextType.SubHeading}>Party Items</Text> : null}
 				{nearby !== null ? <Text type={TextType.SubHeading}>Nearby Items</Text> : null}
+				{party}
 				{nearby}
-				{dialogContent ? <Dialog content={dialogContent} onClose={() => this.setState({ selectedLocation: ItemLocationType.None })} /> : null}
 			</div>
 		);
 	};

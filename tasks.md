@@ -6,6 +6,12 @@
 
 # Improvements / Enhancements
 
+## Card descriptions
+* Species
+* Roles
+* Backgrounds
+* Items
+
 ## Map Types
 * Street
 * Building interior
@@ -124,6 +130,8 @@
   * Psionicist
 
 ## Ideas for Species
+* Small:
+  * Pixie, Gnome, Goblin, Scarab
 * Quirks:
   * Swarm / amorphous / ooze
     * Takes half damage from physical damage

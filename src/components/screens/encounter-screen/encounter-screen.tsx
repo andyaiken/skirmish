@@ -572,7 +572,6 @@ export class EncounterScreen extends Component<Props, State> {
 								developer={this.props.developer}
 								move={this.move}
 								addMovement={this.props.addMovement}
-								pickUpItem={this.props.pickUpItem}
 							/>
 						);
 						break;

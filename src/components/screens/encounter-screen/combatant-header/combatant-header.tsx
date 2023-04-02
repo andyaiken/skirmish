@@ -50,15 +50,19 @@ export class CombatantHeader extends Component<Props> {
 	};
 
 	render = () => {
+		const species = GameLogic.getSpecies(this.props.combatant.speciesID);
+		const role = GameLogic.getRole(this.props.combatant.roleID);
+		const background = GameLogic.getBackground(this.props.combatant.backgroundID);
+
 		return (
 			<div className='combatant-header'>
 				<div className='header-row'>
 					<div className='name'>
 						<Text type={TextType.SubHeading}>{this.props.combatant.name}</Text>
 						<div className='tags'>
-							<Tag>{GameLogic.getSpecies(this.props.combatant.speciesID)?.name ?? 'Unknown species'}</Tag>
-							<Tag>{GameLogic.getRole(this.props.combatant.roleID)?.name ?? 'Unknown role'}</Tag>
-							<Tag>{GameLogic.getBackground(this.props.combatant.backgroundID)?.name ?? 'Unknown background'}</Tag>
+							{species ? <Tag>{species.name}</Tag> : null}
+							{role ? <Tag>{role.name}</Tag> : null}
+							{background ? <Tag>{background.name}</Tag> : null}
 							<Tag>Level {this.props.combatant.level}</Tag>
 							{this.props.combatant.quirks.map((q, n) => <Tag key={n}>{q}</Tag>)}
 						</div>

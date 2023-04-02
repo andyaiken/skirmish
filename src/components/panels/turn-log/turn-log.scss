@@ -1,10 +1,7 @@
 .turn-log {
-	margin: 10px 0;
 	max-height: 300px;
-	border: 2px solid rgb(220, 220, 220);
-	border-radius: 10px;
-	padding: 5px 10px;
-	overflow-y: auto;
+    border-top: 2px solid rgb(220, 220, 220);
+    overflow-y: auto;
 
 	.turn-log-message {
 		margin: 5px 0;

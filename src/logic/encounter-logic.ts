@@ -270,11 +270,13 @@ export class EncounterLogic {
 			case CombatantType.Hero:
 				combatant.combat.actions = Collections.shuffle(deck).splice(0, 3);
 				combatant.combat.actions.push(...BaseData.getBaseActions());
+				combatant.combat.selectedAction = null;
 				break;
 			case CombatantType.Monster:
 				combatant.combat.actions = deck;
 				combatant.combat.actions.push(...BaseData.getBaseActions());
 				EncounterLogic.checkActionParameters(encounter, combatant);
+				combatant.combat.selectedAction = null;
 				break;
 		}
 	};
@@ -519,6 +521,7 @@ export class EncounterLogic {
 		EncounterLogic.log(encounter, `${combatant.name} takes wounds (${value}) and is now at ${combatant.combat.damage} damage, ${combatant.combat.wounds} wounds`);
 
 		if (combatant.quirks.includes(QuirkType.Drone)) {
+			// Drones die if they take any damage
 			EncounterLogic.kill(encounter, combatant);
 		} else {
 			const resolve = EncounterLogic.getTraitRank(encounter, combatant, TraitType.Resolve);

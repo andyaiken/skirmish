@@ -38,6 +38,7 @@ export class BackgroundCard extends Component<Props> {
 			<div className='background-card'>
 				<Text type={TextType.SubHeading}>{this.props.background.name}</Text>
 				<hr />
+				<div className='description'>{this.props.background.description}</div>
 				{features}
 				{actions}
 			</div>

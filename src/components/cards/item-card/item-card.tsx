@@ -71,6 +71,7 @@ export class ItemCard extends Component<Props> {
 			<div className='item-card'>
 				<Text type={TextType.SubHeading}>{this.props.item.name}</Text>
 				<hr />
+				<div className='description'>{this.props.item.description}</div>
 				<div className='tags'>
 					{this.props.item.baseItem !== '' ? <Tag>Magical {this.props.item.baseItem}</Tag> : null}
 					{this.props.item.proficiency !== ItemProficiencyType.None ? <Tag>{this.props.item.proficiency}</Tag> : null}

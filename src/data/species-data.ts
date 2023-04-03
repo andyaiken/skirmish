@@ -20,6 +20,7 @@ export class SpeciesData {
 			{
 				id: 'species-human',
 				name: 'Human',
+				description: 'Humans are resourceful and adaptable.',
 				type: CombatantType.Hero,
 				size: 1,
 				quirks: [],
@@ -60,6 +61,7 @@ export class SpeciesData {
 			{
 				id: 'species-construct',
 				name: 'Construct',
+				description: 'A living automaton.',
 				type: CombatantType.Hero,
 				size: 1,
 				quirks: [],
@@ -111,6 +113,7 @@ export class SpeciesData {
 			{
 				id: 'species-deva',
 				name: 'Deva',
+				description: 'A humanoid with angelic ancestry.',
 				type: CombatantType.Hero,
 				size: 1,
 				quirks: [],
@@ -171,6 +174,7 @@ export class SpeciesData {
 			{
 				id: 'species-dwarf',
 				name: 'Dwarf',
+				description: 'A short, sturdy creature, fond of drink and industry.',
 				type: CombatantType.Hero,
 				size: 1,
 				quirks: [],
@@ -216,6 +220,7 @@ export class SpeciesData {
 			{
 				id: 'species-elf',
 				name: 'Elf',
+				description: 'An elegant forest-dwelling creature.',
 				type: CombatantType.Hero,
 				size: 1,
 				quirks: [],
@@ -261,6 +266,7 @@ export class SpeciesData {
 			{
 				id: 'species-gnome',
 				name: 'Gnome',
+				description: 'A short creature who often prefers to be unseen.',
 				type: CombatantType.Hero,
 				size: 1,
 				quirks: [],
@@ -313,6 +319,7 @@ export class SpeciesData {
 			{
 				id: 'species-minotaur',
 				name: 'Minotaur',
+				description: 'A muscular humanoid with the head of a bull.',
 				type: CombatantType.Hero,
 				size: 1,
 				quirks: [],
@@ -411,6 +418,7 @@ export class SpeciesData {
 			{
 				id: 'species-pixie',
 				name: 'Pixie',
+				description: 'A tiny fairy-like creature.',
 				type: CombatantType.Hero,
 				size: 1,
 				quirks: [],
@@ -454,6 +462,7 @@ export class SpeciesData {
 			{
 				id: 'species-reptilian',
 				name: 'Reptilian',
+				description: 'A scaly humanoid with serpentine ancestry.',
 				type: CombatantType.Hero,
 				size: 1,
 				quirks: [],
@@ -528,6 +537,7 @@ export class SpeciesData {
 			{
 				id: 'species-shadowborn',
 				name: 'Shadowborn',
+				description: 'A humanoid with demonic heritage.',
 				type: CombatantType.Hero,
 				size: 1,
 				quirks: [],
@@ -605,6 +615,7 @@ export class SpeciesData {
 			{
 				id: 'species-werewolf',
 				name: 'Werewolf',
+				description: 'A creature cursed with a wolf form.',
 				type: CombatantType.Hero,
 				size: 1,
 				quirks: [],
@@ -681,6 +692,7 @@ export class SpeciesData {
 			{
 				id: 'species-orc',
 				name: 'Orc',
+				description: 'An evil creature bred for war.',
 				type: CombatantType.Monster,
 				size: 1,
 				quirks: [],
@@ -738,15 +750,14 @@ export class SpeciesData {
 			{
 				id: 'species-goblin',
 				name: 'Goblin',
+				description: 'A fleet-footed creature, difficult to pin down.',
 				type: CombatantType.Monster,
 				size: 1,
 				quirks: [],
 				traits: [
-					TraitType.Speed,
 					TraitType.Speed
 				],
 				skills: [
-					SkillType.Reactions,
 					SkillType.Reactions,
 					SkillType.Stealth
 				],
@@ -796,6 +807,7 @@ export class SpeciesData {
 			{
 				id: 'species-troll',
 				name: 'Troll',
+				description: 'A huge brute of a humanoid.',
 				type: CombatantType.Monster,
 				size: 2,
 				quirks: [
@@ -852,6 +864,7 @@ export class SpeciesData {
 			{
 				id: 'species-elemental-fire',
 				name: 'Fire Elemental',
+				description: 'Hot blooded and quick to anger, these humanoids have planar ancestry.',
 				type: CombatantType.Monster,
 				size: 1,
 				quirks: [],
@@ -931,6 +944,7 @@ export class SpeciesData {
 			{
 				id: 'species-scarab',
 				name: 'Scarab',
+				description: 'Insects with an acidic bite.',
 				type: CombatantType.Monster,
 				size: 1,
 				quirks: [
@@ -990,6 +1004,7 @@ export class SpeciesData {
 			{
 				id: 'species-zombie',
 				name: 'Zombie',
+				description: 'A re-animated corpse.',
 				type: CombatantType.Monster,
 				size: 1,
 				quirks: [

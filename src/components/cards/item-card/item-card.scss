@@ -1,6 +1,13 @@
 .item-card {
 	margin: 10px;
 
+	.description {
+		margin: 10px;
+		font-style: italic;
+		font-size: 12px;
+		color: #555555;
+	}
+
 	.tags {
 		margin: 10px 0;
 		text-align: center;

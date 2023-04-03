@@ -7,6 +7,7 @@ import type { TraitType } from '../enums/trait-type';
 export interface RoleModel {
 	id: string;
 	name: string;
+	description: string;
 	traits: TraitType[];
 	skills: SkillType[];
 	proficiencies: ItemProficiencyType[];

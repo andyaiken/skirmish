@@ -20,6 +20,7 @@ export class BackgroundData {
 			{
 				id: 'background-acrobat',
 				name: 'Acrobat',
+				description: 'Quick and lithe, acrobats are difficult to pin down.',
 				features: [
 					FeatureLogic.createTraitFeature('acrobat-feature-2', TraitType.Speed, 1),
 					FeatureLogic.createSkillFeature('acrobat-feature-3', SkillType.Reactions, 2)
@@ -47,7 +48,8 @@ export class BackgroundData {
 							ActionTargetParameters.self()
 						],
 						effects: [
-							ActionEffects.addMovement()
+							ActionEffects.addMovement(),
+							ActionEffects.redrawActions()
 						]
 					}
 				]
@@ -55,6 +57,7 @@ export class BackgroundData {
 			{
 				id: 'background-bard',
 				name: 'Bard',
+				description: 'The charismatic bard inspires their allies to greatness.',
 				features: [
 					FeatureLogic.createSkillCategoryFeature('bard-feature-1', SkillCategoryType.Mental, 1),
 					FeatureLogic.createProficiencyFeature('bard-feature-2', ItemProficiencyType.Any)
@@ -98,11 +101,13 @@ export class BackgroundData {
 			{
 				id: 'background-commander',
 				name: 'Commander',
+				description: 'A battlefield commander uses tactical analysis to make the most of any situation.',
 				features: [
 					FeatureLogic.createSkillFeature('commander-feature-1', SkillType.Presence, 2),
 					FeatureLogic.createAuraDamageCategoryFeature('commander-feature-2', ConditionType.DamageCategoryBonus, DamageCategoryType.Corruption, 1),
 					FeatureLogic.createAuraDamageCategoryFeature('commander-feature-3', ConditionType.DamageCategoryBonus, DamageCategoryType.Energy, 1),
-					FeatureLogic.createAuraDamageCategoryFeature('commander-feature-4', ConditionType.DamageCategoryBonus, DamageCategoryType.Physical, 1)
+					FeatureLogic.createAuraDamageCategoryFeature('commander-feature-4', ConditionType.DamageCategoryBonus, DamageCategoryType.Physical, 1),
+					FeatureLogic.createAuraSkillCategoryFeature('commander-feature-5', ConditionType.SkillCategoryBonus, SkillCategoryType.Physical, 1)
 				],
 				actions: [
 					{
@@ -143,6 +148,7 @@ export class BackgroundData {
 			{
 				id: 'background-grenadier',
 				name: 'Grenadier',
+				description: 'Grenadiers use explosives, which are dangerous and difficult to master.',
 				features: [
 					FeatureLogic.createSkillFeature('grenadier-feature-1', SkillType.Perception, 2),
 					FeatureLogic.createSkillFeature('grenadier-feature-2', SkillType.Any, 1)
@@ -211,6 +217,7 @@ export class BackgroundData {
 			{
 				id: 'background-mountebank',
 				name: 'Mountebank',
+				description: 'Tricksters and con artists, mountebanks make valuable allies and frustrating foes.',
 				features: [
 					FeatureLogic.createSkillFeature('mountebank-feature-1', SkillType.Presence, 2),
 					FeatureLogic.createAuraDamageCategoryFeature('mountebank-feature-2', ConditionType.DamageCategoryVulnerability, DamageCategoryType.Corruption, 1),
@@ -245,11 +252,13 @@ export class BackgroundData {
 			{
 				id: 'background-mystic',
 				name: 'Mystic',
+				description: 'Mystics are the masters of the arcane arts.',
 				features: [
 					FeatureLogic.createSkillFeature('mystic-feature-1', SkillType.Spellcasting, 2),
 					FeatureLogic.createDamageCategoryBonusFeature('mystic-feature-2', DamageCategoryType.Energy, 1),
-					FeatureLogic.createDamageCategoryBonusFeature('mystic-feature-3', DamageCategoryType.Corruption, 1),
-					FeatureLogic.createDamageCategoryResistFeature('mystic-feature-4', DamageCategoryType.Corruption, 1)
+					FeatureLogic.createDamageCategoryResistFeature('mystic-feature-3', DamageCategoryType.Energy, 1),
+					FeatureLogic.createDamageCategoryBonusFeature('mystic-feature-4', DamageCategoryType.Corruption, 1),
+					FeatureLogic.createDamageCategoryResistFeature('mystic-feature-5', DamageCategoryType.Corruption, 1)
 				],
 				actions: [
 					{
@@ -310,6 +319,7 @@ export class BackgroundData {
 			{
 				id: 'background-noble',
 				name: 'Noble',
+				description: 'Though they can be haughty, nobles bring an imposing presence to a battlefield.',
 				features: [
 					FeatureLogic.createSkillFeature('noble-feature-1', SkillType.Presence, 2),
 					FeatureLogic.createAuraFeature('noble-feature-2', ConditionType.MovementBonus, 1),
@@ -364,6 +374,7 @@ export class BackgroundData {
 			{
 				id: 'background-physician',
 				name: 'Physician',
+				description: 'For many groups, a physician is the difference between life and death.',
 				features: [
 					FeatureLogic.createAuraFeature('physician-feature-1', ConditionType.AutoHeal, 1)
 				],
@@ -406,6 +417,7 @@ export class BackgroundData {
 			{
 				id: 'background-reaver',
 				name: 'Reaver',
+				description: 'Reavers are rarely satisfied with anything other than carnage.',
 				features: [
 					FeatureLogic.createSkillFeature('reaver-feature-1', SkillType.Brawl, 2),
 					FeatureLogic.createSkillFeature('reaver-feature-2', SkillType.Weapon, 2),
@@ -456,6 +468,7 @@ export class BackgroundData {
 			{
 				id: 'background-sentinel',
 				name: 'Sentinel',
+				description: 'Nothing gets past a sentinel unless they allow it.',
 				features: [
 					FeatureLogic.createTraitFeature('sentinel-feature-1', TraitType.Endurance, 1),
 					FeatureLogic.createTraitFeature('sentinel-feature-2', TraitType.Resolve, 1),
@@ -476,7 +489,7 @@ export class BackgroundData {
 					},
 					{
 						id: 'sentinel-action-2',
-						name: 'Imposing Stance',
+						name: 'Unyielding Stance',
 						prerequisites: [],
 						parameters: [
 							ActionTargetParameters.self()
@@ -502,6 +515,7 @@ export class BackgroundData {
 			{
 				id: 'background-thief',
 				name: 'Thief',
+				description: 'One should never put one\'s trust in a thief, even when they\'re on your side.',
 				features: [
 					FeatureLogic.createSkillFeature('thief-feature-1', SkillType.Reactions, 2),
 					FeatureLogic.createSkillFeature('thief-feature-2', SkillType.Stealth, 2),

@@ -9,6 +9,7 @@ import type { FeatureModel } from './feature';
 export interface SpeciesModel {
 	id: string;
 	name: string;
+	description: string;
 	type: CombatantType
 	size: number;
 	quirks: QuirkType[];

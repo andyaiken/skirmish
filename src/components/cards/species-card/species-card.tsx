@@ -60,6 +60,7 @@ export class SpeciesCard extends Component<Props> {
 			<div className='species-card'>
 				<Text type={TextType.SubHeading}>{this.props.species.name}</Text>
 				<hr />
+				<div className='description'>{this.props.species.description}</div>
 				<div className='tags'>
 					{this.props.species.type === CombatantType.Monster ? <Tag>Monster</Tag> : null}
 					{this.props.species.quirks.map((q, n) => (<Tag key={n}>{q}</Tag>))}

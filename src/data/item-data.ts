@@ -13,8 +13,9 @@ export class ItemData {
 	static getList = (): ItemModel[] => {
 		return [
 			{
-				id: 'item-longsword',
-				name: 'Longsword',
+				id: 'item-sword',
+				name: 'Sword',
+				description: 'Three feet long and sharp on both sides.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.MilitaryWeapons,
@@ -37,6 +38,7 @@ export class ItemData {
 			{
 				id: 'item-katana',
 				name: 'Katana',
+				description: 'An elegant single-edged blade with a slight curve.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.MilitaryWeapons,
@@ -59,6 +61,7 @@ export class ItemData {
 			{
 				id: 'item-scimitar',
 				name: 'Scimitar',
+				description: 'A wickedly-curved blade.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.MilitaryWeapons,
@@ -81,6 +84,7 @@ export class ItemData {
 			{
 				id: 'item-handaxe',
 				name: 'Handaxe',
+				description: 'A chopping blade at the end of a wooden haft.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.MilitaryWeapons,
@@ -103,6 +107,7 @@ export class ItemData {
 			{
 				id: 'item-khopesh',
 				name: 'Khopesh',
+				description: 'An intimidatingly-hooked sword.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.MilitaryWeapons,
@@ -125,6 +130,7 @@ export class ItemData {
 			{
 				id: 'item-mace',
 				name: 'Mace',
+				description: 'A simple bludgeoning weapon.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.MilitaryWeapons,
@@ -147,6 +153,7 @@ export class ItemData {
 			{
 				id: 'item-flail',
 				name: 'Flail',
+				description: 'A length of metal chain at the end of a wooden haft.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.MilitaryWeapons,
@@ -169,6 +176,7 @@ export class ItemData {
 			{
 				id: 'item-spear',
 				name: 'Spear',
+				description: 'A long haft, topped with a sharp metal point.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.MilitaryWeapons,
@@ -191,6 +199,7 @@ export class ItemData {
 			{
 				id: 'item-mattock',
 				name: 'Mattock',
+				description: 'A smaller, one-handed warhammer.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.MilitaryWeapons,
@@ -213,6 +222,7 @@ export class ItemData {
 			{
 				id: 'item-rapier',
 				name: 'Rapier',
+				description: 'A sword with a thin, pointed blade.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.MilitaryWeapons,
@@ -235,6 +245,7 @@ export class ItemData {
 			{
 				id: 'item-greatsword',
 				name: 'Greatsword',
+				description: 'A large, two-handed sword.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.LargeWeapons,
@@ -257,6 +268,7 @@ export class ItemData {
 			{
 				id: 'item-battleaxe',
 				name: 'Battleaxe',
+				description: 'A heavy axe that requires two hands to wield it.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.LargeWeapons,
@@ -279,6 +291,7 @@ export class ItemData {
 			{
 				id: 'item-glaive',
 				name: 'Glaive',
+				description: 'A sword blade mounted at the end of a long haft.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.LargeWeapons,
@@ -301,6 +314,7 @@ export class ItemData {
 			{
 				id: 'item-warhammer',
 				name: 'Warhammer',
+				description: 'A heavy, blunt-faced crushing weapon.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.LargeWeapons,
@@ -323,6 +337,7 @@ export class ItemData {
 			{
 				id: 'item-quarterstaff',
 				name: 'Quarterstaff',
+				description: 'A sturdy wooden stick, as tall as a person.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.LargeWeapons,
@@ -345,6 +360,7 @@ export class ItemData {
 			{
 				id: 'item-pike',
 				name: 'Pike',
+				description: 'A spear point mounted at the end of a long haft.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.LargeWeapons,
@@ -365,8 +381,32 @@ export class ItemData {
 				actions: []
 			},
 			{
+				id: 'item-halberd',
+				name: 'Halberd',
+				description: 'An axe blade mounted at the end of a long haft.',
+				baseItem: '',
+				magic: false,
+				proficiency: ItemProficiencyType.LargeWeapons,
+				location: ItemLocationType.Hand,
+				slots: 2,
+				weapon: {
+					damage: [
+						{
+							type: DamageType.Edged,
+							rank: 4
+						}
+					],
+					range: 2,
+					unreliable: 0
+				},
+				armor: null,
+				features: [],
+				actions: []
+			},
+			{
 				id: 'item-trident',
 				name: 'Trident',
+				description: 'A three-pronged spear.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.LargeWeapons,
@@ -389,6 +429,7 @@ export class ItemData {
 			{
 				id: 'item-dagger',
 				name: 'Daggers',
+				description: 'Simple small blades, easily hidden.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.PairedWeapons,
@@ -411,6 +452,7 @@ export class ItemData {
 			{
 				id: 'item-sai',
 				name: 'Sais',
+				description: 'Pointed daggers with sharp side-prongs.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.PairedWeapons,
@@ -433,6 +475,7 @@ export class ItemData {
 			{
 				id: 'item-tonfas',
 				name: 'Tonfas',
+				description: 'Wooden batons with a perpendicular handle.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.PairedWeapons,
@@ -455,6 +498,7 @@ export class ItemData {
 			{
 				id: 'item-longbow',
 				name: 'Longbow',
+				description: 'Longbows loose arrows with great accuracy.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.RangedWeapons,
@@ -467,7 +511,7 @@ export class ItemData {
 							rank: 3
 						}
 					],
-					range: 10,
+					range: 15,
 					unreliable: 0
 				},
 				armor: null,
@@ -477,6 +521,7 @@ export class ItemData {
 			{
 				id: 'item-crossbow',
 				name: 'Crossbow',
+				description: 'A device which can launch wooden bolts hundreds of feet.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.RangedWeapons,
@@ -489,7 +534,30 @@ export class ItemData {
 							rank: 4
 						}
 					],
-					range: 15,
+					range: 20,
+					unreliable: 1
+				},
+				armor: null,
+				features: [],
+				actions: []
+			},
+			{
+				id: 'item-catapult',
+				name: 'Catapult',
+				description: 'A simple device for launching rocks and other small blunt projectiles.',
+				baseItem: '',
+				magic: false,
+				proficiency: ItemProficiencyType.RangedWeapons,
+				location: ItemLocationType.Hand,
+				slots: 2,
+				weapon: {
+					damage: [
+						{
+							type: DamageType.Impact,
+							rank: 3
+						}
+					],
+					range: 10,
 					unreliable: 1
 				},
 				armor: null,
@@ -499,6 +567,30 @@ export class ItemData {
 			{
 				id: 'item-rifle',
 				name: 'Rifle',
+				description: 'A large gun that requires two hands to use.',
+				baseItem: '',
+				magic: false,
+				proficiency: ItemProficiencyType.PowderWeapons,
+				location: ItemLocationType.Hand,
+				slots: 2,
+				weapon: {
+					damage: [
+						{
+							type: DamageType.Piercing,
+							rank: 8
+						}
+					],
+					range: 20,
+					unreliable: 2
+				},
+				armor: null,
+				features: [],
+				actions: []
+			},
+			{
+				id: 'item-carbine',
+				name: 'Carbine',
+				description: 'Smaller than a rifle, larger than a pistol.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.PowderWeapons,
@@ -521,6 +613,7 @@ export class ItemData {
 			{
 				id: 'item-pistol',
 				name: 'Pistol',
+				description: 'A less powerful hand-held gun.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.PowderWeapons,
@@ -543,6 +636,7 @@ export class ItemData {
 			{
 				id: 'item-orb',
 				name: 'Orb',
+				description: 'A crystal ball.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.Implements,
@@ -556,6 +650,7 @@ export class ItemData {
 			{
 				id: 'item-wand',
 				name: 'Wand',
+				description: 'A small wooden rod.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.Implements,
@@ -569,6 +664,7 @@ export class ItemData {
 			{
 				id: 'item-tome',
 				name: 'Tome',
+				description: 'A spellbook or grimoire.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.Implements,
@@ -582,6 +678,7 @@ export class ItemData {
 			{
 				id: 'item-amulet',
 				name: 'Amulet',
+				description: 'A magical symbol worn around the neck.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.Implements,
@@ -595,6 +692,7 @@ export class ItemData {
 			{
 				id: 'item-staff',
 				name: 'Staff',
+				description: 'A magical walking stick.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.Implements,
@@ -608,6 +706,7 @@ export class ItemData {
 			{
 				id: 'item-leather-armor',
 				name: 'Leather Armor',
+				description: 'Armor made of tanned animal skin.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.LightArmor,
@@ -625,6 +724,7 @@ export class ItemData {
 			{
 				id: 'item-hide-armor',
 				name: 'Hide Armor',
+				description: 'The thick hide of a beast, used as armor.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.LightArmor,
@@ -643,6 +743,7 @@ export class ItemData {
 			{
 				id: 'item-brigandine-armor',
 				name: 'Brigandine Armor',
+				description: 'Armor made of small metal plates sewn into fabric.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.LightArmor,
@@ -660,8 +761,28 @@ export class ItemData {
 				actions: []
 			},
 			{
+				id: 'item-breastplate',
+				name: 'Breastplate',
+				description: 'Armor for the torso, made of leather or metal.',
+				baseItem: '',
+				magic: false,
+				proficiency: ItemProficiencyType.LightArmor,
+				location: ItemLocationType.Body,
+				slots: 1,
+				weapon: null,
+				armor: {
+					features: [
+						FeatureLogic.createDamageCategoryResistFeature('brigandinearmour-1', DamageCategoryType.Physical, 3),
+						FeatureLogic.createSkillCategoryFeature('brigandinearmour-2', SkillCategoryType.Physical, -2)
+					]
+				},
+				features: [],
+				actions: []
+			},
+			{
 				id: 'item-chain-armor',
 				name: 'Chain Armor',
+				description: 'Armor made of tiny interwoven metal rings.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.HeavyArmor,
@@ -681,6 +802,7 @@ export class ItemData {
 			{
 				id: 'item-plate-armor',
 				name: 'Plate Armor',
+				description: 'Armor made of jointed sheets of metal.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.HeavyArmor,
@@ -700,6 +822,7 @@ export class ItemData {
 			{
 				id: 'item-shield',
 				name: 'Shield',
+				description: 'A small shield, often worn strapped to the arm.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.Shields,
@@ -717,6 +840,7 @@ export class ItemData {
 			{
 				id: 'item-tower-shield',
 				name: 'Tower shield',
+				description: 'A larger shield, more protective but cumbersome.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.Shields,
@@ -735,6 +859,7 @@ export class ItemData {
 			{
 				id: 'item-helm',
 				name: 'Helm',
+				description: 'Ornamental headware.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.None,
@@ -748,6 +873,7 @@ export class ItemData {
 			{
 				id: 'item-circlet',
 				name: 'Circlet',
+				description: 'Ornamental headware.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.None,
@@ -761,6 +887,7 @@ export class ItemData {
 			{
 				id: 'item-crown',
 				name: 'Crown',
+				description: 'Ornamental headware.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.None,
@@ -774,6 +901,7 @@ export class ItemData {
 			{
 				id: 'item-tiara',
 				name: 'Tiara',
+				description: 'Ornamental headware.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.None,
@@ -785,12 +913,13 @@ export class ItemData {
 				actions: []
 			},
 			{
-				id: 'item-cloak',
-				name: 'Cloak',
+				id: 'item-diadem',
+				name: 'Diadem',
+				description: 'Ornamental headware.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.None,
-				location: ItemLocationType.Neck,
+				location: ItemLocationType.Head,
 				slots: 1,
 				weapon: null,
 				armor: null,
@@ -800,6 +929,7 @@ export class ItemData {
 			{
 				id: 'item-belt',
 				name: 'Belt',
+				description: 'Leather strip worn around the waist.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.None,
@@ -813,6 +943,7 @@ export class ItemData {
 			{
 				id: 'item-sash',
 				name: 'Sash',
+				description: 'Strip of fabric worn across the body.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.None,
@@ -826,6 +957,7 @@ export class ItemData {
 			{
 				id: 'item-bandolier',
 				name: 'Bandolier',
+				description: 'A belt or sash with pockets.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.None,
@@ -837,8 +969,23 @@ export class ItemData {
 				actions: []
 			},
 			{
+				id: 'item-cloak',
+				name: 'Cloak',
+				description: 'Garment which is fastened around the shoulders, sometimes magical.',
+				baseItem: '',
+				magic: false,
+				proficiency: ItemProficiencyType.None,
+				location: ItemLocationType.Neck,
+				slots: 1,
+				weapon: null,
+				armor: null,
+				features: [],
+				actions: []
+			},
+			{
 				id: 'item-torc',
 				name: 'Torc',
+				description: 'Ornamental neckwear.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.None,
@@ -852,6 +999,7 @@ export class ItemData {
 			{
 				id: 'item-necklace',
 				name: 'Necklace',
+				description: 'Ornamental neckwear.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.None,
@@ -865,6 +1013,7 @@ export class ItemData {
 			{
 				id: 'item-ring',
 				name: 'Ring',
+				description: 'Worn on the fingers.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.None,
@@ -878,6 +1027,7 @@ export class ItemData {
 			{
 				id: 'item-boots',
 				name: 'Boots',
+				description: 'Footwear.',
 				baseItem: '',
 				magic: false,
 				proficiency: ItemProficiencyType.None,

@@ -38,6 +38,7 @@ export class NameGenerator {
 			'as',
 			'at',
 			'ba',
+			'bal',
 			'bala',
 			'bar',
 			'barer',
@@ -126,6 +127,7 @@ export class NameGenerator {
 			'or',
 			'os',
 			'ot',
+			'oz',
 			'pae',
 			'pand',
 			'patr',
@@ -157,6 +159,7 @@ export class NameGenerator {
 			'tak',
 			'tal',
 			'tam',
+			'tir',
 			'thav',
 			'thor',
 			'torg',
@@ -300,6 +303,7 @@ export class NameGenerator {
 			'rak',
 			'rasa',
 			'rash',
+			'rax',
 			'ree',
 			'rek',
 			'ret',
@@ -333,7 +337,9 @@ export class NameGenerator {
 			'yas',
 			'yle',
 			'yne',
-			'ynn'
+			'ynn',
+			'za',
+			'zar'
 		];
 
 		const separators = [

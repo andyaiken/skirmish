@@ -6,12 +6,6 @@
 
 # Improvements / Enhancements
 
-## Card descriptions
-* Species
-* Roles
-* Backgrounds
-* Items
-
 ## Map Types
 * Street
 * Building interior

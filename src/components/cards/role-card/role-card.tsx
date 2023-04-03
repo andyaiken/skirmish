@@ -68,6 +68,7 @@ export class RoleCard extends Component<Props> {
 			<div className='role-card'>
 				<Text type={TextType.SubHeading}>{this.props.role.name}</Text>
 				<hr />
+				<div className='description'>{this.props.role.description}</div>
 				{traits}
 				{skills}
 				{profs}

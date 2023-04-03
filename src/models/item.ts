@@ -21,6 +21,7 @@ export interface ArmorModel {
 export interface ItemModel {
 	id: string;
 	name: string;
+	description: string;
 	baseItem: string;
 	magic: boolean;
 	proficiency: ItemProficiencyType;

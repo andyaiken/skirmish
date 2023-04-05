@@ -9,6 +9,8 @@ import { SkillCategoryType } from '../enums/skill-category-type';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
 
+import { CampaignMapGenerator } from '../generators/campaign-map-generator';
+
 import type { CombatantModel } from '../models/combatant';
 import type { ConditionModel } from '../models/condition';
 import type { FeatureModel } from '../models/feature';
@@ -16,8 +18,6 @@ import type { GameModel } from '../models/game';
 import type { LootPileModel } from '../models/encounter';
 
 import { Utils } from '../utils/utils';
-
-import { CampaignMapLogic } from './campaign-map-logic';
 
 export class Factory {
 	static createCombatant = (type: CombatantType): CombatantModel => {
@@ -71,7 +71,7 @@ export class Factory {
 			items: [],
 			boons: [],
 			money: 0,
-			map: CampaignMapLogic.generateCampaignMap(),
+			map: CampaignMapGenerator.generateCampaignMap(),
 			encounter: null
 		};
 	};

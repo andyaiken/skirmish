@@ -6,7 +6,7 @@ import { ItemProficiencyType } from '../../../enums/item-proficiency-type';
 
 import { CombatantLogic } from '../../../logic/combatant-logic';
 import { GameLogic } from '../../../logic/game-logic';
-import { NameGenerator } from '../../../logic/name-generator';
+import { NameGenerator } from '../../../generators/name-generator';
 
 import type { BackgroundModel } from '../../../models/background';
 import type { CombatantModel } from '../../../models/combatant';

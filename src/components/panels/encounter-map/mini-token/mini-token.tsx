@@ -60,7 +60,12 @@ export class MiniToken extends Component<Props, State> {
 		return this.props.combatant.name
 			.split(' ')
 			.filter(token => token.length > 0)
-			.map(token => token[0])
+			.map(token => {
+				if (/^\d+$/.test(token)) {
+					return token;
+				}
+				return token[0];
+			})
 			.join('');
 	};
 

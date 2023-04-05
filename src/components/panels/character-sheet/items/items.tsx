@@ -142,11 +142,14 @@ export class Items extends Component<Props> {
 			return null;
 		}
 
-		const cards = this.props.game.items
+		const cards = Collections.distinct(this.props.game.items, i => i.name)
 			.sort((a, b) => a.name.localeCompare(b.name))
 			.map(item => {
+				const count = this.props.game.items.filter(i => i.name === item.name).length;
+
 				const footer = (
 					<div className='item-options'>
+						{count > 1 ? <Text type={TextType.MinorHeading}>x{count}</Text> : null}
 						<button disabled={!CombatantLogic.canEquip(this.props.combatant, item)} onClick={() => this.props.equipItem(item)}>
 							Equip
 						</button>
@@ -183,7 +186,7 @@ export class Items extends Component<Props> {
 
 		const adj = EncounterMapLogic.getAdjacentSquares(this.props.game.encounter.mapSquares, [ this.props.combatant.combat.position ]);
 		const piles = this.props.game.encounter.loot.filter(lp => adj.find(sq => (sq.x === lp.position.x) && (sq.y === lp.position.y)));
-		const items = Collections.distinct(piles.flatMap(pile => pile.items), i => i.id)
+		const items = Collections.distinct(piles.flatMap(pile => pile.items), i => i.name)
 			.sort((a, b) => a.name.localeCompare(b.name));
 
 		if (items.length === 0) {

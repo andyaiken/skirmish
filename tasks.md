@@ -4,6 +4,8 @@
 * If you select a 'square' parameter, and move, the origin candidate squares do not move
 * Presumably this is the same for other parameter types
 
+-----------------------------------------------------------------------------------------
+
 # Improvements / Enhancements
 
 ## Map Types
@@ -32,12 +34,9 @@
 * Regions could specify monster types found there
 * This should then be used for building encounters
 
-# New Features
+-----------------------------------------------------------------------------------------
 
-## Game Diagnostics
-* Add a system for evaluating each action to ensure none is too powerful
-* Extend this to ensure species / roles / backgrounds are equally matched
-* Also check that the different effect types are all used equally
+# New Features
 
 ## Water / Ice
 * Squares of water / ice would be difficult terrain
@@ -170,6 +169,8 @@
 ## Sound
 * Add sound effects
 * Add music
+
+-----------------------------------------------------------------------------------------
 
 # Tech Debt
 

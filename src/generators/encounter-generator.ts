@@ -10,11 +10,11 @@ import type { RegionModel } from '../models/region';
 import { Collections } from '../utils/collections';
 import { Random } from '../utils/random';
 
-import { CombatantLogic } from './combatant-logic';
-import { EncounterLogic } from './encounter-logic';
-import { EncounterMapLogic } from './encounter-map-logic';
-import { Factory } from './factory';
-import { GameLogic } from './game-logic';
+import { CombatantLogic } from '../logic/combatant-logic';
+import { EncounterLogic } from '../logic/encounter-logic';
+import { EncounterMapLogic } from '../logic/encounter-map-logic';
+import { Factory } from '../logic/factory';
+import { GameLogic } from '../logic/game-logic';
 import { MagicItemGenerator } from './magic-item-generator';
 
 export class EncounterGenerator {

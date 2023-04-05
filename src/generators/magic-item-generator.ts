@@ -15,8 +15,8 @@ import { Collections } from '../utils/collections';
 import { Random } from '../utils/random';
 import { Utils } from '../utils/utils';
 
-import { FeatureLogic } from './feature-logic';
-import { GameLogic } from './game-logic';
+import { FeatureLogic } from '../logic/feature-logic';
+import { GameLogic } from '../logic/game-logic';
 import { NameGenerator } from './name-generator';
 
 export class MagicItemGenerator {

@@ -6,9 +6,9 @@ As you control more and more of the island your heroes will get more powerful, a
 
 ---
 
-If this is your first time playing Skirmish, you should start a new campaign.
+If this is your first time playing Skirmish, you should `Start A New Campaign`.
 
-Otherwise, you can continue your campaign from where you left off.
+Otherwise, you can `Continue Your Campaign` from where you left off.
 
 ---
 

@@ -8,13 +8,13 @@ import { EncounterState } from '../../enums/encounter-state';
 
 import { CampaignMapLogic } from '../../logic/campaign-map-logic';
 import { CombatantLogic } from '../../logic/combatant-logic';
-import { EncounterGenerator } from '../../logic/encounter-generator';
+import { EncounterGenerator } from '../../generators/encounter-generator';
 import { EncounterLogic } from '../../logic/encounter-logic';
 import { EncounterMapLogic } from '../../logic/encounter-map-logic';
 import { Factory } from '../../logic/factory';
 import { GameLogic } from '../../logic/game-logic';
 import { IntentsLogic } from '../../logic/intents-logic';
-import { MagicItemGenerator } from '../../logic/magic-item-generator';
+import { MagicItemGenerator } from '../../generators/magic-item-generator';
 
 import type { ActionModel, ActionParameterModel } from '../../models/action';
 import type { BoonModel } from '../../models/boon';
@@ -510,6 +510,7 @@ export class Main extends Component<Props, State> {
 		if (game.encounter) {
 			EncounterLogic.equipItem(game.encounter, combatant, item);
 		} else {
+			game.items = game.items.filter(i => i.id !== item.id);
 			combatant.carried = combatant.carried.filter(i => i.id !== item.id);
 			combatant.items.push(item);
 		}

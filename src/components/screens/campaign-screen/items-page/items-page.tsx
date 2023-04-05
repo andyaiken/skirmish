@@ -3,7 +3,7 @@ import { Component } from 'react';
 import { CardType } from '../../../../enums/card-type';
 import { GameLogic } from '../../../../logic/game-logic';
 
-import { MagicItemGenerator } from '../../../../logic/magic-item-generator';
+import { MagicItemGenerator } from '../../../../generators/magic-item-generator';
 
 import type { BoonModel } from '../../../../models/boon';
 import type { CombatantModel } from '../../../../models/combatant';

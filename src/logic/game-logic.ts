@@ -3,36 +3,69 @@ import { ItemData } from '../data/item-data';
 import { RoleData } from '../data/role-data';
 import { SpeciesData } from '../data/species-data';
 
+import { ActionTargetType } from '../enums/action-target-type';
 import { BoonType } from '../enums/boon-type';
 import { CombatantType } from '../enums/combatant-type';
 import { DamageCategoryType } from '../enums/damage-category-type';
 import { DamageType } from '../enums/damage-type';
+import { FeatureType } from '../enums/feature-type';
 import { ItemProficiencyType } from '../enums/item-proficiency-type';
 import { SkillCategoryType } from '../enums/skill-category-type';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
 
-import type { ActionModel } from '../models/action';
+import type { ActionEffectModel, ActionModel, ActionTargetParameterModel } from '../models/action';
+import type { BackgroundModel } from '../models/background';
 import type { BoonModel } from '../models/boon';
 import type { CombatantModel } from '../models/combatant';
+import type { ConditionModel } from '../models/condition';
+import type { FeatureModel } from '../models/feature';
 import type { GameModel } from '../models/game';
+import type { RoleModel } from '../models/role';
+import type { SpeciesModel } from '../models/species';
 
 import { Collections } from '../utils/collections';
-import { Random } from '../utils/random';
 import { Utils } from '../utils/utils';
 
-import { MagicItemGenerator } from './magic-item-generator';
+import { ActionLogic } from './action-logic';
 
 export class GameLogic {
-	static getAllActions = () => {
-		const actions: ActionModel[] = [];
-
-		SpeciesData.getList().forEach(s => actions.push(...s.actions));
-		RoleData.getList().forEach(r => actions.push(...r.actions));
-		BackgroundData.getList().forEach(b => actions.push(...b.actions));
-
-		return actions;
+	static getSpeciesDeck = (type: CombatantType) => {
+		return SpeciesData
+			.getList()
+			.filter(s => s.type === type)
+			.map(species => species.id);
 	};
+
+	static getRoleDeck = () => {
+		return RoleData
+			.getList()
+			.map(role => role.id);
+	};
+
+	static getBackgroundDeck = () => {
+		return BackgroundData
+			.getList()
+			.map(background => background.id);
+	};
+
+	static getSpecies = (id: string) => {
+		return SpeciesData.getList().find(s => s.id === id) || null;
+	};
+
+	static getRole = (id: string) => {
+		return RoleData.getList().find(r => r.id === id) || null;
+	};
+
+	static getBackground = (id: string) => {
+		return BackgroundData.getList().find(b => b.id === id) || null;
+	};
+
+	static getItem = (id: string) => {
+		return ItemData.getList().find(b => b.id === id) || null;
+	};
+
+	///////////////////////////////////////////////////////////////////////////
 
 	static getRandomAction = () => {
 		const actions = GameLogic.getAllActions();
@@ -159,54 +192,16 @@ export class GameLogic {
 		return Collections.draw(options);
 	};
 
-	///////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
 
-	static generateBoon = (): BoonModel => {
-		let type = BoonType.ExtraHero;
-		switch (Random.randomNumber(13)) {
-			case 0:
-			case 1:
-			case 2:
-				type = BoonType.ExtraHero;
-				break;
-			case 3:
-			case 4:
-			case 5:
-				type = BoonType.ExtraXP;
-				break;
-			case 6:
-			case 7:
-			case 8:
-				type = BoonType.LevelUp;
-				break;
-			case 9:
-			case 10:
-			case 11:
-				type = BoonType.Money;
-				break;
-			case 12:
-				type = BoonType.MagicItem;
-				break;
-		}
+	static getAllActions = () => {
+		const actions: ActionModel[] = [];
 
-		let data = null;
-		switch (type) {
-			case BoonType.MagicItem:
-				data = MagicItemGenerator.generateMagicItem();
-				break;
-			case BoonType.ExtraXP:
-				data = Random.dice(5);
-				break;
-			case BoonType.Money:
-				data = Random.dice(5) * 5;
-				break;
-		}
+		SpeciesData.getList().forEach(s => actions.push(...s.actions));
+		RoleData.getList().forEach(r => actions.push(...r.actions));
+		BackgroundData.getList().forEach(b => actions.push(...b.actions));
 
-		return {
-			id: Utils.guid(),
-			type: type,
-			data: data
-		};
+		return actions;
 	};
 
 	static getBoonIsHeroType = (boon: BoonModel) => {
@@ -272,44 +267,147 @@ export class GameLogic {
 		return SkillCategoryType.None;
 	};
 
-	///////////////////////////////////////////////////////////////////////////////
-
-	static getSpeciesDeck = (type: CombatantType) => {
-		return SpeciesData
-			.getList()
-			.filter(s => s.type === type)
-			.map(species => species.id);
-	};
-
-	static getRoleDeck = () => {
-		return RoleData
-			.getList()
-			.map(role => role.id);
-	};
-
-	static getBackgroundDeck = () => {
-		return BackgroundData
-			.getList()
-			.map(background => background.id);
-	};
-
-	static getSpecies = (id: string) => {
-		return SpeciesData.getList().find(s => s.id === id) || null;
-	};
-
-	static getRole = (id: string) => {
-		return RoleData.getList().find(r => r.id === id) || null;
-	};
-
-	static getBackground = (id: string) => {
-		return BackgroundData.getList().find(b => b.id === id) || null;
-	};
-
-	static getItem = (id: string) => {
-		return ItemData.getList().find(b => b.id === id) || null;
-	};
-
 	static getItemsForProficiency = (proficiency: ItemProficiencyType) => {
 		return ItemData.getList().filter(i => i.proficiency === proficiency);
+	};
+
+	///////////////////////////////////////////////////////////////////////////
+
+	static getSpeciesStrength = (species: SpeciesModel) => {
+		let value = 0;
+
+		species.features.forEach(f => {
+			value += GameLogic.getFeatureStrength(f);
+		});
+
+		species.actions.forEach(a => {
+			value += GameLogic.getActionStrength(a);
+		});
+
+		return value;
+	};
+
+	static getRoleStrength = (role: RoleModel) => {
+		let value = 0;
+
+		role.features.forEach(f => {
+			value += GameLogic.getFeatureStrength(f);
+		});
+
+		role.actions.forEach(a => {
+			value += GameLogic.getActionStrength(a);
+		});
+
+		return value;
+	};
+
+	static getBackgroundStrength = (background: BackgroundModel) => {
+		let value = 0;
+
+		background.features.forEach(f => {
+			value += GameLogic.getFeatureStrength(f);
+		});
+
+		background.actions.forEach(a => {
+			value += GameLogic.getActionStrength(a);
+		});
+
+		return value;
+	};
+
+	static getFeatureStrength = (feature: FeatureModel) => {
+		switch (feature.type) {
+			case FeatureType.Aura:
+				return feature.rank;
+			case FeatureType.DamageBonus:
+			case FeatureType.DamageResist:
+				return feature.rank;
+			case FeatureType.DamageCategoryBonus:
+			case FeatureType.DamageCategoryResist:
+				return feature.rank * 2;
+			case FeatureType.Skill:
+				return feature.rank;
+			case FeatureType.SkillCategory:
+				return feature.rank * 2;
+			case FeatureType.Trait:
+				return feature.rank * 3;
+		}
+
+		return 0;
+	};
+
+	static getActionStrength = (action: ActionModel) => {
+		let strength = 1;
+
+		// If attack, strength is double number of enemy targets
+		const param = action.parameters.find(a => a.id === 'targets');
+		if (param) {
+			const targetParam = param as ActionTargetParameterModel;
+			if (targetParam.targets) {
+				switch (targetParam.targets.type) {
+					case ActionTargetType.Combatants:
+						strength = Math.min(targetParam.targets.count, 3) * 2;
+						break;
+					case ActionTargetType.Enemies:
+						strength = Math.min(targetParam.targets.count, 3) * 5;
+						break;
+				}
+			}
+		}
+		if (ActionLogic.getActionRange(action) > 2) {
+			strength += 1;
+		}
+
+		const checkEffects = (effects: ActionEffectModel[]) => {
+			let value = 0;
+
+			effects.forEach(e => {
+				switch (e.id) {
+					case 'attack': {
+						value += checkEffects(e.children) / 2;
+						break;
+					}
+					case 'damage': {
+						value += (e.data as { type: DamageType, rank: number }).rank;
+						break;
+					}
+					case 'weapondamage': {
+						value += 3 + (e.data as number);
+						break;
+					}
+					case 'wound': {
+						value += 5 * (e.data as number);
+						break;
+					}
+					case 'addcondition' : {
+						value += (e.data as ConditionModel).rank;
+						break;
+					}
+					case 'stun': {
+						value += 3;
+						break;
+					}
+					case 'disarm':
+					case 'steal': {
+						value += 10;
+						break;
+					}
+					default: {
+						value += 1;
+						break;
+					}
+				}
+			});
+
+			return value;
+		};
+
+		strength += checkEffects(action.effects);
+
+		if (ActionLogic.getActionSpeed(action) === 'Quick') {
+			strength *= 2;
+		}
+
+		return strength;
 	};
 }

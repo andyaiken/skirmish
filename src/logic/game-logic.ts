@@ -319,7 +319,7 @@ export class GameLogic {
 	static getFeatureStrength = (feature: FeatureModel) => {
 		switch (feature.type) {
 			case FeatureType.Aura:
-				return feature.rank;
+				return feature.rank * 3;
 			case FeatureType.DamageBonus:
 			case FeatureType.DamageResist:
 				return feature.rank;
@@ -340,7 +340,6 @@ export class GameLogic {
 	static getActionStrength = (action: ActionModel) => {
 		let strength = 1;
 
-		// If attack, strength is double number of enemy targets
 		const param = action.parameters.find(a => a.id === 'targets');
 		if (param) {
 			const targetParam = param as ActionTargetParameterModel;
@@ -348,6 +347,9 @@ export class GameLogic {
 				switch (targetParam.targets.type) {
 					case ActionTargetType.Combatants:
 						strength = Math.min(targetParam.targets.count, 3) * 2;
+						break;
+					case ActionTargetType.Allies:
+						strength = Math.min(targetParam.targets.count, 3) * 3;
 						break;
 					case ActionTargetType.Enemies:
 						strength = Math.min(targetParam.targets.count, 3) * 5;

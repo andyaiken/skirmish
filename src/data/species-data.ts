@@ -698,7 +698,6 @@ export class SpeciesData {
 				quirks: [],
 				traits: [
 					TraitType.Endurance,
-					TraitType.Resolve,
 					TraitType.Speed
 				],
 				skills: [
@@ -719,9 +718,9 @@ export class SpeciesData {
 							ActionTargetParameters.self()
 						],
 						effects: [
-							ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Endurance, 5, SkillType.Brawl)),
-							ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Endurance, 5, SkillType.Weapon)),
-							ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Endurance, 5, DamageCategoryType.Physical))
+							ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Endurance, 3, SkillType.Brawl)),
+							ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Endurance, 3, SkillType.Weapon)),
+							ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Endurance, 3, DamageCategoryType.Physical))
 						]
 					},
 					{

@@ -82,7 +82,7 @@ export class BackgroundData {
 							ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 10)
 						],
 						effects: [
-							ActionEffects.addCondition(ConditionLogic.createSkillCategoryBonusCondition(TraitType.Resolve, 5, SkillCategoryType.Physical))
+							ActionEffects.addCondition(ConditionLogic.createSkillCategoryBonusCondition(TraitType.Resolve, 8, SkillCategoryType.Physical))
 						]
 					},
 					{
@@ -93,7 +93,7 @@ export class BackgroundData {
 							ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 10)
 						],
 						effects: [
-							ActionEffects.addCondition(ConditionLogic.createSkillCategoryBonusCondition(TraitType.Resolve, 5, SkillCategoryType.Mental))
+							ActionEffects.addCondition(ConditionLogic.createSkillCategoryBonusCondition(TraitType.Resolve, 8, SkillCategoryType.Mental))
 						]
 					}
 				]
@@ -384,7 +384,7 @@ export class BackgroundData {
 						name: 'Remove Affliction',
 						prerequisites: [],
 						parameters: [
-							ActionTargetParameters.adjacent(ActionTargetType.Allies, 1)
+							ActionTargetParameters.adjacent(ActionTargetType.Allies, Number.MAX_VALUE)
 						],
 						effects: [
 							ActionEffects.removeCondition(TraitType.Any)
@@ -395,10 +395,10 @@ export class BackgroundData {
 						name: 'First Aid',
 						prerequisites: [],
 						parameters: [
-							ActionTargetParameters.adjacent(ActionTargetType.Allies, 1)
+							ActionTargetParameters.adjacent(ActionTargetType.Allies, Number.MAX_VALUE)
 						],
 						effects: [
-							ActionEffects.healDamage(3)
+							ActionEffects.healDamage(5)
 						]
 					},
 					{
@@ -406,7 +406,7 @@ export class BackgroundData {
 						name: 'Cure Wounds',
 						prerequisites: [],
 						parameters: [
-							ActionTargetParameters.adjacent(ActionTargetType.Allies, 1)
+							ActionTargetParameters.adjacent(ActionTargetType.Allies, Number.MAX_VALUE)
 						],
 						effects: [
 							ActionEffects.healWounds(1)
@@ -533,6 +533,40 @@ export class BackgroundData {
 						],
 						effects: [
 							ActionEffects.steal()
+						]
+					},
+					{
+						id: 'thief-action-2',
+						name: 'Stake Out',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+						],
+						effects: [
+							ActionEffects.addCondition(ConditionLogic.createDamageVulnerabilityCondition(TraitType.Resolve, 5, DamageType.All))
+						]
+					},
+					{
+						id: 'thief-action-3',
+						name: 'Shake Down',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, Number.MAX_VALUE)
+						],
+						effects: [
+							ActionEffects.reveal()
+						]
+					},
+					{
+						id: 'thief-action-4',
+						name: 'Hide',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.self()
+						],
+						effects: [
+							ActionEffects.hide(),
+							ActionEffects.redrawActions()
 						]
 					}
 				]

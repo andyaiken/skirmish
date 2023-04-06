@@ -32,6 +32,10 @@ export class Collections {
 		return collection.reduce((sum, item) => sum + callback(item), 0);
 	};
 
+	static mean = <T>(collection: T[], callback: (item: T) => number): number => {
+		return Collections.sum(collection, callback) / collection.length;
+	};
+
 	static min = <T>(collection: T[], callback: (item: T) => number): T | null => {
 		let item = null;
 		let min = Number.MAX_VALUE;

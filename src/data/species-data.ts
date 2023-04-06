@@ -66,13 +66,14 @@ export class SpeciesData {
 				size: 1,
 				quirks: [],
 				traits: [
-					TraitType.Endurance
+					TraitType.Endurance,
+					TraitType.Resolve
 				],
 				skills: [],
 				features: [
 					FeatureLogic.createTraitFeature('construct-feature-1', TraitType.Endurance, 1),
-					FeatureLogic.createDamageResistFeature('construct-feature-2', DamageType.Poison, 1),
-					FeatureLogic.createDamageResistFeature('construct-feature-3', DamageType.Psychic, 1)
+					FeatureLogic.createDamageResistFeature('construct-feature-2', DamageType.Poison, 2),
+					FeatureLogic.createDamageResistFeature('construct-feature-3', DamageType.Psychic, 2)
 				],
 				actions: [
 					{
@@ -124,11 +125,9 @@ export class SpeciesData {
 					SkillType.Presence
 				],
 				features: [
-					FeatureLogic.createTraitFeature('deva-feature-1', TraitType.Resolve, 1),
-					FeatureLogic.createSkillFeature('deva-feature-2', SkillType.Presence, 2),
-					FeatureLogic.createDamageCategoryResistFeature('deva-feature-3', DamageCategoryType.Corruption, 1),
-					FeatureLogic.createDamageCategoryResistFeature('deva-feature-4', DamageCategoryType.Energy, 1),
-					FeatureLogic.createAuraDamageFeature('deva-feature-5', ConditionType.AutoDamage, DamageType.Light, 1)
+					FeatureLogic.createSkillFeature('deva-feature-1', SkillType.Presence, 2),
+					FeatureLogic.createDamageCategoryResistFeature('deva-feature-2', DamageCategoryType.Corruption, 1),
+					FeatureLogic.createAuraDamageFeature('deva-feature-3', ConditionType.AutoDamage, DamageType.Light, 1)
 				],
 				actions: [
 					{
@@ -179,14 +178,15 @@ export class SpeciesData {
 				size: 1,
 				quirks: [],
 				traits: [
+					TraitType.Endurance,
 					TraitType.Endurance
 				],
 				skills: [],
 				features: [
 					FeatureLogic.createTraitFeature('dwarf-feature-1', TraitType.Endurance, 1),
 					FeatureLogic.createTraitFeature('dwarf-feature-2', TraitType.Resolve, 1),
-					FeatureLogic.createDamageResistFeature('dwarf-feature-3', DamageType.Poison, 1),
-					FeatureLogic.createDamageResistFeature('dwarf-feature-4', DamageType.Psychic, 1)
+					FeatureLogic.createDamageResistFeature('dwarf-feature-3', DamageType.Poison, 2),
+					FeatureLogic.createDamageResistFeature('dwarf-feature-4', DamageType.Psychic, 2)
 				],
 				actions: [
 					{
@@ -462,7 +462,7 @@ export class SpeciesData {
 			{
 				id: 'species-reptilian',
 				name: 'Reptilian',
-				description: 'A scaly humanoid with serpentine ancestry.',
+				description: 'A scaly humanoid with draconic or serpentine ancestry.',
 				type: CombatantType.Hero,
 				size: 1,
 				quirks: [],
@@ -476,7 +476,7 @@ export class SpeciesData {
 					FeatureLogic.createTraitFeature('reptilian-feature-1', TraitType.Speed, 1),
 					FeatureLogic.createSkillFeature('reptilian-feature-2', SkillType.Brawl, 2),
 					FeatureLogic.createDamageCategoryResistFeature('reptilian-feature-3', DamageCategoryType.Physical, 1),
-					FeatureLogic.createDamageResistFeature('reptilian-feature-4', DamageType.Psychic, 1)
+					FeatureLogic.createDamageResistFeature('reptilian-feature-4', DamageType.Psychic, 2)
 				],
 				actions: [
 					{

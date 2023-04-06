@@ -276,43 +276,44 @@ export class GameLogic {
 	static getSpeciesStrength = (species: SpeciesModel) => {
 		let value = 0;
 
-		species.features.forEach(f => {
-			value += GameLogic.getFeatureStrength(f);
+		species.traits.forEach(t => {
+			value += 5;
 		});
 
-		species.actions.forEach(a => {
-			value += GameLogic.getActionStrength(a);
+		species.skills.forEach(s => {
+			value += 1;
 		});
 
-		return value;
+		value += Collections.mean(species.features, feature => GameLogic.getFeatureStrength(feature));
+		value += Collections.mean(species.actions, action => GameLogic.getActionStrength(action));
+
+		return Math.round(value);
 	};
 
 	static getRoleStrength = (role: RoleModel) => {
 		let value = 0;
 
-		role.features.forEach(f => {
-			value += GameLogic.getFeatureStrength(f);
+		role.traits.forEach(t => {
+			value += 5;
 		});
 
-		role.actions.forEach(a => {
-			value += GameLogic.getActionStrength(a);
+		role.skills.forEach(s => {
+			value += 1;
 		});
 
-		return value;
+		value += Collections.mean(role.features, feature => GameLogic.getFeatureStrength(feature));
+		value += Collections.mean(role.actions, action => GameLogic.getActionStrength(action));
+
+		return Math.round(value);
 	};
 
 	static getBackgroundStrength = (background: BackgroundModel) => {
 		let value = 0;
 
-		background.features.forEach(f => {
-			value += GameLogic.getFeatureStrength(f);
-		});
+		value += Collections.mean(background.features, feature => GameLogic.getFeatureStrength(feature));
+		value += Collections.mean(background.actions, action => GameLogic.getActionStrength(action));
 
-		background.actions.forEach(a => {
-			value += GameLogic.getActionStrength(a);
-		});
-
-		return value;
+		return Math.round(value);
 	};
 
 	static getFeatureStrength = (feature: FeatureModel) => {
@@ -324,13 +325,13 @@ export class GameLogic {
 				return feature.rank;
 			case FeatureType.DamageCategoryBonus:
 			case FeatureType.DamageCategoryResist:
-				return feature.rank * 2;
+				return feature.rank * 3;
 			case FeatureType.Skill:
 				return feature.rank;
 			case FeatureType.SkillCategory:
-				return feature.rank * 2;
-			case FeatureType.Trait:
 				return feature.rank * 3;
+			case FeatureType.Trait:
+				return feature.rank * 5;
 		}
 
 		return 0;
@@ -408,6 +409,6 @@ export class GameLogic {
 			strength *= 2;
 		}
 
-		return strength;
+		return Math.round(strength);
 	};
 }

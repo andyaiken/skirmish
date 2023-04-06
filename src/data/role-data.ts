@@ -1617,7 +1617,8 @@ export class RoleData {
 								trait: TraitType.Speed,
 								skillBonus: 0,
 								hit: [
-									ActionEffects.dealDamage(DamageType.Fire, 3),
+									ActionEffects.dealWeaponDamage(),
+									ActionEffects.dealDamage(DamageType.Fire, 2),
 									ActionEffects.addCondition(ConditionLogic.createAutoDamageCondition(TraitType.Endurance, 5, DamageType.Fire))
 								]
 							})
@@ -1640,7 +1641,8 @@ export class RoleData {
 								trait: TraitType.Speed,
 								skillBonus: 0,
 								hit: [
-									ActionEffects.dealDamage(DamageType.Cold, 3),
+									ActionEffects.dealWeaponDamage(),
+									ActionEffects.dealDamage(DamageType.Cold, 2),
 									ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Endurance, 5, TraitType.Speed))
 								]
 							})
@@ -1663,7 +1665,8 @@ export class RoleData {
 								trait: TraitType.Speed,
 								skillBonus: 0,
 								hit: [
-									ActionEffects.dealDamage(DamageType.Electricity, 3),
+									ActionEffects.dealWeaponDamage(),
+									ActionEffects.dealDamage(DamageType.Electricity, 2),
 									ActionEffects.stun()
 								]
 							})

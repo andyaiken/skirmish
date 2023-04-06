@@ -12,9 +12,10 @@ import { CombatantType } from '../../../enums/combatant-type';
 import { GameLogic } from '../../../logic/game-logic';
 
 import type { ActionModel } from '../../../models/action';
+import type { FeatureModel } from '../../../models/feature';
 import type { GameModel } from '../../../models/game';
 
-import { ActionCard, BackgroundCard, ItemCard, PlaceholderCard, RoleCard, SpeciesCard } from '../../cards';
+import { ActionCard, BackgroundCard, FeatureCard, ItemCard, PlaceholderCard, RoleCard, SpeciesCard } from '../../cards';
 import { CardList, Dialog, PlayingCard, StatValue, Switch, Tabs, Text, TextType } from '../../controls';
 
 import './settings-panel.scss';
@@ -34,6 +35,7 @@ interface State {
 	local: boolean;
 	actionSourceName: string;
 	actionSourceType: CardType;
+	features: FeatureModel[];
 	actions: ActionModel[];
 }
 
@@ -45,14 +47,16 @@ export class SettingsPanel extends Component<Props, State> {
 			local: window.location.href.includes('localhost'),
 			actionSourceName: '',
 			actionSourceType: CardType.Default,
+			features: [],
 			actions: []
 		};
 	}
 
-	setActions = (source: string, type: CardType, actions: ActionModel[]) => {
+	setActions = (source: string, type: CardType, features: FeatureModel[], actions: ActionModel[]) => {
 		this.setState({
 			actionSourceName: source,
 			actionSourceType: type,
+			features: features,
 			actions: actions
 		});
 	};
@@ -92,7 +96,7 @@ export class SettingsPanel extends Component<Props, State> {
 												type={CardType.Species}
 												front={<SpeciesCard species={s} />}
 												footer='Species'
-												onClick={() => this.setActions(s.name, CardType.Species, s.actions)}
+												onClick={() => this.setActions(s.name, CardType.Species, s.features, s.actions)}
 											/>
 											{this.props.developer ? <StatValue label='Strength' value={GameLogic.getSpeciesStrength(s)} /> : null}
 										</div>
@@ -117,7 +121,7 @@ export class SettingsPanel extends Component<Props, State> {
 												type={CardType.Species}
 												front={<SpeciesCard species={s} />}
 												footer='Species'
-												onClick={() => this.setActions(s.name, CardType.Species, s.actions)}
+												onClick={() => this.setActions(s.name, CardType.Species, s.features, s.actions)}
 											/>
 											{this.props.developer ? <StatValue label='Strength' value={GameLogic.getSpeciesStrength(s)} /> : null}
 										</div>
@@ -142,7 +146,7 @@ export class SettingsPanel extends Component<Props, State> {
 												type={CardType.Role}
 												front={<RoleCard role={r} />}
 												footer='Role'
-												onClick={() => this.setActions(r.name, CardType.Role, r.actions)}
+												onClick={() => this.setActions(r.name, CardType.Role, r.features, r.actions)}
 											/>
 											{this.props.developer ? <StatValue label='Strength' value={GameLogic.getRoleStrength(r)} /> : null}
 										</div>
@@ -167,7 +171,7 @@ export class SettingsPanel extends Component<Props, State> {
 												type={CardType.Background}
 												front={<BackgroundCard background={b} />}
 												footer='Background'
-												onClick={() => this.setActions(b.name, CardType.Background, b.actions)}
+												onClick={() => this.setActions(b.name, CardType.Background, b.features, b.actions)}
 											/>
 											{this.props.developer ? <StatValue label='Strength' value={GameLogic.getBackgroundStrength(b)} /> : null}
 										</div>
@@ -215,25 +219,55 @@ export class SettingsPanel extends Component<Props, State> {
 
 		let dialog = null;
 		if (this.state.actionSourceName !== '') {
-			const actionCards = this.state.actions.map(a => (
-				<PlayingCard
-					key={a.id}
-					type={CardType.Action}
-					front={<ActionCard action={a} />}
-					footer={this.state.actionSourceName}
-					footerType={this.state.actionSourceType}
-				/>
-			));
+			const featureCards = [
+				<div key='deck'>
+					<PlayingCard type={CardType.Feature} stack={true} front={<PlaceholderCard text={<div>Feature<br />Deck</div>} />} />
+				</div>
+			];
+			this.state.features.forEach(f => {
+				featureCards.push(
+					<div key={f.id}>
+						<PlayingCard
+							type={CardType.Feature}
+							front={<FeatureCard feature={f} />}
+							footer={this.state.actionSourceName}
+							footerType={this.state.actionSourceType}
+						/>
+						{this.props.developer ? <StatValue label='Strength' value={GameLogic.getFeatureStrength(f)} /> : null}
+					</div>
+				);
+			});
+			const actionCards = [
+				<div key='deck'>
+					<PlayingCard type={CardType.Action} stack={true} front={<PlaceholderCard text={<div>Action<br />Deck</div>} />} />
+				</div>
+			];
+			this.state.actions.forEach(a => {
+				actionCards.push(
+					<div key={a.id}>
+						<PlayingCard
+							type={CardType.Action}
+							front={<ActionCard action={a} />}
+							footer={this.state.actionSourceName}
+							footerType={this.state.actionSourceType}
+						/>
+						{this.props.developer ? <StatValue label='Strength' value={GameLogic.getActionStrength(a)} /> : null}
+					</div>
+				);
+			});
 			const content = (
 				<div>
-					<Text type={TextType.Heading}>Actions</Text>
+					<Text type={TextType.Heading}>{this.state.actionSourceName}</Text>
+					<hr />
+					<CardList cards={featureCards} />
+					<hr />
 					<CardList cards={actionCards} />
 				</div>
 			);
 			dialog = (
 				<Dialog
 					content={content}
-					onClose={() => this.setActions('', CardType.Default, [])}
+					onClose={() => this.setActions('', CardType.Default, [], [])}
 				/>
 			);
 		}

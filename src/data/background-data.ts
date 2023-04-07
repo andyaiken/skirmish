@@ -37,7 +37,7 @@ export class BackgroundData {
 						],
 						effects: [
 							ActionEffects.stand(),
-							ActionEffects.redrawActions()
+							ActionEffects.takeAnotherAction()
 						]
 					},
 					{
@@ -49,7 +49,7 @@ export class BackgroundData {
 						],
 						effects: [
 							ActionEffects.addMovement(),
-							ActionEffects.redrawActions()
+							ActionEffects.takeAnotherAction()
 						]
 					}
 				]
@@ -566,7 +566,7 @@ export class BackgroundData {
 						],
 						effects: [
 							ActionEffects.hide(),
-							ActionEffects.redrawActions()
+							ActionEffects.takeAnotherAction()
 						]
 					}
 				]

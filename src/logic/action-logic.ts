@@ -448,11 +448,11 @@ export class ActionEffects {
 		};
 	};
 
-	static redrawActions = (): ActionEffectModel => {
+	static takeAnotherAction = (redraw = false): ActionEffectModel => {
 		return {
-			id: 'redraw',
-			description: 'Redraw action cards',
-			data: null,
+			id: 'takeAnotherAction',
+			description: redraw ? 'Redraw action cards' : 'Take another action',
+			data: redraw,
 			children: []
 		};
 	};
@@ -864,10 +864,21 @@ export class ActionEffects {
 				}
 				break;
 			}
-			case 'redraw': {
+			case 'takeAnotherAction': {
 				// This only applies to the current combatant
-				EncounterLogic.drawActions(encounter, combatant);
-				combatant.combat.selectedAction = null;
+				const redraw = effect.data as boolean;
+				if (redraw) {
+					// Get a new set of action cards
+					EncounterLogic.drawActions(encounter, combatant);
+					combatant.combat.selectedAction = null;
+				} else {
+					// Remove this action card from the set
+					const currentActionID = combatant.combat.selectedAction ? combatant.combat.selectedAction.action.id : null;
+					if (currentActionID) {
+						combatant.combat.actions = combatant.combat.actions.filter(a => a.id !== currentActionID);
+					}
+					combatant.combat.selectedAction = null;
+				}
 				break;
 			}
 			case 'invertConditions': {
@@ -1202,7 +1213,7 @@ export class ActionLogic {
 	};
 
 	static getActionSpeed = (action: ActionModel) => {
-		return action.effects.some(e => e.id === 'redraw') ? 'Quick' : 'Full';
+		return action.effects.some(e => e.id === 'takeAnotherAction') ? 'Quick' : 'Full';
 	};
 
 	static getActionDescription = (action: ActionModel) => {

@@ -8,6 +8,9 @@
 
 # Improvements / Enhancements
 
+## Action Changes
+* Any action that steals / disarms / stuns should probably be an attack
+
 ## Map Types
 * Street
 * Building interior

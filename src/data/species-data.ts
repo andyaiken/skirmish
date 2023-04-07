@@ -53,7 +53,7 @@ export class SpeciesData {
 						prerequisites: [],
 						parameters: [],
 						effects: [
-							ActionEffects.redrawActions()
+							ActionEffects.takeAnotherAction(true)
 						]
 					}
 				]
@@ -311,7 +311,7 @@ export class SpeciesData {
 						],
 						effects: [
 							ActionEffects.hide(),
-							ActionEffects.redrawActions()
+							ActionEffects.takeAnotherAction()
 						]
 					}
 				]
@@ -454,7 +454,7 @@ export class SpeciesData {
 						],
 						effects: [
 							ActionEffects.moveToTargetSquare(),
-							ActionEffects.redrawActions()
+							ActionEffects.takeAnotherAction()
 						]
 					}
 				]
@@ -798,7 +798,7 @@ export class SpeciesData {
 						],
 						effects: [
 							ActionEffects.forceMovement(MovementType.Random, 1),
-							ActionEffects.redrawActions()
+							ActionEffects.takeAnotherAction()
 						]
 					}
 				]

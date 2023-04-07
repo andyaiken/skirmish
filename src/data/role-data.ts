@@ -176,7 +176,7 @@ export class RoleData {
 						],
 						effects: [
 							ActionEffects.hide(),
-							ActionEffects.redrawActions()
+							ActionEffects.takeAnotherAction()
 						]
 					},
 					{
@@ -482,7 +482,7 @@ export class RoleData {
 									ActionEffects.dealWeaponDamage()
 								]
 							}),
-							ActionEffects.redrawActions()
+							ActionEffects.takeAnotherAction()
 						]
 					}
 				]
@@ -1220,7 +1220,7 @@ export class RoleData {
 									ActionEffects.dealWeaponDamage(-1)
 								]
 							}),
-							ActionEffects.redrawActions()
+							ActionEffects.takeAnotherAction()
 						]
 					},
 					{

@@ -517,7 +517,15 @@ export class RoleData {
 							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 10)
 						],
 						effects: [
-							ActionEffects.commandAction()
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Spellcasting,
+								trait: TraitType.Resolve,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.commandAction()
+								]
+							})
 						]
 					},
 					{
@@ -530,7 +538,15 @@ export class RoleData {
 							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 10)
 						],
 						effects: [
-							ActionEffects.stun()
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Spellcasting,
+								trait: TraitType.Resolve,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.stun()
+								]
+							})
 						]
 					},
 					{
@@ -543,7 +559,15 @@ export class RoleData {
 							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 10)
 						],
 						effects: [
-							ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 5, TraitType.Speed))
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Spellcasting,
+								trait: TraitType.Resolve,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 5, TraitType.Speed))
+								]
+							})
 						]
 					},
 					{
@@ -569,7 +593,15 @@ export class RoleData {
 							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 10)
 						],
 						effects: [
-							ActionEffects.addCondition(ConditionLogic.createDamagePenaltyCondition(TraitType.Endurance, 5, DamageType.All))
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Spellcasting,
+								trait: TraitType.Resolve,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.addCondition(ConditionLogic.createDamagePenaltyCondition(TraitType.Endurance, 5, DamageType.All))
+								]
+							})
 						]
 					},
 					{

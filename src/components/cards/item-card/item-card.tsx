@@ -77,6 +77,7 @@ export class ItemCard extends Component<Props> {
 					{this.props.item.proficiency !== ItemProficiencyType.None ? <Tag>{this.props.item.proficiency}</Tag> : null}
 					<Tag>{location}</Tag>
 				</div>
+				<hr />
 				{weapon}
 				{armor}
 				{features}

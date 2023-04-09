@@ -276,19 +276,6 @@ export class BackgroundData {
 					},
 					{
 						id: 'mystic-action-2',
-						name: 'Stun',
-						prerequisites: [
-							ActionPrerequisites.implement()
-						],
-						parameters: [
-							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
-						],
-						effects: [
-							ActionEffects.stun()
-						]
-					},
-					{
-						id: 'mystic-action-3',
 						name: 'Sympathetic Affliction',
 						prerequisites: [
 							ActionPrerequisites.implement(),
@@ -302,7 +289,7 @@ export class BackgroundData {
 						]
 					},
 					{
-						id: 'mystic-action-4',
+						id: 'mystic-action-3',
 						name: 'Eldritch Reversal',
 						prerequisites: [
 							ActionPrerequisites.implement()
@@ -532,7 +519,15 @@ export class BackgroundData {
 							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
 						],
 						effects: [
-							ActionEffects.steal()
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Reactions,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.steal()
+								]
+							})
 						]
 					},
 					{

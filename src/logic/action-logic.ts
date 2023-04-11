@@ -1357,9 +1357,11 @@ export class ActionLogic {
 			.filter(i => proficiencies.includes(i.proficiency))
 			.forEach(i => candidates.push(i));
 
-		if (candidates.length > 0) {
-			if ((value === null) || !candidates.includes(value)) {
+		if ((value === null) || !candidates.includes(value)) {
+			if (candidates.length > 0) {
 				value = candidates[0];
+			} else {
+				value = null;
 			}
 		}
 
@@ -1390,9 +1392,11 @@ export class ActionLogic {
 			...EncounterLogic.findSquares(encounter, EncounterLogic.getCombatantSquares(encounter, combatant), radius)
 				.filter(sq => EncounterMapLogic.canSeeAny(edges, originSquares, [ sq ]))
 		);
-		if (candidates.length > 0) {
-			if ((value === null) || (value.length === 0) || value.some(v => !candidates.includes(v))) {
+		if ((value === null) || (value.length === 0) || value.some(v => !candidates.includes(v))) {
+			if (candidates.length > 0) {
 				value = [ candidates[0] ];
+			} else {
+				value = [];
 			}
 		}
 
@@ -1500,10 +1504,8 @@ export class ActionLogic {
 				if (parameter.targets.count === Number.MAX_VALUE) {
 					value = [ ...candidates ];
 				} else {
-					if (candidates.length > 0) {
-						if ((value.length === 0) || value.some(v => !candidates.includes(v))) {
-							value = [ ...candidates.slice(0, parameter.targets.count) ];
-						}
+					if ((value.length === 0) || value.some(v => !candidates.includes(v))) {
+						value = [ ...candidates.slice(0, parameter.targets.count) ];
 					}
 				}
 			}

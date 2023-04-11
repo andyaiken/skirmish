@@ -140,22 +140,17 @@
 * Gnoll
 * Lizardfolk
 * Elemental:
-  * Air Elemental
-    * Thunderclap
   * Water Elemental
   * Earth Elemental
     * Some powers similar to geomancer
 * Undead:
   * Wraith
-  * Skeleton
-  * Vampire
 * Demon
 * Beasts:
   * Basilisk / medusa / gorgon
   * Bear
   * Lion / tiger / panther etc
   * Crocodile
-  * Giant spider
   * Giant rat
   * Giant snake
   * Dragon

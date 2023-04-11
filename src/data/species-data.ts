@@ -718,9 +718,9 @@ export class SpeciesData {
 							ActionTargetParameters.self()
 						],
 						effects: [
-							ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Endurance, 3, SkillType.Brawl)),
-							ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Endurance, 3, SkillType.Weapon)),
-							ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Endurance, 3, DamageCategoryType.Physical))
+							ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Endurance, 2, SkillType.Brawl)),
+							ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Endurance, 2, SkillType.Weapon)),
+							ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Endurance, 2, DamageCategoryType.Physical))
 						]
 					},
 					{
@@ -863,7 +863,7 @@ export class SpeciesData {
 			{
 				id: 'species-elemental-fire',
 				name: 'Fire Elemental',
-				description: 'Hot blooded and quick to anger, these humanoids have planar ancestry.',
+				description: 'Hot blooded and quick to anger, these humanoids are made of living fire.',
 				type: CombatantType.Monster,
 				size: 1,
 				quirks: [],
@@ -941,6 +941,67 @@ export class SpeciesData {
 				]
 			},
 			{
+				id: 'species-elemental-air',
+				name: 'Air Elemental',
+				description: 'Air elementals are as changeable as the weather, either calm or tempestuous.',
+				type: CombatantType.Monster,
+				size: 1,
+				quirks: [],
+				traits: [],
+				skills: [
+					SkillType.Brawl
+				],
+				features: [
+					FeatureLogic.createSkillFeature('elemental-air-feature-1', SkillType.Brawl, 2),
+					FeatureLogic.createDamageBonusFeature('elemental-air-feature-2', DamageType.Cold, 1),
+					FeatureLogic.createDamageResistFeature('elemental-air-feature-3', DamageType.Cold, 5),
+					FeatureLogic.createAuraDamageFeature('elemental-air-feature-4', ConditionType.AutoDamage, DamageType.Cold, 1)
+				],
+				actions: [
+					{
+						id: 'elemental-air-action-1',
+						name: 'Thunderclap',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 3)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Endurance,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Sonic, 1),
+									ActionEffects.dealDamage(DamageType.Electricity, 1)
+								]
+							})
+						]
+					},
+					{
+						id: 'elemental-air-action-2',
+						name: 'Step Of The Tempest',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 5)
+						],
+						effects: [
+							ActionEffects.forceMovement(MovementType.BesideTarget, 0),
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Endurance,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Cold, 1),
+									ActionEffects.forceMovement(MovementType.Push, 1)
+								]
+							})
+						]
+					}
+				]
+			},
+			{
 				id: 'species-scarab',
 				name: 'Scarab',
 				description: 'Insects with an acidic bite.',
@@ -1001,6 +1062,66 @@ export class SpeciesData {
 				]
 			},
 			{
+				id: 'species-giant-spider',
+				name: 'Giant Spider',
+				description: 'Venomous insects with eight legs.',
+				type: CombatantType.Monster,
+				size: 1,
+				quirks: [
+					QuirkType.Beast
+				],
+				traits: [],
+				skills: [
+					SkillType.Brawl
+				],
+				features: [
+					FeatureLogic.createSkillFeature('giant-spider-feature-1', SkillType.Brawl, 2),
+					FeatureLogic.createDamageBonusFeature('giant-spider-feature-2', DamageType.Poison, 1)
+				],
+				actions: [
+					{
+						id: 'giant-spider-action-1',
+						name: 'Bite',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Endurance,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Edged, 2),
+									ActionEffects.dealDamage(DamageType.Poison, 2)
+								]
+							})
+						]
+					},
+					{
+						id: 'giant-spider-action-2',
+						name: 'Web',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 5)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Endurance,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Endurance, 2, TraitType.Speed)),
+									ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Endurance, 5))
+								]
+							})
+						]
+					}
+				]
+			},
+			{
 				id: 'species-zombie',
 				name: 'Zombie',
 				description: 'A re-animated corpse.',
@@ -1036,6 +1157,121 @@ export class SpeciesData {
 									ActionEffects.dealDamage(DamageType.Piercing, 1),
 									ActionEffects.dealDamage(DamageType.Decay, 1),
 									ActionEffects.healDamageSelf(1)
+								]
+							})
+						]
+					}
+				]
+			},
+			{
+				id: 'species-skeleton',
+				name: 'Skeleton',
+				description: 'Re-animated bones.',
+				type: CombatantType.Monster,
+				size: 1,
+				quirks: [
+					QuirkType.Undead
+				],
+				traits: [],
+				skills: [
+					SkillType.Brawl
+				],
+				features: [
+					FeatureLogic.createSkillFeature('skeleton-feature-1', SkillType.Brawl, 2),
+					FeatureLogic.createDamageResistFeature('skeleton-feature-2', DamageType.Piercing, 1),
+					FeatureLogic.createDamageCategoryResistFeature('skeleton-feature-2', DamageCategoryType.Corruption, 1)
+				],
+				actions: [
+					{
+						id: 'skeleton-action-1',
+						name: 'Bash',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Impact, 1)
+								]
+							})
+						]
+					}
+				]
+			},
+			{
+				id: 'species-vampire',
+				name: 'Vampire',
+				description: 'The blood is the life.',
+				type: CombatantType.Monster,
+				size: 1,
+				quirks: [
+					QuirkType.Undead
+				],
+				traits: [],
+				skills: [
+					SkillType.Brawl,
+					SkillType.Presence
+				],
+				features: [
+					FeatureLogic.createSkillFeature('vampire-feature-1', SkillType.Brawl, 2),
+					FeatureLogic.createSkillFeature('vampire-feature-2', SkillType.Presence, 2),
+					FeatureLogic.createDamageCategoryResistFeature('vampire-feature-3', DamageCategoryType.Corruption, 1)
+				],
+				actions: [
+					{
+						id: 'vampire-action-1',
+						name: 'Speed Of The Grave',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 10)
+						],
+						effects: [
+							ActionEffects.forceMovement(MovementType.BesideTarget, 0),
+							ActionEffects.takeAnotherAction()
+						]
+					},
+					{
+						id: 'vampire-action-2',
+						name: 'Vampiric Bite',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Resolve,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Piercing, 1),
+									ActionEffects.dealDamage(DamageType.Decay, 1),
+									ActionEffects.healDamageSelf(1),
+									ActionEffects.healWoundsSelf(1)
+								]
+							})
+						]
+					},
+					{
+						id: 'vampire-action-3',
+						name: 'Mesmerize',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Presence,
+								trait: TraitType.Resolve,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.stun()
 								]
 							})
 						]

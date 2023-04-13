@@ -73,145 +73,28 @@ export class SettingsPanel extends Component<Props, State> {
 			case 'rules':
 				content = (
 					<div className='content'>
-						<ReactMarkdown>{this.props.rules}</ReactMarkdown>
+						<RulesTab rules={this.props.rules} />
 					</div>
 				);
 				break;
 			case 'decks':
 				content = (
 					<div className='content'>
-						<div className='cards'>
-							<div className='card-cell'>
-								<PlayingCard
-									stack={true}
-									type={CardType.Species}
-									front={<PlaceholderCard text={<div>Species<br />Deck</div>} subtext='Heroes' />}
-								/>
-							</div>
-							{
-								SpeciesData.getList().filter(s => s.type === CombatantType.Hero).map(s => {
-									return (
-										<div key={s.id} className='card-cell'>
-											<PlayingCard
-												type={CardType.Species}
-												front={<SpeciesCard species={s} />}
-												footer='Species'
-												onClick={() => this.setActions(s.name, CardType.Species, s.features, s.actions)}
-											/>
-											{this.props.developer ? <StatValue label='Strength' value={GameLogic.getSpeciesStrength(s)} /> : null}
-										</div>
-									);
-								})
-							}
-						</div>
-						<hr />
-						<div className='cards'>
-							<div className='card-cell'>
-								<PlayingCard
-									stack={true}
-									type={CardType.Species}
-									front={<PlaceholderCard text={<div>Species<br />Deck</div>} subtext='Monsters' />}
-								/>
-							</div>
-							{
-								SpeciesData.getList().filter(s => s.type === CombatantType.Monster).map(s => {
-									return (
-										<div key={s.id} className='card-cell'>
-											<PlayingCard
-												type={CardType.Species}
-												front={<SpeciesCard species={s} />}
-												footer='Species'
-												onClick={() => this.setActions(s.name, CardType.Species, s.features, s.actions)}
-											/>
-											{this.props.developer ? <StatValue label='Strength' value={GameLogic.getSpeciesStrength(s)} /> : null}
-										</div>
-									);
-								})
-							}
-						</div>
-						<hr />
-						<div className='cards'>
-							<div className='card-cell'>
-								<PlayingCard
-									stack={true}
-									type={CardType.Role}
-									front={<PlaceholderCard text={<div>Role<br />Deck</div>} />}
-								/>
-							</div>
-							{
-								RoleData.getList().map(r => {
-									return (
-										<div key={r.id} className='card-cell'>
-											<PlayingCard
-												type={CardType.Role}
-												front={<RoleCard role={r} />}
-												footer='Role'
-												onClick={() => this.setActions(r.name, CardType.Role, r.features, r.actions)}
-											/>
-											{this.props.developer ? <StatValue label='Strength' value={GameLogic.getRoleStrength(r)} /> : null}
-										</div>
-									);
-								})
-							}
-						</div>
-						<hr />
-						<div className='cards'>
-							<div className='card-cell'>
-								<PlayingCard
-									stack={true}
-									type={CardType.Background}
-									front={<PlaceholderCard text={<div>Background<br />Deck</div>} />}
-								/>
-							</div>
-							{
-								BackgroundData.getList().map(b => {
-									return (
-										<div key={b.id} className='card-cell'>
-											<PlayingCard
-												type={CardType.Background}
-												front={<BackgroundCard background={b} />}
-												footer='Background'
-												onClick={() => this.setActions(b.name, CardType.Background, b.features, b.actions)}
-											/>
-											{this.props.developer ? <StatValue label='Strength' value={GameLogic.getBackgroundStrength(b)} /> : null}
-										</div>
-									);
-								})
-							}
-						</div>
-						<hr />
-						<div className='cards'>
-							<div className='card-cell'>
-								<PlayingCard
-									stack={true}
-									type={CardType.Item}
-									front={<PlaceholderCard text={<div>Item<br />Deck</div>} />}
-								/>
-							</div>
-							{
-								ItemData.getList().map(i => {
-									return (
-										<div key={i.id} className='card-cell'>
-											<PlayingCard
-												type={CardType.Item}
-												front={<ItemCard item={i} />}
-												footer='Item'
-											/>
-										</div>
-									);
-								})
-							}
-						</div>
+						<DecksTab developer={this.props.developer} setActions={this.setActions} />
 					</div>
 				);
 				break;
 			case 'options':
 				content = (
 					<div className='content'>
-						{this.state.local ? <Switch label='Developer Mode' checked={this.props.developer} onChange={this.props.setDeveloperMode} /> : null}
-						{this.props.game ? <button className='danger' onClick={() => this.props.endCampaign()}>Abandon this Campaign</button> : null}
-						<hr />
-						<Text>Version {pkg.version}</Text>
+						<OptionsTab
+							game={this.props.game}
+							version={pkg.version}
+							developer={this.props.developer}
+							local={this.state.local}
+							endCampaign={this.props.endCampaign}
+							setDeveloperMode={this.props.setDeveloperMode}
+						/>
 					</div>
 				);
 				break;
@@ -278,6 +161,176 @@ export class SettingsPanel extends Component<Props, State> {
 				<Tabs options={tabs} selectedID={this.state.selectedTab} onSelect={id => this.setState({ selectedTab: id })} />
 				{content}
 				{dialog}
+			</div>
+		);
+	};
+}
+
+interface RulesTabProps {
+	rules: string;
+}
+
+class RulesTab extends Component<RulesTabProps> {
+	render = () => {
+		return (
+			<ReactMarkdown>{this.props.rules}</ReactMarkdown>
+		);
+	};
+}
+
+interface DecksTabProps {
+	developer: boolean;
+	setActions: (source: string, type: CardType, features: FeatureModel[], actions: ActionModel[]) => void;
+}
+
+class DecksTab extends Component<DecksTabProps> {
+	render = () => {
+		return (
+			<div>
+				<div className='cards'>
+					<div className='card-cell'>
+						<PlayingCard
+							stack={true}
+							type={CardType.Species}
+							front={<PlaceholderCard text={<div>Species<br />Deck</div>} subtext='Heroes' />}
+						/>
+					</div>
+					{
+						SpeciesData.getList().filter(s => s.type === CombatantType.Hero).map(s => {
+							return (
+								<div key={s.id} className='card-cell'>
+									<PlayingCard
+										type={CardType.Species}
+										front={<SpeciesCard species={s} />}
+										footer='Species'
+										onClick={() => this.props.setActions(s.name, CardType.Species, s.features, s.actions)}
+									/>
+									{this.props.developer ? <StatValue label='Strength' value={GameLogic.getSpeciesStrength(s)} /> : null}
+								</div>
+							);
+						})
+					}
+				</div>
+				<hr />
+				<div className='cards'>
+					<div className='card-cell'>
+						<PlayingCard
+							stack={true}
+							type={CardType.Species}
+							front={<PlaceholderCard text={<div>Species<br />Deck</div>} subtext='Monsters' />}
+						/>
+					</div>
+					{
+						SpeciesData.getList().filter(s => s.type === CombatantType.Monster).map(s => {
+							return (
+								<div key={s.id} className='card-cell'>
+									<PlayingCard
+										type={CardType.Species}
+										front={<SpeciesCard species={s} />}
+										footer='Species'
+										onClick={() => this.props.setActions(s.name, CardType.Species, s.features, s.actions)}
+									/>
+									{this.props.developer ? <StatValue label='Strength' value={GameLogic.getSpeciesStrength(s)} /> : null}
+								</div>
+							);
+						})
+					}
+				</div>
+				<hr />
+				<div className='cards'>
+					<div className='card-cell'>
+						<PlayingCard
+							stack={true}
+							type={CardType.Role}
+							front={<PlaceholderCard text={<div>Role<br />Deck</div>} />}
+						/>
+					</div>
+					{
+						RoleData.getList().map(r => {
+							return (
+								<div key={r.id} className='card-cell'>
+									<PlayingCard
+										type={CardType.Role}
+										front={<RoleCard role={r} />}
+										footer='Role'
+										onClick={() => this.props.setActions(r.name, CardType.Role, r.features, r.actions)}
+									/>
+									{this.props.developer ? <StatValue label='Strength' value={GameLogic.getRoleStrength(r)} /> : null}
+								</div>
+							);
+						})
+					}
+				</div>
+				<hr />
+				<div className='cards'>
+					<div className='card-cell'>
+						<PlayingCard
+							stack={true}
+							type={CardType.Background}
+							front={<PlaceholderCard text={<div>Background<br />Deck</div>} />}
+						/>
+					</div>
+					{
+						BackgroundData.getList().map(b => {
+							return (
+								<div key={b.id} className='card-cell'>
+									<PlayingCard
+										type={CardType.Background}
+										front={<BackgroundCard background={b} />}
+										footer='Background'
+										onClick={() => this.props.setActions(b.name, CardType.Background, b.features, b.actions)}
+									/>
+									{this.props.developer ? <StatValue label='Strength' value={GameLogic.getBackgroundStrength(b)} /> : null}
+								</div>
+							);
+						})
+					}
+				</div>
+				<hr />
+				<div className='cards'>
+					<div className='card-cell'>
+						<PlayingCard
+							stack={true}
+							type={CardType.Item}
+							front={<PlaceholderCard text={<div>Item<br />Deck</div>} />}
+						/>
+					</div>
+					{
+						ItemData.getList().map(i => {
+							return (
+								<div key={i.id} className='card-cell'>
+									<PlayingCard
+										type={CardType.Item}
+										front={<ItemCard item={i} />}
+										footer='Item'
+									/>
+								</div>
+							);
+						})
+					}
+				</div>
+			</div>
+		);
+	};
+}
+
+interface OptionsTabProps {
+	game: GameModel | null;
+	version: string;
+	developer: boolean;
+	local: boolean;
+	endCampaign: () => void;
+	setDeveloperMode: (value: boolean) => void;
+}
+
+class OptionsTab extends Component<OptionsTabProps> {
+	render = () => {
+		return (
+			<div className='content'>
+				{this.props.local ? <Switch label='Developer Mode' checked={this.props.developer} onChange={this.props.setDeveloperMode} /> : null}
+				{this.props.game ? <button className='danger' onClick={() => this.props.endCampaign()}>Abandon this Campaign</button> : null}
+				<hr />
+				<Text>Version {this.props.version}</Text>
 			</div>
 		);
 	};

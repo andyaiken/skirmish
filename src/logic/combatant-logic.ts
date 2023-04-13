@@ -365,6 +365,21 @@ export class CombatantLogic {
 		return CardType.Default;
 	};
 
+	static resetCombatant = (combatant: CombatantModel) => {
+		combatant.combat.current = false;
+		combatant.combat.state = CombatantState.Standing;
+		combatant.combat.position = { x: 0, y: 0 };
+		combatant.combat.trail = [];
+		combatant.combat.damage = 0;
+		combatant.combat.wounds = 0;
+		combatant.combat.initiative = Number.MIN_VALUE;
+		combatant.combat.movement = 0;
+		combatant.combat.senses = 0;
+		combatant.combat.hidden = 0;
+		combatant.combat.conditions = [];
+		combatant.combat.actions = [];
+	};
+
 	static getFeatures = (combatant: CombatantModel) => {
 		let list = ([] as FeatureModel[]).concat(combatant.features);
 		combatant.items.forEach(i => {

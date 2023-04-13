@@ -4,6 +4,9 @@
 * If you select a 'square' parameter, and move, the origin candidate squares do not move
 * Presumably this is the same for other parameter types
 
+## Area Targets
+* Monsters using area targets don't seem to select a sensible square
+
 -----------------------------------------------------------------------------------------
 
 # Improvements / Enhancements
@@ -19,7 +22,7 @@
 * Action parameter selection / 'go' button / etc, should happen in the card itself
 
 ## Features
-* Mountebank, Thief, and Pixie should have an attack redirection aura
+* Mountebank and Pixie should have an attack redirection aura
 
 ## Character Sheet
 * Show ranks as filled circles
@@ -103,6 +106,7 @@
 * Warlock
 * Non-magic types
   * Champion
+  * Gladiator - large weapons and showmanship
   * Guard / warden
   * Knight
   * Ravager
@@ -141,8 +145,6 @@
 * Lizardfolk
 * Elemental:
   * Water Elemental
-  * Earth Elemental
-    * Some powers similar to geomancer
 * Undead:
   * Wraith
 * Demon

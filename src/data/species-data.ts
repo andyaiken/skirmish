@@ -141,7 +141,7 @@ export class SpeciesData {
 							ActionEffects.attack({
 								weapon: false,
 								skill: SkillType.Presence,
-								trait: TraitType.Resolve,
+								trait: TraitType.Endurance,
 								skillBonus: 0,
 								hit: [
 									ActionEffects.stun()
@@ -160,7 +160,7 @@ export class SpeciesData {
 							ActionEffects.attack({
 								weapon: false,
 								skill: SkillType.Presence,
-								trait: TraitType.Resolve,
+								trait: TraitType.Endurance,
 								skillBonus: 0,
 								hit: [
 									ActionEffects.dealDamage(DamageType.Light, 2)
@@ -462,7 +462,7 @@ export class SpeciesData {
 			{
 				id: 'species-reptilian',
 				name: 'Reptilian',
-				description: 'A scaly humanoid with draconic or serpentine ancestry.',
+				description: 'A scaly humanoid with serpentine ancestry.',
 				type: CombatantType.Hero,
 				size: 1,
 				quirks: [],
@@ -503,13 +503,13 @@ export class SpeciesData {
 						id: 'reptilian-action-2',
 						name: 'Regeneration',
 						prerequisites: [
-							ActionPrerequisites.damage()
+							ActionPrerequisites.wound()
 						],
 						parameters: [
 							ActionTargetParameters.self()
 						],
 						effects: [
-							ActionEffects.healDamage(2)
+							ActionEffects.healWounds(1)
 						]
 					},
 					{
@@ -813,16 +813,14 @@ export class SpeciesData {
 					QuirkType.Mindless
 				],
 				traits: [
-					TraitType.Endurance,
-					TraitType.Resolve
+					TraitType.Endurance
 				],
 				skills: [],
 				features: [
 					FeatureLogic.createTraitFeature('troll-feature-1', TraitType.Endurance, 1),
-					FeatureLogic.createTraitFeature('troll-feature-2', TraitType.Resolve, 1),
-					FeatureLogic.createDamageCategoryResistFeature('troll-feature-3', DamageCategoryType.Physical, 1),
-					FeatureLogic.createDamageCategoryResistFeature('troll-feature-4', DamageCategoryType.Energy, 1),
-					FeatureLogic.createDamageCategoryResistFeature('troll-feature-5', DamageCategoryType.Corruption, 1)
+					FeatureLogic.createDamageCategoryResistFeature('troll-feature-2', DamageCategoryType.Physical, 1),
+					FeatureLogic.createDamageCategoryResistFeature('troll-feature-3', DamageCategoryType.Energy, 1),
+					FeatureLogic.createDamageCategoryResistFeature('troll-feature-4', DamageCategoryType.Corruption, 1)
 				],
 				actions: [
 					{
@@ -995,6 +993,86 @@ export class SpeciesData {
 								hit: [
 									ActionEffects.dealDamage(DamageType.Cold, 1),
 									ActionEffects.forceMovement(MovementType.Push, 1)
+								]
+							})
+						]
+					}
+				]
+			},
+			{
+				id: 'species-elemental-earth',
+				name: 'Earth Elemental',
+				description: 'Earth elementals are slow but unstoppable.',
+				type: CombatantType.Monster,
+				size: 1,
+				quirks: [],
+				traits: [],
+				skills: [
+					SkillType.Brawl
+				],
+				features: [
+					FeatureLogic.createSkillFeature('elemental-earth-feature-1', SkillType.Brawl, 2),
+					FeatureLogic.createDamageBonusFeature('elemental-earth-feature-2', DamageType.Impact, 1),
+					FeatureLogic.createDamageResistFeature('elemental-earth-feature-3', DamageType.Impact, 5),
+					FeatureLogic.createAuraDamageFeature('elemental-earth-feature-4', ConditionType.AutoDamage, DamageType.Impact, 1)
+				],
+				actions: [
+					{
+						id: 'elemental-earth-action-1',
+						name: 'Earthbind',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 10)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Spellcasting,
+								trait: TraitType.Endurance,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Endurance, 5, TraitType.Speed)),
+									ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Endurance, 5))
+								]
+							})
+						]
+					},
+					{
+						id: 'elemental-earth-action-2',
+						name: 'Rockblast',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 10)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Impact, 3)
+								]
+							})
+						]
+					},
+					{
+						id: 'elemental-earth-action-3',
+						name: 'Earthquake',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Combatants, Number.MAX_VALUE)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Endurance,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Impact, 1),
+									ActionEffects.forceMovement(MovementType.Push, 1),
+									ActionEffects.knockDown()
 								]
 							})
 						]
@@ -1179,7 +1257,7 @@ export class SpeciesData {
 				features: [
 					FeatureLogic.createSkillFeature('skeleton-feature-1', SkillType.Brawl, 2),
 					FeatureLogic.createDamageResistFeature('skeleton-feature-2', DamageType.Piercing, 1),
-					FeatureLogic.createDamageCategoryResistFeature('skeleton-feature-2', DamageCategoryType.Corruption, 1)
+					FeatureLogic.createDamageCategoryResistFeature('skeleton-feature-3', DamageCategoryType.Corruption, 1)
 				],
 				actions: [
 					{

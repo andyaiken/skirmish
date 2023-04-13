@@ -673,6 +673,8 @@ export class Main extends Component<Props, State> {
 			}
 		}
 
+		game.heroes.forEach(h => CombatantLogic.resetCombatant(h));
+
 		this.setState({
 			screen: ScreenType.Campaign,
 			game: game,

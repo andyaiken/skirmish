@@ -1,5 +1,6 @@
 .character-sheet-panel {
 	display: flex;
+	overflow-x: hidden;
 	overflow-y: hidden;
 	height: 100%;
 
@@ -7,6 +8,7 @@
 		flex: 1 1 0;
 		display: flex;
 		flex-direction: column;
+		overflow-x: hidden;
 		overflow-y: hidden;
 		height: 100%;
 	}
@@ -31,6 +33,8 @@
 
 	.content {
 		flex: 1 1 0;
-		overflow-y: auto;
+		overflow-x: hidden;
+		overflow-y: scroll;
+		-webkit-overflow-scrolling: touch;
 	}
 }

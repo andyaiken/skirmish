@@ -1,4 +1,3 @@
-import { CombatantState } from '../enums/combatant-state';
 import { CombatantType } from '../enums/combatant-type';
 import { EncounterMapSquareType } from '../enums/encounter-map-square-type';
 import { QuirkType } from '../enums/quirk-type';
@@ -124,21 +123,7 @@ export class EncounterGenerator {
 
 		encounter.combatants.push(...heroes);
 		encounter.combatants.push(...monsters);
-		encounter.combatants.forEach(c => {
-			// Reset combat data
-			c.combat.current = false;
-			c.combat.state = CombatantState.Standing;
-			c.combat.position = { x: 0, y: 0 };
-			c.combat.trail = [];
-			c.combat.damage = 0;
-			c.combat.wounds = 0;
-			c.combat.initiative = Number.MIN_VALUE;
-			c.combat.movement = 0;
-			c.combat.senses = 0;
-			c.combat.hidden = 0;
-			c.combat.conditions = [];
-			c.combat.actions = [];
-		});
+		encounter.combatants.forEach(c => CombatantLogic.resetCombatant(c));
 
 		EncounterGenerator.placeCombatants(encounter, rng);
 

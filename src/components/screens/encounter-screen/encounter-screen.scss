@@ -20,7 +20,9 @@
 
 		.panel-content {
 			flex: 1 1 0;
-			overflow-y: auto;
+			overflow-x: hidden;
+			overflow-y: scroll;
+			-webkit-overflow-scrolling: touch;
 		}
 
 		.panel-footer {

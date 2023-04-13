@@ -1,6 +1,7 @@
 .encounter-map {
 	height: 100%;
-	overflow: auto;
+	overflow: scroll;
+	-webkit-overflow-scrolling: touch;
 	border: 2px solid rgb(220, 220, 220);
 	border-radius: 10px;
 	background-color: rgb(230, 230, 230);

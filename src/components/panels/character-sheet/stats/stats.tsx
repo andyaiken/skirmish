@@ -14,6 +14,8 @@ import { EncounterLogic } from '../../../../logic/encounter-logic';
 import type { CombatantModel } from '../../../../models/combatant';
 import type { EncounterModel } from '../../../../models/encounter';
 
+import { Collections } from '../../../../utils/collections';
+
 import { ActionCard, FeatureCard, PlaceholderCard } from '../../../cards';
 import { Box, CardList, Dialog, IconType, IconValue, PlayingCard, StatValue, Tag, Text, TextType } from '../../../controls';
 
@@ -67,18 +69,8 @@ export class Stats extends Component<Props, State> {
 		return CombatantLogic.getDamageResistance(this.props.combatant, [], damage);
 	};
 
-	render = () => {
-		let cutDown = false;
-		switch (this.props.combatant.type) {
-			case CombatantType.Hero:
-				cutDown = (this.props.combatant.xp >= this.props.combatant.level);
-				break;
-			case CombatantType.Monster:
-				cutDown = false;
-				break;
-		}
-
-		const traitsSection = (
+	getTraitsSection = () => {
+		return (
 			<Box label='Traits'>
 				<div className='stats-row'>
 					<StatValue orientation='vertical' label='Endurance' value={CombatantLogic.getTraitRank(this.props.combatant, [], TraitType.Endurance)}/>
@@ -87,8 +79,10 @@ export class Stats extends Component<Props, State> {
 				</div>
 			</Box>
 		);
+	};
 
-		const skillsSection = (
+	getSkillsSection = () => {
+		return (
 			<Box label='Skills'>
 				<StatValue label='Brawl' value={this.getSkillRank(SkillType.Brawl)}/>
 				<StatValue label='Perception' value={this.getSkillRank(SkillType.Perception)}/>
@@ -99,12 +93,15 @@ export class Stats extends Component<Props, State> {
 				<StatValue label='Weapon' value={this.getSkillRank(SkillType.Weapon)}/>
 			</Box>
 		);
+	};
 
+	getProficienciesSection = () => {
 		let proficiencySection = (
 			<Box label='Proficiencies'>
 				<Text>None</Text>
 			</Box>
 		);
+
 		const profs = CombatantLogic.getProficiencies(this.props.combatant);
 		if (profs.length > 0) {
 			proficiencySection = (
@@ -114,11 +111,16 @@ export class Stats extends Component<Props, State> {
 			);
 		}
 
+		return proficiencySection;
+	};
+
+	getAurasSection = () => {
 		let auraSection = (
 			<Box label='Auras'>
 				<Text>None</Text>
 			</Box>
 		);
+
 		const auras = CombatantLogic.getAuras(this.props.combatant);
 		if (auras.length > 0) {
 			auraSection = (
@@ -134,40 +136,153 @@ export class Stats extends Component<Props, State> {
 			);
 		}
 
-		const damageColumn = (
+		return auraSection;
+	};
+
+	getDamageSection = (label: string, getValue: (type: DamageType) => number) => {
+		const types = [
+			DamageType.Acid,
+			DamageType.Cold,
+			DamageType.Decay,
+			DamageType.Edged,
+			DamageType.Electricity,
+			DamageType.Fire,
+			DamageType.Impact,
+			DamageType.Light,
+			DamageType.Piercing,
+			DamageType.Poison,
+			DamageType.Psychic,
+			DamageType.Sonic
+		];
+
+		const values = [ ...types.map(type => ({ type: type, value: getValue(type) })) ];
+
+		if (values.every(pair => pair.value === 0)) {
+			return (
+				<Box label={label}>
+					<Text>None</Text>
+				</Box>
+			);
+		}
+
+		if (Collections.min(values, pair => pair.value) === Collections.max(values, pair => pair.value)) {
+			return (
+				<Box label={label}>
+					<StatValue label='All damage types' value={values[0].value}/>
+				</Box>
+			);
+		}
+
+		const physicalTypes = [ DamageType.Acid, DamageType.Edged, DamageType.Impact, DamageType.Piercing ];
+		const physicalValues = [ ...physicalTypes.map(type => ({ type: type, value: getValue(type) })) ];
+		let physical = null;
+		if (physicalValues.every(pair => pair.value === 0)) {
+			physical = (
+				<StatValue label='Physical damage' value={0}/>
+			);
+		} else if (Collections.min(physicalValues, pair => pair.value) === Collections.max(physicalValues, pair => pair.value)) {
+			physical = (
+				<StatValue label='Physical damage' value={physicalValues[0].value}/>
+			);
+		} else {
+			physical = (
+				<div>
+					{physicalTypes.map(type => <StatValue key={type} label={type} value={values.find(p => p.type === type)?.value || 0}/>)}
+				</div>
+			);
+		}
+
+		const energyTypes = [ DamageType.Cold, DamageType.Electricity, DamageType.Fire, DamageType.Light, DamageType.Sonic ];
+		const energyValues = [ ...energyTypes.map(type => ({ type: type, value: getValue(type) })) ];
+		let energy = null;
+		if (energyValues.every(pair => pair.value === 0)) {
+			energy = (
+				<StatValue label='Energy damage' value={0}/>
+			);
+		} else if (Collections.min(energyValues, pair => pair.value) === Collections.max(energyValues, pair => pair.value)) {
+			energy = (
+				<StatValue label='Energy damage' value={energyValues[0].value}/>
+			);
+		} else {
+			energy = (
+				<div>
+					{energyTypes.map(type => <StatValue key={type} label={type} value={values.find(p => p.type === type)?.value || 0}/>)}
+				</div>
+			);
+		}
+
+		const corruptionTypes = [ DamageType.Decay, DamageType.Poison, DamageType.Psychic ];
+		const corruptionValues = [ ...corruptionTypes.map(type => ({ type: type, value: this.getDamageBonusValue(type) })) ];
+		let corruption = null;
+		if (corruptionValues.every(pair => pair.value === 0)) {
+			corruption = (
+				<StatValue label='Corruption damage' value={0}/>
+			);
+		} else if (Collections.min(corruptionValues, pair => pair.value) === Collections.max(corruptionValues, pair => pair.value)) {
+			corruption = (
+				<StatValue label='Corruption damage' value={corruptionValues[0].value}/>
+			);
+		} else {
+			corruption = (
+				<div>
+					{corruptionTypes.map(type => <StatValue key={type} label={type} value={values.find(p => p.type === type)?.value || 0}/>)}
+				</div>
+			);
+		}
+
+		return (
+			<Box label={label}>
+				{physical}
+				<hr />
+				{energy}
+				<hr />
+				{corruption}
+			</Box>
+		);
+	};
+
+	render = () => {
+		let cutDown = false;
+		switch (this.props.combatant.type) {
+			case CombatantType.Hero:
+				cutDown = (this.props.combatant.xp >= this.props.combatant.level);
+				break;
+			case CombatantType.Monster:
+				cutDown = false;
+				break;
+		}
+
+		const primaryColumn = (
 			<div className='column'>
-				<Box label='Damage Bonuses'>
-					<StatValue label='Acid' value={this.getDamageBonusValue(DamageType.Acid)}/>
-					<StatValue label='Edged' value={this.getDamageBonusValue(DamageType.Edged)}/>
-					<StatValue label='Impact' value={this.getDamageBonusValue(DamageType.Impact)}/>
-					<StatValue label='Piercing' value={this.getDamageBonusValue(DamageType.Piercing)}/>
-					<hr />
-					<StatValue label='Cold' value={this.getDamageBonusValue(DamageType.Cold)}/>
-					<StatValue label='Electricity' value={this.getDamageBonusValue(DamageType.Electricity)}/>
-					<StatValue label='Fire' value={this.getDamageBonusValue(DamageType.Fire)}/>
-					<StatValue label='Light' value={this.getDamageBonusValue(DamageType.Light)}/>
-					<StatValue label='Sonic' value={this.getDamageBonusValue(DamageType.Sonic)}/>
-					<hr />
-					<StatValue label='Decay' value={this.getDamageBonusValue(DamageType.Decay)}/>
-					<StatValue label='Poison' value={this.getDamageBonusValue(DamageType.Poison)}/>
-					<StatValue label='Psychic' value={this.getDamageBonusValue(DamageType.Psychic)}/>
-				</Box>
-				<Box label='Resistances'>
-					<StatValue label='Acid' value={this.getDamageResistanceValue(DamageType.Acid)}/>
-					<StatValue label='Edged' value={this.getDamageResistanceValue(DamageType.Edged)}/>
-					<StatValue label='Impact' value={this.getDamageResistanceValue(DamageType.Impact)}/>
-					<StatValue label='Piercing' value={this.getDamageResistanceValue(DamageType.Piercing)}/>
-					<hr />
-					<StatValue label='Cold' value={this.getDamageResistanceValue(DamageType.Cold)}/>
-					<StatValue label='Electricity' value={this.getDamageResistanceValue(DamageType.Electricity)}/>
-					<StatValue label='Fire' value={this.getDamageResistanceValue(DamageType.Fire)}/>
-					<StatValue label='Light' value={this.getDamageResistanceValue(DamageType.Light)}/>
-					<StatValue label='Sonic' value={this.getDamageResistanceValue(DamageType.Sonic)}/>
-					<hr />
-					<StatValue label='Decay' value={this.getDamageResistanceValue(DamageType.Decay)}/>
-					<StatValue label='Poison' value={this.getDamageResistanceValue(DamageType.Poison)}/>
-					<StatValue label='Psychic' value={this.getDamageResistanceValue(DamageType.Psychic)}/>
-				</Box>
+				{
+					this.props.encounter && (this.props.combatant.combat.state !== CombatantState.Standing) ?
+						<Text type={TextType.Information}>{this.props.combatant.name} is <b>{this.props.combatant.combat.state}</b>.</Text>
+						: null
+				}
+				{
+					this.props.encounter && this.props.combatant.combat.stunned ?
+						<Text type={TextType.Information}>{this.props.combatant.name} is <b>stunned</b>.</Text>
+						: null
+				}
+				{this.getTraitsSection()}
+				{this.getSkillsSection()}
+				{this.getProficienciesSection()}
+				{this.getAurasSection()}
+			</div>
+		);
+
+		const secondaryColumn = (
+			<div className='column'>
+				{this.getDamageSection('Damage Bonuses', type => this.getDamageBonusValue(type))}
+				{this.getDamageSection('Damage Resistances', type => this.getDamageResistanceValue(type))}
+				{
+					this.props.combatant.type === CombatantType.Hero ?
+						<Box label='XP'>
+							<StatValue label='Earned' value={<IconValue type={IconType.XP} value={this.props.combatant.xp} iconSize={12} />} />
+							<StatValue label={`Required for level ${this.props.combatant.level + 1}`} value={<IconValue type={IconType.XP} value={this.props.combatant.level} iconSize={12} />} />
+						</Box>
+						: null
+				}
 			</div>
 		);
 
@@ -239,27 +354,8 @@ export class Stats extends Component<Props, State> {
 		return (
 			<div className='stats'>
 				<div className='grid'>
-					<div className='column'>
-						{
-							this.props.encounter && (this.props.combatant.combat.state !== CombatantState.Standing) ?
-								<Text type={TextType.Information}>{this.props.combatant.name} is <b>{this.props.combatant.combat.state}</b>.</Text>
-								: null
-						}
-						{
-							this.props.encounter && this.props.combatant.combat.stunned ?
-								<Text type={TextType.Information}>{this.props.combatant.name} is <b>stunned</b>.</Text>
-								: null
-						}
-						{traitsSection}
-						{skillsSection}
-						{proficiencySection}
-						{auraSection}
-						{this.props.combatant.type === CombatantType.Hero ? <Box label='XP'>
-							<StatValue label='Earned' value={<IconValue type={IconType.XP} value={this.props.combatant.xp} iconSize={12} />} />
-							<StatValue label={`Required for level ${this.props.combatant.level + 1}`} value={<IconValue type={IconType.XP} value={this.props.combatant.level} iconSize={12} />} />
-						</Box> : null}
-					</div>
-					{cutDown ? null : damageColumn}
+					{primaryColumn}
+					{cutDown ? null : secondaryColumn}
 					{cutDown ? null : deckColumn}
 				</div>
 				{dialog}

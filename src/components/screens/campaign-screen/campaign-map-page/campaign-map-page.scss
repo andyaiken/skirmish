@@ -20,7 +20,9 @@
 		border-radius: 10px;
 		padding: 20px;
 		background-color: white;
-		overflow-y: auto;
+		overflow-x: hidden;
+		overflow-y: scroll;
+		-webkit-overflow-scrolling: touch;
 
 		.region {
 			.card,
@@ -36,6 +38,7 @@
 	display: flex;
 	flex-direction: column;
 	height: 100%;
+	overflow-x: hidden;
 	overflow-y: hidden;
 
 	.header {
@@ -47,11 +50,14 @@
 	.hero-lists {
 		flex: 1 1 0;
 		display: flex;
+		overflow-x: hidden;
 		overflow-y: hidden;
 
 		.hero-list-column {
 			flex: 1 1 0;
-			overflow-y: auto;
+			overflow-x: hidden;
+			overflow-y: scroll;
+			-webkit-overflow-scrolling: touch;
 
 			.selected-hero {
 				display: flex;

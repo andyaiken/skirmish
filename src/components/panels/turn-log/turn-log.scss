@@ -1,7 +1,9 @@
 .turn-log {
 	max-height: 300px;
     border-top: 2px solid rgb(220, 220, 220);
-    overflow-y: auto;
+	overflow-x: hidden;
+    overflow-y: scroll;
+	-webkit-overflow-scrolling: touch;
 
 	.turn-log-message {
 		margin: 5px 0;

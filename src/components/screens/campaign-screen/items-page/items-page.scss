@@ -6,7 +6,9 @@
 
 	.items-content {
 		flex: 1 1 0;
-		overflow-y: auto;
+		overflow-x: hidden;
+		overflow-y: scroll;
+		-webkit-overflow-scrolling: touch;
 	}
 
 	.sidebar {
@@ -15,7 +17,9 @@
 		border-radius: 10px;
 		padding: 20px;
 		background-color: white;
-		overflow-y: auto;
+		overflow-x: hidden;
+		overflow-y: scroll;
+		-webkit-overflow-scrolling: touch;
 	}
 
 	.card-selection-row {

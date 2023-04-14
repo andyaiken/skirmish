@@ -1,18 +1,18 @@
 {
   "files": {
-    "main.css": "/skirmish/static/css/main.15d91c45.css",
-    "main.js": "/skirmish/static/js/main.5045824e.js",
-    "static/media/encounters.md": "/skirmish/static/media/encounters.2738e96b2b188d86b628.md",
+    "main.css": "/skirmish/static/css/main.7dbf5ddb.css",
+    "main.js": "/skirmish/static/js/main.622bdc9b.js",
+    "static/media/encounters.md": "/skirmish/static/media/encounters.aca95364d6c04517bf95.md",
     "static/media/heroes.md": "/skirmish/static/media/heroes.f8608565c289c4ecb169.md",
     "static/media/items.md": "/skirmish/static/media/items.6686247ad6cb5291c233.md",
     "index.html": "/skirmish/index.html",
     "static/media/island.md": "/skirmish/static/media/island.a4473e397952c000f208.md",
     "static/media/game.md": "/skirmish/static/media/game.288fa747aa467f7161ab.md",
-    "main.15d91c45.css.map": "/skirmish/static/css/main.15d91c45.css.map",
-    "main.5045824e.js.map": "/skirmish/static/js/main.5045824e.js.map"
+    "main.7dbf5ddb.css.map": "/skirmish/static/css/main.7dbf5ddb.css.map",
+    "main.622bdc9b.js.map": "/skirmish/static/js/main.622bdc9b.js.map"
   },
   "entrypoints": [
-    "static/css/main.15d91c45.css",
-    "static/js/main.5045824e.js"
+    "static/css/main.7dbf5ddb.css",
+    "static/js/main.622bdc9b.js"
   ]
 }

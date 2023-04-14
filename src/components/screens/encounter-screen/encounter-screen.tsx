@@ -55,9 +55,8 @@ interface Props {
 }
 
 interface State {
-	rightID: string;
 	mapSquareSize: number;
-	currentActionParameter: ActionParameterModel | null;
+	selectedActionParameter: ActionParameterModel | null;
 	selectableCombatantIDs: string[];
 	selectableLootIDs: string[];
 	selectableSquares: { x: number, y: number }[];
@@ -73,9 +72,8 @@ export class EncounterScreen extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
-			rightID: 'overview',
 			mapSquareSize: 15,
-			currentActionParameter: null,
+			selectedActionParameter: null,
 			selectableCombatantIDs: [],
 			selectableLootIDs: [],
 			selectableSquares: [],
@@ -88,12 +86,6 @@ export class EncounterScreen extends Component<Props, State> {
 		};
 	}
 
-	setRightID = (id: string) => {
-		this.setState({
-			rightID: id
-		});
-	};
-
 	nudgeMapSize = (delta: number) => {
 		const size = Math.max(this.state.mapSquareSize + delta, 5);
 		this.setState({
@@ -102,7 +94,7 @@ export class EncounterScreen extends Component<Props, State> {
 	};
 
 	selectCombatant = (combatant: CombatantModel) => {
-		const parameter = this.state.currentActionParameter;
+		const parameter = this.state.selectedActionParameter;
 		if (parameter) {
 			let usesCombatantIDs = false;
 			let count = Number.MAX_VALUE;
@@ -135,7 +127,7 @@ export class EncounterScreen extends Component<Props, State> {
 				parameter.value = ids;
 
 				this.setState({
-					currentActionParameter: parameter,
+					selectedActionParameter: parameter,
 					selectedCombatantIDs: ids,
 					selectedLootIDs: [],
 					selectedSquares: []
@@ -145,7 +137,7 @@ export class EncounterScreen extends Component<Props, State> {
 			}
 		} else {
 			this.setState({
-				currentActionParameter: parameter,
+				selectedActionParameter: parameter,
 				selectedCombatantIDs: [ combatant.id ],
 				selectedLootIDs: [],
 				selectedSquares: []
@@ -162,7 +154,7 @@ export class EncounterScreen extends Component<Props, State> {
 	};
 
 	selectSquare = (square: { x: number, y: number }) => {
-		const parameter = this.state.currentActionParameter;
+		const parameter = this.state.selectedActionParameter;
 		if (parameter) {
 			let usesSquares = false;
 			let count = Number.MAX_VALUE;
@@ -207,7 +199,7 @@ export class EncounterScreen extends Component<Props, State> {
 				}
 
 				this.setState({
-					currentActionParameter: parameter,
+					selectedActionParameter: parameter,
 					selectedCombatantIDs: [],
 					selectedLootIDs: [],
 					selectedSquares: squares
@@ -217,7 +209,7 @@ export class EncounterScreen extends Component<Props, State> {
 			}
 		} else {
 			this.setState({
-				currentActionParameter: parameter,
+				selectedActionParameter: parameter,
 				selectedCombatantIDs: [],
 				selectedLootIDs: [],
 				selectedSquares: [ square ]
@@ -226,9 +218,9 @@ export class EncounterScreen extends Component<Props, State> {
 	};
 
 	clearSelection = () => {
-		if (this.state.currentActionParameter) {
+		if (this.state.selectedActionParameter) {
 			this.setState({
-				currentActionParameter: null,
+				selectedActionParameter: null,
 				selectableCombatantIDs: [],
 				selectableLootIDs: [],
 				selectableSquares: []
@@ -271,7 +263,7 @@ export class EncounterScreen extends Component<Props, State> {
 
 	move = (encounter: EncounterModel, combatant: CombatantModel, dir: string, cost: number) => {
 		this.setState({
-			currentActionParameter: null,
+			selectedActionParameter: null,
 			selectedSquares: []
 		}, () => {
 			this.props.move(encounter, combatant, dir, cost);
@@ -289,9 +281,9 @@ export class EncounterScreen extends Component<Props, State> {
 	};
 
 	setActionParameter = (parameter: ActionParameterModel) => {
-		if (this.state.currentActionParameter !== null) {
+		if (this.state.selectedActionParameter !== null) {
 			this.setState({
-				currentActionParameter: null,
+				selectedActionParameter: null,
 				selectableCombatantIDs: [],
 				selectableLootIDs: [],
 				selectableSquares: []
@@ -334,7 +326,7 @@ export class EncounterScreen extends Component<Props, State> {
 			}
 
 			this.setState({
-				currentActionParameter: parameter,
+				selectedActionParameter: parameter,
 				selectableCombatantIDs: selectableCombatantIDs,
 				selectableLootIDs: [],
 				selectableSquares: selectableSquares,
@@ -347,7 +339,7 @@ export class EncounterScreen extends Component<Props, State> {
 
 	runAction = (encounter: EncounterModel, combatant: CombatantModel) => {
 		this.setState({
-			currentActionParameter: null,
+			selectedActionParameter: null,
 			selectableCombatantIDs: [],
 			selectableLootIDs: [],
 			selectableSquares: [],
@@ -357,19 +349,27 @@ export class EncounterScreen extends Component<Props, State> {
 		});
 	};
 
-	endTurn = (encounter: EncounterModel) => {
+	endTurn = () => {
 		this.setState({
-			rightID: 'overview',
-			currentActionParameter: null,
+			selectedActionParameter: null,
 			selectableSquares: [],
 			selectedSquares: []
 		}, () => {
-			this.props.endTurn(encounter);
+			this.props.endTurn(this.props.encounter);
 		});
 	};
 
 	getLeftControls = () => {
 		const currentCombatant = EncounterLogic.getActiveCombatants(this.props.encounter).find(c => c.combat.current) || null;
+
+		let footer = null;
+		if (currentCombatant) {
+			footer = (
+				<div className='panel-footer'>
+					<TurnLogPanel combatant={currentCombatant} />
+				</div>
+			);
+		}
 
 		return (
 			<div className='encounter-left-panel'>
@@ -381,9 +381,7 @@ export class EncounterScreen extends Component<Props, State> {
 						onDetails={this.showDetailsCombatant}
 					/>
 				</div>
-				<div className='panel-footer'>
-					{currentCombatant ? <TurnLogPanel combatant={currentCombatant} /> : null}
-				</div>
+				{footer}
 			</div>
 		);
 	};
@@ -437,53 +435,16 @@ export class EncounterScreen extends Component<Props, State> {
 		if (state === EncounterState.Active) {
 			state = EncounterLogic.getEncounterState(this.props.encounter);
 		}
-
-		const region = this.props.game.map.regions.find(r => r.id === this.props.encounter.regionID) as RegionModel;
-
-		switch (state) {
-			case EncounterState.Victory:
-				return (
-					<div className='encounter-right-panel'>
-						<div className='panel-header'>
-							<Text type={TextType.Heading}>Victory</Text>
-						</div>
-						<div className='panel-content'>
-							<Text type={TextType.MinorHeading}>You won the encounter in {region.name}!</Text>
-							<Text>Each surviving hero who took part in this encounter gains 1 XP.</Text>
-							<Text>Any heroes who died have been lost.</Text>
-							<button onClick={() => this.props.finishEncounter(EncounterState.Victory)}>OK</button>
-							{state !== EncounterLogic.getEncounterState(this.props.encounter) ? <button onClick={() => this.setManualEncounterState(EncounterState.Active)}>Cancel</button> : null}
-						</div>
-					</div>
-				);
-			case EncounterState.Defeat:
-				return (
-					<div className='encounter-right-panel'>
-						<div className='panel-header'>
-							<Text type={TextType.Heading}>Defeated</Text>
-						</div>
-						<div className='panel-content'>
-							<Text type={TextType.MinorHeading}>You lost the encounter in {region.name}.</Text>
-							<Text>Those heroes who took part have been lost, along with all their equipment.</Text>
-							<button onClick={() => this.props.finishEncounter(EncounterState.Defeat)}>OK</button>
-							{state !== EncounterLogic.getEncounterState(this.props.encounter) ? <button onClick={() => this.setManualEncounterState(EncounterState.Active)}>Cancel</button> : null}
-						</div>
-					</div>
-				);
-			case EncounterState.Retreat:
-				return (
-					<div className='encounter-right-panel empty'>
-						<div className='panel-header'>
-							<Text type={TextType.Heading}>Retreat</Text>
-						</div>
-						<div className='panel-content'>
-							<Text type={TextType.MinorHeading}>You retreated from the encounter in {region.name}.</Text>
-							<Text>Any heroes who fell have been lost, along with all their equipment.</Text>
-							<button onClick={() => this.props.finishEncounter(EncounterState.Retreat)}>OK</button>
-							{state !== EncounterLogic.getEncounterState(this.props.encounter) ? <button onClick={() => this.setManualEncounterState(EncounterState.Active)}>Cancel</button> : null}
-						</div>
-					</div>
-				);
+		if (state !== EncounterState.Active) {
+			return (
+				<EncounterControls
+					encounter={this.props.encounter}
+					game={this.props.game}
+					state={state}
+					setEncounterState={this.setManualEncounterState}
+					finishEncounter={this.props.finishEncounter}
+				/>
+			);
 		}
 
 		const currentCombatant = EncounterLogic.getActiveCombatants(this.props.encounter).find(c => c.combat.current) || null;
@@ -500,167 +461,28 @@ export class EncounterScreen extends Component<Props, State> {
 			);
 		}
 
-		let content = null;
-		let footer = null;
-		if (currentCombatant.combat.state === CombatantState.Dead) {
-			content = (
-				<div>
-					<Text type={TextType.Information}><b>{currentCombatant.name} is Dead.</b> They cannot spend movement points or take any actions.</Text>
-				</div>
-			);
-			footer = (
-				<div>
-					<button onClick={() => this.endTurn(this.props.encounter)}>End Turn</button>
-				</div>
-			);
-		} else if (currentCombatant.combat.state === CombatantState.Unconscious) {
-			content = (
-				<div>
-					<Text type={TextType.Information}><b>{currentCombatant.name} is Unconscious.</b> They cannot spend movement points or take any actions until their wounds are healed.</Text>
-				</div>
-			);
-			footer = (
-				<div>
-					<button onClick={() => this.endTurn(this.props.encounter)}>End Turn</button>
-				</div>
-			);
-		} else if (currentCombatant.combat.stunned) {
-			content = (
-				<div>
-					<Text type={TextType.Information}><b>{currentCombatant.name} is Stunned.</b> They cannot spend movement points or take any actions this round.</Text>
-				</div>
-			);
-			footer = (
-				<div>
-					<button onClick={() => this.endTurn(this.props.encounter)}>End Turn</button>
-				</div>
-			);
-		} else {
-			if (currentCombatant.type === CombatantType.Monster) {
-				content = (
-					<CombatantMonster
-						combatant={currentCombatant}
-						developer={this.props.developer}
-					/>
-				);
-				footer = (
-					<div>
-						<button onClick={() => this.props.performIntents(this.props.encounter, currentCombatant)}>
-							{currentCombatant.combat.intents ? currentCombatant.combat.intents.description : 'End Turn'}
-						</button>
-					</div>
-				);
-			} else {
-				switch (this.state.rightID) {
-					case 'overview':
-						content = (
-							<CombatantOverview
-								combatant={currentCombatant}
-								encounter={this.props.encounter}
-								developer={this.props.developer}
-								inspire={this.props.inspire}
-								scan={this.props.scan}
-								hide={this.props.hide}
-							/>
-						);
-						break;
-					case 'move':
-						content = (
-							<CombatantMove
-								combatant={currentCombatant}
-								encounter={this.props.encounter}
-								developer={this.props.developer}
-								move={this.move}
-								addMovement={this.props.addMovement}
-							/>
-						);
-						break;
-					case 'action':
-						content = (
-							<CombatantAction
-								combatant={currentCombatant}
-								encounter={this.props.encounter}
-								currentActionParameter={this.state.currentActionParameter}
-								developer={this.props.developer}
-								drawActions={this.props.drawActions}
-								selectAction={this.selectAction}
-								deselectAction={this.props.deselectAction}
-								setActionParameter={this.setActionParameter}
-								setActionParameterValue={this.props.setActionParameterValue}
-								runAction={this.runAction}
-							/>
-						);
-						break;
-				}
-
-				footer = (
-					<div>
-						{
-							(currentCombatant.combat.selectedAction && currentCombatant.combat.selectedAction.used) ? null :
-								<Text type={TextType.Information}><b>You have not taken an action.</b> You probably want to take an action before you end your turn.</Text>
-						}
-						<button onClick={() => this.endTurn(this.props.encounter)}>End Turn</button>
-					</div>
-				);
-			}
-		}
-
 		return (
-			<div className='encounter-right-panel'>
-				<div className='panel-header'>
-					<CombatantHeader
-						combatant={currentCombatant}
-						developer={this.props.developer}
-						tabID={this.state.rightID}
-						onSelectTab={this.setRightID}
-						showCharacterSheet={this.showDetailsCombatant}
-					/>
-				</div>
-				<div className='panel-content'>
-					{content}
-				</div>
-				<div className='panel-footer'>
-					{footer}
-				</div>
-			</div>
+			<CombatantControls
+				combatant={currentCombatant}
+				encounter={this.props.encounter}
+				developer={this.props.developer}
+				selectedActionParameter={this.state.selectedActionParameter}
+				showCharacterSheet={this.showDetailsCombatant}
+				performIntents={this.props.performIntents}
+				move={this.move}
+				addMovement={this.props.addMovement}
+				inspire={this.props.inspire}
+				scan={this.props.scan}
+				hide={this.props.hide}
+				drawActions={this.props.drawActions}
+				selectAction={this.selectAction}
+				deselectAction={this.props.deselectAction}
+				setActionParameter={this.setActionParameter}
+				setActionParameterValue={this.setActionParameter}
+				runAction={this.runAction}
+				endTurn={this.endTurn}
+			/>
 		);
-	};
-
-	getEffect = () => {
-		let effect = null;
-
-		const combatant = this.props.encounter.combatants.find(c => c.combat.current);
-		if (combatant) {
-			if (combatant.combat.selectedAction && !combatant.combat.selectedAction.used) {
-				const action = combatant.combat.selectedAction.action;
-
-				const range = ActionLogic.getActionRange(action);
-				const param = action.parameters.find(p => p.id === 'origin');
-				if (param) {
-					if (range > 0) {
-						const originParam = param as ActionOriginParameterModel;
-						const origin = (originParam.value as { x: number, y: number }[])[0];
-						effect = {
-							x: origin.x,
-							y: origin.y,
-							size: 1,
-							radius: range
-						};
-					}
-				} else {
-					if (range > 1) {
-						effect = {
-							x: combatant.combat.position.x,
-							y: combatant.combat.position.y,
-							size: combatant.size,
-							radius: range
-						};
-					}
-				}
-			}
-		}
-
-		return effect;
 	};
 
 	render = () => {
@@ -711,7 +533,6 @@ export class EncounterScreen extends Component<Props, State> {
 						selectedCombatantIDs={this.state.selectedCombatantIDs}
 						selectedLootIDs={this.state.selectedLootIDs}
 						selectedSquares={this.state.selectedSquares}
-						effect={this.getEffect()}
 						onClickCombatant={this.selectCombatant}
 						onClickLoot={this.selectLoot}
 						onClickSquare={this.selectSquare}
@@ -723,6 +544,292 @@ export class EncounterScreen extends Component<Props, State> {
 				</div>
 				{this.getRightControls()}
 				{dialog}
+			</div>
+		);
+	};
+}
+
+interface EncounterControlsProps {
+	encounter: EncounterModel;
+	game: GameModel;
+	state: EncounterState;
+	setEncounterState: (state: EncounterState) => void;
+	finishEncounter: (state: EncounterState) => void;
+}
+
+class EncounterControls extends Component<EncounterControlsProps> {
+	render = () => {
+		const region = this.props.game.map.regions.find(r => r.id === this.props.encounter.regionID) as RegionModel;
+
+		switch (this.props.state) {
+			case EncounterState.Victory:
+				return (
+					<div className='encounter-right-panel'>
+						<div className='panel-header'>
+							<Text type={TextType.Heading}>Victory</Text>
+						</div>
+						<div className='panel-content'>
+							<Text type={TextType.MinorHeading}>You won the encounter in {region.name}!</Text>
+							<hr />
+							<Text>Each surviving hero who took part in this encounter gains 1 XP.</Text>
+							<Text>Any heroes who died have been lost.</Text>
+							<hr />
+							<button onClick={() => this.props.finishEncounter(EncounterState.Victory)}>OK</button>
+							{
+								this.props.state !== EncounterLogic.getEncounterState(this.props.encounter) ?
+									<button onClick={() => this.props.setEncounterState(EncounterState.Active)}>Cancel</button>
+									: null
+							}
+						</div>
+					</div>
+				);
+			case EncounterState.Defeat:
+				return (
+					<div className='encounter-right-panel'>
+						<div className='panel-header'>
+							<Text type={TextType.Heading}>Defeated</Text>
+						</div>
+						<div className='panel-content'>
+							<Text type={TextType.MinorHeading}>You lost the encounter in {region.name}.</Text>
+							<hr />
+							<Text>Those heroes who took part have been lost, along with all their equipment.</Text>
+							<hr />
+							<button onClick={() => this.props.finishEncounter(EncounterState.Defeat)}>OK</button>
+							{
+								this.props.state !== EncounterLogic.getEncounterState(this.props.encounter) ?
+									<button onClick={() => this.props.setEncounterState(EncounterState.Active)}>Cancel</button>
+									: null
+							}
+						</div>
+					</div>
+				);
+			case EncounterState.Retreat:
+				return (
+					<div className='encounter-right-panel empty'>
+						<div className='panel-header'>
+							<Text type={TextType.Heading}>Retreat</Text>
+						</div>
+						<div className='panel-content'>
+							<Text type={TextType.MinorHeading}>You retreated from the encounter in {region.name}.</Text>
+							<hr />
+							<Text>Any heroes who fell have been lost, along with all their equipment.</Text>
+							<hr />
+							<button onClick={() => this.props.finishEncounter(EncounterState.Retreat)}>OK</button>
+							{
+								this.props.state !== EncounterLogic.getEncounterState(this.props.encounter) ?
+									<button onClick={() => this.props.setEncounterState(EncounterState.Active)}>Cancel</button>
+									: null
+							}
+						</div>
+					</div>
+				);
+		}
+	};
+}
+
+interface CombatantControlsProps {
+	combatant: CombatantModel;
+	encounter: EncounterModel;
+	developer: boolean;
+	selectedActionParameter: ActionParameterModel | null;
+	showCharacterSheet: (combatant: CombatantModel) => void;
+	performIntents: (encounter: EncounterModel, combatant: CombatantModel) => void;
+	move: (encounter: EncounterModel, combatant: CombatantModel, dir: string, cost: number) => void;
+	addMovement: (encounter: EncounterModel, combatant: CombatantModel, value: number) => void;
+	inspire: (encounter: EncounterModel, combatant: CombatantModel) => void;
+	scan: (encounter: EncounterModel, combatant: CombatantModel) => void;
+	hide: (encounter: EncounterModel, combatant: CombatantModel) => void;
+	drawActions: (encounter: EncounterModel, combatant: CombatantModel) => void;
+	selectAction: (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => void;
+	deselectAction: (encounter: EncounterModel, combatant: CombatantModel) => void;
+	setActionParameter: (parameter: ActionParameterModel) => void;
+	setActionParameterValue: (parameter: ActionParameterModel, value: unknown) => void;
+	runAction: (encounter: EncounterModel, combatant: CombatantModel) => void;
+	endTurn: () => void;
+}
+
+interface CombatantControlsState {
+	tab: string;
+}
+
+class CombatantControls extends Component<CombatantControlsProps, CombatantControlsState> {
+	constructor(props: CombatantControlsProps) {
+		super(props);
+		this.state = {
+			tab: 'overview'
+		};
+	}
+
+	setTab = (tab: string) => {
+		this.setState({
+			tab: tab
+		});
+	};
+
+	endTurn = () => {
+		this.setState({
+			tab: 'overview'
+		}, () => {
+			this.props.endTurn();
+		});
+	};
+
+	render = () => {
+		if (this.props.combatant.combat.state === CombatantState.Dead) {
+			return (
+				<div className='encounter-right-panel'>
+					<div className='panel-header'>
+						<CombatantHeader
+							combatant={this.props.combatant}
+							developer={this.props.developer}
+							tabID={this.state.tab}
+							onSelectTab={this.setTab}
+							showCharacterSheet={this.props.showCharacterSheet}
+						/>
+					</div>
+					<div className='panel-content'>
+						<Text type={TextType.Information}><b>{this.props.combatant.name} is Dead.</b> They cannot spend movement points or take any actions.</Text>
+						<hr />
+						<button onClick={this.endTurn}>End Turn</button>
+					</div>
+				</div>
+			);
+		}
+
+		if (this.props.combatant.combat.state === CombatantState.Unconscious) {
+			return (
+				<div className='encounter-right-panel'>
+					<div className='panel-header'>
+						<CombatantHeader
+							combatant={this.props.combatant}
+							developer={this.props.developer}
+							tabID={this.state.tab}
+							onSelectTab={this.setTab}
+							showCharacterSheet={this.props.showCharacterSheet}
+						/>
+					</div>
+					<div className='panel-content'>
+						<Text type={TextType.Information}><b>{this.props.combatant.name} is Unconscious.</b> They cannot spend movement points or take any actions until their wounds are healed.</Text>
+						<hr />
+						<button onClick={this.endTurn}>End Turn</button>
+					</div>
+				</div>
+			);
+		}
+
+		if (this.props.combatant.combat.stunned) {
+			return (
+				<div className='encounter-right-panel'>
+					<div className='panel-header'>
+						<CombatantHeader
+							combatant={this.props.combatant}
+							developer={this.props.developer}
+							tabID={this.state.tab}
+							onSelectTab={this.setTab}
+							showCharacterSheet={this.props.showCharacterSheet}
+						/>
+					</div>
+					<div className='panel-content'>
+						<Text type={TextType.Information}><b>{this.props.combatant.name} is Stunned.</b> They cannot spend movement points or take any actions this round.</Text>
+						<hr />
+						<button onClick={this.endTurn}>End Turn</button>
+					</div>
+				</div>
+			);
+		}
+
+		if (this.props.combatant.type === CombatantType.Monster) {
+			return (
+				<div className='encounter-right-panel'>
+					<div className='panel-header'>
+						<CombatantHeader
+							combatant={this.props.combatant}
+							developer={this.props.developer}
+							tabID={this.state.tab}
+							onSelectTab={this.setTab}
+							showCharacterSheet={this.props.showCharacterSheet}
+						/>
+					</div>
+					<div className='panel-content'>
+						<CombatantMonster
+							combatant={this.props.combatant}
+							developer={this.props.developer}
+						/>
+						<hr />
+						{
+							(this.props.combatant.combat.intents !== null) ?
+								<button onClick={() => this.props.performIntents(this.props.encounter, this.props.combatant)}>{this.props.combatant.combat.intents.description}</button>
+								: null
+						}
+						{
+							(this.props.combatant.combat.intents === null) ?
+								<button onClick={() => this.endTurn()}>End Turn</button>
+								: null
+						}
+					</div>
+				</div>
+			);
+		}
+
+		let content = null;
+		switch (this.state.tab) {
+			case 'overview':
+				content = (
+					<CombatantOverview
+						combatant={this.props.combatant}
+						encounter={this.props.encounter}
+						developer={this.props.developer}
+						inspire={this.props.inspire}
+						scan={this.props.scan}
+						hide={this.props.hide}
+					/>
+				);
+				break;
+			case 'move':
+				content = (
+					<CombatantMove
+						combatant={this.props.combatant}
+						encounter={this.props.encounter}
+						developer={this.props.developer}
+						move={this.props.move}
+						addMovement={this.props.addMovement}
+					/>
+				);
+				break;
+			case 'action':
+				content = (
+					<CombatantAction
+						combatant={this.props.combatant}
+						encounter={this.props.encounter}
+						currentActionParameter={this.props.selectedActionParameter}
+						developer={this.props.developer}
+						drawActions={this.props.drawActions}
+						selectAction={this.props.selectAction}
+						deselectAction={this.props.deselectAction}
+						setActionParameter={this.props.setActionParameter}
+						setActionParameterValue={this.props.setActionParameterValue}
+						runAction={this.props.runAction}
+					/>
+				);
+				break;
+		}
+
+		return (
+			<div className='encounter-right-panel'>
+				<div className='panel-header'>
+					<CombatantHeader
+						combatant={this.props.combatant}
+						developer={this.props.developer}
+						tabID={this.state.tab}
+						onSelectTab={this.setTab}
+						showCharacterSheet={this.props.showCharacterSheet}
+					/>
+				</div>
+				<div className='panel-content'>
+					{content}
+					<hr />
+					<button onClick={this.endTurn}>End Turn</button>
+				</div>
 			</div>
 		);
 	};

@@ -2,11 +2,13 @@ import { Component } from 'react';
 
 import { CombatantState } from '../../../enums/combatant-state';
 
+import { ActionLogic } from '../../../logic/action-logic';
 import { CombatantLogic } from '../../../logic/combatant-logic';
 import { EncounterLogic } from '../../../logic/encounter-logic';
 import { EncounterMapLogic } from '../../../logic/encounter-map-logic';
 
 import type { EncounterModel, LootPileModel } from '../../../models/encounter';
+import type { ActionOriginParameterModel } from '../../../models/action';
 import type { CombatantModel } from '../../../models/combatant';
 
 import { Collections } from '../../../utils/collections';
@@ -31,7 +33,6 @@ interface Props {
 	selectedCombatantIDs: string[];
 	selectedLootIDs: string[];
 	selectedSquares: { x: number, y: number }[];
-	effect: { x: number, y: number, size: number, radius: number } | null;
 	onClickCombatant: (combatant: CombatantModel) => void;
 	onClickLoot: (loot: LootPileModel) => void;
 	onClickSquare: (square: { x: number, y: number }) => void;
@@ -41,6 +42,43 @@ interface Props {
 }
 
 export class EncounterMapPanel extends Component<Props> {
+	getEffect = () => {
+		let effect = null;
+
+		const combatant = this.props.encounter.combatants.find(c => c.combat.current);
+		if (combatant) {
+			if (combatant.combat.selectedAction && !combatant.combat.selectedAction.used) {
+				const action = combatant.combat.selectedAction.action;
+
+				const range = ActionLogic.getActionRange(action);
+				const param = action.parameters.find(p => p.id === 'origin');
+				if (param) {
+					if (range > 0) {
+						const originParam = param as ActionOriginParameterModel;
+						const origin = (originParam.value as { x: number, y: number }[])[0];
+						effect = {
+							x: origin.x,
+							y: origin.y,
+							size: 1,
+							radius: range
+						};
+					}
+				} else {
+					if (range > 1) {
+						effect = {
+							x: combatant.combat.position.x,
+							y: combatant.combat.position.y,
+							size: combatant.size,
+							radius: range
+						};
+					}
+				}
+			}
+		}
+
+		return effect;
+	};
+
 	render = () => {
 		// Get dimensions, adding a 1-square border
 		const dims = EncounterMapLogic.getDimensions(this.props.encounter.mapSquares);
@@ -182,14 +220,15 @@ export class EncounterMapPanel extends Component<Props> {
 			});
 
 		const overlays = [];
-		if (this.props.effect) {
+		const effect = this.getEffect();
+		if (effect) {
 			overlays.push(
 				<Overlay
 					key='effect'
-					x={this.props.effect.x}
-					y={this.props.effect.y}
-					size={this.props.effect.size}
-					radius={this.props.effect.radius}
+					x={effect.x}
+					y={effect.y}
+					size={effect.size}
+					radius={effect.radius}
 					squareSize={this.props.squareSize}
 					mapDimensions={dims}
 				/>

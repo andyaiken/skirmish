@@ -33,7 +33,7 @@ export class CampaignMapPanel extends Component<Props> {
 		const height = 1 + (dims.bottom - dims.top);
 		const squareSizePC = 100 / Math.max(width, height);
 
-		const squares: JSX.Element[] = this.props.map.squares
+		const squares = this.props.map.squares
 			.sort((a, b) => {
 				let result = a.x - b.x;
 				if (result === 0) {
@@ -71,11 +71,35 @@ export class CampaignMapPanel extends Component<Props> {
 				);
 			});
 
+		const labels = this.props.map.regions.map(region => {
+			const square = CampaignMapLogic.getCentralSquare(this.props.map, region);
+			if (square) {
+				return (
+					<div
+						key={`label ${region.id}`}
+						className='campaign-map-label'
+						style={{
+							width: `calc(${squareSizePC}% + 2px)`,
+							left: `calc(${((square.x - dims.left) * squareSizePC)}% - 1px)`,
+							top: `calc(${((square.y - dims.top) * squareSizePC)}% - 1px)`
+						}}
+						title={region ? region.name : 'Conquered'}
+						onClick={e => this.onClick(e, square)}
+					>
+						{region.encounters.length}
+					</div>
+				);
+			}
+
+			return null;
+		});
+
 		return (
 			<div className='campaign-map' onClick={() => this.props.onSelectRegion(null)}>
 				<div className='campaign-map-inner'>
 					<div className='campaign-map-square-container'>
 						{squares}
+						{labels}
 					</div>
 				</div>
 			</div>

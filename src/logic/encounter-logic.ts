@@ -712,10 +712,23 @@ export class EncounterLogic {
 			return;
 		}
 
-		const allItems = ([] as ItemModel[]).concat(combatant.items).concat(combatant.carried);
-		allItems.forEach(item => {
-			EncounterLogic.dropItem(encounter, combatant, item);
-		});
+		const items = ([] as ItemModel[]).concat(combatant.items).concat(combatant.carried);
+
+		if (items.length > 0) {
+			const loot = Factory.createLootPile();
+			loot.items.push(...items);
+
+			combatant.items = [];
+			combatant.carried = [];
+
+			const empty = EncounterLogic.getCombatantSquares(encounter, combatant).filter(sq => EncounterLogic.getSquareIsEmpty(encounter as EncounterModel, sq));
+			if (empty.length > 0) {
+				const sq = Collections.draw(empty);
+				loot.position.x = sq.x;
+				loot.position.y = sq.y;
+				encounter.loot.push(loot);
+			}
+		}
 	};
 
 	///////////////////////////////////////////////////////////////////////////

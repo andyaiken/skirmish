@@ -1,5 +1,7 @@
 import { Component } from 'react';
 
+import { SpeciesData } from '../../data/species-data';
+
 import { BoonType } from '../../enums/boon-type';
 import { CardType } from '../../enums/card-type';
 import { CombatantState } from '../../enums/combatant-state';
@@ -25,6 +27,7 @@ import type { GameModel } from '../../models/game';
 import type { ItemModel } from '../../models/item';
 import type { RegionModel } from '../../models/region';
 
+import { Collections } from '../../utils/collections';
 import { Utils } from '../../utils/utils';
 
 import { BoonCard, PlaceholderCard } from '../cards';
@@ -77,6 +80,14 @@ export class Main extends Component<Props, State> {
 			game.heroes.forEach(h => {
 				if (h.quirks === undefined) {
 					h.quirks = [];
+				}
+			});
+
+			game.map.regions.forEach(r => {
+				if (r.demographics.speciesIDs === undefined) {
+					r.demographics.speciesIDs = [
+						...Collections.shuffle(SpeciesData.getList().filter(s => s.type === CombatantType.Monster).map(s => s.id)).slice(0, 2)
+					];
 				}
 			});
 

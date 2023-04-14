@@ -41,7 +41,7 @@ export class EncounterGenerator {
 			switch (Random.randomNumber(10, rng)) {
 				case 0: {
 					// Add a random monster
-					const speciesID = Collections.draw(GameLogic.getSpeciesDeck(CombatantType.Monster), rng);
+					const speciesID = Collections.draw(region.demographics.speciesIDs, rng);
 					const roleID = Collections.draw(GameLogic.getRoleDeck(), rng);
 					const backgroundID = Collections.draw(GameLogic.getBackgroundDeck(), rng);
 					addMonster(speciesID, roleID, backgroundID);

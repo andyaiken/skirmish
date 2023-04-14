@@ -1,3 +1,7 @@
+import { SpeciesData } from '../data/species-data';
+
+import { CombatantType } from '../enums/combatant-type';
+
 import { CampaignMapLogic } from '../logic/campaign-map-logic';
 
 import type { CampaignMapModel, CampaignMapSquareModel } from '../models/campaign-map';
@@ -69,6 +73,7 @@ export class CampaignMapGenerator {
 				demographics: {
 					size: 0,
 					population: 0,
+					speciesIDs: [],
 					terrain: ''
 				}
 			});
@@ -102,6 +107,10 @@ export class CampaignMapGenerator {
 		} while (map.squares.filter(sq => sq.regionID === '').length !== 0);
 
 		map.regions.forEach(region => {
+			const monsterIDs = SpeciesData.getList()
+				.filter(s => s.type === CombatantType.Monster)
+				.map(s => s.id);
+
 			const terrains = [
 				'Canyons',
 				'Desert',
@@ -122,15 +131,20 @@ export class CampaignMapGenerator {
 			];
 
 			const size = CampaignMapLogic.getSquares(map, region).length;
+			region.demographics.size = size;
+			region.demographics.population = Random.dice(size);
+
+			const types = Random.randomNumber(2) + 2;
+			region.demographics.speciesIDs = [
+				...Collections.shuffle(monsterIDs).slice(0, types)
+			];
+
+			region.demographics.terrain = Collections.draw(terrains);
 
 			const count = Random.dice(1);
 			while (region.encounters.length < count) {
 				region.encounters.push(Utils.guid());
 			}
-
-			region.demographics.size = size;
-			region.demographics.population = Random.dice(size);
-			region.demographics.terrain = Collections.draw(terrains);
 		});
 
 		return map;

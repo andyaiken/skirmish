@@ -9,6 +9,7 @@ export interface RegionModel {
 	demographics: {
 		size: number;
 		population: number;
+		speciesIDs: string[];
 		terrain: string;
 	};
 }

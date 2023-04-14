@@ -7,8 +7,8 @@ import { CombatantLogic } from '../../../../logic/combatant-logic';
 import type { ActionModel } from '../../../../models/action';
 import type { CombatantModel } from '../../../../models/combatant';
 
+import { ActionCard, PlaceholderCard } from '../../../cards';
 import { PlayingCard, Text, TextType } from '../../../controls';
-import { ActionCard } from '../../../cards';
 
 import './combatant-monster.scss';
 
@@ -32,17 +32,25 @@ export class CombatantMonster extends Component<Props> {
 		return (
 			<div className='combatant-monster'>
 				<Text type={TextType.Information}><b>{this.props.combatant.name} is a monster.</b> You cannot control their actions.</Text>
-				{
-					action ?
-						<div className='actions'>
+				<hr />
+				<div className='actions'>
+					{
+						action ?
 							<PlayingCard
+								stack={true}
 								type={CardType.Action}
 								front={<ActionCard action={action} />}
 								footer={CombatantLogic.getCardSource(this.props.combatant, action.id, 'action')}
-								footerType={CombatantLogic.getCardSourceType(this.props.combatant, action.id, 'action')} />
-						</div>
-						: null
-				}
+								footerType={CombatantLogic.getCardSourceType(this.props.combatant, action.id, 'action')}
+							/>
+							:
+							<PlayingCard
+								stack={true}
+								type={CardType.Action}
+								front={<PlaceholderCard text='' subtext={`${this.props.combatant.name} is not using an action this turn`} />}
+							/>
+					}
+				</div>
 			</div>
 		);
 	};

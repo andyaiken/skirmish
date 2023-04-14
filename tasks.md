@@ -33,10 +33,6 @@
 * Colours
 * Highlighting names, values
 
-## Demographics
-* Regions could specify monster types found there
-* This should then be used for building encounters
-
 -----------------------------------------------------------------------------------------
 
 # New Features

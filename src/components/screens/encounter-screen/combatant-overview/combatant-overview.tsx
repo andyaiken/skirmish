@@ -39,6 +39,7 @@ export class CombatantOverview extends Component<Props> {
 					encounter={this.props.encounter}
 				/>
 				{auraSection}
+				<hr />
 				<div className='quick-actions'>
 					<button disabled={this.props.combatant.combat.movement < 4} onClick={() => this.props.inspire(this.props.encounter, this.props.combatant)}>
 						Inspire<br /><IconValue value={4} type={IconType.Movement} iconSize={12} />

@@ -1234,7 +1234,9 @@ export class SpeciesData {
 								hit: [
 									ActionEffects.dealDamage(DamageType.Piercing, 1),
 									ActionEffects.dealDamage(DamageType.Decay, 1),
-									ActionEffects.healDamageSelf(1)
+									ActionEffects.toSelf([
+										ActionEffects.healDamage(1)
+									])
 								]
 							})
 						]
@@ -1329,8 +1331,10 @@ export class SpeciesData {
 								hit: [
 									ActionEffects.dealDamage(DamageType.Piercing, 1),
 									ActionEffects.dealDamage(DamageType.Decay, 1),
-									ActionEffects.healDamageSelf(1),
-									ActionEffects.healWoundsSelf(1)
+									ActionEffects.toSelf([
+										ActionEffects.healDamage(1),
+										ActionEffects.healWounds(1)
+									])
 								]
 							})
 						]

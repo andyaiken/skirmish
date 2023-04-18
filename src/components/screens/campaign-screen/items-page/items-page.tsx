@@ -167,7 +167,7 @@ export class ItemsPage extends Component<Props, State> {
 					content={(
 						<div>
 							<Text type={TextType.Heading}>Choose a Magic Item</Text>
-							<button className='developer' onClick={this.showMarket}>Redraw</button>
+							{this.props.developer ? <button className='developer' onClick={this.showMarket}>Redraw</button> : null}
 							<div className='card-selection-row'>
 								<CardList cards={cards} />
 							</div>

@@ -219,8 +219,8 @@ export class Stats extends Component<Props, State> {
 							key={f.id}
 							type={CardType.Feature}
 							front={<FeatureCard feature={f} />}
-							footer={CombatantLogic.getCardSource(this.props.combatant, f.id, 'feature')}
-							footerType={CombatantLogic.getCardSourceType(this.props.combatant, f.id, 'feature')}
+							footer={CombatantLogic.getFeatureSource(this.props.combatant, f.id)}
+							footerType={CombatantLogic.getFeatureSourceType(this.props.combatant, f.id)}
 						/>
 					));
 					break;
@@ -231,21 +231,21 @@ export class Stats extends Component<Props, State> {
 							key={a.id}
 							type={CardType.Action}
 							front={<ActionCard action={a} />}
-							footer={CombatantLogic.getCardSource(this.props.combatant, a.id, 'action')}
-							footerType={CombatantLogic.getCardSourceType(this.props.combatant, a.id, 'action')}
+							footer={CombatantLogic.getActionSource(this.props.combatant, a.id)}
+							footerType={CombatantLogic.getActionSourceType(this.props.combatant, a.id)}
 						/>
 					));
 					break;
 			}
-			const content = (
-				<div>
-					<Text type={TextType.Heading}>{heading}</Text>
-					<CardList cards={cards} />
-				</div>
-			);
 			dialog = (
 				<Dialog
-					content={content}
+					content={(
+						<div>
+							<Text type={TextType.Heading}>{heading}</Text>
+							<hr />
+							<CardList cards={cards} />
+						</div>
+					)}
 					onClose={() => this.setDeck(null)}
 				/>
 			);

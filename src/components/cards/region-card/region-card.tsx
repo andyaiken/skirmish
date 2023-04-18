@@ -29,7 +29,7 @@ export class RegionCard extends Component<Props> {
 				<StatValue label='Area' value={`${this.props.region.demographics.size} sq mi`} />
 				<StatValue label='Population' value={`${(this.props.region.demographics.population * 100).toLocaleString()}`} />
 				<StatValue label='Terrain' value={this.props.region.demographics.terrain} />
-				<StatValue label='Monsters' value={monsters} />
+				<StatValue label='Common Monsters' value={monsters} />
 				<StatValue label='Number of Encounters' value={this.props.region.encounters.length} />
 			</div>
 		);

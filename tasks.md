@@ -45,6 +45,19 @@
 * Dealing cold damage to a target on a water square turns all adjacent water squares into ice
 * Dealing fire damage to a target on an ice square turns all adjacent ice squares into water
 
+## Chests
+* Like a loot pile
+
+## Potions
+* Could be found on the map (as a loot pile)
+* An extra section in the items page
+* 2 movement points to drink
+  * Then destroyed
+  * Has effects:
+    * Health (heals damage and wounds)
+    * Luck (grants skill bonuses)
+* Buy for 50 money
+
 ## Doors
 * Present on the map - 2 squares wide
 * Can be open / closed
@@ -52,18 +65,6 @@
   * When closed, blocks LOS
 * Can be broken down
   * Counts as a wall
-
-## Chests
-* Like a loot pile
-
-## Potions
-* Could be found on the map (as a loot pile)
-* An extra section in the items page
-* 1 movement point to drink
-  * Then destroyed
-  * Health (heals wounds)
-  * Luck (grants skill bonuses)
-* Buy for 25 money
 
 ## Keys
 * Another sort of consumable item

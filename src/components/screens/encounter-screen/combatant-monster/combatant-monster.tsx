@@ -37,15 +37,13 @@ export class CombatantMonster extends Component<Props> {
 					{
 						action ?
 							<PlayingCard
-								stack={true}
 								type={CardType.Action}
 								front={<ActionCard action={action} />}
-								footer={CombatantLogic.getCardSource(this.props.combatant, action.id, 'action')}
-								footerType={CombatantLogic.getCardSourceType(this.props.combatant, action.id, 'action')}
+								footer={CombatantLogic.getActionSource(this.props.combatant, action.id)}
+								footerType={CombatantLogic.getActionSourceType(this.props.combatant, action.id)}
 							/>
 							:
 							<PlayingCard
-								stack={true}
 								type={CardType.Action}
 								front={<PlaceholderCard text='' subtext={`${this.props.combatant.name} is not using an action this turn`} />}
 							/>

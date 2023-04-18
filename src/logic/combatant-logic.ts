@@ -221,145 +221,143 @@ export class CombatantLogic {
 		return list;
 	};
 
-	static getCardSource = (combatant: CombatantModel, cardID: string, cardType: 'action' | 'feature') => {
-		switch (cardType) {
-			case 'action': {
-				if (BaseData.getBaseActions().find(a => a.id === cardID)) {
-					return 'Base';
+	static getFeatureSource = (combatant: CombatantModel, cardID: string) => {
+		if (BaseData.getBaseFeatures().find(f => f.id === cardID)) {
+			return 'Base';
+		}
+
+		const s = GameLogic.getSpecies(combatant.speciesID);
+		if (!!s && s.features.find(c => c.id === cardID)) {
+			return s.name;
+		}
+
+		const r = GameLogic.getRole(combatant.roleID);
+		if (!!r && r.features.find(c => c.id === cardID)) {
+			return r.name;
+		}
+
+		const b = GameLogic.getBackground(combatant.backgroundID);
+		if (!!b && b.features.find(c => c.id === cardID)) {
+			return b.name;
+		}
+
+		let itemName = '';
+		combatant.items.forEach(item => {
+			if (item.armor) {
+				if (item.armor.features.find(f => f.id === cardID)) {
+					itemName = item.name;
 				}
-
-				const s = GameLogic.getSpecies(combatant.speciesID);
-				if (!!s && s.actions.find(c => c.id === cardID)) {
-					return s.name;
-				}
-
-				const r = GameLogic.getRole(combatant.roleID);
-				if (!!r && r.actions.find(c => c.id === cardID)) {
-					return r.name;
-				}
-
-				const b = GameLogic.getBackground(combatant.backgroundID);
-				if (!!b && b.actions.find(c => c.id === cardID)) {
-					return b.name;
-				}
-
-				combatant.items.forEach(item => {
-					if (item.actions.find(a => a.id === cardID)) {
-						return item.name;
-					}
-				});
-
-				break;
 			}
-			case 'feature': {
-				if (BaseData.getBaseFeatures().find(f => f.id === cardID)) {
-					return 'Base';
-				}
-
-				const s = GameLogic.getSpecies(combatant.speciesID);
-				if (!!s && s.features.find(c => c.id === cardID)) {
-					return s.name;
-				}
-
-				const r = GameLogic.getRole(combatant.roleID);
-				if (!!r && r.features.find(c => c.id === cardID)) {
-					return r.name;
-				}
-
-				const b = GameLogic.getBackground(combatant.backgroundID);
-				if (!!b && b.features.find(c => c.id === cardID)) {
-					return b.name;
-				}
-
-				combatant.items.forEach(item => {
-					if (item.armor) {
-						if (item.armor.features.find(f => f.id === cardID)) {
-							return item.name;
-						}
-					}
-					if (item.features.find(f => f.id === cardID)) {
-						return item.name;
-					}
-				});
-
-				break;
+			if (item.features.find(f => f.id === cardID)) {
+				itemName = item.name;
 			}
+		});
+		if (itemName !== '') {
+			return itemName;
 		}
 
 		return '';
 	};
 
-	static getCardSourceType = (combatant: CombatantModel, cardID: string, cardType: 'action' | 'feature'): CardType => {
-		switch (cardType) {
-			case 'action': {
-				if (BaseData.getBaseActions().find(a => a.id === cardID)) {
-					return CardType.Base;
-				}
+	static getFeatureSourceType = (combatant: CombatantModel, cardID: string) => {
+		if (BaseData.getBaseFeatures().find(f => f.id === cardID)) {
+			return CardType.Base;
+		}
 
-				const s = GameLogic.getSpecies(combatant.speciesID);
-				if (!!s && s.actions.find(c => c.id === cardID)) {
-					return CardType.Species;
-				}
+		const s = GameLogic.getSpecies(combatant.speciesID);
+		if (!!s && s.features.find(c => c.id === cardID)) {
+			return CardType.Species;
+		}
 
-				const r = GameLogic.getRole(combatant.roleID);
-				if (!!r && r.actions.find(c => c.id === cardID)) {
-					return CardType.Role;
-				}
+		const r = GameLogic.getRole(combatant.roleID);
+		if (!!r && r.features.find(c => c.id === cardID)) {
+			return CardType.Role;
+		}
 
-				const b = GameLogic.getBackground(combatant.backgroundID);
-				if (!!b && b.actions.find(c => c.id === cardID)) {
-					return CardType.Background;
-				}
+		const b = GameLogic.getBackground(combatant.backgroundID);
+		if (!!b && b.features.find(c => c.id === cardID)) {
+			return CardType.Background;
+		}
 
-				let isItem = false;
-				combatant.items.forEach(item => {
-					if (item.actions.find(a => a.id === cardID)) {
-						isItem = true;
-					}
-				});
-				if (isItem) {
-					return CardType.Item;
+		let isItem = false;
+		combatant.items.forEach(item => {
+			if (item.armor) {
+				if (item.armor.features.find(f => f.id === cardID)) {
+					isItem = true;
 				}
-
-				break;
 			}
-			case 'feature': {
-				if (BaseData.getBaseFeatures().find(f => f.id === cardID)) {
-					return CardType.Base;
-				}
-
-				const s = GameLogic.getSpecies(combatant.speciesID);
-				if (!!s && s.features.find(c => c.id === cardID)) {
-					return CardType.Species;
-				}
-
-				const r = GameLogic.getRole(combatant.roleID);
-				if (!!r && r.features.find(c => c.id === cardID)) {
-					return CardType.Role;
-				}
-
-				const b = GameLogic.getBackground(combatant.backgroundID);
-				if (!!b && b.features.find(c => c.id === cardID)) {
-					return CardType.Background;
-				}
-
-				let isItem = false;
-				combatant.items.forEach(item => {
-					if (item.armor) {
-						if (item.armor.features.find(f => f.id === cardID)) {
-							isItem = true;
-						}
-					}
-					if (item.features.find(f => f.id === cardID)) {
-						isItem = true;
-					}
-				});
-				if (isItem) {
-					return CardType.Item;
-				}
-
-				break;
+			if (item.features.find(f => f.id === cardID)) {
+				isItem = true;
 			}
+		});
+		if (isItem) {
+			return CardType.Item;
+		}
+
+		return CardType.Default;
+	};
+
+	static getActionSource = (combatant: CombatantModel, cardID: string) => {
+		if (BaseData.getBaseActions().find(a => a.id === cardID)) {
+			return 'Base';
+		}
+
+		const s = GameLogic.getSpecies(combatant.speciesID);
+		if (!!s && s.actions.find(c => c.id === cardID)) {
+			return s.name;
+		}
+
+		const r = GameLogic.getRole(combatant.roleID);
+		if (!!r && r.actions.find(c => c.id === cardID)) {
+			return r.name;
+		}
+
+		const b = GameLogic.getBackground(combatant.backgroundID);
+		if (!!b && b.actions.find(c => c.id === cardID)) {
+			return b.name;
+		}
+
+		let itemName = '';
+		combatant.items.forEach(item => {
+			if (item.actions.find(a => a.id === cardID)) {
+				itemName = item.name;
+			}
+		});
+		if (itemName !== '') {
+			return itemName;
+		}
+
+		return '';
+	};
+
+	static getActionSourceType = (combatant: CombatantModel, cardID: string) => {
+		if (BaseData.getBaseActions().find(a => a.id === cardID)) {
+			return CardType.Base;
+		}
+
+		const s = GameLogic.getSpecies(combatant.speciesID);
+		if (!!s && s.actions.find(c => c.id === cardID)) {
+			return CardType.Species;
+		}
+
+		const r = GameLogic.getRole(combatant.roleID);
+		if (!!r && r.actions.find(c => c.id === cardID)) {
+			return CardType.Role;
+		}
+
+		const b = GameLogic.getBackground(combatant.backgroundID);
+		if (!!b && b.actions.find(c => c.id === cardID)) {
+			return CardType.Background;
+		}
+
+		let isItem = false;
+		combatant.items.forEach(item => {
+			if (item.actions.find(a => a.id === cardID)) {
+				isItem = true;
+			}
+		});
+		if (isItem) {
+			return CardType.Item;
 		}
 
 		return CardType.Default;

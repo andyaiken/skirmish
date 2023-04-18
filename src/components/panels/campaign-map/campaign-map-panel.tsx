@@ -80,8 +80,8 @@ export class CampaignMapPanel extends Component<Props> {
 						className='campaign-map-label'
 						style={{
 							width: `calc(${squareSizePC}% + 2px)`,
-							left: `calc(${((square.x - dims.left) * squareSizePC)}% - 1px)`,
-							top: `calc(${((square.y - dims.top) * squareSizePC)}% - 1px)`
+							left: `calc(${((square.x - dims.left) * squareSizePC)}% - 2px)`,
+							top: `calc(${((square.y - dims.top) * squareSizePC)}% - 2px)`
 						}}
 						title={region ? region.name : 'Conquered'}
 						onClick={e => this.onClick(e, square)}

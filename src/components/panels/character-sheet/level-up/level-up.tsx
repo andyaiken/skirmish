@@ -62,8 +62,8 @@ export class LevelUp extends Component<Props, State> {
 						type={CardType.Feature}
 						front={<FeatureCard feature={(this.state.selectedFeature !== null) && (this.state.selectedFeature.id === feature.id) ? this.state.selectedFeature : feature} />}
 						back={<PlaceholderCard text='Feature' />}
-						footer={CombatantLogic.getCardSource(this.props.combatant, feature.id, 'feature')}
-						footerType={CombatantLogic.getCardSourceType(this.props.combatant, feature.id, 'feature')}
+						footer={CombatantLogic.getActionSource(this.props.combatant, feature.id)}
+						footerType={CombatantLogic.getActionSourceType(this.props.combatant, feature.id)}
 						display={(this.state.selectedFeature !== null) && (this.state.selectedFeature.id !== feature.id) ? PlayingCardSide.Back : PlayingCardSide.Front}
 						onClick={(this.state.selectedFeature !== null) ? null : () => this.setState({ selectedFeature: feature })}
 					/>

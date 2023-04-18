@@ -295,6 +295,17 @@ export class ActionEffects {
 		};
 	};
 
+	static toSelf = (
+		data: ActionEffectModel[]
+	): ActionEffectModel => {
+		return {
+			id: 'toSelf',
+			description: 'To self',
+			data: data,
+			children: data
+		};
+	};
+
 	static dealWeaponDamage = (rankModifier = 0): ActionEffectModel => {
 		return {
 			id: 'weapondamage',
@@ -322,24 +333,6 @@ export class ActionEffects {
 		};
 	};
 
-	static dealDamageSelf = (type: DamageType, rank: number): ActionEffectModel => {
-		return {
-			id: 'damageSelf',
-			description: `Deal ${type} damage to self (rank ${rank})`,
-			data: { type: type, rank: rank },
-			children: []
-		};
-	};
-
-	static inflictWoundsSelf = (value: number): ActionEffectModel => {
-		return {
-			id: 'woundsSelf',
-			description: `Inflict ${value} wounds on self`,
-			data: value,
-			children: []
-		};
-	};
-
 	static healDamage = (rank: number): ActionEffectModel => {
 		return {
 			id: 'healdamage',
@@ -353,24 +346,6 @@ export class ActionEffects {
 		return {
 			id: 'healwounds',
 			description: `Heal ${value} wound(s)`,
-			data: value,
-			children: []
-		};
-	};
-
-	static healDamageSelf = (rank: number): ActionEffectModel => {
-		return {
-			id: 'healdamageSelf',
-			description: `Heal damage on self (rank ${rank})`,
-			data: rank,
-			children: []
-		};
-	};
-
-	static healWoundsSelf = (value: number): ActionEffectModel => {
-		return {
-			id: 'healwoundsSelf',
-			description: `Heal ${value} wound(s) on self`,
 			data: value,
 			children: []
 		};
@@ -396,7 +371,7 @@ export class ActionEffects {
 
 	static addMovement = (): ActionEffectModel => {
 		return {
-			id: 'addMovementSelf',
+			id: 'addMovement',
 			description: 'Add movement points',
 			data: null,
 			children: []
@@ -641,6 +616,16 @@ export class ActionEffects {
 				});
 				break;
 			}
+			case 'toSelf': {
+				let copy = JSON.parse(JSON.stringify(parameters)) as ActionParameterModel[];
+				copy = copy.filter(p => p.id !== 'targets');
+				copy.push({ id: 'targets', candidates: [], value: [ combatant.id ] });
+				const effects = effect.data as ActionEffectModel[];
+				effects.forEach(effect => {
+					ActionEffects.run(effect, encounter, combatant, copy);
+				});
+				break;
+			}
 			case 'weapondamage': {
 				const rankModifier = effect.data as number;
 				const weaponParameter = parameters.find(p => p.id === 'weapon');
@@ -704,25 +689,6 @@ export class ActionEffects {
 				}
 				break;
 			}
-			case 'damageSelf': {
-				const data = effect.data as { type: DamageType, rank: number };
-				const result = Random.dice(data.rank);
-				log(`${combatant.name} rolls damage for self (rank ${data.rank}) and gets ${result}`);
-				const bonus = EncounterLogic.getDamageBonus(encounter, combatant, data.type);
-				if (bonus > 0) {
-					log(`${combatant.name} deals ${bonus} additional damage`);
-				}
-				if (bonus < 0) {
-					log(`${combatant.name} deals ${bonus} less damage`);
-				}
-				EncounterLogic.damage(encounter, combatant, result + bonus, data.type);
-				break;
-			}
-			case 'woundsSelf': {
-				const value = effect.data as number;
-				EncounterLogic.wound(encounter, combatant, value);
-				break;
-			}
 			case 'healdamage': {
 				const rank = effect.data as number;
 				const targetParameter = parameters.find(p => p.id === 'targets');
@@ -746,17 +712,6 @@ export class ActionEffects {
 						EncounterLogic.healWounds(encounter, target, value);
 					});
 				}
-				break;
-			}
-			case 'healdamageSelf': {
-				const rank = effect.data as number;
-				const value = Random.dice(rank);
-				EncounterLogic.healDamage(encounter, combatant, value);
-				break;
-			}
-			case 'healwoundsSelf': {
-				const value = effect.data as number;
-				EncounterLogic.healWounds(encounter, combatant, value);
 				break;
 			}
 			case 'addcondition': {
@@ -795,12 +750,18 @@ export class ActionEffects {
 				}
 				break;
 			}
-			case 'addMovementSelf': {
-				// This only applies to the current combatant
-				const rank = EncounterLogic.getTraitRank(encounter, combatant, TraitType.Speed);
-				const result = Random.dice(rank);
-				combatant.combat.movement += result;
-				log(`${combatant.name} rolls Speed (rank ${rank}) and gets ${result} additional movement`);
+			case 'addMovement': {
+				const targetParameter = parameters.find(p => p.id === 'targets');
+				if (targetParameter) {
+					const targetIDs = targetParameter.value as string[];
+					targetIDs.forEach(id => {
+						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
+						const rank = EncounterLogic.getTraitRank(encounter, target, TraitType.Speed);
+						const result = Random.dice(rank);
+						target.combat.movement += result;
+						log(`${target.name} rolls Speed (rank ${rank}) and gets ${result} additional movement`);
+					});
+				}
 				break;
 			}
 			case 'knockdown': {

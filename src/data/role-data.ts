@@ -956,8 +956,10 @@ export class RoleData {
 							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
 						],
 						effects: [
-							ActionEffects.healDamageSelf(3),
-							ActionEffects.dealDamage(DamageType.Decay, 3)
+							ActionEffects.dealDamage(DamageType.Decay, 3),
+							ActionEffects.toSelf([
+								ActionEffects.healDamage(3)
+							])
 						]
 					},
 					{
@@ -971,8 +973,10 @@ export class RoleData {
 							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
 						],
 						effects: [
-							ActionEffects.healWoundsSelf(1),
-							ActionEffects.inflictWounds(1)
+							ActionEffects.inflictWounds(1),
+							ActionEffects.toSelf([
+								ActionEffects.healWounds(1)
+							])
 						]
 					},
 					{
@@ -986,7 +990,9 @@ export class RoleData {
 						],
 						effects: [
 							ActionEffects.healDamage(3),
-							ActionEffects.dealDamageSelf(DamageType.Decay, 3)
+							ActionEffects.toSelf([
+								ActionEffects.dealDamage(DamageType.Decay, 3)
+							])
 						]
 					},
 					{
@@ -1000,7 +1006,9 @@ export class RoleData {
 						],
 						effects: [
 							ActionEffects.healWounds(1),
-							ActionEffects.inflictWoundsSelf(1)
+							ActionEffects.toSelf([
+								ActionEffects.inflictWounds(1)
+							])
 						]
 					},
 					{

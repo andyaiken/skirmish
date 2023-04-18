@@ -47,9 +47,13 @@ export class Items extends Component<Props> {
 				}
 
 				let footer: JSX.Element | null = (
-					<div>
-						<button disabled={this.props.combatant.carried.length >= 6} onClick={() => this.props.unequipItem(item)}>{unequip}</button>
-						<button onClick={() => this.props.dropItem(item)}>Drop</button>
+					<div className='item-options'>
+						<button disabled={this.props.combatant.carried.length >= 6} onClick={() => this.props.unequipItem(item)}>
+							{unequip}
+						</button>
+						<button onClick={() => this.props.dropItem(item)}>
+							Drop
+						</button>
 					</div>
 				);
 				if (this.props.combatant.type !== CombatantType.Hero) {
@@ -98,8 +102,12 @@ export class Items extends Component<Props> {
 
 				let footer: JSX.Element | null = (
 					<div className='item-options'>
-						<button disabled={!CombatantLogic.canEquip(this.props.combatant, item)} onClick={() => this.props.equipItem(item)}>{equip}</button>
-						<button onClick={() => this.props.dropItem(item)}>Drop</button>
+						<button disabled={!CombatantLogic.canEquip(this.props.combatant, item)} onClick={() => this.props.equipItem(item)}>
+							{equip}
+						</button>
+						<button onClick={() => this.props.dropItem(item)}>
+							Drop
+						</button>
 					</div>
 				);
 				if (this.props.combatant.type !== CombatantType.Hero) {

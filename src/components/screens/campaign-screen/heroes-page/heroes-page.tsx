@@ -103,8 +103,14 @@ export class HeroesPage extends Component<Props, State> {
 			blankHeroes = (
 				<div>
 					<Text type={TextType.SubHeading}>New Heroes</Text>
-					<Text type={TextType.Information}><b>You can recruit {text}.</b> Select the blank hero card below to recruit a new level 1 hero.</Text>
-					<CardList cards={[ <PlayingCard key={blank[0].id} front={<PlaceholderCard text='Hero' />} onClick={() => this.setState({ selectedHero: blank[0] })} /> ]} />
+					<Text type={TextType.Information}><b>You can recruit {text}.</b> Click the hero deck below to recruit a new level 1 hero.</Text>
+					<div className='center'>
+						<PlayingCard
+							stack={true}
+							front={<PlaceholderCard text='Heroes' />}
+							onClick={() => this.setState({ selectedHero: blank[0] })}
+						/>
+					</div>
 				</div>
 			);
 		}

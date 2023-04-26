@@ -490,7 +490,7 @@ export class RoleData {
 			{
 				id: 'role-enchanter',
 				name: 'Enchanter',
-				description: 'Spellcasters who specialize in mind-affecting magic.',
+				description: 'Spellcasters who specialize in magic that confuses the senses.',
 				traits: [
 					TraitType.Resolve
 				],
@@ -509,7 +509,7 @@ export class RoleData {
 				actions: [
 					{
 						id: 'enchanter-action-1',
-						name: 'Confusion',
+						name: 'Hypnotic Suggestion',
 						prerequisites: [
 							ActionPrerequisites.implement()
 						],
@@ -530,7 +530,7 @@ export class RoleData {
 					},
 					{
 						id: 'enchanter-action-2',
-						name: 'Stun',
+						name: 'Bewilderment',
 						prerequisites: [
 							ActionPrerequisites.implement()
 						],
@@ -551,7 +551,7 @@ export class RoleData {
 					},
 					{
 						id: 'enchanter-action-3',
-						name: 'Fear',
+						name: 'Induce Fear',
 						prerequisites: [
 							ActionPrerequisites.implement()
 						],
@@ -1135,6 +1135,126 @@ export class RoleData {
 							ActionEffects.addCondition(ConditionLogic.createMovementBonusCondition(TraitType.Endurance, 3)),
 							ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Endurance, 3, SkillType.Brawl)),
 							ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Endurance, 3, DamageCategoryType.Physical))
+						]
+					}
+				]
+			},
+			{
+				id: 'role-psion',
+				name: 'Psion',
+				description: 'A master of the power of the mind.',
+				traits: [
+					TraitType.Resolve
+				],
+				skills: [
+					SkillType.Presence
+				],
+				proficiencies: [],
+				features: [
+					FeatureLogic.createTraitFeature('feature-psion-1', TraitType.Resolve, 1),
+					FeatureLogic.createSkillFeature('feature-psion-2', SkillType.Presence, 2),
+					FeatureLogic.createDamageBonusFeature('feature-psion-3', DamageType.Psychic, 2),
+					FeatureLogic.createDamageResistFeature('feature-psion-4', DamageType.Psychic, 2)
+				],
+				actions: [
+					{
+						id: 'psion-action-1',
+						name: 'Bend Allegiance',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 8)
+						],
+						effects: [
+							ActionEffects.commandAction()
+						]
+					},
+					{
+						id: 'psion-action-2',
+						name: 'Psychic Feedback',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Combatants, Number.MAX_VALUE)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Presence,
+								trait: TraitType.Resolve,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.stun()
+								]
+							})
+						]
+					},
+					{
+						id: 'psion-action-3',
+						name: 'Psychic Barrage',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 5)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Presence,
+								trait: TraitType.Resolve,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Psychic, 3)
+								]
+							})
+						]
+					},
+					{
+						id: 'psion-action-4',
+						name: 'Dishearten',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 8)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Presence,
+								trait: TraitType.Resolve,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.addCondition(ConditionLogic.createDamagePenaltyCondition(TraitType.Resolve, 5, DamageType.All))
+								]
+							})
+						]
+					},
+					{
+						id: 'psion-action-5',
+						name: 'Mental Assault',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 8)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Presence,
+								trait: TraitType.Resolve,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Psychic, 4)
+								]
+							})
+						]
+					},
+					{
+						id: 'psion-action-6',
+						name: 'Mind Over Body',
+						prerequisites: [
+							ActionPrerequisites.wound()
+						],
+						parameters: [
+							ActionTargetParameters.self()
+						],
+						effects: [
+							ActionEffects.healWounds(1)
 						]
 					}
 				]

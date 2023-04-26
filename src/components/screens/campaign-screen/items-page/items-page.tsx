@@ -12,7 +12,7 @@ import type { ItemModel } from '../../../../models/item';
 
 import { Collections } from '../../../../utils/collections';
 
-import { BoonCard, ItemCard } from '../../../cards';
+import { BoonCard, ItemCard, PlaceholderCard } from '../../../cards';
 import { CardList, Dialog, IconType, IconValue, PlayingCard, StatValue, Text, TextType } from '../../../controls';
 
 import './items-page.scss';
@@ -66,7 +66,7 @@ export class ItemsPage extends Component<Props, State> {
 				.map(b => (<PlayingCard key={b.id} type={CardType.Boon} front={<BoonCard boon={b} />} footer='Reward' onClick={() => this.props.redeemBoon(b, null)} />));
 			boons = (
 				<div>
-					<Text type={TextType.SubHeading}>Rewards ({cards.length})</Text>
+					<Text type={TextType.SubHeading}>Rewards</Text>
 					<Text type={TextType.Information}><b>You have won these rewards.</b> Select a card to redeem a reward.</Text>
 					<CardList cards={cards} />
 				</div>
@@ -138,17 +138,34 @@ export class ItemsPage extends Component<Props, State> {
 		}
 
 		const controlLand = this.props.game.map.squares.some(sq => sq.regionID === '');
-		const enoughMoney = (this.props.game.money >= 100);
 		const moneySection = (
 			<div>
+				<Text type={TextType.SubHeading}>Money</Text>
 				<StatValue orientation='vertical' label='Money' value={<IconValue type={IconType.Money} value={this.props.game.money} />} />
-				<button disabled={!controlLand || !enoughMoney} onClick={() => this.showMarket()}>
-					Buy a magic item<br /><IconValue type={IconType.Money} value={100} iconSize={12} />
-				</button>
 				{!controlLand ? <Text type={TextType.Information}>You can&apos;t buy anything until you control part of the island.</Text> : null}
 				{this.props.developer ? <button className='developer' onClick={() => this.props.addMoney()}>Add money</button> : null}
 			</div>
 		);
+
+		const enoughMoney = (this.props.game.money >= 100);
+		let itemSection = null;
+		if (controlLand && enoughMoney) {
+			const count = Math.floor(this.props.game.money / 100);
+			const text = count === 1 ? 'a magic item' : `${count} magic items`;
+			itemSection = (
+				<div>
+					<Text type={TextType.SubHeading}>Magic Items</Text>
+					<Text type={TextType.Information}><b>You have enough money to buy {text}.</b> Click the item deck below to choose an item.</Text>
+					<div className='center'>
+						<PlayingCard
+							stack={true}
+							front={<PlaceholderCard text='Magic Items' subtext={<IconValue type={IconType.Money} value={100} iconSize={15} />} />}
+							onClick={() => this.showMarket()}
+						/>
+					</div>
+				</div>
+			);
+		}
 
 		let dialog = null;
 		if (this.state.magicItems.length > 0) {
@@ -190,6 +207,8 @@ export class ItemsPage extends Component<Props, State> {
 					{moneySection}
 					{boons !== null ? <hr /> : null}
 					{boons}
+					{itemSection !== null ? <hr /> : null}
+					{itemSection}
 				</div>
 				{dialog}
 			</div>

@@ -436,7 +436,7 @@ export class SpeciesData {
 				actions: [
 					{
 						id: 'pixie-action-1',
-						name: 'Confusion',
+						name: 'Confound',
 						prerequisites: [],
 						parameters: [
 							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
@@ -462,7 +462,7 @@ export class SpeciesData {
 			{
 				id: 'species-reptilian',
 				name: 'Reptilian',
-				description: 'A scaly humanoid with serpentine ancestry.',
+				description: 'A scaly humanoid with draconic ancestry.',
 				type: CombatantType.Hero,
 				size: 1,
 				quirks: [],
@@ -481,10 +481,10 @@ export class SpeciesData {
 				actions: [
 					{
 						id: 'reptilian-action-1',
-						name: 'Venomous Bite',
+						name: 'Breathe Fire',
 						prerequisites: [],
 						parameters: [
-							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 3)
 						],
 						effects: [
 							ActionEffects.attack({
@@ -493,8 +493,7 @@ export class SpeciesData {
 								trait: TraitType.Speed,
 								skillBonus: 0,
 								hit: [
-									ActionEffects.dealDamage(DamageType.Piercing, 1),
-									ActionEffects.dealDamage(DamageType.Poison, 2)
+									ActionEffects.dealDamage(DamageType.Fire, 3)
 								]
 							})
 						]
@@ -514,10 +513,10 @@ export class SpeciesData {
 					},
 					{
 						id: 'reptilian-action-3',
-						name: 'Intimidate',
+						name: 'Intimidating Presence',
 						prerequisites: [],
 						parameters: [
-							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+							ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 5)
 						],
 						effects: [
 							ActionEffects.attack({
@@ -859,6 +858,87 @@ export class SpeciesData {
 				]
 			},
 			{
+				id: 'species-naga',
+				name: 'Naga',
+				description: 'A serpentine humanoiod.',
+				type: CombatantType.Monster,
+				size: 1,
+				quirks: [],
+				traits: [
+					TraitType.Speed
+				],
+				skills: [
+					SkillType.Brawl,
+					SkillType.Presence
+				],
+				features: [
+					FeatureLogic.createTraitFeature('naga-feature-1', TraitType.Speed, 1),
+					FeatureLogic.createSkillFeature('naga-feature-2', SkillType.Brawl, 2),
+					FeatureLogic.createSkillFeature('naga-feature-3', SkillType.Presence, 2),
+					FeatureLogic.createDamageBonusFeature('naga-feature-4', DamageType.Poison, 2),
+					FeatureLogic.createDamageResistFeature('naga-feature-5', DamageType.Poison, 2)
+				],
+				actions: [
+					{
+						id: 'naga-action-1',
+						name: 'Venomous Bite',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Poison, 4)
+								]
+							})
+						]
+					},
+					{
+						id: 'naga-action-2',
+						name: 'Constrict',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Endurance,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Impact, 4)
+								]
+							})
+						]
+					},
+					{
+						id: 'naga-action-3',
+						name: 'Beguiling Gaze',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 8)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Presence,
+								trait: TraitType.Resolve,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.commandAction()
+								]
+							})
+						]
+					}
+				]
+			},
+			{
 				id: 'species-elemental-fire',
 				name: 'Fire Elemental',
 				description: 'Hot blooded and quick to anger, these humanoids are made of living fire.',
@@ -1051,7 +1131,8 @@ export class SpeciesData {
 								trait: TraitType.Speed,
 								skillBonus: 0,
 								hit: [
-									ActionEffects.dealDamage(DamageType.Impact, 3)
+									ActionEffects.dealDamage(DamageType.Impact, 3),
+									ActionEffects.knockDown()
 								]
 							})
 						]
@@ -1193,6 +1274,86 @@ export class SpeciesData {
 								hit: [
 									ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Endurance, 2, TraitType.Speed)),
 									ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Endurance, 5))
+								]
+							})
+						]
+					}
+				]
+			},
+			{
+				id: 'species-bear',
+				name: 'Bear',
+				description: 'A huge, powerful animal.',
+				type: CombatantType.Monster,
+				size: 2,
+				quirks: [
+					QuirkType.Beast
+				],
+				traits: [
+					TraitType.Endurance
+				],
+				skills: [
+					SkillType.Brawl
+				],
+				features: [
+					FeatureLogic.createTraitFeature('bear-feature-1', TraitType.Endurance, 1),
+					FeatureLogic.createSkillFeature('bear-feature-2', SkillType.Brawl, 2),
+					FeatureLogic.createDamageCategoryBonusFeature('bear-feature-3', DamageCategoryType.Physical, 1)
+				],
+				actions: [
+					{
+						id: 'bear-action-1',
+						name: 'Bite',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Piercing, 3)
+								]
+							})
+						]
+					},
+					{
+						id: 'bear-action-2',
+						name: 'Swipe',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Edged, 4)
+								]
+							})
+						]
+					},
+					{
+						id: 'bear-action-3',
+						name: 'Hug',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Endurance,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Impact, 4)
 								]
 							})
 						]

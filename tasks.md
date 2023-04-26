@@ -93,35 +93,15 @@
 
 ## Ideas for Roles / Backgrounds
 * Artificer
-  * infuse item with magic
-  * drain item of magic
-  * convert item / loot pile into energy
-  * create potion
-  * shocking grasp
-* Blackguard
-* Shaman
-* Warlock
-* Non-magic types
-  * Champion
-  * Gladiator - large weapons and showmanship
-  * Guard / warden
-  * Knight
-  * Ravager
-  * Warrior
-  * Warlord
-* Thief types
-  * Bandit
-  * Scout
-  * Spy
-  * Thug
-* Divine types
-  * Cleric
-  * Cultist
-  * Paladin / warpriest
-* Wizard types
-  * Evoker
-  * Illusionist
-  * Psionicist
+  * Create potion
+  * Shocking grasp (electrical damage, stun)
+  * Electrical dischange (area effect)
+  * Supercharge (buff nearby ally's damage output)
+* Gladiator
+  * Large weapons
+  * Showmanship
+* Cleric
+* Paladin / warpriest
 
 ## Ideas for Species
 * Small:
@@ -139,7 +119,6 @@
 * Ogre
 * Giant
 * Gnoll
-* Lizardfolk
 * Elemental:
   * Water Elemental
 * Undead:
@@ -147,11 +126,9 @@
 * Demon
 * Beasts:
   * Basilisk / medusa / gorgon
-  * Bear
   * Lion / tiger / panther etc
   * Crocodile
   * Giant rat
-  * Giant snake
   * Dragon
   * Kruthik / Ankheg
 * Ooze

@@ -4,9 +4,6 @@
 * If you select a 'square' parameter, and move, the origin candidate squares do not move
 * Presumably this is the same for other parameter types
 
-## Area Targets
-* Monsters using area targets don't seem to select a sensible square
-
 -----------------------------------------------------------------------------------------
 
 # Improvements / Enhancements
@@ -51,11 +48,14 @@
 ## Potions
 * Could be found on the map (as a loot pile)
 * An extra section in the items page
-* 2 movement points to drink
+* Drink
+  * 2 movement points
   * Then destroyed
   * Has effects:
     * Health (heals damage and wounds)
     * Luck (grants skill bonuses)
+    * Power (grants damage bonuses)
+    * Resistance (grants damage resistances)
 * Buy for 50 money
 
 ## Doors

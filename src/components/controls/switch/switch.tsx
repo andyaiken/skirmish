@@ -19,7 +19,7 @@ export class Switch extends Component<Props> {
 		return (
 			<div className='switch' onClick={this.onClick}>
 				<div className='switch-label'>{this.props.label}</div>
-				{this.props.checked ? <IconCircleCheckFilled className='switch-icon' /> : <IconCircle className='switch-icon' />}
+				{this.props.checked ? <IconCircleCheckFilled className='switch-icon checked' /> : <IconCircle className='switch-icon' />}
 			</div>
 		);
 	};

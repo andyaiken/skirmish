@@ -200,7 +200,7 @@ export class CampaignMapPage extends Component<Props, State> {
 					<Text type={TextType.SubHeading}>The Island</Text>
 					<Text>This is the map of the island. Select a region to learn more about it.</Text>
 					{owned.length > 0 ? <hr /> : null}
-					{owned.length > 0 ? <StatValue label='Controlled' value={`${Math.floor(100 * owned.length / this.props.game.map.squares.length)}%`} /> : null}
+					{owned.length > 0 ? <StatValue orientation='vertical' label='Controlled' value={`${Math.floor(100 * owned.length / this.props.game.map.squares.length)}%`} /> : null}
 				</div>
 			);
 		}

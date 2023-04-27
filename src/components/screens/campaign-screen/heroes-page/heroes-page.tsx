@@ -75,8 +75,7 @@ export class HeroesPage extends Component<Props, State> {
 				.map(b => (<PlayingCard key={b.id} type={CardType.Boon} front={<BoonCard boon={b} />} footer='Reward' onClick={() => this.selectBoon(b)} />));
 			boons = (
 				<div>
-					<Text type={TextType.SubHeading}>Rewards</Text>
-					<Text type={TextType.Information}><b>You have won these rewards.</b> Select a card to redeem a reward.</Text>
+					<Text type={TextType.Information}><b>You have won these rewards.</b> Select a card to redeem that reward.</Text>
 					<CardList cards={cards} />
 				</div>
 			);
@@ -89,7 +88,6 @@ export class HeroesPage extends Component<Props, State> {
 			));
 			levelUp = (
 				<div>
-					<Text type={TextType.SubHeading}>Level Up</Text>
 					<Text type={TextType.Information}><b>Some of your heroes have gained enough XP to level up.</b> Click on their name to upgrade them.</Text>
 					{cards}
 				</div>
@@ -102,7 +100,6 @@ export class HeroesPage extends Component<Props, State> {
 			const text = blank.length === 1 ? 'a new hero' : `${blank.length} new heroes`;
 			blankHeroes = (
 				<div>
-					<Text type={TextType.SubHeading}>New Heroes</Text>
 					<Text type={TextType.Information}><b>You can recruit {text}.</b> Click the hero deck below to recruit a new level 1 hero.</Text>
 					<div className='center'>
 						<PlayingCard

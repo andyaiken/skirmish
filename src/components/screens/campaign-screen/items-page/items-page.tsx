@@ -66,7 +66,6 @@ export class ItemsPage extends Component<Props, State> {
 				.map(b => (<PlayingCard key={b.id} type={CardType.Boon} front={<BoonCard boon={b} />} footer='Reward' onClick={() => this.props.redeemBoon(b, null)} />));
 			boons = (
 				<div>
-					<Text type={TextType.SubHeading}>Rewards</Text>
 					<Text type={TextType.Information}><b>You have won these rewards.</b> Select a card to redeem a reward.</Text>
 					<CardList cards={cards} />
 				</div>
@@ -140,7 +139,6 @@ export class ItemsPage extends Component<Props, State> {
 		const controlLand = this.props.game.map.squares.some(sq => sq.regionID === '');
 		const moneySection = (
 			<div>
-				<Text type={TextType.SubHeading}>Money</Text>
 				<StatValue orientation='vertical' label='Money' value={<IconValue type={IconType.Money} value={this.props.game.money} />} />
 				{!controlLand ? <Text type={TextType.Information}>You can&apos;t buy anything until you control part of the island.</Text> : null}
 				{this.props.developer ? <button className='developer' onClick={() => this.props.addMoney()}>Add money</button> : null}
@@ -154,7 +152,6 @@ export class ItemsPage extends Component<Props, State> {
 			const text = count === 1 ? 'a magic item' : `${count} magic items`;
 			itemSection = (
 				<div>
-					<Text type={TextType.SubHeading}>Magic Items</Text>
 					<Text type={TextType.Information}><b>You have enough money to buy {text}.</b> Click the item deck below to choose an item.</Text>
 					<div className='center'>
 						<PlayingCard

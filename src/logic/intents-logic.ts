@@ -183,13 +183,41 @@ export class IntentsLogic {
 				if (candidatePaths.length > 0) {
 					const path = Collections.min(candidatePaths, p => p?.cost || Number.MAX_VALUE);
 					if (path) {
+						let weight = 1;
+						const param = action.parameters.find(p => p.id === 'targets');
+						if (param) {
+							const targetParam = param as ActionTargetParameterModel;
+							if (targetParam.targets) {
+								switch (targetParam.targets.type) {
+									case ActionTargetType.Allies:
+										weight = encounter.combatants
+											.filter(c => c.type === CombatantType.Monster)
+											.filter(c => {
+												const dist = EncounterMapLogic.getDistanceAny(EncounterLogic.getCombatantSquares(encounter, c), [ targetSquare ]);
+												return dist <= targetParam.range.radius;
+											})
+											.length;
+										break;
+									case ActionTargetType.Combatants:
+									case ActionTargetType.Enemies:
+										weight = encounter.combatants
+											.filter(c => c.type === CombatantType.Hero)
+											.filter(c => {
+												const dist = EncounterMapLogic.getDistanceAny(EncounterLogic.getCombatantSquares(encounter, c), [ targetSquare ]);
+												return dist <= targetParam.range.radius;
+											})
+											.length;
+										break;
+								}
+							}
+						}
 						intents.push({
 							description: action.name,
 							intents: [
 								...path.steps.map(step => Intents.move(step)),
 								Intents.action(action)
 							],
-							weight: 1
+							weight: weight
 						});
 					}
 				}

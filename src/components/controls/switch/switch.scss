@@ -10,10 +10,16 @@
 
 	.switch-label {
 		flex: 1 1 0;
+		font-weight: 600;
+		text-transform: uppercase;
 	}
 
 	.switch-icon {
 		flex: 0 0 auto;
+
+		&.checked {
+			color: darkgreen;
+		}
 	}
 
 	&:hover {

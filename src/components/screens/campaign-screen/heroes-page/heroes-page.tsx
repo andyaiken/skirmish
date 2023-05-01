@@ -67,7 +67,38 @@ export class HeroesPage extends Component<Props, State> {
 		});
 	};
 
-	render = () => {
+	getContent = () => {
+		if (this.props.game.heroes.filter(h => !!h.name).length > 0) {
+			const cards = this.props.game.heroes.filter(h => !!h.name).map(hero => {
+				return (
+					<div key={hero.id}>
+						<PlayingCard
+							type={CardType.Hero}
+							front={<HeroCard hero={hero} />}
+							onClick={() => this.selectHero(hero)}
+						/>
+						{this.props.developer ? <button className='developer' onClick={() => this.props.incrementXP(hero)}>Add XP</button> : null}
+					</div>
+				);
+			});
+
+			return (
+				<div>
+					<Text type={TextType.SubHeading}>Heroes ({cards.length})</Text>
+					<CardList cards={cards} />
+				</div>
+			);
+		}
+
+		return (
+			<div>
+				<Text type={TextType.SubHeading}>Heroes (0)</Text>
+				<Text type={TextType.Information}>You have no heroes.</Text>
+			</div>
+		);
+	};
+
+	getSidebar = () => {
 		let boons = null;
 		if (this.props.game.boons.filter(boon => GameLogic.getBoonIsHeroType(boon)).length > 0) {
 			const cards = this.props.game.boons
@@ -112,32 +143,24 @@ export class HeroesPage extends Component<Props, State> {
 			);
 		}
 
-		let heroes = null;
-		if (this.props.game.heroes.filter(h => !!h.name).length > 0) {
-			const cards = this.props.game.heroes.filter(h => !!h.name).map(hero => {
-				return (
-					<div key={hero.id}>
-						<PlayingCard
-							type={CardType.Hero}
-							front={<HeroCard hero={hero} />}
-							onClick={() => this.selectHero(hero)}
-						/>
-						{this.props.developer ? <button className='developer' onClick={() => this.props.incrementXP(hero)}>Add XP</button> : null}
-					</div>
-				);
-			});
-			heroes = (
-				<div>
-					<Text type={TextType.SubHeading}>Heroes ({cards.length})</Text>
-					<CardList cards={cards} />
-				</div>
-			);
-		}
+		return (
+			<div className='sidebar'>
+				<Text type={TextType.SubHeading}>Your Heroes</Text>
+				<Text>This page shows the heroes that you have recruited.</Text>
+				{boons !== null ? <hr /> : null}
+				{boons}
+				{levelUp !== null ? <hr /> : null}
+				{levelUp}
+				{blankHeroes !== null ? <hr /> : null}
+				{blankHeroes}
+			</div>
+		);
+	};
 
-		let dialog = null;
+	getDialog = () => {
 		if (this.state.selectedHero) {
 			if (!this.state.selectedHero.name) {
-				dialog = (
+				return (
 					<Dialog
 						content={(
 							<HeroBuilderPanel
@@ -157,7 +180,7 @@ export class HeroesPage extends Component<Props, State> {
 					/>
 				);
 			} else {
-				dialog = (
+				return (
 					<Dialog
 						content={(
 							<CharacterSheetPanel
@@ -180,6 +203,7 @@ export class HeroesPage extends Component<Props, State> {
 				);
 			}
 		}
+
 		if (this.state.selectedBoon) {
 			const heroCards = this.props.game.heroes
 				.filter(h => h.name !== '')
@@ -201,7 +225,7 @@ export class HeroesPage extends Component<Props, State> {
 					);
 				});
 
-			dialog = (
+			return (
 				<Dialog
 					content={(
 						<div>
@@ -219,22 +243,17 @@ export class HeroesPage extends Component<Props, State> {
 			);
 		}
 
+		return null;
+	};
+
+	render = () => {
 		return (
 			<div className='heroes-page'>
 				<div className='heroes-content'>
-					{heroes}
+					{this.getContent()}
 				</div>
-				<div className='sidebar'>
-					<Text type={TextType.SubHeading}>Your Heroes</Text>
-					<Text>This page shows the heroes that you have recruited.</Text>
-					{boons !== null ? <hr /> : null}
-					{boons}
-					{levelUp !== null ? <hr /> : null}
-					{levelUp}
-					{blankHeroes !== null ? <hr /> : null}
-					{blankHeroes}
-				</div>
-				{dialog}
+				{this.getSidebar()}
+				{this.getDialog()}
 			</div>
 		);
 	};

@@ -58,7 +58,18 @@ export class ItemsPage extends Component<Props, State> {
 		});
 	};
 
-	render = () => {
+	getSidebar = () => {
+		const controlLand = this.props.game.map.squares.some(sq => sq.regionID === '');
+		const enoughMoney = (this.props.game.money >= 100);
+
+		const moneySection = (
+			<div>
+				<StatValue orientation='vertical' label='Money' value={<IconValue type={IconType.Money} value={this.props.game.money} />} />
+				{!controlLand ? <Text type={TextType.Information}>You can&apos;t buy anything until you control part of the island.</Text> : null}
+				{this.props.developer ? <button className='developer' onClick={() => this.props.addMoney()}>Add money</button> : null}
+			</div>
+		);
+
 		let boons = null;
 		if (this.props.game.boons.filter(boon => !GameLogic.getBoonIsHeroType(boon)).length > 0) {
 			const cards = this.props.game.boons
@@ -72,6 +83,78 @@ export class ItemsPage extends Component<Props, State> {
 			);
 		}
 
+		let itemSection = null;
+		if (controlLand && enoughMoney) {
+			const count = Math.floor(this.props.game.money / 100);
+			const text = count === 1 ? 'a magic item' : `${count} magic items`;
+			itemSection = (
+				<div>
+					<Text type={TextType.Information}><b>You have enough money to buy {text}.</b> Click the item deck below to choose an item.</Text>
+					<div className='center'>
+						<PlayingCard
+							stack={true}
+							front={<PlaceholderCard text={<div>Magic<br />Items</div>} subtext={<IconValue type={IconType.Money} value={100} iconSize={15} />} />}
+							onClick={() => this.showMarket()}
+						/>
+					</div>
+				</div>
+			);
+		}
+
+		return (
+			<div className='sidebar'>
+				<Text type={TextType.SubHeading}>Your Items</Text>
+				<Text>This page lists the items that your heroes aren&apos;t currently using.</Text>
+				<hr />
+				{moneySection}
+				{boons !== null ? <hr /> : null}
+				{boons}
+				{itemSection !== null ? <hr /> : null}
+				{itemSection}
+			</div>
+		);
+	};
+
+	getDialog = () => {
+		if (this.state.magicItems.length > 0) {
+			const cards = this.state.magicItems.map(item => (
+				<PlayingCard
+					key={item.id}
+					type={CardType.Item}
+					front={<ItemCard item={item} />}
+					footer='Item'
+					onClick={() => this.buyItem(item)}
+				/>
+			));
+
+			cards.unshift(
+				<PlayingCard
+					key='deck'
+					stack={true}
+					type={CardType.Item}
+					front={<PlaceholderCard text={<div>Magic<br />Item<br />Deck</div>} subtext='Select one of these cards.' />}
+				/>
+			);
+
+			return (
+				<Dialog
+					content={(
+						<div>
+							<Text type={TextType.Heading}>Choose a Magic Item</Text>
+							{this.props.developer ? <button className='developer' onClick={this.showMarket}>Redraw</button> : null}
+							<div className='card-selection-row'>
+								<CardList cards={cards} />
+							</div>
+						</div>
+					)}
+				/>
+			);
+		}
+
+		return null;
+	};
+
+	render = () => {
 		let magicItemSection = null;
 		const magicItems = this.props.game.items.filter(i => i.magic).sort((a, b) => a.name.localeCompare(b.name));
 		if (magicItems.length > 0) {
@@ -130,64 +213,9 @@ export class ItemsPage extends Component<Props, State> {
 		} else {
 			mundaneItemSection = (
 				<div>
-					<Text type={TextType.SubHeading}>Items ({mundaneItems.length})</Text>
+					<Text type={TextType.SubHeading}>Items (0)</Text>
 					<Text type={TextType.Information}>You have no unequipped items.</Text>
 				</div>
-			);
-		}
-
-		const controlLand = this.props.game.map.squares.some(sq => sq.regionID === '');
-		const moneySection = (
-			<div>
-				<StatValue orientation='vertical' label='Money' value={<IconValue type={IconType.Money} value={this.props.game.money} />} />
-				{!controlLand ? <Text type={TextType.Information}>You can&apos;t buy anything until you control part of the island.</Text> : null}
-				{this.props.developer ? <button className='developer' onClick={() => this.props.addMoney()}>Add money</button> : null}
-			</div>
-		);
-
-		const enoughMoney = (this.props.game.money >= 100);
-		let itemSection = null;
-		if (controlLand && enoughMoney) {
-			const count = Math.floor(this.props.game.money / 100);
-			const text = count === 1 ? 'a magic item' : `${count} magic items`;
-			itemSection = (
-				<div>
-					<Text type={TextType.Information}><b>You have enough money to buy {text}.</b> Click the item deck below to choose an item.</Text>
-					<div className='center'>
-						<PlayingCard
-							stack={true}
-							front={<PlaceholderCard text='Magic Items' subtext={<IconValue type={IconType.Money} value={100} iconSize={15} />} />}
-							onClick={() => this.showMarket()}
-						/>
-					</div>
-				</div>
-			);
-		}
-
-		let dialog = null;
-		if (this.state.magicItems.length > 0) {
-			const cards = this.state.magicItems.map(item => (
-				<PlayingCard
-					key={item.id}
-					type={CardType.Item}
-					front={<ItemCard item={item} />}
-					footer='Item'
-					onClick={() => this.buyItem(item)}
-				/>
-			));
-
-			dialog = (
-				<Dialog
-					content={(
-						<div>
-							<Text type={TextType.Heading}>Choose a Magic Item</Text>
-							{this.props.developer ? <button className='developer' onClick={this.showMarket}>Redraw</button> : null}
-							<div className='card-selection-row'>
-								<CardList cards={cards} />
-							</div>
-						</div>
-					)}
-				/>
 			);
 		}
 
@@ -197,17 +225,8 @@ export class ItemsPage extends Component<Props, State> {
 					{magicItemSection}
 					{mundaneItemSection}
 				</div>
-				<div className='sidebar'>
-					<Text type={TextType.SubHeading}>Your Items</Text>
-					<Text>This page lists the items that your heroes aren&apos;t currently using.</Text>
-					<hr />
-					{moneySection}
-					{boons !== null ? <hr /> : null}
-					{boons}
-					{itemSection !== null ? <hr /> : null}
-					{itemSection}
-				</div>
-				{dialog}
+				{this.getSidebar()}
+				{this.getDialog()}
 			</div>
 		);
 	};

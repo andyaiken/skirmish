@@ -24,12 +24,10 @@
 		overflow-y: scroll;
 		-webkit-overflow-scrolling: touch;
 
-		.region {
-			.card,
-			.boon {
-				display: flex;
-				justify-content: center;
-			}
+		.card,
+		.boon {
+			display: flex;
+			justify-content: center;
 		}
 	}
 }

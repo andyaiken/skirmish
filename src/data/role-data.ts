@@ -530,7 +530,7 @@ export class RoleData {
 					},
 					{
 						id: 'enchanter-action-2',
-						name: 'Bewilderment',
+						name: 'Bewilder',
 						prerequisites: [
 							ActionPrerequisites.implement()
 						],

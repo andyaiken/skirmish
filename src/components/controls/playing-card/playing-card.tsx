@@ -56,7 +56,7 @@ export class PlayingCard extends Component<Props> {
 
 		const stack = [];
 		if (this.props.stack) {
-			for (let n = 0; n !== 5; ++n) {
+			for (let n = 0; n !== 10; ++n) {
 				const degrees = (Random.randomDecimal() * 10) - 5;
 				const offsetX = (Random.randomDecimal() * 10) - 5;
 				const offsetY = (Random.randomDecimal() * 10) - 5;

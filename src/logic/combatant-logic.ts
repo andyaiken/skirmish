@@ -14,6 +14,8 @@ import { SkillCategoryType } from '../enums/skill-category-type';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
 
+import { MagicItemGenerator } from '../generators/magic-item-generator';
+
 import type { ActionModel } from '../models/action';
 import type { CombatantModel } from '../models/combatant';
 import type { ConditionModel } from '../models/condition';
@@ -21,6 +23,7 @@ import type { FeatureModel } from '../models/feature';
 import type { ItemModel } from '../models/item';
 
 import { Collections } from '../utils/collections';
+import { Random } from '../utils/random';
 import { Utils } from '../utils/utils';
 
 import { Factory } from './factory';
@@ -64,10 +67,24 @@ export class CombatantLogic {
 		}
 	};
 
-	static incrementCombatantLevel = (combatant: CombatantModel) => {
-		const deck = CombatantLogic.getFeatureDeck(combatant).filter(f => f.type !== FeatureType.Proficiency);
-		combatant.features.push(Collections.draw(deck));
+	static incrementCombatantLevel = (combatant: CombatantModel, feature: FeatureModel) => {
+		// Increment level, remove XP
 		combatant.level += 1;
+		combatant.xp = Math.max(combatant.xp - combatant.level, 0);
+
+		// Add the new feature
+		combatant.features.push(feature);
+
+		// Make magic items more powerful
+		for (let n = 0; n !== combatant.items.length; ++n) {
+			const item = combatant.items[n];
+			if (item.magic) {
+				// 50% chance
+				if (Random.randomBoolean()) {
+					combatant.items[n] = MagicItemGenerator.addMagicItemFeature(item);
+				}
+			}
+		}
 	};
 
 	static makeFeatureChoices = (combatant: CombatantModel) => {

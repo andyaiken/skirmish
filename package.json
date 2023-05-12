@@ -4,7 +4,7 @@
 	"repository": "https://github.com/andyaiken/skirmish.git",
 	"homepage": "https://andyaiken.github.io/skirmish/",
 	"dependencies": {
-		"@tabler/icons-react": "^2.17.0",
+		"@tabler/icons-react": "^2.18.0",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
 		"react-markdown": "^8.0.7"

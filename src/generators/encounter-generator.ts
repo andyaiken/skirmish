@@ -1,5 +1,6 @@
 import { CombatantType } from '../enums/combatant-type';
 import { EncounterMapSquareType } from '../enums/encounter-map-square-type';
+import { FeatureType } from '../enums/feature-type';
 import { QuirkType } from '../enums/quirk-type';
 
 import type { CombatantModel } from '../models/combatant';
@@ -79,7 +80,8 @@ export class EncounterGenerator {
 					// Level up a random monster
 					if (monsters.length > 0) {
 						const monster = Collections.draw(monsters, rng);
-						CombatantLogic.incrementCombatantLevel(monster);
+						const featureDeck = CombatantLogic.getFeatureDeck(monster).filter(f => f.type !== FeatureType.Proficiency);
+						CombatantLogic.incrementCombatantLevel(monster, Collections.draw(featureDeck));
 						CombatantLogic.makeFeatureChoices(monster);
 					}
 					break;

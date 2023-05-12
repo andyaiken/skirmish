@@ -18,6 +18,7 @@ export class PlaceholderCard extends Component<Props> {
 		return (
 			<div className='placeholder-card'>
 				{this.props.text ? <Text type={TextType.SubHeading}>{this.props.text}</Text> : null}
+				{this.props.subtext ? <hr /> : null}
 				{this.props.subtext ? <Text type={TextType.Small}>{this.props.subtext}</Text> : null}
 			</div>
 		);

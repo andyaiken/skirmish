@@ -61,13 +61,7 @@ export class Factory {
 
 	static createGame = (): GameModel => {
 		return {
-			heroes: [
-				Factory.createCombatant(CombatantType.Hero),
-				Factory.createCombatant(CombatantType.Hero),
-				Factory.createCombatant(CombatantType.Hero),
-				Factory.createCombatant(CombatantType.Hero),
-				Factory.createCombatant(CombatantType.Hero)
-			],
+			heroes: [],
 			items: [],
 			boons: [],
 			money: 0,

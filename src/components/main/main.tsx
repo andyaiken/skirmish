@@ -16,7 +16,6 @@ import { EncounterMapLogic } from '../../logic/encounter-map-logic';
 import { Factory } from '../../logic/factory';
 import { GameLogic } from '../../logic/game-logic';
 import { IntentsLogic } from '../../logic/intents-logic';
-import { MagicItemGenerator } from '../../generators/magic-item-generator';
 
 import type { ActionModel, ActionParameterModel } from '../../models/action';
 import type { BoonModel } from '../../models/boon';
@@ -31,7 +30,7 @@ import { Collections } from '../../utils/collections';
 import { Utils } from '../../utils/utils';
 
 import { BoonCard, PlaceholderCard } from '../cards';
-import { CampaignScreen, EncounterScreen, LandingScreen } from '../screens';
+import { CampaignScreen, EncounterScreen, LandingScreen, SetupScreen } from '../screens';
 import { Dialog, PlayingCard, Text, TextType } from '../controls';
 import { SettingsPanel } from '../panels';
 
@@ -42,10 +41,12 @@ import game from '../../docs/game.md';
 import heroes from '../../docs/heroes.md';
 import island from '../../docs/island.md';
 import items from '../../docs/items.md';
+
 const rules: Record<string, string> = {};
 
 enum ScreenType {
 	Landing = 'landing',
+	Setup = 'setup',
 	Campaign = 'campaign',
 	Encounter = 'encounter'
 }
@@ -175,6 +176,12 @@ export class Main extends Component<Props, State> {
 	startCampaign = () => {
 		this.setState({
 			game: Factory.createGame(),
+			screen: ScreenType.Setup
+		});
+	};
+
+	beginCampaign = () => {
+		this.setState({
 			screen: ScreenType.Campaign
 		});
 	};
@@ -226,7 +233,6 @@ export class Main extends Component<Props, State> {
 	};
 
 	incrementXP = (hero: CombatantModel) => {
-		// DEV ONLY
 		hero.xp += 1;
 		this.setState({
 			game: this.state.game
@@ -234,16 +240,7 @@ export class Main extends Component<Props, State> {
 	};
 
 	levelUp = (feature: FeatureModel, hero: CombatantModel) => {
-		hero.xp -= hero.level;
-		hero.level += 1;
-		hero.features.push(feature);
-
-		for (let n = 0; n !== hero.items.length; ++n) {
-			const item = hero.items[n];
-			if (item.magic) {
-				hero.items[n] = MagicItemGenerator.addMagicItemFeature(item);
-			}
-		}
+		CombatantLogic.incrementCombatantLevel(hero, feature);
 
 		this.setState({
 			game: this.state.game
@@ -707,6 +704,18 @@ export class Main extends Component<Props, State> {
 						showHelp={this.showHelp}
 						startCampaign={this.startCampaign}
 						continueCampaign={this.continueCampaign}
+					/>
+				);
+			case 'setup':
+				return (
+					<SetupScreen
+						game={this.state.game as GameModel}
+						addHero={this.addHero}
+						equipItem={this.equipItem}
+						unequipItem={this.unequipItem}
+						pickUpItem={this.pickUpItem}
+						dropItem={this.dropItem}
+						beginCampaign={this.beginCampaign}
 					/>
 				);
 			case 'campaign':

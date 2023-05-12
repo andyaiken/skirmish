@@ -15,7 +15,7 @@ import './mini-token.scss';
 
 interface Props {
 	combatant: CombatantModel;
-	encounter: EncounterModel;
+	encounter: EncounterModel | null;
 	squareSize: number;
 	mapDimensions: { left: number, top: number };
 	selectable: boolean;
@@ -70,6 +70,10 @@ export class MiniToken extends Component<Props, State> {
 	};
 
 	getPopover = () => {
+		if (!this.props.encounter) {
+			return null;
+		}
+
 		return (
 			<div
 				className={this.state.mouseOver ? 'token-popover shown' : 'token-popover'}
@@ -93,7 +97,7 @@ export class MiniToken extends Component<Props, State> {
 		const className = `encounter-map-mini-token ${type} ${current} ${selectable} ${selected} ${hidden} ${mouseOver}`;
 
 		let healthBar = null;
-		if (this.props.combatant.combat.wounds > 0) {
+		if (this.props.encounter && (this.props.combatant.combat.wounds > 0)) {
 			const resolve = EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Resolve);
 			const barWidth = 1 - (this.props.combatant.combat.wounds / resolve);
 			healthBar = (

@@ -76,21 +76,12 @@ export class HeroBuilderPanel extends Component<Props, State> {
 	};
 
 	render = () => {
-		const header = (
-			<div className='header'>
-				<Text type={TextType.Heading}>
-					Recruit a Hero
-				</Text>
-			</div>
-		);
-
 		let content = null;
 		if ((this.state.hero.speciesID === '') && (this.state.hero.roleID === '') && (this.state.hero.backgroundID === '')) {
 			// Initial card selection
 			content = (
 				<CardSelector
 					game={this.props.game}
-					header={header}
 					select={this.selectCards}
 				/>
 			);
@@ -99,7 +90,6 @@ export class HeroBuilderPanel extends Component<Props, State> {
 			content = (
 				<EquipmentSelector
 					hero={this.state.hero}
-					header={header}
 					addItems={this.addItems}
 				/>
 			);
@@ -111,7 +101,11 @@ export class HeroBuilderPanel extends Component<Props, State> {
 
 			content = (
 				<div className='finish-page'>
-					{header}
+					<div className='header'>
+						<Text type={TextType.Heading}>
+							Recruit a Hero
+						</Text>
+					</div>
 					<div className='content'>
 						<div className='rename-section'>
 							<div className='hero-name'>
@@ -142,7 +136,6 @@ export class HeroBuilderPanel extends Component<Props, State> {
 
 interface CardSelectorProps {
 	game: GameModel;
-	header: JSX.Element;
 	select: (speciesID: string, roleID: string, backgroundID: string) => void;
 }
 
@@ -196,28 +189,82 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 		this.props.select(this.state.selectedSpeciesID, this.state.selectedRoleID, this.state.selectedBackgroundID);
 	};
 
-	getSpeciesSection = () => {
-		const cards = [];
-
-		cards.push(
+	getOverviewSection = () => {
+		let speciesCard = (
 			<PlayingCard
-				key='deck'
-				stack={true}
 				type={CardType.Species}
-				front={<PlaceholderCard text={<div>Species<br />Deck</div>} subtext='Select one of these cards.' />}
+				front={<PlaceholderCard text='Species' subtext={<div>Choose one of the <b>Species</b> cards below</div>} />}
 			/>
 		);
 
-		this.state.speciesIDs.forEach(id => {
+		let roleCard = (
+			<PlayingCard
+				type={CardType.Role}
+				front={<PlaceholderCard text='Role' subtext={<div>Choose one of the <b>Role</b> cards below</div>} />}
+			/>
+		);
+
+		let backgroundCard = (
+			<PlayingCard
+				type={CardType.Background}
+				front={<PlaceholderCard text='Background' subtext={<div>Choose one of the <b>Background</b> cards below</div>} />}
+			/>
+		);
+
+		const species = GameLogic.getSpecies(this.state.selectedSpeciesID);
+		if (species) {
+			speciesCard = (
+				<PlayingCard
+					type={CardType.Species}
+					front={<SpeciesCard species={species} />}
+					footer='Species'
+				/>
+			);
+		}
+
+		const role = GameLogic.getRole(this.state.selectedRoleID);
+		if (role) {
+			roleCard = (
+				<PlayingCard
+					type={CardType.Role}
+					front={<RoleCard role={role} />}
+					footer='Role'
+				/>
+			);
+		}
+
+		const background = GameLogic.getBackground(this.state.selectedBackgroundID);
+		if (background) {
+			backgroundCard = (
+				<PlayingCard
+					type={CardType.Background}
+					front={<BackgroundCard background={background} />}
+					footer='Background'
+				/>
+			);
+		}
+
+		return (
+			<div className='card-selection-row'>
+				<CardList cards={[ speciesCard, roleCard, backgroundCard ]} />
+			</div>
+		);
+	};
+
+	getSpeciesSection = () => {
+		if (this.state.selectedSpeciesID) {
+			return;
+		}
+
+		const cards = this.state.speciesIDs.map(id => {
 			const species = GameLogic.getSpecies(id) as SpeciesModel;
-			cards.push(
+			return (
 				<div key={species.id}>
 					<PlayingCard
 						type={CardType.Species}
 						front={<SpeciesCard species={species} />}
 						footer='Species'
 						back={<PlaceholderCard text='Species' />}
-						display={(this.state.selectedSpeciesID !== '') && (this.state.selectedSpeciesID !== species.id) ? PlayingCardSide.Back : PlayingCardSide.Front}
 						onClick={(this.state.selectedSpeciesID !== '') ? null : () => this.selectSpecies(species.id)}
 					/>
 				</div>
@@ -232,27 +279,19 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 	};
 
 	getRoleSection = () => {
-		const cards = [];
+		if (this.state.selectedRoleID) {
+			return;
+		}
 
-		cards.push(
-			<PlayingCard
-				key='deck'
-				stack={true}
-				type={CardType.Role}
-				front={<PlaceholderCard text={<div>Role<br />Deck</div>} subtext='Select one of these cards.' />}
-			/>
-		);
-
-		this.state.roleIDs.forEach(id => {
+		const cards = this.state.roleIDs.map(id => {
 			const role = GameLogic.getRole(id) as RoleModel;
-			cards.push(
+			return (
 				<div key={role.id}>
 					<PlayingCard
 						type={CardType.Role}
 						front={<RoleCard role={role} />}
 						footer='Role'
 						back={<PlaceholderCard text='Role' />}
-						display={(this.state.selectedRoleID !== '') && (this.state.selectedRoleID !== role.id) ? PlayingCardSide.Back : PlayingCardSide.Front}
 						onClick={(this.state.selectedRoleID !== '') ? null : () => this.selectRole(role.id)}
 					/>
 				</div>
@@ -267,27 +306,19 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 	};
 
 	getBackgroundSection = () => {
-		const cards = [];
+		if (this.state.selectedBackgroundID) {
+			return;
+		}
 
-		cards.push(
-			<PlayingCard
-				key='deck'
-				stack={true}
-				type={CardType.Background}
-				front={<PlaceholderCard text={<div>Background<br />Deck</div>} subtext='Select one of these cards.' />}
-			/>
-		);
-
-		this.state.backgroundIDs.forEach(id => {
+		const cards = this.state.backgroundIDs.map(id => {
 			const background = GameLogic.getBackground(id) as BackgroundModel;
-			cards.push(
+			return (
 				<div key={background.id}>
 					<PlayingCard
 						type={CardType.Background}
 						front={<BackgroundCard background={background} />}
 						footer='Background'
 						back={<PlaceholderCard text='Background' />}
-						display={(this.state.selectedBackgroundID !== '') && (this.state.selectedBackgroundID !== background.id) ? PlayingCardSide.Back : PlayingCardSide.Front}
 						onClick={(this.state.selectedBackgroundID !== '') ? null : () => this.selectBackground(background.id)}
 					/>
 				</div>
@@ -306,8 +337,14 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 
 		return (
 			<div className='card-selector-page'>
-				{this.props.header}
+				<div className='header'>
+					<Text type={TextType.Heading}>
+						Recruit a Hero
+					</Text>
+				</div>
 				<div className='content'>
+					{this.getOverviewSection()}
+					<hr />
 					{this.getSpeciesSection()}
 					{this.getRoleSection()}
 					{this.getBackgroundSection()}
@@ -326,7 +363,6 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 
 interface EquipmentSelectorProps {
 	hero: CombatantModel;
-	header: JSX.Element;
 	addItems: (items: ItemModel[]) => void;
 }
 
@@ -379,20 +415,29 @@ class EquipmentSelector extends Component<EquipmentSelectorProps, EquipmentSelec
 			return null;
 		}
 
-		const slots = this.state.slots.map((slot, n) => {
-			const cards = [];
-
-			cards.push(
+		const overviewCards = this.state.slots.map((slot, n) => {
+			if (slot.selected) {
+				return (
+					<PlayingCard
+						key={n}
+						type={CardType.Item}
+						front={<ItemCard item={slot.selected} />}
+						footer='Item'
+					/>
+				);
+			}
+			return (
 				<PlayingCard
-					key='deck'
-					stack={true}
+					key={n}
 					type={CardType.Item}
-					front={<PlaceholderCard text={<div>Item<br />Deck</div>} subtext={`Select one of these ${slot.proficiency} cards.`} />}
+					front={<PlaceholderCard text={slot.proficiency} subtext={<div>Choose one of the <b>{slot.proficiency}</b> cards below</div>}/>}
 				/>
 			);
+		});
 
-			slot.candidates.forEach(item => {
-				cards.push(
+		const slots = this.state.slots.filter(slot => !slot.selected).map((slot, n) => {
+			const cards = slot.candidates.map(item => {
+				return (
 					<div key={item.id}>
 						<PlayingCard
 							type={CardType.Item}
@@ -417,8 +462,16 @@ class EquipmentSelector extends Component<EquipmentSelectorProps, EquipmentSelec
 
 		return (
 			<div className='equipment-page'>
-				{this.props.header}
+				<div className='header'>
+					<Text type={TextType.Heading}>
+						Recruit a Hero
+					</Text>
+				</div>
 				<div className='content'>
+					<div className='card-selection-row'>
+						<CardList cards={overviewCards} />
+					</div>
+					<hr />
 					{slots}
 				</div>
 				<div className='footer'>

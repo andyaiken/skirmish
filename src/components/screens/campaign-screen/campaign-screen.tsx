@@ -61,6 +61,16 @@ export class CampaignScreen extends Component<Props, State> {
 	render = () => {
 		let content = null;
 		switch (this.state.page) {
+			case 'island':
+				content = (
+					<CampaignMapPage
+						game={this.props.game}
+						developer={this.props.developer}
+						startEncounter={this.props.startEncounter}
+						conquer={this.props.conquer}
+					/>
+				);
+				break;
 			case 'heroes':
 				content = (
 					<HeroesPage
@@ -89,22 +99,12 @@ export class CampaignScreen extends Component<Props, State> {
 					/>
 				);
 				break;
-			case 'island':
-				content = (
-					<CampaignMapPage
-						game={this.props.game}
-						developer={this.props.developer}
-						startEncounter={this.props.startEncounter}
-						conquer={this.props.conquer}
-					/>
-				);
-				break;
 		}
 
 		const options = [
+			{ id: 'island', display: 'The Island' },
 			{ id: 'heroes', display: 'Your Team' },
-			{ id: 'items', display: 'Your Equipment' },
-			{ id: 'island', display: 'The Island' }
+			{ id: 'items', display: 'Your Equipment' }
 		];
 
 		return (

@@ -186,10 +186,9 @@ export class CampaignMapPage extends Component<Props, State> {
 									<Text type={TextType.SubHeading}>Selected heroes ({selected.length} / 5)</Text>
 									<Text type={TextType.Information}>Select <b>up to 5 heroes</b> from the left to take part in this encounter.</Text>
 									{selected}
+									<hr />
+									<button disabled={(this.state.selectedHeroes.length < 1) || (this.state.selectedHeroes.length > 5)} onClick={this.startEncounter}>Start the Encounter</button>
 								</div>
-							</div>
-							<div className='footer'>
-								<button disabled={(this.state.selectedHeroes.length < 1) || (this.state.selectedHeroes.length > 5)} onClick={this.startEncounter}>Start the Encounter</button>
 							</div>
 						</div>
 					)}

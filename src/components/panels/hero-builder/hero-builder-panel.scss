@@ -24,13 +24,10 @@
 			overflow-y: scroll;
 			-webkit-overflow-scrolling: touch;
 
-			.card-selection-row {
+			.card-selection-section,
+			.rename-section {
 				width: 620px;
 				margin: 0 auto;
-			}
-
-			.rename-section {
-				margin: 10%;
 
 				.hero-name {
 					margin: 20px 0;
@@ -45,10 +42,6 @@
 					text-align: center;
 				}
 			}
-		}
-
-		.footer {
-			flex: 0 0 auto;
 		}
 	}
 }

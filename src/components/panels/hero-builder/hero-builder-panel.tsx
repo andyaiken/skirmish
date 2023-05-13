@@ -115,10 +115,9 @@ export class HeroBuilderPanel extends Component<Props, State> {
 								<Tag>{species?.name ?? ''}</Tag> <Tag>{role?.name ?? ''}</Tag> <Tag>{background?.name ?? ''}</Tag>
 							</div>
 							<button onClick={this.rename}>Rename this hero</button>
+							<hr />
+							<button onClick={this.finished}>Finished</button>
 						</div>
-					</div>
-					<div className='footer'>
-						<button onClick={this.finished}>Finished</button>
 					</div>
 				</div>
 			);
@@ -343,14 +342,14 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 					</Text>
 				</div>
 				<div className='content'>
-					{this.getOverviewSection()}
-					<hr />
-					{this.getSpeciesSection()}
-					{this.getRoleSection()}
-					{this.getBackgroundSection()}
-				</div>
-				<div className='footer'>
-					<button disabled={!canSelect} onClick={() => this.select()}>Select these cards</button>
+					<div className='card-selection-section'>
+						{this.getOverviewSection()}
+						<hr />
+						{this.getSpeciesSection()}
+						{this.getRoleSection()}
+						{this.getBackgroundSection()}
+						{ canSelect ? <button onClick={() => this.select()}>Select these cards</button> : null }
+					</div>
 				</div>
 			</div>
 		);
@@ -468,14 +467,14 @@ class EquipmentSelector extends Component<EquipmentSelectorProps, EquipmentSelec
 					</Text>
 				</div>
 				<div className='content'>
-					<div className='card-selection-row'>
-						<CardList cards={overviewCards} />
+					<div className='card-selection-section'>
+						<div className='card-selection-row'>
+							<CardList cards={overviewCards} />
+						</div>
+						<hr />
+						{slots}
+						{ canSelect ? <button onClick={() => this.addItems()}>Select these items</button> : null }
 					</div>
-					<hr />
-					{slots}
-				</div>
-				<div className='footer'>
-					<button disabled={!canSelect} onClick={() => this.addItems()}>Select these items</button>
 				</div>
 			</div>
 		);

@@ -15,8 +15,8 @@ import { FeatureLogic } from '../../../../logic/feature-logic';
 import type { CombatantModel } from '../../../../models/combatant';
 import type { FeatureModel } from '../../../../models/feature';
 
-import { CardList, PlayingCard, PlayingCardSide, Selector, Text, TextType } from '../../../controls';
-import { FeatureCard, PlaceholderCard } from '../../../cards';
+import { CardList, PlayingCard, Selector, Text, TextType } from '../../../controls';
+import { FeatureCard } from '../../../cards';
 
 import './level-up.scss';
 
@@ -60,16 +60,28 @@ export class LevelUp extends Component<Props, State> {
 				<div key={feature.id}>
 					<PlayingCard
 						type={CardType.Feature}
-						front={<FeatureCard feature={(this.state.selectedFeature !== null) && (this.state.selectedFeature.id === feature.id) ? this.state.selectedFeature : feature} />}
-						back={<PlaceholderCard text='Feature' />}
+						front={<FeatureCard feature={feature} />}
 						footer={CombatantLogic.getActionSource(this.props.combatant, feature.id)}
 						footerType={CombatantLogic.getActionSourceType(this.props.combatant, feature.id)}
-						display={(this.state.selectedFeature !== null) && (this.state.selectedFeature.id !== feature.id) ? PlayingCardSide.Back : PlayingCardSide.Front}
-						onClick={(this.state.selectedFeature !== null) ? null : () => this.setState({ selectedFeature: feature })}
+						onClick={() => this.setState({ selectedFeature: feature })}
 					/>
 				</div>
 			);
 		});
+
+		let selected = null;
+		if (this.state.selectedFeature) {
+			selected = (
+				<div className='selected-feature'>
+					<PlayingCard
+						type={CardType.Feature}
+						front={<FeatureCard feature={this.state.selectedFeature} />}
+						footer={CombatantLogic.getActionSource(this.props.combatant, this.state.selectedFeature.id)}
+						footerType={CombatantLogic.getActionSourceType(this.props.combatant, this.state.selectedFeature.id)}
+					/>
+				</div>
+			);
+		}
 
 		let choice = null;
 		let canFinish = false;
@@ -82,7 +94,8 @@ export class LevelUp extends Component<Props, State> {
 			<div className='level-up'>
 				<div className='content'>
 					<Text type={TextType.SubHeading}>Choose a feature for level {this.props.combatant.level + 1}</Text>
-					<CardList cards={featureCards} />
+					{ this.state.selectedFeature === null ? <CardList cards={featureCards} /> : null }
+					{selected}
 					{choice}
 				</div>
 				<div className='footer'>

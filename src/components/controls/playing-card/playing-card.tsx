@@ -1,4 +1,5 @@
-import { Component } from 'react';
+import { Component, MouseEvent } from 'react';
+import { IconRefresh } from '@tabler/icons-react';
 
 import { CardType } from '../../../enums/card-type';
 import { Random } from '../../../utils/random';
@@ -13,29 +14,31 @@ export enum PlayingCardSide {
 interface Props {
 	stack: boolean;
 	type: CardType;
-	front: JSX.Element | string | null;
-	back: JSX.Element | string | null;
+	front: JSX.Element;
+	back: JSX.Element | null;
 	footer: JSX.Element | string | null;
 	footerType: CardType | null;
-	display: PlayingCardSide;
 	onClick: (() => void) | null;
 }
 
-export class PlayingCard extends Component<Props> {
+interface State {
+	display: PlayingCardSide;
+}
+
+export class PlayingCard extends Component<Props, State> {
 	static defaultProps = {
 		stack: false,
 		type: CardType.Default,
 		back: null,
 		footer: null,
 		footerType: null,
-		display: PlayingCardSide.Front,
 		onClick: null
 	};
 
 	constructor(props: Props) {
 		super(props);
 		this.state = {
-			display: props.display
+			display: PlayingCardSide.Front
 		};
 	}
 
@@ -45,12 +48,20 @@ export class PlayingCard extends Component<Props> {
 		}
 	};
 
+	flip = (e: MouseEvent) => {
+		e.stopPropagation();
+
+		this.setState({
+			display: this.state.display === PlayingCardSide.Front ? PlayingCardSide.Back : PlayingCardSide.Front
+		});
+	};
+
 	render = () => {
 		let className = 'playing-card';
 		if (this.props.onClick !== null) {
 			className += ' clickable';
 		}
-		if (this.props.display === PlayingCardSide.Back) {
+		if (this.state.display === PlayingCardSide.Back) {
 			className += ' flipped';
 		}
 
@@ -76,8 +87,7 @@ export class PlayingCard extends Component<Props> {
 			}
 		}
 
-		const hasFront = (this.props.front !== null) && (this.props.front !== '');
-		const hasFooter = (this.props.footer !== null) && (this.props.footer !== '');
+		const hasFooter = (this.props.footer !== null);
 		const footerType = this.props.footerType || this.props.type;
 
 		return (
@@ -85,10 +95,12 @@ export class PlayingCard extends Component<Props> {
 				{stack}
 				<div className='playing-card-inner'>
 					<div className={`playing-card-front ${this.props.type.toLowerCase()}`}>
-						{hasFront ? <div className='front-content'>{this.props.front}</div> : null }
-						{hasFooter ? <div className={`front-footer ${footerType.toLowerCase()}`}>{this.props.footer}</div> : null }
+						{ this.props.back !== null ? <button className='icon-btn' onClick={e => this.flip(e)}><IconRefresh /></button> : null }
+						<div className='front-content'>{this.props.front}</div>
+						{ hasFooter ? <div className={`front-footer ${footerType.toLowerCase()}`}>{this.props.footer}</div> : null }
 					</div>
 					<div className={`playing-card-back ${this.props.type.toLowerCase()}`}>
+						<button className='icon-btn' onClick={e => this.flip(e)}><IconRefresh /></button>
 						{this.props.back}
 					</div>
 				</div>

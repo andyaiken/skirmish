@@ -19,7 +19,7 @@ import { Collections } from '../../../utils/collections';
 import { Utils } from '../../../utils/utils';
 
 import { BackgroundCard, ItemCard, PlaceholderCard, RoleCard, SpeciesCard } from '../../cards';
-import { CardList, PlayingCard, PlayingCardSide, Tag, Text, TextType } from '../../controls';
+import { CardList, PlayingCard, Tag, Text, TextType } from '../../controls';
 
 import './hero-builder-panel.scss';
 
@@ -263,8 +263,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 						type={CardType.Species}
 						front={<SpeciesCard species={species} />}
 						footer='Species'
-						back={<PlaceholderCard text='Species' />}
-						onClick={(this.state.selectedSpeciesID !== '') ? null : () => this.selectSpecies(species.id)}
+						onClick={() => this.selectSpecies(species.id)}
 					/>
 				</div>
 			);
@@ -290,8 +289,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 						type={CardType.Role}
 						front={<RoleCard role={role} />}
 						footer='Role'
-						back={<PlaceholderCard text='Role' />}
-						onClick={(this.state.selectedRoleID !== '') ? null : () => this.selectRole(role.id)}
+						onClick={() => this.selectRole(role.id)}
 					/>
 				</div>
 			);
@@ -317,8 +315,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 						type={CardType.Background}
 						front={<BackgroundCard background={background} />}
 						footer='Background'
-						back={<PlaceholderCard text='Background' />}
-						onClick={(this.state.selectedBackgroundID !== '') ? null : () => this.selectBackground(background.id)}
+						onClick={() => this.selectBackground(background.id)}
 					/>
 				</div>
 			);
@@ -348,7 +345,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 						{this.getSpeciesSection()}
 						{this.getRoleSection()}
 						{this.getBackgroundSection()}
-						{ canSelect ? <button onClick={() => this.select()}>Select these cards</button> : null }
+						{ canSelect ? <button onClick={() => this.select()}>Next</button> : null }
 					</div>
 				</div>
 			</div>
@@ -442,9 +439,7 @@ class EquipmentSelector extends Component<EquipmentSelectorProps, EquipmentSelec
 							type={CardType.Item}
 							front={<ItemCard item={item} />}
 							footer='Item'
-							back={<PlaceholderCard text='Item' />}
-							display={(slot.selected !== null) && (slot.selected.name !== item.name) ? PlayingCardSide.Back : PlayingCardSide.Front}
-							onClick={(slot.selected !== null) ? null : () => this.selectItem(item)}
+							onClick={() => this.selectItem(item)}
 						/>
 					</div>
 				);
@@ -473,7 +468,7 @@ class EquipmentSelector extends Component<EquipmentSelectorProps, EquipmentSelec
 						</div>
 						<hr />
 						{slots}
-						{ canSelect ? <button onClick={() => this.addItems()}>Select these items</button> : null }
+						{ canSelect ? <button onClick={() => this.addItems()}>Next</button> : null }
 					</div>
 				</div>
 			</div>

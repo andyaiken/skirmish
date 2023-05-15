@@ -15,9 +15,6 @@
 ## Encounters
 * Undo movement
 
-## Actions
-* Action parameter selection / 'go' button / etc, should happen in the card itself
-
 ## Features
 * Mountebank and Pixie should have an attack redirection aura
 

@@ -131,17 +131,6 @@ export class BackgroundData {
 						effects: [
 							ActionEffects.commandMove()
 						]
-					},
-					{
-						id: 'commander-action-3',
-						name: 'Battlefield Instinct',
-						prerequisites: [],
-						parameters: [
-							ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 10)
-						],
-						effects: [
-							ActionEffects.reveal()
-						]
 					}
 				]
 			},
@@ -543,17 +532,6 @@ export class BackgroundData {
 					},
 					{
 						id: 'thief-action-3',
-						name: 'Shake Down',
-						prerequisites: [],
-						parameters: [
-							ActionTargetParameters.adjacent(ActionTargetType.Enemies, Number.MAX_VALUE)
-						],
-						effects: [
-							ActionEffects.reveal()
-						]
-					},
-					{
-						id: 'thief-action-4',
 						name: 'Hide',
 						prerequisites: [],
 						parameters: [

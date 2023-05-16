@@ -241,17 +241,6 @@ export class SpeciesData {
 				actions: [
 					{
 						id: 'elf-action-1',
-						name: 'Elfsight',
-						prerequisites: [],
-						parameters: [
-							ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 10)
-						],
-						effects: [
-							ActionEffects.reveal()
-						]
-					},
-					{
-						id: 'pixie-action-2',
 						name: 'Seelie Step',
 						prerequisites: [],
 						parameters: [

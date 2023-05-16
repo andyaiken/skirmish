@@ -61,7 +61,7 @@ export class LevelUp extends Component<Props, State> {
 					<PlayingCard
 						type={CardType.Feature}
 						front={<FeatureCard feature={feature} />}
-						footer={CombatantLogic.getActionSource(this.props.combatant, feature.id)}
+						footer={CombatantLogic.getActionSource(this.props.combatant, feature.id) || 'Feature'}
 						footerType={CombatantLogic.getActionSourceType(this.props.combatant, feature.id)}
 						onClick={() => this.setState({ selectedFeature: feature })}
 					/>
@@ -76,7 +76,7 @@ export class LevelUp extends Component<Props, State> {
 					<PlayingCard
 						type={CardType.Feature}
 						front={<FeatureCard feature={this.state.selectedFeature} />}
-						footer={CombatantLogic.getActionSource(this.props.combatant, this.state.selectedFeature.id)}
+						footer={CombatantLogic.getActionSource(this.props.combatant, this.state.selectedFeature.id) || 'Feature'}
 						footerType={CombatantLogic.getActionSourceType(this.props.combatant, this.state.selectedFeature.id)}
 					/>
 				</div>

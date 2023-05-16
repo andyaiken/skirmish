@@ -46,7 +46,7 @@ export class Items extends Component<Props> {
 					);
 				}
 
-				let footer: JSX.Element | null = (
+				let options: JSX.Element | null = (
 					<div className='item-options'>
 						<button disabled={this.props.combatant.carried.length >= 6} onClick={() => this.props.unequipItem(item)}>
 							{unequip}
@@ -57,15 +57,16 @@ export class Items extends Component<Props> {
 					</div>
 				);
 				if (this.props.combatant.type !== CombatantType.Hero) {
-					footer = null;
+					options = null;
 				}
 				if (!!this.props.game.encounter && !this.props.combatant.combat.current) {
-					footer = null;
+					options = null;
 				}
 
 				return (
 					<div key={item.id} className='item'>
-						<PlayingCard type={CardType.Item} front={<ItemCard item={item} />} footer={footer} />
+						<PlayingCard type={CardType.Item} front={<ItemCard item={item} />} footer='Item' />
+						{options}
 					</div>
 				);
 			});
@@ -100,7 +101,7 @@ export class Items extends Component<Props> {
 					);
 				}
 
-				let footer: JSX.Element | null = (
+				let options: JSX.Element | null = (
 					<div className='item-options'>
 						<button disabled={!CombatantLogic.canEquip(this.props.combatant, item)} onClick={() => this.props.equipItem(item)}>
 							{equip}
@@ -111,15 +112,16 @@ export class Items extends Component<Props> {
 					</div>
 				);
 				if (this.props.combatant.type !== CombatantType.Hero) {
-					footer = null;
+					options = null;
 				}
 				if (!!this.props.game.encounter && !this.props.combatant.combat.current) {
-					footer = null;
+					options = null;
 				}
 
 				return (
 					<div key={item.id} className='item'>
-						<PlayingCard type={CardType.Item} front={<ItemCard item={item} />} footer={footer} />
+						<PlayingCard type={CardType.Item} front={<ItemCard item={item} />} footer='Item' />
+						{options}
 					</div>
 				);
 			});
@@ -155,7 +157,7 @@ export class Items extends Component<Props> {
 			.map(item => {
 				const count = this.props.game.items.filter(i => i.name === item.name).length;
 
-				const footer = (
+				const options = (
 					<div className='item-options'>
 						{count > 1 ? <Text type={TextType.MinorHeading}>x{count}</Text> : null}
 						<button disabled={!CombatantLogic.canEquip(this.props.combatant, item)} onClick={() => this.props.equipItem(item)}>
@@ -169,7 +171,8 @@ export class Items extends Component<Props> {
 
 				return (
 					<div key={item.id} className='item'>
-						<PlayingCard type={CardType.Item} front={<ItemCard item={item} />} footer={footer} />
+						<PlayingCard type={CardType.Item} front={<ItemCard item={item} />} footer='Item' />
+						{options}
 					</div>
 				);
 			});
@@ -203,7 +206,7 @@ export class Items extends Component<Props> {
 
 		const cards = items
 			.map(item => {
-				const footer = (
+				const options = (
 					<div className='item-options'>
 						<button disabled={this.props.combatant.carried.length >= 6} onClick={() => this.props.pickUpItem(item)}>
 							<div>Pick Up<br /><IconValue type={IconType.Movement} value={1} iconSize={12} /></div>
@@ -213,7 +216,8 @@ export class Items extends Component<Props> {
 
 				return (
 					<div key={item.id} className='item'>
-						<PlayingCard type={CardType.Item} front={<ItemCard item={item} />} footer={footer} />
+						<PlayingCard type={CardType.Item} front={<ItemCard item={item} />} footer='Item' />
+						{options}
 					</div>
 				);
 			});

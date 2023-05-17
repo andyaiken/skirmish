@@ -89,7 +89,7 @@ export class MiniToken extends Component<Props, State> {
 
 	render = () => {
 		const type = this.props.combatant.type.toLowerCase();
-		const current = this.props.combatant.combat.current ? 'current' : '';
+		const current = !!this.props.encounter && this.props.combatant.combat.current ? 'current' : '';
 		const selectable = this.props.selectable ? 'selectable' : '';
 		const selected = this.props.selected ? 'selected' : '';
 		const hidden = (this.props.combatant.combat.hidden > 0) ? 'hidden' : '';
@@ -111,10 +111,10 @@ export class MiniToken extends Component<Props, State> {
 			<div
 				className={className}
 				style={{
-					width: `${this.props.squareSize * this.props.combatant.size}px`,
-					left: `${((this.props.combatant.combat.position.x - this.props.mapDimensions.left) * this.props.squareSize)}px`,
-					top: `${((this.props.combatant.combat.position.y - this.props.mapDimensions.top) * this.props.squareSize)}px`,
-					fontSize: `${this.props.squareSize * this.props.combatant.size * 0.25}px`
+					width: this.props.encounter ? `${this.props.squareSize * this.props.combatant.size}px` : `${this.props.squareSize}px`,
+					left: this.props.encounter ? `${((this.props.combatant.combat.position.x - this.props.mapDimensions.left) * this.props.squareSize)}px` : '0',
+					top: this.props.encounter ? `${((this.props.combatant.combat.position.y - this.props.mapDimensions.top) * this.props.squareSize)}px` : '0',
+					fontSize: this.props.encounter ? `${this.props.squareSize * this.props.combatant.size * 0.25}px` : `${this.props.squareSize * 0.25}px`
 				}}
 				onClick={e => this.onClick(e)}
 				onDoubleClick={e => this.onDoubleClick(e)}
@@ -125,9 +125,9 @@ export class MiniToken extends Component<Props, State> {
 					{this.getMonogram()}
 				</div>
 				{healthBar}
-				{this.props.combatant.combat.current ? <div className='pulse pulse-one' /> : null}
-				{this.props.combatant.combat.current ? <div className='pulse pulse-two' /> : null}
-				{this.props.combatant.combat.current ? <div className='pulse pulse-three' /> : null}
+				{!!this.props.encounter && this.props.combatant.combat.current ? <div className='pulse pulse-one' /> : null}
+				{!!this.props.encounter && this.props.combatant.combat.current ? <div className='pulse pulse-two' /> : null}
+				{!!this.props.encounter && this.props.combatant.combat.current ? <div className='pulse pulse-three' /> : null}
 				{this.getPopover()}
 			</div>
 		);

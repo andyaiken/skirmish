@@ -4,6 +4,8 @@ import type { LootPileModel } from '../../../models/encounter';
 
 import { Text, TextType } from '../../controls';
 
+import { ListItemPanel } from '../../panels';
+
 import './loot-pile-card.scss';
 
 interface Props {
@@ -16,7 +18,7 @@ export class LootPileCard extends Component<Props> {
 		if (this.props.loot.items.length > 0) {
 			itemSection = (
 				<div className='items'>
-					{this.props.loot.items.map(i => (<div key={i.id} className='item'>{i.name}</div>))}
+					{this.props.loot.items.map(i => (<ListItemPanel key={i.id} item={i.name} />))}
 				</div>
 			);
 		}

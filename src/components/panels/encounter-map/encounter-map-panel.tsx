@@ -55,13 +55,16 @@ export class EncounterMapPanel extends Component<Props> {
 				if (param) {
 					if (range > 0) {
 						const originParam = param as ActionOriginParameterModel;
-						const origin = (originParam.value as { x: number, y: number }[])[0];
-						effect = {
-							x: origin.x,
-							y: origin.y,
-							size: 1,
-							radius: range
-						};
+						if (originParam.value) {
+							const originSquares = (originParam.value as { x: number, y: number }[]);
+							if (originSquares.length > 0)
+								effect = {
+									x: originSquares[0].x,
+									y: originSquares[0].y,
+									size: 1,
+									radius: range
+								};
+						}
 					}
 				} else {
 					if (range > 1) {

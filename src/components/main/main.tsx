@@ -326,6 +326,7 @@ export class Main extends Component<Props, State> {
 
 	startEncounter = (region: RegionModel, heroes: CombatantModel[]) => {
 		if (this.state.game) {
+			heroes.forEach(h => CombatantLogic.resetCombatant(h));
 			const game = this.state.game;
 			game.encounter = EncounterGenerator.createEncounter(region, heroes);
 			this.setState({

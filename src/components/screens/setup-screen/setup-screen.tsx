@@ -1,5 +1,4 @@
 import { Component } from 'react';
-import { IconId } from '@tabler/icons-react';
 
 import { CombatantType } from '../../../enums/combatant-type';
 
@@ -109,7 +108,7 @@ export class SetupScreen extends Component<Props, State> {
 								mapDimensions={{ left: 0, top: 0 }}
 								selectable={true}
 								selected={false}
-								onClick={() => null}
+								onClick={() => this.selectHero(h)}
 								onDoubleClick={() => null}
 							/>
 						</div>
@@ -121,19 +120,26 @@ export class SetupScreen extends Component<Props, State> {
 							<Tag>{GameLogic.getRole(h.roleID)?.name ?? 'Unknown role'}</Tag>
 							<Tag>{GameLogic.getBackground(h.backgroundID)?.name ?? 'Unknown background'}</Tag>
 						</div>
-						<button className='icon-btn' onClick={() => this.selectHero(h)}>
-							<IconId />
-						</button>
 					</div>
 				);
 			});
-		while (heroes.length < 5) {
+		if (heroes.length < 5) {
 			heroes.push(
-				<div key={heroes.length} className='empty-panel'>
+				<div key='add' className='empty-panel'>
 					<button onClick={this.createHero}>Recruit a Hero</button>
 				</div>
 			);
 		}
+		while (heroes.length < 5) {
+			heroes.push(
+				<div key={heroes.length} className='empty-panel' />
+			);
+		}
+		heroes.push(
+			<div key='begin' className='button-panel'>
+				<button disabled={this.props.game.heroes.length < 5} onClick={this.props.beginCampaign}>Begin the Campaign</button>
+			</div>
+		);
 
 		return (
 			<div className='setup-screen'>
@@ -141,11 +147,8 @@ export class SetupScreen extends Component<Props, State> {
 					<div className='logo-text inset-text'>Skirmish</div>
 				</div>
 				<div className='setup-content'>
-					<Text type={TextType.Information}><b>Recruit your team.</b> These heroes will begin the task of conquering the island.</Text>
+					<Text type={TextType.Information}><b>Recruit your team.</b> These five heroes will begin the task of conquering the island.</Text>
 					{heroes}
-				</div>
-				<div className='setup-footer'>
-					<button disabled={this.props.game.heroes.length < 5} onClick={this.props.beginCampaign}>Begin the Campaign</button>
 				</div>
 				{this.getDialog()}
 			</div>

@@ -186,8 +186,8 @@ export class Stats extends Component<Props, State> {
 			</div>
 		);
 
-		const deckColumn = (
-			<div className='column'>
+		const decksColumn = (
+			<div className='column decks'>
 				<CardList cards={[
 					<PlayingCard
 						key='features'
@@ -256,7 +256,7 @@ export class Stats extends Component<Props, State> {
 				<div className='grid'>
 					{primaryColumn}
 					{cutDown ? null : secondaryColumn}
-					{cutDown ? null : deckColumn}
+					{cutDown ? null : decksColumn}
 				</div>
 				{dialog}
 			</div>

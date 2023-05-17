@@ -2,9 +2,12 @@ import { Component } from 'react';
 
 import { ItemProficiencyType } from '../../../enums/item-proficiency-type';
 
+import { ActionLogic } from '../../../logic/action-logic';
+import { FeatureLogic } from '../../../logic/feature-logic';
+
 import type { ItemModel } from '../../../models/item';
 
-import { ActionListItemPanel, FeatureListItemPanel } from '../../panels';
+import { ListItemPanel } from '../../panels';
 
 import { IconValue, StatValue, Tag, Text, TextType } from '../../controls';
 
@@ -42,7 +45,7 @@ export class ItemCard extends Component<Props> {
 			armor = (
 				<div>
 					<Text type={TextType.MinorHeading}>Armor</Text>
-					{this.props.item.armor.features.map(f => <FeatureListItemPanel key={f.id} item={f} />)}
+					{this.props.item.armor.features.map(f => <ListItemPanel key={f.id} item={FeatureLogic.getFeatureDescription(f)} />)}
 				</div>
 			);
 		}
@@ -52,7 +55,7 @@ export class ItemCard extends Component<Props> {
 			features = (
 				<div>
 					<Text type={TextType.MinorHeading}>Features</Text>
-					{this.props.item.features.map(f => <FeatureListItemPanel key={f.id} item={f} />)}
+					{this.props.item.features.map(f => <ListItemPanel key={f.id} item={FeatureLogic.getFeatureDescription(f)} />)}
 				</div>
 			);
 		}
@@ -62,7 +65,7 @@ export class ItemCard extends Component<Props> {
 			actions = (
 				<div>
 					<Text type={TextType.MinorHeading}>Actions</Text>
-					{this.props.item.actions.map(a => <ActionListItemPanel key={a.id} item={a} />)}
+					{this.props.item.actions.map(a => <ListItemPanel key={a.id} item={ActionLogic.getActionDescription(a)} />)}
 				</div>
 			);
 		}

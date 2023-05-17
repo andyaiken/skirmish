@@ -382,6 +382,7 @@ export class CombatantLogic {
 
 	static resetCombatant = (combatant: CombatantModel) => {
 		combatant.combat.current = false;
+		combatant.combat.stunned = false;
 		combatant.combat.state = CombatantState.Standing;
 		combatant.combat.position = { x: 0, y: 0 };
 		combatant.combat.trail = [];
@@ -393,6 +394,9 @@ export class CombatantLogic {
 		combatant.combat.hidden = 0;
 		combatant.combat.conditions = [];
 		combatant.combat.actions = [];
+		combatant.combat.selectedAction = null;
+		combatant.combat.log = [];
+		combatant.combat.intents = null;
 	};
 
 	static getFeatures = (combatant: CombatantModel) => {

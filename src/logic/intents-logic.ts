@@ -265,7 +265,7 @@ export class IntentsLogic {
 		return intents;
 	};
 
-	static getAttackIntents = (encounter: EncounterModel, combatant: CombatantModel) => {
+	static getAttackIntents = (encounter: EncounterModel, combatant: CombatantModel, invertTargets = false) => {
 		const intents: IntentsModel[] = [];
 
 		if (!combatant.combat.selectedAction) {
@@ -276,8 +276,13 @@ export class IntentsLogic {
 					const parametersSet = action.parameters.every(param => {
 						switch (param.id) {
 							case 'origin':
-							case 'targets':
 								return (param.value as []).length > 0;
+							case 'targets': {
+								const targets = param.value as CombatantModel[];
+								const allies = targets.filter(t => invertTargets ? (t.type !== combatant.type) : (t.type === combatant.type)).length;
+								const enemies = targets.filter(t => invertTargets ? (t.type === combatant.type) : (t.type !== combatant.type)).length;
+								return enemies > allies;
+							}
 						}
 
 						return param.value !== null;

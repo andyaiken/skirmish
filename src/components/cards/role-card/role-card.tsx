@@ -1,8 +1,11 @@
 import { Component } from 'react';
 
+import { ActionLogic } from '../../../logic/action-logic';
+import { FeatureLogic } from '../../../logic/feature-logic';
+
 import type { RoleModel } from '../../../models/role';
 
-import { ActionListItemPanel, FeatureListItemPanel, TextListItemPanel } from '../../panels';
+import { ListItemPanel } from '../../panels';
 
 import { Text, TextType } from '../../controls';
 
@@ -19,7 +22,7 @@ export class RoleCard extends Component<Props> {
 			traits = (
 				<div>
 					<Text type={TextType.MinorHeading}>Traits</Text>
-					{this.props.role.traits.map((t, n) => <TextListItemPanel key={n} item={t} />)}
+					{this.props.role.traits.map((t, n) => <ListItemPanel key={n} item={t} />)}
 				</div>
 			);
 		}
@@ -29,7 +32,7 @@ export class RoleCard extends Component<Props> {
 			skills = (
 				<div>
 					<Text type={TextType.MinorHeading}>Skills</Text>
-					{this.props.role.skills.map((s, n) => <TextListItemPanel key={n} item={s} />)}
+					{this.props.role.skills.map((s, n) => <ListItemPanel key={n} item={s} />)}
 				</div>
 			);
 		}
@@ -39,7 +42,7 @@ export class RoleCard extends Component<Props> {
 			profs = (
 				<div>
 					<Text type={TextType.MinorHeading}>Proficiencies</Text>
-					{this.props.role.proficiencies.map((p, n) => <TextListItemPanel key={n} item={p} />)}
+					{this.props.role.proficiencies.map((p, n) => <ListItemPanel key={n} item={p} />)}
 				</div>
 			);
 		}
@@ -49,7 +52,7 @@ export class RoleCard extends Component<Props> {
 			features = (
 				<div>
 					<Text type={TextType.MinorHeading}>Features</Text>
-					{this.props.role.features.map(f => <FeatureListItemPanel key={f.id} item={f} />)}
+					{this.props.role.features.map(f => <ListItemPanel key={f.id} item={FeatureLogic.getFeatureDescription(f)} />)}
 				</div>
 			);
 		}
@@ -59,7 +62,7 @@ export class RoleCard extends Component<Props> {
 			actions = (
 				<div>
 					<Text type={TextType.MinorHeading}>Actions</Text>
-					{this.props.role.actions.map(a => <ActionListItemPanel key={a.id} item={a} />)}
+					{this.props.role.actions.map(a => <ListItemPanel key={a.id} item={ActionLogic.getActionDescription(a)} />)}
 				</div>
 			);
 		}

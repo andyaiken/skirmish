@@ -2,9 +2,12 @@ import { Component } from 'react';
 
 import { CombatantType } from '../../../enums/combatant-type';
 
+import { ActionLogic } from '../../../logic/action-logic';
+import { FeatureLogic } from '../../../logic/feature-logic';
+
 import type { SpeciesModel } from '../../../models/species';
 
-import { ActionListItemPanel, FeatureListItemPanel, TextListItemPanel } from '../../panels';
+import { ListItemPanel } from '../../panels';
 
 import { Tag, Text, TextType } from '../../controls';
 
@@ -16,12 +19,18 @@ interface Props {
 
 export class SpeciesCard extends Component<Props> {
 	render = () => {
+		const tags: JSX.Element[] = [];
+		if (this.props.species.type === CombatantType.Monster) {
+			tags.push(<Tag key='monster'>Monster</Tag>);
+		}
+		this.props.species.quirks.forEach((q, n) => tags.push(<Tag key={n}>{q}</Tag>));
+
 		let traits = null;
 		if (this.props.species.traits.length > 0) {
 			traits = (
 				<div>
 					<Text type={TextType.MinorHeading}>Traits</Text>
-					{this.props.species.traits.map((t, n) => <TextListItemPanel key={n} item={t} />)}
+					{this.props.species.traits.map((t, n) => <ListItemPanel key={n} item={t} />)}
 				</div>
 			);
 		}
@@ -31,7 +40,7 @@ export class SpeciesCard extends Component<Props> {
 			skills = (
 				<div>
 					<Text type={TextType.MinorHeading}>Skills</Text>
-					{this.props.species.skills.map((s, n) => <TextListItemPanel key={n} item={s} />)}
+					{this.props.species.skills.map((s, n) => <ListItemPanel key={n} item={s} />)}
 				</div>
 			);
 		}
@@ -41,7 +50,7 @@ export class SpeciesCard extends Component<Props> {
 			features = (
 				<div>
 					<Text type={TextType.MinorHeading}>Features</Text>
-					{this.props.species.features.map(f => <FeatureListItemPanel key={f.id} item={f} />)}
+					{this.props.species.features.map(f => <ListItemPanel key={f.id} item={FeatureLogic.getFeatureDescription(f)} />)}
 				</div>
 			);
 		}
@@ -51,7 +60,7 @@ export class SpeciesCard extends Component<Props> {
 			actions = (
 				<div>
 					<Text type={TextType.MinorHeading}>Actions</Text>
-					{this.props.species.actions.map(a => <ActionListItemPanel key={a.id} item={a} />)}
+					{this.props.species.actions.map(a => <ListItemPanel key={a.id} item={ActionLogic.getActionDescription(a)} />)}
 				</div>
 			);
 		}
@@ -61,10 +70,7 @@ export class SpeciesCard extends Component<Props> {
 				<Text type={TextType.SubHeading}>{this.props.species.name}</Text>
 				<hr />
 				<div className='description'>{this.props.species.description}</div>
-				<div className='tags'>
-					{this.props.species.type === CombatantType.Monster ? <Tag>Monster</Tag> : null}
-					{this.props.species.quirks.map((q, n) => (<Tag key={n}>{q}</Tag>))}
-				</div>
+				{ tags.length > 0 ? <div className='tags'>{tags}</div> : null }
 				<hr />
 				{traits}
 				{skills}

@@ -869,7 +869,7 @@ export class ActionEffects {
 						log(`${combatant.name} commands ${target.name} to attack`);
 						target.combat.actions = CombatantLogic.getActionDeck(target).filter(action => ActionLogic.getActionType(action) === 'Attack');
 						EncounterLogic.checkActionParameters(encounter, target, (combatant.type !== target.type));
-						const intents = IntentsLogic.getAttackIntents(encounter, target);
+						const intents = IntentsLogic.getAttackIntents(encounter, target, (combatant.type !== target.type));
 						if (intents.length > 0) {
 							target.combat.intents = Collections.draw(intents);
 							IntentsLogic.performIntents(encounter, target);
@@ -1366,7 +1366,7 @@ export class ActionLogic {
 							...EncounterLogic.findCombatants(encounter, originSquares, radius)
 								.filter(c => c.id !== combatant.id)
 								.filter(c => c.combat.state !== CombatantState.Dead)
-								.filter(c => (combatant.type === c.type) || (combatant.combat.senses >= c.combat.hidden))
+								.filter(c => combatant.combat.senses >= c.combat.hidden)
 								.filter(c => EncounterMapLogic.canSeeAny(edges, originSquares, EncounterLogic.getCombatantSquares(encounter, c)))
 								.sort((a, b) => {
 									const squaresCombatant = EncounterLogic.getCombatantSquares(encounter, combatant);
@@ -1385,7 +1385,7 @@ export class ActionLogic {
 								.filter(c => c.id !== combatant.id)
 								.filter(c => c.combat.state !== CombatantState.Dead)
 								.filter(c => combatant.combat.senses >= c.combat.hidden)
-								.filter(c => invertTargets ? c.type === combatant.type : c.type !== combatant.type)
+								.filter(c => invertTargets ? (c.type === combatant.type) : (c.type !== combatant.type))
 								.filter(c => EncounterMapLogic.canSeeAny(edges, originSquares, EncounterLogic.getCombatantSquares(encounter, c)))
 								.sort((a, b) => {
 									const squaresCombatant = EncounterLogic.getCombatantSquares(encounter, combatant);
@@ -1403,7 +1403,7 @@ export class ActionLogic {
 							...EncounterLogic.findCombatants(encounter, originSquares, radius)
 								.filter(c => c.id !== combatant.id)
 								.filter(c => c.combat.state !== CombatantState.Dead)
-								.filter(c => invertTargets ? c.type !== combatant.type : c.type === combatant.type)
+								.filter(c => invertTargets ? (c.type !== combatant.type) : (c.type === combatant.type))
 								.filter(c => EncounterMapLogic.canSeeAny(edges, originSquares, EncounterLogic.getCombatantSquares(encounter, c)))
 								.sort((a, b) => {
 									const squaresCombatant = EncounterLogic.getCombatantSquares(encounter, combatant);

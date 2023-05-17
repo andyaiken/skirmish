@@ -45,7 +45,7 @@ export class CombatantMonster extends Component<Props> {
 							:
 							<PlayingCard
 								type={CardType.Action}
-								front={<PlaceholderCard text='' subtext={`${this.props.combatant.name} is not using an action this turn`} />}
+								front={<PlaceholderCard text='' subtext={`${this.props.combatant.name} has not chosen an action this turn`} />}
 							/>
 					}
 				</div>

@@ -4,7 +4,6 @@
 	border-radius: 50%;
 	background-color: black;
 	box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, 0.4);
-	cursor: crosshair;
 
 	.mini-token-face {
 		position: absolute;
@@ -52,6 +51,8 @@
 	}
 
 	&.selectable:not(.selected) {
+		cursor: pointer;
+
 		&:hover {
 			background-color: rgb(60, 170, 255);
 		}

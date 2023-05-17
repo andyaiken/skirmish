@@ -4,7 +4,10 @@ import type { BackgroundModel } from '../../../models/background';
 
 import { Text, TextType } from '../../controls';
 
-import { ActionListItemPanel, FeatureListItemPanel } from '../../panels';
+import { ActionLogic } from '../../../logic/action-logic';
+import { FeatureLogic } from '../../../logic/feature-logic';
+
+import { ListItemPanel } from '../../panels';
 
 import './background-card.scss';
 
@@ -19,7 +22,7 @@ export class BackgroundCard extends Component<Props> {
 			features = (
 				<div>
 					<Text type={TextType.MinorHeading}>Features</Text>
-					{this.props.background.features.map(f => <FeatureListItemPanel key={f.id} item={f} />)}
+					{this.props.background.features.map(f => <ListItemPanel key={f.id} item={FeatureLogic.getFeatureDescription(f)} />)}
 				</div>
 			);
 		}
@@ -29,7 +32,7 @@ export class BackgroundCard extends Component<Props> {
 			actions = (
 				<div>
 					<Text type={TextType.MinorHeading}>Actions</Text>
-					{this.props.background.actions.map(a => <ActionListItemPanel key={a.id} item={a} />)}
+					{this.props.background.actions.map(a => <ListItemPanel key={a.id} item={ActionLogic.getActionDescription(a)} />)}
 				</div>
 			);
 		}

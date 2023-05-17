@@ -1,5 +1,4 @@
 import { Component } from 'react';
-import { IconId } from '@tabler/icons-react';
 
 import { CombatantState } from '../../../../enums/combatant-state';
 import { CombatantType } from '../../../../enums/combatant-type';
@@ -9,6 +8,8 @@ import { GameLogic } from '../../../../logic/game-logic';
 import type { CombatantModel } from '../../../../models/combatant';
 
 import { Tabs, Tag, Text, TextType } from '../../../controls';
+
+import { MiniToken } from '../../../panels/encounter-map/mini-token/mini-token';
 
 import './combatant-header.scss';
 
@@ -67,9 +68,18 @@ export class CombatantHeader extends Component<Props> {
 							{this.props.combatant.quirks.map((q, n) => <Tag key={n}>{q}</Tag>)}
 						</div>
 					</div>
-					<button className='icon-btn character-sheet-btn' onClick={() => this.props.showCharacterSheet(this.props.combatant)}>
-						<IconId size={40} />
-					</button>
+					<div className='token-container'>
+						<MiniToken
+							combatant={this.props.combatant}
+							encounter={null}
+							squareSize={40}
+							mapDimensions={{ left: 0, top: 0 }}
+							selectable={true}
+							selected={false}
+							onClick={() => this.props.showCharacterSheet(this.props.combatant)}
+							onDoubleClick={() => null}
+						/>
+					</div>
 				</div>
 				{
 					this.props.combatant.combat.state === CombatantState.Prone ?

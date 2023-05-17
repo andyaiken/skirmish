@@ -103,7 +103,7 @@ export class ItemsPage extends Component<Props, State> {
 
 		return (
 			<div className='sidebar'>
-				<Text type={TextType.SubHeading}>Your Items</Text>
+				<Text type={TextType.SubHeading}>Your Equipment</Text>
 				<Text>This page lists the items that your heroes aren&apos;t currently using.</Text>
 				<hr />
 				{moneySection}

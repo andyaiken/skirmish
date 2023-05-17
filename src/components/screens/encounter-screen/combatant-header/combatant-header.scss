@@ -7,8 +7,10 @@
 			flex: 1 1 0;
 		}
 
-		.character-sheet-btn {
-			flex: 0 0 50px;
+		.token-container {
+			position: relative;
+			width: 45px;
+			height: 40px;
 		}
 	}
 }

@@ -278,10 +278,11 @@ export class IntentsLogic {
 							case 'origin':
 								return (param.value as []).length > 0;
 							case 'targets': {
-								const targets = param.value as CombatantModel[];
-								const allies = targets.filter(t => invertTargets ? (t.type !== combatant.type) : (t.type === combatant.type)).length;
-								const enemies = targets.filter(t => invertTargets ? (t.type === combatant.type) : (t.type !== combatant.type)).length;
-								return enemies > allies;
+								const targetIDs = param.value as string[];
+								const targets = targetIDs.map(id => EncounterLogic.getCombatant(encounter, id));
+								const allies = targets.filter(t => (t !== null) && (invertTargets ? (t.type !== combatant.type) : (t.type === combatant.type)));
+								const enemies = targets.filter(t => (t !== null) && (invertTargets ? (t.type === combatant.type) : (t.type !== combatant.type)));
+								return enemies.length > allies.length;
 							}
 						}
 

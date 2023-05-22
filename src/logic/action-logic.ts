@@ -1,3 +1,5 @@
+import { BaseData } from '../data/base-data';
+
 import { ActionRangeType } from '../enums/action-range-type';
 import { ActionTargetType } from '../enums/action-target-type';
 import { CombatantState } from '../enums/combatant-state';
@@ -867,7 +869,9 @@ export class ActionEffects {
 					targetIDs.forEach(id => {
 						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
 						log(`${combatant.name} commands ${target.name} to attack`);
+						target.combat.selectedAction = null;
 						target.combat.actions = CombatantLogic.getActionDeck(target).filter(action => ActionLogic.getActionType(action) === 'Attack');
+						target.combat.actions.push(...BaseData.getBaseActions().filter(action => ActionLogic.getActionType(action) === 'Attack'));
 						EncounterLogic.checkActionParameters(encounter, target, (combatant.type !== target.type));
 						const intents = IntentsLogic.getAttackIntents(encounter, target, (combatant.type !== target.type));
 						if (intents.length > 0) {

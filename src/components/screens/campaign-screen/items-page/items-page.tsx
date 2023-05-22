@@ -160,12 +160,16 @@ export class ItemsPage extends Component<Props, State> {
 		if (magicItems.length > 0) {
 			const cards = magicItems.map(item => {
 				return (
-					<PlayingCard
-						key={item.id}
-						type={CardType.Item}
-						front={<ItemCard item={item} />}
-						footer={<button onClick={() => this.props.sellItem(item, true)}>Sell</button>}
-					/>
+					<div key={item.id}>
+						<PlayingCard
+							type={CardType.Item}
+							front={<ItemCard item={item} />}
+							footer='Item'
+						/>
+						<div>
+							<button onClick={() => this.props.sellItem(item, true)}>Sell</button>
+						</div>
+					</div>
 				);
 			});
 			magicItemSection = (
@@ -196,12 +200,14 @@ export class ItemsPage extends Component<Props, State> {
 				}
 
 				return (
-					<PlayingCard
-						key={item.id}
-						type={CardType.Item}
-						front={<ItemCard item={item} />}
-						footer={footer}
-					/>
+					<div key={item.id}>
+						<PlayingCard
+							type={CardType.Item}
+							front={<ItemCard item={item} />}
+							footer='Item'
+						/>
+						{footer}
+					</div>
 				);
 			});
 			mundaneItemSection = (

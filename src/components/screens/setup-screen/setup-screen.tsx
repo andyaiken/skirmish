@@ -17,6 +17,7 @@ import './setup-screen.scss';
 
 interface Props {
 	game: GameModel;
+	developer: boolean;
 	addHero: (hero: CombatantModel) => void;
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
 	unequipItem: (item: ItemModel, hero: CombatantModel) => void;
@@ -58,6 +59,7 @@ export class SetupScreen extends Component<Props, State> {
 							<HeroBuilderPanel
 								hero={this.state.hero}
 								game={this.props.game}
+								developer={this.props.developer}
 								finished={hero => {
 									const h = this.state.hero as CombatantModel;
 									this.setState({

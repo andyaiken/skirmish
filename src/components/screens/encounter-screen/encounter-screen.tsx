@@ -393,7 +393,9 @@ export class EncounterScreen extends Component<Props, State> {
 		}
 
 		if (state !== EncounterState.Active) {
-			return null;
+			return (
+				<div className='encounter-bottom-panel' />
+			);
 		}
 
 		return (

@@ -21,7 +21,7 @@
 		padding: 20px;
 		background-color: white;
 		overflow-x: hidden;
-		overflow-y: scroll;
+		overflow-y: auto;
 		-webkit-overflow-scrolling: touch;
 
 		.card,
@@ -54,7 +54,7 @@
 		.hero-list-column {
 			flex: 1 1 0;
 			overflow-x: hidden;
-			overflow-y: scroll;
+			overflow-y: auto;
 			-webkit-overflow-scrolling: touch;
 
 			.selected-hero {

@@ -75,6 +75,7 @@ export class HeroesPage extends Component<Props, State> {
 						<PlayingCard
 							type={CardType.Hero}
 							front={<HeroCard hero={hero} />}
+							footer='Hero'
 							onClick={() => this.selectHero(hero)}
 						/>
 						{this.props.developer ? <button className='developer' onClick={() => this.props.incrementXP(hero)}>Add XP</button> : null}
@@ -166,6 +167,7 @@ export class HeroesPage extends Component<Props, State> {
 							<HeroBuilderPanel
 								hero={this.state.selectedHero}
 								game={this.props.game}
+								developer={this.props.developer}
 								finished={hero => {
 									const h = this.state.selectedHero as CombatantModel;
 									this.setState({
@@ -213,6 +215,7 @@ export class HeroesPage extends Component<Props, State> {
 							key={h.id}
 							type={CardType.Hero}
 							front={<HeroCard hero={h} />}
+							footer='Hero'
 							onClick={() => {
 								const boon = this.state.selectedBoon as BoonModel;
 								this.setState({

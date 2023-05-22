@@ -16,6 +16,12 @@ import { ItemsPage } from './items-page/items-page';
 
 import './campaign-screen.scss';
 
+enum CampaignScreenType {
+	Island = 'island',
+	Team = 'team',
+	Items = 'items'
+}
+
 interface Props {
 	game: GameModel;
 	developer: boolean;
@@ -36,32 +42,28 @@ interface Props {
 }
 
 interface State {
-	page: string;
+	screen: CampaignScreenType;
 }
 
 export class CampaignScreen extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 
-		let page = 'island';
-		if (props.game.heroes.some(h => h.name === '') || props.game.heroes.some(h => h.xp >= h.level)) {
-			page = 'heroes';
-		}
 		this.state = {
-			page: page
+			screen: CampaignScreenType.Island
 		};
 	}
 
-	setPage = (page: string) => {
+	setScreen = (screen: CampaignScreenType) => {
 		this.setState({
-			page: page
+			screen: screen
 		});
 	};
 
 	render = () => {
 		let content = null;
-		switch (this.state.page) {
-			case 'island':
+		switch (this.state.screen) {
+			case CampaignScreenType.Island:
 				content = (
 					<CampaignMapPage
 						game={this.props.game}
@@ -71,7 +73,7 @@ export class CampaignScreen extends Component<Props, State> {
 					/>
 				);
 				break;
-			case 'heroes':
+			case CampaignScreenType.Team:
 				content = (
 					<HeroesPage
 						game={this.props.game}
@@ -87,7 +89,7 @@ export class CampaignScreen extends Component<Props, State> {
 					/>
 				);
 				break;
-			case 'items':
+			case CampaignScreenType.Items:
 				content = (
 					<ItemsPage
 						game={this.props.game}
@@ -103,7 +105,7 @@ export class CampaignScreen extends Component<Props, State> {
 
 		const options = [
 			{ id: 'island', display: 'The Island' },
-			{ id: 'heroes', display: 'Your Team' },
+			{ id: 'team', display: 'Your Team' },
 			{ id: 'items', display: 'Your Equipment' }
 		];
 
@@ -111,8 +113,8 @@ export class CampaignScreen extends Component<Props, State> {
 			<div className='campaign-screen'>
 				<div className='campaign-top-bar'>
 					<div className='logo-text inset-text'>Skirmish</div>
-					<Selector options={options} selectedID={this.state.page} onSelect={this.setPage} />
-					<button className='icon-btn' title='Information' onClick={() => this.props.showHelp(this.state.page)}>
+					<Selector options={options} selectedID={this.state.screen} onSelect={id => this.setScreen(id as CampaignScreenType)} />
+					<button className='icon-btn' title='Information' onClick={() => this.props.showHelp(this.state.screen)}>
 						<IconInfoCircle />
 					</button>
 				</div>

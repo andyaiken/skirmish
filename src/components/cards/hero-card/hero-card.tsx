@@ -12,6 +12,7 @@ import type { CombatantModel } from '../../../models/combatant';
 import type { EncounterModel } from '../../../models/encounter';
 
 import { StatValue, Tag, Text, TextType } from '../../controls';
+import { ListItemPanel } from '../../panels';
 
 import './hero-card.scss';
 
@@ -87,7 +88,7 @@ export class HeroCard extends Component<Props> {
 			items = (
 				<div className='items'>
 					<Text type={TextType.MinorHeading}>Magic Items</Text>
-					{magicItems.map(i => (<div key={i.id} className='item'>{i.name} ({i.baseItem})</div>))}
+					{magicItems.map(i => (<ListItemPanel key={i.id} item={`${i.name} (${i.baseItem})`} />))}
 				</div>
 			);
 		}

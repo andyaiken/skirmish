@@ -697,7 +697,7 @@ export class Main extends Component<Props, State> {
 
 	getContent = () => {
 		switch (this.state.screen) {
-			case 'landing':
+			case ScreenType.Landing:
 				return (
 					<LandingScreen
 						game={this.state.game}
@@ -707,10 +707,11 @@ export class Main extends Component<Props, State> {
 						continueCampaign={this.continueCampaign}
 					/>
 				);
-			case 'setup':
+			case ScreenType.Setup:
 				return (
 					<SetupScreen
 						game={this.state.game as GameModel}
+						developer={this.state.developer}
 						addHero={this.addHero}
 						equipItem={this.equipItem}
 						unequipItem={this.unequipItem}
@@ -719,7 +720,7 @@ export class Main extends Component<Props, State> {
 						beginCampaign={this.beginCampaign}
 					/>
 				);
-			case 'campaign':
+			case ScreenType.Campaign:
 				return (
 					<CampaignScreen
 						game={this.state.game as GameModel}
@@ -740,7 +741,7 @@ export class Main extends Component<Props, State> {
 						conquer={this.conquer}
 					/>
 				);
-			case 'encounter':
+			case ScreenType.Encounter:
 				return (
 					<EncounterScreen
 						encounter={this.state.game?.encounter as EncounterModel}

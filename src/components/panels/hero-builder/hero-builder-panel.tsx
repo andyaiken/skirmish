@@ -26,6 +26,7 @@ import './hero-builder-panel.scss';
 interface Props {
 	hero: CombatantModel;
 	game: GameModel;
+	developer: boolean;
 	finished: (hero: CombatantModel) => void;
 }
 
@@ -82,6 +83,7 @@ export class HeroBuilderPanel extends Component<Props, State> {
 			content = (
 				<CardSelector
 					game={this.props.game}
+					developer={this.props.developer}
 					select={this.selectCards}
 				/>
 			);
@@ -90,6 +92,7 @@ export class HeroBuilderPanel extends Component<Props, State> {
 			content = (
 				<EquipmentSelector
 					hero={this.state.hero}
+					developer={this.props.developer}
 					addItems={this.addItems}
 				/>
 			);
@@ -135,6 +138,7 @@ export class HeroBuilderPanel extends Component<Props, State> {
 
 interface CardSelectorProps {
 	game: GameModel;
+	developer: boolean;
 	select: (speciesID: string, roleID: string, backgroundID: string) => void;
 }
 
@@ -186,6 +190,26 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 
 	select = () => {
 		this.props.select(this.state.selectedSpeciesID, this.state.selectedRoleID, this.state.selectedBackgroundID);
+	};
+
+	redraw = (type: CardType) => {
+		switch (type) {
+			case CardType.Species:
+				this.setState({
+					speciesIDs: Collections.shuffle(GameLogic.getSpeciesDeck(CombatantType.Hero)).splice(0, 3)
+				});
+				break;
+			case CardType.Role:
+				this.setState({
+					roleIDs: Collections.shuffle(GameLogic.getRoleDeck()).splice(0, 3)
+				});
+				break;
+			case CardType.Background:
+				this.setState({
+					backgroundIDs: Collections.shuffle(GameLogic.getBackgroundDeck()).splice(0, 3)
+				});
+				break;
+		}
 	};
 
 	getOverviewSection = () => {
@@ -272,6 +296,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 		return (
 			<div className='card-selection-row'>
 				<CardList cards={cards} />
+				{ this.props.developer ? <button className='developer' onClick={() => this.redraw(CardType.Species)}>Redraw</button> : null }
 			</div>
 		);
 	};
@@ -298,6 +323,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 		return (
 			<div className='card-selection-row'>
 				<CardList cards={cards} />
+				{ this.props.developer ? <button className='developer' onClick={() => this.redraw(CardType.Role)}>Redraw</button> : null }
 			</div>
 		);
 	};
@@ -324,6 +350,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 		return (
 			<div className='card-selection-row'>
 				<CardList cards={cards} />
+				{ this.props.developer ? <button className='developer' onClick={() => this.redraw(CardType.Background)}>Redraw</button> : null }
 			</div>
 		);
 	};
@@ -359,6 +386,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 
 interface EquipmentSelectorProps {
 	hero: CombatantModel;
+	developer: boolean;
 	addItems: (items: ItemModel[]) => void;
 }
 

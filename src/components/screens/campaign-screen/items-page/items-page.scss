@@ -7,7 +7,7 @@
 	.items-content {
 		flex: 1 1 0;
 		overflow-x: hidden;
-		overflow-y: scroll;
+		overflow-y: auto;
 		-webkit-overflow-scrolling: touch;
 	}
 
@@ -18,7 +18,7 @@
 		padding: 20px;
 		background-color: white;
 		overflow-x: hidden;
-		overflow-y: scroll;
+		overflow-y: auto;
 		-webkit-overflow-scrolling: touch;
 
 		.center {

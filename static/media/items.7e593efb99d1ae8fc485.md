@@ -1,4 +1,4 @@
-# Your Items
+# Your Equipment
 
 This page show you all the equipment you've gathered during the course of your campaign.
 

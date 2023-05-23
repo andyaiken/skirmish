@@ -1,4 +1,4 @@
-# Your Heroes
+# Your Team
 
 This page is where you'll find your heroes.
 

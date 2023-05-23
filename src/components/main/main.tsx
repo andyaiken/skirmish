@@ -38,9 +38,9 @@ import './main.scss';
 
 import encounters from '../../docs/encounters.md';
 import game from '../../docs/game.md';
-import heroes from '../../docs/heroes.md';
 import island from '../../docs/island.md';
 import items from '../../docs/items.md';
+import team from '../../docs/team.md';
 
 const rules: Record<string, string> = {};
 
@@ -122,14 +122,14 @@ export class Main extends Component<Props, State> {
 		fetch(game).then(response => response.text()).then(text => {
 			rules['game'] = text;
 		});
-		fetch(heroes).then(response => response.text()).then(text => {
-			rules['heroes'] = text;
-		});
 		fetch(island).then(response => response.text()).then(text => {
 			rules['island'] = text;
 		});
 		fetch(items).then(response => response.text()).then(text => {
 			rules['items'] = text;
+		});
+		fetch(team).then(response => response.text()).then(text => {
+			rules['team'] = text;
 		});
 	}
 
@@ -227,6 +227,16 @@ export class Main extends Component<Props, State> {
 	addHero = (hero: CombatantModel) => {
 		const game = this.state.game as GameModel;
 		GameLogic.addHeroToGame(game, hero);
+		this.setState({
+			game: game
+		});
+	};
+
+	addHeroes = (heroes: CombatantModel[]) => {
+		const game = this.state.game as GameModel;
+		heroes.forEach(hero => {
+			GameLogic.addHeroToGame(game, hero);
+		});
 		this.setState({
 			game: game
 		});
@@ -713,6 +723,7 @@ export class Main extends Component<Props, State> {
 						game={this.state.game as GameModel}
 						developer={this.state.developer}
 						addHero={this.addHero}
+						addHeroes={this.addHeroes}
 						equipItem={this.equipItem}
 						unequipItem={this.unequipItem}
 						pickUpItem={this.pickUpItem}
@@ -779,31 +790,35 @@ export class Main extends Component<Props, State> {
 	};
 
 	render = () => {
-		let help = null;
-		if (this.state.showHelp !== null) {
-			help = (
-				<Dialog
-					content={
-						<SettingsPanel
-							game={this.state.game}
-							rules={rules[this.state.showHelp]}
-							developer={this.state.developer}
-							endCampaign={this.endCampaign}
-							setDeveloperMode={this.setDeveloperMode}
-						/>
-					}
-					onClose={() => this.setState({ showHelp: null })}
-				/>
-			);
-		}
+		try {
+			let help = null;
+			if (this.state.showHelp !== null) {
+				help = (
+					<Dialog
+						content={
+							<SettingsPanel
+								game={this.state.game}
+								rules={rules[this.state.showHelp]}
+								developer={this.state.developer}
+								endCampaign={this.endCampaign}
+								setDeveloperMode={this.setDeveloperMode}
+							/>
+						}
+						onClose={() => this.setState({ showHelp: null })}
+					/>
+				);
+			}
 
-		return (
-			<div className='skirmish'>
-				{this.getContent()}
-				{this.state.dialog ? <Dialog content={this.state.dialog} /> : null}
-				{help}
-			</div>
-		);
+			return (
+				<div className='skirmish'>
+					{this.getContent()}
+					{this.state.dialog ? <Dialog content={this.state.dialog} /> : null}
+					{help}
+				</div>
+			);
+		} catch {
+			return <div className='skirmish render-error' />;
+		}
 	};
 
 	//#endregion

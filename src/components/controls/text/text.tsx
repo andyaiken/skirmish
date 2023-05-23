@@ -23,11 +23,14 @@ export class Text extends Component<Props> {
 	};
 
 	render = () => {
-		const className = `skirmish-text ${this.props.type}`;
-		return (
-			<div className={className}>
-				{this.props.children}
-			</div>
-		);
+		try {
+			return (
+				<div className={`skirmish-text ${this.props.type}`}>
+					{this.props.children}
+				</div>
+			);
+		} catch {
+			return <div className='skirmish-text render-error' />;
+		}
 	};
 }

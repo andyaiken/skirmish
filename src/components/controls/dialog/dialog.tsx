@@ -25,25 +25,41 @@ export class Dialog extends Component<Props> {
 		e.stopPropagation();
 	};
 
-	render = () => {
-		let closeBtn = null;
-		if (this.props.onClose) {
-			closeBtn = (
-				<button className='icon-btn close-btn' onClick={this.closeClick}>
-					<IconX />
-				</button>
-			);
-		}
+	getDialog = () => {
+		try {
+			let closeBtn = null;
+			if (this.props.onClose) {
+				closeBtn = (
+					<button className='icon-btn close-btn' onClick={this.closeClick}>
+						<IconX />
+					</button>
+				);
+			}
 
-		return (
-			<div className='dialog-backdrop' onClick={this.closeClick}>
+			return (
 				<div className='dialog' onClick={this.dialogClick}>
 					{closeBtn}
 					<div className='dialog-content'>
 						{this.props.content}
 					</div>
 				</div>
-			</div>
-		);
+			);
+		} catch {
+			return <div className='dialog render-error' />;
+		}
+	};
+
+	render = () => {
+		try {
+			return (
+				<div className='dialog-backdrop' onClick={this.closeClick}>
+					{this.getDialog()}
+				</div>
+			);
+		} catch {
+			return (
+				<div className='dialog-backdrop render-error' />
+			);
+		}
 	};
 }

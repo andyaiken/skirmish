@@ -14,10 +14,9 @@ import { EncounterLogic } from '../../../../logic/encounter-logic';
 import type { CombatantModel } from '../../../../models/combatant';
 import type { EncounterModel } from '../../../../models/encounter';
 
-import { Collections } from '../../../../utils/collections';
-
 import { ActionCard, FeatureCard, PlaceholderCard } from '../../../cards';
 import { Box, CardList, Dialog, IconType, IconValue, PlayingCard, StatValue, Tag, Text, TextType } from '../../../controls';
+import { DamagePanel } from './damage-panel/damage-panel';
 
 import './stats.scss';
 
@@ -149,226 +148,121 @@ export class Stats extends Component<Props, State> {
 	};
 
 	render = () => {
-		let cutDown = false;
-		switch (this.props.combatant.type) {
-			case CombatantType.Hero:
-				cutDown = (this.props.combatant.xp >= this.props.combatant.level);
-				break;
-			case CombatantType.Monster:
-				cutDown = false;
-				break;
-		}
-
-		const primaryColumn = (
-			<div className='column'>
-				{
-					this.props.encounter && (this.props.combatant.combat.state !== CombatantState.Standing) ?
-						<Text type={TextType.Information}>{this.props.combatant.name} is <b>{this.props.combatant.combat.state}</b>.</Text>
-						: null
-				}
-				{
-					this.props.encounter && this.props.combatant.combat.stunned ?
-						<Text type={TextType.Information}>{this.props.combatant.name} is <b>stunned</b>.</Text>
-						: null
-				}
-				{this.getTraitsSection()}
-				{this.getSkillsSection()}
-				{this.getProficienciesSection()}
-				{this.getAurasSection()}
-			</div>
-		);
-
-		const secondaryColumn = (
-			<div className='column'>
-				<DamagePanel label='Damage Bonuses' getValue={this.getDamageBonusValue} />
-				<DamagePanel label='Damage Resistances' getValue={this.getDamageResistanceValue} />
-				{this.props.combatant.type === CombatantType.Hero ? this.getXPSection() : null}
-			</div>
-		);
-
-		const decksColumn = (
-			<div className='column decks'>
-				<CardList cards={[
-					<PlayingCard
-						key='features'
-						stack={true}
-						type={CardType.Feature}
-						front={<PlaceholderCard text={<div>Feature<br />Deck</div>} />}
-						onClick={() => this.setDeck('features')}
-					/>,
-					<PlayingCard
-						key='actions'
-						stack={true}
-						type={CardType.Action}
-						front={<PlaceholderCard text={<div>Action<br />Deck</div>} />}
-						onClick={() => this.setDeck('actions')}
-					/>
-				]} />
-			</div>
-		);
-
-		let dialog = null;
-		if (this.state.deck !== null) {
-			let heading = '';
-			let cards: JSX.Element[] = [];
-			switch (this.state.deck) {
-				case 'features':
-					heading = 'Features';
-					cards = CombatantLogic.getFeatureDeck(this.props.combatant).map(f => (
-						<PlayingCard
-							key={f.id}
-							type={CardType.Feature}
-							front={<FeatureCard feature={f} />}
-							footer={CombatantLogic.getFeatureSource(this.props.combatant, f.id)}
-							footerType={CombatantLogic.getFeatureSourceType(this.props.combatant, f.id)}
-						/>
-					));
+		try {
+			let cutDown = false;
+			switch (this.props.combatant.type) {
+				case CombatantType.Hero:
+					cutDown = (this.props.combatant.xp >= this.props.combatant.level);
 					break;
-				case 'actions':
-					heading = 'Actions';
-					cards = CombatantLogic.getActionDeck(this.props.combatant).map(a => (
-						<PlayingCard
-							key={a.id}
-							type={CardType.Action}
-							front={<ActionCard action={a} />}
-							footer={CombatantLogic.getActionSource(this.props.combatant, a.id)}
-							footerType={CombatantLogic.getActionSourceType(this.props.combatant, a.id)}
-						/>
-					));
+				case CombatantType.Monster:
+					cutDown = false;
 					break;
 			}
-			dialog = (
-				<Dialog
-					content={(
-						<div>
-							<Text type={TextType.Heading}>{heading}</Text>
-							<hr />
-							<CardList cards={cards} />
-						</div>
-					)}
-					onClose={() => this.setDeck(null)}
-				/>
-			);
-		}
 
-		return (
-			<div className='stats'>
-				<div className='grid'>
-					{primaryColumn}
-					{cutDown ? null : secondaryColumn}
-					{cutDown ? null : decksColumn}
+			const primaryColumn = (
+				<div className='column'>
+					{
+						this.props.encounter && (this.props.combatant.combat.state !== CombatantState.Standing) ?
+							<Text type={TextType.Information}>{this.props.combatant.name} is <b>{this.props.combatant.combat.state}</b>.</Text>
+							: null
+					}
+					{
+						this.props.encounter && this.props.combatant.combat.stunned ?
+							<Text type={TextType.Information}>{this.props.combatant.name} is <b>stunned</b>.</Text>
+							: null
+					}
+					{this.getTraitsSection()}
+					{this.getSkillsSection()}
+					{this.getProficienciesSection()}
+					{this.getAurasSection()}
 				</div>
-				{dialog}
-			</div>
-		);
-	};
-}
+			);
 
-interface DamagePanelProps {
-	label: string;
-	getValue: (type: DamageType) => number;
-}
+			const secondaryColumn = (
+				<div className='column'>
+					<DamagePanel label='Damage Bonuses' getValue={this.getDamageBonusValue} />
+					<DamagePanel label='Damage Resistances' getValue={this.getDamageResistanceValue} />
+					{this.props.combatant.type === CombatantType.Hero ? this.getXPSection() : null}
+				</div>
+			);
 
-class DamagePanel extends Component<DamagePanelProps> {
-	render = () => {
-		const types = [
-			DamageType.Acid,
-			DamageType.Cold,
-			DamageType.Decay,
-			DamageType.Edged,
-			DamageType.Electricity,
-			DamageType.Fire,
-			DamageType.Impact,
-			DamageType.Light,
-			DamageType.Piercing,
-			DamageType.Poison,
-			DamageType.Psychic,
-			DamageType.Sonic
-		];
+			const decksColumn = (
+				<div className='column decks'>
+					<CardList cards={[
+						<PlayingCard
+							key='features'
+							stack={true}
+							type={CardType.Feature}
+							front={<PlaceholderCard text={<div>Feature<br />Deck</div>} />}
+							onClick={() => this.setDeck('features')}
+						/>,
+						<PlayingCard
+							key='actions'
+							stack={true}
+							type={CardType.Action}
+							front={<PlaceholderCard text={<div>Action<br />Deck</div>} />}
+							onClick={() => this.setDeck('actions')}
+						/>
+					]} />
+				</div>
+			);
 
-		const values = [ ...types.map(type => ({ type: type, value: this.props.getValue(type) })) ];
+			let dialog = null;
+			if (this.state.deck !== null) {
+				let heading = '';
+				let cards: JSX.Element[] = [];
+				switch (this.state.deck) {
+					case 'features':
+						heading = 'Features';
+						cards = CombatantLogic.getFeatureDeck(this.props.combatant).map(f => (
+							<PlayingCard
+								key={f.id}
+								type={CardType.Feature}
+								front={<FeatureCard feature={f} />}
+								footer={CombatantLogic.getFeatureSource(this.props.combatant, f.id)}
+								footerType={CombatantLogic.getFeatureSourceType(this.props.combatant, f.id)}
+							/>
+						));
+						break;
+					case 'actions':
+						heading = 'Actions';
+						cards = CombatantLogic.getActionDeck(this.props.combatant).map(a => (
+							<PlayingCard
+								key={a.id}
+								type={CardType.Action}
+								front={<ActionCard action={a} />}
+								footer={CombatantLogic.getActionSource(this.props.combatant, a.id)}
+								footerType={CombatantLogic.getActionSourceType(this.props.combatant, a.id)}
+							/>
+						));
+						break;
+				}
+				dialog = (
+					<Dialog
+						content={(
+							<div>
+								<Text type={TextType.Heading}>{heading}</Text>
+								<hr />
+								<CardList cards={cards} />
+							</div>
+						)}
+						onClose={() => this.setDeck(null)}
+					/>
+				);
+			}
 
-		if (values.every(pair => pair.value === 0)) {
 			return (
-				<Box label={this.props.label}>
-					<Text>None</Text>
-				</Box>
-			);
-		}
-
-		if (Collections.min(values, pair => pair.value) === Collections.max(values, pair => pair.value)) {
-			return (
-				<Box label={this.props.label}>
-					<StatValue label='All damage types' value={values[0].value}/>
-				</Box>
-			);
-		}
-
-		const physicalTypes = [ DamageType.Acid, DamageType.Edged, DamageType.Impact, DamageType.Piercing ];
-		const physicalValues = [ ...physicalTypes.map(type => ({ type: type, value: this.props.getValue(type) })) ];
-		let physical = null;
-		if (physicalValues.every(pair => pair.value === 0)) {
-			physical = (
-				<StatValue label='Physical damage' value={0}/>
-			);
-		} else if (Collections.min(physicalValues, pair => pair.value) === Collections.max(physicalValues, pair => pair.value)) {
-			physical = (
-				<StatValue label='Physical damage' value={physicalValues[0].value}/>
-			);
-		} else {
-			physical = (
-				<div>
-					{physicalTypes.map(type => <StatValue key={type} label={type} value={values.find(p => p.type === type)?.value || 0}/>)}
+				<div className='stats'>
+					<div className='grid'>
+						{primaryColumn}
+						{cutDown ? null : secondaryColumn}
+						{cutDown ? null : decksColumn}
+					</div>
+					{dialog}
 				</div>
 			);
+		} catch {
+			return <div className='stats render-error' />;
 		}
-
-		const energyTypes = [ DamageType.Cold, DamageType.Electricity, DamageType.Fire, DamageType.Light, DamageType.Sonic ];
-		const energyValues = [ ...energyTypes.map(type => ({ type: type, value: this.props.getValue(type) })) ];
-		let energy = null;
-		if (energyValues.every(pair => pair.value === 0)) {
-			energy = (
-				<StatValue label='Energy damage' value={0}/>
-			);
-		} else if (Collections.min(energyValues, pair => pair.value) === Collections.max(energyValues, pair => pair.value)) {
-			energy = (
-				<StatValue label='Energy damage' value={energyValues[0].value}/>
-			);
-		} else {
-			energy = (
-				<div>
-					{energyTypes.map(type => <StatValue key={type} label={type} value={values.find(p => p.type === type)?.value || 0}/>)}
-				</div>
-			);
-		}
-
-		const corruptionTypes = [ DamageType.Decay, DamageType.Poison, DamageType.Psychic ];
-		const corruptionValues = [ ...corruptionTypes.map(type => ({ type: type, value: this.props.getValue(type) })) ];
-		let corruption = null;
-		if (corruptionValues.every(pair => pair.value === 0)) {
-			corruption = (
-				<StatValue label='Corruption damage' value={0}/>
-			);
-		} else if (Collections.min(corruptionValues, pair => pair.value) === Collections.max(corruptionValues, pair => pair.value)) {
-			corruption = (
-				<StatValue label='Corruption damage' value={corruptionValues[0].value}/>
-			);
-		} else {
-			corruption = (
-				<div>
-					{corruptionTypes.map(type => <StatValue key={type} label={type} value={values.find(p => p.type === type)?.value || 0}/>)}
-				</div>
-			);
-		}
-
-		return (
-			<Box label={this.props.label}>
-				{physical}
-				<hr />
-				{energy}
-				<hr />
-				{corruption}
-			</Box>
-		);
 	};
 }

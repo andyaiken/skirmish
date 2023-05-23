@@ -8,10 +8,14 @@ interface Props {
 
 export class Tag extends Component<Props> {
 	render = () => {
-		return (
-			<div className='tag'>
-				{this.props.children}
-			</div>
-		);
+		try {
+			return (
+				<div className='tag'>
+					{this.props.children}
+				</div>
+			);
+		} catch {
+			return <div className='tag render-error' />;
+		}
 	};
 }

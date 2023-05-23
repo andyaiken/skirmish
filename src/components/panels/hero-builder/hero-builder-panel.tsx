@@ -77,60 +77,64 @@ export class HeroBuilderPanel extends Component<Props, State> {
 	};
 
 	render = () => {
-		let content = null;
-		if ((this.state.hero.speciesID === '') && (this.state.hero.roleID === '') && (this.state.hero.backgroundID === '')) {
-			// Initial card selection
-			content = (
-				<CardSelector
-					game={this.props.game}
-					developer={this.props.developer}
-					select={this.selectCards}
-				/>
-			);
-		} else if (CombatantLogic.getProficiencies(this.state.hero).length !== this.state.hero.items.length) {
-			// Choose initial equipment
-			content = (
-				<EquipmentSelector
-					hero={this.state.hero}
-					developer={this.props.developer}
-					addItems={this.addItems}
-				/>
-			);
-		} else if (this.state.hero.level === 1) {
-			// Finalise character creation
-			const species = GameLogic.getSpecies(this.state.hero.speciesID);
-			const role = GameLogic.getRole(this.state.hero.roleID);
-			const background = GameLogic.getBackground(this.state.hero.backgroundID);
+		try {
+			let content = null;
+			if ((this.state.hero.speciesID === '') && (this.state.hero.roleID === '') && (this.state.hero.backgroundID === '')) {
+				// Initial card selection
+				content = (
+					<CardSelector
+						game={this.props.game}
+						developer={this.props.developer}
+						select={this.selectCards}
+					/>
+				);
+			} else if (CombatantLogic.getProficiencies(this.state.hero).length !== this.state.hero.items.length) {
+				// Choose initial equipment
+				content = (
+					<EquipmentSelector
+						hero={this.state.hero}
+						developer={this.props.developer}
+						addItems={this.addItems}
+					/>
+				);
+			} else if (this.state.hero.level === 1) {
+				// Finalise character creation
+				const species = GameLogic.getSpecies(this.state.hero.speciesID);
+				const role = GameLogic.getRole(this.state.hero.roleID);
+				const background = GameLogic.getBackground(this.state.hero.backgroundID);
 
-			content = (
-				<div className='finish-page'>
-					<div className='header'>
-						<Text type={TextType.Heading}>
-							Recruit a Hero
-						</Text>
-					</div>
-					<div className='content'>
-						<div className='rename-section'>
-							<div className='hero-name'>
-								{this.state.hero.name}
+				content = (
+					<div className='finish-page'>
+						<div className='header'>
+							<Text type={TextType.Heading}>
+								Recruit a Hero
+							</Text>
+						</div>
+						<div className='content'>
+							<div className='rename-section'>
+								<div className='hero-name'>
+									{this.state.hero.name}
+								</div>
+								<div className='tags'>
+									<Tag>{species?.name ?? ''}</Tag> <Tag>{role?.name ?? ''}</Tag> <Tag>{background?.name ?? ''}</Tag>
+								</div>
+								<button onClick={this.rename}>Rename this hero</button>
+								<hr />
+								<button onClick={this.finished}>Finished</button>
 							</div>
-							<div className='tags'>
-								<Tag>{species?.name ?? ''}</Tag> <Tag>{role?.name ?? ''}</Tag> <Tag>{background?.name ?? ''}</Tag>
-							</div>
-							<button onClick={this.rename}>Rename this hero</button>
-							<hr />
-							<button onClick={this.finished}>Finished</button>
 						</div>
 					</div>
+				);
+			}
+
+			return (
+				<div className='hero-builder-panel'>
+					{content}
 				</div>
 			);
+		} catch {
+			return <div className='hero-builder-panel render-error' />;
 		}
-
-		return (
-			<div className='hero-builder-panel'>
-				{content}
-			</div>
-		);
 	};
 }
 
@@ -356,27 +360,31 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 	};
 
 	render = () => {
-		const canSelect = (this.state.selectedSpeciesID !== '') && (this.state.selectedRoleID !== '') && (this.state.selectedBackgroundID !== '');
+		try {
+			const canSelect = (this.state.selectedSpeciesID !== '') && (this.state.selectedRoleID !== '') && (this.state.selectedBackgroundID !== '');
 
-		return (
-			<div className='card-selector-page'>
-				<div className='header'>
-					<Text type={TextType.Heading}>
-						Recruit a Hero
-					</Text>
-				</div>
-				<div className='content'>
-					<div className='card-selection-section'>
-						{this.getOverviewSection()}
-						<hr />
-						{this.getSpeciesSection()}
-						{this.getRoleSection()}
-						{this.getBackgroundSection()}
-						{ canSelect ? <button onClick={() => this.select()}>Next</button> : null }
+			return (
+				<div className='card-selector-page'>
+					<div className='header'>
+						<Text type={TextType.Heading}>
+							Recruit a Hero
+						</Text>
+					</div>
+					<div className='content'>
+						<div className='card-selection-section'>
+							{this.getOverviewSection()}
+							<hr />
+							{this.getSpeciesSection()}
+							{this.getRoleSection()}
+							{this.getBackgroundSection()}
+							{ canSelect ? <button onClick={() => this.select()}>Next</button> : null }
+						</div>
 					</div>
 				</div>
-			</div>
-		);
+			);
+		} catch {
+			return <div className='card-selector-page render-error' />;
+		}
 	};
 }
 
@@ -434,73 +442,77 @@ class EquipmentSelector extends Component<EquipmentSelectorProps, EquipmentSelec
 	};
 
 	render = () => {
-		const role = GameLogic.getRole(this.props.hero.roleID);
-		if (!role) {
-			return null;
-		}
+		try {
+			const role = GameLogic.getRole(this.props.hero.roleID);
+			if (!role) {
+				return null;
+			}
 
-		const overviewCards = this.state.slots.map((slot, n) => {
-			if (slot.selected) {
+			const overviewCards = this.state.slots.map((slot, n) => {
+				if (slot.selected) {
+					return (
+						<PlayingCard
+							key={n}
+							type={CardType.Item}
+							front={<ItemCard item={slot.selected} />}
+							footer='Item'
+						/>
+					);
+				}
 				return (
 					<PlayingCard
 						key={n}
 						type={CardType.Item}
-						front={<ItemCard item={slot.selected} />}
-						footer='Item'
+						front={<PlaceholderCard text={slot.proficiency} subtext={<div>Choose one of the <b>{slot.proficiency}</b> cards below</div>}/>}
 					/>
 				);
-			}
-			return (
-				<PlayingCard
-					key={n}
-					type={CardType.Item}
-					front={<PlaceholderCard text={slot.proficiency} subtext={<div>Choose one of the <b>{slot.proficiency}</b> cards below</div>}/>}
-				/>
-			);
-		});
+			});
 
-		const slots = this.state.slots.filter(slot => !slot.selected).map((slot, n) => {
-			const cards = slot.candidates.map(item => {
+			const slots = this.state.slots.filter(slot => !slot.selected).map((slot, n) => {
+				const cards = slot.candidates.map(item => {
+					return (
+						<div key={item.id}>
+							<PlayingCard
+								type={CardType.Item}
+								front={<ItemCard item={item} />}
+								footer='Item'
+								onClick={() => this.selectItem(item)}
+							/>
+						</div>
+					);
+				});
+
 				return (
-					<div key={item.id}>
-						<PlayingCard
-							type={CardType.Item}
-							front={<ItemCard item={item} />}
-							footer='Item'
-							onClick={() => this.selectItem(item)}
-						/>
+					<div key={n} className='card-selection-row'>
+						<CardList cards={cards} />
 					</div>
 				);
 			});
 
+			const canSelect = this.state.slots.every(s => s.selected !== null);
+
 			return (
-				<div key={n} className='card-selection-row'>
-					<CardList cards={cards} />
-				</div>
-			);
-		});
-
-		const canSelect = this.state.slots.every(s => s.selected !== null);
-
-		return (
-			<div className='equipment-page'>
-				<div className='header'>
-					<Text type={TextType.Heading}>
-						Recruit a Hero
-					</Text>
-				</div>
-				<div className='content'>
-					<div className='card-selection-section'>
-						<div className='card-selection-row'>
-							<CardList cards={overviewCards} />
+				<div className='equipment-page'>
+					<div className='header'>
+						<Text type={TextType.Heading}>
+							Recruit a Hero
+						</Text>
+					</div>
+					<div className='content'>
+						<div className='card-selection-section'>
+							<div className='card-selection-row'>
+								<CardList cards={overviewCards} />
+							</div>
+							<hr />
+							{slots}
+							{ canSelect ? <button onClick={() => this.addItems()}>Next</button> : null }
 						</div>
-						<hr />
-						{slots}
-						{ canSelect ? <button onClick={() => this.addItems()}>Next</button> : null }
 					</div>
 				</div>
-			</div>
-		);
+			);
+		} catch {
+			return <div className='equipment-page render-error' />;
+		}
 	};
 }
 

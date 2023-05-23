@@ -19,21 +19,25 @@ interface Props {
 
 export class CombatantMove extends Component<Props> {
 	render = () => {
-		const moveCosts: Record<string, number> = {};
-		moveCosts.n = EncounterLogic.getMoveCost(this.props.encounter, this.props.combatant, this.props.combatant.combat.position, 'n');
-		moveCosts.ne = EncounterLogic.getMoveCost(this.props.encounter, this.props.combatant, this.props.combatant.combat.position, 'ne');
-		moveCosts.e = EncounterLogic.getMoveCost(this.props.encounter, this.props.combatant, this.props.combatant.combat.position, 'e');
-		moveCosts.se = EncounterLogic.getMoveCost(this.props.encounter, this.props.combatant, this.props.combatant.combat.position, 'se');
-		moveCosts.s = EncounterLogic.getMoveCost(this.props.encounter, this.props.combatant, this.props.combatant.combat.position, 's');
-		moveCosts.sw = EncounterLogic.getMoveCost(this.props.encounter, this.props.combatant, this.props.combatant.combat.position, 'sw');
-		moveCosts.w = EncounterLogic.getMoveCost(this.props.encounter, this.props.combatant, this.props.combatant.combat.position, 'w');
-		moveCosts.nw = EncounterLogic.getMoveCost(this.props.encounter, this.props.combatant, this.props.combatant.combat.position, 'nw');
+		try {
+			const moveCosts: Record<string, number> = {};
+			moveCosts.n = EncounterLogic.getMoveCost(this.props.encounter, this.props.combatant, this.props.combatant.combat.position, 'n');
+			moveCosts.ne = EncounterLogic.getMoveCost(this.props.encounter, this.props.combatant, this.props.combatant.combat.position, 'ne');
+			moveCosts.e = EncounterLogic.getMoveCost(this.props.encounter, this.props.combatant, this.props.combatant.combat.position, 'e');
+			moveCosts.se = EncounterLogic.getMoveCost(this.props.encounter, this.props.combatant, this.props.combatant.combat.position, 'se');
+			moveCosts.s = EncounterLogic.getMoveCost(this.props.encounter, this.props.combatant, this.props.combatant.combat.position, 's');
+			moveCosts.sw = EncounterLogic.getMoveCost(this.props.encounter, this.props.combatant, this.props.combatant.combat.position, 'sw');
+			moveCosts.w = EncounterLogic.getMoveCost(this.props.encounter, this.props.combatant, this.props.combatant.combat.position, 'w');
+			moveCosts.nw = EncounterLogic.getMoveCost(this.props.encounter, this.props.combatant, this.props.combatant.combat.position, 'nw');
 
-		return (
-			<div className='combatant-move'>
-				<DirectionPanel combatant={this.props.combatant} costs={moveCosts} onMove={(dir, cost) => this.props.move(this.props.encounter, this.props.combatant, dir, cost)} />
-				{this.props.developer ? <button className='developer' onClick={() => this.props.addMovement(this.props.encounter, this.props.combatant, 10)}>Add Movement</button> : null}
-			</div>
-		);
+			return (
+				<div className='combatant-move'>
+					<DirectionPanel combatant={this.props.combatant} costs={moveCosts} onMove={(dir, cost) => this.props.move(this.props.encounter, this.props.combatant, dir, cost)} />
+					{this.props.developer ? <button className='developer' onClick={() => this.props.addMovement(this.props.encounter, this.props.combatant, 10)}>Add Movement</button> : null}
+				</div>
+			);
+		} catch {
+			return <div className='combatant-move render-error' />;
+		}
 	};
 }

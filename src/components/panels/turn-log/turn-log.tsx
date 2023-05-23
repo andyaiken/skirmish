@@ -25,15 +25,19 @@ export class TurnLogPanel extends Component<Props> {
 	};
 
 	render = () => {
-		if (this.props.combatant.combat.log.length === 0) {
-			return null;
-		}
+		try {
+			if (this.props.combatant.combat.log.length === 0) {
+				return null;
+			}
 
-		return (
-			<div className='turn-log'>
-				{this.props.combatant.combat.log.map((msg, n) => <div key={n} className='turn-log-message'>{msg}</div>)}
-				<div ref={this.messagesEndRef} />
-			</div>
-		);
+			return (
+				<div className='turn-log'>
+					{this.props.combatant.combat.log.map((msg, n) => <div key={n} className='turn-log-message'>{msg}</div>)}
+					<div ref={this.messagesEndRef} />
+				</div>
+			);
+		} catch {
+			return <div className='turn-log render-error' />;
+		}
 	};
 }

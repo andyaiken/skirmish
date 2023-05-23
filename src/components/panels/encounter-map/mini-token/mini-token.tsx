@@ -88,48 +88,52 @@ export class MiniToken extends Component<Props, State> {
 	};
 
 	render = () => {
-		const type = this.props.combatant.type.toLowerCase();
-		const current = !!this.props.encounter && this.props.combatant.combat.current ? 'current' : '';
-		const selectable = this.props.selectable ? 'selectable' : '';
-		const selected = this.props.selected ? 'selected' : '';
-		const hidden = (this.props.combatant.combat.hidden > 0) ? 'hidden' : '';
-		const mouseOver = this.state.mouseOver ? 'mouse-over' : '';
-		const className = `encounter-map-mini-token ${type} ${current} ${selectable} ${selected} ${hidden} ${mouseOver}`;
+		try {
+			const type = this.props.combatant.type.toLowerCase();
+			const current = !!this.props.encounter && this.props.combatant.combat.current ? 'current' : '';
+			const selectable = this.props.selectable ? 'selectable' : '';
+			const selected = this.props.selected ? 'selected' : '';
+			const hidden = (this.props.combatant.combat.hidden > 0) ? 'hidden' : '';
+			const mouseOver = this.state.mouseOver ? 'mouse-over' : '';
+			const className = `encounter-map-mini-token ${type} ${current} ${selectable} ${selected} ${hidden} ${mouseOver}`;
 
-		let healthBar = null;
-		if (this.props.encounter && (this.props.combatant.combat.wounds > 0)) {
-			const resolve = EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Resolve);
-			const barWidth = 1 - (this.props.combatant.combat.wounds / resolve);
-			healthBar = (
-				<div className='health-bar' style={{ height: `${this.props.squareSize / 5}px` }}>
-					<div className='health-bar-gauge' style={{ width: `${100 * barWidth}%` }} />
+			let healthBar = null;
+			if (this.props.encounter && (this.props.combatant.combat.wounds > 0)) {
+				const resolve = EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Resolve);
+				const barWidth = 1 - (this.props.combatant.combat.wounds / resolve);
+				healthBar = (
+					<div className='health-bar' style={{ height: `${this.props.squareSize / 5}px` }}>
+						<div className='health-bar-gauge' style={{ width: `${100 * barWidth}%` }} />
+					</div>
+				);
+			}
+
+			return (
+				<div
+					className={className}
+					style={{
+						width: this.props.encounter ? `${this.props.squareSize * this.props.combatant.size}px` : `${this.props.squareSize}px`,
+						left: this.props.encounter ? `${((this.props.combatant.combat.position.x - this.props.mapDimensions.left) * this.props.squareSize)}px` : '0',
+						top: this.props.encounter ? `${((this.props.combatant.combat.position.y - this.props.mapDimensions.top) * this.props.squareSize)}px` : '0',
+						fontSize: this.props.encounter ? `${this.props.squareSize * this.props.combatant.size * 0.25}px` : `${this.props.squareSize * 0.25}px`
+					}}
+					onClick={e => this.onClick(e)}
+					onDoubleClick={e => this.onDoubleClick(e)}
+					onMouseEnter={() => this.setMouseOver(true)}
+					onMouseLeave={() => this.setMouseOver(false)}
+				>
+					<div className={this.props.combatant.combat.current ? 'mini-token-face current' : 'mini-token-face'}>
+						{this.getMonogram()}
+					</div>
+					{healthBar}
+					{!!this.props.encounter && this.props.combatant.combat.current ? <div className='pulse pulse-one' /> : null}
+					{!!this.props.encounter && this.props.combatant.combat.current ? <div className='pulse pulse-two' /> : null}
+					{!!this.props.encounter && this.props.combatant.combat.current ? <div className='pulse pulse-three' /> : null}
+					{this.getPopover()}
 				</div>
 			);
+		} catch {
+			return <div className='encounter-map-mini-token render-error' />;
 		}
-
-		return (
-			<div
-				className={className}
-				style={{
-					width: this.props.encounter ? `${this.props.squareSize * this.props.combatant.size}px` : `${this.props.squareSize}px`,
-					left: this.props.encounter ? `${((this.props.combatant.combat.position.x - this.props.mapDimensions.left) * this.props.squareSize)}px` : '0',
-					top: this.props.encounter ? `${((this.props.combatant.combat.position.y - this.props.mapDimensions.top) * this.props.squareSize)}px` : '0',
-					fontSize: this.props.encounter ? `${this.props.squareSize * this.props.combatant.size * 0.25}px` : `${this.props.squareSize * 0.25}px`
-				}}
-				onClick={e => this.onClick(e)}
-				onDoubleClick={e => this.onDoubleClick(e)}
-				onMouseEnter={() => this.setMouseOver(true)}
-				onMouseLeave={() => this.setMouseOver(false)}
-			>
-				<div className={this.props.combatant.combat.current ? 'mini-token-face current' : 'mini-token-face'}>
-					{this.getMonogram()}
-				</div>
-				{healthBar}
-				{!!this.props.encounter && this.props.combatant.combat.current ? <div className='pulse pulse-one' /> : null}
-				{!!this.props.encounter && this.props.combatant.combat.current ? <div className='pulse pulse-two' /> : null}
-				{!!this.props.encounter && this.props.combatant.combat.current ? <div className='pulse pulse-three' /> : null}
-				{this.getPopover()}
-			</div>
-		);
 	};
 }

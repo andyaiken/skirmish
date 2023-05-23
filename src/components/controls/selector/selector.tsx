@@ -14,19 +14,23 @@ export class Selector extends Component<Props> {
 	};
 
 	render = () => {
-		const options = this.props.options.map(option => {
-			const className = option.id === this.props.selectedID ? 'option selected' : 'option';
+		try {
+			const options = this.props.options.map(option => {
+				const className = option.id === this.props.selectedID ? 'option selected' : 'option';
+				return (
+					<div key={option.id} className={className} onClick={() => this.props.onSelect(option.id)}>
+						{ option.display ?? option.id }
+					</div>
+				);
+			});
+
 			return (
-				<div key={option.id} className={className} onClick={() => this.props.onSelect(option.id)}>
-					{ option.display ?? option.id }
+				<div className='selector'>
+					{ options }
 				</div>
 			);
-		});
-
-		return (
-			<div className='selector'>
-				{ options }
-			</div>
-		);
+		} catch {
+			return <div className='selector render-error' />;
+		}
 	};
 }

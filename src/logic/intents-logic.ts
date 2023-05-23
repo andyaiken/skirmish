@@ -1,3 +1,5 @@
+import { IntentsData } from '../data/intents-data';
+
 import { ActionTargetType } from '../enums/action-target-type';
 import { CombatantState } from '../enums/combatant-state';
 import { CombatantType } from '../enums/combatant-type';
@@ -11,42 +13,12 @@ import { PathLogic } from './path-logic';
 
 import type { ActionModel, ActionTargetParameterModel } from '../models/action';
 import type { EncounterMapEdgeModel, EncounterModel } from '../models/encounter';
-import type { IntentModel, IntentsModel } from '../models/intent';
 import type { CombatantModel } from '../models/combatant';
+import type { IntentsModel } from '../models/intent';
 import type { PathModel } from '../models/path';
 
 import { Collections } from '../utils/collections';
 import { Random } from '../utils/random';
-
-export class Intents {
-	static inspire = (): IntentModel => {
-		return {
-			id: 'inspire',
-			data: null
-		};
-	};
-
-	static hide = (): IntentModel => {
-		return {
-			id: 'hide',
-			data: null
-		};
-	};
-
-	static move = (dir: string): IntentModel => {
-		return {
-			id: 'move',
-			data: dir
-		};
-	};
-
-	static action = (action: ActionModel): IntentModel => {
-		return {
-			id: 'action',
-			data: action
-		};
-	};
-}
 
 export class IntentsLogic {
 	static getIntents = (encounter: EncounterModel, combatant: CombatantModel) => {
@@ -65,7 +37,7 @@ export class IntentsLogic {
 							if (targetParam.targets === null) {
 								options.push({
 									description: action.name,
-									intents: [ Intents.action(action) ],
+									intents: [ IntentsData.action(action) ],
 									weight: 2
 								});
 							} else {
@@ -97,7 +69,7 @@ export class IntentsLogic {
 		if ((presense > 0) && (combatant.combat.movement >= 4)) {
 			options.push({
 				description: 'Inspire',
-				intents: [ Intents.inspire() ],
+				intents: [ IntentsData.inspire() ],
 				weight: presense
 			});
 		}
@@ -106,7 +78,7 @@ export class IntentsLogic {
 		if ((stealth > 0) && (combatant.combat.hidden === 0) && (combatant.combat.movement >= 4)) {
 			options.push({
 				description: 'Hide',
-				intents: [ Intents.hide() ],
+				intents: [ IntentsData.hide() ],
 				weight: stealth
 			});
 		}
@@ -146,8 +118,8 @@ export class IntentsLogic {
 						intents.push({
 							description: action.name,
 							intents: [
-								...path.steps.map(step => Intents.move(step)),
-								Intents.action(action)
+								...path.steps.map(step => IntentsData.move(step)),
+								IntentsData.action(action)
 							],
 							weight: ActionLogic.getActionType(action) === 'Attack' ? 4 : 2
 						});
@@ -214,8 +186,8 @@ export class IntentsLogic {
 						intents.push({
 							description: action.name,
 							intents: [
-								...path.steps.map(step => Intents.move(step)),
-								Intents.action(action)
+								...path.steps.map(step => IntentsData.move(step)),
+								IntentsData.action(action)
 							],
 							weight: weight
 						});
@@ -253,8 +225,8 @@ export class IntentsLogic {
 						intents.push({
 							description: action.name,
 							intents: [
-								...path.steps.map(step => Intents.move(step)),
-								Intents.action(action)
+								...path.steps.map(step => IntentsData.move(step)),
+								IntentsData.action(action)
 							],
 							weight: 1
 						});
@@ -292,7 +264,7 @@ export class IntentsLogic {
 						intents.push({
 							description: action.name,
 							intents: [
-								Intents.action(action)
+								IntentsData.action(action)
 							],
 							weight: 4
 						});
@@ -329,7 +301,7 @@ export class IntentsLogic {
 				intents.push({
 					description: 'Move Away',
 					intents: [
-						...path.steps.map(step => Intents.move(step))
+						...path.steps.map(step => IntentsData.move(step))
 					],
 					weight: 0
 				});
@@ -362,7 +334,7 @@ export class IntentsLogic {
 					intents.push({
 						description: 'Disengage',
 						intents: [
-							...path.steps.map(step => Intents.move(step))
+							...path.steps.map(step => IntentsData.move(step))
 						],
 						weight: 0
 					});
@@ -384,7 +356,7 @@ export class IntentsLogic {
 					intents.push({
 						description: 'Move',
 						intents: [
-							...path.steps.map(step => Intents.move(step))
+							...path.steps.map(step => IntentsData.move(step))
 						],
 						weight: 0
 					});

@@ -19,37 +19,41 @@ interface Props {
 
 export class CombatantMonster extends Component<Props> {
 	render = () => {
-		let action = null;
-		if (this.props.combatant.combat.selectedAction) {
-			action = this.props.combatant.combat.selectedAction.action;
-		} else {
-			const intent = this.props.combatant.combat.intents ? this.props.combatant.combat.intents.intents.find(i => i.id === 'action') : null;
-			if (intent) {
-				action = intent.data as ActionModel;
+		try {
+			let action = null;
+			if (this.props.combatant.combat.selectedAction) {
+				action = this.props.combatant.combat.selectedAction.action;
+			} else {
+				const intent = this.props.combatant.combat.intents ? this.props.combatant.combat.intents.intents.find(i => i.id === 'action') : null;
+				if (intent) {
+					action = intent.data as ActionModel;
+				}
 			}
-		}
 
-		return (
-			<div className='combatant-monster'>
-				<Text type={TextType.Information}><b>{this.props.combatant.name} is a monster.</b> You cannot control their actions.</Text>
-				<hr />
-				<div className='actions'>
-					{
-						action ?
-							<PlayingCard
-								type={CardType.Action}
-								front={<ActionCard action={action} />}
-								footer={CombatantLogic.getActionSource(this.props.combatant, action.id)}
-								footerType={CombatantLogic.getActionSourceType(this.props.combatant, action.id)}
-							/>
-							:
-							<PlayingCard
-								type={CardType.Action}
-								front={<PlaceholderCard text='' subtext={`${this.props.combatant.name} has not chosen an action this turn`} />}
-							/>
-					}
+			return (
+				<div className='combatant-monster'>
+					<Text type={TextType.Information}><b>{this.props.combatant.name} is a monster.</b> You cannot control their actions.</Text>
+					<hr />
+					<div className='actions'>
+						{
+							action ?
+								<PlayingCard
+									type={CardType.Action}
+									front={<ActionCard action={action} />}
+									footer={CombatantLogic.getActionSource(this.props.combatant, action.id)}
+									footerType={CombatantLogic.getActionSourceType(this.props.combatant, action.id)}
+								/>
+								:
+								<PlayingCard
+									type={CardType.Action}
+									front={<PlaceholderCard text='' subtext={`${this.props.combatant.name} has not chosen an action this turn`} />}
+								/>
+						}
+					</div>
 				</div>
-			</div>
-		);
+			);
+		} catch {
+			return <div className='combatant-monster render-error' />;
+		}
 	};
 }

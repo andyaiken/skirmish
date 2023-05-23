@@ -409,14 +409,18 @@ export class CombatantAction extends Component<Props, State> {
 	};
 
 	render = () => {
-		if (!this.props.combatant.combat.selectedAction) {
-			return this.getNotSelected();
-		} else {
-			if (this.props.combatant.combat.selectedAction.used) {
-				return this.getUsed(this.props.combatant.combat.selectedAction.action);
+		try {
+			if (!this.props.combatant.combat.selectedAction) {
+				return this.getNotSelected();
 			} else {
-				return this.getInProgress(this.props.combatant.combat.selectedAction.action);
+				if (this.props.combatant.combat.selectedAction.used) {
+					return this.getUsed(this.props.combatant.combat.selectedAction.action);
+				} else {
+					return this.getInProgress(this.props.combatant.combat.selectedAction.action);
+				}
 			}
+		} catch {
+			return <div className='combatant-action render-error' />;
 		}
 	};
 }

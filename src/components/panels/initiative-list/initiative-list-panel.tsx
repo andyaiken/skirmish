@@ -20,37 +20,41 @@ interface Props {
 
 export class InitiativeListPanel extends Component<Props> {
 	render = () => {
-		const activeEntries = EncounterLogic.getActiveCombatants(this.props.encounter).map(combatant => {
-			return (
-				<Entry
-					key={combatant.id}
-					combatant={combatant}
-					selected={this.props.selectedIDs.includes(combatant.id)}
-					onSelect={this.props.onSelect}
-					onDetails={this.props.onDetails}
-				/>
-			);
-		});
+		try {
+			const activeEntries = EncounterLogic.getActiveCombatants(this.props.encounter).map(combatant => {
+				return (
+					<Entry
+						key={combatant.id}
+						combatant={combatant}
+						selected={this.props.selectedIDs.includes(combatant.id)}
+						onSelect={this.props.onSelect}
+						onDetails={this.props.onDetails}
+					/>
+				);
+			});
 
-		const actedEntries = EncounterLogic.getActedCombatants(this.props.encounter).map(combatant => {
-			return (
-				<Entry
-					key={combatant.id}
-					combatant={combatant}
-					selected={this.props.selectedIDs.includes(combatant.id)}
-					onSelect={this.props.onSelect}
-					onDetails={this.props.onDetails}
-				/>
-			);
-		});
+			const actedEntries = EncounterLogic.getActedCombatants(this.props.encounter).map(combatant => {
+				return (
+					<Entry
+						key={combatant.id}
+						combatant={combatant}
+						selected={this.props.selectedIDs.includes(combatant.id)}
+						onSelect={this.props.onSelect}
+						onDetails={this.props.onDetails}
+					/>
+				);
+			});
 
-		return (
-			<div className='initiative-list-panel'>
-				{activeEntries}
-				{(activeEntries.length > 0) && (actedEntries.length > 0) ? <hr /> : null}
-				{actedEntries}
-			</div>
-		);
+			return (
+				<div className='initiative-list-panel'>
+					{activeEntries}
+					{(activeEntries.length > 0) && (actedEntries.length > 0) ? <hr /> : null}
+					{actedEntries}
+				</div>
+			);
+		} catch {
+			return <div className='initiative-list-panel render-error' />;
+		}
 	};
 }
 

@@ -8,10 +8,14 @@ interface Props {
 
 export class ListItemPanel extends Component<Props> {
 	render = () => {
-		return (
-			<div className='list-item-panel'>
-				{this.props.item}
-			</div>
-		);
+		try {
+			return (
+				<div className='list-item-panel'>
+					{this.props.item}
+				</div>
+			);
+		} catch {
+			return <div className='list-item-panel render-error' />;
+		}
 	};
 }

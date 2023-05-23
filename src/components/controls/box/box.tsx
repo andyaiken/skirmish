@@ -9,15 +9,19 @@ interface Props {
 
 export class Box extends Component<Props> {
 	render = () => {
-		return (
-			<div className='box'>
-				<div className='box-content'>
-					{this.props.children}
+		try {
+			return (
+				<div className='box'>
+					<div className='box-content'>
+						{this.props.children}
+					</div>
+					<div className='box-label'>
+						{this.props.label}
+					</div>
 				</div>
-				<div className='box-label'>
-					{this.props.label}
-				</div>
-			</div>
-		);
+			);
+		} catch {
+			return <div className='box render-error' />;
+		}
 	};
 }

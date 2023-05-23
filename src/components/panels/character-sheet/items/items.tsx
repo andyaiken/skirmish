@@ -228,38 +228,42 @@ export class Items extends Component<Props> {
 	};
 
 	render = () => {
-		const carried = this.getCarriedItemSection();
-		const party = this.getPartyItemSection();
-		const nearby = this.getNearbyItemSection();
+		try {
+			const carried = this.getCarriedItemSection();
+			const party = this.getPartyItemSection();
+			const nearby = this.getNearbyItemSection();
 
-		return (
-			<div className='items'>
-				<Text type={TextType.SubHeading}>Equipped Items</Text>
-				<div className='equipped'>
-					<div className='grid-cell'>
-						{this.getLocationSection(ItemLocationType.Hand)}
+			return (
+				<div className='items'>
+					<Text type={TextType.SubHeading}>Equipped Items</Text>
+					<div className='equipped'>
+						<div className='grid-cell'>
+							{this.getLocationSection(ItemLocationType.Hand)}
+						</div>
+						<div className='grid-cell'>
+							{this.getLocationSection(ItemLocationType.Body)}
+							{this.getLocationSection(ItemLocationType.Feet)}
+						</div>
+						<div className='grid-cell'>
+							{this.getLocationSection(ItemLocationType.Head)}
+							{this.getLocationSection(ItemLocationType.Neck)}
+						</div>
+						<div className='grid-cell'>
+							{this.getLocationSection(ItemLocationType.Ring)}
+						</div>
 					</div>
-					<div className='grid-cell'>
-						{this.getLocationSection(ItemLocationType.Body)}
-						{this.getLocationSection(ItemLocationType.Feet)}
-					</div>
-					<div className='grid-cell'>
-						{this.getLocationSection(ItemLocationType.Head)}
-						{this.getLocationSection(ItemLocationType.Neck)}
-					</div>
-					<div className='grid-cell'>
-						{this.getLocationSection(ItemLocationType.Ring)}
-					</div>
+					<hr />
+					<Text type={TextType.SubHeading}>Carried Items ({this.props.combatant.carried.length} / 6)</Text>
+					{carried}
+					<hr />
+					{party !== null ? <Text type={TextType.SubHeading}>Party Items</Text> : null}
+					{nearby !== null ? <Text type={TextType.SubHeading}>Nearby Items</Text> : null}
+					{party}
+					{nearby}
 				</div>
-				<hr />
-				<Text type={TextType.SubHeading}>Carried Items ({this.props.combatant.carried.length} / 6)</Text>
-				{carried}
-				<hr />
-				{party !== null ? <Text type={TextType.SubHeading}>Party Items</Text> : null}
-				{nearby !== null ? <Text type={TextType.SubHeading}>Nearby Items</Text> : null}
-				{party}
-				{nearby}
-			</div>
-		);
+			);
+		} catch {
+			return <div className='items render-error' />;
+		}
 	};
 }

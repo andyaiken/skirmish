@@ -488,66 +488,70 @@ export class EncounterScreen extends Component<Props, State> {
 	};
 
 	render = () => {
-		let dialog = null;
-		if (this.state.detailsCombatant) {
-			dialog = (
-				<Dialog
-					content={
-						<CharacterSheetPanel
-							combatant={this.state.detailsCombatant}
-							game={this.props.game}
-							developer={this.props.developer}
-							equipItem={this.props.equipItem}
-							unequipItem={this.props.unequipItem}
-							pickUpItem={this.props.pickUpItem}
-							dropItem={this.props.dropItem}
-							levelUp={() => null}
-						/>
-					}
-					onClose={() => this.clearDetails()}
-				/>
-			);
-		}
-		if (this.state.detailsLoot) {
-			dialog = (
-				<Dialog
-					content={
-						<div>
-							<Text type={TextType.Heading}>Treasure</Text>
-							<CardList cards={this.state.detailsLoot.items.map(i => <PlayingCard key={i.id} type={CardType.Item} front={<ItemCard item={i} />} footer='Item' />)} />
-						</div>
-					}
-					onClose={() => this.clearDetails()}
-				/>
-			);
-		}
-
-		return (
-			<div className='encounter-screen'>
-				{this.getLeftControls()}
-				<div className='encounter-central-panel'>
-					<EncounterMapPanel
-						encounter={this.props.encounter}
-						squareSize={this.state.mapSquareSize}
-						selectableCombatantIDs={this.state.selectableCombatantIDs}
-						selectableLootIDs={this.state.selectableLootIDs}
-						selectableSquares={this.state.selectableSquares}
-						selectedCombatantIDs={this.state.selectedCombatantIDs}
-						selectedLootIDs={this.state.selectedLootIDs}
-						selectedSquares={this.state.selectedSquares}
-						onClickCombatant={this.selectCombatant}
-						onClickLoot={this.selectLoot}
-						onClickSquare={this.selectSquare}
-						onClickOff={this.clearSelection}
-						onDoubleClickCombatant={this.showDetailsCombatant}
-						onDoubleClickLoot={this.showDetailsLoot}
+		try {
+			let dialog = null;
+			if (this.state.detailsCombatant) {
+				dialog = (
+					<Dialog
+						content={
+							<CharacterSheetPanel
+								combatant={this.state.detailsCombatant}
+								game={this.props.game}
+								developer={this.props.developer}
+								equipItem={this.props.equipItem}
+								unequipItem={this.props.unequipItem}
+								pickUpItem={this.props.pickUpItem}
+								dropItem={this.props.dropItem}
+								levelUp={() => null}
+							/>
+						}
+						onClose={() => this.clearDetails()}
 					/>
-					{this.getBottomControls()}
+				);
+			}
+			if (this.state.detailsLoot) {
+				dialog = (
+					<Dialog
+						content={
+							<div>
+								<Text type={TextType.Heading}>Treasure</Text>
+								<CardList cards={this.state.detailsLoot.items.map(i => <PlayingCard key={i.id} type={CardType.Item} front={<ItemCard item={i} />} footer='Item' />)} />
+							</div>
+						}
+						onClose={() => this.clearDetails()}
+					/>
+				);
+			}
+
+			return (
+				<div className='encounter-screen'>
+					{this.getLeftControls()}
+					<div className='encounter-central-panel'>
+						<EncounterMapPanel
+							encounter={this.props.encounter}
+							squareSize={this.state.mapSquareSize}
+							selectableCombatantIDs={this.state.selectableCombatantIDs}
+							selectableLootIDs={this.state.selectableLootIDs}
+							selectableSquares={this.state.selectableSquares}
+							selectedCombatantIDs={this.state.selectedCombatantIDs}
+							selectedLootIDs={this.state.selectedLootIDs}
+							selectedSquares={this.state.selectedSquares}
+							onClickCombatant={this.selectCombatant}
+							onClickLoot={this.selectLoot}
+							onClickSquare={this.selectSquare}
+							onClickOff={this.clearSelection}
+							onDoubleClickCombatant={this.showDetailsCombatant}
+							onDoubleClickLoot={this.showDetailsLoot}
+						/>
+						{this.getBottomControls()}
+					</div>
+					{this.getRightControls()}
+					{dialog}
 				</div>
-				{this.getRightControls()}
-				{dialog}
-			</div>
-		);
+			);
+		} catch {
+			return <div className='encounter-screen render-error' />;
+		}
 	};
 }
 

@@ -93,77 +93,81 @@ export class CharacterSheetPanel extends Component<Props, State> {
 	};
 
 	render = () => {
-		let content = null;
-		switch (this.state.view) {
-			case 'stats':
-				content = (
-					<Stats
-						combatant={this.props.combatant}
-						encounter={this.props.game.encounter}
-						developer={this.props.developer}
+		try {
+			let content = null;
+			switch (this.state.view) {
+				case 'stats':
+					content = (
+						<Stats
+							combatant={this.props.combatant}
+							encounter={this.props.game.encounter}
+							developer={this.props.developer}
+						/>
+					);
+					break;
+				case 'items':
+					content = (
+						<Items
+							combatant={this.props.combatant}
+							game={this.props.game}
+							equipItem={this.equipItem}
+							unequipItem={this.unequipItem}
+							pickUpItem={this.pickUpItem}
+							dropItem={this.dropItem}
+						/>
+					);
+					break;
+			}
+
+			let selector = null;
+			let sidebar = null;
+			if (this.props.combatant.xp >= this.props.combatant.level) {
+				sidebar = (
+					<div className='sidebar-section'>
+						<LevelUp combatant={this.props.combatant} features={this.state.features} levelUp={this.levelUp} />
+					</div>
+				);
+			} else {
+				selector = (
+					<Tabs
+						options={[ { id: 'stats', display: 'Statistics' }, { id: 'items', display: 'Equipment' } ]}
+						selectedID={this.state.view}
+						onSelect={id => this.setState({ view: id })}
 					/>
 				);
-				break;
-			case 'items':
-				content = (
-					<Items
-						combatant={this.props.combatant}
-						game={this.props.game}
-						equipItem={this.equipItem}
-						unequipItem={this.unequipItem}
-						pickUpItem={this.pickUpItem}
-						dropItem={this.dropItem}
-					/>
-				);
-				break;
-		}
+			}
 
-		let selector = null;
-		let sidebar = null;
-		if (this.props.combatant.xp >= this.props.combatant.level) {
-			sidebar = (
-				<div className='sidebar-section'>
-					<LevelUp combatant={this.props.combatant} features={this.state.features} levelUp={this.levelUp} />
-				</div>
-			);
-		} else {
-			selector = (
-				<Tabs
-					options={[ { id: 'stats', display: 'Statistics' }, { id: 'items', display: 'Equipment' } ]}
-					selectedID={this.state.view}
-					onSelect={id => this.setState({ view: id })}
-				/>
-			);
-		}
+			const species = GameLogic.getSpecies(this.props.combatant.speciesID);
+			const role = GameLogic.getRole(this.props.combatant.roleID);
+			const background = GameLogic.getBackground(this.props.combatant.backgroundID);
 
-		const species = GameLogic.getSpecies(this.props.combatant.speciesID);
-		const role = GameLogic.getRole(this.props.combatant.roleID);
-		const background = GameLogic.getBackground(this.props.combatant.backgroundID);
+			if (this.props.combatant.quirks.includes(QuirkType.Beast)) {
+				selector = null;
+			}
 
-		if (this.props.combatant.quirks.includes(QuirkType.Beast)) {
-			selector = null;
-		}
-
-		return (
-			<div className='character-sheet-panel'>
-				<div className='main-section'>
-					<div className='header'>
-						<Text type={TextType.Heading}>{this.props.combatant.name || 'unnamed hero'}</Text>
-						<div className='tags'>
-							{species ? <Tag>{species.name}</Tag> : null}
-							{role ? <Tag>{role.name}</Tag> : null}
-							{background ? <Tag>{background.name}</Tag> : null}
-							<Tag>Level {this.props.combatant.level}</Tag>
-							{this.props.combatant.quirks.map((q, n) => (<Tag key={n}>{q}</Tag>))}
+			return (
+				<div className='character-sheet-panel'>
+					<div className='main-section'>
+						<div className='header'>
+							<Text type={TextType.Heading}>{this.props.combatant.name || 'unnamed hero'}</Text>
+							<div className='tags'>
+								{species ? <Tag>{species.name}</Tag> : null}
+								{role ? <Tag>{role.name}</Tag> : null}
+								{background ? <Tag>{background.name}</Tag> : null}
+								<Tag>Level {this.props.combatant.level}</Tag>
+								{this.props.combatant.quirks.map((q, n) => (<Tag key={n}>{q}</Tag>))}
+							</div>
+						</div>
+						{selector}
+						<div className='content'>
+							{content}
 						</div>
 					</div>
-					{selector}
-					<div className='content'>
-						{content}
-					</div>
+					{sidebar}
 				</div>
-				{sidebar}
-			</div>
-		);
+			);
+		} catch {
+			return <div className='character-sheet-panel render-error' />;
+		}
 	};
 }

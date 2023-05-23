@@ -16,11 +16,15 @@ export class Switch extends Component<Props> {
 	};
 
 	render = () => {
-		return (
-			<div className='switch' onClick={this.onClick}>
-				<div className='switch-label'>{this.props.label}</div>
-				{this.props.checked ? <IconCircleCheckFilled className='switch-icon checked' /> : <IconCircle className='switch-icon' />}
-			</div>
-		);
+		try {
+			return (
+				<div className='switch' onClick={this.onClick}>
+					<div className='switch-label'>{this.props.label}</div>
+					{this.props.checked ? <IconCircleCheckFilled className='switch-icon checked' /> : <IconCircle className='switch-icon' />}
+				</div>
+			);
+		} catch {
+			return <div className='switch render-error' />;
+		}
 	};
 }

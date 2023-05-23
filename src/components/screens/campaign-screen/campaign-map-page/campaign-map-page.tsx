@@ -183,7 +183,7 @@ export class CampaignMapPage extends Component<Props, State> {
 								</div>
 								<div className='divider' />
 								<div className='hero-list-column'>
-									<Text type={TextType.SubHeading}>Selected heroes ({selected.length} / 5)</Text>
+									<Text type={TextType.SubHeading}>Selected heroes</Text>
 									<Text type={TextType.Information}>Select <b>up to 5 heroes</b> from the left to take part in this encounter.</Text>
 									{selected}
 									<button disabled={(this.state.selectedHeroes.length < 1) || (this.state.selectedHeroes.length > 5)} onClick={this.startEncounter}>Start the Encounter</button>
@@ -204,18 +204,22 @@ export class CampaignMapPage extends Component<Props, State> {
 	};
 
 	render = () => {
-		return (
-			<div className='campaign-map-page'>
-				<div className='map-content' onClick={() => this.setState({ selectedRegion: null })}>
-					<CampaignMapPanel
-						map={this.props.game.map}
-						selectedRegion={this.state.selectedRegion}
-						onSelectRegion={region => this.setState({ selectedRegion: region })}
-					/>
+		try {
+			return (
+				<div className='campaign-map-page'>
+					<div className='map-content' onClick={() => this.setState({ selectedRegion: null })}>
+						<CampaignMapPanel
+							map={this.props.game.map}
+							selectedRegion={this.state.selectedRegion}
+							onSelectRegion={region => this.setState({ selectedRegion: region })}
+						/>
+					</div>
+					{this.getSidebar()}
+					{this.getDialog()}
 				</div>
-				{this.getSidebar()}
-				{this.getDialog()}
-			</div>
-		);
+			);
+		} catch {
+			return <div className='campaign-map-page render-error' />;
+		}
 	};
 }

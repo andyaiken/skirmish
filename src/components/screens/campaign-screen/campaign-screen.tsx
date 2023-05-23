@@ -61,67 +61,72 @@ export class CampaignScreen extends Component<Props, State> {
 	};
 
 	render = () => {
-		let content = null;
-		switch (this.state.screen) {
-			case CampaignScreenType.Island:
-				content = (
-					<CampaignMapPage
-						game={this.props.game}
-						developer={this.props.developer}
-						startEncounter={this.props.startEncounter}
-						conquer={this.props.conquer}
-					/>
-				);
-				break;
-			case CampaignScreenType.Team:
-				content = (
-					<HeroesPage
-						game={this.props.game}
-						developer={this.props.developer}
-						addHero={this.props.addHero}
-						incrementXP={this.props.incrementXP}
-						equipItem={this.props.equipItem}
-						unequipItem={this.props.unequipItem}
-						pickUpItem={this.props.pickUpItem}
-						dropItem={this.props.dropItem}
-						levelUp={this.props.levelUp}
-						redeemBoon={this.props.redeemBoon}
-					/>
-				);
-				break;
-			case CampaignScreenType.Items:
-				content = (
-					<ItemsPage
-						game={this.props.game}
-						developer={this.props.developer}
-						buyItem={this.props.buyItem}
-						sellItem={this.props.sellItem}
-						redeemBoon={this.props.redeemBoon}
-						addMoney={this.props.addMoney}
-					/>
-				);
-				break;
+		try {
+			//
+			let content = null;
+			switch (this.state.screen) {
+				case CampaignScreenType.Island:
+					content = (
+						<CampaignMapPage
+							game={this.props.game}
+							developer={this.props.developer}
+							startEncounter={this.props.startEncounter}
+							conquer={this.props.conquer}
+						/>
+					);
+					break;
+				case CampaignScreenType.Team:
+					content = (
+						<HeroesPage
+							game={this.props.game}
+							developer={this.props.developer}
+							addHero={this.props.addHero}
+							incrementXP={this.props.incrementXP}
+							equipItem={this.props.equipItem}
+							unequipItem={this.props.unequipItem}
+							pickUpItem={this.props.pickUpItem}
+							dropItem={this.props.dropItem}
+							levelUp={this.props.levelUp}
+							redeemBoon={this.props.redeemBoon}
+						/>
+					);
+					break;
+				case CampaignScreenType.Items:
+					content = (
+						<ItemsPage
+							game={this.props.game}
+							developer={this.props.developer}
+							buyItem={this.props.buyItem}
+							sellItem={this.props.sellItem}
+							redeemBoon={this.props.redeemBoon}
+							addMoney={this.props.addMoney}
+						/>
+					);
+					break;
+			}
+
+			const options = [
+				{ id: 'island', display: 'The Island' },
+				{ id: 'team', display: 'Your Team' },
+				{ id: 'items', display: 'Your Equipment' }
+			];
+
+			return (
+				<div className='campaign-screen'>
+					<div className='campaign-top-bar'>
+						<div className='logo-text inset-text'>Skirmish</div>
+						<Selector options={options} selectedID={this.state.screen} onSelect={id => this.setScreen(id as CampaignScreenType)} />
+						<button className='icon-btn' title='Information' onClick={() => this.props.showHelp(this.state.screen)}>
+							<IconInfoCircle />
+						</button>
+					</div>
+					<div className='campaign-content'>
+						{content}
+					</div>
+				</div>
+			);
+		} catch {
+			return <div className='campaign-screen render-error' />;
 		}
-
-		const options = [
-			{ id: 'island', display: 'The Island' },
-			{ id: 'team', display: 'Your Team' },
-			{ id: 'items', display: 'Your Equipment' }
-		];
-
-		return (
-			<div className='campaign-screen'>
-				<div className='campaign-top-bar'>
-					<div className='logo-text inset-text'>Skirmish</div>
-					<Selector options={options} selectedID={this.state.screen} onSelect={id => this.setScreen(id as CampaignScreenType)} />
-					<button className='icon-btn' title='Information' onClick={() => this.props.showHelp(this.state.screen)}>
-						<IconInfoCircle />
-					</button>
-				</div>
-				<div className='campaign-content'>
-					{content}
-				</div>
-			</div>
-		);
 	};
 }

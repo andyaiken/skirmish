@@ -57,54 +57,58 @@ export class PlayingCard extends Component<Props, State> {
 	};
 
 	render = () => {
-		let className = 'playing-card';
-		if (this.props.onClick !== null) {
-			className += ' clickable';
-		}
-		if (this.state.display === PlayingCardSide.Back) {
-			className += ' flipped';
-		}
-
-		const stack = [];
-		if (this.props.stack) {
-			for (let n = 0; n !== 10; ++n) {
-				const degrees = (Random.randomDecimal() * 10) - 5;
-				const offsetX = (Random.randomDecimal() * 10) - 5;
-				const offsetY = (Random.randomDecimal() * 10) - 5;
-				stack.push(
-					<div
-						key={n}
-						className={`stack-card ${this.props.type.toLowerCase()}`}
-						style={
-							{
-								transform: `rotate(${degrees}deg)`,
-								left: `${offsetX}px`,
-								top: `${offsetY}px`
-							}
-						}
-					/>
-				);
+		try {
+			let className = 'playing-card';
+			if (this.props.onClick !== null) {
+				className += ' clickable';
 			}
-		}
+			if (this.state.display === PlayingCardSide.Back) {
+				className += ' flipped';
+			}
 
-		const hasFooter = (this.props.footer !== null);
-		const footerType = this.props.footerType || this.props.type;
+			const stack = [];
+			if (this.props.stack) {
+				for (let n = 0; n !== 10; ++n) {
+					const degrees = (Random.randomDecimal() * 10) - 5;
+					const offsetX = (Random.randomDecimal() * 10) - 5;
+					const offsetY = (Random.randomDecimal() * 10) - 5;
+					stack.push(
+						<div
+							key={n}
+							className={`stack-card ${this.props.type.toLowerCase()}`}
+							style={
+								{
+									transform: `rotate(${degrees}deg)`,
+									left: `${offsetX}px`,
+									top: `${offsetY}px`
+								}
+							}
+						/>
+					);
+				}
+			}
 
-		return (
-			<div className={className} onClick={this.onClick}>
-				{stack}
-				<div className='playing-card-inner'>
-					<div className={`playing-card-front ${this.props.type.toLowerCase()}`}>
-						{ this.props.back !== null ? <button className='icon-btn' onClick={e => this.flip(e)}><IconRefresh /></button> : null }
-						<div className='front-content'>{this.props.front}</div>
-						{ hasFooter ? <div className={`front-footer ${footerType.toLowerCase()}`}>{this.props.footer}</div> : null }
-					</div>
-					<div className={`playing-card-back ${this.props.type.toLowerCase()}`}>
-						<button className='icon-btn' onClick={e => this.flip(e)}><IconRefresh /></button>
-						{this.props.back}
+			const hasFooter = (this.props.footer !== null);
+			const footerType = this.props.footerType || this.props.type;
+
+			return (
+				<div className={className} onClick={this.onClick}>
+					{stack}
+					<div className='playing-card-inner'>
+						<div className={`playing-card-front ${this.props.type.toLowerCase()}`}>
+							{ this.props.back !== null ? <button className='icon-btn' onClick={e => this.flip(e)}><IconRefresh /></button> : null }
+							<div className='front-content'>{this.props.front}</div>
+							{ hasFooter ? <div className={`front-footer ${footerType.toLowerCase()}`}>{this.props.footer}</div> : null }
+						</div>
+						<div className={`playing-card-back ${this.props.type.toLowerCase()}`}>
+							<button className='icon-btn' onClick={e => this.flip(e)}><IconRefresh /></button>
+							{this.props.back}
+						</div>
 					</div>
 				</div>
-			</div>
-		);
+			);
+		} catch {
+			return <div className='playing-card render-error' />;
+		}
 	};
 }

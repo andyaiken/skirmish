@@ -11,16 +11,20 @@ interface Props {
 
 export class TrailToken extends Component<Props> {
 	render = () => {
-		return (
-			<div
-				className='encounter-map-trail-token'
-				style={{
-					width: `${this.props.squareSize * this.props.size}px`,
-					left: `${((this.props.position.x - this.props.mapDimensions.left) * this.props.squareSize)}px`,
-					top: `${((this.props.position.y - this.props.mapDimensions.top) * this.props.squareSize)}px`
-				}}
-			>
-			</div>
-		);
+		try {
+			return (
+				<div
+					className='encounter-map-trail-token'
+					style={{
+						width: `${this.props.squareSize * this.props.size}px`,
+						left: `${((this.props.position.x - this.props.mapDimensions.left) * this.props.squareSize)}px`,
+						top: `${((this.props.position.y - this.props.mapDimensions.top) * this.props.squareSize)}px`
+					}}
+				>
+				</div>
+			);
+		} catch {
+			return <div className='encounter-map-trail-token render-error' />;
+		}
 	};
 }

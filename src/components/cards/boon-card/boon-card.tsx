@@ -34,7 +34,6 @@ export class BoonCard extends Component<Props> {
 				desc = 'Choose one of your heroes to level up.';
 				break;
 			case BoonType.Money:
-				desc = 'Gain extra money.';
 				extra = <StatValue orientation='vertical' label='Money' value={<IconValue type={IconType.Money} value={this.props.boon.data as number} />} />;
 				break;
 		}
@@ -43,7 +42,7 @@ export class BoonCard extends Component<Props> {
 			<div className='boon-card'>
 				<Text type={TextType.SubHeading}>{this.props.boon.type}</Text>
 				<hr />
-				<Text>{desc}</Text>
+				{desc ? <Text>{desc}</Text> : null}
 				{extra ? <div className='extra'>{extra}</div> : null}
 			</div>
 		);

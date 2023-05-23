@@ -33,7 +33,6 @@
 
 ## Water / Ice
 * Squares of water / ice would be difficult terrain
-* Add a water animation
 * Standing in water gives resistance to fire damage
 * Dealing poison / acid / electricity damage to a target in water deals the same damage to any combatant in adjacent water
 * Dealing cold damage to a target on a water square turns all adjacent water squares into ice
@@ -143,5 +142,4 @@
 # Tech Debt
 
 * Convert to functional components
-* Add error boundaries
 * Use hooks

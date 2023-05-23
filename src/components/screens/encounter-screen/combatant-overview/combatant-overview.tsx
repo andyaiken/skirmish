@@ -22,35 +22,39 @@ interface Props {
 
 export class CombatantOverview extends Component<Props> {
 	render = () => {
-		let auraSection = null;
-		const auras = EncounterLogic.getAuraConditions(this.props.encounter, this.props.combatant);
-		if (auras.length > 0) {
-			auraSection = (
-				<Box label='Affected by Auras'>
-					{auras.map(c => <StatValue key={c.id} label={ConditionLogic.getConditionDescription(c)} value={c.rank} />)}
-				</Box>
-			);
-		}
+		try {
+			let auraSection = null;
+			const auras = EncounterLogic.getAuraConditions(this.props.encounter, this.props.combatant);
+			if (auras.length > 0) {
+				auraSection = (
+					<Box label='Affected by Auras'>
+						{auras.map(c => <StatValue key={c.id} label={ConditionLogic.getConditionDescription(c)} value={c.rank} />)}
+					</Box>
+				);
+			}
 
-		return (
-			<div className='combatant-overview'>
-				<CombatStatsPanel
-					combatant={this.props.combatant}
-					encounter={this.props.encounter}
-				/>
-				{auraSection}
-				<div className='quick-actions'>
-					<button disabled={this.props.combatant.combat.movement < 4} onClick={() => this.props.inspire(this.props.encounter, this.props.combatant)}>
-						Inspire<br /><IconValue value={4} type={IconType.Movement} iconSize={12} />
-					</button>
-					<button disabled={this.props.combatant.combat.movement < 4} onClick={() => this.props.scan(this.props.encounter, this.props.combatant)}>
-						Scan<br /><IconValue value={4} type={IconType.Movement} iconSize={12} />
-					</button>
-					<button disabled={this.props.combatant.combat.movement < 4} onClick={() => this.props.hide(this.props.encounter, this.props.combatant)}>
-						Hide<br /><IconValue value={4} type={IconType.Movement} iconSize={12} />
-					</button>
+			return (
+				<div className='combatant-overview'>
+					<CombatStatsPanel
+						combatant={this.props.combatant}
+						encounter={this.props.encounter}
+					/>
+					{auraSection}
+					<div className='quick-actions'>
+						<button disabled={this.props.combatant.combat.movement < 4} onClick={() => this.props.inspire(this.props.encounter, this.props.combatant)}>
+							Inspire<br /><IconValue value={4} type={IconType.Movement} iconSize={12} />
+						</button>
+						<button disabled={this.props.combatant.combat.movement < 4} onClick={() => this.props.scan(this.props.encounter, this.props.combatant)}>
+							Scan<br /><IconValue value={4} type={IconType.Movement} iconSize={12} />
+						</button>
+						<button disabled={this.props.combatant.combat.movement < 4} onClick={() => this.props.hide(this.props.encounter, this.props.combatant)}>
+							Hide<br /><IconValue value={4} type={IconType.Movement} iconSize={12} />
+						</button>
+					</div>
 				</div>
-			</div>
-		);
+			);
+		} catch {
+			return <div className='combatant-overview render-error' />;
+		}
 	};
 }

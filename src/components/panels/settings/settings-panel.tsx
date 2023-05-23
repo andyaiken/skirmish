@@ -62,107 +62,111 @@ export class SettingsPanel extends Component<Props, State> {
 	};
 
 	render = () => {
-		const tabs = [
-			{ id: 'rules', display: 'Rules' },
-			{ id: 'decks', display: 'Decks' },
-			{ id: 'options', display: 'Options' }
-		];
-
-		let content = null;
-		switch (this.state.selectedTab) {
-			case 'rules':
-				content = (
-					<div className='content'>
-						<RulesTab rules={this.props.rules} />
-					</div>
-				);
-				break;
-			case 'decks':
-				content = (
-					<div className='content'>
-						<DecksTab developer={this.props.developer} setActions={this.setActions} />
-					</div>
-				);
-				break;
-			case 'options':
-				content = (
-					<div className='content'>
-						<OptionsTab
-							game={this.props.game}
-							version={pkg.version}
-							developer={this.props.developer}
-							local={this.state.local}
-							endCampaign={this.props.endCampaign}
-							setDeveloperMode={this.props.setDeveloperMode}
-						/>
-					</div>
-				);
-				break;
-		}
-
-		let dialog = null;
-		if (this.state.actionSourceName !== '') {
-			const featureCards = [
-				<div key='deck'>
-					<PlayingCard type={CardType.Feature} stack={true} front={<PlaceholderCard text={<div>Feature<br />Deck</div>} />} />
-				</div>
+		try {
+			const tabs = [
+				{ id: 'rules', display: 'Rules' },
+				{ id: 'decks', display: 'Decks' },
+				{ id: 'options', display: 'Options' }
 			];
-			this.state.features.forEach(f => {
-				featureCards.push(
-					<div key={f.id}>
-						<PlayingCard
-							type={CardType.Feature}
-							front={<FeatureCard feature={f} />}
-							footer={this.state.actionSourceName}
-							footerType={this.state.actionSourceType}
-						/>
-						{this.props.developer ? <StatValue label='Strength' value={GameLogic.getFeatureStrength(f)} /> : null}
+
+			let content = null;
+			switch (this.state.selectedTab) {
+				case 'rules':
+					content = (
+						<div className='content'>
+							<RulesTab rules={this.props.rules} />
+						</div>
+					);
+					break;
+				case 'decks':
+					content = (
+						<div className='content'>
+							<DecksTab developer={this.props.developer} setActions={this.setActions} />
+						</div>
+					);
+					break;
+				case 'options':
+					content = (
+						<div className='content'>
+							<OptionsTab
+								game={this.props.game}
+								version={pkg.version}
+								developer={this.props.developer}
+								local={this.state.local}
+								endCampaign={this.props.endCampaign}
+								setDeveloperMode={this.props.setDeveloperMode}
+							/>
+						</div>
+					);
+					break;
+			}
+
+			let dialog = null;
+			if (this.state.actionSourceName !== '') {
+				const featureCards = [
+					<div key='deck'>
+						<PlayingCard type={CardType.Feature} stack={true} front={<PlaceholderCard text={<div>Feature<br />Deck</div>} />} />
+					</div>
+				];
+				this.state.features.forEach(f => {
+					featureCards.push(
+						<div key={f.id}>
+							<PlayingCard
+								type={CardType.Feature}
+								front={<FeatureCard feature={f} />}
+								footer={this.state.actionSourceName}
+								footerType={this.state.actionSourceType}
+							/>
+							{this.props.developer ? <StatValue label='Strength' value={GameLogic.getFeatureStrength(f)} /> : null}
+						</div>
+					);
+				});
+				const actionCards = [
+					<div key='deck'>
+						<PlayingCard type={CardType.Action} stack={true} front={<PlaceholderCard text={<div>Action<br />Deck</div>} />} />
+					</div>
+				];
+				this.state.actions.forEach(a => {
+					actionCards.push(
+						<div key={a.id}>
+							<PlayingCard
+								type={CardType.Action}
+								front={<ActionCard action={a} />}
+								footer={this.state.actionSourceName}
+								footerType={this.state.actionSourceType}
+							/>
+							{this.props.developer ? <StatValue label='Strength' value={GameLogic.getActionStrength(a)} /> : null}
+						</div>
+					);
+				});
+				const content = (
+					<div>
+						<Text type={TextType.Heading}>{this.state.actionSourceName}</Text>
+						<hr />
+						<CardList cards={featureCards} />
+						<hr />
+						<CardList cards={actionCards} />
 					</div>
 				);
-			});
-			const actionCards = [
-				<div key='deck'>
-					<PlayingCard type={CardType.Action} stack={true} front={<PlaceholderCard text={<div>Action<br />Deck</div>} />} />
-				</div>
-			];
-			this.state.actions.forEach(a => {
-				actionCards.push(
-					<div key={a.id}>
-						<PlayingCard
-							type={CardType.Action}
-							front={<ActionCard action={a} />}
-							footer={this.state.actionSourceName}
-							footerType={this.state.actionSourceType}
-						/>
-						{this.props.developer ? <StatValue label='Strength' value={GameLogic.getActionStrength(a)} /> : null}
-					</div>
+				dialog = (
+					<Dialog
+						content={content}
+						onClose={() => this.setActions('', CardType.Default, [], [])}
+					/>
 				);
-			});
-			const content = (
-				<div>
-					<Text type={TextType.Heading}>{this.state.actionSourceName}</Text>
-					<hr />
-					<CardList cards={featureCards} />
-					<hr />
-					<CardList cards={actionCards} />
+			}
+
+			return (
+				<div className='settings-panel'>
+					<Text type={TextType.Heading}>Information</Text>
+					<Tabs options={tabs} selectedID={this.state.selectedTab} onSelect={id => this.setState({ selectedTab: id })} />
+					{content}
+					{dialog}
 				</div>
 			);
-			dialog = (
-				<Dialog
-					content={content}
-					onClose={() => this.setActions('', CardType.Default, [], [])}
-				/>
-			);
+		} catch {
+			return <div className='settings-panel render-error' />;
 		}
-
-		return (
-			<div className='settings-panel'>
-				<Text type={TextType.Heading}>Information</Text>
-				<Tabs options={tabs} selectedID={this.state.selectedTab} onSelect={id => this.setState({ selectedTab: id })} />
-				{content}
-				{dialog}
-			</div>
-		);
 	};
 }
 

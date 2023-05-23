@@ -155,85 +155,90 @@ export class ItemsPage extends Component<Props, State> {
 	};
 
 	render = () => {
-		let magicItemSection = null;
-		const magicItems = this.props.game.items.filter(i => i.magic).sort((a, b) => a.name.localeCompare(b.name));
-		if (magicItems.length > 0) {
-			const cards = magicItems.map(item => {
-				return (
-					<div key={item.id}>
-						<PlayingCard
-							type={CardType.Item}
-							front={<ItemCard item={item} />}
-							footer='Item'
-						/>
-						<div>
-							<button onClick={() => this.props.sellItem(item, true)}>Sell</button>
-						</div>
-					</div>
-				);
-			});
-			magicItemSection = (
-				<div>
-					<Text type={TextType.SubHeading}>Magic Items ({magicItems.length})</Text>
-					<CardList cards={cards} />
-				</div>
-			);
-		}
-
-		let mundaneItemSection = null;
-		const mundaneItems = this.props.game.items.filter(i => !i.magic).sort((a, b) => a.name.localeCompare(b.name));
-		if (mundaneItems.length > 0) {
-			const cards = Collections.distinct(mundaneItems, i => i.name).map(item => {
-				const count = mundaneItems.filter(i => i.name === item.name).length;
-
-				let footer = (
-					<button onClick={() => this.props.sellItem(item, true)}>Sell</button>
-				);
-
-				if (count > 1) {
-					footer = (
-						<div>
-							<button onClick={() => this.props.sellItem(item, false)}>Sell One</button>
-							<button onClick={() => this.props.sellItem(item, true)}>Sell All ({count})</button>
+		try {
+			//
+			let magicItemSection = null;
+			const magicItems = this.props.game.items.filter(i => i.magic).sort((a, b) => a.name.localeCompare(b.name));
+			if (magicItems.length > 0) {
+				const cards = magicItems.map(item => {
+					return (
+						<div key={item.id}>
+							<PlayingCard
+								type={CardType.Item}
+								front={<ItemCard item={item} />}
+								footer='Item'
+							/>
+							<div>
+								<button onClick={() => this.props.sellItem(item, true)}>Sell</button>
+							</div>
 						</div>
 					);
-				}
-
-				return (
-					<div key={item.id}>
-						<PlayingCard
-							type={CardType.Item}
-							front={<ItemCard item={item} />}
-							footer='Item'
-						/>
-						{footer}
+				});
+				magicItemSection = (
+					<div>
+						<Text type={TextType.SubHeading}>Magic Items ({magicItems.length})</Text>
+						<CardList cards={cards} />
 					</div>
 				);
-			});
-			mundaneItemSection = (
-				<div>
-					<Text type={TextType.SubHeading}>Items ({mundaneItems.length})</Text>
-					<CardList cards={cards} />
-				</div>
-			);
-		} else {
-			mundaneItemSection = (
-				<div>
-					<Text type={TextType.SubHeading}>Items (0)</Text>
-					<Text type={TextType.Information}>You have no unequipped items.</Text>
-				</div>
-			);
-		}
+			}
 
-		return (
-			<div className='items-page'>
-				<div className='items-content'>
-					{magicItemSection}
-					{mundaneItemSection}
+			let mundaneItemSection = null;
+			const mundaneItems = this.props.game.items.filter(i => !i.magic).sort((a, b) => a.name.localeCompare(b.name));
+			if (mundaneItems.length > 0) {
+				const cards = Collections.distinct(mundaneItems, i => i.name).map(item => {
+					const count = mundaneItems.filter(i => i.name === item.name).length;
+
+					let footer = (
+						<button onClick={() => this.props.sellItem(item, true)}>Sell</button>
+					);
+
+					if (count > 1) {
+						footer = (
+							<div>
+								<button onClick={() => this.props.sellItem(item, false)}>Sell One</button>
+								<button onClick={() => this.props.sellItem(item, true)}>Sell All ({count})</button>
+							</div>
+						);
+					}
+
+					return (
+						<div key={item.id}>
+							<PlayingCard
+								type={CardType.Item}
+								front={<ItemCard item={item} />}
+								footer='Item'
+							/>
+							{footer}
+						</div>
+					);
+				});
+				mundaneItemSection = (
+					<div>
+						<Text type={TextType.SubHeading}>Items ({mundaneItems.length})</Text>
+						<CardList cards={cards} />
+					</div>
+				);
+			} else {
+				mundaneItemSection = (
+					<div>
+						<Text type={TextType.SubHeading}>Items (0)</Text>
+						<Text type={TextType.Information}>You have no unequipped items.</Text>
+					</div>
+				);
+			}
+
+			return (
+				<div className='items-page'>
+					<div className='items-content'>
+						{magicItemSection}
+						{mundaneItemSection}
+					</div>
+					{this.getSidebar()}
+					{this.getDialog()}
 				</div>
-				{this.getSidebar()}
-				{this.getDialog()}
-			</div>
-		);
+			);
+		} catch {
+			return <div className='items-page render-error' />;
+		}
 	};
 }

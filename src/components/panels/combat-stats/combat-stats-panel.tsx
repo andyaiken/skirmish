@@ -28,58 +28,62 @@ export class CombatStatsPanel extends Component<Props> {
 	};
 
 	render = () => {
-		let wounds: JSX.Element[] = [];
-		for (let n = 0; n < this.props.combatant.combat.wounds; ++n) {
-			wounds.push(<IconHeartOff key={n} />);
-		}
-		while (wounds.length < EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Resolve)) {
-			wounds.push(<IconHeartFilled key={wounds.length} className='heartbeat' />);
-		}
-		const woundsPerRow = (wounds.length < 6) || (wounds.length > 8) ? 5 : 4;
-		const woundsInRows: JSX.Element[] = [];
-		while (wounds.length > woundsPerRow) {
-			woundsInRows.push(<div key={woundsInRows.length} className='wounds'>{wounds.slice(0, woundsPerRow)}</div>);
-			wounds = wounds.slice(woundsPerRow);
-		}
-		if (wounds.length !== 0) {
-			woundsInRows.push(<div key={woundsInRows.length} className='wounds'>{wounds}</div>);
-		}
+		try {
+			let wounds: JSX.Element[] = [];
+			for (let n = 0; n < this.props.combatant.combat.wounds; ++n) {
+				wounds.push(<IconHeartOff key={n} />);
+			}
+			while (wounds.length < EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Resolve)) {
+				wounds.push(<IconHeartFilled key={wounds.length} className='heartbeat' />);
+			}
+			const woundsPerRow = (wounds.length < 6) || (wounds.length > 8) ? 5 : 4;
+			const woundsInRows: JSX.Element[] = [];
+			while (wounds.length > woundsPerRow) {
+				woundsInRows.push(<div key={woundsInRows.length} className='wounds'>{wounds.slice(0, woundsPerRow)}</div>);
+				wounds = wounds.slice(woundsPerRow);
+			}
+			if (wounds.length !== 0) {
+				woundsInRows.push(<div key={woundsInRows.length} className='wounds'>{wounds}</div>);
+			}
 
-		return (
-			<div className='combat-stats-panel'>
-				<Box label='This Round'>
-					<div className='stats-row align-bottom'>
-						<StatValue orientation='vertical' label='Movement' value={<IconValue value={this.props.combatant.combat.movement} type={IconType.Movement} />} />
-						<StatValue orientation='vertical' label='Senses' value={this.props.combatant.combat.senses} />
-						<StatValue orientation='vertical' label='Hidden' value={this.props.combatant.combat.hidden} />
-					</div>
-				</Box>
-				<Box label='Health'>
-					<div className='stats-row align-bottom'>
-						<StatValue orientation='vertical' label='Damage' value={this.props.combatant.combat.damage} />
-						<StatValue orientation='vertical' label='Wounds' value={<div>{woundsInRows}</div>} />
-					</div>
-				</Box>
-				<Box label='Traits and Conditions'>
-					<div className='stats-row align-top'>
-						<div>
-							<StatValue orientation='vertical' label='Endurance' value={EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Endurance)} />
-							{this.getConditions(TraitType.Endurance).length > 0 ? <hr /> : null}
-							<div>{this.getConditions(TraitType.Endurance)}</div>
+			return (
+				<div className='combat-stats-panel'>
+					<Box label='This Round'>
+						<div className='stats-row align-bottom'>
+							<StatValue orientation='vertical' label='Movement' value={<IconValue value={this.props.combatant.combat.movement} type={IconType.Movement} />} />
+							<StatValue orientation='vertical' label='Senses' value={this.props.combatant.combat.senses} />
+							<StatValue orientation='vertical' label='Hidden' value={this.props.combatant.combat.hidden} />
 						</div>
-						<div>
-							<StatValue orientation='vertical' label='Resolve' value={EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Resolve)} />
-							{this.getConditions(TraitType.Resolve).length > 0 ? <hr /> : null}
-							<div>{this.getConditions(TraitType.Resolve)}</div>
+					</Box>
+					<Box label='Health'>
+						<div className='stats-row align-bottom'>
+							<StatValue orientation='vertical' label='Damage' value={this.props.combatant.combat.damage} />
+							<StatValue orientation='vertical' label='Wounds' value={<div>{woundsInRows}</div>} />
 						</div>
-						<div>
-							<StatValue orientation='vertical' label='Speed' value={EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Speed)} />
-							{this.getConditions(TraitType.Speed).length > 0 ? <hr /> : null}
-							<div>{this.getConditions(TraitType.Speed)}</div>
+					</Box>
+					<Box label='Traits and Conditions'>
+						<div className='stats-row align-top'>
+							<div>
+								<StatValue orientation='vertical' label='Endurance' value={EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Endurance)} />
+								{this.getConditions(TraitType.Endurance).length > 0 ? <hr /> : null}
+								<div>{this.getConditions(TraitType.Endurance)}</div>
+							</div>
+							<div>
+								<StatValue orientation='vertical' label='Resolve' value={EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Resolve)} />
+								{this.getConditions(TraitType.Resolve).length > 0 ? <hr /> : null}
+								<div>{this.getConditions(TraitType.Resolve)}</div>
+							</div>
+							<div>
+								<StatValue orientation='vertical' label='Speed' value={EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Speed)} />
+								{this.getConditions(TraitType.Speed).length > 0 ? <hr /> : null}
+								<div>{this.getConditions(TraitType.Speed)}</div>
+							</div>
 						</div>
-					</div>
-				</Box>
-			</div>
-		);
+					</Box>
+				</div>
+			);
+		} catch {
+			return <div className='combat-stats-panel render-error' />;
+		}
 	};
 }

@@ -250,14 +250,18 @@ export class HeroesPage extends Component<Props, State> {
 	};
 
 	render = () => {
-		return (
-			<div className='heroes-page'>
-				<div className='heroes-content'>
-					{this.getContent()}
+		try {
+			return (
+				<div className='heroes-page'>
+					<div className='heroes-content'>
+						{this.getContent()}
+					</div>
+					{this.getSidebar()}
+					{this.getDialog()}
 				</div>
-				{this.getSidebar()}
-				{this.getDialog()}
-			</div>
-		);
+			);
+		} catch {
+			return <div className='heroes-page render-error' />;
+		}
 	};
 }

@@ -1,18 +1,16 @@
 import { Component } from 'react';
-import { IconX } from '@tabler/icons-react';
 
 import { CardType } from '../../../../enums/card-type';
 
 import { CampaignMapLogic } from '../../../../logic/campaign-map-logic';
-import { GameLogic } from '../../../../logic/game-logic';
 
 import type { CombatantModel } from '../../../../models/combatant';
 import type { GameModel } from '../../../../models/game';
 import type { RegionModel } from '../../../../models/region';
 
-import { BoonCard, HeroCard, RegionCard } from '../../../cards';
-import { CardList, Dialog, PlayingCard, Selector, StatValue, Tag, Text, TextType } from '../../../controls';
-import { CampaignMapPanel } from '../../../panels';
+import { BoonCard, RegionCard } from '../../../cards';
+import { CampaignMapPanel, EncounterStartPanel } from '../../../panels';
+import { Dialog, PlayingCard, StatValue, Text, TextType } from '../../../controls';
 
 import './campaign-map-page.scss';
 
@@ -26,8 +24,6 @@ interface Props {
 interface State {
 	selectedRegion: RegionModel | null;
 	showHeroSelection: boolean;
-	heroSelectionMode: string;
-	selectedHeroes: CombatantModel[];
 }
 
 export class CampaignMapPage extends Component<Props, State> {
@@ -35,31 +31,9 @@ export class CampaignMapPage extends Component<Props, State> {
 		super(props);
 		this.state = {
 			selectedRegion: null,
-			showHeroSelection: false,
-			heroSelectionMode: 'Name',
-			selectedHeroes: []
+			showHeroSelection: false
 		};
 	}
-
-	selectHero = (hero: CombatantModel) => {
-		const selected = this.state.selectedHeroes;
-		selected.push(hero);
-		selected.sort((a, b) => a.name.localeCompare(b.name));
-		this.setState({
-			selectedHeroes: selected
-		});
-	};
-
-	deselectHero = (hero: CombatantModel) => {
-		const selected = this.state.selectedHeroes.filter(h => h.id !== hero.id);
-		this.setState({
-			selectedHeroes: selected
-		});
-	};
-
-	startEncounter = () => {
-		this.props.startEncounter(this.state.selectedRegion as RegionModel, this.state.selectedHeroes);
-	};
 
 	conquer = (region: RegionModel) => {
 		this.setState({
@@ -104,103 +78,26 @@ export class CampaignMapPage extends Component<Props, State> {
 	};
 
 	getDialog = () => {
-		if (this.state.showHeroSelection) {
-			const canAdd = this.state.selectedHeroes.length < 5;
-
-			const heroes = ([] as CombatantModel[]).concat(this.props.game.heroes);
-			switch (this.state.heroSelectionMode) {
-				case 'Name':
-					heroes.sort((a, b) => a.name.localeCompare(b.name));
-					break;
-				case 'Species':
-					heroes.sort((a, b) => a.speciesID.localeCompare(b.speciesID));
-					break;
-				case 'Role':
-					heroes.sort((a, b) => a.roleID.localeCompare(b.roleID));
-					break;
-				case 'Background':
-					heroes.sort((a, b) => a.backgroundID.localeCompare(b.backgroundID));
-					break;
-				case 'Level':
-					heroes.sort((a, b) => a.level - b.level);
-					break;
-			}
-
-			const candidates = heroes
-				.filter(h => h.name !== '')
-				.filter(h => !this.state.selectedHeroes.includes(h))
-				.map(h => {
-					return (
-						<div key={h.id}>
-							<PlayingCard type={CardType.Hero} front={<HeroCard hero={h} />} footer='Hero' onClick={canAdd ? () => this.selectHero(h) : null} />
-						</div>
-					);
-				});
-
-			const selected = this.state.selectedHeroes
-				.map(h => {
-					return (
-						<div key={h.id} className='selected-hero'>
-							<div className='name'>
-								<Text type={TextType.SubHeading}>{h.name}</Text>
-							</div>
-							<div className='tags'>
-								<Tag>{GameLogic.getSpecies(h.speciesID)?.name ?? 'Unknown species'}</Tag>
-								<Tag>{GameLogic.getRole(h.roleID)?.name ?? 'Unknown role'}</Tag>
-								<Tag>{GameLogic.getBackground(h.backgroundID)?.name ?? 'Unknown background'}</Tag>
-								<Tag>Level {h.level}</Tag>
-							</div>
-							<button className='icon-btn' onClick={() => this.deselectHero(h)}>
-								<IconX />
-							</button>
-						</div>
-					);
-				});
-			while (selected.length < 5) {
-				selected.push(
-					<div key={selected.length} className='selected-hero placeholder'>
-						[No hero selected]
-					</div>
-				);
-			}
-
-			return (
-				<Dialog
-					content={(
-						<div className='hero-selection'>
-							<div className='header'>
-								<Text type={TextType.Heading}>Choose your Heroes</Text>
-							</div>
-							<div className='hero-lists'>
-								<div className='hero-list-column'>
-									<Text type={TextType.SubHeading}>Available heroes</Text>
-									<Selector
-										options={[ { id: 'Name' }, { id: 'Species' }, { id: 'Role' }, { id: 'Background' }, { id: 'Level' } ]}
-										selectedID={this.state.heroSelectionMode}
-										onSelect={id => this.setState({ heroSelectionMode: id })}
-									/>
-									<CardList cards={candidates} />
-								</div>
-								<div className='divider' />
-								<div className='hero-list-column'>
-									<Text type={TextType.SubHeading}>Selected heroes</Text>
-									<Text type={TextType.Information}>Select <b>up to 5 heroes</b> from the left to take part in this encounter.</Text>
-									{selected}
-									<button disabled={(this.state.selectedHeroes.length < 1) || (this.state.selectedHeroes.length > 5)} onClick={this.startEncounter}>Start the Encounter</button>
-								</div>
-							</div>
-						</div>
-					)}
-					onClose={() => {
-						this.setState({
-							showHeroSelection: false
-						});
-					}}
-				/>
-			);
+		if (!this.state.showHeroSelection) {
+			return null;
 		}
 
-		return;
+		return (
+			<Dialog
+				content={(
+					<EncounterStartPanel
+						region={this.state.selectedRegion as RegionModel}
+						game={this.props.game}
+						startEncounter={this.props.startEncounter}
+					/>
+				)}
+				onClose={() => {
+					this.setState({
+						showHeroSelection: false
+					});
+				}}
+			/>
+		);
 	};
 
 	render = () => {

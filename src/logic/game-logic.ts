@@ -21,6 +21,7 @@ import type { CombatantModel } from '../models/combatant';
 import type { ConditionModel } from '../models/condition';
 import type { FeatureModel } from '../models/feature';
 import type { GameModel } from '../models/game';
+import type { ItemModel } from '../models/item';
 import type { RoleModel } from '../models/role';
 import type { SpeciesModel } from '../models/species';
 
@@ -67,10 +68,21 @@ export class GameLogic {
 
 	///////////////////////////////////////////////////////////////////////////
 
-	static getRandomAction = () => {
-		const actions = GameLogic.getAllActions();
-		const action = Collections.draw(actions);
+	static getRandomAction = (item: ItemModel) => {
+		const actions = GameLogic.getAllActions().filter(a => {
+			// Ignore actions that require a different sort of item
+			const prerequisite = a.prerequisites.find(p => p.id === 'item');
+			if (prerequisite) {
+				const types = prerequisite.data as ItemProficiencyType[];
+				if (!types.includes(item.proficiency)) {
+					return false;
+				}
+			}
 
+			return true;
+		});
+
+		const action = Collections.draw(actions);
 		const copy = JSON.parse(JSON.stringify(action)) as ActionModel;
 		copy.id = Utils.guid();
 

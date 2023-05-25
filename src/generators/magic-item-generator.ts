@@ -187,7 +187,7 @@ export class MagicItemGenerator {
 		// A random action
 		const copyAction = JSON.parse(JSON.stringify(item)) as ItemModel;
 		copyAction.id = Utils.guid();
-		copyAction.actions.push(GameLogic.getRandomAction());
+		copyAction.actions.push(GameLogic.getRandomAction(item));
 		options.push(copyAction);
 
 		return Collections.draw(options);

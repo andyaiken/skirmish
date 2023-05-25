@@ -83,50 +83,50 @@ export class SetupScreen extends Component<Props, State> {
 	};
 
 	getDialog = () => {
-		if (this.state.hero) {
-			if (this.state.hero.name === '') {
-				return (
-					<Dialog
-						content={(
-							<HeroBuilderPanel
-								hero={this.state.hero}
-								game={this.props.game}
-								developer={this.props.developer}
-								finished={hero => {
-									const h = this.state.hero as CombatantModel;
-									this.setState({
-										hero: null
-									}, () => {
-										hero.id = h.id;
-										this.props.addHero(hero);
-									});
-								}}
-							/>
-						)}
-					/>
-				);
-			} else {
-				return (
-					<Dialog
-						content={
-							<CharacterSheetPanel
-								combatant={this.state.hero}
-								game={this.props.game}
-								developer={false}
-								equipItem={this.props.equipItem}
-								unequipItem={this.props.unequipItem}
-								pickUpItem={this.props.pickUpItem}
-								dropItem={this.props.dropItem}
-								levelUp={() => null}
-							/>
-						}
-						onClose={() => this.selectHero(null)}
-					/>
-				);
-			}
+		if (!this.state.hero) {
+			return null;
 		}
 
-		return null;
+		if (this.state.hero.name === '') {
+			return (
+				<Dialog
+					content={(
+						<HeroBuilderPanel
+							hero={this.state.hero}
+							game={this.props.game}
+							developer={this.props.developer}
+							finished={hero => {
+								const h = this.state.hero as CombatantModel;
+								this.setState({
+									hero: null
+								}, () => {
+									hero.id = h.id;
+									this.props.addHero(hero);
+								});
+							}}
+						/>
+					)}
+				/>
+			);
+		}
+
+		return (
+			<Dialog
+				content={
+					<CharacterSheetPanel
+						combatant={this.state.hero}
+						game={this.props.game}
+						developer={false}
+						equipItem={this.props.equipItem}
+						unequipItem={this.props.unequipItem}
+						pickUpItem={this.props.pickUpItem}
+						dropItem={this.props.dropItem}
+						levelUp={() => null}
+					/>
+				}
+				onClose={() => this.selectHero(null)}
+			/>
+		);
 	};
 
 	render = () => {

@@ -1,9 +1,7 @@
 import { Component } from 'react';
 
-import { FeatureType } from '../../../enums/feature-type';
 import { QuirkType } from '../../../enums/quirk-type';
 
-import { CombatantLogic } from '../../../logic/combatant-logic';
 import { GameLogic } from '../../../logic/game-logic';
 
 import type { CombatantModel } from '../../../models/combatant';
@@ -11,7 +9,6 @@ import type { FeatureModel } from '../../../models/feature';
 import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
 
-import { Collections } from '../../../utils/collections';
 import { Utils } from '../../../utils/utils';
 
 import { Tabs, Tag, Text, TextType } from '../../controls';
@@ -34,37 +31,15 @@ interface Props {
 
 interface State {
 	view: string;
-	features: FeatureModel[];
 }
 
 export class CharacterSheetPanel extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
-			view: 'stats',
-			features: this.drawFeatures(props.combatant)
+			view: 'stats'
 		};
 	}
-
-	drawFeatures = (combatant: CombatantModel) => {
-		const features = CombatantLogic.getFeatureDeck(combatant)
-			.filter(feature => {
-				// Make sure we can select this feature
-				if (feature.type === FeatureType.Proficiency) {
-					const profs = CombatantLogic.getProficiencies(combatant);
-					if (profs.length <= 9) {
-						// We already have all proficiencies
-						return false;
-					}
-					if (profs.includes(feature.proficiency)) {
-						// We already have this proficiency
-						return false;
-					}
-				}
-				return true;
-			});
-		return Collections.shuffle(features).splice(0, 3);
-	};
 
 	equipItem = (item: ItemModel) => {
 		this.props.equipItem(item, this.props.combatant);
@@ -83,13 +58,9 @@ export class CharacterSheetPanel extends Component<Props, State> {
 	};
 
 	levelUp = (feature: FeatureModel) => {
-		this.setState({
-			features: this.drawFeatures(this.props.combatant)
-		}, () => {
-			const copy = JSON.parse(JSON.stringify(feature)) as FeatureModel;
-			copy.id = Utils.guid();
-			this.props.levelUp(copy, this.props.combatant);
-		});
+		const copy = JSON.parse(JSON.stringify(feature)) as FeatureModel;
+		copy.id = Utils.guid();
+		this.props.levelUp(copy, this.props.combatant);
 	};
 
 	render = () => {
@@ -124,7 +95,7 @@ export class CharacterSheetPanel extends Component<Props, State> {
 			if (this.props.combatant.xp >= this.props.combatant.level) {
 				sidebar = (
 					<div className='sidebar-section'>
-						<LevelUp combatant={this.props.combatant} features={this.state.features} levelUp={this.levelUp} />
+						<LevelUp combatant={this.props.combatant} developer={this.props.developer} levelUp={this.levelUp} />
 					</div>
 				);
 			} else {

@@ -249,6 +249,18 @@ export class SpeciesData {
 						effects: [
 							ActionEffects.moveToTargetSquare()
 						]
+					},
+					{
+						id: 'elf-action-2',
+						name: 'Elven Senses',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.self()
+						],
+						effects: [
+							ActionEffects.scan(),
+							ActionEffects.takeAnotherAction()
+						]
 					}
 				]
 			},
@@ -756,8 +768,9 @@ export class SpeciesData {
 				actions: [
 					{
 						id: 'goblin-action-1',
-						name: 'Sneak Attack',
+						name: 'Backstab',
 						prerequisites: [
+							ActionPrerequisites.meleeWeapon(),
 							ActionPrerequisites.hidden()
 						],
 						parameters: [

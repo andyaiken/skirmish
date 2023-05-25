@@ -116,42 +116,42 @@ export class ItemsPage extends Component<Props, State> {
 	};
 
 	getDialog = () => {
-		if (this.state.magicItems.length > 0) {
-			const cards = this.state.magicItems.map(item => (
-				<PlayingCard
-					key={item.id}
-					type={CardType.Item}
-					front={<ItemCard item={item} />}
-					footer='Item'
-					onClick={() => this.buyItem(item)}
-				/>
-			));
-
-			cards.unshift(
-				<PlayingCard
-					key='deck'
-					stack={true}
-					type={CardType.Item}
-					front={<PlaceholderCard text={<div>Magic<br />Item<br />Deck</div>} subtext='Select one of these cards.' />}
-				/>
-			);
-
-			return (
-				<Dialog
-					content={(
-						<div>
-							<Text type={TextType.Heading}>Choose a Magic Item</Text>
-							{this.props.developer ? <button className='developer' onClick={this.showMarket}>Redraw</button> : null}
-							<div className='card-selection-row'>
-								<CardList cards={cards} />
-							</div>
-						</div>
-					)}
-				/>
-			);
+		if (this.state.magicItems.length === 0) {
+			return null;
 		}
 
-		return null;
+		const cards = this.state.magicItems.map(item => (
+			<PlayingCard
+				key={item.id}
+				type={CardType.Item}
+				front={<ItemCard item={item} />}
+				footer='Item'
+				onClick={() => this.buyItem(item)}
+			/>
+		));
+
+		cards.unshift(
+			<PlayingCard
+				key='deck'
+				stack={true}
+				type={CardType.Item}
+				front={<PlaceholderCard text={<div>Magic<br />Item<br />Deck</div>} subtext='Select one of these cards.' />}
+			/>
+		);
+
+		return (
+			<Dialog
+				content={(
+					<div>
+						<Text type={TextType.Heading}>Choose a Magic Item</Text>
+						{this.props.developer ? <button className='developer' onClick={this.showMarket}>Redraw</button> : null}
+						<div className='card-selection-row'>
+							<CardList cards={cards} />
+						</div>
+					</div>
+				)}
+			/>
+		);
 	};
 
 	render = () => {

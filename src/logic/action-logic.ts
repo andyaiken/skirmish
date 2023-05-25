@@ -407,6 +407,15 @@ export class ActionEffects {
 		};
 	};
 
+	static scan = (): ActionEffectModel => {
+		return {
+			id: 'scan',
+			description: 'Scan',
+			data: null,
+			children: []
+		};
+	};
+
 	static hide = (): ActionEffectModel => {
 		return {
 			id: 'hide',
@@ -566,15 +575,17 @@ export class ActionEffects {
 						const weaponParam = parameters.find(p => p.id === 'weapon');
 						if (weaponParam) {
 							const item = weaponParam.value as ItemModel;
-							const weapon = item.weapon as WeaponModel;
-							if (weapon.unreliable > 0) {
-								log(`${item.name} is Unreliable (rank ${weapon.unreliable})`);
-								const roll = Random.dice(weapon.unreliable);
-								if (roll >= 10) {
-									success = false;
-									log(`It fails (rolled ${roll})`);
-								} else {
-									log(`It works (rolled ${roll})`);
+							if (item) {
+								const weapon = item.weapon as WeaponModel;
+								if (weapon.unreliable > 0) {
+									log(`${item.name} is Unreliable (rank ${weapon.unreliable})`);
+									const roll = Random.dice(weapon.unreliable);
+									if (roll >= 10) {
+										success = false;
+										log(`It fails (rolled ${roll})`);
+									} else {
+										log(`It works (rolled ${roll})`);
+									}
 								}
 							}
 						}
@@ -625,24 +636,26 @@ export class ActionEffects {
 				const targetParameter = parameters.find(p => p.id === 'targets');
 				if (weaponParameter && targetParameter) {
 					const item = weaponParameter.value as ItemModel;
-					const weapon = item.weapon as WeaponModel;
-					const targetIDs = targetParameter.value as string[];
-					targetIDs.forEach(id => {
-						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
-						weapon.damage.forEach(dmg => {
-							const rank = dmg.rank + rankModifier;
-							const result = Random.dice(rank);
-							log(`${combatant.name} rolls weapon damage for ${target.name} (rank ${rank}) and gets ${result}`);
-							const bonus = EncounterLogic.getDamageBonus(encounter, combatant, dmg.type);
-							if (bonus > 0) {
-								log(`${combatant.name} deals ${bonus} additional ${dmg.type} damage`);
-							}
-							if (bonus < 0) {
-								log(`${combatant.name} deals ${bonus} less ${dmg.type} damage`);
-							}
-							EncounterLogic.damage(encounter, target, result + bonus, dmg.type);
+					if (item) {
+						const weapon = item.weapon as WeaponModel;
+						const targetIDs = targetParameter.value as string[];
+						targetIDs.forEach(id => {
+							const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
+							weapon.damage.forEach(dmg => {
+								const rank = dmg.rank + rankModifier;
+								const result = Random.dice(rank);
+								log(`${combatant.name} rolls weapon damage for ${target.name} (rank ${rank}) and gets ${result}`);
+								const bonus = EncounterLogic.getDamageBonus(encounter, combatant, dmg.type);
+								if (bonus > 0) {
+									log(`${combatant.name} deals ${bonus} additional ${dmg.type} damage`);
+								}
+								if (bonus < 0) {
+									log(`${combatant.name} deals ${bonus} less ${dmg.type} damage`);
+								}
+								EncounterLogic.damage(encounter, target, result + bonus, dmg.type);
+							});
 						});
-					});
+					}
 				}
 				break;
 			}
@@ -776,6 +789,19 @@ export class ActionEffects {
 						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
 						target.combat.stunned = true;
 						log(`${target.name} is stunned`);
+					});
+				}
+				break;
+			}
+			case 'scan': {
+				const targetParameter = parameters.find(p => p.id === 'targets');
+				if (targetParameter) {
+					const targetIDs = targetParameter.value as string[];
+					targetIDs.forEach(id => {
+						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
+						target.combat.movement += 4;
+						EncounterLogic.scan(encounter, target);
+						log(`${target.name} scans`);
 					});
 				}
 				break;

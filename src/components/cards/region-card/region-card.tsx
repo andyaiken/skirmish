@@ -4,7 +4,7 @@ import { GameLogic } from '../../../logic/game-logic';
 
 import type { RegionModel } from '../../../models/region';
 
-import { StatValue, Text, TextType } from '../../controls';
+import { StatValue, Tag, Text, TextType } from '../../controls';
 
 import './region-card.scss';
 
@@ -20,7 +20,7 @@ export class RegionCard extends Component<Props> {
 				return species ? species.name : '[species]';
 			})
 			.sort()
-			.join(', ');
+			.map((m, n) => <Tag key={n}>{m}</Tag>);
 
 		return (
 			<div className='region-card'>
@@ -29,7 +29,7 @@ export class RegionCard extends Component<Props> {
 				<StatValue label='Area' value={`${this.props.region.demographics.size} sq mi`} />
 				<StatValue label='Population' value={`${(this.props.region.demographics.population * 100).toLocaleString()}`} />
 				<StatValue label='Terrain' value={this.props.region.demographics.terrain} />
-				<StatValue label='Common Monsters' value={monsters} />
+				<StatValue label='Denizens' value={monsters} />
 				<StatValue label='Number of Encounters' value={this.props.region.encounters.length} />
 			</div>
 		);

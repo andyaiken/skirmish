@@ -9,10 +9,8 @@ import type { CombatantModel } from '../../../models/combatant';
 import type { GameModel } from '../../../models/game';
 import type { RegionModel } from '../../../models/region';
 
-import { Collections } from '../../../utils/collections';
-
-import { CardList, PlayingCard, Selector, StatValue, Tag, Text, TextType } from '../../controls';
-import { HeroCard } from '../../cards';
+import { CardList, PlayingCard, Selector, Tabs, Tag, Text, TextType } from '../../controls';
+import { HeroCard, SpeciesCard } from '../../cards';
 
 import './encounter-start.scss';
 
@@ -25,6 +23,7 @@ interface Props {
 interface State {
 	heroSelectionMode: string;
 	heroSortMode: string;
+	viewMode: string;
 	selectedHeroes: CombatantModel[];
 }
 
@@ -34,6 +33,7 @@ export class EncounterStartPanel extends Component<Props, State> {
 		this.state = {
 			heroSelectionMode: 'Name',
 			heroSortMode: 'asc',
+			viewMode: 'heroes',
 			selectedHeroes: []
 		};
 	}
@@ -43,6 +43,7 @@ export class EncounterStartPanel extends Component<Props, State> {
 		selected.push(hero);
 		selected.sort((a, b) => a.name.localeCompare(b.name));
 		this.setState({
+			viewMode: 'heroes',
 			selectedHeroes: selected
 		});
 	};
@@ -96,31 +97,55 @@ export class EncounterStartPanel extends Component<Props, State> {
 				);
 			});
 
-		const selected = this.state.selectedHeroes
-			.map(h => {
-				return (
-					<div key={h.id} className='selected-hero'>
-						<div className='name'>
-							<Text type={TextType.SubHeading}>{h.name}</Text>
+		let rightContent = null;
+		switch (this.state.viewMode) {
+			case 'heroes': {
+				const selected = this.state.selectedHeroes
+					.map(h => {
+						return (
+							<div key={h.id} className='selected-hero'>
+								<div className='name'>
+									<Text type={TextType.SubHeading}>{h.name}</Text>
+								</div>
+								<div className='tags'>
+									<Tag>{GameLogic.getSpecies(h.speciesID)?.name ?? 'Unknown species'}</Tag>
+									<Tag>{GameLogic.getRole(h.roleID)?.name ?? 'Unknown role'}</Tag>
+									<Tag>{GameLogic.getBackground(h.backgroundID)?.name ?? 'Unknown background'}</Tag>
+									<Tag>Level {h.level}</Tag>
+								</div>
+								<button className='icon-btn' onClick={() => this.deselectHero(h)}>
+									<IconX />
+								</button>
+							</div>
+						);
+					});
+				while (selected.length < 5) {
+					selected.push(
+						<div key={selected.length} className='selected-hero placeholder'>
+							[No hero selected]
 						</div>
-						<div className='tags'>
-							<Tag>{GameLogic.getSpecies(h.speciesID)?.name ?? 'Unknown species'}</Tag>
-							<Tag>{GameLogic.getRole(h.roleID)?.name ?? 'Unknown role'}</Tag>
-							<Tag>{GameLogic.getBackground(h.backgroundID)?.name ?? 'Unknown background'}</Tag>
-							<Tag>Level {h.level}</Tag>
-						</div>
-						<button className='icon-btn' onClick={() => this.deselectHero(h)}>
-							<IconX />
-						</button>
+					);
+				}
+				rightContent = (
+					<div>
+						{selected}
 					</div>
 				);
-			});
-		while (selected.length < 5) {
-			selected.push(
-				<div key={selected.length} className='selected-hero placeholder'>
-					[No hero selected]
-				</div>
-			);
+				break;
+			}
+			case 'monsters': {
+				const monsters = this.props.region.demographics.speciesIDs
+					.map(id => {
+						const species = GameLogic.getSpecies(id);
+						return species ? <PlayingCard type={CardType.Species} front={<SpeciesCard species={species} />} footer='Monster' /> : null;
+					});
+
+				rightContent = (
+					<div>
+						<CardList cards={monsters} />
+					</div>
+				);
+			}
 		}
 
 		return (
@@ -129,7 +154,7 @@ export class EncounterStartPanel extends Component<Props, State> {
 					<Text type={TextType.Heading}>Choose your Heroes</Text>
 				</div>
 				<div className='hero-lists'>
-					<div className='hero-list-column'>
+					<div className={(candidates.length === 0) || (this.state.selectedHeroes.length >= 5) ? 'hero-list-column narrow' : 'hero-list-column'}>
 						<Text type={TextType.Information}>Select <b>up to 5 heroes</b> from this list to take part in this encounter.</Text>
 						{
 							heroes.length > 10 ?
@@ -149,29 +174,18 @@ export class EncounterStartPanel extends Component<Props, State> {
 								/>
 								: null
 						}
-						{ candidates.length === 0 ? <Text type={TextType.Information}>No heroes left.</Text> : null }
 						<CardList cards={candidates} />
 					</div>
 					<div className='divider' />
 					<div className='hero-list-column'>
-						<Text type={TextType.SubHeading}>Selected heroes</Text>
-						{selected}
+						<Tabs
+							options={[ { id: 'heroes', display: 'Selected Heroes' }, { id: 'monsters', display: 'Monsters in this Region' } ]}
+							selectedID={this.state.viewMode}
+							onSelect={id => this.setState({ viewMode: id })}
+						/>
+						{rightContent}
 						<hr />
-						<div className='encounter-info'>
-							<div className='encounter-info-column'>
-								<StatValue
-									label='Monsters'
-									value={this.props.region.demographics.speciesIDs.map(id => GameLogic.getSpecies(id)?.name || '[species]').sort().map((m, n) => <Tag key={n}>{m}</Tag>)}
-								/>
-								<StatValue
-									label='Encounter Level'
-									value={Collections.sum(this.state.selectedHeroes, h => h.level)}
-								/>
-							</div>
-							<div className='encounter-info-column'>
-								<button disabled={(this.state.selectedHeroes.length < 1) || (this.state.selectedHeroes.length > 5)} onClick={this.startEncounter}>Start the Encounter</button>
-							</div>
-						</div>
+						<button disabled={(this.state.selectedHeroes.length < 1) || (this.state.selectedHeroes.length > 5)} onClick={this.startEncounter}>Start the Encounter</button>
 					</div>
 				</div>
 			</div>

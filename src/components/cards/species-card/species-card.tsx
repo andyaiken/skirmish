@@ -1,7 +1,5 @@
 import { Component } from 'react';
 
-import { CombatantType } from '../../../enums/combatant-type';
-
 import { ActionLogic } from '../../../logic/action-logic';
 import { FeatureLogic } from '../../../logic/feature-logic';
 
@@ -19,11 +17,7 @@ interface Props {
 
 export class SpeciesCard extends Component<Props> {
 	render = () => {
-		const tags: JSX.Element[] = [];
-		if (this.props.species.type === CombatantType.Monster) {
-			tags.push(<Tag key='monster'>Monster</Tag>);
-		}
-		this.props.species.quirks.forEach((q, n) => tags.push(<Tag key={n}>{q}</Tag>));
+		const tags = this.props.species.quirks.map((q, n) => <Tag key={n}>{q}</Tag>);
 
 		let traits = null;
 		if (this.props.species.traits.length > 0) {

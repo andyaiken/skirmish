@@ -231,7 +231,7 @@ class DecksTab extends Component<DecksTabProps> {
 									<PlayingCard
 										type={CardType.Species}
 										front={<SpeciesCard species={s} />}
-										footer='Species'
+										footer='Monster'
 										onClick={() => this.props.setActions(s.name, CardType.Species, s.features, s.actions)}
 									/>
 									{this.props.developer ? <StatValue label='Strength' value={GameLogic.getSpeciesStrength(s)} /> : null}

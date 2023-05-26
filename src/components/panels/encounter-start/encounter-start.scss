@@ -8,7 +8,7 @@
 	.header {
 		flex: 0 0 auto;
 		border-bottom: 2px solid rgb(220, 220, 220);
-		margin-bottom: 20px;
+		margin-bottom: 10px;
 	}
 
 	.hero-lists {
@@ -23,6 +23,10 @@
 			overflow-x: hidden;
 			overflow-y: auto;
 			-webkit-overflow-scrolling: touch;
+
+			&.narrow {
+				flex: 0 0 200px;
+			}
 
 			.selected-hero {
 				display: flex;
@@ -54,16 +58,6 @@
 
 				&.placeholder {
 					opacity: 0.6;
-				}
-			}
-
-			.encounter-info {
-				display: flex;
-				gap: 20px;
-				align-items: center;
-
-				.encounter-info-column {
-					flex: 1 1 0;
 				}
 			}
 		}

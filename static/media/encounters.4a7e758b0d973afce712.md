@@ -4,7 +4,7 @@ When you start an encounter, you'll see the screen has split into four sections:
 
 * **On the left**, you'll see a list of all the combatants (heroes and monsters) in the encounter.
 * **In the middle**, you'll see the encounter map.
-* **At the bottom** there is a toolbar that allows you to rotate and zoom the map. It also has buttons that allow you to retreat from the encounter or surrender.
+* **At the bottom** there is a toolbar that allows you to rotate and zoom the map. It also has buttons that allow you to retreat from the encounter.
 * **On the right** are the controls for the current combatant. You can control your heroes, but monsters act for themselves.
 
 Encounters take place in rounds. At the beginning of each round, you'll be asked to `Roll Initiative` to set the order in which the combatants (heroes and monsters) will act.

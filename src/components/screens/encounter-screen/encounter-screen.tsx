@@ -419,10 +419,13 @@ export class EncounterScreen extends Component<Props, State> {
 				<div className='section'>
 					<button className='danger' onClick={() => this.setManualEncounterState(EncounterState.Retreat)}>Retreat</button>
 				</div>
-				<div className='section'>
-					<button className='danger' onClick={() => this.setManualEncounterState(EncounterState.Defeat)}>Surrender</button>
-				</div>
-				{this.props.developer ? <div className='section'><button className='developer' onClick={() => this.setManualEncounterState(EncounterState.Victory)}>Victory</button></div> : null}
+				{
+					this.props.developer ?
+						<div className='section'>
+							<button className='developer' onClick={() => this.setManualEncounterState(EncounterState.Victory)}>Victory</button>
+						</div>
+						: null
+				}
 				<div className='section compact'>
 					<button className='icon-btn' title='Information' onClick={() => this.props.showHelp('encounters')}>
 						<IconInfoCircle />

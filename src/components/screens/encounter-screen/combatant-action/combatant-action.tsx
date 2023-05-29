@@ -14,8 +14,8 @@ import type { CombatantModel } from '../../../../models/combatant';
 import type { EncounterModel } from '../../../../models/encounter';
 import type { ItemModel } from '../../../../models/item';
 
-import { ActionCard, PlaceholderCard } from '../../../cards';
-import { CardList, Dialog, PlayingCard, Selector, Tabs, Text, TextType } from '../../../controls';
+import { CardList, PlayingCard, Selector, Text, TextType } from '../../../controls';
+import { ActionCard } from '../../../cards';
 
 import './combatant-action.scss';
 
@@ -32,123 +32,50 @@ interface Props {
 	runAction: (encounter: EncounterModel, combatant: CombatantModel) => void;
 }
 
-interface State {
-	showDialog: boolean;
-	showActions: string;
-}
-
-export class CombatantAction extends Component<Props, State> {
-	constructor(props: Props) {
-		super(props);
-		this.state = {
-			showDialog: false,
-			showActions: 'default'
-		};
-	}
-
-	selectAction = (action: ActionModel) => {
-		this.setState({
-			showDialog: false,
-			showActions: 'default'
-		}, () => {
-			this.props.selectAction(this.props.encounter, this.props.combatant, action);
-		});
-	};
-
-	getDialog = () => {
-		if (!this.state.showDialog) {
-			return null;
-		}
-
-		const options = [
-			{ id: 'default', display: 'Action Deck' },
-			{ id: 'base', display: 'Base Actions' }
-		];
-
-		let actions: ActionModel[] = [];
-		switch (this.state.showActions) {
-			case 'default':
-				actions = this.props.combatant.combat.actions.filter(a => CombatantLogic.getActionSourceType(this.props.combatant, a.id) !== CardType.Base);
-				break;
-			case 'base':
-				actions = this.props.combatant.combat.actions.filter(a => CombatantLogic.getActionSourceType(this.props.combatant, a.id) === CardType.Base);
-				break;
-		}
-		actions.sort((a, b) => a.name.localeCompare(b.name));
-
-		const actionCards = [];
-		if (this.state.showActions === 'default') {
-			actionCards.push(
-				<PlayingCard
-					key='deck'
-					type={CardType.Action}
-					stack={true}
-					front={<PlaceholderCard text={<div>Action<br />Deck</div>} />}
-				/>
-			);
-		}
-		actions.forEach(a => {
-			const prerequisitesMet = a.prerequisites.every(p => ActionPrerequisites.isSatisfied(p, this.props.encounter, this.props.combatant));
-			actionCards.push(
-				<PlayingCard
-					key={a.id}
-					type={CardType.Action}
-					front={<ActionCard action={a} encounter={this.props.encounter} />}
-					footer={CombatantLogic.getActionSource(this.props.combatant, a.id)}
-					footerType={CombatantLogic.getActionSourceType(this.props.combatant, a.id)}
-					onClick={prerequisitesMet ? () => this.selectAction(a) : null}
-				/>
-			);
-		});
-
-		const content = (
-			<div>
-				<Text type={TextType.Heading}>Choose an Action</Text>
-				<Tabs options={options} selectedID={this.state.showActions} onSelect={id => this.setState({ showActions: id })} />
-				{this.props.developer ? <button className='developer' onClick={() => this.props.drawActions(this.props.encounter, this.props.combatant)}>Draw Again</button> : null}
-				<div className='action-selection'>
-					<CardList cards={actionCards} />
-				</div>
-			</div>
-		);
-
-		return (
-			<Dialog
-				content={content}
-				onClose={() => this.setState({ showDialog: false })}
-			/>
-		);
-	};
-
+export class CombatantAction extends Component<Props> {
 	getNotSelected = () => {
-		return (
-			<div className='combatant-action'>
-				<div className='action-selected-card'>
-					<PlayingCard
-						type={CardType.Action}
-						front={<PlaceholderCard text={<div>Action<br />Deck</div>} subtext='Click to select an action' />}
-						onClick={() => this.setState({ showDialog: true })}
-					/>
-				</div>
-				{this.getDialog()}
-			</div>
-		);
-	};
+		const actionCards: JSX.Element[] = [];
 
-	getUsed = (action: ActionModel) => {
+		this.props.combatant.combat.actions
+			.filter(a => CombatantLogic.getActionSourceType(this.props.combatant, a.id) !== CardType.Base)
+			.sort((a, b) => a.name.localeCompare(b.name))
+			.forEach(a => {
+				const prerequisitesMet = a.prerequisites.every(p => ActionPrerequisites.isSatisfied(p, this.props.encounter, this.props.combatant));
+				actionCards.push(
+					<PlayingCard
+						key={a.id}
+						type={CardType.Action}
+						front={<ActionCard action={a} encounter={this.props.encounter} />}
+						footer={CombatantLogic.getActionSource(this.props.combatant, a.id)}
+						footerType={CombatantLogic.getActionSourceType(this.props.combatant, a.id)}
+						onClick={prerequisitesMet ? () => this.props.selectAction(this.props.encounter, this.props.combatant, a) : null}
+					/>
+				);
+			});
+
+		this.props.combatant.combat.actions
+			.filter(a => CombatantLogic.getActionSourceType(this.props.combatant, a.id) === CardType.Base)
+			.forEach(a => {
+				const prerequisitesMet = a.prerequisites.every(p => ActionPrerequisites.isSatisfied(p, this.props.encounter, this.props.combatant));
+				if (prerequisitesMet) {
+					actionCards.push(
+						<PlayingCard
+							key={a.id}
+							type={CardType.Action}
+							front={<ActionCard action={a} encounter={this.props.encounter} />}
+							footer={CombatantLogic.getActionSource(this.props.combatant, a.id)}
+							footerType={CombatantLogic.getActionSourceType(this.props.combatant, a.id)}
+							onClick={() => this.props.selectAction(this.props.encounter, this.props.combatant, a)}
+						/>
+					);
+				}
+			});
+
 		return (
 			<div className='combatant-action'>
-				<Text type={TextType.Information}>You have taken your action for this turn.</Text>
-				<div className='action-selected-card'>
-					<PlayingCard
-						key={action.id}
-						type={CardType.Action}
-						front={<ActionCard action={action} encounter={this.props.encounter} />}
-						footer={CombatantLogic.getActionSource(this.props.combatant, action.id)}
-						footerType={CombatantLogic.getActionSourceType(this.props.combatant, action.id)}
-					/>
-				</div>
-				{this.props.developer ? <button className='developer' onClick={() => this.props.drawActions(this.props.encounter, this.props.combatant)}>Act Again</button> : null}
+				<Text type={TextType.Information}>Choose one of these action cards.</Text>
+				{this.props.developer ? <button className='developer' onClick={() => this.props.drawActions(this.props.encounter, this.props.combatant)}>Draw Again</button> : null}
+				<CardList cards={actionCards} />
 			</div>
 		);
 	};
@@ -404,6 +331,24 @@ export class CombatantAction extends Component<Props, State> {
 						Cancel
 					</button>
 				</div>
+			</div>
+		);
+	};
+
+	getUsed = (action: ActionModel) => {
+		return (
+			<div className='combatant-action'>
+				<Text type={TextType.Information}>You have taken your action for this turn.</Text>
+				<div className='action-selected-card'>
+					<PlayingCard
+						key={action.id}
+						type={CardType.Action}
+						front={<ActionCard action={action} encounter={this.props.encounter} />}
+						footer={CombatantLogic.getActionSource(this.props.combatant, action.id)}
+						footerType={CombatantLogic.getActionSourceType(this.props.combatant, action.id)}
+					/>
+				</div>
+				{this.props.developer ? <button className='developer' onClick={() => this.props.drawActions(this.props.encounter, this.props.combatant)}>Act Again</button> : null}
 			</div>
 		);
 	};

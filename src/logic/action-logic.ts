@@ -591,16 +591,21 @@ export class ActionEffects {
 						}
 
 						if (success) {
-							const attackRank = EncounterLogic.getSkillRank(encounter, combatant, data.skill) + data.skillBonus;
-							const defenceRank = EncounterLogic.getTraitRank(encounter, target, data.trait);
+							if ((target.combat.state === CombatantState.Unconscious) || (target.combat.state === CombatantState.Dead)) {
+								// Automatic hit
+								log('Coup de grâce: no attack roll required');
+							} else {
+								const attackRank = EncounterLogic.getSkillRank(encounter, combatant, data.skill) + data.skillBonus;
+								const defenceRank = EncounterLogic.getTraitRank(encounter, target, data.trait);
 
-							const attackRoll = Random.dice(attackRank);
-							const defenceRoll = Random.dice(defenceRank);
+								const attackRoll = Random.dice(attackRank);
+								const defenceRoll = Random.dice(defenceRank);
 
-							log(`${combatant.name} rolls ${data.skill} (rank ${attackRank}) and gets ${attackRoll}`);
-							log(`${target.name} rolls ${data.trait} (rank ${defenceRank}) and gets ${defenceRoll}`);
+								log(`${combatant.name} rolls ${data.skill} (rank ${attackRank}) and gets ${attackRoll}`);
+								log(`${target.name} rolls ${data.trait} (rank ${defenceRank}) and gets ${defenceRoll}`);
 
-							success = attackRoll >= defenceRoll;
+								success = attackRoll >= defenceRoll;
+							}
 						}
 
 						if (success) {

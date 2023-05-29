@@ -30,12 +30,12 @@
 	}
 
 	.encounter-left-panel {
-		flex: 0 0 250px;
+		flex: 0 0 200px;
 		padding: 5px;
 	}
 
 	.encounter-central-panel {
-		flex: 2 2 0;
+		flex: 1 1 0;
 		height: 100%;
 		display: flex;
 		flex-direction: column;
@@ -70,7 +70,7 @@
 	}
 
 	.encounter-right-panel {
-		flex: 1 1 0;
+		flex: 0 0 350px;
 		padding: 5px 10px;
 	}
 }

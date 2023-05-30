@@ -152,15 +152,6 @@ export class ItemsPage extends Component<Props, State> {
 			);
 		});
 
-		cards.unshift(
-			<PlayingCard
-				key='deck'
-				stack={true}
-				type={CardType.Item}
-				front={<PlaceholderCard text={<div>Magic<br />Item<br />Deck</div>} subtext='Select one of these cards.' />}
-			/>
-		);
-
 		return (
 			<Dialog
 				content={(

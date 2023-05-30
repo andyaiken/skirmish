@@ -1,6 +1,9 @@
 import { Component } from 'react';
 
 import { CardType } from '../../../../enums/card-type';
+import { ItemProficiencyType } from '../../../../enums/item-proficiency-type';
+
+import { CombatantLogic } from '../../../../logic/combatant-logic';
 import { GameLogic } from '../../../../logic/game-logic';
 
 import { MagicItemGenerator } from '../../../../generators/magic-item-generator';
@@ -14,6 +17,7 @@ import { Collections } from '../../../../utils/collections';
 
 import { BoonCard, ItemCard, PlaceholderCard } from '../../../cards';
 import { CardList, Dialog, IconType, IconValue, PlayingCard, StatValue, Text, TextType } from '../../../controls';
+import { ListItemPanel } from '../../../panels';
 
 import './items-page.scss';
 
@@ -120,15 +124,33 @@ export class ItemsPage extends Component<Props, State> {
 			return null;
 		}
 
-		const cards = this.state.magicItems.map(item => (
-			<PlayingCard
-				key={item.id}
-				type={CardType.Item}
-				front={<ItemCard item={item} />}
-				footer='Item'
-				onClick={() => this.buyItem(item)}
-			/>
-		));
+		const cards = this.state.magicItems.map(item => {
+			const heroes = this.props.game.heroes
+				.filter(h => h.name !== '')
+				.filter(h => (item.proficiency === ItemProficiencyType.None) || CombatantLogic.getProficiencies(h).includes(item.proficiency))
+				.map(h => <ListItemPanel key={h.id} item={h.name} />);
+
+			if (heroes.length === 0) {
+				heroes.push(
+					<Text key='empty' type={TextType.Small}>(none of your current heroes)</Text>
+				);
+			}
+
+			return (
+				<div key={item.id}>
+					<PlayingCard
+						type={CardType.Item}
+						front={<ItemCard item={item} />}
+						footer='Item'
+						onClick={() => this.buyItem(item)}
+					/>
+					<div className='usable-by'>
+						Can be used by:
+					</div>
+					{heroes}
+				</div>
+			);
+		});
 
 		cards.unshift(
 			<PlayingCard
@@ -156,11 +178,21 @@ export class ItemsPage extends Component<Props, State> {
 
 	render = () => {
 		try {
-			//
 			let magicItemSection = null;
 			const magicItems = this.props.game.items.filter(i => i.magic).sort((a, b) => a.name.localeCompare(b.name));
 			if (magicItems.length > 0) {
 				const cards = magicItems.map(item => {
+					const heroes = this.props.game.heroes
+						.filter(h => h.name !== '')
+						.filter(h => (item.proficiency === ItemProficiencyType.None) || CombatantLogic.getProficiencies(h).includes(item.proficiency))
+						.map(h => <ListItemPanel key={h.id} item={h.name} />);
+
+					if (heroes.length === 0) {
+						heroes.push(
+							<Text key='empty' type={TextType.Small}>(none of your current heroes)</Text>
+						);
+					}
+
 					return (
 						<div key={item.id}>
 							<PlayingCard
@@ -171,6 +203,10 @@ export class ItemsPage extends Component<Props, State> {
 							<div>
 								<button onClick={() => this.props.sellItem(item, true)}>Sell</button>
 							</div>
+							<div className='usable-by'>
+								Can be used by:
+							</div>
+							{heroes}
 						</div>
 					);
 				});

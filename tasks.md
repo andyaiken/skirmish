@@ -11,9 +11,6 @@
 ## Character Sheet
 * Make it so that we can see a hero character sheet without having to level up
 
-## Magic items
-* When buying / in items list, make clear which heroes can equip this item / could equip but the slot is currently used
-
 ## Encounters
 * When you don’t win an encounter, save its state so you can try again from that point with a new team
 

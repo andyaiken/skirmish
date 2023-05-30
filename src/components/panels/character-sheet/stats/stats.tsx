@@ -242,7 +242,7 @@ export class Stats extends Component<Props, State> {
 							<PlayingCard
 								key={a.id}
 								type={CardType.Action}
-								front={<ActionCard action={a} />}
+								front={<ActionCard action={a} combatant={this.props.combatant} />}
 								footer={CombatantLogic.getActionSource(this.props.combatant, a.id)}
 								footerType={CombatantLogic.getActionSourceType(this.props.combatant, a.id)}
 							/>

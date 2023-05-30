@@ -805,6 +805,7 @@ class CombatantControls extends Component<CombatantControlsProps, CombatantContr
 					<div className='panel-content'>
 						<CombatantMonster
 							combatant={this.props.combatant}
+							encounter={this.props.encounter}
 							developer={this.props.developer}
 						/>
 						<hr />

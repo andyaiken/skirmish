@@ -40,12 +40,12 @@ export class CombatantAction extends Component<Props> {
 			.filter(a => CombatantLogic.getActionSourceType(this.props.combatant, a.id) !== CardType.Base)
 			.sort((a, b) => a.name.localeCompare(b.name))
 			.forEach(a => {
-				const prerequisitesMet = a.prerequisites.every(p => ActionPrerequisites.isSatisfied(p, this.props.encounter, this.props.combatant));
+				const prerequisitesMet = a.prerequisites.every(p => ActionPrerequisites.isSatisfied(p, this.props.combatant));
 				actionCards.push(
 					<PlayingCard
 						key={a.id}
 						type={CardType.Action}
-						front={<ActionCard action={a} encounter={this.props.encounter} />}
+						front={<ActionCard action={a} combatant={this.props.combatant} encounter={this.props.encounter} />}
 						footer={CombatantLogic.getActionSource(this.props.combatant, a.id)}
 						footerType={CombatantLogic.getActionSourceType(this.props.combatant, a.id)}
 						onClick={prerequisitesMet ? () => this.props.selectAction(this.props.encounter, this.props.combatant, a) : null}
@@ -56,13 +56,13 @@ export class CombatantAction extends Component<Props> {
 		this.props.combatant.combat.actions
 			.filter(a => CombatantLogic.getActionSourceType(this.props.combatant, a.id) === CardType.Base)
 			.forEach(a => {
-				const prerequisitesMet = a.prerequisites.every(p => ActionPrerequisites.isSatisfied(p, this.props.encounter, this.props.combatant));
+				const prerequisitesMet = a.prerequisites.every(p => ActionPrerequisites.isSatisfied(p, this.props.combatant));
 				if (prerequisitesMet) {
 					actionCards.push(
 						<PlayingCard
 							key={a.id}
 							type={CardType.Action}
-							front={<ActionCard action={a} encounter={this.props.encounter} />}
+							front={<ActionCard action={a} combatant={this.props.combatant} encounter={this.props.encounter} />}
 							footer={CombatantLogic.getActionSource(this.props.combatant, a.id)}
 							footerType={CombatantLogic.getActionSourceType(this.props.combatant, a.id)}
 							onClick={() => this.props.selectAction(this.props.encounter, this.props.combatant, a)}
@@ -84,7 +84,7 @@ export class CombatantAction extends Component<Props> {
 		let prerequisitesMet = true;
 		const prerequisites: JSX.Element[] = [];
 		action.prerequisites.forEach((prerequisite, n) => {
-			if (!ActionPrerequisites.isSatisfied(prerequisite, this.props.encounter, this.props.combatant)) {
+			if (!ActionPrerequisites.isSatisfied(prerequisite, this.props.combatant)) {
 				prerequisitesMet = false;
 				prerequisites.push(
 					<div key={n} className='action-prerequisite'>{prerequisite.description}</div>
@@ -177,13 +177,20 @@ export class CombatantAction extends Component<Props> {
 									}
 									if (targetParam.targets.count === Number.MAX_VALUE) {
 										// Targets all possible candidates
-										description = `[${list.length} ${targetParam.targets.type.toLowerCase()}]`;
+										description = list
+											.map(id => EncounterLogic.getCombatant(this.props.encounter, id) as CombatantModel)
+											.map(target => <Text key={target.id} type={TextType.ListItem}>{target.name}</Text>);
+										if (list.length === 0) {
+											description = '[None]';
+										}
 									} else {
 										// Targets a specific number of candidates
 										description = list
 											.map(id => EncounterLogic.getCombatant(this.props.encounter, id) as CombatantModel)
-											.map(target => target.name)
-											.join(', ') || '[None]';
+											.map(target => <Text key={target.id} type={TextType.ListItem}>{target.name}</Text>);
+										if (list.length === 0) {
+											description = '[None]';
+										}
 										if (targetParam.candidates.length > targetParam.targets.count) {
 											const title = `Select ${targetParam.targets.type.toLowerCase()}`;
 											changeButton = (
@@ -206,7 +213,7 @@ export class CombatantAction extends Component<Props> {
 									}
 									if (targetParam.targets.count === Number.MAX_VALUE) {
 										// Targets all possible candidates
-										description = `[${list.length} squares]`;
+										description = list.length > 0 ? `[${list.length} squares]` : '[None]';
 									} else {
 										// Targets a specific number of candidates
 										description = list
@@ -242,7 +249,7 @@ export class CombatantAction extends Component<Props> {
 									}
 									if (targetParam.targets.count === Number.MAX_VALUE) {
 										// Targets all possible candidates
-										description = `[${list.length} walls]`;
+										description = list.length > 0 ? `[${list.length} walls]` : '[None]';
 									} else {
 										// Targets a specific number of candidates
 										description = list

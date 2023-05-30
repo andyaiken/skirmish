@@ -1,6 +1,6 @@
 import { Component } from 'react';
 
-import { ActionLogic, ActionPrerequisites } from '../../../logic/action-logic';
+import { ActionEffects, ActionLogic, ActionPrerequisites } from '../../../logic/action-logic';
 
 import type { ActionEffectModel, ActionModel } from '../../../models/action';
 import type { CombatantModel } from '../../../models/combatant';
@@ -12,22 +12,23 @@ import './action-card.scss';
 
 interface Props {
 	action: ActionModel;
+	combatant: CombatantModel | null;
 	encounter: EncounterModel | null;
 }
 
 export class ActionCard extends Component<Props> {
 	static defaultProps = {
+		combatant: null,
 		encounter: null
 	};
 
 	getPrerequisites = () => {
-		if (this.props.encounter === null) {
+		if (this.props.combatant === null) {
 			return [];
 		}
 
-		const combatant = this.props.encounter.combatants.find(c => c.combat.current) as CombatantModel;
 		return this.props.action.prerequisites
-			.filter(p => !ActionPrerequisites.isSatisfied(p, this.props.encounter as EncounterModel, combatant))
+			.filter(p => !ActionPrerequisites.isSatisfied(p, this.props.combatant as CombatantModel))
 			.map((p, n) => <div key={n} className='prerequisite highlighted'>{p.description}</div>);
 	};
 
@@ -44,7 +45,7 @@ export class ActionCard extends Component<Props> {
 
 			return (
 				<div>
-					<div className='effect'>{effect.description}</div>
+					<div className='effect'>{ActionEffects.getDescription(effect)}</div>
 					{children ? <div className='indent'>{children}</div> : null}
 				</div>
 			);

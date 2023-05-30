@@ -6,6 +6,7 @@ import { CombatantLogic } from '../../../../logic/combatant-logic';
 
 import type { ActionModel } from '../../../../models/action';
 import type { CombatantModel } from '../../../../models/combatant';
+import type { EncounterModel } from '../../../../models/encounter';
 
 import { ActionCard, PlaceholderCard } from '../../../cards';
 import { PlayingCard, Text, TextType } from '../../../controls';
@@ -14,6 +15,7 @@ import './combatant-monster.scss';
 
 interface Props {
 	combatant: CombatantModel;
+	encounter: EncounterModel;
 	developer: boolean;
 }
 
@@ -39,7 +41,7 @@ export class CombatantMonster extends Component<Props> {
 							action ?
 								<PlayingCard
 									type={CardType.Action}
-									front={<ActionCard action={action} />}
+									front={<ActionCard action={action} combatant={this.props.combatant} encounter={this.props.encounter} />}
 									footer={CombatantLogic.getActionSource(this.props.combatant, action.id)}
 									footerType={CombatantLogic.getActionSourceType(this.props.combatant, action.id)}
 								/>

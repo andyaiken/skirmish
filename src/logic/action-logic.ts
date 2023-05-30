@@ -135,7 +135,7 @@ export class ActionPrerequisites {
 		};
 	};
 
-	static isSatisfied = (prerequisite: ActionPrerequisiteModel, encounter: EncounterModel, combatant: CombatantModel) => {
+	static isSatisfied = (prerequisite: ActionPrerequisiteModel, combatant: CombatantModel) => {
 		switch (prerequisite.id) {
 			case 'item': {
 				const proficiencies = prerequisite.data as ItemProficiencyType[];
@@ -543,6 +543,115 @@ export class ActionEffects {
 			data: null,
 			children: []
 		};
+	};
+
+	static getDescription = (effect: ActionEffectModel): string => {
+		switch (effect.id) {
+			case 'attack': {
+				const data = effect.data as {
+					weapon: boolean,
+					skill: SkillType,
+					trait: TraitType,
+					skillBonus: number,
+					hit: ActionEffectModel[]
+				};
+				return (data.skillBonus === 0) ? `Attack: ${data.skill} vs ${data.trait}` : `Attack: ${data.skill} ${data.skillBonus >= 0 ? '+' : ''}${data.skillBonus} vs ${data.trait}`;
+			}
+			case 'toSelf': {
+				return 'To self';
+			}
+			case 'weapondamage': {
+				const rankModifier = effect.data as number;
+				return rankModifier === 0 ? 'Deal weapon damage' : `Deal weapon damage ${rankModifier > 0 ? '+' : ''}${rankModifier}`;
+			}
+			case 'damage': {
+				const data = effect.data as { type: DamageType, rank: number };
+				return `Deal ${data.type} damage (rank ${data.rank})`;
+			}
+			case 'wounds': {
+				const value = effect.data as number;
+				return `Inflict ${value} wounds`;
+			}
+			case 'healdamage': {
+				const rank = effect.data as number;
+				return `Heal damage (rank ${rank})`;
+			}
+			case 'healwounds': {
+				const value = effect.data as number;
+				return `Heal ${value} wound(s)`;
+			}
+			case 'addcondition': {
+				const condition = effect.data as ConditionModel;
+				return `Add a condition (${ConditionLogic.getConditionDescription(condition)}, rank ${condition.rank})`;
+			}
+			case 'removecondition': {
+				const trait = effect.data as TraitType;
+				return trait === TraitType.Any ? 'Remove a condition' : `Remove a ${trait} condition`;
+			}
+			case 'addMovement': {
+				return 'Add movement points';
+			}
+			case 'knockdown': {
+				return 'Knock down';
+			}
+			case 'stun': {
+				return 'Stun';
+			}
+			case 'scan': {
+				return 'Scan';
+			}
+			case 'hide': {
+				return 'Hide';
+			}
+			case 'stand': {
+				return 'Stand Up';
+			}
+			case 'takeAnotherAction': {
+				const redraw = effect.data as boolean;
+				return redraw ? 'Redraw action cards' : 'Take another action';
+			}
+			case 'invertConditions': {
+				const all = effect.data as boolean;
+				return all ? 'Invert conditions' : 'Invert a condition';
+			}
+			case 'transferCondition': {
+				return 'Transfer a condition';
+			}
+			case 'commandAction': {
+				return 'Command target to attack';
+			}
+			case 'commandMove': {
+				return 'Command target to move';
+			}
+			case 'forceMovement': {
+				const data = effect.data as { type: MovementType, rank: number };
+				return `Forced movement (${data.type}), rank ${data.rank}`;
+			}
+			case 'moveSelfTo': {
+				return 'Move to square';
+			}
+			case 'disarm': {
+				return 'Disarm';
+			}
+			case 'steal': {
+				return 'Steal';
+			}
+			case 'createTerrain': {
+				const type = effect.data as EncounterMapSquareType;
+				return `Create ${type.toLowerCase()} terrain`;
+			}
+			case 'addSquares': {
+				return 'Create map squares';
+			}
+			case 'removeSquares': {
+				return 'Destroy map squares';
+			}
+			case 'destroyWalls': {
+				return 'Destroy walls';
+			}
+		}
+
+		return '';
 	};
 
 	static run = (effect: ActionEffectModel, encounter: EncounterModel, combatant: CombatantModel, parameters: ActionParameterModel[]) => {
@@ -1204,7 +1313,7 @@ export class ActionLogic {
 			}
 			case 'weapon': {
 				const weaponParam = parameter as ActionWeaponParameterModel;
-				return `Weapon: ${weaponParam.type}`;
+				return `Uses weapon: ${weaponParam.type}`;
 			}
 			case 'targets': {
 				const targetParam = parameter as ActionTargetParameterModel;

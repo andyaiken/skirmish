@@ -60,7 +60,7 @@ export class MiniToken extends Component<Props, State> {
 	render = () => {
 		try {
 			const type = this.props.combatant.type.toLowerCase();
-			const current = !!this.props.encounter && this.props.combatant.combat.current ? 'current' : '';
+			const current = this.props.combatant.combat.current ? 'current' : '';
 			const selectable = this.props.selectable ? 'selectable' : '';
 			const selected = this.props.selected ? 'selected' : '';
 			const hidden = !!this.props.encounter && (this.props.combatant.combat.hidden > 0) ? 'hidden' : '';

@@ -118,9 +118,9 @@ export class ConditionLogic {
 	static getConditionDescription = (condition: ConditionModel) => {
 		switch (condition.type) {
 			case ConditionType.AutoHeal:
-				return 'Healing';
+				return 'Automatic healing';
 			case ConditionType.AutoDamage:
-				return `${condition.details.damage} damage`;
+				return `Automatic damage (${condition.details.damage})`;
 			case ConditionType.TraitBonus:
 				return `Trait bonus: ${condition.details.trait}`;
 			case ConditionType.TraitPenalty:

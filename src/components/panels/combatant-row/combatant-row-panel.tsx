@@ -69,7 +69,7 @@ export class CombatantRowPanel extends Component<Props> {
 				<div className='tags'>
 					{this.getCombatTags(true)}
 				</div>
-				{this.getDamage()}
+				{this.props.combatant.combat.damage > 0 ? this.getDamage() : null}
 				{this.getWounds()}
 			</div>
 		);
@@ -206,10 +206,14 @@ export class CombatantRowPanel extends Component<Props> {
 					</div>
 					{infoRight}
 					{infoEnd}
-					<div className='buttons'>
-						{detailsBtn}
-						{cancelBtn}
-					</div>
+					{
+						detailsBtn || cancelBtn ?
+							<div className='buttons'>
+								{detailsBtn}
+								{cancelBtn}
+							</div>
+							: null
+					}
 				</div>
 			);
 		} catch {

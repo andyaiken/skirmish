@@ -29,7 +29,7 @@ export class IntentsLogic {
 
 		if (!combatant.combat.selectedAction) {
 			combatant.combat.actions
-				.filter(a => a.prerequisites.every(p => ActionPrerequisites.isSatisfied(p, encounter, combatant)))
+				.filter(a => a.prerequisites.every(p => ActionPrerequisites.isSatisfied(p, combatant)))
 				.forEach(action => {
 					action.parameters.forEach(param => {
 						if (param.id === 'targets') {
@@ -244,7 +244,7 @@ export class IntentsLogic {
 			combatant.combat.actions
 				.filter(action => ActionLogic.getActionType(action) === 'Attack')
 				.forEach(action => {
-					const prerequisitesMet = action.prerequisites.every(prerequisite => ActionPrerequisites.isSatisfied(prerequisite, encounter, combatant));
+					const prerequisitesMet = action.prerequisites.every(prerequisite => ActionPrerequisites.isSatisfied(prerequisite, combatant));
 					const parametersSet = action.parameters.every(param => {
 						switch (param.id) {
 							case 'origin':

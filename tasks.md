@@ -8,6 +8,14 @@
 
 # Priority
 
+## Heroes
+* Each hero should have a random color
+* This color should be used:
+  * As a swatch in the hero card
+  * For its mini token
+* Monsters should all be red
+* Existing heroes should be set to green
+
 ## Character Sheet
 * Make it so that we can see a hero character sheet without having to level up
 

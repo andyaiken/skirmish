@@ -1,4 +1,4 @@
-import { IconInfoCircle, IconRotate2, IconRotateClockwise2, IconZoomIn, IconZoomOut } from '@tabler/icons-react';
+import { IconArrowBackUpDouble, IconConfetti, IconInfoCircle, IconRotate2, IconRotateClockwise2, IconZoomIn, IconZoomOut } from '@tabler/icons-react';
 import { Component } from 'react';
 
 import { ActionTargetType } from '../../../enums/action-target-type';
@@ -18,7 +18,7 @@ import type { ItemModel } from '../../../models/item';
 import type { RegionModel } from '../../../models/region';
 
 import { CardList, Dialog, PlayingCard, Text, TextType } from '../../controls';
-import { CharacterSheetPanel, EncounterMapPanel, InitiativeListPanel, TurnLogPanel } from '../../panels';
+import { CharacterSheetPanel, CombatantRowPanel, EncounterMapPanel, InitiativeListPanel, TreasureRowPanel, TurnLogPanel } from '../../panels';
 import { CombatantAction } from './combatant-action/combatant-action';
 import { CombatantHeader } from './combatant-header/combatant-header';
 import { CombatantMonster } from './combatant-monster/combatant-monster';
@@ -378,7 +378,7 @@ export class EncounterScreen extends Component<Props, State> {
 						encounter={this.props.encounter}
 						selectedIDs={this.state.selectedCombatantIDs}
 						onSelect={this.selectCombatant}
-						onDetails={this.showDetailsCombatant}
+						// onDetails={this.showDetailsCombatant}
 					/>
 				</div>
 				{footer}
@@ -398,35 +398,80 @@ export class EncounterScreen extends Component<Props, State> {
 			);
 		}
 
+		if (this.state.selectedCombatantIDs.length > 1) {
+			return (
+				<div className='encounter-bottom-panel'>
+					Multiple combatants selected.
+				</div>
+			);
+		}
+
+		if (this.state.selectedCombatantIDs.length === 1) {
+			const combatant = EncounterLogic.getCombatant(this.props.encounter, this.state.selectedCombatantIDs[0]);
+			if (combatant) {
+				return (
+					<CombatantRowPanel combatant={combatant} mode='detailed' onDetails={this.showDetailsCombatant} onCancel={this.clearSelection} />
+				);
+			}
+		}
+
+		if (this.state.selectedLootIDs.length > 1) {
+			return (
+				<div className='encounter-bottom-panel'>
+					Multiple treasures selected.
+				</div>
+			);
+		}
+
+		if (this.state.selectedLootIDs.length === 1) {
+			const loot = EncounterLogic.getLoot(this.props.encounter, this.state.selectedLootIDs[0]);
+			if (loot) {
+				return (
+					<TreasureRowPanel loot={loot} onDetails={this.showDetailsLoot} onCancel={this.clearSelection} />
+				);
+			}
+		}
+
 		return (
 			<div className='encounter-bottom-panel'>
 				<div className='section'>
 					<button className='icon-btn' title='Rotate Left' onClick={() => this.props.rotateMap(this.props.encounter, 'l')}>
 						<IconRotate2 />
 					</button>
+				</div>
+				<div className='section'>
 					<button className='icon-btn' title='Rotate Right' onClick={() => this.props.rotateMap(this.props.encounter, 'r')}>
 						<IconRotateClockwise2 />
 					</button>
 				</div>
+				<div className='separator' />
 				<div className='section'>
 					<button disabled={this.state.mapSquareSize <= 5} className='icon-btn' title='Zoom Out' onClick={() => this.nudgeMapSize(-5)}>
 						<IconZoomOut />
 					</button>
+				</div>
+				<div className='section'>
 					<button disabled={this.state.mapSquareSize >= 50} className='icon-btn' title='Zoom In' onClick={() => this.nudgeMapSize(+5)}>
 						<IconZoomIn />
 					</button>
 				</div>
+				<div className='separator' />
 				<div className='section'>
-					<button className='danger' onClick={() => this.setManualEncounterState(EncounterState.Retreat)}>Retreat</button>
+					<button className='icon-btn danger' title='Retreat' onClick={() => this.setManualEncounterState(EncounterState.Retreat)}>
+						<IconArrowBackUpDouble />
+					</button>
 				</div>
 				{
 					this.props.developer ?
 						<div className='section'>
-							<button className='developer' onClick={() => this.setManualEncounterState(EncounterState.Victory)}>Victory</button>
+							<button className='icon-btn developer' title='Win' onClick={() => this.setManualEncounterState(EncounterState.Victory)}>
+								<IconConfetti />
+							</button>
 						</div>
 						: null
 				}
-				<div className='section compact'>
+				<div className='separator' />
+				<div className='section'>
 					<button className='icon-btn' title='Information' onClick={() => this.props.showHelp('encounters')}>
 						<IconInfoCircle />
 					</button>
@@ -543,8 +588,6 @@ export class EncounterScreen extends Component<Props, State> {
 							onClickLoot={this.selectLoot}
 							onClickSquare={this.selectSquare}
 							onClickOff={this.clearSelection}
-							onDoubleClickCombatant={this.showDetailsCombatant}
-							onDoubleClickLoot={this.showDetailsLoot}
 						/>
 						{this.getBottomControls()}
 					</div>

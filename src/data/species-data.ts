@@ -1227,7 +1227,7 @@ export class SpeciesData {
 				name: 'Giant Spider',
 				description: 'Venomous insects with eight legs.',
 				type: CombatantType.Monster,
-				size: 1,
+				size: 2,
 				quirks: [
 					QuirkType.Beast
 				],

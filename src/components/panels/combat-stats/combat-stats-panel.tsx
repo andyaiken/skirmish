@@ -9,7 +9,7 @@ import { EncounterLogic } from '../../../logic/encounter-logic';
 import type { CombatantModel } from '../../../models/combatant';
 import type { EncounterModel } from '../../../models/encounter';
 
-import { Box, IconType, IconValue, StatValue } from '../../controls';
+import { Box, IconType, IconValue, StatValue, Text, TextType } from '../../controls';
 
 import './combat-stats-panel.scss';
 
@@ -22,6 +22,13 @@ export class CombatStatsPanel extends Component<Props> {
 	getConditions = (trait: TraitType) => {
 		return this.props.combatant.combat.conditions
 			.filter(c => c.trait === trait)
+			.map(c => (
+				<StatValue key={c.id} orientation='compact' label={ConditionLogic.getConditionDescription(c)} value={c.rank} />
+			));
+	};
+
+	getAuras = () => {
+		return EncounterLogic.getAuraConditions(this.props.encounter, this.props.combatant)
 			.map(c => (
 				<StatValue key={c.id} orientation='compact' label={ConditionLogic.getConditionDescription(c)} value={c.rank} />
 			));
@@ -46,6 +53,29 @@ export class CombatStatsPanel extends Component<Props> {
 				woundsInRows.push(<div key={woundsInRows.length} className='wounds'>{wounds}</div>);
 			}
 
+			const endurance = this.getConditions(TraitType.Endurance);
+			const resolve = this.getConditions(TraitType.Resolve);
+			const speed = this.getConditions(TraitType.Speed);
+			const auras = this.getAuras();
+
+			let conditions = null;
+			if (endurance.length + resolve.length + speed.length + auras.length > 0) {
+				conditions = (
+					<Box label='Conditions'>
+						<div>
+							{ endurance.length > 0 ? <Text type={TextType.MinorHeading}>Endurance Conditions</Text> : null }
+							{endurance}
+							{ resolve.length > 0 ? <Text type={TextType.MinorHeading}>Resolve Conditions</Text> : null }
+							{resolve}
+							{ speed.length > 0 ? <Text type={TextType.MinorHeading}>Speed Conditions</Text> : null }
+							{speed}
+							{ auras.length > 0 ? <Text type={TextType.MinorHeading}>In Auras</Text> : null }
+							{auras}
+						</div>
+					</Box>
+				);
+			}
+
 			return (
 				<div className='combat-stats-panel'>
 					<Box label='This Round'>
@@ -61,25 +91,7 @@ export class CombatStatsPanel extends Component<Props> {
 							<StatValue orientation='vertical' label='Wounds' value={<div>{woundsInRows}</div>} />
 						</div>
 					</Box>
-					<Box label='Traits and Conditions'>
-						<div className='stats-row align-top'>
-							<div>
-								<StatValue orientation='vertical' label='Endurance' value={EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Endurance)} />
-								{this.getConditions(TraitType.Endurance).length > 0 ? <hr /> : null}
-								<div>{this.getConditions(TraitType.Endurance)}</div>
-							</div>
-							<div>
-								<StatValue orientation='vertical' label='Resolve' value={EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Resolve)} />
-								{this.getConditions(TraitType.Resolve).length > 0 ? <hr /> : null}
-								<div>{this.getConditions(TraitType.Resolve)}</div>
-							</div>
-							<div>
-								<StatValue orientation='vertical' label='Speed' value={EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Speed)} />
-								{this.getConditions(TraitType.Speed).length > 0 ? <hr /> : null}
-								<div>{this.getConditions(TraitType.Speed)}</div>
-							</div>
-						</div>
-					</Box>
+					{conditions}
 				</div>
 			);
 		} catch {

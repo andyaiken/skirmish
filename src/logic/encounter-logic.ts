@@ -262,6 +262,16 @@ export class EncounterLogic {
 			}
 		});
 		combatant.combat.conditions = combatant.combat.conditions.filter(c => c.rank > 0);
+
+		// This might have affected our Resolve, so check whether this is a problem
+		const resolve = EncounterLogic.getTraitRank(encounter, combatant, TraitType.Resolve);
+		if (combatant.combat.wounds === resolve) {
+			combatant.combat.state = CombatantState.Unconscious;
+			EncounterLogic.log(encounter, `${combatant.name} is now ${combatant.combat.state}`);
+		}
+		if (combatant.combat.wounds > resolve) {
+			EncounterLogic.kill(encounter, combatant);
+		}
 	};
 
 	static drawActions = (encounter: EncounterModel, combatant: CombatantModel) => {
@@ -796,6 +806,11 @@ export class EncounterLogic {
 		return encounter.combatants
 			.filter(c => c.combat.state !== CombatantState.Dead)
 			.filter(c => c.combat.initiative === Number.MIN_VALUE);
+	};
+
+	static getDeadCombatants = (encounter: EncounterModel) => {
+		return encounter.combatants
+			.filter(c => c.combat.state === CombatantState.Dead);
 	};
 
 	///////////////////////////////////////////////////////////////////////////

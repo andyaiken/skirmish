@@ -16,6 +16,7 @@ import type { EncounterModel } from '../../../../models/encounter';
 
 import { ActionCard, FeatureCard, PlaceholderCard } from '../../../cards';
 import { Box, CardList, Dialog, IconType, IconValue, PlayingCard, StatValue, Tag, Text, TextType } from '../../../controls';
+import { CombatStatsPanel } from '../../combat-stats/combat-stats-panel';
 import { DamagePanel } from './damage-panel/damage-panel';
 
 import './stats.scss';
@@ -159,6 +160,15 @@ export class Stats extends Component<Props, State> {
 					break;
 			}
 
+			let combatColumn = null;
+			if (this.props.encounter) {
+				combatColumn = (
+					<div className='column'>
+						<CombatStatsPanel combatant={this.props.combatant} encounter={this.props.encounter} />
+					</div>
+				);
+			}
+
 			const primaryColumn = (
 				<div className='column'>
 					{
@@ -175,6 +185,8 @@ export class Stats extends Component<Props, State> {
 					{this.getSkillsSection()}
 					{this.getProficienciesSection()}
 					{this.getAurasSection()}
+					{ cutDown ? <DamagePanel label='Damage Bonuses' getValue={this.getDamageBonusValue} /> : null }
+					{ cutDown ? <DamagePanel label='Damage Resistances' getValue={this.getDamageResistanceValue} /> : null }
 				</div>
 			);
 
@@ -253,11 +265,10 @@ export class Stats extends Component<Props, State> {
 
 			return (
 				<div className='stats'>
-					<div className='grid'>
-						{primaryColumn}
-						{cutDown ? null : secondaryColumn}
-						{cutDown ? null : decksColumn}
-					</div>
+					{combatColumn}
+					{primaryColumn}
+					{cutDown ? null : secondaryColumn}
+					{cutDown ? null : decksColumn}
 					{dialog}
 				</div>
 			);

@@ -1,5 +1,4 @@
 import { Component } from 'react';
-import { IconX } from '@tabler/icons-react';
 
 import { CardType } from '../../../enums/card-type';
 
@@ -9,8 +8,9 @@ import type { CombatantModel } from '../../../models/combatant';
 import type { GameModel } from '../../../models/game';
 import type { RegionModel } from '../../../models/region';
 
-import { CardList, PlayingCard, Selector, Tabs, Tag, Text, TextType } from '../../controls';
+import { CardList, PlayingCard, Selector, Tabs, Text, TextType } from '../../controls';
 import { HeroCard, SpeciesCard } from '../../cards';
+import { CombatantRowPanel } from '../combatant-row/combatant-row-panel';
 
 import './encounter-start.scss';
 
@@ -100,34 +100,16 @@ export class EncounterStartPanel extends Component<Props, State> {
 		let rightContent = null;
 		switch (this.state.viewMode) {
 			case 'heroes': {
-				const selected = this.state.selectedHeroes
-					.map(h => {
-						return (
-							<div key={h.id} className='selected-hero'>
-								<div className='name'>
-									<Text type={TextType.SubHeading}>{h.name}</Text>
-								</div>
-								<div className='tags'>
-									<Tag>{GameLogic.getSpecies(h.speciesID)?.name ?? 'Unknown species'}</Tag>
-									<Tag>{GameLogic.getRole(h.roleID)?.name ?? 'Unknown role'}</Tag>
-									<Tag>{GameLogic.getBackground(h.backgroundID)?.name ?? 'Unknown background'}</Tag>
-									<Tag>Level {h.level}</Tag>
-								</div>
-								<button className='icon-btn' onClick={() => this.deselectHero(h)}>
-									<IconX />
-								</button>
-							</div>
-						);
-					});
+				const selected = this.state.selectedHeroes.map(h => <CombatantRowPanel key={h.id} combatant={h} onCancel={hero => this.deselectHero(hero)} />);
 				while (selected.length < 5) {
 					selected.push(
-						<div key={selected.length} className='selected-hero placeholder'>
+						<div key={selected.length} className='empty-hero-slot'>
 							[No hero selected]
 						</div>
 					);
 				}
 				rightContent = (
-					<div>
+					<div className='selected-hero-list'>
 						{selected}
 					</div>
 				);

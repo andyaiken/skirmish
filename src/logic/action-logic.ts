@@ -436,7 +436,7 @@ export class ActionEffects {
 
 	static invertConditions = (all: boolean): ActionEffectModel => {
 		return {
-			id: 'invertCondition',
+			id: 'invertConditions',
 			description: all ? 'Invert conditions' : 'Invert a condition',
 			data: all,
 			children: []

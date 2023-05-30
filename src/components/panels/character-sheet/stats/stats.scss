@@ -1,15 +1,13 @@
 .stats {
-	.grid {
-		display: flex;
-		align-items: flex-start;
-		gap: 10px;
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
 
-		.column {
-			flex: 1 1 220px;
+	.column {
+		flex: 1 1 220px;
 
-			&.decks {
-				flex: 0 0 250px;
-			}
+		&.decks {
+			flex: 0 0 250px;
 		}
 	}
 

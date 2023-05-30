@@ -37,8 +37,6 @@ interface Props {
 	onClickLoot: (loot: LootPileModel) => void;
 	onClickSquare: (square: { x: number, y: number }) => void;
 	onClickOff: () => void;
-	onDoubleClickCombatant: (combatant: CombatantModel) => void;
-	onDoubleClickLoot: (loot: LootPileModel) => void;
 }
 
 export class EncounterMapPanel extends Component<Props> {
@@ -146,12 +144,12 @@ export class EncounterMapPanel extends Component<Props> {
 					<LootToken
 						key={lp.id}
 						loot={lp}
+						encounter={this.props.encounter}
 						squareSize={this.props.squareSize}
 						mapDimensions={dims}
 						selectable={(this.props.selectableLootIDs.length === 0) || this.props.selectableLootIDs.includes(lp.id)}
 						selected={this.props.selectedLootIDs.includes(lp.id)}
 						onClick={this.props.onClickLoot}
-						onDoubleClick={this.props.onDoubleClickLoot}
 					/>
 				);
 			});
@@ -196,7 +194,6 @@ export class EncounterMapPanel extends Component<Props> {
 						selectable={(this.props.selectableCombatantIDs.length === 0) || this.props.selectableCombatantIDs.includes(combatant.id)}
 						selected={this.props.selectedCombatantIDs.includes(combatant.id)}
 						onClick={this.props.onClickCombatant}
-						onDoubleClick={this.props.onDoubleClickCombatant}
 					/>
 				);
 			});

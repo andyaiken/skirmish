@@ -28,37 +28,19 @@
 				flex: 0 0 200px;
 			}
 
-			.selected-hero {
+			.selected-hero-list {
+				display: flex;
+				flex-direction: column;
+				gap: 10px;
+			}
+
+			.empty-hero-slot {
 				display: flex;
 				align-items: center;
-				justify-content: space-between;
-				gap: 10px;
-				height: 70px;
-				margin: 10px 0;
+				height: 75px;
 				border: 1px solid rgb(220, 220, 220);
-				border-radius: 5px;
-				padding: 10px;
-
-				.name {
-					flex: 1 1 0;
-				}
-
-				.tags {
-					flex: 1 1 0;
-				}
-
-				.icon-btn {
-					flex: 0 0 45px;
-					width: 45px;
-				}
-
-				&:not(.placeholder) {
-					background-color: rgb(250, 250, 250);
-				}
-
-				&.placeholder {
-					opacity: 0.6;
-				}
+				border-radius: 10px;
+				padding: 0 15px;
 			}
 		}
 

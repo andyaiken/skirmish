@@ -14,9 +14,8 @@ import type { ItemModel } from '../../../models/item';
 
 import { Collections } from '../../../utils/collections';
 
-import { CharacterSheetPanel, HeroBuilderPanel } from '../../panels';
-import { Dialog, PlayingCard, Tag, Text, TextType } from '../../controls';
-import { MiniToken } from '../../panels/encounter-map/mini-token/mini-token';
+import { CharacterSheetPanel, CombatantRowPanel, HeroBuilderPanel } from '../../panels';
+import { Dialog, PlayingCard, Text, TextType } from '../../controls';
 import { PlaceholderCard } from '../../cards';
 
 import './setup-screen.scss';
@@ -131,33 +130,7 @@ export class SetupScreen extends Component<Props, State> {
 
 	render = () => {
 		try {
-			const heroes = this.props.game.heroes
-				.map(h => {
-					return (
-						<div key={h.id} className='hero-panel'>
-							<div className='token-container'>
-								<MiniToken
-									combatant={h}
-									encounter={null}
-									squareSize={40}
-									mapDimensions={{ left: 0, top: 0 }}
-									selectable={true}
-									selected={false}
-									onClick={() => this.selectHero(h)}
-									onDoubleClick={() => null}
-								/>
-							</div>
-							<div className='name'>
-								<Text type={TextType.SubHeading}>{h.name}</Text>
-							</div>
-							<div className='tags'>
-								<Tag>{GameLogic.getSpecies(h.speciesID)?.name ?? 'Unknown species'}</Tag>
-								<Tag>{GameLogic.getRole(h.roleID)?.name ?? 'Unknown role'}</Tag>
-								<Tag>{GameLogic.getBackground(h.backgroundID)?.name ?? 'Unknown background'}</Tag>
-							</div>
-						</div>
-					);
-				});
+			const heroes = this.props.game.heroes.map(h => <CombatantRowPanel key={h.id} combatant={h} onDetails={this.selectHero} />);
 			if (heroes.length < 5) {
 				heroes.push(
 					<div key='add' className='empty-panel'>

@@ -6,7 +6,27 @@
 
 -----------------------------------------------------------------------------------------
 
+# Priority
+
+## Character Sheet
+* Make it so that we can see a hero character sheet without having to level up
+
+## Magic items
+* When buying / in items list, make clear which heroes can equip this item / could equip but the slot is currently used
+
+## Encounters
+* When you don’t win an encounter, save its state so you can try again from that point with a new team
+
+-----------------------------------------------------------------------------------------
+
 # Improvements / Enhancements
+
+## Character Sheet
+* Show ranks as filled circles
+* Show the XP required as a gauge
+
+## Features
+* Mountebank and Pixie should have an attack redirection aura
 
 ## Map Types
 * Street
@@ -14,13 +34,6 @@
 
 ## Encounters
 * Undo movement
-
-## Features
-* Mountebank and Pixie should have an attack redirection aura
-
-## Character Sheet
-* Show ranks as filled circles
-* Show the XP required as a gauge
 
 ## Turn Log
 * Indentation
@@ -88,15 +101,16 @@
 * Defeat a specific opponent within a certain number of rounds
 
 ## Ideas for Roles / Backgrounds
-* Artificer
+* Artificer / Technomage
   * Create potion
   * Shocking grasp (electrical damage, stun)
   * Electrical dischange (area effect)
   * Supercharge (buff nearby ally's damage output)
-* Gladiator
+* Gladiator 
   * Large weapons
   * Showmanship
 * Cleric
+* Centurion
 * Paladin / warpriest
 
 ## Ideas for Species

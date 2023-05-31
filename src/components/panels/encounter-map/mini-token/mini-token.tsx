@@ -7,6 +7,8 @@ import { EncounterLogic } from '../../../../logic/encounter-logic';
 import type { CombatantModel } from '../../../../models/combatant';
 import type { EncounterModel } from '../../../../models/encounter';
 
+import { Color } from '../../../../utils/color';
+
 import './mini-token.scss';
 
 interface Props {
@@ -59,13 +61,12 @@ export class MiniToken extends Component<Props, State> {
 
 	render = () => {
 		try {
-			const type = this.props.combatant.type.toLowerCase();
 			const current = this.props.combatant.combat.current ? 'current' : '';
 			const selectable = this.props.selectable ? 'selectable' : '';
 			const selected = this.props.selected ? 'selected' : '';
 			const hidden = !!this.props.encounter && (this.props.combatant.combat.hidden > 0) ? 'hidden' : '';
 			const mouseOver = this.state.mouseOver ? 'mouse-over' : '';
-			const className = `encounter-map-mini-token ${type} ${current} ${selectable} ${selected} ${hidden} ${mouseOver}`;
+			const className = `encounter-map-mini-token ${current} ${selectable} ${selected} ${hidden} ${mouseOver}`;
 
 			let healthBar = null;
 			if (this.props.encounter && (this.props.combatant.combat.wounds > 0)) {
@@ -78,6 +79,14 @@ export class MiniToken extends Component<Props, State> {
 				);
 			}
 
+			let colorDark = this.props.combatant.color;
+			let colorLight = this.props.combatant.color;
+			const color = Color.parse(this.props.combatant.color);
+			if (color) {
+				colorDark = Color.toString(Color.darken(color));
+				colorLight = Color.toString(Color.lighten(color));
+			}
+
 			return (
 				<div
 					className={className}
@@ -85,13 +94,19 @@ export class MiniToken extends Component<Props, State> {
 						width: this.props.encounter ? `${this.props.squareSize * this.props.combatant.size}px` : `${this.props.squareSize}px`,
 						left: this.props.encounter ? `${((this.props.combatant.combat.position.x - this.props.mapDimensions.left) * this.props.squareSize)}px` : '0',
 						top: this.props.encounter ? `${((this.props.combatant.combat.position.y - this.props.mapDimensions.top) * this.props.squareSize)}px` : '0',
-						fontSize: this.props.encounter ? `${this.props.squareSize * this.props.combatant.size * 0.35}px` : `${this.props.squareSize * 0.35}px`
+						fontSize: this.props.encounter ? `${this.props.squareSize * this.props.combatant.size * 0.35}px` : `${this.props.squareSize * 0.35}px`,
+						backgroundImage: `linear-gradient(135deg, ${this.props.combatant.color}, ${colorDark})`
 					}}
 					onClick={e => this.onClick(e)}
 					onMouseEnter={() => this.setMouseOver(true)}
 					onMouseLeave={() => this.setMouseOver(false)}
 				>
-					<div className={this.props.combatant.combat.current ? 'mini-token-face current' : 'mini-token-face'}>
+					<div
+						className={this.props.combatant.combat.current ? 'mini-token-face current' : 'mini-token-face'}
+						style={{
+							backgroundImage: `linear-gradient(135deg, ${colorLight}, ${this.props.combatant.color})`
+						}}
+					>
 						{this.getMonogram()}
 					</div>
 					{healthBar}

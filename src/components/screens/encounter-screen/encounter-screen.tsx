@@ -410,7 +410,13 @@ export class EncounterScreen extends Component<Props, State> {
 			const combatant = EncounterLogic.getCombatant(this.props.encounter, this.state.selectedCombatantIDs[0]);
 			if (combatant) {
 				return (
-					<CombatantRowPanel combatant={combatant} mode='detailed' onDetails={this.showDetailsCombatant} onCancel={this.clearSelection} />
+					<CombatantRowPanel
+						mode='detailed'
+						combatant={combatant}
+						encounter={this.props.encounter}
+						onDetails={this.showDetailsCombatant}
+						onCancel={this.clearSelection}
+					/>
 				);
 			}
 		}
@@ -733,6 +739,7 @@ class CombatantControls extends Component<CombatantControlsProps, CombatantContr
 					<div className='panel-header'>
 						<CombatantHeader
 							combatant={this.props.combatant}
+							encounter={this.props.encounter}
 							developer={this.props.developer}
 							tabID={this.state.tab}
 							onSelectTab={this.setTab}
@@ -754,6 +761,7 @@ class CombatantControls extends Component<CombatantControlsProps, CombatantContr
 					<div className='panel-header'>
 						<CombatantHeader
 							combatant={this.props.combatant}
+							encounter={this.props.encounter}
 							developer={this.props.developer}
 							tabID={this.state.tab}
 							onSelectTab={this.setTab}
@@ -775,6 +783,7 @@ class CombatantControls extends Component<CombatantControlsProps, CombatantContr
 					<div className='panel-header'>
 						<CombatantHeader
 							combatant={this.props.combatant}
+							encounter={this.props.encounter}
 							developer={this.props.developer}
 							tabID={this.state.tab}
 							onSelectTab={this.setTab}
@@ -796,6 +805,7 @@ class CombatantControls extends Component<CombatantControlsProps, CombatantContr
 					<div className='panel-header'>
 						<CombatantHeader
 							combatant={this.props.combatant}
+							encounter={this.props.encounter}
 							developer={this.props.developer}
 							tabID={this.state.tab}
 							onSelectTab={this.setTab}
@@ -872,6 +882,7 @@ class CombatantControls extends Component<CombatantControlsProps, CombatantContr
 				<div className='panel-header'>
 					<CombatantHeader
 						combatant={this.props.combatant}
+						encounter={this.props.encounter}
 						developer={this.props.developer}
 						tabID={this.state.tab}
 						onSelectTab={this.setTab}

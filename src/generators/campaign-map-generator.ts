@@ -59,15 +59,12 @@ export class CampaignMapGenerator {
 		while (map.regions.length !== regionCount) {
 			// The lightest colour we will allow is rgb(229, 229, 229)
 			// This is so that the player (white) stands out
-			const max = 230;
-			const r = Random.randomNumber(max);
-			const g = Random.randomNumber(max);
-			const b = Random.randomNumber(max);
+			const color = Random.randomColor(0, 230);
 
 			map.regions.push({
 				id: Utils.guid(),
 				name: NameGenerator.generateName(),
-				color: `rgb(${r}, ${g}, ${b})`,
+				color: color,
 				encounters: [],
 				boon: BoonGenerator.generateBoon(),
 				demographics: {

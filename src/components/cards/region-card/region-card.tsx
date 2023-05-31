@@ -6,6 +6,8 @@ import type { RegionModel } from '../../../models/region';
 
 import { StatValue, Tag, Text, TextType } from '../../controls';
 
+import { Color } from '../../../utils/color';
+
 import './region-card.scss';
 
 interface Props {
@@ -14,6 +16,14 @@ interface Props {
 
 export class RegionCard extends Component<Props> {
 	render = () => {
+		let colorDark = this.props.region.color;
+		let colorLight = this.props.region.color;
+		const color = Color.parse(this.props.region.color);
+		if (color) {
+			colorDark = Color.toString(Color.darken(color));
+			colorLight = Color.toString(Color.lighten(color));
+		}
+
 		const monsters = this.props.region.demographics.speciesIDs
 			.map(id => {
 				const species = GameLogic.getSpecies(id);
@@ -25,7 +35,13 @@ export class RegionCard extends Component<Props> {
 		return (
 			<div className='region-card'>
 				<Text type={TextType.SubHeading}>{this.props.region.name}</Text>
-				<div className='region-color-box' style={{ backgroundColor: this.props.region.color }} />
+				<div
+					className='color-box'
+					style={{
+						backgroundImage: `linear-gradient(135deg, ${colorLight}, ${this.props.region.color})`,
+						borderColor: colorDark
+					}}
+				/>
 				<StatValue label='Area' value={`${this.props.region.demographics.size} sq mi`} />
 				<StatValue label='Population' value={`${(this.props.region.demographics.population * 100).toLocaleString()}`} />
 				<StatValue label='Terrain' value={this.props.region.demographics.terrain} />

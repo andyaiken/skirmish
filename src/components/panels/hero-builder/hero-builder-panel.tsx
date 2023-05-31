@@ -16,10 +16,12 @@ import type { RoleModel } from '../../../models/role';
 import type { SpeciesModel } from '../../../models/species';
 
 import { Collections } from '../../../utils/collections';
+import { Random } from '../../../utils/random';
 import { Utils } from '../../../utils/utils';
 
 import { BackgroundCard, ItemCard, PlaceholderCard, RoleCard, SpeciesCard } from '../../cards';
-import { CardList, PlayingCard, Tag, Text, TextType } from '../../controls';
+import { CardList, PlayingCard, Text, TextType } from '../../controls';
+import { CombatantRowPanel } from '../combatant-row/combatant-row-panel';
 
 import './hero-builder-panel.scss';
 
@@ -39,9 +41,8 @@ export class HeroBuilderPanel extends Component<Props, State> {
 		super(props);
 
 		const hero = JSON.parse(JSON.stringify(props.hero)) as CombatantModel;
-		if (hero.name === '') {
-			hero.name = NameGenerator.generateName();
-		}
+		hero.name = NameGenerator.generateName();
+		hero.color = Random.randomColor(20, 180);
 
 		this.state = {
 			hero: hero
@@ -67,6 +68,14 @@ export class HeroBuilderPanel extends Component<Props, State> {
 	rename = () => {
 		const hero = this.state.hero;
 		hero.name = NameGenerator.generateName();
+		this.setState({
+			hero: hero
+		});
+	};
+
+	recolor = () => {
+		const hero = this.state.hero;
+		hero.color = Random.randomColor(20, 180);
 		this.setState({
 			hero: hero
 		});
@@ -99,10 +108,6 @@ export class HeroBuilderPanel extends Component<Props, State> {
 				);
 			} else if (this.state.hero.level === 1) {
 				// Finalise character creation
-				const species = GameLogic.getSpecies(this.state.hero.speciesID);
-				const role = GameLogic.getRole(this.state.hero.roleID);
-				const background = GameLogic.getBackground(this.state.hero.backgroundID);
-
 				content = (
 					<div className='finish-page'>
 						<div className='header'>
@@ -112,13 +117,10 @@ export class HeroBuilderPanel extends Component<Props, State> {
 						</div>
 						<div className='content'>
 							<div className='rename-section'>
-								<div className='hero-name'>
-									{this.state.hero.name}
-								</div>
-								<div className='tags'>
-									<Tag>{species?.name ?? ''}</Tag> <Tag>{role?.name ?? ''}</Tag> <Tag>{background?.name ?? ''}</Tag>
-								</div>
+								<CombatantRowPanel combatant={this.state.hero} />
+								<hr />
 								<button onClick={this.rename}>Rename this hero</button>
+								<button onClick={this.recolor}>Change color</button>
 								<hr />
 								<button onClick={this.finished}>Finished</button>
 							</div>

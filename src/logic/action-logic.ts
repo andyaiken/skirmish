@@ -291,7 +291,6 @@ export class ActionEffects {
 	): ActionEffectModel => {
 		return {
 			id: 'attack',
-			description: (data.skillBonus === 0) ? `Attack: ${data.skill} vs ${data.trait}` : `Attack: ${data.skill} ${data.skillBonus >= 0 ? '+' : ''}${data.skillBonus} vs ${data.trait}`,
 			data: data,
 			children: data.hit
 		};
@@ -302,7 +301,6 @@ export class ActionEffects {
 	): ActionEffectModel => {
 		return {
 			id: 'toSelf',
-			description: 'To self',
 			data: data,
 			children: data
 		};
@@ -311,7 +309,6 @@ export class ActionEffects {
 	static dealWeaponDamage = (rankModifier = 0): ActionEffectModel => {
 		return {
 			id: 'weapondamage',
-			description: rankModifier === 0 ? 'Deal weapon damage' : `Deal weapon damage ${rankModifier > 0 ? '+' : ''}${rankModifier}`,
 			data: rankModifier,
 			children: []
 		};
@@ -320,7 +317,6 @@ export class ActionEffects {
 	static dealDamage = (type: DamageType, rank: number): ActionEffectModel => {
 		return {
 			id: 'damage',
-			description: `Deal ${type} damage (rank ${rank})`,
 			data: { type: type, rank: rank },
 			children: []
 		};
@@ -329,7 +325,6 @@ export class ActionEffects {
 	static inflictWounds = (value: number): ActionEffectModel => {
 		return {
 			id: 'wounds',
-			description: `Inflict ${value} wounds`,
 			data: value,
 			children: []
 		};
@@ -338,7 +333,6 @@ export class ActionEffects {
 	static healDamage = (rank: number): ActionEffectModel => {
 		return {
 			id: 'healdamage',
-			description: `Heal damage (rank ${rank})`,
 			data: rank,
 			children: []
 		};
@@ -347,7 +341,6 @@ export class ActionEffects {
 	static healWounds = (value: number): ActionEffectModel => {
 		return {
 			id: 'healwounds',
-			description: `Heal ${value} wound(s)`,
 			data: value,
 			children: []
 		};
@@ -356,7 +349,6 @@ export class ActionEffects {
 	static addCondition = (condition: ConditionModel): ActionEffectModel => {
 		return {
 			id: 'addcondition',
-			description: `Add a condition (${ConditionLogic.getConditionDescription(condition)}, rank ${condition.rank})`,
 			data: condition,
 			children: []
 		};
@@ -365,7 +357,6 @@ export class ActionEffects {
 	static removeCondition = (trait: TraitType): ActionEffectModel => {
 		return {
 			id: 'removecondition',
-			description: trait === TraitType.Any ? 'Remove a condition' : `Remove a ${trait} condition`,
 			data: trait,
 			children: []
 		};
@@ -374,7 +365,6 @@ export class ActionEffects {
 	static addMovement = (): ActionEffectModel => {
 		return {
 			id: 'addMovement',
-			description: 'Add movement points',
 			data: null,
 			children: []
 		};
@@ -383,7 +373,6 @@ export class ActionEffects {
 	static knockDown = (): ActionEffectModel => {
 		return {
 			id: 'knockdown',
-			description: 'Knock down',
 			data: null,
 			children: []
 		};
@@ -392,7 +381,6 @@ export class ActionEffects {
 	static stun = (): ActionEffectModel => {
 		return {
 			id: 'stun',
-			description: 'Stun',
 			data: null,
 			children: []
 		};
@@ -401,7 +389,6 @@ export class ActionEffects {
 	static stand = (): ActionEffectModel => {
 		return {
 			id: 'stand',
-			description: 'Stand Up',
 			data: null,
 			children: []
 		};
@@ -410,7 +397,6 @@ export class ActionEffects {
 	static scan = (): ActionEffectModel => {
 		return {
 			id: 'scan',
-			description: 'Scan',
 			data: null,
 			children: []
 		};
@@ -419,7 +405,6 @@ export class ActionEffects {
 	static hide = (): ActionEffectModel => {
 		return {
 			id: 'hide',
-			description: 'Hide',
 			data: null,
 			children: []
 		};
@@ -428,7 +413,6 @@ export class ActionEffects {
 	static takeAnotherAction = (redraw = false): ActionEffectModel => {
 		return {
 			id: 'takeAnotherAction',
-			description: redraw ? 'Redraw action cards' : 'Take another action',
 			data: redraw,
 			children: []
 		};
@@ -437,7 +421,6 @@ export class ActionEffects {
 	static invertConditions = (all: boolean): ActionEffectModel => {
 		return {
 			id: 'invertConditions',
-			description: all ? 'Invert conditions' : 'Invert a condition',
 			data: all,
 			children: []
 		};
@@ -446,7 +429,6 @@ export class ActionEffects {
 	static transferCondition = (): ActionEffectModel => {
 		return {
 			id: 'transferCondition',
-			description: 'Transfer a condition',
 			data: null,
 			children: []
 		};
@@ -455,7 +437,6 @@ export class ActionEffects {
 	static commandAction = (): ActionEffectModel => {
 		return {
 			id: 'commandAction',
-			description: 'Command target to attack',
 			data: null,
 			children: []
 		};
@@ -464,7 +445,6 @@ export class ActionEffects {
 	static commandMove = (): ActionEffectModel => {
 		return {
 			id: 'commandMove',
-			description: 'Command target to move',
 			data: null,
 			children: []
 		};
@@ -473,7 +453,6 @@ export class ActionEffects {
 	static forceMovement = (type: MovementType, rank: number): ActionEffectModel => {
 		return {
 			id: 'forceMovement',
-			description: `Forced movement (${type}), rank ${rank}`,
 			data: {
 				type: type,
 				rank: rank
@@ -485,7 +464,6 @@ export class ActionEffects {
 	static moveToTargetSquare = (): ActionEffectModel => {
 		return {
 			id: 'moveSelfTo',
-			description: 'Move to square',
 			data: null,
 			children: []
 		};
@@ -494,7 +472,6 @@ export class ActionEffects {
 	static disarm = (): ActionEffectModel => {
 		return {
 			id: 'disarm',
-			description: 'Disarm',
 			data: null,
 			children: []
 		};
@@ -503,7 +480,6 @@ export class ActionEffects {
 	static steal = (): ActionEffectModel => {
 		return {
 			id: 'steal',
-			description: 'Steal',
 			data: null,
 			children: []
 		};
@@ -512,7 +488,6 @@ export class ActionEffects {
 	static createTerrain = (type: EncounterMapSquareType): ActionEffectModel => {
 		return {
 			id: 'createTerrain',
-			description: `Create ${type.toLowerCase()} terrain`,
 			data: type,
 			children: []
 		};
@@ -521,7 +496,6 @@ export class ActionEffects {
 	static addSquares = (): ActionEffectModel => {
 		return {
 			id: 'addSquares',
-			description: 'Create map squares',
 			data: null,
 			children: []
 		};
@@ -530,7 +504,6 @@ export class ActionEffects {
 	static removeSquares = (): ActionEffectModel => {
 		return {
 			id: 'removeSquares',
-			description: 'Destroy map squares',
 			data: null,
 			children: []
 		};
@@ -539,13 +512,12 @@ export class ActionEffects {
 	static destroyWalls = (): ActionEffectModel => {
 		return {
 			id: 'destroyWalls',
-			description: 'Destroy walls',
 			data: null,
 			children: []
 		};
 	};
 
-	static getDescription = (effect: ActionEffectModel): string => {
+	static getDescription = (effect: ActionEffectModel, combatant: CombatantModel | null, encounter: EncounterModel | null): string => {
 		switch (effect.id) {
 			case 'attack': {
 				const data = effect.data as {
@@ -555,7 +527,20 @@ export class ActionEffects {
 					skillBonus: number,
 					hit: ActionEffectModel[]
 				};
-				return (data.skillBonus === 0) ? `Attack: ${data.skill} vs ${data.trait}` : `Attack: ${data.skill} ${data.skillBonus >= 0 ? '+' : ''}${data.skillBonus} vs ${data.trait}`;
+				if (combatant) {
+					let rank = CombatantLogic.getSkillRank(combatant, [], data.skill);
+					if (encounter) {
+						rank = EncounterLogic.getSkillRank(encounter, combatant, data.skill);
+					}
+					if (data.skillBonus === 0) {
+						return `Attack: ${data.skill} (rank ${rank}) vs ${data.trait}`;
+					}
+					return `Attack: ${data.skill} ${data.skillBonus >= 0 ? '+' : ''}${data.skillBonus} (rank ${Math.max(rank + data.skillBonus, 0)}) vs ${data.trait}`;
+				}
+				if (data.skillBonus === 0) {
+					return `Attack: ${data.skill} vs ${data.trait}`;
+				}
+				return `Attack: ${data.skill} ${data.skillBonus >= 0 ? '+' : ''}${data.skillBonus} vs ${data.trait}`;
 			}
 			case 'toSelf': {
 				return 'To self';

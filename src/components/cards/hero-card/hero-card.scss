@@ -1,6 +1,13 @@
 .hero-card {
 	margin: 10px;
 
+	.color-box {
+		margin: 15px;
+		border: 2px solid rgb(220, 220, 220);
+		border-radius: 5px;
+		height: 12px;
+	}
+
 	.tags {
 		text-align: center;
 	}

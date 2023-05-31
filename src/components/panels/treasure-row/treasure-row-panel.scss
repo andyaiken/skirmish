@@ -8,7 +8,8 @@
 	border: 2px solid rgb(220, 220, 220);
 	border-radius: 10px;
 	background-color: rgb(255, 255, 255);
-	padding: 0 10px 0 15px;
+	padding: 0 10px;
+	overflow: hidden;
 
 	.token-container {
 		position: relative;

@@ -20,6 +20,7 @@ export interface CombatantModel {
 	size: number;
 	level: number;
 	xp: number;
+	color: string;
 
 	quirks: QuirkType[];
 	features: FeatureModel[];

@@ -65,6 +65,13 @@ export class Random {
 		return 0;
 	};
 
+	static randomColor = (min = 0, max = 256, rng: () => number = Math.random) => {
+		const r = Random.randomNumber(max - min, rng) + min;
+		const g = Random.randomNumber(max - min, rng) + min;
+		const b = Random.randomNumber(max - min, rng) + min;
+		return `rgb(${r}, ${g}, ${b})`;
+	};
+
 	static getSeededRNG = (seed: string) => {
 		const getHashes = (str: string) => {
 			let h1 = 1779033703;

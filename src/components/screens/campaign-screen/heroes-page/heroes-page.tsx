@@ -148,10 +148,10 @@ export class HeroesPage extends Component<Props, State> {
 			<div className='sidebar'>
 				<Text type={TextType.SubHeading}>Your Team</Text>
 				<Text>This page shows the heroes that you have recruited.</Text>
-				{boons !== null ? <hr /> : null}
-				{boons}
 				{levelUp !== null ? <hr /> : null}
 				{levelUp}
+				{boons !== null ? <hr /> : null}
+				{boons}
 				{blankHeroes !== null ? <hr /> : null}
 				{blankHeroes}
 			</div>

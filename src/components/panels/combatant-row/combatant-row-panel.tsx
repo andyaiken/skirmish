@@ -17,9 +17,9 @@ import { MiniToken } from '../encounter-map/mini-token/mini-token';
 import './combatant-row-panel.scss';
 
 interface Props {
+	mode: 'list' | 'initiative' | 'detailed' | 'header';
 	combatant: CombatantModel;
 	encounter: EncounterModel | null;
-	mode: 'list' | 'initiative' | 'detailed';
 	onClick: ((combatant: CombatantModel) => void) | null;
 	onDetails: ((combatant: CombatantModel) => void) | null;
 	onCancel: ((combatant: CombatantModel) => void) | null;
@@ -27,8 +27,8 @@ interface Props {
 
 export class CombatantRowPanel extends Component<Props> {
 	static defaultProps = {
-		encounter: null,
 		mode: 'list',
+		encounter: null,
 		onClick: null,
 		onDetails: null,
 		onCancel: null
@@ -94,6 +94,16 @@ export class CombatantRowPanel extends Component<Props> {
 		);
 	};
 
+	getHeaderInfoBelow = () => {
+		return (
+			<div className='info below'>
+				<div className='tags'>
+					{this.getCardTags(true)}
+				</div>
+			</div>
+		);
+	};
+
 	getCardTags = (includeQuirks: boolean) => {
 		const species = GameLogic.getSpecies(this.props.combatant.speciesID);
 		const role = GameLogic.getRole(this.props.combatant.roleID);
@@ -122,6 +132,10 @@ export class CombatantRowPanel extends Component<Props> {
 			return null;
 		}
 
+		if (this.props.combatant.combat.state === CombatantState.Dead) {
+			return null;
+		}
+
 		return (
 			<StatValue
 				orientation='compact'
@@ -133,6 +147,10 @@ export class CombatantRowPanel extends Component<Props> {
 
 	getWounds = () => {
 		if (this.props.combatant.quirks.includes(QuirkType.Drone)) {
+			return null;
+		}
+
+		if (this.props.combatant.combat.state === CombatantState.Dead) {
 			return null;
 		}
 
@@ -151,7 +169,9 @@ export class CombatantRowPanel extends Component<Props> {
 		try {
 			const clickable = this.props.onClick !== null ? 'clickable' : '';
 			const current = (this.props.mode === 'initiative') && this.props.combatant.combat.current ? 'current' : '';
-			const dimmed = !!this.props.encounter && ((this.props.combatant.combat.initiative === Number.MIN_VALUE) || (this.props.combatant.combat.state === CombatantState.Dead)) ? 'dimmed' : '';
+			const dimmed = !!this.props.encounter
+				&& (this.props.mode !== 'detailed')
+				&& ((this.props.combatant.combat.initiative === Number.MIN_VALUE) || (this.props.combatant.combat.state === CombatantState.Dead)) ? 'dimmed' : '';
 			const className = `combatant-row-panel ${this.props.mode} ${clickable} ${current} ${dimmed}`;
 
 			let infoBelow: JSX.Element | null = null;
@@ -167,6 +187,10 @@ export class CombatantRowPanel extends Component<Props> {
 				case 'detailed':
 					infoBelow = this.getDetailedInfoBelow();
 					infoEnd = this.getDetailedInfoEnd();
+					break;
+				case 'header':
+					infoBelow = this.getHeaderInfoBelow();
+					break;
 			}
 
 			let detailsBtn = null;

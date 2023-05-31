@@ -13,6 +13,7 @@ import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
 
 import { Collections } from '../../../utils/collections';
+import { Random } from '../../../utils/random';
 
 import { CharacterSheetPanel, CombatantRowPanel, HeroBuilderPanel } from '../../panels';
 import { Dialog, PlayingCard, Text, TextType } from '../../controls';
@@ -58,6 +59,8 @@ export class SetupScreen extends Component<Props, State> {
 		const heroes: CombatantModel[] = [];
 		while (heroes.length < 5) {
 			const hero = Factory.createCombatant(CombatantType.Hero);
+			hero.name = NameGenerator.generateName();
+			hero.color = Random.randomColor(20, 180);
 
 			const speciesID = Collections.draw(speciesDeck);
 			speciesDeck = speciesDeck.filter(s => s !== speciesID);
@@ -68,7 +71,6 @@ export class SetupScreen extends Component<Props, State> {
 
 			CombatantLogic.applyCombatantCards(hero, speciesID, roleID, backgroundID);
 			CombatantLogic.addItems(hero);
-			hero.name = NameGenerator.generateName();
 
 			heroes.push(hero);
 		}

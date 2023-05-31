@@ -31,7 +31,6 @@ export interface ActionTargetParameterModel extends ActionParameterModel {
 
 export interface ActionEffectModel {
 	id: string;
-	description: string;
 	data: unknown;
 	children: ActionEffectModel[];
 }

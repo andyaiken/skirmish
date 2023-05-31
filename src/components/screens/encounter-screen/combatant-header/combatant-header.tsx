@@ -1,19 +1,19 @@
 import { Component } from 'react';
-import { IconId } from '@tabler/icons-react';
 
 import { CombatantState } from '../../../../enums/combatant-state';
 import { CombatantType } from '../../../../enums/combatant-type';
 
-import { GameLogic } from '../../../../logic/game-logic';
-
 import type { CombatantModel } from '../../../../models/combatant';
+import type { EncounterModel } from '../../../../models/encounter';
 
-import { Tabs, Tag, Text, TextType } from '../../../controls';
+import { Tabs, Text, TextType } from '../../../controls';
+import { CombatantRowPanel } from '../../../panels';
 
 import './combatant-header.scss';
 
 interface Props {
 	combatant: CombatantModel;
+	encounter: EncounterModel;
 	developer: boolean;
 	tabID: string;
 	onSelectTab: (tabID: string) => void;
@@ -51,27 +51,9 @@ export class CombatantHeader extends Component<Props> {
 
 	render = () => {
 		try {
-			const species = GameLogic.getSpecies(this.props.combatant.speciesID);
-			const role = GameLogic.getRole(this.props.combatant.roleID);
-			const background = GameLogic.getBackground(this.props.combatant.backgroundID);
-
 			return (
 				<div className='combatant-header'>
-					<div className='header-row'>
-						<div className='name'>
-							<Text type={TextType.SubHeading}>{this.props.combatant.name}</Text>
-							<div className='tags'>
-								{species ? <Tag>{species.name}</Tag> : null}
-								{role ? <Tag>{role.name}</Tag> : null}
-								{background ? <Tag>{background.name}</Tag> : null}
-								<Tag>Level {this.props.combatant.level}</Tag>
-								{this.props.combatant.quirks.map((q, n) => <Tag key={n}>{q}</Tag>)}
-							</div>
-						</div>
-						<button className='icon-btn' onClick={() => this.props.showCharacterSheet(this.props.combatant)}>
-							<IconId />
-						</button>
-					</div>
+					<CombatantRowPanel mode='header' combatant={this.props.combatant} encounter={this.props.encounter} onDetails={this.props.showCharacterSheet} />
 					{
 						this.props.combatant.combat.state === CombatantState.Prone ?
 							<Text type={TextType.Information}><b>{this.props.combatant.name} is Prone.</b> Their skill ranks are halved and moving costs are doubled.</Text>

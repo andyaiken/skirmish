@@ -26,9 +26,9 @@ export class InitiativeListPanel extends Component<Props> {
 					return (
 						<CombatantRowPanel
 							key={combatant.id}
+							mode='initiative'
 							combatant={combatant}
 							encounter={this.props.encounter}
-							mode='initiative'
 							onClick={this.props.onSelect}
 						/>
 					);
@@ -40,9 +40,9 @@ export class InitiativeListPanel extends Component<Props> {
 					return (
 						<CombatantRowPanel
 							key={combatant.id}
+							mode='initiative'
 							combatant={combatant}
 							encounter={this.props.encounter}
-							mode='initiative'
 							onClick={this.props.onSelect}
 						/>
 					);
@@ -53,9 +53,9 @@ export class InitiativeListPanel extends Component<Props> {
 					return (
 						<CombatantRowPanel
 							key={combatant.id}
+							mode='initiative'
 							combatant={combatant}
 							encounter={this.props.encounter}
-							mode='initiative'
 							onClick={this.props.onSelect}
 						/>
 					);
@@ -66,9 +66,9 @@ export class InitiativeListPanel extends Component<Props> {
 					return (
 						<CombatantRowPanel
 							key={combatant.id}
+							mode='initiative'
 							combatant={combatant}
 							encounter={this.props.encounter}
-							mode='initiative'
 							onClick={this.props.onSelect}
 						/>
 					);
@@ -76,7 +76,7 @@ export class InitiativeListPanel extends Component<Props> {
 
 			let actedHeading = 'Acted';
 			if (currentEntries.length === 0) {
-				actedHeading = 'Waiting';
+				actedHeading = 'Combatants';
 			}
 
 			return (

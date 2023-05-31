@@ -45,7 +45,7 @@ export class ActionCard extends Component<Props> {
 
 			return (
 				<div>
-					<div className='effect'>{ActionEffects.getDescription(effect)}</div>
+					<div className='effect'>{ActionEffects.getDescription(effect, this.props.combatant, this.props.encounter)}</div>
 					{children ? <div className='indent'>{children}</div> : null}
 				</div>
 			);

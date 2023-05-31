@@ -317,7 +317,7 @@ export class CombatantAction extends Component<Props> {
 					<PlayingCard
 						key={action.id}
 						type={CardType.Action}
-						front={<ActionCard action={action} encounter={this.props.encounter} />}
+						front={<ActionCard action={action} combatant={this.props.combatant} encounter={this.props.encounter} />}
 						footer={CombatantLogic.getActionSource(this.props.combatant, action.id)}
 						footerType={CombatantLogic.getActionSourceType(this.props.combatant, action.id)}
 					/>
@@ -350,7 +350,7 @@ export class CombatantAction extends Component<Props> {
 					<PlayingCard
 						key={action.id}
 						type={CardType.Action}
-						front={<ActionCard action={action} encounter={this.props.encounter} />}
+						front={<ActionCard action={action} combatant={this.props.combatant} encounter={this.props.encounter} />}
 						footer={CombatantLogic.getActionSource(this.props.combatant, action.id)}
 						footerType={CombatantLogic.getActionSourceType(this.props.combatant, action.id)}
 					/>

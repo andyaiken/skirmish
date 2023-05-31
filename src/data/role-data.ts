@@ -334,6 +334,129 @@ export class RoleData {
 				]
 			},
 			{
+				id: 'role-centurion',
+				name: 'Centurion',
+				description: 'A master of the battlefield.',
+				traits: [
+					TraitType.Endurance
+				],
+				skills: [
+					SkillType.Weapon
+				],
+				proficiencies: [
+					ItemProficiencyType.MilitaryWeapons,
+					ItemProficiencyType.HeavyArmor,
+					ItemProficiencyType.Shields
+				],
+				features: [
+					FeatureLogic.createTraitFeature('centurion-feature-1', TraitType.Endurance, 1),
+					FeatureLogic.createSkillFeature('centurion-feature-2', SkillType.Weapon, 2),
+					FeatureLogic.createDamageCategoryBonusFeature('centurion-feature-3', DamageCategoryType.Physical, 1)
+				],
+				actions: [
+					{
+						id: 'centurion-action-1',
+						name: 'Charge',
+						prerequisites: [
+							ActionPrerequisites.meleeWeapon()
+						],
+						parameters: [
+							ActionWeaponParameters.melee(),
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+						],
+						effects: [
+							ActionEffects.forceMovement(MovementType.TowardsTarget, 2),
+							ActionEffects.attack({
+								weapon: true,
+								skill: SkillType.Weapon,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealWeaponDamage()
+								]
+							})
+						]
+					},
+					{
+						id: 'centurion-action-2',
+						name: 'Precise Attack',
+						prerequisites: [
+							ActionPrerequisites.meleeWeapon()
+						],
+						parameters: [
+							ActionWeaponParameters.melee(),
+							ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: true,
+								skill: SkillType.Weapon,
+								trait: TraitType.Speed,
+								skillBonus: 2,
+								hit: [
+									ActionEffects.dealWeaponDamage()
+								]
+							})
+						]
+					},
+					{
+						id: 'centurion-action-3',
+						name: 'Disarm',
+						prerequisites: [
+							ActionPrerequisites.meleeWeapon()
+						],
+						parameters: [
+							ActionWeaponParameters.melee(),
+							ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: true,
+								skill: SkillType.Weapon,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.disarm()
+								]
+							})
+						]
+					},
+					{
+						id: 'centurion-action-4',
+						name: 'Parrying Stance',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.self()
+						],
+						effects: [
+							ActionEffects.addCondition(ConditionLogic.createDamageResistanceCondition(TraitType.Endurance, 5, DamageType.All))
+						]
+					},
+					{
+						id: 'centurion-action-5',
+						name: 'Shield Bash',
+						prerequisites: [
+							ActionPrerequisites.shield()
+						],
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Weapon,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Impact, 3),
+									ActionEffects.forceMovement(MovementType.Push, 1)
+								]
+							})
+						]
+					}
+				]
+			},
+			{
 				id: 'role-dervish',
 				name: 'Dervish',
 				description: 'Acrobatic warriors who leap and spin around the battlefield.',
@@ -1506,129 +1629,6 @@ export class RoleData {
 						],
 						effects: [
 							ActionEffects.removeCondition(TraitType.Any)
-						]
-					}
-				]
-			},
-			{
-				id: 'role-soldier',
-				name: 'Soldier',
-				description: 'A master of the battlefield.',
-				traits: [
-					TraitType.Endurance
-				],
-				skills: [
-					SkillType.Weapon
-				],
-				proficiencies: [
-					ItemProficiencyType.MilitaryWeapons,
-					ItemProficiencyType.HeavyArmor,
-					ItemProficiencyType.Shields
-				],
-				features: [
-					FeatureLogic.createTraitFeature('soldier-feature-1', TraitType.Endurance, 1),
-					FeatureLogic.createSkillFeature('soldier-feature-2', SkillType.Weapon, 2),
-					FeatureLogic.createDamageCategoryBonusFeature('soldier-feature-3', DamageCategoryType.Physical, 1)
-				],
-				actions: [
-					{
-						id: 'soldier-action-1',
-						name: 'Charge',
-						prerequisites: [
-							ActionPrerequisites.meleeWeapon()
-						],
-						parameters: [
-							ActionWeaponParameters.melee(),
-							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
-						],
-						effects: [
-							ActionEffects.forceMovement(MovementType.TowardsTarget, 2),
-							ActionEffects.attack({
-								weapon: true,
-								skill: SkillType.Weapon,
-								trait: TraitType.Speed,
-								skillBonus: 0,
-								hit: [
-									ActionEffects.dealWeaponDamage()
-								]
-							})
-						]
-					},
-					{
-						id: 'soldier-action-2',
-						name: 'Precise Attack',
-						prerequisites: [
-							ActionPrerequisites.meleeWeapon()
-						],
-						parameters: [
-							ActionWeaponParameters.melee(),
-							ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
-						],
-						effects: [
-							ActionEffects.attack({
-								weapon: true,
-								skill: SkillType.Weapon,
-								trait: TraitType.Speed,
-								skillBonus: 2,
-								hit: [
-									ActionEffects.dealWeaponDamage()
-								]
-							})
-						]
-					},
-					{
-						id: 'soldier-action-3',
-						name: 'Disarm',
-						prerequisites: [
-							ActionPrerequisites.meleeWeapon()
-						],
-						parameters: [
-							ActionWeaponParameters.melee(),
-							ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
-						],
-						effects: [
-							ActionEffects.attack({
-								weapon: true,
-								skill: SkillType.Weapon,
-								trait: TraitType.Speed,
-								skillBonus: 0,
-								hit: [
-									ActionEffects.disarm()
-								]
-							})
-						]
-					},
-					{
-						id: 'soldier-action-4',
-						name: 'Parrying Stance',
-						prerequisites: [],
-						parameters: [
-							ActionTargetParameters.self()
-						],
-						effects: [
-							ActionEffects.addCondition(ConditionLogic.createDamageResistanceCondition(TraitType.Endurance, 5, DamageType.All))
-						]
-					},
-					{
-						id: 'soldier-action-5',
-						name: 'Shield Bash',
-						prerequisites: [
-							ActionPrerequisites.shield()
-						],
-						parameters: [
-							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
-						],
-						effects: [
-							ActionEffects.attack({
-								weapon: false,
-								skill: SkillType.Weapon,
-								trait: TraitType.Speed,
-								skillBonus: 0,
-								hit: [
-									ActionEffects.dealDamage(DamageType.Impact, 3),
-									ActionEffects.forceMovement(MovementType.Push, 1)
-								]
-							})
 						]
 					}
 				]

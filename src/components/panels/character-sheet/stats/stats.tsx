@@ -185,8 +185,27 @@ export class Stats extends Component<Props, State> {
 					{this.getSkillsSection()}
 					{this.getProficienciesSection()}
 					{this.getAurasSection()}
-					{ cutDown ? <DamagePanel label='Damage Bonuses' getValue={this.getDamageBonusValue} /> : null }
-					{ cutDown ? <DamagePanel label='Damage Resistances' getValue={this.getDamageResistanceValue} /> : null }
+					{cutDown ? <DamagePanel label='Damage Bonuses' getValue={this.getDamageBonusValue} /> : null}
+					{cutDown ? <DamagePanel label='Damage Resistances' getValue={this.getDamageResistanceValue} /> : null}
+					{cutDown ? <hr /> : null}
+					{
+						cutDown ?
+							<div className='decks'>
+								<PlayingCard
+									stack={true}
+									type={CardType.Feature}
+									front={<PlaceholderCard text={<div>Feature<br />Deck</div>} />}
+									onClick={() => this.setDeck('features')}
+								/>
+								<PlayingCard
+									stack={true}
+									type={CardType.Action}
+									front={<PlaceholderCard text={<div>Action<br />Deck</div>} />}
+									onClick={() => this.setDeck('actions')}
+								/>
+							</div>
+							: null
+					}
 				</div>
 			);
 
@@ -200,22 +219,18 @@ export class Stats extends Component<Props, State> {
 
 			const decksColumn = (
 				<div className='column decks'>
-					<CardList cards={[
-						<PlayingCard
-							key='features'
-							stack={true}
-							type={CardType.Feature}
-							front={<PlaceholderCard text={<div>Feature<br />Deck</div>} />}
-							onClick={() => this.setDeck('features')}
-						/>,
-						<PlayingCard
-							key='actions'
-							stack={true}
-							type={CardType.Action}
-							front={<PlaceholderCard text={<div>Action<br />Deck</div>} />}
-							onClick={() => this.setDeck('actions')}
-						/>
-					]} />
+					<PlayingCard
+						stack={true}
+						type={CardType.Feature}
+						front={<PlaceholderCard text={<div>Feature<br />Deck</div>} />}
+						onClick={() => this.setDeck('features')}
+					/>
+					<PlayingCard
+						stack={true}
+						type={CardType.Action}
+						front={<PlaceholderCard text={<div>Action<br />Deck</div>} />}
+						onClick={() => this.setDeck('actions')}
+					/>
 				</div>
 			);
 

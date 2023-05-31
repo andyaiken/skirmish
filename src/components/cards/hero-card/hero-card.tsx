@@ -7,6 +7,8 @@ import { GameLogic } from '../../../logic/game-logic';
 
 import type { CombatantModel } from '../../../models/combatant';
 
+import { Color } from '../../../utils/color';
+
 import { StatValue, Tag, Text, TextType } from '../../controls';
 import { ListItemPanel } from '../../panels';
 
@@ -18,6 +20,14 @@ interface Props {
 
 export class HeroCard extends Component<Props> {
 	render = () => {
+		let colorDark = this.props.hero.color;
+		let colorLight = this.props.hero.color;
+		const color = Color.parse(this.props.hero.color);
+		if (color) {
+			colorDark = Color.toString(Color.darken(color));
+			colorLight = Color.toString(Color.lighten(color));
+		}
+
 		let items = null;
 		const magicItems = this.props.hero.items.filter(i => i.magic);
 		if (magicItems.length > 0) {
@@ -36,7 +46,13 @@ export class HeroCard extends Component<Props> {
 		return (
 			<div className='hero-card'>
 				<Text type={TextType.SubHeading}>{this.props.hero.name || 'unnamed hero'}</Text>
-				<hr />
+				<div
+					className='color-box'
+					style={{
+						backgroundImage: `linear-gradient(135deg, ${colorLight}, ${this.props.hero.color})`,
+						borderColor: colorDark
+					}}
+				/>
 				<div className='tags'>
 					{species ? <Tag>{species.name}</Tag> : null}
 					{role ? <Tag>{role.name}</Tag> : null}

@@ -3,7 +3,7 @@ import { IconList, IconX } from '@tabler/icons-react';
 
 import type { LootPileModel } from '../../../models/encounter';
 
-import { Text, TextType } from '../../controls';
+import { Tag, Text, TextType } from '../../controls';
 import { LootToken } from '../encounter-map/loot-token/loot-token';
 
 import './treasure-row-panel.scss';
@@ -31,6 +31,22 @@ export class TreasureRowPanel extends Component<Props> {
 
 	render = () => {
 		try {
+			let name = '';
+			let tags: JSX.Element | null = null;
+			if (this.props.loot.items.length === 1) {
+				const item = this.props.loot.items[0];
+				name = item.name;
+				if (item.magic) {
+					tags = (
+						<div>
+							<Tag>Magical {item.baseItem}</Tag>
+						</div>
+					);
+				}
+			} else {
+				name = `${this.props.loot.items.length} items`;
+			}
+
 			return (
 				<div className='treasure-row-panel'>
 					<div className='token-container'>
@@ -45,7 +61,8 @@ export class TreasureRowPanel extends Component<Props> {
 						/>
 					</div>
 					<div className='name'>
-						<Text type={TextType.MinorHeading}>{this.props.loot.items.map(i => i.name).join(', ')}</Text>
+						<Text type={TextType.MinorHeading}>{name}</Text>
+						{tags}
 					</div>
 					<button className='icon-btn' onClick={e => this.onDetails(e)}>
 						<IconList />

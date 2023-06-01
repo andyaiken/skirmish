@@ -150,6 +150,10 @@ export class CombatantRowPanel extends Component<Props> {
 			return null;
 		}
 
+		if (this.props.combatant.combat.state === CombatantState.Unconscious) {
+			return null;
+		}
+
 		if (this.props.combatant.combat.state === CombatantState.Dead) {
 			return null;
 		}
@@ -171,7 +175,11 @@ export class CombatantRowPanel extends Component<Props> {
 			const current = (this.props.mode === 'initiative') && this.props.combatant.combat.current ? 'current' : '';
 			const dimmed = !!this.props.encounter
 				&& (this.props.mode !== 'detailed')
-				&& ((this.props.combatant.combat.initiative === Number.MIN_VALUE) || (this.props.combatant.combat.state === CombatantState.Dead)) ? 'dimmed' : '';
+				&& (
+					(this.props.combatant.combat.initiative === Number.MIN_VALUE)
+					|| (this.props.combatant.combat.state === CombatantState.Unconscious)
+					|| (this.props.combatant.combat.state === CombatantState.Dead)
+				) ? 'dimmed' : '';
 			const className = `combatant-row-panel ${this.props.mode} ${clickable} ${current} ${dimmed}`;
 
 			let infoBelow: JSX.Element | null = null;

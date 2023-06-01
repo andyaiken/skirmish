@@ -24,6 +24,7 @@ import pkg from '../../../../package.json';
 
 interface Props {
 	game: GameModel | null;
+	exceptions: string[];
 	rules: string;
 	developer: boolean;
 	endCampaign: () => void;
@@ -69,6 +70,10 @@ export class SettingsPanel extends Component<Props, State> {
 				{ id: 'options', display: 'Options' }
 			];
 
+			if (this.props.exceptions.length > 0) {
+				tabs.push({ id: 'exceptions', display: 'Exceptions' });
+			}
+
 			let content = null;
 			switch (this.state.selectedTab) {
 				case 'rules':
@@ -96,6 +101,13 @@ export class SettingsPanel extends Component<Props, State> {
 								endCampaign={this.props.endCampaign}
 								setDeveloperMode={this.props.setDeveloperMode}
 							/>
+						</div>
+					);
+					break;
+				case 'exceptions':
+					content = (
+						<div className='content'>
+							{this.props.exceptions.map((ex, n) => <Text key={n}>{ex}</Text>)}
 						</div>
 					);
 					break;

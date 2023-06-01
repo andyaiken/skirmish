@@ -61,6 +61,7 @@ interface State {
 	showHelp: string | null;
 	developer: boolean;
 	dialog: JSX.Element | null;
+	exceptions: string[];
 }
 
 export class Main extends Component<Props, State> {
@@ -111,7 +112,8 @@ export class Main extends Component<Props, State> {
 			screen: ScreenType.Landing,
 			showHelp: null,
 			developer: false,
-			dialog: null
+			dialog: null,
+			exceptions: []
 		};
 	}
 
@@ -135,6 +137,16 @@ export class Main extends Component<Props, State> {
 
 	componentDidUpdate = () => {
 		this.saveAfterDelay();
+	};
+
+	logException = (ex: unknown) => {
+		console.error(ex);
+
+		const exceptions = this.state.exceptions;
+		exceptions.push(`${ex}`);
+		this.setState({
+			exceptions: exceptions
+		});
 	};
 
 	setScreen = (screen: ScreenType) => {
@@ -162,8 +174,8 @@ export class Main extends Component<Props, State> {
 
 	save = () => {
 		try {
-			const json = JSON.stringify(this.state.game);
-			window.localStorage.setItem('game', json);
+			const game = JSON.stringify(this.state.game);
+			window.localStorage.setItem('game', game);
 		} catch (ex) {
 			console.error('Could not stringify data: ', ex);
 		}
@@ -174,50 +186,72 @@ export class Main extends Component<Props, State> {
 	//#region Campaign
 
 	startCampaign = () => {
-		this.setState({
-			game: Factory.createGame(),
-			screen: ScreenType.Setup
-		});
+		try {
+			const game = Factory.createGame();
+
+			this.setState({
+				game: game,
+				screen: ScreenType.Setup
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
 	};
 
 	beginCampaign = () => {
-		this.setState({
-			screen: ScreenType.Campaign
-		});
+		try {
+			this.setState({
+				screen: ScreenType.Campaign
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
 	};
 
 	continueCampaign = () => {
-		this.setState({
-			screen: !this.state.game?.encounter ? ScreenType.Campaign : ScreenType.Encounter
-		});
+		try {
+			this.setState({
+				screen: !this.state.game?.encounter ? ScreenType.Campaign : ScreenType.Encounter
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
 	};
 
 	restartCampaign = () => {
-		const game = this.state.game as GameModel;
-		game.heroes = [
-			Factory.createCombatant(CombatantType.Hero),
-			Factory.createCombatant(CombatantType.Hero),
-			Factory.createCombatant(CombatantType.Hero),
-			Factory.createCombatant(CombatantType.Hero),
-			Factory.createCombatant(CombatantType.Hero)
-		];
-		game.items = [];
-		game.boons = [];
-		game.money = 0;
+		try {
+			const game = this.state.game as GameModel;
+			game.heroes = [
+				Factory.createCombatant(CombatantType.Hero),
+				Factory.createCombatant(CombatantType.Hero),
+				Factory.createCombatant(CombatantType.Hero),
+				Factory.createCombatant(CombatantType.Hero),
+				Factory.createCombatant(CombatantType.Hero)
+			];
+			game.items = [];
+			game.boons = [];
+			game.money = 0;
 
-		this.setState({
-			game: game,
-			screen: ScreenType.Campaign,
-			dialog: null
-		});
+			this.setState({
+				game: game,
+				screen: ScreenType.Campaign,
+				dialog: null
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
 	};
 
 	endCampaign = () => {
-		this.setState({
-			game: null,
-			screen: ScreenType.Landing,
-			dialog: null
-		});
+		try {
+			this.setState({
+				game: null,
+				screen: ScreenType.Landing,
+				dialog: null
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
 	};
 
 	//#endregion
@@ -225,63 +259,83 @@ export class Main extends Component<Props, State> {
 	//#region Heroes page
 
 	addHero = (hero: CombatantModel) => {
-		const game = this.state.game as GameModel;
-		GameLogic.addHeroToGame(game, hero);
-		this.setState({
-			game: game
-		});
+		try {
+			const game = this.state.game as GameModel;
+			GameLogic.addHeroToGame(game, hero);
+			this.setState({
+				game: game
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
 	};
 
 	addHeroes = (heroes: CombatantModel[]) => {
-		const game = this.state.game as GameModel;
-		heroes.forEach(hero => {
-			GameLogic.addHeroToGame(game, hero);
-		});
-		this.setState({
-			game: game
-		});
+		try {
+			const game = this.state.game as GameModel;
+			heroes.forEach(hero => {
+				GameLogic.addHeroToGame(game, hero);
+			});
+			this.setState({
+				game: game
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
 	};
 
 	incrementXP = (hero: CombatantModel) => {
-		hero.xp += 1;
-		this.setState({
-			game: this.state.game
-		});
+		try {
+			hero.xp += 1;
+			this.setState({
+				game: this.state.game
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
 	};
 
 	levelUp = (feature: FeatureModel, hero: CombatantModel) => {
-		CombatantLogic.incrementCombatantLevel(hero, feature);
+		try {
+			CombatantLogic.incrementCombatantLevel(hero, feature);
 
-		this.setState({
-			game: this.state.game
-		});
+			this.setState({
+				game: this.state.game
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
 	};
 
 	redeemBoon = (boon: BoonModel, hero: CombatantModel | null) => {
-		const game = this.state.game as GameModel;
-		game.boons = game.boons.filter(b => b.id !== boon.id);
+		try {
+			const game = this.state.game as GameModel;
+			game.boons = game.boons.filter(b => b.id !== boon.id);
 
-		switch (boon.type) {
-			case BoonType.ExtraHero:
-				GameLogic.addHeroToGame(game, Factory.createCombatant(CombatantType.Hero));
-				break;
-			case BoonType.ExtraXP:
-				(hero as CombatantModel).xp += boon.data as number;
-				break;
-			case BoonType.LevelUp:
-				(hero as CombatantModel).xp += (hero as CombatantModel).level;
-				break;
-			case BoonType.MagicItem:
-				game.items.push(boon.data as ItemModel);
-				break;
-			case BoonType.Money:
-				game.money += boon.data as number;
-				break;
+			switch (boon.type) {
+				case BoonType.ExtraHero:
+					GameLogic.addHeroToGame(game, Factory.createCombatant(CombatantType.Hero));
+					break;
+				case BoonType.ExtraXP:
+					(hero as CombatantModel).xp += boon.data as number;
+					break;
+				case BoonType.LevelUp:
+					(hero as CombatantModel).xp += (hero as CombatantModel).level;
+					break;
+				case BoonType.MagicItem:
+					game.items.push(boon.data as ItemModel);
+					break;
+				case BoonType.Money:
+					game.money += boon.data as number;
+					break;
+			}
+
+			this.setState({
+				game: game
+			});
+		} catch (ex) {
+			this.logException(ex);
 		}
-
-		this.setState({
-			game: game
-		});
 	};
 
 	//#endregion
@@ -289,45 +343,57 @@ export class Main extends Component<Props, State> {
 	//#region Items
 
 	buyItem = (item: ItemModel) => {
-		const game = this.state.game as GameModel;
+		try {
+			const game = this.state.game as GameModel;
 
-		game.items.push(item);
-		game.money = Math.max(0, game.money - 100);
+			game.items.push(item);
+			game.money = Math.max(0, game.money - 100);
 
-		this.setState({
-			game: game
-		});
+			this.setState({
+				game: game
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
 	};
 
 	sellItem = (item: ItemModel, all: boolean) => {
-		const sell = (item: ItemModel) => {
-			game.items = game.items.filter(i => i !== item);
-			game.money += item.magic ? 50 : 1;
-		};
+		try {
+			const sell = (item: ItemModel) => {
+				game.items = game.items.filter(i => i !== item);
+				game.money += item.magic ? 50 : 1;
+			};
 
-		const game = this.state.game as GameModel;
+			const game = this.state.game as GameModel;
 
-		if (all) {
-			game.items
-				.filter(i => i.name === item.name)
-				.forEach(i => sell(i));
-		} else {
-			sell(item);
+			if (all) {
+				game.items
+					.filter(i => i.name === item.name)
+					.forEach(i => sell(i));
+			} else {
+				sell(item);
+			}
+
+			this.setState({
+				game: game
+			});
+		} catch (ex) {
+			this.logException(ex);
 		}
-
-		this.setState({
-			game: game
-		});
 	};
 
 	addMoney = () => {
-		const game = this.state.game as GameModel;
+		try {
+			const game = this.state.game as GameModel;
 
-		game.money += 100;
+			game.money += 100;
 
-		this.setState({
-			game: game
-		});
+			this.setState({
+				game: game
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
 	};
 
 	//#endregion
@@ -335,28 +401,36 @@ export class Main extends Component<Props, State> {
 	//#region Campaign map page
 
 	startEncounter = (region: RegionModel, heroes: CombatantModel[]) => {
-		if (this.state.game) {
-			heroes.forEach(h => CombatantLogic.resetCombatant(h));
-			const game = this.state.game;
-			game.encounter = EncounterGenerator.createEncounter(region, heroes);
-			this.setState({
-				game: game,
-				screen: ScreenType.Encounter
-			});
+		try {
+			if (this.state.game) {
+				heroes.forEach(h => CombatantLogic.resetCombatant(h));
+				const game = this.state.game;
+				game.encounter = EncounterGenerator.createEncounter(region, heroes);
+				this.setState({
+					game: game,
+					screen: ScreenType.Encounter
+				});
+			}
+		} catch (ex) {
+			this.logException(ex);
 		}
 	};
 
 	conquer = (region: RegionModel) => {
-		if (this.state.game) {
-			const game = this.state.game;
+		try {
+			if (this.state.game) {
+				const game = this.state.game;
 
-			CampaignMapLogic.removeRegion(game.map, region);
-			GameLogic.addHeroToGame(game, Factory.createCombatant(CombatantType.Hero));
-			game.boons.push(region.boon);
+				CampaignMapLogic.removeRegion(game.map, region);
+				GameLogic.addHeroToGame(game, Factory.createCombatant(CombatantType.Hero));
+				game.boons.push(region.boon);
 
-			this.setState({
-				game: game
-			});
+				this.setState({
+					game: game
+				});
+			}
+		} catch (ex) {
+			this.logException(ex);
 		}
 	};
 
@@ -365,340 +439,416 @@ export class Main extends Component<Props, State> {
 	//#region Encounter page
 
 	rotateMap = (encounter: EncounterModel, dir: 'l' | 'r') => {
-		const move = (position: { x: number, y: number }, size: number): { x: number, y: number } => {
-			const result = {
-				x: position.x,
-				y: position.y
+		try {
+			const move = (position: { x: number, y: number }, size: number): { x: number, y: number } => {
+				const result = {
+					x: position.x,
+					y: position.y
+				};
+
+				switch (dir) {
+					case 'l':
+						result.x = position.y;
+						result.y = -position.x - size;
+						break;
+					case 'r':
+						result.x = -position.y - size;
+						result.y = position.x;
+						break;
+				}
+
+				return result;
 			};
 
-			switch (dir) {
-				case 'l':
-					result.x = position.y;
-					result.y = -position.x - size;
-					break;
-				case 'r':
-					result.x = -position.y - size;
-					result.y = position.x;
-					break;
-			}
-
-			return result;
-		};
-
-		encounter.mapSquares.forEach(sq => {
-			const pos = move(sq, 1);
-			sq.x = pos.x;
-			sq.y = pos.y;
-		});
-		encounter.combatants.forEach(c => {
-			const pos = move(c.combat.position, c.size);
-			c.combat.position.x = pos.x;
-			c.combat.position.y = pos.y;
-
-			c.combat.trail.forEach(step => {
-				const pos = move(step, c.size);
-				step.x = pos.x;
-				step.y = pos.y;
+			encounter.mapSquares.forEach(sq => {
+				const pos = move(sq, 1);
+				sq.x = pos.x;
+				sq.y = pos.y;
 			});
-		});
-		encounter.loot.forEach(lp => {
-			const pos = move(lp.position, 1);
-			lp.position.x = pos.x;
-			lp.position.y = pos.y;
-		});
-		EncounterMapLogic.visibilityCache = {};
+			encounter.combatants.forEach(c => {
+				const pos = move(c.combat.position, c.size);
+				c.combat.position.x = pos.x;
+				c.combat.position.y = pos.y;
 
-		this.setState({
-			game: this.state.game
-		});
+				c.combat.trail.forEach(step => {
+					const pos = move(step, c.size);
+					step.x = pos.x;
+					step.y = pos.y;
+				});
+			});
+			encounter.loot.forEach(lp => {
+				const pos = move(lp.position, 1);
+				lp.position.x = pos.x;
+				lp.position.y = pos.y;
+			});
+			EncounterMapLogic.visibilityCache = {};
+
+			this.setState({
+				game: this.state.game
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
 	};
 
 	rollInitiative = (encounter: EncounterModel) => {
-		EncounterLogic.rollInitiative(encounter);
+		try {
+			EncounterLogic.rollInitiative(encounter);
 
-		const acting = EncounterLogic.getActiveCombatants(encounter);
-		const current = acting.length > 0 ? acting[0] : null;
-		if (current) {
-			EncounterLogic.startOfTurn(encounter, current);
+			const acting = EncounterLogic.getActiveCombatants(encounter);
+			const current = acting.length > 0 ? acting[0] : null;
+			if (current) {
+				EncounterLogic.startOfTurn(encounter, current);
+			}
+
+			this.setState({
+				game: this.state.game
+			});
+		} catch (ex) {
+			this.logException(ex);
 		}
-
-		this.setState({
-			game: this.state.game
-		});
 	};
 
 	move = (encounter: EncounterModel, combatant: CombatantModel, dir: string, cost: number) => {
-		EncounterLogic.move(encounter, combatant, dir, cost);
+		try {
+			EncounterLogic.move(encounter, combatant, dir, cost);
 
-		this.setState({
-			game: this.state.game
-		});
+			this.setState({
+				game: this.state.game
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
 	};
 
 	addMovement = (encounter:EncounterModel, combatant: CombatantModel, value: number) => {
-		combatant.combat.movement += value;
+		try {
+			combatant.combat.movement += value;
 
-		this.setState({
-			game: this.state.game
-		});
+			this.setState({
+				game: this.state.game
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
 	};
 
 	inspire = (encounter: EncounterModel, combatant: CombatantModel) => {
-		EncounterLogic.inspire(encounter, combatant);
+		try {
+			EncounterLogic.inspire(encounter, combatant);
 
-		this.setState({
-			game: this.state.game
-		});
+			this.setState({
+				game: this.state.game
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
 	};
 
 	scan = (encounter: EncounterModel, combatant: CombatantModel) => {
-		EncounterLogic.scan(encounter, combatant);
+		try {
+			EncounterLogic.scan(encounter, combatant);
 
-		this.setState({
-			game: this.state.game
-		});
+			this.setState({
+				game: this.state.game
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
 	};
 
 	hide = (encounter: EncounterModel, combatant: CombatantModel) => {
-		EncounterLogic.hide(encounter, combatant);
+		try {
+			EncounterLogic.hide(encounter, combatant);
 
-		this.setState({
-			game: this.state.game
-		});
+			this.setState({
+				game: this.state.game
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
 	};
 
 	drawActions = (encounter: EncounterModel, combatant: CombatantModel) => {
-		EncounterLogic.drawActions(encounter, combatant);
+		try {
+			EncounterLogic.drawActions(encounter, combatant);
 
-		this.setState({
-			game: this.state.game
-		});
+			this.setState({
+				game: this.state.game
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
 	};
 
 	selectAction = (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => {
-		EncounterLogic.selectAction(encounter, combatant, action);
+		try {
+			EncounterLogic.selectAction(encounter, combatant, action);
 
-		this.setState({
-			game: this.state.game
-		});
+			this.setState({
+				game: this.state.game
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
 	};
 
 	deselectAction = (encounter: EncounterModel, combatant: CombatantModel) => {
-		EncounterLogic.deselectAction(encounter, combatant);
+		try {
+			EncounterLogic.deselectAction(encounter, combatant);
 
-		this.setState({
-			game: this.state.game
-		});
+			this.setState({
+				game: this.state.game
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
 	};
 
 	setActionParameterValue = (parameter: ActionParameterModel, value: unknown) => {
-		parameter.value = value;
+		try {
+			parameter.value = value;
 
-		this.setState({
-			game: this.state.game
-		});
+			this.setState({
+				game: this.state.game
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
 	};
 
 	runAction = (encounter: EncounterModel, combatant: CombatantModel) => {
-		EncounterLogic.runAction(encounter, combatant);
+		try {
+			EncounterLogic.runAction(encounter, combatant);
 
-		this.setState({
-			game: this.state.game
-		});
+			this.setState({
+				game: this.state.game
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
 	};
 
 	endTurn = (encounter: EncounterModel) => {
-		EncounterLogic.endTurn(encounter);
+		try {
+			EncounterLogic.endTurn(encounter);
 
-		this.setState({
-			game: this.state.game
-		});
+			this.setState({
+				game: this.state.game
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
 	};
 
 	performIntents = (encounter: EncounterModel, combatant: CombatantModel) => {
-		IntentsLogic.performIntents(encounter, combatant);
+		try {
+			IntentsLogic.performIntents(encounter, combatant);
 
-		this.setState({
-			game: this.state.game
-		});
+			this.setState({
+				game: this.state.game
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
 	};
 
 	equipItem = (item: ItemModel, combatant: CombatantModel) => {
-		const game = this.state.game as GameModel;
+		try {
+			const game = this.state.game as GameModel;
 
-		if (game.encounter) {
-			EncounterLogic.equipItem(game.encounter, combatant, item);
-		} else {
-			game.items = game.items.filter(i => i.id !== item.id);
-			combatant.carried = combatant.carried.filter(i => i.id !== item.id);
-			combatant.items.push(item);
+			if (game.encounter) {
+				EncounterLogic.equipItem(game.encounter, combatant, item);
+			} else {
+				game.items = game.items.filter(i => i.id !== item.id);
+				combatant.carried = combatant.carried.filter(i => i.id !== item.id);
+				combatant.items.push(item);
+			}
+
+			this.setState({
+				game: game
+			});
+		} catch (ex) {
+			this.logException(ex);
 		}
-
-		this.setState({
-			game: game
-		});
 	};
 
 	unequipItem = (item: ItemModel, combatant: CombatantModel) => {
-		const game = this.state.game as GameModel;
+		try {
+			const game = this.state.game as GameModel;
 
-		if (game.encounter) {
-			EncounterLogic.unequipItem(game.encounter, combatant, item);
-		} else {
-			combatant.items = combatant.items.filter(i => i.id !== item.id);
-			combatant.carried.push(item);
+			if (game.encounter) {
+				EncounterLogic.unequipItem(game.encounter, combatant, item);
+			} else {
+				combatant.items = combatant.items.filter(i => i.id !== item.id);
+				combatant.carried.push(item);
+			}
+
+			this.setState({
+				game: game
+			});
+		} catch (ex) {
+			this.logException(ex);
 		}
-
-		this.setState({
-			game: game
-		});
 	};
 
 	pickUpItem = (item: ItemModel, combatant: CombatantModel) => {
-		const game = this.state.game as GameModel;
+		try {
+			const game = this.state.game as GameModel;
 
-		if (game.encounter) {
-			EncounterLogic.pickUpItem(game.encounter, combatant, item);
-		} else {
-			game.items = game.items.filter(i => i.id !== item.id);
-			if (CombatantLogic.canEquip(combatant, item)) {
-				combatant.items.push(item);
+			if (game.encounter) {
+				EncounterLogic.pickUpItem(game.encounter, combatant, item);
 			} else {
-				combatant.carried.push(item);
+				game.items = game.items.filter(i => i.id !== item.id);
+				if (CombatantLogic.canEquip(combatant, item)) {
+					combatant.items.push(item);
+				} else {
+					combatant.carried.push(item);
+				}
 			}
-		}
 
-		this.setState({
-			game: game
-		});
+			this.setState({
+				game: game
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
 	};
 
 	dropItem = (item: ItemModel, combatant: CombatantModel) => {
-		const game = this.state.game as GameModel;
+		try {
+			const game = this.state.game as GameModel;
 
-		if (game.encounter) {
-			EncounterLogic.dropItem(game.encounter, combatant, item);
-		} else {
-			combatant.items = combatant.items.filter(i => i.id !== item.id);
-			combatant.carried = combatant.carried.filter(i => i.id !== item.id);
+			if (game.encounter) {
+				EncounterLogic.dropItem(game.encounter, combatant, item);
+			} else {
+				combatant.items = combatant.items.filter(i => i.id !== item.id);
+				combatant.carried = combatant.carried.filter(i => i.id !== item.id);
 
-			game.items.push(item);
+				game.items.push(item);
+			}
+
+			this.setState({
+				game: game
+			});
+		} catch (ex) {
+			this.logException(ex);
 		}
-
-		this.setState({
-			game: game
-		});
 	};
 
 	finishEncounter = (state: EncounterState) => {
-		const game = this.state.game;
-		if (!game) {
-			return;
-		}
+		try {
+			const game = this.state.game;
+			if (!game) {
+				return;
+			}
 
-		const encounter = game.encounter;
-		if (!encounter) {
-			return;
-		}
+			const encounter = game.encounter;
+			if (!encounter) {
+				return;
+			}
 
-		const region = game.map.regions.find(r => r.id === encounter.regionID);
-		if (!region) {
-			return;
-		}
+			const region = game.map.regions.find(r => r.id === encounter.regionID);
+			if (!region) {
+				return;
+			}
 
-		let dialogContent = null;
-		switch (state) {
-			case EncounterState.Victory: {
-				// Remove dead heroes from the game
-				const deadHeroes = encounter.combatants.filter(c => c.type === CombatantType.Hero).filter(h => h.combat.state === CombatantState.Dead);
-				game.heroes = game.heroes.filter(h => !deadHeroes.includes(h));
-				// Get equipment from loot piles, add to game items
-				encounter.loot.forEach(lp => game.items.push(...lp.items));
-				// Increment XP for surviving heroes
-				encounter.combatants
-					.filter(c => c.type === CombatantType.Hero)
-					.filter(h => (h.combat.state === CombatantState.Standing) || (h.combat.state === CombatantState.Prone))
-					.forEach(h => h.xp += 1);
-				// Remove the first encounter for this region
-				region.encounters.splice(0, 1);
-				if (region.encounters.length === 0) {
-					// Conquer the region
-					CampaignMapLogic.removeRegion(game.map, region);
-					if (game.map.squares.every(sq => sq.regionID === '')) {
-						// Show message
-						dialogContent = (
-							<div>
-								<Text type={TextType.Heading}>Victory</Text>
-								<Text type={TextType.SubHeading}>You control the island!</Text>
-								<Text><b>Congratulations!</b> There are no more regions to conquer.</Text>
-								<button onClick={() => this.endCampaign()}>Start Again</button>
-							</div>
-						);
-					} else {
-						// Add a new level 1 hero
-						GameLogic.addHeroToGame(game, Factory.createCombatant(CombatantType.Hero));
-						// Add the region's boon
-						game.boons.push(region.boon);
-						// Show message
-						dialogContent = (
-							<div>
-								<Text type={TextType.Heading}>Victory</Text>
-								<Text type={TextType.SubHeading}>You have taken control of {region.name}!</Text>
-								<Text>You can recruit a new hero, and you have earned a reward:</Text>
-								<div className='card-row'>
-									<PlayingCard type={CardType.Boon} front={<BoonCard boon={region.boon} />} footer='Reward' />
+			let dialogContent = null;
+			switch (state) {
+				case EncounterState.Victory: {
+					// Remove dead heroes from the game
+					const deadHeroes = encounter.combatants.filter(c => c.type === CombatantType.Hero).filter(h => h.combat.state === CombatantState.Dead);
+					game.heroes = game.heroes.filter(h => !deadHeroes.includes(h));
+					// Get equipment from loot piles, add to game items
+					encounter.loot.forEach(lp => game.items.push(...lp.items));
+					// Increment XP for surviving heroes
+					encounter.combatants
+						.filter(c => c.type === CombatantType.Hero)
+						.filter(h => (h.combat.state === CombatantState.Standing) || (h.combat.state === CombatantState.Prone))
+						.forEach(h => h.xp += 1);
+					// Remove the first encounter for this region
+					region.encounters.splice(0, 1);
+					if (region.encounters.length === 0) {
+						// Conquer the region
+						CampaignMapLogic.removeRegion(game.map, region);
+						if (game.map.squares.every(sq => sq.regionID === '')) {
+							// Show message
+							dialogContent = (
+								<div>
+									<Text type={TextType.Heading}>Victory</Text>
+									<Text type={TextType.SubHeading}>You control the island!</Text>
+									<Text><b>Congratulations!</b> There are no more regions to conquer.</Text>
+									<button onClick={() => this.endCampaign()}>Start Again</button>
 								</div>
-								<Text>Any heroes who died have been lost.</Text>
-								<button onClick={() => this.setScreen(ScreenType.Campaign)}>OK</button>
+							);
+						} else {
+							// Add a new level 1 hero
+							GameLogic.addHeroToGame(game, Factory.createCombatant(CombatantType.Hero));
+							// Add the region's boon
+							game.boons.push(region.boon);
+							// Show message
+							dialogContent = (
+								<div>
+									<Text type={TextType.Heading}>Victory</Text>
+									<Text type={TextType.SubHeading}>You have taken control of {region.name}!</Text>
+									<Text>You can recruit a new hero, and you have earned a reward:</Text>
+									<div className='card-row'>
+										<PlayingCard type={CardType.Boon} front={<BoonCard boon={region.boon} />} footer='Reward' />
+									</div>
+									<Text>Any heroes who died have been lost.</Text>
+									<button onClick={() => this.setScreen(ScreenType.Campaign)}>OK</button>
+								</div>
+							);
+						}
+					}
+					// Clear the current encounter
+					game.encounter = null;
+					break;
+				}
+				case EncounterState.Defeat: {
+					// Remove all participating heroes from the game
+					const heroes = encounter.combatants.filter(c => c.type === CombatantType.Hero);
+					game.heroes = game.heroes.filter(h => !heroes.includes(h));
+					// Clear the current encounter
+					game.encounter = null;
+					if ((game.heroes.length === 0) && (!game.boons.some(b => b.type === BoonType.ExtraHero))) {
+						// Show message
+						dialogContent = (
+							<div>
+								<Text type={TextType.Heading}>Defeat</Text>
+								<Text type={TextType.SubHeading}>You lost the encounter in {region.name}, and have no more heroes.</Text>
+								<Text>You can either continue with a new group of heroes, or abandon this campaign.</Text>
+								<div className='card-row'>
+									<PlayingCard front={<PlaceholderCard text='Continue' />} onClick={() => this.restartCampaign()} />
+									<PlayingCard front={<PlaceholderCard text='Abandon' />} onClick={() => this.endCampaign()} />
+								</div>
 							</div>
 						);
 					}
+					break;
 				}
-				// Clear the current encounter
-				game.encounter = null;
-				break;
-			}
-			case EncounterState.Defeat: {
-				// Remove all participating heroes from the game
-				const heroes = encounter.combatants.filter(c => c.type === CombatantType.Hero);
-				game.heroes = game.heroes.filter(h => !heroes.includes(h));
-				// Clear the current encounter
-				game.encounter = null;
-				if ((game.heroes.length === 0) && (!game.boons.some(b => b.type === BoonType.ExtraHero))) {
-					// Show message
-					dialogContent = (
-						<div>
-							<Text type={TextType.Heading}>Defeat</Text>
-							<Text type={TextType.SubHeading}>You lost the encounter in {region.name}, and have no more heroes.</Text>
-							<Text>You can either continue with a new group of heroes, or abandon this campaign.</Text>
-							<div className='card-row'>
-								<PlayingCard front={<PlaceholderCard text='Continue' />} onClick={() => this.restartCampaign()} />
-								<PlayingCard front={<PlaceholderCard text='Abandon' />} onClick={() => this.endCampaign()} />
-							</div>
-						</div>
-					);
+				case EncounterState.Retreat: {
+					// Remove fallen heroes from the game
+					const fallenHeroes = encounter.combatants
+						.filter(c => c.type === CombatantType.Hero)
+						.filter(h => (h.combat.state === CombatantState.Dead) || (h.combat.state === CombatantState.Unconscious));
+					game.heroes = game.heroes.filter(h => !fallenHeroes.includes(h));
+					// Clear the current encounter
+					game.encounter = null;
+					break;
 				}
-				break;
 			}
-			case EncounterState.Retreat: {
-				// Remove fallen heroes from the game
-				const fallenHeroes = encounter.combatants
-					.filter(c => c.type === CombatantType.Hero)
-					.filter(h => (h.combat.state === CombatantState.Dead) || (h.combat.state === CombatantState.Unconscious));
-				game.heroes = game.heroes.filter(h => !fallenHeroes.includes(h));
-				// Clear the current encounter
-				game.encounter = null;
-				break;
-			}
+
+			game.heroes.forEach(h => CombatantLogic.resetCombatant(h));
+
+			this.setState({
+				screen: ScreenType.Campaign,
+				game: game,
+				dialog: dialogContent
+			});
+		} catch (ex) {
+			this.logException(ex);
 		}
-
-		game.heroes.forEach(h => CombatantLogic.resetCombatant(h));
-
-		this.setState({
-			screen: ScreenType.Campaign,
-			game: game,
-			dialog: dialogContent
-		});
 	};
 
 	//#endregion
@@ -736,6 +886,7 @@ export class Main extends Component<Props, State> {
 					<CampaignScreen
 						game={this.state.game as GameModel}
 						developer={this.state.developer}
+						hasExceptions={this.state.exceptions.length > 0}
 						showHelp={this.showHelp}
 						addHero={this.addHero}
 						incrementXP={this.incrementXP}
@@ -758,6 +909,7 @@ export class Main extends Component<Props, State> {
 						encounter={this.state.game?.encounter as EncounterModel}
 						game={this.state.game as GameModel}
 						developer={this.state.developer}
+						hasExceptions={this.state.exceptions.length > 0}
 						showHelp={this.showHelp}
 						rotateMap={this.rotateMap}
 						rollInitiative={this.rollInitiative}
@@ -781,12 +933,6 @@ export class Main extends Component<Props, State> {
 					/>
 				);
 		}
-
-		return (
-			<div>
-				{this.state.screen}
-			</div>
-		);
 	};
 
 	render = () => {
@@ -798,6 +944,7 @@ export class Main extends Component<Props, State> {
 						content={
 							<SettingsPanel
 								game={this.state.game}
+								exceptions={this.state.exceptions}
 								rules={rules[this.state.showHelp]}
 								developer={this.state.developer}
 								endCampaign={this.endCampaign}

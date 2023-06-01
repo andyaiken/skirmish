@@ -1,5 +1,5 @@
+import { IconInfoCircle, IconInfoCircleFilled } from '@tabler/icons-react';
 import { Component } from 'react';
-import { IconInfoCircle } from '@tabler/icons-react';
 
 import type { BoonModel } from '../../../models/boon';
 import type { CombatantModel } from '../../../models/combatant';
@@ -25,6 +25,7 @@ enum CampaignScreenType {
 interface Props {
 	game: GameModel;
 	developer: boolean;
+	hasExceptions: boolean;
 	showHelp: (file: string) => void;
 	addHero: (hero: CombatantModel) => void;
 	incrementXP: (hero: CombatantModel) => void;
@@ -117,7 +118,7 @@ export class CampaignScreen extends Component<Props, State> {
 						<div className='logo-text inset-text'>Skirmish</div>
 						<Selector options={options} selectedID={this.state.screen} onSelect={id => this.setScreen(id as CampaignScreenType)} />
 						<button className='icon-btn' title='Information' onClick={() => this.props.showHelp(this.state.screen)}>
-							<IconInfoCircle />
+							{this.props.developer && this.props.hasExceptions ? <IconInfoCircleFilled /> : <IconInfoCircle />}
 						</button>
 					</div>
 					<div className='campaign-content'>

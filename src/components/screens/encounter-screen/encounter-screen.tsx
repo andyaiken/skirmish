@@ -1,4 +1,4 @@
-import { IconArrowBackUpDouble, IconConfetti, IconInfoCircle, IconRotate2, IconRotateClockwise2, IconZoomIn, IconZoomOut } from '@tabler/icons-react';
+import { IconArrowBackUpDouble, IconConfetti, IconInfoCircle, IconInfoCircleFilled, IconRotate2, IconRotateClockwise2, IconZoomIn, IconZoomOut } from '@tabler/icons-react';
 import { Component } from 'react';
 
 import { ActionTargetType } from '../../../enums/action-target-type';
@@ -32,6 +32,7 @@ interface Props {
 	encounter: EncounterModel;
 	game: GameModel;
 	developer: boolean;
+	hasExceptions: boolean;
 	showHelp: (file: string) => void;
 	rotateMap: (encounter: EncounterModel, dir: 'l' | 'r') => void;
 	rollInitiative: (encounter: EncounterModel) => void;
@@ -479,7 +480,7 @@ export class EncounterScreen extends Component<Props, State> {
 				<div className='separator' />
 				<div className='section'>
 					<button className='icon-btn' title='Information' onClick={() => this.props.showHelp('encounters')}>
-						<IconInfoCircle />
+						{this.props.developer && this.props.hasExceptions ? <IconInfoCircleFilled /> : <IconInfoCircle />}
 					</button>
 				</div>
 			</div>

@@ -14,7 +14,6 @@ interface Props {
 	encounter: EncounterModel;
 	selectedIDs: string[];
 	onSelect: (combatant: CombatantModel) => void;
-	// onDetails: (combatant: CombatantModel) => void;
 }
 
 export class InitiativeListPanel extends Component<Props> {
@@ -30,6 +29,7 @@ export class InitiativeListPanel extends Component<Props> {
 							combatant={combatant}
 							encounter={this.props.encounter}
 							onClick={this.props.onSelect}
+							onTokenClick={this.props.onSelect}
 						/>
 					);
 				});
@@ -44,6 +44,7 @@ export class InitiativeListPanel extends Component<Props> {
 							combatant={combatant}
 							encounter={this.props.encounter}
 							onClick={this.props.onSelect}
+							onTokenClick={this.props.onSelect}
 						/>
 					);
 				});
@@ -57,6 +58,7 @@ export class InitiativeListPanel extends Component<Props> {
 							combatant={combatant}
 							encounter={this.props.encounter}
 							onClick={this.props.onSelect}
+							onTokenClick={this.props.onSelect}
 						/>
 					);
 				});
@@ -70,6 +72,7 @@ export class InitiativeListPanel extends Component<Props> {
 							combatant={combatant}
 							encounter={this.props.encounter}
 							onClick={this.props.onSelect}
+							onTokenClick={this.props.onSelect}
 						/>
 					);
 				});

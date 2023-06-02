@@ -794,6 +794,16 @@ export class EncounterLogic {
 		return auras;
 	};
 
+	static getPausedEncounter = (encounter: EncounterModel) => {
+		return {
+			regionID: encounter.regionID,
+			round: 0,
+			combatants: encounter.combatants.filter(c => c.type === CombatantType.Monster),
+			loot: encounter.loot,
+			mapSquares: encounter.mapSquares
+		};
+	};
+
 	///////////////////////////////////////////////////////////////////////////
 
 	static getActiveCombatants = (encounter: EncounterModel) => {

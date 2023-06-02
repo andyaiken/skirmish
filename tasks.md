@@ -6,21 +6,12 @@
 
 -----------------------------------------------------------------------------------------
 
-# Priority
-
-## Character Sheet
-* Make it so that we can see a hero character sheet without having to level up
-
-## Encounters
-* When you don’t win an encounter, save its state so you can try again from that point with a new team
-
------------------------------------------------------------------------------------------
-
 # Improvements / Enhancements
 
 ## Character Sheet
 * Show ranks as filled circles
 * Show the XP required as a gauge
+* Make it so that we can see a hero character sheet without having to level up
 
 ## Features
 * Mountebank and Pixie should have an attack redirection aura
@@ -53,7 +44,7 @@
 
 ## Potions
 * Could be found on the map (as a loot pile)
-* An extra section in the items page
+* An extra section in the items page - 'Potions'
 * Drink
   * 2 movement points
   * Then destroyed
@@ -65,17 +56,16 @@
 * Buy for 50 money
 
 ## Doors
-* Present on the map - 2 squares wide
-* Can be open / closed
-  * Open / close a door for 1 movement point
-  * When closed, blocks LOS
-* Can be broken down
-  * Counts as a wall
+* Present on the map - 1x2 squares
+* Counts as a wall: blocks LOS and can be broken down
+* Open a door for 1 movement point
+  * When opened, 
 
 ## Keys
-* Another sort of consumable item
-* Make doors / chests lockable
+* Another sort of consumable item, like a potion
+* Make doors lockable
 * Destroyed when used to lock / unlock
+* Thieves can pick locks
 
 ## Traps
 * Types of trap:
@@ -98,11 +88,12 @@
 * Defeat a specific opponent within a certain number of rounds
 
 ## Ideas for Roles / Backgrounds
-* Artificer / Technomage
+* Artificer / Technomage / Inventor
   * Create potion
   * Shocking grasp (electrical damage, stun)
-  * Electrical dischange (area effect)
+  * Electrical discharge (all adjacent combatants)
   * Supercharge (buff nearby ally's damage output)
+  * Acid spray
 * Gladiator 
   * Large weapons
   * Showmanship
@@ -140,6 +131,7 @@
 * Ooze
 
 ## Styling
+* Favicon
 * Dark mode
 * Action animations (fireball etc)
 

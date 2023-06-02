@@ -384,7 +384,7 @@ export class CombatantLogic {
 		combatant.combat.current = false;
 		combatant.combat.stunned = false;
 		combatant.combat.state = CombatantState.Standing;
-		combatant.combat.position = { x: 0, y: 0 };
+		combatant.combat.position = { x: Number.MIN_VALUE, y: Number.MIN_VALUE };
 		combatant.combat.trail = [];
 		combatant.combat.damage = 0;
 		combatant.combat.wounds = 0;

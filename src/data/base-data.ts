@@ -23,27 +23,6 @@ export class BaseData {
 		return [
 			{
 				id: 'base-1',
-				name: 'Unarmed Attack',
-				prerequisites: [
-					ActionPrerequisites.emptyHand()
-				],
-				parameters: [
-					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
-				],
-				effects: [
-					ActionEffects.attack({
-						weapon: false,
-						skill: SkillType.Brawl,
-						trait: TraitType.Speed,
-						skillBonus: 0,
-						hit: [
-							ActionEffects.dealDamage(DamageType.Impact, 1)
-						]
-					})
-				]
-			},
-			{
-				id: 'base-2',
 				name: 'Melee Weapon Attack',
 				prerequisites: [
 					ActionPrerequisites.meleeWeapon()
@@ -65,7 +44,7 @@ export class BaseData {
 				]
 			},
 			{
-				id: 'base-3',
+				id: 'base-2',
 				name: 'Ranged Weapon Attack',
 				prerequisites: [
 					ActionPrerequisites.rangedWeapon()
@@ -82,6 +61,27 @@ export class BaseData {
 						skillBonus: 0,
 						hit: [
 							ActionEffects.dealWeaponDamage()
+						]
+					})
+				]
+			},
+			{
+				id: 'base-3',
+				name: 'Unarmed Attack',
+				prerequisites: [
+					ActionPrerequisites.emptyHand()
+				],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Brawl,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Impact, 1)
 						]
 					})
 				]

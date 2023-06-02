@@ -21,6 +21,7 @@ interface Props {
 	combatant: CombatantModel;
 	encounter: EncounterModel | null;
 	onClick: ((combatant: CombatantModel) => void) | null;
+	onTokenClick: ((combatant: CombatantModel) => void) | null;
 	onDetails: ((combatant: CombatantModel) => void) | null;
 	onCancel: ((combatant: CombatantModel) => void) | null;
 }
@@ -30,6 +31,7 @@ export class CombatantRowPanel extends Component<Props> {
 		mode: 'list',
 		encounter: null,
 		onClick: null,
+		onTokenClick: null,
 		onDetails: null,
 		onCancel: null
 	};
@@ -173,10 +175,9 @@ export class CombatantRowPanel extends Component<Props> {
 		try {
 			const clickable = this.props.onClick !== null ? 'clickable' : '';
 			const current = (this.props.mode === 'initiative') && this.props.combatant.combat.current ? 'current' : '';
-			const dimmed = !!this.props.encounter
-				&& (this.props.mode !== 'detailed')
+			const dimmed = (this.props.mode === 'initiative')
 				&& (
-					(this.props.combatant.combat.initiative === Number.MIN_VALUE)
+					(!!this.props.encounter && this.props.encounter.combatants.some(c => c.combat.current) && (this.props.combatant.combat.initiative === Number.MIN_VALUE))
 					|| (this.props.combatant.combat.state === CombatantState.Unconscious)
 					|| (this.props.combatant.combat.state === CombatantState.Dead)
 				) ? 'dimmed' : '';
@@ -229,7 +230,7 @@ export class CombatantRowPanel extends Component<Props> {
 							mapDimensions={{ left: 0, top: 0 }}
 							selectable={true}
 							selected={false}
-							onClick={() => null}
+							onClick={c => this.props.onTokenClick ? this.props.onTokenClick(c) : null}
 						/>
 					</div>
 					<div className='name'>

@@ -1,5 +1,5 @@
+import { Component, createRef } from 'react';
 import { IconArrowBackUpDouble, IconConfetti, IconInfoCircle, IconInfoCircleFilled, IconRotate2, IconRotateClockwise2, IconZoomIn, IconZoomOut } from '@tabler/icons-react';
-import { Component } from 'react';
 
 import { ActionTargetType } from '../../../enums/action-target-type';
 import { CardType } from '../../../enums/card-type';
@@ -17,14 +17,14 @@ import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
 import type { RegionModel } from '../../../models/region';
 
-import { CardList, Dialog, PlayingCard, Text, TextType } from '../../controls';
+import { BoonCard, ItemCard } from '../../cards';
+import { Box, CardList, Dialog, PlayingCard, StatValue, Text, TextType } from '../../controls';
 import { CharacterSheetPanel, CombatantRowPanel, EncounterMapPanel, InitiativeListPanel, TreasureRowPanel, TurnLogPanel } from '../../panels';
 import { CombatantAction } from './combatant-action/combatant-action';
 import { CombatantHeader } from './combatant-header/combatant-header';
 import { CombatantMonster } from './combatant-monster/combatant-monster';
 import { CombatantMove } from './combatant-move/combatant-move';
 import { CombatantOverview } from './combatant-overview/combatant-overview';
-import { ItemCard } from '../../cards';
 
 import './encounter-screen.scss';
 
@@ -87,6 +87,12 @@ export class EncounterScreen extends Component<Props, State> {
 		};
 	}
 
+	mapRef = createRef<EncounterMapPanel>();
+
+	scrollToCombatant = (combatant: 'current' | 'selected') => {
+		this.mapRef.current?.scrollToCombatant(combatant);
+	};
+
 	nudgeMapSize = (delta: number) => {
 		const size = Math.max(this.state.mapSquareSize + delta, 5);
 		this.setState({
@@ -133,6 +139,7 @@ export class EncounterScreen extends Component<Props, State> {
 					selectedLootIDs: [],
 					selectedSquares: []
 				}, () => {
+					this.scrollToCombatant('selected');
 					this.props.setActionParameterValue(parameter, ids);
 				});
 			}
@@ -142,6 +149,8 @@ export class EncounterScreen extends Component<Props, State> {
 				selectedCombatantIDs: [ combatant.id ],
 				selectedLootIDs: [],
 				selectedSquares: []
+			}, () => {
+				this.scrollToCombatant('selected');
 			});
 		}
 	};
@@ -379,7 +388,6 @@ export class EncounterScreen extends Component<Props, State> {
 						encounter={this.props.encounter}
 						selectedIDs={this.state.selectedCombatantIDs}
 						onSelect={this.selectCombatant}
-						// onDetails={this.showDetailsCombatant}
 					/>
 				</div>
 				{footer}
@@ -415,6 +423,7 @@ export class EncounterScreen extends Component<Props, State> {
 						mode='detailed'
 						combatant={combatant}
 						encounter={this.props.encounter}
+						onTokenClick={() => this.scrollToCombatant('selected')}
 						onDetails={this.showDetailsCombatant}
 						onCancel={this.clearSelection}
 					/>
@@ -505,39 +514,36 @@ export class EncounterScreen extends Component<Props, State> {
 		}
 
 		const currentCombatant = EncounterLogic.getActiveCombatants(this.props.encounter).find(c => c.combat.current) || null;
-		if (currentCombatant === null) {
+		if (currentCombatant !== null) {
 			return (
-				<div className='encounter-right-panel'>
-					<div className='panel-header'>
-						<Text type={TextType.Heading}>Round {this.props.encounter.round + 1}</Text>
-					</div>
-					<div className='panel-content'>
-						<button onClick={() => this.props.rollInitiative(this.props.encounter)}>Roll Initiative</button>
-					</div>
-				</div>
+				<CombatantControls
+					combatant={currentCombatant}
+					encounter={this.props.encounter}
+					developer={this.props.developer}
+					selectedActionParameter={this.state.selectedActionParameter}
+					showToken={() => this.scrollToCombatant('current')}
+					showCharacterSheet={this.showDetailsCombatant}
+					performIntents={this.props.performIntents}
+					move={this.move}
+					addMovement={this.props.addMovement}
+					inspire={this.props.inspire}
+					scan={this.props.scan}
+					hide={this.props.hide}
+					drawActions={this.props.drawActions}
+					selectAction={this.selectAction}
+					deselectAction={this.props.deselectAction}
+					setActionParameter={this.setActionParameter}
+					setActionParameterValue={this.setActionParameter}
+					runAction={this.runAction}
+					endTurn={this.endTurn}
+				/>
 			);
 		}
 
 		return (
-			<CombatantControls
-				combatant={currentCombatant}
+			<RoundControls
 				encounter={this.props.encounter}
-				developer={this.props.developer}
-				selectedActionParameter={this.state.selectedActionParameter}
-				showCharacterSheet={this.showDetailsCombatant}
-				performIntents={this.props.performIntents}
-				move={this.move}
-				addMovement={this.props.addMovement}
-				inspire={this.props.inspire}
-				scan={this.props.scan}
-				hide={this.props.hide}
-				drawActions={this.props.drawActions}
-				selectAction={this.selectAction}
-				deselectAction={this.props.deselectAction}
-				setActionParameter={this.setActionParameter}
-				setActionParameterValue={this.setActionParameter}
-				runAction={this.runAction}
-				endTurn={this.endTurn}
+				rollInitiative={this.props.rollInitiative}
 			/>
 		);
 	};
@@ -558,6 +564,7 @@ export class EncounterScreen extends Component<Props, State> {
 								pickUpItem={this.props.pickUpItem}
 								dropItem={this.props.dropItem}
 								levelUp={() => null}
+								retireHero={() => null}
 							/>
 						}
 						onClose={() => this.clearDetails()}
@@ -583,6 +590,7 @@ export class EncounterScreen extends Component<Props, State> {
 					{this.getLeftControls()}
 					<div className='encounter-central-panel'>
 						<EncounterMapPanel
+							ref={this.mapRef}
 							encounter={this.props.encounter}
 							squareSize={this.state.mapSquareSize}
 							selectableCombatantIDs={this.state.selectableCombatantIDs}
@@ -608,6 +616,62 @@ export class EncounterScreen extends Component<Props, State> {
 	};
 }
 
+interface RoundControlsProps {
+	encounter: EncounterModel;
+	rollInitiative: (encounter: EncounterModel) => void;
+}
+
+class RoundControls extends Component<RoundControlsProps> {
+	render = () => {
+		const heroesActive = this.props.encounter.combatants
+			.filter(c => c.type === CombatantType.Hero)
+			.filter(c => (c.combat.state === CombatantState.Standing) || (c.combat.state === CombatantState.Prone)).length;
+		const heroesUnconscious = this.props.encounter.combatants
+			.filter(c => c.type === CombatantType.Hero)
+			.filter(c => c.combat.state === CombatantState.Unconscious).length;
+		const heroesDead = this.props.encounter.combatants
+			.filter(c => c.type === CombatantType.Hero)
+			.filter(c => c.combat.state === CombatantState.Dead).length;
+		const monstersActive = this.props.encounter.combatants
+			.filter(c => c.type === CombatantType.Monster)
+			.filter(c => (c.combat.state === CombatantState.Standing) || (c.combat.state === CombatantState.Prone)).length;
+		const monstersUnconscious = this.props.encounter.combatants
+			.filter(c => c.type === CombatantType.Monster)
+			.filter(c => c.combat.state === CombatantState.Unconscious).length;
+		const monstersDead = this.props.encounter.combatants
+			.filter(c => c.type === CombatantType.Monster)
+			.filter(c => c.combat.state === CombatantState.Dead).length;
+
+		return (
+			<div className='encounter-right-panel'>
+				<div className='panel-header'>
+					<Text type={TextType.Heading}>Round {this.props.encounter.round + 1}</Text>
+				</div>
+				<div className='panel-content'>
+					<div className='encounter-stats'>
+						<Box label='Heroes'>
+							<StatValue orientation='vertical' label='Active' value={heroesActive} />
+							<hr />
+							<StatValue orientation='vertical' label='Unconscious' value={heroesUnconscious} />
+							<hr />
+							<StatValue orientation='vertical' label='Dead' value={heroesDead} />
+						</Box>
+						<Box label='Monsters'>
+							<StatValue orientation='vertical' label='Active' value={monstersActive} />
+							<hr />
+							<StatValue orientation='vertical' label='Unconscious' value={monstersUnconscious} />
+							<hr />
+							<StatValue orientation='vertical' label='Dead' value={monstersDead} />
+						</Box>
+					</div>
+					<hr />
+					<button onClick={() => this.props.rollInitiative(this.props.encounter)}>Roll Initiative</button>
+				</div>
+			</div>
+		);
+	};
+}
+
 interface EncounterControlsProps {
 	encounter: EncounterModel;
 	game: GameModel;
@@ -622,26 +686,58 @@ class EncounterControls extends Component<EncounterControlsProps> {
 
 		switch (this.props.state) {
 			case EncounterState.Victory:
-				return (
-					<div className='encounter-right-panel'>
-						<div className='panel-header'>
-							<Text type={TextType.Heading}>Victory</Text>
+				if (region.encounters.length > 1) {
+					return (
+						<div className='encounter-right-panel'>
+							<div className='panel-header'>
+								<Text type={TextType.Heading}>Victory</Text>
+							</div>
+							<div className='panel-content'>
+								<Text type={TextType.MinorHeading}>You won the encounter in {region.name}!</Text>
+								<hr />
+								<ul>
+									<li>Each surviving hero who took part in this encounter gains 1 XP.</li>
+									<li>Any heroes who died have been lost.</li>
+								</ul>
+								<hr />
+								<button onClick={() => this.props.finishEncounter(EncounterState.Victory)}>OK</button>
+								{
+									this.props.state !== EncounterLogic.getEncounterState(this.props.encounter) ?
+										<button onClick={() => this.props.setEncounterState(EncounterState.Active)}>Cancel</button>
+										: null
+								}
+							</div>
 						</div>
-						<div className='panel-content'>
-							<Text type={TextType.MinorHeading}>You won the encounter in {region.name}!</Text>
-							<hr />
-							<Text>Each surviving hero who took part in this encounter gains 1 XP.</Text>
-							<Text>Any heroes who died have been lost.</Text>
-							<hr />
-							<button onClick={() => this.props.finishEncounter(EncounterState.Victory)}>OK</button>
-							{
-								this.props.state !== EncounterLogic.getEncounterState(this.props.encounter) ?
-									<button onClick={() => this.props.setEncounterState(EncounterState.Active)}>Cancel</button>
-									: null
-							}
+					);
+				} else {
+					return (
+						<div className='encounter-right-panel'>
+							<div className='panel-header'>
+								<Text type={TextType.Heading}>Victory</Text>
+							</div>
+							<div className='panel-content'>
+								<Text type={TextType.MinorHeading}>You have taken control of {region.name}!</Text>
+								<hr />
+								<ul>
+									<li>Each surviving hero who took part in this encounter gains 1 XP.</li>
+									<li>Any heroes who died have been lost.</li>
+									<li>You can recruit a new hero.</li>
+									<li>You have earned a reward.</li>
+								</ul>
+								<div className='region-reward'>
+									<PlayingCard type={CardType.Boon} front={<BoonCard boon={region.boon} />} footer='Reward' />
+								</div>
+								<hr />
+								<button onClick={() => this.props.finishEncounter(EncounterState.Victory)}>OK</button>
+								{
+									this.props.state !== EncounterLogic.getEncounterState(this.props.encounter) ?
+										<button onClick={() => this.props.setEncounterState(EncounterState.Active)}>Cancel</button>
+										: null
+								}
+							</div>
 						</div>
-					</div>
-				);
+					);
+				}
 			case EncounterState.Defeat:
 				return (
 					<div className='encounter-right-panel'>
@@ -651,7 +747,10 @@ class EncounterControls extends Component<EncounterControlsProps> {
 						<div className='panel-content'>
 							<Text type={TextType.MinorHeading}>You lost the encounter in {region.name}.</Text>
 							<hr />
-							<Text>Those heroes who took part have been lost, along with all their equipment.</Text>
+							<ul>
+								<li>Those heroes who took part have been lost, along with all their equipment.</li>
+								<li>You can attempt this encounter again, picking up from where you left off.</li>
+							</ul>
 							<hr />
 							<button onClick={() => this.props.finishEncounter(EncounterState.Defeat)}>OK</button>
 							{
@@ -671,7 +770,10 @@ class EncounterControls extends Component<EncounterControlsProps> {
 						<div className='panel-content'>
 							<Text type={TextType.MinorHeading}>You retreated from the encounter in {region.name}.</Text>
 							<hr />
-							<Text>Any heroes who fell have been lost, along with all their equipment.</Text>
+							<ul>
+								<li>Any heroes who fell have been lost, along with all their equipment.</li>
+								<li>You can attempt this encounter again, picking up from where you left off.</li>
+							</ul>
 							<hr />
 							<button onClick={() => this.props.finishEncounter(EncounterState.Retreat)}>OK</button>
 							{
@@ -691,6 +793,7 @@ interface CombatantControlsProps {
 	encounter: EncounterModel;
 	developer: boolean;
 	selectedActionParameter: ActionParameterModel | null;
+	showToken: (combatant: CombatantModel) => void;
 	showCharacterSheet: (combatant: CombatantModel) => void;
 	performIntents: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	move: (encounter: EncounterModel, combatant: CombatantModel, dir: string, cost: number) => void;
@@ -744,6 +847,7 @@ class CombatantControls extends Component<CombatantControlsProps, CombatantContr
 							developer={this.props.developer}
 							tabID={this.state.tab}
 							onSelectTab={this.setTab}
+							onTokenClick={this.props.showToken}
 							showCharacterSheet={this.props.showCharacterSheet}
 						/>
 					</div>
@@ -766,6 +870,7 @@ class CombatantControls extends Component<CombatantControlsProps, CombatantContr
 							developer={this.props.developer}
 							tabID={this.state.tab}
 							onSelectTab={this.setTab}
+							onTokenClick={this.props.showToken}
 							showCharacterSheet={this.props.showCharacterSheet}
 						/>
 					</div>
@@ -788,6 +893,7 @@ class CombatantControls extends Component<CombatantControlsProps, CombatantContr
 							developer={this.props.developer}
 							tabID={this.state.tab}
 							onSelectTab={this.setTab}
+							onTokenClick={this.props.showToken}
 							showCharacterSheet={this.props.showCharacterSheet}
 						/>
 					</div>
@@ -810,6 +916,7 @@ class CombatantControls extends Component<CombatantControlsProps, CombatantContr
 							developer={this.props.developer}
 							tabID={this.state.tab}
 							onSelectTab={this.setTab}
+							onTokenClick={this.props.showToken}
 							showCharacterSheet={this.props.showCharacterSheet}
 						/>
 					</div>
@@ -887,6 +994,7 @@ class CombatantControls extends Component<CombatantControlsProps, CombatantContr
 						developer={this.props.developer}
 						tabID={this.state.tab}
 						onSelectTab={this.setTab}
+						onTokenClick={this.props.showToken}
 						showCharacterSheet={this.props.showCharacterSheet}
 					/>
 				</div>

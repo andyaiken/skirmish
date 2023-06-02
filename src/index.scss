@@ -38,9 +38,19 @@ h2 {
 
 p {
 	font-size: 15px;
-	margin: 10px 0;
+	margin: 15px 0;
 	text-transform: none;
 	font-weight: normal;
+}
+
+ul,
+ol,
+dl {
+	padding-inline-start: 20px;
+
+	li {
+		margin: 10px 0;
+	}
 }
 
 code {

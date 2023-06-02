@@ -1,8 +1,8 @@
 .items {
 	.equipped {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-		gap: 10px;
+		grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+		gap: 0 10px;
 
 		.grid-cell {
 			display: flex;

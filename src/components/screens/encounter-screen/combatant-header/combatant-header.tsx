@@ -16,6 +16,7 @@ interface Props {
 	encounter: EncounterModel;
 	developer: boolean;
 	tabID: string;
+	onTokenClick: (combatant: CombatantModel) => void;
 	onSelectTab: (tabID: string) => void;
 	showCharacterSheet: (combatant: CombatantModel) => void;
 }
@@ -53,7 +54,13 @@ export class CombatantHeader extends Component<Props> {
 		try {
 			return (
 				<div className='combatant-header'>
-					<CombatantRowPanel mode='header' combatant={this.props.combatant} encounter={this.props.encounter} onDetails={this.props.showCharacterSheet} />
+					<CombatantRowPanel
+						mode='header'
+						combatant={this.props.combatant}
+						encounter={this.props.encounter}
+						onTokenClick={this.props.onTokenClick}
+						onDetails={this.props.showCharacterSheet}
+					/>
 					{
 						this.props.combatant.combat.state === CombatantState.Prone ?
 							<Text type={TextType.Information}><b>{this.props.combatant.name} is Prone.</b> Their skill ranks are halved and moving costs are doubled.</Text>

@@ -24,6 +24,13 @@
 		overflow-y: auto;
 		-webkit-overflow-scrolling: touch;
 
+		.map-stats {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			justify-content: space-evenly;
+		}
+
 		.card,
 		.boon {
 			display: flex;

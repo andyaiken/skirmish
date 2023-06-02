@@ -453,6 +453,28 @@ export class RoleData {
 								]
 							})
 						]
+					},
+					{
+						id: 'centurion-action-6',
+						name: 'Sweeping Attack',
+						prerequisites: [
+							ActionPrerequisites.meleeWeapon()
+						],
+						parameters: [
+							ActionWeaponParameters.melee(),
+							ActionTargetParameters.weapon(ActionTargetType.Enemies, Number.MAX_VALUE, 0)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: true,
+								skill: SkillType.Weapon,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealWeaponDamage()
+								]
+							})
+						]
 					}
 				]
 			},

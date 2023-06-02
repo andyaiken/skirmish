@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component, createRef } from 'react';
 
 import { CombatantState } from '../../../enums/combatant-state';
 
@@ -40,6 +40,29 @@ interface Props {
 }
 
 export class EncounterMapPanel extends Component<Props> {
+
+	currentCombatantRef = createRef<MiniToken>();
+	selectedCombatantRef = createRef<MiniToken>();
+
+	scrollToCombatant = (combatant: 'current' | 'selected') => {
+		if (combatant === 'selected') {
+			// If they're the same combatant, switch to 'current'
+			const current = this.props.encounter.combatants.find(c => c.combat.current);
+			if (current && (this.props.selectedCombatantIDs.length > 0) && (this.props.selectedCombatantIDs[0] === current.id)) {
+				combatant = 'current';
+			}
+		}
+
+		switch (combatant) {
+			case 'current':
+				this.currentCombatantRef.current?.scrollIntoView();
+				break;
+			case 'selected':
+				this.selectedCombatantRef.current?.scrollIntoView();
+				break;
+		}
+	};
+
 	getEffect = () => {
 		let effect = null;
 
@@ -184,9 +207,16 @@ export class EncounterMapPanel extends Component<Props> {
 			});
 
 			const minis = combatants.map(combatant => {
+				let ref = null;
+				if (combatant.combat.current) {
+					ref = this.currentCombatantRef;
+				} else if ((this.props.selectedCombatantIDs.length > 0) && (this.props.selectedCombatantIDs[0] === combatant.id)) {
+					ref = this.selectedCombatantRef;
+				}
 				return (
 					<MiniToken
 						key={combatant.id}
+						ref={ref}
 						combatant={combatant}
 						encounter={this.props.encounter}
 						squareSize={this.props.squareSize}
@@ -240,7 +270,7 @@ export class EncounterMapPanel extends Component<Props> {
 			const height = dims.bottom - dims.top + 1;
 
 			return (
-				<div className='encounter-map' onClick={e => this.props.onClickOff()}>
+				<div className='encounter-map' onClick={() => this.props.onClickOff()}>
 					<div className='encounter-map-square-container' style={{ maxWidth: `${this.props.squareSize * width}px`, maxHeight: `${this.props.squareSize * height}px` }}>
 						{floor}
 						{auras}

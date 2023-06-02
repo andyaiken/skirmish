@@ -26,6 +26,7 @@ interface Props {
 	pickUpItem: (item: ItemModel, hero: CombatantModel) => void;
 	dropItem: (item: ItemModel, hero: CombatantModel) => void;
 	levelUp: (feature: FeatureModel, hero: CombatantModel) => void;
+	retireHero: (combatant: CombatantModel) => void;
 	redeemBoon: (boon: BoonModel, hero: CombatantModel | null) => void;
 }
 
@@ -64,6 +65,14 @@ export class HeroesPage extends Component<Props, State> {
 	selectHero = (hero: CombatantModel) => {
 		this.setState({
 			selectedHero: hero
+		});
+	};
+
+	retireHero = (hero: CombatantModel) => {
+		this.setState({
+			selectedHero: null
+		}, () => {
+			this.props.retireHero(hero);
 		});
 	};
 
@@ -194,6 +203,7 @@ export class HeroesPage extends Component<Props, State> {
 								pickUpItem={this.props.pickUpItem}
 								dropItem={this.props.dropItem}
 								levelUp={this.props.levelUp}
+								retireHero={this.retireHero}
 							/>
 						)}
 						onClose={this.state.selectedHero.xp >= this.state.selectedHero.level ? null : () => {

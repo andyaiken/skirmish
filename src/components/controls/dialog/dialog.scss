@@ -11,10 +11,10 @@
 
 .dialog {
 	position: absolute;
+	width: 1000px;
 	top: 5%;
-	left: 5%;
-	right: 5%;
 	bottom: 5%;
+	left: calc(50% - 500px);
 	border: 2px solid rgb(180, 180, 180);
 	border-radius: 15px;
 	background-color: rgb(255, 255, 255);

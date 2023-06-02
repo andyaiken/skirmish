@@ -3,7 +3,6 @@ import { Component } from 'react';
 import { SpeciesData } from '../../data/species-data';
 
 import { BoonType } from '../../enums/boon-type';
-import { CardType } from '../../enums/card-type';
 import { CombatantState } from '../../enums/combatant-state';
 import { CombatantType } from '../../enums/combatant-type';
 import { EncounterState } from '../../enums/encounter-state';
@@ -29,9 +28,9 @@ import type { RegionModel } from '../../models/region';
 import { Collections } from '../../utils/collections';
 import { Utils } from '../../utils/utils';
 
-import { BoonCard, PlaceholderCard } from '../cards';
 import { CampaignScreen, EncounterScreen, LandingScreen, SetupScreen } from '../screens';
 import { Dialog, PlayingCard, Text, TextType } from '../controls';
+import { PlaceholderCard } from '../cards';
 import { SettingsPanel } from '../panels';
 
 import './main.scss';
@@ -90,6 +89,10 @@ export class Main extends Component<Props, State> {
 					r.demographics.speciesIDs = [
 						...Collections.shuffle(SpeciesData.getList().filter(s => s.type === CombatantType.Monster).map(s => s.id)).slice(0, 2)
 					];
+				}
+
+				if (r.pausedEncounter === undefined) {
+					r.pausedEncounter = null;
 				}
 			});
 
@@ -307,6 +310,37 @@ export class Main extends Component<Props, State> {
 		}
 	};
 
+	retireHero = (hero: CombatantModel) => {
+		try {
+			const game = this.state.game as GameModel;
+
+			// Remove hero
+			game.heroes = game.heroes.filter(h => h.id !== hero.id);
+
+			// Add XP
+			const spent = hero.level * (hero.level - 1) / 2;
+			const xp = Math.floor(spent + hero.xp / 2);
+			game.boons.push({
+				id: Utils.guid(),
+				type: BoonType.ExtraXP,
+				data: xp
+			});
+
+			// Add magic items
+			hero.items.filter(i => i.magic).forEach(i => game.items.push(i));
+			hero.carried.filter(i => i.magic).forEach(i => game.items.push(i));
+
+			// Add a blank hero
+			game.heroes.push(Factory.createCombatant(CombatantType.Hero));
+
+			this.setState({
+				game: game
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
+	};
+
 	redeemBoon = (boon: BoonModel, hero: CombatantModel | null) => {
 		try {
 			const game = this.state.game as GameModel;
@@ -404,8 +438,11 @@ export class Main extends Component<Props, State> {
 		try {
 			if (this.state.game) {
 				heroes.forEach(h => CombatantLogic.resetCombatant(h));
+
 				const game = this.state.game;
 				game.encounter = EncounterGenerator.createEncounter(region, heroes);
+				region.pausedEncounter = null;
+
 				this.setState({
 					game: game,
 					screen: ScreenType.Encounter
@@ -786,19 +823,6 @@ export class Main extends Component<Props, State> {
 							GameLogic.addHeroToGame(game, Factory.createCombatant(CombatantType.Hero));
 							// Add the region's boon
 							game.boons.push(region.boon);
-							// Show message
-							dialogContent = (
-								<div>
-									<Text type={TextType.Heading}>Victory</Text>
-									<Text type={TextType.SubHeading}>You have taken control of {region.name}!</Text>
-									<Text>You can recruit a new hero, and you have earned a reward:</Text>
-									<div className='card-row'>
-										<PlayingCard type={CardType.Boon} front={<BoonCard boon={region.boon} />} footer='Reward' />
-									</div>
-									<Text>Any heroes who died have been lost.</Text>
-									<button onClick={() => this.setScreen(ScreenType.Campaign)}>OK</button>
-								</div>
-							);
 						}
 					}
 					// Clear the current encounter
@@ -810,6 +834,7 @@ export class Main extends Component<Props, State> {
 					const heroes = encounter.combatants.filter(c => c.type === CombatantType.Hero);
 					game.heroes = game.heroes.filter(h => !heroes.includes(h));
 					// Clear the current encounter
+					region.pausedEncounter = EncounterLogic.getPausedEncounter(game.encounter as EncounterModel);
 					game.encounter = null;
 					if ((game.heroes.length === 0) && (!game.boons.some(b => b.type === BoonType.ExtraHero))) {
 						// Show message
@@ -817,8 +842,8 @@ export class Main extends Component<Props, State> {
 							<div>
 								<Text type={TextType.Heading}>Defeat</Text>
 								<Text type={TextType.SubHeading}>You lost the encounter in {region.name}, and have no more heroes.</Text>
-								<Text>You can either continue with a new group of heroes, or abandon this campaign.</Text>
-								<div className='card-row'>
+								<Text>You can either continue your campaign with a new group of heroes, or abandon it.</Text>
+								<div className='defeat-options'>
 									<PlayingCard front={<PlaceholderCard text='Continue' />} onClick={() => this.restartCampaign()} />
 									<PlayingCard front={<PlaceholderCard text='Abandon' />} onClick={() => this.endCampaign()} />
 								</div>
@@ -834,6 +859,7 @@ export class Main extends Component<Props, State> {
 						.filter(h => (h.combat.state === CombatantState.Dead) || (h.combat.state === CombatantState.Unconscious));
 					game.heroes = game.heroes.filter(h => !fallenHeroes.includes(h));
 					// Clear the current encounter
+					region.pausedEncounter = EncounterLogic.getPausedEncounter(game.encounter as EncounterModel);
 					game.encounter = null;
 					break;
 				}
@@ -895,6 +921,7 @@ export class Main extends Component<Props, State> {
 						pickUpItem={this.pickUpItem}
 						dropItem={this.dropItem}
 						levelUp={this.levelUp}
+						retireHero={this.retireHero}
 						redeemBoon={this.redeemBoon}
 						buyItem={this.buyItem}
 						sellItem={this.sellItem}

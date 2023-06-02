@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component, createRef } from 'react';
 
 import { TraitType } from '../../../../enums/trait-type';
 
@@ -32,6 +32,12 @@ export class MiniToken extends Component<Props, State> {
 			mouseOver: false
 		};
 	}
+
+	tokenRef = createRef<HTMLDivElement>();
+
+	scrollIntoView = () => {
+		this.tokenRef.current?.scrollIntoView({ behavior: 'smooth' });
+	};
 
 	onClick = (e: React.MouseEvent) => {
 		if (this.props.selectable) {
@@ -89,6 +95,7 @@ export class MiniToken extends Component<Props, State> {
 
 			return (
 				<div
+					ref={this.tokenRef}
 					className={className}
 					style={{
 						width: this.props.encounter ? `${this.props.squareSize * this.props.combatant.size}px` : `${this.props.squareSize}px`,

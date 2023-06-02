@@ -30,10 +30,12 @@ interface Props {
 export class Items extends Component<Props> {
 	getLocationSection = (location: ItemLocationType) => {
 		let className = 'location-section';
+		let label = location.toString();
 		switch (location) {
 			case ItemLocationType.Hand:
 			case ItemLocationType.Ring:
 				className += ' double';
+				label += 's';
 		}
 
 		const cards = this.props.combatant.items
@@ -81,7 +83,7 @@ export class Items extends Component<Props> {
 
 		return (
 			<div className={className}>
-				<Box label={location}>
+				<Box label={label}>
 					<div className='cards'>
 						{cards}
 					</div>

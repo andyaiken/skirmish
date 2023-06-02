@@ -8,6 +8,8 @@ import type { CombatantModel } from '../../../../models/combatant';
 import type { GameModel } from '../../../../models/game';
 import type { RegionModel } from '../../../../models/region';
 
+import { Collections } from '../../../../utils/collections';
+
 import { BoonCard, RegionCard } from '../../../cards';
 import { CampaignMapPanel, EncounterStartPanel } from '../../../panels';
 import { Dialog, PlayingCard, StatValue, Text, TextType } from '../../../controls';
@@ -66,13 +68,17 @@ export class CampaignMapPage extends Component<Props, State> {
 			);
 		}
 
+		const regions = Collections.distinct(this.props.game.map.squares.map(sq => sq.regionID).filter(id => id !== ''), id => id);
 		const owned = this.props.game.map.squares.filter(sq => sq.regionID === '');
 		return (
 			<div className='sidebar'>
 				<Text type={TextType.SubHeading}>The Island</Text>
 				<Text>This is the map of the island. Select a region to learn more about it.</Text>
-				{owned.length > 0 ? <hr /> : null}
-				{owned.length > 0 ? <StatValue orientation='vertical' label='Controlled' value={`${Math.floor(100 * owned.length / this.props.game.map.squares.length)}%`} /> : null}
+				<hr />
+				<div className='map-stats'>
+					<StatValue orientation='vertical' label='Regions' value={regions.length} />
+					<StatValue orientation='vertical' label='Controlled' value={`${Math.floor(100 * owned.length / this.props.game.map.squares.length)}%`} />
+				</div>
 			</div>
 		);
 	};

@@ -22,6 +22,24 @@
 			overflow-x: hidden;
 			overflow-y: auto;
 			-webkit-overflow-scrolling: touch;
+
+			.encounter-stats {
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+				gap: 5px;
+
+				.box {
+					flex: 1 1 0;
+				}
+			}
+
+			.region-reward {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				margin-top: 20px;
+			}
 		}
 
 		.panel-footer {

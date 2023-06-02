@@ -34,6 +34,7 @@ interface Props {
 	pickUpItem: (item: ItemModel, hero: CombatantModel) => void;
 	dropItem: (item: ItemModel, hero: CombatantModel) => void;
 	levelUp: (feature: FeatureModel, hero: CombatantModel) => void;
+	retireHero: (combatant: CombatantModel) => void;
 	redeemBoon: (boon: BoonModel, hero: CombatantModel | null) => void;
 	buyItem: (item: ItemModel) => void;
 	sellItem: (item: ItemModel, all: boolean) => void;
@@ -88,6 +89,7 @@ export class CampaignScreen extends Component<Props, State> {
 							pickUpItem={this.props.pickUpItem}
 							dropItem={this.props.dropItem}
 							levelUp={this.props.levelUp}
+							retireHero={this.props.retireHero}
 							redeemBoon={this.props.redeemBoon}
 						/>
 					);

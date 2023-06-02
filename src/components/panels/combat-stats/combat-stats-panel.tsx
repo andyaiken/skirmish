@@ -41,9 +41,9 @@ export class CombatStatsPanel extends Component<Props> {
 				wounds.push(<IconHeartOff key={n} />);
 			}
 			while (wounds.length < EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Resolve)) {
-				wounds.push(<IconHeartFilled key={wounds.length} className='heartbeat' />);
+				wounds.unshift(<IconHeartFilled key={wounds.length} className='heartbeat' />);
 			}
-			const woundsPerRow = (wounds.length < 6) || (wounds.length > 8) ? 5 : 4;
+			const woundsPerRow = (wounds.length === 4) ? 2 : 3;
 			const woundsInRows: JSX.Element[] = [];
 			while (wounds.length > woundsPerRow) {
 				woundsInRows.push(<div key={woundsInRows.length} className='wounds'>{wounds.slice(0, woundsPerRow)}</div>);
@@ -79,14 +79,14 @@ export class CombatStatsPanel extends Component<Props> {
 			return (
 				<div className='combat-stats-panel'>
 					<Box label='This Round'>
-						<div className='stats-row align-bottom'>
+						<div className='combat-stats-row'>
 							<StatValue orientation='vertical' label='Movement' value={<IconValue value={this.props.combatant.combat.movement} type={IconType.Movement} />} />
 							<StatValue orientation='vertical' label='Senses' value={this.props.combatant.combat.senses} />
 							<StatValue orientation='vertical' label='Hidden' value={this.props.combatant.combat.hidden} />
 						</div>
 					</Box>
 					<Box label='Health'>
-						<div className='stats-row align-bottom'>
+						<div className='combat-stats-row'>
 							<StatValue orientation='vertical' label='Damage' value={this.props.combatant.combat.damage} />
 							<StatValue orientation='vertical' label='Wounds' value={<div>{woundsInRows}</div>} />
 						</div>

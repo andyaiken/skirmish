@@ -140,7 +140,7 @@ export class RoleData {
 					FeatureLogic.createTraitFeature('assassin-feature-1', TraitType.Speed, 1),
 					FeatureLogic.createSkillFeature('assassin-feature-2', SkillType.Stealth, 2),
 					FeatureLogic.createSkillFeature('assassin-feature-3', SkillType.Weapon, 2),
-					FeatureLogic.createDamageBonusFeature('assassin-feature-4', DamageType.Poison, 1)
+					FeatureLogic.createDamageBonusFeature('assassin-feature-4', DamageType.Poison, 2)
 				],
 				actions: [
 					{
@@ -648,8 +648,8 @@ export class RoleData {
 				features: [
 					FeatureLogic.createTraitFeature('enchanter-feature-1', TraitType.Resolve, 1),
 					FeatureLogic.createSkillFeature('enchanter-feature-2', SkillType.Spellcasting, 2),
-					FeatureLogic.createDamageBonusFeature('enchanter-feature-3', DamageType.Psychic, 1),
-					FeatureLogic.createDamageResistFeature('enchanter-feature-4', DamageType.Psychic, 1)
+					FeatureLogic.createDamageBonusFeature('enchanter-feature-3', DamageType.Psychic, 2),
+					FeatureLogic.createDamageResistFeature('enchanter-feature-4', DamageType.Psychic, 2)
 				],
 				actions: [
 					{
@@ -854,6 +854,28 @@ export class RoleData {
 								hit: [
 									ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Endurance, 5, TraitType.Speed)),
 									ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Endurance, 5))
+								]
+							})
+						]
+					},
+					{
+						id: 'geomancer-action-6',
+						name: 'Rockblast',
+						prerequisites: [
+							ActionPrerequisites.implement()
+						],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 10)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Spellcasting,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Impact, 3),
+									ActionEffects.knockDown()
 								]
 							})
 						]

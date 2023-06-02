@@ -527,7 +527,7 @@ export class CombatantLogic {
 			.filter(f => f.type === FeatureType.Proficiency)
 			.forEach(f => profs.push(f.proficiency));
 
-		return profs;
+		return Collections.distinct(profs, p => p.toString());
 	};
 
 	static getAuras = (combatant: CombatantModel) => {

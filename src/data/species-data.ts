@@ -953,7 +953,7 @@ export class SpeciesData {
 				],
 				features: [
 					FeatureLogic.createSkillFeature('elemental-fire-feature-1', SkillType.Brawl, 2),
-					FeatureLogic.createDamageBonusFeature('elemental-fire-feature-2', DamageType.Fire, 1),
+					FeatureLogic.createDamageBonusFeature('elemental-fire-feature-2', DamageType.Fire, 2),
 					FeatureLogic.createDamageResistFeature('elemental-fire-feature-3', DamageType.Fire, 5),
 					FeatureLogic.createAuraDamageFeature('elemental-fire-feature-4', ConditionType.AutoDamage, DamageType.Fire, 1)
 				],
@@ -1033,7 +1033,7 @@ export class SpeciesData {
 				],
 				features: [
 					FeatureLogic.createSkillFeature('elemental-air-feature-1', SkillType.Brawl, 2),
-					FeatureLogic.createDamageBonusFeature('elemental-air-feature-2', DamageType.Cold, 1),
+					FeatureLogic.createDamageBonusFeature('elemental-air-feature-2', DamageType.Cold, 2),
 					FeatureLogic.createDamageResistFeature('elemental-air-feature-3', DamageType.Cold, 5),
 					FeatureLogic.createAuraDamageFeature('elemental-air-feature-4', ConditionType.AutoDamage, DamageType.Cold, 1)
 				],
@@ -1094,7 +1094,7 @@ export class SpeciesData {
 				],
 				features: [
 					FeatureLogic.createSkillFeature('elemental-earth-feature-1', SkillType.Brawl, 2),
-					FeatureLogic.createDamageBonusFeature('elemental-earth-feature-2', DamageType.Impact, 1),
+					FeatureLogic.createDamageBonusFeature('elemental-earth-feature-2', DamageType.Impact, 2),
 					FeatureLogic.createDamageResistFeature('elemental-earth-feature-3', DamageType.Impact, 5),
 					FeatureLogic.createAuraDamageFeature('elemental-earth-feature-4', ConditionType.AutoDamage, DamageType.Impact, 1)
 				],
@@ -1177,7 +1177,7 @@ export class SpeciesData {
 				],
 				features: [
 					FeatureLogic.createSkillFeature('scarab-feature-1', SkillType.Brawl, 2),
-					FeatureLogic.createDamageBonusFeature('scarab-feature-2', DamageType.Acid, 1)
+					FeatureLogic.createDamageBonusFeature('scarab-feature-2', DamageType.Acid, 2)
 				],
 				actions: [
 					{
@@ -1237,7 +1237,7 @@ export class SpeciesData {
 				],
 				features: [
 					FeatureLogic.createSkillFeature('giant-spider-feature-1', SkillType.Brawl, 2),
-					FeatureLogic.createDamageBonusFeature('giant-spider-feature-2', DamageType.Poison, 1)
+					FeatureLogic.createDamageBonusFeature('giant-spider-feature-2', DamageType.Poison, 2)
 				],
 				actions: [
 					{
@@ -1421,7 +1421,7 @@ export class SpeciesData {
 				],
 				features: [
 					FeatureLogic.createSkillFeature('skeleton-feature-1', SkillType.Brawl, 2),
-					FeatureLogic.createDamageResistFeature('skeleton-feature-2', DamageType.Piercing, 1),
+					FeatureLogic.createDamageResistFeature('skeleton-feature-2', DamageType.Piercing, 2),
 					FeatureLogic.createDamageCategoryResistFeature('skeleton-feature-3', DamageCategoryType.Corruption, 1)
 				],
 				actions: [

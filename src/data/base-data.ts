@@ -15,7 +15,9 @@ export class BaseData {
 		return [
 			FeatureLogic.createTraitFeature('base-trait', TraitType.Any, 1),
 			FeatureLogic.createSkillFeature('base-skill', SkillType.Any, 1),
-			FeatureLogic.createProficiencyFeature('base-prof', ItemProficiencyType.Any)
+			FeatureLogic.createProficiencyFeature('base-prof', ItemProficiencyType.Any),
+			FeatureLogic.createDamageBonusFeature('base-dmg-bonus', DamageType.Any, 1),
+			FeatureLogic.createDamageResistFeature('base-dmg-resist', DamageType.Any, 1)
 		];
 	};
 

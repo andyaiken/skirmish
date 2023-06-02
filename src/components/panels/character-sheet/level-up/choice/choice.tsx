@@ -13,7 +13,7 @@ import { CombatantLogic } from '../../../../../logic/combatant-logic';
 import type { CombatantModel } from '../../../../../models/combatant';
 import type { FeatureModel } from '../../../../../models/feature';
 
-import { Selector } from '../../../../controls';
+import { IconValue, Selector } from '../../../../controls';
 
 import './choice.scss';
 
@@ -128,6 +128,7 @@ export class ChoicePanel extends Component<Props, State> {
 								{ id: SkillType.Stealth },
 								{ id: SkillType.Weapon }
 							]}
+							columnCount={4}
 							selectedID={this.state.feature.skill}
 							onSelect={id => this.selectSkill(id as SkillType)}
 						/>
@@ -164,6 +165,7 @@ export class ChoicePanel extends Component<Props, State> {
 								{ id: ItemProficiencyType.HeavyArmor },
 								{ id: ItemProficiencyType.Shields }
 							].filter(o => !got.includes(o.id))}
+							columnCount={5}
 							selectedID={this.state.feature.proficiency}
 							onSelect={id => this.selectProficiency(id as ItemProficiencyType)}
 						/>
@@ -177,19 +179,20 @@ export class ChoicePanel extends Component<Props, State> {
 					<div>
 						<Selector
 							options={[
-								{ id: DamageType.Acid },
-								{ id: DamageType.Edged },
-								{ id: DamageType.Impact },
-								{ id: DamageType.Piercing },
-								{ id: DamageType.Cold },
-								{ id: DamageType.Electricity },
-								{ id: DamageType.Fire },
-								{ id: DamageType.Light },
-								{ id: DamageType.Sonic },
-								{ id: DamageType.Decay },
-								{ id: DamageType.Poison },
-								{ id: DamageType.Psychic }
+								{ id: DamageType.Acid, display: <IconValue type={DamageType.Acid} value='Acid' /> },
+								{ id: DamageType.Edged, display: <IconValue type={DamageType.Edged} value='Edged' /> },
+								{ id: DamageType.Impact, display: <IconValue type={DamageType.Impact} value='Impact' /> },
+								{ id: DamageType.Piercing, display: <IconValue type={DamageType.Piercing} value='Piercing' /> },
+								{ id: DamageType.Cold, display: <IconValue type={DamageType.Cold} value='Cold' /> },
+								{ id: DamageType.Electricity, display: <IconValue type={DamageType.Electricity} value='Electricity' /> },
+								{ id: DamageType.Fire, display: <IconValue type={DamageType.Fire} value='Fire' /> },
+								{ id: DamageType.Light, display: <IconValue type={DamageType.Light} value='Light' /> },
+								{ id: DamageType.Sonic, display: <IconValue type={DamageType.Sonic} value='Sonic' /> },
+								{ id: DamageType.Decay, display: <IconValue type={DamageType.Decay} value='Decay' /> },
+								{ id: DamageType.Poison, display: <IconValue type={DamageType.Poison} value='Poison' /> },
+								{ id: DamageType.Psychic, display: <IconValue type={DamageType.Psychic} value='Psychic' /> }
 							]}
+							columnCount={6}
 							selectedID={this.state.feature.damage}
 							onSelect={id => this.selectDamage(id as DamageType)}
 						/>

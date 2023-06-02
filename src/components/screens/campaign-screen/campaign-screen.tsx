@@ -1,4 +1,4 @@
-import { IconInfoCircle, IconInfoCircleFilled } from '@tabler/icons-react';
+import { IconBackpack, IconInfoCircle, IconInfoCircleFilled, IconMap, IconUsers } from '@tabler/icons-react';
 import { Component } from 'react';
 
 import type { BoonModel } from '../../../models/boon';
@@ -109,9 +109,33 @@ export class CampaignScreen extends Component<Props, State> {
 			}
 
 			const options = [
-				{ id: 'island', display: 'The Island' },
-				{ id: 'team', display: 'Your Team' },
-				{ id: 'items', display: 'Your Equipment' }
+				{
+					id: 'island',
+					display: (
+						<div className='tab-icon'>
+							<IconMap />
+							The Island
+						</div>
+					)
+				},
+				{
+					id: 'team',
+					display: (
+						<div className='tab-icon'>
+							<IconUsers />
+							Your Team
+						</div>
+					)
+				},
+				{
+					id: 'items',
+					display: (
+						<div className='tab-icon'>
+							<IconBackpack />
+							Your Equipment
+						</div>
+					)
+				}
 			];
 
 			return (

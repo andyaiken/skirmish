@@ -43,7 +43,7 @@ export class LevelUp extends Component<Props, State> {
 				// Make sure we can select this feature
 				if (feature.type === FeatureType.Proficiency) {
 					const profs = CombatantLogic.getProficiencies(combatant);
-					if (profs.length <= 9) {
+					if (profs.length >= 9) {
 						// We already have all proficiencies
 						return false;
 					}

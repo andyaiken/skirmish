@@ -23,6 +23,12 @@
 			flex: 1 1 0;
 		}
 
+		.tab-icon {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+		}
+
 		button {
 			flex: 0 0 50px;
 		}

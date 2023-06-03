@@ -138,10 +138,6 @@ export class Main extends Component<Props, State> {
 		});
 	}
 
-	componentDidUpdate = () => {
-		this.saveAfterDelay();
-	};
-
 	logException = (ex: unknown) => {
 		console.error(ex);
 
@@ -150,6 +146,15 @@ export class Main extends Component<Props, State> {
 		this.setState({
 			exceptions: exceptions
 		});
+	};
+
+	save = () => {
+		try {
+			const game = JSON.stringify(this.state.game);
+			window.localStorage.setItem('game', game);
+		} catch (ex) {
+			console.error('Could not stringify data: ', ex);
+		}
 	};
 
 	setScreen = (screen: ScreenType) => {
@@ -171,21 +176,6 @@ export class Main extends Component<Props, State> {
 		});
 	};
 
-	//#region Saving
-
-	readonly saveAfterDelay = Utils.debounce(() => this.save(), 5 * 1000);
-
-	save = () => {
-		try {
-			const game = JSON.stringify(this.state.game);
-			window.localStorage.setItem('game', game);
-		} catch (ex) {
-			console.error('Could not stringify data: ', ex);
-		}
-	};
-
-	//#endregion
-
 	//#region Campaign
 
 	startCampaign = () => {
@@ -195,6 +185,8 @@ export class Main extends Component<Props, State> {
 			this.setState({
 				game: game,
 				screen: ScreenType.Setup
+			}, () => {
+				this.save();
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -205,6 +197,8 @@ export class Main extends Component<Props, State> {
 		try {
 			this.setState({
 				screen: ScreenType.Campaign
+			}, () => {
+				this.save();
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -215,6 +209,8 @@ export class Main extends Component<Props, State> {
 		try {
 			this.setState({
 				screen: !this.state.game?.encounter ? ScreenType.Campaign : ScreenType.Encounter
+			}, () => {
+				this.save();
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -239,6 +235,8 @@ export class Main extends Component<Props, State> {
 				game: game,
 				screen: ScreenType.Campaign,
 				dialog: null
+			}, () => {
+				this.save();
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -251,6 +249,8 @@ export class Main extends Component<Props, State> {
 				game: null,
 				screen: ScreenType.Landing,
 				dialog: null
+			}, () => {
+				this.save();
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -267,6 +267,8 @@ export class Main extends Component<Props, State> {
 			GameLogic.addHeroToGame(game, hero);
 			this.setState({
 				game: game
+			}, () => {
+				this.save();
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -281,6 +283,8 @@ export class Main extends Component<Props, State> {
 			});
 			this.setState({
 				game: game
+			}, () => {
+				this.save();
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -292,6 +296,8 @@ export class Main extends Component<Props, State> {
 			hero.xp += 1;
 			this.setState({
 				game: this.state.game
+			}, () => {
+				this.save();
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -304,6 +310,8 @@ export class Main extends Component<Props, State> {
 
 			this.setState({
 				game: this.state.game
+			}, () => {
+				this.save();
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -335,6 +343,8 @@ export class Main extends Component<Props, State> {
 
 			this.setState({
 				game: game
+			}, () => {
+				this.save();
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -366,6 +376,8 @@ export class Main extends Component<Props, State> {
 
 			this.setState({
 				game: game
+			}, () => {
+				this.save();
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -385,6 +397,8 @@ export class Main extends Component<Props, State> {
 
 			this.setState({
 				game: game
+			}, () => {
+				this.save();
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -410,6 +424,8 @@ export class Main extends Component<Props, State> {
 
 			this.setState({
 				game: game
+			}, () => {
+				this.save();
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -424,6 +440,8 @@ export class Main extends Component<Props, State> {
 
 			this.setState({
 				game: game
+			}, () => {
+				this.save();
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -446,6 +464,8 @@ export class Main extends Component<Props, State> {
 				this.setState({
 					game: game,
 					screen: ScreenType.Encounter
+				}, () => {
+					this.save();
 				});
 			}
 		} catch (ex) {
@@ -464,6 +484,8 @@ export class Main extends Component<Props, State> {
 
 				this.setState({
 					game: game
+				}, () => {
+					this.save();
 				});
 			}
 		} catch (ex) {
@@ -522,6 +544,8 @@ export class Main extends Component<Props, State> {
 
 			this.setState({
 				game: this.state.game
+			}, () => {
+				this.save();
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -540,6 +564,8 @@ export class Main extends Component<Props, State> {
 
 			this.setState({
 				game: this.state.game
+			}, () => {
+				this.save();
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -552,6 +578,8 @@ export class Main extends Component<Props, State> {
 
 			this.setState({
 				game: this.state.game
+			}, () => {
+				this.save();
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -564,6 +592,8 @@ export class Main extends Component<Props, State> {
 
 			this.setState({
 				game: this.state.game
+			}, () => {
+				this.save();
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -576,6 +606,8 @@ export class Main extends Component<Props, State> {
 
 			this.setState({
 				game: this.state.game
+			}, () => {
+				this.save();
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -588,6 +620,8 @@ export class Main extends Component<Props, State> {
 
 			this.setState({
 				game: this.state.game
+			}, () => {
+				this.save();
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -600,6 +634,8 @@ export class Main extends Component<Props, State> {
 
 			this.setState({
 				game: this.state.game
+			}, () => {
+				this.save();
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -612,6 +648,8 @@ export class Main extends Component<Props, State> {
 
 			this.setState({
 				game: this.state.game
+			}, () => {
+				this.save();
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -624,6 +662,8 @@ export class Main extends Component<Props, State> {
 
 			this.setState({
 				game: this.state.game
+			}, () => {
+				this.save();
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -636,6 +676,8 @@ export class Main extends Component<Props, State> {
 
 			this.setState({
 				game: this.state.game
+			}, () => {
+				this.save();
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -648,6 +690,8 @@ export class Main extends Component<Props, State> {
 
 			this.setState({
 				game: this.state.game
+			}, () => {
+				this.save();
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -660,6 +704,8 @@ export class Main extends Component<Props, State> {
 
 			this.setState({
 				game: this.state.game
+			}, () => {
+				this.save();
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -672,6 +718,8 @@ export class Main extends Component<Props, State> {
 
 			this.setState({
 				game: this.state.game
+			}, () => {
+				this.save();
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -684,6 +732,8 @@ export class Main extends Component<Props, State> {
 
 			this.setState({
 				game: this.state.game
+			}, () => {
+				this.save();
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -704,6 +754,8 @@ export class Main extends Component<Props, State> {
 
 			this.setState({
 				game: game
+			}, () => {
+				this.save();
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -723,6 +775,8 @@ export class Main extends Component<Props, State> {
 
 			this.setState({
 				game: game
+			}, () => {
+				this.save();
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -746,6 +800,8 @@ export class Main extends Component<Props, State> {
 
 			this.setState({
 				game: game
+			}, () => {
+				this.save();
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -767,6 +823,8 @@ export class Main extends Component<Props, State> {
 
 			this.setState({
 				game: game
+			}, () => {
+				this.save();
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -871,6 +929,8 @@ export class Main extends Component<Props, State> {
 				screen: ScreenType.Campaign,
 				game: game,
 				dialog: dialogContent
+			}, () => {
+				this.save();
 			});
 		} catch (ex) {
 			this.logException(ex);

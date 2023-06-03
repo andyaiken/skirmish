@@ -14,7 +14,6 @@
 	width: 1000px;
 	top: 5%;
 	bottom: 5%;
-	left: calc(50% - 500px);
 	border: 2px solid rgb(180, 180, 180);
 	border-radius: 15px;
 	background-color: rgb(255, 255, 255);
@@ -22,6 +21,21 @@
     flex-direction: column;
 	z-index: 200;
 	box-shadow: 10px 10px 30px 0 rgba(0, 0, 0, 0.2);
+
+	&.level-1 {
+		left: calc(50% - 500px);
+		width: 1000px;
+	}
+
+	&.level-2 {
+		left: 100px;
+		width: 800px;
+	}
+
+	&.level-3 {
+		left: 100px;
+		width: 600px;
+	}
 
 	.close-btn {
 		width: 45px;

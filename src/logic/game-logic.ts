@@ -296,8 +296,8 @@ export class GameLogic {
 			value += 1;
 		});
 
-		value += Collections.mean(species.features, feature => GameLogic.getFeatureStrength(feature));
-		value += Collections.mean(species.actions, action => GameLogic.getActionStrength(action));
+		value += Collections.mean(species.features, feature => GameLogic.getFeatureStrength(feature)) + species.features.length;
+		value += Collections.mean(species.actions, action => GameLogic.getActionStrength(action)) + species.actions.length;
 
 		return Math.round(value);
 	};
@@ -313,8 +313,8 @@ export class GameLogic {
 			value += 1;
 		});
 
-		value += Collections.mean(role.features, feature => GameLogic.getFeatureStrength(feature));
-		value += Collections.mean(role.actions, action => GameLogic.getActionStrength(action));
+		value += Collections.mean(role.features, feature => GameLogic.getFeatureStrength(feature)) + role.features.length;
+		value += Collections.mean(role.actions, action => GameLogic.getActionStrength(action)) + role.actions.length;
 
 		return Math.round(value);
 	};
@@ -322,8 +322,8 @@ export class GameLogic {
 	static getBackgroundStrength = (background: BackgroundModel) => {
 		let value = 0;
 
-		value += Collections.mean(background.features, feature => GameLogic.getFeatureStrength(feature));
-		value += Collections.mean(background.actions, action => GameLogic.getActionStrength(action));
+		value += Collections.mean(background.features, feature => GameLogic.getFeatureStrength(feature)) + background.features.length;
+		value += Collections.mean(background.actions, action => GameLogic.getActionStrength(action)) + background.actions.length;
 
 		return Math.round(value);
 	};
@@ -350,7 +350,7 @@ export class GameLogic {
 	};
 
 	static getActionStrength = (action: ActionModel) => {
-		let strength = 1;
+		let strength = 0;
 
 		const param = action.parameters.find(a => a.id === 'targets');
 		if (param) {
@@ -369,9 +369,8 @@ export class GameLogic {
 				}
 			}
 		}
-		if (ActionLogic.getActionRange(action) > 2) {
-			strength += 1;
-		}
+
+		strength += Math.max(ActionLogic.getActionRange(action), 1);
 
 		const checkEffects = (effects: ActionEffectModel[]) => {
 			let value = 0;

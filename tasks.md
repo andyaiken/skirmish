@@ -39,9 +39,6 @@
 * Dealing cold damage to a target on a water square turns all adjacent water squares into ice
 * Dealing fire damage to a target on an ice square turns all adjacent ice squares into water
 
-## Chests
-* Like a loot pile
-
 ## Potions
 * Could be found on the map (as a loot pile)
 * An extra section in the items page - 'Potions'
@@ -59,7 +56,7 @@
 * Present on the map - 1x2 squares
 * Counts as a wall: blocks LOS and can be broken down
 * Open a door for 1 movement point
-  * When opened, 
+  * When opened, removed from the map
 
 ## Keys
 * Another sort of consumable item, like a potion

@@ -163,6 +163,7 @@ export class SettingsPanel extends Component<Props, State> {
 				dialog = (
 					<Dialog
 						content={content}
+						level={2}
 						onClose={() => this.setActions('', CardType.Default, [], [])}
 					/>
 				);

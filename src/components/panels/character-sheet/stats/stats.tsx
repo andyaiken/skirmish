@@ -273,6 +273,7 @@ export class Stats extends Component<Props, State> {
 								<CardList cards={cards} />
 							</div>
 						)}
+						level={2}
 						onClose={() => this.setDeck(null)}
 					/>
 				);

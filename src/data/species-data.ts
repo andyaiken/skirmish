@@ -135,7 +135,7 @@ export class SpeciesData {
 						name: 'Divine Radiance',
 						prerequisites: [],
 						parameters: [
-							ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 5)
+							ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 3)
 						],
 						effects: [
 							ActionEffects.attack({
@@ -154,7 +154,7 @@ export class SpeciesData {
 						name: 'Divine Light',
 						prerequisites: [],
 						parameters: [
-							ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 5)
+							ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 3)
 						],
 						effects: [
 							ActionEffects.attack({

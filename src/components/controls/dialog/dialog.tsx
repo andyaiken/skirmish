@@ -5,11 +5,13 @@ import './dialog.scss';
 
 interface Props {
 	content: JSX.Element;
+	level: number;
 	onClose: (() => void) | null;
 }
 
 export class Dialog extends Component<Props> {
 	static defaultProps = {
+		level: 1,
 		onClose: null
 	};
 
@@ -37,7 +39,7 @@ export class Dialog extends Component<Props> {
 			}
 
 			return (
-				<div className='dialog' onClick={this.dialogClick}>
+				<div className={`dialog level-${this.props.level}`} onClick={this.dialogClick}>
 					{closeBtn}
 					<div className='dialog-content'>
 						{this.props.content}

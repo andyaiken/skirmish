@@ -1,6 +1,5 @@
 import { Component } from 'react';
 
-import { CardType } from '../../../../enums/card-type';
 import { CombatantType } from '../../../../enums/combatant-type';
 import { ItemLocationType } from '../../../../enums/item-location-type';
 
@@ -67,7 +66,7 @@ export class Items extends Component<Props> {
 
 				return (
 					<div key={item.id} className='item'>
-						<PlayingCard type={CardType.Item} front={<ItemCard item={item} />} footer='Item' />
+						<ItemCard item={item} />
 						{options}
 					</div>
 				);
@@ -122,7 +121,7 @@ export class Items extends Component<Props> {
 
 				return (
 					<div key={item.id} className='item'>
-						<PlayingCard type={CardType.Item} front={<ItemCard item={item} />} footer='Item' />
+						<ItemCard item={item} />
 						{options}
 					</div>
 				);
@@ -173,7 +172,7 @@ export class Items extends Component<Props> {
 
 				return (
 					<div key={item.id} className='item'>
-						<PlayingCard type={CardType.Item} front={<ItemCard item={item} />} footer='Item' />
+						<ItemCard item={item} />
 						{options}
 					</div>
 				);
@@ -218,7 +217,7 @@ export class Items extends Component<Props> {
 
 				return (
 					<div key={item.id} className='item'>
-						<PlayingCard type={CardType.Item} front={<ItemCard item={item} />} footer='Item' />
+						<ItemCard item={item} />
 						{options}
 					</div>
 				);

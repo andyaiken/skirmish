@@ -131,6 +131,17 @@ export class BackgroundData {
 						effects: [
 							ActionEffects.commandMove()
 						]
+					},
+					{
+						id: 'commander-action-3',
+						name: 'Inspiring Leadership',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 10)
+						],
+						effects: [
+							ActionEffects.healDamage(3)
+						]
 					}
 				]
 			},
@@ -150,7 +161,7 @@ export class BackgroundData {
 							ActionPrerequisites.emptyHand()
 						],
 						parameters: [
-							ActionTargetParameters.burst(ActionTargetType.Walls, 1, 10)
+							ActionTargetParameters.burst(ActionTargetType.Walls, 1, 8)
 						],
 						effects: [
 							ActionEffects.addSquares()
@@ -163,7 +174,7 @@ export class BackgroundData {
 							ActionPrerequisites.emptyHand()
 						],
 						parameters: [
-							ActionOriginParameters.distance(10),
+							ActionOriginParameters.distance(8),
 							ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 3)
 						],
 						effects: [
@@ -178,11 +189,12 @@ export class BackgroundData {
 							ActionPrerequisites.emptyHand()
 						],
 						parameters: [
-							ActionOriginParameters.distance(10),
+							ActionOriginParameters.distance(8),
 							ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 3)
 						],
 						effects: [
-							ActionEffects.dealDamage(DamageType.Fire, 3)
+							ActionEffects.dealDamage(DamageType.Fire, 2),
+							ActionEffects.addCondition(ConditionLogic.createAutoDamageCondition(TraitType.Endurance, 1, DamageType.Fire))
 						]
 					},
 					{
@@ -192,7 +204,7 @@ export class BackgroundData {
 							ActionPrerequisites.emptyHand()
 						],
 						parameters: [
-							ActionOriginParameters.distance(10),
+							ActionOriginParameters.distance(8),
 							ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 3)
 						],
 						effects: [
@@ -253,9 +265,7 @@ export class BackgroundData {
 					{
 						id: 'mystic-action-1',
 						name: 'Confusion',
-						prerequisites: [
-							ActionPrerequisites.implement()
-						],
+						prerequisites: [],
 						parameters: [
 							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
 						],
@@ -267,7 +277,6 @@ export class BackgroundData {
 						id: 'mystic-action-2',
 						name: 'Sympathetic Affliction',
 						prerequisites: [
-							ActionPrerequisites.implement(),
 							ActionPrerequisites.condition(TraitType.Any)
 						],
 						parameters: [
@@ -280,9 +289,7 @@ export class BackgroundData {
 					{
 						id: 'mystic-action-3',
 						name: 'Eldritch Reversal',
-						prerequisites: [
-							ActionPrerequisites.implement()
-						],
+						prerequisites: [],
 						parameters: [
 							ActionTargetParameters.burst(ActionTargetType.Combatants, 1, 5)
 						],

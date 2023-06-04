@@ -1,4 +1,7 @@
-import { Component } from 'react';
+import { Component, MouseEvent } from 'react';
+import { IconCheck, IconRefresh } from '@tabler/icons-react';
+
+import { CardType } from '../../../enums/card-type';
 
 import { ActionLogic } from '../../../logic/action-logic';
 import { FeatureLogic } from '../../../logic/feature-logic';
@@ -7,15 +10,48 @@ import type { SpeciesModel } from '../../../models/species';
 
 import { ListItemPanel } from '../../panels';
 
-import { Tag, Text, TextType } from '../../controls';
+import { PlayingCard, Tag, Text, TextType } from '../../controls';
+import { PlaceholderCard } from '../placeholder-card/placeholder-card';
 
 import './species-card.scss';
 
 interface Props {
 	species: SpeciesModel;
+	onSelect: ((species: SpeciesModel) => void) | null;
 }
 
-export class SpeciesCard extends Component<Props> {
+interface State {
+	flipped: boolean;
+}
+
+export class SpeciesCard extends Component<Props, State> {
+	static defaultProps = {
+		onSelect: null
+	};
+
+	constructor(props: Props) {
+		super(props);
+		this.state = {
+			flipped: false
+		};
+	}
+
+	onFlip = (e: MouseEvent) => {
+		e.stopPropagation();
+
+		this.setState({
+			flipped: !this.state.flipped
+		});
+	};
+
+	onSelect = (e: MouseEvent) => {
+		e.stopPropagation();
+
+		if (this.props.onSelect) {
+			this.props.onSelect(this.props.species);
+		}
+	};
+
 	render = () => {
 		const tags = this.props.species.quirks.map((q, n) => <Tag key={n}>{q}</Tag>);
 
@@ -59,18 +95,42 @@ export class SpeciesCard extends Component<Props> {
 			);
 		}
 
+		const buttons: JSX.Element[] = [];
+		buttons.push(
+			<button key='flip' className='icon-btn' onClick={this.onFlip}><IconRefresh /></button>
+		);
+		if (this.props.onSelect && (buttons.length > 0)) {
+			buttons.push(
+				<button key='select' className='icon-btn' onClick={this.onSelect}><IconCheck /></button>
+			);
+		}
+
 		return (
-			<div className='species-card'>
-				<Text type={TextType.SubHeading}>{this.props.species.name}</Text>
-				<hr />
-				<div className='description'>{this.props.species.description}</div>
-				{ tags.length > 0 ? <div className='tags'>{tags}</div> : null }
-				<hr />
-				{traits}
-				{skills}
-				{features}
-				{actions}
-			</div>
+			<PlayingCard
+				type={CardType.Species}
+				front={
+					<PlaceholderCard
+						text={this.props.species.name}
+						subtext={(
+							<div className='species-card'>
+								<Text type={TextType.Small}>{this.props.species.description}</Text>
+								<hr />
+								{ tags.length > 0 ? <div className='tags'>{tags}</div> : null }
+							</div>
+						)} />
+				}
+				back={(
+					<div className='species-card'>
+						{traits}
+						{skills}
+						{features}
+						{actions}
+					</div>
+				)}
+				footer={<div className='buttons'>{buttons}</div>}
+				flipped={this.state.flipped}
+				onClick={this.props.onSelect ? this.onSelect : null}
+			/>
 		);
 	};
 }

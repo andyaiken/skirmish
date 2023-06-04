@@ -14,7 +14,7 @@ import type { CombatantModel } from '../../../../models/combatant';
 import type { EncounterModel } from '../../../../models/encounter';
 import type { ItemModel } from '../../../../models/item';
 
-import { CardList, PlayingCard, Selector, Text, TextType } from '../../../controls';
+import { CardList, Selector, Text, TextType } from '../../../controls';
 import { ActionCard } from '../../../cards';
 
 import './combatant-action.scss';
@@ -42,13 +42,14 @@ export class CombatantAction extends Component<Props> {
 			.forEach(a => {
 				const prerequisitesMet = a.prerequisites.every(p => ActionPrerequisites.isSatisfied(p, this.props.combatant));
 				actionCards.push(
-					<PlayingCard
+					<ActionCard
 						key={a.id}
-						type={CardType.Action}
-						front={<ActionCard action={a} combatant={this.props.combatant} encounter={this.props.encounter} />}
+						action={a}
 						footer={CombatantLogic.getActionSource(this.props.combatant, a.id)}
 						footerType={CombatantLogic.getActionSourceType(this.props.combatant, a.id)}
-						onClick={prerequisitesMet ? () => this.props.selectAction(this.props.encounter, this.props.combatant, a) : null}
+						combatant={this.props.combatant}
+						encounter={this.props.encounter}
+						onSelect={action => prerequisitesMet ? this.props.selectAction(this.props.encounter, this.props.combatant, action) : null}
 					/>
 				);
 			});
@@ -59,13 +60,14 @@ export class CombatantAction extends Component<Props> {
 				const prerequisitesMet = a.prerequisites.every(p => ActionPrerequisites.isSatisfied(p, this.props.combatant));
 				if (prerequisitesMet) {
 					actionCards.push(
-						<PlayingCard
+						<ActionCard
 							key={a.id}
-							type={CardType.Action}
-							front={<ActionCard action={a} combatant={this.props.combatant} encounter={this.props.encounter} />}
+							action={a}
 							footer={CombatantLogic.getActionSource(this.props.combatant, a.id)}
 							footerType={CombatantLogic.getActionSourceType(this.props.combatant, a.id)}
-							onClick={() => this.props.selectAction(this.props.encounter, this.props.combatant, a)}
+							combatant={this.props.combatant}
+							encounter={this.props.encounter}
+							onSelect={action => this.props.selectAction(this.props.encounter, this.props.combatant, action)}
 						/>
 					);
 				}
@@ -314,12 +316,12 @@ export class CombatantAction extends Component<Props> {
 		return (
 			<div className='combatant-action'>
 				<div className='action-selected-card'>
-					<PlayingCard
-						key={action.id}
-						type={CardType.Action}
-						front={<ActionCard action={action} combatant={this.props.combatant} encounter={this.props.encounter} />}
+					<ActionCard
+						action={action}
 						footer={CombatantLogic.getActionSource(this.props.combatant, action.id)}
 						footerType={CombatantLogic.getActionSourceType(this.props.combatant, action.id)}
+						combatant={this.props.combatant}
+						encounter={this.props.encounter}
 					/>
 				</div>
 				<div className='action-details'>
@@ -347,12 +349,12 @@ export class CombatantAction extends Component<Props> {
 			<div className='combatant-action'>
 				<Text type={TextType.Information}>You have taken your action for this turn.</Text>
 				<div className='action-selected-card'>
-					<PlayingCard
-						key={action.id}
-						type={CardType.Action}
-						front={<ActionCard action={action} combatant={this.props.combatant} encounter={this.props.encounter} />}
+					<ActionCard
+						action={action}
 						footer={CombatantLogic.getActionSource(this.props.combatant, action.id)}
 						footerType={CombatantLogic.getActionSourceType(this.props.combatant, action.id)}
+						combatant={this.props.combatant}
+						encounter={this.props.encounter}
 					/>
 				</div>
 				{this.props.developer ? <button className='developer' onClick={() => this.props.drawActions(this.props.encounter, this.props.combatant)}>Act Again</button> : null}

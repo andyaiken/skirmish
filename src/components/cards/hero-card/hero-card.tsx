@@ -1,5 +1,7 @@
-import { Component } from 'react';
+import { Component, MouseEvent } from 'react';
+import { IconCheck, IconId, IconRefresh } from '@tabler/icons-react';
 
+import { CardType } from '../../../enums/card-type';
 import { TraitType } from '../../../enums/trait-type';
 
 import { CombatantLogic } from '../../../logic/combatant-logic';
@@ -9,16 +11,59 @@ import type { CombatantModel } from '../../../models/combatant';
 
 import { Color } from '../../../utils/color';
 
-import { StatValue, Tag, Text, TextType } from '../../controls';
+import { PlayingCard, StatValue, Tag, Text, TextType } from '../../controls';
 import { ListItemPanel } from '../../panels';
+import { PlaceholderCard } from '../placeholder-card/placeholder-card';
 
 import './hero-card.scss';
 
 interface Props {
 	hero: CombatantModel;
+	onCharacterSheet: ((hero: CombatantModel) => void) | null;
+	onSelect: ((hero: CombatantModel) => void) | null;
 }
 
-export class HeroCard extends Component<Props> {
+interface State {
+	flipped: boolean;
+}
+
+export class HeroCard extends Component<Props, State> {
+	static defaultProps = {
+		onCharacterSheet: null,
+		onSelect: null
+	};
+
+	constructor(props: Props) {
+		super(props);
+		this.state = {
+			flipped: false
+		};
+	}
+
+	onFlip = (e: MouseEvent) => {
+		e.stopPropagation();
+
+		this.setState({
+			flipped: !this.state.flipped
+		});
+	};
+
+	onCharacterSheet = (e: MouseEvent) => {
+		e.stopPropagation();
+
+		if (this.props.onCharacterSheet) {
+			this.props.onCharacterSheet(this.props.hero);
+		}
+	};
+
+	onSelect = (e: MouseEvent) => {
+		e.stopPropagation();
+
+		if (this.props.onSelect) {
+			this.props.onSelect(this.props.hero);
+		}
+	};
+
 	render = () => {
 		let colorDark = this.props.hero.color;
 		let colorLight = this.props.hero.color;
@@ -39,34 +84,66 @@ export class HeroCard extends Component<Props> {
 			);
 		}
 
+		const buttons: JSX.Element[] = [];
+		buttons.push(
+			<button key='flip' className='icon-btn' onClick={this.onFlip}><IconRefresh /></button>
+		);
+		if (this.props.onCharacterSheet) {
+			buttons.push(
+				<button key='character-sheet' className='icon-btn' onClick={this.onCharacterSheet}><IconId /></button>
+			);
+		}
+		if (this.props.onSelect && (buttons.length > 0)) {
+			buttons.push(
+				<button key='select' className='icon-btn' onClick={this.onSelect}><IconCheck /></button>
+			);
+		}
+
 		const species = GameLogic.getSpecies(this.props.hero.speciesID);
 		const role = GameLogic.getRole(this.props.hero.roleID);
 		const background = GameLogic.getBackground(this.props.hero.backgroundID);
 
 		return (
-			<div className='hero-card'>
-				<Text type={TextType.SubHeading}>{this.props.hero.name || 'unnamed hero'}</Text>
-				<div
-					className='color-box'
-					style={{
-						backgroundImage: `linear-gradient(135deg, ${colorLight}, ${this.props.hero.color})`,
-						borderColor: colorDark
-					}}
-				/>
-				<div className='tags'>
-					{species ? <Tag>{species.name}</Tag> : null}
-					{role ? <Tag>{role.name}</Tag> : null}
-					{background ? <Tag>{background.name}</Tag> : null}
-					<Tag>Level {this.props.hero.level}</Tag>
-					{this.props.hero.quirks.map((q, n) => <Tag key={n}>{q}</Tag>)}
-				</div>
-				<div className='traits'>
-					<StatValue orientation='vertical' label='End' value={CombatantLogic.getTraitRank(this.props.hero, [], TraitType.Endurance)} />
-					<StatValue orientation='vertical' label='Res' value={CombatantLogic.getTraitRank(this.props.hero, [], TraitType.Resolve)} />
-					<StatValue orientation='vertical' label='Spd' value={CombatantLogic.getTraitRank(this.props.hero, [], TraitType.Speed)} />
-				</div>
-				{items}
-			</div>
+			<PlayingCard
+				type={CardType.Hero}
+				front={(
+					<PlaceholderCard
+						text={this.props.hero.name}
+						subtext={(
+							<div className='hero-card'>
+								<div
+									className='color-box'
+									style={{
+										backgroundImage: `linear-gradient(135deg, ${colorLight}, ${this.props.hero.color})`,
+										borderColor: colorDark
+									}}
+								/>
+								<hr />
+								<div className='tags'>
+									{species ? <Tag>{species.name}</Tag> : null}
+									{role ? <Tag>{role.name}</Tag> : null}
+									{background ? <Tag>{background.name}</Tag> : null}
+									<Tag>Level {this.props.hero.level}</Tag>
+									{this.props.hero.quirks.map((q, n) => <Tag key={n}>{q}</Tag>)}
+								</div>
+							</div>
+						)}
+					/>
+				)}
+				back={(
+					<div className='hero-card'>
+						<div className='traits'>
+							<StatValue orientation='vertical' label='End' value={CombatantLogic.getTraitRank(this.props.hero, [], TraitType.Endurance)} />
+							<StatValue orientation='vertical' label='Res' value={CombatantLogic.getTraitRank(this.props.hero, [], TraitType.Resolve)} />
+							<StatValue orientation='vertical' label='Spd' value={CombatantLogic.getTraitRank(this.props.hero, [], TraitType.Speed)} />
+						</div>
+						{items}
+					</div>
+				)}
+				footer={<div className='buttons'>{buttons}</div>}
+				flipped={this.state.flipped}
+				onClick={this.props.onSelect ? this.onSelect : null}
+			/>
 		);
 	};
 }

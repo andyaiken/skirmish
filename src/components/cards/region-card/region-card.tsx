@@ -1,20 +1,56 @@
-import { Component } from 'react';
+import { Component, MouseEvent } from 'react';
+import { IconCheck, IconRefresh } from '@tabler/icons-react';
+
+import { CardType } from '../../../enums/card-type';
 
 import { GameLogic } from '../../../logic/game-logic';
 
 import type { RegionModel } from '../../../models/region';
 
-import { StatValue, Tag, Text, TextType } from '../../controls';
-
 import { Color } from '../../../utils/color';
+
+import { PlayingCard, StatValue, Tag } from '../../controls';
+import { PlaceholderCard } from '../placeholder-card/placeholder-card';
 
 import './region-card.scss';
 
 interface Props {
 	region: RegionModel;
+	onSelect: ((region: RegionModel) => void) | null;
 }
 
-export class RegionCard extends Component<Props> {
+interface State {
+	flipped: boolean;
+}
+
+export class RegionCard extends Component<Props, State> {
+	static defaultProps = {
+		onSelect: null
+	};
+
+	constructor(props: Props) {
+		super(props);
+		this.state = {
+			flipped: false
+		};
+	}
+
+	onFlip = (e: MouseEvent) => {
+		e.stopPropagation();
+
+		this.setState({
+			flipped: !this.state.flipped
+		});
+	};
+
+	onSelect = (e: MouseEvent) => {
+		e.stopPropagation();
+
+		if (this.props.onSelect) {
+			this.props.onSelect(this.props.region);
+		}
+	};
+
 	render = () => {
 		let colorDark = this.props.region.color;
 		let colorLight = this.props.region.color;
@@ -32,22 +68,49 @@ export class RegionCard extends Component<Props> {
 			.sort()
 			.map((m, n) => <Tag key={n}>{m}</Tag>);
 
+
+		const buttons: JSX.Element[] = [];
+		buttons.push(
+			<button key='flip' className='icon-btn' onClick={this.onFlip}><IconRefresh /></button>
+		);
+		if (this.props.onSelect && (buttons.length > 0)) {
+			buttons.push(
+				<button key='select' className='icon-btn' onClick={this.onSelect}><IconCheck /></button>
+			);
+		}
+
 		return (
-			<div className='region-card'>
-				<Text type={TextType.SubHeading}>{this.props.region.name}</Text>
-				<div
-					className='color-box'
-					style={{
-						backgroundImage: `linear-gradient(135deg, ${colorLight}, ${this.props.region.color})`,
-						borderColor: colorDark
-					}}
-				/>
-				<StatValue label='Area' value={`${this.props.region.demographics.size} sq mi`} />
-				<StatValue label='Population' value={`${(this.props.region.demographics.population * 100).toLocaleString()}`} />
-				<StatValue label='Terrain' value={this.props.region.demographics.terrain} />
-				<StatValue label='Denizens' value={monsters} />
-				<StatValue label='Number of Encounters' value={this.props.region.encounters.length} />
-			</div>
+			<PlayingCard
+				type={CardType.Region}
+				front={(
+					<PlaceholderCard
+						text={this.props.region.name}
+						subtext={(
+							<div className='region-card'>
+								<div
+									className='color-box'
+									style={{
+										backgroundImage: `linear-gradient(135deg, ${colorLight}, ${this.props.region.color})`,
+										borderColor: colorDark
+									}}
+								/>
+							</div>
+						)}
+					/>
+				)}
+				back={(
+					<div className='region-card'>
+						<StatValue label='Area' value={`${this.props.region.demographics.size} sq mi`} />
+						<StatValue label='Population' value={`${(this.props.region.demographics.population * 100).toLocaleString()}`} />
+						<StatValue label='Terrain' value={this.props.region.demographics.terrain} />
+						<StatValue label='Denizens' value={monsters} />
+						<StatValue label='Number of Encounters' value={this.props.region.encounters.length} />
+					</div>
+				)}
+				footer={<div className='buttons'>{buttons}</div>}
+				flipped={this.state.flipped}
+				onClick={this.props.onSelect ? this.onSelect : null}
+			/>
 		);
 	};
 }

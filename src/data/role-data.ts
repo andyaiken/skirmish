@@ -1109,7 +1109,8 @@ export class RoleData {
 				features: [
 					FeatureLogic.createTraitFeature('necromancer-feature-1', TraitType.Resolve, 1),
 					FeatureLogic.createSkillFeature('necromancer-feature-2', SkillType.Spellcasting, 2),
-					FeatureLogic.createAuraDamageFeature('necromancer-feature-3', ConditionType.AutoDamage, DamageType.Decay, 1)
+					FeatureLogic.createAuraDamageFeature('necromancer-feature-3', ConditionType.AutoDamage, DamageType.Decay, 1),
+					FeatureLogic.createDamageBonusFeature('necromancer-feature-4', DamageType.Decay, 2)
 				],
 				actions: [
 					{
@@ -1192,6 +1193,30 @@ export class RoleData {
 							ActionEffects.healDamage(3),
 							ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Resolve, 3, TraitType.Endurance)),
 							ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Resolve, 3, TraitType.Resolve))
+						]
+					},
+					{
+						id: 'necromancer-action-6',
+						name: 'Grave Bolt',
+						prerequisites: [
+							ActionPrerequisites.implement()
+						],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Spellcasting,
+								trait: TraitType.Resolve,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Decay, 3),
+									ActionEffects.toSelf([
+										ActionEffects.healWounds(1)
+									])
+								]
+							})
 						]
 					}
 				]

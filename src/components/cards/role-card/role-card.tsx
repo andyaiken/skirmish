@@ -1,4 +1,7 @@
-import { Component } from 'react';
+import { Component, MouseEvent } from 'react';
+import { IconCheck, IconRefresh } from '@tabler/icons-react';
+
+import { CardType } from '../../../enums/card-type';
 
 import { ActionLogic } from '../../../logic/action-logic';
 import { FeatureLogic } from '../../../logic/feature-logic';
@@ -7,15 +10,48 @@ import type { RoleModel } from '../../../models/role';
 
 import { ListItemPanel } from '../../panels';
 
-import { Text, TextType } from '../../controls';
+import { PlayingCard, Text, TextType } from '../../controls';
+import { PlaceholderCard } from '../placeholder-card/placeholder-card';
 
 import './role-card.scss';
 
 interface Props {
 	role: RoleModel;
+	onSelect: ((role: RoleModel) => void) | null;
 }
 
-export class RoleCard extends Component<Props> {
+interface State {
+	flipped: boolean;
+}
+
+export class RoleCard extends Component<Props, State> {
+	static defaultProps = {
+		onSelect: null
+	};
+
+	constructor(props: Props) {
+		super(props);
+		this.state = {
+			flipped: false
+		};
+	}
+
+	onFlip = (e: MouseEvent) => {
+		e.stopPropagation();
+
+		this.setState({
+			flipped: !this.state.flipped
+		});
+	};
+
+	onSelect = (e: MouseEvent) => {
+		e.stopPropagation();
+
+		if (this.props.onSelect) {
+			this.props.onSelect(this.props.role);
+		}
+	};
+
 	render = () => {
 		let traits = null;
 		if (this.props.role.traits.length > 0) {
@@ -67,18 +103,33 @@ export class RoleCard extends Component<Props> {
 			);
 		}
 
+		const buttons: JSX.Element[] = [];
+		buttons.push(
+			<button key='flip' className='icon-btn' onClick={this.onFlip}><IconRefresh /></button>
+		);
+		if (this.props.onSelect && (buttons.length > 0)) {
+			buttons.push(
+				<button key='select' className='icon-btn' onClick={this.onSelect}><IconCheck /></button>
+			);
+		}
+
 		return (
-			<div className='role-card'>
-				<Text type={TextType.SubHeading}>{this.props.role.name}</Text>
-				<hr />
-				<div className='description'>{this.props.role.description}</div>
-				<hr />
-				{traits}
-				{skills}
-				{profs}
-				{features}
-				{actions}
-			</div>
+			<PlayingCard
+				type={CardType.Role}
+				front={<PlaceholderCard text={this.props.role.name} subtext={this.props.role.description} />}
+				back={(
+					<div className='role-card'>
+						{traits}
+						{skills}
+						{profs}
+						{features}
+						{actions}
+					</div>
+				)}
+				footer={<div className='buttons'>{buttons}</div>}
+				flipped={this.state.flipped}
+				onClick={this.props.onSelect ? this.onSelect : null}
+			/>
 		);
 	};
 }

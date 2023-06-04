@@ -1,5 +1,7 @@
-import { Component } from 'react';
+import { Component, MouseEvent } from 'react';
+import { IconCheck, IconRefresh } from '@tabler/icons-react';
 
+import { CardType } from '../../../enums/card-type';
 import { ItemProficiencyType } from '../../../enums/item-proficiency-type';
 
 import { ActionLogic } from '../../../logic/action-logic';
@@ -9,15 +11,48 @@ import type { ItemModel } from '../../../models/item';
 
 import { ListItemPanel } from '../../panels';
 
-import { IconValue, StatValue, Tag, Text, TextType } from '../../controls';
+import { IconValue, PlayingCard, StatValue, Tag, Text, TextType } from '../../controls';
+import { PlaceholderCard } from '../placeholder-card/placeholder-card';
 
 import './item-card.scss';
 
 interface Props {
 	item: ItemModel;
+	onSelect: ((item: ItemModel) => void) | null;
 }
 
-export class ItemCard extends Component<Props> {
+interface State {
+	flipped: boolean;
+}
+
+export class ItemCard extends Component<Props, State> {
+	static defaultProps = {
+		onSelect: null
+	};
+
+	constructor(props: Props) {
+		super(props);
+		this.state = {
+			flipped: false
+		};
+	}
+
+	onFlip = (e: MouseEvent) => {
+		e.stopPropagation();
+
+		this.setState({
+			flipped: !this.state.flipped
+		});
+	};
+
+	onSelect = (e: MouseEvent) => {
+		e.stopPropagation();
+
+		if (this.props.onSelect) {
+			this.props.onSelect(this.props.item);
+		}
+	};
+
 	render = () => {
 		let location = this.props.item.location.toString();
 		if (this.props.item.slots > 1) {
@@ -70,22 +105,47 @@ export class ItemCard extends Component<Props> {
 			);
 		}
 
+		const buttons: JSX.Element[] = [];
+		buttons.push(
+			<button key='flip' className='icon-btn' onClick={this.onFlip}><IconRefresh /></button>
+		);
+		if (this.props.onSelect && (buttons.length > 0)) {
+			buttons.push(
+				<button key='select' className='icon-btn' onClick={this.onSelect}><IconCheck /></button>
+			);
+		}
+
 		return (
-			<div className='item-card'>
-				<Text type={TextType.SubHeading}>{this.props.item.name}</Text>
-				<hr />
-				<div className='description'>{this.props.item.description}</div>
-				<div className='tags'>
-					{this.props.item.baseItem !== '' ? <Tag>Magical {this.props.item.baseItem}</Tag> : null}
-					{this.props.item.proficiency !== ItemProficiencyType.None ? <Tag>{this.props.item.proficiency}</Tag> : null}
-					<Tag>{location}</Tag>
-				</div>
-				<hr />
-				{weapon}
-				{armor}
-				{features}
-				{actions}
-			</div>
+			<PlayingCard
+				type={CardType.Item}
+				front={(
+					<PlaceholderCard
+						text={this.props.item.name}
+						subtext={(
+							<div className='item-card'>
+								<Text type={TextType.Small}>{this.props.item.description}</Text>
+								<hr />
+								<div className='tags'>
+									{this.props.item.baseItem !== '' ? <Tag>Magical {this.props.item.baseItem}</Tag> : null}
+									{this.props.item.proficiency !== ItemProficiencyType.None ? <Tag>{this.props.item.proficiency}</Tag> : null}
+									<Tag>{location}</Tag>
+								</div>
+							</div>
+						)}
+					/>
+				)}
+				back={(
+					<div className='item-card'>
+						{weapon}
+						{armor}
+						{features}
+						{actions}
+					</div>
+				)}
+				footer={<div className='buttons'>{buttons}</div>}
+				flipped={this.state.flipped}
+				onClick={this.props.onSelect ? this.onSelect : null}
+			/>
 		);
 	};
 }

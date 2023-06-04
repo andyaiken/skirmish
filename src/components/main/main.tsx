@@ -293,7 +293,7 @@ export class Main extends Component<Props, State> {
 
 	incrementXP = (hero: CombatantModel) => {
 		try {
-			hero.xp += 1;
+			hero.xp = hero.level;
 			this.setState({
 				game: this.state.game
 			}, () => {
@@ -328,11 +328,13 @@ export class Main extends Component<Props, State> {
 			// Add XP
 			const spent = hero.level * (hero.level - 1) / 2;
 			const xp = Math.floor(spent + hero.xp / 2);
-			game.boons.push({
-				id: Utils.guid(),
-				type: BoonType.ExtraXP,
-				data: xp
-			});
+			if (xp > 0) {
+				game.boons.push({
+					id: Utils.guid(),
+					type: BoonType.ExtraXP,
+					data: xp
+				});
+			}
 
 			// Add magic items
 			hero.items.filter(i => i.magic).forEach(i => game.items.push(i));
@@ -902,8 +904,8 @@ export class Main extends Component<Props, State> {
 								<Text type={TextType.SubHeading}>You lost the encounter in {region.name}, and have no more heroes.</Text>
 								<Text>You can either continue your campaign with a new group of heroes, or abandon it.</Text>
 								<div className='defeat-options'>
-									<PlayingCard front={<PlaceholderCard text='Continue' />} onClick={() => this.restartCampaign()} />
-									<PlayingCard front={<PlaceholderCard text='Abandon' />} onClick={() => this.endCampaign()} />
+									<PlayingCard front={<PlaceholderCard text='Continue' onClick={() => this.restartCampaign()} />} />
+									<PlayingCard front={<PlaceholderCard text='Abandon' onClick={() => this.endCampaign()} />} />
 								</div>
 							</div>
 						);

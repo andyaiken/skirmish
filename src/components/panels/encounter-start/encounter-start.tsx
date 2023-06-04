@@ -1,14 +1,12 @@
 import { Component } from 'react';
 
-import { CardType } from '../../../enums/card-type';
-
 import { GameLogic } from '../../../logic/game-logic';
 
 import type { CombatantModel } from '../../../models/combatant';
 import type { GameModel } from '../../../models/game';
 import type { RegionModel } from '../../../models/region';
 
-import { CardList, PlayingCard, Selector, Tabs, Text, TextType } from '../../controls';
+import { CardList, Selector, Tabs, Text, TextType } from '../../controls';
 import { HeroCard, SpeciesCard } from '../../cards';
 import { CombatantRowPanel } from '../combatant-row/combatant-row-panel';
 
@@ -87,13 +85,7 @@ export class EncounterStartPanel extends Component<Props, State> {
 			.filter(h => !this.state.selectedHeroes.includes(h))
 			.map(h => {
 				return (
-					<PlayingCard
-						key={h.id}
-						type={CardType.Hero}
-						front={<HeroCard hero={h} />}
-						footer='Hero'
-						onClick={this.state.selectedHeroes.length < 5 ? () => this.selectHero(h) : null}
-					/>
+					<HeroCard key={h.id} hero={h} onSelect={this.state.selectedHeroes.length < 5 ? hero => this.selectHero(hero) : null} />
 				);
 			});
 
@@ -119,7 +111,7 @@ export class EncounterStartPanel extends Component<Props, State> {
 				const monsters = this.props.region.demographics.speciesIDs
 					.map(id => {
 						const species = GameLogic.getSpecies(id);
-						return species ? <PlayingCard type={CardType.Species} front={<SpeciesCard species={species} />} footer='Monster' /> : null;
+						return species ? <SpeciesCard species={species} /> : null;
 					});
 
 				rightContent = (

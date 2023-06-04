@@ -39,11 +39,12 @@ export class CombatantMonster extends Component<Props> {
 					<div className='actions'>
 						{
 							action ?
-								<PlayingCard
-									type={CardType.Action}
-									front={<ActionCard action={action} combatant={this.props.combatant} encounter={this.props.encounter} />}
+								<ActionCard
+									action={action}
 									footer={CombatantLogic.getActionSource(this.props.combatant, action.id)}
 									footerType={CombatantLogic.getActionSourceType(this.props.combatant, action.id)}
+									combatant={this.props.combatant}
+									encounter={this.props.encounter}
 								/>
 								:
 								<PlayingCard

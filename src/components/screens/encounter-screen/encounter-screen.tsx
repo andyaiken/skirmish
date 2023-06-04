@@ -2,7 +2,6 @@ import { Component, createRef } from 'react';
 import { IconArrowBackUpDouble, IconConfetti, IconInfoCircle, IconInfoCircleFilled, IconRotate2, IconRotateClockwise2, IconZoomIn, IconZoomOut } from '@tabler/icons-react';
 
 import { ActionTargetType } from '../../../enums/action-target-type';
-import { CardType } from '../../../enums/card-type';
 import { CombatantState } from '../../../enums/combatant-state';
 import { CombatantType } from '../../../enums/combatant-type';
 import { EncounterState } from '../../../enums/encounter-state';
@@ -18,7 +17,7 @@ import type { ItemModel } from '../../../models/item';
 import type { RegionModel } from '../../../models/region';
 
 import { BoonCard, ItemCard } from '../../cards';
-import { Box, CardList, Dialog, PlayingCard, StatValue, Text, TextType } from '../../controls';
+import { Box, CardList, Dialog, StatValue, Text, TextType } from '../../controls';
 import { CharacterSheetPanel, CombatantRowPanel, EncounterMapPanel, InitiativeListPanel, TreasureRowPanel, TurnLogPanel } from '../../panels';
 import { CombatantAction } from './combatant-action/combatant-action';
 import { CombatantHeader } from './combatant-header/combatant-header';
@@ -577,7 +576,7 @@ export class EncounterScreen extends Component<Props, State> {
 						content={
 							<div>
 								<Text type={TextType.Heading}>Treasure</Text>
-								<CardList cards={this.state.detailsLoot.items.map(i => <PlayingCard key={i.id} type={CardType.Item} front={<ItemCard item={i} />} footer='Item' />)} />
+								<CardList cards={this.state.detailsLoot.items.map(i => <ItemCard key={i.id} item={i} />)} />
 							</div>
 						}
 						onClose={() => this.clearDetails()}
@@ -725,7 +724,7 @@ class EncounterControls extends Component<EncounterControlsProps> {
 									<li>You have earned a reward.</li>
 								</ul>
 								<div className='region-reward'>
-									<PlayingCard type={CardType.Boon} front={<BoonCard boon={region.boon} />} footer='Reward' />
+									<BoonCard boon={region.boon} />
 								</div>
 								<hr />
 								<button onClick={() => this.props.finishEncounter(EncounterState.Victory)}>OK</button>

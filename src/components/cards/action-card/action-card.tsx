@@ -1,4 +1,7 @@
-import { Component } from 'react';
+import { Component, MouseEvent } from 'react';
+import { IconCheck } from '@tabler/icons-react';
+
+import { CardType } from '../../../enums/card-type';
 
 import { ActionEffects, ActionLogic, ActionPrerequisites } from '../../../logic/action-logic';
 
@@ -6,20 +9,51 @@ import type { ActionEffectModel, ActionModel } from '../../../models/action';
 import type { CombatantModel } from '../../../models/combatant';
 import type { EncounterModel } from '../../../models/encounter';
 
-import { Tag, Text, TextType } from '../../controls';
+import { PlayingCard, Tag, Text, TextType } from '../../controls';
 
 import './action-card.scss';
 
 interface Props {
 	action: ActionModel;
+	footer: string;
+	footerType: CardType;
 	combatant: CombatantModel | null;
 	encounter: EncounterModel | null;
+	onSelect: ((action: ActionModel) => void) | null;
 }
 
-export class ActionCard extends Component<Props> {
+interface State {
+	flipped: boolean;
+}
+
+export class ActionCard extends Component<Props, State> {
 	static defaultProps = {
 		combatant: null,
-		encounter: null
+		encounter: null,
+		onSelect: null
+	};
+
+	constructor(props: Props) {
+		super(props);
+		this.state = {
+			flipped: false
+		};
+	}
+
+	onFlip = (e: MouseEvent) => {
+		e.stopPropagation();
+
+		this.setState({
+			flipped: !this.state.flipped
+		});
+	};
+
+	onSelect = (e: MouseEvent) => {
+		e.stopPropagation();
+
+		if (this.props.onSelect) {
+			this.props.onSelect(this.props.action);
+		}
 	};
 
 	getPrerequisites = () => {
@@ -55,17 +89,33 @@ export class ActionCard extends Component<Props> {
 	};
 
 	render = () => {
+		const buttons: JSX.Element[] = [];
+		if (this.props.onSelect && (buttons.length > 0)) {
+			buttons.push(
+				<button key='select' className='icon-btn' onClick={this.onSelect}><IconCheck /></button>
+			);
+		}
+
 		return (
-			<div className='action-card'>
-				<Text type={TextType.SubHeading}>{this.props.action.name}</Text>
-				<div className='tags'>
-					<Tag>{ActionLogic.getActionType(this.props.action)}</Tag>
-					{ActionLogic.getActionSpeed(this.props.action) === 'Quick' ? <Tag>Quick</Tag> : null}
-				</div>
-				{this.getPrerequisites()}
-				{this.getParameters()}
-				{this.getEffects()}
-			</div>
+			<PlayingCard
+				type={CardType.Action}
+				front={(
+					<div className='action-card'>
+						<Text type={TextType.SubHeading}>{this.props.action.name}</Text>
+						<div className='tags'>
+							<Tag>{ActionLogic.getActionType(this.props.action)}</Tag>
+							{ActionLogic.getActionSpeed(this.props.action) === 'Quick' ? <Tag>Quick</Tag> : null}
+						</div>
+						{this.getPrerequisites()}
+						{this.getParameters()}
+						{this.getEffects()}
+					</div>
+				)}
+				footer={buttons.length > 0 ? <div className='buttons'>{buttons}</div> : this.props.footer}
+				footerType={this.props.footerType}
+				flipped={this.state.flipped}
+				onClick={this.props.onSelect ? this.onSelect : null}
+			/>
 		);
 	};
 }

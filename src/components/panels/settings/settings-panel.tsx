@@ -123,9 +123,8 @@ export class SettingsPanel extends Component<Props, State> {
 				this.state.features.forEach(f => {
 					featureCards.push(
 						<div key={f.id}>
-							<PlayingCard
-								type={CardType.Feature}
-								front={<FeatureCard feature={f} />}
+							<FeatureCard
+								feature={f}
 								footer={this.state.actionSourceName}
 								footerType={this.state.actionSourceType}
 							/>
@@ -141,9 +140,8 @@ export class SettingsPanel extends Component<Props, State> {
 				this.state.actions.forEach(a => {
 					actionCards.push(
 						<div key={a.id}>
-							<PlayingCard
-								type={CardType.Action}
-								front={<ActionCard action={a} />}
+							<ActionCard
+								action={a}
 								footer={this.state.actionSourceName}
 								footerType={this.state.actionSourceType}
 							/>
@@ -216,12 +214,7 @@ class DecksTab extends Component<DecksTabProps> {
 						SpeciesData.getList().filter(s => s.type === CombatantType.Hero).map(s => {
 							return (
 								<div key={s.id} className='card-cell'>
-									<PlayingCard
-										type={CardType.Species}
-										front={<SpeciesCard species={s} />}
-										footer='Species'
-										onClick={() => this.props.setActions(s.name, CardType.Species, s.features, s.actions)}
-									/>
+									<SpeciesCard species={s} onSelect={species => this.props.setActions(species.name, CardType.Species, species.features, species.actions)} />
 									{this.props.developer ? <StatValue label='Strength' value={GameLogic.getSpeciesStrength(s)} /> : null}
 								</div>
 							);
@@ -241,12 +234,7 @@ class DecksTab extends Component<DecksTabProps> {
 						SpeciesData.getList().filter(s => s.type === CombatantType.Monster).map(s => {
 							return (
 								<div key={s.id} className='card-cell'>
-									<PlayingCard
-										type={CardType.Species}
-										front={<SpeciesCard species={s} />}
-										footer='Monster'
-										onClick={() => this.props.setActions(s.name, CardType.Species, s.features, s.actions)}
-									/>
+									<SpeciesCard species={s} onSelect={species => this.props.setActions(species.name, CardType.Species, species.features, species.actions)} />
 									{this.props.developer ? <StatValue label='Strength' value={GameLogic.getSpeciesStrength(s)} /> : null}
 								</div>
 							);
@@ -266,12 +254,7 @@ class DecksTab extends Component<DecksTabProps> {
 						RoleData.getList().map(r => {
 							return (
 								<div key={r.id} className='card-cell'>
-									<PlayingCard
-										type={CardType.Role}
-										front={<RoleCard role={r} />}
-										footer='Role'
-										onClick={() => this.props.setActions(r.name, CardType.Role, r.features, r.actions)}
-									/>
+									<RoleCard role={r} onSelect={role => this.props.setActions(role.name, CardType.Role, role.features, role.actions)} />
 									{this.props.developer ? <StatValue label='Strength' value={GameLogic.getRoleStrength(r)} /> : null}
 								</div>
 							);
@@ -291,12 +274,7 @@ class DecksTab extends Component<DecksTabProps> {
 						BackgroundData.getList().map(b => {
 							return (
 								<div key={b.id} className='card-cell'>
-									<PlayingCard
-										type={CardType.Background}
-										front={<BackgroundCard background={b} />}
-										footer='Background'
-										onClick={() => this.props.setActions(b.name, CardType.Background, b.features, b.actions)}
-									/>
+									<BackgroundCard background={b} onSelect={background => this.props.setActions(background.name, CardType.Background, background.features, background.actions)} />
 									{this.props.developer ? <StatValue label='Strength' value={GameLogic.getBackgroundStrength(b)} /> : null}
 								</div>
 							);
@@ -316,11 +294,7 @@ class DecksTab extends Component<DecksTabProps> {
 						ItemData.getList().map(i => {
 							return (
 								<div key={i.id} className='card-cell'>
-									<PlayingCard
-										type={CardType.Item}
-										front={<ItemCard item={i} />}
-										footer='Item'
-									/>
+									<ItemCard item={i} />
 								</div>
 							);
 						})

@@ -1,5 +1,6 @@
 import { Component } from 'react';
 
+import { CardType } from '../../../enums/card-type';
 import { CombatantType } from '../../../enums/combatant-type';
 
 import { NameGenerator } from '../../../generators/name-generator';
@@ -158,7 +159,11 @@ export class SetupScreen extends Component<Props, State> {
 						<div className='left-panel'>
 							{
 								this.props.game.heroes.filter(h => h.name !== '').length === 0 ?
-									<PlayingCard stack={true} front={<PlaceholderCard text={<div>Draw A<br />Random<br />Team</div>} />} onClick={this.createHeroes} />
+									<PlayingCard
+										type={CardType.Species}
+										stack={true}
+										front={<PlaceholderCard text={<div>Draw A<br />Random<br />Team</div>} onClick={this.createHeroes} />}
+									/>
 									: null
 							}
 						</div>
@@ -169,7 +174,11 @@ export class SetupScreen extends Component<Props, State> {
 						<div className='right-panel'>
 							{
 								this.props.game.heroes.filter(h => h.name !== '').length >= 5 ?
-									<PlayingCard stack={true} front={<PlaceholderCard text={<div>Begin<br />The<br />Campaign</div>} />} onClick={this.props.beginCampaign} />
+									<PlayingCard
+										type={CardType.Role}
+										stack={true}
+										front={<PlaceholderCard text={<div>Begin<br />The<br />Campaign</div>} onClick={this.props.beginCampaign} />}
+									/>
 									: null
 							}
 						</div>

@@ -194,14 +194,12 @@ export class Stats extends Component<Props, State> {
 								<PlayingCard
 									stack={true}
 									type={CardType.Feature}
-									front={<PlaceholderCard text={<div>Feature<br />Deck</div>} />}
-									onClick={() => this.setDeck('features')}
+									front={<PlaceholderCard text={<div>Feature<br />Deck</div>} onClick={() => this.setDeck('features')} />}
 								/>
 								<PlayingCard
 									stack={true}
 									type={CardType.Action}
-									front={<PlaceholderCard text={<div>Action<br />Deck</div>} />}
-									onClick={() => this.setDeck('actions')}
+									front={<PlaceholderCard text={<div>Action<br />Deck</div>} onClick={() => this.setDeck('actions')} />}
 								/>
 							</div>
 							: null
@@ -222,14 +220,12 @@ export class Stats extends Component<Props, State> {
 					<PlayingCard
 						stack={true}
 						type={CardType.Feature}
-						front={<PlaceholderCard text={<div>Feature<br />Deck</div>} />}
-						onClick={() => this.setDeck('features')}
+						front={<PlaceholderCard text={<div>Feature<br />Deck</div>} onClick={() => this.setDeck('features')} />}
 					/>
 					<PlayingCard
 						stack={true}
 						type={CardType.Action}
-						front={<PlaceholderCard text={<div>Action<br />Deck</div>} />}
-						onClick={() => this.setDeck('actions')}
+						front={<PlaceholderCard text={<div>Action<br />Deck</div>} onClick={() => this.setDeck('actions')} />}
 					/>
 				</div>
 			);
@@ -242,10 +238,9 @@ export class Stats extends Component<Props, State> {
 					case 'features':
 						heading = 'Features';
 						cards = CombatantLogic.getFeatureDeck(this.props.combatant).map(f => (
-							<PlayingCard
+							<FeatureCard
 								key={f.id}
-								type={CardType.Feature}
-								front={<FeatureCard feature={f} />}
+								feature={f}
 								footer={CombatantLogic.getFeatureSource(this.props.combatant, f.id)}
 								footerType={CombatantLogic.getFeatureSourceType(this.props.combatant, f.id)}
 							/>
@@ -254,12 +249,12 @@ export class Stats extends Component<Props, State> {
 					case 'actions':
 						heading = 'Actions';
 						cards = CombatantLogic.getActionDeck(this.props.combatant).map(a => (
-							<PlayingCard
+							<ActionCard
 								key={a.id}
-								type={CardType.Action}
-								front={<ActionCard action={a} combatant={this.props.combatant} />}
+								action={a}
 								footer={CombatantLogic.getActionSource(this.props.combatant, a.id)}
 								footerType={CombatantLogic.getActionSourceType(this.props.combatant, a.id)}
+								combatant={this.props.combatant}
 							/>
 						));
 						break;

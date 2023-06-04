@@ -1,25 +1,75 @@
-import { Component } from 'react';
+import { Component, MouseEvent } from 'react';
+import { IconCheck } from '@tabler/icons-react';
+
+import { CardType } from '../../../enums/card-type';
 
 import { FeatureLogic } from '../../../logic/feature-logic';
 
 import type { FeatureModel } from '../../../models/feature';
 
-import { Text, TextType } from '../../controls';
+import { PlaceholderCard } from '../placeholder-card/placeholder-card';
+import { PlayingCard } from '../../controls';
 
 import './feature-card.scss';
 
 interface Props {
 	feature: FeatureModel;
+	footer: string;
+	footerType: CardType;
+	onSelect: ((feature: FeatureModel) => void) | null;
 }
 
-export class FeatureCard extends Component<Props> {
+interface State {
+	flipped: boolean;
+}
+
+export class FeatureCard extends Component<Props, State> {
+	static defaultProps = {
+		onSelect: null
+	};
+
+	constructor(props: Props) {
+		super(props);
+		this.state = {
+			flipped: false
+		};
+	}
+
+	onFlip = (e: MouseEvent) => {
+		e.stopPropagation();
+
+		this.setState({
+			flipped: !this.state.flipped
+		});
+	};
+
+	onSelect = (e: MouseEvent) => {
+		e.stopPropagation();
+
+		if (this.props.onSelect) {
+			this.props.onSelect(this.props.feature);
+		}
+	};
+
 	render = () => {
+		const buttons: JSX.Element[] = [];
+		if (this.props.onSelect && (buttons.length > 0)) {
+			buttons.push(
+				<button key='select' className='icon-btn' onClick={this.onSelect}><IconCheck /></button>
+			);
+		}
+
 		return (
-			<div className='feature-card'>
-				<Text type={TextType.SubHeading}>{FeatureLogic.getFeatureTitle(this.props.feature)}</Text>
-				<hr />
-				<Text>{FeatureLogic.getFeatureInformation(this.props.feature)}</Text>
-			</div>
+			<PlayingCard
+				type={CardType.Feature}
+				front={(
+					<PlaceholderCard text={FeatureLogic.getFeatureTitle(this.props.feature)} subtext={FeatureLogic.getFeatureInformation(this.props.feature)} />
+				)}
+				footer={buttons.length > 0 ? <div className='buttons'>{buttons}</div> : this.props.footer}
+				footerType={this.props.footerType}
+				flipped={this.state.flipped}
+				onClick={this.props.onSelect ? this.onSelect : null}
+			/>
 		);
 	};
 }

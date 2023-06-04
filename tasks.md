@@ -4,6 +4,8 @@
 * If you select a 'square' parameter, and move, the origin candidate squares do not move
 * Presumably this is the same for other parameter types
 
+## Cards
+* Move hero retire into card footer
 -----------------------------------------------------------------------------------------
 
 # Improvements / Enhancements

@@ -1,7 +1,6 @@
 import { Component } from 'react';
 
 import { BoonType } from '../../../../enums/boon-type';
-import { CardType } from '../../../../enums/card-type';
 import { GameLogic } from '../../../../logic/game-logic';
 
 import type { BoonModel } from '../../../../models/boon';
@@ -81,12 +80,7 @@ export class HeroesPage extends Component<Props, State> {
 			const cards = this.props.game.heroes.filter(h => !!h.name).map(hero => {
 				return (
 					<div key={hero.id}>
-						<PlayingCard
-							type={CardType.Hero}
-							front={<HeroCard hero={hero} />}
-							footer='Hero'
-							onClick={() => this.selectHero(hero)}
-						/>
+						<HeroCard hero={hero} onCharacterSheet={this.selectHero} />
 						{this.props.developer ? <button className='developer' onClick={() => this.props.incrementXP(hero)}>Add XP</button> : null}
 					</div>
 				);
@@ -113,7 +107,7 @@ export class HeroesPage extends Component<Props, State> {
 		if (this.props.game.boons.filter(boon => GameLogic.getBoonIsHeroType(boon)).length > 0) {
 			const cards = this.props.game.boons
 				.filter(boon => GameLogic.getBoonIsHeroType(boon))
-				.map(b => (<PlayingCard key={b.id} type={CardType.Boon} front={<BoonCard boon={b} />} footer='Reward' onClick={() => this.selectBoon(b)} />));
+				.map(b => <BoonCard key={b.id} boon={b} onSelect={this.selectBoon} />);
 			boons = (
 				<div>
 					<Text type={TextType.Information}><b>You have won these rewards.</b> Select a card to redeem that reward.</Text>
@@ -145,8 +139,7 @@ export class HeroesPage extends Component<Props, State> {
 					<div className='center'>
 						<PlayingCard
 							stack={true}
-							front={<PlaceholderCard text='Heroes' />}
-							onClick={() => this.setState({ selectedHero: blank[0] })}
+							front={<PlaceholderCard text='Heroes' onClick={() => this.setState({ selectedHero: blank[0] })} />}
 						/>
 					</div>
 				</div>
@@ -221,17 +214,16 @@ export class HeroesPage extends Component<Props, State> {
 				.filter(h => h.name !== '')
 				.map(h => {
 					return (
-						<PlayingCard
+						<HeroCard
 							key={h.id}
-							type={CardType.Hero}
-							front={<HeroCard hero={h} />}
-							footer='Hero'
-							onClick={() => {
+							hero={h}
+							onSelect={hero => {
+								//
 								const boon = this.state.selectedBoon as BoonModel;
 								this.setState({
 									selectedBoon: null
 								}, () => {
-									this.props.redeemBoon(boon, h);
+									this.props.redeemBoon(boon, hero);
 								});
 							}}
 						/>

@@ -1,6 +1,5 @@
 import { Component } from 'react';
 
-import { CardType } from '../../../../enums/card-type';
 import { FeatureType } from '../../../../enums/feature-type';
 
 import { CombatantLogic } from '../../../../logic/combatant-logic';
@@ -11,7 +10,7 @@ import type { FeatureModel } from '../../../../models/feature';
 
 import { Collections } from '../../../../utils/collections';
 
-import { CardList, PlayingCard, Text, TextType } from '../../../controls';
+import { CardList, Text, TextType } from '../../../controls';
 import { ChoicePanel } from './choice/choice';
 import { FeatureCard } from '../../../cards';
 
@@ -85,15 +84,13 @@ export class LevelUp extends Component<Props, State> {
 		try {
 			const featureCards = this.state.features.map(feature => {
 				return (
-					<div key={feature.id}>
-						<PlayingCard
-							type={CardType.Feature}
-							front={<FeatureCard feature={feature} />}
-							footer={CombatantLogic.getActionSource(this.props.combatant, feature.id) || 'Feature'}
-							footerType={CombatantLogic.getActionSourceType(this.props.combatant, feature.id)}
-							onClick={() => this.setState({ selectedFeature: feature })}
-						/>
-					</div>
+					<FeatureCard
+						key={feature.id}
+						feature={feature}
+						footer={CombatantLogic.getActionSource(this.props.combatant, feature.id) || 'Feature'}
+						footerType={CombatantLogic.getActionSourceType(this.props.combatant, feature.id)}
+						onSelect={f => this.setState({ selectedFeature: f })}
+					/>
 				);
 			});
 
@@ -101,9 +98,7 @@ export class LevelUp extends Component<Props, State> {
 			if (this.state.selectedFeature) {
 				selected = (
 					<div className='selected-feature'>
-						<PlayingCard
-							type={CardType.Feature}
-							front={<FeatureCard feature={this.state.selectedFeature} />}
+						<FeatureCard feature={this.state.selectedFeature}
 							footer={CombatantLogic.getActionSource(this.props.combatant, this.state.selectedFeature.id) || 'Feature'}
 							footerType={CombatantLogic.getActionSourceType(this.props.combatant, this.state.selectedFeature.id)}
 						/>

@@ -1,7 +1,5 @@
 import { Component } from 'react';
 
-import { CardType } from '../../../../enums/card-type';
-
 import { CampaignMapLogic } from '../../../../logic/campaign-map-logic';
 
 import type { CombatantModel } from '../../../../models/combatant';
@@ -12,7 +10,7 @@ import { Collections } from '../../../../utils/collections';
 
 import { BoonCard, RegionCard } from '../../../cards';
 import { CampaignMapPanel, EncounterStartPanel } from '../../../panels';
-import { Dialog, PlayingCard, StatValue, Text, TextType } from '../../../controls';
+import { Dialog, StatValue, Text, TextType } from '../../../controls';
 
 import './campaign-map-page.scss';
 
@@ -52,12 +50,12 @@ export class CampaignMapPage extends Component<Props, State> {
 			return (
 				<div className='sidebar'>
 					<div className='card'>
-						<PlayingCard type={CardType.Region} front={<RegionCard region={this.state.selectedRegion} />} footer='Region' />
+						<RegionCard region={this.state.selectedRegion} />
 					</div>
 					<hr />
 					<Text>If you take control of {this.state.selectedRegion.name}, you will recieve:</Text>
 					<div className='boon'>
-						<PlayingCard type={CardType.Boon} front={<BoonCard boon={this.state.selectedRegion.boon} />} footer='Reward' />
+						<BoonCard boon={this.state.selectedRegion.boon} />
 					</div>
 					<hr />
 					{canAttack ? null : <Text type={TextType.Information}>You can&apos;t attack {this.state.selectedRegion.name} because it&apos;s not on the coast or adjacent to your land.</Text>}

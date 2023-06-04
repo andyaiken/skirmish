@@ -1,6 +1,5 @@
 import { Component } from 'react';
 
-import { CardType } from '../../../../enums/card-type';
 import { ItemProficiencyType } from '../../../../enums/item-proficiency-type';
 
 import { CombatantLogic } from '../../../../logic/combatant-logic';
@@ -78,7 +77,7 @@ export class ItemsPage extends Component<Props, State> {
 		if (this.props.game.boons.filter(boon => !GameLogic.getBoonIsHeroType(boon)).length > 0) {
 			const cards = this.props.game.boons
 				.filter(boon => !GameLogic.getBoonIsHeroType(boon))
-				.map(b => (<PlayingCard key={b.id} type={CardType.Boon} front={<BoonCard boon={b} />} footer='Reward' onClick={() => this.props.redeemBoon(b, null)} />));
+				.map(b => <BoonCard key={b.id} boon={b} onSelect={boon => this.props.redeemBoon(boon, null)} />);
 			boons = (
 				<div>
 					<Text type={TextType.Information}><b>You have won these rewards.</b> Select a card to redeem a reward.</Text>
@@ -97,8 +96,7 @@ export class ItemsPage extends Component<Props, State> {
 					<div className='center'>
 						<PlayingCard
 							stack={true}
-							front={<PlaceholderCard text={<div>Magic<br />Items</div>} subtext={<IconValue type={IconType.Money} value={100} iconSize={15} />} />}
-							onClick={() => this.showMarket()}
+							front={<PlaceholderCard text={<div>Magic<br />Items</div>} subtext={<IconValue type={IconType.Money} value={100} iconSize={15} />} onClick={() => this.showMarket()} />}
 						/>
 					</div>
 				</div>
@@ -138,12 +136,7 @@ export class ItemsPage extends Component<Props, State> {
 
 			return (
 				<div key={item.id}>
-					<PlayingCard
-						type={CardType.Item}
-						front={<ItemCard item={item} />}
-						footer='Item'
-						onClick={() => this.buyItem(item)}
-					/>
+					<ItemCard item={item} onSelect={this.buyItem} />
 					<div className='usable-by'>
 						Can be used by:
 					</div>
@@ -186,11 +179,7 @@ export class ItemsPage extends Component<Props, State> {
 
 					return (
 						<div key={item.id}>
-							<PlayingCard
-								type={CardType.Item}
-								front={<ItemCard item={item} />}
-								footer='Item'
-							/>
+							<ItemCard item={item} />
 							<div>
 								<button onClick={() => this.props.sellItem(item, true)}>Sell</button>
 							</div>
@@ -230,11 +219,7 @@ export class ItemsPage extends Component<Props, State> {
 
 					return (
 						<div key={item.id}>
-							<PlayingCard
-								type={CardType.Item}
-								front={<ItemCard item={item} />}
-								footer='Item'
-							/>
+							<ItemCard item={item} />
 							{footer}
 						</div>
 					);

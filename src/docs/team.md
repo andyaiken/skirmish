@@ -10,7 +10,7 @@ Building a hero is simple, and has only three steps:
 
 * **Choosing species, role, and background**: Three species cards, three role cards, and three background cards will be drawn for you; pick one card from each row.
 * **Choosing equipment**: For every proficiency your hero has, three item cards will be drawn for you; pick one card from each row.
-* **Choose a name**: Click the `Rename this Hero` button until you're happy with your new hero's name.
+* **Choose a name and a color**: Click the `Change Name` and `Change Color` buttons until you're happy with your new hero.
 
 ## The Character Sheet
 

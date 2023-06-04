@@ -53,15 +53,17 @@ export class EncounterGenerator {
 				switch (Random.randomNumber(10, rng)) {
 					case 0: {
 						// Add a random monster
-						const speciesID = Collections.draw(region.demographics.speciesIDs, rng);
-						const roleID = Collections.draw(GameLogic.getRoleDeck(), rng);
-						const backgroundID = Collections.draw(GameLogic.getBackgroundDeck(), rng);
-						addMonster(speciesID, roleID, backgroundID);
+						if (monsters.length < (heroes.length * 2)) {
+							const speciesID = Collections.draw(region.demographics.speciesIDs, rng);
+							const roleID = Collections.draw(GameLogic.getRoleDeck(), rng);
+							const backgroundID = Collections.draw(GameLogic.getBackgroundDeck(), rng);
+							addMonster(speciesID, roleID, backgroundID);
+						}
 						break;
 					}
 					case 1: {
 						// Add a monster we already have, keeping the species only
-						if (monsters.length > 0) {
+						if ((monsters.length > 0) && (monsters.length < (heroes.length * 2))) {
 							const original = Collections.draw(monsters, rng);
 							const speciesID = original.speciesID;
 							const roleID = Collections.draw(GameLogic.getRoleDeck(), rng);
@@ -73,7 +75,7 @@ export class EncounterGenerator {
 					case 2:
 					case 3: {
 						// Add a monster we already have, keeping the species and role
-						if (monsters.length > 0) {
+						if ((monsters.length > 0) && (monsters.length < (heroes.length * 2))) {
 							const original = Collections.draw(monsters, rng);
 							const speciesID = original.speciesID;
 							const roleID = original.roleID;

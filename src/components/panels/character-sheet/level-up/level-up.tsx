@@ -87,8 +87,8 @@ export class LevelUp extends Component<Props, State> {
 					<FeatureCard
 						key={feature.id}
 						feature={feature}
-						footer={CombatantLogic.getActionSource(this.props.combatant, feature.id) || 'Feature'}
-						footerType={CombatantLogic.getActionSourceType(this.props.combatant, feature.id)}
+						footer={CombatantLogic.getFeatureSource(this.props.combatant, feature.id) || 'Feature'}
+						footerType={CombatantLogic.getFeatureSourceType(this.props.combatant, feature.id)}
 						onSelect={f => this.setState({ selectedFeature: f })}
 					/>
 				);
@@ -99,8 +99,8 @@ export class LevelUp extends Component<Props, State> {
 				selected = (
 					<div className='selected-feature'>
 						<FeatureCard feature={this.state.selectedFeature}
-							footer={CombatantLogic.getActionSource(this.props.combatant, this.state.selectedFeature.id) || 'Feature'}
-							footerType={CombatantLogic.getActionSourceType(this.props.combatant, this.state.selectedFeature.id)}
+							footer={CombatantLogic.getFeatureSource(this.props.combatant, this.state.selectedFeature.id) || 'Feature'}
+							footerType={CombatantLogic.getFeatureSourceType(this.props.combatant, this.state.selectedFeature.id)}
 						/>
 					</div>
 				);

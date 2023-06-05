@@ -107,7 +107,8 @@ export class RegionCard extends Component<Props, State> {
 						<StatValue label='Number of Encounters' value={this.props.region.encounters.length} />
 					</div>
 				)}
-				footer={<div className='buttons'>{buttons}</div>}
+				footerText='Region'
+				footerContent={buttons}
 				flipped={this.state.flipped}
 				onClick={this.props.onSelect ? this.onSelect : null}
 			/>

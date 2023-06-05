@@ -93,7 +93,8 @@ export class BackgroundCard extends Component<Props, State> {
 						{actions}
 					</div>
 				)}
-				footer={<div className='buttons'>{buttons}</div>}
+				footerText='Background'
+				footerContent={buttons}
 				flipped={this.state.flipped}
 				onClick={this.props.onSelect ? this.onSelect : null}
 			/>

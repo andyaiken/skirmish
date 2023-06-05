@@ -10,7 +10,8 @@ interface Props {
 	type: CardType;
 	front: JSX.Element;
 	back: JSX.Element | null;
-	footer: JSX.Element | string | null;
+	footerText: string;
+	footerContent: JSX.Element[];
 	footerType: CardType | null;
 	flipped: boolean;
 	onClick: ((e: MouseEvent) => void) | null;
@@ -21,7 +22,8 @@ export class PlayingCard extends Component<Props> {
 		stack: false,
 		type: CardType.Default,
 		back: null,
-		footer: null,
+		footerText: '',
+		footerContent: [],
 		footerType: null,
 		flipped: false,
 		onClick: null
@@ -67,8 +69,8 @@ export class PlayingCard extends Component<Props> {
 				}
 			}
 
-			const hasFooter = (this.props.footer !== null);
-			const footerType = this.props.footerType || this.props.type;
+			const hasFooter = (this.props.footerText !== '') || (this.props.footerContent.length !== 0);
+			const footerType = (this.props.footerType || this.props.type).toLowerCase();
 
 			return (
 				<div className={className} onClick={this.onClick}>
@@ -76,11 +78,33 @@ export class PlayingCard extends Component<Props> {
 					<div className='playing-card-inner'>
 						<div className={`playing-card-front ${this.props.type.toLowerCase()}`}>
 							<div className='card-content'>{this.props.front}</div>
-							{ hasFooter ? <div className={`card-footer ${footerType.toLowerCase()}`}>{this.props.footer}</div> : null }
+							{
+								hasFooter ?
+									<div className={`card-footer ${footerType}`}>
+										<div className={this.props.footerContent.length === 0 ? 'card-footer-text card-footer-text-full' : 'card-footer-text card-footer-text-left'}>
+											{this.props.footerText}
+										</div>
+										<div className='card-footer-content'>
+											{this.props.footerContent}
+										</div>
+									</div>
+									: null
+							}
 						</div>
 						<div className={`playing-card-back ${this.props.type.toLowerCase()}`}>
 							<div className='card-content'>{this.props.back}</div>
-							{ hasFooter ? <div className={`card-footer ${footerType.toLowerCase()}`}>{this.props.footer}</div> : null }
+							{
+								hasFooter ?
+									<div className={`card-footer ${footerType}`}>
+										<div className={this.props.footerContent.length === 0 ? 'card-footer-text card-footer-text-full' : 'card-footer-text card-footer-text-left'}>
+											{this.props.footerText}
+										</div>
+										<div className='card-footer-content'>
+											{this.props.footerContent}
+										</div>
+									</div>
+									: null
+							}
 						</div>
 					</div>
 				</div>

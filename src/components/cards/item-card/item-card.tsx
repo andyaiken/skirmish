@@ -142,7 +142,8 @@ export class ItemCard extends Component<Props, State> {
 						{actions}
 					</div>
 				)}
-				footer={<div className='buttons'>{buttons}</div>}
+				footerText='Item'
+				footerContent={buttons}
 				flipped={this.state.flipped}
 				onClick={this.props.onSelect ? this.onSelect : null}
 			/>

@@ -59,8 +59,9 @@ export class BackgroundData {
 				name: 'Bard',
 				description: 'The charismatic bard inspires their allies to greatness.',
 				features: [
-					FeatureLogic.createSkillCategoryFeature('bard-feature-1', SkillCategoryType.Mental, 1),
-					FeatureLogic.createProficiencyFeature('bard-feature-2', ItemProficiencyType.Any)
+					FeatureLogic.createSkillFeature('bard-feature-1', SkillType.Presence, 2),
+					FeatureLogic.createSkillCategoryFeature('bard-feature-2', SkillCategoryType.Mental, 1),
+					FeatureLogic.createProficiencyFeature('bard-feature-3', ItemProficiencyType.Any)
 				],
 				actions: [
 					{
@@ -94,6 +95,19 @@ export class BackgroundData {
 						],
 						effects: [
 							ActionEffects.addCondition(ConditionLogic.createSkillCategoryBonusCondition(TraitType.Resolve, 8, SkillCategoryType.Mental))
+						]
+					},
+					{
+						id: 'bard-action-4',
+						name: 'Song of Victory',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 10)
+						],
+						effects: [
+							ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 1, TraitType.Endurance)),
+							ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 1, TraitType.Resolve)),
+							ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 1, TraitType.Speed))
 						]
 					}
 				]
@@ -134,13 +148,14 @@ export class BackgroundData {
 					},
 					{
 						id: 'commander-action-3',
-						name: 'Inspiring Leadership',
+						name: 'Rally',
 						prerequisites: [],
 						parameters: [
 							ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 10)
 						],
 						effects: [
-							ActionEffects.healDamage(3)
+							ActionEffects.healDamage(3),
+							ActionEffects.stand()
 						]
 					}
 				]
@@ -390,6 +405,19 @@ export class BackgroundData {
 						prerequisites: [],
 						parameters: [
 							ActionTargetParameters.adjacent(ActionTargetType.Allies, Number.MAX_VALUE)
+						],
+						effects: [
+							ActionEffects.healWounds(1)
+						]
+					},
+					{
+						id: 'physician-action-4',
+						name: 'Heal Thyself',
+						prerequisites: [
+							ActionPrerequisites.wound()
+						],
+						parameters: [
+							ActionTargetParameters.self()
 						],
 						effects: [
 							ActionEffects.healWounds(1)

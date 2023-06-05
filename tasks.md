@@ -5,10 +5,13 @@
 * Presumably this is the same for other parameter types
 
 ## Cards
-* Move hero retire into card footer
+* Item card can flip to show nothing
 -----------------------------------------------------------------------------------------
 
 # Improvements / Enhancements
+
+## Cards
+* Move hero retire into footer
 
 ## Character Sheet
 * Show ranks as filled circles
@@ -98,6 +101,7 @@
   * Showmanship
 * Cleric
 * Paladin / warpriest
+* Ravager
 
 ## Ideas for Species
 * Small:

@@ -75,7 +75,8 @@ export class LootPileCard extends Component<Props, State> {
 						{itemSection}
 					</div>
 				)}
-				footer={buttons.length > 0 ? <div className='buttons'>{buttons}</div> : 'Item'}
+				footerText='Item'
+				footerContent={buttons}
 				flipped={this.state.flipped}
 				onClick={this.props.onSelect ? this.onSelect : null}
 			/>

@@ -65,7 +65,8 @@ export class FeatureCard extends Component<Props, State> {
 				front={(
 					<PlaceholderCard text={FeatureLogic.getFeatureTitle(this.props.feature)} subtext={FeatureLogic.getFeatureInformation(this.props.feature)} />
 				)}
-				footer={buttons.length > 0 ? <div className='buttons'>{buttons}</div> : this.props.footer}
+				footerText={this.props.footer || 'Feature'}
+				footerContent={buttons}
 				footerType={this.props.footerType}
 				flipped={this.state.flipped}
 				onClick={this.props.onSelect ? this.onSelect : null}

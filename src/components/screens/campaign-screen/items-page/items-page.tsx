@@ -42,11 +42,18 @@ export class ItemsPage extends Component<Props, State> {
 	}
 
 	showMarket = () => {
-		const items = [
-			MagicItemGenerator.generateMagicItem(),
-			MagicItemGenerator.generateMagicItem(),
-			MagicItemGenerator.generateMagicItem()
-		];
+		const items: ItemModel[] = [];
+		while (items.length < 3) {
+			const item = MagicItemGenerator.generateMagicItem();
+
+			const heroes = this.props.game.heroes
+				.filter(h => h.name !== '')
+				.filter(h => (item.proficiency === ItemProficiencyType.None) || CombatantLogic.getProficiencies(h).includes(item.proficiency));
+
+			if (heroes.length > 0) {
+				items.push(item);
+			}
+		}
 
 		this.setState({
 			magicItems: items

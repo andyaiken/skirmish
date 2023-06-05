@@ -2,6 +2,7 @@ import { Component, MouseEvent } from 'react';
 import { IconCheck, IconRefresh } from '@tabler/icons-react';
 
 import { CardType } from '../../../enums/card-type';
+import { CombatantType } from '../../../enums/combatant-type';
 
 import { ActionLogic } from '../../../logic/action-logic';
 import { FeatureLogic } from '../../../logic/feature-logic';
@@ -127,7 +128,8 @@ export class SpeciesCard extends Component<Props, State> {
 						{actions}
 					</div>
 				)}
-				footer={<div className='buttons'>{buttons}</div>}
+				footerText={this.props.species.type === CombatantType.Hero ? 'Species' : 'Monster'}
+				footerContent={buttons}
 				flipped={this.state.flipped}
 				onClick={this.props.onSelect ? this.onSelect : null}
 			/>

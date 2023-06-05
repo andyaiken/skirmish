@@ -94,7 +94,8 @@ export class BoonCard extends Component<Props, State> {
 						)}
 					/>
 				)}
-				footer={buttons.length > 0 ? <div className='buttons'>{buttons}</div> : 'Reward'}
+				footerText='Reward'
+				footerContent={buttons}
 				flipped={this.state.flipped}
 				onClick={this.props.onSelect ? this.onSelect : null}
 			/>

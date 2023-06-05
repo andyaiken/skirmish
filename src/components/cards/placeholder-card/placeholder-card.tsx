@@ -1,11 +1,9 @@
 import { Component, MouseEvent } from 'react';
 
-import { Text, TextType } from '../../controls';
-
 import './placeholder-card.scss';
 
-// TODO: Rename this to PlayingCardFace
-// TODO: Create a new card type, PlainCard
+// TODO: Rename this to PlayingCardFace, and add it to the PlayingCard file
+// TODO: Create a new card type, SimpleCard, which uses PlayingCard like the others
 
 interface Props {
 	text: string | JSX.Element;
@@ -30,9 +28,9 @@ export class PlaceholderCard extends Component<Props> {
 
 		return (
 			<div className={className} onClick={this.onClick}>
-				{this.props.text ? <Text type={TextType.SubHeading}>{this.props.text}</Text> : null}
+				{this.props.text ? <div className='main-text'>{this.props.text}</div> : null}
 				{this.props.text && this.props.subtext ? <hr /> : null}
-				{this.props.subtext ? <Text type={TextType.Small}>{this.props.subtext}</Text> : null}
+				{this.props.subtext ? <div className='sub-text'>{this.props.subtext}</div> : null}
 			</div>
 		);
 	};

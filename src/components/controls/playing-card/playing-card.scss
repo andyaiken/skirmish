@@ -47,28 +47,38 @@
 			}
 
 			.card-footer {
-				flex: 0 0 50px;
+				flex: 0 0 auto;
 				border-top: 1px solid rgb(220, 220, 220);
 				border-radius: 0 0 13px 13px;
 				background-color: rgb(240, 240, 240);
 				padding: 5px 10px;
-				text-transform: uppercase;
-				font-size: 12px;
-				font-weight: 600;
-				letter-spacing: 3px;
 				display: flex;
 				align-items: center;
-				justify-content: center;
 
-				.buttons {
+				.card-footer-text {
+					flex: 1 1 0;
+					text-transform: uppercase;
+					font-size: 10px;
+					font-weight: 600;
+					letter-spacing: 1px;
+
+					&.card-footer-text-full {
+						text-align: center;
+					}
+
+					&.card-footer-text-left {
+						text-align: left;
+						padding-left: 5px;
+					}
+				}
+
+				.card-footer-content {
+					flex: 0 0 auto;
 					display: flex;
-					flex-direction: row;
 					align-items: center;
-					justify-content: space-evenly;
 
 					.icon-btn {
 						flex: 0 0 40px;
-						width: 40px;
 					}
 				}
 			}

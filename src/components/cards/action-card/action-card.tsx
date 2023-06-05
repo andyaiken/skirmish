@@ -111,7 +111,8 @@ export class ActionCard extends Component<Props, State> {
 						{this.getEffects()}
 					</div>
 				)}
-				footer={buttons.length > 0 ? <div className='buttons'>{buttons}</div> : this.props.footer}
+				footerText={this.props.footer || 'Action'}
+				footerContent={buttons}
 				footerType={this.props.footerType}
 				flipped={this.state.flipped}
 				onClick={this.props.onSelect ? this.onSelect : null}

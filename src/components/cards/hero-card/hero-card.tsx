@@ -132,6 +132,7 @@ export class HeroCard extends Component<Props, State> {
 				)}
 				back={(
 					<div className='hero-card'>
+						<Text type={TextType.MinorHeading}>Traits</Text>
 						<div className='traits'>
 							<StatValue orientation='vertical' label='End' value={CombatantLogic.getTraitRank(this.props.hero, [], TraitType.Endurance)} />
 							<StatValue orientation='vertical' label='Res' value={CombatantLogic.getTraitRank(this.props.hero, [], TraitType.Resolve)} />
@@ -140,7 +141,8 @@ export class HeroCard extends Component<Props, State> {
 						{items}
 					</div>
 				)}
-				footer={<div className='buttons'>{buttons}</div>}
+				footerText='Hero'
+				footerContent={buttons}
 				flipped={this.state.flipped}
 				onClick={this.props.onSelect ? this.onSelect : null}
 			/>

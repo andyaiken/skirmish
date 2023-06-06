@@ -75,7 +75,7 @@ export class ItemsPage extends Component<Props, State> {
 		const moneySection = (
 			<div>
 				<StatValue orientation='vertical' label='Money' value={<IconValue type={IconType.Money} value={this.props.game.money} />} />
-				{!controlLand ? <Text type={TextType.Information}>You can&apos;t buy anything until you control part of the island.</Text> : null}
+				{(this.props.game.money > 0) && !controlLand ? <Text type={TextType.Information}><p>You can&apos;t buy anything until you control part of the island.</p></Text> : null}
 				{this.props.developer ? <button className='developer' onClick={() => this.props.addMoney()}>Add money</button> : null}
 			</div>
 		);
@@ -87,7 +87,7 @@ export class ItemsPage extends Component<Props, State> {
 				.map(b => <BoonCard key={b.id} boon={b} onSelect={boon => this.props.redeemBoon(boon, null)} />);
 			boons = (
 				<div>
-					<Text type={TextType.Information}><b>You have won these rewards.</b> Select a card to redeem a reward.</Text>
+					<Text type={TextType.Information}><p><b>You have won these rewards.</b> Select a card to redeem a reward.</p></Text>
 					<CardList cards={cards} />
 				</div>
 			);
@@ -99,11 +99,17 @@ export class ItemsPage extends Component<Props, State> {
 			const text = count === 1 ? 'a magic item' : `${count} magic items`;
 			itemSection = (
 				<div>
-					<Text type={TextType.Information}><b>You have enough money to buy {text}.</b> Click the item deck below to choose an item.</Text>
+					<Text type={TextType.Information}><p><b>You have enough money to buy {text}.</b> Click the item deck below to choose an item.</p></Text>
 					<div className='center'>
 						<PlayingCard
 							stack={true}
-							front={<PlaceholderCard text={<div>Magic<br />Items</div>} subtext={<IconValue type={IconType.Money} value={100} iconSize={15} />} onClick={() => this.showMarket()} />}
+							front={
+								<PlaceholderCard
+									text='Magic Items'
+									content={<IconValue type={IconType.Money} value={100} iconSize={15} />}
+									onClick={() => this.showMarket()}
+								/>
+							}
 						/>
 					</div>
 				</div>
@@ -241,7 +247,7 @@ export class ItemsPage extends Component<Props, State> {
 				mundaneItemSection = (
 					<div>
 						<Text type={TextType.SubHeading}>Items (0)</Text>
-						<Text type={TextType.Information}>You have no unequipped items.</Text>
+						<Text type={TextType.Information}><p>You have no unequipped items.</p></Text>
 					</div>
 				);
 			}

@@ -7,7 +7,7 @@ import { CardType } from '../../../enums/card-type';
 import type { BoonModel } from '../../../models/boon';
 import type { ItemModel } from '../../../models/item';
 
-import { IconType, IconValue, PlayingCard, StatValue, Text, TextType } from '../../controls';
+import { IconType, IconValue, PlayingCard, StatValue } from '../../controls';
 import { ItemCard } from '../item-card/item-card';
 import { PlaceholderCard } from '../placeholder-card/placeholder-card';
 
@@ -50,9 +50,20 @@ export class BoonCard extends Component<Props, State> {
 		}
 	};
 
+	onSelectItem = (item: ItemModel) => {
+		if (this.props.onSelect) {
+			this.props.onSelect(this.props.boon);
+		}
+	};
+
 	render = () => {
 		if (this.props.boon.type === BoonType.MagicItem) {
-			return <ItemCard item={this.props.boon.data as ItemModel} />;
+			return (
+				<ItemCard
+					item={this.props.boon.data as ItemModel}
+					onSelect={this.props.onSelect ? this.onSelectItem : null}
+				/>
+			);
 		}
 
 		let desc = '';
@@ -86,9 +97,9 @@ export class BoonCard extends Component<Props, State> {
 				front={(
 					<PlaceholderCard
 						text={this.props.boon.type}
-						subtext={(
-							<div className='boon-card'>
-								{desc ? <Text type={TextType.Small}>{desc}</Text> : null}
+						subtext={desc}
+						content={(
+							<div className='boon-card-front'>
 								{extra ? <div className='extra'>{extra}</div> : null}
 							</div>
 						)}

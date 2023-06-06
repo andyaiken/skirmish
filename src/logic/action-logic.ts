@@ -610,7 +610,10 @@ export class ActionEffects {
 			}
 			case 'forceMovement': {
 				const data = effect.data as { type: MovementType, rank: number };
-				return `Forced movement (${data.type}), rank ${data.rank}`;
+				if (data.rank === 0) {
+					return `Move (${data.type})`;
+				}
+				return `Move (${data.type}), rank ${data.rank}`;
 			}
 			case 'moveSelfTo': {
 				return 'Move to square';

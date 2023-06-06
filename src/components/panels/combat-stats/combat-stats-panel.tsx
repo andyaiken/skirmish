@@ -37,12 +37,11 @@ export class CombatStatsPanel extends Component<Props> {
 	render = () => {
 		try {
 			let wounds: JSX.Element[] = [];
-			for (let n = 0; n < this.props.combatant.combat.wounds; ++n) {
-				wounds.push(<IconHeartOff key={n} />);
+			const resolveRank = EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Resolve);
+			for (let n = 0; n < resolveRank; ++n) {
+				wounds.push(n < this.props.combatant.combat.wounds ? <IconHeartOff key={n} /> : <IconHeartFilled key={n} />);
 			}
-			while (wounds.length < EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Resolve)) {
-				wounds.unshift(<IconHeartFilled key={wounds.length} className='heartbeat' />);
-			}
+
 			const woundsPerRow = (wounds.length === 4) ? 2 : 3;
 			const woundsInRows: JSX.Element[] = [];
 			while (wounds.length > woundsPerRow) {

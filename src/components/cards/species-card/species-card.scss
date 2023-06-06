@@ -1,15 +1,10 @@
-.species-card {
-	margin: 10px;
-
-	.description {
-		margin: 10px;
-		font-style: italic;
-		font-size: 12px;
-		color: #555555;
-	}
-
+.species-card-front {
 	.tags {
-		margin-top: 20px;
+		margin-top: 15px;
 		text-align: center;
 	}
+}
+
+.species-card-back {
+	margin: 10px;
 }

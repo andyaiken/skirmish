@@ -10,7 +10,7 @@ import type { GameModel } from '../../../../models/game';
 import type { ItemModel } from '../../../../models/item';
 
 import { BoonCard, HeroCard, PlaceholderCard } from '../../../cards';
-import { CardList, Dialog, PlayingCard, Text, TextType } from '../../../controls';
+import { CardList, ConfirmButton, Dialog, PlayingCard, Text, TextType } from '../../../controls';
 import { CharacterSheetPanel, HeroBuilderPanel } from '../../../panels';
 
 import './heroes-page.scss';
@@ -32,6 +32,7 @@ interface Props {
 interface State {
 	selectedHero: CombatantModel | null;
 	selectedBoon: BoonModel | null;
+	retiringHero: CombatantModel | null;
 }
 
 export class HeroesPage extends Component<Props, State> {
@@ -39,7 +40,8 @@ export class HeroesPage extends Component<Props, State> {
 		super(props);
 		this.state = {
 			selectedHero: null,
-			selectedBoon: null
+			selectedBoon: null,
+			retiringHero: null
 		};
 	}
 
@@ -67,6 +69,12 @@ export class HeroesPage extends Component<Props, State> {
 		});
 	};
 
+	selectRetiringHero = (hero: CombatantModel) => {
+		this.setState({
+			retiringHero: hero
+		});
+	};
+
 	retireHero = (hero: CombatantModel) => {
 		this.setState({
 			selectedHero: null
@@ -80,7 +88,7 @@ export class HeroesPage extends Component<Props, State> {
 			const cards = this.props.game.heroes.filter(h => !!h.name).map(hero => {
 				return (
 					<div key={hero.id}>
-						<HeroCard hero={hero} onCharacterSheet={this.selectHero} />
+						<HeroCard hero={hero} onCharacterSheet={this.selectHero} onRetire={this.selectRetiringHero} />
 						{this.props.developer ? <button className='developer' onClick={() => this.props.incrementXP(hero)}>Add XP</button> : null}
 					</div>
 				);
@@ -97,7 +105,9 @@ export class HeroesPage extends Component<Props, State> {
 		return (
 			<div>
 				<Text type={TextType.SubHeading}>Heroes (0)</Text>
-				<Text type={TextType.Information}>You have no heroes.</Text>
+				<Text type={TextType.Information}>
+					<p>You have no heroes.</p>
+				</Text>
 			</div>
 		);
 	};
@@ -110,7 +120,9 @@ export class HeroesPage extends Component<Props, State> {
 				.map(b => <BoonCard key={b.id} boon={b} onSelect={this.selectBoon} />);
 			boons = (
 				<div>
-					<Text type={TextType.Information}><b>You have won these rewards.</b> Select a card to redeem that reward.</Text>
+					<Text type={TextType.Information}>
+						<p><b>You have won these rewards.</b> Select a card to redeem that reward.</p>
+					</Text>
 					<CardList cards={cards} />
 				</div>
 			);
@@ -123,7 +135,9 @@ export class HeroesPage extends Component<Props, State> {
 			));
 			levelUp = (
 				<div>
-					<Text type={TextType.Information}><b>Some of your heroes have gained enough XP to level up.</b> Click on their name to upgrade them.</Text>
+					<Text type={TextType.Information}>
+						<p><b>Some of your heroes have gained enough XP to level up.</b> Click on their name to upgrade them.</p>
+					</Text>
 					{cards}
 				</div>
 			);
@@ -135,7 +149,9 @@ export class HeroesPage extends Component<Props, State> {
 			const text = blank.length === 1 ? 'a new hero' : `${blank.length} new heroes`;
 			blankHeroes = (
 				<div>
-					<Text type={TextType.Information}><b>You can recruit {text}.</b> Click the hero deck below to recruit a new level 1 hero.</Text>
+					<Text type={TextType.Information}>
+						<p><b>You can recruit {text}.</b> Click the hero deck below to recruit a new level 1 hero.</p>
+					</Text>
 					<div className='center'>
 						<PlayingCard
 							stack={true}
@@ -235,13 +251,54 @@ export class HeroesPage extends Component<Props, State> {
 					content={(
 						<div>
 							<Text type={TextType.Heading}>Choose a Hero</Text>
-							<Text type={TextType.Information}>Choose a hero to receive this reward:</Text>
+							<Text type={TextType.Information}>
+								<p>Choose a hero to receive this reward:</p>
+							</Text>
 							<CardList cards={heroCards} />
 						</div>
 					)}
 					onClose={() => {
 						this.setState({
 							selectedBoon: null
+						});
+					}}
+				/>
+			);
+		}
+
+		if (this.state.retiringHero) {
+			return (
+				<Dialog
+					content={(
+						<div>
+							<Text type={TextType.Heading}>Retire This Hero</Text>
+							<div>
+								<Text type={TextType.Information}>
+									<p><b>You can retire this hero.</b> If you do:</p>
+									<ul>
+										<li>You&apos;ll get half their total XP to add to another hero</li>
+										<li>You keep any magic items they have</li>
+										<li>You can recruit a new hero to take their place</li>
+									</ul>
+									<p>This cannot be undone.</p>
+								</Text>
+								<ConfirmButton
+									label='Retire'
+									onClick={() => {
+										const h = this.state.retiringHero as CombatantModel;
+										this.setState({
+											retiringHero: null
+										}, () => {
+											this.props.retireHero(h);
+										});
+									}}
+								/>
+							</div>
+						</div>
+					)}
+					onClose={() => {
+						this.setState({
+							retiringHero: null
 						});
 					}}
 				/>

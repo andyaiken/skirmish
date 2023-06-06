@@ -162,13 +162,15 @@ export class SetupScreen extends Component<Props, State> {
 									<PlayingCard
 										type={CardType.Species}
 										stack={true}
-										front={<PlaceholderCard text={<div>Draw A<br />Random<br />Team</div>} onClick={this.createHeroes} />}
+										front={<PlaceholderCard text='Randomize' subtext='Draw a random team of heroes' onClick={this.createHeroes} />}
 									/>
 									: null
 							}
 						</div>
 						<div className='center-panel'>
-							<Text type={TextType.Information}><b>Recruit your team.</b> These five heroes will begin the task of conquering the island.</Text>
+							<Text type={TextType.Information}>
+								<p><b>Recruit your team.</b> These five heroes will begin the task of conquering the island.</p>
+							</Text>
 							{heroes}
 						</div>
 						<div className='right-panel'>
@@ -177,7 +179,7 @@ export class SetupScreen extends Component<Props, State> {
 									<PlayingCard
 										type={CardType.Role}
 										stack={true}
-										front={<PlaceholderCard text={<div>Begin<br />The<br />Campaign</div>} onClick={this.props.beginCampaign} />}
+										front={<PlaceholderCard text='Start' subtext='Begin the campaign' onClick={this.props.beginCampaign} />}
 									/>
 									: null
 							}

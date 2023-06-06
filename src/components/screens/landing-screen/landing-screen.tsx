@@ -26,7 +26,7 @@ export class LandingScreen extends Component<Props> {
 					<PlayingCard
 						type={CardType.Species}
 						stack={true}
-						front={<PlaceholderCard text={<div>Continue<br />Your<br />Campaign</div>} onClick={this.props.continueCampaign} />}
+						front={<PlaceholderCard text='Continue' subtext='Continue your current campaign' onClick={this.props.continueCampaign} />}
 					/>
 				);
 			}
@@ -41,12 +41,12 @@ export class LandingScreen extends Component<Props> {
 						<PlayingCard
 							type={CardType.Role}
 							stack={true}
-							front={<PlaceholderCard text={<div>Start<br />A New<br />Campaign</div>} onClick={this.props.startCampaign} />}
+							front={<PlaceholderCard text='New Campaign' subtext='Begin a new Skirmish campaign' onClick={this.props.startCampaign} />}
 						/>
 						<PlayingCard
 							type={CardType.Background}
 							stack={true}
-							front={<PlaceholderCard text={<div>About<br />This<br />Game</div>} onClick={() => this.props.showHelp('game')} />}
+							front={<PlaceholderCard text='About' subtext='Learn about this game' onClick={() => this.props.showHelp('game')} />}
 						/>
 					</div>
 				</div>

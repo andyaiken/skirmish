@@ -129,7 +129,9 @@ export class EncounterStartPanel extends Component<Props, State> {
 				</div>
 				<div className='hero-lists'>
 					<div className={(candidates.length === 0) || (this.state.selectedHeroes.length >= 5) ? 'hero-list-column narrow' : 'hero-list-column'}>
-						<Text type={TextType.Information}>Select <b>up to 5 heroes</b> from this list to take part in this encounter.</Text>
+						<Text type={TextType.Information}>
+							<p>Select <b>up to 5 heroes</b> from this list to take part in this encounter.</p>
+						</Text>
 						{
 							heroes.length > 10 ?
 								<Selector

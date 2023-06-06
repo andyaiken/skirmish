@@ -16,7 +16,7 @@ import type { FeatureModel } from '../../../models/feature';
 import type { GameModel } from '../../../models/game';
 
 import { ActionCard, BackgroundCard, FeatureCard, ItemCard, PlaceholderCard, RoleCard, SpeciesCard } from '../../cards';
-import { CardList, Dialog, PlayingCard, StatValue, Switch, Tabs, Text, TextType } from '../../controls';
+import { CardList, ConfirmButton, Dialog, PlayingCard, StatValue, Switch, Tabs, Text, TextType } from '../../controls';
 
 import './settings-panel.scss';
 
@@ -117,7 +117,7 @@ export class SettingsPanel extends Component<Props, State> {
 			if (this.state.actionSourceName !== '') {
 				const featureCards = [
 					<div key='deck'>
-						<PlayingCard type={CardType.Feature} stack={true} front={<PlaceholderCard text={<div>Feature<br />Deck</div>} />} />
+						<PlayingCard type={CardType.Feature} stack={true} front={<PlaceholderCard text='Feature Deck' />} />
 					</div>
 				];
 				this.state.features.forEach(f => {
@@ -134,7 +134,7 @@ export class SettingsPanel extends Component<Props, State> {
 				});
 				const actionCards = [
 					<div key='deck'>
-						<PlayingCard type={CardType.Action} stack={true} front={<PlaceholderCard text={<div>Action<br />Deck</div>} />} />
+						<PlayingCard type={CardType.Action} stack={true} front={<PlaceholderCard text='Action Deck' />} />
 					</div>
 				];
 				this.state.actions.forEach(a => {
@@ -169,7 +169,7 @@ export class SettingsPanel extends Component<Props, State> {
 
 			return (
 				<div className='settings-panel'>
-					<Text type={TextType.Heading}>Information</Text>
+					<Text type={TextType.Heading}>About</Text>
 					<Tabs options={tabs} selectedID={this.state.selectedTab} onSelect={id => this.setState({ selectedTab: id })} />
 					{content}
 					{dialog}
@@ -207,7 +207,7 @@ class DecksTab extends Component<DecksTabProps> {
 						<PlayingCard
 							stack={true}
 							type={CardType.Species}
-							front={<PlaceholderCard text={<div>Species<br />Deck</div>} subtext='Heroes' />}
+							front={<PlaceholderCard text='Hero Species Deck' />}
 						/>
 					</div>
 					{
@@ -227,7 +227,7 @@ class DecksTab extends Component<DecksTabProps> {
 						<PlayingCard
 							stack={true}
 							type={CardType.Species}
-							front={<PlaceholderCard text={<div>Species<br />Deck</div>} subtext='Monsters' />}
+							front={<PlaceholderCard text='Monster Species Deck' />}
 						/>
 					</div>
 					{
@@ -247,7 +247,7 @@ class DecksTab extends Component<DecksTabProps> {
 						<PlayingCard
 							stack={true}
 							type={CardType.Role}
-							front={<PlaceholderCard text={<div>Role<br />Deck</div>} />}
+							front={<PlaceholderCard text='Role Deck' />}
 						/>
 					</div>
 					{
@@ -267,7 +267,7 @@ class DecksTab extends Component<DecksTabProps> {
 						<PlayingCard
 							stack={true}
 							type={CardType.Background}
-							front={<PlaceholderCard text={<div>Background<br />Deck</div>} />}
+							front={<PlaceholderCard text='Background Deck' />}
 						/>
 					</div>
 					{
@@ -287,7 +287,7 @@ class DecksTab extends Component<DecksTabProps> {
 						<PlayingCard
 							stack={true}
 							type={CardType.Item}
-							front={<PlaceholderCard text={<div>Item<br />Deck</div>} />}
+							front={<PlaceholderCard text='Item Deck' />}
 						/>
 					</div>
 					{
@@ -319,7 +319,7 @@ class OptionsTab extends Component<OptionsTabProps> {
 		return (
 			<div className='content'>
 				{this.props.local ? <Switch label='Developer Mode' checked={this.props.developer} onChange={this.props.setDeveloperMode} /> : null}
-				{this.props.game ? <button className='danger' onClick={() => this.props.endCampaign()}>Abandon this Campaign</button> : null}
+				{this.props.game ? <ConfirmButton label='Abandon this Campaign' onClick={() => this.props.endCampaign()} /> : null}
 				<hr />
 				<Text>Version {this.props.version}</Text>
 			</div>

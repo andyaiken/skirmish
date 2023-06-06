@@ -116,7 +116,9 @@ export class LevelUp extends Component<Props, State> {
 			return (
 				<div className='level-up'>
 					<div className='content'>
-						<Text type={TextType.Information}><b>Level up.</b> Choose a feature for level {this.props.combatant.level + 1}.</Text>
+						<Text type={TextType.Information}>
+							<p><b>Level up.</b> Choose a feature for level {this.props.combatant.level + 1}.</p>
+						</Text>
 						{ this.props.developer ? <button className='developer' onClick={this.setFeatures}>Redraw Cards</button> : null }
 						{ this.state.selectedFeature === null ? <CardList cards={featureCards} /> : null }
 						{selected}

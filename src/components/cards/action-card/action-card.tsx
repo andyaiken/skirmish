@@ -100,7 +100,7 @@ export class ActionCard extends Component<Props, State> {
 			<PlayingCard
 				type={CardType.Action}
 				front={(
-					<div className='action-card'>
+					<div className='action-card-front'>
 						<Text type={TextType.SubHeading}>{this.props.action.name}</Text>
 						<div className='tags'>
 							<Tag>{ActionLogic.getActionType(this.props.action)}</Tag>

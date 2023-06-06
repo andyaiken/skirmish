@@ -75,7 +75,9 @@ export class CombatantAction extends Component<Props> {
 
 		return (
 			<div className='combatant-action'>
-				<Text type={TextType.Information}>Choose one of these action cards.</Text>
+				<Text type={TextType.Information}>
+					<p>Choose one of these action cards.</p>
+				</Text>
 				{this.props.developer ? <button className='developer' onClick={() => this.props.drawActions(this.props.encounter, this.props.combatant)}>Draw Again</button> : null}
 				<CardList cards={actionCards} />
 			</div>
@@ -303,7 +305,7 @@ export class CombatantAction extends Component<Props> {
 						{
 							this.props.currentActionParameter === parameter ?
 								<Text type={TextType.Information}>
-									Select targets on the map, then press the <IconViewfinder size={13} /> button again to finalize your selection and run the action.
+									<p>Select targets on the map, then press the <IconViewfinder size={13} /> button again to finalize your selection and run the action.</p>
 								</Text>
 								: null
 						}
@@ -347,7 +349,9 @@ export class CombatantAction extends Component<Props> {
 	getUsed = (action: ActionModel) => {
 		return (
 			<div className='combatant-action'>
-				<Text type={TextType.Information}>You have taken your action for this turn.</Text>
+				<Text type={TextType.Information}>
+					<p>You have taken your action for this turn.</p>
+				</Text>
 				<div className='action-selected-card'>
 					<ActionCard
 						action={action}

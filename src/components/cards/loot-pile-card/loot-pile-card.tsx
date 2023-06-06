@@ -69,7 +69,7 @@ export class LootPileCard extends Component<Props, State> {
 			<PlayingCard
 				type={CardType.Item}
 				front={(
-					<div className='loot-pile-card'>
+					<div className='loot-pile-card-front'>
 						<Text type={TextType.SubHeading}>Treasure</Text>
 						<hr />
 						{itemSection}

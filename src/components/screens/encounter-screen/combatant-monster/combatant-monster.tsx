@@ -34,7 +34,9 @@ export class CombatantMonster extends Component<Props> {
 
 			return (
 				<div className='combatant-monster'>
-					<Text type={TextType.Information}><b>{this.props.combatant.name} is a monster.</b> You cannot control their actions.</Text>
+					<Text type={TextType.Information}>
+						<p><b>{this.props.combatant.name} is a monster.</b> You cannot control their actions.</p>
+					</Text>
 					<hr />
 					<div className='actions'>
 						{
@@ -49,7 +51,7 @@ export class CombatantMonster extends Component<Props> {
 								:
 								<PlayingCard
 									type={CardType.Action}
-									front={<PlaceholderCard text='' subtext={`${this.props.combatant.name} has not chosen an action this turn`} />}
+									front={<PlaceholderCard subtext={`${this.props.combatant.name} has not chosen an action this turn`} />}
 								/>
 						}
 					</div>

@@ -86,9 +86,14 @@ export class BackgroundCard extends Component<Props, State> {
 		return (
 			<PlayingCard
 				type={CardType.Background}
-				front={<PlaceholderCard text={this.props.background.name} subtext={this.props.background.description} />}
+				front={
+					<PlaceholderCard
+						text={this.props.background.name}
+						subtext={this.props.background.description}
+					/>
+				}
 				back={(
-					<div className='background-card'>
+					<div className='background-card-back'>
 						{features}
 						{actions}
 					</div>

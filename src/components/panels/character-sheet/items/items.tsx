@@ -75,7 +75,7 @@ export class Items extends Component<Props> {
 		if (cards.length === 0) {
 			cards.push(
 				<div key='empty' className='item'>
-					<PlayingCard front={<PlaceholderCard text='No Item' />} />
+					<PlayingCard front={<PlaceholderCard subtext='No item' />} />
 				</div>
 			);
 		}
@@ -130,7 +130,7 @@ export class Items extends Component<Props> {
 		if (this.props.combatant.carried.length === 0) {
 			cards.push(
 				<div key='empty' className='item'>
-					<PlayingCard front={<PlaceholderCard text='No Item' />} />
+					<PlayingCard front={<PlaceholderCard subtext='No Item' />} />
 				</div>
 			);
 		}

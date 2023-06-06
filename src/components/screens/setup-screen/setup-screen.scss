@@ -8,12 +8,12 @@
 		background-color: rgb(230, 230, 230);
 		border-bottom: 2px solid rgb(220, 220, 220);
 		text-align: center;
-		padding: 30px 0;
+		padding: 10px 0;
 
 		.logo-text {
-			font-size: 95px;
+			font-size: 90px;
 			text-transform: uppercase;
-			letter-spacing: 10px;
+			letter-spacing: 15px;
 			font-weight: 600;
 		}
 	}
@@ -38,7 +38,7 @@
 		.center-panel {
 			flex: 0 0 500px;
 			height: 100%;
-			padding: 50px 0;
+			padding-bottom: 50px;
 			display: flex;
 			flex-direction: column;
 			justify-content: space-evenly;

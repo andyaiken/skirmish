@@ -222,21 +222,21 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 		let speciesCard = (
 			<PlayingCard
 				type={CardType.Species}
-				front={<PlaceholderCard text='Species' subtext={<div>Choose one of the <b>Species</b> cards below</div>} />}
+				front={<PlaceholderCard text='Species' content={<div>Choose one of the <b>Species</b> cards below</div>} />}
 			/>
 		);
 
 		let roleCard = (
 			<PlayingCard
 				type={CardType.Role}
-				front={<PlaceholderCard text='Role' subtext={<div>Choose one of the <b>Role</b> cards below</div>} />}
+				front={<PlaceholderCard text='Role' content={<div>Choose one of the <b>Role</b> cards below</div>} />}
 			/>
 		);
 
 		let backgroundCard = (
 			<PlayingCard
 				type={CardType.Background}
-				front={<PlaceholderCard text='Background' subtext={<div>Choose one of the <b>Background</b> cards below</div>} />}
+				front={<PlaceholderCard text='Background' content={<div>Choose one of the <b>Background</b> cards below</div>} />}
 			/>
 		);
 
@@ -427,7 +427,7 @@ class EquipmentSelector extends Component<EquipmentSelectorProps, EquipmentSelec
 					<PlayingCard
 						key={n}
 						type={CardType.Item}
-						front={<PlaceholderCard text={slot.proficiency} subtext={<div>Choose one of the <b>{slot.proficiency}</b> cards below</div>}/>}
+						front={<PlaceholderCard text={slot.proficiency} content={<div>Choose one of the <b>{slot.proficiency}</b> cards below</div>}/>}
 					/>
 				);
 			});

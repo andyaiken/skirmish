@@ -89,21 +89,6 @@ export class CharacterSheetPanel extends Component<Props, State> {
 						/>
 					);
 					break;
-				case 'options':
-					content = (
-						<div>
-							<Text type={TextType.Information}>
-								<b>You can retire this hero.</b> If you do:
-								<ul>
-									<li>You&apos;ll get half their total XP to add to another hero</li>
-									<li>You keep any magic items they have</li>
-									<li>You can recruit a new hero to take their place</li>
-								</ul>
-							</Text>
-							<button className='danger' onClick={() => this.props.retireHero(this.props.combatant)}>Retire</button>
-						</div>
-					);
-					break;
 			}
 
 			let selector = null;
@@ -119,9 +104,6 @@ export class CharacterSheetPanel extends Component<Props, State> {
 					{ id: 'stats', display: 'Statistics' },
 					{ id: 'items', display: 'Equipment' }
 				];
-				if (this.props.game.encounter === null) {
-					options.push({ id: 'options', display: 'Options' });
-				}
 				selector = (
 					<Tabs
 						options={options}

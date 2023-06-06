@@ -112,16 +112,16 @@ export class SpeciesCard extends Component<Props, State> {
 				front={
 					<PlaceholderCard
 						text={this.props.species.name}
-						subtext={(
-							<div className='species-card'>
-								<Text type={TextType.Small}>{this.props.species.description}</Text>
-								<hr />
+						subtext={this.props.species.description}
+						content={(
+							<div className='species-card-front'>
 								{ tags.length > 0 ? <div className='tags'>{tags}</div> : null }
 							</div>
-						)} />
+						)}
+					/>
 				}
 				back={(
-					<div className='species-card'>
+					<div className='species-card-back'>
 						{traits}
 						{skills}
 						{features}

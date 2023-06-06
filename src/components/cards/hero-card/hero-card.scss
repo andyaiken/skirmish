@@ -1,31 +1,23 @@
-.hero-card {
-	margin: 10px;
-
+.hero-card-front {
 	.color-box {
-		margin-top: 15px;
-		margin-bottom: 30px;
+		margin: 0 20px;
 		border: 2px solid rgb(220, 220, 220);
 		border-radius: 5px;
 		height: 12px;
 	}
 
 	.tags {
-		margin-top: 20px;
+		margin-top: 15px;
 		text-align: center;
 	}
+}
+
+.hero-card-back {
+	margin: 10px;
 
 	.traits {
 		margin: 10px 0;
 		display: flex;
-	}
-
-	.damage {
-		margin: 10px 0;
-		display: flex;
-	}
-
-	.conditions {
-		margin: 10px 0;
 	}
 
 	.items {

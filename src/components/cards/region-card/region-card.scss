@@ -1,11 +1,13 @@
-.region-card {
-	margin: 10px;
+.region-card-front {
 
 	.color-box {
-		margin-top: 15px;
-		margin-bottom: 30px;
+		margin: 0 20px;
 		border: 2px solid rgb(220, 220, 220);
 		border-radius: 5px;
 		height: 12px;
 	}
+}
+
+.region-card-back {
+	margin: 10px;
 }

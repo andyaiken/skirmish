@@ -63,12 +63,16 @@ export class CombatantHeader extends Component<Props> {
 					/>
 					{
 						this.props.combatant.combat.state === CombatantState.Prone ?
-							<Text type={TextType.Information}><b>{this.props.combatant.name} is Prone.</b> Their skill ranks are halved and moving costs are doubled.</Text>
+							<Text type={TextType.Information}>
+								<p><b>{this.props.combatant.name} is Prone.</b> Their skill ranks are halved and moving costs are doubled.</p>
+							</Text>
 							: null
 					}
 					{
 						this.props.combatant.combat.hidden > 0 ?
-							<Text type={TextType.Information}><b>{this.props.combatant.name} is Hidden.</b> Their moving costs are doubled.</Text>
+							<Text type={TextType.Information}>
+								<p><b>{this.props.combatant.name} is Hidden.</b> Their moving costs are doubled.</p>
+							</Text>
 							: null
 					}
 					{this.getTabs()}

@@ -85,8 +85,8 @@ export class RegionCard extends Component<Props, State> {
 				front={(
 					<PlaceholderCard
 						text={this.props.region.name}
-						subtext={(
-							<div className='region-card'>
+						content={(
+							<div className='region-card-front'>
 								<div
 									className='color-box'
 									style={{
@@ -99,7 +99,7 @@ export class RegionCard extends Component<Props, State> {
 					/>
 				)}
 				back={(
-					<div className='region-card'>
+					<div className='region-card-back'>
 						<StatValue label='Area' value={`${this.props.region.demographics.size} sq mi`} />
 						<StatValue label='Population' value={`${(this.props.region.demographics.population * 100).toLocaleString()}`} />
 						<StatValue label='Terrain' value={this.props.region.demographics.terrain} />

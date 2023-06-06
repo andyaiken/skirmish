@@ -1,10 +1,7 @@
-.background-card {
-	margin: 10px;
+.background-card-front {
+	display: block;
+}
 
-	.description {
-		margin: 10px;
-		font-style: italic;
-		font-size: 12px;
-		color: #555555;
-	}
+.background-card-back {
+	margin: 10px;
 }

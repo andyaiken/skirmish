@@ -173,12 +173,16 @@ export class Stats extends Component<Props, State> {
 				<div className='column'>
 					{
 						this.props.encounter && (this.props.combatant.combat.state !== CombatantState.Standing) ?
-							<Text type={TextType.Information}>{this.props.combatant.name} is <b>{this.props.combatant.combat.state}</b>.</Text>
+							<Text type={TextType.Information}>
+								<p>{this.props.combatant.name} is <b>{this.props.combatant.combat.state}</b>.</p>
+							</Text>
 							: null
 					}
 					{
 						this.props.encounter && this.props.combatant.combat.stunned ?
-							<Text type={TextType.Information}>{this.props.combatant.name} is <b>stunned</b>.</Text>
+							<Text type={TextType.Information}>
+								<p>{this.props.combatant.name} is <b>stunned</b>.</p>
+							</Text>
 							: null
 					}
 					{this.getTraitsSection()}
@@ -194,12 +198,12 @@ export class Stats extends Component<Props, State> {
 								<PlayingCard
 									stack={true}
 									type={CardType.Feature}
-									front={<PlaceholderCard text={<div>Feature<br />Deck</div>} onClick={() => this.setDeck('features')} />}
+									front={<PlaceholderCard text='Feature Deck' onClick={() => this.setDeck('features')} />}
 								/>
 								<PlayingCard
 									stack={true}
 									type={CardType.Action}
-									front={<PlaceholderCard text={<div>Action<br />Deck</div>} onClick={() => this.setDeck('actions')} />}
+									front={<PlaceholderCard text='Action Deck' onClick={() => this.setDeck('actions')} />}
 								/>
 							</div>
 							: null
@@ -220,12 +224,12 @@ export class Stats extends Component<Props, State> {
 					<PlayingCard
 						stack={true}
 						type={CardType.Feature}
-						front={<PlaceholderCard text={<div>Feature<br />Deck</div>} onClick={() => this.setDeck('features')} />}
+						front={<PlaceholderCard text='Feature Deck' onClick={() => this.setDeck('features')} />}
 					/>
 					<PlayingCard
 						stack={true}
 						type={CardType.Action}
-						front={<PlaceholderCard text={<div>Action<br />Deck</div>} onClick={() => this.setDeck('actions')} />}
+						front={<PlaceholderCard text='Action Deck' onClick={() => this.setDeck('actions')} />}
 					/>
 				</div>
 			);

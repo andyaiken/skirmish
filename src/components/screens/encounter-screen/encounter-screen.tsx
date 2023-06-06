@@ -17,7 +17,7 @@ import type { ItemModel } from '../../../models/item';
 import type { RegionModel } from '../../../models/region';
 
 import { BoonCard, ItemCard } from '../../cards';
-import { Box, CardList, Dialog, StatValue, Text, TextType } from '../../controls';
+import { Box, CardList, ConfirmButton, Dialog, StatValue, Text, TextType } from '../../controls';
 import { CharacterSheetPanel, CombatantRowPanel, EncounterMapPanel, InitiativeListPanel, TreasureRowPanel, TurnLogPanel } from '../../panels';
 import { CombatantAction } from './combatant-action/combatant-action';
 import { CombatantHeader } from './combatant-header/combatant-header';
@@ -472,7 +472,7 @@ export class EncounterScreen extends Component<Props, State> {
 				</div>
 				<div className='separator' />
 				<div className='section'>
-					<button className='icon-btn danger' title='Retreat' onClick={() => this.setManualEncounterState(EncounterState.Retreat)}>
+					<button className='icon-btn' title='Retreat' onClick={() => this.setManualEncounterState(EncounterState.Retreat)}>
 						<IconArrowBackUpDouble />
 					</button>
 				</div>
@@ -851,7 +851,9 @@ class CombatantControls extends Component<CombatantControlsProps, CombatantContr
 						/>
 					</div>
 					<div className='panel-content'>
-						<Text type={TextType.Information}><b>{this.props.combatant.name} is Dead.</b> They cannot spend movement points or take any actions.</Text>
+						<Text type={TextType.Information}>
+							<p><b>{this.props.combatant.name} is Dead.</b> They cannot spend movement points or take any actions.</p>
+						</Text>
 						<hr />
 						<button onClick={this.endTurn}>End Turn</button>
 					</div>
@@ -874,7 +876,9 @@ class CombatantControls extends Component<CombatantControlsProps, CombatantContr
 						/>
 					</div>
 					<div className='panel-content'>
-						<Text type={TextType.Information}><b>{this.props.combatant.name} is Unconscious.</b> They cannot spend movement points or take any actions until their wounds are healed.</Text>
+						<Text type={TextType.Information}>
+							<p><b>{this.props.combatant.name} is Unconscious.</b> They cannot spend movement points or take any actions until their wounds are healed.</p>
+						</Text>
 						<hr />
 						<button onClick={this.endTurn}>End Turn</button>
 					</div>
@@ -897,7 +901,9 @@ class CombatantControls extends Component<CombatantControlsProps, CombatantContr
 						/>
 					</div>
 					<div className='panel-content'>
-						<Text type={TextType.Information}><b>{this.props.combatant.name} is Stunned.</b> They cannot spend movement points or take any actions this round.</Text>
+						<Text type={TextType.Information}>
+							<p><b>{this.props.combatant.name} is Stunned.</b> They cannot spend movement points or take any actions this round.</p>
+						</Text>
 						<hr />
 						<button onClick={this.endTurn}>End Turn</button>
 					</div>
@@ -984,6 +990,8 @@ class CombatantControls extends Component<CombatantControlsProps, CombatantContr
 				break;
 		}
 
+		const takenAction = this.props.combatant.combat.selectedAction && this.props.combatant.combat.selectedAction.used;
+
 		return (
 			<div className='encounter-right-panel'>
 				<div className='panel-header'>
@@ -1000,7 +1008,12 @@ class CombatantControls extends Component<CombatantControlsProps, CombatantContr
 				<div className='panel-content'>
 					{content}
 					<hr />
-					<button onClick={this.endTurn}>End Turn</button>
+					{
+						takenAction ?
+							<button onClick={this.endTurn}>End Turn</button>
+							:
+							<ConfirmButton label='End Turn' info='You have not yet taken an action.' onClick={this.endTurn} />
+					}
 				</div>
 			</div>
 		);

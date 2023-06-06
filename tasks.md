@@ -4,14 +4,16 @@
 * If you select a 'square' parameter, and move, the origin candidate squares do not move
 * Presumably this is the same for other parameter types
 
-## Cards
-* Item card can flip to show nothing
+-----------------------------------------------------------------------------------------
+
+# Priority
+
+## Monster Turns
+* Make monsters take their actions automatically, in 1s intervals
+
 -----------------------------------------------------------------------------------------
 
 # Improvements / Enhancements
-
-## Cards
-* Move hero retire into footer
 
 ## Character Sheet
 * Show ranks as filled circles
@@ -146,5 +148,6 @@
 
 # Tech Debt
 
+* Make the layout responsive for phones
 * Convert to functional components
 * Use hooks

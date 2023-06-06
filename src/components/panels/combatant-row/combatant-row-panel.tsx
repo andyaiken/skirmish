@@ -1,5 +1,5 @@
 import { Component, MouseEvent } from 'react';
-import { IconId, IconX } from '@tabler/icons-react';
+import { IconHeartFilled, IconHeartOff, IconId, IconX } from '@tabler/icons-react';
 
 import { CombatantState } from '../../../enums/combatant-state';
 import { QuirkType } from '../../../enums/quirk-type';
@@ -161,12 +161,16 @@ export class CombatantRowPanel extends Component<Props> {
 		}
 
 		const resolve = this.props.encounter ? EncounterLogic.getTraitRank(this.props.encounter as EncounterModel, this.props.combatant, TraitType.Resolve) : 0;
+		const hearts = [];
+		for (let n = 0; n < resolve; ++n) {
+			hearts.push(n < this.props.combatant.combat.wounds ? <IconHeartOff key={n} size={12} /> : <IconHeartFilled key={n} size={12} />);
+		}
 
 		return (
 			<StatValue
 				orientation='compact'
 				label='Wounds'
-				value={this.props.combatant.combat.wounds === 0 ? `${resolve}` : `${this.props.combatant.combat.wounds} / ${resolve}`}
+				value={<div className='hearts'>{hearts}</div>}
 			/>
 		);
 	};

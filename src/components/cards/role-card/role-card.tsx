@@ -116,9 +116,14 @@ export class RoleCard extends Component<Props, State> {
 		return (
 			<PlayingCard
 				type={CardType.Role}
-				front={<PlaceholderCard text={this.props.role.name} subtext={this.props.role.description} />}
+				front={
+					<PlaceholderCard
+						text={this.props.role.name}
+						subtext={this.props.role.description}
+					/>
+				}
 				back={(
-					<div className='role-card'>
+					<div className='role-card-back'>
 						{traits}
 						{skills}
 						{profs}

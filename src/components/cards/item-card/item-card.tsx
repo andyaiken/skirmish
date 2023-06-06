@@ -105,6 +105,15 @@ export class ItemCard extends Component<Props, State> {
 			);
 		}
 
+		let empty = null;
+		if (!weapon && !armor && !features && !actions) {
+			empty = (
+				<div>
+					<Text type={TextType.Small}>This item has no additional statistics.</Text>
+				</div>
+			);
+		}
+
 		const buttons: JSX.Element[] = [];
 		buttons.push(
 			<button key='flip' className='icon-btn' onClick={this.onFlip}><IconRefresh /></button>
@@ -121,10 +130,9 @@ export class ItemCard extends Component<Props, State> {
 				front={(
 					<PlaceholderCard
 						text={this.props.item.name}
-						subtext={(
-							<div className='item-card'>
-								<Text type={TextType.Small}>{this.props.item.description}</Text>
-								<hr />
+						subtext={this.props.item.description}
+						content={(
+							<div className='item-card-front'>
 								<div className='tags'>
 									{this.props.item.baseItem !== '' ? <Tag>Magical {this.props.item.baseItem}</Tag> : null}
 									{this.props.item.proficiency !== ItemProficiencyType.None ? <Tag>{this.props.item.proficiency}</Tag> : null}
@@ -135,11 +143,12 @@ export class ItemCard extends Component<Props, State> {
 					/>
 				)}
 				back={(
-					<div className='item-card'>
+					<div className='item-card-back'>
 						{weapon}
 						{armor}
 						{features}
 						{actions}
+						{empty}
 					</div>
 				)}
 				footerText='Item'

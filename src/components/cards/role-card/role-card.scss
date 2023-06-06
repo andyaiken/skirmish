@@ -1,10 +1,7 @@
-.role-card {
-	margin: 10px;
+.role-card-front {
+	display: block;
+}
 
-	.description {
-		margin: 10px;
-		font-style: italic;
-		font-size: 12px;
-		color: #555555;
-	}
+.role-card-back {
+	margin: 10px;
 }

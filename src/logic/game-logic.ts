@@ -252,13 +252,9 @@ export class GameLogic {
 	};
 
 	static addHeroToGame = (game: GameModel, hero: CombatantModel) => {
-		const index = game.heroes.findIndex(h => h.id === hero.id);
-		if (index === -1) {
-			game.heroes.push(hero);
-		} else {
-			game.heroes[index] = hero;
-		}
-		game.heroes.sort((a, b) => (a.name > b.name ? 1 : -1));
+		game.heroSlots = Math.max(game.heroSlots - 1, 0);
+		game.heroes.push(hero);
+		game.heroes.sort((a, b) => a.name.localeCompare(b.name));
 	};
 
 	static getSkillCategory = (skill: SkillType) => {

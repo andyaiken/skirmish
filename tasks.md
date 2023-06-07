@@ -20,6 +20,10 @@
 * Show the XP required as a gauge
 * Make it so that we can see a hero character sheet without having to level up
 
+## Magic Items
+* Allow items to be compared to show which is better
+* When adding a feature, collate similar features
+
 ## Features
 * Mountebank and Pixie should have an attack redirection aura
 

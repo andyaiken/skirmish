@@ -1,6 +1,5 @@
+import { compress, decompress } from 'lz-string';
 import { Component } from 'react';
-
-import { SpeciesData } from '../../data/species-data';
 
 import { BoonType } from '../../enums/boon-type';
 import { CombatantState } from '../../enums/combatant-state';
@@ -25,7 +24,6 @@ import type { GameModel } from '../../models/game';
 import type { ItemModel } from '../../models/item';
 import type { RegionModel } from '../../models/region';
 
-import { Collections } from '../../utils/collections';
 import { Utils } from '../../utils/utils';
 
 import { CampaignScreen, EncounterScreen, LandingScreen, SetupScreen } from '../screens';
@@ -68,46 +66,32 @@ export class Main extends Component<Props, State> {
 		super(props);
 
 		let game: GameModel | null = null;
+
 		try {
-			const str = window.localStorage.getItem('game');
-			if (str !== null) {
-				game = JSON.parse(str) as GameModel;
+			const str = window.localStorage.getItem('skirmish-game');
+			if (str) {
+				const json = decompress(str);
+				if (json !== null) {
+					game = JSON.parse(json) as GameModel;
+				}
+
+				if (!game) {
+					// Something didn't work; maybe the saved data wasn't compressed
+					game = JSON.parse(str) as GameModel;
+				}
+
+				if (game) {
+					if (game.heroSlots === undefined) {
+						game.heroSlots = 0;
+					}
+
+					const slots = game.heroes.filter(h => h.name === '').length;
+					game.heroes = game.heroes.filter(h => h.name !== '');
+					game.heroSlots += slots;
+				}
 			}
 		} catch (ex) {
-			console.error('Could not parse JSON: ', ex);
-		}
-
-		if (game) {
-			game.heroes.forEach(h => {
-				if (h.quirks === undefined) {
-					h.quirks = [];
-				}
-			});
-
-			game.map.regions.forEach(r => {
-				if (r.demographics.speciesIDs === undefined) {
-					r.demographics.speciesIDs = [
-						...Collections.shuffle(SpeciesData.getList().filter(s => s.type === CombatantType.Monster).map(s => s.id)).slice(0, 2)
-					];
-				}
-
-				if (r.pausedEncounter === undefined) {
-					r.pausedEncounter = null;
-				}
-			});
-
-			if (game.encounter) {
-				for (let n = 0; n !== game.encounter.combatants.length; ++n) {
-					const combatant = game.encounter.combatants[n];
-					if (combatant.type === CombatantType.Hero) {
-						const original = game.heroes.find(h => h.id === combatant.id);
-						if (original) {
-							original.combat = combatant.combat;
-							game.encounter.combatants[n] = original;
-						}
-					}
-				}
-			}
+			console.error('Could not load: ', ex);
 		}
 
 		this.state = {
@@ -150,10 +134,15 @@ export class Main extends Component<Props, State> {
 
 	save = () => {
 		try {
-			const game = JSON.stringify(this.state.game);
-			window.localStorage.setItem('game', game);
+			if (this.state.game) {
+				const json = JSON.stringify(this.state.game);
+				const str = compress(json);
+				window.localStorage.setItem('skirmish-game', str);
+			} else {
+				window.localStorage.removeItem('skirmish-game');
+			}
 		} catch (ex) {
-			console.error('Could not stringify data: ', ex);
+			console.error('Could not save: ', ex);
 		}
 	};
 
@@ -220,13 +209,8 @@ export class Main extends Component<Props, State> {
 	restartCampaign = () => {
 		try {
 			const game = this.state.game as GameModel;
-			game.heroes = [
-				Factory.createCombatant(CombatantType.Hero),
-				Factory.createCombatant(CombatantType.Hero),
-				Factory.createCombatant(CombatantType.Hero),
-				Factory.createCombatant(CombatantType.Hero),
-				Factory.createCombatant(CombatantType.Hero)
-			];
+			game.heroSlots = 5;
+			game.heroes = [];
 			game.items = [];
 			game.boons = [];
 			game.money = 0;
@@ -323,6 +307,7 @@ export class Main extends Component<Props, State> {
 			const game = this.state.game as GameModel;
 
 			// Remove hero
+			game.heroSlots += 1;
 			game.heroes = game.heroes.filter(h => h.id !== hero.id);
 
 			// Add XP
@@ -339,9 +324,6 @@ export class Main extends Component<Props, State> {
 			// Add magic items
 			hero.items.filter(i => i.magic).forEach(i => game.items.push(i));
 			hero.carried.filter(i => i.magic).forEach(i => game.items.push(i));
-
-			// Add a blank hero
-			game.heroes.push(Factory.createCombatant(CombatantType.Hero));
 
 			this.setState({
 				game: game
@@ -360,7 +342,7 @@ export class Main extends Component<Props, State> {
 
 			switch (boon.type) {
 				case BoonType.ExtraHero:
-					GameLogic.addHeroToGame(game, Factory.createCombatant(CombatantType.Hero));
+					game.heroSlots += 1;
 					break;
 				case BoonType.ExtraXP:
 					(hero as CombatantModel).xp += boon.data as number;
@@ -460,6 +442,7 @@ export class Main extends Component<Props, State> {
 				heroes.forEach(h => CombatantLogic.resetCombatant(h));
 
 				const game = this.state.game;
+				game.heroes = game.heroes.filter(h => !heroes.includes(h));
 				game.encounter = EncounterGenerator.createEncounter(region, heroes);
 				region.pausedEncounter = null;
 
@@ -481,7 +464,7 @@ export class Main extends Component<Props, State> {
 				const game = this.state.game;
 
 				CampaignMapLogic.removeRegion(game.map, region);
-				GameLogic.addHeroToGame(game, Factory.createCombatant(CombatantType.Hero));
+				game.heroSlots += 1;
 				game.boons.push(region.boon);
 
 				this.setState({
@@ -853,9 +836,6 @@ export class Main extends Component<Props, State> {
 			let dialogContent = null;
 			switch (state) {
 				case EncounterState.Victory: {
-					// Remove dead heroes from the game
-					const deadHeroes = encounter.combatants.filter(c => c.type === CombatantType.Hero).filter(h => h.combat.state === CombatantState.Dead);
-					game.heroes = game.heroes.filter(h => !deadHeroes.includes(h));
 					// Get equipment from loot piles, add to game items
 					encounter.loot.forEach(lp => game.items.push(...lp.items));
 					// Increment XP for surviving heroes
@@ -863,6 +843,12 @@ export class Main extends Component<Props, State> {
 						.filter(c => c.type === CombatantType.Hero)
 						.filter(h => (h.combat.state === CombatantState.Standing) || (h.combat.state === CombatantState.Prone))
 						.forEach(h => h.xp += 1);
+					// Add surviving heroes back into the game
+					encounter.combatants
+						.filter(c => c.type === CombatantType.Hero)
+						.filter(h => (h.combat.state === CombatantState.Standing) || (h.combat.state === CombatantState.Prone) || (h.combat.state === CombatantState.Unconscious))
+						.forEach(h => game.heroes.push(h));
+					game.heroes.sort((a, b) => a.name.localeCompare(b.name));
 					// Remove the first encounter for this region
 					region.encounters.splice(0, 1);
 					if (region.encounters.length === 0) {
@@ -879,8 +865,8 @@ export class Main extends Component<Props, State> {
 								</div>
 							);
 						} else {
-							// Add a new level 1 hero
-							GameLogic.addHeroToGame(game, Factory.createCombatant(CombatantType.Hero));
+							// Add a new hero slot
+							game.heroSlots += 1;
 							// Add the region's boon
 							game.boons.push(region.boon);
 						}
@@ -890,9 +876,6 @@ export class Main extends Component<Props, State> {
 					break;
 				}
 				case EncounterState.Defeat: {
-					// Remove all participating heroes from the game
-					const heroes = encounter.combatants.filter(c => c.type === CombatantType.Hero);
-					game.heroes = game.heroes.filter(h => !heroes.includes(h));
 					// Clear the current encounter
 					region.pausedEncounter = EncounterLogic.getPausedEncounter(game.encounter as EncounterModel);
 					game.encounter = null;
@@ -913,11 +896,12 @@ export class Main extends Component<Props, State> {
 					break;
 				}
 				case EncounterState.Retreat: {
-					// Remove fallen heroes from the game
-					const fallenHeroes = encounter.combatants
+					// Add conscious heroes back into the game
+					encounter.combatants
 						.filter(c => c.type === CombatantType.Hero)
-						.filter(h => (h.combat.state === CombatantState.Dead) || (h.combat.state === CombatantState.Unconscious));
-					game.heroes = game.heroes.filter(h => !fallenHeroes.includes(h));
+						.filter(h => (h.combat.state === CombatantState.Standing) || (h.combat.state === CombatantState.Prone))
+						.forEach(h => game.heroes.push(h));
+					game.heroes.sort((a, b) => a.name.localeCompare(b.name));
 					// Clear the current encounter
 					region.pausedEncounter = EncounterLogic.getPausedEncounter(game.encounter as EncounterModel);
 					game.encounter = null;

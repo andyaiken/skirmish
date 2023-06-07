@@ -46,7 +46,7 @@ export class CampaignMapPage extends Component<Props, State> {
 	getSidebar = () => {
 		if (this.state.selectedRegion) {
 			const canAttack = CampaignMapLogic.canAttackRegion(this.props.game.map, this.state.selectedRegion);
-			const heroesExist = this.props.game.heroes.filter(h => h.name !== '').length > 0;
+			const heroesExist = this.props.game.heroes.length > 0;
 			return (
 				<div className='sidebar'>
 					<div className='card'>

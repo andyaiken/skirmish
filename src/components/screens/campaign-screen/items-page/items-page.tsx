@@ -47,7 +47,6 @@ export class ItemsPage extends Component<Props, State> {
 			const item = MagicItemGenerator.generateMagicItem();
 
 			const heroes = this.props.game.heroes
-				.filter(h => h.name !== '')
 				.filter(h => (item.proficiency === ItemProficiencyType.None) || CombatantLogic.getProficiencies(h).includes(item.proficiency));
 
 			if (heroes.length > 0) {
@@ -106,7 +105,7 @@ export class ItemsPage extends Component<Props, State> {
 							front={
 								<PlaceholderCard
 									text='Magic Items'
-									content={<IconValue type={IconType.Money} value={100} iconSize={15} />}
+									content={<div><IconValue type={IconType.Money} value={100} iconSize={15} /></div>}
 									onClick={() => this.showMarket()}
 								/>
 							}
@@ -137,7 +136,6 @@ export class ItemsPage extends Component<Props, State> {
 
 		const cards = this.state.magicItems.map(item => {
 			const heroes = this.props.game.heroes
-				.filter(h => h.name !== '')
 				.filter(h => (item.proficiency === ItemProficiencyType.None) || CombatantLogic.getProficiencies(h).includes(item.proficiency))
 				.map(h => <ListItemPanel key={h.id} item={h.name} />);
 
@@ -180,7 +178,6 @@ export class ItemsPage extends Component<Props, State> {
 			if (magicItems.length > 0) {
 				const cards = magicItems.map(item => {
 					const heroes = this.props.game.heroes
-						.filter(h => h.name !== '')
 						.filter(h => (item.proficiency === ItemProficiencyType.None) || CombatantLogic.getProficiencies(h).includes(item.proficiency))
 						.map(h => <ListItemPanel key={h.id} item={h.name} />);
 

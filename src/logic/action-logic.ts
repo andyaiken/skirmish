@@ -1425,7 +1425,10 @@ export class ActionLogic {
 
 		combatant.items
 			.filter(i => proficiencies.includes(i.proficiency))
-			.forEach(i => candidates.push(i));
+			.forEach(i => {
+				const copy = JSON.parse(JSON.stringify(i)) as ItemModel;
+				candidates.push(copy);
+			});
 
 		if ((value === null) || !candidates.includes(value)) {
 			if (candidates.length > 0) {

@@ -1,7 +1,10 @@
 import { Component } from 'react';
 
 import { BoonType } from '../../../../enums/boon-type';
+import { CombatantType } from '../../../../enums/combatant-type';
 import { GameLogic } from '../../../../logic/game-logic';
+
+import { Factory } from '../../../../logic/factory';
 
 import type { BoonModel } from '../../../../models/boon';
 import type { CombatantModel } from '../../../../models/combatant';
@@ -84,8 +87,8 @@ export class HeroesPage extends Component<Props, State> {
 	};
 
 	getContent = () => {
-		if (this.props.game.heroes.filter(h => !!h.name).length > 0) {
-			const cards = this.props.game.heroes.filter(h => !!h.name).map(hero => {
+		if (this.props.game.heroes.length > 0) {
+			const cards = this.props.game.heroes.map(hero => {
 				return (
 					<div key={hero.id}>
 						<HeroCard hero={hero} onCharacterSheet={this.selectHero} onRetire={this.selectRetiringHero} />
@@ -144,9 +147,8 @@ export class HeroesPage extends Component<Props, State> {
 		}
 
 		let blankHeroes = null;
-		const blank = this.props.game.heroes.filter(h => !h.name);
-		if (blank.length > 0) {
-			const text = blank.length === 1 ? 'a new hero' : `${blank.length} new heroes`;
+		if (this.props.game.heroSlots > 0) {
+			const text = this.props.game.heroSlots === 1 ? 'a new hero' : `${this.props.game.heroSlots} new heroes`;
 			blankHeroes = (
 				<div>
 					<Text type={TextType.Information}>
@@ -155,7 +157,7 @@ export class HeroesPage extends Component<Props, State> {
 					<div className='center'>
 						<PlayingCard
 							stack={true}
-							front={<PlaceholderCard text='Heroes' onClick={() => this.setState({ selectedHero: blank[0] })} />}
+							front={<PlaceholderCard text='Heroes' onClick={() => this.setState({ selectedHero: Factory.createCombatant(CombatantType.Hero) })} />}
 						/>
 					</div>
 				</div>
@@ -227,7 +229,6 @@ export class HeroesPage extends Component<Props, State> {
 
 		if (this.state.selectedBoon) {
 			const heroCards = this.props.game.heroes
-				.filter(h => h.name !== '')
 				.map(h => {
 					return (
 						<HeroCard

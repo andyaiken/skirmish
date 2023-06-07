@@ -58,7 +58,7 @@ export class EncounterStartPanel extends Component<Props, State> {
 	};
 
 	render = () => {
-		const heroes = ([] as CombatantModel[]).concat(this.props.game.heroes.filter(h => h.name !== ''));
+		const heroes = ([] as CombatantModel[]).concat(this.props.game.heroes);
 		switch (this.state.heroSelectionMode) {
 			case 'Name':
 				heroes.sort((a, b) => a.name.localeCompare(b.name));

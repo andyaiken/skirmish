@@ -6,6 +6,7 @@ import { CombatantType } from '../../../enums/combatant-type';
 import { NameGenerator } from '../../../generators/name-generator';
 
 import { CombatantLogic } from '../../../logic/combatant-logic';
+import { Factory } from '../../../logic/factory';
 import { GameLogic } from '../../../logic/game-logic';
 
 import type { CombatantModel } from '../../../models/combatant';
@@ -46,12 +47,9 @@ export class SetupScreen extends Component<Props, State> {
 	}
 
 	createHero = () => {
-		const hero = this.props.game.heroes.find(h => h.name === '');
-		if (hero) {
-			this.setState({
-				hero: hero
-			});
-		}
+		this.setState({
+			hero: Factory.createCombatant(CombatantType.Hero)
+		});
 	};
 
 	createHeroes = () => {
@@ -60,7 +58,8 @@ export class SetupScreen extends Component<Props, State> {
 		let backgroundDeck = GameLogic.getBackgroundDeck();
 
 		const heroes: CombatantModel[] = [];
-		this.props.game.heroes.forEach(hero => {
+		while (heroes.length < 5) {
+			const hero = Factory.createCombatant(CombatantType.Hero);
 			hero.name = NameGenerator.generateName();
 			hero.color = Random.randomColor(20, 180);
 
@@ -75,7 +74,7 @@ export class SetupScreen extends Component<Props, State> {
 			CombatantLogic.addItems(hero);
 
 			heroes.push(hero);
-		});
+		}
 
 		this.props.addHeroes(heroes);
 	};
@@ -100,11 +99,9 @@ export class SetupScreen extends Component<Props, State> {
 							game={this.props.game}
 							developer={this.props.developer}
 							finished={hero => {
-								const h = this.state.hero as CombatantModel;
 								this.setState({
 									hero: null
 								}, () => {
-									hero.id = h.id;
 									this.props.addHero(hero);
 								});
 							}}
@@ -136,7 +133,7 @@ export class SetupScreen extends Component<Props, State> {
 
 	render = () => {
 		try {
-			const heroes = this.props.game.heroes.filter(h => h.name !== '').map(h => <CombatantRowPanel key={h.id} combatant={h} onDetails={this.selectHero} />);
+			const heroes = this.props.game.heroes.map(h => <CombatantRowPanel key={h.id} combatant={h} onDetails={this.selectHero} />);
 			if (heroes.length < 5) {
 				heroes.push(
 					<div key='add' className='empty-panel'>
@@ -158,7 +155,7 @@ export class SetupScreen extends Component<Props, State> {
 					<div className='setup-content'>
 						<div className='left-panel'>
 							{
-								this.props.game.heroes.filter(h => h.name !== '').length === 0 ?
+								this.props.game.heroes.length === 0 ?
 									<PlayingCard
 										type={CardType.Species}
 										stack={true}
@@ -175,7 +172,7 @@ export class SetupScreen extends Component<Props, State> {
 						</div>
 						<div className='right-panel'>
 							{
-								this.props.game.heroes.filter(h => h.name !== '').length >= 5 ?
+								this.props.game.heroes.length >= 5 ?
 									<PlayingCard
 										type={CardType.Role}
 										stack={true}

@@ -8,9 +8,6 @@
 
 # Priority
 
-## Monster Turns
-* Make monsters take their actions automatically, in 1s intervals
-
 -----------------------------------------------------------------------------------------
 
 # Improvements / Enhancements
@@ -33,6 +30,7 @@
 
 ## Encounters
 * Undo movement
+* Make monsters take their actions automatically, in 1s intervals
 
 ## Turn Log
 * Indentation

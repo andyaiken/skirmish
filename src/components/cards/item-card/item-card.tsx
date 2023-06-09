@@ -130,11 +130,10 @@ export class ItemCard extends Component<Props, State> {
 				front={(
 					<PlaceholderCard
 						text={this.props.item.name}
-						subtext={this.props.item.description}
+						subtext={this.props.item.baseItem === '' ? this.props.item.description : `Magical ${this.props.item.baseItem}. ${this.props.item.description}`}
 						content={(
 							<div className='item-card-front'>
 								<div className='tags'>
-									{this.props.item.baseItem !== '' ? <Tag>Magical {this.props.item.baseItem}</Tag> : null}
 									{this.props.item.proficiency !== ItemProficiencyType.None ? <Tag>{this.props.item.proficiency}</Tag> : null}
 									<Tag>{location}</Tag>
 								</div>

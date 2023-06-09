@@ -1,4 +1,4 @@
-import { SpeciesData } from '../data/species-data';
+import { MonsterSpeciesData } from '../data/monster-species-data';
 
 import { CombatantType } from '../enums/combatant-type';
 
@@ -105,7 +105,7 @@ export class CampaignMapGenerator {
 		} while (map.squares.filter(sq => sq.regionID === '').length !== 0);
 
 		map.regions.forEach(region => {
-			const monsterIDs = SpeciesData.getList()
+			const monsterIDs = MonsterSpeciesData.getList()
 				.filter(s => s.type === CombatantType.Monster)
 				.map(s => s.id);
 

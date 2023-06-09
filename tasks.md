@@ -123,7 +123,6 @@
     * No movement penalty for water terrain
 * Kobold
 * Ogre
-* Giant
 * Gnoll
 * Elemental:
   * Water Elemental
@@ -133,6 +132,7 @@
 * Beasts:
   * Basilisk / medusa / gorgon
   * Lion / tiger / panther etc
+  * Wolf
   * Crocodile
   * Giant rat
   * Dragon

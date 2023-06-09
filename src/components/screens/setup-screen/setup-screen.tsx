@@ -53,7 +53,7 @@ export class SetupScreen extends Component<Props, State> {
 	};
 
 	createHeroes = () => {
-		let speciesDeck = GameLogic.getSpeciesDeck(CombatantType.Hero);
+		let speciesDeck = GameLogic.getHeroSpeciesDeck();
 		let roleDeck = GameLogic.getRoleDeck();
 		let backgroundDeck = GameLogic.getBackgroundDeck();
 

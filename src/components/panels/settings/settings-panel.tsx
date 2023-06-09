@@ -2,12 +2,12 @@ import { Component } from 'react';
 import ReactMarkdown from 'react-markdown';
 
 import { BackgroundData } from '../../../data/background-data';
+import { HeroSpeciesData } from '../../../data/hero-species-data';
 import { ItemData } from '../../../data/item-data';
+import { MonsterSpeciesData } from '../../../data/monster-species-data';
 import { RoleData } from '../../../data/role-data';
-import { SpeciesData } from '../../../data/species-data';
 
 import { CardType } from '../../../enums/card-type';
-import { CombatantType } from '../../../enums/combatant-type';
 
 import { GameLogic } from '../../../logic/game-logic';
 
@@ -211,7 +211,7 @@ class DecksTab extends Component<DecksTabProps> {
 						/>
 					</div>
 					{
-						SpeciesData.getList().filter(s => s.type === CombatantType.Hero).map(s => {
+						HeroSpeciesData.getList().map(s => {
 							return (
 								<div key={s.id} className='card-cell'>
 									<SpeciesCard species={s} onSelect={species => this.props.setActions(species.name, CardType.Species, species.features, species.actions)} />
@@ -231,7 +231,7 @@ class DecksTab extends Component<DecksTabProps> {
 						/>
 					</div>
 					{
-						SpeciesData.getList().filter(s => s.type === CombatantType.Monster).map(s => {
+						MonsterSpeciesData.getList().map(s => {
 							return (
 								<div key={s.id} className='card-cell'>
 									<SpeciesCard species={s} onSelect={species => this.props.setActions(species.name, CardType.Species, species.features, species.actions)} />

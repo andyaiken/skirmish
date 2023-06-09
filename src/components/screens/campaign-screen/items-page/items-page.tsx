@@ -202,7 +202,6 @@ export class ItemsPage extends Component<Props, State> {
 				});
 				magicItemSection = (
 					<div>
-						<Text type={TextType.SubHeading}>Magic Items ({magicItems.length})</Text>
 						<CardList cards={cards} />
 					</div>
 				);
@@ -236,14 +235,12 @@ export class ItemsPage extends Component<Props, State> {
 				});
 				mundaneItemSection = (
 					<div>
-						<Text type={TextType.SubHeading}>Items ({mundaneItems.length})</Text>
 						<CardList cards={cards} />
 					</div>
 				);
 			} else {
 				mundaneItemSection = (
 					<div>
-						<Text type={TextType.SubHeading}>Items (0)</Text>
 						<Text type={TextType.Information}><p>You have no unequipped items.</p></Text>
 					</div>
 				);

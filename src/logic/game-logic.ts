@@ -1,11 +1,11 @@
 import { BackgroundData } from '../data/background-data';
+import { HeroSpeciesData } from '../data/hero-species-data';
 import { ItemData } from '../data/item-data';
+import { MonsterSpeciesData } from '../data/monster-species-data';
 import { RoleData } from '../data/role-data';
-import { SpeciesData } from '../data/species-data';
 
 import { ActionTargetType } from '../enums/action-target-type';
 import { BoonType } from '../enums/boon-type';
-import { CombatantType } from '../enums/combatant-type';
 import { DamageCategoryType } from '../enums/damage-category-type';
 import { DamageType } from '../enums/damage-type';
 import { FeatureType } from '../enums/feature-type';
@@ -31,10 +31,15 @@ import { Utils } from '../utils/utils';
 import { ActionLogic } from './action-logic';
 
 export class GameLogic {
-	static getSpeciesDeck = (type: CombatantType) => {
-		return SpeciesData
+	static getHeroSpeciesDeck = () => {
+		return HeroSpeciesData
 			.getList()
-			.filter(s => s.type === type)
+			.map(species => species.id);
+	};
+
+	static getMonsterSpeciesDeck = () => {
+		return MonsterSpeciesData
+			.getList()
 			.map(species => species.id);
 	};
 
@@ -51,7 +56,10 @@ export class GameLogic {
 	};
 
 	static getSpecies = (id: string) => {
-		return SpeciesData.getList().find(s => s.id === id) || null;
+		const species: SpeciesModel[] = ([] as SpeciesModel[])
+			.concat(HeroSpeciesData.getList())
+			.concat(MonsterSpeciesData.getList());
+		return species.find(s => s.id === id) || null;
 	};
 
 	static getRole = (id: string) => {
@@ -209,7 +217,8 @@ export class GameLogic {
 	static getAllActions = () => {
 		const actions: ActionModel[] = [];
 
-		SpeciesData.getList().forEach(s => actions.push(...s.actions));
+		HeroSpeciesData.getList().forEach(s => actions.push(...s.actions));
+		MonsterSpeciesData.getList().forEach(s => actions.push(...s.actions));
 		RoleData.getList().forEach(r => actions.push(...r.actions));
 		BackgroundData.getList().forEach(b => actions.push(...b.actions));
 

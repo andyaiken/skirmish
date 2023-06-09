@@ -1,7 +1,6 @@
 import { Component } from 'react';
 
 import { CardType } from '../../../enums/card-type';
-import { CombatantType } from '../../../enums/combatant-type';
 import { ItemProficiencyType } from '../../../enums/item-proficiency-type';
 
 import { CombatantLogic } from '../../../logic/combatant-logic';
@@ -161,7 +160,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 	constructor(props: CardSelectorProps) {
 		super(props);
 		this.state = {
-			speciesIDs: Collections.shuffle(GameLogic.getSpeciesDeck(CombatantType.Hero)).splice(0, 3),
+			speciesIDs: Collections.shuffle(GameLogic.getHeroSpeciesDeck()).splice(0, 3),
 			roleIDs: Collections.shuffle(GameLogic.getRoleDeck()).splice(0, 3),
 			backgroundIDs: Collections.shuffle(GameLogic.getBackgroundDeck()).splice(0, 3),
 			selectedSpeciesID: '',
@@ -202,7 +201,7 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 		switch (type) {
 			case CardType.Species:
 				this.setState({
-					speciesIDs: Collections.shuffle(GameLogic.getSpeciesDeck(CombatantType.Hero)).splice(0, 3)
+					speciesIDs: Collections.shuffle(GameLogic.getHeroSpeciesDeck()).splice(0, 3)
 				});
 				break;
 			case CardType.Role:
@@ -222,21 +221,21 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 		let speciesCard = (
 			<PlayingCard
 				type={CardType.Species}
-				front={<PlaceholderCard text='Species' content={<div>Choose one of the <b>Species</b> cards below</div>} />}
+				front={<PlaceholderCard text='Species' subtext='Choose one of the Species cards below' />}
 			/>
 		);
 
 		let roleCard = (
 			<PlayingCard
 				type={CardType.Role}
-				front={<PlaceholderCard text='Role' content={<div>Choose one of the <b>Role</b> cards below</div>} />}
+				front={<PlaceholderCard text='Role' subtext='Choose one of the Role cards below' />}
 			/>
 		);
 
 		let backgroundCard = (
 			<PlayingCard
 				type={CardType.Background}
-				front={<PlaceholderCard text='Background' content={<div>Choose one of the <b>Background</b> cards below</div>} />}
+				front={<PlaceholderCard text='Background' subtext='Choose one of the Background cards below' />}
 			/>
 		);
 

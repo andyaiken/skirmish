@@ -99,7 +99,6 @@ export class HeroesPage extends Component<Props, State> {
 
 			return (
 				<div>
-					<Text type={TextType.SubHeading}>Heroes ({cards.length})</Text>
 					<CardList cards={cards} />
 				</div>
 			);
@@ -107,7 +106,6 @@ export class HeroesPage extends Component<Props, State> {
 
 		return (
 			<div>
-				<Text type={TextType.SubHeading}>Heroes (0)</Text>
 				<Text type={TextType.Information}>
 					<p>You have no heroes.</p>
 				</Text>

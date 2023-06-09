@@ -74,21 +74,6 @@ export class Main extends Component<Props, State> {
 				if (json !== null) {
 					game = JSON.parse(json) as GameModel;
 				}
-
-				if (!game) {
-					// Something didn't work; maybe the saved data wasn't compressed
-					game = JSON.parse(str) as GameModel;
-				}
-
-				if (game) {
-					if (game.heroSlots === undefined) {
-						game.heroSlots = 0;
-					}
-
-					const slots = game.heroes.filter(h => h.name === '').length;
-					game.heroes = game.heroes.filter(h => h.name !== '');
-					game.heroSlots += slots;
-				}
 			}
 		} catch (ex) {
 			console.error('Could not load: ', ex);
@@ -142,7 +127,7 @@ export class Main extends Component<Props, State> {
 				window.localStorage.removeItem('skirmish-game');
 			}
 		} catch (ex) {
-			console.error('Could not save: ', ex);
+			this.logException(ex);
 		}
 	};
 

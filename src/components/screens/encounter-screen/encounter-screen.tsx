@@ -748,7 +748,6 @@ class EncounterControls extends Component<EncounterControlsProps> {
 							<hr />
 							<ul>
 								<li>Those heroes who took part have been lost, along with all their equipment.</li>
-								<li>You can attempt this encounter again, picking up from where you left off.</li>
 							</ul>
 							<hr />
 							<button onClick={() => this.props.finishEncounter(EncounterState.Defeat)}>OK</button>
@@ -771,7 +770,6 @@ class EncounterControls extends Component<EncounterControlsProps> {
 							<hr />
 							<ul>
 								<li>Any heroes who fell have been lost, along with all their equipment.</li>
-								<li>You can attempt this encounter again, picking up from where you left off.</li>
 							</ul>
 							<hr />
 							<button onClick={() => this.props.finishEncounter(EncounterState.Retreat)}>OK</button>

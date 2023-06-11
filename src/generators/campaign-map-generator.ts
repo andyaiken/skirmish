@@ -66,7 +66,6 @@ export class CampaignMapGenerator {
 				name: NameGenerator.generateName(),
 				color: color,
 				encounters: [],
-				pausedEncounter: null,
 				boon: BoonGenerator.generateBoon(),
 				demographics: {
 					size: 0,

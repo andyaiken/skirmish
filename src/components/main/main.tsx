@@ -374,6 +374,23 @@ export class Main extends Component<Props, State> {
 		}
 	};
 
+	buyAndEquipItem = (item: ItemModel, hero: CombatantModel) => {
+		try {
+			const game = this.state.game as GameModel;
+
+			hero.items.push(item);
+			game.money = Math.max(0, game.money - 100);
+
+			this.setState({
+				game: game
+			}, () => {
+				this.save();
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
+	};
+
 	sellItem = (item: ItemModel, all: boolean) => {
 		try {
 			const sell = (item: ItemModel) => {
@@ -429,7 +446,6 @@ export class Main extends Component<Props, State> {
 				const game = this.state.game;
 				game.heroes = game.heroes.filter(h => !heroes.includes(h));
 				game.encounter = EncounterGenerator.createEncounter(region, heroes);
-				region.pausedEncounter = null;
 
 				this.setState({
 					game: game,
@@ -862,7 +878,6 @@ export class Main extends Component<Props, State> {
 				}
 				case EncounterState.Defeat: {
 					// Clear the current encounter
-					region.pausedEncounter = EncounterLogic.getPausedEncounter(game.encounter as EncounterModel);
 					game.encounter = null;
 					if ((game.heroes.length === 0) && (!game.boons.some(b => b.type === BoonType.ExtraHero))) {
 						// Show message
@@ -888,7 +903,6 @@ export class Main extends Component<Props, State> {
 						.forEach(h => game.heroes.push(h));
 					game.heroes.sort((a, b) => a.name.localeCompare(b.name));
 					// Clear the current encounter
-					region.pausedEncounter = EncounterLogic.getPausedEncounter(game.encounter as EncounterModel);
 					game.encounter = null;
 					break;
 				}
@@ -955,6 +969,7 @@ export class Main extends Component<Props, State> {
 						retireHero={this.retireHero}
 						redeemBoon={this.redeemBoon}
 						buyItem={this.buyItem}
+						buyAndEquipItem={this.buyAndEquipItem}
 						sellItem={this.sellItem}
 						addMoney={this.addMoney}
 						startEncounter={this.startEncounter}

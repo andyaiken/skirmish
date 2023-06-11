@@ -8,6 +8,7 @@ import { EncounterStartPanel } from './encounter-start/encounter-start';
 import { HeroBuilderPanel } from './hero-builder/hero-builder-panel';
 import { InitiativeListPanel } from './initiative-list/initiative-list-panel';
 import { ListItemPanel } from './list-item/list-item-panel';
+import { MagicItemInfoPanel } from './magic-item-info/magic-item-info-panel';
 import { SettingsPanel } from './settings/settings-panel';
 import { TreasureRowPanel } from './treasure-row/treasure-row-panel';
 import { TurnLogPanel } from './turn-log/turn-log';
@@ -23,6 +24,7 @@ export {
 	HeroBuilderPanel,
 	InitiativeListPanel,
 	ListItemPanel,
+	MagicItemInfoPanel,
 	SettingsPanel,
 	TreasureRowPanel,
 	TurnLogPanel

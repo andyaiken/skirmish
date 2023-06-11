@@ -15,8 +15,8 @@ import type { ItemModel } from '../../../../models/item';
 import { Collections } from '../../../../utils/collections';
 
 import { BoonCard, ItemCard, PlaceholderCard } from '../../../cards';
-import { CardList, Dialog, IconType, IconValue, PlayingCard, StatValue, Text, TextType } from '../../../controls';
-import { ListItemPanel } from '../../../panels';
+import { CardList, ConfirmButton, Dialog, IconType, IconValue, PlayingCard, StatValue, Switch, Text, TextType } from '../../../controls';
+import { MagicItemInfoPanel } from '../../../panels';
 
 import './items-page.scss';
 
@@ -25,11 +25,15 @@ interface Props {
 	developer: boolean;
 	buyItem: (item: ItemModel) => void;
 	sellItem: (item: ItemModel, all: boolean) => void;
+	equipItem: (item: ItemModel, hero: CombatantModel) => void;
+	buyAndEquipItem: (item: ItemModel, hero: CombatantModel) => void;
+	dropItem: (item: ItemModel, hero: CombatantModel) => void;
 	redeemBoon: (boon: BoonModel, combatant: CombatantModel | null) => void;
 	addMoney: () => void;
 }
 
 interface State {
+	showUsable: boolean;
 	magicItems: ItemModel[];
 }
 
@@ -37,6 +41,7 @@ export class ItemsPage extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
+			showUsable: false,
 			magicItems: []
 		};
 	}
@@ -64,6 +69,14 @@ export class ItemsPage extends Component<Props, State> {
 			magicItems: []
 		}, () => {
 			this.props.buyItem(item);
+		});
+	};
+
+	buyAndEquipItem = (item: ItemModel, hero: CombatantModel) => {
+		this.setState({
+			magicItems: []
+		}, () => {
+			this.props.buyAndEquipItem(item, hero);
 		});
 	};
 
@@ -120,6 +133,8 @@ export class ItemsPage extends Component<Props, State> {
 				<Text type={TextType.SubHeading}>Your Equipment</Text>
 				<Text>This page lists the items that your heroes aren&apos;t currently using.</Text>
 				<hr />
+				{this.props.game.items.some(i => i.magic) ? <Switch label='Magic Item Usability' checked={this.state.showUsable} onChange={value => this.setState({ showUsable: value })} /> : null}
+				{this.props.game.items.some(i => i.magic) ? <hr /> : null}
 				{moneySection}
 				{boons !== null ? <hr /> : null}
 				{boons}
@@ -134,27 +149,12 @@ export class ItemsPage extends Component<Props, State> {
 			return null;
 		}
 
-		const cards = this.state.magicItems.map(item => {
-			const heroes = this.props.game.heroes
-				.filter(h => (item.proficiency === ItemProficiencyType.None) || CombatantLogic.getProficiencies(h).includes(item.proficiency))
-				.map(h => <ListItemPanel key={h.id} item={h.name} />);
-
-			if (heroes.length === 0) {
-				heroes.push(
-					<Text key='empty' type={TextType.Small}>(none of your current heroes)</Text>
-				);
-			}
-
-			return (
-				<div key={item.id}>
-					<ItemCard item={item} onSelect={this.buyItem} />
-					<div className='usable-by'>
-						Can be used by:
-					</div>
-					{heroes}
-				</div>
-			);
-		});
+		const cards = this.state.magicItems.map(item => (
+			<div key={item.id}>
+				<ItemCard item={item} onSelect={this.buyItem} />
+				<MagicItemInfoPanel item={item} game={this.props.game} equipItem={this.buyAndEquipItem} dropItem={this.props.dropItem} />
+			</div>
+		));
 
 		return (
 			<Dialog
@@ -176,30 +176,15 @@ export class ItemsPage extends Component<Props, State> {
 			let magicItemSection = null;
 			const magicItems = this.props.game.items.filter(i => i.magic).sort((a, b) => a.name.localeCompare(b.name));
 			if (magicItems.length > 0) {
-				const cards = magicItems.map(item => {
-					const heroes = this.props.game.heroes
-						.filter(h => (item.proficiency === ItemProficiencyType.None) || CombatantLogic.getProficiencies(h).includes(item.proficiency))
-						.map(h => <ListItemPanel key={h.id} item={h.name} />);
-
-					if (heroes.length === 0) {
-						heroes.push(
-							<Text key='empty' type={TextType.Small}>(none of your current heroes)</Text>
-						);
-					}
-
-					return (
-						<div key={item.id}>
-							<ItemCard item={item} />
-							<div>
-								<button onClick={() => this.props.sellItem(item, true)}>Sell</button>
-							</div>
-							<div className='usable-by'>
-								Can be used by:
-							</div>
-							{heroes}
+				const cards = magicItems.map(item => (
+					<div key={item.id}>
+						<ItemCard item={item} />
+						<div>
+							<ConfirmButton label='Sell (50)' onClick={() => this.props.sellItem(item, false)} />
 						</div>
-					);
-				});
+						{this.state.showUsable ? <MagicItemInfoPanel item={item} game={this.props.game} equipItem={this.props.equipItem} dropItem={this.props.dropItem} /> : null}
+					</div>
+				));
 				magicItemSection = (
 					<div>
 						<CardList cards={cards} />
@@ -238,11 +223,14 @@ export class ItemsPage extends Component<Props, State> {
 						<CardList cards={cards} />
 					</div>
 				);
-			} else {
-				mundaneItemSection = (
-					<div>
-						<Text type={TextType.Information}><p>You have no unequipped items.</p></Text>
-					</div>
+			}
+
+			let empty = null;
+			if (this.props.game.items.length === 0) {
+				empty = (
+					<Text type={TextType.Information}>
+						<p>You have no unequipped items.</p>
+					</Text>
 				);
 			}
 
@@ -251,6 +239,7 @@ export class ItemsPage extends Component<Props, State> {
 					<div className='items-content'>
 						{magicItemSection}
 						{mundaneItemSection}
+						{empty}
 					</div>
 					{this.getSidebar()}
 					{this.getDialog()}

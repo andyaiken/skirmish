@@ -1749,7 +1749,7 @@ export class RoleData {
 					},
 					{
 						id: 'sorcerer-action-2',
-						name: 'Immolation',
+						name: 'Inferno',
 						prerequisites: [
 							ActionPrerequisites.implement()
 						],

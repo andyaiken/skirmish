@@ -21,11 +21,11 @@ On each combatant's turn, you'll see that the map hides the squares that aren't 
 
 When it's a hero's turn to act, you'll see the following information:
 
-* The `Overview` tab:
+* The `Stats` tab:
   * **Movement points** - Each round, you get a number of movement points which you can spend to move around the map.
   * **Senses** and **Hidden** - Enemies whose Hidden score beats your Senses score can't be seen, and so can't be attacked.
   * **Damage** and **Wounds** - When you're the target of a successful attack you'll take Damage. Damage can become Wounds, which are much more serious.
-  * **Traits** and **Conditions** - During the encounter you might have Conditions applied to you. A Condition might be beneficial or detrimental, and each one is associated with a particular Trait.
+  * **Conditions** - During the encounter you might have Conditions applied to you. A Condition might be beneficial or detrimental, and each one is associated with a particular Trait.
 * The `Move` tab:
   * This tab allows you to move your hero around the battlefield. If you're beside a pile of treasure, you'll also be able to pick up items here.
 * The `Action` tab:

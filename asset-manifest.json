@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/skirmish/static/css/main.137533eb.css",
-    "main.js": "/skirmish/static/js/main.448bc356.js",
+    "main.js": "/skirmish/static/js/main.225d9fe9.js",
     "static/media/encounters.md": "/skirmish/static/media/encounters.6c1c386ad93aa65c6a91.md",
     "static/media/team.md": "/skirmish/static/media/team.f0cf2f319afc29e45708.md",
     "static/media/items.md": "/skirmish/static/media/items.7e593efb99d1ae8fc485.md",
@@ -9,10 +9,10 @@
     "static/media/island.md": "/skirmish/static/media/island.a4473e397952c000f208.md",
     "static/media/game.md": "/skirmish/static/media/game.288fa747aa467f7161ab.md",
     "main.137533eb.css.map": "/skirmish/static/css/main.137533eb.css.map",
-    "main.448bc356.js.map": "/skirmish/static/js/main.448bc356.js.map"
+    "main.225d9fe9.js.map": "/skirmish/static/js/main.225d9fe9.js.map"
   },
   "entrypoints": [
     "static/css/main.137533eb.css",
-    "static/js/main.448bc356.js"
+    "static/js/main.225d9fe9.js"
   ]
 }

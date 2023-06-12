@@ -51,6 +51,27 @@
 		pointer-events: none;
 	}
 
+	.icon-prone,
+	.icon-stunned {
+		position: absolute;
+		top: 0;
+		background-color: orange;
+		border-radius: 40%;
+		z-index: 100;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-weight: 600;
+	}
+
+	.icon-prone {
+		left: 0;
+	}
+
+	.icon-stunned {
+		right: 0;
+	}
+
 	.health-bar {
 		position: absolute;
 		bottom: 0;

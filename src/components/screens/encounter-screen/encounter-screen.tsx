@@ -815,7 +815,7 @@ class CombatantControls extends Component<CombatantControlsProps, CombatantContr
 	constructor(props: CombatantControlsProps) {
 		super(props);
 		this.state = {
-			tab: 'overview'
+			tab: 'stats'
 		};
 	}
 
@@ -827,7 +827,7 @@ class CombatantControls extends Component<CombatantControlsProps, CombatantContr
 
 	endTurn = () => {
 		this.setState({
-			tab: 'overview'
+			tab: 'stats'
 		}, () => {
 			this.props.endTurn();
 		});
@@ -947,7 +947,7 @@ class CombatantControls extends Component<CombatantControlsProps, CombatantContr
 
 		let content = null;
 		switch (this.state.tab) {
-			case 'overview':
+			case 'stats':
 				content = (
 					<CombatantOverview
 						combatant={this.props.combatant}

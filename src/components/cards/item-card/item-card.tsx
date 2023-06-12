@@ -86,11 +86,12 @@ export class ItemCard extends Component<Props, State> {
 		}
 
 		let features = null;
-		if (this.props.item.features.length > 0) {
+		const collatedFeatures = FeatureLogic.collateFeatures(this.props.item.features);
+		if (collatedFeatures.length > 0) {
 			features = (
 				<div>
 					<Text type={TextType.MinorHeading}>Features</Text>
-					{this.props.item.features.map(f => <ListItemPanel key={f.id} item={FeatureLogic.getFeatureDescription(f)} />)}
+					{collatedFeatures.map(f => <ListItemPanel key={f.id} item={FeatureLogic.getFeatureDescription(f)} />)}
 				</div>
 			);
 		}

@@ -152,7 +152,7 @@ export class ItemsPage extends Component<Props, State> {
 		const cards = this.state.magicItems.map(item => (
 			<div key={item.id}>
 				<ItemCard item={item} onSelect={this.buyItem} />
-				<MagicItemInfoPanel item={item} game={this.props.game} equipItem={this.buyAndEquipItem} dropItem={this.props.dropItem} />
+				<MagicItemInfoPanel item={item} game={this.props.game} isInsideDialog={true} equipItem={this.buyAndEquipItem} dropItem={this.props.dropItem} />
 			</div>
 		));
 
@@ -182,7 +182,11 @@ export class ItemsPage extends Component<Props, State> {
 						<div>
 							<ConfirmButton label='Sell (50)' onClick={() => this.props.sellItem(item, false)} />
 						</div>
-						{this.state.showUsable ? <MagicItemInfoPanel item={item} game={this.props.game} equipItem={this.props.equipItem} dropItem={this.props.dropItem} /> : null}
+						{
+							this.state.showUsable ?
+								<MagicItemInfoPanel item={item} game={this.props.game} isInsideDialog={false} equipItem={this.props.equipItem} dropItem={this.props.dropItem} />
+								: null
+						}
 					</div>
 				));
 				magicItemSection = (
@@ -237,7 +241,10 @@ export class ItemsPage extends Component<Props, State> {
 			return (
 				<div className='items-page'>
 					<div className='items-content'>
+						{magicItemSection && mundaneItemSection ? <Text type={TextType.SubHeading}>Magic Items</Text> : null}
 						{magicItemSection}
+						{magicItemSection && mundaneItemSection ? <hr /> : null}
+						{magicItemSection && mundaneItemSection ? <Text type={TextType.SubHeading}>Non-Magic Items</Text> : null}
 						{mundaneItemSection}
 						{empty}
 					</div>

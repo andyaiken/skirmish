@@ -237,21 +237,37 @@ export class FeatureLogic {
 	static getFeatureInformation = (feature: FeatureModel) => {
 		switch (feature.type) {
 			case FeatureType.Trait:
-				return `${feature.trait} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
 			case FeatureType.Skill:
-				return `${feature.skill} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
 			case FeatureType.SkillCategory:
-				return `All ${feature.skillCategory} skills ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
+			case FeatureType.DamageBonus:
+			case FeatureType.DamageCategoryBonus:
+			case FeatureType.DamageResist:
+			case FeatureType.DamageCategoryResist:
+			case FeatureType.Aura:
+				return `${FeatureLogic.getFeatureText(feature)} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
+			case FeatureType.Proficiency:
+				return FeatureLogic.getFeatureText(feature);
+		}
+	};
+
+	static getFeatureText = (feature: FeatureModel) => {
+		switch (feature.type) {
+			case FeatureType.Trait:
+				return `${feature.trait}`;
+			case FeatureType.Skill:
+				return `${feature.skill}`;
+			case FeatureType.SkillCategory:
+				return `All ${feature.skillCategory} skills`;
 			case FeatureType.Proficiency:
 				return `${feature.proficiency}`;
 			case FeatureType.DamageBonus:
-				return `${feature.damage} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
+				return `${feature.damage}`;
 			case FeatureType.DamageCategoryBonus:
-				return `All ${feature.damageCategory} types ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
+				return `All ${feature.damageCategory} types`;
 			case FeatureType.DamageResist:
-				return `${feature.damage} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
+				return `${feature.damage}`;
 			case FeatureType.DamageCategoryResist:
-				return `All ${feature.damageCategory} types ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
+				return `All ${feature.damageCategory} types`;
 			case FeatureType.Aura: {
 				const aura = Factory.createCondition(feature.aura, TraitType.None, feature.rank);
 				aura.details.trait = feature.trait;
@@ -260,7 +276,7 @@ export class FeatureLogic {
 				aura.details.damage = feature.damage;
 				aura.details.damageCategory = feature.damageCategory;
 				const affects = ConditionLogic.getConditionIsBeneficial(aura) ? 'allies' : 'enemies';
-				return `${ConditionLogic.getConditionDescription(aura)} (affects ${affects}) ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
+				return `${ConditionLogic.getConditionDescription(aura)} (affects ${affects})`;
 			}
 		}
 	};
@@ -284,5 +300,23 @@ export class FeatureLogic {
 		}
 
 		return false;
+	};
+
+	static collateFeatures = (features: FeatureModel[]) => {
+		const collated: FeatureModel[] = [];
+
+		features.forEach(feature => {
+			const existing = collated.find(f => {
+				return (FeatureLogic.getFeatureTitle(f) === FeatureLogic.getFeatureTitle(feature)) && (FeatureLogic.getFeatureText(f) === FeatureLogic.getFeatureText(feature));
+			});
+			if (existing) {
+				existing.rank += feature.rank;
+			} else {
+				const copy = JSON.parse(JSON.stringify(feature)) as FeatureModel;
+				collated.push(copy);
+			}
+		});
+
+		return collated;
 	};
 }

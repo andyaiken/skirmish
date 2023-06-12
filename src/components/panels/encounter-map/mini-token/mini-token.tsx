@@ -1,5 +1,7 @@
 import { Component, createRef } from 'react';
+import { IconArrowBigDownFilled, IconStarFilled } from '@tabler/icons-react';
 
+import { CombatantState } from '../../../../enums/combatant-state';
 import { TraitType } from '../../../../enums/trait-type';
 
 import { EncounterLogic } from '../../../../logic/encounter-logic';
@@ -74,6 +76,26 @@ export class MiniToken extends Component<Props, State> {
 			const mouseOver = this.state.mouseOver ? 'mouse-over' : '';
 			const className = `encounter-map-mini-token ${current} ${selectable} ${selected} ${hidden} ${mouseOver}`;
 
+			let prone = null;
+			if (this.props.encounter && (this.props.combatant.combat.state === CombatantState.Prone)) {
+				const size = this.props.squareSize / 3;
+				prone = (
+					<div className='icon-prone' style={{ width: `${size}px`, height: `${size}px` }}>
+						<IconArrowBigDownFilled size={this.props.squareSize / 4} />
+					</div>
+				);
+			}
+
+			let stunned = null;
+			if (this.props.encounter && this.props.combatant.combat.stunned) {
+				const size = this.props.squareSize / 3;
+				stunned = (
+					<div className='icon-stunned' style={{ width: `${size}px`, height: `${size}px` }}>
+						<IconStarFilled size={this.props.squareSize / 4} />
+					</div>
+				);
+			}
+
 			let healthBar = null;
 			if (this.props.encounter && (this.props.combatant.combat.wounds > 0)) {
 				const resolve = EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Resolve);
@@ -116,6 +138,8 @@ export class MiniToken extends Component<Props, State> {
 					>
 						{this.getMonogram()}
 					</div>
+					{prone}
+					{stunned}
 					{healthBar}
 					{!!this.props.encounter && this.props.combatant.combat.current ? <div className='pulse pulse-one' /> : null}
 					{!!this.props.encounter && this.props.combatant.combat.current ? <div className='pulse pulse-two' /> : null}

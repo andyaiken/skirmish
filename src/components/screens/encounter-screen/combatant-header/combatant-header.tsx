@@ -36,7 +36,7 @@ export class CombatantHeader extends Component<Props> {
 		}
 
 		const options = [
-			{ id: 'overview', display: 'Overview' },
+			{ id: 'stats', display: 'Stats' },
 			{ id: 'move', display: 'Move' },
 			{ id: 'action', display: 'Action' }
 		];

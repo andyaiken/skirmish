@@ -1,26 +1,8 @@
 .magic-item-info-panel {
-	display: block;
-
-	.usable-by {
-		margin: 20px 0;
-	}
-
-	.hero-row {
-		margin: 5px 0;
-		border: 2px solid rgb(220, 220, 220);
-		border-radius: 10px;
-		padding: 5px 5px 5px 10px;
-		display: flex;
-		align-items: center;
-
-		.hero-name {
-			flex: 1 1 0;
-		}
-
-		.icon-btn {
-			flex: 0 0 40px;
-		}
-	}
+	width: 200px;
+	border: 2px solid rgb(220, 220, 220);
+	border-radius: 10px;
+	padding: 10px;
 }
 
 .item-comparer-dialog {

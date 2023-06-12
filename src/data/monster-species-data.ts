@@ -69,7 +69,8 @@ export class MonsterSpeciesData {
 								hit: [
 									ActionEffects.dealDamage(DamageType.Impact, 3)
 								]
-							})
+							}),
+							ActionEffects.takeAnotherAction()
 						]
 					}
 				]
@@ -876,7 +877,7 @@ export class MonsterSpeciesData {
 						name: 'Hurl Object',
 						prerequisites: [],
 						parameters: [
-							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 15)
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 10)
 						],
 						effects: [
 							ActionEffects.attack({

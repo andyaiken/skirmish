@@ -157,6 +157,7 @@ export class ConditionLogic {
 
 		return '';
 	};
+
 	static getOppositeType = (type: ConditionType) => {
 		const pairs: { a: ConditionType, b: ConditionType }[] = [
 			{ a: ConditionType.AutoHeal, b: ConditionType.AutoDamage },

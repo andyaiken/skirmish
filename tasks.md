@@ -8,6 +8,9 @@
 
 # Priority
 
+## Encounters
+* Make monsters take their actions automatically, in 1s intervals
+
 -----------------------------------------------------------------------------------------
 
 # Improvements / Enhancements
@@ -16,9 +19,6 @@
 * Show ranks as filled circles
 * Show the XP required as a gauge
 * Make it so that we can see a hero character sheet without having to level up
-
-## Magic Items
-* When adding a feature, collate similar features
 
 ## Features
 * Mountebank and Pixie should have an attack redirection aura
@@ -29,7 +29,6 @@
 
 ## Encounters
 * Undo movement
-* Make monsters take their actions automatically, in 1s intervals
 
 ## Turn Log
 * Indentation

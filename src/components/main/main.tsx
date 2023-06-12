@@ -879,7 +879,8 @@ export class Main extends Component<Props, State> {
 				case EncounterState.Defeat: {
 					// Clear the current encounter
 					game.encounter = null;
-					if ((game.heroes.length === 0) && (!game.boons.some(b => b.type === BoonType.ExtraHero))) {
+					const heroes = game.heroes.length + game.heroSlots + game.boons.filter(b => b.type === BoonType.ExtraHero).length;
+					if (heroes === 0) {
 						// Show message
 						dialogContent = (
 							<div>

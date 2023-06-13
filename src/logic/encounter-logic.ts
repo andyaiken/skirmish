@@ -25,7 +25,6 @@ import { CombatantLogic } from './combatant-logic';
 import { ConditionLogic } from './condition-logic';
 import { EncounterMapLogic } from './encounter-map-logic';
 import { Factory } from './factory';
-import { IntentsLogic } from './intents-logic';
 
 export class EncounterLogic {
 	static getCombatantSquares = (encounter: EncounterModel, combatant: CombatantModel, position: { x: number, y: number } | null = null) => {
@@ -212,11 +211,6 @@ export class EncounterLogic {
 					});
 
 				EncounterLogic.drawActions(encounter, combatant);
-
-				if (combatant.type === CombatantType.Monster) {
-					combatant.combat.intents = IntentsLogic.getIntents(encounter, combatant);
-				}
-
 				break;
 			}
 			case CombatantState.Unconscious:

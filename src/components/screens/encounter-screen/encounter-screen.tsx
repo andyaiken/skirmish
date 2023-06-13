@@ -36,7 +36,6 @@ interface Props {
 	rotateMap: (encounter: EncounterModel, dir: 'l' | 'r') => void;
 	rollInitiative: (encounter: EncounterModel) => void;
 	endTurn: (encounter: EncounterModel) => void;
-	performIntents: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	move: (encounter: EncounterModel, combatant: CombatantModel, dir: string, cost: number) => void;
 	addMovement: (encounter: EncounterModel, combatant: CombatantModel, value: number) => void;
 	inspire: (encounter: EncounterModel, combatant: CombatantModel) => void;
@@ -47,6 +46,7 @@ interface Props {
 	deselectAction: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	setActionParameterValue: (parameter: ActionParameterModel, value: unknown) => void;
 	runAction: (encounter: EncounterModel, combatant: CombatantModel) => void;
+	runMonsterTurn: (encounter: EncounterModel, combatant: CombatantModel, onFinished: () => void) => void;
 	equipItem: (item: ItemModel, combatant: CombatantModel) => void;
 	unequipItem: (item: ItemModel, combatant: CombatantModel) => void;
 	pickUpItem: (item: ItemModel, hero: CombatantModel) => void;
@@ -522,7 +522,6 @@ export class EncounterScreen extends Component<Props, State> {
 					selectedActionParameter={this.state.selectedActionParameter}
 					showToken={() => this.scrollToCombatant('current')}
 					showCharacterSheet={this.showDetailsCombatant}
-					performIntents={this.props.performIntents}
 					move={this.move}
 					addMovement={this.props.addMovement}
 					inspire={this.props.inspire}
@@ -534,6 +533,7 @@ export class EncounterScreen extends Component<Props, State> {
 					setActionParameter={this.setActionParameter}
 					setActionParameterValue={this.setActionParameter}
 					runAction={this.runAction}
+					runMonsterTurn={this.props.runMonsterTurn}
 					endTurn={this.endTurn}
 				/>
 			);
@@ -792,7 +792,6 @@ interface CombatantControlsProps {
 	selectedActionParameter: ActionParameterModel | null;
 	showToken: (combatant: CombatantModel) => void;
 	showCharacterSheet: (combatant: CombatantModel) => void;
-	performIntents: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	move: (encounter: EncounterModel, combatant: CombatantModel, dir: string, cost: number) => void;
 	addMovement: (encounter: EncounterModel, combatant: CombatantModel, value: number) => void;
 	inspire: (encounter: EncounterModel, combatant: CombatantModel) => void;
@@ -804,24 +803,45 @@ interface CombatantControlsProps {
 	setActionParameter: (parameter: ActionParameterModel) => void;
 	setActionParameterValue: (parameter: ActionParameterModel, value: unknown) => void;
 	runAction: (encounter: EncounterModel, combatant: CombatantModel) => void;
+	runMonsterTurn: (encounter: EncounterModel, combatant: CombatantModel, onFinished: () => void) => void;
 	endTurn: () => void;
 }
 
 interface CombatantControlsState {
 	tab: string;
+	thinking: boolean;
 }
 
 class CombatantControls extends Component<CombatantControlsProps, CombatantControlsState> {
 	constructor(props: CombatantControlsProps) {
 		super(props);
 		this.state = {
-			tab: 'stats'
+			tab: 'stats',
+			thinking: false
 		};
 	}
 
 	setTab = (tab: string) => {
 		this.setState({
 			tab: tab
+		});
+	};
+
+	setThinking = (value: boolean) => {
+		this.setState({
+			thinking: value
+		});
+	};
+
+	runMonsterTurn = () => {
+		this.setState({
+			thinking: true
+		}, () => {
+			this.props.runMonsterTurn(this.props.encounter, this.props.combatant, () => {
+				this.setState({
+					thinking: false
+				});
+			});
 		});
 	};
 
@@ -930,16 +950,9 @@ class CombatantControls extends Component<CombatantControlsProps, CombatantContr
 							developer={this.props.developer}
 						/>
 						<hr />
-						{
-							(this.props.combatant.combat.intents !== null) ?
-								<button onClick={() => this.props.performIntents(this.props.encounter, this.props.combatant)}>{this.props.combatant.combat.intents.description}</button>
-								: null
-						}
-						{
-							(this.props.combatant.combat.intents === null) ?
-								<button onClick={() => this.endTurn()}>End Turn</button>
-								: null
-						}
+						<button disabled={this.state.thinking} onClick={() => this.runMonsterTurn()}>
+							{this.state.thinking ? 'Thinking' : 'Go'}
+						</button>
 					</div>
 				</div>
 			);

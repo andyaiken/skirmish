@@ -9,6 +9,13 @@ export class IntentsData {
 		};
 	};
 
+	static scan = (): IntentModel => {
+		return {
+			id: 'scan',
+			data: null
+		};
+	};
+
 	static hide = (): IntentModel => {
 		return {
 			id: 'hide',

@@ -1699,6 +1699,25 @@ export class RoleData {
 						effects: [
 							ActionEffects.removeCondition(TraitType.Any)
 						]
+					},
+					{
+						id: 'sensei-action-6',
+						name: 'Chi Punch',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Speed,
+								skillBonus: 2,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Impact, 3)
+								]
+							})
+						]
 					}
 				]
 			},

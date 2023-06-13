@@ -698,23 +698,40 @@ export class Main extends Component<Props, State> {
 		}
 	};
 
-	endTurn = (encounter: EncounterModel) => {
+	runMonsterTurn = (encounter: EncounterModel, combatant: CombatantModel, onFinished: () => void) => {
 		try {
-			EncounterLogic.endTurn(encounter);
+			const perform = () => {
+				combatant.combat.intents = IntentsLogic.getIntents(encounter, combatant);
+				if (combatant.combat.intents) {
+					IntentsLogic.performIntents(encounter, combatant);
 
-			this.setState({
-				game: this.state.game
-			}, () => {
-				this.save();
-			});
+					this.setState({
+						game: this.state.game
+					}, () => {
+						this.save();
+						setTimeout(perform, 1000);
+					});
+				} else {
+					EncounterLogic.endTurn(encounter);
+
+					this.setState({
+						game: this.state.game
+					}, () => {
+						this.save();
+						onFinished();
+					});
+				}
+			};
+
+			setTimeout(perform, 1000);
 		} catch (ex) {
 			this.logException(ex);
 		}
 	};
 
-	performIntents = (encounter: EncounterModel, combatant: CombatantModel) => {
+	endTurn = (encounter: EncounterModel) => {
 		try {
-			IntentsLogic.performIntents(encounter, combatant);
+			EncounterLogic.endTurn(encounter);
 
 			this.setState({
 				game: this.state.game
@@ -988,7 +1005,6 @@ export class Main extends Component<Props, State> {
 						rotateMap={this.rotateMap}
 						rollInitiative={this.rollInitiative}
 						endTurn={this.endTurn}
-						performIntents={this.performIntents}
 						move={this.move}
 						addMovement={this.addMovement}
 						inspire={this.inspire}
@@ -999,6 +1015,7 @@ export class Main extends Component<Props, State> {
 						deselectAction={this.deselectAction}
 						setActionParameterValue={this.setActionParameterValue}
 						runAction={this.runAction}
+						runMonsterTurn={this.runMonsterTurn}
 						equipItem={this.equipItem}
 						unequipItem={this.unequipItem}
 						pickUpItem={this.pickUpItem}

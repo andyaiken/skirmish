@@ -8,9 +8,6 @@
 
 # Priority
 
-## Encounters
-* Make monsters take their actions automatically, in 1s intervals
-
 -----------------------------------------------------------------------------------------
 
 # Improvements / Enhancements

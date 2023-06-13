@@ -725,7 +725,26 @@ export class MonsterSpeciesData {
 								skillBonus: 0,
 								hit: [
 									ActionEffects.dealDamage(DamageType.Piercing, 1),
-									ActionEffects.dealDamage(DamageType.Decay, 1),
+									ActionEffects.dealDamage(DamageType.Decay, 1)
+								]
+							})
+						]
+					},
+					{
+						id: 'zombie-action-2',
+						name: 'Grave Rot',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Combatants, Number.MAX_VALUE)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Brawl,
+								trait: TraitType.Endurance,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Decay, 2),
 									ActionEffects.toSelf([
 										ActionEffects.healDamage(1)
 									])
@@ -771,6 +790,17 @@ export class MonsterSpeciesData {
 									ActionEffects.dealDamage(DamageType.Impact, 1)
 								]
 							})
+						]
+					},
+					{
+						id: 'skeleton-action-2',
+						name: 'Reassemble',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.self()
+						],
+						effects: [
+							ActionEffects.healDamage(3)
 						]
 					}
 				]

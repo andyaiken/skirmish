@@ -66,11 +66,24 @@ export class IntentsLogic {
 		options.push(...IntentsLogic.getAttackIntents(encounter, combatant));
 
 		const presense = EncounterLogic.getSkillRank(encounter, combatant, SkillType.Presence);
-		if ((presense > 0) && (combatant.combat.movement >= 4)) {
+		const canSeeStunnedAlly = encounter.combatants
+			.filter(c => c.type === combatant.type)
+			.filter(ally => ally.combat.stunned)
+			.some(ally => EncounterMapLogic.canSeeAny(edges, EncounterLogic.getCombatantSquares(encounter, combatant), EncounterLogic.getCombatantSquares(encounter, ally)));
+		if ((presense > 0) && (combatant.combat.movement >= 4) && canSeeStunnedAlly) {
 			options.push({
 				description: 'Inspire',
 				intents: [ IntentsData.inspire() ],
 				weight: presense
+			});
+		}
+
+		const perception = EncounterLogic.getSkillRank(encounter, combatant, SkillType.Perception);
+		if ((perception > 0) && (combatant.combat.movement >= 4)) {
+			options.push({
+				description: 'Scan',
+				intents: [ IntentsData.scan() ],
+				weight: perception
 			});
 		}
 
@@ -378,6 +391,12 @@ export class IntentsLogic {
 				case 'inspire': {
 					if (combatant.combat.movement >= 4) {
 						EncounterLogic.inspire(encounter, combatant);
+					}
+					break;
+				}
+				case 'scan': {
+					if (combatant.combat.movement >= 4) {
+						EncounterLogic.scan(encounter, combatant);
 					}
 					break;
 				}

@@ -78,20 +78,22 @@ export class MiniToken extends Component<Props, State> {
 
 			let prone = null;
 			if (this.props.encounter && (this.props.combatant.combat.state === CombatantState.Prone)) {
-				const size = this.props.squareSize / 3;
+				const size = this.props.combatant.size * this.props.squareSize / 3;
+				const iconSize = this.props.combatant.size * this.props.squareSize / 4;
 				prone = (
 					<div className='icon-prone' style={{ width: `${size}px`, height: `${size}px` }}>
-						<IconArrowBigDownFilled size={this.props.squareSize / 4} />
+						<IconArrowBigDownFilled size={iconSize} />
 					</div>
 				);
 			}
 
 			let stunned = null;
 			if (this.props.encounter && this.props.combatant.combat.stunned) {
-				const size = this.props.squareSize / 3;
+				const size = this.props.combatant.size * this.props.squareSize / 3;
+				const iconSize = this.props.combatant.size * this.props.squareSize / 4;
 				stunned = (
 					<div className='icon-stunned' style={{ width: `${size}px`, height: `${size}px` }}>
-						<IconStarFilled size={this.props.squareSize / 4} />
+						<IconStarFilled size={iconSize} />
 					</div>
 				);
 			}
@@ -101,7 +103,7 @@ export class MiniToken extends Component<Props, State> {
 				const resolve = EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Resolve);
 				const barWidth = 1 - (this.props.combatant.combat.wounds / resolve);
 				healthBar = (
-					<div className='health-bar' style={{ height: `${this.props.squareSize / 5}px` }}>
+					<div className='health-bar' style={{ height: `${this.props.combatant.size * this.props.squareSize / 5}px` }}>
 						<div className='health-bar-gauge' style={{ width: `${100 * barWidth}%` }} />
 					</div>
 				);

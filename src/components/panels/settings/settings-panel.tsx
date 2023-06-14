@@ -14,6 +14,7 @@ import { GameLogic } from '../../../logic/game-logic';
 import type { ActionModel } from '../../../models/action';
 import type { FeatureModel } from '../../../models/feature';
 import type { GameModel } from '../../../models/game';
+import type { OptionsModel } from '../../../models/options';
 
 import { ActionCard, BackgroundCard, FeatureCard, ItemCard, PlaceholderCard, RoleCard, SpeciesCard } from '../../cards';
 import { CardList, ConfirmButton, Dialog, PlayingCard, StatValue, Switch, Tabs, Text, TextType } from '../../controls';
@@ -26,9 +27,10 @@ interface Props {
 	game: GameModel | null;
 	exceptions: string[];
 	rules: string;
-	developer: boolean;
+	options: OptionsModel;
 	endCampaign: () => void;
 	setDeveloperMode: (value: boolean) => void;
+	setSoundEffectsVolume: (value: number) => void;
 }
 
 interface State {
@@ -86,7 +88,7 @@ export class SettingsPanel extends Component<Props, State> {
 				case 'decks':
 					content = (
 						<div className='content'>
-							<DecksTab developer={this.props.developer} setActions={this.setActions} />
+							<DecksTab developer={this.props.options.developer} setActions={this.setActions} />
 						</div>
 					);
 					break;
@@ -95,11 +97,12 @@ export class SettingsPanel extends Component<Props, State> {
 						<div className='content'>
 							<OptionsTab
 								game={this.props.game}
+								options={this.props.options}
 								version={pkg.version}
-								developer={this.props.developer}
 								local={this.state.local}
 								endCampaign={this.props.endCampaign}
 								setDeveloperMode={this.props.setDeveloperMode}
+								setSoundEffectsVolume={this.props.setSoundEffectsVolume}
 							/>
 						</div>
 					);
@@ -128,7 +131,7 @@ export class SettingsPanel extends Component<Props, State> {
 								footer={this.state.actionSourceName}
 								footerType={this.state.actionSourceType}
 							/>
-							{this.props.developer ? <StatValue label='Strength' value={GameLogic.getFeatureStrength(f)} /> : null}
+							{this.props.options.developer ? <StatValue label='Strength' value={GameLogic.getFeatureStrength(f)} /> : null}
 						</div>
 					);
 				});
@@ -145,7 +148,7 @@ export class SettingsPanel extends Component<Props, State> {
 								footer={this.state.actionSourceName}
 								footerType={this.state.actionSourceType}
 							/>
-							{this.props.developer ? <StatValue label='Strength' value={GameLogic.getActionStrength(a)} /> : null}
+							{this.props.options.developer ? <StatValue label='Strength' value={GameLogic.getActionStrength(a)} /> : null}
 						</div>
 					);
 				});
@@ -307,18 +310,30 @@ class DecksTab extends Component<DecksTabProps> {
 
 interface OptionsTabProps {
 	game: GameModel | null;
+	options: OptionsModel;
 	version: string;
-	developer: boolean;
 	local: boolean;
 	endCampaign: () => void;
 	setDeveloperMode: (value: boolean) => void;
+	setSoundEffectsVolume: (value: number) => void;
 }
 
 class OptionsTab extends Component<OptionsTabProps> {
 	render = () => {
 		return (
 			<div className='content'>
-				{this.props.local ? <Switch label='Developer Mode' checked={this.props.developer} onChange={this.props.setDeveloperMode} /> : null}
+				{this.props.local ? <Switch label='Developer Mode' checked={this.props.options.developer} onChange={this.props.setDeveloperMode} /> : null}
+				<hr />
+				<Text type={TextType.MinorHeading}>Sound Effects Volume</Text>
+				<input
+					type='range'
+					min={0}
+					max={1}
+					step={0.1}
+					value={this.props.options.soundEffectsVolume}
+					onChange={e => this.props.setSoundEffectsVolume(parseFloat(e.target.value))}
+				/>
+				<hr />
 				{this.props.game ? <ConfirmButton label='Abandon this Campaign' onClick={() => this.props.endCampaign()} /> : null}
 				<hr />
 				<Text>Version {this.props.version}</Text>

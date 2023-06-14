@@ -25,6 +25,7 @@ import { CombatantLogic } from './combatant-logic';
 import { ConditionLogic } from './condition-logic';
 import { EncounterMapLogic } from './encounter-map-logic';
 import { Factory } from './factory';
+import { Sound } from '../utils/sound';
 
 export class EncounterLogic {
 	static getCombatantSquares = (encounter: EncounterModel, combatant: CombatantModel, position: { x: number, y: number } | null = null) => {
@@ -154,9 +155,7 @@ export class EncounterLogic {
 			const result = Random.dice(rank);
 			EncounterLogic.log(encounter, `${combatant.name} is unconscious: rolls Resolve (${rank}) and gets ${result}`);
 			if (result <= 1) {
-				combatant.combat.state = CombatantState.Dead;
-				EncounterLogic.log(encounter, `${combatant.name} is now ${combatant.combat.state}`);
-				EncounterLogic.dropAllItems(encounter, combatant);
+				EncounterLogic.kill(encounter, combatant);
 			} else if ((result >= 10) && (combatant.quirks.includes(QuirkType.Undead))) {
 				combatant.combat.wounds = rank - 1;
 				combatant.combat.state = CombatantState.Prone;
@@ -545,6 +544,7 @@ export class EncounterLogic {
 		combatant.combat.state = CombatantState.Dead;
 		EncounterLogic.log(encounter, `${combatant.name} is now ${combatant.combat.state}`);
 		EncounterLogic.dropAllItems(encounter, combatant);
+		Sound.play(Sound.dong);
 	};
 
 	static goProne = (encounter: EncounterModel, combatant: CombatantModel) => {

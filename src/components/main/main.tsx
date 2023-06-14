@@ -22,8 +22,10 @@ import type { EncounterModel } from '../../models/encounter';
 import type { FeatureModel } from '../../models/feature';
 import type { GameModel } from '../../models/game';
 import type { ItemModel } from '../../models/item';
+import type { OptionsModel } from '../../models/options';
 import type { RegionModel } from '../../models/region';
 
+import { Sound } from '../../utils/sound';
 import { Utils } from '../../utils/utils';
 
 import { CampaignScreen, EncounterScreen, LandingScreen, SetupScreen } from '../screens';
@@ -33,11 +35,13 @@ import { SettingsPanel } from '../panels';
 
 import './main.scss';
 
-import encounters from '../../docs/encounters.md';
-import game from '../../docs/game.md';
-import island from '../../docs/island.md';
-import items from '../../docs/items.md';
-import team from '../../docs/team.md';
+import encounters from '../../assets/docs/encounters.md';
+import game from '../../assets/docs/game.md';
+import island from '../../assets/docs/island.md';
+import items from '../../assets/docs/items.md';
+import team from '../../assets/docs/team.md';
+
+import dong from '../../assets/sounds/dong.mp3';
 
 const rules: Record<string, string> = {};
 
@@ -54,9 +58,9 @@ interface Props {
 
 interface State {
 	game: GameModel | null;
+	options: OptionsModel;
 	screen: ScreenType;
 	showHelp: string | null;
-	developer: boolean;
 	dialog: JSX.Element | null;
 	exceptions: string[];
 }
@@ -66,7 +70,6 @@ export class Main extends Component<Props, State> {
 		super(props);
 
 		let game: GameModel | null = null;
-
 		try {
 			const str = window.localStorage.getItem('skirmish-game');
 			if (str) {
@@ -79,14 +82,32 @@ export class Main extends Component<Props, State> {
 			console.error('Could not load: ', ex);
 		}
 
+		let options: OptionsModel = {
+			developer: false,
+			soundEffectsVolume: 0.5
+		};
+		try {
+			const str = window.localStorage.getItem('skirmish-options');
+			if (str) {
+				const json = decompress(str);
+				if (json !== null) {
+					options = JSON.parse(json) as OptionsModel;
+				}
+			}
+		} catch (ex) {
+			console.error('Could not load: ', ex);
+		}
+
 		this.state = {
 			game: game,
+			options: options,
 			screen: ScreenType.Landing,
 			showHelp: null,
-			developer: false,
 			dialog: null,
 			exceptions: []
 		};
+
+		Sound.volume = this.state.options.soundEffectsVolume;
 	}
 
 	componentDidMount(): void {
@@ -104,6 +125,9 @@ export class Main extends Component<Props, State> {
 		});
 		fetch(team).then(response => response.text()).then(text => {
 			rules['team'] = text;
+		});
+		fetch(dong).then(response => response.arrayBuffer()).then(arrayBuffer => {
+			Sound.dong.array = arrayBuffer;
 		});
 	}
 
@@ -131,6 +155,16 @@ export class Main extends Component<Props, State> {
 		}
 	};
 
+	saveOptions = () => {
+		try {
+			const json = JSON.stringify(this.state.options);
+			const str = compress(json);
+			window.localStorage.setItem('skirmish-options', str);
+		} catch (ex) {
+			this.logException(ex);
+		}
+	};
+
 	setScreen = (screen: ScreenType) => {
 		this.setState({
 			screen: screen,
@@ -145,8 +179,26 @@ export class Main extends Component<Props, State> {
 	};
 
 	setDeveloperMode = (value: boolean) => {
+		const options = this.state.options;
+		options.developer = value;
+
 		this.setState({
-			developer: value
+			options: options
+		}, () => {
+			this.saveOptions();
+		});
+	};
+
+	setSoundEffectsVolume = (value: number) => {
+		const options = this.state.options;
+		options.soundEffectsVolume = value;
+
+		Sound.volume = value;
+
+		this.setState({
+			options: options
+		}, () => {
+			this.saveOptions();
 		});
 	};
 
@@ -950,7 +1002,7 @@ export class Main extends Component<Props, State> {
 				return (
 					<LandingScreen
 						game={this.state.game}
-						developer={this.state.developer}
+						developer={this.state.options.developer}
 						showHelp={this.showHelp}
 						startCampaign={this.startCampaign}
 						continueCampaign={this.continueCampaign}
@@ -960,7 +1012,7 @@ export class Main extends Component<Props, State> {
 				return (
 					<SetupScreen
 						game={this.state.game as GameModel}
-						developer={this.state.developer}
+						developer={this.state.options.developer}
 						addHero={this.addHero}
 						addHeroes={this.addHeroes}
 						equipItem={this.equipItem}
@@ -974,7 +1026,7 @@ export class Main extends Component<Props, State> {
 				return (
 					<CampaignScreen
 						game={this.state.game as GameModel}
-						developer={this.state.developer}
+						developer={this.state.options.developer}
 						hasExceptions={this.state.exceptions.length > 0}
 						showHelp={this.showHelp}
 						addHero={this.addHero}
@@ -999,7 +1051,7 @@ export class Main extends Component<Props, State> {
 					<EncounterScreen
 						encounter={this.state.game?.encounter as EncounterModel}
 						game={this.state.game as GameModel}
-						developer={this.state.developer}
+						developer={this.state.options.developer}
 						hasExceptions={this.state.exceptions.length > 0}
 						showHelp={this.showHelp}
 						rotateMap={this.rotateMap}
@@ -1037,9 +1089,10 @@ export class Main extends Component<Props, State> {
 								game={this.state.game}
 								exceptions={this.state.exceptions}
 								rules={rules[this.state.showHelp]}
-								developer={this.state.developer}
+								options={this.state.options}
 								endCampaign={this.endCampaign}
 								setDeveloperMode={this.setDeveloperMode}
+								setSoundEffectsVolume={this.setSoundEffectsVolume}
 							/>
 						}
 						onClose={() => this.setState({ showHelp: null })}

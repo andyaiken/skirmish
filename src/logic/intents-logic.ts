@@ -13,8 +13,8 @@ import { PathLogic } from './path-logic';
 
 import type { ActionModel, ActionTargetParameterModel } from '../models/action';
 import type { EncounterMapEdgeModel, EncounterModel } from '../models/encounter';
+import type { IntentModel, IntentsModel } from '../models/intent';
 import type { CombatantModel } from '../models/combatant';
-import type { IntentsModel } from '../models/intent';
 import type { PathModel } from '../models/path';
 
 import { Collections } from '../utils/collections';
@@ -387,42 +387,45 @@ export class IntentsLogic {
 		}
 
 		combatant.combat.intents.intents.forEach(intent => {
-			switch (intent.id) {
-				case 'inspire': {
-					if (combatant.combat.movement >= 4) {
-						EncounterLogic.inspire(encounter, combatant);
-					}
-					break;
-				}
-				case 'scan': {
-					if (combatant.combat.movement >= 4) {
-						EncounterLogic.scan(encounter, combatant);
-					}
-					break;
-				}
-				case 'hide': {
-					if (combatant.combat.movement >= 4) {
-						EncounterLogic.hide(encounter, combatant);
-					}
-					break;
-				}
-				case 'move': {
-					const dir = intent.data as string;
-					const cost = EncounterLogic.getMoveCost(encounter, combatant, combatant.combat.position, dir);
-					if (combatant.combat.movement >= cost) {
-						EncounterLogic.move(encounter, combatant, dir, cost);
-					}
-					break;
-				}
-				case 'action': {
-					const action = intent.data as ActionModel;
-					EncounterLogic.selectAction(encounter, combatant, action);
-					EncounterLogic.runAction(encounter, combatant);
-					break;
-				}
-			}
+			IntentsLogic.performIntent(encounter, combatant, intent);
 		});
-
 		combatant.combat.intents = IntentsLogic.getIntents(encounter, combatant);
+	};
+
+	static performIntent = (encounter: EncounterModel, combatant: CombatantModel, intent: IntentModel): void => {
+		switch (intent.id) {
+			case 'inspire': {
+				if (combatant.combat.movement >= 4) {
+					EncounterLogic.inspire(encounter, combatant);
+				}
+				break;
+			}
+			case 'scan': {
+				if (combatant.combat.movement >= 4) {
+					EncounterLogic.scan(encounter, combatant);
+				}
+				break;
+			}
+			case 'hide': {
+				if (combatant.combat.movement >= 4) {
+					EncounterLogic.hide(encounter, combatant);
+				}
+				break;
+			}
+			case 'move': {
+				const dir = intent.data as string;
+				const cost = EncounterLogic.getMoveCost(encounter, combatant, combatant.combat.position, dir);
+				if (combatant.combat.movement >= cost) {
+					EncounterLogic.move(encounter, combatant, dir, cost);
+				}
+				break;
+			}
+			case 'action': {
+				const action = intent.data as ActionModel;
+				EncounterLogic.selectAction(encounter, combatant, action);
+				EncounterLogic.runAction(encounter, combatant);
+				break;
+			}
+		}
 	};
 }

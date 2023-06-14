@@ -644,8 +644,10 @@ export class ActionEffects {
 
 	static run = (effect: ActionEffectModel, encounter: EncounterModel, combatant: CombatantModel, parameters: ActionParameterModel[]) => {
 		const log = (msg: string) => {
-			const current = encounter.combatants.find(c => c.combat.current) as CombatantModel;
-			current.combat.log.push(msg);
+			const current = encounter.combatants.find(c => c.combat.current);
+			if (current) {
+				current.combat.log.push(msg);
+			}
 		};
 
 		switch (effect.id) {

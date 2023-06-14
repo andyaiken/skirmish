@@ -16,6 +16,8 @@ import type { FeatureModel } from '../../../models/feature';
 import type { GameModel } from '../../../models/game';
 import type { OptionsModel } from '../../../models/options';
 
+import { Sound } from '../../../utils/sound';
+
 import { ActionCard, BackgroundCard, FeatureCard, ItemCard, PlaceholderCard, RoleCard, SpeciesCard } from '../../cards';
 import { CardList, ConfirmButton, Dialog, PlayingCard, StatValue, Switch, Tabs, Text, TextType } from '../../controls';
 
@@ -319,6 +321,11 @@ interface OptionsTabProps {
 }
 
 class OptionsTab extends Component<OptionsTabProps> {
+	setSoundEffectsVolume = (value: number) => {
+		this.props.setSoundEffectsVolume(value);
+		Sound.play(Sound.dong);
+	};
+
 	render = () => {
 		return (
 			<div className='content'>
@@ -331,7 +338,7 @@ class OptionsTab extends Component<OptionsTabProps> {
 					max={1}
 					step={0.1}
 					value={this.props.options.soundEffectsVolume}
-					onChange={e => this.props.setSoundEffectsVolume(parseFloat(e.target.value))}
+					onChange={e => this.setSoundEffectsVolume(parseFloat(e.target.value))}
 				/>
 				<hr />
 				{this.props.game ? <ConfirmButton label='Abandon this Campaign' onClick={() => this.props.endCampaign()} /> : null}

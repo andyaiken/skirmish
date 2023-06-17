@@ -110,7 +110,7 @@ export class Main extends Component<Props, State> {
 		Sound.volume = this.state.options.soundEffectsVolume;
 	}
 
-	componentDidMount(): void {
+	componentDidMount() {
 		fetch(encounters).then(response => response.text()).then(text => {
 			rules['encounters'] = text;
 		});
@@ -141,7 +141,11 @@ export class Main extends Component<Props, State> {
 		});
 	};
 
-	save = () => {
+	save = Utils.debounce(() => {
+		this.saveGame();
+	});
+
+	saveGame = () => {
 		try {
 			if (this.state.game) {
 				const json = JSON.stringify(this.state.game);
@@ -499,6 +503,8 @@ export class Main extends Component<Props, State> {
 				game.heroes = game.heroes.filter(h => !heroes.includes(h));
 				game.encounter = EncounterGenerator.createEncounter(region, heroes);
 
+				EncounterMapLogic.visibilityCache.reset();
+
 				this.setState({
 					game: game,
 					screen: ScreenType.Encounter
@@ -578,7 +584,7 @@ export class Main extends Component<Props, State> {
 				lp.position.x = pos.x;
 				lp.position.y = pos.y;
 			});
-			EncounterMapLogic.visibilityCache = {};
+			EncounterMapLogic.visibilityCache.reset();
 
 			this.setState({
 				game: this.state.game
@@ -979,6 +985,7 @@ export class Main extends Component<Props, State> {
 			}
 
 			game.heroes.forEach(h => CombatantLogic.resetCombatant(h));
+			EncounterMapLogic.visibilityCache.reset();
 
 			this.setState({
 				screen: ScreenType.Campaign,

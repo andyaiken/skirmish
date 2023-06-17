@@ -1240,7 +1240,7 @@ export class ActionEffects {
 							encounter.mapSquares.push(square);
 						});
 					});
-					EncounterMapLogic.visibilityCache = {};
+					EncounterMapLogic.visibilityCache.reset();
 					log(`${combatant.name} has created map squares`);
 				}
 				break;
@@ -1253,7 +1253,7 @@ export class ActionEffects {
 						const blob = EncounterMapLogic.getFloorBlob(encounter.mapSquares, square).filter(sq => EncounterLogic.getSquareIsEmpty(encounter, sq));
 						encounter.mapSquares = encounter.mapSquares.filter(sq => !blob.includes(sq));
 					});
-					EncounterMapLogic.visibilityCache = {};
+					EncounterMapLogic.visibilityCache.reset();
 					log(`${combatant.name} has destroyed map squares`);
 				}
 				break;
@@ -1270,7 +1270,7 @@ export class ActionEffects {
 						};
 						encounter.mapSquares.push(square);
 					});
-					EncounterMapLogic.visibilityCache = {};
+					EncounterMapLogic.visibilityCache.reset();
 					log(`${combatant.name} has destroyed walls`);
 				}
 				break;

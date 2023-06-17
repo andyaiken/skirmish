@@ -9,7 +9,7 @@ import { EncounterMapLogic } from '../logic/encounter-map-logic';
 
 export class EncounterMapGenerator {
 	static generateEncounterMap = (rng: () => number): EncounterMapSquareModel[] => {
-		EncounterMapLogic.visibilityCache = {};
+		EncounterMapLogic.visibilityCache.reset();
 
 		const mapTypes = [ 'dungeon', 'cavern', 'street' ];
 		switch (Collections.draw(mapTypes, rng)) {
@@ -27,7 +27,7 @@ export class EncounterMapGenerator {
 	static generateDungeonMap = (rng: () => number): EncounterMapSquareModel[] => {
 		const map: EncounterMapSquareModel[] = [];
 
-		while (map.length < 500) {
+		while (map.length < 400) {
 			const dirs = [ 'n', 'e', 's', 'w' ];
 			const dir = Collections.draw(dirs, rng);
 
@@ -74,7 +74,7 @@ export class EncounterMapGenerator {
 			blob.forEach(sq => sq.type = EncounterMapSquareType.Obstructed);
 		}
 
-		return map;
+		return EncounterMapGenerator.simplifyMap(map);
 	};
 
 	static generateCavernMap = (rng: () => number): EncounterMapSquareModel[] => {
@@ -86,7 +86,7 @@ export class EncounterMapGenerator {
 			}
 		];
 
-		while (map.length < 500) {
+		while (map.length < 400) {
 			const walls = EncounterMapLogic.getAdjacentWalls(map, map, [ 'n', 'e', 's', 'w' ]);
 			const wall = Collections.draw(walls, rng);
 
@@ -108,7 +108,7 @@ export class EncounterMapGenerator {
 			blob.forEach(sq => sq.type = EncounterMapSquareType.Obstructed);
 		}
 
-		return map;
+		return EncounterMapGenerator.simplifyMap(map);
 	};
 
 	static generateStreetMap = (rng: () => number): EncounterMapSquareModel[] => {
@@ -116,7 +116,7 @@ export class EncounterMapGenerator {
 
 		const streets: { dir: string, squares: EncounterMapSquareModel[] }[] = [];
 
-		while (map.length < 500) {
+		while (map.length < 400) {
 			const dirs = [ 'n', 'e', 's', 'w' ];
 			let dir = Collections.draw(dirs, rng);
 
@@ -199,6 +199,10 @@ export class EncounterMapGenerator {
 			blob.forEach(sq => sq.type = EncounterMapSquareType.Obstructed);
 		}
 
-		return map;
+		return EncounterMapGenerator.simplifyMap(map);
+	};
+
+	static simplifyMap = (map: EncounterMapSquareModel[]) => {
+		return Collections.distinct(map, sq => `${sq.x} ${sq.y}`);
 	};
 }

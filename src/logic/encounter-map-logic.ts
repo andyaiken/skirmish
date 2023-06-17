@@ -1,6 +1,7 @@
 import type { EncounterMapEdgeModel, EncounterMapSquareModel } from '../models/encounter';
 
 import { Collections } from '../utils/collections';
+import { HashTable } from '../utils/hash-table';
 import { Random } from '../utils/random';
 import { Utils } from '../utils/utils';
 
@@ -191,12 +192,12 @@ export class EncounterMapLogic {
 		return aSquares.some(a => bSquares.some(b => EncounterMapLogic.canSee(edges, a, b)));
 	};
 
-	static visibilityCache: Record<string, boolean> = {};
+	static visibilityCache = new HashTable<boolean>();
 
 	static canSee = (edges: EncounterMapEdgeModel, a: { x: number, y: number }, b: { x: number, y: number }) => {
 		// Check the cache
-		const cached = EncounterMapLogic.visibilityCache[`${a.x} ${a.y} - ${b.x} ${b.y}`];
-		if (cached !== undefined) {
+		const cached = EncounterMapLogic.visibilityCache.search(`${a.x} ${a.y} - ${b.x} ${b.y}`);
+		if (cached !== null) {
 			return cached;
 		}
 
@@ -207,8 +208,8 @@ export class EncounterMapLogic {
 			|| edges.vertical.some(edge => Utils.intersects({ a: midA, b: midB }, { a: { x: edge.x, y: edge.start }, b: { x: edge.x, y: edge.end } })));
 
 		// Cache this value
-		EncounterMapLogic.visibilityCache[`${a.x} ${a.y} - ${b.x} ${b.y}`] = visible;
-		EncounterMapLogic.visibilityCache[`${b.x} ${b.y} - ${a.x} ${a.y}`] = visible;
+		EncounterMapLogic.visibilityCache.insert(`${a.x} ${a.y} - ${b.x} ${b.y}`, visible);
+		EncounterMapLogic.visibilityCache.insert(`${b.x} ${b.y} - ${a.x} ${a.y}`, visible);
 
 		return visible;
 	};

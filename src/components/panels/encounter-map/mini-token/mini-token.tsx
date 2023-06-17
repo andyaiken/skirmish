@@ -103,7 +103,7 @@ export class MiniToken extends Component<Props, State> {
 				const resolve = EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Resolve);
 				const barWidth = 1 - (this.props.combatant.combat.wounds / resolve);
 				healthBar = (
-					<div className='health-bar' style={{ height: `${this.props.combatant.size * this.props.squareSize / 5}px` }}>
+					<div className='health-bar' style={{ height: `${this.props.squareSize / 5}px` }}>
 						<div className='health-bar-gauge' style={{ width: `${100 * barWidth}%` }} />
 					</div>
 				);

@@ -8,6 +8,10 @@
 
 # Priority
 
+## Map Types
+* Street
+* Building interior
+
 -----------------------------------------------------------------------------------------
 
 # Improvements / Enhancements
@@ -19,10 +23,6 @@
 
 ## Features
 * Mountebank and Pixie should have an attack redirection aura
-
-## Map Types
-* Street
-* Building interior
 
 ## Encounters
 * Undo movement
@@ -45,7 +45,7 @@
 
 ## Potions
 * Could be found on the map (as a loot pile)
-* An extra section in the items page - 'Potions'
+* An extra section in the items page - 'Potions' / 'Consumables'
 * Drink
   * 2 movement points
   * Then destroyed
@@ -57,16 +57,15 @@
 * Buy for 50 money
 
 ## Doors
-* Present on the map - 1x2 squares
+* Present on the map - 1x2 squares, horizontally or vertically
 * Counts as a wall: blocks LOS and can be broken down
-* Open a door for 1 movement point
-  * When opened, removed from the map
+* Open / close a door for 1 movement point
 
 ## Keys
 * Another sort of consumable item, like a potion
 * Make doors lockable
+  * Thieves can pick locks
 * Destroyed when used to lock / unlock
-* Thieves can pick locks
 
 ## Traps
 * Types of trap:
@@ -133,12 +132,15 @@
 * Ooze
 
 ## Styling
-* Favicon
 * Dark mode
 * Action animations (fireball etc)
 
 ## Sound
 * Add sound effects
+  * On move
+  * On hit
+  * On miss
+  * On wound
 * Add music
 
 -----------------------------------------------------------------------------------------

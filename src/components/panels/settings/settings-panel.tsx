@@ -331,12 +331,12 @@ class OptionsTab extends Component<OptionsTabProps> {
 			<div className='content'>
 				{this.props.local ? <Switch label='Developer Mode' checked={this.props.options.developer} onChange={this.props.setDeveloperMode} /> : null}
 				<hr />
-				<Text type={TextType.MinorHeading}>Sound Effects Volume</Text>
+				<StatValue label='Sound effects volume' value={`${this.props.options.soundEffectsVolume * 100}%`} />
 				<input
 					type='range'
 					min={0}
 					max={1}
-					step={0.1}
+					step={0.05}
 					value={this.props.options.soundEffectsVolume}
 					onChange={e => this.setSoundEffectsVolume(parseFloat(e.target.value))}
 				/>

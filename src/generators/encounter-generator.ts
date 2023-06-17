@@ -3,19 +3,20 @@ import { EncounterMapSquareType } from '../enums/encounter-map-square-type';
 import { FeatureType } from '../enums/feature-type';
 import { QuirkType } from '../enums/quirk-type';
 
+import { EncounterMapGenerator } from './encounter-map-generator';
+import { MagicItemGenerator } from './magic-item-generator';
+
+import { CombatantLogic } from '../logic/combatant-logic';
+import { EncounterLogic } from '../logic/encounter-logic';
+import { Factory } from '../logic/factory';
+import { GameLogic } from '../logic/game-logic';
+
 import type { EncounterModel, LootPileModel } from '../models/encounter';
 import type { CombatantModel } from '../models/combatant';
 import type { RegionModel } from '../models/region';
 
 import { Collections } from '../utils/collections';
 import { Random } from '../utils/random';
-
-import { CombatantLogic } from '../logic/combatant-logic';
-import { EncounterLogic } from '../logic/encounter-logic';
-import { EncounterMapLogic } from '../logic/encounter-map-logic';
-import { Factory } from '../logic/factory';
-import { GameLogic } from '../logic/game-logic';
-import { MagicItemGenerator } from './magic-item-generator';
 
 export class EncounterGenerator {
 	static createEncounter = (region: RegionModel, heroes: CombatantModel[]): EncounterModel => {
@@ -27,7 +28,7 @@ export class EncounterGenerator {
 			round: 0,
 			combatants: [ ...heroes ],
 			loot: [],
-			mapSquares: EncounterMapLogic.generateEncounterMap(rng)
+			mapSquares: EncounterMapGenerator.generateEncounterMap(rng)
 		};
 
 		const monsters: CombatantModel[] = [];

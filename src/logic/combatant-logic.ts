@@ -79,7 +79,7 @@ export class CombatantLogic {
 		for (let n = 0; n !== combatant.items.length; ++n) {
 			const item = combatant.items[n];
 			if (item.magic) {
-				if (Random.randomNumber(4) === 0) {
+				if (Random.randomNumber(5) === 0) {
 					combatant.items[n] = MagicItemGenerator.addMagicItemFeature(item);
 				}
 			}

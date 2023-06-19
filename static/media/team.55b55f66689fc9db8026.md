@@ -2,8 +2,6 @@
 
 This page is where you'll find your heroes.
 
-When you start a campaign, you'll see that you have several blank hero cards: click on them to create your heroes.
-
 ## Building a Hero
 
 Building a hero is simple, and has only three steps:

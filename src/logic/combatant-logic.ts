@@ -79,8 +79,7 @@ export class CombatantLogic {
 		for (let n = 0; n !== combatant.items.length; ++n) {
 			const item = combatant.items[n];
 			if (item.magic) {
-				// 50% chance
-				if (Random.randomBoolean()) {
+				if (Random.randomNumber(4) === 0) {
 					combatant.items[n] = MagicItemGenerator.addMagicItemFeature(item);
 				}
 			}

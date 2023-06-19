@@ -35,38 +35,38 @@ export class DirectionPanel extends Component<Props> {
 		try {
 			return (
 				<div className='direction-panel'>
-					<div className={this.getClassName('nw')} onClick={() => this.props.onMove('nw', this.props.costs.nw)}>
+					<div className={this.getClassName('nw')} onClick={() => this.props.onMove('nw', this.props.costs.nw)} onDoubleClick={() => this.props.onMove('nw', this.props.costs.nw)}>
 						<div className='arrow'><IconChevronUpLeft size={70} /></div>
 						<div className='cost'><IconValue type={IconType.Movement} value={this.getCostLabel(this.props.costs.nw)} iconSize={12} /></div>
 					</div>
-					<div className={this.getClassName('n')} onClick={() => this.props.onMove('n', this.props.costs.n)}>
+					<div className={this.getClassName('n')} onClick={() => this.props.onMove('n', this.props.costs.n)} onDoubleClick={() => this.props.onMove('n', this.props.costs.n)}>
 						<div className='arrow'><IconChevronUp size={70} /></div>
 						<div className='cost'><IconValue type={IconType.Movement} value={this.getCostLabel(this.props.costs.n)} iconSize={12} /></div>
 					</div>
-					<div className={this.getClassName('ne')} onClick={() => this.props.onMove('ne', this.props.costs.ne)}>
+					<div className={this.getClassName('ne')} onClick={() => this.props.onMove('ne', this.props.costs.ne)} onDoubleClick={() => this.props.onMove('ne', this.props.costs.ne)}>
 						<div className='arrow'><IconChevronUpRight size={70} /></div>
 						<div className='cost'><IconValue type={IconType.Movement} value={this.getCostLabel(this.props.costs.ne)} iconSize={12} /></div>
 					</div>
-					<div className={this.getClassName('w')} onClick={() => this.props.onMove('w', this.props.costs.w)}>
+					<div className={this.getClassName('w')} onClick={() => this.props.onMove('w', this.props.costs.w)} onDoubleClick={() => this.props.onMove('w', this.props.costs.w)}>
 						<div className='arrow'><IconChevronLeft size={70} /></div>
 						<div className='cost'><IconValue type={IconType.Movement} value={this.getCostLabel(this.props.costs.w)} iconSize={12} /></div>
 					</div>
 					<div className='center'>
 						<div className='cost'><IconValue type={IconType.Movement} value={this.props.combatant.combat.movement} iconSize={12} /></div>
 					</div>
-					<div className={this.getClassName('e')} onClick={() => this.props.onMove('e', this.props.costs.e)}>
+					<div className={this.getClassName('e')} onClick={() => this.props.onMove('e', this.props.costs.e)} onDoubleClick={() => this.props.onMove('e', this.props.costs.e)}>
 						<div className='arrow'><IconChevronRight size={70} /></div>
 						<div className='cost'><IconValue type={IconType.Movement} value={this.getCostLabel(this.props.costs.e)} iconSize={12} /></div>
 					</div>
-					<div className={this.getClassName('sw')} onClick={() => this.props.onMove('sw', this.props.costs.sw)}>
+					<div className={this.getClassName('sw')} onClick={() => this.props.onMove('sw', this.props.costs.sw)} onDoubleClick={() => this.props.onMove('sw', this.props.costs.sw)}>
 						<div className='arrow'><IconChevronDownLeft size={70} /></div>
 						<div className='cost'><IconValue type={IconType.Movement} value={this.getCostLabel(this.props.costs.sw)} iconSize={12} /></div>
 					</div>
-					<div className={this.getClassName('s')} onClick={() => this.props.onMove('s', this.props.costs.s)}>
+					<div className={this.getClassName('s')} onClick={() => this.props.onMove('s', this.props.costs.s)} onDoubleClick={() => this.props.onMove('s', this.props.costs.s)}>
 						<div className='arrow'><IconChevronDown size={70} /></div>
 						<div className='cost'><IconValue type={IconType.Movement} value={this.getCostLabel(this.props.costs.s)} iconSize={12} /></div>
 					</div>
-					<div className={this.getClassName('se')} onClick={() => this.props.onMove('se', this.props.costs.se)}>
+					<div className={this.getClassName('se')} onClick={() => this.props.onMove('se', this.props.costs.se)} onDoubleClick={() => this.props.onMove('se', this.props.costs.se)}>
 						<div className='arrow'><IconChevronDownRight size={70} /></div>
 						<div className='cost'><IconValue type={IconType.Movement} value={this.getCostLabel(this.props.costs.se)} iconSize={12} /></div>
 					</div>

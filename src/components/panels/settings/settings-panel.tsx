@@ -329,8 +329,7 @@ class OptionsTab extends Component<OptionsTabProps> {
 	render = () => {
 		return (
 			<div className='content'>
-				{this.props.local ? <Switch label='Developer Mode' checked={this.props.options.developer} onChange={this.props.setDeveloperMode} /> : null}
-				<hr />
+				<Text type={TextType.SubHeading}>Sound</Text>
 				<StatValue label='Sound effects volume' value={`${this.props.options.soundEffectsVolume * 100}%`} />
 				<input
 					type='range'
@@ -341,8 +340,10 @@ class OptionsTab extends Component<OptionsTabProps> {
 					onChange={e => this.setSoundEffectsVolume(parseFloat(e.target.value))}
 				/>
 				<hr />
+				{this.props.local ? <Switch label='Developer Mode' checked={this.props.options.developer} onChange={this.props.setDeveloperMode} /> : null}
+				{this.props.local ? <hr /> : null}
 				{this.props.game ? <ConfirmButton label='Abandon this Campaign' onClick={() => this.props.endCampaign()} /> : null}
-				<hr />
+				{this.props.game ? <hr /> : null}
 				<Text>Version {this.props.version}</Text>
 			</div>
 		);

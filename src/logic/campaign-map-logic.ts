@@ -67,12 +67,14 @@ export class CampaignMapLogic {
 		return coastal || bordering;
 	};
 
-	static removeRegion = (map: CampaignMapModel, region: RegionModel) => {
+	static conquerRegion = (map: CampaignMapModel, region: RegionModel) => {
 		map.squares.forEach(sq => {
 			if (sq.regionID === region.id) {
 				sq.regionID = '';
 			}
 		});
+
+		map.regions = map.regions.filter(r => map.squares.some(sq => sq.regionID === r.id));
 	};
 
 	static isConquered = (map: CampaignMapModel) => {

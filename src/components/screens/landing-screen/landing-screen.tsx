@@ -9,6 +9,8 @@ import { PlayingCard } from '../../controls';
 
 import './landing-screen.scss';
 
+import pkg from '../../../../package.json';
+
 interface Props {
 	game: GameModel | null;
 	developer: boolean;
@@ -48,6 +50,9 @@ export class LandingScreen extends Component<Props> {
 							stack={true}
 							front={<PlaceholderCard text='About' subtext='Learn about this game' onClick={() => this.props.showHelp('game')} />}
 						/>
+					</div>
+					<div className='landing-footer'>
+						{pkg.version} | Copyright Andy Aiken 2023
 					</div>
 				</div>
 			);

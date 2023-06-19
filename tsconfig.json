@@ -1,6 +1,6 @@
 {
 	"compilerOptions": {
-		"target": "es6",
+		"target": "ES2022",
 		"lib": [
 			"dom",
 			"dom.iterable",
@@ -12,7 +12,7 @@
 		"allowSyntheticDefaultImports": true,
 		"strict": true,
 		"forceConsistentCasingInFileNames": true,
-		"module": "es6",
+		"module": "ES2022",
 		"moduleResolution": "node",
 		"resolveJsonModule": true,
 		"isolatedModules": true,

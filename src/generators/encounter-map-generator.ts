@@ -114,82 +114,103 @@ export class EncounterMapGenerator {
 	static generateStreetMap = (rng: () => number): EncounterMapSquareModel[] => {
 		const map: EncounterMapSquareModel[] = [];
 
-		const streets: { dir: string, squares: EncounterMapSquareModel[] }[] = [];
+		const intersections: { x: number, y: number, used: { n: boolean, e: boolean, s: boolean, w: boolean } }[] = [];
 
 		while (map.length < 400) {
-			const dirs = [ 'n', 'e', 's', 'w' ];
-			let dir = Collections.draw(dirs, rng);
-
-			if (streets.length === 1) {
-				const firstStreet = streets[0];
-				switch (firstStreet.dir) {
-					case 'n':
-					case 's':
-						dir = Random.randomBoolean(rng) ? 'e' : 'w';
-						break;
-					case 'e':
-					case 'w':
-						dir = Random.randomBoolean(rng) ? 'n' : 's';
-						break;
-				}
-			}
-
-			const size = {
-				width: (dir === 'n') || (dir === 's') ? 3 : 10 + Random.dice(5, rng),
-				height: (dir === 'e') || (dir === 'w') ? 3 : 10 + Random.dice(5, rng)
-			};
-
 			const position = { x: 0, y: 0 };
-			if (streets.length > 0) {
-				const perpendicular = streets.filter(s => {
-					switch (dir) {
-						case 'n':
-						case 's':
-							return (s.dir === 'e') || (s.dir === 'w');
-						case 'e':
-						case 'w':
-							return (s.dir === 'n') || (s.dir === 's');
+			const length = 10 + Random.dice(5, rng);
+
+			if (intersections.length === 0) {
+				const dirs = [ 'n', 'e', 's', 'w' ];
+				const dir = Collections.draw(dirs, rng);
+				const size = {
+					width: (dir === 'n') || (dir === 's') ? 3 : length,
+					height: (dir === 'e') || (dir === 'w') ? 3 : length
+				};
+				for (let x = position.x; x < position.x + size.width; ++x) {
+					for (let y = position.y; y < position.y + size.height; ++y) {
+						if (!map.find(t => (t.x === x) && (t.y === y))) {
+							const square: EncounterMapSquareModel = {
+								x: x,
+								y: y,
+								type: EncounterMapSquareType.Clear
+							};
+							map.push(square);
+						}
+					}
+				}
+
+				intersections.push({ x: position.x + 1, y: position.y + 1, used: { n: dir === 'n', e: dir === 'e', s: dir === 's', w: dir === 'w' } });
+				intersections.push({ x: position.x + size.width - 2, y: position.y + size.height - 2, used: { n: dir === 's', e: dir === 'w', s: dir === 'n', w: dir === 'e' } });
+			} else {
+				const intersection = Collections.draw(intersections, rng);
+				const dirs = [];
+				if (!intersection.used.n) {
+					dirs.push('n');
+				}
+				if (!intersection.used.e) {
+					dirs.push('e');
+				}
+				if (!intersection.used.s) {
+					dirs.push('s');
+				}
+				if (!intersection.used.w) {
+					dirs.push('w');
+				}
+				if (dirs.length > 0) {
+					const dir = Collections.draw(dirs, rng);
+					if (dir === 'n') {
+						position.x = intersection.x - 1;
+						position.y = intersection.y - (length - 2);
+					}
+					if (dir === 'e') {
+						position.x = intersection.x - 1;
+						position.y = intersection.y - 1;
+					}
+					if (dir === 's') {
+						position.x = intersection.x - 1;
+						position.y = intersection.y - 1;
+					}
+					if (dir === 'w') {
+						position.x = intersection.x - (length - 2);
+						position.y = intersection.y - 1;
 					}
 
-					return false;
-				});
-				if (perpendicular.length > 0) {
-					const selectedStreet = Collections.draw(perpendicular, rng);
-					const adj = EncounterMapLogic.getAdjacentWalls(map, selectedStreet.squares, [ dir as 'n' | 'e' | 's' | 'w' ]);
-					if (adj.length > 0) {
-						const sq = Collections.draw(adj, rng);
-						if (dir === 'n') {
-							sq.y -= (size.height - 1);
+					const size = {
+						width: (dir === 'n') || (dir === 's') ? 3 : length,
+						height: (dir === 'e') || (dir === 'w') ? 3 : length
+					};
+					for (let x = position.x; x < position.x + size.width; ++x) {
+						for (let y = position.y; y < position.y + size.height; ++y) {
+							if (!map.find(t => (t.x === x) && (t.y === y))) {
+								const square: EncounterMapSquareModel = {
+									x: x,
+									y: y,
+									type: EncounterMapSquareType.Clear
+								};
+								map.push(square);
+							}
 						}
-						if (dir === 'w') {
-							sq.x -= (size.width - 1);
-						}
-						position.x = sq.x;
-						position.y = sq.y;
+					}
+
+					if (dir === 'n') {
+						intersection.used.n = true;
+						intersections.push({ x: intersection.x, y: intersection.y - length + 3, used: { n: false, e: false, s: true, w: false } });
+					}
+					if (dir === 'e') {
+						intersection.used.e = true;
+						intersections.push({ x: intersection.x + length - 3, y: intersection.y, used: { n: false, e: false, s: false, w: true } });
+					}
+					if (dir === 's') {
+						intersection.used.s = true;
+						intersections.push({ x: intersection.x, y: intersection.y + length - 3, used: { n: true, e: false, s: false, w: false } });
+					}
+					if (dir === 'w') {
+						intersection.used.w = true;
+						intersections.push({ x: intersection.x - length + 3, y: intersection.y, used: { n: false, e: true, s: false, w: false } });
 					}
 				}
 			}
-
-			const street: { dir: string, squares: EncounterMapSquareModel[] } = {
-				dir: dir,
-				squares: []
-			};
-
-			for (let x = position.x; x < position.x + size.width; ++x) {
-				for (let y = position.y; y < position.y + size.height; ++y) {
-					if (!map.find(t => (t.x === x) && (t.y === y))) {
-						const square: EncounterMapSquareModel = {
-							x: x,
-							y: y,
-							type: EncounterMapSquareType.Clear
-						};
-						street.squares.push(square);
-					}
-				}
-			}
-
-			streets.push(street);
-			map.push(...street.squares);
 		}
 
 		while (Random.randomNumber(3, rng) !== 0) {

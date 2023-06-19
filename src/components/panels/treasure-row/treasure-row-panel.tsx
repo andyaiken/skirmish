@@ -39,7 +39,7 @@ export class TreasureRowPanel extends Component<Props> {
 				if (item.magic) {
 					tags = (
 						<div>
-							<Tag>Magical {item.baseItem}</Tag>
+							<Tag>{item.description}</Tag>
 						</div>
 					);
 				}

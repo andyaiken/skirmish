@@ -9,8 +9,8 @@
 # Priority
 
 ## Map Types
-* Street
 * Building interior
+* Arena
 
 -----------------------------------------------------------------------------------------
 
@@ -149,4 +149,5 @@
 
 * Make the layout responsive for phones
 * Convert to functional components
+* Convert to React Native / Electron
 * Use hooks

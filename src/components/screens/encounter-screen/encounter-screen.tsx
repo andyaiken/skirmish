@@ -155,6 +155,7 @@ export class EncounterScreen extends Component<Props, State> {
 				parameter.value = ids;
 
 				this.setState({
+					logExpanded: false,
 					selectedActionParameter: parameter,
 					selectedCombatantIDs: ids,
 					selectedLootIDs: [],
@@ -166,6 +167,7 @@ export class EncounterScreen extends Component<Props, State> {
 			}
 		} else {
 			this.setState({
+				logExpanded: false,
 				selectedActionParameter: parameter,
 				selectedCombatantIDs: [ combatant.id ],
 				selectedLootIDs: [],
@@ -178,6 +180,7 @@ export class EncounterScreen extends Component<Props, State> {
 
 	selectLoot = (loot: LootPileModel) => {
 		this.setState({
+			logExpanded: false,
 			selectedCombatantIDs: [],
 			selectedLootIDs: [ loot.id ],
 			selectedSquares: []
@@ -258,6 +261,7 @@ export class EncounterScreen extends Component<Props, State> {
 			});
 		} else {
 			this.setState({
+				logExpanded: false,
 				selectedCombatantIDs: [],
 				selectedLootIDs: [],
 				selectedSquares: []

@@ -1,11 +1,11 @@
 import { Component } from 'react';
 
-import { EncounterLogic } from '../../../../logic/encounter-logic';
+import { EncounterLogic } from '../../../../../logic/encounter-logic';
 
-import type { CombatantModel } from '../../../../models/combatant';
-import type { EncounterModel } from '../../../../models/encounter';
+import type { CombatantModel } from '../../../../../models/combatant';
+import type { EncounterModel } from '../../../../../models/encounter';
 
-import { DirectionPanel } from '../../../panels';
+import { DirectionPanel } from '../../../../panels';
 
 import './combatant-move.scss';
 

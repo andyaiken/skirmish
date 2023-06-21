@@ -375,7 +375,8 @@ export class GameLogic {
 			}
 		}
 
-		strength += Math.max(ActionLogic.getActionRange(action), 1);
+		const mockCombatant = { items: [] as ItemModel[] } as CombatantModel;
+		strength += Math.max(ActionLogic.getActionRange(action, mockCombatant), 1);
 
 		const checkEffects = (effects: ActionEffectModel[]) => {
 			let value = 0;

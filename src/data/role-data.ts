@@ -79,7 +79,7 @@ export class RoleData {
 								trait: TraitType.Speed,
 								skillBonus: 0,
 								hit: [
-									ActionEffects.dealDamage(DamageType.Impact, 1),
+									ActionEffects.dealDamage(DamageType.Impact, 2),
 									ActionEffects.forceMovement(MovementType.Push, 3)
 								]
 							})
@@ -117,7 +117,22 @@ export class RoleData {
 							ActionTargetParameters.burst(ActionTargetType.Combatants, 1, 10)
 						],
 						effects: [
-							ActionEffects.forceMovement(MovementType.Swap, 0)
+							ActionEffects.forceMovement(MovementType.Swap, 0),
+							ActionEffects.takeAnotherAction()
+						]
+					},
+					{
+						id: 'arcanist-action-6',
+						name: 'Arcane Escape',
+						prerequisites: [
+							ActionPrerequisites.implement()
+						],
+						parameters: [
+							ActionTargetParameters.self()
+						],
+						effects: [
+							ActionEffects.forceMovement(MovementType.Random, 10),
+							ActionEffects.takeAnotherAction()
 						]
 					}
 				]

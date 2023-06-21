@@ -1,0 +1,13 @@
+.round-controls {
+
+	.encounter-stats {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: 5px;
+
+		.box {
+			flex: 1 1 0;
+		}
+	}
+}

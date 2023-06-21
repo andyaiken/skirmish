@@ -100,7 +100,7 @@ export class IntentsLogic {
 	};
 
 	static getCombatantTargetIntents = (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel, type: CombatantType, paths: PathModel[], edges: EncounterMapEdgeModel) => {
-		const range = ActionLogic.getActionRange(action);
+		const range = ActionLogic.getActionRange(action, combatant);
 
 		const intents: IntentsModel[] = [];
 
@@ -144,7 +144,7 @@ export class IntentsLogic {
 	};
 
 	static getSquareTargetIntents = (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel, paths: PathModel[], edges: EncounterMapEdgeModel) => {
-		const range = ActionLogic.getActionRange(action);
+		const range = ActionLogic.getActionRange(action, combatant);
 
 		const intents: IntentsModel[] = [];
 
@@ -212,7 +212,7 @@ export class IntentsLogic {
 	};
 
 	static getWallTargetIntents = (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel, paths: PathModel[]) => {
-		const range = ActionLogic.getActionRange(action);
+		const range = ActionLogic.getActionRange(action, combatant);
 
 		const intents: IntentsModel[] = [];
 

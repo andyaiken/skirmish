@@ -1,21 +1,21 @@
 import { IconArrowUp, IconViewfinder } from '@tabler/icons-react';
 import { Component } from 'react';
 
-import { ActionTargetType } from '../../../../enums/action-target-type';
-import { CardType } from '../../../../enums/card-type';
+import { ActionTargetType } from '../../../../../enums/action-target-type';
+import { CardType } from '../../../../../enums/card-type';
 
-import { ActionLogic, ActionPrerequisites } from '../../../../logic/action-logic';
-import { CombatantLogic } from '../../../../logic/combatant-logic';
-import { EncounterLogic } from '../../../../logic/encounter-logic';
-import { EncounterMapLogic } from '../../../../logic/encounter-map-logic';
+import { ActionLogic, ActionPrerequisites } from '../../../../../logic/action-logic';
+import { CombatantLogic } from '../../../../../logic/combatant-logic';
+import { EncounterLogic } from '../../../../../logic/encounter-logic';
+import { EncounterMapLogic } from '../../../../../logic/encounter-map-logic';
 
-import type { ActionModel, ActionOriginParameterModel, ActionParameterModel, ActionTargetParameterModel, ActionWeaponParameterModel } from '../../../../models/action';
-import type { CombatantModel } from '../../../../models/combatant';
-import type { EncounterModel } from '../../../../models/encounter';
-import type { ItemModel } from '../../../../models/item';
+import type { ActionModel, ActionOriginParameterModel, ActionParameterModel, ActionTargetParameterModel, ActionWeaponParameterModel } from '../../../../../models/action';
+import type { CombatantModel } from '../../../../../models/combatant';
+import type { EncounterModel } from '../../../../../models/encounter';
+import type { ItemModel } from '../../../../../models/item';
 
-import { CardList, Selector, Text, TextType } from '../../../controls';
-import { ActionCard } from '../../../cards';
+import { CardList, Selector, Text, TextType } from '../../../../controls';
+import { ActionCard } from '../../../../cards';
 
 import './combatant-action.scss';
 
@@ -109,10 +109,11 @@ export class CombatantAction extends Component<Props> {
 				let changeButton = null;
 				let changeControls = null;
 				switch (parameter.id) {
-					case'weapon': {
+					case 'weapon': {
 						const weaponParam = parameter as ActionWeaponParameterModel;
 						if (weaponParam.value) {
-							const item = parameter.value as ItemModel;
+							const itemID = parameter.value as string;
+							const item = this.props.combatant.items.find(i => i.id === itemID) as ItemModel;
 							description = item.name;
 						} else {
 							parametersSet = false;
@@ -121,12 +122,14 @@ export class CombatantAction extends Component<Props> {
 						if (weaponParam.candidates.length > 1) {
 							changeControls = (
 								<Selector
-									options={weaponParam.candidates.map(candidate => candidate as ItemModel).map(item => ({ id: item.id, display: item.name }))}
-									selectedID={(weaponParam.value as ItemModel).id}
-									onSelect={id => {
-										const item = weaponParam.candidates.find(i => (i as ItemModel).id === id);
-										this.props.setActionParameterValue(parameter, item);
-									}}
+									options={
+										weaponParam.candidates
+											.map(candidate => candidate as string)
+											.map(id => this.props.combatant.items.find(i => i.id === id) as ItemModel)
+											.map(item => ({ id: item.id, display: item.name }))
+									}
+									selectedID={weaponParam.value as string}
+									onSelect={id => this.props.setActionParameterValue(parameter, id)}
 								/>
 							);
 						}

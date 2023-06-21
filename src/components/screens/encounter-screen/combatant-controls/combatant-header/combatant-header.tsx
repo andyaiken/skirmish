@@ -1,13 +1,12 @@
 import { Component } from 'react';
 
-import { CombatantState } from '../../../../enums/combatant-state';
-import { CombatantType } from '../../../../enums/combatant-type';
+import { CombatantState } from '../../../../../enums/combatant-state';
 
-import type { CombatantModel } from '../../../../models/combatant';
-import type { EncounterModel } from '../../../../models/encounter';
+import type { CombatantModel } from '../../../../../models/combatant';
+import type { EncounterModel } from '../../../../../models/encounter';
 
-import { Tabs, Text, TextType } from '../../../controls';
-import { CombatantRowPanel } from '../../../panels';
+import { Text, TextType } from '../../../../controls';
+import { CombatantRowPanel } from '../../../../panels';
 
 import './combatant-header.scss';
 
@@ -15,41 +14,11 @@ interface Props {
 	combatant: CombatantModel;
 	encounter: EncounterModel;
 	developer: boolean;
-	tabID: string;
 	onTokenClick: (combatant: CombatantModel) => void;
-	onSelectTab: (tabID: string) => void;
 	showCharacterSheet: (combatant: CombatantModel) => void;
 }
 
 export class CombatantHeader extends Component<Props> {
-	getTabs = () => {
-		if (this.props.combatant.type === CombatantType.Monster) {
-			return null;
-		}
-
-		if ((this.props.combatant.combat.state === CombatantState.Dead) || (this.props.combatant.combat.state === CombatantState.Unconscious)) {
-			return null;
-		}
-
-		if (this.props.combatant.combat.stunned) {
-			return null;
-		}
-
-		const options = [
-			{ id: 'stats', display: 'Stats' },
-			{ id: 'move', display: 'Move' },
-			{ id: 'action', display: 'Action' }
-		];
-
-		return (
-			<Tabs
-				options={options}
-				selectedID={this.props.tabID}
-				onSelect={this.props.onSelectTab}
-			/>
-		);
-	};
-
 	render = () => {
 		try {
 			return (
@@ -69,13 +38,33 @@ export class CombatantHeader extends Component<Props> {
 							: null
 					}
 					{
+						this.props.combatant.combat.state === CombatantState.Unconscious ?
+							<Text type={TextType.Information}>
+								<p><b>{this.props.combatant.name} is Unconscious.</b> They cannot spend movement points or take any actions until their wounds are healed.</p>
+							</Text>
+							: null
+					}
+					{
+						this.props.combatant.combat.state === CombatantState.Dead ?
+							<Text type={TextType.Information}>
+								<p><b>{this.props.combatant.name} is Dead.</b> They cannot spend movement points or take any actions.</p>
+							</Text>
+							: null
+					}
+					{
+						this.props.combatant.combat.stunned ?
+							<Text type={TextType.Information}>
+								<p><b>{this.props.combatant.name} is Stunned.</b> They cannot spend movement points or take any actions this round.</p>
+							</Text>
+							: null
+					}
+					{
 						this.props.combatant.combat.hidden > 0 ?
 							<Text type={TextType.Information}>
 								<p><b>{this.props.combatant.name} is Hidden.</b> Their moving costs are doubled.</p>
 							</Text>
 							: null
 					}
-					{this.getTabs()}
 				</div>
 			);
 		} catch {

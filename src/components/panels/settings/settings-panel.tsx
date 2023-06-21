@@ -16,6 +16,7 @@ import type { FeatureModel } from '../../../models/feature';
 import type { GameModel } from '../../../models/game';
 import type { OptionsModel } from '../../../models/options';
 
+import { Format } from '../../../utils/format';
 import { Sound } from '../../../utils/sound';
 
 import { ActionCard, BackgroundCard, FeatureCard, ItemCard, PlaceholderCard, RoleCard, SpeciesCard } from '../../cards';
@@ -327,6 +328,8 @@ class OptionsTab extends Component<OptionsTabProps> {
 	};
 
 	render = () => {
+		const dataSize = JSON.stringify(this.props.game).length;
+
 		return (
 			<div className='content'>
 				<Text type={TextType.SubHeading}>Sound</Text>
@@ -344,7 +347,8 @@ class OptionsTab extends Component<OptionsTabProps> {
 				{this.props.local ? <hr /> : null}
 				{this.props.game ? <ConfirmButton label='Abandon this Campaign' onClick={() => this.props.endCampaign()} /> : null}
 				{this.props.game ? <hr /> : null}
-				<Text>Version {this.props.version}</Text>
+				{this.props.game ? <StatValue label='Data size' value={Format.toSize(dataSize)} /> : null}
+				<StatValue label='Version' value={this.props.version} />
 			</div>
 		);
 	};

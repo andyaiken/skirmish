@@ -71,7 +71,7 @@ export class EncounterMapPanel extends Component<Props> {
 			if (combatant.combat.selectedAction && !combatant.combat.selectedAction.used) {
 				const action = combatant.combat.selectedAction.action;
 
-				const range = ActionLogic.getActionRange(action);
+				const range = ActionLogic.getActionRange(action, combatant);
 				const param = action.parameters.find(p => p.id === 'origin');
 				if (param) {
 					if (range > 0) {

@@ -305,10 +305,6 @@ export class Main extends Component<Props, State> {
 		try {
 			const game = this.state.game as GameModel;
 
-			// Remove hero
-			game.heroSlots += 1;
-			game.heroes = game.heroes.filter(h => h.id !== hero.id);
-
 			// Add XP
 			const spent = hero.level * (hero.level - 1) / 2;
 			const xp = Math.floor(spent + hero.xp / 2);
@@ -319,6 +315,10 @@ export class Main extends Component<Props, State> {
 					data: xp
 				});
 			}
+
+			// Remove the hero
+			game.heroSlots += 1;
+			game.heroes = game.heroes.filter(h => h.id !== hero.id);
 
 			// Add magic items
 			hero.items.filter(i => i.magic).forEach(i => game.items.push(i));

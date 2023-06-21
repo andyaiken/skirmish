@@ -1,10 +1,10 @@
 import { Component } from 'react';
 
-import type { CombatantModel } from '../../../../models/combatant';
-import type { EncounterModel } from '../../../../models/encounter';
+import type { CombatantModel } from '../../../../../models/combatant';
+import type { EncounterModel } from '../../../../../models/encounter';
 
-import { IconType, IconValue } from '../../../controls';
-import { CombatStatsPanel } from '../../../panels';
+import { IconType, IconValue } from '../../../../controls';
+import { CombatStatsPanel } from '../../../../panels';
 
 import './combatant-overview.scss';
 

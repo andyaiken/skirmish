@@ -673,7 +673,8 @@ export class ActionEffects {
 						let success = true;
 						const weaponParam = parameters.find(p => p.id === 'weapon');
 						if (weaponParam) {
-							const item = weaponParam.value as ItemModel;
+							const itemID = weaponParam.value as string;
+							const item = combatant.items.find(i => i.id === itemID);
 							if (item) {
 								const weapon = item.weapon as WeaponModel;
 								if (weapon.unreliable > 0) {
@@ -739,7 +740,8 @@ export class ActionEffects {
 				const weaponParameter = parameters.find(p => p.id === 'weapon');
 				const targetParameter = parameters.find(p => p.id === 'targets');
 				if (weaponParameter && targetParameter) {
-					const item = weaponParameter.value as ItemModel;
+					const itemID = weaponParameter.value as string;
+					const item = combatant.items.find(i => i.id === itemID);
 					if (item) {
 						const weapon = item.weapon as WeaponModel;
 						const targetIDs = targetParameter.value as string[];
@@ -1372,7 +1374,7 @@ export class ActionLogic {
 		return str;
 	};
 
-	static getActionRange = (action: ActionModel) => {
+	static getActionRange = (action: ActionModel, combatant: CombatantModel) => {
 		let range = 0;
 
 		action.parameters.forEach(param => {
@@ -1394,9 +1396,10 @@ export class ActionLogic {
 					case ActionRangeType.Weapon: {
 						const wpnParam = action.parameters.find(p => p.id === 'weapon') as ActionWeaponParameterModel;
 						if (wpnParam && (wpnParam.value !== null)) {
-							const weapon = wpnParam.value as ItemModel;
-							if (weapon.weapon) {
-								range = weapon.weapon.range + targetParam.range.radius;
+							const itemID = wpnParam.value as string;
+							const item = combatant.items.find(i => i.id === itemID);
+							if (item && item.weapon) {
+								range = item.weapon.range + targetParam.range.radius;
 							}
 						}
 						break;
@@ -1409,8 +1412,8 @@ export class ActionLogic {
 	};
 
 	static checkWeaponParameter = (parameter: ActionWeaponParameterModel, combatant: CombatantModel) => {
-		const candidates: ItemModel[] = [];
-		let value = parameter.value as ItemModel | null;
+		const candidates: string[] = [];
+		let value = parameter.value as string | null;
 
 		const proficiencies: ItemProficiencyType[] = [];
 		switch (parameter.type) {
@@ -1427,10 +1430,7 @@ export class ActionLogic {
 
 		combatant.items
 			.filter(i => proficiencies.includes(i.proficiency))
-			.forEach(i => {
-				const copy = JSON.parse(JSON.stringify(i)) as ItemModel;
-				candidates.push(copy);
-			});
+			.forEach(i => candidates.push(i.id));
 
 		if ((value === null) || !candidates.includes(value)) {
 			if (candidates.length > 0) {
@@ -1452,9 +1452,10 @@ export class ActionLogic {
 		if (parameter.distance === 'weapon') {
 			const wpnParam = action.parameters.find(p => p.id === 'weapon') as ActionWeaponParameterModel;
 			if (wpnParam && (wpnParam.value !== null)) {
-				const weapon = wpnParam.value as ItemModel;
-				if (weapon.weapon) {
-					radius = weapon.weapon.range;
+				const itemID = wpnParam.value as string;
+				const item = combatant.items.find(i => i.id === itemID);
+				if (item && item.weapon) {
+					radius = item.weapon.range;
 				}
 			}
 		} else {
@@ -1487,7 +1488,7 @@ export class ActionLogic {
 			candidates.push(combatant.id);
 			value = [ combatant.id ];
 		} else {
-			const radius = ActionLogic.getActionRange(action);
+			const radius = ActionLogic.getActionRange(action, combatant);
 
 			let originSquares = EncounterLogic.getCombatantSquares(encounter, combatant);
 			const originParam = action.parameters.find(p => p.id === 'origin');

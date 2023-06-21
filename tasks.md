@@ -8,10 +8,6 @@
 
 # Priority
 
-## Map Types
-* Building interior
-* Arena
-
 -----------------------------------------------------------------------------------------
 
 # Improvements / Enhancements
@@ -22,7 +18,9 @@
 * Make it so that we can see a hero character sheet without having to level up
 
 ## Features
-* Mountebank and Pixie should have an attack redirection aura
+* Mountebank and Pixie should have a blur aura
+  * Affects self
+  * When attacked, roll aura rank; 10+ means attack misses
 
 ## Encounters
 * Undo movement
@@ -31,6 +29,10 @@
 * Indentation
 * Colours
 * Highlighting names, values
+
+## Map Types
+* Building interior
+* Arena
 
 -----------------------------------------------------------------------------------------
 

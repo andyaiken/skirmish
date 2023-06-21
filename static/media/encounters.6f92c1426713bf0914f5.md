@@ -2,16 +2,16 @@
 
 When you start an encounter, you'll see the screen has split into four sections:
 
-* **On the left**, you'll see a list of all the combatants (heroes and monsters) in the encounter.
 * **In the middle**, you'll see the encounter map.
-* **At the bottom** there is a toolbar that allows you to rotate and zoom the map. It also has buttons that allow you to retreat from the encounter.
+* **At the top** there is a toolbar that allows you to rotate and zoom the map. It also has buttons that allow you to retreat from the encounter.
+* **On the left**, you'll see a list of all the combatants (heroes and monsters) in the encounter.
 * **On the right** are the controls for the current combatant. You can control your heroes, but monsters act for themselves.
 
 Encounters take place in rounds. At the beginning of each round, you'll be asked to `Roll Initiative` to set the order in which the combatants (heroes and monsters) will act.
 
 ## The Map
 
-The map has a number of tokens on it; heroes are green tokens, monsters are red. You might sometimes see a yellow token, which is a pile of treasure. You can hover your mouse over a token to see its card, or double-click to bring up a character sheet. Some combatants might have an Aura, which is shown as a translucent grey circle around their token.
+The map has a number of tokens on it; heroes are in their own colors, monsters are black. You might sometimes see a yellow token, which is a pile of treasure. You can tap on token to select it, which brings up its information at the bottom of the screen. Some combatants might have an Aura, which is shown as a translucent grey circle around their token.
 
 You'll notice that most floor squares are white, but some are gray - these squares are Obstructed, making them more difficult to move into.
 

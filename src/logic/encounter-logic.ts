@@ -83,14 +83,12 @@ export class EncounterLogic {
 	};
 
 	static log = (encounter: EncounterModel, message: string) => {
-		const combatant = encounter.combatants.find(c => c.combat.current);
-		if (combatant) {
-			combatant.combat.log.push(message);
-		}
+		encounter.log.push(message);
 	};
 
 	static rollInitiative = (encounter: EncounterModel) => {
 		encounter.round += 1;
+		encounter.log = [];
 
 		encounter.combatants.forEach(c => {
 			c.combat.initiative = Number.MIN_VALUE;
@@ -147,8 +145,9 @@ export class EncounterLogic {
 		combatant.combat.trail = [];
 		combatant.combat.actions = [];
 		combatant.combat.selectedAction = null;
-		combatant.combat.log = [];
 		combatant.combat.intents = null;
+
+		EncounterLogic.log(encounter, `Start of turn: ${combatant.name}`);
 
 		if (combatant.combat.state === CombatantState.Unconscious) {
 			const rank = EncounterLogic.getTraitRank(encounter, combatant, TraitType.Resolve);
@@ -233,7 +232,6 @@ export class EncounterLogic {
 			c.combat.trail = [];
 			c.combat.actions = [];
 			c.combat.selectedAction = null;
-			c.combat.log = [];
 			c.combat.intents = null;
 		});
 
@@ -541,10 +539,12 @@ export class EncounterLogic {
 	};
 
 	static kill = (encounter: EncounterModel, combatant: CombatantModel) => {
-		combatant.combat.state = CombatantState.Dead;
-		EncounterLogic.log(encounter, `${combatant.name} is now ${combatant.combat.state}`);
-		EncounterLogic.dropAllItems(encounter, combatant);
-		Sound.play(Sound.dong);
+		if (combatant.combat.state !== CombatantState.Dead) {
+			combatant.combat.state = CombatantState.Dead;
+			EncounterLogic.log(encounter, `${combatant.name} is now ${combatant.combat.state}`);
+			EncounterLogic.dropAllItems(encounter, combatant);
+			Sound.play(Sound.dong);
+		}
 	};
 
 	static goProne = (encounter: EncounterModel, combatant: CombatantModel) => {

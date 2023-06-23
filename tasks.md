@@ -14,7 +14,6 @@
 
 ## Character Sheet
 * Show ranks as filled circles
-* Show the XP required as a gauge
 * Make it so that we can see a hero character sheet without having to level up
 
 ## Features

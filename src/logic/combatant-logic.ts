@@ -394,7 +394,6 @@ export class CombatantLogic {
 		combatant.combat.conditions = [];
 		combatant.combat.actions = [];
 		combatant.combat.selectedAction = null;
-		combatant.combat.log = [];
 		combatant.combat.intents = null;
 	};
 

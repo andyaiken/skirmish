@@ -51,7 +51,6 @@ export interface CombatantModel {
 			action: ActionModel;
 			used: boolean;
 		} | null;
-		log: string[];
 		intents: IntentsModel | null;
 	}
 }

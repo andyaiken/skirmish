@@ -643,13 +643,6 @@ export class ActionEffects {
 	};
 
 	static run = (effect: ActionEffectModel, encounter: EncounterModel, combatant: CombatantModel, parameters: ActionParameterModel[]) => {
-		const log = (msg: string) => {
-			const current = encounter.combatants.find(c => c.combat.current);
-			if (current) {
-				current.combat.log.push(msg);
-			}
-		};
-
 		switch (effect.id) {
 			case 'attack': {
 				const data = effect.data as {
@@ -668,7 +661,7 @@ export class ActionEffects {
 					targetIDs.forEach(id => {
 						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
 
-						log(`${combatant.name} attacks ${target.name}`);
+						EncounterLogic.log(encounter, `${combatant.name} attacks ${target.name}`);
 
 						let success = true;
 						const weaponParam = parameters.find(p => p.id === 'weapon');
@@ -678,13 +671,13 @@ export class ActionEffects {
 							if (item) {
 								const weapon = item.weapon as WeaponModel;
 								if (weapon.unreliable > 0) {
-									log(`${item.name} is Unreliable (rank ${weapon.unreliable})`);
+									EncounterLogic.log(encounter, `${item.name} is Unreliable (rank ${weapon.unreliable})`);
 									const roll = Random.dice(weapon.unreliable);
 									if (roll >= 10) {
 										success = false;
-										log(`It fails (rolled ${roll})`);
+										EncounterLogic.log(encounter, `It fails (rolled ${roll})`);
 									} else {
-										log(`It works (rolled ${roll})`);
+										EncounterLogic.log(encounter, `It works (rolled ${roll})`);
 									}
 								}
 							}
@@ -693,7 +686,7 @@ export class ActionEffects {
 						if (success) {
 							if ((target.combat.state === CombatantState.Unconscious) || (target.combat.state === CombatantState.Dead)) {
 								// Automatic hit
-								log('Coup de grâce: no attack roll required');
+								EncounterLogic.log(encounter, 'Coup de grâce: no attack roll required');
 							} else {
 								const attackRank = EncounterLogic.getSkillRank(encounter, combatant, data.skill) + data.skillBonus;
 								const defenceRank = EncounterLogic.getTraitRank(encounter, target, data.trait);
@@ -701,8 +694,8 @@ export class ActionEffects {
 								const attackRoll = Random.dice(attackRank);
 								const defenceRoll = Random.dice(defenceRank);
 
-								log(`${combatant.name} rolls ${data.skill} (rank ${attackRank}) and gets ${attackRoll}`);
-								log(`${target.name} rolls ${data.trait} (rank ${defenceRank}) and gets ${defenceRoll}`);
+								EncounterLogic.log(encounter, `${combatant.name} rolls ${data.skill} (rank ${attackRank}) and gets ${attackRoll}`);
+								EncounterLogic.log(encounter, `${target.name} rolls ${data.trait} (rank ${defenceRank}) and gets ${defenceRoll}`);
 
 								success = attackRoll >= defenceRoll;
 							}
@@ -710,9 +703,9 @@ export class ActionEffects {
 
 						if (success) {
 							targetsSucceeded.push(target.id);
-							log('Hit');
+							EncounterLogic.log(encounter, 'Hit');
 						} else {
-							log('Miss');
+							EncounterLogic.log(encounter, 'Miss');
 						}
 					});
 				}
@@ -750,13 +743,13 @@ export class ActionEffects {
 							weapon.damage.forEach(dmg => {
 								const rank = dmg.rank + rankModifier;
 								const result = Random.dice(rank);
-								log(`${combatant.name} rolls weapon damage for ${target.name} (rank ${rank}) and gets ${result}`);
+								EncounterLogic.log(encounter, `${combatant.name} rolls weapon damage for ${target.name} (rank ${rank}) and gets ${result}`);
 								const bonus = EncounterLogic.getDamageBonus(encounter, combatant, dmg.type);
 								if (bonus > 0) {
-									log(`${combatant.name} deals ${bonus} additional ${dmg.type} damage`);
+									EncounterLogic.log(encounter, `${combatant.name} deals ${bonus} additional ${dmg.type} damage`);
 								}
 								if (bonus < 0) {
-									log(`${combatant.name} deals ${bonus} less ${dmg.type} damage`);
+									EncounterLogic.log(encounter, `${combatant.name} deals ${bonus} less ${dmg.type} damage`);
 								}
 								EncounterLogic.damage(encounter, target, result + bonus, dmg.type);
 							});
@@ -776,13 +769,13 @@ export class ActionEffects {
 					targetIDs.forEach(id => {
 						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
 						const result = Random.dice(data.rank);
-						log(`${combatant.name} rolls damage for ${target.name} (rank ${data.rank}) and gets ${result}`);
+						EncounterLogic.log(encounter, `${combatant.name} rolls damage for ${target.name} (rank ${data.rank}) and gets ${result}`);
 						const bonus = EncounterLogic.getDamageBonus(encounter, combatant, data.type);
 						if (bonus > 0) {
-							log(`${combatant.name} deals ${bonus} additional ${data.type} damage`);
+							EncounterLogic.log(encounter, `${combatant.name} deals ${bonus} additional ${data.type} damage`);
 						}
 						if (bonus < 0) {
-							log(`${combatant.name} deals ${bonus} less ${data.type} damage`);
+							EncounterLogic.log(encounter, `${combatant.name} deals ${bonus} less ${data.type} damage`);
 						}
 						EncounterLogic.damage(encounter, target, result + bonus, data.type);
 					});
@@ -836,7 +829,7 @@ export class ActionEffects {
 						const copy = JSON.parse(JSON.stringify(condition)) as ConditionModel;
 						copy.id = Utils.guid();
 						target.combat.conditions.push(copy);
-						log(`${target.name} is now affected by ${ConditionLogic.getConditionDescription(condition)}, rank ${condition.rank}`);
+						EncounterLogic.log(encounter, `${target.name} is now affected by ${ConditionLogic.getConditionDescription(condition)}, rank ${condition.rank}`);
 					});
 				}
 				break;
@@ -856,7 +849,7 @@ export class ActionEffects {
 							const maxRank = Math.max(...conditions.map(c => c.rank));
 							const condition = conditions.find(c => c.rank === maxRank) as ConditionModel;
 							target.combat.conditions = target.combat.conditions.filter(c => c.id !== condition.id);
-							log(`${target.name} is no longer affected by ${ConditionLogic.getConditionDescription(condition)}`);
+							EncounterLogic.log(encounter, `${target.name} is no longer affected by ${ConditionLogic.getConditionDescription(condition)}`);
 						}
 					});
 				}
@@ -871,7 +864,7 @@ export class ActionEffects {
 						const rank = EncounterLogic.getTraitRank(encounter, target, TraitType.Speed);
 						const result = Random.dice(rank);
 						target.combat.movement += result;
-						log(`${target.name} rolls Speed (rank ${rank}) and gets ${result} additional movement`);
+						EncounterLogic.log(encounter, `${target.name} rolls Speed (rank ${rank}) and gets ${result} additional movement`);
 					});
 				}
 				break;
@@ -894,7 +887,7 @@ export class ActionEffects {
 					targetIDs.forEach(id => {
 						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
 						target.combat.stunned = true;
-						log(`${target.name} is stunned`);
+						EncounterLogic.log(encounter, `${target.name} is stunned`);
 					});
 				}
 				break;
@@ -907,7 +900,7 @@ export class ActionEffects {
 						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
 						target.combat.movement += 4;
 						EncounterLogic.scan(encounter, target);
-						log(`${target.name} scans`);
+						EncounterLogic.log(encounter, `${target.name} scans`);
 					});
 				}
 				break;
@@ -920,7 +913,7 @@ export class ActionEffects {
 						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
 						target.combat.movement += 4;
 						EncounterLogic.hide(encounter, target);
-						log(`${target.name} hides`);
+						EncounterLogic.log(encounter, `${target.name} hides`);
 					});
 				}
 				break;
@@ -957,7 +950,7 @@ export class ActionEffects {
 				const all = effect.data as boolean;
 				const invert = (target: CombatantModel, condition: ConditionModel) => {
 					condition.type = ConditionLogic.getOppositeType(condition.type);
-					log(`${target.name} is now affected by ${ConditionLogic.getConditionDescription(condition)}`);
+					EncounterLogic.log(encounter, `${target.name} is now affected by ${ConditionLogic.getConditionDescription(condition)}`);
 				};
 				const targetParameter = parameters.find(p => p.id === 'targets');
 				if (targetParameter) {
@@ -987,8 +980,8 @@ export class ActionEffects {
 							combatant.combat.conditions = combatant.combat.conditions.filter(c => c !== condition);
 							const copy = JSON.parse(JSON.stringify(condition)) as ConditionModel;
 							target.combat.conditions.push(copy);
-							log(`${combatant.name} is no longer affected by ${ConditionLogic.getConditionDescription(condition)}`);
-							log(`${target.name} is now affected by ${ConditionLogic.getConditionDescription(copy)}`);
+							EncounterLogic.log(encounter, `${combatant.name} is no longer affected by ${ConditionLogic.getConditionDescription(condition)}`);
+							EncounterLogic.log(encounter, `${target.name} is now affected by ${ConditionLogic.getConditionDescription(copy)}`);
 						}
 					});
 				}
@@ -1000,7 +993,7 @@ export class ActionEffects {
 					const targetIDs = targetParameter.value as string[];
 					targetIDs.forEach(id => {
 						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
-						log(`${combatant.name} commands ${target.name} to attack`);
+						EncounterLogic.log(encounter, `${combatant.name} commands ${target.name} to attack`);
 						target.combat.selectedAction = null;
 						target.combat.actions = CombatantLogic.getActionDeck(target).filter(action => ActionLogic.getActionType(action) === 'Attack');
 						target.combat.actions.push(...BaseData.getBaseActions().filter(action => ActionLogic.getActionType(action) === 'Attack'));
@@ -1010,7 +1003,7 @@ export class ActionEffects {
 							target.combat.intents = Collections.draw(intents);
 							IntentsLogic.performIntents(encounter, target);
 						} else {
-							log(`${target.name} cannot attack`);
+							EncounterLogic.log(encounter, `${target.name} cannot attack`);
 						}
 					});
 				}
@@ -1022,7 +1015,7 @@ export class ActionEffects {
 					const targetIDs = targetParameter.value as string[];
 					targetIDs.forEach(id => {
 						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
-						log(`${combatant.name} commands ${target.name} to move`);
+						EncounterLogic.log(encounter, `${combatant.name} commands ${target.name} to move`);
 						target.combat.movement = Random.dice(EncounterLogic.getTraitRank(encounter, target, TraitType.Speed));
 						const paths = PathLogic.findPaths(encounter, target);
 						const intents = IntentsLogic.getMovementIntents(encounter, target, paths);
@@ -1030,7 +1023,7 @@ export class ActionEffects {
 							target.combat.intents = Collections.draw(intents);
 							IntentsLogic.performIntents(encounter, target);
 						} else {
-							log(`${target.name} cannot move`);
+							EncounterLogic.log(encounter, `${target.name} cannot move`);
 						}
 					});
 				}
@@ -1058,7 +1051,7 @@ export class ActionEffects {
 										target.combat.position.y = square.y;
 									}
 								}
-								log(`${target.name} has been pulled`);
+								EncounterLogic.log(encounter, `${target.name} has been pulled`);
 								break;
 							}
 							case MovementType.Push: {
@@ -1075,7 +1068,7 @@ export class ActionEffects {
 										target.combat.position.y = square.y;
 									}
 								}
-								log(`${target.name} has been pushed`);
+								EncounterLogic.log(encounter, `${target.name} has been pushed`);
 								break;
 							}
 							case MovementType.Swap: {
@@ -1085,7 +1078,7 @@ export class ActionEffects {
 								combatant.combat.position.y = target.combat.position.y;
 								target.combat.position.x = currentX;
 								target.combat.position.y = currentY;
-								log(`${combatant.name} and ${target.name} have swapped positions`);
+								EncounterLogic.log(encounter, `${combatant.name} and ${target.name} have swapped positions`);
 								break;
 							}
 							case MovementType.TowardsTarget: {
@@ -1102,7 +1095,7 @@ export class ActionEffects {
 										combatant.combat.position.y = square.y;
 									}
 								}
-								log(`${combatant.name} has moved towards ${target.name}`);
+								EncounterLogic.log(encounter, `${combatant.name} has moved towards ${target.name}`);
 								break;
 							}
 							case MovementType.BesideTarget: {
@@ -1110,7 +1103,7 @@ export class ActionEffects {
 								const targetSquares = EncounterLogic.getCombatantSquares(encounter, target);
 								const targetAdjacentSquares = EncounterMapLogic.getAdjacentSquares(encounter.mapSquares, targetSquares);
 								if (combatantSquares.some(square => targetAdjacentSquares.find(s => (s.x === square.x) && (s.y === square.y)))) {
-									log(`${combatant.name} is already beside ${target.name}`);
+									EncounterLogic.log(encounter, `${combatant.name} is already beside ${target.name}`);
 								} else {
 									const candidates = encounter.mapSquares.filter(square => {
 										const squares = EncounterLogic.getCombatantSquares(encounter, combatant, square);
@@ -1123,9 +1116,9 @@ export class ActionEffects {
 										combatant.combat.trail.push({ x: target.combat.position.x, y: target.combat.position.y });
 										combatant.combat.position.x = square.x;
 										combatant.combat.position.y = square.y;
-										log(`${combatant.name} has moved to ${target.name}`);
+										EncounterLogic.log(encounter, `${combatant.name} has moved to ${target.name}`);
 									} else {
-										log(`${combatant.name} can't move to ${target.name}`);
+										EncounterLogic.log(encounter, `${combatant.name} can't move to ${target.name}`);
 									}
 								}
 								break;
@@ -1141,7 +1134,7 @@ export class ActionEffects {
 									target.combat.position.x = square.x;
 									target.combat.position.y = square.y;
 								}
-								log(`${target.name} has been moved to a random square`);
+								EncounterLogic.log(encounter, `${target.name} has been moved to a random square`);
 								break;
 							}
 						}
@@ -1161,9 +1154,9 @@ export class ActionEffects {
 						combatant.combat.trail.push({ x: combatant.combat.position.x, y: combatant.combat.position.y });
 						combatant.combat.position.x = square.x;
 						combatant.combat.position.y = square.y;
-						log(`${combatant.name} has moved`);
+						EncounterLogic.log(encounter, `${combatant.name} has moved`);
 					} else {
-						log(`${combatant.name} can't move`);
+						EncounterLogic.log(encounter, `${combatant.name} can't move`);
 					}
 				}
 				break;
@@ -1188,9 +1181,9 @@ export class ActionEffects {
 								loot.position.y = square.y;
 								encounter.loot.push(loot);
 							}
-							log(`${target.name} has lost ${item.name}`);
+							EncounterLogic.log(encounter, `${target.name} has lost ${item.name}`);
 						} else {
-							log(`${target.name} is not holding anything`);
+							EncounterLogic.log(encounter, `${target.name} is not holding anything`);
 						}
 					});
 				}
@@ -1208,7 +1201,7 @@ export class ActionEffects {
 							target.items = target.items.filter(i => i.id !== item.id);
 							target.carried = target.carried.filter(i => i.id !== item.id);
 							combatant.carried.push(item);
-							log(`${combatant.name} has stolen ${item.name} from ${target.name}`);
+							EncounterLogic.log(encounter, `${combatant.name} has stolen ${item.name} from ${target.name}`);
 						}
 					});
 				}
@@ -1223,7 +1216,7 @@ export class ActionEffects {
 						const blob = EncounterMapLogic.getFloorBlob(encounter.mapSquares, square);
 						blob.forEach(sq => sq.type = type);
 					});
-					log(`${combatant.name} has created an area of ${type.toLowerCase()} terrain`);
+					EncounterLogic.log(encounter, `${combatant.name} has created an area of ${type.toLowerCase()} terrain`);
 				}
 				break;
 			}
@@ -1243,7 +1236,7 @@ export class ActionEffects {
 						});
 					});
 					EncounterMapLogic.visibilityCache.reset();
-					log(`${combatant.name} has created map squares`);
+					EncounterLogic.log(encounter, `${combatant.name} has created map squares`);
 				}
 				break;
 			}
@@ -1256,7 +1249,7 @@ export class ActionEffects {
 						encounter.mapSquares = encounter.mapSquares.filter(sq => !blob.includes(sq));
 					});
 					EncounterMapLogic.visibilityCache.reset();
-					log(`${combatant.name} has destroyed map squares`);
+					EncounterLogic.log(encounter, `${combatant.name} has destroyed map squares`);
 				}
 				break;
 			}
@@ -1273,7 +1266,7 @@ export class ActionEffects {
 						encounter.mapSquares.push(square);
 					});
 					EncounterMapLogic.visibilityCache.reset();
-					log(`${combatant.name} has destroyed walls`);
+					EncounterLogic.log(encounter, `${combatant.name} has destroyed walls`);
 				}
 				break;
 			}

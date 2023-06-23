@@ -1,11 +1,11 @@
 import { Component, createRef } from 'react';
 
-import type { CombatantModel } from '../../../models/combatant';
+import type { EncounterModel } from '../../../models/encounter';
 
 import './turn-log.scss';
 
 interface Props {
-	combatant: CombatantModel;
+	encounter: EncounterModel;
 }
 
 export class TurnLogPanel extends Component<Props> {
@@ -26,13 +26,13 @@ export class TurnLogPanel extends Component<Props> {
 
 	render = () => {
 		try {
-			if (this.props.combatant.combat.log.length === 0) {
+			if (this.props.encounter.log.length === 0) {
 				return null;
 			}
 
 			return (
 				<div className='turn-log'>
-					{this.props.combatant.combat.log.map((msg, n) => <div key={n} className='turn-log-message'>{msg}</div>)}
+					{this.props.encounter.log.map((msg, n) => <div key={n} className='turn-log-message'>{msg}</div>)}
 					<div ref={this.messagesEndRef} />
 				</div>
 			);

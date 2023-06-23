@@ -4,6 +4,7 @@ import { Box } from './box/box';
 import { CardList } from './card-list/card-list';
 import { ConfirmButton } from './confirm-button/confirm-button';
 import { Dialog } from './dialog/dialog';
+import { Gauge } from './gauge/gauge';
 import { PlayingCard } from './playing-card/playing-card';
 import { Selector } from './selector/selector';
 import { StatValue } from './stat-value/stat-value';
@@ -16,6 +17,7 @@ export {
 	CardList,
 	ConfirmButton,
 	Dialog,
+	Gauge,
 	IconType, IconValue,
 	PlayingCard,
 	Selector,

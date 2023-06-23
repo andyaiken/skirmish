@@ -502,17 +502,20 @@ export class EncounterScreen extends Component<Props, State> {
 			}
 		}
 
-		const currentCombatant = EncounterLogic.getActiveCombatants(this.props.encounter).find(c => c.combat.current) || null;
-		if (currentCombatant && (currentCombatant.combat.log.length > 0)) {
+		if (this.props.encounter.log.length > 0) {
 			const className = this.state.logExpanded ? 'encounter-bottom-panel clickable scrollable expanded' : 'encounter-bottom-panel clickable scrollable';
 			return (
 				<div className={className} onClick={() => this.toggleLogExpanded()}>
-					<TurnLogPanel combatant={currentCombatant} />
+					<TurnLogPanel encounter={this.props.encounter} />
 				</div>
 			);
 		}
 
-		return null;
+		return (
+			<div className='encounter-bottom-panel'>
+				<div className='logo-text inset-text'>Skirmish</div>
+			</div>
+		);
 	};
 
 	getRightControls = () => {

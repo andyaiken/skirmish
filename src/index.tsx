@@ -10,6 +10,10 @@ import { Main } from './components/main/main';
 import './index.scss';
 
 localforage.getItem<GameModel>('skirmish-game').then(game => {
+	if (game && game.encounter && (game.encounter.log === undefined)) {
+		game.encounter.log = [];
+	}
+
 	localforage.getItem<OptionsModel>('skirmish-options').then(options => {
 		if (!options) {
 			options = {

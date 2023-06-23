@@ -54,7 +54,6 @@ export class Factory {
 				conditions: [],
 				actions: [],
 				selectedAction: null,
-				log: [],
 				intents: null
 			}
 		};

@@ -11,7 +11,7 @@ import type { CombatantModel } from '../../../models/combatant';
 
 import { Color } from '../../../utils/color';
 
-import { PlayingCard, StatValue, Tag, Text, TextType } from '../../controls';
+import { Gauge, PlayingCard, StatValue, Tag, Text, TextType } from '../../controls';
 import { ListItemPanel } from '../../panels';
 import { PlaceholderCard } from '../placeholder-card/placeholder-card';
 
@@ -151,6 +151,10 @@ export class HeroCard extends Component<Props, State> {
 							<StatValue orientation='vertical' label='End' value={CombatantLogic.getTraitRank(this.props.hero, [], TraitType.Endurance)} />
 							<StatValue orientation='vertical' label='Res' value={CombatantLogic.getTraitRank(this.props.hero, [], TraitType.Resolve)} />
 							<StatValue orientation='vertical' label='Spd' value={CombatantLogic.getTraitRank(this.props.hero, [], TraitType.Speed)} />
+						</div>
+						<Text type={TextType.MinorHeading}>XP</Text>
+						<div className='xp'>
+							<Gauge progress={this.props.hero.xp / (this.props.hero.level + 1)} />
 						</div>
 						{items}
 					</div>

@@ -35,7 +35,7 @@ interface Props {
 	dropItem: (item: ItemModel, hero: CombatantModel) => void;
 	levelUp: (feature: FeatureModel, hero: CombatantModel) => void;
 	retireHero: (combatant: CombatantModel) => void;
-	redeemBoon: (boon: BoonModel, hero: CombatantModel | null) => void;
+	redeemBoon: (boon: BoonModel, hero: CombatantModel | null, item: ItemModel | null, newItem: ItemModel | null) => void;
 	buyItem: (item: ItemModel) => void;
 	buyAndEquipItem: (item: ItemModel, hero: CombatantModel) => void;
 	sellItem: (item: ItemModel, all: boolean) => void;

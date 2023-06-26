@@ -80,7 +80,7 @@ export class CombatantLogic {
 			const item = combatant.items[n];
 			if (item.magic) {
 				if (Random.randomNumber(5) === 0) {
-					combatant.items[n] = MagicItemGenerator.addMagicItemFeature(item);
+					combatant.items[n] = MagicItemGenerator.generateMagicItem(item);
 				}
 			}
 		}

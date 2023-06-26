@@ -1,11 +1,8 @@
 import { Component } from 'react';
 
-import { ItemProficiencyType } from '../../../../enums/item-proficiency-type';
+import { BoonType } from '../../../../enums/boon-type';
 
-import { CombatantLogic } from '../../../../logic/combatant-logic';
 import { GameLogic } from '../../../../logic/game-logic';
-
-import { MagicItemGenerator } from '../../../../generators/magic-item-generator';
 
 import type { BoonModel } from '../../../../models/boon';
 import type { CombatantModel } from '../../../../models/combatant';
@@ -16,7 +13,7 @@ import { Collections } from '../../../../utils/collections';
 
 import { BoonCard, ItemCard, PlaceholderCard } from '../../../cards';
 import { CardList, ConfirmButton, Dialog, IconType, IconValue, PlayingCard, StatValue, Switch, Text, TextType } from '../../../controls';
-import { MagicItemInfoPanel } from '../../../panels';
+import { EnchantItemPanel, MagicItemInfoPanel, MagicItemsPanel } from '../../../panels';
 
 import './items-page.scss';
 
@@ -28,13 +25,14 @@ interface Props {
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
 	buyAndEquipItem: (item: ItemModel, hero: CombatantModel) => void;
 	dropItem: (item: ItemModel, hero: CombatantModel) => void;
-	redeemBoon: (boon: BoonModel, combatant: CombatantModel | null) => void;
+	redeemBoon: (boon: BoonModel, combatant: CombatantModel | null, item: ItemModel | null, newItem: ItemModel | null) => void;
 	addMoney: () => void;
 }
 
 interface State {
 	showUsable: boolean;
-	magicItems: ItemModel[];
+	showMarket: boolean;
+	selectedBoon: BoonModel | null;
 }
 
 export class ItemsPage extends Component<Props, State> {
@@ -42,31 +40,39 @@ export class ItemsPage extends Component<Props, State> {
 		super(props);
 		this.state = {
 			showUsable: false,
-			magicItems: []
+			showMarket: false,
+			selectedBoon: null
 		};
 	}
 
-	showMarket = () => {
-		const items: ItemModel[] = [];
-		while (items.length < 3) {
-			const item = MagicItemGenerator.generateMagicItem();
-
-			const heroes = this.props.game.heroes
-				.filter(h => (item.proficiency === ItemProficiencyType.None) || CombatantLogic.getProficiencies(h).includes(item.proficiency));
-
-			if (heroes.length > 0) {
-				items.push(item);
+	selectBoon = (boon: BoonModel) => {
+		switch (boon.type) {
+			case BoonType.ExtraHero:
+			case BoonType.MagicItem:
+			case BoonType.Money: {
+				this.props.redeemBoon(boon, null, null, null);
+				break;
+			}
+			case BoonType.ExtraXP:
+			case BoonType.LevelUp:
+			case BoonType.EnchantItem: {
+				this.setState({
+					selectedBoon: boon
+				});
+				break;
 			}
 		}
+	};
 
+	showMarket = (show: boolean) => {
 		this.setState({
-			magicItems: items
+			showMarket: show
 		});
 	};
 
 	buyItem = (item: ItemModel) => {
 		this.setState({
-			magicItems: []
+			showMarket: false
 		}, () => {
 			this.props.buyItem(item);
 		});
@@ -74,9 +80,19 @@ export class ItemsPage extends Component<Props, State> {
 
 	buyAndEquipItem = (item: ItemModel, hero: CombatantModel) => {
 		this.setState({
-			magicItems: []
+			showMarket: false
 		}, () => {
 			this.props.buyAndEquipItem(item, hero);
+		});
+	};
+
+	enchantItem = (item: ItemModel, newItem: ItemModel) => {
+		const boon = this.state.selectedBoon as BoonModel;
+
+		this.setState({
+			selectedBoon: null
+		}, () => {
+			this.props.redeemBoon(boon, null, item, newItem);
 		});
 	};
 
@@ -96,7 +112,7 @@ export class ItemsPage extends Component<Props, State> {
 		if (this.props.game.boons.filter(boon => !GameLogic.getBoonIsHeroType(boon)).length > 0) {
 			const cards = this.props.game.boons
 				.filter(boon => !GameLogic.getBoonIsHeroType(boon))
-				.map(b => <BoonCard key={b.id} boon={b} onSelect={boon => this.props.redeemBoon(boon, null)} />);
+				.map(b => <BoonCard key={b.id} boon={b} onSelect={boon => this.selectBoon(boon)} />);
 			boons = (
 				<div>
 					<Text type={TextType.Information}><p><b>You have won these rewards.</b> Select a card to redeem a reward.</p></Text>
@@ -119,7 +135,7 @@ export class ItemsPage extends Component<Props, State> {
 								<PlaceholderCard
 									text='Magic Items'
 									content={<div><IconValue type={IconType.Money} value={100} iconSize={15} /></div>}
-									onClick={() => this.showMarket()}
+									onClick={() => this.showMarket(true)}
 								/>
 							}
 						/>
@@ -145,30 +161,39 @@ export class ItemsPage extends Component<Props, State> {
 	};
 
 	getDialog = () => {
-		if (this.state.magicItems.length === 0) {
-			return null;
+		if (this.state.showMarket) {
+			return (
+				<Dialog
+					content={(
+						<MagicItemsPanel
+							game={this.props.game}
+							developer={this.props.developer}
+							buyItem={this.buyItem}
+							buyAndEquipItem={this.buyAndEquipItem}
+							dropItem={this.props.dropItem}
+						/>
+					)}
+				/>
+			);
 		}
 
-		const cards = this.state.magicItems.map(item => (
-			<div key={item.id}>
-				<ItemCard item={item} onSelect={this.buyItem} />
-				<MagicItemInfoPanel item={item} game={this.props.game} isInsideDialog={true} equipItem={this.buyAndEquipItem} dropItem={this.props.dropItem} />
-			</div>
-		));
+		if (this.state.selectedBoon) {
+			if (this.state.selectedBoon.type === BoonType.EnchantItem) {
+				return (
+					<Dialog
+						content={(
+							<EnchantItemPanel
+								game={this.props.game}
+								developer={this.props.developer}
+								enchantItem={this.enchantItem}
+							/>
+						)}
+					/>
+				);
+			}
+		}
 
-		return (
-			<Dialog
-				content={(
-					<div>
-						<Text type={TextType.Heading}>Choose a Magic Item</Text>
-						{this.props.developer ? <button className='developer' onClick={this.showMarket}>Redraw</button> : null}
-						<div className='card-selection-row'>
-							<CardList cards={cards} />
-						</div>
-					</div>
-				)}
-			/>
-		);
+		return null;
 	};
 
 	render = () => {

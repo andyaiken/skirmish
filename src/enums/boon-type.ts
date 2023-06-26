@@ -3,5 +3,6 @@ export enum BoonType {
 	ExtraXP = 'Extra XP',
 	LevelUp = 'Level up',
 	MagicItem = 'Magic item',
-	Money = 'Money'
+	Money = 'Money',
+	EnchantItem = 'Enchant item'
 }

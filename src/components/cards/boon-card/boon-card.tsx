@@ -82,6 +82,9 @@ export class BoonCard extends Component<Props, State> {
 			case BoonType.Money:
 				extra = <StatValue orientation='vertical' label='Money' value={<IconValue type={IconType.Money} value={this.props.boon.data as number} />} />;
 				break;
+			case BoonType.EnchantItem:
+				extra = 'Enchant one of your items.';
+				break;
 		}
 
 		const buttons: JSX.Element[] = [];

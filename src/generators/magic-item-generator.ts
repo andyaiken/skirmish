@@ -20,9 +20,21 @@ import { GameLogic } from '../logic/game-logic';
 import { NameGenerator } from './name-generator';
 
 export class MagicItemGenerator {
-	static generateMagicItem = (): ItemModel => {
-		// Pick a random item from the item list
+	static generateMagicItem = (baseItem: ItemModel): ItemModel => {
+		const item = MagicItemGenerator.convertToMagicItem(baseItem);
+		return MagicItemGenerator.addMagicItemFeature(item);
+	};
+
+	static generateRandomMagicItem = (): ItemModel => {
 		const baseItem = Collections.draw(ItemData.getList());
+		const item = MagicItemGenerator.convertToMagicItem(baseItem);
+		return MagicItemGenerator.addMagicItemFeature(item);
+	};
+
+	static convertToMagicItem = (baseItem: ItemModel) => {
+		if (baseItem.magic) {
+			return baseItem;
+		}
 
 		const item = JSON.parse(JSON.stringify(baseItem)) as ItemModel;
 		item.id = Utils.guid();
@@ -30,8 +42,7 @@ export class MagicItemGenerator {
 		item.description = `Magical ${baseItem.name}`;
 		item.baseItem = baseItem.name;
 		item.magic = true;
-
-		return MagicItemGenerator.addMagicItemFeature(item);
+		return item;
 	};
 
 	static addMagicItemFeature = (item: ItemModel) => {

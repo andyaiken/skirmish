@@ -122,7 +122,7 @@ export class EncounterGenerator {
 		const loot: LootPileModel[] = [];
 		if (Random.randomNumber(10, rng) === 0) {
 			const lp = Factory.createLootPile();
-			lp.items.push(MagicItemGenerator.generateMagicItem());
+			lp.items.push(MagicItemGenerator.generateRandomMagicItem());
 
 			const square = Collections.draw(encounter.mapSquares.filter(c => c.type === EncounterMapSquareType.Clear), rng);
 			lp.position.x = square.x;

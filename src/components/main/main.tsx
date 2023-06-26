@@ -334,7 +334,7 @@ export class Main extends Component<Props, State> {
 		}
 	};
 
-	redeemBoon = (boon: BoonModel, hero: CombatantModel | null) => {
+	redeemBoon = (boon: BoonModel, hero: CombatantModel | null, item: ItemModel | null, newItem: ItemModel | null) => {
 		try {
 			const game = this.state.game as GameModel;
 			game.boons = game.boons.filter(b => b.id !== boon.id);
@@ -355,6 +355,28 @@ export class Main extends Component<Props, State> {
 				case BoonType.Money:
 					game.money += boon.data as number;
 					break;
+				case BoonType.EnchantItem: {
+					const original = item as ItemModel;
+					const upgrade = newItem as ItemModel;
+					game.heroes.forEach(h => {
+						h.items.forEach((i, n) => {
+							if (i.id === original.id) {
+								h.items[n] = upgrade;
+							}
+						});
+						h.carried.forEach((i, n) => {
+							if (i.id === original.id) {
+								h.items[n] = upgrade;
+							}
+						});
+					});
+					game.items.forEach((i, n) => {
+						if (i.id === original.id) {
+							game.items[n] = upgrade;
+						}
+					});
+					break;
+				}
 			}
 
 			this.setState({

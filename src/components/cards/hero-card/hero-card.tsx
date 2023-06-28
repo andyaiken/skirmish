@@ -154,7 +154,8 @@ export class HeroCard extends Component<Props, State> {
 						</div>
 						<Text type={TextType.MinorHeading}>XP</Text>
 						<div className='xp'>
-							<Gauge progress={this.props.hero.xp / (this.props.hero.level + 1)} />
+							<div>{this.props.hero.xp} of {this.props.hero.level}</div>
+							<Gauge progress={this.props.hero.xp / this.props.hero.level} />
 						</div>
 						{items}
 					</div>

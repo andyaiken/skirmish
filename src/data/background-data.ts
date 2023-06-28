@@ -526,7 +526,7 @@ export class BackgroundData {
 			{
 				id: 'background-thief',
 				name: 'Thief',
-				description: 'One should never put one\'s trust in a thief, even when they\'re on your side.',
+				description: 'Never put your trust in a thief, even when they\'re on your side.',
 				features: [
 					FeatureLogic.createSkillFeature('thief-feature-1', SkillType.Reactions, 2),
 					FeatureLogic.createSkillFeature('thief-feature-2', SkillType.Stealth, 2),

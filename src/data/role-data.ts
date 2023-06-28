@@ -1761,7 +1761,7 @@ export class RoleData {
 				actions: [
 					{
 						id: 'sorcerer-action-1',
-						name: 'Voltaic Arc',
+						name: 'Thunderbolt',
 						prerequisites: [
 							ActionPrerequisites.implement()
 						],

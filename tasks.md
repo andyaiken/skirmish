@@ -89,12 +89,12 @@
 * Defeat a specific opponent within a certain number of rounds
 
 ## Ideas for Roles / Backgrounds
-* Artificer / Technomage / Inventor
+* Artificer / Technomage / Inventor / Alchemist
   * Create potion
-  * Shocking grasp (electrical damage, stun)
-  * Electrical discharge (all adjacent combatants)
+  * Shocking grasp (1 adjacent enemy, electrical dmg, stun)
+  * Voltaic discharge (all adjacent combatants, electrical dmg)
   * Supercharge (buff nearby ally's damage output)
-  * Acid spray
+  * Acid spray (1 adjacent enemy, acid dmg)
 * Gladiator 
   * Large weapons
   * Showmanship

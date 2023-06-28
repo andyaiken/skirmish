@@ -29,6 +29,32 @@ export class PlaceholderCard extends Component<Props> {
 			className += ' clickable';
 		}
 
+		if (this.props.text && !this.props.subtext && !this.props.content) {
+			className += ' centered';
+			return (
+				<div className={className} onClick={this.onClick}>
+					<div className='main-text'>{this.props.text}</div>
+				</div>
+			);
+		}
+
+		if (!this.props.text && this.props.subtext && !this.props.content) {
+			className += ' centered';
+			return (
+				<div className={className} onClick={this.onClick}>
+					<div className='sub-text'>{this.props.subtext}</div>
+				</div>
+			);
+		}
+
+		if (!this.props.text && !this.props.subtext && this.props.content) {
+			return (
+				<div className={className} onClick={this.onClick}>
+					{this.props.content}
+				</div>
+			);
+		}
+
 		return (
 			<div className={className} onClick={this.onClick}>
 				{this.props.text ? <div className='main-text'>{this.props.text}</div> : null}

@@ -76,6 +76,7 @@ export class Items extends Component<Props> {
 			cards.push(
 				<div key='empty' className='item'>
 					<PlayingCard front={<PlaceholderCard subtext='No item' />} />
+					<div className='item-options' />
 				</div>
 			);
 		}
@@ -131,6 +132,7 @@ export class Items extends Component<Props> {
 			cards.push(
 				<div key='empty' className='item'>
 					<PlayingCard front={<PlaceholderCard subtext='No Item' />} />
+					<div className='item-options' />
 				</div>
 			);
 		}

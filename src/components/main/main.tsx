@@ -307,7 +307,8 @@ export class Main extends Component<Props, State> {
 
 			// Add XP
 			const spent = hero.level * (hero.level - 1) / 2;
-			const xp = Math.floor(spent + hero.xp / 2);
+			const total = spent + hero.xp;
+			const xp = Math.floor(total / 2);
 			if (xp > 0) {
 				game.boons.push({
 					id: Utils.guid(),

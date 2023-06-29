@@ -38,7 +38,7 @@ export class Gauge extends Component<Props> {
 						stroke='rgb(60, 170, 255)'
 						strokeWidth={6}
 						strokeDasharray={`${strokeLength}, ${circumference}`}
-						strokeDashoffset={strokeLength * (1 - this.props.progress)}
+						strokeDashoffset={strokeLength * (1 - Math.max(this.props.progress, 1))}
 						strokeLinecap='round'
 					/>
 				</svg>

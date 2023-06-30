@@ -1,5 +1,18 @@
 .gauge {
+	position: relative;
 	margin: 5px;
 	width: 52px;
 	height: 45px;
+
+	.gauge-content {
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 6px;
+		bottom: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 10px;
+	}
 }

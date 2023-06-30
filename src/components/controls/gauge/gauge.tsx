@@ -4,6 +4,7 @@ import './gauge.scss';
 
 interface Props {
 	progress: number;
+	content: string | JSX.Element | null;
 }
 
 export class Gauge extends Component<Props> {
@@ -38,10 +39,13 @@ export class Gauge extends Component<Props> {
 						stroke='rgb(60, 170, 255)'
 						strokeWidth={6}
 						strokeDasharray={`${strokeLength}, ${circumference}`}
-						strokeDashoffset={strokeLength * (1 - Math.max(this.props.progress, 1))}
+						strokeDashoffset={strokeLength * (1 - Math.min(this.props.progress, 1))}
 						strokeLinecap='round'
 					/>
 				</svg>
+				<div className='gauge-content'>
+					{this.props.content}
+				</div>
 			</div>
 		);
 	};

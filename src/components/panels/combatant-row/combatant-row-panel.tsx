@@ -5,6 +5,7 @@ import { CombatantState } from '../../../enums/combatant-state';
 import { QuirkType } from '../../../enums/quirk-type';
 import { TraitType } from '../../../enums/trait-type';
 
+import { ConditionLogic } from '../../../logic/condition-logic';
 import { EncounterLogic } from '../../../logic/encounter-logic';
 import { GameLogic } from '../../../logic/game-logic';
 
@@ -66,6 +67,12 @@ export class CombatantRowPanel extends Component<Props> {
 	};
 
 	getInitiativeInfo = () => {
+		const conditions = this.props.combatant.combat.conditions.map(c => {
+			return (
+				<StatValue key={c.id} orientation='compact' label={ConditionLogic.getConditionDescription(c)} value={c.rank} />
+			);
+		});
+
 		return (
 			<div className='info below'>
 				<div className='tags'>
@@ -73,6 +80,8 @@ export class CombatantRowPanel extends Component<Props> {
 				</div>
 				{this.props.combatant.combat.damage > 0 ? this.getDamage() : null}
 				{this.getWounds()}
+				{this.props.combatant.combat.conditions.length > 0 ? <hr /> : null}
+				{conditions}
 			</div>
 		);
 	};

@@ -118,7 +118,7 @@ export class EncounterMapGenerator {
 
 		while (map.length < 400) {
 			const position = { x: 0, y: 0 };
-			const length = 10 + Random.dice(5, rng);
+			const length = 8 + Random.dice(5, rng);
 
 			if (intersections.length === 0) {
 				const dirs = [ 'n', 'e', 's', 'w' ];

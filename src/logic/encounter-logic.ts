@@ -189,55 +189,27 @@ export class EncounterLogic {
 				EncounterLogic.damage(encounter, combatant, value, condition.details.damage);
 			});
 
-		switch (combatant.combat.state) {
-			case CombatantState.Standing:
-			case CombatantState.Prone: {
-				combatant.combat.senses = Random.dice(EncounterLogic.getSkillRank(encounter, combatant, SkillType.Perception));
-				combatant.combat.movement = Random.dice(EncounterLogic.getTraitRank(encounter, combatant, TraitType.Speed));
+		if ((combatant.combat.state === CombatantState.Standing) || (combatant.combat.state === CombatantState.Prone)) {
+			combatant.combat.senses = Random.dice(EncounterLogic.getSkillRank(encounter, combatant, SkillType.Perception));
+			combatant.combat.movement = Random.dice(EncounterLogic.getTraitRank(encounter, combatant, TraitType.Speed));
 
-				conditions
-					.filter(condition => condition.type === ConditionType.MovementBonus)
-					.forEach(condition => {
-						EncounterLogic.log(encounter, `Movement bonus condition (${condition.rank})`);
-						combatant.combat.movement += Random.dice(condition.rank);
-					});
-				conditions
-					.filter(condition => condition.type === ConditionType.MovementPenalty)
-					.forEach(condition => {
-						EncounterLogic.log(encounter, `Movement penalty condition (${condition.rank})`);
-						combatant.combat.movement = Math.max(0, combatant.combat.movement - condition.rank);
-					});
+			conditions
+				.filter(condition => condition.type === ConditionType.MovementBonus)
+				.forEach(condition => {
+					EncounterLogic.log(encounter, `Movement bonus condition (${condition.rank})`);
+					combatant.combat.movement += Random.dice(condition.rank);
+				});
+			conditions
+				.filter(condition => condition.type === ConditionType.MovementPenalty)
+				.forEach(condition => {
+					EncounterLogic.log(encounter, `Movement penalty condition (${condition.rank})`);
+					combatant.combat.movement = Math.max(0, combatant.combat.movement - condition.rank);
+				});
 
-				EncounterLogic.drawActions(encounter, combatant);
-				break;
-			}
-			case CombatantState.Unconscious:
-			case CombatantState.Dead: {
-				EncounterLogic.endOfTurn(encounter, combatant);
-
-				const active = EncounterLogic.getActiveCombatants(encounter);
-				if (active.length > 0) {
-					EncounterLogic.startOfTurn(encounter, active[0]);
-				}
-				break;
-			}
+			EncounterLogic.drawActions(encounter, combatant);
 		}
-	};
 
-	static endOfTurn = (encounter: EncounterModel, combatant: CombatantModel) => {
-		encounter.combatants.forEach(c => {
-			c.combat.current = false;
-			c.combat.senses = 0;
-			c.combat.movement = 0;
-			c.combat.trail = [];
-			c.combat.actions = [];
-			c.combat.selectedAction = null;
-			c.combat.intents = null;
-		});
-
-		combatant.combat.stunned = false;
-		combatant.combat.initiative = Number.MIN_VALUE;
-
+		// Decrement conditions
 		combatant.combat.conditions.forEach(condition => {
 			if (ConditionLogic.getConditionIsBeneficial(condition)) {
 				condition.rank -= 1;
@@ -263,6 +235,30 @@ export class EncounterLogic {
 		if (combatant.combat.wounds > resolve) {
 			EncounterLogic.kill(encounter, combatant);
 		}
+
+		if ((combatant.combat.state === CombatantState.Unconscious) || (combatant.combat.state === CombatantState.Dead)) {
+			EncounterLogic.endOfTurn(encounter, combatant);
+
+			const active = EncounterLogic.getActiveCombatants(encounter);
+			if (active.length > 0) {
+				EncounterLogic.startOfTurn(encounter, active[0]);
+			}
+		}
+	};
+
+	static endOfTurn = (encounter: EncounterModel, combatant: CombatantModel) => {
+		encounter.combatants.forEach(c => {
+			c.combat.current = false;
+			c.combat.senses = 0;
+			c.combat.movement = 0;
+			c.combat.trail = [];
+			c.combat.actions = [];
+			c.combat.selectedAction = null;
+			c.combat.intents = null;
+		});
+
+		combatant.combat.stunned = false;
+		combatant.combat.initiative = Number.MIN_VALUE;
 	};
 
 	static drawActions = (encounter: EncounterModel, combatant: CombatantModel) => {

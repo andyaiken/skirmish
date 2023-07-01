@@ -56,21 +56,16 @@ When the monster has done everything they want to do, the game will move on to t
   * Roll the combatant's Speed rank to set their movement points
   * Roll the combatant's Perception rank to set their Senses score
   * Set the combatant's Hidden score to 0
+* Each Condition applied to the combatant is checked:
+  * If the Condition is beneficial, its rank is reduced by 1
+  * Otherwise, the combatant rolls their Trait vs the Conditon's rank:
+    * If the combatant rolls beats the Condition, its rank is reduced to 0
+    * Otherwise, the Condition's rank is reduced by 1
+* Any Conditions with a rank of 0 are removed
 
 ## During a turn
 
 If you're Stunned, you can't do anything for one round; otherwise, you can use your movement points and take an action.
-
-## At the end of a turn
-
-At the end of a combatant's turn, each Condition applied to them is checked:
-
-* If the Condition is beneficial, its rank is reduced by 1
-* Otherwise, the combatant rolls their Trait vs the Conditon's rank:
-  * If the combatant rolls beats the Condition, its rank is reduced to 0
-  * Otherwise, the Condition's rank is reduced by 1
-
-Any Conditions with a rank of 0 are removed.
 
 ---
 

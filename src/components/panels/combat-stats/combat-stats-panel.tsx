@@ -9,6 +9,8 @@ import { EncounterLogic } from '../../../logic/encounter-logic';
 import type { CombatantModel } from '../../../models/combatant';
 import type { EncounterModel } from '../../../models/encounter';
 
+import { Collections } from '../../../utils/collections';
+
 import { Box, IconType, IconValue, StatValue, Text, TextType } from '../../controls';
 
 import './combat-stats-panel.scss';
@@ -20,10 +22,15 @@ interface Props {
 
 export class CombatStatsPanel extends Component<Props> {
 	getConditions = (trait: TraitType) => {
-		return this.props.combatant.combat.conditions
-			.filter(c => c.trait === trait)
+		const conditions = this.props.combatant.combat.conditions.filter(c => c.trait === trait);
+		return Collections.distinct(conditions, c => ConditionLogic.getConditionDescription(c))
 			.map(c => (
-				<StatValue key={c.id} orientation='compact' label={ConditionLogic.getConditionDescription(c)} value={c.rank} />
+				<StatValue
+					key={c.id}
+					orientation='compact'
+					label={ConditionLogic.getConditionDescription(c)}
+					value={Collections.sum(conditions, c => c.rank)}
+				/>
 			));
 	};
 

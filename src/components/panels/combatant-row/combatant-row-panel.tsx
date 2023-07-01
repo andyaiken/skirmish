@@ -12,6 +12,8 @@ import { GameLogic } from '../../../logic/game-logic';
 import type { CombatantModel } from '../../../models/combatant';
 import type { EncounterModel } from '../../../models/encounter';
 
+import { Collections } from '../../../utils/collections';
+
 import { StatValue, Tag, Text, TextType } from '../../controls';
 import { MiniToken } from '../encounter-map/mini-token/mini-token';
 
@@ -67,11 +69,15 @@ export class CombatantRowPanel extends Component<Props> {
 	};
 
 	getInitiativeInfo = () => {
-		const conditions = this.props.combatant.combat.conditions.map(c => {
-			return (
-				<StatValue key={c.id} orientation='compact' label={ConditionLogic.getConditionDescription(c)} value={c.rank} />
-			);
-		});
+		const conditions = Collections.distinct(this.props.combatant.combat.conditions, c => ConditionLogic.getConditionDescription(c))
+			.map(c => (
+				<StatValue
+					key={c.id}
+					orientation='compact'
+					label={ConditionLogic.getConditionDescription(c)}
+					value={Collections.sum(this.props.combatant.combat.conditions, c => c.rank)}
+				/>
+			));
 
 		return (
 			<div className='info below'>

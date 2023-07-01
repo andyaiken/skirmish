@@ -45,6 +45,14 @@ export class Stats extends Component<Props, State> {
 		});
 	};
 
+	getTraitRank = (trait: TraitType) => {
+		if (this.props.encounter) {
+			return EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, trait);
+		}
+
+		return CombatantLogic.getTraitRank(this.props.combatant, [], trait);
+	};
+
 	getSkillRank = (skill: SkillType) => {
 		if (this.props.encounter) {
 			return EncounterLogic.getSkillRank(this.props.encounter, this.props.combatant, skill);
@@ -73,9 +81,9 @@ export class Stats extends Component<Props, State> {
 		return (
 			<Box label='Traits'>
 				<div className='stats-row'>
-					<StatValue orientation='vertical' label='Endurance' value={CombatantLogic.getTraitRank(this.props.combatant, [], TraitType.Endurance)}/>
-					<StatValue orientation='vertical' label='Resolve' value={CombatantLogic.getTraitRank(this.props.combatant, [], TraitType.Resolve)}/>
-					<StatValue orientation='vertical' label='Speed' value={CombatantLogic.getTraitRank(this.props.combatant, [], TraitType.Speed)}/>
+					<StatValue orientation='vertical' label='Endurance' value={this.getTraitRank(TraitType.Endurance)}/>
+					<StatValue orientation='vertical' label='Resolve' value={this.getTraitRank(TraitType.Resolve)}/>
+					<StatValue orientation='vertical' label='Speed' value={this.getTraitRank(TraitType.Speed)}/>
 				</div>
 			</Box>
 		);

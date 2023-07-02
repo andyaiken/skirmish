@@ -161,7 +161,6 @@ export class EncounterScreen extends Component<Props, State> {
 					selectedLootIDs: [],
 					selectedSquares: []
 				}, () => {
-					this.scrollToCombatant('selected');
 					this.props.setActionParameterValue(parameter, ids);
 				});
 			}
@@ -172,8 +171,6 @@ export class EncounterScreen extends Component<Props, State> {
 				selectedCombatantIDs: [ combatant.id ],
 				selectedLootIDs: [],
 				selectedSquares: []
-			}, () => {
-				this.scrollToCombatant('selected');
 			});
 		}
 	};

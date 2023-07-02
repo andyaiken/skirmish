@@ -70,14 +70,17 @@ export class CombatantRowPanel extends Component<Props> {
 
 	getInitiativeInfo = () => {
 		const conditions = Collections.distinct(this.props.combatant.combat.conditions, c => ConditionLogic.getConditionDescription(c))
-			.map(c => (
-				<StatValue
-					key={c.id}
-					orientation='compact'
-					label={ConditionLogic.getConditionDescription(c)}
-					value={Collections.sum(this.props.combatant.combat.conditions, c => c.rank)}
-				/>
-			));
+			.map(c => {
+				const set = this.props.combatant.combat.conditions.filter(con => ConditionLogic.getConditionDescription(con) === ConditionLogic.getConditionDescription(c));
+				return (
+					<StatValue
+						key={c.id}
+						orientation='compact'
+						label={ConditionLogic.getConditionDescription(c)}
+						value={Collections.sum(set, c => c.rank)}
+					/>
+				);
+			});
 
 		return (
 			<div className='info below'>

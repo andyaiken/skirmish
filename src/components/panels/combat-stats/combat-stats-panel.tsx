@@ -24,14 +24,17 @@ export class CombatStatsPanel extends Component<Props> {
 	getConditions = (trait: TraitType) => {
 		const conditions = this.props.combatant.combat.conditions.filter(c => c.trait === trait);
 		return Collections.distinct(conditions, c => ConditionLogic.getConditionDescription(c))
-			.map(c => (
-				<StatValue
-					key={c.id}
-					orientation='compact'
-					label={ConditionLogic.getConditionDescription(c)}
-					value={Collections.sum(conditions, c => c.rank)}
-				/>
-			));
+			.map(c => {
+				const set = this.props.combatant.combat.conditions.filter(con => ConditionLogic.getConditionDescription(con) === ConditionLogic.getConditionDescription(c));
+				return (
+					<StatValue
+						key={c.id}
+						orientation='compact'
+						label={ConditionLogic.getConditionDescription(c)}
+						value={Collections.sum(set, c => c.rank)}
+					/>
+				);
+			});
 	};
 
 	getAuras = () => {
@@ -48,6 +51,7 @@ export class CombatStatsPanel extends Component<Props> {
 			for (let n = 0; n < resolveRank; ++n) {
 				wounds.push(n < this.props.combatant.combat.wounds ? <IconHeartOff key={n}  /> : <IconHeartFilled key={n} className='heartbeat' />);
 			}
+			wounds.reverse();
 
 			const woundsPerRow = (wounds.length === 4) ? 2 : 3;
 			const woundsInRows: JSX.Element[] = [];

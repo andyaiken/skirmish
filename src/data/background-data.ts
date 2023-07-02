@@ -115,7 +115,7 @@ export class BackgroundData {
 			{
 				id: 'background-commander',
 				name: 'Commander',
-				description: 'A battlefield commander uses tactical analysis to make the most of any situation.',
+				description: 'A commander uses tactical analysis to make the most of any situation.',
 				features: [
 					FeatureLogic.createSkillFeature('commander-feature-1', SkillType.Presence, 2),
 					FeatureLogic.createAuraDamageCategoryFeature('commander-feature-2', ConditionType.DamageCategoryBonus, DamageCategoryType.Corruption, 1),

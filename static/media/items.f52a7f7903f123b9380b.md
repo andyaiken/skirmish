@@ -1,6 +1,6 @@
 # Your Equipment
 
-This page show you all the equipment you've gathered during the course of your campaign.
+This page shows you all the equipment you've gathered during the course of your campaign.
 
 Initially there'll be nothing here, but when you win an encounter you'll get all of your opponents' equipment, plus anything else that was lying around the battlefield.
 

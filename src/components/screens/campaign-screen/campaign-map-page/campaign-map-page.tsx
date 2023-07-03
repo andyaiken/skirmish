@@ -10,7 +10,7 @@ import { Collections } from '../../../../utils/collections';
 
 import { BoonCard, RegionCard } from '../../../cards';
 import { CampaignMapPanel, EncounterStartPanel } from '../../../panels';
-import { Dialog, StatValue, Text, TextType } from '../../../controls';
+import { Dialog, Gauge, StatValue, Text, TextType } from '../../../controls';
 
 import './campaign-map-page.scss';
 
@@ -80,14 +80,30 @@ export class CampaignMapPage extends Component<Props, State> {
 
 		const regions = Collections.distinct(this.props.game.map.squares.map(sq => sq.regionID).filter(id => id !== ''), id => id);
 		const owned = this.props.game.map.squares.filter(sq => sq.regionID === '');
+		const ownedFraction = owned.length / this.props.game.map.squares.length;
 		return (
 			<div className='sidebar'>
 				<Text type={TextType.SubHeading}>The Island</Text>
 				<Text>This is the map of the island. Select a region to learn more about it.</Text>
 				<hr />
 				<div className='map-stats'>
-					<StatValue orientation='vertical' label='Regions' value={regions.length} />
-					<StatValue orientation='vertical' label='Controlled' value={`${Math.floor(100 * owned.length / this.props.game.map.squares.length)}%`} />
+					<StatValue
+						orientation='vertical'
+						label='Island Controlled'
+						value={<Gauge progress={ownedFraction} content={`${Math.floor(ownedFraction * 100)}%`} />}
+					/>
+				</div>
+				<div className='map-stats'>
+					<StatValue
+						orientation='vertical'
+						label={<div>Regions<br ></br>Remaining</div>}
+						value={regions.length}
+					/>
+					<StatValue
+						orientation='vertical'
+						label={<div>Encounters<br />Remaining</div>}
+						value={Collections.sum(this.props.game.map.regions, r => r.encounters.length)}
+					/>
 				</div>
 			</div>
 		);

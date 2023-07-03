@@ -46,7 +46,9 @@
 		.stat-value-value {
 			font-size: 40px;
 			font-weight: 600;
-			text-align: center;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
 		}
 
 		.stat-value-label {

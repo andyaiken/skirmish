@@ -9,8 +9,8 @@ interface Props {
 
 export class Gauge extends Component<Props> {
 	render = () => {
-		const width = 52;
-		const circumference = 40 * Math.PI;
+		const width = 92;
+		const circumference = 80 * Math.PI;
 		const strokeLength = circumference * 2 / 3;
 
 		return (
@@ -24,7 +24,7 @@ export class Gauge extends Component<Props> {
 					<circle
 						cx={width / 2}
 						cy={width / 2}
-						r={20}
+						r={40}
 						fill='none'
 						stroke='rgb(220, 220, 220)'
 						strokeWidth={5}
@@ -34,10 +34,10 @@ export class Gauge extends Component<Props> {
 					<circle
 						cx={width / 2}
 						cy={width / 2}
-						r={20}
+						r={40}
 						fill='none'
 						stroke='rgb(60, 170, 255)'
-						strokeWidth={6}
+						strokeWidth={10}
 						strokeDasharray={`${strokeLength}, ${circumference}`}
 						strokeDashoffset={strokeLength * (1 - Math.min(this.props.progress, 1))}
 						strokeLinecap='round'

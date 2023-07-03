@@ -84,13 +84,13 @@ export class InitiativeListPanel extends Component<Props> {
 
 			return (
 				<div className='initiative-list-panel'>
-					{currentEntries.length > 0 ? <Text type={TextType.MinorHeading}>Current</Text> : null}
+					{currentEntries.length > 0 ? <Text type={TextType.SubHeading}>Current Combatant</Text> : null}
 					{currentEntries}
-					{activeEntries.length > 0 ? <Text type={TextType.MinorHeading}>Waiting</Text> : null}
+					{activeEntries.length > 0 ? <Text type={TextType.SubHeading}>Waiting</Text> : null}
 					{activeEntries}
-					{actedEntries.length > 0 ? <Text type={TextType.MinorHeading}>{actedHeading}</Text> : null}
+					{actedEntries.length > 0 ? <Text type={TextType.SubHeading}>{actedHeading}</Text> : null}
 					{actedEntries}
-					{deadEntries.length > 0 ? <Text type={TextType.MinorHeading}>Dead</Text> : null}
+					{deadEntries.length > 0 ? <Text type={TextType.SubHeading}>Dead</Text> : null}
 					{deadEntries}
 				</div>
 			);

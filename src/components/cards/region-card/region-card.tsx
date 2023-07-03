@@ -3,8 +3,9 @@ import { IconCheck, IconRefresh } from '@tabler/icons-react';
 
 import { CardType } from '../../../enums/card-type';
 
-import { GameLogic } from '../../../logic/game-logic';
+import { CampaignMapLogic } from '../../../logic/campaign-map-logic';
 
+import type { OptionsModel } from '../../../models/options';
 import type { RegionModel } from '../../../models/region';
 
 import { Color } from '../../../utils/color';
@@ -16,6 +17,7 @@ import './region-card.scss';
 
 interface Props {
 	region: RegionModel;
+	options: OptionsModel;
 	onSelect: ((region: RegionModel) => void) | null;
 }
 
@@ -60,11 +62,8 @@ export class RegionCard extends Component<Props, State> {
 			colorLight = Color.toString(Color.lighten(color));
 		}
 
-		const monsters = this.props.region.demographics.speciesIDs
-			.map(id => {
-				const species = GameLogic.getSpecies(id);
-				return species ? species.name : '[species]';
-			})
+		const monsters = CampaignMapLogic.getMonsters(this.props.region, this.props.options.packs)
+			.map(species => species.name)
 			.sort()
 			.map((m, n) => <Tag key={n}>{m}</Tag>);
 

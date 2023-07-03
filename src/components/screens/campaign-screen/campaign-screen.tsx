@@ -6,6 +6,7 @@ import type { CombatantModel } from '../../../models/combatant';
 import type { FeatureModel } from '../../../models/feature';
 import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
+import type { OptionsModel } from '../../../models/options';
 import type { RegionModel } from '../../../models/region';
 
 import { Selector } from '../../controls';
@@ -24,7 +25,7 @@ enum CampaignScreenType {
 
 interface Props {
 	game: GameModel;
-	developer: boolean;
+	options: OptionsModel;
 	hasExceptions: boolean;
 	showHelp: (file: string) => void;
 	addHero: (hero: CombatantModel) => void;
@@ -72,7 +73,7 @@ export class CampaignScreen extends Component<Props, State> {
 					content = (
 						<CampaignMapPage
 							game={this.props.game}
-							developer={this.props.developer}
+							options={this.props.options}
 							startEncounter={this.props.startEncounter}
 							conquer={this.props.conquer}
 						/>
@@ -82,7 +83,7 @@ export class CampaignScreen extends Component<Props, State> {
 					content = (
 						<HeroesPage
 							game={this.props.game}
-							developer={this.props.developer}
+							options={this.props.options}
 							addHero={this.props.addHero}
 							incrementXP={this.props.incrementXP}
 							equipItem={this.props.equipItem}
@@ -99,7 +100,7 @@ export class CampaignScreen extends Component<Props, State> {
 					content = (
 						<ItemsPage
 							game={this.props.game}
-							developer={this.props.developer}
+							options={this.props.options}
 							buyItem={this.props.buyItem}
 							sellItem={this.props.sellItem}
 							equipItem={this.props.equipItem}
@@ -148,7 +149,7 @@ export class CampaignScreen extends Component<Props, State> {
 						<div className='logo-text inset-text'>Skirmish</div>
 						<Selector options={options} selectedID={this.state.screen} onSelect={id => this.setScreen(id as CampaignScreenType)} />
 						<button className='icon-btn' title='Information' onClick={() => this.props.showHelp(this.state.screen)}>
-							{this.props.developer && this.props.hasExceptions ? <IconInfoCircleFilled /> : <IconInfoCircle />}
+							{this.props.options.developer && this.props.hasExceptions ? <IconInfoCircleFilled /> : <IconInfoCircle />}
 						</button>
 					</div>
 					<div className='campaign-content'>

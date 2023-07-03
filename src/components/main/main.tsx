@@ -164,11 +164,36 @@ export class Main extends Component<Props, State> {
 		});
 	};
 
+	addPack = (pack: string) => {
+		const options = this.state.options;
+		if (!options.packs.includes(pack)) {
+			options.packs.push(pack);
+			options.packs.sort();
+		}
+
+		this.setState({
+			options: options
+		}, () => {
+			this.saveOptions();
+		});
+	};
+
+	removePack = (pack: string) => {
+		const options = this.state.options;
+		options.packs = options.packs.filter(p => p !== pack);
+
+		this.setState({
+			options: options
+		}, () => {
+			this.saveOptions();
+		});
+	};
+
 	//#region Campaign
 
 	startCampaign = () => {
 		try {
-			const game = Factory.createGame();
+			const game = Factory.createGame(this.state.options.packs);
 
 			this.setState({
 				game: game,
@@ -482,7 +507,7 @@ export class Main extends Component<Props, State> {
 
 				const game = this.state.game;
 				game.heroes = game.heroes.filter(h => !heroes.includes(h));
-				game.encounter = EncounterGenerator.createEncounter(region, heroes);
+				game.encounter = EncounterGenerator.createEncounter(region, heroes, this.state.options.packs);
 
 				EncounterMapLogic.visibilityCache.reset();
 
@@ -1000,7 +1025,7 @@ export class Main extends Component<Props, State> {
 				return (
 					<SetupScreen
 						game={this.state.game as GameModel}
-						developer={this.state.options.developer}
+						options={this.state.options}
 						addHero={this.addHero}
 						addHeroes={this.addHeroes}
 						equipItem={this.equipItem}
@@ -1014,7 +1039,7 @@ export class Main extends Component<Props, State> {
 				return (
 					<CampaignScreen
 						game={this.state.game as GameModel}
-						developer={this.state.options.developer}
+						options={this.state.options}
 						hasExceptions={this.state.exceptions.length > 0}
 						showHelp={this.showHelp}
 						addHero={this.addHero}
@@ -1078,6 +1103,8 @@ export class Main extends Component<Props, State> {
 								exceptions={this.state.exceptions}
 								rules={rules[this.state.showHelp]}
 								options={this.state.options}
+								addPack={this.addPack}
+								removePack={this.removePack}
 								endCampaign={this.endCampaign}
 								setDeveloperMode={this.setDeveloperMode}
 								setSoundEffectsVolume={this.setSoundEffectsVolume}

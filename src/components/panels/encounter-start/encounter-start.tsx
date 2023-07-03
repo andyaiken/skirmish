@@ -1,9 +1,10 @@
 import { Component } from 'react';
 
-import { GameLogic } from '../../../logic/game-logic';
+import { CampaignMapLogic } from '../../../logic/campaign-map-logic';
 
 import type { CombatantModel } from '../../../models/combatant';
 import type { GameModel } from '../../../models/game';
+import type { OptionsModel } from '../../../models/options';
 import type { RegionModel } from '../../../models/region';
 
 import { CardList, Selector, Tabs, Text, TextType } from '../../controls';
@@ -15,6 +16,7 @@ import './encounter-start.scss';
 interface Props {
 	region: RegionModel;
 	game: GameModel;
+	options: OptionsModel;
 	startEncounter: (region: RegionModel, heroes: CombatantModel[]) => void;
 }
 
@@ -108,11 +110,10 @@ export class EncounterStartPanel extends Component<Props, State> {
 				break;
 			}
 			case 'monsters': {
-				const monsters = this.props.region.demographics.speciesIDs
-					.map(id => {
-						const species = GameLogic.getSpecies(id);
-						return species ? <SpeciesCard species={species} /> : null;
-					});
+				const monsters = CampaignMapLogic.getMonsters(this.props.region, this.props.options.packs)
+					.map(species => (
+						<SpeciesCard key={species.id} species={species} />
+					));
 
 				rightContent = (
 					<div>

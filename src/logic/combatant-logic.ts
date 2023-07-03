@@ -162,14 +162,14 @@ export class CombatantLogic {
 		});
 	};
 
-	static addItems = (combatant: CombatantModel) => {
+	static addItems = (combatant: CombatantModel, packs: string[]) => {
 		if (combatant.quirks.includes(QuirkType.Beast)) {
 			// Beasts can't use items
 			return;
 		}
 
 		CombatantLogic.getProficiencies(combatant).forEach(prof => {
-			const items = GameLogic.getItemsForProficiency(prof);
+			const items = GameLogic.getItemsForProficiency(prof, packs);
 			const item = JSON.parse(JSON.stringify(Collections.draw(items))) as ItemModel;
 			item.id = Utils.guid();
 			combatant.items.push(item);

@@ -59,14 +59,14 @@ export class Factory {
 		};
 	};
 
-	static createGame = (): GameModel => {
+	static createGame = (packs: string[]): GameModel => {
 		return {
 			heroSlots: 5,
 			heroes: [],
 			items: [],
 			boons: [],
 			money: 0,
-			map: CampaignMapGenerator.generateCampaignMap(),
+			map: CampaignMapGenerator.generateCampaignMap(packs),
 			encounter: null
 		};
 	};

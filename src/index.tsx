@@ -10,17 +10,25 @@ import { Main } from './components/main/main';
 import './index.scss';
 
 localforage.getItem<GameModel>('skirmish-game').then(game => {
-	if (game && game.encounter && (game.encounter.log === undefined)) {
-		game.encounter.log = [];
+	if (game) {
+		if (game.encounter && (game.encounter.log === undefined)) {
+			game.encounter.log = [];
+		}
 	}
 
 	localforage.getItem<OptionsModel>('skirmish-options').then(options => {
 		if (!options) {
 			options = {
 				developer: false,
-				soundEffectsVolume: 0.5
+				soundEffectsVolume: 0.5,
+				packs: []
 			};
 		}
+
+		if (options.packs === undefined) {
+			options.packs = [];
+		}
+
 		const container = document.getElementById('root');
 		if (container) {
 			const root = createRoot(container);

@@ -11,6 +11,7 @@ import type { CombatantModel } from '../../../../models/combatant';
 import type { FeatureModel } from '../../../../models/feature';
 import type { GameModel } from '../../../../models/game';
 import type { ItemModel } from '../../../../models/item';
+import type { OptionsModel } from '../../../../models/options';
 
 import { BoonCard, HeroCard, PlaceholderCard } from '../../../cards';
 import { CardList, ConfirmButton, Dialog, PlayingCard, Text, TextType } from '../../../controls';
@@ -20,7 +21,7 @@ import './heroes-page.scss';
 
 interface Props {
 	game: GameModel;
-	developer: boolean;
+	options: OptionsModel;
 	addHero: (hero: CombatantModel) => void;
 	incrementXP: (hero: CombatantModel) => void;
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
@@ -93,7 +94,7 @@ export class HeroesPage extends Component<Props, State> {
 				return (
 					<div key={hero.id}>
 						<HeroCard hero={hero} onCharacterSheet={this.selectHero} onRetire={this.selectRetiringHero} />
-						{this.props.developer ? <button className='developer' onClick={() => this.props.incrementXP(hero)}>Add XP</button> : null}
+						{this.props.options.developer ? <button className='developer' onClick={() => this.props.incrementXP(hero)}>Add XP</button> : null}
 					</div>
 				);
 			});
@@ -186,7 +187,7 @@ export class HeroesPage extends Component<Props, State> {
 							<HeroBuilderPanel
 								hero={this.state.selectedHero}
 								game={this.props.game}
-								developer={this.props.developer}
+								options={this.props.options}
 								finished={hero => {
 									const h = this.state.selectedHero as CombatantModel;
 									this.setState({
@@ -207,7 +208,7 @@ export class HeroesPage extends Component<Props, State> {
 							<CharacterSheetPanel
 								combatant={this.state.selectedHero}
 								game={this.props.game}
-								developer={this.props.developer}
+								developer={this.props.options.developer}
 								equipItem={this.props.equipItem}
 								unequipItem={this.props.unequipItem}
 								pickUpItem={this.props.pickUpItem}

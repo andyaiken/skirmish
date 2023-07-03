@@ -1,0 +1,13 @@
+.packs-tab {
+	display: flex;
+	align-items: flex-start;
+	gap: 20px;
+
+	.packs-sidebar {
+		flex: 0 0 160px;
+	}
+
+	.pack-content {
+		flex: 1 1 0;
+	}
+}

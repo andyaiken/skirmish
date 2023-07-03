@@ -6,6 +6,7 @@ import { QuirkType } from '../enums/quirk-type';
 import { EncounterMapGenerator } from './encounter-map-generator';
 import { MagicItemGenerator } from './magic-item-generator';
 
+import { CampaignMapLogic } from '../logic/campaign-map-logic';
 import { CombatantLogic } from '../logic/combatant-logic';
 import { EncounterLogic } from '../logic/encounter-logic';
 import { Factory } from '../logic/factory';
@@ -19,7 +20,7 @@ import { Collections } from '../utils/collections';
 import { Random } from '../utils/random';
 
 export class EncounterGenerator {
-	static createEncounter = (region: RegionModel, heroes: CombatantModel[]): EncounterModel => {
+	static createEncounter = (region: RegionModel, heroes: CombatantModel[], packs: string[]): EncounterModel => {
 		const seed = region.encounters[0];
 		const rng = Random.getSeededRNG(seed);
 
@@ -43,7 +44,7 @@ export class EncounterGenerator {
 				}
 				CombatantLogic.applyCombatantCards(monster, speciesID, roleID, backgroundID);
 				CombatantLogic.makeFeatureChoices(monster);
-				CombatantLogic.addItems(monster);
+				CombatantLogic.addItems(monster, packs);
 				monsters.push(monster);
 			}
 		};
@@ -53,9 +54,10 @@ export class EncounterGenerator {
 				case 0: {
 					// Add a random monster
 					if (monsters.length < (heroes.length * 2)) {
-						const speciesID = Collections.draw(region.demographics.speciesIDs, rng);
-						const roleID = Collections.draw(GameLogic.getRoleDeck(), rng);
-						const backgroundID = Collections.draw(GameLogic.getBackgroundDeck(), rng);
+						const speciesIDs = CampaignMapLogic.getMonsters(region, packs).map(s => s.id);
+						const speciesID = Collections.draw(speciesIDs, rng);
+						const roleID = Collections.draw(GameLogic.getRoleDeck(packs).map(r => r.id), rng);
+						const backgroundID = Collections.draw(GameLogic.getBackgroundDeck(packs).map(b => b.id), rng);
 						addMonster(speciesID, roleID, backgroundID);
 					}
 					break;
@@ -65,8 +67,8 @@ export class EncounterGenerator {
 					if ((monsters.length > 0) && (monsters.length < (heroes.length * 2))) {
 						const original = Collections.draw(monsters, rng);
 						const speciesID = original.speciesID;
-						const roleID = Collections.draw(GameLogic.getRoleDeck(), rng);
-						const backgroundID = Collections.draw(GameLogic.getBackgroundDeck(), rng);
+						const roleID = Collections.draw(GameLogic.getRoleDeck(packs).map(r => r.id), rng);
+						const backgroundID = Collections.draw(GameLogic.getBackgroundDeck(packs).map(b => b.id), rng);
 						addMonster(speciesID, roleID, backgroundID);
 					}
 					break;
@@ -78,7 +80,7 @@ export class EncounterGenerator {
 						const original = Collections.draw(monsters, rng);
 						const speciesID = original.speciesID;
 						const roleID = original.roleID;
-						const backgroundID = Collections.draw(GameLogic.getBackgroundDeck(), rng);
+						const backgroundID = Collections.draw(GameLogic.getBackgroundDeck(packs).map(b => b.id), rng);
 						addMonster(speciesID, roleID, backgroundID);
 					}
 					break;
@@ -122,7 +124,7 @@ export class EncounterGenerator {
 		const loot: LootPileModel[] = [];
 		if (Random.randomNumber(10, rng) === 0) {
 			const lp = Factory.createLootPile();
-			lp.items.push(MagicItemGenerator.generateRandomMagicItem());
+			lp.items.push(MagicItemGenerator.generateRandomMagicItem(packs));
 
 			const square = Collections.draw(encounter.mapSquares.filter(c => c.type === EncounterMapSquareType.Clear), rng);
 			lp.position.x = square.x;

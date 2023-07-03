@@ -1,5 +1,3 @@
-import { ItemData } from '../data/item-data';
-
 import { DamageCategoryType } from '../enums/damage-category-type';
 import { FeatureType } from '../enums/feature-type';
 import { ItemLocationType } from '../enums/item-location-type';
@@ -25,8 +23,8 @@ export class MagicItemGenerator {
 		return MagicItemGenerator.addMagicItemFeature(item);
 	};
 
-	static generateRandomMagicItem = (): ItemModel => {
-		const baseItem = Collections.draw(ItemData.getList());
+	static generateRandomMagicItem = (packs: string[]): ItemModel => {
+		const baseItem = Collections.draw(GameLogic.getItemDeck(packs));
 		const item = MagicItemGenerator.convertToMagicItem(baseItem);
 		return MagicItemGenerator.addMagicItemFeature(item);
 	};

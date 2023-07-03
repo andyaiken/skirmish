@@ -19,6 +19,7 @@ export class HeroSpeciesData {
 			{
 				id: 'species-human',
 				name: 'Human',
+				pack: '',
 				description: 'Humans are resourceful and adaptable.',
 				type: CombatantType.Hero,
 				size: 1,
@@ -60,6 +61,7 @@ export class HeroSpeciesData {
 			{
 				id: 'species-construct',
 				name: 'Construct',
+				pack: 'Technology',
 				description: 'A living automaton.',
 				type: CombatantType.Hero,
 				size: 1,
@@ -113,6 +115,7 @@ export class HeroSpeciesData {
 			{
 				id: 'species-deva',
 				name: 'Deva',
+				pack: 'Planar',
 				description: 'A humanoid with angelic ancestry.',
 				type: CombatantType.Hero,
 				size: 1,
@@ -172,6 +175,7 @@ export class HeroSpeciesData {
 			{
 				id: 'species-dwarf',
 				name: 'Dwarf',
+				pack: '',
 				description: 'A short, sturdy creature, fond of drink and industry.',
 				type: CombatantType.Hero,
 				size: 1,
@@ -219,6 +223,7 @@ export class HeroSpeciesData {
 			{
 				id: 'species-elf',
 				name: 'Elf',
+				pack: '',
 				description: 'An elegant forest-dwelling creature.',
 				type: CombatantType.Hero,
 				size: 1,
@@ -266,6 +271,7 @@ export class HeroSpeciesData {
 			{
 				id: 'species-gnome',
 				name: 'Gnome',
+				pack: '',
 				description: 'A short creature who often prefers to be unseen.',
 				type: CombatantType.Hero,
 				size: 1,
@@ -319,6 +325,7 @@ export class HeroSpeciesData {
 			{
 				id: 'species-minotaur',
 				name: 'Minotaur',
+				pack: 'Beasts',
 				description: 'A muscular humanoid with the head of a bull.',
 				type: CombatantType.Hero,
 				size: 1,
@@ -418,6 +425,7 @@ export class HeroSpeciesData {
 			{
 				id: 'species-pixie',
 				name: 'Pixie',
+				pack: '',
 				description: 'A tiny fairy-like creature.',
 				type: CombatantType.Hero,
 				size: 1,
@@ -462,6 +470,7 @@ export class HeroSpeciesData {
 			{
 				id: 'species-reptilian',
 				name: 'Reptilian',
+				pack: 'Beasts',
 				description: 'A scaly humanoid with draconic ancestry.',
 				type: CombatantType.Hero,
 				size: 1,
@@ -536,6 +545,7 @@ export class HeroSpeciesData {
 			{
 				id: 'species-shadowborn',
 				name: 'Shadowborn',
+				pack: 'Planar',
 				description: 'A humanoid with demonic heritage.',
 				type: CombatantType.Hero,
 				size: 1,
@@ -614,6 +624,7 @@ export class HeroSpeciesData {
 			{
 				id: 'species-werewolf',
 				name: 'Werewolf',
+				pack: 'Beasts',
 				description: 'A creature cursed with a wolf form.',
 				type: CombatantType.Hero,
 				size: 1,

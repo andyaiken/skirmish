@@ -21,6 +21,7 @@ export class RoleData {
 			{
 				id: 'role-arcanist',
 				name: 'Arcanist',
+				pack: '',
 				description: 'Arcanists are magical generalists, able to create a wide range of effects.',
 				traits: [
 					TraitType.Resolve
@@ -140,6 +141,7 @@ export class RoleData {
 			{
 				id: 'role-assassin',
 				name: 'Assassin',
+				pack: 'Skullduggery',
 				description: 'Assassins operate from the shadows, using poison to kill.',
 				traits: [
 					TraitType.Speed
@@ -223,6 +225,7 @@ export class RoleData {
 			{
 				id: 'role-barbarian',
 				name: 'Barbarian',
+				pack: '',
 				description: 'Barbarians are warriors who attack recklessly, with no sense of self-preservation.',
 				traits: [
 					TraitType.Endurance
@@ -351,6 +354,7 @@ export class RoleData {
 			{
 				id: 'role-centurion',
 				name: 'Centurion',
+				pack: '',
 				description: 'A master of the battlefield.',
 				traits: [
 					TraitType.Endurance
@@ -496,6 +500,7 @@ export class RoleData {
 			{
 				id: 'role-dervish',
 				name: 'Dervish',
+				pack: '',
 				description: 'Acrobatic warriors who leap and spin around the battlefield.',
 				traits: [
 					TraitType.Speed
@@ -650,6 +655,7 @@ export class RoleData {
 			{
 				id: 'role-enchanter',
 				name: 'Enchanter',
+				pack: '',
 				description: 'Spellcasters who specialize in magic that confuses the senses.',
 				traits: [
 					TraitType.Resolve
@@ -782,6 +788,7 @@ export class RoleData {
 			{
 				id: 'role-geomancer',
 				name: 'Geomancer',
+				pack: '',
 				description: 'Spellcasters whose magic affects the battlefield itself.',
 				traits: [
 					TraitType.Endurance
@@ -900,6 +907,7 @@ export class RoleData {
 			{
 				id: 'role-luckweaver',
 				name: 'Luckweaver',
+				pack: 'Skullduggery',
 				description: 'One who can manipulate the laws of chance.',
 				traits: [
 					TraitType.Speed
@@ -972,6 +980,7 @@ export class RoleData {
 			{
 				id: 'role-gunslinger',
 				name: 'Gunslinger',
+				pack: 'Technology',
 				description: 'A fighter who uses gunpowder weapons.',
 				traits: [
 					TraitType.Speed
@@ -1111,6 +1120,7 @@ export class RoleData {
 			{
 				id: 'role-necromancer',
 				name: 'Necromancer',
+				pack: 'Undead',
 				description: 'A spellcaster whose magic deals with life and death.',
 				traits: [
 					TraitType.Resolve
@@ -1239,6 +1249,7 @@ export class RoleData {
 			{
 				id: 'role-ninja',
 				name: 'Ninja',
+				pack: '',
 				description: 'A martial artist who hones their abilities with extreme training and self-discipline.',
 				traits: [
 					TraitType.Speed
@@ -1349,6 +1360,7 @@ export class RoleData {
 			{
 				id: 'role-psion',
 				name: 'Psion',
+				pack: 'Planar',
 				description: 'A master of the power of the mind.',
 				traits: [
 					TraitType.Resolve
@@ -1469,6 +1481,7 @@ export class RoleData {
 			{
 				id: 'role-ranger',
 				name: 'Ranger',
+				pack: '',
 				description: 'A fighter who specializes in ranged weaponry.',
 				traits: [
 					TraitType.Endurance
@@ -1617,6 +1630,7 @@ export class RoleData {
 			{
 				id: 'role-sensei',
 				name: 'Sensei',
+				pack: '',
 				description: 'A martial artist who uses elementally-enhanced fighting techniques.',
 				traits: [
 					TraitType.Speed
@@ -1739,6 +1753,7 @@ export class RoleData {
 			{
 				id: 'role-sorcerer',
 				name: 'Sorcerer',
+				pack: 'Elements',
 				description: 'A magic-user whose spells are elemental and destructive.',
 				traits: [
 					TraitType.Resolve
@@ -1845,6 +1860,7 @@ export class RoleData {
 			{
 				id: 'role-warmage',
 				name: 'Warmage',
+				pack: '',
 				description: 'A warrior who bridges martial discipline and arcane power.',
 				traits: [
 					TraitType.Resolve

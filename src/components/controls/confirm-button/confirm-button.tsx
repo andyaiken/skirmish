@@ -1,7 +1,7 @@
 import { IconCircleCheck, IconCircleX } from '@tabler/icons-react';
 import { Component } from 'react';
 
-import { Text, TextType } from '../../controls';
+import { Text } from '../../controls';
 
 import './confirm-button.scss';
 
@@ -58,9 +58,8 @@ export class ConfirmButton extends Component<Props, State> {
 		if (this.state.view === 'query') {
 			return (
 				<div className='confirm-query'>
-					<Text type={TextType.Information}>
-						<p><b>Are you sure?</b></p>
-						{this.props.info ? <p>{this.props.info}</p> : null}
+					<Text>
+						<b>{this.props.info || 'Are you sure?'}</b>
 					</Text>
 					<div className='button-row'>
 						<button className='icon-btn' onClick={this.onConfirm}><IconCircleCheck /></button>

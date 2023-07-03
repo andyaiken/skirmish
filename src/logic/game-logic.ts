@@ -31,35 +31,45 @@ import { Utils } from '../utils/utils';
 import { ActionLogic } from './action-logic';
 
 export class GameLogic {
-	static getHeroSpeciesDeck = () => {
-		return HeroSpeciesData
-			.getList()
-			.map(species => species.id);
+	static getHeroSpeciesDeck = (packs: string[]) => {
+		return HeroSpeciesData.getList().filter(s => (s.pack === '') || packs.includes(s.pack));
 	};
 
-	static getMonsterSpeciesDeck = () => {
-		return MonsterSpeciesData
-			.getList()
-			.map(species => species.id);
+	static getMonsterSpeciesDeck = (packs: string[]) => {
+		return MonsterSpeciesData.getList().filter(s => (s.pack === '') || packs.includes(s.pack));
 	};
 
-	static getRoleDeck = () => {
-		return RoleData
-			.getList()
-			.map(role => role.id);
+	static getRoleDeck = (packs: string[]) => {
+		return RoleData.getList().filter(r => (r.pack === '') || packs.includes(r.pack));
 	};
 
-	static getBackgroundDeck = () => {
-		return BackgroundData
-			.getList()
-			.map(background => background.id);
+	static getBackgroundDeck = (packs: string[]) => {
+		return BackgroundData.getList().filter(b => (b.pack === '') || packs.includes(b.pack));
+	};
+
+	static getItemDeck = (packs: string[]) => {
+		return ItemData.getList().filter(i => (i.pack === '') || packs.includes(i.pack));
+	};
+
+	///////////////////////////////////////////////////////////////////////////
+
+	static getPacks = () => {
+		const packs = ([] as string[])
+			.concat(HeroSpeciesData.getList().map(s => s.pack).filter(p => !!p))
+			.concat(MonsterSpeciesData.getList().map(s => s.pack).filter(p => !!p))
+			.concat(RoleData.getList().map(r => r.pack).filter(p => !!p))
+			.concat(BackgroundData.getList().map(b => b.pack).filter(p => !!p))
+			.concat(ItemData.getList().map(i => i.pack).filter(p => !!p));
+
+		return Collections.distinct(packs, p => p).sort();
 	};
 
 	static getSpecies = (id: string) => {
-		const species: SpeciesModel[] = ([] as SpeciesModel[])
+		const allSpecies = ([] as SpeciesModel[])
 			.concat(HeroSpeciesData.getList())
 			.concat(MonsterSpeciesData.getList());
-		return species.find(s => s.id === id) || null;
+
+		return allSpecies.find(s => s.id === id) || null;
 	};
 
 	static getRole = (id: string) => {
@@ -71,13 +81,21 @@ export class GameLogic {
 	};
 
 	static getItem = (id: string) => {
-		return ItemData.getList().find(b => b.id === id) || null;
+		return ItemData.getList().find(i => i.id === id) || null;
 	};
 
 	///////////////////////////////////////////////////////////////////////////
 
 	static getRandomAction = (item: ItemModel) => {
-		const actions = GameLogic.getAllActions().filter(a => {
+		const packs = GameLogic.getPacks();
+
+		const allActions: ActionModel[] = [];
+		GameLogic.getHeroSpeciesDeck(packs).forEach(s => allActions.push(...s.actions));
+		GameLogic.getMonsterSpeciesDeck(packs).forEach(s => allActions.push(...s.actions));
+		GameLogic.getRoleDeck(packs).forEach(r => allActions.push(...r.actions));
+		GameLogic.getBackgroundDeck(packs).forEach(b => allActions.push(...b.actions));
+
+		const actions = allActions.filter(a => {
 			// Ignore actions that require a different sort of item
 			const prerequisite = a.prerequisites.find(p => p.id === 'item');
 			if (prerequisite) {
@@ -214,17 +232,6 @@ export class GameLogic {
 
 	///////////////////////////////////////////////////////////////////////////
 
-	static getAllActions = () => {
-		const actions: ActionModel[] = [];
-
-		HeroSpeciesData.getList().forEach(s => actions.push(...s.actions));
-		MonsterSpeciesData.getList().forEach(s => actions.push(...s.actions));
-		RoleData.getList().forEach(r => actions.push(...r.actions));
-		BackgroundData.getList().forEach(b => actions.push(...b.actions));
-
-		return actions;
-	};
-
 	static getBoonIsHeroType = (boon: BoonModel) => {
 		switch (boon.type) {
 			case BoonType.ExtraHero:
@@ -284,8 +291,8 @@ export class GameLogic {
 		return SkillCategoryType.None;
 	};
 
-	static getItemsForProficiency = (proficiency: ItemProficiencyType) => {
-		return ItemData.getList().filter(i => i.proficiency === proficiency);
+	static getItemsForProficiency = (proficiency: ItemProficiencyType, packs: string[]) => {
+		return GameLogic.getItemDeck(packs).filter(i => i.proficiency === proficiency);
 	};
 
 	///////////////////////////////////////////////////////////////////////////

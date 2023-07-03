@@ -1,11 +1,4 @@
 import { Component } from 'react';
-import ReactMarkdown from 'react-markdown';
-
-import { BackgroundData } from '../../../data/background-data';
-import { HeroSpeciesData } from '../../../data/hero-species-data';
-import { ItemData } from '../../../data/item-data';
-import { MonsterSpeciesData } from '../../../data/monster-species-data';
-import { RoleData } from '../../../data/role-data';
 
 import { CardType } from '../../../enums/card-type';
 
@@ -16,11 +9,12 @@ import type { FeatureModel } from '../../../models/feature';
 import type { GameModel } from '../../../models/game';
 import type { OptionsModel } from '../../../models/options';
 
-import { Format } from '../../../utils/format';
-import { Sound } from '../../../utils/sound';
-
-import { ActionCard, BackgroundCard, FeatureCard, ItemCard, PlaceholderCard, RoleCard, SpeciesCard } from '../../cards';
-import { CardList, ConfirmButton, Dialog, PlayingCard, StatValue, Switch, Tabs, Text, TextType } from '../../controls';
+import { ActionCard, FeatureCard, PlaceholderCard } from '../../cards';
+import { CardList, Dialog, PlayingCard, StatValue, Tabs, Text, TextType } from '../../controls';
+import { DecksTab } from './decks-tab/decks-tab';
+import { OptionsTab } from './options-tab/options-tab';
+import { PacksTab } from './packs-tab/packs-tab';
+import { RulesTab } from './rules-tab/rules-tab';
 
 import './settings-panel.scss';
 
@@ -28,9 +22,11 @@ import pkg from '../../../../package.json';
 
 interface Props {
 	game: GameModel | null;
+	options: OptionsModel;
 	exceptions: string[];
 	rules: string;
-	options: OptionsModel;
+	addPack: (pack: string) => void;
+	removePack: (pack: string) => void;
 	endCampaign: () => void;
 	setDeveloperMode: (value: boolean) => void;
 	setSoundEffectsVolume: (value: number) => void;
@@ -72,6 +68,7 @@ export class SettingsPanel extends Component<Props, State> {
 			const tabs = [
 				{ id: 'rules', display: 'Rules' },
 				{ id: 'decks', display: 'Decks' },
+				{ id: 'packs', display: 'Packs' },
 				{ id: 'options', display: 'Options' }
 			];
 
@@ -91,7 +88,21 @@ export class SettingsPanel extends Component<Props, State> {
 				case 'decks':
 					content = (
 						<div className='content'>
-							<DecksTab developer={this.props.options.developer} setActions={this.setActions} />
+							<DecksTab
+								options={this.props.options}
+								setActions={this.setActions}
+							/>
+						</div>
+					);
+					break;
+				case 'packs':
+					content = (
+						<div className='content'>
+							<PacksTab
+								options={this.props.options}
+								addPack={this.props.addPack}
+								setActions={this.setActions}
+							/>
 						</div>
 					);
 					break;
@@ -103,6 +114,7 @@ export class SettingsPanel extends Component<Props, State> {
 								options={this.props.options}
 								version={pkg.version}
 								local={this.state.local}
+								removePack={this.props.removePack}
 								endCampaign={this.props.endCampaign}
 								setDeveloperMode={this.props.setDeveloperMode}
 								setSoundEffectsVolume={this.props.setSoundEffectsVolume}
@@ -184,172 +196,5 @@ export class SettingsPanel extends Component<Props, State> {
 		} catch {
 			return <div className='settings-panel render-error' />;
 		}
-	};
-}
-
-interface RulesTabProps {
-	rules: string;
-}
-
-class RulesTab extends Component<RulesTabProps> {
-	render = () => {
-		return (
-			<ReactMarkdown>{this.props.rules}</ReactMarkdown>
-		);
-	};
-}
-
-interface DecksTabProps {
-	developer: boolean;
-	setActions: (source: string, type: CardType, features: FeatureModel[], actions: ActionModel[]) => void;
-}
-
-class DecksTab extends Component<DecksTabProps> {
-	render = () => {
-		return (
-			<div>
-				<div className='cards'>
-					<div className='card-cell'>
-						<PlayingCard
-							stack={true}
-							type={CardType.Species}
-							front={<PlaceholderCard text='Hero Species Deck' />}
-						/>
-					</div>
-					{
-						HeroSpeciesData.getList().map(s => {
-							return (
-								<div key={s.id} className='card-cell'>
-									<SpeciesCard species={s} onSelect={species => this.props.setActions(species.name, CardType.Species, species.features, species.actions)} />
-									{this.props.developer ? <StatValue label='Strength' value={GameLogic.getSpeciesStrength(s)} /> : null}
-								</div>
-							);
-						})
-					}
-				</div>
-				<hr />
-				<div className='cards'>
-					<div className='card-cell'>
-						<PlayingCard
-							stack={true}
-							type={CardType.Species}
-							front={<PlaceholderCard text='Monster Species Deck' />}
-						/>
-					</div>
-					{
-						MonsterSpeciesData.getList().map(s => {
-							return (
-								<div key={s.id} className='card-cell'>
-									<SpeciesCard species={s} onSelect={species => this.props.setActions(species.name, CardType.Species, species.features, species.actions)} />
-									{this.props.developer ? <StatValue label='Strength' value={GameLogic.getSpeciesStrength(s)} /> : null}
-								</div>
-							);
-						})
-					}
-				</div>
-				<hr />
-				<div className='cards'>
-					<div className='card-cell'>
-						<PlayingCard
-							stack={true}
-							type={CardType.Role}
-							front={<PlaceholderCard text='Role Deck' />}
-						/>
-					</div>
-					{
-						RoleData.getList().map(r => {
-							return (
-								<div key={r.id} className='card-cell'>
-									<RoleCard role={r} onSelect={role => this.props.setActions(role.name, CardType.Role, role.features, role.actions)} />
-									{this.props.developer ? <StatValue label='Strength' value={GameLogic.getRoleStrength(r)} /> : null}
-								</div>
-							);
-						})
-					}
-				</div>
-				<hr />
-				<div className='cards'>
-					<div className='card-cell'>
-						<PlayingCard
-							stack={true}
-							type={CardType.Background}
-							front={<PlaceholderCard text='Background Deck' />}
-						/>
-					</div>
-					{
-						BackgroundData.getList().map(b => {
-							return (
-								<div key={b.id} className='card-cell'>
-									<BackgroundCard background={b} onSelect={background => this.props.setActions(background.name, CardType.Background, background.features, background.actions)} />
-									{this.props.developer ? <StatValue label='Strength' value={GameLogic.getBackgroundStrength(b)} /> : null}
-								</div>
-							);
-						})
-					}
-				</div>
-				<hr />
-				<div className='cards'>
-					<div className='card-cell'>
-						<PlayingCard
-							stack={true}
-							type={CardType.Item}
-							front={<PlaceholderCard text='Item Deck' />}
-						/>
-					</div>
-					{
-						ItemData.getList().map(i => {
-							return (
-								<div key={i.id} className='card-cell'>
-									<ItemCard item={i} />
-								</div>
-							);
-						})
-					}
-				</div>
-			</div>
-		);
-	};
-}
-
-interface OptionsTabProps {
-	game: GameModel | null;
-	options: OptionsModel;
-	version: string;
-	local: boolean;
-	endCampaign: () => void;
-	setDeveloperMode: (value: boolean) => void;
-	setSoundEffectsVolume: (value: number) => void;
-}
-
-class OptionsTab extends Component<OptionsTabProps> {
-	setSoundEffectsVolume = (value: number) => {
-		this.props.setSoundEffectsVolume(value);
-		Sound.play(Sound.dong);
-	};
-
-	render = () => {
-		const dataSize = JSON.stringify(this.props.game).length;
-
-		return (
-			<div className='content'>
-				<Text type={TextType.SubHeading}>Sound</Text>
-				<StatValue label='Sound effects volume' value={`${this.props.options.soundEffectsVolume * 100}%`} />
-				<input
-					type='range'
-					min={0}
-					max={1}
-					step={0.05}
-					value={this.props.options.soundEffectsVolume}
-					onChange={e => this.setSoundEffectsVolume(parseFloat(e.target.value))}
-				/>
-				<hr />
-				{this.props.local ? <Switch label='Developer Mode' checked={this.props.options.developer} onChange={this.props.setDeveloperMode} /> : null}
-				{this.props.local ? <hr /> : null}
-				{this.props.game ? <ConfirmButton label='Abandon this Campaign' onClick={() => this.props.endCampaign()} /> : null}
-				{this.props.game ? <hr /> : null}
-				{this.props.game ? <StatValue label='Data size' value={Format.toSize(dataSize)} /> : null}
-				<StatValue label='Version' value={this.props.version} />
-			</div>
-		);
 	};
 }

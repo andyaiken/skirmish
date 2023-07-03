@@ -1,7 +1,10 @@
+import { GameLogic } from './game-logic';
+
 import type { CampaignMapModel, CampaignMapSquareModel } from '../models/campaign-map';
 import type { RegionModel } from '../models/region';
 
 import { Collections } from '../utils/collections';
+import { Random } from '../utils/random';
 
 export class CampaignMapLogic {
 	static getAdjacentSquares = (map: CampaignMapModel, x: number, y: number) => {
@@ -79,5 +82,15 @@ export class CampaignMapLogic {
 
 	static isConquered = (map: CampaignMapModel) => {
 		return map.squares.every(sq => sq.regionID === '');
+	};
+
+	static getMonsters = (region: RegionModel, packs: string[]) => {
+		const monsterIDs = GameLogic.getMonsterSpeciesDeck(packs);
+
+		const rng = Random.getSeededRNG(region.id);
+		const count = Random.randomNumber(2, rng) + 2;
+		return [
+			...Collections.shuffle(monsterIDs, rng).slice(0, count)
+		];
 	};
 }

@@ -1,7 +1,3 @@
-import { MonsterSpeciesData } from '../data/monster-species-data';
-
-import { CombatantType } from '../enums/combatant-type';
-
 import { CampaignMapLogic } from '../logic/campaign-map-logic';
 
 import type { CampaignMapModel, CampaignMapSquareModel } from '../models/campaign-map';
@@ -14,7 +10,7 @@ import { BoonGenerator } from './boon-generator';
 import { NameGenerator } from './name-generator';
 
 export class CampaignMapGenerator {
-	static generateCampaignMap = (): CampaignMapModel => {
+	static generateCampaignMap = (packs: string[]): CampaignMapModel => {
 		const map: CampaignMapModel = {
 			squares: [ {
 				x: 0,
@@ -66,11 +62,10 @@ export class CampaignMapGenerator {
 				name: NameGenerator.generateName(),
 				color: color,
 				encounters: [],
-				boon: BoonGenerator.generateBoon(),
+				boon: BoonGenerator.generateBoon(packs),
 				demographics: {
 					size: 0,
 					population: 0,
-					speciesIDs: [],
 					terrain: ''
 				}
 			});
@@ -104,9 +99,9 @@ export class CampaignMapGenerator {
 		} while (map.squares.filter(sq => sq.regionID === '').length !== 0);
 
 		map.regions.forEach(region => {
-			const monsterIDs = MonsterSpeciesData.getList()
-				.filter(s => s.type === CombatantType.Monster)
-				.map(s => s.id);
+			const size = CampaignMapLogic.getSquares(map, region).length;
+			region.demographics.size = size;
+			region.demographics.population = Random.dice(size);
 
 			const terrains = [
 				'Canyons',
@@ -126,16 +121,6 @@ export class CampaignMapGenerator {
 				'Valleys',
 				'Volcanic'
 			];
-
-			const size = CampaignMapLogic.getSquares(map, region).length;
-			region.demographics.size = size;
-			region.demographics.population = Random.dice(size);
-
-			const types = Random.randomNumber(2) + 2;
-			region.demographics.speciesIDs = [
-				...Collections.shuffle(monsterIDs).slice(0, types)
-			];
-
 			region.demographics.terrain = Collections.draw(terrains);
 
 			const count = Random.dice(1);

@@ -9,6 +9,7 @@ import { CombatantLogic } from '../../../logic/combatant-logic';
 import type { CombatantModel } from '../../../models/combatant';
 import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
+import type { OptionsModel } from '../../../models/options';
 
 import { CardList, Text, TextType } from '../../controls';
 import { ItemCard } from '../../cards';
@@ -18,7 +19,7 @@ import './magic-items-panel.scss';
 
 interface Props {
 	game: GameModel;
-	developer: boolean;
+	options: OptionsModel;
 	buyItem: (item: ItemModel) => void;
 	buyAndEquipItem: (item: ItemModel, hero: CombatantModel) => void;
 	dropItem: (item: ItemModel, hero: CombatantModel) => void;
@@ -41,7 +42,7 @@ export class MagicItemsPanel extends Component<Props, State> {
 		const items: ItemModel[] = [];
 
 		while (items.length < 3) {
-			const item = MagicItemGenerator.generateRandomMagicItem();
+			const item = MagicItemGenerator.generateRandomMagicItem(this.props.options.packs);
 
 			let ok = true;
 
@@ -94,7 +95,7 @@ export class MagicItemsPanel extends Component<Props, State> {
 			return (
 				<div className='magic-items-panel'>
 					<Text type={TextType.Heading}>Choose a Magic Item</Text>
-					{this.props.developer ? <button className='developer' onClick={() => this.redraw()}>Redraw</button> : null}
+					{this.props.options.developer ? <button className='developer' onClick={() => this.redraw()}>Redraw</button> : null}
 					<div className='card-selection-row'>
 						<CardList cards={cards} />
 					</div>

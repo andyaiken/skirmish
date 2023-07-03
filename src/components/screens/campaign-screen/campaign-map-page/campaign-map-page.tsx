@@ -4,6 +4,7 @@ import { CampaignMapLogic } from '../../../../logic/campaign-map-logic';
 
 import type { CombatantModel } from '../../../../models/combatant';
 import type { GameModel } from '../../../../models/game';
+import type { OptionsModel } from '../../../../models/options';
 import type { RegionModel } from '../../../../models/region';
 
 import { Collections } from '../../../../utils/collections';
@@ -16,7 +17,7 @@ import './campaign-map-page.scss';
 
 interface Props {
 	game: GameModel;
-	developer: boolean;
+	options: OptionsModel;
 	startEncounter: (region: RegionModel, heroes: CombatantModel[]) => void;
 	conquer: (region: RegionModel) => void;
 }
@@ -50,7 +51,7 @@ export class CampaignMapPage extends Component<Props, State> {
 			return (
 				<div className='sidebar'>
 					<div className='card'>
-						<RegionCard region={this.state.selectedRegion} />
+						<RegionCard region={this.state.selectedRegion} options={this.props.options} />
 					</div>
 					<hr />
 					{
@@ -68,7 +69,7 @@ export class CampaignMapPage extends Component<Props, State> {
 							</Text>
 					}
 					{canAttack && heroesExist ? <button onClick={() => this.setState({ showHeroSelection: true })}>Start an encounter</button> : null}
-					{this.props.developer ? <button className='developer' onClick={() => this.conquer(this.state.selectedRegion as RegionModel)}>Conquer</button> : null}
+					{this.props.options.developer ? <button className='developer' onClick={() => this.conquer(this.state.selectedRegion as RegionModel)}>Conquer</button> : null}
 					<hr />
 					<Text>If you take control of {this.state.selectedRegion.name}, you will recieve:</Text>
 					<div className='boon'>
@@ -120,6 +121,7 @@ export class CampaignMapPage extends Component<Props, State> {
 					<EncounterStartPanel
 						region={this.state.selectedRegion as RegionModel}
 						game={this.props.game}
+						options={this.props.options}
 						startEncounter={this.props.startEncounter}
 					/>
 				)}

@@ -12,6 +12,7 @@ import { GameLogic } from '../../../logic/game-logic';
 import type { CombatantModel } from '../../../models/combatant';
 import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
+import type { OptionsModel } from '../../../models/options';
 
 import { Collections } from '../../../utils/collections';
 import { Random } from '../../../utils/random';
@@ -24,7 +25,7 @@ import './setup-screen.scss';
 
 interface Props {
 	game: GameModel;
-	developer: boolean;
+	options: OptionsModel;
 	addHero: (hero: CombatantModel) => void;
 	addHeroes: (heroes: CombatantModel[]) => void;
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
@@ -53,9 +54,9 @@ export class SetupScreen extends Component<Props, State> {
 	};
 
 	createHeroes = () => {
-		let speciesDeck = GameLogic.getHeroSpeciesDeck();
-		let roleDeck = GameLogic.getRoleDeck();
-		let backgroundDeck = GameLogic.getBackgroundDeck();
+		let speciesDeck = GameLogic.getHeroSpeciesDeck(this.props.options.packs).map(s => s.id);
+		let roleDeck = GameLogic.getRoleDeck(this.props.options.packs).map(r => r.id);
+		let backgroundDeck = GameLogic.getBackgroundDeck(this.props.options.packs).map(b => b.id);
 
 		const heroes: CombatantModel[] = [];
 		while (heroes.length < 5) {
@@ -71,7 +72,7 @@ export class SetupScreen extends Component<Props, State> {
 			backgroundDeck = backgroundDeck.filter(b => b !== backgroundID);
 
 			CombatantLogic.applyCombatantCards(hero, speciesID, roleID, backgroundID);
-			CombatantLogic.addItems(hero);
+			CombatantLogic.addItems(hero, this.props.options.packs);
 
 			heroes.push(hero);
 		}
@@ -97,7 +98,7 @@ export class SetupScreen extends Component<Props, State> {
 						<HeroBuilderPanel
 							hero={this.state.hero}
 							game={this.props.game}
-							developer={this.props.developer}
+							options={this.props.options}
 							finished={hero => {
 								this.setState({
 									hero: null

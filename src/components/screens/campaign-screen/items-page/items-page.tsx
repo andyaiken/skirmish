@@ -8,6 +8,7 @@ import type { BoonModel } from '../../../../models/boon';
 import type { CombatantModel } from '../../../../models/combatant';
 import type { GameModel } from '../../../../models/game';
 import type { ItemModel } from '../../../../models/item';
+import type { OptionsModel } from '../../../../models/options';
 
 import { Collections } from '../../../../utils/collections';
 
@@ -19,7 +20,7 @@ import './items-page.scss';
 
 interface Props {
 	game: GameModel;
-	developer: boolean;
+	options: OptionsModel;
 	buyItem: (item: ItemModel) => void;
 	sellItem: (item: ItemModel, all: boolean) => void;
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
@@ -104,7 +105,7 @@ export class ItemsPage extends Component<Props, State> {
 			<div>
 				<StatValue orientation='vertical' label='Money' value={<IconValue type={IconType.Money} value={this.props.game.money} />} />
 				{(this.props.game.money > 0) && !controlLand ? <Text type={TextType.Information}><p>You can&apos;t buy anything until you control part of the island.</p></Text> : null}
-				{this.props.developer ? <button className='developer' onClick={() => this.props.addMoney()}>Add money</button> : null}
+				{this.props.options.developer ? <button className='developer' onClick={() => this.props.addMoney()}>Add money</button> : null}
 			</div>
 		);
 
@@ -167,7 +168,7 @@ export class ItemsPage extends Component<Props, State> {
 					content={(
 						<MagicItemsPanel
 							game={this.props.game}
-							developer={this.props.developer}
+							options={this.props.options}
 							buyItem={this.buyItem}
 							buyAndEquipItem={this.buyAndEquipItem}
 							dropItem={this.props.dropItem}
@@ -184,7 +185,7 @@ export class ItemsPage extends Component<Props, State> {
 						content={(
 							<EnchantItemPanel
 								game={this.props.game}
-								developer={this.props.developer}
+								developer={this.props.options.developer}
 								enchantItem={this.enchantItem}
 							/>
 						)}

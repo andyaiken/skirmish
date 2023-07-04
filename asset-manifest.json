@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/skirmish/static/css/main.9c41afc0.css",
-    "main.js": "/skirmish/static/js/main.087425f8.js",
+    "main.js": "/skirmish/static/js/main.0b2a240d.js",
     "static/js/315.1e6f7aed.chunk.js": "/skirmish/static/js/315.1e6f7aed.chunk.js",
     "static/js/842.6b529014.chunk.js": "/skirmish/static/js/842.6b529014.chunk.js",
     "static/media/dong.mp3": "/skirmish/static/media/dong.e69db03d8e628a27235e.mp3",
@@ -12,12 +12,12 @@
     "static/media/island.md": "/skirmish/static/media/island.a4473e397952c000f208.md",
     "static/media/game.md": "/skirmish/static/media/game.288fa747aa467f7161ab.md",
     "main.9c41afc0.css.map": "/skirmish/static/css/main.9c41afc0.css.map",
-    "main.087425f8.js.map": "/skirmish/static/js/main.087425f8.js.map",
+    "main.0b2a240d.js.map": "/skirmish/static/js/main.0b2a240d.js.map",
     "315.1e6f7aed.chunk.js.map": "/skirmish/static/js/315.1e6f7aed.chunk.js.map",
     "842.6b529014.chunk.js.map": "/skirmish/static/js/842.6b529014.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.9c41afc0.css",
-    "static/js/main.087425f8.js"
+    "static/js/main.0b2a240d.js"
   ]
 }

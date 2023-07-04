@@ -56,6 +56,16 @@ export class SpeciesCard extends Component<Props, State> {
 	render = () => {
 		const tags = this.props.species.quirks.map((q, n) => <Tag key={n}>{q}</Tag>);
 
+		let size = null;
+		if (this.props.species.size !== 1) {
+			size = (
+				<div>
+					<Text type={TextType.MinorHeading}>Size</Text>
+					<ListItemPanel item={`${this.props.species.size}`} />
+				</div>
+			);
+		}
+
 		let traits = null;
 		if (this.props.species.traits.length > 0) {
 			traits = (
@@ -122,6 +132,7 @@ export class SpeciesCard extends Component<Props, State> {
 				}
 				back={(
 					<div className='species-card-back'>
+						{size}
 						{traits}
 						{skills}
 						{features}

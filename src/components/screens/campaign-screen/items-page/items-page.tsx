@@ -185,7 +185,7 @@ export class ItemsPage extends Component<Props, State> {
 						content={(
 							<EnchantItemPanel
 								game={this.props.game}
-								developer={this.props.options.developer}
+								options={this.props.options}
 								enchantItem={this.enchantItem}
 							/>
 						)}

@@ -21,12 +21,12 @@ localforage.getItem<GameModel>('skirmish-game').then(game => {
 			options = {
 				developer: false,
 				soundEffectsVolume: 0.5,
-				packs: []
+				packIDs: []
 			};
 		}
 
-		if (options.packs === undefined) {
-			options.packs = [];
+		if (options.packIDs === undefined) {
+			options.packIDs = [];
 		}
 
 		const container = document.getElementById('root');

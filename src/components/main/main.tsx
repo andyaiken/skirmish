@@ -164,11 +164,11 @@ export class Main extends Component<Props, State> {
 		});
 	};
 
-	addPack = (pack: string) => {
+	addPack = (packID: string) => {
 		const options = this.state.options;
-		if (!options.packs.includes(pack)) {
-			options.packs.push(pack);
-			options.packs.sort();
+		if (!options.packIDs.includes(packID)) {
+			options.packIDs.push(packID);
+			options.packIDs.sort();
 		}
 
 		this.setState({
@@ -178,9 +178,9 @@ export class Main extends Component<Props, State> {
 		});
 	};
 
-	removePack = (pack: string) => {
+	removePack = (packID: string) => {
 		const options = this.state.options;
-		options.packs = options.packs.filter(p => p !== pack);
+		options.packIDs = options.packIDs.filter(p => p !== packID);
 
 		this.setState({
 			options: options
@@ -193,7 +193,7 @@ export class Main extends Component<Props, State> {
 
 	startCampaign = () => {
 		try {
-			const game = Factory.createGame(this.state.options.packs);
+			const game = Factory.createGame(this.state.options.packIDs);
 
 			this.setState({
 				game: game,
@@ -314,7 +314,7 @@ export class Main extends Component<Props, State> {
 
 	levelUp = (feature: FeatureModel, hero: CombatantModel) => {
 		try {
-			CombatantLogic.incrementCombatantLevel(hero, feature);
+			CombatantLogic.incrementCombatantLevel(hero, feature, this.state.options.packIDs);
 
 			this.setState({
 				game: this.state.game
@@ -507,7 +507,7 @@ export class Main extends Component<Props, State> {
 
 				const game = this.state.game;
 				game.heroes = game.heroes.filter(h => !heroes.includes(h));
-				game.encounter = EncounterGenerator.createEncounter(region, heroes, this.state.options.packs);
+				game.encounter = EncounterGenerator.createEncounter(region, heroes, this.state.options.packIDs);
 
 				EncounterMapLogic.visibilityCache.reset();
 

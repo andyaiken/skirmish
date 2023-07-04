@@ -9,7 +9,7 @@ import type { FeatureModel } from './feature';
 export interface SpeciesModel {
 	id: string;
 	name: string;
-	pack: string;
+	packID: string;
 	description: string;
 	type: CombatantType
 	size: number;

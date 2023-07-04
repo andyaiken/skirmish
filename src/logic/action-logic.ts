@@ -1044,11 +1044,19 @@ export class ActionEffects {
 						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
 						switch (data.type) {
 							case MovementType.Pull: {
+								let origin = combatant.combat.position;
+								const originParameter = parameters.find(p => p.id === 'origin');
+								if (originParameter && originParameter.value) {
+									const originSquares = originParameter.value as { x: number, y: number }[];
+									if (originSquares.length > 0) {
+										origin = originSquares[0];
+									}
+								}
 								const moveDistance = Random.dice(data.rank);
 								for (let n = 0; n < moveDistance; ++n) {
-									const distance = EncounterMapLogic.getDistance(combatant.combat.position, target.combat.position);
+									const distance = EncounterMapLogic.getDistance(origin, target.combat.position);
 									const squares = EncounterLogic.getPossibleMoveSquares(encounter, target).filter(square => {
-										return EncounterMapLogic.getDistance(combatant.combat.position, square) < distance;
+										return EncounterMapLogic.getDistance(origin, square) < distance;
 									});
 									if (squares.length > 0) {
 										const square = Collections.draw(squares);
@@ -1061,11 +1069,19 @@ export class ActionEffects {
 								break;
 							}
 							case MovementType.Push: {
+								let origin = combatant.combat.position;
+								const originParameter = parameters.find(p => p.id === 'origin');
+								if (originParameter && originParameter.value) {
+									const originSquares = originParameter.value as { x: number, y: number }[];
+									if (originSquares.length > 0) {
+										origin = originSquares[0];
+									}
+								}
 								const moveDistance = Random.dice(data.rank);
 								for (let n = 0; n < moveDistance; ++n) {
-									const distance = EncounterMapLogic.getDistance(combatant.combat.position, target.combat.position);
+									const distance = EncounterMapLogic.getDistance(origin, target.combat.position);
 									const squares = EncounterLogic.getPossibleMoveSquares(encounter, target).filter(square => {
-										return EncounterMapLogic.getDistance(combatant.combat.position, square) > distance;
+										return EncounterMapLogic.getDistance(origin, square) > distance;
 									});
 									if (squares.length > 0) {
 										const square = Collections.draw(squares);

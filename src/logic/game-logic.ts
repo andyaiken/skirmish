@@ -2,6 +2,7 @@ import { BackgroundData } from '../data/background-data';
 import { HeroSpeciesData } from '../data/hero-species-data';
 import { ItemData } from '../data/item-data';
 import { MonsterSpeciesData } from '../data/monster-species-data';
+import { PackData } from '../data/pack-data';
 import { RoleData } from '../data/role-data';
 
 import { ActionTargetType } from '../enums/action-target-type';
@@ -31,38 +32,45 @@ import { Utils } from '../utils/utils';
 import { ActionLogic } from './action-logic';
 
 export class GameLogic {
-	static getHeroSpeciesDeck = (packs: string[]) => {
-		return HeroSpeciesData.getList().filter(s => (s.pack === '') || packs.includes(s.pack));
+	static getHeroSpeciesDeck = (packIDs: string[]) => {
+		return HeroSpeciesData.getList().filter(s => (s.packID === '') || packIDs.includes(s.packID));
 	};
 
-	static getMonsterSpeciesDeck = (packs: string[]) => {
-		return MonsterSpeciesData.getList().filter(s => (s.pack === '') || packs.includes(s.pack));
+	static getMonsterSpeciesDeck = (packIDs: string[]) => {
+		return MonsterSpeciesData.getList().filter(s => (s.packID === '') || packIDs.includes(s.packID));
 	};
 
-	static getRoleDeck = (packs: string[]) => {
-		return RoleData.getList().filter(r => (r.pack === '') || packs.includes(r.pack));
+	static getRoleDeck = (packIDs: string[]) => {
+		return RoleData.getList().filter(r => (r.packID === '') || packIDs.includes(r.packID));
 	};
 
-	static getBackgroundDeck = (packs: string[]) => {
-		return BackgroundData.getList().filter(b => (b.pack === '') || packs.includes(b.pack));
+	static getBackgroundDeck = (packIDs: string[]) => {
+		return BackgroundData.getList().filter(b => (b.packID === '') || packIDs.includes(b.packID));
 	};
 
-	static getItemDeck = (packs: string[]) => {
-		return ItemData.getList().filter(i => (i.pack === '') || packs.includes(i.pack));
+	static getItemDeck = (packIDs: string[]) => {
+		return ItemData.getList().filter(i => (i.packID === '') || packIDs.includes(i.packID));
 	};
 
 	///////////////////////////////////////////////////////////////////////////
 
 	static getPacks = () => {
-		const packs = ([] as string[])
-			.concat(HeroSpeciesData.getList().map(s => s.pack).filter(p => !!p))
-			.concat(MonsterSpeciesData.getList().map(s => s.pack).filter(p => !!p))
-			.concat(RoleData.getList().map(r => r.pack).filter(p => !!p))
-			.concat(BackgroundData.getList().map(b => b.pack).filter(p => !!p))
-			.concat(ItemData.getList().map(i => i.pack).filter(p => !!p));
-
-		return Collections.distinct(packs, p => p).sort();
+		return PackData.getList();
 	};
+
+	static getPackCardCount = (packID: string) => {
+		let count = 0;
+
+		count += HeroSpeciesData.getList().filter(s => s.packID === packID).length;
+		count += MonsterSpeciesData.getList().filter(s => s.packID === packID).length;
+		count += RoleData.getList().filter(r => r.packID === packID).length;
+		count += BackgroundData.getList().filter(b => b.packID === packID).length;
+		count += ItemData.getList().filter(i => i.packID === packID).length;
+
+		return count;
+	};
+
+	///////////////////////////////////////////////////////////////////////////
 
 	static getSpecies = (id: string) => {
 		const allSpecies = ([] as SpeciesModel[])
@@ -84,16 +92,18 @@ export class GameLogic {
 		return ItemData.getList().find(i => i.id === id) || null;
 	};
 
+	static getPack = (id: string) => {
+		return PackData.getList().find(p => p.id === id) || null;
+	};
+
 	///////////////////////////////////////////////////////////////////////////
 
-	static getRandomAction = (item: ItemModel) => {
-		const packs = GameLogic.getPacks();
-
+	static getRandomAction = (item: ItemModel, packIDs: string[]) => {
 		const allActions: ActionModel[] = [];
-		GameLogic.getHeroSpeciesDeck(packs).forEach(s => allActions.push(...s.actions));
-		GameLogic.getMonsterSpeciesDeck(packs).forEach(s => allActions.push(...s.actions));
-		GameLogic.getRoleDeck(packs).forEach(r => allActions.push(...r.actions));
-		GameLogic.getBackgroundDeck(packs).forEach(b => allActions.push(...b.actions));
+		GameLogic.getHeroSpeciesDeck(packIDs).forEach(s => allActions.push(...s.actions));
+		GameLogic.getMonsterSpeciesDeck(packIDs).forEach(s => allActions.push(...s.actions));
+		GameLogic.getRoleDeck(packIDs).forEach(r => allActions.push(...r.actions));
+		GameLogic.getBackgroundDeck(packIDs).forEach(b => allActions.push(...b.actions));
 
 		const actions = allActions.filter(a => {
 			// Ignore actions that require a different sort of item
@@ -291,8 +301,8 @@ export class GameLogic {
 		return SkillCategoryType.None;
 	};
 
-	static getItemsForProficiency = (proficiency: ItemProficiencyType, packs: string[]) => {
-		return GameLogic.getItemDeck(packs).filter(i => i.proficiency === proficiency);
+	static getItemsForProficiency = (proficiency: ItemProficiencyType, packIDs: string[]) => {
+		return GameLogic.getItemDeck(packIDs).filter(i => i.proficiency === proficiency);
 	};
 
 	///////////////////////////////////////////////////////////////////////////

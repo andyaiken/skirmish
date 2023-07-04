@@ -1,3 +1,5 @@
+import { PackData } from './pack-data';
+
 import { ActionTargetType } from '../enums/action-target-type';
 import { ConditionType } from '../enums/condition-type';
 import { DamageCategoryType } from '../enums/damage-category-type';
@@ -20,7 +22,7 @@ export class BackgroundData {
 			{
 				id: 'background-acrobat',
 				name: 'Acrobat',
-				pack: '',
+				packID: '',
 				description: 'Quick and lithe, acrobats are difficult to pin down.',
 				features: [
 					FeatureLogic.createTraitFeature('acrobat-feature-2', TraitType.Speed, 1),
@@ -58,7 +60,7 @@ export class BackgroundData {
 			{
 				id: 'background-bard',
 				name: 'Bard',
-				pack: '',
+				packID: '',
 				description: 'The charismatic bard inspires their allies to greatness.',
 				features: [
 					FeatureLogic.createSkillFeature('bard-feature-1', SkillType.Presence, 2),
@@ -117,7 +119,7 @@ export class BackgroundData {
 			{
 				id: 'background-commander',
 				name: 'Commander',
-				pack: '',
+				packID: '',
 				description: 'A commander uses tactical analysis to make the most of any situation.',
 				features: [
 					FeatureLogic.createSkillFeature('commander-feature-1', SkillType.Presence, 2),
@@ -166,7 +168,7 @@ export class BackgroundData {
 			{
 				id: 'background-grenadier',
 				name: 'Grenadier',
-				pack: 'Technology',
+				packID: PackData.technology.id,
 				description: 'Grenadiers use explosives, which are dangerous and difficult to master.',
 				features: [
 					FeatureLogic.createSkillFeature('grenadier-feature-1', SkillType.Perception, 2),
@@ -237,7 +239,7 @@ export class BackgroundData {
 			{
 				id: 'background-mountebank',
 				name: 'Mountebank',
-				pack: 'Skullduggery',
+				packID: PackData.skullduggery.id,
 				description: 'Tricksters and con artists, mountebanks make valuable allies and frustrating foes.',
 				features: [
 					FeatureLogic.createSkillFeature('mountebank-feature-1', SkillType.Presence, 2),
@@ -273,7 +275,7 @@ export class BackgroundData {
 			{
 				id: 'background-mystic',
 				name: 'Mystic',
-				pack: 'Planar',
+				packID: PackData.arcana.id,
 				description: 'Mystics are the masters of the arcane arts.',
 				features: [
 					FeatureLogic.createSkillFeature('mystic-feature-1', SkillType.Spellcasting, 2),
@@ -323,7 +325,7 @@ export class BackgroundData {
 			{
 				id: 'background-noble',
 				name: 'Noble',
-				pack: '',
+				packID: '',
 				description: 'Though they can be haughty, nobles bring an imposing presence to a battlefield.',
 				features: [
 					FeatureLogic.createSkillFeature('noble-feature-1', SkillType.Presence, 2),
@@ -379,7 +381,7 @@ export class BackgroundData {
 			{
 				id: 'background-physician',
 				name: 'Physician',
-				pack: '',
+				packID: '',
 				description: 'For many groups, a physician is the difference between life and death.',
 				features: [
 					FeatureLogic.createAuraFeature('physician-feature-1', ConditionType.AutoHeal, 1)
@@ -436,7 +438,7 @@ export class BackgroundData {
 			{
 				id: 'background-reaver',
 				name: 'Reaver',
-				pack: '',
+				packID: '',
 				description: 'Reavers are rarely satisfied with anything other than carnage.',
 				features: [
 					FeatureLogic.createSkillFeature('reaver-feature-1', SkillType.Brawl, 2),
@@ -488,7 +490,7 @@ export class BackgroundData {
 			{
 				id: 'background-sentinel',
 				name: 'Sentinel',
-				pack: '',
+				packID: '',
 				description: 'Nothing gets past a sentinel unless they allow it.',
 				features: [
 					FeatureLogic.createTraitFeature('sentinel-feature-1', TraitType.Endurance, 1),
@@ -536,7 +538,7 @@ export class BackgroundData {
 			{
 				id: 'background-thief',
 				name: 'Thief',
-				pack: 'Skullduggery',
+				packID: PackData.skullduggery.id,
 				description: 'Never put your trust in a thief, even when they\'re on your side.',
 				features: [
 					FeatureLogic.createSkillFeature('thief-feature-1', SkillType.Reactions, 2),

@@ -21,7 +21,7 @@ export interface ArmorModel {
 export interface ItemModel {
 	id: string;
 	name: string;
-	pack: string;
+	packID: string;
 	description: string;
 	baseItem: string;
 	magic: boolean;

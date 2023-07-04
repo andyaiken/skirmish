@@ -16,7 +16,7 @@ interface Props {
 	options: OptionsModel;
 	version: string;
 	local: boolean;
-	removePack: (pack: string) => void;
+	removePack: (packID: string) => void;
 	endCampaign: () => void;
 	setDeveloperMode: (value: boolean) => void;
 	setSoundEffectsVolume: (value: number) => void;
@@ -30,11 +30,11 @@ export class OptionsTab extends Component<Props> {
 
 	render = () => {
 		try {
-			const packs = this.props.options.packs.map((p, n) => {
+			const packs = this.props.options.packIDs.map((packID, n) => {
 				return (
 					<div key={n}>
-						<PlayingCard stack={true} front={<PlaceholderCard text={p} />} />
-						<ConfirmButton label='Remove this pack' onClick={() => this.props.removePack(p)} />
+						<PlayingCard stack={true} front={<PlaceholderCard text={packID} />} />
+						<ConfirmButton label='Remove this pack' onClick={() => this.props.removePack(packID)} />
 					</div>
 				);
 			});
@@ -52,10 +52,10 @@ export class OptionsTab extends Component<Props> {
 						onChange={e => this.setSoundEffectsVolume(parseFloat(e.target.value))}
 					/>
 					<hr />
-					<Text type={TextType.SubHeading}>Packs</Text>
-					{packs.length > 0 ? <CardList cards={packs} /> : null}
-					{packs.length === 0 ? <Text type={TextType.Small}>None.</Text> : null}
-					<hr />
+					{this.props.options.developer ? <Text type={TextType.SubHeading}>Packs</Text> : null}
+					{this.props.options.developer && (packs.length > 0) ? <CardList cards={packs} /> : null}
+					{this.props.options.developer && (packs.length === 0) ? <Text type={TextType.Small}>None.</Text> : null}
+					{this.props.options.developer ? <hr /> : null}
 					{this.props.local ? <Switch label='Developer Mode' checked={this.props.options.developer} onChange={this.props.setDeveloperMode} /> : null}
 					{this.props.local ? <hr /> : null}
 					{this.props.game ? <ConfirmButton label='Abandon this Campaign' onClick={() => this.props.endCampaign()} /> : null}

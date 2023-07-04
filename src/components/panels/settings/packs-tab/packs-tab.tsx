@@ -13,48 +13,73 @@ import { GameLogic } from '../../../../logic/game-logic';
 import type { ActionModel } from '../../../../models/action';
 import type { FeatureModel } from '../../../../models/feature';
 import type { OptionsModel } from '../../../../models/options';
+import type { PackModel } from '../../../../models/pack';
 
-import { BackgroundCard, ItemCard, RoleCard, SpeciesCard } from '../../../cards';
+import { BackgroundCard, ItemCard, PackCard, RoleCard, SpeciesCard } from '../../../cards';
 import { CardList, StatValue, Text, TextType } from '../../../controls';
 
 import './packs-tab.scss';
 
 interface Props {
 	options: OptionsModel;
-	addPack: (pack: string) => void;
+	addPack: (packID: string) => void;
 	setActions: (source: string, type: CardType, features: FeatureModel[], actions: ActionModel[]) => void;
 }
 
 interface State {
-	selectedPack: string;
+	selectedPack: PackModel | null;
 }
 
 export class PacksTab extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
-			selectedPack: ''
+			selectedPack: null
 		};
 	}
 
+	addPack = (pack: PackModel | null) => {
+		if (pack) {
+			this.props.addPack(pack.id);
+		}
+	};
+
+	getPackButton = (pack: PackModel | null) => {
+		let className = 'pack-button';
+		if (pack === this.state.selectedPack) {
+			className += ' selected';
+		}
+
+		return (
+			<div className={className} onClick={() => this.setState({ selectedPack: pack })}>
+				<Text type={TextType.MinorHeading}>{pack ? pack.name : 'Core Game'}</Text>
+			</div>
+		);
+	};
+
 	getPackList = () => {
-		const owned = GameLogic.getPacks().filter(p => this.props.options.packs.includes(p)).map((p, n) => <button key={n} onClick={() => this.setState({ selectedPack: p })}>{p}</button>);
-		const notOwned = GameLogic.getPacks().filter(p => !this.props.options.packs.includes(p)).map((p, n) => <button key={n} onClick={() => this.setState({ selectedPack: p })}>{p}</button>);
+		const owned = GameLogic.getPacks()
+			.filter(pack => this.props.options.packIDs.includes(pack.id))
+			.map((pack, n) => <div key={n}>{this.getPackButton(pack)}</div>);
+		const notOwned = GameLogic.getPacks()
+			.filter(pack => !this.props.options.packIDs.includes(pack.id))
+			.map((pack, n) => <div key={n}>{this.getPackButton(pack)}</div>);
 
 		return (
 			<div className='packs-sidebar'>
 				<Text type={TextType.SubHeading}>My Packs</Text>
 				{owned}
-				{owned.length === 0 ? <Text type={TextType.Small}>None</Text> : null}
-				<Text type={TextType.SubHeading}>Other Packs</Text>
+				{owned.length === 0 ? <Text type={TextType.Small}>None.</Text> : null}
+				<hr />
+				<Text type={TextType.SubHeading}>Available Packs</Text>
 				{notOwned}
-				{notOwned.length === 0 ? <Text type={TextType.Small}>None</Text> : null}
+				{notOwned.length === 0 ? <Text type={TextType.Small}>None.</Text> : null}
 			</div>
 		);
 	};
 
 	getPackContent = () => {
-		if (this.state.selectedPack === '') {
+		if (!this.state.selectedPack) {
 			return (
 				<div key='empty' className='pack-content'>
 					<Text>Select a pack from the list on the left.</Text>
@@ -63,16 +88,16 @@ export class PacksTab extends Component<Props, State> {
 		}
 
 		let owned = null;
-		if ((this.state.selectedPack !== '') && !this.props.options.packs.includes(this.state.selectedPack)) {
+		if (!this.props.options.packIDs.includes(this.state.selectedPack.id)) {
 			owned = (
 				<Text type={TextType.Information}>
 					<p>You <b>do not</b> own this pack.</p>
-					<button onClick={() => this.props.addPack(this.state.selectedPack)}>Get This Pack</button>
+					<button onClick={() => this.addPack(this.state.selectedPack)}>Get This Pack</button>
 				</Text>
 			);
 		}
 
-		const heroes = HeroSpeciesData.getList().filter(s => s.pack === this.state.selectedPack).map(s => {
+		const heroes = HeroSpeciesData.getList().filter(s => s.packID === (this.state.selectedPack ? this.state.selectedPack.id : '')).map(s => {
 			return (
 				<div key={s.id}>
 					<SpeciesCard species={s} onSelect={species => this.props.setActions(species.name, CardType.Species, species.features, species.actions)} />
@@ -81,7 +106,7 @@ export class PacksTab extends Component<Props, State> {
 			);
 		});
 
-		const monsters = MonsterSpeciesData.getList().filter(s => s.pack === this.state.selectedPack).map(s => {
+		const monsters = MonsterSpeciesData.getList().filter(s => s.packID === (this.state.selectedPack ? this.state.selectedPack.id : '')).map(s => {
 			return (
 				<div key={s.id}>
 					<SpeciesCard species={s} onSelect={species => this.props.setActions(species.name, CardType.Species, species.features, species.actions)} />
@@ -90,7 +115,7 @@ export class PacksTab extends Component<Props, State> {
 			);
 		});
 
-		const roles = RoleData.getList().filter(r => r.pack === this.state.selectedPack).map(r => {
+		const roles = RoleData.getList().filter(r => r.packID === (this.state.selectedPack ? this.state.selectedPack.id : '')).map(r => {
 			return (
 				<div key={r.id}>
 					<RoleCard role={r} onSelect={role => this.props.setActions(role.name, CardType.Role, role.features, role.actions)} />
@@ -99,7 +124,7 @@ export class PacksTab extends Component<Props, State> {
 			);
 		});
 
-		const backgrounds = BackgroundData.getList().filter(b => b.pack === this.state.selectedPack).map(b => {
+		const backgrounds = BackgroundData.getList().filter(b => b.packID === (this.state.selectedPack ? this.state.selectedPack.id : '')).map(b => {
 			return (
 				<div key={b.id}>
 					<BackgroundCard background={b} onSelect={background => this.props.setActions(background.name, CardType.Background, background.features, background.actions)} />
@@ -108,7 +133,7 @@ export class PacksTab extends Component<Props, State> {
 			);
 		});
 
-		const items = ItemData.getList().filter(i => i.pack === this.state.selectedPack).map(i => {
+		const items = ItemData.getList().filter(i => i.packID === (this.state.selectedPack ? this.state.selectedPack.id : '')).map(i => {
 			return (
 				<div key={i.id}>
 					<ItemCard item={i} />
@@ -119,28 +144,25 @@ export class PacksTab extends Component<Props, State> {
 		return (
 			<div className='pack-content'>
 				{owned}
-				<Text type={TextType.SubHeading}>{this.state.selectedPack}</Text>
-				<Text>The <b>{this.state.selectedPack}</b> pack contains the following cards.</Text>
-				<hr />
-				<Text type={TextType.MinorHeading}>Hero Species Cards</Text>
+				{owned ? <hr /> : null}
+				<div className='pack-card-section'>
+					<PackCard pack={this.state.selectedPack} />
+				</div>
+				{heroes.length > 0 ? <hr /> : null}
+				{heroes.length > 0 ? <Text type={TextType.MinorHeading}>Hero Species Cards</Text> : null}
 				{heroes.length > 0 ? <CardList cards={heroes} /> : null}
-				{heroes.length > 0 ? null : <Text type={TextType.Small}>None.</Text>}
-				<hr />
-				<Text type={TextType.MinorHeading}>Monster Species Cards</Text>
+				{monsters.length > 0 ? <hr /> : null}
+				{monsters.length > 0 ? <Text type={TextType.MinorHeading}>Monster Species Cards</Text> : null}
 				{monsters.length > 0 ? <CardList cards={monsters} /> : null}
-				{monsters.length > 0 ? null : <Text type={TextType.Small}>None.</Text>}
-				<hr />
-				<Text type={TextType.MinorHeading}>Role Cards</Text>
+				{roles.length > 0 ? <hr /> : null}
+				{roles.length > 0 ? <Text type={TextType.MinorHeading}>Role Cards</Text> : null}
 				{roles.length > 0 ? <CardList cards={roles} /> : null}
-				{roles.length > 0 ? null : <Text type={TextType.Small}>None.</Text>}
-				<hr />
-				<Text type={TextType.MinorHeading}>Background Cards</Text>
+				{backgrounds.length > 0 ? <hr /> : null}
+				{backgrounds.length > 0 ? <Text type={TextType.MinorHeading}>Background Cards</Text> : null}
 				{backgrounds.length > 0 ? <CardList cards={backgrounds} /> : null}
-				{backgrounds.length > 0 ? null : <Text type={TextType.Small}>None.</Text>}
-				<hr />
-				<Text type={TextType.MinorHeading}>Item Cards</Text>
+				{items.length > 0 ? <hr /> : null}
+				{items.length > 0 ? <Text type={TextType.MinorHeading}>Item Cards</Text> : null}
 				{items.length > 0 ? <CardList cards={items} /> : null}
-				{items.length > 0 ? null : <Text type={TextType.Small}>None.</Text>}
 			</div>
 		);
 	};

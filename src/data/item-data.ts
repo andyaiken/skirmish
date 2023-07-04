@@ -15,7 +15,7 @@ export class ItemData {
 			{
 				id: 'item-sword',
 				name: 'Sword',
-				pack: '',
+				packID: '',
 				description: 'Three feet long and sharp on both sides.',
 				baseItem: '',
 				magic: false,
@@ -39,7 +39,7 @@ export class ItemData {
 			{
 				id: 'item-katana',
 				name: 'Katana',
-				pack: '',
+				packID: '',
 				description: 'An elegant single-edged blade with a slight curve.',
 				baseItem: '',
 				magic: false,
@@ -63,7 +63,7 @@ export class ItemData {
 			{
 				id: 'item-scimitar',
 				name: 'Scimitar',
-				pack: '',
+				packID: '',
 				description: 'A wickedly-curved blade.',
 				baseItem: '',
 				magic: false,
@@ -87,7 +87,7 @@ export class ItemData {
 			{
 				id: 'item-handaxe',
 				name: 'Handaxe',
-				pack: '',
+				packID: '',
 				description: 'A chopping blade at the end of a wooden haft.',
 				baseItem: '',
 				magic: false,
@@ -111,7 +111,7 @@ export class ItemData {
 			{
 				id: 'item-khopesh',
 				name: 'Khopesh',
-				pack: '',
+				packID: '',
 				description: 'An intimidatingly-hooked sword.',
 				baseItem: '',
 				magic: false,
@@ -135,7 +135,7 @@ export class ItemData {
 			{
 				id: 'item-mace',
 				name: 'Mace',
-				pack: '',
+				packID: '',
 				description: 'A simple bludgeoning weapon.',
 				baseItem: '',
 				magic: false,
@@ -159,7 +159,7 @@ export class ItemData {
 			{
 				id: 'item-flail',
 				name: 'Flail',
-				pack: '',
+				packID: '',
 				description: 'A length of metal chain at the end of a wooden haft.',
 				baseItem: '',
 				magic: false,
@@ -183,7 +183,7 @@ export class ItemData {
 			{
 				id: 'item-spear',
 				name: 'Spear',
-				pack: '',
+				packID: '',
 				description: 'A long haft, topped with a sharp metal point.',
 				baseItem: '',
 				magic: false,
@@ -207,7 +207,7 @@ export class ItemData {
 			{
 				id: 'item-mattock',
 				name: 'Mattock',
-				pack: '',
+				packID: '',
 				description: 'A smaller, one-handed warhammer.',
 				baseItem: '',
 				magic: false,
@@ -231,7 +231,7 @@ export class ItemData {
 			{
 				id: 'item-rapier',
 				name: 'Rapier',
-				pack: '',
+				packID: '',
 				description: 'A sword with a thin, pointed blade.',
 				baseItem: '',
 				magic: false,
@@ -255,7 +255,7 @@ export class ItemData {
 			{
 				id: 'item-greatsword',
 				name: 'Greatsword',
-				pack: '',
+				packID: '',
 				description: 'A large, two-handed sword.',
 				baseItem: '',
 				magic: false,
@@ -279,7 +279,7 @@ export class ItemData {
 			{
 				id: 'item-battleaxe',
 				name: 'Battleaxe',
-				pack: '',
+				packID: '',
 				description: 'A heavy axe that requires two hands to wield it.',
 				baseItem: '',
 				magic: false,
@@ -303,7 +303,7 @@ export class ItemData {
 			{
 				id: 'item-glaive',
 				name: 'Glaive',
-				pack: '',
+				packID: '',
 				description: 'A sword blade mounted at the end of a long haft.',
 				baseItem: '',
 				magic: false,
@@ -327,7 +327,7 @@ export class ItemData {
 			{
 				id: 'item-warhammer',
 				name: 'Warhammer',
-				pack: '',
+				packID: '',
 				description: 'A heavy, blunt-faced crushing weapon.',
 				baseItem: '',
 				magic: false,
@@ -351,7 +351,7 @@ export class ItemData {
 			{
 				id: 'item-quarterstaff',
 				name: 'Quarterstaff',
-				pack: '',
+				packID: '',
 				description: 'A sturdy wooden stick, as tall as a person.',
 				baseItem: '',
 				magic: false,
@@ -375,7 +375,7 @@ export class ItemData {
 			{
 				id: 'item-pike',
 				name: 'Pike',
-				pack: '',
+				packID: '',
 				description: 'A spear point mounted at the end of a long haft.',
 				baseItem: '',
 				magic: false,
@@ -399,7 +399,7 @@ export class ItemData {
 			{
 				id: 'item-halberd',
 				name: 'Halberd',
-				pack: '',
+				packID: '',
 				description: 'An axe blade mounted at the end of a long haft.',
 				baseItem: '',
 				magic: false,
@@ -423,7 +423,7 @@ export class ItemData {
 			{
 				id: 'item-trident',
 				name: 'Trident',
-				pack: '',
+				packID: '',
 				description: 'A three-pronged spear.',
 				baseItem: '',
 				magic: false,
@@ -447,7 +447,7 @@ export class ItemData {
 			{
 				id: 'item-dagger',
 				name: 'Daggers',
-				pack: '',
+				packID: '',
 				description: 'Simple small blades, easily hidden.',
 				baseItem: '',
 				magic: false,
@@ -471,7 +471,7 @@ export class ItemData {
 			{
 				id: 'item-sai',
 				name: 'Sais',
-				pack: '',
+				packID: '',
 				description: 'Pointed daggers with sharp side-prongs.',
 				baseItem: '',
 				magic: false,
@@ -495,7 +495,7 @@ export class ItemData {
 			{
 				id: 'item-tonfas',
 				name: 'Tonfas',
-				pack: '',
+				packID: '',
 				description: 'Wooden batons with a perpendicular handle.',
 				baseItem: '',
 				magic: false,
@@ -519,7 +519,7 @@ export class ItemData {
 			{
 				id: 'item-longbow',
 				name: 'Longbow',
-				pack: '',
+				packID: '',
 				description: 'Longbows loose arrows with great accuracy.',
 				baseItem: '',
 				magic: false,
@@ -543,7 +543,7 @@ export class ItemData {
 			{
 				id: 'item-crossbow',
 				name: 'Crossbow',
-				pack: '',
+				packID: '',
 				description: 'A device which can launch wooden bolts hundreds of feet.',
 				baseItem: '',
 				magic: false,
@@ -567,7 +567,7 @@ export class ItemData {
 			{
 				id: 'item-catapult',
 				name: 'Catapult',
-				pack: '',
+				packID: '',
 				description: 'A simple device for launching rocks and other small blunt projectiles.',
 				baseItem: '',
 				magic: false,
@@ -591,7 +591,7 @@ export class ItemData {
 			{
 				id: 'item-rifle',
 				name: 'Rifle',
-				pack: '',
+				packID: '',
 				description: 'A large gun that requires two hands to use.',
 				baseItem: '',
 				magic: false,
@@ -615,7 +615,7 @@ export class ItemData {
 			{
 				id: 'item-carbine',
 				name: 'Carbine',
-				pack: '',
+				packID: '',
 				description: 'Smaller than a rifle, larger than a pistol.',
 				baseItem: '',
 				magic: false,
@@ -639,7 +639,7 @@ export class ItemData {
 			{
 				id: 'item-pistol',
 				name: 'Pistol',
-				pack: '',
+				packID: '',
 				description: 'A less powerful hand-held gun.',
 				baseItem: '',
 				magic: false,
@@ -663,7 +663,7 @@ export class ItemData {
 			{
 				id: 'item-orb',
 				name: 'Orb',
-				pack: '',
+				packID: '',
 				description: 'A crystal ball.',
 				baseItem: '',
 				magic: false,
@@ -678,7 +678,7 @@ export class ItemData {
 			{
 				id: 'item-wand',
 				name: 'Wand',
-				pack: '',
+				packID: '',
 				description: 'A small wooden rod.',
 				baseItem: '',
 				magic: false,
@@ -693,7 +693,7 @@ export class ItemData {
 			{
 				id: 'item-tome',
 				name: 'Tome',
-				pack: '',
+				packID: '',
 				description: 'A spellbook or grimoire.',
 				baseItem: '',
 				magic: false,
@@ -708,7 +708,7 @@ export class ItemData {
 			{
 				id: 'item-amulet',
 				name: 'Amulet',
-				pack: '',
+				packID: '',
 				description: 'A magical symbol worn around the neck.',
 				baseItem: '',
 				magic: false,
@@ -723,7 +723,7 @@ export class ItemData {
 			{
 				id: 'item-staff',
 				name: 'Staff',
-				pack: '',
+				packID: '',
 				description: 'A magical walking stick.',
 				baseItem: '',
 				magic: false,
@@ -738,7 +738,7 @@ export class ItemData {
 			{
 				id: 'item-leather-armor',
 				name: 'Leather Armor',
-				pack: '',
+				packID: '',
 				description: 'Armor made of tanned animal skin.',
 				baseItem: '',
 				magic: false,
@@ -757,7 +757,7 @@ export class ItemData {
 			{
 				id: 'item-hide-armor',
 				name: 'Hide Armor',
-				pack: '',
+				packID: '',
 				description: 'The thick hide of a beast, used as armor.',
 				baseItem: '',
 				magic: false,
@@ -777,7 +777,7 @@ export class ItemData {
 			{
 				id: 'item-brigandine-armor',
 				name: 'Brigandine Armor',
-				pack: '',
+				packID: '',
 				description: 'Armor made of small metal plates sewn into fabric.',
 				baseItem: '',
 				magic: false,
@@ -798,7 +798,7 @@ export class ItemData {
 			{
 				id: 'item-breastplate',
 				name: 'Breastplate',
-				pack: '',
+				packID: '',
 				description: 'Armor for the torso, made of leather or metal.',
 				baseItem: '',
 				magic: false,
@@ -818,7 +818,7 @@ export class ItemData {
 			{
 				id: 'item-chain-armor',
 				name: 'Chain Armor',
-				pack: '',
+				packID: '',
 				description: 'Armor made of tiny interwoven metal rings.',
 				baseItem: '',
 				magic: false,
@@ -839,7 +839,7 @@ export class ItemData {
 			{
 				id: 'item-plate-armor',
 				name: 'Plate Armor',
-				pack: '',
+				packID: '',
 				description: 'Armor made of jointed sheets of metal.',
 				baseItem: '',
 				magic: false,
@@ -860,7 +860,7 @@ export class ItemData {
 			{
 				id: 'item-shield',
 				name: 'Shield',
-				pack: '',
+				packID: '',
 				description: 'A small shield, often worn strapped to the arm.',
 				baseItem: '',
 				magic: false,
@@ -879,7 +879,7 @@ export class ItemData {
 			{
 				id: 'item-tower-shield',
 				name: 'Tower shield',
-				pack: '',
+				packID: '',
 				description: 'A larger shield, more protective but cumbersome.',
 				baseItem: '',
 				magic: false,
@@ -899,7 +899,7 @@ export class ItemData {
 			{
 				id: 'item-helm',
 				name: 'Helm',
-				pack: '',
+				packID: '',
 				description: 'Ornamental headware.',
 				baseItem: '',
 				magic: false,
@@ -914,7 +914,7 @@ export class ItemData {
 			{
 				id: 'item-circlet',
 				name: 'Circlet',
-				pack: '',
+				packID: '',
 				description: 'Ornamental headware.',
 				baseItem: '',
 				magic: false,
@@ -929,7 +929,7 @@ export class ItemData {
 			{
 				id: 'item-crown',
 				name: 'Crown',
-				pack: '',
+				packID: '',
 				description: 'Ornamental headware.',
 				baseItem: '',
 				magic: false,
@@ -944,7 +944,7 @@ export class ItemData {
 			{
 				id: 'item-tiara',
 				name: 'Tiara',
-				pack: '',
+				packID: '',
 				description: 'Ornamental headware.',
 				baseItem: '',
 				magic: false,
@@ -959,7 +959,7 @@ export class ItemData {
 			{
 				id: 'item-diadem',
 				name: 'Diadem',
-				pack: '',
+				packID: '',
 				description: 'Ornamental headware.',
 				baseItem: '',
 				magic: false,
@@ -974,7 +974,7 @@ export class ItemData {
 			{
 				id: 'item-belt',
 				name: 'Belt',
-				pack: '',
+				packID: '',
 				description: 'Leather strip worn around the waist.',
 				baseItem: '',
 				magic: false,
@@ -989,7 +989,7 @@ export class ItemData {
 			{
 				id: 'item-sash',
 				name: 'Sash',
-				pack: '',
+				packID: '',
 				description: 'Strip of fabric worn across the body.',
 				baseItem: '',
 				magic: false,
@@ -1004,7 +1004,7 @@ export class ItemData {
 			{
 				id: 'item-bandolier',
 				name: 'Bandolier',
-				pack: '',
+				packID: '',
 				description: 'A belt or sash with pockets.',
 				baseItem: '',
 				magic: false,
@@ -1019,7 +1019,7 @@ export class ItemData {
 			{
 				id: 'item-cloak',
 				name: 'Cloak',
-				pack: '',
+				packID: '',
 				description: 'Garment which is fastened around the shoulders, sometimes magical.',
 				baseItem: '',
 				magic: false,
@@ -1034,7 +1034,7 @@ export class ItemData {
 			{
 				id: 'item-torc',
 				name: 'Torc',
-				pack: '',
+				packID: '',
 				description: 'Ornamental neckwear.',
 				baseItem: '',
 				magic: false,
@@ -1049,7 +1049,7 @@ export class ItemData {
 			{
 				id: 'item-necklace',
 				name: 'Necklace',
-				pack: '',
+				packID: '',
 				description: 'Ornamental neckwear.',
 				baseItem: '',
 				magic: false,
@@ -1064,7 +1064,7 @@ export class ItemData {
 			{
 				id: 'item-ring',
 				name: 'Ring',
-				pack: '',
+				packID: '',
 				description: 'Worn on the fingers.',
 				baseItem: '',
 				magic: false,
@@ -1079,7 +1079,7 @@ export class ItemData {
 			{
 				id: 'item-boots',
 				name: 'Boots',
-				pack: '',
+				packID: '',
 				description: 'Footwear.',
 				baseItem: '',
 				magic: false,

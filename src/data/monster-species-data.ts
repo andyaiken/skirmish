@@ -1,3 +1,5 @@
+import { PackData } from './pack-data';
+
 import { ActionTargetType } from '../enums/action-target-type';
 import { CombatantType } from '../enums/combatant-type';
 import { ConditionType } from '../enums/condition-type';
@@ -20,7 +22,7 @@ export class MonsterSpeciesData {
 			{
 				id: 'species-orc',
 				name: 'Orc',
-				pack: '',
+				packID: '',
 				description: 'An evil creature bred for war.',
 				type: CombatantType.Monster,
 				size: 1,
@@ -79,7 +81,7 @@ export class MonsterSpeciesData {
 			{
 				id: 'species-goblin',
 				name: 'Goblin',
-				pack: '',
+				packID: '',
 				description: 'A fleet-footed creature, difficult to pin down.',
 				type: CombatantType.Monster,
 				size: 1,
@@ -138,7 +140,7 @@ export class MonsterSpeciesData {
 			{
 				id: 'species-troll',
 				name: 'Troll',
-				pack: '',
+				packID: '',
 				description: 'A huge brute of a humanoid.',
 				type: CombatantType.Monster,
 				size: 2,
@@ -194,7 +196,7 @@ export class MonsterSpeciesData {
 			{
 				id: 'species-naga',
 				name: 'Naga',
-				pack: '',
+				packID: '',
 				description: 'A serpentine humanoiod.',
 				type: CombatantType.Monster,
 				size: 1,
@@ -276,7 +278,7 @@ export class MonsterSpeciesData {
 			{
 				id: 'species-elemental-fire',
 				name: 'Fire Elemental',
-				pack: 'Elements',
+				packID: PackData.elements.id,
 				description: 'Hot blooded and quick to anger, these humanoids are made of living fire.',
 				type: CombatantType.Monster,
 				size: 1,
@@ -357,7 +359,7 @@ export class MonsterSpeciesData {
 			{
 				id: 'species-elemental-air',
 				name: 'Air Elemental',
-				pack: 'Elements',
+				packID: PackData.elements.id,
 				description: 'Air elementals are as changeable as the weather, either calm or tempestuous.',
 				type: CombatantType.Monster,
 				size: 1,
@@ -419,7 +421,7 @@ export class MonsterSpeciesData {
 			{
 				id: 'species-elemental-earth',
 				name: 'Earth Elemental',
-				pack: 'Elements',
+				packID: PackData.elements.id,
 				description: 'Earth elementals are slow but unstoppable.',
 				type: CombatantType.Monster,
 				size: 1,
@@ -501,7 +503,7 @@ export class MonsterSpeciesData {
 			{
 				id: 'species-scarab',
 				name: 'Scarab',
-				pack: 'Beasts',
+				packID: PackData.beasts.id,
 				description: 'Insects with an acidic bite.',
 				type: CombatantType.Monster,
 				size: 1,
@@ -562,7 +564,7 @@ export class MonsterSpeciesData {
 			{
 				id: 'species-giant-spider',
 				name: 'Giant Spider',
-				pack: 'Beasts',
+				packID: PackData.beasts.id,
 				description: 'Venomous insects with eight legs.',
 				type: CombatantType.Monster,
 				size: 2,
@@ -623,8 +625,8 @@ export class MonsterSpeciesData {
 			{
 				id: 'species-bear',
 				name: 'Bear',
-				pack: 'Beasts',
-				description: 'A huge, powerful animal.',
+				packID: PackData.beasts.id,
+				description: 'A huge, powerful mammal.',
 				type: CombatantType.Monster,
 				size: 2,
 				quirks: [
@@ -704,7 +706,7 @@ export class MonsterSpeciesData {
 			{
 				id: 'species-zombie',
 				name: 'Zombie',
-				pack: 'Undead',
+				packID: PackData.undead.id,
 				description: 'A re-animated corpse.',
 				type: CombatantType.Monster,
 				size: 1,
@@ -768,7 +770,7 @@ export class MonsterSpeciesData {
 			{
 				id: 'species-skeleton',
 				name: 'Skeleton',
-				pack: 'Undead',
+				packID: PackData.undead.id,
 				description: 'Re-animated bones.',
 				type: CombatantType.Monster,
 				size: 1,
@@ -820,7 +822,7 @@ export class MonsterSpeciesData {
 			{
 				id: 'species-vampire',
 				name: 'Vampire',
-				pack: 'Undead',
+				packID: PackData.undead.id,
 				description: 'The blood is the life.',
 				type: CombatantType.Monster,
 				size: 1,
@@ -898,7 +900,7 @@ export class MonsterSpeciesData {
 			{
 				id: 'species-giant',
 				name: 'Giant',
-				pack: '',
+				packID: '',
 				description: 'A huge, monstrously strong creature.',
 				type: CombatantType.Monster,
 				size: 3,

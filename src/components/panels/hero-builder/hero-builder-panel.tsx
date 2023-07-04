@@ -161,9 +161,9 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 	constructor(props: CardSelectorProps) {
 		super(props);
 		this.state = {
-			speciesIDs: Collections.shuffle(GameLogic.getHeroSpeciesDeck(props.options.packs).map(s => s.id)).splice(0, 3),
-			roleIDs: Collections.shuffle(GameLogic.getRoleDeck(props.options.packs).map(r => r.id)).splice(0, 3),
-			backgroundIDs: Collections.shuffle(GameLogic.getBackgroundDeck(props.options.packs).map(b => b.id)).splice(0, 3),
+			speciesIDs: Collections.shuffle(GameLogic.getHeroSpeciesDeck(props.options.packIDs).map(s => s.id)).splice(0, 3),
+			roleIDs: Collections.shuffle(GameLogic.getRoleDeck(props.options.packIDs).map(r => r.id)).splice(0, 3),
+			backgroundIDs: Collections.shuffle(GameLogic.getBackgroundDeck(props.options.packIDs).map(b => b.id)).splice(0, 3),
 			selectedSpeciesID: '',
 			selectedRoleID: '',
 			selectedBackgroundID: ''
@@ -202,17 +202,17 @@ class CardSelector extends Component<CardSelectorProps, CardSelectorState> {
 		switch (type) {
 			case CardType.Species:
 				this.setState({
-					speciesIDs: Collections.shuffle(GameLogic.getHeroSpeciesDeck(this.props.options.packs).map(s => s.id)).splice(0, 3)
+					speciesIDs: Collections.shuffle(GameLogic.getHeroSpeciesDeck(this.props.options.packIDs).map(s => s.id)).splice(0, 3)
 				});
 				break;
 			case CardType.Role:
 				this.setState({
-					roleIDs: Collections.shuffle(GameLogic.getRoleDeck(this.props.options.packs).map(r => r.id)).splice(0, 3)
+					roleIDs: Collections.shuffle(GameLogic.getRoleDeck(this.props.options.packIDs).map(r => r.id)).splice(0, 3)
 				});
 				break;
 			case CardType.Background:
 				this.setState({
-					backgroundIDs: Collections.shuffle(GameLogic.getBackgroundDeck(this.props.options.packs).map(b => b.id)).splice(0, 3)
+					backgroundIDs: Collections.shuffle(GameLogic.getBackgroundDeck(this.props.options.packIDs).map(b => b.id)).splice(0, 3)
 				});
 				break;
 		}
@@ -383,7 +383,7 @@ class EquipmentSelector extends Component<EquipmentSelectorProps, EquipmentSelec
 		const slots = role.proficiencies.map(prof => {
 			return {
 				proficiency: prof,
-				candidates: Collections.shuffle(GameLogic.getItemsForProficiency(prof, props.options.packs)).splice(0, 3),
+				candidates: Collections.shuffle(GameLogic.getItemsForProficiency(prof, props.options.packIDs)).splice(0, 3),
 				selected: null
 			};
 		});

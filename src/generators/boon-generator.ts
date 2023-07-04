@@ -8,7 +8,7 @@ import { Utils } from '../utils/utils';
 import { MagicItemGenerator } from './magic-item-generator';
 
 export class BoonGenerator {
-	static generateBoon = (packs: string[]): BoonModel => {
+	static generateBoon = (packIDs: string[]): BoonModel => {
 		let type = BoonType.ExtraHero;
 		switch (Random.randomNumber(6)) {
 			case 0:
@@ -34,7 +34,7 @@ export class BoonGenerator {
 		let data = null;
 		switch (type) {
 			case BoonType.MagicItem:
-				data = MagicItemGenerator.generateRandomMagicItem(packs);
+				data = MagicItemGenerator.generateRandomMagicItem(packIDs);
 				break;
 			case BoonType.ExtraXP:
 				data = Random.dice(5);

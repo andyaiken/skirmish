@@ -67,7 +67,7 @@ export class CombatantLogic {
 		}
 	};
 
-	static incrementCombatantLevel = (combatant: CombatantModel, feature: FeatureModel) => {
+	static incrementCombatantLevel = (combatant: CombatantModel, feature: FeatureModel, packIDs: string[]) => {
 		// Increment level, remove XP
 		combatant.level += 1;
 		combatant.xp = Math.max(combatant.xp - combatant.level, 0);
@@ -80,7 +80,7 @@ export class CombatantLogic {
 			const item = combatant.items[n];
 			if (item.magic) {
 				if (Random.randomNumber(5) === 0) {
-					combatant.items[n] = MagicItemGenerator.generateMagicItem(item);
+					combatant.items[n] = MagicItemGenerator.generateMagicItem(item, packIDs);
 				}
 			}
 		}
@@ -162,14 +162,14 @@ export class CombatantLogic {
 		});
 	};
 
-	static addItems = (combatant: CombatantModel, packs: string[]) => {
+	static addItems = (combatant: CombatantModel, packIDs: string[]) => {
 		if (combatant.quirks.includes(QuirkType.Beast)) {
 			// Beasts can't use items
 			return;
 		}
 
 		CombatantLogic.getProficiencies(combatant).forEach(prof => {
-			const items = GameLogic.getItemsForProficiency(prof, packs);
+			const items = GameLogic.getItemsForProficiency(prof, packIDs);
 			const item = JSON.parse(JSON.stringify(Collections.draw(items))) as ItemModel;
 			item.id = Utils.guid();
 			combatant.items.push(item);

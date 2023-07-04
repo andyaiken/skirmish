@@ -4,6 +4,7 @@ import { MagicItemGenerator } from '../../../generators/magic-item-generator';
 
 import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
+import type { OptionsModel } from '../../../models/options';
 
 import { CardList, Text, TextType } from '../../controls';
 import { ItemCard } from '../../cards';
@@ -12,7 +13,7 @@ import './enchant-item-panel.scss';
 
 interface Props {
 	game: GameModel;
-	developer: boolean;
+	options: OptionsModel;
 	enchantItem: (item: ItemModel, newItem: ItemModel) => void;
 }
 
@@ -42,7 +43,7 @@ export class EnchantItemPanel extends Component<Props, State> {
 		const items: ItemModel[] = [];
 
 		while (items.length < 3) {
-			items.push(MagicItemGenerator.generateMagicItem(baseItem));
+			items.push(MagicItemGenerator.generateMagicItem(baseItem, this.props.options.packIDs));
 		}
 
 		items.sort((a, b) => a.name.localeCompare(b.name));
@@ -62,7 +63,7 @@ export class EnchantItemPanel extends Component<Props, State> {
 				return (
 					<div className='enchant-item-panel'>
 						<Text type={TextType.Heading}>Choose an Enchantment</Text>
-						{this.props.developer ? <button className='developer' onClick={() => this.selectItem(this.state.selectedItem as ItemModel)}>Redraw</button> : null}
+						{this.props.options.developer ? <button className='developer' onClick={() => this.selectItem(this.state.selectedItem as ItemModel)}>Redraw</button> : null}
 						<div className='card-selection-row'>
 							<CardList cards={cards} />
 						</div>

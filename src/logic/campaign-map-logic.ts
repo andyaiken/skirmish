@@ -84,8 +84,8 @@ export class CampaignMapLogic {
 		return map.squares.every(sq => sq.regionID === '');
 	};
 
-	static getMonsters = (region: RegionModel, packs: string[]) => {
-		const monsterIDs = GameLogic.getMonsterSpeciesDeck(packs);
+	static getMonsters = (region: RegionModel, packIDs: string[]) => {
+		const monsterIDs = GameLogic.getMonsterSpeciesDeck(packIDs);
 
 		const rng = Random.getSeededRNG(region.id);
 		const count = Random.randomNumber(2, rng) + 2;

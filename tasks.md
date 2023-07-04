@@ -88,13 +88,22 @@
 * Get a certain number of heroes to a specific area and stay there for a certain number of rounds
 * Defeat a specific opponent within a certain number of rounds
 
+## Ideas for Packs
+* Divine
+  * Deva
+  * Paladin / warpriest
+  * Cleric
+* Evil
+  * Shadowborn
+  * Demon
+* Fae
+  * Pixie
+  * Arcane archer
+
 ## Ideas for Roles / Backgrounds
-* Artificer / Technomage / Inventor / Alchemist
+* Alchemist
   * Create potion
-  * Shocking grasp (1 adjacent enemy, electrical dmg, stun)
-  * Voltaic discharge (all adjacent combatants, electrical dmg)
-  * Supercharge (buff nearby ally's damage output)
-  * Acid spray (1 adjacent enemy, acid dmg)
+  * Add to technology pack
 * Gladiator 
   * Large weapons
   * Showmanship

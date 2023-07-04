@@ -62,7 +62,7 @@ export class RegionCard extends Component<Props, State> {
 			colorLight = Color.toString(Color.lighten(color));
 		}
 
-		const monsters = CampaignMapLogic.getMonsters(this.props.region, this.props.options.packs)
+		const monsters = CampaignMapLogic.getMonsters(this.props.region, this.props.options.packIDs)
 			.map(species => species.name)
 			.sort()
 			.map((m, n) => <Tag key={n}>{m}</Tag>);

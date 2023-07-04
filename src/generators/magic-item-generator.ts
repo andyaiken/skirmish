@@ -18,15 +18,15 @@ import { GameLogic } from '../logic/game-logic';
 import { NameGenerator } from './name-generator';
 
 export class MagicItemGenerator {
-	static generateMagicItem = (baseItem: ItemModel): ItemModel => {
+	static generateMagicItem = (baseItem: ItemModel, packIDs: string[]): ItemModel => {
 		const item = MagicItemGenerator.convertToMagicItem(baseItem);
-		return MagicItemGenerator.addMagicItemFeature(item);
+		return MagicItemGenerator.addMagicItemFeature(item, packIDs);
 	};
 
-	static generateRandomMagicItem = (packs: string[]): ItemModel => {
-		const baseItem = Collections.draw(GameLogic.getItemDeck(packs));
+	static generateRandomMagicItem = (packIDs: string[]): ItemModel => {
+		const baseItem = Collections.draw(GameLogic.getItemDeck(packIDs));
 		const item = MagicItemGenerator.convertToMagicItem(baseItem);
-		return MagicItemGenerator.addMagicItemFeature(item);
+		return MagicItemGenerator.addMagicItemFeature(item, packIDs);
 	};
 
 	static convertToMagicItem = (baseItem: ItemModel) => {
@@ -43,7 +43,7 @@ export class MagicItemGenerator {
 		return item;
 	};
 
-	static addMagicItemFeature = (item: ItemModel) => {
+	static addMagicItemFeature = (item: ItemModel, packIDs: string[]) => {
 		const options: ItemModel[] = [];
 
 		if (item.weapon) {
@@ -197,7 +197,7 @@ export class MagicItemGenerator {
 		// A random action
 		const copyAction = JSON.parse(JSON.stringify(item)) as ItemModel;
 		copyAction.id = Utils.guid();
-		copyAction.actions.push(GameLogic.getRandomAction(item));
+		copyAction.actions.push(GameLogic.getRandomAction(item, packIDs));
 		options.push(copyAction);
 
 		return Collections.draw(options);

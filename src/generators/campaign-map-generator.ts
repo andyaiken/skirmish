@@ -10,7 +10,7 @@ import { BoonGenerator } from './boon-generator';
 import { NameGenerator } from './name-generator';
 
 export class CampaignMapGenerator {
-	static generateCampaignMap = (packs: string[]): CampaignMapModel => {
+	static generateCampaignMap = (packIDs: string[]): CampaignMapModel => {
 		const map: CampaignMapModel = {
 			squares: [ {
 				x: 0,
@@ -62,7 +62,7 @@ export class CampaignMapGenerator {
 				name: NameGenerator.generateName(),
 				color: color,
 				encounters: [],
-				boon: BoonGenerator.generateBoon(packs),
+				boon: BoonGenerator.generateBoon(packIDs),
 				demographics: {
 					size: 0,
 					population: 0,

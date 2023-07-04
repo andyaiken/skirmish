@@ -21,7 +21,7 @@ interface Props {
 export class DecksTab extends Component<Props> {
 	render = () => {
 		try {
-			const heroes = GameLogic.getHeroSpeciesDeck(this.props.options.packs).map(s => {
+			const heroes = GameLogic.getHeroSpeciesDeck(this.props.options.packIDs).map(s => {
 				return (
 					<div key={s.id}>
 						<SpeciesCard species={s} onSelect={species => this.props.setActions(species.name, CardType.Species, species.features, species.actions)} />
@@ -30,7 +30,7 @@ export class DecksTab extends Component<Props> {
 				);
 			});
 
-			const monsters = GameLogic.getMonsterSpeciesDeck(this.props.options.packs).map(s => {
+			const monsters = GameLogic.getMonsterSpeciesDeck(this.props.options.packIDs).map(s => {
 				return (
 					<div key={s.id}>
 						<SpeciesCard species={s} onSelect={species => this.props.setActions(species.name, CardType.Species, species.features, species.actions)} />
@@ -39,7 +39,7 @@ export class DecksTab extends Component<Props> {
 				);
 			});
 
-			const roles = GameLogic.getRoleDeck(this.props.options.packs).map(r => {
+			const roles = GameLogic.getRoleDeck(this.props.options.packIDs).map(r => {
 				return (
 					<div key={r.id}>
 						<RoleCard role={r} onSelect={role => this.props.setActions(role.name, CardType.Role, role.features, role.actions)} />
@@ -48,7 +48,7 @@ export class DecksTab extends Component<Props> {
 				);
 			});
 
-			const backgrounds = GameLogic.getBackgroundDeck(this.props.options.packs).map(b => {
+			const backgrounds = GameLogic.getBackgroundDeck(this.props.options.packIDs).map(b => {
 				return (
 					<div key={b.id}>
 						<BackgroundCard background={b} onSelect={background => this.props.setActions(background.name, CardType.Background, background.features, background.actions)} />
@@ -57,7 +57,7 @@ export class DecksTab extends Component<Props> {
 				);
 			});
 
-			const items = GameLogic.getItemDeck(this.props.options.packs).map(i => {
+			const items = GameLogic.getItemDeck(this.props.options.packIDs).map(i => {
 				return (
 					<div key={i.id}>
 						<ItemCard item={i} />

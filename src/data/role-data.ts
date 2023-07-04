@@ -1,3 +1,5 @@
+import { PackData } from './pack-data';
+
 import { ActionTargetType } from '../enums/action-target-type';
 import { ConditionType } from '../enums/condition-type';
 import { DamageCategoryType } from '../enums/damage-category-type';
@@ -21,7 +23,7 @@ export class RoleData {
 			{
 				id: 'role-arcanist',
 				name: 'Arcanist',
-				pack: '',
+				packID: PackData.arcana.id,
 				description: 'Arcanists are magical generalists, able to create a wide range of effects.',
 				traits: [
 					TraitType.Resolve
@@ -139,9 +141,120 @@ export class RoleData {
 				]
 			},
 			{
+				id: 'role-artificer',
+				name: 'Artificer',
+				packID: PackData.technology.id,
+				description: 'A creator of magically-powered inventions.',
+				traits: [
+					TraitType.Resolve
+				],
+				skills: [
+					SkillType.Spellcasting
+				],
+				proficiencies: [],
+				features: [
+					FeatureLogic.createTraitFeature('artificer-feature-1', TraitType.Resolve, 1),
+					FeatureLogic.createSkillFeature('artificer-feature-2', SkillType.Spellcasting, 2),
+					FeatureLogic.createDamageCategoryBonusFeature('artificer-feature-3', DamageCategoryType.Energy, 1)
+				],
+				actions: [
+					{
+						id: 'artificer-action-1',
+						name: 'Aetheric Gauntlet',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Spellcasting,
+								trait: TraitType.Speed,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Electricity, 3)
+								]
+							})
+						]
+					},
+					{
+						id: 'artificer-action-2',
+						name: 'Voltaic Flux',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.adjacent(ActionTargetType.Enemies, Number.MAX_VALUE)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Spellcasting,
+								trait: TraitType.Resolve,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Electricity, 3)
+								]
+							})
+						]
+					},
+					{
+						id: 'artificer-action-3',
+						name: 'Supercharge',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Allies, 1, 5)
+						],
+						effects: [
+							ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Endurance, 5, DamageCategoryType.Corruption)),
+							ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Endurance, 5, DamageCategoryType.Energy)),
+							ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Endurance, 5, DamageCategoryType.Physical))
+						]
+					},
+					{
+						id: 'artificer-action-4',
+						name: 'Gravity Bomb',
+						prerequisites: [],
+						parameters: [
+							ActionOriginParameters.distance(8),
+							ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 3)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Spellcasting,
+								trait: TraitType.Endurance,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.forceMovement(MovementType.Pull, 3),
+									ActionEffects.knockDown()
+								]
+							})
+						]
+					},
+					{
+						id: 'artificer-action-5',
+						name: 'Vitriolic Jet',
+						prerequisites: [],
+						parameters: [
+							ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 3)
+						],
+						effects: [
+							ActionEffects.attack({
+								weapon: false,
+								skill: SkillType.Spellcasting,
+								trait: TraitType.Endurance,
+								skillBonus: 0,
+								hit: [
+									ActionEffects.dealDamage(DamageType.Acid, 3)
+								]
+							})
+						]
+					}
+				]
+			},
+			{
 				id: 'role-assassin',
 				name: 'Assassin',
-				pack: 'Skullduggery',
+				packID: PackData.skullduggery.id,
 				description: 'Assassins operate from the shadows, using poison to kill.',
 				traits: [
 					TraitType.Speed
@@ -225,7 +338,7 @@ export class RoleData {
 			{
 				id: 'role-barbarian',
 				name: 'Barbarian',
-				pack: '',
+				packID: '',
 				description: 'Barbarians are warriors who attack recklessly, with no sense of self-preservation.',
 				traits: [
 					TraitType.Endurance
@@ -354,7 +467,7 @@ export class RoleData {
 			{
 				id: 'role-centurion',
 				name: 'Centurion',
-				pack: '',
+				packID: '',
 				description: 'A master of the battlefield.',
 				traits: [
 					TraitType.Endurance
@@ -500,7 +613,7 @@ export class RoleData {
 			{
 				id: 'role-dervish',
 				name: 'Dervish',
-				pack: '',
+				packID: '',
 				description: 'Acrobatic warriors who leap and spin around the battlefield.',
 				traits: [
 					TraitType.Speed
@@ -655,7 +768,7 @@ export class RoleData {
 			{
 				id: 'role-enchanter',
 				name: 'Enchanter',
-				pack: '',
+				packID: PackData.arcana.id,
 				description: 'Spellcasters who specialize in magic that confuses the senses.',
 				traits: [
 					TraitType.Resolve
@@ -788,7 +901,7 @@ export class RoleData {
 			{
 				id: 'role-geomancer',
 				name: 'Geomancer',
-				pack: '',
+				packID: PackData.arcana.id,
 				description: 'Spellcasters whose magic affects the battlefield itself.',
 				traits: [
 					TraitType.Endurance
@@ -907,7 +1020,7 @@ export class RoleData {
 			{
 				id: 'role-luckweaver',
 				name: 'Luckweaver',
-				pack: 'Skullduggery',
+				packID: PackData.skullduggery.id,
 				description: 'One who can manipulate the laws of chance.',
 				traits: [
 					TraitType.Speed
@@ -980,7 +1093,7 @@ export class RoleData {
 			{
 				id: 'role-gunslinger',
 				name: 'Gunslinger',
-				pack: 'Technology',
+				packID: PackData.technology.id,
 				description: 'A fighter who uses gunpowder weapons.',
 				traits: [
 					TraitType.Speed
@@ -1120,7 +1233,7 @@ export class RoleData {
 			{
 				id: 'role-necromancer',
 				name: 'Necromancer',
-				pack: 'Undead',
+				packID: PackData.undead.id,
 				description: 'A spellcaster whose magic deals with life and death.',
 				traits: [
 					TraitType.Resolve
@@ -1249,7 +1362,7 @@ export class RoleData {
 			{
 				id: 'role-ninja',
 				name: 'Ninja',
-				pack: '',
+				packID: '',
 				description: 'A martial artist who hones their abilities with extreme training and self-discipline.',
 				traits: [
 					TraitType.Speed
@@ -1360,7 +1473,7 @@ export class RoleData {
 			{
 				id: 'role-psion',
 				name: 'Psion',
-				pack: 'Planar',
+				packID: PackData.arcana.id,
 				description: 'A master of the power of the mind.',
 				traits: [
 					TraitType.Resolve
@@ -1481,7 +1594,7 @@ export class RoleData {
 			{
 				id: 'role-ranger',
 				name: 'Ranger',
-				pack: '',
+				packID: '',
 				description: 'A fighter who specializes in ranged weaponry.',
 				traits: [
 					TraitType.Endurance
@@ -1630,7 +1743,7 @@ export class RoleData {
 			{
 				id: 'role-sensei',
 				name: 'Sensei',
-				pack: '',
+				packID: '',
 				description: 'A martial artist who uses elementally-enhanced fighting techniques.',
 				traits: [
 					TraitType.Speed
@@ -1753,7 +1866,7 @@ export class RoleData {
 			{
 				id: 'role-sorcerer',
 				name: 'Sorcerer',
-				pack: 'Elements',
+				packID: PackData.elements.id,
 				description: 'A magic-user whose spells are elemental and destructive.',
 				traits: [
 					TraitType.Resolve
@@ -1860,7 +1973,7 @@ export class RoleData {
 			{
 				id: 'role-warmage',
 				name: 'Warmage',
-				pack: '',
+				packID: '',
 				description: 'A warrior who bridges martial discipline and arcane power.',
 				traits: [
 					TraitType.Resolve

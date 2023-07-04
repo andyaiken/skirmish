@@ -9,8 +9,8 @@ import type { FeatureModel } from '../../../models/feature';
 import type { GameModel } from '../../../models/game';
 import type { OptionsModel } from '../../../models/options';
 
-import { ActionCard, FeatureCard, PlaceholderCard } from '../../cards';
-import { CardList, Dialog, PlayingCard, StatValue, Tabs, Text, TextType } from '../../controls';
+import { ActionCard, FeatureCard } from '../../cards';
+import { CardList, Dialog, StatValue, Tabs, Text, TextType } from '../../controls';
 import { DecksTab } from './decks-tab/decks-tab';
 import { OptionsTab } from './options-tab/options-tab';
 import { PacksTab } from './packs-tab/packs-tab';
@@ -25,8 +25,8 @@ interface Props {
 	options: OptionsModel;
 	exceptions: string[];
 	rules: string;
-	addPack: (pack: string) => void;
-	removePack: (pack: string) => void;
+	addPack: (packID: string) => void;
+	removePack: (packID: string) => void;
 	endCampaign: () => void;
 	setDeveloperMode: (value: boolean) => void;
 	setSoundEffectsVolume: (value: number) => void;
@@ -133,13 +133,8 @@ export class SettingsPanel extends Component<Props, State> {
 
 			let dialog = null;
 			if (this.state.actionSourceName !== '') {
-				const featureCards = [
-					<div key='deck'>
-						<PlayingCard type={CardType.Feature} stack={true} front={<PlaceholderCard text='Feature Deck' />} />
-					</div>
-				];
-				this.state.features.forEach(f => {
-					featureCards.push(
+				const featureCards = this.state.features.map(f => {
+					return (
 						<div key={f.id}>
 							<FeatureCard
 								feature={f}
@@ -150,13 +145,8 @@ export class SettingsPanel extends Component<Props, State> {
 						</div>
 					);
 				});
-				const actionCards = [
-					<div key='deck'>
-						<PlayingCard type={CardType.Action} stack={true} front={<PlaceholderCard text='Action Deck' />} />
-					</div>
-				];
-				this.state.actions.forEach(a => {
-					actionCards.push(
+				const actionCards = this.state.actions.map(a => {
+					return (
 						<div key={a.id}>
 							<ActionCard
 								action={a}
@@ -171,8 +161,10 @@ export class SettingsPanel extends Component<Props, State> {
 					<div>
 						<Text type={TextType.Heading}>{this.state.actionSourceName}</Text>
 						<hr />
+						<Text type={TextType.SubHeading}>Feature Cards</Text>
 						<CardList cards={featureCards} />
 						<hr />
+						<Text type={TextType.SubHeading}>Action Cards</Text>
 						<CardList cards={actionCards} />
 					</div>
 				);

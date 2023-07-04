@@ -110,7 +110,7 @@ export class EncounterStartPanel extends Component<Props, State> {
 				break;
 			}
 			case 'monsters': {
-				const monsters = CampaignMapLogic.getMonsters(this.props.region, this.props.options.packs)
+				const monsters = CampaignMapLogic.getMonsters(this.props.region, this.props.options.packIDs)
 					.map(species => (
 						<SpeciesCard key={species.id} species={species} />
 					));

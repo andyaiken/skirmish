@@ -42,7 +42,7 @@ export class MagicItemsPanel extends Component<Props, State> {
 		const items: ItemModel[] = [];
 
 		while (items.length < 3) {
-			const item = MagicItemGenerator.generateRandomMagicItem(this.props.options.packs);
+			const item = MagicItemGenerator.generateRandomMagicItem(this.props.options.packIDs);
 
 			let ok = true;
 

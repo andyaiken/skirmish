@@ -54,9 +54,9 @@ export class SetupScreen extends Component<Props, State> {
 	};
 
 	createHeroes = () => {
-		let speciesDeck = GameLogic.getHeroSpeciesDeck(this.props.options.packs).map(s => s.id);
-		let roleDeck = GameLogic.getRoleDeck(this.props.options.packs).map(r => r.id);
-		let backgroundDeck = GameLogic.getBackgroundDeck(this.props.options.packs).map(b => b.id);
+		let speciesDeck = GameLogic.getHeroSpeciesDeck(this.props.options.packIDs).map(s => s.id);
+		let roleDeck = GameLogic.getRoleDeck(this.props.options.packIDs).map(r => r.id);
+		let backgroundDeck = GameLogic.getBackgroundDeck(this.props.options.packIDs).map(b => b.id);
 
 		const heroes: CombatantModel[] = [];
 		while (heroes.length < 5) {
@@ -72,7 +72,7 @@ export class SetupScreen extends Component<Props, State> {
 			backgroundDeck = backgroundDeck.filter(b => b !== backgroundID);
 
 			CombatantLogic.applyCombatantCards(hero, speciesID, roleID, backgroundID);
-			CombatantLogic.addItems(hero, this.props.options.packs);
+			CombatantLogic.addItems(hero, this.props.options.packIDs);
 
 			heroes.push(hero);
 		}

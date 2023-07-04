@@ -1,3 +1,5 @@
+-----------------------------------------------------------------------------------------
+
 # Bugs
 
 ## Highlighted Squares
@@ -7,6 +9,11 @@
 -----------------------------------------------------------------------------------------
 
 # Priority
+
+## Add help sections
+* Help sections throughout app
+  * Enable / disable this in options
+* Add a wizard-style beginner's walkthrough
 
 -----------------------------------------------------------------------------------------
 
@@ -88,6 +95,22 @@
 * Get a certain number of heroes to a specific area and stay there for a certain number of rounds
 * Defeat a specific opponent within a certain number of rounds
 
+## Styling
+* Dark mode
+* Action animations (fireball etc)
+
+## Sound
+* Add sound effects
+  * On move
+  * On hit
+  * On miss
+  * On wound
+* Add music
+
+-----------------------------------------------------------------------------------------
+
+# Content Ideas
+
 ## Ideas for Packs
 * Divine
   * Deva
@@ -141,18 +164,6 @@
   * Kruthik / Ankheg
 * Ooze
 
-## Styling
-* Dark mode
-* Action animations (fireball etc)
-
-## Sound
-* Add sound effects
-  * On move
-  * On hit
-  * On miss
-  * On wound
-* Add music
-
 -----------------------------------------------------------------------------------------
 
 # Tech Debt
@@ -161,3 +172,5 @@
 * Convert to functional components
 * Convert to React Native / Electron
 * Use hooks
+
+-----------------------------------------------------------------------------------------

@@ -11,7 +11,7 @@ import type { ItemModel } from '../models/item';
 
 export class ItemData {
 	static getList = (): ItemModel[] => {
-		return [
+		const list = [
 			{
 				id: 'item-sword',
 				name: 'Sword',
@@ -1092,5 +1092,8 @@ export class ItemData {
 				actions: []
 			}
 		];
+
+		list.sort((a, b) => a.name.localeCompare(b.name));
+		return list;
 	};
 }

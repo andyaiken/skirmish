@@ -308,7 +308,7 @@ export class CombatantAction extends Component<Props> {
 						{
 							this.props.currentActionParameter === parameter ?
 								<Text type={TextType.Information}>
-									<p>Select targets on the map, then press the <IconViewfinder size={13} /> button again to finalize your selection and run the action.</p>
+									<p>Select targets on the map, then press the <IconViewfinder size={13} /> button again to confirm your selection.</p>
 								</Text>
 								: null
 						}

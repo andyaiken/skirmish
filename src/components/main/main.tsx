@@ -35,7 +35,6 @@ import { SettingsPanel } from '../panels';
 import './main.scss';
 
 import encounters from '../../assets/docs/encounters.md';
-import game from '../../assets/docs/game.md';
 import island from '../../assets/docs/island.md';
 import items from '../../assets/docs/items.md';
 import team from '../../assets/docs/team.md';
@@ -91,9 +90,6 @@ export class Main extends Component<Props, State> {
 	componentDidMount = () => {
 		fetch(encounters).then(response => response.text()).then(text => {
 			rules['encounters'] = text;
-		});
-		fetch(game).then(response => response.text()).then(text => {
-			rules['game'] = text;
 		});
 		fetch(island).then(response => response.text()).then(text => {
 			rules['island'] = text;
@@ -197,7 +193,9 @@ export class Main extends Component<Props, State> {
 
 			this.setState({
 				game: game,
-				screen: ScreenType.Setup
+				screen: ScreenType.Setup,
+				showHelp: null,
+				dialog: null
 			}, () => {
 				this.saveGame();
 			});
@@ -242,6 +240,7 @@ export class Main extends Component<Props, State> {
 			this.setState({
 				game: game,
 				screen: ScreenType.Campaign,
+				showHelp: null,
 				dialog: null
 			}, () => {
 				this.saveGame();
@@ -256,6 +255,7 @@ export class Main extends Component<Props, State> {
 			this.setState({
 				game: null,
 				screen: ScreenType.Landing,
+				showHelp: null,
 				dialog: null
 			}, () => {
 				this.saveGame();
@@ -1015,8 +1015,6 @@ export class Main extends Component<Props, State> {
 				return (
 					<LandingScreen
 						game={this.state.game}
-						developer={this.state.options.developer}
-						showHelp={this.showHelp}
 						startCampaign={this.startCampaign}
 						continueCampaign={this.continueCampaign}
 					/>

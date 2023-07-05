@@ -100,6 +100,8 @@ export class CampaignMapPage extends Component<Props, State> {
 						label={<div>Regions<br ></br>Remaining</div>}
 						value={regions.length}
 					/>
+				</div>
+				<div className='map-stats'>
 					<StatValue
 						orientation='vertical'
 						label={<div>Encounters<br />Remaining</div>}

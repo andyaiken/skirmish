@@ -4,8 +4,8 @@ import { CardType } from '../../../enums/card-type';
 
 import type { GameModel } from '../../../models/game';
 
+import { PlayingCard, Tag, Text } from '../../controls';
 import { PlaceholderCard } from '../../cards';
-import { PlayingCard } from '../../controls';
 
 import './landing-screen.scss';
 
@@ -13,8 +13,6 @@ import pkg from '../../../../package.json';
 
 interface Props {
 	game: GameModel | null;
-	developer: boolean;
-	showHelp: (file: string) => void;
 	startCampaign: () => void;
 	continueCampaign: () => void;
 }
@@ -22,13 +20,21 @@ interface Props {
 export class LandingScreen extends Component<Props> {
 	render = () => {
 		try {
-			let continueBtn = null;
-			if (this.props.game?.map) {
-				continueBtn = (
+			let mainBtn = null;
+			if (this.props.game) {
+				mainBtn = (
 					<PlayingCard
-						type={CardType.Species}
+						type={CardType.Role}
 						stack={true}
-						front={<PlaceholderCard text='Continue' subtext='Continue your current campaign' onClick={this.props.continueCampaign} />}
+						front={<PlaceholderCard text='Continue' subtext='Click here to continue your campaign.' onClick={this.props.continueCampaign} />}
+					/>
+				);
+			} else {
+				mainBtn = (
+					<PlayingCard
+						type={CardType.Role}
+						stack={true}
+						front={<PlaceholderCard text='Start' subtext='Click here to begin a new campaign.' onClick={this.props.startCampaign} />}
 					/>
 				);
 			}
@@ -39,20 +45,30 @@ export class LandingScreen extends Component<Props> {
 						<div className='logo-text inset-text'>Skirmish</div>
 					</div>
 					<div className='landing-content'>
-						{ continueBtn }
-						<PlayingCard
-							type={CardType.Role}
-							stack={true}
-							front={<PlaceholderCard text='New Campaign' subtext='Begin a new Skirmish campaign' onClick={this.props.startCampaign} />}
-						/>
-						<PlayingCard
-							type={CardType.Background}
-							stack={true}
-							front={<PlaceholderCard text='About' subtext='Learn about this game' onClick={() => this.props.showHelp('game')} />}
-						/>
+						<Text>
+							<p>
+								Skirmish is a tactical battle game in which you control a band of heroes, each represented by a stack of cards.
+								Your objective is to gain control of an island.
+							</p>
+							<p>
+								This island, however, is populated by monstrous enemies which you will have to defeat in a series of encounters.
+							</p>
+							<p>
+								Some parts of the island might be easier to control than others, but each region will provide you with some reward for conquering it.
+							</p>
+							<p>
+								As you gain control over more and more of the island your heroes will become more powerful,
+								and you&apos;ll pick up allies and magic items which will help you in your encounters.
+							</p>
+							<p>
+								Good luck!
+							</p>
+						</Text>
+						{mainBtn}
 					</div>
 					<div className='landing-footer'>
-						{pkg.version} | Copyright Andy Aiken 2023
+						<Tag>Version {pkg.version}</Tag>
+						<Tag>© Andy Aiken 2023</Tag>
 					</div>
 				</div>
 			);

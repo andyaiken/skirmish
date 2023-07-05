@@ -66,8 +66,8 @@ export class SettingsPanel extends Component<Props, State> {
 	render = () => {
 		try {
 			const tabs = [
-				{ id: 'rules', display: 'Rules' },
-				{ id: 'decks', display: 'Decks' },
+				{ id: 'rules', display: 'Game Rules' },
+				{ id: 'decks', display: 'Your Cards' },
 				{ id: 'packs', display: 'Packs' },
 				{ id: 'options', display: 'Options' }
 			];
@@ -179,7 +179,7 @@ export class SettingsPanel extends Component<Props, State> {
 
 			return (
 				<div className='settings-panel'>
-					<Text type={TextType.Heading}>About</Text>
+					<Text type={TextType.Heading}>Skirmish</Text>
 					<Tabs options={tabs} selectedID={this.state.selectedTab} onSelect={id => this.setState({ selectedTab: id })} />
 					{content}
 					{dialog}

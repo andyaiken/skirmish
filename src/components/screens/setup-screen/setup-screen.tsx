@@ -160,7 +160,7 @@ export class SetupScreen extends Component<Props, State> {
 									<PlayingCard
 										type={CardType.Species}
 										stack={true}
-										front={<PlaceholderCard text='Randomize' subtext='Draw a random team of heroes' onClick={this.createHeroes} />}
+										front={<PlaceholderCard text='Randomize' subtext='Click here to draw a random team of heroes' onClick={this.createHeroes} />}
 									/>
 									: null
 							}
@@ -177,7 +177,7 @@ export class SetupScreen extends Component<Props, State> {
 									<PlayingCard
 										type={CardType.Role}
 										stack={true}
-										front={<PlaceholderCard text='Start' subtext='Begin the campaign' onClick={this.props.beginCampaign} />}
+										front={<PlaceholderCard text='Begin the Campaign' onClick={this.props.beginCampaign} />}
 									/>
 									: null
 							}

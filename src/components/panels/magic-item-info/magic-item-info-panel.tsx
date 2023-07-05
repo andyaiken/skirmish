@@ -19,7 +19,6 @@ import './magic-item-info-panel.scss';
 interface Props {
 	item: ItemModel;
 	game: GameModel;
-	isInsideDialog: boolean;
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
 	dropItem: (item: ItemModel, hero: CombatantModel) => void;
 }
@@ -49,21 +48,20 @@ export class MagicItemInfoPanel extends Component<Props, State> {
 
 		return (
 			<Dialog
-				level={this.props.isInsideDialog ? 2 : 1}
+				level={2}
 				content={
 					<div className='item-comparer-dialog'>
 						<Text type={TextType.Heading}>{this.state.hero.name}</Text>
+						<hr />
 						<div className='item-columns'>
 							<div className='item-column'>
 								<Text type={TextType.SubHeading}>Currently Equipped</Text>
-								<div className='card-container'>
-									{this.state.hero.items.filter(i => i.location === this.props.item.location).map(i => (
-										<div key={i.id}>
-											<ItemCard item={i} />
-											<button onClick={() => this.props.dropItem(i, this.state.hero as CombatantModel)}>Drop</button>
-										</div>
-									))}
-								</div>
+								{this.state.hero.items.filter(i => i.location === this.props.item.location).map(i => (
+									<div key={i.id} className='card-container'>
+										<ItemCard item={i} />
+										<button onClick={() => this.props.dropItem(i, this.state.hero as CombatantModel)}>Drop</button>
+									</div>
+								))}
 							</div>
 							<div className='item-column'>
 								<Text type={TextType.SubHeading}>New Item</Text>
@@ -120,10 +118,19 @@ export class MagicItemInfoPanel extends Component<Props, State> {
 
 			return (
 				<div className='magic-item-info-panel'>
-					{canEquip.length > 0 ? <div>These heroes can equip this item:</div> : null}
-					{canEquip}
-					{canReplace.length > 0 ? <div>These heroes already have an item in this location:</div> : null}
-					{canReplace}
+					<Text type={TextType.Heading}>Magic Item</Text>
+					<hr />
+					<div className='magic-item-info-content'>
+						<div className='card'>
+							<ItemCard item={this.props.item} />
+						</div>
+						<div className='hero-list'>
+							{canEquip.length > 0 ? <div>These heroes can equip this item:</div> : null}
+							{canEquip}
+							{canReplace.length > 0 ? <div>These heroes already have an item in this location:</div> : null}
+							{canReplace}
+						</div>
+					</div>
 					{this.getDialog()}
 				</div>
 			);

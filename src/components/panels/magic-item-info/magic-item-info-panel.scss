@@ -1,9 +1,19 @@
 .magic-item-info-panel {
-	width: 200px;
-	border: 2px solid rgb(220, 220, 220);
-	border-radius: 10px;
-	padding: 10px;
-	margin: 10px 0;
+	display: block;
+
+	.magic-item-info-content {
+		display: flex;
+		justify-content: space-evenly;
+		gap: 20px;
+
+		.card {
+			flex: 0 0 auto;
+		}
+
+		.hero-list {
+			flex: 0 0 300px;
+		}
+	}
 }
 
 .item-comparer-dialog {
@@ -17,6 +27,9 @@
 
 			.card-container {
 				margin: 10px auto;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
 			}
 		}
 	}

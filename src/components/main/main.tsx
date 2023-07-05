@@ -436,23 +436,6 @@ export class Main extends Component<Props, State> {
 		}
 	};
 
-	buyAndEquipItem = (item: ItemModel, hero: CombatantModel) => {
-		try {
-			const game = this.state.game as GameModel;
-
-			hero.items.push(item);
-			game.money = Math.max(0, game.money - 100);
-
-			this.setState({
-				game: game
-			}, () => {
-				this.saveGame();
-			});
-		} catch (ex) {
-			this.logException(ex);
-		}
-	};
-
 	sellItem = (item: ItemModel, all: boolean) => {
 		try {
 			const sell = (item: ItemModel) => {
@@ -1050,7 +1033,6 @@ export class Main extends Component<Props, State> {
 						retireHero={this.retireHero}
 						redeemBoon={this.redeemBoon}
 						buyItem={this.buyItem}
-						buyAndEquipItem={this.buyAndEquipItem}
 						sellItem={this.sellItem}
 						addMoney={this.addMoney}
 						startEncounter={this.startEncounter}

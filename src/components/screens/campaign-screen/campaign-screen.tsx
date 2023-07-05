@@ -38,7 +38,6 @@ interface Props {
 	retireHero: (combatant: CombatantModel) => void;
 	redeemBoon: (boon: BoonModel, hero: CombatantModel | null, item: ItemModel | null, newItem: ItemModel | null) => void;
 	buyItem: (item: ItemModel) => void;
-	buyAndEquipItem: (item: ItemModel, hero: CombatantModel) => void;
 	sellItem: (item: ItemModel, all: boolean) => void;
 	addMoney: () => void;
 	startEncounter: (region: RegionModel, heroes: CombatantModel[]) => void;
@@ -104,7 +103,6 @@ export class CampaignScreen extends Component<Props, State> {
 							buyItem={this.props.buyItem}
 							sellItem={this.props.sellItem}
 							equipItem={this.props.equipItem}
-							buyAndEquipItem={this.props.buyAndEquipItem}
 							dropItem={this.props.dropItem}
 							redeemBoon={this.props.redeemBoon}
 							addMoney={this.props.addMoney}

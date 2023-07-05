@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import { IconCards } from '@tabler/icons-react';
 
 import { BackgroundData } from '../../../../data/background-data';
 import { HeroSpeciesData } from '../../../../data/hero-species-data';
@@ -53,6 +54,7 @@ export class PacksTab extends Component<Props, State> {
 		return (
 			<div className={className} onClick={() => this.setState({ selectedPack: pack })}>
 				<Text type={TextType.MinorHeading}>{pack ? pack.name : 'Core Game'}</Text>
+				<IconCards />
 			</div>
 		);
 	};

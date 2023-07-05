@@ -13,7 +13,7 @@ import type { OptionsModel } from '../../../../models/options';
 import { Collections } from '../../../../utils/collections';
 
 import { BoonCard, ItemCard, PlaceholderCard } from '../../../cards';
-import { CardList, ConfirmButton, Dialog, IconType, IconValue, PlayingCard, StatValue, Switch, Text, TextType } from '../../../controls';
+import { CardList, ConfirmButton, Dialog, IconType, IconValue, PlayingCard, StatValue, Text, TextType } from '../../../controls';
 import { EnchantItemPanel, MagicItemInfoPanel, MagicItemsPanel } from '../../../panels';
 
 import './items-page.scss';
@@ -24,15 +24,14 @@ interface Props {
 	buyItem: (item: ItemModel) => void;
 	sellItem: (item: ItemModel, all: boolean) => void;
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
-	buyAndEquipItem: (item: ItemModel, hero: CombatantModel) => void;
 	dropItem: (item: ItemModel, hero: CombatantModel) => void;
 	redeemBoon: (boon: BoonModel, combatant: CombatantModel | null, item: ItemModel | null, newItem: ItemModel | null) => void;
 	addMoney: () => void;
 }
 
 interface State {
-	showUsable: boolean;
 	showMarket: boolean;
+	selectedMagicItem: ItemModel | null;
 	selectedBoon: BoonModel | null;
 }
 
@@ -40,8 +39,8 @@ export class ItemsPage extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
-			showUsable: false,
 			showMarket: false,
+			selectedMagicItem: null,
 			selectedBoon: null
 		};
 	}
@@ -76,14 +75,6 @@ export class ItemsPage extends Component<Props, State> {
 			showMarket: false
 		}, () => {
 			this.props.buyItem(item);
-		});
-	};
-
-	buyAndEquipItem = (item: ItemModel, hero: CombatantModel) => {
-		this.setState({
-			showMarket: false
-		}, () => {
-			this.props.buyAndEquipItem(item, hero);
 		});
 	};
 
@@ -150,8 +141,6 @@ export class ItemsPage extends Component<Props, State> {
 				<Text type={TextType.SubHeading}>Your Equipment</Text>
 				<Text>This page lists the items that your heroes aren&apos;t currently using.</Text>
 				<hr />
-				{this.props.game.items.some(i => i.magic) ? <Switch label='Magic Item Usability' checked={this.state.showUsable} onChange={value => this.setState({ showUsable: value })} /> : null}
-				{this.props.game.items.some(i => i.magic) ? <hr /> : null}
 				{moneySection}
 				{boons !== null ? <hr /> : null}
 				{boons}
@@ -170,10 +159,25 @@ export class ItemsPage extends Component<Props, State> {
 							game={this.props.game}
 							options={this.props.options}
 							buyItem={this.buyItem}
-							buyAndEquipItem={this.buyAndEquipItem}
 							dropItem={this.props.dropItem}
 						/>
 					)}
+				/>
+			);
+		}
+
+		if (this.state.selectedMagicItem) {
+			return (
+				<Dialog
+					content={(
+						<MagicItemInfoPanel
+							item={this.state.selectedMagicItem}
+							game={this.props.game}
+							equipItem={this.props.equipItem}
+							dropItem={this.props.dropItem}
+						/>
+					)}
+					onClose={() => this.setState({ selectedMagicItem: null })}
 				/>
 			);
 		}
@@ -204,15 +208,10 @@ export class ItemsPage extends Component<Props, State> {
 			if (magicItems.length > 0) {
 				const cards = magicItems.map(item => (
 					<div key={item.id}>
-						<ItemCard item={item} />
+						<ItemCard item={item} onSelect={i => this.setState({ selectedMagicItem: i })} />
 						<div>
 							<ConfirmButton label='Sell (50)' onClick={() => this.props.sellItem(item, false)} />
 						</div>
-						{
-							this.state.showUsable ?
-								<MagicItemInfoPanel item={item} game={this.props.game} isInsideDialog={false} equipItem={this.props.equipItem} dropItem={this.props.dropItem} />
-								: null
-						}
 					</div>
 				));
 				magicItemSection = (

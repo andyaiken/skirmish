@@ -13,7 +13,6 @@ import type { OptionsModel } from '../../../models/options';
 
 import { CardList, Text, TextType } from '../../controls';
 import { ItemCard } from '../../cards';
-import { MagicItemInfoPanel } from '../magic-item-info/magic-item-info-panel';
 
 import './magic-items-panel.scss';
 
@@ -21,7 +20,6 @@ interface Props {
 	game: GameModel;
 	options: OptionsModel;
 	buyItem: (item: ItemModel) => void;
-	buyAndEquipItem: (item: ItemModel, hero: CombatantModel) => void;
 	dropItem: (item: ItemModel, hero: CombatantModel) => void;
 }
 
@@ -86,10 +84,7 @@ export class MagicItemsPanel extends Component<Props, State> {
 	render = () => {
 		try {
 			const cards = this.state.magicItems.map(item => (
-				<div key={item.id}>
-					<ItemCard item={item} onSelect={this.props.buyItem} />
-					<MagicItemInfoPanel item={item} game={this.props.game} isInsideDialog={true} equipItem={this.props.buyAndEquipItem} dropItem={this.props.dropItem} />
-				</div>
+				<ItemCard key={item.id} item={item} onSelect={this.props.buyItem} />
 			));
 
 			return (

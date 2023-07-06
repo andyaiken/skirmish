@@ -10,18 +10,9 @@
 
 # Priority
 
-## Add help sections
-* Help sections throughout app
-  * Enable / disable this in options
-* Add a wizard-style beginner's walkthrough
-
 -----------------------------------------------------------------------------------------
 
 # Improvements / Enhancements
-
-## Character Sheet
-* Show ranks as filled circles
-* Make it so that we can see a hero character sheet without having to level up
 
 ## Features
 * Mountebank and Pixie should have a blur aura

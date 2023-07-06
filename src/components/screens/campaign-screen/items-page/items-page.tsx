@@ -13,7 +13,7 @@ import type { OptionsModel } from '../../../../models/options';
 import { Collections } from '../../../../utils/collections';
 
 import { BoonCard, ItemCard, PlaceholderCard } from '../../../cards';
-import { CardList, ConfirmButton, Dialog, IconType, IconValue, PlayingCard, StatValue, Text, TextType } from '../../../controls';
+import { CardList, Dialog, IconType, IconValue, PlayingCard, StatValue, Text, TextType } from '../../../controls';
 import { EnchantItemPanel, MagicItemInfoPanel, MagicItemsPanel } from '../../../panels';
 
 import './items-page.scss';
@@ -218,7 +218,9 @@ export class ItemsPage extends Component<Props, State> {
 					<div key={item.id}>
 						<ItemCard item={item} onSelect={i => this.setState({ selectedMagicItem: i })} />
 						<div>
-							<ConfirmButton label='Sell (50)' onClick={() => this.props.sellItem(item, false)} />
+							<button onClick={() => this.props.sellItem(item, false)}>
+								Sell<br /><IconValue type={IconType.Money} value={50} iconSize={12} />
+							</button>
 						</div>
 					</div>
 				));

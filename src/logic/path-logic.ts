@@ -76,11 +76,6 @@ export class PathLogic {
 							paths.push(newPath);
 						}
 					}
-				} else {
-					if (cost < discovered.cost) {
-						// We've been to this square before, but this is a cheaper path
-						// TODO: Update all existing paths accordingly
-					}
 				}
 			});
 		});

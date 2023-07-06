@@ -115,11 +115,10 @@ export class CombatantControls extends Component<CombatantControlsProps, Combata
 							onTokenClick={this.props.showToken}
 							showCharacterSheet={this.props.showCharacterSheet}
 						/>
-						<CombatantMonster combatant={this.props.combatant} />
-						<hr />
 						<button disabled={this.state.thinking} onClick={() => this.runMonsterTurn()}>
 							{this.state.thinking ? 'Thinking' : 'Go'}
 						</button>
+						<CombatantMonster combatant={this.props.combatant} />
 					</div>
 				);
 			}

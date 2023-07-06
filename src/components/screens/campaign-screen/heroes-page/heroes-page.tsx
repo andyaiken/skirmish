@@ -273,27 +273,30 @@ export class HeroesPage extends Component<Props, State> {
 					content={(
 						<div>
 							<Text type={TextType.Heading}>Retire This Hero</Text>
-							<div>
-								<Text type={TextType.Information}>
-									<p><b>You can retire this hero.</b> If you do:</p>
-									<ul>
-										<li>You&apos;ll get half their total XP to add to another hero</li>
-										<li>You keep any magic items they have</li>
-										<li>You can recruit a new hero to take their place</li>
-									</ul>
-									<p>This cannot be undone.</p>
-								</Text>
-								<ConfirmButton
-									label='Retire'
-									onClick={() => {
-										const h = this.state.retiringHero as CombatantModel;
-										this.setState({
-											retiringHero: null
-										}, () => {
-											this.props.retireHero(h);
-										});
-									}}
-								/>
+							<div className='retire-hero-card'>
+								<HeroCard hero={this.state.retiringHero} />
+								<div>
+									<Text type={TextType.Information}>
+										<p><b>You can retire this hero.</b> If you do:</p>
+										<ul>
+											<li>You&apos;ll get half their total XP to add to another hero</li>
+											<li>You keep any magic items they have</li>
+											<li>You can recruit a new hero to take their place</li>
+										</ul>
+										<p>This cannot be undone.</p>
+									</Text>
+									<ConfirmButton
+										label='Retire'
+										onClick={() => {
+											const h = this.state.retiringHero as CombatantModel;
+											this.setState({
+												retiringHero: null
+											}, () => {
+												this.props.retireHero(h);
+											});
+										}}
+									/>
+								</div>
 							</div>
 						</div>
 					)}

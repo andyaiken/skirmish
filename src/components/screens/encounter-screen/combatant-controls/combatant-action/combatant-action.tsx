@@ -352,9 +352,6 @@ export class CombatantAction extends Component<Props> {
 	getUsed = (action: ActionModel) => {
 		return (
 			<div className='combatant-action'>
-				<Text type={TextType.Information}>
-					<p>You have taken your action for this turn.</p>
-				</Text>
 				<div className='action-selected-card'>
 					<ActionCard
 						action={action}

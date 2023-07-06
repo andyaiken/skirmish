@@ -1,4 +1,3 @@
-import { IconCircleCheck, IconCircleX } from '@tabler/icons-react';
 import { Component } from 'react';
 
 import { Text } from '../../controls';
@@ -62,8 +61,8 @@ export class ConfirmButton extends Component<Props, State> {
 						<b>{this.props.info || 'Are you sure?'}</b>
 					</Text>
 					<div className='button-row'>
-						<button className='icon-btn' onClick={this.onConfirm}><IconCircleCheck /></button>
-						<button className='icon-btn' onClick={this.onCancel}><IconCircleX /></button>
+						<button onClick={this.onConfirm}>OK</button>
+						<button onClick={this.onCancel}>Cancel</button>
 					</div>
 				</div>
 			);

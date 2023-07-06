@@ -12,10 +12,11 @@
 	.button-row {
 		display: flex;
 		align-items: center;
-		justify-content: space-evenly;
+		justify-content: center;
+		gap: 10px;
 
-		.icon-btn {
-			flex: 0 0 40px;
+		button {
+			width: 120px;
 		}
 	}
 }

@@ -41,10 +41,26 @@ export class MagicItemInfoPanel extends Component<Props, State> {
 		});
 	};
 
+	getIsEquippable = (hero: CombatantModel, item: ItemModel) => {
+		let slotsTotal = 1;
+		switch (item.location) {
+			case ItemLocationType.Hand:
+			case ItemLocationType.Ring:
+				slotsTotal = 2;
+				break;
+		}
+		const equipped = hero.items.filter(i => i.location === item.location);
+		const slotsUsed = Collections.sum(equipped, i => i.slots);
+		const slotsAvailable = slotsTotal - slotsUsed;
+		return item.slots <= slotsAvailable;
+	};
+
 	getDialog = () => {
 		if (this.state.hero === null) {
 			return null;
 		}
+
+		const equippable = this.getIsEquippable(this.state.hero, this.props.item);
 
 		return (
 			<Dialog
@@ -67,6 +83,7 @@ export class MagicItemInfoPanel extends Component<Props, State> {
 								<Text type={TextType.SubHeading}>New Item</Text>
 								<div className='card-container'>
 									<ItemCard item={this.props.item} />
+									{equippable ? <button onClick={() => { this.props.equipItem(this.props.item, this.state.hero as CombatantModel); this.setComparison(null); }}>Equip</button> : null}
 								</div>
 							</div>
 						</div>
@@ -85,18 +102,7 @@ export class MagicItemInfoPanel extends Component<Props, State> {
 			this.props.game.heroes
 				.filter(hero => (this.props.item.proficiency === ItemProficiencyType.None) || CombatantLogic.getProficiencies(hero).includes(this.props.item.proficiency))
 				.forEach(hero => {
-					let slotsTotal = 1;
-					switch (this.props.item.location) {
-						case ItemLocationType.Hand:
-						case ItemLocationType.Ring:
-							slotsTotal = 2;
-							break;
-					}
-					const equipped = hero.items.filter(i => i.location === this.props.item.location);
-					const slotsUsed = Collections.sum(equipped, i => i.slots);
-					const slotsAvailable = slotsTotal - slotsUsed;
-					const equippable = this.props.item.slots <= slotsAvailable;
-
+					const equippable = this.getIsEquippable(hero, this.props.item);
 					if (equippable) {
 						canEquip.push(
 							<button key={hero.id} onClick={() => this.props.equipItem(this.props.item, hero)}>{hero.name}</button>

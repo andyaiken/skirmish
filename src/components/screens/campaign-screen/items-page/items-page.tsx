@@ -88,6 +88,14 @@ export class ItemsPage extends Component<Props, State> {
 		});
 	};
 
+	equipItem = (item: ItemModel, hero: CombatantModel) => {
+		this.setState({
+			selectedMagicItem: null
+		}, () => {
+			this.props.equipItem(item, hero);
+		});
+	};
+
 	getSidebar = () => {
 		const controlLand = this.props.game.map.squares.some(sq => sq.regionID === '');
 		const enoughMoney = (this.props.game.money >= 100);
@@ -173,7 +181,7 @@ export class ItemsPage extends Component<Props, State> {
 						<MagicItemInfoPanel
 							item={this.state.selectedMagicItem}
 							game={this.props.game}
-							equipItem={this.props.equipItem}
+							equipItem={this.equipItem}
 							dropItem={this.props.dropItem}
 						/>
 					)}

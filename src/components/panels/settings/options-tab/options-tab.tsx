@@ -1,13 +1,14 @@
 import { Component } from 'react';
 
-import { Format } from '../../../../utils/format';
-import { Sound } from '../../../../utils/sound';
+import { GameLogic } from '../../../../logic/game-logic';
 
 import type { GameModel } from '../../../../models/game';
 import type { OptionsModel } from '../../../../models/options';
 
-import { CardList, ConfirmButton, PlayingCard, StatValue, Switch, Text, TextType } from '../../../controls';
-import { PlaceholderCard } from '../../../cards';
+import { Format } from '../../../../utils/format';
+import { Sound } from '../../../../utils/sound';
+
+import { ConfirmButton, StatValue, Switch, Text, TextType } from '../../../controls';
 
 import './options-tab.scss';
 
@@ -31,11 +32,9 @@ export class OptionsTab extends Component<Props> {
 	render = () => {
 		try {
 			const packs = this.props.options.packIDs.map((packID, n) => {
+				const pack = GameLogic.getPack(packID);
 				return (
-					<div key={n}>
-						<PlayingCard stack={true} front={<PlaceholderCard text={packID} />} />
-						<ConfirmButton label='Remove this pack' onClick={() => this.props.removePack(packID)} />
-					</div>
+					<ConfirmButton key={n} label={pack ? pack.name : packID} onClick={() => this.props.removePack(packID)} />
 				);
 			});
 
@@ -55,7 +54,7 @@ export class OptionsTab extends Component<Props> {
 					{this.props.local ? <Switch label='Developer Mode' checked={this.props.options.developer} onChange={this.props.setDeveloperMode} /> : null}
 					{this.props.local ? <hr /> : null}
 					{this.props.options.developer ? <Text type={TextType.SubHeading}>Packs</Text> : null}
-					{this.props.options.developer && (packs.length > 0) ? <CardList cards={packs} /> : null}
+					{this.props.options.developer && (packs.length > 0) ? packs : null}
 					{this.props.options.developer && (packs.length === 0) ? <Text type={TextType.Small}>None.</Text> : null}
 					{this.props.options.developer ? <hr /> : null}
 					{this.props.game ? <ConfirmButton label='Abandon this Campaign' onClick={() => this.props.endCampaign()} /> : null}

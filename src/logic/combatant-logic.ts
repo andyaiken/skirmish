@@ -27,7 +27,6 @@ import { Random } from '../utils/random';
 import { Utils } from '../utils/utils';
 
 import { Factory } from './factory';
-import { FeatureLogic } from './feature-logic';
 import { GameLogic } from './game-logic';
 
 export class CombatantLogic {
@@ -37,8 +36,7 @@ export class CombatantLogic {
 			combatant.speciesID = species.id;
 			combatant.size = species.size;
 			species.quirks.forEach(q => combatant.quirks.push(q));
-			species.traits.forEach(t => combatant.features.push(FeatureLogic.createTraitFeature(Utils.guid(), t, 1)));
-			species.skills.forEach(s => combatant.features.push(FeatureLogic.createSkillFeature(Utils.guid(), s, 2)));
+			species.startingFeatures.forEach(f => combatant.features.push(JSON.parse(JSON.stringify(f)) as FeatureModel));
 
 			if (combatant.type === CombatantType.Monster) {
 				combatant.name = species.name;
@@ -51,9 +49,7 @@ export class CombatantLogic {
 			const role = GameLogic.getRole(roleID);
 			if (role) {
 				combatant.roleID = role.id;
-				role.traits.forEach(t => combatant.features.push(FeatureLogic.createTraitFeature(Utils.guid(), t, 1)));
-				role.skills.forEach(s => combatant.features.push(FeatureLogic.createSkillFeature(Utils.guid(), s, 2)));
-				role.proficiencies.forEach(p => combatant.features.push(FeatureLogic.createProficiencyFeature(Utils.guid(), p)));
+				role.startingFeatures.forEach(f => combatant.features.push(JSON.parse(JSON.stringify(f)) as FeatureModel));
 
 				if (combatant.type === CombatantType.Monster) {
 					combatant.name += ` ${role.name}`;
@@ -63,6 +59,7 @@ export class CombatantLogic {
 			const background = GameLogic.getBackground(backgroundID);
 			if (background) {
 				combatant.backgroundID = background.id;
+				background.startingFeatures.forEach(f => combatant.features.push(JSON.parse(JSON.stringify(f)) as FeatureModel));
 			}
 		}
 	};

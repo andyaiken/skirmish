@@ -23,14 +23,10 @@ export class RoleData {
 		name: 'Arcanist',
 		packID: PackData.arcana.id,
 		description: 'Arcanists are magical generalists, able to create a wide range of effects.',
-		traits: [
-			TraitType.Resolve
-		],
-		skills: [
-			SkillType.Spellcasting
-		],
-		proficiencies: [
-			ItemProficiencyType.Implements
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('arcanist-start-1', TraitType.Resolve, 1),
+			FeatureLogic.createSkillFeature('arcanist-start-2', SkillType.Spellcasting, 2),
+			FeatureLogic.createProficiencyFeature('arcanist-start-3', ItemProficiencyType.Implements)
 		],
 		features: [
 			FeatureLogic.createTraitFeature('arcanist-feature-1', TraitType.Resolve, 1),
@@ -144,13 +140,10 @@ export class RoleData {
 		name: 'Artificer',
 		packID: PackData.technology.id,
 		description: 'A creator of magically-powered inventions.',
-		traits: [
-			TraitType.Resolve
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('artificer-start-1', TraitType.Resolve, 1),
+			FeatureLogic.createSkillFeature('artificer-start-2', SkillType.Spellcasting, 2)
 		],
-		skills: [
-			SkillType.Spellcasting
-		],
-		proficiencies: [],
 		features: [
 			FeatureLogic.createTraitFeature('artificer-feature-1', TraitType.Resolve, 1),
 			FeatureLogic.createSkillFeature('artificer-feature-2', SkillType.Spellcasting, 2),
@@ -256,15 +249,11 @@ export class RoleData {
 		name: 'Assassin',
 		packID: PackData.skullduggery.id,
 		description: 'Assassins operate from the shadows, using poison to kill.',
-		traits: [
-			TraitType.Speed
-		],
-		skills: [
-			SkillType.Stealth,
-			SkillType.Weapon
-		],
-		proficiencies: [
-			ItemProficiencyType.PairedWeapons
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('assassin-start-1', TraitType.Speed, 1),
+			FeatureLogic.createSkillFeature('assassin-start-2', SkillType.Stealth, 2),
+			FeatureLogic.createSkillFeature('assassin-start-3', SkillType.Weapon, 2),
+			FeatureLogic.createProficiencyFeature('assassin-start-4', ItemProficiencyType.PairedWeapons)
 		],
 		features: [
 			FeatureLogic.createTraitFeature('assassin-feature-1', TraitType.Speed, 1),
@@ -341,15 +330,11 @@ export class RoleData {
 		name: 'Barbarian',
 		packID: '',
 		description: 'Barbarians are warriors who attack recklessly, with no sense of self-preservation.',
-		traits: [
-			TraitType.Endurance
-		],
-		skills: [
-			SkillType.Weapon
-		],
-		proficiencies: [
-			ItemProficiencyType.LargeWeapons,
-			ItemProficiencyType.LightArmor
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('barbarian-start-1', TraitType.Endurance, 1),
+			FeatureLogic.createSkillFeature('barbarian-start-2', SkillType.Weapon, 2),
+			FeatureLogic.createProficiencyFeature('barbarian-start-3', ItemProficiencyType.LargeWeapons),
+			FeatureLogic.createProficiencyFeature('barbarian-start-4', ItemProficiencyType.LightArmor)
 		],
 		features: [
 			FeatureLogic.createTraitFeature('barbarian-feature-1', TraitType.Endurance, 1),
@@ -471,16 +456,12 @@ export class RoleData {
 		name: 'Centurion',
 		packID: '',
 		description: 'A master of the battlefield.',
-		traits: [
-			TraitType.Endurance
-		],
-		skills: [
-			SkillType.Weapon
-		],
-		proficiencies: [
-			ItemProficiencyType.MilitaryWeapons,
-			ItemProficiencyType.HeavyArmor,
-			ItemProficiencyType.Shields
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('centurion-start-1', TraitType.Endurance, 1),
+			FeatureLogic.createSkillFeature('centurion-start-2', SkillType.Weapon, 2),
+			FeatureLogic.createProficiencyFeature('centurion-start-3', ItemProficiencyType.MilitaryWeapons),
+			FeatureLogic.createProficiencyFeature('centurion-start-4', ItemProficiencyType.HeavyArmor),
+			FeatureLogic.createProficiencyFeature('centurion-start-5', ItemProficiencyType.Shields)
 		],
 		features: [
 			FeatureLogic.createTraitFeature('centurion-feature-1', TraitType.Endurance, 1),
@@ -618,15 +599,11 @@ export class RoleData {
 		name: 'Dervish',
 		packID: '',
 		description: 'Acrobatic warriors who leap and spin around the battlefield.',
-		traits: [
-			TraitType.Speed
-		],
-		skills: [
-			SkillType.Weapon
-		],
-		proficiencies: [
-			ItemProficiencyType.PairedWeapons,
-			ItemProficiencyType.LightArmor
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('dervish-start-1', TraitType.Speed, 1),
+			FeatureLogic.createSkillFeature('dervish-start-2', SkillType.Weapon, 2),
+			FeatureLogic.createProficiencyFeature('dervish-start-3', ItemProficiencyType.PairedWeapons),
+			FeatureLogic.createProficiencyFeature('dervish-start-4', ItemProficiencyType.LightArmor)
 		],
 		features: [
 			FeatureLogic.createTraitFeature('dervish-feature-1', TraitType.Speed, 1),
@@ -774,14 +751,10 @@ export class RoleData {
 		name: 'Enchanter',
 		packID: PackData.arcana.id,
 		description: 'Spellcasters who specialize in magic that confuses the senses.',
-		traits: [
-			TraitType.Resolve
-		],
-		skills: [
-			SkillType.Spellcasting
-		],
-		proficiencies: [
-			ItemProficiencyType.Implements
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('enchanter-start-1', TraitType.Resolve, 1),
+			FeatureLogic.createSkillFeature('enchanter-start-2', SkillType.Spellcasting, 2),
+			FeatureLogic.createProficiencyFeature('enchanter-start-3', ItemProficiencyType.Implements)
 		],
 		features: [
 			FeatureLogic.createTraitFeature('enchanter-feature-1', TraitType.Resolve, 1),
@@ -908,14 +881,10 @@ export class RoleData {
 		name: 'Geomancer',
 		packID: PackData.arcana.id,
 		description: 'Spellcasters whose magic affects the battlefield itself.',
-		traits: [
-			TraitType.Endurance
-		],
-		skills: [
-			SkillType.Spellcasting
-		],
-		proficiencies: [
-			ItemProficiencyType.Implements
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('geomancer-start-1', TraitType.Endurance, 1),
+			FeatureLogic.createSkillFeature('geomancer-start-2', SkillType.Spellcasting, 2),
+			FeatureLogic.createProficiencyFeature('geomancer-start-3', ItemProficiencyType.Implements)
 		],
 		features: [
 			FeatureLogic.createTraitFeature('geomancer-feature-1', TraitType.Endurance, 1),
@@ -1028,14 +997,10 @@ export class RoleData {
 		name: 'Gunslinger',
 		packID: PackData.technology.id,
 		description: 'A fighter who uses gunpowder weapons.',
-		traits: [
-			TraitType.Speed
-		],
-		skills: [
-			SkillType.Weapon
-		],
-		proficiencies: [
-			ItemProficiencyType.PowderWeapons
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('gunslinger-start-1', TraitType.Speed, 1),
+			FeatureLogic.createSkillFeature('gunslinger-start-2', SkillType.Weapon, 2),
+			FeatureLogic.createProficiencyFeature('gunslinger-start-3', ItemProficiencyType.PowderWeapons)
 		],
 		features: [
 			FeatureLogic.createTraitFeature('gunslinger-feature-1', TraitType.Speed, 1),
@@ -1169,13 +1134,9 @@ export class RoleData {
 		name: 'Luckweaver',
 		packID: PackData.skullduggery.id,
 		description: 'One who can manipulate the laws of chance.',
-		traits: [
-			TraitType.Speed
+		startingFeatures: [
+			FeatureLogic.createSkillFeature('luckweaver-start-1', SkillType.Spellcasting, 2)
 		],
-		skills: [
-			SkillType.Spellcasting
-		],
-		proficiencies: [],
 		features: [
 			FeatureLogic.createSkillFeature('luckweaver-feature-1', SkillType.Spellcasting, 2),
 			FeatureLogic.createSkillCategoryFeature('luckweaver-feature-2', SkillCategoryType.Any, 1),
@@ -1243,14 +1204,10 @@ export class RoleData {
 		name: 'Necromancer',
 		packID: PackData.undead.id,
 		description: 'A spellcaster whose magic deals with life and death.',
-		traits: [
-			TraitType.Resolve
-		],
-		skills: [
-			SkillType.Spellcasting
-		],
-		proficiencies: [
-			ItemProficiencyType.Implements
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('necromancer-start-1', TraitType.Resolve, 1),
+			FeatureLogic.createSkillFeature('necromancer-start-2', SkillType.Spellcasting, 2),
+			FeatureLogic.createProficiencyFeature('necromancer-start-3', ItemProficiencyType.Implements)
 		],
 		features: [
 			FeatureLogic.createTraitFeature('necromancer-feature-1', TraitType.Resolve, 1),
@@ -1373,14 +1330,11 @@ export class RoleData {
 		name: 'Ninja',
 		packID: '',
 		description: 'A martial artist who hones their abilities with extreme training and self-discipline.',
-		traits: [
-			TraitType.Speed
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('ninja-start-1', TraitType.Speed, 1),
+			FeatureLogic.createSkillFeature('ninja-start-2', SkillType.Brawl, 2),
+			FeatureLogic.createSkillFeature('ninja-start-3', SkillType.Stealth, 2)
 		],
-		skills: [
-			SkillType.Brawl,
-			SkillType.Stealth
-		],
-		proficiencies: [],
 		features: [
 			FeatureLogic.createTraitFeature('ninja-feature-1', TraitType.Speed, 1),
 			FeatureLogic.createSkillFeature('ninja-feature-2', SkillType.Brawl, 2),
@@ -1485,18 +1439,15 @@ export class RoleData {
 		name: 'Psion',
 		packID: PackData.arcana.id,
 		description: 'A master of the power of the mind.',
-		traits: [
-			TraitType.Resolve
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('psion-start-1', TraitType.Resolve, 1),
+			FeatureLogic.createSkillFeature('psion-start-2', SkillType.Presence, 2)
 		],
-		skills: [
-			SkillType.Presence
-		],
-		proficiencies: [],
 		features: [
-			FeatureLogic.createTraitFeature('feature-psion-1', TraitType.Resolve, 1),
-			FeatureLogic.createSkillFeature('feature-psion-2', SkillType.Presence, 2),
-			FeatureLogic.createDamageBonusFeature('feature-psion-3', DamageType.Psychic, 2),
-			FeatureLogic.createDamageResistFeature('feature-psion-4', DamageType.Psychic, 2)
+			FeatureLogic.createTraitFeature('psion-feature-1', TraitType.Resolve, 1),
+			FeatureLogic.createSkillFeature('psion-feature-2', SkillType.Presence, 2),
+			FeatureLogic.createDamageBonusFeature('psion-feature-3', DamageType.Psychic, 2),
+			FeatureLogic.createDamageResistFeature('psion-feature-4', DamageType.Psychic, 2)
 		],
 		actions: [
 			{
@@ -1607,15 +1558,11 @@ export class RoleData {
 		name: 'Ranger',
 		packID: '',
 		description: 'A fighter who specializes in ranged weaponry.',
-		traits: [
-			TraitType.Endurance
-		],
-		skills: [
-			SkillType.Weapon
-		],
-		proficiencies: [
-			ItemProficiencyType.RangedWeapons,
-			ItemProficiencyType.LightArmor
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('ranger-start-1', TraitType.Endurance, 1),
+			FeatureLogic.createSkillFeature('ranger-start-2', SkillType.Perception, 2),
+			FeatureLogic.createProficiencyFeature('ranger-start-3', ItemProficiencyType.RangedWeapons),
+			FeatureLogic.createProficiencyFeature('ranger-start-4', ItemProficiencyType.LightArmor)
 		],
 		features: [
 			FeatureLogic.createTraitFeature('ranger-feature-1', TraitType.Endurance, 1),
@@ -1757,13 +1704,10 @@ export class RoleData {
 		name: 'Sensei',
 		packID: '',
 		description: 'A martial artist who uses elementally-enhanced fighting techniques.',
-		traits: [
-			TraitType.Speed
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('sensei-start-1', TraitType.Speed, 1),
+			FeatureLogic.createSkillFeature('sensei-start-2', SkillType.Brawl, 2)
 		],
-		skills: [
-			SkillType.Brawl
-		],
-		proficiencies: [],
 		features: [
 			FeatureLogic.createTraitFeature('sensei-feature-1', TraitType.Speed, 1),
 			FeatureLogic.createSkillFeature('sensei-feature-2', SkillType.Brawl, 2),
@@ -1881,14 +1825,10 @@ export class RoleData {
 		name: 'Sorcerer',
 		packID: PackData.elements.id,
 		description: 'A magic-user whose spells are elemental and destructive.',
-		traits: [
-			TraitType.Resolve
-		],
-		skills: [
-			SkillType.Spellcasting
-		],
-		proficiencies: [
-			ItemProficiencyType.Implements
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('sorcerer-start-1', TraitType.Resolve, 1),
+			FeatureLogic.createSkillFeature('sorcerer-start-2', SkillType.Spellcasting, 2),
+			FeatureLogic.createProficiencyFeature('sorcerer-start-3', ItemProficiencyType.Implements)
 		],
 		features: [
 			FeatureLogic.createTraitFeature('sorcerer-feature-1', TraitType.Resolve, 1),
@@ -1989,15 +1929,11 @@ export class RoleData {
 		name: 'Warmage',
 		packID: '',
 		description: 'A warrior who bridges martial discipline and arcane power.',
-		traits: [
-			TraitType.Resolve
-		],
-		skills: [
-			SkillType.Weapon
-		],
-		proficiencies: [
-			ItemProficiencyType.MilitaryWeapons,
-			ItemProficiencyType.LightArmor
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('warmage-start-1', TraitType.Resolve, 1),
+			FeatureLogic.createSkillFeature('warmage-start-2', SkillType.Weapon, 2),
+			FeatureLogic.createProficiencyFeature('warmage-start-3', ItemProficiencyType.MilitaryWeapons),
+			FeatureLogic.createProficiencyFeature('warmage-start-4', ItemProficiencyType.LightArmor)
 		],
 		features: [
 			FeatureLogic.createTraitFeature('warmage-feature-1', TraitType.Resolve, 1),

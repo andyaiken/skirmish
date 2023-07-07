@@ -24,12 +24,11 @@ export class HeroSpeciesData {
 		type: CombatantType.Hero,
 		size: 1,
 		quirks: [],
-		traits: [
-			TraitType.Endurance,
-			TraitType.Resolve,
-			TraitType.Speed
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('human-start-1', TraitType.Endurance, 1),
+			FeatureLogic.createTraitFeature('human-start-2', TraitType.Resolve, 1),
+			FeatureLogic.createTraitFeature('human-start-3', TraitType.Speed, 1)
 		],
-		skills: [],
 		features: [
 			FeatureLogic.createSkillFeature('human-feature-1', SkillType.Any, 2)
 		],
@@ -67,11 +66,10 @@ export class HeroSpeciesData {
 		type: CombatantType.Hero,
 		size: 1,
 		quirks: [],
-		traits: [
-			TraitType.Endurance,
-			TraitType.Resolve
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('construct-start-1', TraitType.Endurance, 1),
+			FeatureLogic.createTraitFeature('construct-start-2', TraitType.Resolve, 1)
 		],
-		skills: [],
 		features: [
 			FeatureLogic.createTraitFeature('construct-feature-1', TraitType.Endurance, 1),
 			FeatureLogic.createDamageResistFeature('construct-feature-2', DamageType.Poison, 2),
@@ -122,11 +120,9 @@ export class HeroSpeciesData {
 		type: CombatantType.Hero,
 		size: 1,
 		quirks: [],
-		traits: [
-			TraitType.Resolve
-		],
-		skills: [
-			SkillType.Presence
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('deva-start-1', TraitType.Resolve, 1),
+			FeatureLogic.createSkillFeature('deva-start-2', SkillType.Presence, 2)
 		],
 		features: [
 			FeatureLogic.createSkillFeature('deva-feature-1', SkillType.Presence, 2),
@@ -183,11 +179,9 @@ export class HeroSpeciesData {
 		type: CombatantType.Hero,
 		size: 1,
 		quirks: [],
-		traits: [
-			TraitType.Endurance,
-			TraitType.Endurance
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('dwarf-start-1', TraitType.Endurance, 2)
 		],
-		skills: [],
 		features: [
 			FeatureLogic.createTraitFeature('dwarf-feature-1', TraitType.Endurance, 1),
 			FeatureLogic.createTraitFeature('dwarf-feature-2', TraitType.Resolve, 1),
@@ -232,13 +226,11 @@ export class HeroSpeciesData {
 		type: CombatantType.Hero,
 		size: 1,
 		quirks: [],
-		traits: [
-			TraitType.Speed
-		],
-		skills: [
-			SkillType.Perception,
-			SkillType.Reactions,
-			SkillType.Stealth
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('elf-start-1', TraitType.Speed, 1),
+			FeatureLogic.createSkillFeature('elf-start-2', SkillType.Perception, 2),
+			FeatureLogic.createSkillFeature('elf-start-3', SkillType.Reactions, 2),
+			FeatureLogic.createSkillFeature('elf-start-4', SkillType.Stealth, 2)
 		],
 		features: [
 			FeatureLogic.createTraitFeature('elf-feature-1', TraitType.Speed, 1),
@@ -281,12 +273,10 @@ export class HeroSpeciesData {
 		type: CombatantType.Hero,
 		size: 1,
 		quirks: [],
-		traits: [
-			TraitType.Speed
-		],
-		skills: [
-			SkillType.Reactions,
-			SkillType.Stealth
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('gnome-start-1', TraitType.Speed, 1),
+			FeatureLogic.createSkillFeature('gnome-start-2', SkillType.Reactions, 2),
+			FeatureLogic.createSkillFeature('gnome-start-3', SkillType.Stealth, 2)
 		],
 		features: [
 			FeatureLogic.createTraitFeature('gnome-feature-1', TraitType.Speed, 1),
@@ -336,11 +326,9 @@ export class HeroSpeciesData {
 		type: CombatantType.Hero,
 		size: 1,
 		quirks: [],
-		traits: [
-			TraitType.Endurance
-		],
-		skills: [
-			SkillType.Brawl
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('minotaur-start-1', TraitType.Endurance, 1),
+			FeatureLogic.createSkillFeature('minotaur-start-2', SkillType.Brawl, 2)
 		],
 		features: [
 			FeatureLogic.createTraitFeature('minotaur-feature-1', TraitType.Endurance, 1),
@@ -437,11 +425,9 @@ export class HeroSpeciesData {
 		type: CombatantType.Hero,
 		size: 1,
 		quirks: [],
-		traits: [
-			TraitType.Speed
-		],
-		skills: [
-			SkillType.Stealth
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('pixie-start-1', TraitType.Speed, 1),
+			FeatureLogic.createSkillFeature('pixie-start-2', SkillType.Stealth, 2)
 		],
 		features: [
 			FeatureLogic.createTraitFeature('pixie-feature-1', TraitType.Speed, 1),
@@ -483,11 +469,9 @@ export class HeroSpeciesData {
 		type: CombatantType.Hero,
 		size: 1,
 		quirks: [],
-		traits: [
-			TraitType.Speed
-		],
-		skills: [
-			SkillType.Brawl
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('reptilian-start-1', TraitType.Speed, 1),
+			FeatureLogic.createSkillFeature('reptilian-start-2', SkillType.Brawl, 2)
 		],
 		features: [
 			FeatureLogic.createTraitFeature('reptilian-feature-1', TraitType.Speed, 1),
@@ -559,12 +543,10 @@ export class HeroSpeciesData {
 		type: CombatantType.Hero,
 		size: 1,
 		quirks: [],
-		traits: [
-			TraitType.Resolve
-		],
-		skills: [
-			SkillType.Brawl,
-			SkillType.Stealth
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('shadowborn-start-1', TraitType.Resolve, 1),
+			FeatureLogic.createSkillFeature('shadowborn-start-2', SkillType.Brawl, 2),
+			FeatureLogic.createSkillFeature('shadowborn-start-3', SkillType.Stealth, 2)
 		],
 		features: [
 			FeatureLogic.createTraitFeature('shadowborn-feature-1', TraitType.Resolve, 1),
@@ -639,13 +621,11 @@ export class HeroSpeciesData {
 		type: CombatantType.Hero,
 		size: 1,
 		quirks: [],
-		traits: [
-			TraitType.Resolve
-		],
-		skills: [
-			SkillType.Brawl,
-			SkillType.Perception,
-			SkillType.Stealth
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('werewolf-start-1', TraitType.Resolve, 1),
+			FeatureLogic.createSkillFeature('werewolf-start-2', SkillType.Brawl, 2),
+			FeatureLogic.createSkillFeature('werewolf-start-3', SkillType.Perception, 2),
+			FeatureLogic.createSkillFeature('werewolf-start-4', SkillType.Stealth, 2)
 		],
 		features: [
 			FeatureLogic.createTraitFeature('werewolf-feature-1', TraitType.Resolve, 1),

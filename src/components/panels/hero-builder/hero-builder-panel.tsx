@@ -379,8 +379,7 @@ class EquipmentSelector extends Component<EquipmentSelectorProps, EquipmentSelec
 	constructor(props: EquipmentSelectorProps) {
 		super(props);
 
-		const role = GameLogic.getRole(this.props.hero.roleID) as RoleModel;
-		const slots = role.proficiencies.map(prof => {
+		const slots = CombatantLogic.getProficiencies(this.props.hero).map(prof => {
 			return {
 				proficiency: prof,
 				candidates: Collections.shuffle(GameLogic.getItemsForProficiency(prof, props.options.packIDs)).splice(0, 3),

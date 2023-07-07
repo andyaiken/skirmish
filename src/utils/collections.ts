@@ -33,6 +33,10 @@ export class Collections {
 	};
 
 	static mean = <T>(collection: T[], callback: (item: T) => number): number => {
+		if (collection.length === 0) {
+			return 0;
+		}
+
 		return Collections.sum(collection, callback) / collection.length;
 	};
 

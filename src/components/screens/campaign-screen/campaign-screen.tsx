@@ -1,5 +1,7 @@
-import { IconBackpack, IconInfoCircle, IconInfoCircleFilled, IconMap, IconUsers } from '@tabler/icons-react';
+import { IconBackpack, IconCards, IconInfoCircle, IconInfoCircleFilled, IconMap, IconUsers } from '@tabler/icons-react';
 import { Component } from 'react';
+
+import { GameLogic } from '../../../logic/game-logic';
 
 import type { BoonModel } from '../../../models/boon';
 import type { CombatantModel } from '../../../models/combatant';
@@ -28,6 +30,7 @@ interface Props {
 	options: OptionsModel;
 	hasExceptions: boolean;
 	showHelp: (file: string) => void;
+	showPacks: () => void;
 	addHero: (hero: CombatantModel) => void;
 	incrementXP: (hero: CombatantModel) => void;
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
@@ -141,6 +144,8 @@ export class CampaignScreen extends Component<Props, State> {
 				}
 			];
 
+			const availablePacks = GameLogic.getPacks().filter(p => !this.props.options.packIDs.includes(p.id)).length;
+
 			return (
 				<div className='campaign-screen'>
 					<div className='campaign-top-bar'>
@@ -149,6 +154,13 @@ export class CampaignScreen extends Component<Props, State> {
 						<button className='icon-btn' title='Information' onClick={() => this.props.showHelp(this.state.screen)}>
 							{this.props.options.developer && this.props.hasExceptions ? <IconInfoCircleFilled /> : <IconInfoCircle />}
 						</button>
+						{
+							availablePacks > 0 ?
+								<button className='icon-btn' title='Packs' onClick={() => this.props.showPacks()}>
+									<IconCards />
+								</button>
+								: null
+						}
 					</div>
 					<div className='campaign-content'>
 						{content}

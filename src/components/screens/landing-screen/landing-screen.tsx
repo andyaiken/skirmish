@@ -1,8 +1,12 @@
 import { Component } from 'react';
+import { IconCards } from '@tabler/icons-react';
 
 import { CardType } from '../../../enums/card-type';
 
+import { GameLogic } from '../../../logic/game-logic';
+
 import type { GameModel } from '../../../models/game';
+import type { OptionsModel } from '../../../models/options';
 
 import { PlayingCard, Tag, Text } from '../../controls';
 import { PlaceholderCard } from '../../cards';
@@ -13,8 +17,10 @@ import pkg from '../../../../package.json';
 
 interface Props {
 	game: GameModel | null;
+	options: OptionsModel;
 	startCampaign: () => void;
 	continueCampaign: () => void;
+	showPacks: () => void;
 }
 
 export class LandingScreen extends Component<Props> {
@@ -36,6 +42,17 @@ export class LandingScreen extends Component<Props> {
 						stack={true}
 						front={<PlaceholderCard text='Start' subtext='Click here to begin a new campaign.' onClick={this.props.startCampaign} />}
 					/>
+				);
+			}
+
+			let packsBtn = null;
+			const availablePacks = GameLogic.getPacks().filter(p => !this.props.options.packIDs.includes(p.id)).length;
+			if (availablePacks > 0) {
+				packsBtn = (
+					<button className='packs-btn' onClick={() => this.props.showPacks()}>
+						{availablePacks === 1 ? '1 Pack' : `${availablePacks} Packs`} Available
+						<IconCards />
+					</button>
 				);
 			}
 
@@ -64,7 +81,10 @@ export class LandingScreen extends Component<Props> {
 								Good luck!
 							</p>
 						</Text>
-						{mainBtn}
+						<div className='action-buttons'>
+							{mainBtn}
+							{packsBtn}
+						</div>
 					</div>
 					<div className='landing-footer'>
 						<Tag>Version {pkg.version}</Tag>

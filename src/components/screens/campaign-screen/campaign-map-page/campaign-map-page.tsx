@@ -82,6 +82,7 @@ export class CampaignMapPage extends Component<Props, State> {
 		const regions = Collections.distinct(this.props.game.map.squares.map(sq => sq.regionID).filter(id => id !== ''), id => id);
 		const owned = this.props.game.map.squares.filter(sq => sq.regionID === '');
 		const ownedFraction = owned.length / this.props.game.map.squares.length;
+		const encounters = Collections.sum(this.props.game.map.regions, r => r.encounters.length);
 		return (
 			<div className='sidebar'>
 				<Text type={TextType.SubHeading}>The Island</Text>
@@ -97,17 +98,21 @@ export class CampaignMapPage extends Component<Props, State> {
 				<div className='map-stats'>
 					<StatValue
 						orientation='vertical'
-						label={<div>Regions<br ></br>Remaining</div>}
+						label='Regions Remaining'
 						value={regions.length}
 					/>
 				</div>
-				<div className='map-stats'>
-					<StatValue
-						orientation='vertical'
-						label={<div>Encounters<br />Remaining</div>}
-						value={Collections.sum(this.props.game.map.regions, r => r.encounters.length)}
-					/>
-				</div>
+				{
+					encounters <= 100 ?
+						<div className='map-stats'>
+							<StatValue
+								orientation='vertical'
+								label='Encounters Remaining'
+								value={encounters}
+							/>
+						</div>
+						: null
+				}
 			</div>
 		);
 	};

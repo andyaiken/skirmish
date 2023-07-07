@@ -6,6 +6,7 @@ export interface BackgroundModel {
 	name: string;
 	packID: string;
 	description: string;
+	startingFeatures: FeatureModel[];
 	features: FeatureModel[];
 	actions: ActionModel[];
 }

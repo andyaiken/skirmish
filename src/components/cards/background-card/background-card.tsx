@@ -53,6 +53,16 @@ export class BackgroundCard extends Component<Props, State> {
 	};
 
 	render = () => {
+		let startingFeatures = null;
+		if (this.props.background.features.length > 0) {
+			startingFeatures = (
+				<div>
+					<Text type={TextType.MinorHeading}>Start With</Text>
+					{this.props.background.startingFeatures.map(f => <ListItemPanel key={f.id} item={FeatureLogic.getFeatureDescription(f)} />)}
+				</div>
+			);
+		}
+
 		let features = null;
 		if (this.props.background.features.length > 0) {
 			features = (
@@ -94,6 +104,7 @@ export class BackgroundCard extends Component<Props, State> {
 				}
 				back={(
 					<div className='background-card-back'>
+						{startingFeatures}
 						{features}
 						{actions}
 					</div>

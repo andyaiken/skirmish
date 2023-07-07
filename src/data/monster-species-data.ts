@@ -25,13 +25,11 @@ export class MonsterSpeciesData {
 		type: CombatantType.Monster,
 		size: 1,
 		quirks: [],
-		traits: [
-			TraitType.Endurance,
-			TraitType.Speed
-		],
-		skills: [
-			SkillType.Brawl,
-			SkillType.Weapon
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('orc-start-1', TraitType.Endurance, 1),
+			FeatureLogic.createTraitFeature('orc-start-2', TraitType.Speed, 1),
+			FeatureLogic.createSkillFeature('orc-start-3', SkillType.Brawl, 2),
+			FeatureLogic.createSkillFeature('orc-start-4', SkillType.Weapon, 2)
 		],
 		features: [
 			FeatureLogic.createDamageResistFeature('orc-feature-1', DamageType.All, 1),
@@ -85,12 +83,10 @@ export class MonsterSpeciesData {
 		type: CombatantType.Monster,
 		size: 1,
 		quirks: [],
-		traits: [
-			TraitType.Speed
-		],
-		skills: [
-			SkillType.Reactions,
-			SkillType.Stealth
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('goblin-start-1', TraitType.Speed, 1),
+			FeatureLogic.createSkillFeature('goblin-start-2', SkillType.Reactions, 2),
+			FeatureLogic.createSkillFeature('goblin-start-3', SkillType.Stealth, 2)
 		],
 		features: [
 			FeatureLogic.createTraitFeature('goblin-feature-1', TraitType.Speed, 1),
@@ -147,10 +143,9 @@ export class MonsterSpeciesData {
 		quirks: [
 			QuirkType.Mindless
 		],
-		traits: [
-			TraitType.Endurance
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('troll-start-1', TraitType.Endurance, 2)
 		],
-		skills: [],
 		features: [
 			FeatureLogic.createTraitFeature('troll-feature-1', TraitType.Endurance, 1),
 			FeatureLogic.createDamageCategoryResistFeature('troll-feature-2', DamageCategoryType.Physical, 1),
@@ -202,12 +197,10 @@ export class MonsterSpeciesData {
 		type: CombatantType.Monster,
 		size: 1,
 		quirks: [],
-		traits: [
-			TraitType.Speed
-		],
-		skills: [
-			SkillType.Brawl,
-			SkillType.Presence
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('naga-start-1', TraitType.Speed, 1),
+			FeatureLogic.createSkillFeature('naga-start-2', SkillType.Brawl, 2),
+			FeatureLogic.createSkillFeature('naga-start-3', SkillType.Presence, 2)
 		],
 		features: [
 			FeatureLogic.createTraitFeature('naga-feature-1', TraitType.Speed, 1),
@@ -285,15 +278,16 @@ export class MonsterSpeciesData {
 		type: CombatantType.Monster,
 		size: 1,
 		quirks: [],
-		traits: [],
-		skills: [
-			SkillType.Brawl
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('elemental-fire-start-1', TraitType.Speed, 1),
+			FeatureLogic.createSkillFeature('elemental-fire-start-2', SkillType.Brawl, 2)
 		],
 		features: [
-			FeatureLogic.createSkillFeature('elemental-fire-feature-1', SkillType.Brawl, 2),
-			FeatureLogic.createDamageBonusFeature('elemental-fire-feature-2', DamageType.Fire, 2),
-			FeatureLogic.createDamageResistFeature('elemental-fire-feature-3', DamageType.Fire, 5),
-			FeatureLogic.createAuraDamageFeature('elemental-fire-feature-4', ConditionType.AutoDamage, DamageType.Fire, 1)
+			FeatureLogic.createTraitFeature('elemental-fire-feature-1', TraitType.Speed, 1),
+			FeatureLogic.createSkillFeature('elemental-fire-feature-2', SkillType.Brawl, 2),
+			FeatureLogic.createDamageBonusFeature('elemental-fire-feature-3', DamageType.Fire, 2),
+			FeatureLogic.createDamageResistFeature('elemental-fire-feature-4', DamageType.Fire, 5),
+			FeatureLogic.createAuraDamageFeature('elemental-fire-feature-5', ConditionType.AutoDamage, DamageType.Fire, 1)
 		],
 		actions: [
 			{
@@ -367,15 +361,16 @@ export class MonsterSpeciesData {
 		type: CombatantType.Monster,
 		size: 1,
 		quirks: [],
-		traits: [],
-		skills: [
-			SkillType.Brawl
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('elemental-air-start-1', TraitType.Resolve, 1),
+			FeatureLogic.createSkillFeature('elemental-air-start-2', SkillType.Brawl, 2)
 		],
 		features: [
-			FeatureLogic.createSkillFeature('elemental-air-feature-1', SkillType.Brawl, 2),
-			FeatureLogic.createDamageBonusFeature('elemental-air-feature-2', DamageType.Cold, 2),
-			FeatureLogic.createDamageResistFeature('elemental-air-feature-3', DamageType.Cold, 5),
-			FeatureLogic.createAuraDamageFeature('elemental-air-feature-4', ConditionType.AutoDamage, DamageType.Cold, 1)
+			FeatureLogic.createTraitFeature('elemental-air-start-1', TraitType.Resolve, 1),
+			FeatureLogic.createSkillFeature('elemental-air-feature-2', SkillType.Brawl, 2),
+			FeatureLogic.createDamageBonusFeature('elemental-air-feature-3', DamageType.Cold, 2),
+			FeatureLogic.createDamageResistFeature('elemental-air-feature-4', DamageType.Cold, 5),
+			FeatureLogic.createAuraDamageFeature('elemental-air-feature-5', ConditionType.AutoDamage, DamageType.Cold, 1)
 		],
 		actions: [
 			{
@@ -430,15 +425,17 @@ export class MonsterSpeciesData {
 		type: CombatantType.Monster,
 		size: 1,
 		quirks: [],
-		traits: [],
-		skills: [
-			SkillType.Brawl
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('elemental-earth-start-1', TraitType.Endurance, 2),
+			FeatureLogic.createTraitFeature('elemental-earth-start-2', TraitType.Speed, -1),
+			FeatureLogic.createSkillFeature('elemental-earth-start-3', SkillType.Brawl, 2)
 		],
 		features: [
-			FeatureLogic.createSkillFeature('elemental-earth-feature-1', SkillType.Brawl, 2),
-			FeatureLogic.createDamageBonusFeature('elemental-earth-feature-2', DamageType.Impact, 2),
-			FeatureLogic.createDamageResistFeature('elemental-earth-feature-3', DamageType.Impact, 5),
-			FeatureLogic.createAuraDamageFeature('elemental-earth-feature-4', ConditionType.AutoDamage, DamageType.Impact, 1)
+			FeatureLogic.createTraitFeature('elemental-earth-feature-1', TraitType.Endurance, 1),
+			FeatureLogic.createSkillFeature('elemental-earth-feature-2', SkillType.Brawl, 2),
+			FeatureLogic.createDamageBonusFeature('elemental-earth-feature-3', DamageType.Impact, 2),
+			FeatureLogic.createDamageResistFeature('elemental-earth-feature-4', DamageType.Impact, 5),
+			FeatureLogic.createAuraDamageFeature('elemental-earth-feature-5', ConditionType.AutoDamage, DamageType.Impact, 1)
 		],
 		actions: [
 			{
@@ -515,9 +512,8 @@ export class MonsterSpeciesData {
 		quirks: [
 			QuirkType.Beast
 		],
-		traits: [],
-		skills: [
-			SkillType.Brawl
+		startingFeatures: [
+			FeatureLogic.createSkillFeature('scarab-start-1', SkillType.Brawl, 2)
 		],
 		features: [
 			FeatureLogic.createSkillFeature('scarab-feature-1', SkillType.Brawl, 2),
@@ -577,9 +573,8 @@ export class MonsterSpeciesData {
 		quirks: [
 			QuirkType.Beast
 		],
-		traits: [],
-		skills: [
-			SkillType.Brawl
+		startingFeatures: [
+			FeatureLogic.createSkillFeature('giant-spider-start-1', SkillType.Brawl, 2)
 		],
 		features: [
 			FeatureLogic.createSkillFeature('giant-spider-feature-1', SkillType.Brawl, 2),
@@ -639,11 +634,9 @@ export class MonsterSpeciesData {
 		quirks: [
 			QuirkType.Beast
 		],
-		traits: [
-			TraitType.Endurance
-		],
-		skills: [
-			SkillType.Brawl
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('bear-start-1', TraitType.Endurance, 1),
+			FeatureLogic.createSkillFeature('bear-start-2', SkillType.Brawl, 2)
 		],
 		features: [
 			FeatureLogic.createTraitFeature('bear-feature-1', TraitType.Endurance, 1),
@@ -722,9 +715,8 @@ export class MonsterSpeciesData {
 			QuirkType.Mindless,
 			QuirkType.Undead
 		],
-		traits: [],
-		skills: [
-			SkillType.Brawl
+		startingFeatures: [
+			FeatureLogic.createSkillFeature('zombie-start-1', SkillType.Brawl, 2)
 		],
 		features: [
 			FeatureLogic.createSkillFeature('zombie-feature-1', SkillType.Brawl, 2),
@@ -786,9 +778,8 @@ export class MonsterSpeciesData {
 		quirks: [
 			QuirkType.Undead
 		],
-		traits: [],
-		skills: [
-			SkillType.Brawl
+		startingFeatures: [
+			FeatureLogic.createSkillFeature('skeleton-start-1', SkillType.Brawl, 2)
 		],
 		features: [
 			FeatureLogic.createSkillFeature('skeleton-feature-1', SkillType.Brawl, 2),
@@ -839,10 +830,9 @@ export class MonsterSpeciesData {
 		quirks: [
 			QuirkType.Undead
 		],
-		traits: [],
-		skills: [
-			SkillType.Brawl,
-			SkillType.Presence
+		startingFeatures: [
+			FeatureLogic.createSkillFeature('vampire-start-1', SkillType.Brawl, 2),
+			FeatureLogic.createSkillFeature('vampire-start-2', SkillType.Presence, 2)
 		],
 		features: [
 			FeatureLogic.createSkillFeature('vampire-feature-1', SkillType.Brawl, 2),
@@ -916,12 +906,10 @@ export class MonsterSpeciesData {
 		type: CombatantType.Monster,
 		size: 3,
 		quirks: [],
-		traits: [
-			TraitType.Endurance,
-			TraitType.Endurance,
-			TraitType.Endurance
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('giant-start-1', TraitType.Endurance, 3),
+			FeatureLogic.createSkillFeature('giant-start-2', SkillType.Brawl, 2)
 		],
-		skills: [],
 		features: [
 			FeatureLogic.createTraitFeature('giant-feature-1', TraitType.Endurance, 1),
 			FeatureLogic.createTraitFeature('giant-feature-2', TraitType.Resolve, 1),

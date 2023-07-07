@@ -66,22 +66,12 @@ export class SpeciesCard extends Component<Props, State> {
 			);
 		}
 
-		let traits = null;
-		if (this.props.species.traits.length > 0) {
-			traits = (
+		let startingFeatures = null;
+		if (this.props.species.startingFeatures.length > 0) {
+			startingFeatures = (
 				<div>
-					<Text type={TextType.MinorHeading}>Traits</Text>
-					{this.props.species.traits.map((t, n) => <ListItemPanel key={n} item={t} />)}
-				</div>
-			);
-		}
-
-		let skills = null;
-		if (this.props.species.skills.length > 0) {
-			skills = (
-				<div>
-					<Text type={TextType.MinorHeading}>Skills</Text>
-					{this.props.species.skills.map((s, n) => <ListItemPanel key={n} item={s} />)}
+					<Text type={TextType.MinorHeading}>Start With</Text>
+					{this.props.species.startingFeatures.map(f => <ListItemPanel key={f.id} item={FeatureLogic.getFeatureDescription(f)} />)}
 				</div>
 			);
 		}
@@ -133,8 +123,7 @@ export class SpeciesCard extends Component<Props, State> {
 				back={(
 					<div className='species-card-back'>
 						{size}
-						{traits}
-						{skills}
+						{startingFeatures}
 						{features}
 						{actions}
 					</div>

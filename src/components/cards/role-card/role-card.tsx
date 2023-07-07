@@ -53,32 +53,12 @@ export class RoleCard extends Component<Props, State> {
 	};
 
 	render = () => {
-		let traits = null;
-		if (this.props.role.traits.length > 0) {
-			traits = (
+		let startingFeatures = null;
+		if (this.props.role.startingFeatures.length > 0) {
+			startingFeatures = (
 				<div>
-					<Text type={TextType.MinorHeading}>Traits</Text>
-					{this.props.role.traits.map((t, n) => <ListItemPanel key={n} item={t} />)}
-				</div>
-			);
-		}
-
-		let skills = null;
-		if (this.props.role.skills.length > 0) {
-			skills = (
-				<div>
-					<Text type={TextType.MinorHeading}>Skills</Text>
-					{this.props.role.skills.map((s, n) => <ListItemPanel key={n} item={s} />)}
-				</div>
-			);
-		}
-
-		let profs = null;
-		if (this.props.role.proficiencies.length > 0) {
-			profs = (
-				<div>
-					<Text type={TextType.MinorHeading}>Proficiencies</Text>
-					{this.props.role.proficiencies.map((p, n) => <ListItemPanel key={n} item={p} />)}
+					<Text type={TextType.MinorHeading}>Start With</Text>
+					{this.props.role.startingFeatures.map(f => <ListItemPanel key={f.id} item={FeatureLogic.getFeatureDescription(f)} />)}
 				</div>
 			);
 		}
@@ -124,9 +104,7 @@ export class RoleCard extends Component<Props, State> {
 				}
 				back={(
 					<div className='role-card-back'>
-						{traits}
-						{skills}
-						{profs}
+						{startingFeatures}
 						{features}
 						{actions}
 					</div>

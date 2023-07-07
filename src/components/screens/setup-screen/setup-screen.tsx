@@ -158,7 +158,7 @@ export class SetupScreen extends Component<Props, State> {
 							{
 								this.props.game.heroes.length === 0 ?
 									<PlayingCard
-										type={CardType.Species}
+										type={CardType.Role}
 										stack={true}
 										front={<PlaceholderCard text='Randomize' subtext='Click here to draw a random team of heroes' onClick={this.createHeroes} />}
 									/>

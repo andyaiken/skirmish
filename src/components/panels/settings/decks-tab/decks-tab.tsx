@@ -15,7 +15,7 @@ import './decks-tab.scss';
 
 interface Props {
 	options: OptionsModel;
-	setActions: (source: string, type: CardType, features: FeatureModel[], actions: ActionModel[]) => void;
+	setActions: (source: string, type: CardType, starting: FeatureModel[], features: FeatureModel[], actions: ActionModel[]) => void;
 }
 
 export class DecksTab extends Component<Props> {
@@ -24,7 +24,7 @@ export class DecksTab extends Component<Props> {
 			const heroes = GameLogic.getHeroSpeciesDeck(this.props.options.packIDs).map(s => {
 				return (
 					<div key={s.id}>
-						<SpeciesCard species={s} onSelect={species => this.props.setActions(species.name, CardType.Species, species.features, species.actions)} />
+						<SpeciesCard species={s} onSelect={species => this.props.setActions(species.name, CardType.Species, species.startingFeatures, species.features, species.actions)} />
 						{this.props.options.developer ? <StatValue label='Strength' value={GameLogic.getSpeciesStrength(s)} /> : null}
 					</div>
 				);
@@ -33,7 +33,7 @@ export class DecksTab extends Component<Props> {
 			const monsters = GameLogic.getMonsterSpeciesDeck(this.props.options.packIDs).map(s => {
 				return (
 					<div key={s.id}>
-						<SpeciesCard species={s} onSelect={species => this.props.setActions(species.name, CardType.Species, species.features, species.actions)} />
+						<SpeciesCard species={s} onSelect={species => this.props.setActions(species.name, CardType.Species, species.startingFeatures, species.features, species.actions)} />
 						{this.props.options.developer ? <StatValue label='Strength' value={GameLogic.getSpeciesStrength(s)} /> : null}
 					</div>
 				);
@@ -42,7 +42,7 @@ export class DecksTab extends Component<Props> {
 			const roles = GameLogic.getRoleDeck(this.props.options.packIDs).map(r => {
 				return (
 					<div key={r.id}>
-						<RoleCard role={r} onSelect={role => this.props.setActions(role.name, CardType.Role, role.features, role.actions)} />
+						<RoleCard role={r} onSelect={role => this.props.setActions(role.name, CardType.Role, role.startingFeatures, role.features, role.actions)} />
 						{this.props.options.developer ? <StatValue label='Strength' value={GameLogic.getRoleStrength(r)} /> : null}
 					</div>
 				);
@@ -51,7 +51,7 @@ export class DecksTab extends Component<Props> {
 			const backgrounds = GameLogic.getBackgroundDeck(this.props.options.packIDs).map(b => {
 				return (
 					<div key={b.id}>
-						<BackgroundCard background={b} onSelect={background => this.props.setActions(background.name, CardType.Background, background.features, background.actions)} />
+						<BackgroundCard background={b} onSelect={bg => this.props.setActions(bg.name, CardType.Background, bg.startingFeatures, bg.features, bg.actions)} />
 						{this.props.options.developer ? <StatValue label='Strength' value={GameLogic.getBackgroundStrength(b)} /> : null}
 					</div>
 				);

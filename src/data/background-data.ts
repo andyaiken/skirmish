@@ -22,6 +22,7 @@ export class BackgroundData {
 		name: 'Acrobat',
 		packID: '',
 		description: 'Quick and lithe, acrobats are difficult to pin down.',
+		startingFeatures: [],
 		features: [
 			FeatureLogic.createTraitFeature('acrobat-feature-2', TraitType.Speed, 1),
 			FeatureLogic.createSkillFeature('acrobat-feature-3', SkillType.Reactions, 2)
@@ -61,6 +62,7 @@ export class BackgroundData {
 		name: 'Bard',
 		packID: '',
 		description: 'The charismatic bard inspires their allies to greatness.',
+		startingFeatures: [],
 		features: [
 			FeatureLogic.createSkillFeature('bard-feature-1', SkillType.Presence, 2),
 			FeatureLogic.createSkillCategoryFeature('bard-feature-2', SkillCategoryType.Mental, 1),
@@ -121,6 +123,7 @@ export class BackgroundData {
 		name: 'Commander',
 		packID: '',
 		description: 'A commander uses tactical analysis to make the most of any situation.',
+		startingFeatures: [],
 		features: [
 			FeatureLogic.createSkillFeature('commander-feature-1', SkillType.Presence, 2),
 			FeatureLogic.createAuraDamageCategoryFeature('commander-feature-2', ConditionType.DamageCategoryBonus, DamageCategoryType.Corruption, 1),
@@ -171,6 +174,7 @@ export class BackgroundData {
 		name: 'Grenadier',
 		packID: PackData.technology.id,
 		description: 'Grenadiers use explosives, which are dangerous and difficult to master.',
+		startingFeatures: [],
 		features: [
 			FeatureLogic.createSkillFeature('grenadier-feature-1', SkillType.Perception, 2),
 			FeatureLogic.createSkillFeature('grenadier-feature-2', SkillType.Any, 1)
@@ -243,6 +247,7 @@ export class BackgroundData {
 		name: 'Mountebank',
 		packID: PackData.skullduggery.id,
 		description: 'Tricksters and con artists, mountebanks make valuable allies and frustrating foes.',
+		startingFeatures: [],
 		features: [
 			FeatureLogic.createSkillFeature('mountebank-feature-1', SkillType.Presence, 2),
 			FeatureLogic.createAuraDamageCategoryFeature('mountebank-feature-2', ConditionType.DamageCategoryVulnerability, DamageCategoryType.Corruption, 1),
@@ -280,6 +285,7 @@ export class BackgroundData {
 		name: 'Mystic',
 		packID: PackData.arcana.id,
 		description: 'Mystics are the masters of the arcane arts.',
+		startingFeatures: [],
 		features: [
 			FeatureLogic.createSkillFeature('mystic-feature-1', SkillType.Spellcasting, 2),
 			FeatureLogic.createDamageCategoryBonusFeature('mystic-feature-2', DamageCategoryType.Energy, 1),
@@ -331,6 +337,7 @@ export class BackgroundData {
 		name: 'Noble',
 		packID: '',
 		description: 'Though they can be haughty, nobles bring an imposing presence to a battlefield.',
+		startingFeatures: [],
 		features: [
 			FeatureLogic.createSkillFeature('noble-feature-1', SkillType.Presence, 2),
 			FeatureLogic.createAuraFeature('noble-feature-2', ConditionType.MovementBonus, 1),
@@ -388,6 +395,7 @@ export class BackgroundData {
 		name: 'Physician',
 		packID: '',
 		description: 'For many groups, a physician is the difference between life and death.',
+		startingFeatures: [],
 		features: [
 			FeatureLogic.createAuraFeature('physician-feature-1', ConditionType.AutoHeal, 1)
 		],
@@ -446,6 +454,7 @@ export class BackgroundData {
 		name: 'Reaver',
 		packID: '',
 		description: 'Reavers are rarely satisfied with anything other than carnage.',
+		startingFeatures: [],
 		features: [
 			FeatureLogic.createSkillFeature('reaver-feature-1', SkillType.Brawl, 2),
 			FeatureLogic.createSkillFeature('reaver-feature-2', SkillType.Weapon, 2),
@@ -499,6 +508,7 @@ export class BackgroundData {
 		name: 'Sentinel',
 		packID: '',
 		description: 'Nothing gets past a sentinel unless they allow it.',
+		startingFeatures: [],
 		features: [
 			FeatureLogic.createTraitFeature('sentinel-feature-1', TraitType.Endurance, 1),
 			FeatureLogic.createTraitFeature('sentinel-feature-2', TraitType.Resolve, 1),
@@ -548,6 +558,7 @@ export class BackgroundData {
 		name: 'Thief',
 		packID: PackData.skullduggery.id,
 		description: 'Never put your trust in a thief, even when they\'re on your side.',
+		startingFeatures: [],
 		features: [
 			FeatureLogic.createSkillFeature('thief-feature-1', SkillType.Reactions, 2),
 			FeatureLogic.createSkillFeature('thief-feature-2', SkillType.Stealth, 2),

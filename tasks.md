@@ -10,12 +10,15 @@
 
 # Priority
 
+## Packs
+* Add packs button to setup screen
+
 -----------------------------------------------------------------------------------------
 
 # Improvements / Enhancements
 
 ## Features
-* Mountebank and Pixie should have a blur aura
+* Mountebank, Ninja, Sensei, and Pixie should have a blur aura
   * Affects self
   * When attacked, roll aura rank; 10+ means attack misses
 

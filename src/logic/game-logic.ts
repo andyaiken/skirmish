@@ -310,14 +310,7 @@ export class GameLogic {
 	static getSpeciesStrength = (species: SpeciesModel) => {
 		let value = 0;
 
-		species.traits.forEach(t => {
-			value += 5;
-		});
-
-		species.skills.forEach(s => {
-			value += 1;
-		});
-
+		value += Collections.mean(species.startingFeatures, feature => GameLogic.getFeatureStrength(feature)) + species.startingFeatures.length;
 		value += Collections.mean(species.features, feature => GameLogic.getFeatureStrength(feature)) + species.features.length;
 		value += Collections.mean(species.actions, action => GameLogic.getActionStrength(action)) + species.actions.length;
 
@@ -327,14 +320,7 @@ export class GameLogic {
 	static getRoleStrength = (role: RoleModel) => {
 		let value = 0;
 
-		role.traits.forEach(t => {
-			value += 5;
-		});
-
-		role.skills.forEach(s => {
-			value += 1;
-		});
-
+		value += Collections.mean(role.startingFeatures, feature => GameLogic.getFeatureStrength(feature)) + role.startingFeatures.length;
 		value += Collections.mean(role.features, feature => GameLogic.getFeatureStrength(feature)) + role.features.length;
 		value += Collections.mean(role.actions, action => GameLogic.getActionStrength(action)) + role.actions.length;
 
@@ -344,6 +330,7 @@ export class GameLogic {
 	static getBackgroundStrength = (background: BackgroundModel) => {
 		let value = 0;
 
+		value += Collections.mean(background.startingFeatures, feature => GameLogic.getFeatureStrength(feature)) + background.startingFeatures.length;
 		value += Collections.mean(background.features, feature => GameLogic.getFeatureStrength(feature)) + background.features.length;
 		value += Collections.mean(background.actions, action => GameLogic.getActionStrength(action)) + background.actions.length;
 

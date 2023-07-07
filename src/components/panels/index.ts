@@ -11,6 +11,7 @@ import { InitiativeListPanel } from './initiative-list/initiative-list-panel';
 import { ListItemPanel } from './list-item/list-item-panel';
 import { MagicItemInfoPanel } from './magic-item-info/magic-item-info-panel';
 import { MagicItemsPanel } from './magic-items/magic-items-panel';
+import { PacksPanel } from './packs/packs';
 import { SettingsPanel } from './settings/settings-panel';
 import { TreasureRowPanel } from './treasure-row/treasure-row-panel';
 import { TurnLogPanel } from './turn-log/turn-log';
@@ -29,6 +30,7 @@ export {
 	ListItemPanel,
 	MagicItemInfoPanel,
 	MagicItemsPanel,
+	PacksPanel,
 	SettingsPanel,
 	TreasureRowPanel,
 	TurnLogPanel

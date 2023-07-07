@@ -13,7 +13,6 @@ import { ActionCard, FeatureCard } from '../../cards';
 import { CardList, Dialog, StatValue, Tabs, Text, TextType } from '../../controls';
 import { DecksTab } from './decks-tab/decks-tab';
 import { OptionsTab } from './options-tab/options-tab';
-import { PacksTab } from './packs-tab/packs-tab';
 import { RulesTab } from './rules-tab/rules-tab';
 
 import './settings-panel.scss';
@@ -25,7 +24,6 @@ interface Props {
 	options: OptionsModel;
 	exceptions: string[];
 	rules: string;
-	addPack: (packID: string) => void;
 	removePack: (packID: string) => void;
 	endCampaign: () => void;
 	setDeveloperMode: (value: boolean) => void;
@@ -37,6 +35,7 @@ interface State {
 	local: boolean;
 	actionSourceName: string;
 	actionSourceType: CardType;
+	starting: FeatureModel[];
 	features: FeatureModel[];
 	actions: ActionModel[];
 }
@@ -49,15 +48,17 @@ export class SettingsPanel extends Component<Props, State> {
 			local: window.location.href.includes('localhost'),
 			actionSourceName: '',
 			actionSourceType: CardType.Default,
+			starting: [],
 			features: [],
 			actions: []
 		};
 	}
 
-	setActions = (source: string, type: CardType, features: FeatureModel[], actions: ActionModel[]) => {
+	setActions = (source: string, type: CardType, starting: FeatureModel[], features: FeatureModel[], actions: ActionModel[]) => {
 		this.setState({
 			actionSourceName: source,
 			actionSourceType: type,
+			starting: starting,
 			features: features,
 			actions: actions
 		});
@@ -68,7 +69,6 @@ export class SettingsPanel extends Component<Props, State> {
 			const tabs = [
 				{ id: 'rules', display: 'Game Rules' },
 				{ id: 'decks', display: 'Your Cards' },
-				{ id: 'packs', display: 'Packs' },
 				{ id: 'options', display: 'Options' }
 			];
 
@@ -90,17 +90,6 @@ export class SettingsPanel extends Component<Props, State> {
 						<div className='content'>
 							<DecksTab
 								options={this.props.options}
-								setActions={this.setActions}
-							/>
-						</div>
-					);
-					break;
-				case 'packs':
-					content = (
-						<div className='content'>
-							<PacksTab
-								options={this.props.options}
-								addPack={this.props.addPack}
 								setActions={this.setActions}
 							/>
 						</div>
@@ -133,6 +122,18 @@ export class SettingsPanel extends Component<Props, State> {
 
 			let dialog = null;
 			if (this.state.actionSourceName !== '') {
+				const startingCards = this.state.starting.map(f => {
+					return (
+						<div key={f.id}>
+							<FeatureCard
+								feature={f}
+								footer={this.state.actionSourceName}
+								footerType={this.state.actionSourceType}
+							/>
+							{this.props.options.developer ? <StatValue label='Strength' value={GameLogic.getFeatureStrength(f)} /> : null}
+						</div>
+					);
+				});
 				const featureCards = this.state.features.map(f => {
 					return (
 						<div key={f.id}>
@@ -161,6 +162,9 @@ export class SettingsPanel extends Component<Props, State> {
 					<div>
 						<Text type={TextType.Heading}>{this.state.actionSourceName}</Text>
 						<hr />
+						<Text type={TextType.SubHeading}>Starting Cards</Text>
+						<CardList cards={startingCards} />
+						<hr />
 						<Text type={TextType.SubHeading}>Feature Cards</Text>
 						<CardList cards={featureCards} />
 						<hr />
@@ -172,7 +176,7 @@ export class SettingsPanel extends Component<Props, State> {
 					<Dialog
 						content={content}
 						level={2}
-						onClose={() => this.setActions('', CardType.Default, [], [])}
+						onClose={() => this.setActions('', CardType.Default, [], [], [])}
 					/>
 				);
 			}

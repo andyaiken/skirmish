@@ -1,37 +1,32 @@
 import { Component } from 'react';
 import { IconCards } from '@tabler/icons-react';
 
-import { BackgroundData } from '../../../../data/background-data';
-import { HeroSpeciesData } from '../../../../data/hero-species-data';
-import { ItemData } from '../../../../data/item-data';
-import { MonsterSpeciesData } from '../../../../data/monster-species-data';
-import { RoleData } from '../../../../data/role-data';
+import { BackgroundData } from '../../../data/background-data';
+import { HeroSpeciesData } from '../../../data/hero-species-data';
+import { ItemData } from '../../../data/item-data';
+import { MonsterSpeciesData } from '../../../data/monster-species-data';
+import { RoleData } from '../../../data/role-data';
 
-import { CardType } from '../../../../enums/card-type';
+import { GameLogic } from '../../../logic/game-logic';
 
-import { GameLogic } from '../../../../logic/game-logic';
+import type { OptionsModel } from '../../../models/options';
+import type { PackModel } from '../../../models/pack';
 
-import type { ActionModel } from '../../../../models/action';
-import type { FeatureModel } from '../../../../models/feature';
-import type { OptionsModel } from '../../../../models/options';
-import type { PackModel } from '../../../../models/pack';
+import { BackgroundCard, ItemCard, PackCard, RoleCard, SpeciesCard } from '../../cards';
+import { CardList, StatValue, Text, TextType } from '../../controls';
 
-import { BackgroundCard, ItemCard, PackCard, RoleCard, SpeciesCard } from '../../../cards';
-import { CardList, StatValue, Text, TextType } from '../../../controls';
-
-import './packs-tab.scss';
+import './packs.scss';
 
 interface Props {
 	options: OptionsModel;
 	addPack: (packID: string) => void;
-	setActions: (source: string, type: CardType, features: FeatureModel[], actions: ActionModel[]) => void;
 }
 
 interface State {
 	selectedPack: PackModel | null;
 }
 
-export class PacksTab extends Component<Props, State> {
+export class PacksPanel extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
@@ -69,13 +64,13 @@ export class PacksTab extends Component<Props, State> {
 
 		return (
 			<div className='packs-sidebar'>
-				<Text type={TextType.SubHeading}>My Packs</Text>
-				{owned}
-				{owned.length === 0 ? <Text type={TextType.Small}>None.</Text> : null}
-				<hr />
 				<Text type={TextType.SubHeading}>Available Packs</Text>
 				{notOwned}
 				{notOwned.length === 0 ? <Text type={TextType.Small}>None.</Text> : null}
+				<hr />
+				<Text type={TextType.SubHeading}>My Packs</Text>
+				{owned}
+				{owned.length === 0 ? <Text type={TextType.Small}>None.</Text> : null}
 			</div>
 		);
 	};
@@ -83,7 +78,7 @@ export class PacksTab extends Component<Props, State> {
 	getPackContent = () => {
 		if (!this.state.selectedPack) {
 			return (
-				<div key='empty' className='pack-content'>
+				<div key='empty' className='pack-content empty'>
 					<Text>Select a pack from the list on the left.</Text>
 				</div>
 			);
@@ -102,7 +97,7 @@ export class PacksTab extends Component<Props, State> {
 		const heroes = HeroSpeciesData.getList().filter(s => s.packID === (this.state.selectedPack ? this.state.selectedPack.id : '')).map(s => {
 			return (
 				<div key={s.id}>
-					<SpeciesCard species={s} onSelect={species => this.props.setActions(species.name, CardType.Species, species.features, species.actions)} />
+					<SpeciesCard species={s} />
 					{this.props.options.developer ? <StatValue label='Strength' value={GameLogic.getSpeciesStrength(s)} /> : null}
 				</div>
 			);
@@ -111,7 +106,7 @@ export class PacksTab extends Component<Props, State> {
 		const monsters = MonsterSpeciesData.getList().filter(s => s.packID === (this.state.selectedPack ? this.state.selectedPack.id : '')).map(s => {
 			return (
 				<div key={s.id}>
-					<SpeciesCard species={s} onSelect={species => this.props.setActions(species.name, CardType.Species, species.features, species.actions)} />
+					<SpeciesCard species={s} />
 					{this.props.options.developer ? <StatValue label='Strength' value={GameLogic.getSpeciesStrength(s)} /> : null}
 				</div>
 			);
@@ -120,7 +115,7 @@ export class PacksTab extends Component<Props, State> {
 		const roles = RoleData.getList().filter(r => r.packID === (this.state.selectedPack ? this.state.selectedPack.id : '')).map(r => {
 			return (
 				<div key={r.id}>
-					<RoleCard role={r} onSelect={role => this.props.setActions(role.name, CardType.Role, role.features, role.actions)} />
+					<RoleCard role={r} />
 					{this.props.options.developer ? <StatValue label='Strength' value={GameLogic.getRoleStrength(r)} /> : null}
 				</div>
 			);
@@ -129,7 +124,7 @@ export class PacksTab extends Component<Props, State> {
 		const backgrounds = BackgroundData.getList().filter(b => b.packID === (this.state.selectedPack ? this.state.selectedPack.id : '')).map(b => {
 			return (
 				<div key={b.id}>
-					<BackgroundCard background={b} onSelect={background => this.props.setActions(background.name, CardType.Background, background.features, background.actions)} />
+					<BackgroundCard background={b} />
 					{this.props.options.developer ? <StatValue label='Strength' value={GameLogic.getBackgroundStrength(b)} /> : null}
 				</div>
 			);
@@ -172,13 +167,17 @@ export class PacksTab extends Component<Props, State> {
 	render = () => {
 		try {
 			return (
-				<div className='packs-tab'>
-					{this.getPackList()}
-					{this.getPackContent()}
+				<div className='packs-panel'>
+					<Text type={TextType.Heading}>Packs</Text>
+					<hr />
+					<div className='packs-panel-content'>
+						{this.getPackList()}
+						{this.getPackContent()}
+					</div>
 				</div>
 			);
 		} catch {
-			return <div className='packs-tab render-error' />;
+			return <div className='packs-panel render-error' />;
 		}
 	};
 }

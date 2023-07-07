@@ -29,8 +29,8 @@ import { Utils } from '../../utils/utils';
 
 import { CampaignScreen, EncounterScreen, LandingScreen, SetupScreen } from '../screens';
 import { Dialog, PlayingCard, Text, TextType } from '../controls';
+import { PacksPanel, SettingsPanel } from '../panels';
 import { PlaceholderCard } from '../cards';
-import { SettingsPanel } from '../panels';
 
 import './main.scss';
 
@@ -60,6 +60,7 @@ interface State {
 	options: OptionsModel;
 	screen: ScreenType;
 	showHelp: string | null;
+	showPacks: boolean;
 	dialog: JSX.Element | null;
 	exceptions: string[];
 }
@@ -75,6 +76,7 @@ export class Main extends Component<Props, State> {
 			options: props.options,
 			screen: ScreenType.Landing,
 			showHelp: null,
+			showPacks: false,
 			dialog: null,
 			exceptions: []
 		};
@@ -132,7 +134,17 @@ export class Main extends Component<Props, State> {
 
 	showHelp = (filename: string) => {
 		this.setState({
-			showHelp: filename
+			showHelp: filename,
+			showPacks: false,
+			dialog: null
+		});
+	};
+
+	showPacks = () => {
+		this.setState({
+			showHelp: null,
+			showPacks: true,
+			dialog: null
 		});
 	};
 
@@ -195,6 +207,7 @@ export class Main extends Component<Props, State> {
 				game: game,
 				screen: ScreenType.Setup,
 				showHelp: null,
+				showPacks: false,
 				dialog: null
 			}, () => {
 				this.saveGame();
@@ -241,6 +254,7 @@ export class Main extends Component<Props, State> {
 				game: game,
 				screen: ScreenType.Campaign,
 				showHelp: null,
+				showPacks: false,
 				dialog: null
 			}, () => {
 				this.saveGame();
@@ -256,6 +270,7 @@ export class Main extends Component<Props, State> {
 				game: null,
 				screen: ScreenType.Landing,
 				showHelp: null,
+				showPacks: false,
 				dialog: null
 			}, () => {
 				this.saveGame();
@@ -998,8 +1013,10 @@ export class Main extends Component<Props, State> {
 				return (
 					<LandingScreen
 						game={this.state.game}
+						options={this.state.options}
 						startCampaign={this.startCampaign}
 						continueCampaign={this.continueCampaign}
+						showPacks={this.showPacks}
 					/>
 				);
 			case ScreenType.Setup:
@@ -1023,6 +1040,7 @@ export class Main extends Component<Props, State> {
 						options={this.state.options}
 						hasExceptions={this.state.exceptions.length > 0}
 						showHelp={this.showHelp}
+						showPacks={this.showPacks}
 						addHero={this.addHero}
 						incrementXP={this.incrementXP}
 						equipItem={this.equipItem}
@@ -1073,9 +1091,9 @@ export class Main extends Component<Props, State> {
 
 	render = () => {
 		try {
-			let help = null;
+			let dialog = null;
 			if (this.state.showHelp !== null) {
-				help = (
+				dialog = (
 					<Dialog
 						content={
 							<SettingsPanel
@@ -1083,7 +1101,6 @@ export class Main extends Component<Props, State> {
 								exceptions={this.state.exceptions}
 								rules={rules[this.state.showHelp]}
 								options={this.state.options}
-								addPack={this.addPack}
 								removePack={this.removePack}
 								endCampaign={this.endCampaign}
 								setDeveloperMode={this.setDeveloperMode}
@@ -1094,12 +1111,31 @@ export class Main extends Component<Props, State> {
 					/>
 				);
 			}
+			if (this.state.showPacks) {
+				dialog = (
+					<Dialog
+						content={
+							<PacksPanel
+								options={this.state.options}
+								addPack={this.addPack}
+							/>
+						}
+						onClose={() => this.setState({ showPacks: false })}
+					/>
+				);
+			}
+			if (this.state.dialog) {
+				dialog = (
+					<Dialog
+						content={this.state.dialog}
+					/>
+				);
+			}
 
 			return (
 				<div className='skirmish'>
 					{this.getContent()}
-					{this.state.dialog ? <Dialog content={this.state.dialog} /> : null}
-					{help}
+					{dialog}
 				</div>
 			);
 		} catch {

@@ -12,6 +12,10 @@
 
 		.hero-list {
 			flex: 0 0 300px;
+
+			&.empty {
+				padding-top: 100px;
+			}
 		}
 	}
 }

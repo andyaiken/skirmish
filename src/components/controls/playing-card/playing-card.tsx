@@ -14,6 +14,7 @@ interface Props {
 	footerContent: JSX.Element[];
 	footerType: CardType | null;
 	flipped: boolean;
+	disabled: boolean;
 	onClick: ((e: MouseEvent) => void) | null;
 }
 
@@ -26,6 +27,7 @@ export class PlayingCard extends Component<Props> {
 		footerContent: [],
 		footerType: null,
 		flipped: false,
+		disabled: false,
 		onClick: null
 	};
 
@@ -45,6 +47,9 @@ export class PlayingCard extends Component<Props> {
 			}
 			if (this.props.flipped) {
 				className += ' flipped';
+			}
+			if (this.props.disabled) {
+				className += ' disabled';
 			}
 
 			const stack = [];

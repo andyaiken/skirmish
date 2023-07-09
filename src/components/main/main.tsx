@@ -1030,6 +1030,7 @@ export class Main extends Component<Props, State> {
 						unequipItem={this.unequipItem}
 						pickUpItem={this.pickUpItem}
 						dropItem={this.dropItem}
+						showPacks={this.showPacks}
 						beginCampaign={this.beginCampaign}
 					/>
 				);

@@ -161,4 +161,9 @@
 	&.flipped .playing-card-inner {
 		transform: rotateY(-181deg);
 	}
+
+	&.disabled {
+		opacity: 0.5;
+		pointer-events: none;
+	}
 }

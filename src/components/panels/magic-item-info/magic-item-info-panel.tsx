@@ -114,10 +114,20 @@ export class MagicItemInfoPanel extends Component<Props, State> {
 					}
 				});
 
+			let content = null;
 			if (canEquip.length + canReplace.length === 0) {
-				return (
-					<div className='magic-item-info-panel'>
-						<Text type={TextType.Small}>(usable by none of your current heroes)</Text>
+				content = (
+					<div className='hero-list empty'>
+						<Text type={TextType.Small}>Usable by none of your current heroes.</Text>
+					</div>
+				);
+			} else {
+				content = (
+					<div className='hero-list'>
+						{canEquip.length > 0 ? <div>These heroes can equip this item:</div> : null}
+						{canEquip}
+						{canReplace.length > 0 ? <div>These heroes already have an item in this location:</div> : null}
+						{canReplace}
 					</div>
 				);
 			}
@@ -130,12 +140,7 @@ export class MagicItemInfoPanel extends Component<Props, State> {
 						<div className='card'>
 							<ItemCard item={this.props.item} />
 						</div>
-						<div className='hero-list'>
-							{canEquip.length > 0 ? <div>These heroes can equip this item:</div> : null}
-							{canEquip}
-							{canReplace.length > 0 ? <div>These heroes already have an item in this location:</div> : null}
-							{canReplace}
-						</div>
+						{content}
 					</div>
 					{this.getDialog()}
 				</div>

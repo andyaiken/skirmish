@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import { IconCards } from '@tabler/icons-react';
 
 import { CardType } from '../../../enums/card-type';
 import { CombatantType } from '../../../enums/combatant-type';
@@ -32,6 +33,7 @@ interface Props {
 	unequipItem: (item: ItemModel, hero: CombatantModel) => void;
 	pickUpItem: (item: ItemModel, hero: CombatantModel) => void;
 	dropItem: (item: ItemModel, hero: CombatantModel) => void;
+	showPacks: () => void;
 	beginCampaign: () => void;
 }
 
@@ -59,7 +61,8 @@ export class SetupScreen extends Component<Props, State> {
 		let backgroundDeck = GameLogic.getBackgroundDeck(this.props.options.packIDs).map(b => b.id);
 
 		const heroes: CombatantModel[] = [];
-		while (heroes.length < 5) {
+		const needed = 5 - this.props.game.heroes.length;
+		while (heroes.length < needed) {
 			const hero = Factory.createCombatant(CombatantType.Hero);
 			hero.name = NameGenerator.generateName();
 			hero.color = Random.randomColor(20, 180);
@@ -148,23 +151,23 @@ export class SetupScreen extends Component<Props, State> {
 				);
 			}
 
+			let packsBtn = null;
+			const availablePacks = GameLogic.getPacks().filter(p => !this.props.options.packIDs.includes(p.id)).length;
+			if (availablePacks > 0) {
+				packsBtn = (
+					<button className='packs-btn' onClick={() => this.props.showPacks()}>
+						{availablePacks === 1 ? '1 Pack' : `${availablePacks} Packs`} Available
+						<IconCards />
+					</button>
+				);
+			}
+
 			return (
 				<div className='setup-screen'>
 					<div className='setup-top-bar'>
 						<div className='logo-text inset-text'>Skirmish</div>
 					</div>
 					<div className='setup-content'>
-						<div className='left-panel'>
-							{
-								this.props.game.heroes.length === 0 ?
-									<PlayingCard
-										type={CardType.Role}
-										stack={true}
-										front={<PlaceholderCard text='Randomize' subtext='Click here to draw a random team of heroes' onClick={this.createHeroes} />}
-									/>
-									: null
-							}
-						</div>
 						<div className='center-panel'>
 							<Text type={TextType.Information}>
 								<p><b>Recruit your team.</b> These five heroes will begin the task of conquering the island.</p>
@@ -172,15 +175,14 @@ export class SetupScreen extends Component<Props, State> {
 							{heroes}
 						</div>
 						<div className='right-panel'>
-							{
-								this.props.game.heroes.length >= 5 ?
-									<PlayingCard
-										type={CardType.Role}
-										stack={true}
-										front={<PlaceholderCard text='Begin the Campaign' onClick={this.props.beginCampaign} />}
-									/>
-									: null
-							}
+							<PlayingCard
+								type={CardType.Role}
+								stack={true}
+								disabled={this.props.game.heroes.length < 5}
+								front={<PlaceholderCard text='Begin the Campaign' onClick={this.props.beginCampaign} />}
+							/>
+							{this.props.options.developer ? <button onClick={this.createHeroes}>Randomize</button> : null}
+							{packsBtn}
 						</div>
 					</div>
 					{this.getDialog()}

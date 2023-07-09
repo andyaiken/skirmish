@@ -10,9 +10,6 @@
 
 # Priority
 
-## Packs
-* Add packs button to setup screen
-
 -----------------------------------------------------------------------------------------
 
 # Improvements / Enhancements

@@ -11,7 +11,7 @@ import type { ItemModel } from '../../../models/item';
 import type { OptionsModel } from '../../../models/options';
 import type { RegionModel } from '../../../models/region';
 
-import { Selector } from '../../controls';
+import { Badge, Selector } from '../../controls';
 
 import { CampaignMapPage } from './campaign-map-page/campaign-map-page';
 import { HeroesPage } from './heroes-page/heroes-page';
@@ -156,9 +156,11 @@ export class CampaignScreen extends Component<Props, State> {
 						</button>
 						{
 							availablePacks > 0 ?
-								<button className='icon-btn' title='Packs' onClick={() => this.props.showPacks()}>
-									<IconCards />
-								</button>
+								<Badge value={availablePacks}>
+									<button className='icon-btn' title='Packs' onClick={() => this.props.showPacks()}>
+										<IconCards />
+									</button>
+								</Badge>
 								: null
 						}
 					</div>

@@ -7,6 +7,7 @@ import { DamageCategoryType } from '../enums/damage-category-type';
 import { DamageType } from '../enums/damage-type';
 import { MovementType } from '../enums/movement-type';
 import { QuirkType } from '../enums/quirk-type';
+import { SkillCategoryType } from '../enums/skill-category-type';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
 
@@ -704,6 +705,103 @@ export class MonsterSpeciesData {
 		]
 	};
 
+	static gnoll: SpeciesModel = {
+		id: 'species-gnoll',
+		name: 'Gnoll',
+		packID: '',
+		description: 'A humanoid with the head and claws of a hyena.',
+		type: CombatantType.Monster,
+		size: 1,
+		quirks: [],
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('gnoll-start-1', TraitType.Speed, 1),
+			FeatureLogic.createSkillFeature('gnoll-start-2', SkillType.Brawl, 2)
+		],
+		features: [
+			FeatureLogic.createTraitFeature('gnoll-feature-1', TraitType.Speed, 1),
+			FeatureLogic.createSkillFeature('gnoll-feature-2', SkillType.Brawl, 2)
+		],
+		actions: [
+			{
+				id: 'gnoll-action-1',
+				name: 'Frenzied Bite',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Brawl,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Piercing, 3)
+						]
+					})
+				]
+			},
+			{
+				id: 'gnoll-action-2',
+				name: 'Raking Claws',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Brawl,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Edged, 3)
+						]
+					}),
+					ActionEffects.takeAnotherAction()
+				]
+			},
+			{
+				id: 'gnoll-action-3',
+				name: 'Rending Claws',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Brawl,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Edged, 3)
+						]
+					})
+				]
+			},
+			{
+				id: 'gnoll-action-4',
+				name: 'Maniacal Cackle',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 3)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Presence,
+						trait: TraitType.Resolve,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.addCondition(ConditionLogic.createSkillCategoryPenaltyCondition(TraitType.Resolve, 3, SkillCategoryType.Mental))
+						]
+					})
+				]
+			}
+		]
+	};
+
 	static zombie: SpeciesModel = {
 		id: 'species-zombie',
 		name: 'Zombie',
@@ -993,6 +1091,7 @@ export class MonsterSpeciesData {
 			MonsterSpeciesData.scarab,
 			MonsterSpeciesData.giantSpider,
 			MonsterSpeciesData.bear,
+			MonsterSpeciesData.gnoll,
 			MonsterSpeciesData.zombie,
 			MonsterSpeciesData.skeleton,
 			MonsterSpeciesData.vampire,

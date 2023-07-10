@@ -96,21 +96,21 @@ export class HeroCard extends Component<Props, State> {
 
 		const buttons: JSX.Element[] = [];
 		buttons.push(
-			<button key='flip' className='icon-btn' onClick={this.onFlip}><IconRefresh /></button>
+			<button key='flip' className='icon-btn' title='Flip' onClick={this.onFlip}><IconRefresh /></button>
 		);
 		if (this.props.onCharacterSheet) {
 			buttons.push(
-				<button key='character-sheet' className='icon-btn' onClick={this.onCharacterSheet}><IconId /></button>
-			);
-		}
-		if (this.props.onRetire) {
-			buttons.push(
-				<button key='retire' className='icon-btn' onClick={this.onRetire}><IconX /></button>
+				<button key='character-sheet' className='icon-btn' title='Character Sheet' onClick={this.onCharacterSheet}><IconId /></button>
 			);
 		}
 		if (this.props.onSelect && (buttons.length > 0)) {
 			buttons.push(
-				<button key='select' className='icon-btn' onClick={this.onSelect}><IconCheck /></button>
+				<button key='select' className='icon-btn' title='Select' onClick={this.onSelect}><IconCheck /></button>
+			);
+		}
+		if (this.props.onRetire) {
+			buttons.push(
+				<button key='retire' className='icon-btn' title='Retire' onClick={this.onRetire}><IconX /></button>
 			);
 		}
 

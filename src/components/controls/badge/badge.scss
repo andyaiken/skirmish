@@ -1,0 +1,22 @@
+.badge {
+	position: relative;
+
+	.badge-value {
+		position: absolute;
+		left: 0;
+		top: 0;
+		border-radius: 8px;
+		padding: 0 5px;
+		text-transform: uppercase;
+		font-weight: 600;
+		background-color: rgb(60, 170, 255);
+		box-shadow: 0 0 3px 2px rgb(60, 170, 255);
+		color: white;
+		min-width: 16px;
+		height: 16px;
+		font-size: 10px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+}

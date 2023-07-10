@@ -13,8 +13,8 @@ import type { GameModel } from '../../../../models/game';
 import type { ItemModel } from '../../../../models/item';
 import type { OptionsModel } from '../../../../models/options';
 
+import { Badge, CardList, ConfirmButton, Dialog, PlayingCard, Text, TextType } from '../../../controls';
 import { BoonCard, HeroCard, PlaceholderCard } from '../../../cards';
-import { CardList, ConfirmButton, Dialog, PlayingCard, Text, TextType } from '../../../controls';
 import { CharacterSheetPanel, HeroBuilderPanel } from '../../../panels';
 
 import './heroes-page.scss';
@@ -89,11 +89,22 @@ export class HeroesPage extends Component<Props, State> {
 	};
 
 	getContent = () => {
+		let levelUp = null;
+		if (this.props.game.heroes.some(h => h.xp >= h.level)) {
+			levelUp = (
+				<Text type={TextType.Information}>
+					<p><b>Some of your heroes have gained enough XP to level up.</b> Click on them to upgrade them.</p>
+				</Text>
+			);
+		}
+
 		if (this.props.game.heroes.length > 0) {
 			const cards = this.props.game.heroes.map(hero => {
 				return (
 					<div key={hero.id}>
-						<HeroCard hero={hero} onCharacterSheet={this.selectHero} onRetire={this.selectRetiringHero} />
+						<Badge value={hero.xp >= hero.level ? 'Level Up' : null}>
+							<HeroCard hero={hero} onSelect={this.selectHero} onRetire={this.selectRetiringHero} />
+						</Badge>
 						{this.props.options.developer ? <button className='developer' onClick={() => this.props.incrementXP(hero)}>Add XP</button> : null}
 					</div>
 				);
@@ -101,6 +112,7 @@ export class HeroesPage extends Component<Props, State> {
 
 			return (
 				<div>
+					{levelUp}
 					<CardList cards={cards} />
 				</div>
 			);
@@ -131,21 +143,6 @@ export class HeroesPage extends Component<Props, State> {
 			);
 		}
 
-		let levelUp = null;
-		if (this.props.game.heroes.some(h => h.xp >= h.level)) {
-			const cards = this.props.game.heroes.filter(h => h.xp >= h.level).map(h => (
-				<button key={h.id} onClick={() => this.setState({ selectedHero: h })}>{h.name}</button>
-			));
-			levelUp = (
-				<div>
-					<Text type={TextType.Information}>
-						<p><b>Some of your heroes have gained enough XP to level up.</b> Click on their name to upgrade them.</p>
-					</Text>
-					{cards}
-				</div>
-			);
-		}
-
 		let blankHeroes = null;
 		if (this.props.game.heroSlots > 0) {
 			const text = this.props.game.heroSlots === 1 ? 'a new hero' : `${this.props.game.heroSlots} new heroes`;
@@ -168,8 +165,6 @@ export class HeroesPage extends Component<Props, State> {
 			<div className='sidebar'>
 				<Text type={TextType.SubHeading}>Your Team</Text>
 				<Text>This page shows the heroes that you have recruited.</Text>
-				{levelUp !== null ? <hr /> : null}
-				{levelUp}
 				{boons !== null ? <hr /> : null}
 				{boons}
 				{blankHeroes !== null ? <hr /> : null}

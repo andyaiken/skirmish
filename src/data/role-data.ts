@@ -21,7 +21,7 @@ export class RoleData {
 	static arcanist: RoleModel = {
 		id: 'role-arcanist',
 		name: 'Arcanist',
-		packID: PackData.arcana.id,
+		packID: '',
 		description: 'Arcanists are magical generalists, able to create a wide range of effects.',
 		startingFeatures: [
 			FeatureLogic.createTraitFeature('arcanist-start-1', TraitType.Resolve, 1),
@@ -1560,7 +1560,7 @@ export class RoleData {
 		description: 'A fighter who specializes in ranged weaponry.',
 		startingFeatures: [
 			FeatureLogic.createTraitFeature('ranger-start-1', TraitType.Endurance, 1),
-			FeatureLogic.createSkillFeature('ranger-start-2', SkillType.Perception, 2),
+			FeatureLogic.createSkillFeature('ranger-start-2', SkillType.Weapon, 2),
 			FeatureLogic.createProficiencyFeature('ranger-start-3', ItemProficiencyType.RangedWeapons),
 			FeatureLogic.createProficiencyFeature('ranger-start-4', ItemProficiencyType.LightArmor)
 		],
@@ -1927,7 +1927,7 @@ export class RoleData {
 	static warmage: RoleModel = {
 		id: 'role-warmage',
 		name: 'Warmage',
-		packID: '',
+		packID: PackData.arcana.id,
 		description: 'A warrior who bridges martial discipline and arcane power.',
 		startingFeatures: [
 			FeatureLogic.createTraitFeature('warmage-start-1', TraitType.Resolve, 1),

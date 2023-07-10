@@ -316,7 +316,7 @@ export class Main extends Component<Props, State> {
 
 	incrementXP = (hero: CombatantModel) => {
 		try {
-			hero.xp = hero.level;
+			hero.xp += 1;
 			this.setState({
 				game: this.state.game
 			}, () => {

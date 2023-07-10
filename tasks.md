@@ -139,7 +139,6 @@
     * No movement penalty for water terrain
 * Kobold
 * Ogre
-* Gnoll
 * Elemental:
   * Water Elemental
 * Undead:

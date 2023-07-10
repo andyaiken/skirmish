@@ -117,11 +117,11 @@ export class ItemCard extends Component<Props, State> {
 
 		const buttons: JSX.Element[] = [];
 		buttons.push(
-			<button key='flip' className='icon-btn' onClick={this.onFlip}><IconRefresh /></button>
+			<button key='flip' className='icon-btn' title='Flip' onClick={this.onFlip}><IconRefresh /></button>
 		);
 		if (this.props.onSelect && (buttons.length > 0)) {
 			buttons.push(
-				<button key='select' className='icon-btn' onClick={this.onSelect}><IconCheck /></button>
+				<button key='select' className='icon-btn' title='Select' onClick={this.onSelect}><IconCheck /></button>
 			);
 		}
 

@@ -55,7 +55,7 @@ export class FeatureCard extends Component<Props, State> {
 		const buttons: JSX.Element[] = [];
 		if (this.props.onSelect && (buttons.length > 0)) {
 			buttons.push(
-				<button key='select' className='icon-btn' onClick={this.onSelect}><IconCheck /></button>
+				<button key='select' className='icon-btn' title='Select' onClick={this.onSelect}><IconCheck /></button>
 			);
 		}
 

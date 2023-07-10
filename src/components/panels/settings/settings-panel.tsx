@@ -161,15 +161,15 @@ export class SettingsPanel extends Component<Props, State> {
 				const content = (
 					<div>
 						<Text type={TextType.Heading}>{this.state.actionSourceName}</Text>
-						<hr />
-						<Text type={TextType.SubHeading}>Starting Cards</Text>
-						<CardList cards={startingCards} />
-						<hr />
-						<Text type={TextType.SubHeading}>Feature Cards</Text>
-						<CardList cards={featureCards} />
-						<hr />
-						<Text type={TextType.SubHeading}>Action Cards</Text>
-						<CardList cards={actionCards} />
+						{startingCards.length > 0 ? <hr /> : null}
+						{startingCards.length > 0 ? <Text type={TextType.SubHeading}>Starting Cards</Text> : null}
+						{startingCards.length > 0 ? <CardList cards={startingCards} /> : null}
+						{featureCards.length > 0 ? <hr /> : null}
+						{featureCards.length > 0 ? <Text type={TextType.SubHeading}>Feature Cards</Text> : null}
+						{featureCards.length > 0 ? <CardList cards={featureCards} /> : null}
+						{actionCards.length > 0 ? <hr /> : null}
+						{actionCards.length > 0 ? <Text type={TextType.SubHeading}>Action Cards</Text> : null}
+						{actionCards.length > 0 ? <CardList cards={actionCards} /> : null}
 					</div>
 				);
 				dialog = (

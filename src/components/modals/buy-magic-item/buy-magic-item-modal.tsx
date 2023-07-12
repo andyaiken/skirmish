@@ -13,7 +13,7 @@ import type { OptionsModel } from '../../../models/options';
 import { CardList, Text, TextType } from '../../controls';
 import { ItemCard } from '../../cards';
 
-import './magic-items-panel.scss';
+import './buy-magic-item-modal.scss';
 
 interface Props {
 	game: GameModel;
@@ -25,7 +25,7 @@ interface State {
 	magicItems: ItemModel[];
 }
 
-export class MagicItemsPanel extends Component<Props, State> {
+export class BuyMagicItemModal extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 
@@ -86,7 +86,7 @@ export class MagicItemsPanel extends Component<Props, State> {
 			));
 
 			return (
-				<div className='magic-items-panel'>
+				<div className='buy-magic-item-modal'>
 					<Text type={TextType.Heading}>Choose a Magic Item</Text>
 					{this.props.options.developer ? <button className='developer' onClick={() => this.redraw()}>Redraw</button> : null}
 					<div className='card-selection-row'>
@@ -95,7 +95,7 @@ export class MagicItemsPanel extends Component<Props, State> {
 				</div>
 			);
 		} catch {
-			return <div className='magic-items-panel render-error' />;
+			return <div className='buy-magic-item-modal render-error' />;
 		}
 	};
 }

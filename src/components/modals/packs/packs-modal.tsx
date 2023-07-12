@@ -15,7 +15,7 @@ import type { PackModel } from '../../../models/pack';
 import { BackgroundCard, ItemCard, PackCard, RoleCard, SpeciesCard } from '../../cards';
 import { CardList, StatValue, Text, TextType } from '../../controls';
 
-import './packs.scss';
+import './packs-modal.scss';
 
 interface Props {
 	options: OptionsModel;
@@ -26,7 +26,7 @@ interface State {
 	selectedPack: PackModel | null;
 }
 
-export class PacksPanel extends Component<Props, State> {
+export class PacksModal extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
@@ -167,17 +167,17 @@ export class PacksPanel extends Component<Props, State> {
 	render = () => {
 		try {
 			return (
-				<div className='packs-panel'>
+				<div className='packs-modal'>
 					<Text type={TextType.Heading}>Packs</Text>
 					<hr />
-					<div className='packs-panel-content'>
+					<div className='packs-modal-content'>
 						{this.getPackList()}
 						{this.getPackContent()}
 					</div>
 				</div>
 			);
 		} catch {
-			return <div className='packs-panel render-error' />;
+			return <div className='packs-modal render-error' />;
 		}
 	};
 }

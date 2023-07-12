@@ -18,8 +18,9 @@ import type { OptionsModel } from '../../../models/options';
 import { Collections } from '../../../utils/collections';
 import { Random } from '../../../utils/random';
 
-import { CharacterSheetPanel, CombatantRowPanel, HeroBuilderPanel } from '../../panels';
+import { CharacterSheetModal, HeroBuilderModal } from '../../modals';
 import { Dialog, PlayingCard, Text, TextType } from '../../controls';
+import { CombatantRowPanel } from '../../panels';
 import { PlaceholderCard } from '../../cards';
 
 import './setup-screen.scss';
@@ -98,7 +99,7 @@ export class SetupScreen extends Component<Props, State> {
 			return (
 				<Dialog
 					content={(
-						<HeroBuilderPanel
+						<HeroBuilderModal
 							hero={this.state.hero}
 							game={this.props.game}
 							options={this.props.options}
@@ -118,7 +119,7 @@ export class SetupScreen extends Component<Props, State> {
 		return (
 			<Dialog
 				content={
-					<CharacterSheetPanel
+					<CharacterSheetModal
 						combatant={this.state.hero}
 						game={this.props.game}
 						developer={false}

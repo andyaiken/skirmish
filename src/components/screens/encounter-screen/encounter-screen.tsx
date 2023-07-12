@@ -25,7 +25,8 @@ import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
 
 import { CardList, Dialog, Text, TextType } from '../../controls';
-import { CharacterSheetPanel, CombatantRowPanel, EncounterMapPanel, InitiativeListPanel, TreasureRowPanel, TurnLogPanel } from '../../panels';
+import { CombatantRowPanel, EncounterMapPanel, InitiativeListPanel, TreasureRowPanel, TurnLogPanel } from '../../panels';
+import { CharacterSheetModal } from '../../modals';
 import { CombatantControls } from './combatant-controls/combatant-controls';
 import { EncounterControls } from './encounter-controls/encounter-controls';
 import { ItemCard } from '../../cards';
@@ -589,7 +590,7 @@ export class EncounterScreen extends Component<Props, State> {
 				dialog = (
 					<Dialog
 						content={
-							<CharacterSheetPanel
+							<CharacterSheetModal
 								combatant={this.state.detailsCombatant}
 								game={this.props.game}
 								developer={this.props.developer}

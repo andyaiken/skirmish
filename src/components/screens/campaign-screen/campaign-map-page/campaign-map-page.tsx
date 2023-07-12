@@ -10,8 +10,9 @@ import type { RegionModel } from '../../../../models/region';
 import { Collections } from '../../../../utils/collections';
 
 import { BoonCard, RegionCard } from '../../../cards';
-import { CampaignMapPanel, EncounterStartPanel } from '../../../panels';
 import { Dialog, Gauge, StatValue, Text, TextType } from '../../../controls';
+import { CampaignMapPanel } from '../../../panels';
+import { EncounterStartModal } from '../../../modals';
 
 import './campaign-map-page.scss';
 
@@ -125,7 +126,7 @@ export class CampaignMapPage extends Component<Props, State> {
 		return (
 			<Dialog
 				content={(
-					<EncounterStartPanel
+					<EncounterStartModal
 						region={this.state.selectedRegion as RegionModel}
 						game={this.props.game}
 						options={this.props.options}

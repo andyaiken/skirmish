@@ -14,7 +14,7 @@ import { Collections } from '../../../utils/collections';
 import { Dialog, Text, TextType } from '../../controls';
 import { ItemCard } from '../../cards';
 
-import './magic-item-info-panel.scss';
+import './magic-item-info-modal.scss';
 
 interface Props {
 	item: ItemModel;
@@ -27,7 +27,7 @@ interface State {
 	hero: CombatantModel | null;
 }
 
-export class MagicItemInfoPanel extends Component<Props, State> {
+export class MagicItemInfoModal extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
@@ -133,7 +133,7 @@ export class MagicItemInfoPanel extends Component<Props, State> {
 			}
 
 			return (
-				<div className='magic-item-info-panel'>
+				<div className='magic-item-info-modal'>
 					<Text type={TextType.Heading}>Magic Item</Text>
 					<hr />
 					<div className='magic-item-info-content'>
@@ -146,7 +146,7 @@ export class MagicItemInfoPanel extends Component<Props, State> {
 				</div>
 			);
 		} catch {
-			return <div className='magic-item-info render-error' />;
+			return <div className='magic-item-modal render-error' />;
 		}
 	};
 }

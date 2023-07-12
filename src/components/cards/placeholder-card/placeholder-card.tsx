@@ -4,7 +4,7 @@ import './placeholder-card.scss';
 
 interface Props {
 	text: string;
-	subtext: string;
+	subtext: string | JSX.Element | null;
 	content: JSX.Element | null;
 	onClick: (() => void) | null;
 }

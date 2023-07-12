@@ -12,10 +12,9 @@ import type { OptionsModel } from '../../../../models/options';
 
 import { Collections } from '../../../../utils/collections';
 
-import { BoonCard, ItemCard, PlaceholderCard } from '../../../cards';
-import { CardList, Dialog, IconType, IconValue, PlayingCard, StatValue, Text, TextType } from '../../../controls';
-import { EnchantItemPanel, MagicItemInfoPanel, MagicItemsPanel } from '../../../panels';
-import { PotionsPanel } from '../../../panels/potions/potions-panel';
+import { BoonCard, ItemCard } from '../../../cards';
+import { BuyMagicItemModal, BuyPotionModal, EnchantItemModal, MagicItemInfoModal } from '../../../modals';
+import { CardList, Dialog, IconType, IconValue, StatValue, Text, TextType } from '../../../controls';
 
 import './items-page.scss';
 
@@ -112,7 +111,6 @@ export class ItemsPage extends Component<Props, State> {
 		const moneySection = (
 			<div>
 				<StatValue orientation='vertical' label='Money' value={<IconValue type={IconType.Money} value={this.props.game.money} />} />
-				{(this.props.game.money > 0) && !controlLand ? <Text type={TextType.Information}><p>You can&apos;t buy anything until you control part of the island.</p></Text> : null}
 				{this.props.options.developer ? <button className='developer' onClick={() => this.props.addMoney()}>Add money</button> : null}
 			</div>
 		);
@@ -130,45 +128,29 @@ export class ItemsPage extends Component<Props, State> {
 			);
 		}
 
-		let itemSection = null;
-		if (controlLand && (this.props.game.money >= 100)) {
-			itemSection = (
-				<div>
-					<Text type={TextType.Information}><p><b>You have enough money to buy a magic item.</b> Click the item deck below to choose one.</p></Text>
-					<div className='center'>
-						<PlayingCard
-							stack={true}
-							front={
-								<PlaceholderCard
-									text='Magic Items'
-									content={<div><IconValue type={IconType.Money} value={100} iconSize={15} /></div>}
-									onClick={() => this.showMarket(true)}
-								/>
-							}
-						/>
-					</div>
-				</div>
-			);
-		}
-
-		let potionSection = null;
-		if (controlLand && (this.props.game.money >= 20)) {
-			potionSection = (
-				<div>
-					<Text type={TextType.Information}><p><b>You have enough money to buy a potion.</b> Click the potion deck below to choose one.</p></Text>
-					<div className='center'>
-						<PlayingCard
-							stack={true}
-							front={
-								<PlaceholderCard
-									text='Potions'
-									content={<div><IconValue type={IconType.Money} value={20} iconSize={15} /></div>}
-									onClick={() => this.showApothecary(true)}
-								/>
-							}
-						/>
-					</div>
-				</div>
+		const buySection = [];
+		if (controlLand) {
+			if (this.props.game.money >= 20) {
+				buySection.push(
+					<button key='potion' onClick={() => this.showApothecary(true)}>
+						<div>Buy a potion</div>
+						<IconValue type={IconType.Money} value={20} iconSize={12} />
+					</button>
+				);
+			}
+			if (this.props.game.money >= 100) {
+				buySection.push(
+					<button key='magic-item' onClick={() => this.showMarket(true)}>
+						<div>Buy a magic item</div>
+						<IconValue type={IconType.Money} value={100} iconSize={12} />
+					</button>
+				);
+			}
+		} else if (this.props.game.money > 0) {
+			buySection.push(
+				<Text key='cannot-buy' type={TextType.Information}>
+					<p>You can&apos;t buy anything until you control part of the island.</p>
+				</Text>
 			);
 		}
 
@@ -180,10 +162,8 @@ export class ItemsPage extends Component<Props, State> {
 				{moneySection}
 				{boons !== null ? <hr /> : null}
 				{boons}
-				{itemSection !== null ? <hr /> : null}
-				{itemSection}
-				{potionSection !== null ? <hr /> : null}
-				{potionSection}
+				{buySection.length !== 0 ? <hr /> : null}
+				{buySection}
 			</div>
 		);
 	};
@@ -193,7 +173,7 @@ export class ItemsPage extends Component<Props, State> {
 			return (
 				<Dialog
 					content={(
-						<MagicItemsPanel
+						<BuyMagicItemModal
 							game={this.props.game}
 							options={this.props.options}
 							buyItem={this.buyItem}
@@ -207,7 +187,7 @@ export class ItemsPage extends Component<Props, State> {
 			return (
 				<Dialog
 					content={(
-						<PotionsPanel
+						<BuyPotionModal
 							game={this.props.game}
 							options={this.props.options}
 							buyItem={this.buyItem}
@@ -221,7 +201,7 @@ export class ItemsPage extends Component<Props, State> {
 			return (
 				<Dialog
 					content={(
-						<MagicItemInfoPanel
+						<MagicItemInfoModal
 							item={this.state.selectedMagicItem}
 							game={this.props.game}
 							equipItem={this.equipItem}
@@ -238,7 +218,7 @@ export class ItemsPage extends Component<Props, State> {
 				return (
 					<Dialog
 						content={(
-							<EnchantItemPanel
+							<EnchantItemModal
 								game={this.props.game}
 								options={this.props.options}
 								enchantItem={this.enchantItem}
@@ -281,14 +261,20 @@ export class ItemsPage extends Component<Props, State> {
 					const count = potions.filter(i => i.name === item.name).length;
 
 					let footer = (
-						<button onClick={() => this.props.sellItem(item, true)}>Sell</button>
+						<button onClick={() => this.props.sellItem(item, true)}>
+							Sell<br /><IconValue type={IconType.Money} value={10} iconSize={12} />
+						</button>
 					);
 
 					if (count > 1) {
 						footer = (
 							<div>
-								<button onClick={() => this.props.sellItem(item, false)}>Sell One</button>
-								<button onClick={() => this.props.sellItem(item, true)}>Sell All ({count})</button>
+								<button onClick={() => this.props.sellItem(item, false)}>
+									Sell One<br /><IconValue type={IconType.Money} value={10} iconSize={12} />
+								</button>
+								<button onClick={() => this.props.sellItem(item, true)}>
+									Sell All ({count})<br /><IconValue type={IconType.Money} value={10 * count} iconSize={12} />
+								</button>
 							</div>
 						);
 					}

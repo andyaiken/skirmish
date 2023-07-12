@@ -13,9 +13,9 @@ import type { GameModel } from '../../../../models/game';
 import type { ItemModel } from '../../../../models/item';
 import type { OptionsModel } from '../../../../models/options';
 
-import { Badge, CardList, ConfirmButton, Dialog, PlayingCard, Text, TextType } from '../../../controls';
+import { Badge, CardList, ConfirmButton, Dialog, PlayingCard, StatValue, Text, TextType } from '../../../controls';
 import { BoonCard, HeroCard, PlaceholderCard } from '../../../cards';
-import { CharacterSheetPanel, HeroBuilderPanel } from '../../../panels';
+import { CharacterSheetModal, HeroBuilderModal } from '../../../modals';
 
 import './heroes-page.scss';
 
@@ -145,16 +145,20 @@ export class HeroesPage extends Component<Props, State> {
 
 		let blankHeroes = null;
 		if (this.props.game.heroSlots > 0) {
-			const text = this.props.game.heroSlots === 1 ? 'a new hero' : `${this.props.game.heroSlots} new heroes`;
 			blankHeroes = (
 				<div>
-					<Text type={TextType.Information}>
-						<p><b>You can recruit {text}.</b> Click the hero deck below to recruit a new level 1 hero.</p>
-					</Text>
+					<StatValue orientation='vertical' label='Recruits Available' value={this.props.game.heroSlots} />
+					<hr />
 					<div className='center'>
 						<PlayingCard
 							stack={true}
-							front={<PlaceholderCard text='Heroes' onClick={() => this.setState({ selectedHero: Factory.createCombatant(CombatantType.Hero) })} />}
+							front={
+								<PlaceholderCard
+									text='Heroes'
+									subtext='Click here to recruit a new hero.'
+									onClick={() => this.setState({ selectedHero: Factory.createCombatant(CombatantType.Hero) })}
+								/>
+							}
 						/>
 					</div>
 				</div>
@@ -179,7 +183,7 @@ export class HeroesPage extends Component<Props, State> {
 				return (
 					<Dialog
 						content={(
-							<HeroBuilderPanel
+							<HeroBuilderModal
 								hero={this.state.selectedHero}
 								game={this.props.game}
 								options={this.props.options}
@@ -200,7 +204,7 @@ export class HeroesPage extends Component<Props, State> {
 				return (
 					<Dialog
 						content={(
-							<CharacterSheetPanel
+							<CharacterSheetModal
 								combatant={this.state.selectedHero}
 								game={this.props.game}
 								developer={this.props.options.developer}
@@ -275,7 +279,7 @@ export class HeroesPage extends Component<Props, State> {
 										<p><b>You can retire this hero.</b> If you do:</p>
 										<ul>
 											<li>You&apos;ll get half their total XP to add to another hero</li>
-											<li>You keep any magic items they have</li>
+											<li>You keep any potions and magic items they have</li>
 											<li>You can recruit a new hero to take their place</li>
 										</ul>
 										<p>This cannot be undone.</p>

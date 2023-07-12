@@ -9,9 +9,9 @@ import type { RegionModel } from '../../../models/region';
 
 import { CardList, Selector, Tabs, Text, TextType } from '../../controls';
 import { HeroCard, SpeciesCard } from '../../cards';
-import { CombatantRowPanel } from '../combatant-row/combatant-row-panel';
+import { CombatantRowPanel } from '../../panels/combatant-row/combatant-row-panel';
 
-import './encounter-start.scss';
+import './encounter-start-modal.scss';
 
 interface Props {
 	region: RegionModel;
@@ -27,7 +27,7 @@ interface State {
 	selectedHeroes: CombatantModel[];
 }
 
-export class EncounterStartPanel extends Component<Props, State> {
+export class EncounterStartModal extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
@@ -124,7 +124,7 @@ export class EncounterStartPanel extends Component<Props, State> {
 		}
 
 		return (
-			<div className='encounter-start'>
+			<div className='encounter-start-modal'>
 				<div className='header'>
 					<Text type={TextType.Heading}>Choose your Heroes</Text>
 				</div>

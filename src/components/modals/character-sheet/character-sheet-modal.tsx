@@ -16,7 +16,7 @@ import { Items } from './items/items';
 import { LevelUp } from './level-up/level-up';
 import { Stats } from './stats/stats';
 
-import './character-sheet-panel.scss';
+import './character-sheet-modal.scss';
 
 interface Props {
 	combatant: CombatantModel;
@@ -34,7 +34,7 @@ interface State {
 	view: string;
 }
 
-export class CharacterSheetPanel extends Component<Props, State> {
+export class CharacterSheetModal extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
@@ -122,7 +122,7 @@ export class CharacterSheetPanel extends Component<Props, State> {
 			}
 
 			return (
-				<div className='character-sheet-panel'>
+				<div className='character-sheet-modal'>
 					<div className='main-section'>
 						<div className='header'>
 							<Text type={TextType.Heading}>{this.props.combatant.name || 'unnamed hero'}</Text>
@@ -143,7 +143,7 @@ export class CharacterSheetPanel extends Component<Props, State> {
 				</div>
 			);
 		} catch {
-			return <div className='character-sheet-panel render-error' />;
+			return <div className='character-sheet-modal render-error' />;
 		}
 	};
 }

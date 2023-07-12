@@ -29,7 +29,7 @@ import { Utils } from '../../utils/utils';
 
 import { CampaignScreen, EncounterScreen, LandingScreen, SetupScreen } from '../screens';
 import { Dialog, PlayingCard, Text, TextType } from '../controls';
-import { PacksPanel, SettingsPanel } from '../panels';
+import { PacksModal, SettingsModal } from '../modals';
 import { PlaceholderCard } from '../cards';
 
 import './main.scss';
@@ -361,9 +361,9 @@ export class Main extends Component<Props, State> {
 			game.heroSlots += 1;
 			game.heroes = game.heroes.filter(h => h.id !== hero.id);
 
-			// Add magic items
-			hero.items.filter(i => i.magic).forEach(i => game.items.push(i));
-			hero.carried.filter(i => i.magic).forEach(i => game.items.push(i));
+			// Add magic items and potions
+			hero.items.filter(i => i.magic || i.potion).forEach(i => game.items.push(i));
+			hero.carried.filter(i => i.magic || i.potion).forEach(i => game.items.push(i));
 
 			this.setState({
 				game: game
@@ -1128,7 +1128,7 @@ export class Main extends Component<Props, State> {
 				dialog = (
 					<Dialog
 						content={
-							<SettingsPanel
+							<SettingsModal
 								game={this.state.game}
 								exceptions={this.state.exceptions}
 								rules={rules[this.state.showHelp]}
@@ -1147,7 +1147,7 @@ export class Main extends Component<Props, State> {
 				dialog = (
 					<Dialog
 						content={
-							<PacksPanel
+							<PacksModal
 								options={this.state.options}
 								addPack={this.addPack}
 							/>

@@ -9,7 +9,7 @@ import type { OptionsModel } from '../../../models/options';
 import { CardList, Text, TextType } from '../../controls';
 import { ItemCard } from '../../cards';
 
-import './enchant-item-panel.scss';
+import './enchant-item-modal.scss';
 
 interface Props {
 	game: GameModel;
@@ -22,7 +22,7 @@ interface State {
 	magicItems: ItemModel[];
 }
 
-export class EnchantItemPanel extends Component<Props, State> {
+export class EnchantItemModal extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 
@@ -61,7 +61,7 @@ export class EnchantItemPanel extends Component<Props, State> {
 				));
 
 				return (
-					<div className='enchant-item-panel'>
+					<div className='enchant-item-modal'>
 						<Text type={TextType.Heading}>Choose an Enchantment</Text>
 						{this.props.options.developer ? <button className='developer' onClick={() => this.selectItem(this.state.selectedItem as ItemModel)}>Redraw</button> : null}
 						<div className='card-selection-row'>
@@ -107,7 +107,7 @@ export class EnchantItemPanel extends Component<Props, State> {
 				}
 
 				return (
-					<div className='enchant-item-panel'>
+					<div className='enchant-item-modal'>
 						<Text type={TextType.Heading}>Choose an Item</Text>
 						{heroes}
 						{other}
@@ -116,7 +116,7 @@ export class EnchantItemPanel extends Component<Props, State> {
 			}
 
 		} catch {
-			return <div className='enchant-item-panel render-error' />;
+			return <div className='enchant-item-modal render-error' />;
 		}
 	};
 }

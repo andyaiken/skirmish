@@ -12,7 +12,7 @@ import { Utils } from '../../../utils/utils';
 import { CardList, Text, TextType } from '../../controls';
 import { ItemCard } from '../../cards';
 
-import './potions-panel.scss';
+import './buy-potion-modal.scss';
 
 interface Props {
 	game: GameModel;
@@ -24,7 +24,7 @@ interface State {
 	potions: ItemModel[];
 }
 
-export class PotionsPanel extends Component<Props, State> {
+export class BuyPotionModal extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 
@@ -63,7 +63,7 @@ export class PotionsPanel extends Component<Props, State> {
 			));
 
 			return (
-				<div className='potions-panel'>
+				<div className='buy-potion-modal'>
 					<Text type={TextType.Heading}>Choose a Potion</Text>
 					{this.props.options.developer ? <button className='developer' onClick={() => this.redraw()}>Redraw</button> : null}
 					<div className='card-selection-row'>
@@ -72,7 +72,7 @@ export class PotionsPanel extends Component<Props, State> {
 				</div>
 			);
 		} catch {
-			return <div className='potions-panel render-error' />;
+			return <div className='buy-potion-modal render-error' />;
 		}
 	};
 }

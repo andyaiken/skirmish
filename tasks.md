@@ -10,6 +10,9 @@
 
 # Priority
 
+## Enchant Item
+* This should be available to buy for 100 money
+
 -----------------------------------------------------------------------------------------
 
 # Improvements / Enhancements

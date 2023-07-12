@@ -16,7 +16,7 @@ import type { EncounterModel } from '../../../../models/encounter';
 
 import { ActionCard, FeatureCard, PlaceholderCard } from '../../../cards';
 import { Box, CardList, Dialog, IconType, IconValue, PlayingCard, StatValue, Tag, Text, TextType } from '../../../controls';
-import { CombatStatsPanel } from '../../combat-stats/combat-stats-panel';
+import { CombatStatsPanel } from '../../../panels/combat-stats/combat-stats-panel';
 import { DamagePanel } from './damage-panel/damage-panel';
 
 import './stats.scss';

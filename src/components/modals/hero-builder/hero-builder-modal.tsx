@@ -21,9 +21,9 @@ import { Utils } from '../../../utils/utils';
 
 import { BackgroundCard, ItemCard, PlaceholderCard, RoleCard, SpeciesCard } from '../../cards';
 import { CardList, PlayingCard, Text, TextType } from '../../controls';
-import { CombatantRowPanel } from '../combatant-row/combatant-row-panel';
+import { CombatantRowPanel } from '../../panels/combatant-row/combatant-row-panel';
 
-import './hero-builder-panel.scss';
+import './hero-builder-modal.scss';
 
 interface Props {
 	hero: CombatantModel;
@@ -36,7 +36,7 @@ interface State {
 	hero: CombatantModel;
 }
 
-export class HeroBuilderPanel extends Component<Props, State> {
+export class HeroBuilderModal extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 
@@ -130,12 +130,12 @@ export class HeroBuilderPanel extends Component<Props, State> {
 			}
 
 			return (
-				<div className='hero-builder-panel'>
+				<div className='hero-builder-modal'>
 					{content}
 				</div>
 			);
 		} catch {
-			return <div className='hero-builder-panel render-error' />;
+			return <div className='hero-builder-modal render-error' />;
 		}
 	};
 }

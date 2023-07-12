@@ -15,7 +15,7 @@ import { DecksTab } from './decks-tab/decks-tab';
 import { OptionsTab } from './options-tab/options-tab';
 import { RulesTab } from './rules-tab/rules-tab';
 
-import './settings-panel.scss';
+import './settings-modal.scss';
 
 import pkg from '../../../../package.json';
 
@@ -40,7 +40,7 @@ interface State {
 	actions: ActionModel[];
 }
 
-export class SettingsPanel extends Component<Props, State> {
+export class SettingsModal extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
@@ -182,7 +182,7 @@ export class SettingsPanel extends Component<Props, State> {
 			}
 
 			return (
-				<div className='settings-panel'>
+				<div className='settings-modal'>
 					<Text type={TextType.Heading}>Skirmish</Text>
 					<Tabs options={tabs} selectedID={this.state.selectedTab} onSelect={id => this.setState({ selectedTab: id })} />
 					{content}
@@ -190,7 +190,7 @@ export class SettingsPanel extends Component<Props, State> {
 				</div>
 			);
 		} catch {
-			return <div className='settings-panel render-error' />;
+			return <div className='settings-modal render-error' />;
 		}
 	};
 }

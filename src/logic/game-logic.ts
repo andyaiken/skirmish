@@ -3,6 +3,7 @@ import { HeroSpeciesData } from '../data/hero-species-data';
 import { ItemData } from '../data/item-data';
 import { MonsterSpeciesData } from '../data/monster-species-data';
 import { PackData } from '../data/pack-data';
+import { PotionData } from '../data/potion-data';
 import { RoleData } from '../data/role-data';
 
 import { ActionTargetType } from '../enums/action-target-type';
@@ -52,6 +53,10 @@ export class GameLogic {
 		return ItemData.getList().filter(i => (i.packID === '') || packIDs.includes(i.packID));
 	};
 
+	static getPotionDeck = (packIDs: string[]) => {
+		return PotionData.getList().filter(i => (i.packID === '') || packIDs.includes(i.packID));
+	};
+
 	///////////////////////////////////////////////////////////////////////////
 
 	static getPacks = () => {
@@ -66,6 +71,7 @@ export class GameLogic {
 		count += RoleData.getList().filter(r => r.packID === packID).length;
 		count += BackgroundData.getList().filter(b => b.packID === packID).length;
 		count += ItemData.getList().filter(i => i.packID === packID).length;
+		count += PotionData.getList().filter(i => i.packID === packID).length;
 
 		return count;
 	};
@@ -90,6 +96,10 @@ export class GameLogic {
 
 	static getItem = (id: string) => {
 		return ItemData.getList().find(i => i.id === id) || null;
+	};
+
+	static getPotion = (id: string) => {
+		return PotionData.getList().find(i => i.id === id) || null;
 	};
 
 	static getPack = (id: string) => {
@@ -253,7 +263,7 @@ export class GameLogic {
 		return false;
 	};
 
-	static getDamageCategoryType = (type: DamageType) => {
+	static getDamageCategory = (type: DamageType) => {
 		switch (type) {
 			case DamageType.All:
 				return DamageCategoryType.All;
@@ -277,12 +287,6 @@ export class GameLogic {
 		return DamageCategoryType.None;
 	};
 
-	static addHeroToGame = (game: GameModel, hero: CombatantModel) => {
-		game.heroSlots = Math.max(game.heroSlots - 1, 0);
-		game.heroes.push(hero);
-		game.heroes.sort((a, b) => a.name.localeCompare(b.name));
-	};
-
 	static getSkillCategory = (skill: SkillType) => {
 		switch (skill) {
 			case SkillType.All:
@@ -303,6 +307,12 @@ export class GameLogic {
 
 	static getItemsForProficiency = (proficiency: ItemProficiencyType, packIDs: string[]) => {
 		return GameLogic.getItemDeck(packIDs).filter(i => i.proficiency === proficiency);
+	};
+
+	static addHeroToGame = (game: GameModel, hero: CombatantModel) => {
+		game.heroSlots = Math.max(game.heroSlots - 1, 0);
+		game.heroes.push(hero);
+		game.heroes.sort((a, b) => a.name.localeCompare(b.name));
 	};
 
 	///////////////////////////////////////////////////////////////////////////

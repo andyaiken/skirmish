@@ -15,6 +15,7 @@ import { Collections } from '../../../../utils/collections';
 import { BoonCard, ItemCard, PlaceholderCard } from '../../../cards';
 import { CardList, Dialog, IconType, IconValue, PlayingCard, StatValue, Text, TextType } from '../../../controls';
 import { EnchantItemPanel, MagicItemInfoPanel, MagicItemsPanel } from '../../../panels';
+import { PotionsPanel } from '../../../panels/potions/potions-panel';
 
 import './items-page.scss';
 
@@ -31,6 +32,7 @@ interface Props {
 
 interface State {
 	showMarket: boolean;
+	showApothecary: boolean;
 	selectedMagicItem: ItemModel | null;
 	selectedBoon: BoonModel | null;
 }
@@ -40,6 +42,7 @@ export class ItemsPage extends Component<Props, State> {
 		super(props);
 		this.state = {
 			showMarket: false,
+			showApothecary: false,
 			selectedMagicItem: null,
 			selectedBoon: null
 		};
@@ -70,9 +73,16 @@ export class ItemsPage extends Component<Props, State> {
 		});
 	};
 
+	showApothecary = (show: boolean) => {
+		this.setState({
+			showApothecary: show
+		});
+	};
+
 	buyItem = (item: ItemModel) => {
 		this.setState({
-			showMarket: false
+			showMarket: false,
+			showApothecary: false
 		}, () => {
 			this.props.buyItem(item);
 		});
@@ -98,7 +108,6 @@ export class ItemsPage extends Component<Props, State> {
 
 	getSidebar = () => {
 		const controlLand = this.props.game.map.squares.some(sq => sq.regionID === '');
-		const enoughMoney = (this.props.game.money >= 100);
 
 		const moneySection = (
 			<div>
@@ -122,12 +131,10 @@ export class ItemsPage extends Component<Props, State> {
 		}
 
 		let itemSection = null;
-		if (controlLand && enoughMoney) {
-			const count = Math.floor(this.props.game.money / 100);
-			const text = count === 1 ? 'a magic item' : `${count} magic items`;
+		if (controlLand && (this.props.game.money >= 100)) {
 			itemSection = (
 				<div>
-					<Text type={TextType.Information}><p><b>You have enough money to buy {text}.</b> Click the item deck below to choose an item.</p></Text>
+					<Text type={TextType.Information}><p><b>You have enough money to buy a magic item.</b> Click the item deck below to choose one.</p></Text>
 					<div className='center'>
 						<PlayingCard
 							stack={true}
@@ -136,6 +143,27 @@ export class ItemsPage extends Component<Props, State> {
 									text='Magic Items'
 									content={<div><IconValue type={IconType.Money} value={100} iconSize={15} /></div>}
 									onClick={() => this.showMarket(true)}
+								/>
+							}
+						/>
+					</div>
+				</div>
+			);
+		}
+
+		let potionSection = null;
+		if (controlLand && (this.props.game.money >= 20)) {
+			potionSection = (
+				<div>
+					<Text type={TextType.Information}><p><b>You have enough money to buy a potion.</b> Click the potion deck below to choose one.</p></Text>
+					<div className='center'>
+						<PlayingCard
+							stack={true}
+							front={
+								<PlaceholderCard
+									text='Potions'
+									content={<div><IconValue type={IconType.Money} value={20} iconSize={15} /></div>}
+									onClick={() => this.showApothecary(true)}
 								/>
 							}
 						/>
@@ -154,6 +182,8 @@ export class ItemsPage extends Component<Props, State> {
 				{boons}
 				{itemSection !== null ? <hr /> : null}
 				{itemSection}
+				{potionSection !== null ? <hr /> : null}
+				{potionSection}
 			</div>
 		);
 	};
@@ -167,7 +197,20 @@ export class ItemsPage extends Component<Props, State> {
 							game={this.props.game}
 							options={this.props.options}
 							buyItem={this.buyItem}
-							dropItem={this.props.dropItem}
+						/>
+					)}
+				/>
+			);
+		}
+
+		if (this.state.showApothecary) {
+			return (
+				<Dialog
+					content={(
+						<PotionsPanel
+							game={this.props.game}
+							options={this.props.options}
+							buyItem={this.buyItem}
 						/>
 					)}
 				/>
@@ -231,8 +274,41 @@ export class ItemsPage extends Component<Props, State> {
 				);
 			}
 
+			let potionSection = null;
+			const potions = this.props.game.items.filter(i => !i.magic && i.potion).sort((a, b) => a.name.localeCompare(b.name));
+			if (potions.length > 0) {
+				const cards = Collections.distinct(potions, i => i.name).map(item => {
+					const count = potions.filter(i => i.name === item.name).length;
+
+					let footer = (
+						<button onClick={() => this.props.sellItem(item, true)}>Sell</button>
+					);
+
+					if (count > 1) {
+						footer = (
+							<div>
+								<button onClick={() => this.props.sellItem(item, false)}>Sell One</button>
+								<button onClick={() => this.props.sellItem(item, true)}>Sell All ({count})</button>
+							</div>
+						);
+					}
+
+					return (
+						<div key={item.id}>
+							<ItemCard item={item} count={count} />
+							{footer}
+						</div>
+					);
+				});
+				potionSection = (
+					<div>
+						<CardList cards={cards} />
+					</div>
+				);
+			}
+
 			let mundaneItemSection = null;
-			const mundaneItems = this.props.game.items.filter(i => !i.magic).sort((a, b) => a.name.localeCompare(b.name));
+			const mundaneItems = this.props.game.items.filter(i => !i.magic && !i.potion).sort((a, b) => a.name.localeCompare(b.name));
 			if (mundaneItems.length > 0) {
 				const cards = Collections.distinct(mundaneItems, i => i.name).map(item => {
 					const count = mundaneItems.filter(i => i.name === item.name).length;
@@ -252,7 +328,7 @@ export class ItemsPage extends Component<Props, State> {
 
 					return (
 						<div key={item.id}>
-							<ItemCard item={item} />
+							<ItemCard item={item} count={count} />
 							{footer}
 						</div>
 					);
@@ -276,10 +352,11 @@ export class ItemsPage extends Component<Props, State> {
 			return (
 				<div className='items-page'>
 					<div className='items-content'>
-						{magicItemSection && mundaneItemSection ? <Text type={TextType.SubHeading}>Magic Items</Text> : null}
+						{magicItemSection ? <Text type={TextType.SubHeading}>Magic Items</Text> : null}
 						{magicItemSection}
-						{magicItemSection && mundaneItemSection ? <hr /> : null}
-						{magicItemSection && mundaneItemSection ? <Text type={TextType.SubHeading}>Non-Magic Items</Text> : null}
+						{potionSection ? <Text type={TextType.SubHeading}>Potions</Text> : null}
+						{potionSection}
+						{mundaneItemSection ? <Text type={TextType.SubHeading}>Non-Magic Items</Text> : null}
 						{mundaneItemSection}
 						{empty}
 					</div>

@@ -42,23 +42,11 @@
 * Dealing cold damage to a target on a water square turns all adjacent water squares into ice
 * Dealing fire damage to a target on an ice square turns all adjacent ice squares into water
 
-## Potions
-* Could be found on the map (as a loot pile)
-* An extra section in the items page - 'Potions' / 'Consumables'
-* Drink
-  * 2 movement points
-  * Then destroyed
-  * Has effects:
-    * Health (heals damage and wounds)
-    * Luck (grants skill bonuses)
-    * Power (grants damage bonuses)
-    * Resistance (grants damage resistances)
-* Buy for 50 money
-
 ## Doors
 * Present on the map - 1x2 squares, horizontally or vertically
-* Counts as a wall: blocks LOS and can be broken down
-* Open / close a door for 1 movement point
+* When closed, counts as a wall: blocks LOS and can be broken down
+* When beside a door, move tab should allow you to open / close it
+  * 1 movement point
 
 ## Keys
 * Another sort of consumable item, like a potion
@@ -68,14 +56,16 @@
 
 ## Traps
 * Types of trap:
-  * Pit traps
-  * Fire traps
-  * Dart traps
-  * Poison dart traps
+  * Spike traps (piercing dmg)
+  * Fire traps (fire dmg)
+  * Poison gas traps (poison dmg)
+  * Acid dart traps (acid dmg)
   * Traps on chests
-* Traps should be present on the map initially
+* Traps might be present on the map initially
 * Traps should have a set Hidden score
-* Gnome, Thief should be able to set / disable traps
+* When set off, a trap should become visible (Hidden = 0)
+* Gnome, Thief should be able to disable traps
+* Trapper should be able to set traps
 
 ## Lighting
 * General light level

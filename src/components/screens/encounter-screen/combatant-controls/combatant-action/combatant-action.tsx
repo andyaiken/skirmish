@@ -75,9 +75,6 @@ export class CombatantAction extends Component<Props> {
 
 		return (
 			<div className='combatant-action'>
-				<Text type={TextType.Information}>
-					<p>Choose one of these action cards.</p>
-				</Text>
 				{this.props.developer ? <button className='developer' onClick={() => this.props.drawActions(this.props.encounter, this.props.combatant)}>Draw Again</button> : null}
 				<CardList cards={actionCards} />
 			</div>

@@ -1,0 +1,11 @@
+.combatant-potions {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+
+	.potion-card {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+}

@@ -10,7 +10,7 @@ import { QuirkType } from '../enums/quirk-type';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
 
-import { ActionEffects, ActionLogic } from './action-logic';
+import { ActionEffects, ActionLogic, ActionTargetParameters } from './action-logic';
 
 import type { ActionModel, ActionOriginParameterModel, ActionTargetParameterModel, ActionWeaponParameterModel } from '../models/action';
 import type { EncounterMapSquareModel, EncounterModel, LootPileModel } from '../models/encounter';
@@ -457,6 +457,25 @@ export class EncounterLogic {
 		}
 
 		EncounterLogic.checkActionParameters(encounter, combatant);
+	};
+
+	static drinkPotion = (encounter: EncounterModel, combatant: CombatantModel, potion: ItemModel) => {
+		if (!potion.potion) {
+			return;
+		}
+
+		EncounterLogic.log(encounter, `${combatant.name} drinks ${potion.name}`);
+
+		combatant.combat.movement -= 2;
+
+		combatant.items = combatant.items.filter(i => i.id !== potion.id);
+		combatant.carried = combatant.carried.filter(i => i.id !== potion.id);
+
+		potion.potion.effects.forEach(effect => {
+			const param = ActionTargetParameters.self();
+			param.value = [ combatant.id ];
+			ActionEffects.run(effect, encounter, combatant, [ param ]);
+		});
 	};
 
 	static healDamage = (encounter: EncounterModel, combatant: CombatantModel, value: number) => {

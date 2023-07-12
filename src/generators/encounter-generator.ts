@@ -18,6 +18,7 @@ import type { RegionModel } from '../models/region';
 
 import { Collections } from '../utils/collections';
 import { Random } from '../utils/random';
+import { Utils } from '../utils/utils';
 
 export class EncounterGenerator {
 	static createEncounter = (region: RegionModel, heroes: CombatantModel[], packIDs: string[]): EncounterModel => {
@@ -122,9 +123,16 @@ export class EncounterGenerator {
 		encounter.combatants.push(...monsters);
 
 		const loot: LootPileModel[] = [];
-		if (Random.randomNumber(10, rng) === 0) {
+		if (Random.randomNumber(5, rng) === 0) {
 			const lp = Factory.createLootPile();
-			lp.items.push(MagicItemGenerator.generateRandomMagicItem(packIDs));
+			if (Random.randomNumber(3, rng) === 0) {
+				lp.items.push(MagicItemGenerator.generateRandomMagicItem(packIDs));
+			} else {
+				const potions = GameLogic.getPotionDeck(packIDs);
+				const item = Collections.draw(potions);
+				item.id = Utils.guid();
+				lp.items.push(item);
+			}
 
 			const square = Collections.draw(encounter.mapSquares.filter(c => c.type === EncounterMapSquareType.Clear), rng);
 			lp.position.x = square.x;

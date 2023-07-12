@@ -1,0 +1,9 @@
+.combatant-endturn {
+	display: flex;
+    flex-direction: column;
+	gap: 20px;
+
+	.checked {
+		color: rgb(0, 100, 0);
+	}
+}

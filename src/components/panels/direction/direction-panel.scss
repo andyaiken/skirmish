@@ -1,14 +1,14 @@
 .direction-panel {
-	width: 220px;
-	height: 220px;
+	width: 250px;
+	height: 250px;
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
 	gap: 5px;
 
 	.dir,
 	.center {
-		width: 70px;
-		height: 70px;
+		width: 80px;
+		height: 80px;
 		display: flex;
 		align-items: center;
 		justify-content: center;

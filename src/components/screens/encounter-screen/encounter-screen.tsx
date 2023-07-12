@@ -47,6 +47,7 @@ interface Props {
 	inspire: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	scan: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	hide: (encounter: EncounterModel, combatant: CombatantModel) => void;
+	drinkPotion: (encounter: EncounterModel, combatant: CombatantModel, potion: ItemModel) => void;
 	drawActions: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	selectAction: (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => void;
 	deselectAction: (encounter: EncounterModel, combatant: CombatantModel) => void;
@@ -547,6 +548,7 @@ export class EncounterScreen extends Component<Props, State> {
 					inspire={this.props.inspire}
 					scan={this.props.scan}
 					hide={this.props.hide}
+					drinkPotion={this.props.drinkPotion}
 					drawActions={this.props.drawActions}
 					selectAction={this.selectAction}
 					deselectAction={this.props.deselectAction}

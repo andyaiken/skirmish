@@ -162,7 +162,6 @@ export class Items extends Component<Props> {
 
 				const options = (
 					<div className='item-options'>
-						{count > 1 ? <Text type={TextType.MinorHeading}>x{count}</Text> : null}
 						<button disabled={!CombatantLogic.canEquip(this.props.combatant, item)} onClick={() => this.props.equipItem(item)}>
 							Equip
 						</button>
@@ -174,7 +173,7 @@ export class Items extends Component<Props> {
 
 				return (
 					<div key={item.id} className='item'>
-						<ItemCard item={item} />
+						<ItemCard item={item} count={count} />
 						{options}
 					</div>
 				);

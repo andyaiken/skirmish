@@ -1,4 +1,7 @@
 .combatant-overview {
+	display: flex;
+    flex-direction: column;
+
 	.quick-actions {
 		display: flex;
 		align-items: flex-start;

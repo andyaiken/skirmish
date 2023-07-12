@@ -2,9 +2,10 @@ import { Component, MouseEvent } from 'react';
 import { IconCheck, IconRefresh } from '@tabler/icons-react';
 
 import { CardType } from '../../../enums/card-type';
+import { ItemLocationType } from '../../../enums/item-location-type';
 import { ItemProficiencyType } from '../../../enums/item-proficiency-type';
 
-import { ActionLogic } from '../../../logic/action-logic';
+import { ActionEffects, ActionLogic } from '../../../logic/action-logic';
 import { FeatureLogic } from '../../../logic/feature-logic';
 
 import type { ItemModel } from '../../../models/item';
@@ -18,6 +19,7 @@ import './item-card.scss';
 
 interface Props {
 	item: ItemModel;
+	count: number;
 	onSelect: ((item: ItemModel) => void) | null;
 }
 
@@ -27,6 +29,7 @@ interface State {
 
 export class ItemCard extends Component<Props, State> {
 	static defaultProps = {
+		count: 1,
 		onSelect: null
 	};
 
@@ -58,6 +61,9 @@ export class ItemCard extends Component<Props, State> {
 		if (this.props.item.slots > 1) {
 			location = `${this.props.item.slots} ${location}s`;
 		}
+		if (this.props.item.location === ItemLocationType.None) {
+			location = '';
+		}
 
 		let weapon = null;
 		if (this.props.item.weapon) {
@@ -85,6 +91,16 @@ export class ItemCard extends Component<Props, State> {
 			);
 		}
 
+		let potion = null;
+		if (this.props.item.potion) {
+			potion = (
+				<div>
+					<Text type={TextType.MinorHeading}>Potion</Text>
+					{this.props.item.potion.effects.map((e, n) => <ListItemPanel key={n} item={ActionEffects.getDescription(e, null, null)} />)}
+				</div>
+			);
+		}
+
 		let features = null;
 		const collatedFeatures = FeatureLogic.collateFeatures(this.props.item.features);
 		if (collatedFeatures.length > 0) {
@@ -107,7 +123,7 @@ export class ItemCard extends Component<Props, State> {
 		}
 
 		let empty = null;
-		if (!weapon && !armor && !features && !actions) {
+		if (!weapon && !armor && !potion && !features && !actions) {
 			empty = (
 				<div>
 					<Text type={TextType.Small}>This item has no additional statistics.</Text>
@@ -130,13 +146,13 @@ export class ItemCard extends Component<Props, State> {
 				type={CardType.Item}
 				front={(
 					<PlaceholderCard
-						text={this.props.item.name}
+						text={this.props.count === 1 ? this.props.item.name : `${this.props.item.name} (x${this.props.count})`}
 						subtext={this.props.item.description}
 						content={(
 							<div className='item-card-front'>
 								<div className='tags'>
 									{this.props.item.proficiency !== ItemProficiencyType.None ? <Tag>{this.props.item.proficiency}</Tag> : null}
-									<Tag>{location}</Tag>
+									{location !== '' ? <Tag>{location}</Tag> : null}
 								</div>
 							</div>
 						)}
@@ -146,6 +162,7 @@ export class ItemCard extends Component<Props, State> {
 					<div className='item-card-back'>
 						{weapon}
 						{armor}
+						{potion}
 						{features}
 						{actions}
 						{empty}

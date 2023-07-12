@@ -18,12 +18,12 @@ import { GameLogic } from '../logic/game-logic';
 import { NameGenerator } from './name-generator';
 
 export class MagicItemGenerator {
-	static generateMagicItem = (baseItem: ItemModel, packIDs: string[]): ItemModel => {
+	static generateMagicItem = (baseItem: ItemModel, packIDs: string[]) => {
 		const item = MagicItemGenerator.convertToMagicItem(baseItem);
 		return MagicItemGenerator.addMagicItemFeature(item, packIDs);
 	};
 
-	static generateRandomMagicItem = (packIDs: string[]): ItemModel => {
+	static generateRandomMagicItem = (packIDs: string[]) => {
 		const baseItem = Collections.draw(GameLogic.getItemDeck(packIDs));
 		const item = MagicItemGenerator.convertToMagicItem(baseItem);
 		return MagicItemGenerator.addMagicItemFeature(item, packIDs);

@@ -2,7 +2,7 @@ import type { DamageType } from '../enums/damage-type';
 import type { ItemLocationType } from '../enums/item-location-type';
 import type { ItemProficiencyType } from '../enums/item-proficiency-type';
 
-import type { ActionModel } from './action';
+import type { ActionEffectModel, ActionModel } from './action';
 import type { FeatureModel } from './feature';
 
 export interface WeaponModel {
@@ -18,6 +18,10 @@ export interface ArmorModel {
 	features: FeatureModel[];
 }
 
+export interface PotionModel {
+	effects: ActionEffectModel[];
+}
+
 export interface ItemModel {
 	id: string;
 	name: string;
@@ -30,6 +34,7 @@ export interface ItemModel {
 	slots: number;
 	weapon: WeaponModel | null;
 	armor: ArmorModel | null;
+	potion: PotionModel | null;
 	features: FeatureModel[];
 	actions: ActionModel[];
 }

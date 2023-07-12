@@ -11,7 +11,7 @@ import type { ItemModel } from '../models/item';
 
 export class ItemData {
 	static getList = (): ItemModel[] => {
-		const list = [
+		const list: ItemModel[] = [
 			{
 				id: 'item-sword',
 				name: 'Sword',
@@ -33,6 +33,7 @@ export class ItemData {
 					unreliable: 0
 				},
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -57,6 +58,7 @@ export class ItemData {
 					unreliable: 0
 				},
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -81,6 +83,7 @@ export class ItemData {
 					unreliable: 0
 				},
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -105,6 +108,7 @@ export class ItemData {
 					unreliable: 0
 				},
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -129,6 +133,7 @@ export class ItemData {
 					unreliable: 0
 				},
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -153,6 +158,7 @@ export class ItemData {
 					unreliable: 0
 				},
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -177,6 +183,7 @@ export class ItemData {
 					unreliable: 1
 				},
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -201,6 +208,7 @@ export class ItemData {
 					unreliable: 0
 				},
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -225,6 +233,7 @@ export class ItemData {
 					unreliable: 0
 				},
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -249,6 +258,7 @@ export class ItemData {
 					unreliable: 0
 				},
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -273,6 +283,7 @@ export class ItemData {
 					unreliable: 0
 				},
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -297,6 +308,7 @@ export class ItemData {
 					unreliable: 0
 				},
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -321,6 +333,7 @@ export class ItemData {
 					unreliable: 0
 				},
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -345,6 +358,7 @@ export class ItemData {
 					unreliable: 0
 				},
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -369,6 +383,7 @@ export class ItemData {
 					unreliable: 0
 				},
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -393,6 +408,7 @@ export class ItemData {
 					unreliable: 0
 				},
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -417,6 +433,7 @@ export class ItemData {
 					unreliable: 0
 				},
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -441,6 +458,7 @@ export class ItemData {
 					unreliable: 0
 				},
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -465,6 +483,7 @@ export class ItemData {
 					unreliable: 0
 				},
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -489,6 +508,7 @@ export class ItemData {
 					unreliable: 0
 				},
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -513,6 +533,7 @@ export class ItemData {
 					unreliable: 0
 				},
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -537,6 +558,7 @@ export class ItemData {
 					unreliable: 0
 				},
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -561,6 +583,7 @@ export class ItemData {
 					unreliable: 1
 				},
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -585,6 +608,7 @@ export class ItemData {
 					unreliable: 1
 				},
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -609,6 +633,7 @@ export class ItemData {
 					unreliable: 2
 				},
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -633,6 +658,7 @@ export class ItemData {
 					unreliable: 2
 				},
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -657,6 +683,7 @@ export class ItemData {
 					unreliable: 2
 				},
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -672,6 +699,7 @@ export class ItemData {
 				slots: 1,
 				weapon: null,
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -687,6 +715,7 @@ export class ItemData {
 				slots: 1,
 				weapon: null,
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -702,6 +731,7 @@ export class ItemData {
 				slots: 2,
 				weapon: null,
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -717,6 +747,7 @@ export class ItemData {
 				slots: 1,
 				weapon: null,
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -732,6 +763,7 @@ export class ItemData {
 				slots: 2,
 				weapon: null,
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -751,6 +783,7 @@ export class ItemData {
 						FeatureLogic.createDamageCategoryResistFeature('leatherarmour-1', DamageCategoryType.Physical, 1)
 					]
 				},
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -771,6 +804,7 @@ export class ItemData {
 						FeatureLogic.createSkillCategoryFeature('hidearmour-2', SkillCategoryType.Physical, -1)
 					]
 				},
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -792,6 +826,7 @@ export class ItemData {
 						FeatureLogic.createTraitFeature('brigandinearmour-3', TraitType.Speed, -1)
 					]
 				},
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -812,6 +847,7 @@ export class ItemData {
 						FeatureLogic.createSkillCategoryFeature('brigandinearmour-2', SkillCategoryType.Physical, -2)
 					]
 				},
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -833,6 +869,7 @@ export class ItemData {
 						FeatureLogic.createTraitFeature('chainarmour-3', TraitType.Speed, -1)
 					]
 				},
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -854,6 +891,7 @@ export class ItemData {
 						FeatureLogic.createTraitFeature('platearmor-3', TraitType.Speed, -2)
 					]
 				},
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -873,6 +911,7 @@ export class ItemData {
 						FeatureLogic.createDamageCategoryResistFeature('shield-1', DamageCategoryType.Physical, 1)
 					]
 				},
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -893,6 +932,7 @@ export class ItemData {
 						FeatureLogic.createSkillCategoryFeature('towershield-2', SkillCategoryType.Physical, -1)
 					]
 				},
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -908,6 +948,7 @@ export class ItemData {
 				slots: 1,
 				weapon: null,
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -923,6 +964,7 @@ export class ItemData {
 				slots: 1,
 				weapon: null,
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -938,6 +980,7 @@ export class ItemData {
 				slots: 1,
 				weapon: null,
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -953,6 +996,7 @@ export class ItemData {
 				slots: 1,
 				weapon: null,
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -968,6 +1012,7 @@ export class ItemData {
 				slots: 1,
 				weapon: null,
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -983,6 +1028,7 @@ export class ItemData {
 				slots: 1,
 				weapon: null,
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -998,6 +1044,7 @@ export class ItemData {
 				slots: 1,
 				weapon: null,
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -1013,6 +1060,7 @@ export class ItemData {
 				slots: 1,
 				weapon: null,
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -1028,6 +1076,7 @@ export class ItemData {
 				slots: 1,
 				weapon: null,
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -1043,6 +1092,7 @@ export class ItemData {
 				slots: 1,
 				weapon: null,
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -1058,6 +1108,7 @@ export class ItemData {
 				slots: 1,
 				weapon: null,
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -1073,6 +1124,7 @@ export class ItemData {
 				slots: 1,
 				weapon: null,
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			},
@@ -1088,6 +1140,7 @@ export class ItemData {
 				slots: 1,
 				weapon: null,
 				armor: null,
+				potion: null,
 				features: [],
 				actions: []
 			}

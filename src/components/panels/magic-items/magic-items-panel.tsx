@@ -6,7 +6,6 @@ import { MagicItemGenerator } from '../../../generators/magic-item-generator';
 
 import { CombatantLogic } from '../../../logic/combatant-logic';
 
-import type { CombatantModel } from '../../../models/combatant';
 import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
 import type { OptionsModel } from '../../../models/options';
@@ -20,7 +19,6 @@ interface Props {
 	game: GameModel;
 	options: OptionsModel;
 	buyItem: (item: ItemModel) => void;
-	dropItem: (item: ItemModel, hero: CombatantModel) => void;
 }
 
 interface State {

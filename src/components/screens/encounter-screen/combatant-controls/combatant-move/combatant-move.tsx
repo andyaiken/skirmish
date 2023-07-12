@@ -32,8 +32,8 @@ export class CombatantMove extends Component<Props> {
 
 			return (
 				<div className='combatant-move'>
-					<DirectionPanel combatant={this.props.combatant} costs={moveCosts} onMove={(dir, cost) => this.props.move(this.props.encounter, this.props.combatant, dir, cost)} />
 					{this.props.developer ? <button className='developer' onClick={() => this.props.addMovement(this.props.encounter, this.props.combatant, 10)}>Add Movement</button> : null}
+					<DirectionPanel combatant={this.props.combatant} costs={moveCosts} onMove={(dir, cost) => this.props.move(this.props.encounter, this.props.combatant, dir, cost)} />
 				</div>
 			);
 		} catch {

@@ -1,3 +1,4 @@
+import { IconArrowsMove, IconCircleCheck, IconFlare, IconFlask2, IconListDetails } from '@tabler/icons-react';
 import { Component } from 'react';
 
 import { CombatantState } from '../../../../enums/combatant-state';
@@ -6,13 +7,16 @@ import { CombatantType } from '../../../../enums/combatant-type';
 import type { ActionModel, ActionParameterModel } from '../../../../models/action';
 import type { CombatantModel } from '../../../../models/combatant';
 import type { EncounterModel } from '../../../../models/encounter';
+import type { ItemModel } from '../../../../models/item';
 
-import { ConfirmButton, Tabs } from '../../../controls';
+import { Tabs, Text, TextType } from '../../../controls';
 import { CombatantAction } from './combatant-action/combatant-action';
+import { CombatantEndturn } from './combatant-endturn/combatant-endturn';
 import { CombatantHeader } from './combatant-header/combatant-header';
 import { CombatantMonster } from './combatant-monster/combatant-monster';
 import { CombatantMove } from './combatant-move/combatant-move';
 import { CombatantOverview } from './combatant-overview/combatant-overview';
+import { CombatantPotions } from './combatant-potions/combatant-potions';
 
 import './combatant-controls.scss';
 
@@ -28,6 +32,7 @@ interface CombatantControlsProps {
 	inspire: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	scan: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	hide: (encounter: EncounterModel, combatant: CombatantModel) => void;
+	drinkPotion: (encounter: EncounterModel, combatant: CombatantModel, potion: ItemModel) => void;
 	drawActions: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	selectAction: (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => void;
 	deselectAction: (encounter: EncounterModel, combatant: CombatantModel) => void;
@@ -47,7 +52,7 @@ export class CombatantControls extends Component<CombatantControlsProps, Combata
 	constructor(props: CombatantControlsProps) {
 		super(props);
 		this.state = {
-			tab: 'stats',
+			tab: 'overview',
 			thinking: false
 		};
 	}
@@ -125,7 +130,7 @@ export class CombatantControls extends Component<CombatantControlsProps, Combata
 
 			let content = null;
 			switch (this.state.tab) {
-				case 'stats':
+				case 'overview':
 					content = (
 						<CombatantOverview
 							combatant={this.props.combatant}
@@ -137,7 +142,7 @@ export class CombatantControls extends Component<CombatantControlsProps, Combata
 						/>
 					);
 					break;
-				case 'move':
+				case 'movement':
 					content = (
 						<CombatantMove
 							combatant={this.props.combatant}
@@ -148,7 +153,7 @@ export class CombatantControls extends Component<CombatantControlsProps, Combata
 						/>
 					);
 					break;
-				case 'action':
+				case 'take an action':
 					content = (
 						<CombatantAction
 							combatant={this.props.combatant}
@@ -161,6 +166,24 @@ export class CombatantControls extends Component<CombatantControlsProps, Combata
 							setActionParameter={this.props.setActionParameter}
 							setActionParameterValue={this.props.setActionParameterValue}
 							runAction={this.props.runAction}
+						/>
+					);
+					break;
+				case 'drink a potion':
+					content = (
+						<CombatantPotions
+							combatant={this.props.combatant}
+							encounter={this.props.encounter}
+							drinkPotion={this.props.drinkPotion}
+						/>
+					);
+					break;
+				case 'end your turn':
+					content = (
+						<CombatantEndturn
+							combatant={this.props.combatant}
+							encounter={this.props.encounter}
+							endTurn={this.endTurn}
 						/>
 					);
 					break;
@@ -177,21 +200,17 @@ export class CombatantControls extends Component<CombatantControlsProps, Combata
 					/>
 					<Tabs
 						options={[
-							{ id: 'stats', display: 'Stats' },
-							{ id: 'move', display: 'Move' },
-							{ id: 'action', display: 'Action' }
+							{ id: 'overview', display: <IconListDetails /> },
+							{ id: 'movement', display: <IconArrowsMove /> },
+							{ id: 'take an action', display: <IconFlare /> },
+							{ id: 'drink a potion', display: <IconFlask2 /> },
+							{ id: 'end your turn', display: <IconCircleCheck /> }
 						]}
 						selectedID={this.state.tab}
 						onSelect={this.setTab}
 					/>
+					<Text type={TextType.SubHeading}>{this.state.tab}</Text>
 					{content}
-					<hr />
-					{
-						this.props.combatant.combat.selectedAction && this.props.combatant.combat.selectedAction.used ?
-							<button onClick={this.endTurn}>End Turn</button>
-							:
-							<ConfirmButton label='End Turn' info='You have not yet taken an action.' onClick={this.endTurn} />
-					}
 				</div>
 			);
 		}  catch {

@@ -439,7 +439,15 @@ export class Main extends Component<Props, State> {
 			const game = this.state.game as GameModel;
 
 			game.items.push(item);
-			game.money = Math.max(0, game.money - 100);
+
+			let money = 2;
+			if (item.potion) {
+				money = 20;
+			}
+			if (item.magic) {
+				money = 100;
+			}
+			game.money = Math.max(0, game.money - money);
 
 			this.setState({
 				game: game
@@ -455,7 +463,15 @@ export class Main extends Component<Props, State> {
 		try {
 			const sell = (item: ItemModel) => {
 				game.items = game.items.filter(i => i !== item);
-				game.money += item.magic ? 50 : 1;
+
+				let money = 1;
+				if (item.potion) {
+					money = 10;
+				}
+				if (item.magic) {
+					money = 50;
+				}
+				game.money += money;
 			};
 
 			const game = this.state.game as GameModel;
@@ -679,6 +695,20 @@ export class Main extends Component<Props, State> {
 	hide = (encounter: EncounterModel, combatant: CombatantModel) => {
 		try {
 			EncounterLogic.hide(encounter, combatant);
+
+			this.setState({
+				game: this.state.game
+			}, () => {
+				this.saveGame();
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
+	};
+
+	drinkPotion = (encounter: EncounterModel, combatant: CombatantModel, potion: ItemModel) => {
+		try {
+			EncounterLogic.drinkPotion(encounter, combatant, potion);
 
 			this.setState({
 				game: this.state.game
@@ -1074,6 +1104,7 @@ export class Main extends Component<Props, State> {
 						inspire={this.inspire}
 						scan={this.scan}
 						hide={this.hide}
+						drinkPotion={this.drinkPotion}
 						drawActions={this.drawActions}
 						selectAction={this.selectAction}
 						deselectAction={this.deselectAction}

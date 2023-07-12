@@ -179,26 +179,23 @@ export class CombatantLogic {
 			return false;
 		}
 
-		if (item.location !== ItemLocationType.None) {
-			let slotsTotal = 1;
-			switch (item.location) {
-				case ItemLocationType.Hand:
-				case ItemLocationType.Ring:
-					slotsTotal = 2;
-					break;
-			}
+		if (item.location === ItemLocationType.None) {
+			return false;
+		}
 
-			const slotsUsed = Collections.sum(combatant.items.filter(i => i.location === item.location), i => i.slots);
-			const slotsAvailable = slotsTotal - slotsUsed;
+		let slotsTotal = 1;
+		switch (item.location) {
+			case ItemLocationType.Hand:
+			case ItemLocationType.Ring:
+				slotsTotal = 2;
+				break;
+		}
 
-			if (item.slots > slotsAvailable) {
-				return false;
-			}
-		} else {
-			// We can only carry 6 items
-			if (combatant.carried.length >= 6) {
-				return false;
-			}
+		const slotsUsed = Collections.sum(combatant.items.filter(i => i.location === item.location), i => i.slots);
+		const slotsAvailable = slotsTotal - slotsUsed;
+
+		if (item.slots > slotsAvailable) {
+			return false;
 		}
 
 		const profOK = (item.proficiency === ItemProficiencyType.None) || (CombatantLogic.getProficiencies(combatant).includes(item.proficiency));
@@ -466,20 +463,20 @@ export class CombatantLogic {
 			.forEach(f => value += f.rank);
 		CombatantLogic.getFeatures(combatant)
 			.filter(f => f.type === FeatureType.DamageCategoryBonus)
-			.filter(f => (f.damageCategory === GameLogic.getDamageCategoryType(damage)) || (f.damageCategory === DamageCategoryType.All))
+			.filter(f => (f.damageCategory === GameLogic.getDamageCategory(damage)) || (f.damageCategory === DamageCategoryType.All))
 			.forEach(f => value += f.rank);
 
 		conditions.filter(c => c.type === ConditionType.DamageBonus)
 			.filter(c => (c.details.damage === damage) || (c.details.damage === DamageType.All))
 			.forEach(c => value += c.rank);
 		conditions.filter(c => c.type === ConditionType.DamageCategoryBonus)
-			.filter(c => (c.details.damageCategory === GameLogic.getDamageCategoryType(damage)) || (c.details.damageCategory === DamageCategoryType.All))
+			.filter(c => (c.details.damageCategory === GameLogic.getDamageCategory(damage)) || (c.details.damageCategory === DamageCategoryType.All))
 			.forEach(c => value += c.rank);
 		conditions.filter(c => c.type === ConditionType.DamagePenalty)
 			.filter(c => (c.details.damage === damage) || (c.details.damage === DamageType.All))
 			.forEach(c => value -= c.rank);
 		conditions.filter(c => c.type === ConditionType.DamageCategoryPenalty)
-			.filter(c => (c.details.damageCategory === GameLogic.getDamageCategoryType(damage)) || (c.details.damageCategory === DamageCategoryType.All))
+			.filter(c => (c.details.damageCategory === GameLogic.getDamageCategory(damage)) || (c.details.damageCategory === DamageCategoryType.All))
 			.forEach(c => value -= c.rank);
 
 		// No minimum value
@@ -495,20 +492,20 @@ export class CombatantLogic {
 			.forEach(f => value += f.rank);
 		CombatantLogic.getFeatures(combatant)
 			.filter(f => f.type === FeatureType.DamageCategoryResist)
-			.filter(f => (f.damageCategory === GameLogic.getDamageCategoryType(damage)) || (f.damageCategory === DamageCategoryType.All))
+			.filter(f => (f.damageCategory === GameLogic.getDamageCategory(damage)) || (f.damageCategory === DamageCategoryType.All))
 			.forEach(f => value += f.rank);
 
 		conditions.filter(c => c.type === ConditionType.DamageResistance)
 			.filter(c => (c.details.damage === damage) || (c.details.damage === DamageType.All))
 			.forEach(c => value += c.rank);
 		conditions.filter(c => c.type === ConditionType.DamageCategoryResistance)
-			.filter(c => (c.details.damageCategory === GameLogic.getDamageCategoryType(damage)) || (c.details.damageCategory === DamageCategoryType.All))
+			.filter(c => (c.details.damageCategory === GameLogic.getDamageCategory(damage)) || (c.details.damageCategory === DamageCategoryType.All))
 			.forEach(c => value += c.rank);
 		conditions.filter(c => c.type === ConditionType.DamageVulnerability)
 			.filter(c => (c.details.damage === damage) || (c.details.damage === DamageType.All))
 			.forEach(c => value -= c.rank);
 		conditions.filter(c => c.type === ConditionType.DamageCategoryVulnerability)
-			.filter(c => (c.details.damageCategory === GameLogic.getDamageCategoryType(damage)) || (c.details.damageCategory === DamageCategoryType.All))
+			.filter(c => (c.details.damageCategory === GameLogic.getDamageCategory(damage)) || (c.details.damageCategory === DamageCategoryType.All))
 			.forEach(c => value -= c.rank);
 
 		// No minimum value

@@ -1,5 +1,6 @@
 export enum ItemLocationType {
 	None = 'None',
+	Any = '[choose one location]',
 	Head = 'Head',
 	Neck = 'Neck',
 	Body = 'Body',

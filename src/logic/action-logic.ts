@@ -517,6 +517,14 @@ export class ActionEffects {
 		};
 	};
 
+	static createPotion = (potionID: string): ActionEffectModel => {
+		return {
+			id: 'createPotion',
+			data: potionID,
+			children: []
+		};
+	};
+
 	static getDescription = (effect: ActionEffectModel, combatant: CombatantModel | null, encounter: EncounterModel | null): string => {
 		switch (effect.id) {
 			case 'attack': {
@@ -636,6 +644,11 @@ export class ActionEffects {
 			}
 			case 'destroyWalls': {
 				return 'Destroy walls';
+			}
+			case 'createPotion': {
+				const potionID = effect.data as string;
+				const potion = GameLogic.getPotion(potionID) as ItemModel;
+				return `Create a ${potion.name}`;
 			}
 		}
 
@@ -1289,6 +1302,20 @@ export class ActionEffects {
 					});
 					EncounterMapLogic.visibilityCache.reset();
 					EncounterLogic.log(encounter, `${combatant.name} has destroyed walls`);
+				}
+				break;
+			}
+			case 'createPotion': {
+				const potionID = effect.data as string;
+				const targetParameter = parameters.find(p => p.id === 'targets');
+				if (targetParameter) {
+					const targetIDs = targetParameter.value as string[];
+					targetIDs.forEach(id => {
+						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
+						const potion = GameLogic.getPotion(potionID) as ItemModel;
+						potion.id = Utils.guid();
+						target.carried.push(potion);
+					});
 				}
 				break;
 			}

@@ -30,7 +30,7 @@ interface Props {
 	dropItem: (item: ItemModel, hero: CombatantModel) => void;
 	levelUp: (feature: FeatureModel, hero: CombatantModel) => void;
 	retireHero: (combatant: CombatantModel) => void;
-	redeemBoon: (boon: BoonModel, hero: CombatantModel | null, item: ItemModel | null, newItem: ItemModel | null) => void;
+	redeemBoon: (boon: BoonModel, hero: CombatantModel | null, item: ItemModel | null, newItem: ItemModel | null, cost: number) => void;
 }
 
 interface State {
@@ -54,7 +54,7 @@ export class HeroesPage extends Component<Props, State> {
 			case BoonType.ExtraHero:
 			case BoonType.MagicItem:
 			case BoonType.Money: {
-				this.props.redeemBoon(boon, null, null, null);
+				this.props.redeemBoon(boon, null, null, null, 0);
 				break;
 			}
 			case BoonType.ExtraXP:
@@ -239,7 +239,7 @@ export class HeroesPage extends Component<Props, State> {
 								this.setState({
 									selectedBoon: null
 								}, () => {
-									this.props.redeemBoon(boon, hero, null, null);
+									this.props.redeemBoon(boon, hero, null, null, 0);
 								});
 							}}
 						/>

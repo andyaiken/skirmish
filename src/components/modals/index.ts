@@ -1,3 +1,4 @@
+import { BuyEquipmentModal } from './buy-equipment/buy-equipment-modal';
 import { BuyMagicItemModal } from './buy-magic-item/buy-magic-item-modal';
 import { BuyPotionModal } from './buy-potion/buy-potion-modal';
 import { CharacterSheetModal } from './character-sheet/character-sheet-modal';
@@ -9,6 +10,7 @@ import { PacksModal } from './packs/packs-modal';
 import { SettingsModal } from './settings/settings-modal';
 
 export {
+	BuyEquipmentModal,
 	BuyMagicItemModal,
 	BuyPotionModal,
 	CharacterSheetModal,

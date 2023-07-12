@@ -10,9 +10,6 @@
 
 # Priority
 
-## Enchant Item
-* This should be available to buy for 100 money
-
 -----------------------------------------------------------------------------------------
 
 # Improvements / Enhancements
@@ -108,9 +105,6 @@
   * Arcane archer
 
 ## Ideas for Roles / Backgrounds
-* Alchemist
-  * Create potion
-  * Add to technology pack
 * Gladiator 
   * Large weapons
   * Showmanship

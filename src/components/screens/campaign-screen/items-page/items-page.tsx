@@ -11,9 +11,10 @@ import type { ItemModel } from '../../../../models/item';
 import type { OptionsModel } from '../../../../models/options';
 
 import { Collections } from '../../../../utils/collections';
+import { Utils } from '../../../../utils/utils';
 
 import { BoonCard, ItemCard } from '../../../cards';
-import { BuyMagicItemModal, BuyPotionModal, EnchantItemModal, MagicItemInfoModal } from '../../../modals';
+import { BuyEquipmentModal, BuyMagicItemModal, BuyPotionModal, EnchantItemModal, MagicItemInfoModal } from '../../../modals';
 import { CardList, Dialog, IconType, IconValue, StatValue, Text, TextType } from '../../../controls';
 
 import './items-page.scss';
@@ -25,13 +26,13 @@ interface Props {
 	sellItem: (item: ItemModel, all: boolean) => void;
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
 	dropItem: (item: ItemModel, hero: CombatantModel) => void;
-	redeemBoon: (boon: BoonModel, combatant: CombatantModel | null, item: ItemModel | null, newItem: ItemModel | null) => void;
+	redeemBoon: (boon: BoonModel, combatant: CombatantModel | null, item: ItemModel | null, newItem: ItemModel | null, cost: number) => void;
 	addMoney: () => void;
 }
 
 interface State {
-	showMarket: boolean;
-	showApothecary: boolean;
+	showMarket: 'magical' | 'potion' | 'mundane' | null;
+	showEnchant: boolean;
 	selectedMagicItem: ItemModel | null;
 	selectedBoon: BoonModel | null;
 }
@@ -40,8 +41,8 @@ export class ItemsPage extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
-			showMarket: false,
-			showApothecary: false,
+			showMarket: null,
+			showEnchant: false,
 			selectedMagicItem: null,
 			selectedBoon: null
 		};
@@ -52,7 +53,7 @@ export class ItemsPage extends Component<Props, State> {
 			case BoonType.ExtraHero:
 			case BoonType.MagicItem:
 			case BoonType.Money: {
-				this.props.redeemBoon(boon, null, null, null);
+				this.props.redeemBoon(boon, null, null, null, 0);
 				break;
 			}
 			case BoonType.ExtraXP:
@@ -66,34 +67,43 @@ export class ItemsPage extends Component<Props, State> {
 		}
 	};
 
-	showMarket = (show: boolean) => {
+	showMarket = (market: 'magical' | 'potion' | 'mundane' | null) => {
 		this.setState({
-			showMarket: show
+			showMarket: market
 		});
 	};
 
-	showApothecary = (show: boolean) => {
+	showEnchant = (show: boolean) => {
 		this.setState({
-			showApothecary: show
+			showEnchant: show
 		});
 	};
 
 	buyItem = (item: ItemModel) => {
 		this.setState({
-			showMarket: false,
-			showApothecary: false
+			showMarket: null
 		}, () => {
 			this.props.buyItem(item);
 		});
 	};
 
 	enchantItem = (item: ItemModel, newItem: ItemModel) => {
-		const boon = this.state.selectedBoon as BoonModel;
+		let boon = this.state.selectedBoon;
+		let cost = 0;
+		if (!boon) {
+			boon = {
+				id: Utils.guid(),
+				type: BoonType.EnchantItem,
+				data: null
+			};
+			cost = 100;
+		}
 
 		this.setState({
-			selectedBoon: null
+			selectedBoon: null,
+			showEnchant: false
 		}, () => {
-			this.props.redeemBoon(boon, null, item, newItem);
+			this.props.redeemBoon(boon as BoonModel, null, item, newItem, cost);
 		});
 	};
 
@@ -130,9 +140,17 @@ export class ItemsPage extends Component<Props, State> {
 
 		const buySection = [];
 		if (controlLand) {
+			if (this.props.game.money >= 2) {
+				buySection.push(
+					<button key='mundane' onClick={() => this.showMarket('mundane')}>
+						<div>Buy equipment</div>
+						<IconValue type={IconType.Money} value={2} iconSize={12} />
+					</button>
+				);
+			}
 			if (this.props.game.money >= 20) {
 				buySection.push(
-					<button key='potion' onClick={() => this.showApothecary(true)}>
+					<button key='potion' onClick={() => this.showMarket('potion')}>
 						<div>Buy a potion</div>
 						<IconValue type={IconType.Money} value={20} iconSize={12} />
 					</button>
@@ -140,7 +158,7 @@ export class ItemsPage extends Component<Props, State> {
 			}
 			if (this.props.game.money >= 100) {
 				buySection.push(
-					<button key='magic-item' onClick={() => this.showMarket(true)}>
+					<button key='magical' onClick={() => this.showMarket('magical')}>
 						<div>Buy a magic item</div>
 						<IconValue type={IconType.Money} value={100} iconSize={12} />
 					</button>
@@ -154,6 +172,16 @@ export class ItemsPage extends Component<Props, State> {
 			);
 		}
 
+		let enchantSection = null;
+		if (this.props.game.money >= 100) {
+			enchantSection = (
+				<button onClick={() => this.showEnchant(true)}>
+					<div>Enchant an item</div>
+					<IconValue type={IconType.Money} value={100} iconSize={12} />
+				</button>
+			);
+		}
+
 		return (
 			<div className='sidebar'>
 				<Text type={TextType.SubHeading}>Your Equipment</Text>
@@ -164,12 +192,14 @@ export class ItemsPage extends Component<Props, State> {
 				{boons}
 				{buySection.length !== 0 ? <hr /> : null}
 				{buySection}
+				{enchantSection !== null ? <hr /> : null}
+				{enchantSection}
 			</div>
 		);
 	};
 
 	getDialog = () => {
-		if (this.state.showMarket) {
+		if (this.state.showMarket === 'magical') {
 			return (
 				<Dialog
 					content={(
@@ -183,7 +213,7 @@ export class ItemsPage extends Component<Props, State> {
 			);
 		}
 
-		if (this.state.showApothecary) {
+		if (this.state.showMarket === 'potion') {
 			return (
 				<Dialog
 					content={(
@@ -193,6 +223,21 @@ export class ItemsPage extends Component<Props, State> {
 							buyItem={this.buyItem}
 						/>
 					)}
+				/>
+			);
+		}
+
+		if (this.state.showMarket === 'mundane') {
+			return (
+				<Dialog
+					content={(
+						<BuyEquipmentModal
+							game={this.props.game}
+							options={this.props.options}
+							buyItem={this.buyItem}
+						/>
+					)}
+					onClose={() => this.showMarket(null)}
 				/>
 			);
 		}
@@ -213,20 +258,19 @@ export class ItemsPage extends Component<Props, State> {
 			);
 		}
 
-		if (this.state.selectedBoon) {
-			if (this.state.selectedBoon.type === BoonType.EnchantItem) {
-				return (
-					<Dialog
-						content={(
-							<EnchantItemModal
-								game={this.props.game}
-								options={this.props.options}
-								enchantItem={this.enchantItem}
-							/>
-						)}
-					/>
-				);
-			}
+		if (this.state.showEnchant || (this.state.selectedBoon && (this.state.selectedBoon.type === BoonType.EnchantItem))) {
+			return (
+				<Dialog
+					content={(
+						<EnchantItemModal
+							game={this.props.game}
+							options={this.props.options}
+							enchantItem={this.enchantItem}
+						/>
+					)}
+					onClose={() => this.showEnchant(false)}
+				/>
+			);
 		}
 
 		return null;

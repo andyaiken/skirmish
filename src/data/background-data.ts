@@ -57,6 +57,69 @@ export class BackgroundData {
 		]
 	};
 
+	static apothecary: BackgroundModel = {
+		id: 'background-apothecary',
+		name: 'Apothecary',
+		packID: PackData.technology.id,
+		description: 'The apothecary creates potions.',
+		startingFeatures: [],
+		features: [],
+		actions: [
+			{
+				id: 'apothecary-action-1',
+				name: 'Create Potion of Health',
+				prerequisites: [
+					ActionPrerequisites.carryingCapacity()
+				],
+				parameters: [
+					ActionTargetParameters.self()
+				],
+				effects: [
+					ActionEffects.createPotion('potion-health')
+				]
+			},
+			{
+				id: 'apothecary-action-2',
+				name: 'Create Potion of Luck',
+				prerequisites: [
+					ActionPrerequisites.carryingCapacity()
+				],
+				parameters: [
+					ActionTargetParameters.self()
+				],
+				effects: [
+					ActionEffects.createPotion('potion-luck')
+				]
+			},
+			{
+				id: 'apothecary-action-3',
+				name: 'Create Potion of Might',
+				prerequisites: [
+					ActionPrerequisites.carryingCapacity()
+				],
+				parameters: [
+					ActionTargetParameters.self()
+				],
+				effects: [
+					ActionEffects.createPotion('potion-might')
+				]
+			},
+			{
+				id: 'apothecary-action-4',
+				name: 'Create Potion of Resistance',
+				prerequisites: [
+					ActionPrerequisites.carryingCapacity()
+				],
+				parameters: [
+					ActionTargetParameters.self()
+				],
+				effects: [
+					ActionEffects.createPotion('potion-resistance')
+				]
+			}
+		]
+	};
+
 	static bard: BackgroundModel = {
 		id: 'background-bard',
 		name: 'Bard',
@@ -615,6 +678,7 @@ export class BackgroundData {
 	static getList = (): BackgroundModel[] => {
 		const list = [
 			BackgroundData.acrobat,
+			BackgroundData.apothecary,
 			BackgroundData.bard,
 			BackgroundData.commander,
 			BackgroundData.grenadier,

@@ -375,7 +375,7 @@ export class Main extends Component<Props, State> {
 		}
 	};
 
-	redeemBoon = (boon: BoonModel, hero: CombatantModel | null, item: ItemModel | null, newItem: ItemModel | null) => {
+	redeemBoon = (boon: BoonModel, hero: CombatantModel | null, item: ItemModel | null, newItem: ItemModel | null, cost: number) => {
 		try {
 			const game = this.state.game as GameModel;
 			game.boons = game.boons.filter(b => b.id !== boon.id);
@@ -419,6 +419,8 @@ export class Main extends Component<Props, State> {
 					break;
 				}
 			}
+
+			game.money -= cost;
 
 			this.setState({
 				game: game

@@ -76,7 +76,7 @@ export class PotionData {
 				actions: []
 			},
 			{
-				id: 'potion-protection',
+				id: 'potion-resistance',
 				name: 'Potion of Resistance',
 				packID: '',
 				description: 'A glass vial filled with an iridescent yellow liquid.',

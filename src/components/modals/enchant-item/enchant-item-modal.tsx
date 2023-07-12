@@ -71,7 +71,7 @@ export class EnchantItemModal extends Component<Props, State> {
 				);
 			} else {
 				const heroes = this.props.game.heroes.map(h => {
-					const items = ([] as ItemModel[]).concat(h.items).concat(h.carried);
+					const items = ([] as ItemModel[]).concat(h.items).concat(h.carried).filter(i => !i.potion);
 					if (items.length > 0) {
 						const cards = items.map(item => (
 							<div key={item.id}>

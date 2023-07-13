@@ -3,6 +3,7 @@ import { Component } from 'react';
 import { CombatantLogic } from '../../../../../logic/combatant-logic';
 
 import type { CombatantModel } from '../../../../../models/combatant';
+import type { EncounterModel } from '../../../../../models/encounter';
 
 import { ActionCard } from '../../../../cards';
 
@@ -10,6 +11,7 @@ import './combatant-monster.scss';
 
 interface Props {
 	combatant: CombatantModel;
+	encounter: EncounterModel;
 }
 
 export class CombatantMonster extends Component<Props> {
@@ -26,6 +28,7 @@ export class CombatantMonster extends Component<Props> {
 						footer={CombatantLogic.getActionSource(this.props.combatant, this.props.combatant.combat.selectedAction.action.id)}
 						footerType={CombatantLogic.getActionSourceType(this.props.combatant, this.props.combatant.combat.selectedAction.action.id)}
 						combatant={this.props.combatant}
+						encounter={this.props.encounter}
 					/>
 				</div>
 			);

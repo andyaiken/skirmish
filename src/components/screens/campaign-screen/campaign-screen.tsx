@@ -154,15 +154,11 @@ export class CampaignScreen extends Component<Props, State> {
 						<button className='icon-btn' title='Information' onClick={() => this.props.showHelp(this.state.screen)}>
 							{this.props.options.developer && this.props.hasExceptions ? <IconInfoCircleFilled /> : <IconInfoCircle />}
 						</button>
-						{
-							availablePacks > 0 ?
-								<Badge value={availablePacks}>
-									<button className='icon-btn' title='Packs' onClick={() => this.props.showPacks()}>
-										<IconCards />
-									</button>
-								</Badge>
-								: null
-						}
+						<Badge value={availablePacks}>
+							<button className='icon-btn' title='Packs' onClick={() => this.props.showPacks()}>
+								<IconCards />
+							</button>
+						</Badge>
 					</div>
 					<div className='campaign-content'>
 						{content}

@@ -14,7 +14,7 @@ export class Badge extends Component<Props> {
 
 	render = () => {
 		try {
-			if (this.props.value === null) {
+			if (!this.props.value) {
 				return this.props.children;
 			}
 

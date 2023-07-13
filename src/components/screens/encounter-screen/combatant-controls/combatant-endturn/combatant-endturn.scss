@@ -3,6 +3,12 @@
     flex-direction: column;
 	gap: 20px;
 
+	.endturn-stats {
+		margin: 0 20px;
+		display: flex;
+		align-items: flex-end;
+	}
+
 	.checked {
 		color: rgb(0, 100, 0);
 	}

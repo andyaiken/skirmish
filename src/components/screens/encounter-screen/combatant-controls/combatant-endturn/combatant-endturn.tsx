@@ -19,13 +19,22 @@ export class CombatantEndturn extends Component<Props> {
 		try {
 			return (
 				<div className='combatant-endturn'>
-					<StatValue orientation='vertical' label='Movement Left' value={<IconValue type={IconType.Movement} value={this.props.combatant.combat.movement} />} />
-					{
-						this.props.combatant.combat.selectedAction && this.props.combatant.combat.selectedAction.used ?
-							<StatValue orientation='vertical' label='Action Taken' value={<IconCircleCheckFilled className='checked' size={40} />} />
-							:
-							<StatValue orientation='vertical' label='Action Taken' value={<IconX size={40} />} />
-					}
+					<div className='endturn-stats'>
+						<StatValue
+							orientation='vertical'
+							label='Movement Left'
+							value={<IconValue type={IconType.Movement} value={this.props.combatant.combat.movement} />}
+						/>
+						<StatValue
+							orientation='vertical'
+							label='Action Taken'
+							value={
+								this.props.combatant.combat.selectedAction && this.props.combatant.combat.selectedAction.used ?
+									<IconCircleCheckFilled className='checked' size={50} />
+									:
+									<IconX size={50} />}
+						/>
+					</div>
 					<button onClick={this.props.endTurn}>End Turn</button>
 				</div>
 			);

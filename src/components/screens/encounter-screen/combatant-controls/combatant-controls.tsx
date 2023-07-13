@@ -1,4 +1,4 @@
-import { IconArrowsMove, IconCircleCheck, IconFlare, IconFlask2, IconListDetails } from '@tabler/icons-react';
+import { IconArrowsMove, IconCircleCheck, IconCircleCheckFilled, IconFlare, IconFlask2, IconListDetails } from '@tabler/icons-react';
 import { Component } from 'react';
 
 import { CombatantState } from '../../../../enums/combatant-state';
@@ -52,7 +52,7 @@ export class CombatantControls extends Component<CombatantControlsProps, Combata
 	constructor(props: CombatantControlsProps) {
 		super(props);
 		this.state = {
-			tab: 'overview',
+			tab: 'stats',
 			thinking: false
 		};
 	}
@@ -123,14 +123,32 @@ export class CombatantControls extends Component<CombatantControlsProps, Combata
 						<button disabled={this.state.thinking} onClick={() => this.runMonsterTurn()}>
 							{this.state.thinking ? 'Thinking' : 'Go'}
 						</button>
-						<CombatantMonster combatant={this.props.combatant} />
+						<CombatantMonster
+							combatant={this.props.combatant}
+							encounter={this.props.encounter}
+						/>
 					</div>
 				);
 			}
 
+			const finished = (this.props.combatant.combat.movement === 0) && this.props.combatant.combat.selectedAction && this.props.combatant.combat.selectedAction.used;
+
+			const options = [
+				{ id: 'stats', display: <IconListDetails /> },
+				{ id: 'move', display: <IconArrowsMove /> },
+				{ id: 'action', display: <IconFlare /> },
+				{ id: 'endturn', display: finished ? <IconCircleCheckFilled className='checked' /> : <IconCircleCheck /> }
+			];
+
+			if (this.props.combatant.carried.some(i => i.potion)) {
+				options.splice(3, 0, { id: 'potion', display: <IconFlask2 /> });
+			}
+
+			let title = '';
 			let content = null;
 			switch (this.state.tab) {
-				case 'overview':
+				case 'stats':
+					title = 'Overview';
 					content = (
 						<CombatantOverview
 							combatant={this.props.combatant}
@@ -142,7 +160,8 @@ export class CombatantControls extends Component<CombatantControlsProps, Combata
 						/>
 					);
 					break;
-				case 'movement':
+				case 'move':
+					title = 'Move';
 					content = (
 						<CombatantMove
 							combatant={this.props.combatant}
@@ -153,7 +172,8 @@ export class CombatantControls extends Component<CombatantControlsProps, Combata
 						/>
 					);
 					break;
-				case 'take an action':
+				case 'action':
+					title = 'Take an Action';
 					content = (
 						<CombatantAction
 							combatant={this.props.combatant}
@@ -169,7 +189,8 @@ export class CombatantControls extends Component<CombatantControlsProps, Combata
 						/>
 					);
 					break;
-				case 'drink a potion':
+				case 'potion':
+					title = 'Drink a Potion';
 					content = (
 						<CombatantPotions
 							combatant={this.props.combatant}
@@ -178,7 +199,8 @@ export class CombatantControls extends Component<CombatantControlsProps, Combata
 						/>
 					);
 					break;
-				case 'end your turn':
+				case 'endturn':
+					title = 'End Your Turn';
 					content = (
 						<CombatantEndturn
 							combatant={this.props.combatant}
@@ -199,17 +221,13 @@ export class CombatantControls extends Component<CombatantControlsProps, Combata
 						showCharacterSheet={this.props.showCharacterSheet}
 					/>
 					<Tabs
-						options={[
-							{ id: 'overview', display: <IconListDetails /> },
-							{ id: 'movement', display: <IconArrowsMove /> },
-							{ id: 'take an action', display: <IconFlare /> },
-							{ id: 'drink a potion', display: <IconFlask2 /> },
-							{ id: 'end your turn', display: <IconCircleCheck /> }
-						]}
+						options={options}
 						selectedID={this.state.tab}
 						onSelect={this.setTab}
 					/>
-					<Text type={TextType.SubHeading}>{this.state.tab}</Text>
+					<div className='centered'>
+						<Text type={TextType.SubHeading}>{title}</Text>
+					</div>
 					{content}
 				</div>
 			);

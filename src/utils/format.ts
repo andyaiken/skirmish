@@ -1,6 +1,6 @@
 export class Format {
 	static toSize = (value: number) => {
-		let str = `${value} b`;
+		let str = `${value} B`;
 
 		if (value > 1024) {
 			value /= 1024;

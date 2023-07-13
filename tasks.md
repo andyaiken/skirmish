@@ -21,6 +21,7 @@
 
 ## Encounters
 * Undo movement
+  * Can't undo movement if you've done anything (taken an action, hidden, etc)
 
 ## Turn Log
 * Indentation

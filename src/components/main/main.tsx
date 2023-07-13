@@ -29,7 +29,7 @@ import { Utils } from '../../utils/utils';
 
 import { CampaignScreen, EncounterScreen, LandingScreen, SetupScreen } from '../screens';
 import { Dialog, PlayingCard, Text, TextType } from '../controls';
-import { PacksModal, SettingsModal } from '../modals';
+import { HelpModal, PacksModal } from '../modals';
 import { PlaceholderCard } from '../cards';
 
 import './main.scss';
@@ -1130,7 +1130,7 @@ export class Main extends Component<Props, State> {
 				dialog = (
 					<Dialog
 						content={
-							<SettingsModal
+							<HelpModal
 								game={this.state.game}
 								exceptions={this.state.exceptions}
 								rules={rules[this.state.showHelp]}

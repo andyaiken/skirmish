@@ -4,10 +4,10 @@ import { BuyPotionModal } from './buy-potion/buy-potion-modal';
 import { CharacterSheetModal } from './character-sheet/character-sheet-modal';
 import { EnchantItemModal } from './enchant-item/enchant-item-modal';
 import { EncounterStartModal } from './encounter-start/encounter-start-modal';
+import { HelpModal } from './help/help-modal';
 import { HeroBuilderModal } from './hero-builder/hero-builder-modal';
 import { MagicItemInfoModal } from './magic-item-info/magic-item-info-modal';
 import { PacksModal } from './packs/packs-modal';
-import { SettingsModal } from './settings/settings-modal';
 
 export {
 	BuyEquipmentModal,
@@ -16,8 +16,8 @@ export {
 	CharacterSheetModal,
 	EnchantItemModal,
 	EncounterStartModal,
+	HelpModal,
 	HeroBuilderModal,
 	MagicItemInfoModal,
-	PacksModal,
-	SettingsModal
+	PacksModal
 };

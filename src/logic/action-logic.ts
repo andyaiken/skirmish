@@ -162,7 +162,7 @@ export class ActionPrerequisites {
 				return combatant.combat.conditions.filter(c => c.trait === trait).length > 0;
 			}
 			case 'carryingcapacity': {
-				return combatant.carried.length < 6;
+				return combatant.carried.length < CombatantLogic.CARRY_CAPACITY;
 			}
 			case 'hidden': {
 				return combatant.combat.hidden > 0;

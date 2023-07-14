@@ -30,6 +30,8 @@ import { Factory } from './factory';
 import { GameLogic } from './game-logic';
 
 export class CombatantLogic {
+	static CARRY_CAPACITY = 4;
+
 	static applyCombatantCards = (combatant: CombatantModel, speciesID: string, roleID: string, backgroundID: string) => {
 		const species = GameLogic.getSpecies(speciesID);
 		if (species) {

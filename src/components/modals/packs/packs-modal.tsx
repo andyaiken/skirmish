@@ -139,7 +139,7 @@ export class PacksModal extends Component<Props, State> {
 		});
 
 		return (
-			<div className='pack-content'>
+			<div key={this.state.selectedPack.id} className='pack-content'>
 				{owned}
 				{owned ? <hr /> : null}
 				<div className='pack-card-section'>

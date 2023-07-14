@@ -49,7 +49,7 @@ export class Items extends Component<Props> {
 
 				let options: JSX.Element | null = (
 					<div className='item-options'>
-						<button disabled={this.props.combatant.carried.length >= 6} onClick={() => this.props.unequipItem(item)}>
+						<button disabled={this.props.combatant.carried.length >= CombatantLogic.CARRY_CAPACITY} onClick={() => this.props.unequipItem(item)}>
 							{unequip}
 						</button>
 						<button onClick={() => this.props.dropItem(item)}>
@@ -165,7 +165,7 @@ export class Items extends Component<Props> {
 						<button disabled={!CombatantLogic.canEquip(this.props.combatant, item)} onClick={() => this.props.equipItem(item)}>
 							Equip
 						</button>
-						<button disabled={this.props.combatant.carried.length >= 6} onClick={() => this.props.pickUpItem(item)}>
+						<button disabled={this.props.combatant.carried.length >= CombatantLogic.CARRY_CAPACITY} onClick={() => this.props.pickUpItem(item)}>
 							Pick Up
 						</button>
 					</div>
@@ -210,7 +210,7 @@ export class Items extends Component<Props> {
 			.map(item => {
 				const options = (
 					<div className='item-options'>
-						<button disabled={this.props.combatant.carried.length >= 6} onClick={() => this.props.pickUpItem(item)}>
+						<button disabled={this.props.combatant.carried.length >= CombatantLogic.CARRY_CAPACITY} onClick={() => this.props.pickUpItem(item)}>
 							<div>Pick Up<br /><IconValue type={IconType.Movement} value={1} iconSize={12} /></div>
 						</button>
 					</div>
@@ -255,7 +255,7 @@ export class Items extends Component<Props> {
 						</div>
 					</div>
 					<hr />
-					<Text type={TextType.SubHeading}>Carried Items ({this.props.combatant.carried.length} / 6)</Text>
+					<Text type={TextType.SubHeading}>Carried Items ({this.props.combatant.carried.length} / {CombatantLogic.CARRY_CAPACITY})</Text>
 					{carried}
 					<hr />
 					{party !== null ? <Text type={TextType.SubHeading}>Party Items</Text> : null}

@@ -17,6 +17,7 @@ import './role-card.scss';
 
 interface Props {
 	role: RoleModel;
+	disabled: boolean;
 	onSelect: ((role: RoleModel) => void) | null;
 }
 
@@ -26,6 +27,7 @@ interface State {
 
 export class RoleCard extends Component<Props, State> {
 	static defaultProps = {
+		disabled: false,
 		onSelect: null
 	};
 
@@ -112,6 +114,7 @@ export class RoleCard extends Component<Props, State> {
 				footerText='Role'
 				footerContent={buttons}
 				flipped={this.state.flipped}
+				disabled={this.props.disabled}
 				onClick={this.props.onSelect ? this.onSelect : null}
 			/>
 		);

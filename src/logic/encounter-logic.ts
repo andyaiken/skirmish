@@ -459,22 +459,26 @@ export class EncounterLogic {
 		EncounterLogic.checkActionParameters(encounter, combatant);
 	};
 
-	static drinkPotion = (encounter: EncounterModel, combatant: CombatantModel, potion: ItemModel) => {
+	static drinkPotion = (encounter: EncounterModel, owner: CombatantModel, drinker: CombatantModel, potion: ItemModel) => {
 		if (!potion.potion) {
 			return;
 		}
 
-		EncounterLogic.log(encounter, `${combatant.name} drinks ${potion.name}`);
+		if (owner.id === drinker.id) {
+			EncounterLogic.log(encounter, `${owner.name} drinks ${potion.name}`);
+		} else {
+			EncounterLogic.log(encounter, `${owner.name} gives ${potion.name} to ${drinker.name}`);
+		}
 
-		combatant.combat.movement -= 2;
+		owner.combat.movement -= 2;
 
-		combatant.items = combatant.items.filter(i => i.id !== potion.id);
-		combatant.carried = combatant.carried.filter(i => i.id !== potion.id);
+		owner.items = owner.items.filter(i => i.id !== potion.id);
+		owner.carried = owner.carried.filter(i => i.id !== potion.id);
 
 		potion.potion.effects.forEach(effect => {
 			const param = ActionTargetParameters.self();
-			param.value = [ combatant.id ];
-			ActionEffects.run(effect, encounter, combatant, [ param ]);
+			param.value = [ drinker.id ];
+			ActionEffects.run(effect, encounter, drinker, [ param ]);
 		});
 	};
 

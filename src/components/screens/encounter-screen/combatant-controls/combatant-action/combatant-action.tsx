@@ -349,6 +349,7 @@ export class CombatantAction extends Component<Props> {
 	getUsed = (action: ActionModel) => {
 		return (
 			<div className='combatant-action'>
+				{this.props.developer ? <button className='developer' onClick={() => this.props.drawActions(this.props.encounter, this.props.combatant)}>Act Again</button> : null}
 				<div className='action-selected-card'>
 					<ActionCard
 						action={action}
@@ -356,9 +357,12 @@ export class CombatantAction extends Component<Props> {
 						footerType={CombatantLogic.getActionSourceType(this.props.combatant, action.id)}
 						combatant={this.props.combatant}
 						encounter={this.props.encounter}
+						disabled={true}
 					/>
 				</div>
-				{this.props.developer ? <button className='developer' onClick={() => this.props.drawActions(this.props.encounter, this.props.combatant)}>Act Again</button> : null}
+				<Text type={TextType.Information}>
+					<p>You have used your action for this turn.</p>
+				</Text>
 			</div>
 		);
 	};

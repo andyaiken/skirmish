@@ -19,6 +19,7 @@ interface Props {
 	footerType: CardType;
 	combatant: CombatantModel | null;
 	encounter: EncounterModel | null;
+	disabled: boolean;
 	onSelect: ((action: ActionModel) => void) | null;
 }
 
@@ -30,6 +31,7 @@ export class ActionCard extends Component<Props, State> {
 	static defaultProps = {
 		combatant: null,
 		encounter: null,
+		disabled: false,
 		onSelect: null
 	};
 
@@ -115,6 +117,7 @@ export class ActionCard extends Component<Props, State> {
 				footerContent={buttons}
 				footerType={this.props.footerType}
 				flipped={this.state.flipped}
+				disabled={this.props.disabled}
 				onClick={this.props.onSelect ? this.onSelect : null}
 			/>
 		);

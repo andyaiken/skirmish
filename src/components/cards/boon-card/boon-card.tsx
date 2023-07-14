@@ -15,6 +15,7 @@ import './boon-card.scss';
 
 interface Props {
 	boon: BoonModel;
+	disabled: boolean;
 	onSelect: ((boon: BoonModel) => void) | null;
 }
 
@@ -24,6 +25,7 @@ interface State {
 
 export class BoonCard extends Component<Props, State> {
 	static defaultProps = {
+		disabled: false,
 		onSelect: null
 	};
 
@@ -111,6 +113,7 @@ export class BoonCard extends Component<Props, State> {
 				footerText='Reward'
 				footerContent={buttons}
 				flipped={this.state.flipped}
+				disabled={this.props.disabled}
 				onClick={this.props.onSelect ? this.onSelect : null}
 			/>
 		);

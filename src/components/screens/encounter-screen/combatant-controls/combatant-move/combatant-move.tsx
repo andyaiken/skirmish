@@ -5,6 +5,7 @@ import { EncounterLogic } from '../../../../../logic/encounter-logic';
 import type { CombatantModel } from '../../../../../models/combatant';
 import type { EncounterModel } from '../../../../../models/encounter';
 
+import { Text, TextType } from '../../../../controls';
 import { DirectionPanel } from '../../../../panels';
 
 import './combatant-move.scss';
@@ -34,6 +35,13 @@ export class CombatantMove extends Component<Props> {
 				<div className='combatant-move'>
 					{this.props.developer ? <button className='developer' onClick={() => this.props.addMovement(this.props.encounter, this.props.combatant, 10)}>Add Movement</button> : null}
 					<DirectionPanel combatant={this.props.combatant} costs={moveCosts} onMove={(dir, cost) => this.props.move(this.props.encounter, this.props.combatant, dir, cost)} />
+					{
+						this.props.combatant.combat.movement === 0 ?
+							<Text type={TextType.Information}>
+								<p>You have used all your movement for this turn.</p>
+							</Text>
+							: null
+					}
 				</div>
 			);
 		} catch {

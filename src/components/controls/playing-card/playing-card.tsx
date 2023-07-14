@@ -90,7 +90,7 @@ export class PlayingCard extends Component<Props> {
 											{this.props.footerText}
 										</div>
 										<div className='card-footer-content'>
-											{this.props.footerContent}
+											{this.props.disabled ? null : this.props.footerContent}
 										</div>
 									</div>
 									: null
@@ -105,7 +105,7 @@ export class PlayingCard extends Component<Props> {
 											{this.props.footerText}
 										</div>
 										<div className='card-footer-content'>
-											{this.props.footerContent}
+											{this.props.disabled ? null : this.props.footerContent}
 										</div>
 									</div>
 									: null

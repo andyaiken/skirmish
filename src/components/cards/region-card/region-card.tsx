@@ -18,6 +18,7 @@ import './region-card.scss';
 interface Props {
 	region: RegionModel;
 	options: OptionsModel;
+	disabled: boolean;
 	onSelect: ((region: RegionModel) => void) | null;
 }
 
@@ -27,6 +28,7 @@ interface State {
 
 export class RegionCard extends Component<Props, State> {
 	static defaultProps = {
+		disabled: false,
 		onSelect: null
 	};
 
@@ -109,6 +111,7 @@ export class RegionCard extends Component<Props, State> {
 				footerText='Region'
 				footerContent={buttons}
 				flipped={this.state.flipped}
+				disabled={this.props.disabled}
 				onClick={this.props.onSelect ? this.onSelect : null}
 			/>
 		);

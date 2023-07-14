@@ -13,6 +13,7 @@ import './loot-pile-card.scss';
 
 interface Props {
 	loot: LootPileModel;
+	disabled: boolean;
 	onSelect: ((loot: LootPileModel) => void) | null;
 }
 
@@ -22,6 +23,7 @@ interface State {
 
 export class LootPileCard extends Component<Props, State> {
 	static defaultProps = {
+		disabled: false,
 		onSelect: null
 	};
 
@@ -78,6 +80,7 @@ export class LootPileCard extends Component<Props, State> {
 				footerText='Item'
 				footerContent={buttons}
 				flipped={this.state.flipped}
+				disabled={this.props.disabled}
 				onClick={this.props.onSelect ? this.onSelect : null}
 			/>
 		);

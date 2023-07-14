@@ -708,9 +708,9 @@ export class Main extends Component<Props, State> {
 		}
 	};
 
-	drinkPotion = (encounter: EncounterModel, combatant: CombatantModel, potion: ItemModel) => {
+	drinkPotion = (encounter: EncounterModel, owner: CombatantModel, drinker: CombatantModel, potion: ItemModel) => {
 		try {
-			EncounterLogic.drinkPotion(encounter, combatant, potion);
+			EncounterLogic.drinkPotion(encounter, owner, drinker, potion);
 
 			this.setState({
 				game: this.state.game

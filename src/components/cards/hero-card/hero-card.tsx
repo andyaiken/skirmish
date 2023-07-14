@@ -19,6 +19,7 @@ import './hero-card.scss';
 
 interface Props {
 	hero: CombatantModel;
+	disabled: boolean;
 	onCharacterSheet: ((hero: CombatantModel) => void) | null;
 	onRetire: ((hero: CombatantModel) => void) | null;
 	onSelect: ((hero: CombatantModel) => void) | null;
@@ -30,6 +31,7 @@ interface State {
 
 export class HeroCard extends Component<Props, State> {
 	static defaultProps = {
+		disabled: false,
 		onCharacterSheet: null,
 		onRetire: null,
 		onSelect: null
@@ -165,6 +167,7 @@ export class HeroCard extends Component<Props, State> {
 				footerText='Hero'
 				footerContent={buttons}
 				flipped={this.state.flipped}
+				disabled={this.props.disabled}
 				onClick={this.props.onSelect ? this.onSelect : null}
 			/>
 		);

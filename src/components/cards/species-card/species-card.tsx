@@ -18,6 +18,7 @@ import './species-card.scss';
 
 interface Props {
 	species: SpeciesModel;
+	disabled: boolean;
 	onSelect: ((species: SpeciesModel) => void) | null;
 }
 
@@ -27,6 +28,7 @@ interface State {
 
 export class SpeciesCard extends Component<Props, State> {
 	static defaultProps = {
+		disabled: false,
 		onSelect: null
 	};
 
@@ -131,6 +133,7 @@ export class SpeciesCard extends Component<Props, State> {
 				footerText={this.props.species.type === CombatantType.Hero ? 'Species' : 'Monster'}
 				footerContent={buttons}
 				flipped={this.state.flipped}
+				disabled={this.props.disabled}
 				onClick={this.props.onSelect ? this.onSelect : null}
 			/>
 		);

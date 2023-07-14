@@ -20,6 +20,7 @@ import './item-card.scss';
 interface Props {
 	item: ItemModel;
 	count: number;
+	disabled: boolean;
 	onSelect: ((item: ItemModel) => void) | null;
 }
 
@@ -30,6 +31,7 @@ interface State {
 export class ItemCard extends Component<Props, State> {
 	static defaultProps = {
 		count: 1,
+		disabled: false,
 		onSelect: null
 	};
 
@@ -171,6 +173,7 @@ export class ItemCard extends Component<Props, State> {
 				footerText='Item'
 				footerContent={buttons}
 				flipped={this.state.flipped}
+				disabled={this.props.disabled}
 				onClick={this.props.onSelect ? this.onSelect : null}
 			/>
 		);

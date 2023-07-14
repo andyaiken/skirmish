@@ -17,6 +17,7 @@ import './background-card.scss';
 
 interface Props {
 	background: BackgroundModel;
+	disabled: boolean;
 	onSelect: ((background: BackgroundModel) => void) | null;
 }
 
@@ -26,6 +27,7 @@ interface State {
 
 export class BackgroundCard extends Component<Props, State> {
 	static defaultProps = {
+		disabled: false,
 		onSelect: null
 	};
 
@@ -112,6 +114,7 @@ export class BackgroundCard extends Component<Props, State> {
 				footerText='Background'
 				footerContent={buttons}
 				flipped={this.state.flipped}
+				disabled={this.props.disabled}
 				onClick={this.props.onSelect ? this.onSelect : null}
 			/>
 		);

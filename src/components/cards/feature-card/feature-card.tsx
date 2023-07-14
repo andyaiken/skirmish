@@ -16,6 +16,7 @@ interface Props {
 	feature: FeatureModel;
 	footer: string;
 	footerType: CardType;
+	disabled: boolean;
 	onSelect: ((feature: FeatureModel) => void) | null;
 }
 
@@ -25,6 +26,7 @@ interface State {
 
 export class FeatureCard extends Component<Props, State> {
 	static defaultProps = {
+		disabled: false,
 		onSelect: null
 	};
 
@@ -69,6 +71,7 @@ export class FeatureCard extends Component<Props, State> {
 				footerContent={buttons}
 				footerType={this.props.footerType}
 				flipped={this.state.flipped}
+				disabled={this.props.disabled}
 				onClick={this.props.onSelect ? this.onSelect : null}
 			/>
 		);

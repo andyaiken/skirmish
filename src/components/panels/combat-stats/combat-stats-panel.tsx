@@ -98,7 +98,7 @@ export class CombatStatsPanel extends Component<Props> {
 					<Box label='Health'>
 						<div className='combat-stats-row'>
 							<StatValue orientation='vertical' label='Damage' value={this.props.combatant.combat.damage} />
-							<StatValue orientation='vertical' label='Wounds' value={<div>{woundsInRows}</div>} />
+							<StatValue orientation='vertical' label='Wounds' value={<div className='wounds-section'>{woundsInRows}</div>} />
 						</div>
 					</Box>
 					{conditions}

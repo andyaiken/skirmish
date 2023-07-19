@@ -1,13 +1,16 @@
 .combat-stats-panel {
-	.wounds {
-		padding-bottom: 10px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		color: rgb(150, 0, 24);
+	.wounds-section {
+		padding: 10px 0;
 
-		.heartbeat {
-			animation: heartbeat 1s infinite ease-in-out;
+		.wounds {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: rgb(150, 0, 24);
+
+			.heartbeat {
+				animation: heartbeat 1s infinite ease-in-out;
+			}
 		}
 	}
 

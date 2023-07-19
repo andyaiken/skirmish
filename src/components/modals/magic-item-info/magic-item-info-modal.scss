@@ -11,7 +11,10 @@
 		}
 
 		.hero-list {
-			flex: 0 0 300px;
+			flex: 0 0 500px;
+			display: flex;
+			flex-direction: column;
+			gap: 5px;
 
 			&.empty {
 				padding-top: 100px;

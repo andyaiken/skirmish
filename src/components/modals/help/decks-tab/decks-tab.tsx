@@ -152,7 +152,7 @@ export class DecksTab extends Component<Props, State> {
 					<Dialog
 						content={content}
 						level={2}
-						onClose={() => this.setActions('', CardType.Default, [], [], [])}
+						onClose={() => this.setState({ selected: null })}
 					/>
 				);
 			}

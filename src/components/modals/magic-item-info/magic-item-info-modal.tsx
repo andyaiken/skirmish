@@ -12,6 +12,7 @@ import type { ItemModel } from '../../../models/item';
 import { Collections } from '../../../utils/collections';
 
 import { Dialog, Text, TextType } from '../../controls';
+import { CombatantRowPanel } from '../../panels';
 import { ItemCard } from '../../cards';
 
 import './magic-item-info-modal.scss';
@@ -105,11 +106,11 @@ export class MagicItemInfoModal extends Component<Props, State> {
 					const equippable = this.getIsEquippable(hero, this.props.item);
 					if (equippable) {
 						canEquip.push(
-							<button key={hero.id} onClick={() => this.props.equipItem(this.props.item, hero)}>{hero.name}</button>
+							<CombatantRowPanel key={hero.id} combatant={hero} onSelect={combatant => this.props.equipItem(this.props.item, combatant)} />
 						);
 					} else {
 						canReplace.push(
-							<button key={hero.id} onClick={() => this.setComparison(hero)}>{hero.name}</button>
+							<CombatantRowPanel key={hero.id} combatant={hero} onSelect={combatant => this.setComparison(combatant)} />
 						);
 					}
 				});

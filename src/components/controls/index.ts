@@ -1,5 +1,6 @@
 import { IconType, IconValue } from './icon-value/icon-value';
 import { Text, TextType } from './text/text';
+import { Accordion } from './accordion/accordion';
 import { Badge } from './badge/badge';
 import { Box } from './box/box';
 import { CardList } from './card-list/card-list';
@@ -14,6 +15,7 @@ import { Tabs } from './tabs/tabs';
 import { Tag } from './tag/tag';
 
 export {
+	Accordion,
 	Badge,
 	Box,
 	CardList,

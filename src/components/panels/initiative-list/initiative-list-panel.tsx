@@ -5,7 +5,7 @@ import { EncounterLogic } from '../../../logic/encounter-logic';
 import type { CombatantModel } from '../../../models/combatant';
 import type { EncounterModel } from '../../../models/encounter';
 
-import { Text, TextType } from '../../controls';
+import { Accordion, Text, TextType } from '../../controls';
 import { CombatantRowPanel } from '../../panels';
 
 import './initiative-list-panel.scss';
@@ -90,8 +90,7 @@ export class InitiativeListPanel extends Component<Props> {
 					{activeEntries}
 					{actedEntries.length > 0 ? <Text type={TextType.SubHeading}>{actedHeading}</Text> : null}
 					{actedEntries}
-					{deadEntries.length > 0 ? <Text type={TextType.SubHeading}>Dead</Text> : null}
-					{deadEntries}
+					{deadEntries.length > 0 ? <Accordion header='Dead'><div className='dead-combatants'>{deadEntries}</div></Accordion> : null}
 				</div>
 			);
 		} catch {

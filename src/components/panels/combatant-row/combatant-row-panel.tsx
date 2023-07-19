@@ -1,5 +1,5 @@
 import { Component, MouseEvent } from 'react';
-import { IconHeartFilled, IconHeartOff, IconId, IconX } from '@tabler/icons-react';
+import { IconCheck, IconHeartFilled, IconHeartOff, IconId, IconX } from '@tabler/icons-react';
 
 import { CombatantState } from '../../../enums/combatant-state';
 import { QuirkType } from '../../../enums/quirk-type';
@@ -25,6 +25,7 @@ interface Props {
 	encounter: EncounterModel | null;
 	onClick: ((combatant: CombatantModel) => void) | null;
 	onTokenClick: ((combatant: CombatantModel) => void) | null;
+	onSelect: ((combatant: CombatantModel) => void) | null;
 	onDetails: ((combatant: CombatantModel) => void) | null;
 	onCancel: ((combatant: CombatantModel) => void) | null;
 }
@@ -35,6 +36,7 @@ export class CombatantRowPanel extends Component<Props> {
 		encounter: null,
 		onClick: null,
 		onTokenClick: null,
+		onSelect: null,
 		onDetails: null,
 		onCancel: null
 	};
@@ -43,6 +45,13 @@ export class CombatantRowPanel extends Component<Props> {
 		e.stopPropagation();
 		if (this.props.onClick) {
 			this.props.onClick(this.props.combatant);
+		}
+	};
+
+	onSelect = (e: MouseEvent) => {
+		e.stopPropagation();
+		if (this.props.onSelect) {
+			this.props.onSelect(this.props.combatant);
 		}
 	};
 
@@ -224,6 +233,15 @@ export class CombatantRowPanel extends Component<Props> {
 					break;
 			}
 
+			let selectBtn = null;
+			if (this.props.onSelect) {
+				selectBtn = (
+					<button className='icon-btn' onClick={e => this.onSelect(e)}>
+						<IconCheck />
+					</button>
+				);
+			}
+
 			let detailsBtn = null;
 			if (this.props.onDetails) {
 				detailsBtn = (
@@ -262,8 +280,9 @@ export class CombatantRowPanel extends Component<Props> {
 					{infoRight}
 					{infoEnd}
 					{
-						detailsBtn || cancelBtn ?
+						selectBtn || detailsBtn || cancelBtn ?
 							<div className='buttons'>
+								{selectBtn}
 								{detailsBtn}
 								{cancelBtn}
 							</div>

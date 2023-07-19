@@ -66,6 +66,7 @@
 		cursor: pointer;
 
 		&:hover {
+			background-image: none;
 			background-color: rgb(200, 230, 255);
 		}
 	}

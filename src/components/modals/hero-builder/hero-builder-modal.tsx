@@ -426,7 +426,7 @@ class EquipmentSelector extends Component<EquipmentSelectorProps, EquipmentSelec
 					<PlayingCard
 						key={n}
 						type={CardType.Item}
-						front={<PlaceholderCard text={slot.proficiency} content={<div>Choose one of the <b>{slot.proficiency}</b> cards below</div>}/>}
+						front={<PlaceholderCard text={slot.proficiency} subtext={`Choose one of the ${slot.proficiency} cards below`} />}
 					/>
 				);
 			});

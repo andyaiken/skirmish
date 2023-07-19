@@ -92,7 +92,7 @@ export class EnchantItemModal extends Component<Props, State> {
 
 				let other = null;
 				if (this.props.game.items.length > 0) {
-					const cards = this.props.game.items.map(item => (
+					const cards = this.props.game.items.filter(i => !i.potion).map(item => (
 						<div key={item.id}>
 							<ItemCard item={item} onSelect={this.selectItem} />
 						</div>

@@ -2,12 +2,13 @@ import { Component, createRef } from 'react';
 import {
 	IconArrowBackUpDouble,
 	IconConfetti,
-	IconInfoCircle,
-	IconInfoCircleFilled,
+	IconHelpCircle,
+	IconHelpCircleFilled,
 	IconLayoutSidebarLeftCollapse,
 	IconLayoutSidebarLeftExpand,
 	IconRotate2,
 	IconRotateClockwise2,
+	IconSettings,
 	IconZoomIn,
 	IconZoomOut
 } from '@tabler/icons-react';
@@ -23,6 +24,7 @@ import type { EncounterModel, LootPileModel } from '../../../models/encounter';
 import type { CombatantModel } from '../../../models/combatant';
 import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
+import type { OptionsModel } from '../../../models/options';
 
 import { CardList, Dialog, Text, TextType } from '../../controls';
 import { CombatantRowPanel, EncounterMapPanel, InitiativeListPanel, TreasureRowPanel, TurnLogPanel } from '../../panels';
@@ -37,9 +39,10 @@ import './encounter-screen.scss';
 interface Props {
 	encounter: EncounterModel;
 	game: GameModel;
-	developer: boolean;
+	options: OptionsModel;
 	hasExceptions: boolean;
 	showHelp: (file: string) => void;
+	showOptions: () => void;
 	rotateMap: (encounter: EncounterModel, dir: 'l' | 'r') => void;
 	rollInitiative: (encounter: EncounterModel) => void;
 	endTurn: (encounter: EncounterModel) => void;
@@ -407,54 +410,41 @@ export class EncounterScreen extends Component<Props, State> {
 
 		return (
 			<div className='encounter-top-panel'>
-				<div className='section'>
-					<button className='icon-btn' title='Left Sidebar' onClick={() => this.toggleInitiativeList()}>
-						{this.state.showInitiativeList ? <IconLayoutSidebarLeftCollapse /> : <IconLayoutSidebarLeftExpand />}
-					</button>
-				</div>
+				<button className='icon-btn' title='Left Sidebar' onClick={() => this.toggleInitiativeList()}>
+					{this.state.showInitiativeList ? <IconLayoutSidebarLeftCollapse /> : <IconLayoutSidebarLeftExpand />}
+				</button>
 				<div className='separator' />
-				<div className='section'>
-					<button className='icon-btn' title='Rotate Left' onClick={() => this.props.rotateMap(this.props.encounter, 'l')}>
-						<IconRotate2 />
-					</button>
-				</div>
-				<div className='section'>
-					<button className='icon-btn' title='Rotate Right' onClick={() => this.props.rotateMap(this.props.encounter, 'r')}>
-						<IconRotateClockwise2 />
-					</button>
-				</div>
+				<button className='icon-btn' title='Rotate Left' onClick={() => this.props.rotateMap(this.props.encounter, 'l')}>
+					<IconRotate2 />
+				</button>
+				<button className='icon-btn' title='Rotate Right' onClick={() => this.props.rotateMap(this.props.encounter, 'r')}>
+					<IconRotateClockwise2 />
+				</button>
 				<div className='separator' />
-				<div className='section'>
-					<button disabled={this.state.mapSquareSize <= 5} className='icon-btn' title='Zoom Out' onClick={() => this.nudgeMapSize(-5)}>
-						<IconZoomOut />
-					</button>
-				</div>
-				<div className='section'>
-					<button disabled={this.state.mapSquareSize >= 50} className='icon-btn' title='Zoom In' onClick={() => this.nudgeMapSize(+5)}>
-						<IconZoomIn />
-					</button>
-				</div>
+				<button disabled={this.state.mapSquareSize <= 5} className='icon-btn' title='Zoom Out' onClick={() => this.nudgeMapSize(-5)}>
+					<IconZoomOut />
+				</button>
+				<button disabled={this.state.mapSquareSize >= 50} className='icon-btn' title='Zoom In' onClick={() => this.nudgeMapSize(+5)}>
+					<IconZoomIn />
+				</button>
 				<div className='separator' />
-				<div className='section'>
-					<button className='icon-btn' title='Retreat' onClick={() => this.setManualEncounterState(EncounterState.Retreat)}>
-						<IconArrowBackUpDouble />
-					</button>
-				</div>
+				<button className='icon-btn' title='Retreat' onClick={() => this.setManualEncounterState(EncounterState.Retreat)}>
+					<IconArrowBackUpDouble />
+				</button>
 				{
-					this.props.developer ?
-						<div className='section'>
-							<button className='icon-btn developer' title='Win' onClick={() => this.setManualEncounterState(EncounterState.Victory)}>
-								<IconConfetti />
-							</button>
-						</div>
+					this.props.options.developer ?
+						<button className='icon-btn developer' title='Win' onClick={() => this.setManualEncounterState(EncounterState.Victory)}>
+							<IconConfetti />
+						</button>
 						: null
 				}
 				<div className='separator' />
-				<div className='section'>
-					<button className='icon-btn' title='Information' onClick={() => this.props.showHelp('encounters')}>
-						{this.props.developer && this.props.hasExceptions ? <IconInfoCircleFilled /> : <IconInfoCircle />}
-					</button>
-				</div>
+				<button className='icon-btn' title='Help' onClick={() => this.props.showHelp('encounters')}>
+					{this.props.options.developer && this.props.hasExceptions ? <IconHelpCircleFilled /> : <IconHelpCircle />}
+				</button>
+				<button className='icon-btn' title='Options' onClick={() => this.props.showOptions()}>
+					<IconSettings />
+				</button>
 			</div>
 		);
 	};
@@ -527,6 +517,7 @@ export class EncounterScreen extends Component<Props, State> {
 				<EncounterControls
 					encounter={this.props.encounter}
 					game={this.props.game}
+					options={this.props.options}
 					state={state}
 					setEncounterState={this.setManualEncounterState}
 					finishEncounter={this.props.finishEncounter}
@@ -540,7 +531,7 @@ export class EncounterScreen extends Component<Props, State> {
 				<CombatantControls
 					combatant={currentCombatant}
 					encounter={this.props.encounter}
-					developer={this.props.developer}
+					options={this.props.options}
 					selectedActionParameter={this.state.selectedActionParameter}
 					showToken={() => this.scrollToCombatant('current')}
 					showCharacterSheet={this.showDetailsCombatant}
@@ -565,6 +556,7 @@ export class EncounterScreen extends Component<Props, State> {
 		return (
 			<RoundControls
 				encounter={this.props.encounter}
+				options={this.props.options}
 				rollInitiative={this.props.rollInitiative}
 			/>
 		);
@@ -593,7 +585,7 @@ export class EncounterScreen extends Component<Props, State> {
 							<CharacterSheetModal
 								combatant={this.state.detailsCombatant}
 								game={this.props.game}
-								developer={this.props.developer}
+								developer={this.props.options.developer}
 								equipItem={this.props.equipItem}
 								unequipItem={this.props.unequipItem}
 								pickUpItem={this.props.pickUpItem}

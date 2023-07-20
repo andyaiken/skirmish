@@ -1,4 +1,4 @@
-import { IconCards, IconInfoCircle, IconInfoCircleFilled } from '@tabler/icons-react';
+import { IconCards, IconHelpCircle, IconHelpCircleFilled, IconSettings } from '@tabler/icons-react';
 import { Component } from 'react';
 
 import { GameLogic } from '../../../logic/game-logic';
@@ -31,6 +31,7 @@ interface Props {
 	hasExceptions: boolean;
 	showHelp: (file: string) => void;
 	showPacks: () => void;
+	showOptions: () => void;
 	addHero: (hero: CombatantModel) => void;
 	incrementXP: (hero: CombatantModel) => void;
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
@@ -136,14 +137,19 @@ export class CampaignScreen extends Component<Props, State> {
 					<div className='campaign-top-bar'>
 						<div className='logo-text inset-text'>Skirmish</div>
 						<Selector options={options} selectedID={this.state.screen} onSelect={id => this.setScreen(id as CampaignScreenType)} />
-						<Badge value={availablePacks}>
-							<button className='icon-btn' title='Packs' onClick={() => this.props.showPacks()}>
-								<IconCards />
+						<div className='buttons'>
+							<Badge value={availablePacks}>
+								<button className='icon-btn' title='Packs' onClick={() => this.props.showPacks()}>
+									<IconCards />
+								</button>
+							</Badge>
+							<button className='icon-btn' title='Help' onClick={() => this.props.showHelp(this.state.screen)}>
+								{this.props.options.developer && this.props.hasExceptions ? <IconHelpCircleFilled /> : <IconHelpCircle />}
 							</button>
-						</Badge>
-						<button className='icon-btn' title='Information' onClick={() => this.props.showHelp(this.state.screen)}>
-							{this.props.options.developer && this.props.hasExceptions ? <IconInfoCircleFilled /> : <IconInfoCircle />}
-						</button>
+							<button className='icon-btn' title='Options' onClick={() => this.props.showOptions()}>
+								<IconSettings />
+							</button>
+						</div>
 					</div>
 					<div className='campaign-content'>
 						{content}

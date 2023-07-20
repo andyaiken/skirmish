@@ -20,9 +20,14 @@ localforage.getItem<GameModel>('skirmish-game').then(game => {
 		if (!options) {
 			options = {
 				developer: false,
+				showTips: true,
 				soundEffectsVolume: 0.5,
 				packIDs: []
 			};
+		}
+
+		if (options.showTips === undefined) {
+			options.showTips = true;
 		}
 
 		if (options.packIDs === undefined) {

@@ -29,7 +29,7 @@ import { Utils } from '../../utils/utils';
 
 import { CampaignScreen, EncounterScreen, LandingScreen, SetupScreen } from '../screens';
 import { Dialog, PlayingCard, Text, TextType } from '../controls';
-import { HelpModal, PacksModal } from '../modals';
+import { HelpModal, OptionsModal, PacksModal } from '../modals';
 import { PlaceholderCard } from '../cards';
 
 import './main.scss';
@@ -61,6 +61,7 @@ interface State {
 	screen: ScreenType;
 	showHelp: string | null;
 	showPacks: boolean;
+	showOptions: boolean;
 	dialog: JSX.Element | null;
 	exceptions: string[];
 }
@@ -77,6 +78,7 @@ export class Main extends Component<Props, State> {
 			screen: ScreenType.Landing,
 			showHelp: null,
 			showPacks: false,
+			showOptions: false,
 			dialog: null,
 			exceptions: []
 		};
@@ -136,6 +138,7 @@ export class Main extends Component<Props, State> {
 		this.setState({
 			showHelp: filename,
 			showPacks: false,
+			showOptions: false,
 			dialog: null
 		});
 	};
@@ -144,6 +147,16 @@ export class Main extends Component<Props, State> {
 		this.setState({
 			showHelp: null,
 			showPacks: true,
+			showOptions: false,
+			dialog: null
+		});
+	};
+
+	showOptions = () => {
+		this.setState({
+			showHelp: null,
+			showPacks: false,
+			showOptions: true,
 			dialog: null
 		});
 	};
@@ -151,6 +164,17 @@ export class Main extends Component<Props, State> {
 	setDeveloperMode = (value: boolean) => {
 		const options = this.state.options;
 		options.developer = value;
+
+		this.setState({
+			options: options
+		}, () => {
+			this.saveOptions();
+		});
+	};
+
+	setShowTips = (value: boolean) => {
+		const options = this.state.options;
+		options.showTips = value;
 
 		this.setState({
 			options: options
@@ -208,6 +232,7 @@ export class Main extends Component<Props, State> {
 				screen: ScreenType.Setup,
 				showHelp: null,
 				showPacks: false,
+				showOptions: false,
 				dialog: null
 			}, () => {
 				this.saveGame();
@@ -255,6 +280,7 @@ export class Main extends Component<Props, State> {
 				screen: ScreenType.Campaign,
 				showHelp: null,
 				showPacks: false,
+				showOptions: false,
 				dialog: null
 			}, () => {
 				this.saveGame();
@@ -271,6 +297,7 @@ export class Main extends Component<Props, State> {
 				screen: ScreenType.Landing,
 				showHelp: null,
 				showPacks: false,
+				showOptions: false,
 				dialog: null
 			}, () => {
 				this.saveGame();
@@ -1074,6 +1101,7 @@ export class Main extends Component<Props, State> {
 						hasExceptions={this.state.exceptions.length > 0}
 						showHelp={this.showHelp}
 						showPacks={this.showPacks}
+						showOptions={this.showOptions}
 						addHero={this.addHero}
 						incrementXP={this.incrementXP}
 						equipItem={this.equipItem}
@@ -1095,9 +1123,10 @@ export class Main extends Component<Props, State> {
 					<EncounterScreen
 						encounter={this.state.game?.encounter as EncounterModel}
 						game={this.state.game as GameModel}
-						developer={this.state.options.developer}
+						options={this.state.options}
 						hasExceptions={this.state.exceptions.length > 0}
 						showHelp={this.showHelp}
+						showOptions={this.showOptions}
 						rotateMap={this.rotateMap}
 						rollInitiative={this.rollInitiative}
 						endTurn={this.endTurn}
@@ -1135,10 +1164,6 @@ export class Main extends Component<Props, State> {
 								exceptions={this.state.exceptions}
 								rules={rules[this.state.showHelp]}
 								options={this.state.options}
-								removePack={this.removePack}
-								endCampaign={this.endCampaign}
-								setDeveloperMode={this.setDeveloperMode}
-								setSoundEffectsVolume={this.setSoundEffectsVolume}
 							/>
 						}
 						onClose={() => this.setState({ showHelp: null })}
@@ -1155,6 +1180,24 @@ export class Main extends Component<Props, State> {
 							/>
 						}
 						onClose={() => this.setState({ showPacks: false })}
+					/>
+				);
+			}
+			if (this.state.showOptions) {
+				dialog = (
+					<Dialog
+						content={
+							<OptionsModal
+								game={this.state.game}
+								options={this.state.options}
+								removePack={this.removePack}
+								endCampaign={this.endCampaign}
+								setDeveloperMode={this.setDeveloperMode}
+								setShowTips={this.setShowTips}
+								setSoundEffectsVolume={this.setSoundEffectsVolume}
+							/>
+						}
+						onClose={() => this.setState({ showOptions: false })}
 					/>
 				);
 			}

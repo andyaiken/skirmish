@@ -4,13 +4,15 @@ import { CombatantState } from '../../../../enums/combatant-state';
 import { CombatantType } from '../../../../enums/combatant-type';
 
 import type { EncounterModel } from '../../../../models/encounter';
+import type { OptionsModel } from '../../../../models/options';
 
-import { Box, StatValue, Text, TextType } from '../../../controls';
+import { Box, Expander, StatValue, Text, TextType } from '../../../controls';
 
 import './round-controls.scss';
 
 interface Props {
 	encounter: EncounterModel;
+	options: OptionsModel;
 	rollInitiative: (encounter: EncounterModel) => void;
 }
 
@@ -56,6 +58,21 @@ export class RoundControls extends Component<Props> {
 						</Box>
 					</div>
 					<hr />
+					{
+						this.props.options.showTips ?
+							<Expander
+								header={
+									<Text type={TextType.Tip}>At the start of each turn, each combatant rolls initiative.</Text>
+								}
+								content={
+									<Text>
+										<p>This determines the order they will act in for this round - higher goes first.</p>
+										<p>Initiative is calculated using a combatant&apos;s <b>Reactions</b> skill rank.</p>
+									</Text>
+								}
+							/>
+							: null
+					}
 					<button onClick={() => this.props.rollInitiative(this.props.encounter)}>Roll Initiative</button>
 				</div>
 			);

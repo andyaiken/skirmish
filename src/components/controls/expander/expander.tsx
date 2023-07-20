@@ -1,14 +1,13 @@
 import { MouseEvent, useEffect, useRef, useState } from 'react';
-import { IconChevronDown } from '@tabler/icons-react';
 
-import './accordion.scss';
+import './expander.scss';
 
 interface Props {
 	header: string | JSX.Element;
-	children: string | JSX.Element | (string | JSX.Element)[];
+	content: string | JSX.Element;
 }
 
-export const Accordion = (props: Props) => {
+export const Expander = (props: Props) => {
 	const [ opened, setOpened ] = useState<boolean>(false);
 
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -43,11 +42,11 @@ export const Accordion = (props: Props) => {
 			);
 	};
 
-	const openAccordion = () => {
+	const openExpander = () => {
 		setOpened(true);
 	};
 
-	const closeAccordion = () => {
+	const closeExpander = () => {
 		const content = contentRef.current;
 		if (!content) {
 			return;
@@ -68,20 +67,19 @@ export const Accordion = (props: Props) => {
 		e.stopPropagation();
 
 		if (opened) {
-			closeAccordion();
+			closeExpander();
 		} else {
-			openAccordion();
+			openExpander();
 		}
 	};
 
-	const className= `accordion ${opened ? 'accordion-open' : 'accordion-closed'}`;
 	return (
-		<div className={className} ref={containerRef}>
-			<div className='accordion-header' onClick={onClick}>
+		<div className='expander' ref={containerRef} onClick={onClick}>
+			<div className='expander-header'>
 				{props.header}
-				<button className='icon-btn' onClick={onClick}><IconChevronDown /></button>
 			</div>
-			{opened ? <div className='accordion-content' ref={contentRef}>{props.children}</div> : null}
+			{opened ? <div className='expander-content' ref={contentRef}>{props.content}</div> : null}
+			<div className='expander-ellipsis'>&hellip;</div>
 		</div>
 	);
 };

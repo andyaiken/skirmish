@@ -8,8 +8,9 @@ import type { ActionModel, ActionParameterModel } from '../../../../models/actio
 import type { CombatantModel } from '../../../../models/combatant';
 import type { EncounterModel } from '../../../../models/encounter';
 import type { ItemModel } from '../../../../models/item';
+import type { OptionsModel } from '../../../../models/options';
 
-import { Tabs, Text, TextType } from '../../../controls';
+import { Expander, Tabs, Text, TextType } from '../../../controls';
 import { CombatantAction } from './combatant-action/combatant-action';
 import { CombatantEndturn } from './combatant-endturn/combatant-endturn';
 import { CombatantHeader } from './combatant-header/combatant-header';
@@ -23,7 +24,7 @@ import './combatant-controls.scss';
 interface CombatantControlsProps {
 	combatant: CombatantModel;
 	encounter: EncounterModel;
-	developer: boolean;
+	options: OptionsModel;
 	selectedActionParameter: ActionParameterModel | null;
 	showToken: (combatant: CombatantModel) => void;
 	showCharacterSheet: (combatant: CombatantModel) => void;
@@ -100,11 +101,10 @@ export class CombatantControls extends Component<CombatantControlsProps, Combata
 						<CombatantHeader
 							combatant={this.props.combatant}
 							encounter={this.props.encounter}
-							developer={this.props.developer}
+							developer={this.props.options.developer}
 							onTokenClick={this.props.showToken}
 							showCharacterSheet={this.props.showCharacterSheet}
 						/>
-						<hr />
 						<button onClick={this.endTurn}>End Turn</button>
 					</div>
 				);
@@ -116,10 +116,22 @@ export class CombatantControls extends Component<CombatantControlsProps, Combata
 						<CombatantHeader
 							combatant={this.props.combatant}
 							encounter={this.props.encounter}
-							developer={this.props.developer}
+							developer={this.props.options.developer}
 							onTokenClick={this.props.showToken}
 							showCharacterSheet={this.props.showCharacterSheet}
 						/>
+						{
+							this.props.options.showTips ?
+								<Expander
+									header={
+										<Text type={TextType.Tip}>It is {this.props.combatant.name}&apos;s turn.</Text>
+									}
+									content={
+										<div>You can&apos;t control a monster directly; press the <b>Go</b> button and it will take its turn.</div>
+									}
+								/>
+								: null
+						}
 						<button disabled={this.state.thinking} onClick={() => this.runMonsterTurn()}>
 							{this.state.thinking ? 'Thinking' : 'Go'}
 						</button>
@@ -153,7 +165,7 @@ export class CombatantControls extends Component<CombatantControlsProps, Combata
 						<CombatantOverview
 							combatant={this.props.combatant}
 							encounter={this.props.encounter}
-							developer={this.props.developer}
+							developer={this.props.options.developer}
 							inspire={this.props.inspire}
 							scan={this.props.scan}
 							hide={this.props.hide}
@@ -166,7 +178,7 @@ export class CombatantControls extends Component<CombatantControlsProps, Combata
 						<CombatantMove
 							combatant={this.props.combatant}
 							encounter={this.props.encounter}
-							developer={this.props.developer}
+							developer={this.props.options.developer}
 							move={this.props.move}
 							addMovement={this.props.addMovement}
 						/>
@@ -179,7 +191,7 @@ export class CombatantControls extends Component<CombatantControlsProps, Combata
 							combatant={this.props.combatant}
 							encounter={this.props.encounter}
 							currentActionParameter={this.props.selectedActionParameter}
-							developer={this.props.developer}
+							developer={this.props.options.developer}
 							drawActions={this.props.drawActions}
 							selectAction={this.props.selectAction}
 							deselectAction={this.props.deselectAction}
@@ -216,10 +228,29 @@ export class CombatantControls extends Component<CombatantControlsProps, Combata
 					<CombatantHeader
 						combatant={this.props.combatant}
 						encounter={this.props.encounter}
-						developer={this.props.developer}
+						developer={this.props.options.developer}
 						onTokenClick={this.props.showToken}
 						showCharacterSheet={this.props.showCharacterSheet}
 					/>
+					{
+						this.props.options.showTips ?
+							<Expander
+								header={
+									<Text type={TextType.Tip}>It is {this.props.combatant.name}&apos;s turn; explore the tabs below to see what they can do.</Text>
+								}
+								content={
+									<Text>
+										<p>The most important things to know are:</p>
+										<ul>
+											<li>You can move your hero around the map with the <IconArrowsMove size={12} /> tab.</li>
+											<li>You can take your action - you only get one per turn! - with the <IconFlare size={12} /> tab.</li>
+										</ul>
+										<p>When you&apos;re finished, select <b>End Turn</b> on the <IconCircleCheck size={12} /> tab.</p>
+									</Text>
+								}
+							/>
+							: null
+					}
 					<Tabs
 						options={options}
 						selectedID={this.state.tab}

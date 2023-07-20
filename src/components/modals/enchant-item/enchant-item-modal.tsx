@@ -6,7 +6,7 @@ import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
 import type { OptionsModel } from '../../../models/options';
 
-import { CardList, Text, TextType } from '../../controls';
+import { CardList, Dialog, Text, TextType } from '../../controls';
 import { ItemCard } from '../../cards';
 
 import './enchant-item-modal.scss';
@@ -53,6 +53,7 @@ export class EnchantItemModal extends Component<Props, State> {
 
 	render = () => {
 		try {
+			let dialog = null;
 			if (this.state.selectedItem) {
 				const cards = this.state.magicItems.map(item => (
 					<div key={item.id}>
@@ -60,61 +61,66 @@ export class EnchantItemModal extends Component<Props, State> {
 					</div>
 				));
 
-				return (
-					<div className='enchant-item-modal'>
-						<Text type={TextType.Heading}>Choose an Enchantment</Text>
-						{this.props.options.developer ? <button className='developer' onClick={() => this.selectItem(this.state.selectedItem as ItemModel)}>Redraw</button> : null}
-						<div className='card-selection-row'>
-							<CardList cards={cards} />
-						</div>
-					</div>
+				dialog = (
+					<Dialog
+						content={
+							<div className='enchant-item-modal'>
+								<Text type={TextType.Heading}>Choose an Enchantment</Text>
+								{this.props.options.developer ? <button className='developer' onClick={() => this.selectItem(this.state.selectedItem as ItemModel)}>Redraw</button> : null}
+								<div className='card-selection-row'>
+									<CardList cards={cards} />
+								</div>
+							</div>
+						}
+						level={2}
+					/>
 				);
-			} else {
-				const heroes = this.props.game.heroes.map(h => {
-					const items = ([] as ItemModel[]).concat(h.items).concat(h.carried).filter(i => !i.potion);
-					if (items.length > 0) {
-						const cards = items.map(item => (
-							<div key={item.id}>
-								<ItemCard item={item} onSelect={this.selectItem} />
-							</div>
-						));
+			}
 
-						return (
-							<div key={h.id} className='card-selection-row'>
-								<Text type={TextType.MinorHeading}>{h.name}</Text>
-								<CardList cards={cards} />
-							</div>
-						);
-					}
-
-					return null;
-				});
-
-				let other = null;
-				if (this.props.game.items.length > 0) {
-					const cards = this.props.game.items.filter(i => !i.potion).map(item => (
+			const heroes = this.props.game.heroes.map(h => {
+				const items = ([] as ItemModel[]).concat(h.items).concat(h.carried).filter(i => !i.potion);
+				if (items.length > 0) {
+					const cards = items.map(item => (
 						<div key={item.id}>
 							<ItemCard item={item} onSelect={this.selectItem} />
 						</div>
 					));
 
-					other = (
-						<div className='card-selection-row'>
-							<Text type={TextType.MinorHeading}>Other Items</Text>
+					return (
+						<div key={h.id} className='card-selection-row'>
+							<Text type={TextType.MinorHeading}>{h.name}</Text>
 							<CardList cards={cards} />
 						</div>
 					);
 				}
 
-				return (
-					<div className='enchant-item-modal'>
-						<Text type={TextType.Heading}>Choose an Item</Text>
-						{heroes}
-						{other}
+				return null;
+			});
+
+			let other = null;
+			if (this.props.game.items.length > 0) {
+				const cards = this.props.game.items.filter(i => !i.potion).map(item => (
+					<div key={item.id}>
+						<ItemCard item={item} onSelect={this.selectItem} />
+					</div>
+				));
+
+				other = (
+					<div className='card-selection-row'>
+						<Text type={TextType.MinorHeading}>Other Items</Text>
+						<CardList cards={cards} />
 					</div>
 				);
 			}
 
+			return (
+				<div className='enchant-item-modal'>
+					<Text type={TextType.Heading}>Choose an Item</Text>
+					{heroes}
+					{other}
+					{dialog}
+				</div>
+			);
 		} catch {
 			return <div className='enchant-item-modal render-error' />;
 		}

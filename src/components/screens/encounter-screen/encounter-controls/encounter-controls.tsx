@@ -6,6 +6,7 @@ import { EncounterLogic } from '../../../../logic/encounter-logic';
 
 import type { EncounterModel } from '../../../../models/encounter';
 import type { GameModel } from '../../../../models/game';
+import type { OptionsModel } from '../../../../models/options';
 import type { RegionModel } from '../../../../models/region';
 
 import { Text, TextType } from '../../../controls';
@@ -16,6 +17,7 @@ import './encounter-controls.scss';
 interface EncounterControlsProps {
 	encounter: EncounterModel;
 	game: GameModel;
+	options: OptionsModel;
 	state: EncounterState;
 	setEncounterState: (state: EncounterState) => void;
 	finishEncounter: (state: EncounterState) => void;

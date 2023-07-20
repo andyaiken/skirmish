@@ -200,6 +200,10 @@ export class MagicItemGenerator {
 		copyAction.actions.push(GameLogic.getRandomAction(item, packIDs));
 		options.push(copyAction);
 
+		if (options.length === 0) {
+			return item;
+		}
+
 		return Collections.draw(options);
 	};
 }

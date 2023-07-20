@@ -6,7 +6,6 @@ import './confirm-button.scss';
 
 interface Props {
 	label: string;
-	info: string;
 	onClick: () => void;
 }
 
@@ -15,10 +14,6 @@ interface State {
 }
 
 export class ConfirmButton extends Component<Props, State> {
-	static defaultProps = {
-		info: ''
-	};
-
 	constructor(props: Props) {
 		super(props);
 
@@ -58,7 +53,7 @@ export class ConfirmButton extends Component<Props, State> {
 			return (
 				<div className='confirm-query'>
 					<Text>
-						<b>{this.props.info || 'Are you sure?'}</b>
+						<b>{`${this.props.label} - are you sure?`}</b>
 					</Text>
 					<div className='button-row'>
 						<button onClick={this.onConfirm}>OK</button>

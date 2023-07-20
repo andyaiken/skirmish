@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import { IconInfoCircle } from '@tabler/icons-react';
 
 import './text.scss';
 
@@ -9,6 +10,7 @@ export enum TextType {
 	MinorHeading = 'minorheading',
 	ListItem = 'listitem',
 	Information = 'information',
+	Tip = 'tip',
 	Small = 'small'
 }
 
@@ -24,9 +26,23 @@ export class Text extends Component<Props> {
 
 	render = () => {
 		try {
+			let icon = null;
+			switch (this.props.type) {
+				case TextType.Tip:
+					icon = (
+						<div className='skirmish-text-icon'>
+							<IconInfoCircle />
+						</div>
+					);
+					break;
+			}
+
 			return (
 				<div className={`skirmish-text ${this.props.type}`}>
-					{this.props.children}
+					{icon}
+					<div className={`skirmish-text-content ${this.props.type}`}>
+						{this.props.children}
+					</div>
 				</div>
 			);
 		} catch {

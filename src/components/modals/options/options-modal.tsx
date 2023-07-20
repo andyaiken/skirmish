@@ -1,15 +1,15 @@
 import { Component } from 'react';
 
-import { GameLogic } from '../../../../logic/game-logic';
+import { GameLogic } from '../../../logic/game-logic';
 
-import type { GameModel } from '../../../../models/game';
-import type { OptionsModel } from '../../../../models/options';
+import type { GameModel } from '../../../models/game';
+import type { OptionsModel } from '../../../models/options';
 
-import { Sound } from '../../../../utils/sound';
+import { Sound } from '../../../utils/sound';
 
-import { ConfirmButton, StatValue, Switch, Text, TextType } from '../../../controls';
+import { ConfirmButton, StatValue, Switch, Text, TextType } from '../../controls';
 
-import './options-tab.scss';
+import './options-modal.scss';
 
 interface Props {
 	game: GameModel | null;
@@ -17,10 +17,11 @@ interface Props {
 	removePack: (packID: string) => void;
 	endCampaign: () => void;
 	setDeveloperMode: (value: boolean) => void;
+	setShowTips: (value: boolean) => void;
 	setSoundEffectsVolume: (value: number) => void;
 }
 
-export class OptionsTab extends Component<Props> {
+export class OptionsModal extends Component<Props> {
 	setSoundEffectsVolume = (value: number) => {
 		this.props.setSoundEffectsVolume(value);
 		Sound.play(Sound.dong);
@@ -38,7 +39,9 @@ export class OptionsTab extends Component<Props> {
 			});
 
 			return (
-				<div className='options-tab'>
+				<div className='options-modal'>
+					<Text type={TextType.Heading}>Options</Text>
+					<hr />
 					<Text type={TextType.SubHeading}>Sound</Text>
 					<StatValue label='Sound effects volume' value={`${this.props.options.soundEffectsVolume * 100}%`} />
 					<input
@@ -51,16 +54,17 @@ export class OptionsTab extends Component<Props> {
 					/>
 					<hr />
 					{local ? <Switch label='Developer Mode' checked={this.props.options.developer} onChange={this.props.setDeveloperMode} /> : null}
-					{local ? <hr /> : null}
+					<Switch label='Show Tips' checked={this.props.options.showTips} onChange={this.props.setShowTips} />
+					<hr />
 					{this.props.options.developer ? <Text type={TextType.SubHeading}>Packs</Text> : null}
 					{this.props.options.developer && (packs.length > 0) ? packs : null}
 					{this.props.options.developer && (packs.length === 0) ? <Text type={TextType.Small}>None.</Text> : null}
 					{this.props.options.developer ? <hr /> : null}
-					{this.props.game ? <ConfirmButton label='Abandon this Campaign' onClick={() => this.props.endCampaign()} /> : null}
+					{this.props.game ? <ConfirmButton label='Abandon this campaign' onClick={() => this.props.endCampaign()} /> : null}
 				</div>
 			);
 		} catch {
-			return <div className='options-tab render-error' />;
+			return <div className='options-modal render-error' />;
 		}
 	};
 }

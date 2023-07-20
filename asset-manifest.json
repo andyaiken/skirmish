@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/skirmish/static/css/main.21231678.css",
-    "main.js": "/skirmish/static/js/main.1dc8d08e.js",
+    "main.css": "/skirmish/static/css/main.26c288d6.css",
+    "main.js": "/skirmish/static/js/main.53e54f18.js",
     "static/js/315.19260ef8.chunk.js": "/skirmish/static/js/315.19260ef8.chunk.js",
     "static/js/842.6b529014.chunk.js": "/skirmish/static/js/842.6b529014.chunk.js",
     "static/media/PTSans-Bold.ttf": "/skirmish/static/media/PTSans-Bold.610bc32a7e32c292ce59.ttf",
@@ -9,18 +9,18 @@
     "static/media/PTSans-Italic.ttf": "/skirmish/static/media/PTSans-Italic.4faac24b7809d950b77e.ttf",
     "static/media/PTSans-BoldItalic.ttf": "/skirmish/static/media/PTSans-BoldItalic.9432b29338612af7eca9.ttf",
     "static/media/dong.mp3": "/skirmish/static/media/dong.e69db03d8e628a27235e.mp3",
-    "static/media/encounters.md": "/skirmish/static/media/encounters.b8938018f3af932221f4.md",
+    "static/media/encounters.md": "/skirmish/static/media/encounters.9fa0d228946ee3926149.md",
     "static/media/team.md": "/skirmish/static/media/team.55b55f66689fc9db8026.md",
     "static/media/items.md": "/skirmish/static/media/items.f52a7f7903f123b9380b.md",
     "index.html": "/skirmish/index.html",
     "static/media/island.md": "/skirmish/static/media/island.282049dbd32e0376a091.md",
-    "main.21231678.css.map": "/skirmish/static/css/main.21231678.css.map",
-    "main.1dc8d08e.js.map": "/skirmish/static/js/main.1dc8d08e.js.map",
+    "main.26c288d6.css.map": "/skirmish/static/css/main.26c288d6.css.map",
+    "main.53e54f18.js.map": "/skirmish/static/js/main.53e54f18.js.map",
     "315.19260ef8.chunk.js.map": "/skirmish/static/js/315.19260ef8.chunk.js.map",
     "842.6b529014.chunk.js.map": "/skirmish/static/js/842.6b529014.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.21231678.css",
-    "static/js/main.1dc8d08e.js"
+    "static/css/main.26c288d6.css",
+    "static/js/main.53e54f18.js"
   ]
 }

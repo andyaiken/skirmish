@@ -72,7 +72,7 @@ export class BoonCard extends Component<Props, State> {
 		let extra = null;
 		switch (this.props.boon.type) {
 			case BoonType.ExtraHero:
-				desc = 'Gain an empty hero slot.';
+				desc = 'Recruit an additional hero.';
 				break;
 			case BoonType.ExtraXP:
 				desc = 'Choose one of your heroes to gain bonus XP.';

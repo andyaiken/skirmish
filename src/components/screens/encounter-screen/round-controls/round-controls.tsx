@@ -65,10 +65,10 @@ export class RoundControls extends Component<Props> {
 									<Text type={TextType.Tip}>At the start of each turn, each combatant rolls initiative.</Text>
 								}
 								content={
-									<Text>
+									<div>
 										<p>This determines the order they will act in for this round - higher goes first.</p>
 										<p>Initiative is calculated using a combatant&apos;s <b>Reactions</b> skill rank.</p>
-									</Text>
+									</div>
 								}
 							/>
 							: null

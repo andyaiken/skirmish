@@ -61,7 +61,7 @@ export class DirectionPanel extends Component<Props> {
 						<div className='cost'><IconValue type={IconType.Movement} value={this.getCostLabel(this.props.costs.w)} iconSize={12} /></div>
 					</div>
 					<div className='center'>
-						<div className='cost'><IconValue type={IconType.Movement} value={this.props.combatant.combat.movement} iconSize={12} /></div>
+						<div className='cost big'><IconValue type={IconType.Movement} value={this.props.combatant.combat.movement} iconSize={24} /></div>
 					</div>
 					<div className={this.getClassName('e')} onClick={e => this.onClick(e, 'e', this.props.costs.e)} onDoubleClick={this.onDoubleClick}>
 						<div className='arrow'><IconChevronRight size={70} /></div>

@@ -78,7 +78,8 @@ export class PacksModal extends Component<Props, State> {
 	getPackContent = () => {
 		if (!this.state.selectedPack) {
 			return (
-				<div key='empty' className='pack-content empty'>
+				<div key='empty' className='pack-content'>
+					<Text>Packs provide additional options - more species cards (for heroes and monsters), role cards, and background cards.</Text>
 					<Text>Select a pack from the list on the left.</Text>
 				</div>
 			);

@@ -116,8 +116,6 @@ export class ItemsPage extends Component<Props, State> {
 	};
 
 	getSidebar = () => {
-		const controlLand = this.props.game.map.squares.some(sq => sq.regionID === '');
-
 		const moneySection = (
 			<div>
 				<StatValue orientation='vertical' label='Money' value={<IconValue type={IconType.Money} value={this.props.game.money} />} />
@@ -139,36 +137,28 @@ export class ItemsPage extends Component<Props, State> {
 		}
 
 		const buySection = [];
-		if (controlLand) {
-			if (this.props.game.money >= 2) {
-				buySection.push(
-					<button key='mundane' onClick={() => this.showMarket('mundane')}>
-						<div>Buy equipment</div>
-						<IconValue type={IconType.Money} value={2} iconSize={12} />
-					</button>
-				);
-			}
-			if (this.props.game.money >= 20) {
-				buySection.push(
-					<button key='potion' onClick={() => this.showMarket('potion')}>
-						<div>Buy a potion</div>
-						<IconValue type={IconType.Money} value={20} iconSize={12} />
-					</button>
-				);
-			}
-			if (this.props.game.money >= 100) {
-				buySection.push(
-					<button key='magical' onClick={() => this.showMarket('magical')}>
-						<div>Buy a magic item</div>
-						<IconValue type={IconType.Money} value={100} iconSize={12} />
-					</button>
-				);
-			}
-		} else if (this.props.game.money > 0) {
+		if (this.props.game.money >= 2) {
 			buySection.push(
-				<Text key='cannot-buy' type={TextType.Information}>
-					<p>You can&apos;t buy anything until you control part of the island.</p>
-				</Text>
+				<button key='mundane' onClick={() => this.showMarket('mundane')}>
+					<div>Buy equipment</div>
+					<IconValue type={IconType.Money} value={2} iconSize={12} />
+				</button>
+			);
+		}
+		if (this.props.game.money >= 20) {
+			buySection.push(
+				<button key='potion' onClick={() => this.showMarket('potion')}>
+					<div>Buy a potion</div>
+					<IconValue type={IconType.Money} value={20} iconSize={12} />
+				</button>
+			);
+		}
+		if (this.props.game.money >= 100) {
+			buySection.push(
+				<button key='magical' onClick={() => this.showMarket('magical')}>
+					<div>Buy a magic item</div>
+					<IconValue type={IconType.Money} value={100} iconSize={12} />
+				</button>
 			);
 		}
 

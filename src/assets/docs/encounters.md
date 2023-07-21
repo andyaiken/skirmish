@@ -77,11 +77,12 @@ You can move into any adjacent empty square, including diagonally, for 1 movemen
 * If the square you are moving out of is adjacent to an opponent, add 4 movement points
 * If you are Prone or Hidden, double the movement point cost
 
-There are three other important uses for movement points:
+There are four other important uses for movement points:
 
 * **Inspire**: Roll your Presense rank; on a result of 8 or higher, any allies you can see are no longer Stunned (4 movement points)
 * **Scan**: Roll your Perception rank, and add the result to your Senses score (4 movement points)
 * **Hide**: Roll your Stealth rank, and add the result to your Hidden score (4 movement points)
+* **Drink a potion**: If you have a potion, you can either drink it or feed it to an adjacent ally (2 movement points)
 
 For these options, you'll have to open your character sheet by tapping the icon at the top right:
 

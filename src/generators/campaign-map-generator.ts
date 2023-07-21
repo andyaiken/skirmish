@@ -104,6 +104,7 @@ export class CampaignMapGenerator {
 			region.demographics.population = Random.dice(size);
 
 			const terrains = [
+				'Badlands',
 				'Canyons',
 				'Desert',
 				'Fens',
@@ -118,12 +119,13 @@ export class CampaignMapGenerator {
 				'Salt flats',
 				'Scrubland',
 				'Steppe',
+				'Taiga',
 				'Valleys',
 				'Volcanic'
 			];
 			region.demographics.terrain = Collections.draw(terrains);
 
-			const count = Random.dice(1);
+			const count = Random.randomNumber(10) + 1;
 			while (region.encounters.length < count) {
 				region.encounters.push(Utils.guid());
 			}

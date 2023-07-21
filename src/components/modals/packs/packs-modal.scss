@@ -35,13 +35,6 @@
 		.pack-content {
 			flex: 1 1 0;
 
-			&.empty {
-				height: 400px;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-			}
-
 			.pack-card-section {
 				margin: 30px 0;
 				display: flex;

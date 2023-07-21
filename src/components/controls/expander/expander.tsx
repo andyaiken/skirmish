@@ -79,7 +79,6 @@ export const Expander = (props: Props) => {
 				{props.header}
 			</div>
 			{opened ? <div className='expander-content' ref={contentRef}>{props.content}</div> : null}
-			<div className='expander-ellipsis'>&hellip;</div>
 		</div>
 	);
 };

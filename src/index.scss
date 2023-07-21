@@ -228,3 +228,11 @@ textarea {
 	text-transform: uppercase;
 	font-weight: 600;
 }
+
+
+p .tabler-icon,
+li .tabler-icon {
+	margin-bottom: -2px;
+    border: 0.5px solid rgb(220, 220, 220);
+    background-color: rgb(240, 240, 240);
+}

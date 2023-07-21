@@ -19,7 +19,7 @@ import { Collections } from '../../../utils/collections';
 import { Random } from '../../../utils/random';
 
 import { CharacterSheetModal, HeroBuilderModal } from '../../modals';
-import { Dialog, PlayingCard, Text, TextType } from '../../controls';
+import { Dialog, Expander, PlayingCard, Text, TextType } from '../../controls';
 import { CombatantRowPanel } from '../../panels';
 import { PlaceholderCard } from '../../cards';
 
@@ -176,6 +176,21 @@ export class SetupScreen extends Component<Props, State> {
 							{heroes}
 						</div>
 						<div className='right-panel'>
+							{
+								this.props.options.showTips ?
+									<Expander
+										header={
+											<Text type={TextType.Tip}>When you see a box like this, you can tap it to show more information.</Text>
+										}
+										content={
+											<div>
+												<p>We&apos;ll use these boxes to explain how to play the game.</p>
+												<p>You can tap it again to close it.</p>
+											</div>
+										}
+									/>
+									: null
+							}
 							<PlayingCard
 								type={CardType.Role}
 								stack={true}

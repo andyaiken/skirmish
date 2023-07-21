@@ -127,7 +127,9 @@ export class CombatantControls extends Component<CombatantControlsProps, Combata
 										<Text type={TextType.Tip}>It is {this.props.combatant.name}&apos;s turn.</Text>
 									}
 									content={
-										<div>You can&apos;t control a monster directly; press the <b>Go</b> button and it will take its turn.</div>
+										<div>
+											<p>You can&apos;t control a monster directly; press the <b>Go</b> button and it will take its turn.</p>
+										</div>
 									}
 								/>
 								: null
@@ -165,7 +167,7 @@ export class CombatantControls extends Component<CombatantControlsProps, Combata
 						<CombatantOverview
 							combatant={this.props.combatant}
 							encounter={this.props.encounter}
-							developer={this.props.options.developer}
+							options={this.props.options}
 							inspire={this.props.inspire}
 							scan={this.props.scan}
 							hide={this.props.hide}
@@ -178,7 +180,7 @@ export class CombatantControls extends Component<CombatantControlsProps, Combata
 						<CombatantMove
 							combatant={this.props.combatant}
 							encounter={this.props.encounter}
-							developer={this.props.options.developer}
+							options={this.props.options}
 							move={this.props.move}
 							addMovement={this.props.addMovement}
 						/>
@@ -239,14 +241,14 @@ export class CombatantControls extends Component<CombatantControlsProps, Combata
 									<Text type={TextType.Tip}>It is {this.props.combatant.name}&apos;s turn; explore the tabs below to see what they can do.</Text>
 								}
 								content={
-									<Text>
+									<div>
 										<p>The most important things to know are:</p>
 										<ul>
-											<li>You can move your hero around the map with the <IconArrowsMove size={12} /> tab.</li>
-											<li>You can take your action - you only get one per turn! - with the <IconFlare size={12} /> tab.</li>
+											<li>You can move your hero around the map with the <IconArrowsMove size={15} /> tab.</li>
+											<li>You can take your action - you only get one per turn! - with the <IconFlare size={15} /> tab.</li>
 										</ul>
-										<p>When you&apos;re finished, select <b>End Turn</b> on the <IconCircleCheck size={12} /> tab.</p>
-									</Text>
+										<p>When you&apos;re finished, select <b>End Turn</b> on the <IconCircleCheck size={15} /> tab.</p>
+									</div>
 								}
 							/>
 							: null

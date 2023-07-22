@@ -65,9 +65,7 @@ export class CampaignMapLogic {
 
 	static canAttackRegion = (map: CampaignMapModel, region: RegionModel) => {
 		const squares = CampaignMapLogic.getSquares(map, region);
-		const coastal = squares.some(sq => CampaignMapLogic.getAdjacentSquares(map, sq.x, sq.y).length !== 4);
-		const bordering = squares.some(sq => CampaignMapLogic.getAdjacentSquares(map, sq.x, sq.y).some(a => a.regionID === ''));
-		return coastal || bordering;
+		return squares.some(sq => CampaignMapLogic.getAdjacentSquares(map, sq.x, sq.y).some(a => a.regionID === ''));
 	};
 
 	static conquerRegion = (map: CampaignMapModel, region: RegionModel) => {

@@ -51,7 +51,7 @@ export class CampaignMapGenerator {
 			}
 		}
 
-		const regionCount = map.squares.length / 20;
+		const regionCount = 1 + (map.squares.length / 20);
 		while (map.regions.length !== regionCount) {
 			// The lightest colour we will allow is rgb(229, 229, 229)
 			// This is so that the player (white) stands out
@@ -110,6 +110,7 @@ export class CampaignMapGenerator {
 				'Fens',
 				'Forest',
 				'Jungle',
+				'Lakes',
 				'Marshland',
 				'Mountains',
 				'Plains',
@@ -121,7 +122,8 @@ export class CampaignMapGenerator {
 				'Steppe',
 				'Taiga',
 				'Valleys',
-				'Volcanic'
+				'Volcanic',
+				'Wetlands'
 			];
 			region.demographics.terrain = Collections.draw(terrains);
 
@@ -130,6 +132,14 @@ export class CampaignMapGenerator {
 				region.encounters.push(Utils.guid());
 			}
 		});
+
+		// Find a coastal region and conquer it
+		const coastalRegions = map.regions.filter(region => {
+			const squares = CampaignMapLogic.getSquares(map, region);
+			return squares.some(sq => CampaignMapLogic.getAdjacentSquares(map, sq.x, sq.y).length !== 4);
+		});
+		const startingRegion = Collections.draw(coastalRegions);
+		CampaignMapLogic.conquerRegion(map, startingRegion);
 
 		return map;
 	};

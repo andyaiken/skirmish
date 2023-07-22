@@ -55,14 +55,14 @@ export class CampaignMapPage extends Component<Props, State> {
 						canAttack ?
 							null :
 							<Text type={TextType.Information}>
-								<p>You can&apos;t attack {this.state.selectedRegion.name} because it&apos;s not on the coast or adjacent to your land.</p>
+								<p><b>You can&apos;t attack {this.state.selectedRegion.name}</b> because it&apos;s not adjacent to your land.</p>
 							</Text>
 					}
 					{
 						heroesExist ?
 							null :
 							<Text type={TextType.Information}>
-								<p>You can&apos;t attack {this.state.selectedRegion.name} because you don&apos;t have any heroes.</p>
+								<p><b>You can&apos;t attack {this.state.selectedRegion.name}</b> because you don&apos;t have any heroes.</p>
 							</Text>
 					}
 					{canAttack && heroesExist ? <button onClick={() => this.setState({ showHeroSelection: true })}>Start an encounter</button> : null}
@@ -99,6 +99,7 @@ export class CampaignMapPage extends Component<Props, State> {
 									<p>Encounters are the main way your heroes can gain XP (and level up).</p>
 									<p>Each region has a certain number of encounters that must be won in order to conquer that region.</p>
 									<p>Conquering a region will allow you to recruit a new hero, and will also provide an additional reward - often money or a magical item.</p>
+									<p>You can only attack regions that border the land you already control (in white).</p>
 								</div>
 							}
 						/>

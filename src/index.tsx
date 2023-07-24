@@ -14,6 +14,12 @@ localforage.getItem<GameModel>('skirmish-game').then(game => {
 		if (game.encounter && (game.encounter.log === undefined)) {
 			game.encounter.log = [];
 		}
+
+		game.map.regions
+			.filter(r => r.encounters.length > 10)
+			.forEach(r => {
+				r.encounters = r.encounters.slice(0, 9);
+			});
 	}
 
 	localforage.getItem<OptionsModel>('skirmish-options').then(options => {

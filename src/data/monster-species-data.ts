@@ -46,8 +46,8 @@ export class MonsterSpeciesData {
 					ActionTargetParameters.self()
 				],
 				effects: [
-					ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Endurance, 2, SkillType.Brawl)),
-					ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Endurance, 2, SkillType.Weapon)),
+					ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Endurance, 5, SkillType.Brawl)),
+					ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Endurance, 5, SkillType.Weapon)),
 					ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Endurance, 2, DamageCategoryType.Physical))
 				]
 			},

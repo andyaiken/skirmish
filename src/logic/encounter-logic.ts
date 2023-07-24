@@ -228,11 +228,11 @@ export class EncounterLogic {
 
 		// This might have affected our Resolve, so check whether this is a problem
 		const resolve = EncounterLogic.getTraitRank(encounter, combatant, TraitType.Resolve);
-		if (combatant.combat.wounds === resolve) {
+		if ((combatant.combat.wounds === resolve) && ((combatant.combat.state === CombatantState.Standing) || (combatant.combat.state === CombatantState.Unconscious))) {
 			combatant.combat.state = CombatantState.Unconscious;
 			EncounterLogic.log(encounter, `${combatant.name} is now ${combatant.combat.state}`);
 		}
-		if (combatant.combat.wounds > resolve) {
+		if ((combatant.combat.wounds > resolve) && (combatant.combat.state !== CombatantState.Dead)) {
 			EncounterLogic.kill(encounter, combatant);
 		}
 
@@ -584,6 +584,11 @@ export class EncounterLogic {
 
 			EncounterLogic.log(encounter, `${combatant.name} is now ${combatant.combat.state}`);
 		}
+	};
+
+	static stun = (encounter: EncounterModel, combatant: CombatantModel) => {
+		combatant.combat.stunned = true;
+		EncounterLogic.log(encounter, `${combatant.name} is stunned`);
 	};
 
 	static inspire = (encounter: EncounterModel, combatant: CombatantModel) => {

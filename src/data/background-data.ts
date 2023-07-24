@@ -417,7 +417,7 @@ export class BackgroundData {
 					ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 5)
 				],
 				effects: [
-					ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Resolve, 2, SkillType.All))
+					ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Resolve, 5, SkillType.All))
 				]
 			},
 			{
@@ -428,7 +428,7 @@ export class BackgroundData {
 					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
 				],
 				effects: [
-					ActionEffects.addCondition(ConditionLogic.createSkillPenaltyCondition(TraitType.Resolve, 2, SkillType.All))
+					ActionEffects.addCondition(ConditionLogic.createSkillPenaltyCondition(TraitType.Resolve, 5, SkillType.All))
 				]
 			},
 			{

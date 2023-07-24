@@ -2,11 +2,9 @@ import { Component } from 'react';
 
 import { CardType } from '../../../enums/card-type';
 
-import { GameLogic } from '../../../logic/game-logic';
-
 import type { PackModel } from '../../../models/pack';
 
-import { PlayingCard, StatValue } from '../../controls';
+import { PlayingCard } from '../../controls';
 
 import { PlaceholderCard } from '../placeholder-card/placeholder-card';
 
@@ -31,11 +29,6 @@ export class PackCard extends Component<Props> {
 					<PlaceholderCard
 						text={this.props.pack.name}
 						subtext={this.props.pack.description}
-						content={
-							<div className='pack-card-front'>
-								<StatValue label='Cards' value={GameLogic.getPackCardCount(this.props.pack.id)} />
-							</div>
-						}
 					/>
 				}
 				footerText='Pack'

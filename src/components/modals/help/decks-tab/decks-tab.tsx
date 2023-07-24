@@ -9,7 +9,7 @@ import type { FeatureModel } from '../../../../models/feature';
 import type { OptionsModel } from '../../../../models/options';
 
 import { ActionCard, BackgroundCard, FeatureCard, ItemCard, RoleCard, SpeciesCard } from '../../../cards';
-import { CardList, Dialog, StatValue, Text, TextType } from '../../../controls';
+import { Badge, CardList, Dialog, Switch, Text, TextType } from '../../../controls';
 
 import './decks-tab.scss';
 
@@ -18,6 +18,7 @@ interface Props {
 }
 
 interface State {
+	showCoreOnly: boolean;
 	selected: { name: string, type: CardType, starting: FeatureModel[], features: FeatureModel[], actions: ActionModel[] } | null;
 }
 
@@ -25,9 +26,16 @@ export class DecksTab extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
+			showCoreOnly: false,
 			selected: null
 		};
 	}
+
+	setCoreOnly = (value: boolean) => {
+		this.setState({
+			showCoreOnly: value
+		});
+	};
 
 	setActions = (name: string, type: CardType, starting: FeatureModel[], features: FeatureModel[], actions: ActionModel[]) => {
 		this.setState({
@@ -47,51 +55,75 @@ export class DecksTab extends Component<Props, State> {
 		});
 	};
 
+	getBadge = (packID: string, strength: number) => {
+		let value = '';
+
+		if (this.props.options.developer) {
+			const scaled = Math.round(strength / 5);
+			for (let n = 0; n < scaled; ++n) {
+				value += '★';
+			}
+		} else {
+			const pack = GameLogic.getPack(packID);
+			if (pack) {
+				value = pack.name;
+			}
+		}
+
+		return value;
+	};
+
 	render = () => {
 		try {
-			const heroes = GameLogic.getHeroSpeciesDeck(this.props.options.packIDs).map(s => {
-				return (
-					<div key={s.id}>
-						<SpeciesCard species={s} onSelect={species => this.setActions(species.name, CardType.Species, species.startingFeatures, species.features, species.actions)} />
-						{this.props.options.developer ? <StatValue label='Strength' value={GameLogic.getSpeciesStrength(s)} /> : null}
-					</div>
-				);
-			});
+			const heroes = GameLogic.getHeroSpeciesDeck(this.props.options.packIDs)
+				.filter(s => (s.packID === '') || !this.state.showCoreOnly)
+				.map(s => {
+					return (
+						<Badge key={s.id} value={this.getBadge(s.packID, GameLogic.getSpeciesStrength(s))}>
+							<SpeciesCard species={s} onSelect={species => this.setActions(species.name, CardType.Species, species.startingFeatures, species.features, species.actions)} />
+						</Badge>
+					);
+				});
 
-			const monsters = GameLogic.getMonsterSpeciesDeck(this.props.options.packIDs).map(s => {
-				return (
-					<div key={s.id}>
-						<SpeciesCard species={s} onSelect={species => this.setActions(species.name, CardType.Species, species.startingFeatures, species.features, species.actions)} />
-						{this.props.options.developer ? <StatValue label='Strength' value={GameLogic.getSpeciesStrength(s)} /> : null}
-					</div>
-				);
-			});
+			const monsters = GameLogic.getMonsterSpeciesDeck(this.props.options.packIDs)
+				.filter(s => (s.packID === '') || !this.state.showCoreOnly)
+				.map(s => {
+					return (
+						<Badge key={s.id} value={this.getBadge(s.packID, GameLogic.getSpeciesStrength(s))}>
+							<SpeciesCard species={s} onSelect={species => this.setActions(species.name, CardType.Species, species.startingFeatures, species.features, species.actions)} />
+						</Badge>
+					);
+				});
 
-			const roles = GameLogic.getRoleDeck(this.props.options.packIDs).map(r => {
-				return (
-					<div key={r.id}>
-						<RoleCard role={r} onSelect={role => this.setActions(role.name, CardType.Role, role.startingFeatures, role.features, role.actions)} />
-						{this.props.options.developer ? <StatValue label='Strength' value={GameLogic.getRoleStrength(r)} /> : null}
-					</div>
-				);
-			});
+			const roles = GameLogic.getRoleDeck(this.props.options.packIDs)
+				.filter(s => (s.packID === '') || !this.state.showCoreOnly)
+				.map(r => {
+					return (
+						<Badge key={r.id} value={this.getBadge(r.packID, GameLogic.getRoleStrength(r))}>
+							<RoleCard role={r} onSelect={role => this.setActions(role.name, CardType.Role, role.startingFeatures, role.features, role.actions)} />
+						</Badge>
+					);
+				});
 
-			const backgrounds = GameLogic.getBackgroundDeck(this.props.options.packIDs).map(b => {
-				return (
-					<div key={b.id}>
-						<BackgroundCard background={b} onSelect={bg => this.setActions(bg.name, CardType.Background, bg.startingFeatures, bg.features, bg.actions)} />
-						{this.props.options.developer ? <StatValue label='Strength' value={GameLogic.getBackgroundStrength(b)} /> : null}
-					</div>
-				);
-			});
+			const backgrounds = GameLogic.getBackgroundDeck(this.props.options.packIDs)
+				.filter(s => (s.packID === '') || !this.state.showCoreOnly)
+				.map(b => {
+					return (
+						<Badge key={b.id} value={this.getBadge(b.packID, GameLogic.getBackgroundStrength(b))}>
+							<BackgroundCard background={b} onSelect={bg => this.setActions(bg.name, CardType.Background, bg.startingFeatures, bg.features, bg.actions)} />
+						</Badge>
+					);
+				});
 
-			const items = GameLogic.getItemDeck(this.props.options.packIDs).map(i => {
-				return (
-					<div key={i.id}>
-						<ItemCard item={i} />
-					</div>
-				);
-			});
+			const items = GameLogic.getItemDeck(this.props.options.packIDs)
+				.filter(s => (s.packID === '') || !this.state.showCoreOnly)
+				.map(i => {
+					return (
+						<Badge key={i.id} value={this.getBadge(i.packID, 0)}>
+							<ItemCard item={i} />
+						</Badge>
+					);
+				});
 
 			let dialog = null;
 			if (this.state.selected) {
@@ -100,38 +132,35 @@ export class DecksTab extends Component<Props, State> {
 
 				const startingCards = this.state.selected.starting.map(f => {
 					return (
-						<div key={f.id}>
+						<Badge key={f.id} value={this.props.options.developer ? GameLogic.getFeatureStrength(f) : 0}>
 							<FeatureCard
 								feature={f}
 								footer={source}
 								footerType={type}
 							/>
-							{this.props.options.developer ? <StatValue label='Strength' value={GameLogic.getFeatureStrength(f)} /> : null}
-						</div>
+						</Badge>
 					);
 				});
 				const featureCards = this.state.selected.features.map(f => {
 					return (
-						<div key={f.id}>
+						<Badge key={f.id} value={this.props.options.developer ? GameLogic.getFeatureStrength(f) : 0}>
 							<FeatureCard
 								feature={f}
 								footer={source}
 								footerType={type}
 							/>
-							{this.props.options.developer ? <StatValue label='Strength' value={GameLogic.getFeatureStrength(f)} /> : null}
-						</div>
+						</Badge>
 					);
 				});
 				const actionCards = this.state.selected.actions.map(a => {
 					return (
-						<div key={a.id}>
+						<Badge key={a.id} value={this.props.options.developer ? GameLogic.getActionStrength(a) : 0}>
 							<ActionCard
 								action={a}
 								footer={source}
 								footerType={type}
 							/>
-							{this.props.options.developer ? <StatValue label='Strength' value={GameLogic.getActionStrength(a)} /> : null}
-						</div>
+						</Badge>
 					);
 				});
 				const content = (
@@ -159,6 +188,8 @@ export class DecksTab extends Component<Props, State> {
 
 			return (
 				<div className='decks-tab'>
+					{this.props.options.developer ? <Switch label='Show core cards only' checked={this.state.showCoreOnly} onChange={value => this.setCoreOnly(value)} /> : null}
+					{this.props.options.developer ? <hr /> : null}
 					<Text type={TextType.SubHeading}>Hero Species Cards</Text>
 					{heroes.length > 0 ? <CardList cards={heroes} /> : null}
 					{heroes.length > 0 ? null : <Text type={TextType.Small}>None.</Text>}

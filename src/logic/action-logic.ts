@@ -905,8 +905,7 @@ export class ActionEffects {
 					const targetIDs = targetParameter.value as string[];
 					targetIDs.forEach(id => {
 						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
-						target.combat.stunned = true;
-						EncounterLogic.log(encounter, `${target.name} is stunned`);
+						EncounterLogic.stun(encounter, target);
 					});
 				}
 				break;

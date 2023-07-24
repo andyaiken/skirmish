@@ -17,6 +17,7 @@
 				display: flex;
 				align-items: center;
 				justify-content: space-between;
+				gap: 20px;
 
 				&.selected {
 					border-color: rgb(60, 170, 255);
@@ -28,6 +29,14 @@
 
 				&:hover {
 					border-color: rgb(60, 170, 255);
+				}
+
+				.pack-info {
+					flex: 1 1 0;
+
+					.pack-count {
+						width: 120px;
+					}
 				}
 			}
 		}

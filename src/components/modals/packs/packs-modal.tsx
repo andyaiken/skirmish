@@ -20,6 +20,7 @@ import './packs-modal.scss';
 interface Props {
 	options: OptionsModel;
 	addPack: (packID: string) => void;
+	removePack: (packID: string) => void;
 }
 
 interface State {
@@ -110,6 +111,11 @@ export class PacksModal extends Component<Props, State> {
 					<p>You <b>do not</b> own this pack.</p>
 					<button onClick={() => this.addPack(this.state.selectedPack)}>Get This Pack</button>
 				</Text>
+			);
+		} else if (this.props.options.developer) {
+			const packID = this.state.selectedPack.id;
+			owned = (
+				<button className='developer' onClick={() => this.props.removePack(packID)}>Remove This Pack</button>
 			);
 		}
 

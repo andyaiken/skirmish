@@ -1177,6 +1177,7 @@ export class Main extends Component<Props, State> {
 							<PacksModal
 								options={this.state.options}
 								addPack={this.addPack}
+								removePack={this.removePack}
 							/>
 						}
 						onClose={() => this.setState({ showPacks: false })}
@@ -1190,7 +1191,6 @@ export class Main extends Component<Props, State> {
 							<OptionsModal
 								game={this.state.game}
 								options={this.state.options}
-								removePack={this.removePack}
 								endCampaign={this.endCampaign}
 								setDeveloperMode={this.setDeveloperMode}
 								setShowTips={this.setShowTips}

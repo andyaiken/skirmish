@@ -1,7 +1,5 @@
 import { Component } from 'react';
 
-import { GameLogic } from '../../../logic/game-logic';
-
 import type { GameModel } from '../../../models/game';
 import type { OptionsModel } from '../../../models/options';
 
@@ -14,7 +12,6 @@ import './options-modal.scss';
 interface Props {
 	game: GameModel | null;
 	options: OptionsModel;
-	removePack: (packID: string) => void;
 	endCampaign: () => void;
 	setDeveloperMode: (value: boolean) => void;
 	setShowTips: (value: boolean) => void;
@@ -30,13 +27,6 @@ export class OptionsModal extends Component<Props> {
 	render = () => {
 		try {
 			const local = window.location.href.includes('localhost');
-
-			const packs = this.props.options.packIDs.map((packID, n) => {
-				const pack = GameLogic.getPack(packID);
-				return (
-					<ConfirmButton key={n} label={pack ? pack.name : packID} onClick={() => this.props.removePack(packID)} />
-				);
-			});
 
 			return (
 				<div className='options-modal'>
@@ -56,10 +46,6 @@ export class OptionsModal extends Component<Props> {
 					{local ? <Switch label='Developer Mode' checked={this.props.options.developer} onChange={this.props.setDeveloperMode} /> : null}
 					<Switch label='Show Tips' checked={this.props.options.showTips} onChange={this.props.setShowTips} />
 					<hr />
-					{this.props.options.developer ? <Text type={TextType.SubHeading}>Packs</Text> : null}
-					{this.props.options.developer && (packs.length > 0) ? packs : null}
-					{this.props.options.developer && (packs.length === 0) ? <Text type={TextType.Small}>None.</Text> : null}
-					{this.props.options.developer ? <hr /> : null}
 					{this.props.game ? <ConfirmButton label='Abandon this campaign' onClick={() => this.props.endCampaign()} /> : null}
 				</div>
 			);

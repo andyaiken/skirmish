@@ -22,6 +22,8 @@
 ## Encounters
 * Undo movement
   * Can't undo movement if you've done anything (taken an action, hidden, etc)
+* Drag and drop movement
+  * Automatically select the best path
 
 ## Turn Log
 * Indentation
@@ -128,10 +130,6 @@
 # Content Ideas
 
 ## Ideas for Packs
-* Divine
-  * Deva
-  * Paladin / warpriest
-  * Cleric
 * Evil
   * Shadowborn
   * Demon
@@ -143,8 +141,6 @@
 * Gladiator 
   * Large weapons
   * Showmanship
-* Cleric
-* Paladin / warpriest
 * Ravager
 
 ## Ideas for Species
@@ -181,6 +177,7 @@
 # Tech Debt
 
 * Make the layout responsive for phones
+* Convert from CRA to Vite
 * Convert to functional components
 * Convert to React Native / Electron
 * Use hooks

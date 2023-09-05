@@ -426,6 +426,10 @@ export class GameLogic {
 						value += 10;
 						break;
 					}
+					case 'createPotion': {
+						value += 7;
+						break;
+					}
 					default: {
 						value += 1;
 						break;

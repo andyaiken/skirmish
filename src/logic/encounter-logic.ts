@@ -640,6 +640,16 @@ export class EncounterLogic {
 		EncounterLogic.log(encounter, `${combatant.name} rolls Stealth (${rank}) and gets ${result}`);
 	};
 
+	static reveal = (encounter: EncounterModel, combatant: CombatantModel) => {
+		if (combatant.combat.hidden > 0) {
+			combatant.combat.hidden = 0;
+
+			EncounterLogic.checkActionParameters(encounter, combatant);
+
+			EncounterLogic.log(encounter, `${combatant.name} is no longer hidden`);
+		}
+	};
+
 	static equipItem = (encounter: EncounterModel, combatant: CombatantModel, item: ItemModel) => {
 		if (combatant.quirks.includes(QuirkType.Beast)) {
 			// Beasts can't use items

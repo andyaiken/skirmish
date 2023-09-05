@@ -63,7 +63,9 @@ export class BackgroundData {
 		packID: PackData.technology.id,
 		description: 'The apothecary creates potions.',
 		startingFeatures: [],
-		features: [],
+		features: [
+			FeatureLogic.createSkillCategoryFeature('grenadier-feature-1', SkillCategoryType.Mental, 1)
+		],
 		actions: [
 			{
 				id: 'apothecary-action-1',
@@ -228,6 +230,21 @@ export class BackgroundData {
 					ActionEffects.healDamage(3),
 					ActionEffects.stand()
 				]
+			},
+			{
+				id: 'commander-action-4',
+				name: 'Battlefield Sense',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 10)
+				],
+				effects: [
+					ActionEffects.toSelf([
+						ActionEffects.scan()
+					]),
+					ActionEffects.reveal(),
+					ActionEffects.takeAnotherAction()
+				]
 			}
 		]
 	};
@@ -239,8 +256,7 @@ export class BackgroundData {
 		description: 'Grenadiers use explosives, which are dangerous and difficult to master.',
 		startingFeatures: [],
 		features: [
-			FeatureLogic.createSkillFeature('grenadier-feature-1', SkillType.Perception, 2),
-			FeatureLogic.createSkillFeature('grenadier-feature-2', SkillType.Any, 1)
+			FeatureLogic.createSkillFeature('grenadier-feature-1', SkillType.Perception, 2)
 		],
 		actions: [
 			{
@@ -338,6 +354,17 @@ export class BackgroundData {
 				],
 				effects: [
 					ActionEffects.addCondition(ConditionLogic.createDamageVulnerabilityCondition(TraitType.Resolve, 5, DamageType.All))
+				]
+			},
+			{
+				id: 'mountebank-action-3',
+				name: 'Roll the Dice',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.self()
+				],
+				effects: [
+					ActionEffects.invertConditions(true)
 				]
 			}
 		]
@@ -482,7 +509,8 @@ export class BackgroundData {
 					ActionTargetParameters.adjacent(ActionTargetType.Allies, Number.MAX_VALUE)
 				],
 				effects: [
-					ActionEffects.healDamage(5)
+					ActionEffects.healDamage(5),
+					ActionEffects.invertConditions(false)
 				]
 			},
 			{
@@ -493,7 +521,8 @@ export class BackgroundData {
 					ActionTargetParameters.adjacent(ActionTargetType.Allies, Number.MAX_VALUE)
 				],
 				effects: [
-					ActionEffects.healWounds(1)
+					ActionEffects.healWounds(1),
+					ActionEffects.invertConditions(false)
 				]
 			},
 			{
@@ -506,7 +535,8 @@ export class BackgroundData {
 					ActionTargetParameters.self()
 				],
 				effects: [
-					ActionEffects.healWounds(1)
+					ActionEffects.healWounds(1),
+					ActionEffects.invertConditions(true)
 				]
 			}
 		]
@@ -587,7 +617,8 @@ export class BackgroundData {
 					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
 				],
 				effects: [
-					ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Speed, 10))
+					ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Speed, 10)),
+					ActionEffects.takeAnotherAction()
 				]
 			},
 			{
@@ -675,6 +706,63 @@ export class BackgroundData {
 		]
 	};
 
+	static zealot: BackgroundModel = {
+		id: 'background-zealot',
+		name: 'Zealot',
+		packID: PackData.faith.id,
+		description: 'A religious fanatic, empowered by the strength of their convictions.',
+		startingFeatures: [
+			FeatureLogic.createSkillFeature('reaver-start-1', SkillType.Brawl, 2),
+			FeatureLogic.createSkillFeature('reaver-start-2', SkillType.Weapon, 2)
+		],
+		features: [
+			FeatureLogic.createSkillFeature('reaver-feature-1', SkillType.Brawl, 2),
+			FeatureLogic.createSkillFeature('reaver-feature-2', SkillType.Weapon, 2),
+			FeatureLogic.createDamageCategoryBonusFeature('reaver-feature-4', DamageCategoryType.Any, 1)
+		],
+		actions: [
+			{
+				id: 'zealot-action-1',
+				name: 'Fanatic\'s Strength',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.self()
+				],
+				effects: [
+					ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Resolve, 4, DamageCategoryType.Physical)),
+					ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Resolve, 4, DamageCategoryType.Energy)),
+					ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Resolve, 4, DamageCategoryType.Corruption))
+				]
+			},
+			{
+				id: 'zealot-action-2',
+				name: 'Fanatic\'s Speed',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.self()
+				],
+				effects: [
+					ActionEffects.addCondition(ConditionLogic.createMovementBonusCondition(TraitType.Endurance, 5)),
+					ActionEffects.takeAnotherAction()
+				]
+			},
+			{
+				id: 'zealot-action-3',
+				name: 'Righteous Will',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.self()
+				],
+				effects: [
+					ActionEffects.invertConditions(false),
+					ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Endurance, 3, TraitType.Endurance)),
+					ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Endurance, 3, TraitType.Resolve)),
+					ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Endurance, 3, TraitType.Resolve))
+				]
+			}
+		]
+	};
+
 	static getList = (): BackgroundModel[] => {
 		const list = [
 			BackgroundData.acrobat,
@@ -688,7 +776,8 @@ export class BackgroundData {
 			BackgroundData.physician,
 			BackgroundData.reaver,
 			BackgroundData.sentinel,
-			BackgroundData.thief
+			BackgroundData.thief,
+			BackgroundData.zealot
 		];
 
 		list.sort((a, b) => a.name.localeCompare(b.name));

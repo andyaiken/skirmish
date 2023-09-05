@@ -410,6 +410,14 @@ export class ActionEffects {
 		};
 	};
 
+	static reveal = (): ActionEffectModel => {
+		return {
+			id: 'reveal',
+			data: null,
+			children: []
+		};
+	};
+
 	static takeAnotherAction = (redraw = false): ActionEffectModel => {
 		return {
 			id: 'takeAnotherAction',
@@ -595,6 +603,9 @@ export class ActionEffects {
 			}
 			case 'hide': {
 				return 'Hide';
+			}
+			case 'reveal': {
+				return 'Reveal';
 			}
 			case 'stand': {
 				return 'Stand Up';
@@ -932,6 +943,17 @@ export class ActionEffects {
 						target.combat.movement += 4;
 						EncounterLogic.hide(encounter, target);
 						EncounterLogic.log(encounter, `${target.name} hides`);
+					});
+				}
+				break;
+			}
+			case 'reveal': {
+				const targetParameter = parameters.find(p => p.id === 'targets');
+				if (targetParameter) {
+					const targetIDs = targetParameter.value as string[];
+					targetIDs.forEach(id => {
+						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
+						EncounterLogic.reveal(encounter, target);
 					});
 				}
 				break;

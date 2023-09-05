@@ -594,6 +594,93 @@ export class RoleData {
 		]
 	};
 
+	static cleric: RoleModel = {
+		id: 'role-cleric',
+		name: 'Cleric',
+		packID: PackData.faith.id,
+		description: 'Clerics devote their lives to the gods, and receive power in return.',
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('cleric-start-1', TraitType.Resolve, 1),
+			FeatureLogic.createSkillFeature('cleric-start-2', SkillType.Presence, 2)
+		],
+		features: [
+			FeatureLogic.createTraitFeature('cleric-feature-1', TraitType.Resolve, 1),
+			FeatureLogic.createSkillFeature('cleric-feature-2', SkillType.Presence, 2),
+			FeatureLogic.createDamageBonusFeature('cleric-feature-3', DamageType.Light, 2)
+		],
+		actions: [
+			{
+				id: 'cleric-action-1',
+				name: 'Lay On Hands',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Allies, 1)
+				],
+				effects: [
+					ActionEffects.healDamage(5),
+					ActionEffects.healWounds(5)
+				]
+			},
+			{
+				id: 'cleric-action-2',
+				name: 'Sacrament',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Allies, Number.MAX_VALUE)
+				],
+				effects: [
+					ActionEffects.removeCondition(TraitType.Any),
+					ActionEffects.healDamage(1),
+					ActionEffects.addCondition(ConditionLogic.createDamageResistanceCondition(TraitType.Resolve, 5, DamageType.All))
+				]
+			},
+			{
+				id: 'cleric-action-3',
+				name: 'Holy Light',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 8)
+				],
+				effects: [
+					ActionEffects.addCondition(ConditionLogic.createDamageResistanceCondition(TraitType.Resolve, 3, DamageType.All))
+				]
+			},
+			{
+				id: 'cleric-action-4',
+				name: 'Bless',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Allies, 1, 8)
+				],
+				effects: [
+					ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Resolve, 3, TraitType.Endurance)),
+					ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Resolve, 3, TraitType.Resolve)),
+					ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Resolve, 3, TraitType.Speed))
+				]
+			},
+			{
+				id: 'cleric-action-5',
+				name: 'Divine Retribution',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 8)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Presence,
+						trait: TraitType.Endurance,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Light, 3),
+							ActionEffects.dealDamage(DamageType.Fire, 3)
+						]
+					})
+				]
+			}
+		]
+	};
+
 	static dervish: RoleModel = {
 		id: 'role-dervish',
 		name: 'Dervish',
@@ -1434,6 +1521,92 @@ export class RoleData {
 		]
 	};
 
+	static paladin: RoleModel = {
+		id: 'role-paladin',
+		name: 'Paladin',
+		packID: PackData.faith.id,
+		description: 'A holy warrior, driven by unwavering faith.',
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('paladin-start-1', TraitType.Resolve, 1),
+			FeatureLogic.createSkillFeature('paladin-start-2', SkillType.Presence, 2),
+			FeatureLogic.createSkillFeature('paladin-start-3', SkillType.Weapon, 2),
+			FeatureLogic.createProficiencyFeature('paladin-start-4', ItemProficiencyType.MilitaryWeapons),
+			FeatureLogic.createProficiencyFeature('paladin-start-5', ItemProficiencyType.HeavyArmor),
+			FeatureLogic.createProficiencyFeature('paladin-start-6', ItemProficiencyType.Shields)
+		],
+		features: [
+			FeatureLogic.createTraitFeature('paladin-feature-1', TraitType.Resolve, 1),
+			FeatureLogic.createSkillFeature('paladin-feature-2', SkillType.Presence, 2),
+			FeatureLogic.createSkillFeature('paladin-feature-3', SkillType.Weapon, 2)
+		],
+		actions: [
+			{
+				id: 'paladin-action-1',
+				name: 'Radiant Smite',
+				prerequisites: [
+					ActionPrerequisites.meleeWeapon()
+				],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: true,
+						skill: SkillType.Weapon,
+						trait: TraitType.Resolve,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealWeaponDamage(),
+							ActionEffects.dealDamage(DamageType.Light, 2)
+						]
+					})
+				]
+			},
+			{
+				id: 'paladin-action-2',
+				name: 'Holy Flame',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Enemies, Number.MAX_VALUE)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Presence,
+						trait: TraitType.Resolve,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Light, 2)
+						]
+					})
+				]
+			},
+			{
+				id: 'paladin-action-3',
+				name: 'Divine Shield',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 5)
+				],
+				effects: [
+					ActionEffects.addCondition(ConditionLogic.createDamageResistanceCondition(TraitType.Resolve, 6, DamageType.All))
+				]
+			},
+			{
+				id: 'paladin-action-4',
+				name: 'Divine Strength',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.self()
+				],
+				effects: [
+					ActionEffects.healDamage(1),
+					ActionEffects.healWounds(1)
+				]
+			}
+		]
+	};
+
 	static psion: RoleModel = {
 		id: 'role-psion',
 		name: 'Psion',
@@ -2061,6 +2234,7 @@ export class RoleData {
 			RoleData.assassin,
 			RoleData.barbarian,
 			RoleData.centurion,
+			RoleData.cleric,
 			RoleData.dervish,
 			RoleData.enchanter,
 			RoleData.geomancer,
@@ -2068,6 +2242,7 @@ export class RoleData {
 			RoleData.luckweaver,
 			RoleData.necromancer,
 			RoleData.ninja,
+			RoleData.paladin,
 			RoleData.psion,
 			RoleData.ranger,
 			RoleData.sensei,

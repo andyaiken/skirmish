@@ -115,7 +115,7 @@ export class HeroSpeciesData {
 	static deva: SpeciesModel = {
 		id: 'species-deva',
 		name: 'Deva',
-		packID: '',
+		packID: 'pack-7',
 		description: 'A humanoid with angelic ancestry.',
 		type: CombatantType.Hero,
 		size: 1,

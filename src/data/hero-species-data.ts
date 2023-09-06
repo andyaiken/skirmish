@@ -705,6 +705,9 @@ export class HeroSpeciesData {
 			HeroSpeciesData.werewolf
 		];
 
+		list.forEach(n => {
+			n.actions.sort((a, b) => a.name.localeCompare(b.name));
+		});
 		list.sort((a, b) => a.name.localeCompare(b.name));
 		return list;
 	};

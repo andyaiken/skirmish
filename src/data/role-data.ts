@@ -1583,7 +1583,7 @@ export class RoleData {
 			},
 			{
 				id: 'paladin-action-3',
-				name: 'Divine Shield',
+				name: 'Shield of Justice',
 				prerequisites: [],
 				parameters: [
 					ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 5)
@@ -1594,7 +1594,7 @@ export class RoleData {
 			},
 			{
 				id: 'paladin-action-4',
-				name: 'Divine Strength',
+				name: 'Templar\'s Strength',
 				prerequisites: [],
 				parameters: [
 					ActionTargetParameters.self()
@@ -2250,6 +2250,9 @@ export class RoleData {
 			RoleData.warmage
 		];
 
+		list.forEach(n => {
+			n.actions.sort((a, b) => a.name.localeCompare(b.name));
+		});
 		list.sort((a, b) => a.name.localeCompare(b.name));
 		return list;
 	};

@@ -50,7 +50,7 @@ export class LandingScreen extends Component<Props> {
 			if (availablePacks > 0) {
 				packsBtn = (
 					<button className='packs-btn' onClick={() => this.props.showPacks()}>
-						{availablePacks === 1 ? '1 Pack' : `${availablePacks} Packs`} Available
+						{`${availablePacks} card pack${availablePacks === 1 ? '' : 's'} available`}
 						<IconCards />
 					</button>
 				);

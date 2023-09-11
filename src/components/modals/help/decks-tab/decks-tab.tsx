@@ -190,23 +190,23 @@ export class DecksTab extends Component<Props, State> {
 				<div className='decks-tab'>
 					{this.props.options.developer ? <Switch label='Show core cards only' checked={this.state.showCoreOnly} onChange={value => this.setCoreOnly(value)} /> : null}
 					{this.props.options.developer ? <hr /> : null}
-					<Text type={TextType.SubHeading}>Hero Species Cards</Text>
+					<Text type={TextType.SubHeading}>Hero Species Cards ({heroes.length})</Text>
 					{heroes.length > 0 ? <CardList cards={heroes} /> : null}
 					{heroes.length > 0 ? null : <Text type={TextType.Small}>None.</Text>}
 					<hr />
-					<Text type={TextType.SubHeading}>Monster Species Cards</Text>
+					<Text type={TextType.SubHeading}>Monster Species Cards ({monsters.length})</Text>
 					{monsters.length > 0 ? <CardList cards={monsters} /> : null}
 					{monsters.length > 0 ? null : <Text type={TextType.Small}>None.</Text>}
 					<hr />
-					<Text type={TextType.SubHeading}>Role Cards</Text>
+					<Text type={TextType.SubHeading}>Role Cards ({roles.length})</Text>
 					{roles.length > 0 ? <CardList cards={roles} /> : null}
 					{roles.length > 0 ? null : <Text type={TextType.Small}>None.</Text>}
 					<hr />
-					<Text type={TextType.SubHeading}>Background Cards</Text>
+					<Text type={TextType.SubHeading}>Background Cards ({backgrounds.length})</Text>
 					{backgrounds.length > 0 ? <CardList cards={backgrounds} /> : null}
 					{backgrounds.length > 0 ? null : <Text type={TextType.Small}>None.</Text>}
 					<hr />
-					<Text type={TextType.SubHeading}>Item Cards</Text>
+					<Text type={TextType.SubHeading}>Item Cards ({items.length})</Text>
 					{items.length > 0 ? <CardList cards={items} /> : null}
 					{items.length > 0 ? null : <Text type={TextType.Small}>None.</Text>}
 					{dialog}

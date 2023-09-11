@@ -105,7 +105,7 @@ export class HeroCard extends Component<Props, State> {
 				<button key='character-sheet' className='icon-btn' title='Character Sheet' onClick={this.onCharacterSheet}><IconId /></button>
 			);
 		}
-		if (this.props.onSelect && (buttons.length > 0)) {
+		if (this.props.onSelect) {
 			buttons.push(
 				<button key='select' className='icon-btn' title='Select' onClick={this.onSelect}><IconCheck /></button>
 			);

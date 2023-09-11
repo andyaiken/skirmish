@@ -9,5 +9,6 @@ export enum CardType {
 	Region = 'Region',
 	Feature = 'Feature',
 	Action = 'Action',
+	Pack = 'Pack',
 	Base = 'Base'
 }

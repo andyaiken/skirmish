@@ -24,6 +24,7 @@ import type { ConditionModel } from '../models/condition';
 import type { FeatureModel } from '../models/feature';
 import type { GameModel } from '../models/game';
 import type { ItemModel } from '../models/item';
+import type { PackModel } from '../models/pack';
 import type { RoleModel } from '../models/role';
 import type { SpeciesModel } from '../models/species';
 
@@ -447,5 +448,16 @@ export class GameLogic {
 		}
 
 		return Math.round(strength);
+	};
+
+	static getPackStrength = (pack: PackModel) => {
+		const values: number[] = [];
+
+		values.push(...HeroSpeciesData.getList().filter(s => s.packID === pack.id).map(s => GameLogic.getSpeciesStrength(s)));
+		values.push(...MonsterSpeciesData.getList().filter(s => s.packID === pack.id).map(s => GameLogic.getSpeciesStrength(s)));
+		values.push(...RoleData.getList().filter(r => r.packID === pack.id).map(r => GameLogic.getRoleStrength(r)));
+		values.push(...BackgroundData.getList().filter(b => b.packID === pack.id).map(b => GameLogic.getBackgroundStrength(b)));
+
+		return Collections.mean(values, n => n);
 	};
 }

@@ -1,5 +1,4 @@
 import { Component } from 'react';
-import { IconCards } from '@tabler/icons-react';
 
 import { BackgroundData } from '../../../data/background-data';
 import { HeroSpeciesData } from '../../../data/hero-species-data';
@@ -13,7 +12,7 @@ import type { OptionsModel } from '../../../models/options';
 import type { PackModel } from '../../../models/pack';
 
 import { BackgroundCard, ItemCard, PackCard, RoleCard, SpeciesCard } from '../../cards';
-import { Badge, CardList, StatValue, Text, TextType } from '../../controls';
+import { Badge, CardList, Dialog, Text, TextType } from '../../controls';
 
 import './packs-modal.scss';
 
@@ -54,54 +53,9 @@ export class PacksModal extends Component<Props, State> {
 		return value;
 	};
 
-	getPackButton = (pack: PackModel | null) => {
-		let className = 'pack-button';
-		if (pack === this.state.selectedPack) {
-			className += ' selected';
-		}
-
-		return (
-			<div className={className} onClick={() => this.setState({ selectedPack: pack })}>
-				<div className='pack-info'>
-					<Text type={TextType.MinorHeading}>{pack ? pack.name : 'Core Game'}</Text>
-					<div className='pack-count'>
-						<StatValue label='Cards' value={GameLogic.getPackCardCount(pack ? pack.id : '')} />
-					</div>
-				</div>
-				<IconCards />
-			</div>
-		);
-	};
-
-	getPackList = () => {
-		const owned = GameLogic.getPacks()
-			.filter(pack => this.props.options.packIDs.includes(pack.id))
-			.map((pack, n) => <div key={n}>{this.getPackButton(pack)}</div>);
-		const notOwned = GameLogic.getPacks()
-			.filter(pack => !this.props.options.packIDs.includes(pack.id))
-			.map((pack, n) => <div key={n}>{this.getPackButton(pack)}</div>);
-
-		return (
-			<div className='packs-sidebar'>
-				<Text type={TextType.SubHeading}>Available Packs</Text>
-				{notOwned}
-				{notOwned.length === 0 ? <Text type={TextType.Small}>None.</Text> : null}
-				<hr />
-				<Text type={TextType.SubHeading}>My Packs</Text>
-				{owned}
-				{owned.length === 0 ? <Text type={TextType.Small}>None.</Text> : null}
-			</div>
-		);
-	};
-
 	getPackContent = () => {
 		if (!this.state.selectedPack) {
-			return (
-				<div key='empty' className='pack-content'>
-					<Text>Packs provide additional options - more species cards (for heroes and monsters), role cards, and background cards.</Text>
-					<Text>Select a pack from the list on the left.</Text>
-				</div>
-			);
+			return null;
 		}
 
 		let owned = null;
@@ -111,11 +65,6 @@ export class PacksModal extends Component<Props, State> {
 					<p>You <b>do not</b> own this pack.</p>
 					<button onClick={() => this.addPack(this.state.selectedPack)}>Get This Pack</button>
 				</Text>
-			);
-		} else if (this.props.options.developer) {
-			const packID = this.state.selectedPack.id;
-			owned = (
-				<button className='developer' onClick={() => this.props.removePack(packID)}>Remove This Pack</button>
 			);
 		}
 
@@ -160,41 +109,68 @@ export class PacksModal extends Component<Props, State> {
 		});
 
 		return (
-			<div key={this.state.selectedPack.id} className='pack-content'>
-				{owned}
-				{owned ? <hr /> : null}
-				<div className='pack-card-section'>
-					<PackCard pack={this.state.selectedPack} />
-				</div>
-				{heroes.length > 0 ? <hr /> : null}
-				{heroes.length > 0 ? <Text type={TextType.MinorHeading}>Hero Species Cards</Text> : null}
-				{heroes.length > 0 ? <CardList cards={heroes} /> : null}
-				{monsters.length > 0 ? <hr /> : null}
-				{monsters.length > 0 ? <Text type={TextType.MinorHeading}>Monster Species Cards</Text> : null}
-				{monsters.length > 0 ? <CardList cards={monsters} /> : null}
-				{roles.length > 0 ? <hr /> : null}
-				{roles.length > 0 ? <Text type={TextType.MinorHeading}>Role Cards</Text> : null}
-				{roles.length > 0 ? <CardList cards={roles} /> : null}
-				{backgrounds.length > 0 ? <hr /> : null}
-				{backgrounds.length > 0 ? <Text type={TextType.MinorHeading}>Background Cards</Text> : null}
-				{backgrounds.length > 0 ? <CardList cards={backgrounds} /> : null}
-				{items.length > 0 ? <hr /> : null}
-				{items.length > 0 ? <Text type={TextType.MinorHeading}>Item Cards</Text> : null}
-				{items.length > 0 ? <CardList cards={items} /> : null}
-			</div>
+			<Dialog
+				content={
+					<div>
+						<Text type={TextType.Heading}>{this.state.selectedPack.name}</Text>
+						{owned !== null ? <hr /> : null}
+						{owned}
+						{heroes.length > 0 ? <hr /> : null}
+						{heroes.length > 0 ? <Text type={TextType.MinorHeading}>Hero Species Cards</Text> : null}
+						{heroes.length > 0 ? <CardList cards={heroes} /> : null}
+						{monsters.length > 0 ? <hr /> : null}
+						{monsters.length > 0 ? <Text type={TextType.MinorHeading}>Monster Species Cards</Text> : null}
+						{monsters.length > 0 ? <CardList cards={monsters} /> : null}
+						{roles.length > 0 ? <hr /> : null}
+						{roles.length > 0 ? <Text type={TextType.MinorHeading}>Role Cards</Text> : null}
+						{roles.length > 0 ? <CardList cards={roles} /> : null}
+						{backgrounds.length > 0 ? <hr /> : null}
+						{backgrounds.length > 0 ? <Text type={TextType.MinorHeading}>Background Cards</Text> : null}
+						{backgrounds.length > 0 ? <CardList cards={backgrounds} /> : null}
+						{items.length > 0 ? <hr /> : null}
+						{items.length > 0 ? <Text type={TextType.MinorHeading}>Item Cards</Text> : null}
+						{items.length > 0 ? <CardList cards={items} /> : null}
+					</div>
+				}
+				level={2}
+				onClose={() => this.setState({ selectedPack: null })}
+			/>
 		);
 	};
 
 	render = () => {
 		try {
+			const owned = GameLogic.getPacks()
+				.filter(pack => this.props.options.packIDs.includes(pack.id))
+				.map((pack, n) => {
+					return (
+						<Badge key={n} value={this.getBadge(GameLogic.getPackStrength(pack))}>
+							<PackCard pack={pack} onSelect={p => this.setState({ selectedPack: p })} onRemove={this.props.options.developer ? p => this.props.removePack(p.id) : null} />
+						</Badge>
+					);
+				});
+			const notOwned = GameLogic.getPacks()
+				.filter(pack => !this.props.options.packIDs.includes(pack.id))
+				.map((pack, n) => {
+					return (
+						<Badge key={n} value={this.getBadge(GameLogic.getPackStrength(pack))}>
+							<PackCard pack={pack} onSelect={p => this.setState({ selectedPack: p })} onRemove={this.props.options.developer ? p => this.props.removePack(p.id) : null} />
+						</Badge>
+					);
+				});
+
 			return (
 				<div className='packs-modal'>
-					<Text type={TextType.Heading}>Packs</Text>
+					<Text type={TextType.Heading}>Card Packs</Text>
 					<hr />
-					<div className='packs-modal-content'>
-						{this.getPackList()}
-						{this.getPackContent()}
-					</div>
+					<Text type={TextType.SubHeading}>Available Packs</Text>
+					{notOwned.length > 0 ? <CardList cards={notOwned} /> : null}
+					{notOwned.length === 0 ? <Text type={TextType.Small}>None.</Text> : null}
+					<hr />
+					<Text type={TextType.SubHeading}>My Packs</Text>
+					{owned.length > 0 ? <CardList cards={owned} /> : null}
+					{owned.length === 0 ? <Text type={TextType.Small}>None.</Text> : null}
+					{this.getPackContent()}
 				</div>
 			);
 		} catch {

@@ -121,34 +121,57 @@
 		&.region {
 			background: linear-gradient(135deg, rgb(255, 255, 255), rgb(245, 255, 250));
 		}
-	}
 
-	.playing-card-inner .playing-card-front .card-footer,
-	.playing-card-inner .playing-card-back .card-footer {
-		background-color: rgb(230, 230, 230);
-
-		&.species {
-			background-color: rgb(240, 220, 230);
+		&.pack {
+			background: linear-gradient(135deg, rgb(255, 255, 255), rgb(240, 255, 255));
 		}
 
-		&.role {
-			background-color: rgb(220, 230, 240);
+		&.xxx {
+			background: linear-gradient(135deg, rgb(255, 255, 255), rgb(255, 240, 255));
 		}
 
-		&.background {
-			background-color: rgb(230, 240, 220);
+		&.xxx {
+			background: linear-gradient(135deg, rgb(255, 255, 255), rgb(255, 255, 240));
 		}
 
-		&.item {
-			background-color: rgb(240, 230, 220);
-		}
+		.card-footer {
+			background-color: rgb(230, 230, 230);
+	
+			&.species {
+				background-color: rgb(240, 220, 230);
+			}
+	
+			&.role {
+				background-color: rgb(220, 230, 240);
+			}
+	
+			&.background {
+				background-color: rgb(230, 240, 220);
+			}
+	
+			&.item {
+				background-color: rgb(240, 230, 220);
+			}
+	
+			&.boon {
+				background-color: rgb(230, 220, 240);
+			}
+	
+			&.region {
+				background-color: rgb(220, 240, 230);
+			}
 
-		&.boon {
-			background-color: rgb(230, 220, 240);
-		}
+			&.pack {
+				background-color: rgb(210, 240, 240);
+			}
 
-		&.region {
-			background-color: rgb(220, 240, 230);
+			&.xxx {
+				background-color: rgb(240, 210, 240);
+			}
+
+			&.xxx {
+				background-color: rgb(240, 240, 210);
+			}
 		}
 	}
 

@@ -48,7 +48,7 @@ export class CombatantPotions extends Component<Props> {
 							{
 								adj.map(c => (
 									<button key={c.id} disabled={this.props.combatant.combat.movement < 2} onClick={() => this.props.drinkPotion(this.props.encounter, this.props.combatant, c, p)}>
-										Give to {c.name}<br /><IconValue type={IconType.Movement} value={2} iconSize={12} />
+										Feed to {c.name}<br /><IconValue type={IconType.Movement} value={2} iconSize={12} />
 									</button>
 								))
 							}

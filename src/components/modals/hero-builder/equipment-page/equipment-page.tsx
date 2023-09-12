@@ -90,7 +90,7 @@ export class EquipmentPage extends Component<Props, State> {
 			});
 
 			const slots = this.state.slots.filter(slot => !slot.selected).map((slot, n) => {
-				const cards = slot.candidates.map(item => <ItemCard key={item.id} item={item} onSelect={this.selectItem} />);
+				const cards = slot.candidates.map(item => <ItemCard key={item.id} item={item} onClick={this.selectItem} />);
 
 				return (
 					<div key={n} className='card-selection-row'>

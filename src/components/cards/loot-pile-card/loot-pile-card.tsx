@@ -1,5 +1,4 @@
 import { Component, MouseEvent } from 'react';
-import { IconCheck } from '@tabler/icons-react';
 
 import { CardType } from '../../../enums/card-type';
 
@@ -14,7 +13,7 @@ import './loot-pile-card.scss';
 interface Props {
 	loot: LootPileModel;
 	disabled: boolean;
-	onSelect: ((loot: LootPileModel) => void) | null;
+	onClick: ((loot: LootPileModel) => void) | null;
 }
 
 interface State {
@@ -24,7 +23,7 @@ interface State {
 export class LootPileCard extends Component<Props, State> {
 	static defaultProps = {
 		disabled: false,
-		onSelect: null
+		onClick: null
 	};
 
 	constructor(props: Props) {
@@ -42,11 +41,11 @@ export class LootPileCard extends Component<Props, State> {
 		});
 	};
 
-	onSelect = (e: MouseEvent) => {
+	onClick = (e: MouseEvent) => {
 		e.stopPropagation();
 
-		if (this.props.onSelect) {
-			this.props.onSelect(this.props.loot);
+		if (this.props.onClick) {
+			this.props.onClick(this.props.loot);
 		}
 	};
 
@@ -57,13 +56,6 @@ export class LootPileCard extends Component<Props, State> {
 				<div className='items'>
 					{this.props.loot.items.map(i => (<ListItemPanel key={i.id} item={i.name} />))}
 				</div>
-			);
-		}
-
-		const buttons: JSX.Element[] = [];
-		if (this.props.onSelect && (buttons.length > 0)) {
-			buttons.push(
-				<button key='select' className='icon-btn' title='Select' onClick={this.onSelect}><IconCheck /></button>
 			);
 		}
 
@@ -78,10 +70,9 @@ export class LootPileCard extends Component<Props, State> {
 					</div>
 				)}
 				footerText='Item'
-				footerContent={buttons}
 				flipped={this.state.flipped}
 				disabled={this.props.disabled}
-				onClick={this.props.onSelect ? this.onSelect : null}
+				onClick={this.props.onClick ? this.onClick : null}
 			/>
 		);
 	};

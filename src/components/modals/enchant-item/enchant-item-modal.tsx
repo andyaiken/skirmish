@@ -57,7 +57,7 @@ export class EnchantItemModal extends Component<Props, State> {
 			if (this.state.selectedItem) {
 				const cards = this.state.magicItems.map(item => (
 					<div key={item.id}>
-						<ItemCard item={item} onSelect={item => this.props.enchantItem(this.state.selectedItem as ItemModel, item)} />
+						<ItemCard item={item} onClick={item => this.props.enchantItem(this.state.selectedItem as ItemModel, item)} />
 					</div>
 				));
 
@@ -66,6 +66,7 @@ export class EnchantItemModal extends Component<Props, State> {
 						content={
 							<div className='enchant-item-modal'>
 								<Text type={TextType.Heading}>Choose an Enchantment</Text>
+								<hr />
 								{this.props.options.developer ? <button className='developer' onClick={() => this.selectItem(this.state.selectedItem as ItemModel)}>Redraw</button> : null}
 								<div className='card-selection-row'>
 									<CardList cards={cards} />
@@ -82,13 +83,13 @@ export class EnchantItemModal extends Component<Props, State> {
 				if (items.length > 0) {
 					const cards = items.map(item => (
 						<div key={item.id}>
-							<ItemCard item={item} onSelect={this.selectItem} />
+							<ItemCard item={item} onClick={this.selectItem} />
 						</div>
 					));
 
 					return (
 						<div key={h.id} className='card-selection-row'>
-							<Text type={TextType.MinorHeading}>{h.name}</Text>
+							<Text type={TextType.SubHeading}>{h.name}</Text>
 							<CardList cards={cards} />
 						</div>
 					);
@@ -101,13 +102,13 @@ export class EnchantItemModal extends Component<Props, State> {
 			if (this.props.game.items.length > 0) {
 				const cards = this.props.game.items.filter(i => !i.potion).map(item => (
 					<div key={item.id}>
-						<ItemCard item={item} onSelect={this.selectItem} />
+						<ItemCard item={item} onClick={this.selectItem} />
 					</div>
 				));
 
 				other = (
 					<div className='card-selection-row'>
-						<Text type={TextType.MinorHeading}>Other Items</Text>
+						<Text type={TextType.SubHeading}>Other Items</Text>
 						<CardList cards={cards} />
 					</div>
 				);
@@ -116,6 +117,7 @@ export class EnchantItemModal extends Component<Props, State> {
 			return (
 				<div className='enchant-item-modal'>
 					<Text type={TextType.Heading}>Choose an Item</Text>
+					<hr />
 					{heroes}
 					{other}
 					{dialog}

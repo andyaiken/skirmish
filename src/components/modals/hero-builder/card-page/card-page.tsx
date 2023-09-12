@@ -1,5 +1,5 @@
-import { IconCheck, IconRefresh } from '@tabler/icons-react';
 import { Component } from 'react';
+import { IconRefresh } from '@tabler/icons-react';
 
 import { CardType } from '../../../../enums/card-type';
 
@@ -153,7 +153,7 @@ export class CardPage extends Component<Props, State> {
 		const cards = this.state.speciesIDs.map(id => {
 			const species = GameLogic.getSpecies(id) as SpeciesModel;
 			return (
-				<SpeciesCard key={species.id} species={species} onSelect={this.selectSpecies} />
+				<SpeciesCard key={species.id} species={species} onClick={this.selectSpecies} />
 			);
 		});
 
@@ -173,7 +173,7 @@ export class CardPage extends Component<Props, State> {
 		const cards = this.state.roleIDs.map(id => {
 			const role = GameLogic.getRole(id) as RoleModel;
 			return (
-				<RoleCard key={role.id} role={role} onSelect={this.selectRole} />
+				<RoleCard key={role.id} role={role} onClick={this.selectRole} />
 			);
 		});
 
@@ -193,7 +193,7 @@ export class CardPage extends Component<Props, State> {
 		const cards = this.state.backgroundIDs.map(id => {
 			const background = GameLogic.getBackground(id) as BackgroundModel;
 			return (
-				<BackgroundCard key={background.id} background={background} onSelect={this.selectBackground} />
+				<BackgroundCard key={background.id} background={background} onClick={this.selectBackground} />
 			);
 		});
 
@@ -220,7 +220,7 @@ export class CardPage extends Component<Props, State> {
 								}
 								content={
 									<div>
-										<p>Click on a card, or press the <IconCheck size={15} /> button, to select it.</p>
+										<p>Click on a card to select it.</p>
 										<p>You can click on the <IconRefresh size={15} /> button to flip a card over and see its details.</p>
 										<p>Each card gives the hero a set of <b>features</b> and <b>actions</b>.</p>
 										<ul>

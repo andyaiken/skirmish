@@ -49,7 +49,7 @@ export class CombatantAction extends Component<Props> {
 						footerType={CombatantLogic.getActionSourceType(this.props.combatant, a.id)}
 						combatant={this.props.combatant}
 						encounter={this.props.encounter}
-						onSelect={action => prerequisitesMet ? this.props.selectAction(this.props.encounter, this.props.combatant, action) : null}
+						onClick={action => prerequisitesMet ? this.props.selectAction(this.props.encounter, this.props.combatant, action) : null}
 					/>
 				);
 			});
@@ -67,7 +67,7 @@ export class CombatantAction extends Component<Props> {
 							footerType={CombatantLogic.getActionSourceType(this.props.combatant, a.id)}
 							combatant={this.props.combatant}
 							encounter={this.props.encounter}
-							onSelect={action => this.props.selectAction(this.props.encounter, this.props.combatant, action)}
+							onClick={action => this.props.selectAction(this.props.encounter, this.props.combatant, action)}
 						/>
 					);
 				}

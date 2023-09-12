@@ -127,7 +127,7 @@ export class ItemsPage extends Component<Props, State> {
 		if (this.props.game.boons.filter(boon => !GameLogic.getBoonIsHeroType(boon)).length > 0) {
 			const cards = this.props.game.boons
 				.filter(boon => !GameLogic.getBoonIsHeroType(boon))
-				.map(b => <BoonCard key={b.id} boon={b} onSelect={boon => this.selectBoon(boon)} />);
+				.map(b => <BoonCard key={b.id} boon={b} onClick={boon => this.selectBoon(boon)} />);
 			boons = (
 				<div>
 					<Text type={TextType.Information}><p><b>You have won these rewards.</b> Select a card to redeem a reward.</p></Text>
@@ -273,7 +273,7 @@ export class ItemsPage extends Component<Props, State> {
 			if (magicItems.length > 0) {
 				const cards = magicItems.map(item => (
 					<div key={item.id}>
-						<ItemCard item={item} onSelect={i => this.setState({ selectedMagicItem: i })} />
+						<ItemCard item={item} onClick={i => this.setState({ selectedMagicItem: i })} />
 						<div>
 							<button onClick={() => this.props.sellItem(item, false)}>
 								Sell<br /><IconValue type={IconType.Money} value={50} iconSize={12} />

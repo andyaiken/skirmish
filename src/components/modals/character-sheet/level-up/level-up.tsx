@@ -89,7 +89,7 @@ export class LevelUp extends Component<Props, State> {
 						feature={feature}
 						footer={CombatantLogic.getFeatureSource(this.props.combatant, feature.id) || 'Feature'}
 						footerType={CombatantLogic.getFeatureSourceType(this.props.combatant, feature.id)}
-						onSelect={f => this.setState({ selectedFeature: f })}
+						onClick={f => this.setState({ selectedFeature: f })}
 					/>
 				);
 			});

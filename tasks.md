@@ -94,36 +94,32 @@
 * Add music
 
 ## Base Building
-* Grounds
-	* Gardens
-	* Archery range
-	* Graveyard
-	* Druid grove
-	* Barracks / melee training yard
-	* Docks
-	* Market
-* Towers / Keep
-	* Observatory
-	* Aviary - messenger birds
-	* Wizard’s tower
-	* Rooms / state rooms - allow more heroes
-	* Artificer’s workshop
-* Wing
-	* Stables
-	* Library
-	* Inn
-	* Forge
-	* Greenhouse
-	* Map room
-	* Kitchens
-	* Trophy room
-	* Meeting hall
-	* Banqueting hall
-	* Audience chamber
-* Basement
-	* Morgue
-	* Storage
-	* Spymaster
+* Gardens
+* Archery range
+* Graveyard
+* Druid grove
+* Barracks / melee training yard
+* Docks
+* Market
+* Observatory
+* Aviary - messenger birds
+* Wizard’s tower
+* Rooms / state rooms - allow more heroes
+* Artificer’s workshop
+* Stables
+* Library
+* Inn
+* Forge
+* Greenhouse
+* Map room
+* Kitchens
+* Trophy room
+* Meeting hall
+* Banqueting hall
+* Audience chamber
+* Morgue
+* Storage
+* Spymaster
 
 -----------------------------------------------------------------------------------------
 

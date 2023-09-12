@@ -1,5 +1,4 @@
 import { Component, MouseEvent } from 'react';
-import { IconCheck } from '@tabler/icons-react';
 
 import { BoonType } from '../../../enums/boon-type';
 import { CardType } from '../../../enums/card-type';
@@ -16,7 +15,7 @@ import './boon-card.scss';
 interface Props {
 	boon: BoonModel;
 	disabled: boolean;
-	onSelect: ((boon: BoonModel) => void) | null;
+	onClick: ((boon: BoonModel) => void) | null;
 }
 
 interface State {
@@ -26,7 +25,7 @@ interface State {
 export class BoonCard extends Component<Props, State> {
 	static defaultProps = {
 		disabled: false,
-		onSelect: null
+		onClick: null
 	};
 
 	constructor(props: Props) {
@@ -44,17 +43,17 @@ export class BoonCard extends Component<Props, State> {
 		});
 	};
 
-	onSelect = (e: MouseEvent) => {
+	onClick = (e: MouseEvent) => {
 		e.stopPropagation();
 
-		if (this.props.onSelect) {
-			this.props.onSelect(this.props.boon);
+		if (this.props.onClick) {
+			this.props.onClick(this.props.boon);
 		}
 	};
 
 	onSelectItem = (item: ItemModel) => {
-		if (this.props.onSelect) {
-			this.props.onSelect(this.props.boon);
+		if (this.props.onClick) {
+			this.props.onClick(this.props.boon);
 		}
 	};
 
@@ -63,7 +62,7 @@ export class BoonCard extends Component<Props, State> {
 			return (
 				<ItemCard
 					item={this.props.boon.data as ItemModel}
-					onSelect={this.props.onSelect ? this.onSelectItem : null}
+					onClick={this.props.onClick ? this.onSelectItem : null}
 				/>
 			);
 		}
@@ -89,13 +88,6 @@ export class BoonCard extends Component<Props, State> {
 				break;
 		}
 
-		const buttons: JSX.Element[] = [];
-		if (this.props.onSelect && (buttons.length > 0)) {
-			buttons.push(
-				<button key='select' className='icon-btn' title='Select' onClick={this.onSelect}><IconCheck /></button>
-			);
-		}
-
 		return (
 			<PlayingCard
 				type={CardType.Boon}
@@ -111,10 +103,9 @@ export class BoonCard extends Component<Props, State> {
 					/>
 				)}
 				footerText='Reward'
-				footerContent={buttons}
 				flipped={this.state.flipped}
 				disabled={this.props.disabled}
-				onClick={this.props.onSelect ? this.onSelect : null}
+				onClick={this.props.onClick ? this.onClick : null}
 			/>
 		);
 	};

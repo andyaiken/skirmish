@@ -82,12 +82,13 @@ export class BuyMagicItemModal extends Component<Props, State> {
 	render = () => {
 		try {
 			const cards = this.state.magicItems.map(item => (
-				<ItemCard key={item.id} item={item} onSelect={this.props.buyItem} />
+				<ItemCard key={item.id} item={item} onClick={this.props.buyItem} />
 			));
 
 			return (
 				<div className='buy-magic-item-modal'>
 					<Text type={TextType.Heading}>Choose a Magic Item</Text>
+					<hr />
 					{this.props.options.developer ? <button className='developer' onClick={() => this.redraw()}>Redraw</button> : null}
 					<div className='card-selection-row'>
 						<CardList cards={cards} />

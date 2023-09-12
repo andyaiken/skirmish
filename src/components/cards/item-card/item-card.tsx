@@ -1,5 +1,5 @@
 import { Component, MouseEvent } from 'react';
-import { IconCheck, IconRefresh } from '@tabler/icons-react';
+import { IconRefresh } from '@tabler/icons-react';
 
 import { CardType } from '../../../enums/card-type';
 import { ItemLocationType } from '../../../enums/item-location-type';
@@ -21,7 +21,7 @@ interface Props {
 	item: ItemModel;
 	count: number;
 	disabled: boolean;
-	onSelect: ((item: ItemModel) => void) | null;
+	onClick: ((item: ItemModel) => void) | null;
 }
 
 interface State {
@@ -32,7 +32,7 @@ export class ItemCard extends Component<Props, State> {
 	static defaultProps = {
 		count: 1,
 		disabled: false,
-		onSelect: null
+		onClick: null
 	};
 
 	constructor(props: Props) {
@@ -50,11 +50,11 @@ export class ItemCard extends Component<Props, State> {
 		});
 	};
 
-	onSelect = (e: MouseEvent) => {
+	onClick = (e: MouseEvent) => {
 		e.stopPropagation();
 
-		if (this.props.onSelect) {
-			this.props.onSelect(this.props.item);
+		if (this.props.onClick) {
+			this.props.onClick(this.props.item);
 		}
 	};
 
@@ -137,11 +137,6 @@ export class ItemCard extends Component<Props, State> {
 		buttons.push(
 			<button key='flip' className='icon-btn' title='Flip' onClick={this.onFlip}><IconRefresh /></button>
 		);
-		if (this.props.onSelect && (buttons.length > 0)) {
-			buttons.push(
-				<button key='select' className='icon-btn' title='Select' onClick={this.onSelect}><IconCheck /></button>
-			);
-		}
 
 		return (
 			<PlayingCard
@@ -174,7 +169,7 @@ export class ItemCard extends Component<Props, State> {
 				footerContent={buttons}
 				flipped={this.state.flipped}
 				disabled={this.props.disabled}
-				onClick={this.props.onSelect ? this.onSelect : null}
+				onClick={this.props.onClick ? this.onClick : null}
 			/>
 		);
 	};

@@ -1,5 +1,5 @@
 import { Component, MouseEvent } from 'react';
-import { IconCheck, IconRefresh } from '@tabler/icons-react';
+import { IconRefresh } from '@tabler/icons-react';
 
 import { CardType } from '../../../enums/card-type';
 import { CombatantType } from '../../../enums/combatant-type';
@@ -19,7 +19,7 @@ import './species-card.scss';
 interface Props {
 	species: SpeciesModel;
 	disabled: boolean;
-	onSelect: ((species: SpeciesModel) => void) | null;
+	onClick: ((species: SpeciesModel) => void) | null;
 }
 
 interface State {
@@ -29,7 +29,7 @@ interface State {
 export class SpeciesCard extends Component<Props, State> {
 	static defaultProps = {
 		disabled: false,
-		onSelect: null
+		onClick: null
 	};
 
 	constructor(props: Props) {
@@ -47,11 +47,11 @@ export class SpeciesCard extends Component<Props, State> {
 		});
 	};
 
-	onSelect = (e: MouseEvent) => {
+	onClick = (e: MouseEvent) => {
 		e.stopPropagation();
 
-		if (this.props.onSelect) {
-			this.props.onSelect(this.props.species);
+		if (this.props.onClick) {
+			this.props.onClick(this.props.species);
 		}
 	};
 
@@ -102,11 +102,6 @@ export class SpeciesCard extends Component<Props, State> {
 		buttons.push(
 			<button key='flip' className='icon-btn' title='Flip' onClick={this.onFlip}><IconRefresh /></button>
 		);
-		if (this.props.onSelect && (buttons.length > 0)) {
-			buttons.push(
-				<button key='select' className='icon-btn' title='Select' onClick={this.onSelect}><IconCheck /></button>
-			);
-		}
 
 		return (
 			<PlayingCard
@@ -134,7 +129,7 @@ export class SpeciesCard extends Component<Props, State> {
 				footerContent={buttons}
 				flipped={this.state.flipped}
 				disabled={this.props.disabled}
-				onClick={this.props.onSelect ? this.onSelect : null}
+				onClick={this.props.onClick ? this.onClick : null}
 			/>
 		);
 	};

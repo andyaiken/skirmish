@@ -9,7 +9,7 @@ import type { FeatureModel } from '../../../../models/feature';
 import type { OptionsModel } from '../../../../models/options';
 
 import { ActionCard, BackgroundCard, FeatureCard, ItemCard, RoleCard, SpeciesCard } from '../../../cards';
-import { Badge, CardList, Dialog, Switch, Text, TextType } from '../../../controls';
+import { Badge, CardList, Dialog, Text, TextType } from '../../../controls';
 
 import './decks-tab.scss';
 
@@ -18,7 +18,6 @@ interface Props {
 }
 
 interface State {
-	showCoreOnly: boolean;
 	selected: { name: string, type: CardType, starting: FeatureModel[], features: FeatureModel[], actions: ActionModel[] } | null;
 }
 
@@ -26,16 +25,9 @@ export class DecksTab extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
-			showCoreOnly: false,
 			selected: null
 		};
 	}
-
-	setCoreOnly = (value: boolean) => {
-		this.setState({
-			showCoreOnly: value
-		});
-	};
 
 	setActions = (name: string, type: CardType, starting: FeatureModel[], features: FeatureModel[], actions: ActionModel[]) => {
 		this.setState({
@@ -76,47 +68,42 @@ export class DecksTab extends Component<Props, State> {
 	render = () => {
 		try {
 			const heroes = GameLogic.getHeroSpeciesDeck(this.props.options.packIDs)
-				.filter(s => (s.packID === '') || !this.state.showCoreOnly)
 				.map(s => {
 					return (
 						<Badge key={s.id} value={this.getBadge(s.packID, GameLogic.getSpeciesStrength(s))}>
-							<SpeciesCard species={s} onSelect={species => this.setActions(species.name, CardType.Species, species.startingFeatures, species.features, species.actions)} />
+							<SpeciesCard species={s} onClick={species => this.setActions(species.name, CardType.Species, species.startingFeatures, species.features, species.actions)} />
 						</Badge>
 					);
 				});
 
 			const monsters = GameLogic.getMonsterSpeciesDeck(this.props.options.packIDs)
-				.filter(s => (s.packID === '') || !this.state.showCoreOnly)
 				.map(s => {
 					return (
 						<Badge key={s.id} value={this.getBadge(s.packID, GameLogic.getSpeciesStrength(s))}>
-							<SpeciesCard species={s} onSelect={species => this.setActions(species.name, CardType.Species, species.startingFeatures, species.features, species.actions)} />
+							<SpeciesCard species={s} onClick={species => this.setActions(species.name, CardType.Species, species.startingFeatures, species.features, species.actions)} />
 						</Badge>
 					);
 				});
 
 			const roles = GameLogic.getRoleDeck(this.props.options.packIDs)
-				.filter(s => (s.packID === '') || !this.state.showCoreOnly)
 				.map(r => {
 					return (
 						<Badge key={r.id} value={this.getBadge(r.packID, GameLogic.getRoleStrength(r))}>
-							<RoleCard role={r} onSelect={role => this.setActions(role.name, CardType.Role, role.startingFeatures, role.features, role.actions)} />
+							<RoleCard role={r} onClick={role => this.setActions(role.name, CardType.Role, role.startingFeatures, role.features, role.actions)} />
 						</Badge>
 					);
 				});
 
 			const backgrounds = GameLogic.getBackgroundDeck(this.props.options.packIDs)
-				.filter(s => (s.packID === '') || !this.state.showCoreOnly)
 				.map(b => {
 					return (
 						<Badge key={b.id} value={this.getBadge(b.packID, GameLogic.getBackgroundStrength(b))}>
-							<BackgroundCard background={b} onSelect={bg => this.setActions(bg.name, CardType.Background, bg.startingFeatures, bg.features, bg.actions)} />
+							<BackgroundCard background={b} onClick={bg => this.setActions(bg.name, CardType.Background, bg.startingFeatures, bg.features, bg.actions)} />
 						</Badge>
 					);
 				});
 
 			const items = GameLogic.getItemDeck(this.props.options.packIDs)
-				.filter(s => (s.packID === '') || !this.state.showCoreOnly)
 				.map(i => {
 					return (
 						<Badge key={i.id} value={this.getBadge(i.packID, 0)}>
@@ -188,7 +175,6 @@ export class DecksTab extends Component<Props, State> {
 
 			return (
 				<div className='decks-tab'>
-					{this.props.options.developer ? <Switch label='Show core cards only' checked={this.state.showCoreOnly} onChange={value => this.setCoreOnly(value)} /> : null}
 					{this.props.options.developer ? <hr /> : null}
 					<Text type={TextType.SubHeading}>Hero Species Cards ({heroes.length})</Text>
 					{heroes.length > 0 ? <CardList cards={heroes} /> : null}

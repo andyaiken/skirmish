@@ -1,11 +1,13 @@
 import { Component, MouseEvent } from 'react';
-import { IconCheck, IconX } from '@tabler/icons-react';
+import { IconX } from '@tabler/icons-react';
 
 import { CardType } from '../../../enums/card-type';
 
+import { GameLogic } from '../../../logic/game-logic';
+
 import type { PackModel } from '../../../models/pack';
 
-import { PlayingCard } from '../../controls';
+import { PlayingCard, StatValue } from '../../controls';
 
 import { PlaceholderCard } from '../placeholder-card/placeholder-card';
 
@@ -14,22 +16,22 @@ import './pack-card.scss';
 interface Props {
 	pack: PackModel;
 	disabled: boolean;
-	onSelect: ((pack: PackModel) => void) | null;
+	onClick: ((pack: PackModel) => void) | null;
 	onRemove: ((pack: PackModel) => void) | null;
 }
 
 export class PackCard extends Component<Props> {
 	static defaultProps = {
 		disabled: false,
-		onSelect: null,
+		onClick: null,
 		onRemove: null
 	};
 
-	onSelect = (e: MouseEvent) => {
+	onClick = (e: MouseEvent) => {
 		e.stopPropagation();
 
-		if (this.props.onSelect) {
-			this.props.onSelect(this.props.pack);
+		if (this.props.onClick) {
+			this.props.onClick(this.props.pack);
 		}
 	};
 
@@ -43,14 +45,18 @@ export class PackCard extends Component<Props> {
 
 	render = () => {
 		const buttons: JSX.Element[] = [];
-		if (this.props.onSelect) {
-			buttons.push(
-				<button key='select' className='icon-btn' title='Select' onClick={this.onSelect}><IconCheck /></button>
-			);
-		}
 		if (this.props.onRemove) {
 			buttons.push(
-				<button key='retire' className='icon-btn' title='Retire' onClick={this.onRemove}><IconX /></button>
+				<button key='retire' className='icon-btn' title='Remove' onClick={this.onRemove}><IconX /></button>
+			);
+		}
+
+		let content = null;
+		if (this.props.pack.id) {
+			content = (
+				<div className='pack-card-front'>
+					<StatValue label='Cards' value={GameLogic.getPackCardCount(this.props.pack.id)} />
+				</div>
 			);
 		}
 
@@ -62,12 +68,13 @@ export class PackCard extends Component<Props> {
 					<PlaceholderCard
 						text={this.props.pack.name}
 						subtext={this.props.pack.description}
+						content={content}
 					/>
 				}
 				footerText='Pack'
 				footerContent={buttons}
 				disabled={this.props.disabled}
-				onClick={this.props.onSelect ? this.onSelect : null}
+				onClick={this.props.onClick ? this.onClick : null}
 			/>
 		);
 	};

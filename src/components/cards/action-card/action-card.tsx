@@ -1,5 +1,4 @@
 import { Component, MouseEvent } from 'react';
-import { IconCheck } from '@tabler/icons-react';
 
 import { CardType } from '../../../enums/card-type';
 
@@ -20,7 +19,7 @@ interface Props {
 	combatant: CombatantModel | null;
 	encounter: EncounterModel | null;
 	disabled: boolean;
-	onSelect: ((action: ActionModel) => void) | null;
+	onClick: ((action: ActionModel) => void) | null;
 }
 
 interface State {
@@ -32,7 +31,7 @@ export class ActionCard extends Component<Props, State> {
 		combatant: null,
 		encounter: null,
 		disabled: false,
-		onSelect: null
+		onClick: null
 	};
 
 	constructor(props: Props) {
@@ -50,11 +49,11 @@ export class ActionCard extends Component<Props, State> {
 		});
 	};
 
-	onSelect = (e: MouseEvent) => {
+	onClick = (e: MouseEvent) => {
 		e.stopPropagation();
 
-		if (this.props.onSelect) {
-			this.props.onSelect(this.props.action);
+		if (this.props.onClick) {
+			this.props.onClick(this.props.action);
 		}
 	};
 
@@ -91,13 +90,6 @@ export class ActionCard extends Component<Props, State> {
 	};
 
 	render = () => {
-		const buttons: JSX.Element[] = [];
-		if (this.props.onSelect && (buttons.length > 0)) {
-			buttons.push(
-				<button key='select' className='icon-btn' onClick={this.onSelect}><IconCheck /></button>
-			);
-		}
-
 		return (
 			<PlayingCard
 				type={CardType.Action}
@@ -114,11 +106,10 @@ export class ActionCard extends Component<Props, State> {
 					</div>
 				)}
 				footerText={this.props.footer || 'Action'}
-				footerContent={buttons}
 				footerType={this.props.footerType}
 				flipped={this.state.flipped}
 				disabled={this.props.disabled}
-				onClick={this.props.onSelect ? this.onSelect : null}
+				onClick={this.props.onClick ? this.onClick : null}
 			/>
 		);
 	};

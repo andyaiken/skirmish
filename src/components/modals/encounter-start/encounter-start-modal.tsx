@@ -87,7 +87,7 @@ export class EncounterStartModal extends Component<Props, State> {
 			.filter(h => !this.state.selectedHeroes.includes(h))
 			.map(h => {
 				return (
-					<HeroCard key={h.id} hero={h} onSelect={this.state.selectedHeroes.length < 5 ? hero => this.selectHero(hero) : null} />
+					<HeroCard key={h.id} hero={h} onClick={this.state.selectedHeroes.length < 5 ? hero => this.selectHero(hero) : null} />
 				);
 			});
 

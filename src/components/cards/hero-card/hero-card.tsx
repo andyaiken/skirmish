@@ -1,5 +1,5 @@
 import { Component, MouseEvent } from 'react';
-import { IconCheck, IconId, IconRefresh, IconX } from '@tabler/icons-react';
+import { IconId, IconRefresh, IconX } from '@tabler/icons-react';
 
 import { CardType } from '../../../enums/card-type';
 import { TraitType } from '../../../enums/trait-type';
@@ -20,9 +20,9 @@ import './hero-card.scss';
 interface Props {
 	hero: CombatantModel;
 	disabled: boolean;
+	onClick: ((hero: CombatantModel) => void) | null;
 	onCharacterSheet: ((hero: CombatantModel) => void) | null;
 	onRetire: ((hero: CombatantModel) => void) | null;
-	onSelect: ((hero: CombatantModel) => void) | null;
 }
 
 interface State {
@@ -32,9 +32,9 @@ interface State {
 export class HeroCard extends Component<Props, State> {
 	static defaultProps = {
 		disabled: false,
+		onClick: null,
 		onCharacterSheet: null,
-		onRetire: null,
-		onSelect: null
+		onRetire: null
 	};
 
 	constructor(props: Props) {
@@ -52,6 +52,14 @@ export class HeroCard extends Component<Props, State> {
 		});
 	};
 
+	onClick = (e: MouseEvent) => {
+		e.stopPropagation();
+
+		if (this.props.onClick) {
+			this.props.onClick(this.props.hero);
+		}
+	};
+
 	onCharacterSheet = (e: MouseEvent) => {
 		e.stopPropagation();
 
@@ -65,14 +73,6 @@ export class HeroCard extends Component<Props, State> {
 
 		if (this.props.onRetire) {
 			this.props.onRetire(this.props.hero);
-		}
-	};
-
-	onSelect = (e: MouseEvent) => {
-		e.stopPropagation();
-
-		if (this.props.onSelect) {
-			this.props.onSelect(this.props.hero);
 		}
 	};
 
@@ -103,11 +103,6 @@ export class HeroCard extends Component<Props, State> {
 		if (this.props.onCharacterSheet) {
 			buttons.push(
 				<button key='character-sheet' className='icon-btn' title='Character Sheet' onClick={this.onCharacterSheet}><IconId /></button>
-			);
-		}
-		if (this.props.onSelect) {
-			buttons.push(
-				<button key='select' className='icon-btn' title='Select' onClick={this.onSelect}><IconCheck /></button>
 			);
 		}
 		if (this.props.onRetire) {
@@ -168,7 +163,7 @@ export class HeroCard extends Component<Props, State> {
 				footerContent={buttons}
 				flipped={this.state.flipped}
 				disabled={this.props.disabled}
-				onClick={this.props.onSelect ? this.onSelect : null}
+				onClick={this.props.onClick ? this.onClick : null}
 			/>
 		);
 	};

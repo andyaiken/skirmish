@@ -34,12 +34,6 @@ export class PacksModal extends Component<Props, State> {
 		};
 	}
 
-	addPack = (pack: PackModel | null) => {
-		if (pack) {
-			this.props.addPack(pack.id);
-		}
-	};
-
 	getBadge = (strength: number) => {
 		let value = '';
 
@@ -53,22 +47,25 @@ export class PacksModal extends Component<Props, State> {
 		return value;
 	};
 
-	getPackContent = () => {
+	getDialog = () => {
 		if (!this.state.selectedPack) {
 			return null;
 		}
 
+		const packID = this.state.selectedPack.id;
+		const packName = this.state.selectedPack.name;
+
 		let owned = null;
-		if (!this.props.options.packIDs.includes(this.state.selectedPack.id)) {
+		if ((packID !== '') && !this.props.options.packIDs.includes(packID)) {
 			owned = (
 				<Text type={TextType.Information}>
-					<p>You <b>do not</b> own this pack.</p>
-					<button onClick={() => this.addPack(this.state.selectedPack)}>Get This Pack</button>
+					<p>You <b>do not</b> own this card pack.</p>
+					<button onClick={() => this.props.addPack(packID)}>Get This Pack</button>
 				</Text>
 			);
 		}
 
-		const heroes = HeroSpeciesData.getList().filter(s => s.packID === (this.state.selectedPack ? this.state.selectedPack.id : '')).map(s => {
+		const heroes = HeroSpeciesData.getList().filter(s => s.packID === packID).map(s => {
 			return (
 				<Badge key={s.id} value={this.getBadge(GameLogic.getSpeciesStrength(s))}>
 					<SpeciesCard species={s} />
@@ -76,7 +73,7 @@ export class PacksModal extends Component<Props, State> {
 			);
 		});
 
-		const monsters = MonsterSpeciesData.getList().filter(s => s.packID === (this.state.selectedPack ? this.state.selectedPack.id : '')).map(s => {
+		const monsters = MonsterSpeciesData.getList().filter(s => s.packID === packID).map(s => {
 			return (
 				<Badge key={s.id} value={this.getBadge(GameLogic.getSpeciesStrength(s))}>
 					<SpeciesCard species={s} />
@@ -84,7 +81,7 @@ export class PacksModal extends Component<Props, State> {
 			);
 		});
 
-		const roles = RoleData.getList().filter(r => r.packID === (this.state.selectedPack ? this.state.selectedPack.id : '')).map(r => {
+		const roles = RoleData.getList().filter(r => r.packID === packID).map(r => {
 			return (
 				<Badge key={r.id} value={this.getBadge(GameLogic.getRoleStrength(r))}>
 					<RoleCard role={r} />
@@ -92,7 +89,7 @@ export class PacksModal extends Component<Props, State> {
 			);
 		});
 
-		const backgrounds = BackgroundData.getList().filter(b => b.packID === (this.state.selectedPack ? this.state.selectedPack.id : '')).map(b => {
+		const backgrounds = BackgroundData.getList().filter(b => b.packID === packID).map(b => {
 			return (
 				<Badge key={b.id} value={this.getBadge(GameLogic.getBackgroundStrength(b))}>
 					<BackgroundCard background={b} />
@@ -100,7 +97,7 @@ export class PacksModal extends Component<Props, State> {
 			);
 		});
 
-		const items = ItemData.getList().filter(i => i.packID === (this.state.selectedPack ? this.state.selectedPack.id : '')).map(i => {
+		const items = ItemData.getList().filter(i => i.packID === packID).map(i => {
 			return (
 				<Badge key={i.id} value={0}>
 					<ItemCard item={i} />
@@ -112,7 +109,7 @@ export class PacksModal extends Component<Props, State> {
 			<Dialog
 				content={
 					<div>
-						<Text type={TextType.Heading}>{this.state.selectedPack.name}</Text>
+						<Text type={TextType.Heading}>{packName}</Text>
 						{owned !== null ? <hr /> : null}
 						{owned}
 						{heroes.length > 0 ? <hr /> : null}
@@ -140,21 +137,30 @@ export class PacksModal extends Component<Props, State> {
 
 	render = () => {
 		try {
+			const core = {
+				id: '',
+				name: 'Skirmish',
+				description: 'The core cards for the game, available to all.'
+			};
+
 			const owned = GameLogic.getPacks()
 				.filter(pack => this.props.options.packIDs.includes(pack.id))
-				.map((pack, n) => {
+				.map(pack => {
 					return (
-						<Badge key={n} value={this.getBadge(GameLogic.getPackStrength(pack))}>
-							<PackCard pack={pack} onSelect={p => this.setState({ selectedPack: p })} onRemove={this.props.options.developer ? p => this.props.removePack(p.id) : null} />
+						<Badge key={pack.id} value={this.getBadge(GameLogic.getPackStrength(pack))}>
+							<PackCard pack={pack} onClick={p => this.setState({ selectedPack: p })} onRemove={this.props.options.developer ? p => this.props.removePack(p.id) : null} />
 						</Badge>
 					);
 				});
+			owned.unshift(
+				<PackCard key='core' pack={core} onClick={p => this.setState({ selectedPack: p })} />
+			);
 			const notOwned = GameLogic.getPacks()
 				.filter(pack => !this.props.options.packIDs.includes(pack.id))
-				.map((pack, n) => {
+				.map(pack => {
 					return (
-						<Badge key={n} value={this.getBadge(GameLogic.getPackStrength(pack))}>
-							<PackCard pack={pack} onSelect={p => this.setState({ selectedPack: p })} onRemove={this.props.options.developer ? p => this.props.removePack(p.id) : null} />
+						<Badge key={pack.id} value={this.getBadge(GameLogic.getPackStrength(pack))}>
+							<PackCard pack={pack} onClick={p => this.setState({ selectedPack: p })} onRemove={this.props.options.developer ? p => this.props.removePack(p.id) : null} />
 						</Badge>
 					);
 				});
@@ -163,14 +169,12 @@ export class PacksModal extends Component<Props, State> {
 				<div className='packs-modal'>
 					<Text type={TextType.Heading}>Card Packs</Text>
 					<hr />
-					<Text type={TextType.SubHeading}>Available Packs</Text>
+					{notOwned.length > 0 ? <Text type={TextType.SubHeading}>Available Packs</Text> : null}
 					{notOwned.length > 0 ? <CardList cards={notOwned} /> : null}
-					{notOwned.length === 0 ? <Text type={TextType.Small}>None.</Text> : null}
-					<hr />
+					{notOwned.length > 0 ? <hr /> : null}
 					<Text type={TextType.SubHeading}>My Packs</Text>
-					{owned.length > 0 ? <CardList cards={owned} /> : null}
-					{owned.length === 0 ? <Text type={TextType.Small}>None.</Text> : null}
-					{this.getPackContent()}
+					<CardList cards={owned} />
+					{this.getDialog()}
 				</div>
 			);
 		} catch {

@@ -49,12 +49,13 @@ export class BuyEquipmentModal extends Component<Props, State> {
 		try {
 			const cards = this.getItems()
 				.map(item => (
-					<ItemCard key={item.id} item={item} onSelect={this.props.buyItem} />
+					<ItemCard key={item.id} item={item} onClick={this.props.buyItem} />
 				));
 
 			return (
 				<div className='buy-equipment-modal'>
 					<Text type={TextType.Heading}>Buy Equipment</Text>
+					<hr />
 					<div className='card-selection-row'>
 						<Text type={TextType.SubHeading}>Filter by proficiency</Text>
 						<Selector

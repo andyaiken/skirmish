@@ -1,5 +1,4 @@
 import { Component, MouseEvent } from 'react';
-import { IconCheck } from '@tabler/icons-react';
 
 import { CardType } from '../../../enums/card-type';
 
@@ -17,7 +16,7 @@ interface Props {
 	footer: string;
 	footerType: CardType;
 	disabled: boolean;
-	onSelect: ((feature: FeatureModel) => void) | null;
+	onClick: ((feature: FeatureModel) => void) | null;
 }
 
 interface State {
@@ -27,7 +26,7 @@ interface State {
 export class FeatureCard extends Component<Props, State> {
 	static defaultProps = {
 		disabled: false,
-		onSelect: null
+		onClick: null
 	};
 
 	constructor(props: Props) {
@@ -45,22 +44,15 @@ export class FeatureCard extends Component<Props, State> {
 		});
 	};
 
-	onSelect = (e: MouseEvent) => {
+	onClick = (e: MouseEvent) => {
 		e.stopPropagation();
 
-		if (this.props.onSelect) {
-			this.props.onSelect(this.props.feature);
+		if (this.props.onClick) {
+			this.props.onClick(this.props.feature);
 		}
 	};
 
 	render = () => {
-		const buttons: JSX.Element[] = [];
-		if (this.props.onSelect && (buttons.length > 0)) {
-			buttons.push(
-				<button key='select' className='icon-btn' title='Select' onClick={this.onSelect}><IconCheck /></button>
-			);
-		}
-
 		return (
 			<PlayingCard
 				type={CardType.Feature}
@@ -68,11 +60,10 @@ export class FeatureCard extends Component<Props, State> {
 					<PlaceholderCard text={FeatureLogic.getFeatureTitle(this.props.feature)} subtext={FeatureLogic.getFeatureInformation(this.props.feature)} />
 				)}
 				footerText={this.props.footer || 'Feature'}
-				footerContent={buttons}
 				footerType={this.props.footerType}
 				flipped={this.state.flipped}
 				disabled={this.props.disabled}
-				onClick={this.props.onSelect ? this.onSelect : null}
+				onClick={this.props.onClick ? this.onClick : null}
 			/>
 		);
 	};

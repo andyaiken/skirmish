@@ -3,7 +3,7 @@ import { Component, MouseEvent } from 'react';
 import './placeholder-card.scss';
 
 interface Props {
-	text: string;
+	text: string | JSX.Element | null;
 	subtext: string | JSX.Element | null;
 	content: JSX.Element | null;
 	onClick: (() => void) | null;
@@ -11,8 +11,8 @@ interface Props {
 
 export class PlaceholderCard extends Component<Props> {
 	static defaultProps = {
-		text: '',
-		subtext: '',
+		text: null,
+		subtext: null,
 		content: null,
 		onClick: null
 	};

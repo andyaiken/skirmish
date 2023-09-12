@@ -13,7 +13,7 @@ import type { GameModel } from '../../../../models/game';
 import type { ItemModel } from '../../../../models/item';
 import type { OptionsModel } from '../../../../models/options';
 
-import { Badge, CardList, ConfirmButton, Dialog, PlayingCard, StatValue, Text, TextType } from '../../../controls';
+import { Badge, CardList, ConfirmButton, Dialog, PlayingCard, Text, TextType } from '../../../controls';
 import { BoonCard, HeroCard, PlaceholderCard } from '../../../cards';
 import { CharacterSheetModal, HeroBuilderModal } from '../../../modals';
 
@@ -103,7 +103,7 @@ export class HeroesPage extends Component<Props, State> {
 				return (
 					<div key={hero.id}>
 						<Badge value={hero.xp >= hero.level ? 'Level Up' : null}>
-							<HeroCard hero={hero} onSelect={this.selectHero} onRetire={this.selectRetiringHero} />
+							<HeroCard hero={hero} onCharacterSheet={this.selectHero} onRetire={this.selectRetiringHero} />
 						</Badge>
 						{this.props.options.developer ? <button className='developer' onClick={() => this.props.incrementXP(hero)}>Add XP</button> : null}
 					</div>
@@ -132,7 +132,7 @@ export class HeroesPage extends Component<Props, State> {
 		if (this.props.game.boons.filter(boon => GameLogic.getBoonIsHeroType(boon)).length > 0) {
 			const cards = this.props.game.boons
 				.filter(boon => GameLogic.getBoonIsHeroType(boon))
-				.map(b => <BoonCard key={b.id} boon={b} onSelect={this.selectBoon} />);
+				.map(b => <BoonCard key={b.id} boon={b} onClick={this.selectBoon} />);
 			boons = (
 				<div>
 					<Text type={TextType.Information}>
@@ -146,21 +146,18 @@ export class HeroesPage extends Component<Props, State> {
 		let blankHeroes = null;
 		if (this.props.game.heroSlots > 0) {
 			blankHeroes = (
-				<div>
-					<StatValue orientation='vertical' label='Recruits Available' value={this.props.game.heroSlots} />
-					<hr />
-					<div className='center'>
-						<PlayingCard
-							stack={true}
-							front={
-								<PlaceholderCard
-									text='Heroes'
-									subtext='Click here to recruit a new hero.'
-									onClick={() => this.setState({ selectedHero: Factory.createCombatant(CombatantType.Hero) })}
-								/>
-							}
-						/>
-					</div>
+				<div className='center'>
+					<PlayingCard
+						stack={true}
+						front={
+							<PlaceholderCard
+								text='Recruits Available'
+								subtext='Click here to recruit a new hero.'
+								content={<div className='heroes-count'>{this.props.game.heroSlots}</div>}
+								onClick={() => this.setState({ selectedHero: Factory.createCombatant(CombatantType.Hero) })}
+							/>
+						}
+					/>
 				</div>
 			);
 		}
@@ -233,8 +230,7 @@ export class HeroesPage extends Component<Props, State> {
 						<HeroCard
 							key={h.id}
 							hero={h}
-							onSelect={hero => {
-								//
+							onClick={hero => {
 								const boon = this.state.selectedBoon as BoonModel;
 								this.setState({
 									selectedBoon: null

@@ -45,17 +45,13 @@ export class StatValue extends Component<Props> {
 				);
 			}
 
-			if (this.props.orientation === 'compact') {
-				return (
-					<div className='stat-value compact'>
-						{label}
-						{value}
-					</div>
-				);
+			let className = `stat-value ${this.props.orientation}`;
+			if (!this.props.value) {
+				className += ' zero';
 			}
 
 			return (
-				<div className='stat-value horizontal'>
+				<div className={className}>
 					{label}
 					{value}
 				</div>

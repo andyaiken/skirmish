@@ -191,7 +191,7 @@ export class HeroSpeciesData {
 		actions: [
 			{
 				id: 'dwarf-action-1',
-				name: 'Constitution',
+				name: 'Dwarven Constitution',
 				prerequisites: [
 					ActionPrerequisites.condition(TraitType.Endurance)
 				],
@@ -199,12 +199,13 @@ export class HeroSpeciesData {
 					ActionTargetParameters.self()
 				],
 				effects: [
-					ActionEffects.removeCondition(TraitType.Endurance)
+					ActionEffects.removeCondition(TraitType.Endurance),
+					ActionEffects.takeAnotherAction()
 				]
 			},
 			{
 				id: 'dwarf-action-2',
-				name: 'Discipline',
+				name: 'Dwarven Discipline',
 				prerequisites: [
 					ActionPrerequisites.condition(TraitType.Resolve)
 				],
@@ -212,7 +213,8 @@ export class HeroSpeciesData {
 					ActionTargetParameters.self()
 				],
 				effects: [
-					ActionEffects.removeCondition(TraitType.Resolve)
+					ActionEffects.removeCondition(TraitType.Resolve),
+					ActionEffects.takeAnotherAction()
 				]
 			}
 		]

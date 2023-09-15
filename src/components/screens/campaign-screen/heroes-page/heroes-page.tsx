@@ -93,7 +93,7 @@ export class HeroesPage extends Component<Props, State> {
 		if (this.props.game.heroes.some(h => h.xp >= h.level)) {
 			levelUp = (
 				<Text type={TextType.Information}>
-					<p><b>Some of your heroes have gained enough XP to level up.</b> Click on them to upgrade them.</p>
+					<p><b>Some of your heroes have gained enough XP to level up.</b> Open their character sheet to upgrade them.</p>
 				</Text>
 			);
 		}

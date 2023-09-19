@@ -11,7 +11,7 @@ import type { ItemModel } from '../../../../../models/item';
 
 import { Collections } from '../../../../../utils/collections';
 
-import { IconType, IconValue, Text, TextType } from '../../../../controls';
+import { IconSize, IconType, IconValue, Text, TextType } from '../../../../controls';
 import { ItemCard } from '../../../../cards';
 
 import './combatant-potions.scss';
@@ -43,12 +43,12 @@ export class CombatantPotions extends Component<Props> {
 								<ItemCard item={p} count={count} />
 							</div>
 							<button disabled={this.props.combatant.combat.movement < 2} onClick={() => this.props.drinkPotion(this.props.encounter, this.props.combatant, this.props.combatant, p)}>
-								Drink<br /><IconValue type={IconType.Movement} value={2} iconSize={12} />
+								Drink<br /><IconValue type={IconType.Movement} value={2} size={IconSize.Button} />
 							</button>
 							{
 								adj.map(c => (
 									<button key={c.id} disabled={this.props.combatant.combat.movement < 2} onClick={() => this.props.drinkPotion(this.props.encounter, this.props.combatant, c, p)}>
-										Feed to {c.name}<br /><IconValue type={IconType.Movement} value={2} iconSize={12} />
+										Feed to {c.name}<br /><IconValue type={IconType.Movement} value={2} size={IconSize.Button} />
 									</button>
 								))
 							}

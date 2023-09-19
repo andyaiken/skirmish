@@ -36,6 +36,7 @@ export class CombatantMove extends Component<Props> {
 						this.props.combatant.combat.movement === 0 ?
 							<Text type={TextType.Information}>
 								<p>You have used all your movement for this turn.</p>
+								{!this.props.combatant.combat.selectedAction || !this.props.combatant.combat.selectedAction.used ? <p>You can still take your action.</p> : null }
 							</Text>
 							: null
 					}

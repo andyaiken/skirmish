@@ -14,15 +14,54 @@ export enum IconType {
 	XP = 'XP'
 }
 
+export enum IconSize {
+	Default = 'default',
+	Button = 'button',
+	Large = 'large'
+}
+
 interface Props {
 	value: number | string;
 	type: DamageType | IconType;
-	iconSize: number;
+	size: IconSize;
 }
 
 export class IconValue extends Component<Props> {
 	static defaultProps = {
-		iconSize: 24
+		size: IconSize.Default
+	};
+
+	getTextSize = () => {
+		switch (this.props.size) {
+			case IconSize.Button:
+				return 15;
+			case IconSize.Large:
+				return 40;
+		}
+
+		return 12;
+	};
+
+	getIconSize = () => {
+		switch (this.props.size) {
+			case IconSize.Button:
+				return 15;
+			case IconSize.Large:
+				return 24;
+		}
+
+		return 12;
+	};
+
+	getTextWeight = () => {
+		switch (this.props.size) {
+			case IconSize.Button:
+				return 600;
+			case IconSize.Large:
+				return 600;
+		}
+
+		return 400;
 	};
 
 	render = () => {
@@ -30,54 +69,54 @@ export class IconValue extends Component<Props> {
 			let icon = null;
 			switch (this.props.type) {
 				case IconType.Movement:
-					icon = <IconArrowBigRightLinesFilled size={this.props.iconSize} />;
+					icon = <IconArrowBigRightLinesFilled size={this.getIconSize()} />;
 					break;
 				case IconType.Money:
-					icon = <IconCoins size={this.props.iconSize} />;
+					icon = <IconCoins size={this.getIconSize()} />;
 					break;
 				case IconType.XP:
-					icon = <IconAwardFilled size={this.props.iconSize} />;
+					icon = <IconAwardFilled size={this.getIconSize()} />;
 					break;
 				case DamageType.Acid:
-					icon = <IconVaccineBottle size={this.props.iconSize} />;
+					icon = <IconVaccineBottle size={this.getIconSize()} />;
 					break;
 				case DamageType.Cold:
-					icon = <IconSnowflake size={this.props.iconSize} />;
+					icon = <IconSnowflake size={this.getIconSize()} />;
 					break;
 				case DamageType.Decay:
-					icon = <IconSpiral size={this.props.iconSize} />;
+					icon = <IconSpiral size={this.getIconSize()} />;
 					break;
 				case DamageType.Edged:
-					icon = <IconSlice size={this.props.iconSize} />;
+					icon = <IconSlice size={this.getIconSize()} />;
 					break;
 				case DamageType.Electricity:
-					icon = <IconBolt size={this.props.iconSize} />;
+					icon = <IconBolt size={this.getIconSize()} />;
 					break;
 				case DamageType.Fire:
-					icon = <IconFlame size={this.props.iconSize} />;
+					icon = <IconFlame size={this.getIconSize()} />;
 					break;
 				case DamageType.Impact:
-					icon = <IconHammer size={this.props.iconSize} />;
+					icon = <IconHammer size={this.getIconSize()} />;
 					break;
 				case DamageType.Light:
-					icon = <IconSun size={this.props.iconSize} />;
+					icon = <IconSun size={this.getIconSize()} />;
 					break;
 				case DamageType.Piercing:
-					icon = <IconTrident size={this.props.iconSize} />;
+					icon = <IconTrident size={this.getIconSize()} />;
 					break;
 				case DamageType.Poison:
-					icon = <IconSkull size={this.props.iconSize} />;
+					icon = <IconSkull size={this.getIconSize()} />;
 					break;
 				case DamageType.Psychic:
-					icon = <IconBrain size={this.props.iconSize} />;
+					icon = <IconBrain size={this.getIconSize()} />;
 					break;
 				case DamageType.Sonic:
-					icon = <IconAccessPoint size={this.props.iconSize} />;
+					icon = <IconAccessPoint size={this.getIconSize()} />;
 					break;
 			}
 
 			return (
-				<div className='icon-value' title={`${this.props.value} ${this.props.type}`}>
+				<div className='icon-value' title={`${this.props.value} ${this.props.type}`} style={{ fontSize: `${this.getTextSize()}px`, fontWeight: `${this.getTextWeight()}` }}>
 					{this.props.value} {icon}
 				</div>
 			);

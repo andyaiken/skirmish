@@ -106,6 +106,7 @@ export class Factory {
 		return {
 			id: Utils.guid(),
 			items: [],
+			money: 0,
 			position: { x: 0, y: 0 }
 		};
 	};

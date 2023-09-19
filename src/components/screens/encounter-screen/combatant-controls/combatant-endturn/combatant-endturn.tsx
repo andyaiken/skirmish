@@ -4,7 +4,7 @@ import { Component } from 'react';
 import type { CombatantModel } from '../../../../../models/combatant';
 import type { EncounterModel } from '../../../../../models/encounter';
 
-import { IconType, IconValue, StatValue } from '../../../../controls';
+import { IconSize, IconType, IconValue, StatValue } from '../../../../controls';
 
 import './combatant-endturn.scss';
 
@@ -23,7 +23,7 @@ export class CombatantEndturn extends Component<Props> {
 						<StatValue
 							orientation='vertical'
 							label='Movement Left'
-							value={<IconValue type={IconType.Movement} value={this.props.combatant.combat.movement} />}
+							value={<IconValue type={IconType.Movement} value={this.props.combatant.combat.movement} size={IconSize.Large} />}
 						/>
 						<StatValue
 							orientation='vertical'

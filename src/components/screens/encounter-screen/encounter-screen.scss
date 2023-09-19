@@ -32,6 +32,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: 10px;
+		overflow: hidden;
 
 		.encounter-center-panel {
 			flex: 1 1 0;
@@ -57,6 +58,17 @@
 				-webkit-overflow-scrolling: touch;
 			}
 
+			&.cards {
+				flex: 0 0 310px;
+				gap: 10px;
+				border: none;
+				background-color: transparent;
+				justify-content: flex-start;
+				overflow-x: auto;
+				overflow-y: hidden;
+				-webkit-overflow-scrolling: touch;
+			}
+
 			&.expanded {
 				flex: 1 1 0;
 			}
@@ -67,7 +79,7 @@
 
 			.separator {
 				flex: 0 0 2px;
-				height: 30px;
+				height: 50%;
 				background-color: rgb(220, 220, 220);
 			}
 
@@ -76,5 +88,10 @@
 				letter-spacing: 6px;
 			}
 		}
+	}
+
+	.treasure-money {
+		font-size: 40px;
+		font-weight: 600;
 	}
 }

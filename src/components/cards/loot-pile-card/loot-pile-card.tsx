@@ -4,7 +4,7 @@ import { CardType } from '../../../enums/card-type';
 
 import type { LootPileModel } from '../../../models/encounter';
 
-import { PlayingCard, Text, TextType } from '../../controls';
+import { IconSize, IconType, IconValue, PlayingCard, StatValue, Text, TextType } from '../../controls';
 
 import { ListItemPanel } from '../../panels';
 
@@ -55,6 +55,7 @@ export class LootPileCard extends Component<Props, State> {
 			itemSection = (
 				<div className='items'>
 					{this.props.loot.items.map(i => (<ListItemPanel key={i.id} item={i.name} />))}
+					{this.props.loot.money > 0 ? <StatValue label='Money' value={<IconValue type={IconType.Money} value={this.props.loot.money} size={IconSize.Large} />} /> : null}
 				</div>
 			);
 		}

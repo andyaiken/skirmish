@@ -14,9 +14,13 @@ import {
 } from '@tabler/icons-react';
 
 import { ActionTargetType } from '../../../enums/action-target-type';
+import { CardType } from '../../../enums/card-type';
 import { EncounterState } from '../../../enums/encounter-state';
 
-import { ActionLogic } from '../../../logic/action-logic';
+import { CombatantType } from '../../../enums/combatant-type';
+
+import { ActionLogic, ActionPrerequisites } from '../../../logic/action-logic';
+import { CombatantLogic } from '../../../logic/combatant-logic';
 import { EncounterLogic } from '../../../logic/encounter-logic';
 
 import type { ActionModel, ActionOriginParameterModel, ActionParameterModel, ActionTargetParameterModel } from '../../../models/action';
@@ -26,12 +30,12 @@ import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
 import type { OptionsModel } from '../../../models/options';
 
-import { CardList, Dialog, Text, TextType } from '../../controls';
+import { ActionCard, ItemCard, PlaceholderCard } from '../../cards';
+import { CardList, Dialog, IconSize, IconType, IconValue, PlayingCard, Text, TextType } from '../../controls';
 import { CombatantRowPanel, EncounterMapPanel, InitiativeListPanel, TreasureRowPanel, TurnLogPanel } from '../../panels';
 import { CharacterSheetModal } from '../../modals';
 import { CombatantControls } from './combatant-controls/combatant-controls';
 import { EncounterControls } from './encounter-controls/encounter-controls';
-import { ItemCard } from '../../cards';
 import { RoundControls } from './round-controls/round-controls';
 
 import './encounter-screen.scss';
@@ -68,6 +72,7 @@ interface Props {
 interface State {
 	mapSquareSize: number;
 	showInitiativeList: boolean;
+	showActionHand: boolean;
 	logExpanded: boolean;
 	selectedActionParameter: ActionParameterModel | null;
 	selectableCombatantIDs: string[];
@@ -87,6 +92,7 @@ export class EncounterScreen extends Component<Props, State> {
 		this.state = {
 			mapSquareSize: 15,
 			showInitiativeList: true,
+			showActionHand: false,
 			logExpanded: false,
 			selectedActionParameter: null,
 			selectableCombatantIDs: [],
@@ -388,6 +394,7 @@ export class EncounterScreen extends Component<Props, State> {
 
 	endTurn = () => {
 		this.setState({
+			showActionHand: false,
 			selectedActionParameter: null,
 			selectableSquares: [],
 			selectedSquares: []
@@ -450,6 +457,58 @@ export class EncounterScreen extends Component<Props, State> {
 	};
 
 	getBottomControls = () => {
+		const currentCombatant = EncounterLogic.getActiveCombatants(this.props.encounter).find(c => c.combat.current) || null;
+		if (currentCombatant && (currentCombatant.type === CombatantType.Hero) && !currentCombatant.combat.selectedAction && this.state.showActionHand) {
+			const actionCards: JSX.Element[] = [];
+			const baseCards: JSX.Element[] = [];
+
+			currentCombatant.combat.actions
+				.filter(a => CombatantLogic.getActionSourceType(currentCombatant, a.id) !== CardType.Base)
+				.sort((a, b) => a.name.localeCompare(b.name))
+				.forEach(a => {
+					const prerequisitesMet = a.prerequisites.every(p => ActionPrerequisites.isSatisfied(p, currentCombatant));
+					actionCards.push(
+						<ActionCard
+							key={a.id}
+							action={a}
+							footer={CombatantLogic.getActionSource(currentCombatant, a.id)}
+							footerType={CombatantLogic.getActionSourceType(currentCombatant, a.id)}
+							combatant={currentCombatant}
+							encounter={this.props.encounter}
+							disabled={!prerequisitesMet}
+							onClick={prerequisitesMet ? action => this.props.selectAction(this.props.encounter, currentCombatant, action) : null}
+						/>
+					);
+				});
+
+			currentCombatant.combat.actions
+				.filter(a => CombatantLogic.getActionSourceType(currentCombatant, a.id) === CardType.Base)
+				.forEach(a => {
+					const prerequisitesMet = a.prerequisites.every(p => ActionPrerequisites.isSatisfied(p, currentCombatant));
+					if (prerequisitesMet) {
+						baseCards.push(
+							<ActionCard
+								key={a.id}
+								action={a}
+								footer={CombatantLogic.getActionSource(currentCombatant, a.id)}
+								footerType={CombatantLogic.getActionSourceType(currentCombatant, a.id)}
+								combatant={currentCombatant}
+								encounter={this.props.encounter}
+								onClick={action => this.props.selectAction(this.props.encounter, currentCombatant, action)}
+							/>
+						);
+					}
+				});
+
+			return (
+				<div className='encounter-bottom-panel cards'>
+					{actionCards}
+					{(actionCards.length > 0) && (baseCards.length > 0) ? <div className='separator' /> : null}
+					{baseCards}
+				</div>
+			);
+		}
+
 		if (this.state.selectedCombatantIDs.length > 1) {
 			return (
 				<div className='encounter-bottom-panel'>
@@ -532,6 +591,7 @@ export class EncounterScreen extends Component<Props, State> {
 					combatant={currentCombatant}
 					encounter={this.props.encounter}
 					options={this.props.options}
+					showingActionHand={this.state.showActionHand}
 					selectedActionParameter={this.state.selectedActionParameter}
 					showToken={() => this.scrollToCombatant('current')}
 					showCharacterSheet={this.showDetailsCombatant}
@@ -542,7 +602,7 @@ export class EncounterScreen extends Component<Props, State> {
 					hide={this.props.hide}
 					drinkPotion={this.props.drinkPotion}
 					drawActions={this.props.drawActions}
-					selectAction={this.selectAction}
+					showActionHand={show => this.setState({ showActionHand: show })}
 					deselectAction={this.props.deselectAction}
 					setActionParameter={this.setActionParameter}
 					setActionParameterValue={this.setActionParameter}
@@ -599,12 +659,35 @@ export class EncounterScreen extends Component<Props, State> {
 				);
 			}
 			if (this.state.detailsLoot) {
+				const cards = this.state.detailsLoot.items.map(i => <ItemCard key={i.id} item={i} />);
+				if (this.state.detailsLoot.money > 0) {
+					cards.push(
+						<PlayingCard
+							type={CardType.Item}
+							front={
+								<PlaceholderCard
+									subtext={
+										<div className='treasure-money'>
+											<IconValue
+												type={IconType.Money}
+												value={this.state.detailsLoot.money}
+												size={IconSize.Large}
+											/>
+										</div>
+									}
+								/>
+							}
+							footerText='Money'
+						/>
+					);
+				}
 				dialog = (
 					<Dialog
 						content={
 							<div>
 								<Text type={TextType.Heading}>Treasure</Text>
-								<CardList cards={this.state.detailsLoot.items.map(i => <ItemCard key={i.id} item={i} />)} />
+								<hr />
+								<CardList cards={cards} />
 							</div>
 						}
 						onClose={() => this.clearDetails()}

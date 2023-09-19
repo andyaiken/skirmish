@@ -752,9 +752,17 @@ export class EncounterLogic {
 
 		const items = ([] as ItemModel[]).concat(combatant.items).concat(combatant.carried);
 
-		if (items.length > 0) {
+		let money = 0;
+		if (combatant.type === CombatantType.Monster) {
+			if (Random.randomBoolean()) {
+				money = Random.dice(1);
+			}
+		}
+
+		if ((items.length > 0) || (money > 0)) {
 			const loot = Factory.createLootPile();
 			loot.items.push(...items);
+			loot.money = money;
 
 			combatant.items = [];
 			combatant.carried = [];

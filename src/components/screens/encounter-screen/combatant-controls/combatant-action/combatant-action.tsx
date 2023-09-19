@@ -2,7 +2,6 @@ import { IconArrowUp, IconViewfinder } from '@tabler/icons-react';
 import { Component } from 'react';
 
 import { ActionTargetType } from '../../../../../enums/action-target-type';
-import { CardType } from '../../../../../enums/card-type';
 
 import { ActionLogic, ActionPrerequisites } from '../../../../../logic/action-logic';
 import { CombatantLogic } from '../../../../../logic/combatant-logic';
@@ -14,7 +13,7 @@ import type { CombatantModel } from '../../../../../models/combatant';
 import type { EncounterModel } from '../../../../../models/encounter';
 import type { ItemModel } from '../../../../../models/item';
 
-import { CardList, Selector, Text, TextType } from '../../../../controls';
+import { Selector, Switch, Text, TextType } from '../../../../controls';
 import { ActionCard } from '../../../../cards';
 
 import './combatant-action.scss';
@@ -22,10 +21,11 @@ import './combatant-action.scss';
 interface Props {
 	combatant: CombatantModel;
 	encounter: EncounterModel;
+	showingActionHand: boolean;
 	currentActionParameter: ActionParameterModel | null;
 	developer: boolean;
 	drawActions: (encounter: EncounterModel, combatant: CombatantModel) => void;
-	selectAction: (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => void;
+	showActionHand: (show: boolean) => void;
 	deselectAction: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	setActionParameter: (parameter: ActionParameterModel) => void;
 	setActionParameterValue: (parameter: ActionParameterModel, value: unknown) => void;
@@ -34,49 +34,13 @@ interface Props {
 
 export class CombatantAction extends Component<Props> {
 	getNotSelected = () => {
-		const actionCards: JSX.Element[] = [];
-
-		this.props.combatant.combat.actions
-			.filter(a => CombatantLogic.getActionSourceType(this.props.combatant, a.id) !== CardType.Base)
-			.sort((a, b) => a.name.localeCompare(b.name))
-			.forEach(a => {
-				const prerequisitesMet = a.prerequisites.every(p => ActionPrerequisites.isSatisfied(p, this.props.combatant));
-				actionCards.push(
-					<ActionCard
-						key={a.id}
-						action={a}
-						footer={CombatantLogic.getActionSource(this.props.combatant, a.id)}
-						footerType={CombatantLogic.getActionSourceType(this.props.combatant, a.id)}
-						combatant={this.props.combatant}
-						encounter={this.props.encounter}
-						onClick={action => prerequisitesMet ? this.props.selectAction(this.props.encounter, this.props.combatant, action) : null}
-					/>
-				);
-			});
-
-		this.props.combatant.combat.actions
-			.filter(a => CombatantLogic.getActionSourceType(this.props.combatant, a.id) === CardType.Base)
-			.forEach(a => {
-				const prerequisitesMet = a.prerequisites.every(p => ActionPrerequisites.isSatisfied(p, this.props.combatant));
-				if (prerequisitesMet) {
-					actionCards.push(
-						<ActionCard
-							key={a.id}
-							action={a}
-							footer={CombatantLogic.getActionSource(this.props.combatant, a.id)}
-							footerType={CombatantLogic.getActionSourceType(this.props.combatant, a.id)}
-							combatant={this.props.combatant}
-							encounter={this.props.encounter}
-							onClick={action => this.props.selectAction(this.props.encounter, this.props.combatant, action)}
-						/>
-					);
-				}
-			});
-
 		return (
 			<div className='combatant-action'>
+				<Text type={TextType.Information}>
+					<p>You haven&apos;t yet chosen your action for this turn.</p>
+				</Text>
+				<Switch label='Show Action Cards' checked={this.props.showingActionHand} onChange={show => this.props.showActionHand(show)} />
 				{this.props.developer ? <button className='developer' onClick={() => this.props.drawActions(this.props.encounter, this.props.combatant)}>Draw Again</button> : null}
-				<CardList cards={actionCards} />
 			</div>
 		);
 	};
@@ -339,7 +303,7 @@ export class CombatantAction extends Component<Props> {
 						disabled={this.props.currentActionParameter !== null}
 						onClick={() => this.props.deselectAction(this.props.encounter, this.props.combatant)}
 					>
-						Cancel
+						Choose Again
 					</button>
 				</div>
 			</div>
@@ -357,11 +321,11 @@ export class CombatantAction extends Component<Props> {
 						footerType={CombatantLogic.getActionSourceType(this.props.combatant, action.id)}
 						combatant={this.props.combatant}
 						encounter={this.props.encounter}
-						disabled={true}
 					/>
 				</div>
 				<Text type={TextType.Information}>
 					<p>You have used your action for this turn.</p>
+					{this.props.combatant.combat.movement > 0 ? <p>You still have some movement points you can use.</p> : null }
 				</Text>
 			</div>
 		);

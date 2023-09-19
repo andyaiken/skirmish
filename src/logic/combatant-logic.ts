@@ -210,7 +210,6 @@ export class CombatantLogic {
 		const b = GameLogic.getBackground(combatant.backgroundID);
 
 		return ([] as FeatureModel[])
-			.concat(BaseData.getBaseFeatures())
 			.concat(s ? s.features : [])
 			.concat(r ? r.features : [])
 			.concat(b ? b.features : []);
@@ -235,7 +234,7 @@ export class CombatantLogic {
 
 	static getFeatureSource = (combatant: CombatantModel, cardID: string) => {
 		if (BaseData.getBaseFeatures().find(f => f.id === cardID)) {
-			return 'Base';
+			return 'Standard';
 		}
 
 		const s = GameLogic.getSpecies(combatant.speciesID);
@@ -311,7 +310,7 @@ export class CombatantLogic {
 
 	static getActionSource = (combatant: CombatantModel, cardID: string) => {
 		if (BaseData.getBaseActions().find(a => a.id === cardID)) {
-			return 'Base';
+			return 'Standard';
 		}
 
 		const s = GameLogic.getSpecies(combatant.speciesID);

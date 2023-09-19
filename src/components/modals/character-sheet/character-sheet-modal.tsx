@@ -93,7 +93,7 @@ export class CharacterSheetModal extends Component<Props, State> {
 
 			let selector = null;
 			let sidebar = null;
-			if (this.props.combatant.xp >= this.props.combatant.level) {
+			if ((this.props.game.encounter === null) && (this.props.combatant.xp >= this.props.combatant.level)) {
 				sidebar = (
 					<div className='sidebar-section'>
 						<LevelUp combatant={this.props.combatant} developer={this.props.developer} levelUp={this.levelUp} />

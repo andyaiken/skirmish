@@ -47,14 +47,12 @@ export class DecksTab extends Component<Props, State> {
 		});
 	};
 
-	getBadge = (packID: string, strength: number) => {
+	getBadge = (strength: number, scale: number, packID = '') => {
 		let value = '';
 
 		if (this.props.options.developer) {
-			const scaled = Math.round(strength / 5);
-			for (let n = 0; n < scaled; ++n) {
-				value += '★';
-			}
+			const scaled = Math.round(strength / scale);
+			value = value.padEnd(scaled, '★');
 		} else {
 			const pack = GameLogic.getPack(packID);
 			if (pack) {
@@ -70,7 +68,7 @@ export class DecksTab extends Component<Props, State> {
 			const heroes = GameLogic.getHeroSpeciesDeck(this.props.options.packIDs)
 				.map(s => {
 					return (
-						<Badge key={s.id} value={this.getBadge(s.packID, GameLogic.getSpeciesStrength(s))}>
+						<Badge key={s.id} value={this.getBadge(GameLogic.getSpeciesStrength(s), 5, s.packID)}>
 							<SpeciesCard species={s} onClick={species => this.setActions(species.name, CardType.Species, species.startingFeatures, species.features, species.actions)} />
 						</Badge>
 					);
@@ -79,7 +77,7 @@ export class DecksTab extends Component<Props, State> {
 			const monsters = GameLogic.getMonsterSpeciesDeck(this.props.options.packIDs)
 				.map(s => {
 					return (
-						<Badge key={s.id} value={this.getBadge(s.packID, GameLogic.getSpeciesStrength(s))}>
+						<Badge key={s.id} value={this.getBadge(GameLogic.getSpeciesStrength(s), 5, s.packID)}>
 							<SpeciesCard species={s} onClick={species => this.setActions(species.name, CardType.Species, species.startingFeatures, species.features, species.actions)} />
 						</Badge>
 					);
@@ -88,7 +86,7 @@ export class DecksTab extends Component<Props, State> {
 			const roles = GameLogic.getRoleDeck(this.props.options.packIDs)
 				.map(r => {
 					return (
-						<Badge key={r.id} value={this.getBadge(r.packID, GameLogic.getRoleStrength(r))}>
+						<Badge key={r.id} value={this.getBadge(GameLogic.getRoleStrength(r), 5, r.packID)}>
 							<RoleCard role={r} onClick={role => this.setActions(role.name, CardType.Role, role.startingFeatures, role.features, role.actions)} />
 						</Badge>
 					);
@@ -97,7 +95,7 @@ export class DecksTab extends Component<Props, State> {
 			const backgrounds = GameLogic.getBackgroundDeck(this.props.options.packIDs)
 				.map(b => {
 					return (
-						<Badge key={b.id} value={this.getBadge(b.packID, GameLogic.getBackgroundStrength(b))}>
+						<Badge key={b.id} value={this.getBadge(GameLogic.getBackgroundStrength(b), 5, b.packID)}>
 							<BackgroundCard background={b} onClick={bg => this.setActions(bg.name, CardType.Background, bg.startingFeatures, bg.features, bg.actions)} />
 						</Badge>
 					);
@@ -106,9 +104,7 @@ export class DecksTab extends Component<Props, State> {
 			const items = GameLogic.getItemDeck(this.props.options.packIDs)
 				.map(i => {
 					return (
-						<Badge key={i.id} value={this.getBadge(i.packID, 0)}>
-							<ItemCard item={i} />
-						</Badge>
+						<ItemCard key={i.id} item={i} />
 					);
 				});
 
@@ -119,7 +115,7 @@ export class DecksTab extends Component<Props, State> {
 
 				const startingCards = this.state.selected.starting.map(f => {
 					return (
-						<Badge key={f.id} value={this.props.options.developer ? GameLogic.getFeatureStrength(f) : 0}>
+						<Badge key={f.id} value={this.getBadge(GameLogic.getFeatureStrength(f), 2)}>
 							<FeatureCard
 								feature={f}
 								footer={source}
@@ -130,7 +126,7 @@ export class DecksTab extends Component<Props, State> {
 				});
 				const featureCards = this.state.selected.features.map(f => {
 					return (
-						<Badge key={f.id} value={this.props.options.developer ? GameLogic.getFeatureStrength(f) : 0}>
+						<Badge key={f.id} value={this.getBadge(GameLogic.getFeatureStrength(f), 2)}>
 							<FeatureCard
 								feature={f}
 								footer={source}
@@ -141,7 +137,7 @@ export class DecksTab extends Component<Props, State> {
 				});
 				const actionCards = this.state.selected.actions.map(a => {
 					return (
-						<Badge key={a.id} value={this.props.options.developer ? GameLogic.getActionStrength(a) : 0}>
+						<Badge key={a.id} value={this.getBadge(GameLogic.getActionStrength(a), 3)}>
 							<ActionCard
 								action={a}
 								footer={source}

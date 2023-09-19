@@ -30,7 +30,8 @@ export class HeroSpeciesData {
 			FeatureLogic.createTraitFeature('human-start-3', TraitType.Speed, 1)
 		],
 		features: [
-			FeatureLogic.createSkillFeature('human-feature-1', SkillType.Any, 2)
+			FeatureLogic.createTraitFeature('human-feature-1', TraitType.Any, 1),
+			FeatureLogic.createSkillFeature('human-feature-2', SkillType.Any, 2)
 		],
 		actions: [
 			{
@@ -68,12 +69,15 @@ export class HeroSpeciesData {
 		quirks: [],
 		startingFeatures: [
 			FeatureLogic.createTraitFeature('construct-start-1', TraitType.Endurance, 1),
-			FeatureLogic.createTraitFeature('construct-start-2', TraitType.Resolve, 1)
+			FeatureLogic.createTraitFeature('construct-start-2', TraitType.Resolve, 1),
+			FeatureLogic.createDamageResistFeature('construct-start-3', DamageType.Poison, 2),
+			FeatureLogic.createDamageResistFeature('construct-start-4', DamageType.Psychic, 2)
 		],
 		features: [
 			FeatureLogic.createTraitFeature('construct-feature-1', TraitType.Endurance, 1),
-			FeatureLogic.createDamageResistFeature('construct-feature-2', DamageType.Poison, 2),
-			FeatureLogic.createDamageResistFeature('construct-feature-3', DamageType.Psychic, 2)
+			FeatureLogic.createTraitFeature('construct-feature-2', TraitType.Resolve, 1),
+			FeatureLogic.createDamageResistFeature('construct-feature-3', DamageType.Poison, 2),
+			FeatureLogic.createDamageResistFeature('construct-feature-4', DamageType.Psychic, 2)
 		],
 		actions: [
 			{
@@ -90,7 +94,7 @@ export class HeroSpeciesData {
 						trait: TraitType.Endurance,
 						skillBonus: 0,
 						hit: [
-							ActionEffects.dealDamage(DamageType.Impact, 1),
+							ActionEffects.dealDamage(DamageType.Impact, 2),
 							ActionEffects.knockDown()
 						]
 					})
@@ -106,7 +110,8 @@ export class HeroSpeciesData {
 					ActionTargetParameters.self()
 				],
 				effects: [
-					ActionEffects.healDamage(1)
+					ActionEffects.healDamage(1),
+					ActionEffects.takeAnotherAction()
 				]
 			}
 		]

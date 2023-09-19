@@ -6,7 +6,7 @@ import { CardType } from '../../../enums/card-type';
 import type { BoonModel } from '../../../models/boon';
 import type { ItemModel } from '../../../models/item';
 
-import { IconType, IconValue, PlayingCard, StatValue } from '../../controls';
+import { IconSize, IconType, IconValue, PlayingCard } from '../../controls';
 import { ItemCard } from '../item-card/item-card';
 import { PlaceholderCard } from '../placeholder-card/placeholder-card';
 
@@ -75,13 +75,13 @@ export class BoonCard extends Component<Props, State> {
 				break;
 			case BoonType.ExtraXP:
 				desc = 'Choose one of your heroes to gain bonus XP.';
-				extra = <StatValue orientation='vertical' label='XP' value={<IconValue type={IconType.XP} value={this.props.boon.data as number} />} />;
+				extra = <IconValue type={IconType.XP} value={this.props.boon.data as number} size={IconSize.Large} />;
 				break;
 			case BoonType.LevelUp:
 				desc = 'Choose one of your heroes to level up.';
 				break;
 			case BoonType.Money:
-				extra = <StatValue orientation='vertical' label='Money' value={<IconValue type={IconType.Money} value={this.props.boon.data as number} />} />;
+				extra = <IconValue type={IconType.Money} value={this.props.boon.data as number} size={IconSize.Large} />;
 				break;
 			case BoonType.EnchantItem:
 				extra = 'Enchant one of your items.';

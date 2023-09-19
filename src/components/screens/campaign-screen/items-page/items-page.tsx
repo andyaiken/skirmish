@@ -15,7 +15,7 @@ import { Utils } from '../../../../utils/utils';
 
 import { BoonCard, ItemCard } from '../../../cards';
 import { BuyEquipmentModal, BuyMagicItemModal, BuyPotionModal, EnchantItemModal, MagicItemInfoModal } from '../../../modals';
-import { CardList, Dialog, IconType, IconValue, StatValue, Text, TextType } from '../../../controls';
+import { CardList, Dialog, IconSize, IconType, IconValue, StatValue, Text, TextType } from '../../../controls';
 
 import './items-page.scss';
 
@@ -118,7 +118,7 @@ export class ItemsPage extends Component<Props, State> {
 	getSidebar = () => {
 		const moneySection = (
 			<div>
-				<StatValue orientation='vertical' label='Money' value={<IconValue type={IconType.Money} value={this.props.game.money} />} />
+				<StatValue orientation='vertical' label='Money' value={<IconValue type={IconType.Money} value={this.props.game.money} size={IconSize.Large} />} />
 				{this.props.options.developer ? <button className='developer' onClick={() => this.props.addMoney()}>Add money</button> : null}
 			</div>
 		);
@@ -141,7 +141,7 @@ export class ItemsPage extends Component<Props, State> {
 			buySection.push(
 				<button key='mundane' onClick={() => this.showMarket('mundane')}>
 					<div>Buy equipment</div>
-					<IconValue type={IconType.Money} value={2} iconSize={12} />
+					<IconValue type={IconType.Money} value={2} size={IconSize.Button} />
 				</button>
 			);
 		}
@@ -149,7 +149,7 @@ export class ItemsPage extends Component<Props, State> {
 			buySection.push(
 				<button key='potion' onClick={() => this.showMarket('potion')}>
 					<div>Buy a potion</div>
-					<IconValue type={IconType.Money} value={20} iconSize={12} />
+					<IconValue type={IconType.Money} value={20} size={IconSize.Button} />
 				</button>
 			);
 		}
@@ -157,7 +157,7 @@ export class ItemsPage extends Component<Props, State> {
 			buySection.push(
 				<button key='magical' onClick={() => this.showMarket('magical')}>
 					<div>Buy a magic item</div>
-					<IconValue type={IconType.Money} value={100} iconSize={12} />
+					<IconValue type={IconType.Money} value={100} size={IconSize.Button} />
 				</button>
 			);
 		}
@@ -167,7 +167,7 @@ export class ItemsPage extends Component<Props, State> {
 			enchantSection = (
 				<button onClick={() => this.showEnchant(true)}>
 					<div>Enchant an item</div>
-					<IconValue type={IconType.Money} value={100} iconSize={12} />
+					<IconValue type={IconType.Money} value={100} />
 				</button>
 			);
 		}
@@ -276,7 +276,7 @@ export class ItemsPage extends Component<Props, State> {
 						<ItemCard item={item} onClick={i => this.setState({ selectedMagicItem: i })} />
 						<div>
 							<button onClick={() => this.props.sellItem(item, false)}>
-								Sell<br /><IconValue type={IconType.Money} value={50} iconSize={12} />
+								Sell<br /><IconValue type={IconType.Money} value={50} size={IconSize.Button} />
 							</button>
 						</div>
 					</div>
@@ -296,7 +296,7 @@ export class ItemsPage extends Component<Props, State> {
 
 					let footer = (
 						<button onClick={() => this.props.sellItem(item, true)}>
-							Sell<br /><IconValue type={IconType.Money} value={10} iconSize={12} />
+							Sell<br /><IconValue type={IconType.Money} value={10} size={IconSize.Button} />
 						</button>
 					);
 
@@ -304,10 +304,10 @@ export class ItemsPage extends Component<Props, State> {
 						footer = (
 							<div>
 								<button onClick={() => this.props.sellItem(item, false)}>
-									Sell One<br /><IconValue type={IconType.Money} value={10} iconSize={12} />
+									Sell One<br /><IconValue type={IconType.Money} value={10} size={IconSize.Button} />
 								</button>
 								<button onClick={() => this.props.sellItem(item, true)}>
-									Sell All ({count})<br /><IconValue type={IconType.Money} value={10 * count} iconSize={12} />
+									Sell All ({count})<br /><IconValue type={IconType.Money} value={10 * count} size={IconSize.Button} />
 								</button>
 							</div>
 						);

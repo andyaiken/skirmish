@@ -11,8 +11,16 @@ import './index.scss';
 
 localforage.getItem<GameModel>('skirmish-game').then(game => {
 	if (game) {
-		if (game.encounter && (game.encounter.log === undefined)) {
-			game.encounter.log = [];
+		if (game.encounter) {
+			if (game.encounter.log === undefined) {
+				game.encounter.log = [];
+			}
+
+			game.encounter.loot.forEach(lp => {
+				if (lp.money === undefined) {
+					lp.money = 0;
+				}
+			});
 		}
 
 		game.map.regions

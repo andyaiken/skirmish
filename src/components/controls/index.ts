@@ -1,4 +1,4 @@
-import { IconType, IconValue } from './icon-value/icon-value';
+import { IconSize, IconType, IconValue } from './icon-value/icon-value';
 import { Text, TextType } from './text/text';
 import { Badge } from './badge/badge';
 import { Box } from './box/box';
@@ -22,7 +22,7 @@ export {
 	ConfirmButton,
 	Dialog,
 	Gauge,
-	IconType, IconValue,
+	IconSize, IconType, IconValue,
 	PlayingCard,
 	Selector,
 	StatValue,

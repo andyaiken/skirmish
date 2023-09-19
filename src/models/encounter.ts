@@ -12,6 +12,7 @@ export interface EncounterMapSquareModel {
 export interface LootPileModel {
 	id: string;
 	items: ItemModel[];
+	money: number;
 	position: { x: number, y: number };
 }
 

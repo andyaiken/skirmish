@@ -975,8 +975,11 @@ export class Main extends Component<Props, State> {
 			let dialogContent = null;
 			switch (state) {
 				case EncounterState.Victory: {
-					// Get equipment from loot piles, add to game items
-					encounter.loot.forEach(lp => game.items.push(...lp.items));
+					// Get equipment and money from loot piles, add to game items
+					encounter.loot.forEach(lp => {
+						game.items.push(...lp.items);
+						game.money += lp.money;
+					});
 					// Increment XP for surviving heroes
 					encounter.combatants
 						.filter(c => c.type === CombatantType.Hero)

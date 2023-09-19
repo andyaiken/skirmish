@@ -4,7 +4,7 @@ import { Component } from 'react';
 import { CombatantState } from '../../../../enums/combatant-state';
 import { CombatantType } from '../../../../enums/combatant-type';
 
-import type { ActionModel, ActionParameterModel } from '../../../../models/action';
+import type { ActionParameterModel } from '../../../../models/action';
 import type { CombatantModel } from '../../../../models/combatant';
 import type { EncounterModel } from '../../../../models/encounter';
 import type { ItemModel } from '../../../../models/item';
@@ -25,6 +25,7 @@ interface CombatantControlsProps {
 	combatant: CombatantModel;
 	encounter: EncounterModel;
 	options: OptionsModel;
+	showingActionHand: boolean;
 	selectedActionParameter: ActionParameterModel | null;
 	showToken: (combatant: CombatantModel) => void;
 	showCharacterSheet: (combatant: CombatantModel) => void;
@@ -35,7 +36,7 @@ interface CombatantControlsProps {
 	hide: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	drinkPotion: (encounter: EncounterModel, owner: CombatantModel, drinker: CombatantModel, potion: ItemModel) => void;
 	drawActions: (encounter: EncounterModel, combatant: CombatantModel) => void;
-	selectAction: (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => void;
+	showActionHand: (show: boolean) => void;
 	deselectAction: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	setActionParameter: (parameter: ActionParameterModel) => void;
 	setActionParameterValue: (parameter: ActionParameterModel, value: unknown) => void;
@@ -192,10 +193,11 @@ export class CombatantControls extends Component<CombatantControlsProps, Combata
 						<CombatantAction
 							combatant={this.props.combatant}
 							encounter={this.props.encounter}
+							showingActionHand={this.props.showingActionHand}
 							currentActionParameter={this.props.selectedActionParameter}
 							developer={this.props.options.developer}
 							drawActions={this.props.drawActions}
-							selectAction={this.props.selectAction}
+							showActionHand={this.props.showActionHand}
 							deselectAction={this.props.deselectAction}
 							setActionParameter={this.props.setActionParameter}
 							setActionParameterValue={this.props.setActionParameterValue}

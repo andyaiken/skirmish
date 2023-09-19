@@ -46,6 +46,13 @@ export class TreasureRowPanel extends Component<Props> {
 			} else {
 				name = `${this.props.loot.items.length} items`;
 			}
+			if (this.props.loot.money > 0) {
+				if (name === '') {
+					name = 'Money';
+				} else {
+					name += '; money';
+				}
+			}
 
 			return (
 				<div className='treasure-row-panel'>

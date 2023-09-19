@@ -349,24 +349,32 @@ export class GameLogic {
 	};
 
 	static getFeatureStrength = (feature: FeatureModel) => {
+		let factor = 1;
+
 		switch (feature.type) {
 			case FeatureType.Aura:
-				return feature.rank * 3;
+				factor = 3;
+				break;
 			case FeatureType.DamageBonus:
 			case FeatureType.DamageResist:
-				return feature.rank;
+				factor = (feature.damage === DamageType.Any) ? 3 : 1;
+				break;
 			case FeatureType.DamageCategoryBonus:
 			case FeatureType.DamageCategoryResist:
-				return feature.rank * 3;
+				factor = (feature.damageCategory === DamageCategoryType.Any) ? 5 : 3;
+				break;
 			case FeatureType.Skill:
-				return feature.rank;
+				factor = (feature.skill === SkillType.Any) ? 3 : 1;
+				break;
 			case FeatureType.SkillCategory:
-				return feature.rank * 3;
+				factor = (feature.skillCategory === SkillCategoryType.Any) ? 5 : 3;
+				break;
 			case FeatureType.Trait:
-				return feature.rank * 5;
+				factor = (feature.trait === TraitType.Any) ? 8 : 5;
+				break;
 		}
 
-		return 0;
+		return feature.rank * factor;
 	};
 
 	static getActionStrength = (action: ActionModel) => {

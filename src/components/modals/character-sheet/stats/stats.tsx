@@ -150,8 +150,8 @@ export class Stats extends Component<Props, State> {
 	getXPSection = () => {
 		return (
 			<Box label='XP'>
-				<StatValue label='Earned' value={<IconValue type={IconType.XP} value={this.props.combatant.xp} iconSize={12} />} />
-				<StatValue label={`Required for level ${this.props.combatant.level + 1}`} value={<IconValue type={IconType.XP} value={this.props.combatant.level} iconSize={12} />} />
+				<StatValue label='Earned' value={<IconValue type={IconType.XP} value={this.props.combatant.xp} />} />
+				<StatValue label={`Required for level ${this.props.combatant.level + 1}`} value={<IconValue type={IconType.XP} value={this.props.combatant.level} />} />
 			</Box>
 		);
 	};
@@ -161,7 +161,7 @@ export class Stats extends Component<Props, State> {
 			let cutDown = false;
 			switch (this.props.combatant.type) {
 				case CombatantType.Hero:
-					cutDown = (this.props.combatant.xp >= this.props.combatant.level);
+					cutDown = (this.props.encounter === null) && (this.props.combatant.xp >= this.props.combatant.level);
 					break;
 				case CombatantType.Monster:
 					cutDown = false;

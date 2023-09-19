@@ -11,7 +11,7 @@ import type { EncounterModel } from '../../../models/encounter';
 
 import { Collections } from '../../../utils/collections';
 
-import { Box, IconType, IconValue, StatValue, Text, TextType } from '../../controls';
+import { Box, IconSize, IconType, IconValue, StatValue, Text, TextType } from '../../controls';
 
 import './combat-stats-panel.scss';
 
@@ -90,7 +90,7 @@ export class CombatStatsPanel extends Component<Props> {
 				<div className='combat-stats-panel'>
 					<Box label='This Round'>
 						<div className='combat-stats-row'>
-							<StatValue orientation='vertical' label='Movement' value={<IconValue value={this.props.combatant.combat.movement} type={IconType.Movement} />} />
+							<StatValue orientation='vertical' label='Movement' value={<IconValue value={this.props.combatant.combat.movement} type={IconType.Movement} size={IconSize.Large} />} />
 							<StatValue orientation='vertical' label='Senses' value={this.props.combatant.combat.senses} />
 							<StatValue orientation='vertical' label='Hidden' value={this.props.combatant.combat.hidden} />
 						</div>

@@ -12,7 +12,7 @@ import type { ItemModel } from '../../../../models/item';
 
 import { Collections } from '../../../../utils/collections';
 
-import { Box, CardList, IconType, IconValue, PlayingCard, Text, TextType } from '../../../controls';
+import { Box, CardList, IconSize, IconType, IconValue, PlayingCard, Text, TextType } from '../../../controls';
 import { ItemCard, PlaceholderCard } from '../../../cards';
 
 import './items.scss';
@@ -43,7 +43,7 @@ export class Items extends Component<Props> {
 				let unequip: JSX.Element | string = 'Carry';
 				if (this.props.game.encounter && (this.props.combatant.type === CombatantType.Hero)) {
 					unequip = (
-						<div>Carry<br /><IconValue type={IconType.Movement} value={1} iconSize={12} /></div>
+						<div>Carry<br /><IconValue type={IconType.Movement} value={1} size={IconSize.Button} /></div>
 					);
 				}
 
@@ -99,7 +99,7 @@ export class Items extends Component<Props> {
 				let equip: JSX.Element | string = 'Equip';
 				if (this.props.game.encounter && (this.props.combatant.type === CombatantType.Hero)) {
 					equip = (
-						<div>Equip<br /><IconValue type={IconType.Movement} value={1} iconSize={12} /></div>
+						<div>Equip<br /><IconValue type={IconType.Movement} value={1} size={IconSize.Button} /></div>
 					);
 				}
 
@@ -211,7 +211,7 @@ export class Items extends Component<Props> {
 				const options = (
 					<div className='item-options'>
 						<button disabled={this.props.combatant.carried.length >= CombatantLogic.CARRY_CAPACITY} onClick={() => this.props.pickUpItem(item)}>
-							<div>Pick Up<br /><IconValue type={IconType.Movement} value={1} iconSize={12} /></div>
+							<div>Pick Up<br /><IconValue type={IconType.Movement} value={1} size={IconSize.Button} /></div>
 						</button>
 					</div>
 				);

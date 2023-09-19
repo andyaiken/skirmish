@@ -135,7 +135,7 @@ export class CombatantControls extends Component<CombatantControlsProps, Combata
 								/>
 								: null
 						}
-						<button disabled={this.state.thinking} onClick={() => this.runMonsterTurn()}>
+						<button className='primary' disabled={this.state.thinking} onClick={() => this.runMonsterTurn()}>
 							{this.state.thinking ? 'Thinking' : 'Go'}
 						</button>
 						<CombatantMonster

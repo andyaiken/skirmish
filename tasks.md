@@ -4,12 +4,22 @@
 
 ## Highlighted Squares
 * If you select a 'square' parameter, and move, the origin candidate squares do not move
-* Presumably this is the same for other parameter types
+  * Presumably this is the same for other parameter types
 
 -----------------------------------------------------------------------------------------
 
 # Priority
 
+## Reworking the encounter screen
+* Move encounter log to tab behind initiative list
+* Remove selected combatant / selected loot pile display from below map
+  * Replace this with a hover-over display and double-click to open dialog
+* Move all action-related controls into the action hand panel
+* Make the action hand panel expandable
+* Shrink the right-hand panel to 250px to match left-hand panel
+* Make significant log messages appear on the map for a brief time before disappearing
+* Make the right-hand panel collapsible, like the left-hand panel
+  * Maybe they become narrow panels rather than disappearing
 -----------------------------------------------------------------------------------------
 
 # Improvements / Enhancements

@@ -125,7 +125,7 @@ export class LevelUp extends Component<Props, State> {
 						{choice}
 					</div>
 					<div className='footer'>
-						<button disabled={!canFinish} onClick={this.levelUp}>Level Up</button>
+						<button className='primary' disabled={!canFinish} onClick={this.levelUp}>Level Up</button>
 					</div>
 				</div>
 			);

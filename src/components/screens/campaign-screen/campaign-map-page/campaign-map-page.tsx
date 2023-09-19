@@ -65,7 +65,7 @@ export class CampaignMapPage extends Component<Props, State> {
 								<p><b>You can&apos;t attack {this.state.selectedRegion.name}</b> because you don&apos;t have any heroes.</p>
 							</Text>
 					}
-					{canAttack && heroesExist ? <button onClick={() => this.setState({ showHeroSelection: true })}>Start an encounter</button> : null}
+					{canAttack && heroesExist ? <button className='primary' onClick={() => this.setState({ showHeroSelection: true })}>Start an encounter</button> : null}
 					{this.props.options.developer ? <button className='developer' onClick={() => this.conquer(this.state.selectedRegion as RegionModel)}>Conquer</button> : null}
 					<hr />
 					<div className='region-details-card'>
@@ -83,6 +83,7 @@ export class CampaignMapPage extends Component<Props, State> {
 		const owned = this.props.game.map.squares.filter(sq => sq.regionID === '');
 		const ownedFraction = owned.length / this.props.game.map.squares.length;
 		const encounters = Collections.sum(this.props.game.map.regions, r => r.encounters.length);
+
 		return (
 			<div key='map' className='sidebar'>
 				<Text type={TextType.SubHeading}>The Island</Text>

@@ -35,7 +35,7 @@ export class CombatantEndturn extends Component<Props> {
 									<IconX size={50} />}
 						/>
 					</div>
-					<button onClick={this.props.endTurn}>End Turn</button>
+					<button className='primary' onClick={this.props.endTurn}>End Turn</button>
 				</div>
 			);
 		} catch {

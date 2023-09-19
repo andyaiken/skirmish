@@ -73,7 +73,7 @@ export class RoundControls extends Component<Props> {
 							/>
 							: null
 					}
-					<button onClick={() => this.props.rollInitiative(this.props.encounter)}>Roll Initiative</button>
+					<button className='primary' onClick={() => this.props.rollInitiative(this.props.encounter)}>Roll Initiative</button>
 				</div>
 			);
 		} catch {

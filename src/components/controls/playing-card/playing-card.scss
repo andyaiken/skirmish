@@ -189,5 +189,11 @@
 	&.disabled {
 		opacity: 0.75;
 		pointer-events: none;
+
+		.stack-card,
+		.playing-card-inner .playing-card-front,
+		.playing-card-inner .playing-card-back {
+			box-shadow: none;
+		}
 	}
 }

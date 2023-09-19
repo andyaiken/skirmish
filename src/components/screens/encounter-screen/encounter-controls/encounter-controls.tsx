@@ -41,7 +41,7 @@ export class EncounterControls extends Component<EncounterControlsProps> {
 									<li>Any heroes who died have been lost.</li>
 								</ul>
 								<hr />
-								<button onClick={() => this.props.finishEncounter(EncounterState.Victory)}>OK</button>
+								<button className='primary' onClick={() => this.props.finishEncounter(EncounterState.Victory)}>OK</button>
 								{
 									this.props.state !== EncounterLogic.getEncounterState(this.props.encounter) ?
 										<button onClick={() => this.props.setEncounterState(EncounterState.Active)}>Cancel</button>
@@ -65,7 +65,7 @@ export class EncounterControls extends Component<EncounterControlsProps> {
 									<BoonCard boon={region.boon} />
 								</div>
 								<hr />
-								<button onClick={() => this.props.finishEncounter(EncounterState.Victory)}>OK</button>
+								<button className='primary' onClick={() => this.props.finishEncounter(EncounterState.Victory)}>OK</button>
 								{
 									this.props.state !== EncounterLogic.getEncounterState(this.props.encounter) ?
 										<button onClick={() => this.props.setEncounterState(EncounterState.Active)}>Cancel</button>
@@ -84,7 +84,7 @@ export class EncounterControls extends Component<EncounterControlsProps> {
 								<li>Those heroes who took part have been lost, along with all their equipment.</li>
 							</ul>
 							<hr />
-							<button onClick={() => this.props.finishEncounter(EncounterState.Defeat)}>OK</button>
+							<button className='primary' onClick={() => this.props.finishEncounter(EncounterState.Defeat)}>OK</button>
 							{
 								this.props.state !== EncounterLogic.getEncounterState(this.props.encounter) ?
 									<button onClick={() => this.props.setEncounterState(EncounterState.Active)}>Cancel</button>
@@ -102,7 +102,7 @@ export class EncounterControls extends Component<EncounterControlsProps> {
 								<li>Any heroes who fell have been lost, along with all their equipment.</li>
 							</ul>
 							<hr />
-							<button onClick={() => this.props.finishEncounter(EncounterState.Retreat)}>OK</button>
+							<button className='primary' onClick={() => this.props.finishEncounter(EncounterState.Retreat)}>OK</button>
 							{
 								this.props.state !== EncounterLogic.getEncounterState(this.props.encounter) ?
 									<button onClick={() => this.props.setEncounterState(EncounterState.Active)}>Cancel</button>

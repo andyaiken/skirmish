@@ -162,7 +162,13 @@ export class EncounterStartModal extends Component<Props, State> {
 						/>
 						{rightContent}
 						<hr />
-						<button disabled={(this.state.selectedHeroes.length < 1) || (this.state.selectedHeroes.length > 5)} onClick={this.startEncounter}>Start the Encounter</button>
+						<button
+							className='primary'
+							disabled={(this.state.selectedHeroes.length < 1) || (this.state.selectedHeroes.length > 5)}
+							onClick={this.startEncounter}
+						>
+							Start the Encounter
+						</button>
 					</div>
 				</div>
 			</div>

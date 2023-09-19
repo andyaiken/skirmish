@@ -403,6 +403,20 @@ export class EncounterScreen extends Component<Props, State> {
 		});
 	};
 
+	getLeftControls = () => {
+		if (this.state.showInitiativeList) {
+			return (
+				<InitiativeListPanel
+					encounter={this.props.encounter}
+					selectedIDs={this.state.selectedCombatantIDs}
+					onSelect={this.selectCombatant}
+				/>
+			);
+		}
+
+		return null;
+	};
+
 	getTopControls = () => {
 		let state = this.state.manualEncounterState;
 		if (state === EncounterState.Active) {
@@ -624,19 +638,6 @@ export class EncounterScreen extends Component<Props, State> {
 
 	render = () => {
 		try {
-			let left = null;
-			if (this.state.showInitiativeList) {
-				left = (
-					<div className='encounter-left-column'>
-						<InitiativeListPanel
-							encounter={this.props.encounter}
-							selectedIDs={this.state.selectedCombatantIDs}
-							onSelect={this.selectCombatant}
-						/>
-					</div>
-				);
-			}
-
 			let dialog = null;
 			if (this.state.detailsCombatant) {
 				dialog = (
@@ -697,7 +698,9 @@ export class EncounterScreen extends Component<Props, State> {
 
 			return (
 				<div className='encounter-screen'>
-					{left}
+					<div className='encounter-left-column'>
+						{this.getLeftControls()}
+					</div>
 					<div className='encounter-central-column'>
 						{this.getTopControls()}
 						<div className='encounter-center-panel'>

@@ -38,6 +38,7 @@ export class CombatantAction extends Component<Props> {
 			<div className='combatant-action'>
 				<Text type={TextType.Information}>
 					<p>You haven&apos;t yet chosen your action for this turn.</p>
+					<p>Three action cards have been drawn for you from your action deck; press the button below to pick one of them.</p>
 				</Text>
 				<Switch label='Show Action Cards' checked={this.props.showingActionHand} onChange={show => this.props.showActionHand(show)} />
 				{this.props.developer ? <button className='developer' onClick={() => this.props.drawActions(this.props.encounter, this.props.combatant)}>Draw Again</button> : null}
@@ -294,6 +295,7 @@ export class CombatantAction extends Component<Props> {
 					{prerequisites}
 					{parameters}
 					<button
+						className='primary'
 						disabled={!prerequisitesMet || !parametersSet || (this.props.currentActionParameter !== null)}
 						onClick={() => this.props.runAction(this.props.encounter, this.props.combatant)}
 					>

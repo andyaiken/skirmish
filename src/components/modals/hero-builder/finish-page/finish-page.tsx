@@ -41,7 +41,7 @@ export class FinishPage extends Component<Props> {
 					<button onClick={this.props.rename}>Change Name</button>
 					<button onClick={this.props.recolor}>Change Color</button>
 					<hr />
-					<button onClick={this.props.finished}>Finished</button>
+					<button className='primary' onClick={this.props.finished}>Finished</button>
 				</div>
 			);
 		} catch {

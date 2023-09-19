@@ -236,7 +236,7 @@ export class CardPage extends Component<Props, State> {
 					{this.getSpeciesSection()}
 					{this.getRoleSection()}
 					{this.getBackgroundSection()}
-					{ canSelect ? <button onClick={() => this.select()}>Next</button> : null }
+					{ canSelect ? <button className='primary' onClick={() => this.select()}>Next</button> : null }
 				</div>
 			);
 		} catch {

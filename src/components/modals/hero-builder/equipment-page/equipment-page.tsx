@@ -123,7 +123,7 @@ export class EquipmentPage extends Component<Props, State> {
 					}
 					<hr />
 					{slots}
-					{ canSelect ? <button onClick={() => this.addItems()}>Next</button> : null }
+					{ canSelect ? <button className='primary' onClick={() => this.addItems()}>Next</button> : null }
 				</div>
 			);
 		} catch {

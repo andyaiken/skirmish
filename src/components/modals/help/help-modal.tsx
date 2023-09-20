@@ -79,7 +79,6 @@ export class HelpModal extends Component<Props, State> {
 			return (
 				<div className='help-modal'>
 					<Text type={TextType.Heading}>Help</Text>
-					<hr />
 					<Tabs options={tabs} selectedID={this.state.selectedTab} onSelect={id => this.setState({ selectedTab: id })} />
 					{content}
 				</div>

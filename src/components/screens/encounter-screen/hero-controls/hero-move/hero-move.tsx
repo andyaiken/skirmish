@@ -10,7 +10,7 @@ import type { OptionsModel } from '../../../../../models/options';
 import { Expander, Text, TextType } from '../../../../controls';
 import { DirectionPanel } from '../../../../panels';
 
-import './combatant-move.scss';
+import './hero-move.scss';
 
 interface Props {
 	combatant: CombatantModel;
@@ -20,7 +20,7 @@ interface Props {
 	addMovement: (encounter: EncounterModel, combatant: CombatantModel, value: number) => void;
 }
 
-export class CombatantMove extends Component<Props> {
+export class HeroMove extends Component<Props> {
 	render = () => {
 		try {
 			const moveCosts: Record<string, number> = {};
@@ -29,7 +29,7 @@ export class CombatantMove extends Component<Props> {
 			});
 
 			return (
-				<div className='combatant-move'>
+				<div className='hero-move'>
 					{this.props.options.developer ? <button className='developer' onClick={() => this.props.addMovement(this.props.encounter, this.props.combatant, 10)}>Add Movement</button> : null}
 					<DirectionPanel combatant={this.props.combatant} costs={moveCosts} onMove={(dir, cost) => this.props.move(this.props.encounter, this.props.combatant, dir, cost)} />
 					{
@@ -59,7 +59,7 @@ export class CombatantMove extends Component<Props> {
 				</div>
 			);
 		} catch {
-			return <div className='combatant-move render-error' />;
+			return <div className='hero-move render-error' />;
 		}
 	};
 }

@@ -4,25 +4,35 @@ import type { CombatantModel } from '../../../../../models/combatant';
 import type { EncounterModel } from '../../../../../models/encounter';
 import type { OptionsModel } from '../../../../../models/options';
 
+import { CombatStatsPanel, CombatantNotices, CombatantRowPanel } from '../../../../panels';
 import { Expander, IconSize, IconType, IconValue, Text, TextType } from '../../../../controls';
-import { CombatStatsPanel } from '../../../../panels';
 
-import './combatant-overview.scss';
+import './hero-overview.scss';
 
 interface Props {
 	combatant: CombatantModel;
 	encounter: EncounterModel;
 	options: OptionsModel;
+	showToken: (combatant: CombatantModel) => void;
+	showCharacterSheet: (combatant: CombatantModel) => void;
 	inspire: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	scan: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	hide: (encounter: EncounterModel, combatant: CombatantModel) => void;
 }
 
-export class CombatantOverview extends Component<Props> {
+export class HeroOverview extends Component<Props> {
 	render = () => {
 		try {
 			return (
-				<div className='combatant-overview'>
+				<div className='hero-overview'>
+					<CombatantRowPanel
+						mode='header'
+						combatant={this.props.combatant}
+						encounter={this.props.encounter}
+						onTokenClick={this.props.showToken}
+						onDetails={this.props.showCharacterSheet}
+					/>
+					<CombatantNotices combatant={this.props.combatant} />
 					<CombatStatsPanel combatant={this.props.combatant} encounter={this.props.encounter} />
 					<div className='quick-actions'>
 						<button disabled={this.props.combatant.combat.movement < 4} onClick={() => this.props.inspire(this.props.encounter, this.props.combatant)}>
@@ -35,6 +45,22 @@ export class CombatantOverview extends Component<Props> {
 							Hide<br /><IconValue value={4} type={IconType.Movement} size={IconSize.Button} />
 						</button>
 					</div>
+					{
+						this.props.options.showTips ?
+							<Expander
+								header={
+									<Text type={TextType.Tip}>Taking an Action</Text>
+								}
+								content={
+									<div>
+										<p>You haven&apos;t yet chosen your action for this turn.</p>
+										<p>Three action cards have been drawn for you from your action deck, and are shown below the map.</p>
+										<p>Select one of those cards to use that action.</p>
+									</div>
+								}
+							/>
+							: null
+					}
 					{
 						this.props.options.showTips ?
 							<Expander
@@ -76,7 +102,7 @@ export class CombatantOverview extends Component<Props> {
 				</div>
 			);
 		} catch {
-			return <div className='combatant-overview render-error' />;
+			return <div className='hero-overview render-error' />;
 		}
 	};
 }

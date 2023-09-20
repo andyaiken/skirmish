@@ -1,0 +1,78 @@
+.action-controls {
+
+	&.collapsed {
+		height: 40px;
+
+		.action-controls-content {
+			pointer-events: none;
+		}
+	}
+
+	.action-controls-content {
+		display: flex;
+		gap: 10px;
+		align-items: flex-start;
+		padding-bottom: 3px;
+		overflow-x: auto;
+		overflow-y: hidden;
+		-webkit-overflow-scrolling: touch;
+	
+		.separator {
+			margin: 0 10px;
+			flex: 0 0 2px;
+			align-self: center;
+			height: 150px;
+			background-color: rgb(220, 220, 220);
+		}
+
+		.action-details {
+			flex: 1 1 0;
+
+			.action-prerequisite {
+				margin: 5px;
+			}
+
+			.action-parameter {
+				margin: 5px 0;
+				border: 2px solid rgb(220, 220, 220);
+				border-radius: 5px;
+				background-color: rgb(255, 255, 255);
+				padding: 10px;
+
+				.action-parameter-top-line {
+					display: flex;
+					align-items: center;
+					gap: 10px;
+
+					.action-parameter-name {
+						flex: 1 1 0;
+					}
+
+					.action-parameter-value {
+						flex: 1 1 0;
+						text-align: right;
+
+						.square-indicator {
+							margin: 0 5px;
+							border: 1px solid rgb(220, 220, 220);
+							border-radius: 5px;
+							background-color: rgb(255, 255, 255);
+							padding: 5px;
+							display: inline-flex;
+							align-items: center;
+							gap: 3px;
+						}
+					}
+
+					.action-parameter-change {
+						flex: 0 0 auto;
+
+						.map-btn {
+							width: 40px;
+						}
+					}
+				}
+			}
+		}
+	}
+}

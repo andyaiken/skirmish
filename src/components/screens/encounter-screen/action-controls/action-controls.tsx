@@ -1,46 +1,87 @@
 import { IconArrowUp, IconViewfinder } from '@tabler/icons-react';
 import { Component } from 'react';
 
-import { ActionTargetType } from '../../../../../enums/action-target-type';
+import { ActionTargetType } from '../../../../enums/action-target-type';
+import { CardType } from '../../../../enums/card-type';
 
-import { ActionLogic, ActionPrerequisites } from '../../../../../logic/action-logic';
-import { CombatantLogic } from '../../../../../logic/combatant-logic';
-import { EncounterLogic } from '../../../../../logic/encounter-logic';
-import { EncounterMapLogic } from '../../../../../logic/encounter-map-logic';
+import { ActionLogic, ActionPrerequisites } from '../../../../logic/action-logic';
+import { CombatantLogic } from '../../../../logic/combatant-logic';
+import { EncounterLogic } from '../../../../logic/encounter-logic';
+import { EncounterMapLogic } from '../../../../logic/encounter-map-logic';
 
-import type { ActionModel, ActionOriginParameterModel, ActionParameterModel, ActionTargetParameterModel, ActionWeaponParameterModel } from '../../../../../models/action';
-import type { CombatantModel } from '../../../../../models/combatant';
-import type { EncounterModel } from '../../../../../models/encounter';
-import type { ItemModel } from '../../../../../models/item';
+import type { ActionModel, ActionOriginParameterModel, ActionParameterModel, ActionTargetParameterModel, ActionWeaponParameterModel } from '../../../../models/action';
+import type { CombatantModel } from '../../../../models/combatant';
+import type { EncounterModel } from '../../../../models/encounter';
+import type { ItemModel } from '../../../../models/item';
 
-import { Selector, Switch, Text, TextType } from '../../../../controls';
-import { ActionCard } from '../../../../cards';
+import { Badge, Selector, Text, TextType } from '../../../controls';
+import { ActionCard } from '../../../cards';
 
-import './combatant-action.scss';
+import './action-controls.scss';
 
 interface Props {
 	combatant: CombatantModel;
 	encounter: EncounterModel;
-	showingActionHand: boolean;
 	currentActionParameter: ActionParameterModel | null;
 	developer: boolean;
+	collapsed: boolean;
 	drawActions: (encounter: EncounterModel, combatant: CombatantModel) => void;
-	showActionHand: (show: boolean) => void;
+	selectAction: (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => void;
 	deselectAction: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	setActionParameter: (parameter: ActionParameterModel) => void;
 	setActionParameterValue: (parameter: ActionParameterModel, value: unknown) => void;
 	runAction: (encounter: EncounterModel, combatant: CombatantModel) => void;
 }
 
-export class CombatantAction extends Component<Props> {
+export class ActionControls extends Component<Props> {
 	getNotSelected = () => {
+		const actionCards: JSX.Element[] = [];
+		const baseCards: JSX.Element[] = [];
+
+		this.props.combatant.combat.actions
+			.filter(a => CombatantLogic.getActionSourceType(this.props.combatant, a.id) !== CardType.Base)
+			.sort((a, b) => a.name.localeCompare(b.name))
+			.forEach(a => {
+				const prerequisitesMet = a.prerequisites.every(p => ActionPrerequisites.isSatisfied(p, this.props.combatant));
+				actionCards.push(
+					<ActionCard
+						key={a.id}
+						action={a}
+						footer={CombatantLogic.getActionSource(this.props.combatant, a.id)}
+						footerType={CombatantLogic.getActionSourceType(this.props.combatant, a.id)}
+						combatant={this.props.combatant}
+						encounter={this.props.encounter}
+						disabled={!prerequisitesMet}
+						onClick={prerequisitesMet ? action => this.props.selectAction(this.props.encounter, this.props.combatant, action) : null}
+					/>
+				);
+			});
+
+		this.props.combatant.combat.actions
+			.filter(a => CombatantLogic.getActionSourceType(this.props.combatant, a.id) === CardType.Base)
+			.forEach(a => {
+				const prerequisitesMet = a.prerequisites.every(p => ActionPrerequisites.isSatisfied(p, this.props.combatant));
+				if (prerequisitesMet) {
+					baseCards.push(
+						<ActionCard
+							key={a.id}
+							action={a}
+							footer={CombatantLogic.getActionSource(this.props.combatant, a.id)}
+							footerType={CombatantLogic.getActionSourceType(this.props.combatant, a.id)}
+							combatant={this.props.combatant}
+							encounter={this.props.encounter}
+							onClick={action => this.props.selectAction(this.props.encounter, this.props.combatant, action)}
+						/>
+					);
+				}
+			});
+
 		return (
-			<div className='combatant-action'>
-				<Text type={TextType.Information}>
-					<p>You haven&apos;t yet chosen your action for this turn.</p>
-					<p>Three action cards have been drawn for you from your action deck; press the button below to pick one of them.</p>
-				</Text>
-				<Switch label='Show Action Cards' checked={this.props.showingActionHand} onChange={show => this.props.showActionHand(show)} />
+			<div className='action-controls-content' key={this.props.combatant.id}>
+				{actionCards}
+				{(actionCards.length > 0) && (baseCards.length > 0) ? <div className='separator' /> : null}
+				{baseCards}
+				{this.props.developer ? <div className='separator' /> : null}
 				{this.props.developer ? <button className='developer' onClick={() => this.props.drawActions(this.props.encounter, this.props.combatant)}>Draw Again</button> : null}
 			</div>
 		);
@@ -66,7 +107,9 @@ export class CombatantAction extends Component<Props> {
 				return;
 			}
 
+			let parameterSet = true;
 			if (parameter.value) {
+				let showParameter = true;
 				let description: JSX.Element[] | string = '';
 				let changeButton = null;
 				let changeControls = null;
@@ -78,7 +121,7 @@ export class CombatantAction extends Component<Props> {
 							const item = this.props.combatant.items.find(i => i.id === itemID) as ItemModel;
 							description = item.name;
 						} else {
-							parametersSet = false;
+							parameterSet = false;
 							description = '[Not set]';
 						}
 						if (weaponParam.candidates.length > 1) {
@@ -94,6 +137,8 @@ export class CombatantAction extends Component<Props> {
 									onSelect={id => this.props.setActionParameterValue(parameter, id)}
 								/>
 							);
+						} else {
+							showParameter = false;
 						}
 						break;
 					}
@@ -113,11 +158,11 @@ export class CombatantAction extends Component<Props> {
 									</div>
 								];
 							} else {
-								parametersSet = false;
+								parameterSet = false;
 								description = '[Not set]';
 							}
 						} else {
-							parametersSet = false;
+							parameterSet = false;
 							description = '[Not set]';
 						}
 						if (originParam.candidates.length > 1) {
@@ -142,7 +187,7 @@ export class CombatantAction extends Component<Props> {
 								case ActionTargetType.Allies: {
 									const list = targetParam.value as string[];
 									if (!list || (list.length === 0)) {
-										parametersSet = false;
+										parameterSet = false;
 									}
 									if (targetParam.targets.count === Number.MAX_VALUE) {
 										// Targets all possible candidates
@@ -178,7 +223,7 @@ export class CombatantAction extends Component<Props> {
 								case ActionTargetType.Squares: {
 									const list = targetParam.value as { x: number, y: number }[];
 									if (list.length === 0) {
-										parametersSet = false;
+										parameterSet = false;
 									}
 									if (targetParam.targets.count === Number.MAX_VALUE) {
 										// Targets all possible candidates
@@ -214,7 +259,7 @@ export class CombatantAction extends Component<Props> {
 								case ActionTargetType.Walls: {
 									const list = targetParam.value as { x: number, y: number }[];
 									if (list.length === 0) {
-										parametersSet = false;
+										parameterSet = false;
 									}
 									if (targetParam.targets.count === Number.MAX_VALUE) {
 										// Targets all possible candidates
@@ -250,47 +295,55 @@ export class CombatantAction extends Component<Props> {
 							}
 						} else {
 							// Targets self
-							description = '[Self]';
+							showParameter = false;
 						}
 						break;
 					}
 				}
 
-				parameters.push(
-					<div key={n} className='action-parameter'>
-						<div className='action-parameter-top-line'>
-							<div className='action-parameter-name'>
-								{ActionLogic.getParameterDescription(parameter)}
+				if (showParameter) {
+					parameters.push(
+						<Badge key={n} value={parameterSet ? '' : '!'}>
+							<div className='action-parameter'>
+								<div className='action-parameter-top-line'>
+									<div className='action-parameter-name'>
+										{ActionLogic.getParameterDescription(parameter)}
+									</div>
+									<div className='action-parameter-value'>
+										{description}
+									</div>
+									{changeButton !== null ? <div className='action-parameter-change'>{changeButton}</div> : null}
+								</div>
+								{
+									this.props.currentActionParameter === parameter ?
+										<Text type={TextType.Information}>
+											<p>Select targets on the map, then press the <IconViewfinder size={13} /> button again to confirm your selection.</p>
+										</Text>
+										: null
+								}
+								{changeControls !== null ? <div className='action-parameter-change'>{changeControls}</div> : null}
 							</div>
-							<div className='action-parameter-value'>
-								{description}
-							</div>
-							{changeButton !== null ? <div className='action-parameter-change'>{changeButton}</div> : null}
-						</div>
-						{
-							this.props.currentActionParameter === parameter ?
-								<Text type={TextType.Information}>
-									<p>Select targets on the map, then press the <IconViewfinder size={13} /> button again to confirm your selection.</p>
-								</Text>
-								: null
-						}
-						{changeControls !== null ? <div className='action-parameter-change'>{changeControls}</div> : null}
-					</div>
-				);
+						</Badge>
+					);
+				}
+			} else {
+				parameterSet = false;
+			}
+
+			if (!parameterSet) {
+				parametersSet = false;
 			}
 		});
 
 		return (
-			<div className='combatant-action'>
-				<div className='action-selected-card'>
-					<ActionCard
-						action={action}
-						footer={CombatantLogic.getActionSource(this.props.combatant, action.id)}
-						footerType={CombatantLogic.getActionSourceType(this.props.combatant, action.id)}
-						combatant={this.props.combatant}
-						encounter={this.props.encounter}
-					/>
-				</div>
+			<div className='action-controls-content' key={this.props.combatant.id}>
+				<ActionCard
+					action={action}
+					footer={CombatantLogic.getActionSource(this.props.combatant, action.id)}
+					footerType={CombatantLogic.getActionSourceType(this.props.combatant, action.id)}
+					combatant={this.props.combatant}
+					encounter={this.props.encounter}
+				/>
 				<div className='action-details'>
 					{prerequisites}
 					{parameters}
@@ -314,38 +367,43 @@ export class CombatantAction extends Component<Props> {
 
 	getUsed = (action: ActionModel) => {
 		return (
-			<div className='combatant-action'>
-				{this.props.developer ? <button className='developer' onClick={() => this.props.drawActions(this.props.encounter, this.props.combatant)}>Act Again</button> : null}
-				<div className='action-selected-card'>
-					<ActionCard
-						action={action}
-						footer={CombatantLogic.getActionSource(this.props.combatant, action.id)}
-						footerType={CombatantLogic.getActionSourceType(this.props.combatant, action.id)}
-						combatant={this.props.combatant}
-						encounter={this.props.encounter}
-					/>
+			<div className='action-controls-content' key={this.props.combatant.id}>
+				<ActionCard
+					action={action}
+					footer={CombatantLogic.getActionSource(this.props.combatant, action.id)}
+					footerType={CombatantLogic.getActionSourceType(this.props.combatant, action.id)}
+				/>
+				<div className='action-details'>
+					<Text type={TextType.Information}>
+						<p>You have used your action for this turn.</p>
+						{this.props.combatant.combat.movement > 0 ? <p>You still have some movement points you can use.</p> : null }
+					</Text>
+					{this.props.developer ? <button className='developer' onClick={() => this.props.drawActions(this.props.encounter, this.props.combatant)}>Act Again</button> : null}
 				</div>
-				<Text type={TextType.Information}>
-					<p>You have used your action for this turn.</p>
-					{this.props.combatant.combat.movement > 0 ? <p>You still have some movement points you can use.</p> : null }
-				</Text>
 			</div>
 		);
 	};
 
 	render = () => {
 		try {
-			if (!this.props.combatant.combat.selectedAction) {
-				return this.getNotSelected();
-			} else {
+			let content = null;
+			if (this.props.combatant.combat.selectedAction) {
 				if (this.props.combatant.combat.selectedAction.used) {
-					return this.getUsed(this.props.combatant.combat.selectedAction.action);
+					content = this.getUsed(this.props.combatant.combat.selectedAction.action);
 				} else {
-					return this.getInProgress(this.props.combatant.combat.selectedAction.action);
+					content = this.getInProgress(this.props.combatant.combat.selectedAction.action);
 				}
+			} else {
+				content = this.getNotSelected();
 			}
+
+			return (
+				<div className={`action-controls ${this.props.collapsed ? 'collapsed' : 'expanded'}`}>
+					{content}
+				</div>
+			);
 		} catch {
-			return <div className='combatant-action render-error' />;
+			return <div className='action-controls render-error' />;
 		}
 	};
 }

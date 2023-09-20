@@ -1,35 +1,22 @@
 import { Component } from 'react';
 
-import { CombatantState } from '../../../../../enums/combatant-state';
+import { CombatantState } from '../../../enums/combatant-state';
 
-import type { CombatantModel } from '../../../../../models/combatant';
-import type { EncounterModel } from '../../../../../models/encounter';
+import type { CombatantModel } from '../../../models/combatant';
 
-import { Text, TextType } from '../../../../controls';
-import { CombatantRowPanel } from '../../../../panels';
+import { Text, TextType } from '../../controls';
 
-import './combatant-header.scss';
+import './combatant-notices.scss';
 
 interface Props {
 	combatant: CombatantModel;
-	encounter: EncounterModel;
-	developer: boolean;
-	onTokenClick: (combatant: CombatantModel) => void;
-	showCharacterSheet: (combatant: CombatantModel) => void;
 }
 
-export class CombatantHeader extends Component<Props> {
+export class CombatantNotices extends Component<Props> {
 	render = () => {
 		try {
 			return (
-				<div className='combatant-header'>
-					<CombatantRowPanel
-						mode='header'
-						combatant={this.props.combatant}
-						encounter={this.props.encounter}
-						onTokenClick={this.props.onTokenClick}
-						onDetails={this.props.showCharacterSheet}
-					/>
+				<div className='combatant-notices'>
 					{
 						this.props.combatant.combat.state === CombatantState.Prone ?
 							<Text type={TextType.Information}>
@@ -68,7 +55,7 @@ export class CombatantHeader extends Component<Props> {
 				</div>
 			);
 		} catch {
-			return <div className='combatant-header render-error' />;
+			return <div className='combatant-notices render-error' />;
 		}
 	};
 }

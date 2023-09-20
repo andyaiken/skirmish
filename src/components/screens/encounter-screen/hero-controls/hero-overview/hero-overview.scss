@@ -1,0 +1,12 @@
+.hero-overview {
+	margin-top: 10px;
+
+	.quick-actions {
+		display: flex;
+		gap: 5px;
+
+		button {
+			flex: 1 1 0;
+		}
+	}
+}

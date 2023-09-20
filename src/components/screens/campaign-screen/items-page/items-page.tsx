@@ -167,7 +167,7 @@ export class ItemsPage extends Component<Props, State> {
 			enchantSection = (
 				<button onClick={() => this.showEnchant(true)}>
 					<div>Enchant an item</div>
-					<IconValue type={IconType.Money} value={100} />
+					<IconValue type={IconType.Money} value={100} size={IconSize.Button} />
 				</button>
 			);
 		}

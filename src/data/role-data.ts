@@ -618,7 +618,7 @@ export class RoleData {
 				],
 				effects: [
 					ActionEffects.healDamage(5),
-					ActionEffects.healWounds(5)
+					ActionEffects.healWounds(1)
 				]
 			},
 			{

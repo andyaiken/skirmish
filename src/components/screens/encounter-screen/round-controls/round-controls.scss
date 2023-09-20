@@ -1,4 +1,9 @@
 .round-controls {
+	flex: 1 1 0;
+	border: 2px solid rgb(220, 220, 220);
+	border-radius: 10px;
+	background-color: white;
+	padding: 0 10px;
 
 	.encounter-stats {
 		display: flex;

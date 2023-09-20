@@ -10,16 +10,6 @@
 
 # Priority
 
-## Reworking the encounter screen
-* Move encounter log to tab behind initiative list
-* Remove selected combatant / selected loot pile display from below map
-  * Replace this with a hover-over display and double-click to open dialog
-* Move all action-related controls into the action hand panel
-* Make the action hand panel expandable
-* Shrink the right-hand panel to 250px to match left-hand panel
-* Make significant log messages appear on the map for a brief time before disappearing
-* Make the right-hand panel collapsible, like the left-hand panel
-  * Maybe they become narrow panels rather than disappearing
 -----------------------------------------------------------------------------------------
 
 # Improvements / Enhancements
@@ -36,9 +26,12 @@
   * Automatically select the best path
 
 ## Turn Log
-* Indentation
-* Colours
-* Highlighting names, values
+* Make significant log messages appear on the map for a brief time before disappearing
+* Show log messages from an action in the action panel
+* Formatting
+  * Indentation
+  * Colours
+  * Highlighting names, values
 
 ## Map Types
 * Building interior

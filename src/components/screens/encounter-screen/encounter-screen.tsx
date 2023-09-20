@@ -4,8 +4,12 @@ import {
 	IconConfetti,
 	IconHelpCircle,
 	IconHelpCircleFilled,
+	IconLayoutBottombarCollapse,
+	IconLayoutBottombarExpand,
 	IconLayoutSidebarLeftCollapse,
 	IconLayoutSidebarLeftExpand,
+	IconList,
+	IconNotes,
 	IconRotate2,
 	IconRotateClockwise2,
 	IconSettings,
@@ -15,12 +19,12 @@ import {
 
 import { ActionTargetType } from '../../../enums/action-target-type';
 import { CardType } from '../../../enums/card-type';
+import { CombatantState } from '../../../enums/combatant-state';
 import { EncounterState } from '../../../enums/encounter-state';
 
 import { CombatantType } from '../../../enums/combatant-type';
 
-import { ActionLogic, ActionPrerequisites } from '../../../logic/action-logic';
-import { CombatantLogic } from '../../../logic/combatant-logic';
+import { ActionLogic } from '../../../logic/action-logic';
 import { EncounterLogic } from '../../../logic/encounter-logic';
 
 import type { ActionModel, ActionOriginParameterModel, ActionParameterModel, ActionTargetParameterModel } from '../../../models/action';
@@ -30,12 +34,15 @@ import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
 import type { OptionsModel } from '../../../models/options';
 
-import { ActionCard, ItemCard, PlaceholderCard } from '../../cards';
-import { CardList, Dialog, IconSize, IconType, IconValue, PlayingCard, Text, TextType } from '../../controls';
+import { CardList, Dialog, IconSize, IconType, IconValue, PlayingCard, Tabs, Text, TextType } from '../../controls';
 import { CombatantRowPanel, EncounterMapPanel, InitiativeListPanel, TreasureRowPanel, TurnLogPanel } from '../../panels';
+import { ItemCard, PlaceholderCard } from '../../cards';
+import { ActionControls } from './action-controls/action-controls';
 import { CharacterSheetModal } from '../../modals';
-import { CombatantControls } from './combatant-controls/combatant-controls';
 import { EncounterControls } from './encounter-controls/encounter-controls';
+import { HeroControls } from './hero-controls/hero-controls';
+import { InactiveControls } from './inactive-controls/inactive-controls';
+import { MonsterControls } from './monster-controls/monster-controls';
 import { RoundControls } from './round-controls/round-controls';
 
 import './encounter-screen.scss';
@@ -71,9 +78,9 @@ interface Props {
 
 interface State {
 	mapSquareSize: number;
-	showInitiativeList: boolean;
-	showActionHand: boolean;
-	logExpanded: boolean;
+	showLeftPanel: boolean;
+	showBottomPanel: boolean;
+	leftTab: string;
 	selectedActionParameter: ActionParameterModel | null;
 	selectableCombatantIDs: string[];
 	selectableLootIDs: string[];
@@ -91,9 +98,9 @@ export class EncounterScreen extends Component<Props, State> {
 		super(props);
 		this.state = {
 			mapSquareSize: 15,
-			showInitiativeList: true,
-			showActionHand: false,
-			logExpanded: false,
+			showLeftPanel: true,
+			showBottomPanel: true,
+			leftTab: 'combatants',
 			selectedActionParameter: null,
 			selectableCombatantIDs: [],
 			selectableLootIDs: [],
@@ -120,15 +127,21 @@ export class EncounterScreen extends Component<Props, State> {
 		});
 	};
 
-	toggleInitiativeList = () => {
+	toggleLeftPanel = () => {
 		this.setState({
-			showInitiativeList: !this.state.showInitiativeList
+			showLeftPanel: !this.state.showLeftPanel
 		});
 	};
 
-	toggleLogExpanded = () => {
+	toggleBottomPanel = () => {
 		this.setState({
-			logExpanded: !this.state.logExpanded
+			showBottomPanel: !this.state.showBottomPanel
+		});
+	};
+
+	setLeftTab = (tab: string) => {
+		this.setState({
+			leftTab: tab
 		});
 	};
 
@@ -166,7 +179,6 @@ export class EncounterScreen extends Component<Props, State> {
 				parameter.value = ids;
 
 				this.setState({
-					logExpanded: false,
 					selectedActionParameter: parameter,
 					selectedCombatantIDs: ids,
 					selectedLootIDs: [],
@@ -177,7 +189,6 @@ export class EncounterScreen extends Component<Props, State> {
 			}
 		} else {
 			this.setState({
-				logExpanded: false,
 				selectedActionParameter: parameter,
 				selectedCombatantIDs: [ combatant.id ],
 				selectedLootIDs: [],
@@ -188,7 +199,6 @@ export class EncounterScreen extends Component<Props, State> {
 
 	selectLoot = (loot: LootPileModel) => {
 		this.setState({
-			logExpanded: false,
 			selectedCombatantIDs: [],
 			selectedLootIDs: [ loot.id ],
 			selectedSquares: []
@@ -269,7 +279,6 @@ export class EncounterScreen extends Component<Props, State> {
 			});
 		} else {
 			this.setState({
-				logExpanded: false,
 				selectedCombatantIDs: [],
 				selectedLootIDs: [],
 				selectedSquares: []
@@ -394,7 +403,6 @@ export class EncounterScreen extends Component<Props, State> {
 
 	endTurn = () => {
 		this.setState({
-			showActionHand: false,
 			selectedActionParameter: null,
 			selectableSquares: [],
 			selectedSquares: []
@@ -404,13 +412,41 @@ export class EncounterScreen extends Component<Props, State> {
 	};
 
 	getLeftControls = () => {
-		if (this.state.showInitiativeList) {
+		const options = [
+			{ id: 'combatants', display: <IconList /> },
+			{ id: 'log', display: <IconNotes /> }
+		];
+
+		if (this.state.showLeftPanel) {
+			let content = null;
+			switch (this.state.leftTab) {
+				case 'combatants':
+					content = (
+						<InitiativeListPanel
+							encounter={this.props.encounter}
+							selectedIDs={this.state.selectedCombatantIDs}
+							onSelect={this.selectCombatant}
+						/>
+					);
+					break;
+				case 'log':
+					content = (
+						<TurnLogPanel encounter={this.props.encounter} />
+					);
+					break;
+			}
+
 			return (
-				<InitiativeListPanel
-					encounter={this.props.encounter}
-					selectedIDs={this.state.selectedCombatantIDs}
-					onSelect={this.selectCombatant}
-				/>
+				<div className='encounter-left-column'>
+					<Tabs
+						options={options}
+						selectedID={this.state.leftTab}
+						onSelect={tab => this.setLeftTab(tab)}
+					/>
+					<div className='tab-content'>
+						{content}
+					</div>
+				</div>
 			);
 		}
 
@@ -425,109 +461,7 @@ export class EncounterScreen extends Component<Props, State> {
 
 		if (state !== EncounterState.Active) {
 			return (
-				<div className='encounter-bottom-panel' />
-			);
-		}
-
-		return (
-			<div className='encounter-top-panel'>
-				<button className='icon-btn' title='Left Sidebar' onClick={() => this.toggleInitiativeList()}>
-					{this.state.showInitiativeList ? <IconLayoutSidebarLeftCollapse /> : <IconLayoutSidebarLeftExpand />}
-				</button>
-				<div className='separator' />
-				<button className='icon-btn' title='Rotate Left' onClick={() => this.props.rotateMap(this.props.encounter, 'l')}>
-					<IconRotate2 />
-				</button>
-				<button className='icon-btn' title='Rotate Right' onClick={() => this.props.rotateMap(this.props.encounter, 'r')}>
-					<IconRotateClockwise2 />
-				</button>
-				<div className='separator' />
-				<button disabled={this.state.mapSquareSize <= 5} className='icon-btn' title='Zoom Out' onClick={() => this.nudgeMapSize(-5)}>
-					<IconZoomOut />
-				</button>
-				<button disabled={this.state.mapSquareSize >= 50} className='icon-btn' title='Zoom In' onClick={() => this.nudgeMapSize(+5)}>
-					<IconZoomIn />
-				</button>
-				<div className='separator' />
-				<button className='icon-btn' title='Retreat' onClick={() => this.setManualEncounterState(EncounterState.Retreat)}>
-					<IconArrowBackUpDouble />
-				</button>
-				{
-					this.props.options.developer ?
-						<button className='icon-btn developer' title='Win' onClick={() => this.setManualEncounterState(EncounterState.Victory)}>
-							<IconConfetti />
-						</button>
-						: null
-				}
-				<div className='separator' />
-				<button className='icon-btn' title='Help' onClick={() => this.props.showHelp('encounters')}>
-					{this.props.options.developer && this.props.hasExceptions ? <IconHelpCircleFilled /> : <IconHelpCircle />}
-				</button>
-				<button className='icon-btn' title='Options' onClick={() => this.props.showOptions()}>
-					<IconSettings />
-				</button>
-			</div>
-		);
-	};
-
-	getBottomControls = () => {
-		const currentCombatant = EncounterLogic.getActiveCombatants(this.props.encounter).find(c => c.combat.current) || null;
-		if (currentCombatant && (currentCombatant.type === CombatantType.Hero) && !currentCombatant.combat.selectedAction && this.state.showActionHand) {
-			const actionCards: JSX.Element[] = [];
-			const baseCards: JSX.Element[] = [];
-
-			currentCombatant.combat.actions
-				.filter(a => CombatantLogic.getActionSourceType(currentCombatant, a.id) !== CardType.Base)
-				.sort((a, b) => a.name.localeCompare(b.name))
-				.forEach(a => {
-					const prerequisitesMet = a.prerequisites.every(p => ActionPrerequisites.isSatisfied(p, currentCombatant));
-					actionCards.push(
-						<ActionCard
-							key={a.id}
-							action={a}
-							footer={CombatantLogic.getActionSource(currentCombatant, a.id)}
-							footerType={CombatantLogic.getActionSourceType(currentCombatant, a.id)}
-							combatant={currentCombatant}
-							encounter={this.props.encounter}
-							disabled={!prerequisitesMet}
-							onClick={prerequisitesMet ? action => this.props.selectAction(this.props.encounter, currentCombatant, action) : null}
-						/>
-					);
-				});
-
-			currentCombatant.combat.actions
-				.filter(a => CombatantLogic.getActionSourceType(currentCombatant, a.id) === CardType.Base)
-				.forEach(a => {
-					const prerequisitesMet = a.prerequisites.every(p => ActionPrerequisites.isSatisfied(p, currentCombatant));
-					if (prerequisitesMet) {
-						baseCards.push(
-							<ActionCard
-								key={a.id}
-								action={a}
-								footer={CombatantLogic.getActionSource(currentCombatant, a.id)}
-								footerType={CombatantLogic.getActionSourceType(currentCombatant, a.id)}
-								combatant={currentCombatant}
-								encounter={this.props.encounter}
-								onClick={action => this.props.selectAction(this.props.encounter, currentCombatant, action)}
-							/>
-						);
-					}
-				});
-
-			return (
-				<div className='encounter-bottom-panel cards'>
-					{actionCards}
-					{(actionCards.length > 0) && (baseCards.length > 0) ? <div className='separator' /> : null}
-					{baseCards}
-				</div>
-			);
-		}
-
-		if (this.state.selectedCombatantIDs.length > 1) {
-			return (
-				<div className='encounter-bottom-panel'>
-					Multiple combatants selected.
-				</div>
+				<div className='encounter-top-panel' />
 			);
 		}
 
@@ -547,14 +481,6 @@ export class EncounterScreen extends Component<Props, State> {
 			}
 		}
 
-		if (this.state.selectedLootIDs.length > 1) {
-			return (
-				<div className='encounter-bottom-panel'>
-					Multiple treasures selected.
-				</div>
-			);
-		}
-
 		if (this.state.selectedLootIDs.length === 1) {
 			const loot = EncounterLogic.getLoot(this.props.encounter, this.state.selectedLootIDs[0]);
 			if (loot) {
@@ -564,20 +490,79 @@ export class EncounterScreen extends Component<Props, State> {
 			}
 		}
 
-		if (this.props.encounter.log.length > 0) {
-			const className = this.state.logExpanded ? 'encounter-bottom-panel clickable scrollable expanded' : 'encounter-bottom-panel clickable scrollable';
+		return (
+			<div className='encounter-top-panel'>
+				<div className='icon-section'>
+					<button className='icon-btn' title='Left Sidebar' onClick={() => this.toggleLeftPanel()}>
+						{this.state.showLeftPanel ? <IconLayoutSidebarLeftCollapse /> : <IconLayoutSidebarLeftExpand />}
+					</button>
+					<button className='icon-btn' title='Action Cards' onClick={() => this.toggleBottomPanel()}>
+						{this.state.showBottomPanel ? <IconLayoutBottombarCollapse /> : <IconLayoutBottombarExpand />}
+					</button>
+				</div>
+				<div className='icon-section'>
+					<button className='icon-btn' title='Rotate Left' onClick={() => this.props.rotateMap(this.props.encounter, 'l')}>
+						<IconRotate2 />
+					</button>
+					<button className='icon-btn' title='Rotate Right' onClick={() => this.props.rotateMap(this.props.encounter, 'r')}>
+						<IconRotateClockwise2 />
+					</button>
+				</div>
+				<div className='icon-section'>
+					<button disabled={this.state.mapSquareSize <= 5} className='icon-btn' title='Zoom Out' onClick={() => this.nudgeMapSize(-5)}>
+						<IconZoomOut />
+					</button>
+					<button disabled={this.state.mapSquareSize >= 50} className='icon-btn' title='Zoom In' onClick={() => this.nudgeMapSize(+5)}>
+						<IconZoomIn />
+					</button>
+				</div>
+				<div className='icon-section'>
+					<button className='icon-btn' title='Retreat' onClick={() => this.setManualEncounterState(EncounterState.Retreat)}>
+						<IconArrowBackUpDouble />
+					</button>
+					{
+						this.props.options.developer ?
+							<button className='icon-btn developer' title='Win' onClick={() => this.setManualEncounterState(EncounterState.Victory)}>
+								<IconConfetti />
+							</button>
+							: null
+					}
+				</div>
+				<div className='icon-section'>
+					<button className='icon-btn' title='Help' onClick={() => this.props.showHelp('encounters')}>
+						{this.props.options.developer && this.props.hasExceptions ? <IconHelpCircleFilled /> : <IconHelpCircle />}
+					</button>
+					<button className='icon-btn' title='Options' onClick={() => this.props.showOptions()}>
+						<IconSettings />
+					</button>
+				</div>
+			</div>
+		);
+	};
+
+	getBottomControls = () => {
+		const currentCombatant = EncounterLogic.getActiveCombatants(this.props.encounter).find(c => c.combat.current) || null;
+		if (currentCombatant && (currentCombatant.type === CombatantType.Hero)) {
 			return (
-				<div className={className} onClick={() => this.toggleLogExpanded()}>
-					<TurnLogPanel encounter={this.props.encounter} />
+				<div className='encounter-bottom-panel'>
+					<ActionControls
+						combatant={currentCombatant}
+						encounter={this.props.encounter}
+						currentActionParameter={this.state.selectedActionParameter}
+						developer={this.props.options.developer}
+						collapsed={!this.state.showBottomPanel}
+						drawActions={this.props.drawActions}
+						selectAction={this.selectAction}
+						deselectAction={this.props.deselectAction}
+						setActionParameter={this.setActionParameter}
+						setActionParameterValue={this.setActionParameter}
+						runAction={this.runAction}
+					/>
 				</div>
 			);
 		}
 
-		return (
-			<div className='encounter-bottom-panel'>
-				<div className='logo-text inset-text'>Skirmish</div>
-			</div>
-		);
+		return null;
 	};
 
 	getRightControls = () => {
@@ -600,13 +585,40 @@ export class EncounterScreen extends Component<Props, State> {
 
 		const currentCombatant = EncounterLogic.getActiveCombatants(this.props.encounter).find(c => c.combat.current) || null;
 		if (currentCombatant !== null) {
+			const unconscious = currentCombatant.combat.state === CombatantState.Unconscious;
+			const dead = currentCombatant.combat.state === CombatantState.Dead;
+			const stunned = currentCombatant.combat.stunned;
+			if (unconscious || dead || stunned) {
+				return (
+					<InactiveControls
+						combatant={currentCombatant}
+						encounter={this.props.encounter}
+						options={this.props.options}
+						showToken={() => this.scrollToCombatant('current')}
+						showCharacterSheet={this.showDetailsCombatant}
+						endTurn={this.endTurn}
+					/>
+				);
+			}
+
+			if (currentCombatant.type === CombatantType.Monster) {
+				return (
+					<MonsterControls
+						combatant={currentCombatant}
+						encounter={this.props.encounter}
+						options={this.props.options}
+						showToken={() => this.scrollToCombatant('current')}
+						showCharacterSheet={this.showDetailsCombatant}
+						runMonsterTurn={this.props.runMonsterTurn}
+					/>
+				);
+			}
+
 			return (
-				<CombatantControls
+				<HeroControls
 					combatant={currentCombatant}
 					encounter={this.props.encounter}
 					options={this.props.options}
-					showingActionHand={this.state.showActionHand}
-					selectedActionParameter={this.state.selectedActionParameter}
 					showToken={() => this.scrollToCombatant('current')}
 					showCharacterSheet={this.showDetailsCombatant}
 					move={this.move}
@@ -615,13 +627,6 @@ export class EncounterScreen extends Component<Props, State> {
 					scan={this.props.scan}
 					hide={this.props.hide}
 					drinkPotion={this.props.drinkPotion}
-					drawActions={this.props.drawActions}
-					showActionHand={show => this.setState({ showActionHand: show })}
-					deselectAction={this.props.deselectAction}
-					setActionParameter={this.setActionParameter}
-					setActionParameterValue={this.setActionParameter}
-					runAction={this.runAction}
-					runMonsterTurn={this.props.runMonsterTurn}
 					endTurn={this.endTurn}
 				/>
 			);
@@ -698,9 +703,7 @@ export class EncounterScreen extends Component<Props, State> {
 
 			return (
 				<div className='encounter-screen'>
-					<div className='encounter-left-column'>
-						{this.getLeftControls()}
-					</div>
+					{this.getLeftControls()}
 					<div className='encounter-central-column'>
 						{this.getTopControls()}
 						<div className='encounter-center-panel'>

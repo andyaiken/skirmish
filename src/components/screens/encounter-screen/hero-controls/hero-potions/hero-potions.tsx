@@ -14,7 +14,7 @@ import { Collections } from '../../../../../utils/collections';
 import { IconSize, IconType, IconValue, Text, TextType } from '../../../../controls';
 import { ItemCard } from '../../../../cards';
 
-import './combatant-potions.scss';
+import './hero-potions.scss';
 
 interface Props {
 	combatant: CombatantModel;
@@ -22,7 +22,7 @@ interface Props {
 	drinkPotion: (encounter: EncounterModel, owner: CombatantModel, drinker: CombatantModel, potion: ItemModel) => void;
 }
 
-export class CombatantPotions extends Component<Props> {
+export class HeroPotions extends Component<Props> {
 	render = () => {
 		try {
 			const edges = EncounterMapLogic.getMapEdges(this.props.encounter.mapSquares);
@@ -67,12 +67,12 @@ export class CombatantPotions extends Component<Props> {
 			}
 
 			return (
-				<div className='combatant-potions'>
+				<div className='hero-potions'>
 					{potionSections}
 				</div>
 			);
 		} catch {
-			return <div className='combatant-potions render-error' />;
+			return <div className='hero-potions render-error' />;
 		}
 	};
 }

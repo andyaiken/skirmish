@@ -116,7 +116,7 @@ export class EncounterStartModal extends Component<Props, State> {
 					));
 
 				rightContent = (
-					<div>
+					<div className='monster-list'>
 						<CardList cards={monsters} />
 					</div>
 				);

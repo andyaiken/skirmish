@@ -175,9 +175,9 @@ export class BackgroundData {
 					ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 10)
 				],
 				effects: [
-					ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 1, TraitType.Endurance)),
-					ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 1, TraitType.Resolve)),
-					ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 1, TraitType.Speed))
+					ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 2, TraitType.Endurance)),
+					ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 2, TraitType.Resolve)),
+					ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 2, TraitType.Speed))
 				]
 			}
 		]

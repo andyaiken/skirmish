@@ -6,7 +6,7 @@ import type { EncounterModel } from '../../../../../models/encounter';
 
 import { IconSize, IconType, IconValue, StatValue } from '../../../../controls';
 
-import './combatant-endturn.scss';
+import './hero-endturn.scss';
 
 interface Props {
 	combatant: CombatantModel;
@@ -14,11 +14,11 @@ interface Props {
 	endTurn: () => void;
 }
 
-export class CombatantEndturn extends Component<Props> {
+export class HeroEndturn extends Component<Props> {
 	render = () => {
 		try {
 			return (
-				<div className='combatant-endturn'>
+				<div className='hero-endturn'>
 					<div className='endturn-stats'>
 						<StatValue
 							orientation='vertical'
@@ -35,11 +35,11 @@ export class CombatantEndturn extends Component<Props> {
 									<IconX size={50} />}
 						/>
 					</div>
-					<button className='primary' onClick={this.props.endTurn}>End Turn</button>
+					<button className='primary' onClick={this.props.endTurn}>End your Turn</button>
 				</div>
 			);
 		} catch {
-			return <div className='combatant-endturn render-error' />;
+			return <div className='hero-endturn render-error' />;
 		}
 	};
 }

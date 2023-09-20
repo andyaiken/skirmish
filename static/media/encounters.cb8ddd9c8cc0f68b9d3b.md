@@ -28,10 +28,9 @@ When it's a hero's turn to act, you'll see the following information:
   * **Conditions** - During the encounter you might have Conditions applied to you. A Condition might be beneficial or detrimental, and each one is associated with a particular Trait.
 * The `Movement` tab:
   * This tab allows you to move your hero around the battlefield. If you're beside a pile of treasure, you'll also be able to pick up items here.
-* The `Take an Action` tab:
-  * This tab allows you to select and perform one of your actions.
+* On the final tab you'll see an `End Your Turn` button; when you're finished with this hero's turn, press this to move on to the next combatant.
 
-On the final tab you'll see an `End Turn` button; when you're finished with this hero's turn, press this to move on to the next combatant.
+Below the map you'll see your action cards for this turn; this allows you to select and perform one of your actions.
 
 ## Monster Controls
 

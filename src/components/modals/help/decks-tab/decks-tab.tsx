@@ -53,7 +53,9 @@ export class DecksTab extends Component<Props, State> {
 		if (this.props.options.developer) {
 			const scaled = Math.round(strength / scale);
 			value = value.padEnd(scaled, '★');
-		} else {
+		}
+
+		if ((value === '') && (packID !== '')) {
 			const pack = GameLogic.getPack(packID);
 			if (pack) {
 				value = pack.name;
@@ -104,21 +106,27 @@ export class DecksTab extends Component<Props, State> {
 			const items = GameLogic.getItemDeck(this.props.options.packIDs)
 				.map(i => {
 					return (
-						<ItemCard key={i.id} item={i} />
+						<Badge key={i.id} value={this.getBadge(0, 5, i.packID)}>
+							<ItemCard item={i} />
+						</Badge>
 					);
 				});
 
 			const potions = GameLogic.getPotionDeck(this.props.options.packIDs)
 				.map(p => {
 					return (
-						<ItemCard key={p.id} item={p} />
+						<Badge key={p.id} value={this.getBadge(0, 5, p.packID)}>
+							<ItemCard item={p} />
+						</Badge>
 					);
 				});
 
 			const structures = GameLogic.getStructureDeck(this.props.options.packIDs)
 				.map(s => {
 					return (
-						<StructureCard key={s.id} structure={s} />
+						<Badge key={s.id} value={this.getBadge(0, 5, s.packID)}>
+							<StructureCard structure={s} />
+						</Badge>
 					);
 				});
 

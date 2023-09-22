@@ -1,10 +1,12 @@
 import { Component } from 'react';
 
 import { ItemProficiencyType } from '../../../enums/item-proficiency-type';
+import { StructureType } from '../../../enums/structure-type';
 
 import { MagicItemGenerator } from '../../../generators/magic-item-generator';
 
 import { CombatantLogic } from '../../../logic/combatant-logic';
+import { StrongholdLogic } from '../../../logic/stronghold-logic';
 
 import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
@@ -12,6 +14,7 @@ import type { OptionsModel } from '../../../models/options';
 
 import { CardList, Text, TextType } from '../../controls';
 import { ItemCard } from '../../cards';
+import { RedrawButton } from '../../panels';
 
 import './buy-magic-item-modal.scss';
 
@@ -19,6 +22,7 @@ interface Props {
 	game: GameModel;
 	options: OptionsModel;
 	buyItem: (item: ItemModel) => void;
+	useCharge: (type: StructureType) => void;
 }
 
 interface State {
@@ -76,6 +80,10 @@ export class BuyMagicItemModal extends Component<Props, State> {
 	redraw = () => {
 		this.setState({
 			magicItems: this.getItems()
+		}, () => {
+			if (!this.props.options.developer) {
+				this.props.useCharge(StructureType.WizardTower);
+			}
 		});
 	};
 
@@ -85,11 +93,22 @@ export class BuyMagicItemModal extends Component<Props, State> {
 				<ItemCard key={item.id} item={item} onClick={this.props.buyItem} />
 			));
 
+			const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.WizardTower);
+			if ((redraws > 0) || this.props.options.developer) {
+				cards.push(
+					<RedrawButton
+						key='redraw'
+						value={redraws}
+						developer={this.props.options.developer}
+						onClick={() => this.redraw()}
+					/>
+				);
+			}
+
 			return (
 				<div className='buy-magic-item-modal'>
 					<Text type={TextType.Heading}>Choose a Magic Item</Text>
 					<hr />
-					{this.props.options.developer ? <button className='developer' onClick={() => this.redraw()}>Redraw</button> : null}
 					<div className='card-selection-row'>
 						<CardList cards={cards} />
 					</div>

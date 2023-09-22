@@ -1,9 +1,12 @@
+import { StructureType } from '../enums/structure-type';
+
+import type { GameModel } from '../models/game';
 import type { StructureModel } from '../models/structure';
 
 import { Collections } from '../utils/collections';
 import { Utils } from '../utils/utils';
 
-export class StrongholdMapLogic {
+export class StrongholdLogic {
 	static getDimensions = (stronghold: StructureModel[]) => {
 		const dims = {
 			left: Number.MAX_VALUE,
@@ -25,7 +28,7 @@ export class StrongholdMapLogic {
 	static addStructure = (stronghold: StructureModel[], structure: StructureModel) => {
 		const copy = JSON.parse(JSON.stringify(structure)) as StructureModel;
 		copy.id = Utils.guid();
-		copy.position = StrongholdMapLogic.getEmptyPosition(stronghold);
+		copy.position = StrongholdLogic.getEmptyPosition(stronghold);
 		stronghold.push(copy);
 	};
 
@@ -52,5 +55,36 @@ export class StrongholdMapLogic {
 		}
 
 		return Collections.draw(empty);
+	};
+
+	static canCharge = (structure: StructureModel) => {
+		switch (structure.type) {
+			case StructureType.Barracks:
+				return false;
+		}
+
+		return true;
+	};
+
+	static getHeroLimit = (game: GameModel) => {
+		let count = 0;
+
+		game.stronghold
+			.filter(s => s.type === StructureType.Barracks)
+			.forEach(s => count += s.level * 3);
+
+		return count;
+	};
+
+	static getStructureCharges = (game: GameModel, type: StructureType) => {
+		return Collections.sum(game.stronghold.filter(s => s.type === type), s => s.charges);
+	};
+
+	static useCharge = (game: GameModel, type: StructureType) => {
+		const structures = game.stronghold.filter(s => s.type === type).filter(s => s.charges > 0);
+		if (structures.length > 0) {
+			const structure = Collections.draw(structures);
+			structure.charges -= 1;
+		}
 	};
 }

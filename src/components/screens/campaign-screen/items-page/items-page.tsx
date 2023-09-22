@@ -1,6 +1,7 @@
 import { Component } from 'react';
 
 import { BoonType } from '../../../../enums/boon-type';
+import { StructureType } from '../../../../enums/structure-type';
 
 import { GameLogic } from '../../../../logic/game-logic';
 
@@ -27,6 +28,7 @@ interface Props {
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
 	dropItem: (item: ItemModel, hero: CombatantModel) => void;
 	redeemBoon: (boon: BoonModel, combatant: CombatantModel | null, item: ItemModel | null, newItem: ItemModel | null, cost: number) => void;
+	useCharge: (type: StructureType) => void;
 	addMoney: () => void;
 }
 
@@ -137,7 +139,7 @@ export class ItemsPage extends Component<Props, State> {
 		}
 
 		const buySection = [];
-		if (this.props.game.money >= 2) {
+		if ((GameLogic.getItemDeck(this.props.options.packIDs).length > 0) && (this.props.game.money >= 2)) {
 			buySection.push(
 				<button key='mundane' onClick={() => this.showMarket('mundane')}>
 					<div>Buy equipment</div>
@@ -145,7 +147,7 @@ export class ItemsPage extends Component<Props, State> {
 				</button>
 			);
 		}
-		if (this.props.game.money >= 20) {
+		if ((GameLogic.getPotionDeck(this.props.options.packIDs).length > 0) && (this.props.game.money >= 20)) {
 			buySection.push(
 				<button key='potion' onClick={() => this.showMarket('potion')}>
 					<div>Buy a potion</div>
@@ -153,7 +155,7 @@ export class ItemsPage extends Component<Props, State> {
 				</button>
 			);
 		}
-		if (this.props.game.money >= 100) {
+		if ((GameLogic.getItemDeck(this.props.options.packIDs).length > 0) && (this.props.game.money >= 100)) {
 			buySection.push(
 				<button key='magical' onClick={() => this.showMarket('magical')}>
 					<div>Buy a magic item</div>
@@ -197,6 +199,7 @@ export class ItemsPage extends Component<Props, State> {
 							game={this.props.game}
 							options={this.props.options}
 							buyItem={this.buyItem}
+							useCharge={this.props.useCharge}
 						/>
 					)}
 				/>
@@ -211,6 +214,7 @@ export class ItemsPage extends Component<Props, State> {
 							game={this.props.game}
 							options={this.props.options}
 							buyItem={this.buyItem}
+							useCharge={this.props.useCharge}
 						/>
 					)}
 				/>
@@ -256,6 +260,7 @@ export class ItemsPage extends Component<Props, State> {
 							game={this.props.game}
 							options={this.props.options}
 							enchantItem={this.enchantItem}
+							useCharge={this.props.useCharge}
 						/>
 					)}
 					onClose={() => this.showEnchant(false)}

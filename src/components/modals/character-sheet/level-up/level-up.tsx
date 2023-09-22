@@ -1,24 +1,30 @@
 import { Component } from 'react';
 
 import { FeatureType } from '../../../../enums/feature-type';
+import { StructureType } from '../../../../enums/structure-type';
 
 import { CombatantLogic } from '../../../../logic/combatant-logic';
 import { FeatureLogic } from '../../../../logic/feature-logic';
+import { StrongholdLogic } from '../../../../logic/stronghold-logic';
 
 import type { CombatantModel } from '../../../../models/combatant';
 import type { FeatureModel } from '../../../../models/feature';
+import type { GameModel } from '../../../../models/game';
 
 import { Collections } from '../../../../utils/collections';
 
 import { CardList, Text, TextType } from '../../../controls';
 import { ChoicePanel } from './choice/choice';
 import { FeatureCard } from '../../../cards';
+import { RedrawButton } from '../../../panels';
 
 import './level-up.scss';
 
 interface Props {
 	combatant: CombatantModel;
+	game: GameModel;
 	developer: boolean;
+	useCharge: (type: StructureType) => void;
 	levelUp: (feature: FeatureModel) => void;
 }
 
@@ -60,6 +66,10 @@ export class LevelUp extends Component<Props, State> {
 		this.setState({
 			features: this.drawFeatures(this.props.combatant),
 			selectedFeature: null
+		}, () => {
+			if (!this.props.developer) {
+				this.props.useCharge(StructureType.TrainingGround);
+			}
 		});
 	};
 
@@ -94,6 +104,18 @@ export class LevelUp extends Component<Props, State> {
 				);
 			});
 
+			const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.TrainingGround);
+			if ((redraws > 0) || this.props.developer) {
+				featureCards.push(
+					<RedrawButton
+						key='redraw'
+						value={redraws}
+						developer={this.props.developer}
+						onClick={() => this.setFeatures()}
+					/>
+				);
+			}
+
 			let selected = null;
 			if (this.state.selectedFeature) {
 				selected = (
@@ -119,7 +141,6 @@ export class LevelUp extends Component<Props, State> {
 						<Text type={TextType.Information}>
 							<p><b>Level up.</b> Choose a feature for level {this.props.combatant.level + 1}.</p>
 						</Text>
-						{ this.props.developer ? <button className='developer' onClick={this.setFeatures}>Redraw Cards</button> : null }
 						{ this.state.selectedFeature === null ? <CardList cards={featureCards} /> : null }
 						{selected}
 						{choice}

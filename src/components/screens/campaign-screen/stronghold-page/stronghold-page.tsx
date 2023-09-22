@@ -4,6 +4,7 @@ import { BoonType } from '../../../../enums/boon-type';
 import { StructureType } from '../../../../enums/structure-type';
 
 import { GameLogic } from '../../../../logic/game-logic';
+import { StrongholdLogic } from '../../../../logic/stronghold-logic';
 
 import type { BoonModel } from '../../../../models/boon';
 import type { CombatantModel } from '../../../../models/combatant';
@@ -13,7 +14,7 @@ import type { OptionsModel } from '../../../../models/options';
 import type { StructureModel } from '../../../../models/structure';
 
 import { BoonCard, StructureCard } from '../../../cards';
-import { CardList, Dialog, IconSize, IconType, IconValue, StatValue, Text, TextType } from '../../../controls';
+import { CardList, Dialog, Expander, IconSize, IconType, IconValue, StatValue, Text, TextType } from '../../../controls';
 import { BuyStructureModal } from '../../../modals/buy-structure/buy-structure-modal';
 import { StrongholdMapPanel } from '../../../panels';
 
@@ -23,7 +24,9 @@ interface Props {
 	game: GameModel;
 	options: OptionsModel;
 	buyStructure: (structure: StructureModel) => void;
+	chargeStructure: (structure: StructureModel) => void;
 	upgradeStructure: (structure: StructureModel) => void;
+	useCharge: (type: StructureType) => void;
 	redeemBoon: (boon: BoonModel, hero: CombatantModel | null, item: ItemModel | null, newItem: ItemModel | null, cost: number) => void;
 }
 
@@ -62,17 +65,90 @@ export class StrongholdPage extends Component<Props, State> {
 		switch (structure.type) {
 			case StructureType.Barracks:
 				return (
-					<div>
-						This structure provides living space for up to {structure.level * 3} heroes.
-					</div>
+					<Text>
+						<p>This structure provides living space for up to {structure.level * 3} heroes.</p>
+					</Text>
+				);
+			case StructureType.Hall:
+				return (
+					<Text>
+						<p>When recruiting a new hero, this structure allows you to redraw species, role, or background cards.</p>
+						<p>You gain {structure.level} redraw(s) when the structure is charged.</p>
+					</Text>
+				);
+			case StructureType.Quartermaster:
+				return (
+					<Text>
+						<p>When recruiting a new hero, this structure allows you to redraw item cards.</p>
+						<p>You gain {structure.level} redraw(s) when the structure is charged.</p>
+					</Text>
+				);
+			case StructureType.TrainingGround:
+				return (
+					<Text>
+						<p>When levelling-up a hero, this structure allows you to redraw feature cards.</p>
+						<p>You gain {structure.level} redraw(s) when the structure is charged.</p>
+					</Text>
+				);
+			case StructureType.Observatory:
+				return (
+					<Text>
+						<p>In an encounter, this structure allows you to redraw action cards.</p>
+						<p>You gain {structure.level} redraw(s) when the structure is charged.</p>
+					</Text>
+				);
+			case StructureType.WizardTower:
+				return (
+					<Text>
+						<p>When buying a magic item or potion, this structure allows you to redraw item cards.</p>
+						<p>You gain {structure.level} redraws when the structure is charged.</p>
+					</Text>
+				);
+			case StructureType.Stockpile:
+				return (
+					<Text>
+						<p>When adding a new structure to your stronghold, this allows you to redraw structure cards.</p>
+						<p>You gain {structure.level} redraw(s) when the structure is charged.</p>
+					</Text>
 				);
 		}
 
 		return null;
 	};
 
+	getStrongholdBenefits = () => {
+		const heroRedraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Hall);
+		const itemRedraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Quartermaster);
+		const featureRedraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.TrainingGround);
+		const actionRedraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Observatory);
+		const magicRedraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.WizardTower);
+		const structureRedraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Stockpile);
+
+		return (
+			<div>
+				<StatValue label='Max Heroes' value={StrongholdLogic.getHeroLimit(this.props.game)} />
+				{heroRedraws > 0 ? <StatValue label='Hero Card Redraws' value={<IconValue type={IconType.Redraw} value={heroRedraws} />} /> : null}
+				{itemRedraws > 0 ? <StatValue label='Item Card Redraws' value={<IconValue type={IconType.Redraw} value={itemRedraws} />} /> : null}
+				{featureRedraws > 0 ? <StatValue label='Feature Card Redraws' value={<IconValue type={IconType.Redraw} value={featureRedraws} />} /> : null}
+				{actionRedraws > 0 ? <StatValue label='Action Card Redraws' value={<IconValue type={IconType.Redraw} value={actionRedraws} />} /> : null}
+				{magicRedraws > 0 ? <StatValue label='Magic Item Card Redraws' value={<IconValue type={IconType.Redraw} value={magicRedraws} />} /> : null}
+				{structureRedraws > 0 ? <StatValue label='Structure Card Redraws' value={<IconValue type={IconType.Redraw} value={structureRedraws} />} /> : null}
+			</div>
+		);
+	};
+
 	getSidebar = () => {
 		if (this.state.selectedStructure) {
+			let charge = null;
+			if (StrongholdLogic.canCharge(this.state.selectedStructure) && (this.props.game.money >= 100)) {
+				charge = (
+					<button disabled={this.state.selectedStructure.charges > 0} onClick={() => this.props.chargeStructure(this.state.selectedStructure as StructureModel)}>
+						<div>Charge structure</div>
+						<IconValue type={IconType.Money} value={100} size={IconSize.Button} />
+					</button>
+				);
+			}
+
 			let upgrade = null;
 			const upgradeCost = this.state.selectedStructure.level * 50;
 			if (this.props.game.money >= upgradeCost) {
@@ -91,7 +167,8 @@ export class StrongholdPage extends Component<Props, State> {
 					<div className='structure-details-card'>
 						<StructureCard structure={this.state.selectedStructure} />
 					</div>
-					{upgrade ? <hr /> : null}
+					{!!charge || !!upgrade ? <hr /> : null}
+					{charge}
 					{upgrade}
 					{details ? <hr /> : null}
 					{details}
@@ -113,7 +190,7 @@ export class StrongholdPage extends Component<Props, State> {
 		}
 
 		let addSection = null;
-		if (this.props.game.money >= 50) {
+		if ((GameLogic.getStructureDeck(this.props.options.packIDs).length > 0) && (this.props.game.money >= 50)) {
 			addSection = (
 				<button onClick={() => this.setState({ addingStructure: true })}>
 					<div>New structure</div>
@@ -126,8 +203,28 @@ export class StrongholdPage extends Component<Props, State> {
 			<div key='map' className='sidebar'>
 				<Text type={TextType.SubHeading}>Your Stronghold</Text>
 				<Text>This is your base of operations. Select a structure on the map to see what it can do.</Text>
+				{
+					this.props.options.showTips ?
+						<Expander
+							header={
+								<Text type={TextType.Tip}>Your stronghold can provide useful advantages.</Text>
+							}
+							content={
+								<div>
+									<p>The different structures have different effects:</p>
+									<ul>
+										<li>The Barracks allows you recruit more heroes.</li>
+										<li>Some structures allow you to redraw cards.</li>
+									</ul>
+									<p>Structures can be upgraded, which increases their usefulness.</p>
+									<p>Most structures need to be charged before they can be used, which costs money.</p>
+								</div>
+							}
+						/>
+						: null
+				}
 				<hr />
-				<StatValue orientation='vertical' label='Max Heroes' value={GameLogic.getHeroLimit(this.props.game)} />
+				{this.getStrongholdBenefits()}
 				{boons !== null ? <hr /> : null}
 				{boons}
 				{addSection !== null ? <hr /> : null}
@@ -145,6 +242,7 @@ export class StrongholdPage extends Component<Props, State> {
 							game={this.props.game}
 							options={this.props.options}
 							buyStructure={this.buyStructure}
+							useCharge={this.props.useCharge}
 						/>
 					)}
 				/>

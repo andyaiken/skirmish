@@ -1,6 +1,7 @@
 import { Component } from 'react';
 
 import { QuirkType } from '../../../enums/quirk-type';
+import { StructureType } from '../../../enums/structure-type';
 
 import { GameLogic } from '../../../logic/game-logic';
 
@@ -28,6 +29,7 @@ interface Props {
 	dropItem: (item: ItemModel, combatant: CombatantModel) => void;
 	levelUp: (feature: FeatureModel, combatant: CombatantModel) => void;
 	retireHero: (combatant: CombatantModel) => void;
+	useCharge: (type: StructureType) => void;
 }
 
 interface State {
@@ -96,7 +98,13 @@ export class CharacterSheetModal extends Component<Props, State> {
 			if ((this.props.game.encounter === null) && (this.props.combatant.xp >= this.props.combatant.level)) {
 				sidebar = (
 					<div className='sidebar-section'>
-						<LevelUp combatant={this.props.combatant} developer={this.props.developer} levelUp={this.levelUp} />
+						<LevelUp
+							combatant={this.props.combatant}
+							game={this.props.game}
+							developer={this.props.developer}
+							useCharge={this.props.useCharge}
+							levelUp={this.levelUp}
+						/>
 					</div>
 				);
 			} else {

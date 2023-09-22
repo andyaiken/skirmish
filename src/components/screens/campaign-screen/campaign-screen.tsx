@@ -1,6 +1,8 @@
 import { IconCards, IconHelpCircle, IconHelpCircleFilled, IconSettings } from '@tabler/icons-react';
 import { Component } from 'react';
 
+import { StructureType } from '../../../enums/structure-type';
+
 import { GameLogic } from '../../../logic/game-logic';
 
 import type { BoonModel } from '../../../models/boon';
@@ -36,7 +38,9 @@ interface Props {
 	showPacks: () => void;
 	showOptions: () => void;
 	buyStructure: (structure: StructureModel) => void;
+	chargeStructure: (structure: StructureModel) => void;
 	upgradeStructure: (structure: StructureModel) => void;
+	useCharge: (type: StructureType) => void;
 	addHero: (hero: CombatantModel) => void;
 	incrementXP: (hero: CombatantModel) => void;
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
@@ -92,7 +96,9 @@ export class CampaignScreen extends Component<Props, State> {
 							game={this.props.game}
 							options={this.props.options}
 							buyStructure={this.props.buyStructure}
+							chargeStructure={this.props.chargeStructure}
 							upgradeStructure={this.props.upgradeStructure}
+							useCharge={this.props.useCharge}
 							redeemBoon={this.props.redeemBoon}
 						/>
 					);
@@ -111,6 +117,7 @@ export class CampaignScreen extends Component<Props, State> {
 							levelUp={this.props.levelUp}
 							retireHero={this.props.retireHero}
 							redeemBoon={this.props.redeemBoon}
+							useCharge={this.props.useCharge}
 						/>
 					);
 					break;
@@ -124,6 +131,7 @@ export class CampaignScreen extends Component<Props, State> {
 							equipItem={this.props.equipItem}
 							dropItem={this.props.dropItem}
 							redeemBoon={this.props.redeemBoon}
+							useCharge={this.props.useCharge}
 							addMoney={this.props.addMoney}
 						/>
 					);

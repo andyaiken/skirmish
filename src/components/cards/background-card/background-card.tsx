@@ -56,7 +56,7 @@ export class BackgroundCard extends Component<Props, State> {
 
 	render = () => {
 		let startingFeatures = null;
-		if (this.props.background.features.length > 0) {
+		if (this.props.background.startingFeatures.length > 0) {
 			startingFeatures = (
 				<div>
 					<Text type={TextType.MinorHeading}>Start With</Text>

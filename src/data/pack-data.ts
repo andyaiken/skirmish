@@ -43,6 +43,12 @@ export class PackData {
 		description: 'These cards bring the majesty of the divine to your game.'
 	};
 
+	static potions: PackModel = {
+		id: 'pack-8',
+		name: 'Potions',
+		description: 'These cards add magical potions to the game.'
+	};
+
 	static getList = (): PackModel[] => {
 		const list = [
 			PackData.arcana,
@@ -51,7 +57,8 @@ export class PackData {
 			PackData.beasts,
 			PackData.undead,
 			PackData.technology,
-			PackData.faith
+			PackData.faith,
+			PackData.potions
 		];
 
 		list.sort((a, b) => a.name.localeCompare(b.name));

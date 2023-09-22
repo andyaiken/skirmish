@@ -20,9 +20,9 @@ import {
 import { ActionTargetType } from '../../../enums/action-target-type';
 import { CardType } from '../../../enums/card-type';
 import { CombatantState } from '../../../enums/combatant-state';
-import { EncounterState } from '../../../enums/encounter-state';
-
 import { CombatantType } from '../../../enums/combatant-type';
+import { EncounterState } from '../../../enums/encounter-state';
+import { StructureType } from '../../../enums/structure-type';
 
 import { ActionLogic } from '../../../logic/action-logic';
 import { EncounterLogic } from '../../../logic/encounter-logic';
@@ -63,7 +63,7 @@ interface Props {
 	scan: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	hide: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	drinkPotion: (encounter: EncounterModel, owner: CombatantModel, drinker: CombatantModel, potion: ItemModel) => void;
-	drawActions: (encounter: EncounterModel, combatant: CombatantModel) => void;
+	drawActions: (encounter: EncounterModel, combatant: CombatantModel, useCharge: StructureType | null) => void;
 	selectAction: (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => void;
 	deselectAction: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	setActionParameterValue: (parameter: ActionParameterModel, value: unknown) => void;
@@ -73,6 +73,7 @@ interface Props {
 	unequipItem: (item: ItemModel, combatant: CombatantModel) => void;
 	pickUpItem: (item: ItemModel, hero: CombatantModel) => void;
 	dropItem: (item: ItemModel, combatant: CombatantModel) => void;
+	useCharge: (type: StructureType) => void;
 	finishEncounter: (state: EncounterState) => void;
 }
 
@@ -548,6 +549,7 @@ export class EncounterScreen extends Component<Props, State> {
 					<ActionControls
 						combatant={currentCombatant}
 						encounter={this.props.encounter}
+						game={this.props.game}
 						currentActionParameter={this.state.selectedActionParameter}
 						developer={this.props.options.developer}
 						collapsed={!this.state.showBottomPanel}
@@ -658,6 +660,7 @@ export class EncounterScreen extends Component<Props, State> {
 								dropItem={this.props.dropItem}
 								levelUp={() => null}
 								retireHero={() => null}
+								useCharge={this.props.useCharge}
 							/>
 						}
 						onClose={() => this.clearDetails()}

@@ -4,6 +4,7 @@ import { BoonType } from '../../enums/boon-type';
 import { CombatantState } from '../../enums/combatant-state';
 import { CombatantType } from '../../enums/combatant-type';
 import { EncounterState } from '../../enums/encounter-state';
+import { StructureType } from '../../enums/structure-type';
 
 import { CampaignMapLogic } from '../../logic/campaign-map-logic';
 import { CombatantLogic } from '../../logic/combatant-logic';
@@ -13,7 +14,7 @@ import { EncounterMapLogic } from '../../logic/encounter-map-logic';
 import { Factory } from '../../logic/factory';
 import { GameLogic } from '../../logic/game-logic';
 import { IntentsLogic } from '../../logic/intents-logic';
-import { StrongholdMapLogic } from '../../logic/stronghold-map-logic';
+import { StrongholdLogic } from '../../logic/stronghold-logic';
 
 import type { ActionModel, ActionParameterModel } from '../../models/action';
 import type { BoonModel } from '../../models/boon';
@@ -321,10 +322,29 @@ export class Main extends Component<Props, State> {
 		try {
 			const game = this.state.game as GameModel;
 
-			StrongholdMapLogic.addStructure(game.stronghold, structure);
+			StrongholdLogic.addStructure(game.stronghold, structure);
 
 			const money = 50;
 			game.money = Math.max(0, game.money - money);
+
+			this.setState({
+				game: game
+			}, () => {
+				this.saveGame();
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
+	};
+
+	chargeStructure = (structure: StructureModel) => {
+		try {
+			const game = this.state.game as GameModel;
+
+			const money = 100;
+			game.money = Math.max(0, game.money - money);
+
+			structure.charges += structure.level;
 
 			this.setState({
 				game: game
@@ -344,6 +364,22 @@ export class Main extends Component<Props, State> {
 			game.money = Math.max(0, game.money - money);
 
 			structure.level += 1;
+
+			this.setState({
+				game: game
+			}, () => {
+				this.saveGame();
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
+	};
+
+	useCharge = (type: StructureType) => {
+		try {
+			const game = this.state.game as GameModel;
+
+			StrongholdLogic.useCharge(game, type);
 
 			this.setState({
 				game: game
@@ -494,7 +530,7 @@ export class Main extends Component<Props, State> {
 					break;
 				}
 				case BoonType.Structure:
-					StrongholdMapLogic.addStructure(game.stronghold, boon.data as StructureModel);
+					StrongholdLogic.addStructure(game.stronghold, boon.data as StructureModel);
 					break;
 			}
 
@@ -800,9 +836,13 @@ export class Main extends Component<Props, State> {
 		}
 	};
 
-	drawActions = (encounter: EncounterModel, combatant: CombatantModel) => {
+	drawActions = (encounter: EncounterModel, combatant: CombatantModel, useCharge: StructureType | null) => {
 		try {
 			EncounterLogic.drawActions(encounter, combatant);
+
+			if (useCharge) {
+				StrongholdLogic.useCharge(this.state.game as GameModel, useCharge);
+			}
 
 			this.setState({
 				game: this.state.game
@@ -1157,7 +1197,9 @@ export class Main extends Component<Props, State> {
 						showPacks={this.showPacks}
 						showOptions={this.showOptions}
 						buyStructure={this.buyStructure}
+						chargeStructure={this.chargeStructure}
 						upgradeStructure={this.upgradeStructure}
+						useCharge={this.useCharge}
 						addHero={this.addHero}
 						incrementXP={this.incrementXP}
 						equipItem={this.equipItem}
@@ -1202,6 +1244,7 @@ export class Main extends Component<Props, State> {
 						unequipItem={this.unequipItem}
 						pickUpItem={this.pickUpItem}
 						dropItem={this.dropItem}
+						useCharge={this.useCharge}
 						finishEncounter={this.finishEncounter}
 					/>
 				);

@@ -88,7 +88,6 @@ export class CampaignMapPage extends Component<Props, State> {
 			<div key='map' className='sidebar'>
 				<Text type={TextType.SubHeading}>The Island</Text>
 				<Text>This is the map of the island. Select a region to learn more about it.</Text>
-				<hr />
 				{
 					this.props.options.showTips ?
 						<Expander
@@ -106,6 +105,7 @@ export class CampaignMapPage extends Component<Props, State> {
 						/>
 						: null
 				}
+				<hr />
 				<div className='map-stats'>
 					<StatValue
 						orientation='vertical'

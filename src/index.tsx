@@ -4,7 +4,7 @@ import localforage from 'localforage';
 
 import { StructureData } from './data/structure-data';
 
-import { StrongholdMapLogic } from './logic/stronghold-map-logic';
+import { StrongholdLogic } from './logic/stronghold-logic';
 
 import type { GameModel } from './models/game';
 import type { OptionsModel } from './models/options';
@@ -17,8 +17,8 @@ localforage.getItem<GameModel>('skirmish-game').then(game => {
 	if (game) {
 		if (!game.stronghold) {
 			game.stronghold = [];
-			StrongholdMapLogic.addStructure(game.stronghold, StructureData.barracks);
-			StrongholdMapLogic.addStructure(game.stronghold, StructureData.barracks);
+			StrongholdLogic.addStructure(game.stronghold, StructureData.barracks);
+			StrongholdLogic.addStructure(game.stronghold, StructureData.barracks);
 		}
 
 		if (game.encounter) {

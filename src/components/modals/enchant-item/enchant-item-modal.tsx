@@ -1,6 +1,10 @@
 import { Component } from 'react';
 
+import { StructureType } from '../../../enums/structure-type';
+
 import { MagicItemGenerator } from '../../../generators/magic-item-generator';
+
+import { StrongholdLogic } from '../../../logic/stronghold-logic';
 
 import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
@@ -8,6 +12,7 @@ import type { OptionsModel } from '../../../models/options';
 
 import { CardList, Dialog, Text, TextType } from '../../controls';
 import { ItemCard } from '../../cards';
+import { RedrawButton } from '../../panels';
 
 import './enchant-item-modal.scss';
 
@@ -15,6 +20,7 @@ interface Props {
 	game: GameModel;
 	options: OptionsModel;
 	enchantItem: (item: ItemModel, newItem: ItemModel) => void;
+	useCharge: (type: StructureType) => void;
 }
 
 interface State {
@@ -51,6 +57,16 @@ export class EnchantItemModal extends Component<Props, State> {
 		return items;
 	};
 
+	redraw = () => {
+		this.setState({
+			magicItems: this.getItems(this.state.selectedItem as ItemModel)
+		}, () => {
+			if (!this.props.options.developer) {
+				this.props.useCharge(StructureType.WizardTower);
+			}
+		});
+	};
+
 	render = () => {
 		try {
 			let dialog = null;
@@ -60,6 +76,18 @@ export class EnchantItemModal extends Component<Props, State> {
 						<ItemCard item={item} onClick={item => this.props.enchantItem(this.state.selectedItem as ItemModel, item)} />
 					</div>
 				));
+
+				const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.WizardTower);
+				if ((redraws > 0) || this.props.options.developer) {
+					cards.push(
+						<RedrawButton
+							key='redraw'
+							value={redraws}
+							developer={this.props.options.developer}
+							onClick={() => this.redraw()}
+						/>
+					);
+				}
 
 				dialog = (
 					<Dialog

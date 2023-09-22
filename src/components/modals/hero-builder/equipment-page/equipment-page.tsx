@@ -2,11 +2,14 @@ import { Component } from 'react';
 
 import { CardType } from '../../../../enums/card-type';
 import { ItemProficiencyType } from '../../../../enums/item-proficiency-type';
+import { StructureType } from '../../../../enums/structure-type';
 
 import { CombatantLogic } from '../../../../logic/combatant-logic';
 import { GameLogic } from '../../../../logic/game-logic';
+import { StrongholdLogic } from '../../../../logic/stronghold-logic';
 
 import type { CombatantModel } from '../../../../models/combatant';
+import type { GameModel } from '../../../../models/game';
 import type { ItemModel } from '../../../../models/item';
 import type { OptionsModel } from '../../../../models/options';
 
@@ -15,13 +18,16 @@ import { Utils } from '../../../../utils/utils';
 
 import { CardList, Expander, PlayingCard, Text, TextType } from '../../../controls';
 import { ItemCard, PlaceholderCard } from '../../../cards';
+import { RedrawButton } from '../../../panels';
 
 import './equipment-page.scss';
 
 interface Props {
 	hero: CombatantModel;
+	game: GameModel;
 	options: OptionsModel;
 	addItems: (items: ItemModel[]) => void;
+	useCharge: (type: StructureType) => void;
 }
 
 interface State {
@@ -61,6 +67,20 @@ export class EquipmentPage extends Component<Props, State> {
 		}
 	};
 
+	redraw = (proficiency: ItemProficiencyType) => {
+		const slot = this.state.slots.find(s => s.proficiency === proficiency);
+		if (slot) {
+			slot.candidates = Collections.shuffle(GameLogic.getItemsForProficiency(proficiency, this.props.options.packIDs)).splice(0, 3);
+			this.setState({
+				slots: this.state.slots
+			}, () => {
+				if (!this.props.options.developer) {
+					this.props.useCharge(StructureType.Quartermaster);
+				}
+			});
+		}
+	};
+
 	addItems = () => {
 		const items = this.state.slots.map(s => s.selected).filter(i => i !== null) as ItemModel[];
 		this.props.addItems(items);
@@ -91,6 +111,18 @@ export class EquipmentPage extends Component<Props, State> {
 
 			const slots = this.state.slots.filter(slot => !slot.selected).map((slot, n) => {
 				const cards = slot.candidates.map(item => <ItemCard key={item.id} item={item} onClick={this.selectItem} />);
+
+				const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Quartermaster);
+				if ((redraws > 0) || this.props.options.developer) {
+					cards.push(
+						<RedrawButton
+							key='redraw'
+							value={redraws}
+							developer={this.props.options.developer}
+							onClick={() => this.redraw(slot.proficiency)}
+						/>
+					);
+				}
 
 				return (
 					<div key={n} className='card-selection-row'>

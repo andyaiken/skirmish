@@ -3,29 +3,34 @@ import { Component } from 'react';
 
 import { ActionTargetType } from '../../../../enums/action-target-type';
 import { CardType } from '../../../../enums/card-type';
+import { StructureType } from '../../../../enums/structure-type';
 
 import { ActionLogic, ActionPrerequisites } from '../../../../logic/action-logic';
 import { CombatantLogic } from '../../../../logic/combatant-logic';
 import { EncounterLogic } from '../../../../logic/encounter-logic';
 import { EncounterMapLogic } from '../../../../logic/encounter-map-logic';
+import { StrongholdLogic } from '../../../../logic/stronghold-logic';
 
 import type { ActionModel, ActionOriginParameterModel, ActionParameterModel, ActionTargetParameterModel, ActionWeaponParameterModel } from '../../../../models/action';
 import type { CombatantModel } from '../../../../models/combatant';
 import type { EncounterModel } from '../../../../models/encounter';
+import type { GameModel } from '../../../../models/game';
 import type { ItemModel } from '../../../../models/item';
 
 import { Badge, Selector, Text, TextType } from '../../../controls';
 import { ActionCard } from '../../../cards';
+import { RedrawButton } from '../../../panels';
 
 import './action-controls.scss';
 
 interface Props {
 	combatant: CombatantModel;
 	encounter: EncounterModel;
+	game: GameModel;
 	currentActionParameter: ActionParameterModel | null;
 	developer: boolean;
 	collapsed: boolean;
-	drawActions: (encounter: EncounterModel, combatant: CombatantModel) => void;
+	drawActions: (encounter: EncounterModel, combatant: CombatantModel, useCharge: StructureType | null) => void;
 	selectAction: (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => void;
 	deselectAction: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	setActionParameter: (parameter: ActionParameterModel) => void;
@@ -76,13 +81,26 @@ export class ActionControls extends Component<Props> {
 				}
 			});
 
+		let redrawCard = null;
+		const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Observatory);
+		if ((redraws > 0) || this.props.developer) {
+			redrawCard = (
+				<RedrawButton
+					key='redraw'
+					value={redraws}
+					developer={this.props.developer}
+					onClick={() => this.props.drawActions(this.props.encounter, this.props.combatant, this.props.developer ? null : StructureType.Observatory)}
+				/>
+			);
+		}
+
 		return (
 			<div className='action-controls-content' key={this.props.combatant.id}>
 				{actionCards}
-				{(actionCards.length > 0) && (baseCards.length > 0) ? <div className='separator' /> : null}
+				{redrawCard ? <div className='separator' /> : null}
+				{redrawCard}
+				{baseCards.length > 0 ? <div className='separator' /> : null}
 				{baseCards}
-				{this.props.developer ? <div className='separator' /> : null}
-				{this.props.developer ? <button className='developer' onClick={() => this.props.drawActions(this.props.encounter, this.props.combatant)}>Draw Again</button> : null}
 			</div>
 		);
 	};
@@ -378,7 +396,7 @@ export class ActionControls extends Component<Props> {
 						<p>You have used your action for this turn.</p>
 						{this.props.combatant.combat.movement > 0 ? <p>You still have some movement points you can use.</p> : null }
 					</Text>
-					{this.props.developer ? <button className='developer' onClick={() => this.props.drawActions(this.props.encounter, this.props.combatant)}>Act Again</button> : null}
+					{this.props.developer ? <button className='developer' onClick={() => this.props.drawActions(this.props.encounter, this.props.combatant, null)}>Act Again</button> : null}
 				</div>
 			</div>
 		);

@@ -15,6 +15,7 @@ import { ConditionLogic } from '../logic/condition-logic';
 import { FeatureLogic } from '../logic/feature-logic';
 
 import type { BackgroundModel } from '../models/background';
+import { PotionData } from './potion-data';
 
 export class BackgroundData {
 	static acrobat: BackgroundModel = {
@@ -69,6 +70,32 @@ export class BackgroundData {
 		actions: [
 			{
 				id: 'apothecary-action-1',
+				name: 'Create Tonic of Aptitude',
+				prerequisites: [
+					ActionPrerequisites.carryingCapacity()
+				],
+				parameters: [
+					ActionTargetParameters.self()
+				],
+				effects: [
+					ActionEffects.createPotion(PotionData.aptitude.id)
+				]
+			},
+			{
+				id: 'apothecary-action-2',
+				name: 'Create Tincture of Brilliance',
+				prerequisites: [
+					ActionPrerequisites.carryingCapacity()
+				],
+				parameters: [
+					ActionTargetParameters.self()
+				],
+				effects: [
+					ActionEffects.createPotion(PotionData.brilliance.id)
+				]
+			},
+			{
+				id: 'apothecary-action-3',
 				name: 'Create Potion of Health',
 				prerequisites: [
 					ActionPrerequisites.carryingCapacity()
@@ -77,37 +104,37 @@ export class BackgroundData {
 					ActionTargetParameters.self()
 				],
 				effects: [
-					ActionEffects.createPotion('potion-health')
-				]
-			},
-			{
-				id: 'apothecary-action-2',
-				name: 'Create Potion of Luck',
-				prerequisites: [
-					ActionPrerequisites.carryingCapacity()
-				],
-				parameters: [
-					ActionTargetParameters.self()
-				],
-				effects: [
-					ActionEffects.createPotion('potion-luck')
-				]
-			},
-			{
-				id: 'apothecary-action-3',
-				name: 'Create Potion of Might',
-				prerequisites: [
-					ActionPrerequisites.carryingCapacity()
-				],
-				parameters: [
-					ActionTargetParameters.self()
-				],
-				effects: [
-					ActionEffects.createPotion('potion-might')
+					ActionEffects.createPotion(PotionData.health.id)
 				]
 			},
 			{
 				id: 'apothecary-action-4',
+				name: 'Create Philtre of Luck',
+				prerequisites: [
+					ActionPrerequisites.carryingCapacity()
+				],
+				parameters: [
+					ActionTargetParameters.self()
+				],
+				effects: [
+					ActionEffects.createPotion(PotionData.luck.id)
+				]
+			},
+			{
+				id: 'apothecary-action-5',
+				name: 'Create Elixir of Might',
+				prerequisites: [
+					ActionPrerequisites.carryingCapacity()
+				],
+				parameters: [
+					ActionTargetParameters.self()
+				],
+				effects: [
+					ActionEffects.createPotion(PotionData.might.id)
+				]
+			},
+			{
+				id: 'apothecary-action-6',
 				name: 'Create Potion of Resistance',
 				prerequisites: [
 					ActionPrerequisites.carryingCapacity()
@@ -116,7 +143,46 @@ export class BackgroundData {
 					ActionTargetParameters.self()
 				],
 				effects: [
-					ActionEffects.createPotion('potion-resistance')
+					ActionEffects.createPotion(PotionData.resistance.id)
+				]
+			},
+			{
+				id: 'apothecary-action-7',
+				name: 'Create Brew of Endurance',
+				prerequisites: [
+					ActionPrerequisites.carryingCapacity()
+				],
+				parameters: [
+					ActionTargetParameters.self()
+				],
+				effects: [
+					ActionEffects.createPotion(PotionData.endurance.id)
+				]
+			},
+			{
+				id: 'apothecary-action-8',
+				name: 'Create Brew of Resolve',
+				prerequisites: [
+					ActionPrerequisites.carryingCapacity()
+				],
+				parameters: [
+					ActionTargetParameters.self()
+				],
+				effects: [
+					ActionEffects.createPotion(PotionData.resolve.id)
+				]
+			},
+			{
+				id: 'apothecary-action-9',
+				name: 'Create Brew of Speed',
+				prerequisites: [
+					ActionPrerequisites.carryingCapacity()
+				],
+				parameters: [
+					ActionTargetParameters.self()
+				],
+				effects: [
+					ActionEffects.createPotion(PotionData.speed.id)
 				]
 			}
 		]

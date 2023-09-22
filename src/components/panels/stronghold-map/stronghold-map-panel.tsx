@@ -1,6 +1,6 @@
 import { Component } from 'react';
 
-import { StrongholdMapLogic } from '../../../logic/stronghold-map-logic';
+import { StrongholdLogic } from '../../../logic/stronghold-logic';
 
 import { type StructureModel } from '../../../models/structure';
 
@@ -48,7 +48,7 @@ export class StrongholdMapPanel extends Component<Props> {
 	render = () => {
 		try {
 			// Get dimensions, adding a 1-square border
-			const dims = StrongholdMapLogic.getDimensions(this.props.stronghold);
+			const dims = StrongholdLogic.getDimensions(this.props.stronghold);
 			dims.left -= 1;
 			dims.top -= 1;
 			dims.right += 1;

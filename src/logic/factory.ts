@@ -13,7 +13,7 @@ import { TraitType } from '../enums/trait-type';
 
 import { CampaignMapGenerator } from '../generators/campaign-map-generator';
 
-import { StrongholdMapLogic } from './stronghold-map-logic';
+import { StrongholdLogic } from './stronghold-logic';
 
 import type { CombatantModel } from '../models/combatant';
 import type { ConditionModel } from '../models/condition';
@@ -75,8 +75,8 @@ export class Factory {
 			encounter: null
 		};
 
-		StrongholdMapLogic.addStructure(game.stronghold, StructureData.barracks);
-		StrongholdMapLogic.addStructure(game.stronghold, StructureData.barracks);
+		StrongholdLogic.addStructure(game.stronghold, StructureData.barracks);
+		StrongholdLogic.addStructure(game.stronghold, StructureData.barracks);
 
 		return game;
 	};

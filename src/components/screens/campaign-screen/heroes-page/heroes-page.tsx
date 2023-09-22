@@ -2,9 +2,11 @@ import { Component } from 'react';
 
 import { BoonType } from '../../../../enums/boon-type';
 import { CombatantType } from '../../../../enums/combatant-type';
-import { GameLogic } from '../../../../logic/game-logic';
+import { StructureType } from '../../../../enums/structure-type';
 
 import { Factory } from '../../../../logic/factory';
+import { GameLogic } from '../../../../logic/game-logic';
+import { StrongholdLogic } from '../../../../logic/stronghold-logic';
 
 import type { BoonModel } from '../../../../models/boon';
 import type { CombatantModel } from '../../../../models/combatant';
@@ -31,6 +33,7 @@ interface Props {
 	levelUp: (feature: FeatureModel, hero: CombatantModel) => void;
 	retireHero: (combatant: CombatantModel) => void;
 	redeemBoon: (boon: BoonModel, hero: CombatantModel | null, item: ItemModel | null, newItem: ItemModel | null, cost: number) => void;
+	useCharge: (type: StructureType) => void;
 }
 
 interface State {
@@ -145,7 +148,7 @@ export class HeroesPage extends Component<Props, State> {
 
 		let blankHeroes = null;
 		if (this.props.game.heroSlots > 0) {
-			const atHeroLimit = this.props.game.heroes.length >= GameLogic.getHeroLimit(this.props.game);
+			const atHeroLimit = this.props.game.heroes.length >= StrongholdLogic.getHeroLimit(this.props.game);
 			blankHeroes = (
 				<div className='center'>
 					<PlayingCard
@@ -186,6 +189,7 @@ export class HeroesPage extends Component<Props, State> {
 								hero={this.state.selectedHero}
 								game={this.props.game}
 								options={this.props.options}
+								useCharge={this.props.useCharge}
 								finished={hero => {
 									const h = this.state.selectedHero as CombatantModel;
 									this.setState({
@@ -213,6 +217,7 @@ export class HeroesPage extends Component<Props, State> {
 								dropItem={this.props.dropItem}
 								levelUp={this.props.levelUp}
 								retireHero={this.retireHero}
+								useCharge={this.props.useCharge}
 							/>
 						)}
 						onClose={this.state.selectedHero.xp >= this.state.selectedHero.level ? null : () => {

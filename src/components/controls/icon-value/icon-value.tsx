@@ -1,6 +1,6 @@
 import {
 	IconAccessPoint, IconArrowBigRightLinesFilled, IconAwardFilled, IconBolt, IconBrain, IconCoins, IconFlame,
-	IconHammer, IconSkull, IconSlice, IconSnowflake, IconSpiral, IconSun, IconTrident, IconVaccineBottle
+	IconHammer, IconRefresh, IconSkull, IconSlice, IconSnowflake, IconSpiral, IconSun, IconTrident, IconVaccineBottle
 } from '@tabler/icons-react';
 import { Component } from 'react';
 
@@ -11,7 +11,8 @@ import './icon-value.scss';
 export enum IconType {
 	Movement = 'Movement',
 	Money = 'Money',
-	XP = 'XP'
+	XP = 'XP',
+	Redraw = 'Redraw'
 }
 
 export enum IconSize {
@@ -39,7 +40,7 @@ export class IconValue extends Component<Props> {
 				return 40;
 		}
 
-		return 12;
+		return 15;
 	};
 
 	getIconSize = () => {
@@ -66,52 +67,57 @@ export class IconValue extends Component<Props> {
 
 	render = () => {
 		try {
+			const size = this.getIconSize();
+
 			let icon = null;
 			switch (this.props.type) {
 				case IconType.Movement:
-					icon = <IconArrowBigRightLinesFilled size={this.getIconSize()} />;
+					icon = <IconArrowBigRightLinesFilled size={size} />;
 					break;
 				case IconType.Money:
-					icon = <IconCoins size={this.getIconSize()} />;
+					icon = <IconCoins size={size} />;
 					break;
 				case IconType.XP:
-					icon = <IconAwardFilled size={this.getIconSize()} />;
+					icon = <IconAwardFilled size={size} />;
+					break;
+				case IconType.Redraw:
+					icon = <IconRefresh size={size} />;
 					break;
 				case DamageType.Acid:
-					icon = <IconVaccineBottle size={this.getIconSize()} />;
+					icon = <IconVaccineBottle size={size} />;
 					break;
 				case DamageType.Cold:
-					icon = <IconSnowflake size={this.getIconSize()} />;
+					icon = <IconSnowflake size={size} />;
 					break;
 				case DamageType.Decay:
-					icon = <IconSpiral size={this.getIconSize()} />;
+					icon = <IconSpiral size={size} />;
 					break;
 				case DamageType.Edged:
-					icon = <IconSlice size={this.getIconSize()} />;
+					icon = <IconSlice size={size} />;
 					break;
 				case DamageType.Electricity:
-					icon = <IconBolt size={this.getIconSize()} />;
+					icon = <IconBolt size={size} />;
 					break;
 				case DamageType.Fire:
-					icon = <IconFlame size={this.getIconSize()} />;
+					icon = <IconFlame size={size} />;
 					break;
 				case DamageType.Impact:
-					icon = <IconHammer size={this.getIconSize()} />;
+					icon = <IconHammer size={size} />;
 					break;
 				case DamageType.Light:
-					icon = <IconSun size={this.getIconSize()} />;
+					icon = <IconSun size={size} />;
 					break;
 				case DamageType.Piercing:
-					icon = <IconTrident size={this.getIconSize()} />;
+					icon = <IconTrident size={size} />;
 					break;
 				case DamageType.Poison:
-					icon = <IconSkull size={this.getIconSize()} />;
+					icon = <IconSkull size={size} />;
 					break;
 				case DamageType.Psychic:
-					icon = <IconBrain size={this.getIconSize()} />;
+					icon = <IconBrain size={size} />;
 					break;
 				case DamageType.Sonic:
-					icon = <IconAccessPoint size={this.getIconSize()} />;
+					icon = <IconAccessPoint size={size} />;
 					break;
 			}
 

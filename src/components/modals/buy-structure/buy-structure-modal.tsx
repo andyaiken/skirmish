@@ -1,6 +1,9 @@
 import { Component } from 'react';
 
+import { StructureType } from '../../../enums/structure-type';
+
 import { GameLogic } from '../../../logic/game-logic';
+import { StrongholdLogic } from '../../../logic/stronghold-logic';
 
 import type { GameModel } from '../../../models/game';
 import type { OptionsModel } from '../../../models/options';
@@ -9,6 +12,7 @@ import type { StructureModel } from '../../../models/structure';
 import { Collections } from '../../../utils/collections';
 
 import { CardList, Text, TextType } from '../../controls';
+import { RedrawButton } from '../../panels';
 import { StructureCard } from '../../cards';
 
 import './buy-structure-modal.scss';
@@ -17,6 +21,7 @@ interface Props {
 	game: GameModel;
 	options: OptionsModel;
 	buyStructure: (structure: StructureModel) => void;
+	useCharge: (type: StructureType) => void;
 }
 
 interface State {
@@ -48,6 +53,10 @@ export class BuyStructureModal extends Component<Props, State> {
 	redraw = () => {
 		this.setState({
 			structures: this.getStructures()
+		}, () => {
+			if (!this.props.options.developer) {
+				this.props.useCharge(StructureType.Stockpile);
+			}
 		});
 	};
 
@@ -57,11 +66,22 @@ export class BuyStructureModal extends Component<Props, State> {
 				<StructureCard key={s.id} structure={s} onClick={this.props.buyStructure} />
 			));
 
+			const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Stockpile);
+			if ((redraws > 0) || this.props.options.developer) {
+				cards.push(
+					<RedrawButton
+						key='redraw'
+						value={redraws}
+						developer={this.props.options.developer}
+						onClick={() => this.redraw()}
+					/>
+				);
+			}
+
 			return (
 				<div className='buy-structure-modal'>
 					<Text type={TextType.Heading}>Choose a Structure</Text>
 					<hr />
-					{this.props.options.developer ? <button className='developer' onClick={() => this.redraw()}>Redraw</button> : null}
 					<div className='card-selection-row'>
 						<CardList cards={cards} />
 					</div>

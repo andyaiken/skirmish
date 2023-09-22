@@ -29,6 +29,7 @@ export class PlaceholderCard extends Component<Props> {
 			className += ' clickable';
 		}
 
+		// Text only
 		if (this.props.text && !this.props.subtext && !this.props.content) {
 			className += ' centered';
 			return (
@@ -38,6 +39,7 @@ export class PlaceholderCard extends Component<Props> {
 			);
 		}
 
+		// Subtext only
 		if (!this.props.text && this.props.subtext && !this.props.content) {
 			className += ' centered';
 			return (
@@ -47,7 +49,9 @@ export class PlaceholderCard extends Component<Props> {
 			);
 		}
 
+		// Content only
 		if (!this.props.text && !this.props.subtext && this.props.content) {
+			className += ' centered';
 			return (
 				<div className={className} onClick={this.onClick}>
 					{this.props.content}

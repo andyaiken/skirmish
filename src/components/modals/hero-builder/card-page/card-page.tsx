@@ -2,10 +2,13 @@ import { Component } from 'react';
 import { IconRefresh } from '@tabler/icons-react';
 
 import { CardType } from '../../../../enums/card-type';
+import { StructureType } from '../../../../enums/structure-type';
 
 import { GameLogic } from '../../../../logic/game-logic';
+import { StrongholdLogic } from '../../../../logic/stronghold-logic';
 
 import type { BackgroundModel } from '../../../../models/background';
+import type { GameModel } from '../../../../models/game';
 import type { OptionsModel } from '../../../../models/options';
 import type { RoleModel } from '../../../../models/role';
 import type { SpeciesModel } from '../../../../models/species';
@@ -14,12 +17,15 @@ import { Collections } from '../../../../utils/collections';
 
 import { BackgroundCard, PlaceholderCard, RoleCard, SpeciesCard } from '../../../cards';
 import { CardList, Expander, PlayingCard, Text, TextType } from '../../../controls';
+import { RedrawButton } from '../../../panels';
 
 import './card-page.scss';
 
 interface Props {
+	game: GameModel;
 	options: OptionsModel;
 	select: (speciesID: string, roleID: string, backgroundID: string) => void;
+	useCharge: (type: StructureType) => void;
 }
 
 interface State {
@@ -77,16 +83,28 @@ export class CardPage extends Component<Props, State> {
 			case CardType.Species:
 				this.setState({
 					speciesIDs: Collections.shuffle(GameLogic.getHeroSpeciesDeck(this.props.options.packIDs).map(s => s.id)).splice(0, 3)
+				}, () => {
+					if (!this.props.options.developer) {
+						this.props.useCharge(StructureType.Hall);
+					}
 				});
 				break;
 			case CardType.Role:
 				this.setState({
 					roleIDs: Collections.shuffle(GameLogic.getRoleDeck(this.props.options.packIDs).map(r => r.id)).splice(0, 3)
+				}, () => {
+					if (!this.props.options.developer) {
+						this.props.useCharge(StructureType.Hall);
+					}
 				});
 				break;
 			case CardType.Background:
 				this.setState({
 					backgroundIDs: Collections.shuffle(GameLogic.getBackgroundDeck(this.props.options.packIDs).map(b => b.id)).splice(0, 3)
+				}, () => {
+					if (!this.props.options.developer) {
+						this.props.useCharge(StructureType.Hall);
+					}
 				});
 				break;
 		}
@@ -157,10 +175,21 @@ export class CardPage extends Component<Props, State> {
 			);
 		});
 
+		const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Hall);
+		if ((redraws > 0) || this.props.options.developer) {
+			cards.push(
+				<RedrawButton
+					key='redraw'
+					value={redraws}
+					developer={this.props.options.developer}
+					onClick={() => this.redraw(CardType.Species)}
+				/>
+			);
+		}
+
 		return (
 			<div className='card-selection-row'>
 				<CardList cards={cards} />
-				{ this.props.options.developer ? <button className='developer' onClick={() => this.redraw(CardType.Species)}>Redraw</button> : null }
 			</div>
 		);
 	};
@@ -177,10 +206,21 @@ export class CardPage extends Component<Props, State> {
 			);
 		});
 
+		const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Hall);
+		if ((redraws > 0) || this.props.options.developer) {
+			cards.push(
+				<RedrawButton
+					key='redraw'
+					value={redraws}
+					developer={this.props.options.developer}
+					onClick={() => this.redraw(CardType.Role)}
+				/>
+			);
+		}
+
 		return (
 			<div className='card-selection-row'>
 				<CardList cards={cards} />
-				{ this.props.options.developer ? <button className='developer' onClick={() => this.redraw(CardType.Role)}>Redraw</button> : null }
 			</div>
 		);
 	};
@@ -197,10 +237,21 @@ export class CardPage extends Component<Props, State> {
 			);
 		});
 
+		const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Hall);
+		if ((redraws > 0) || this.props.options.developer) {
+			cards.push(
+				<RedrawButton
+					key='redraw'
+					value={redraws}
+					developer={this.props.options.developer}
+					onClick={() => this.redraw(CardType.Background)}
+				/>
+			);
+		}
+
 		return (
 			<div className='card-selection-row'>
 				<CardList cards={cards} />
-				{ this.props.options.developer ? <button className='developer' onClick={() => this.redraw(CardType.Background)}>Redraw</button> : null }
 			</div>
 		);
 	};

@@ -1334,8 +1334,9 @@ export class ActionEffects {
 					targetIDs.forEach(id => {
 						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
 						const potion = GameLogic.getPotion(potionID) as ItemModel;
-						potion.id = Utils.guid();
-						target.carried.push(potion);
+						const copy = JSON.parse(JSON.stringify(potion)) as ItemModel;
+						copy.id = Utils.guid();
+						target.carried.push(copy);
 					});
 				}
 				break;

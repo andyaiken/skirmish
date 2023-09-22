@@ -8,95 +8,216 @@ import { ActionEffects } from '../logic/action-logic';
 import { ConditionLogic } from '../logic/condition-logic';
 
 import type { ItemModel } from '../models/item';
+import { PackData } from './pack-data';
 
 export class PotionData {
+	static aptitude: ItemModel = {
+		id: 'potion-aptitude',
+		name: 'Tonic of Aptitude',
+		packID: PackData.potions.id,
+		description: 'A glass vial filled with a viscous orange liquid.',
+		baseItem: '',
+		magic: false,
+		proficiency: ItemProficiencyType.None,
+		location: ItemLocationType.None,
+		slots: 1,
+		weapon: null,
+		armor: null,
+		potion: {
+			effects: [
+				ActionEffects.addCondition(ConditionLogic.createSkillCategoryBonusCondition(TraitType.Resolve, 8, SkillCategoryType.Physical))
+			]
+		},
+		features: [],
+		actions: []
+	};
+
+	static brilliance: ItemModel = {
+		id: 'potion-brilliance',
+		name: 'Tincture of Brilliance',
+		packID: PackData.potions.id,
+		description: 'A glass vial filled with a still purple liquid.',
+		baseItem: '',
+		magic: false,
+		proficiency: ItemProficiencyType.None,
+		location: ItemLocationType.None,
+		slots: 1,
+		weapon: null,
+		armor: null,
+		potion: {
+			effects: [
+				ActionEffects.addCondition(ConditionLogic.createSkillCategoryBonusCondition(TraitType.Resolve, 8, SkillCategoryType.Mental))
+			]
+		},
+		features: [],
+		actions: []
+	};
+	static health: ItemModel = {
+		id: 'potion-health',
+		name: 'Potion of Health',
+		packID: PackData.potions.id,
+		description: 'A glass vial filled with a sparkling red liquid.',
+		baseItem: '',
+		magic: false,
+		proficiency: ItemProficiencyType.None,
+		location: ItemLocationType.None,
+		slots: 1,
+		weapon: null,
+		armor: null,
+		potion: {
+			effects: [
+				ActionEffects.healWounds(1)
+			]
+		},
+		features: [],
+		actions: []
+	};
+
+	static luck: ItemModel = {
+		id: 'potion-luck',
+		name: 'Philtre of Luck',
+		packID: PackData.potions.id,
+		description: 'A glass vial filled with a scintillating green liquid.',
+		baseItem: PackData.potions.id,
+		magic: false,
+		proficiency: ItemProficiencyType.None,
+		location: ItemLocationType.None,
+		slots: 1,
+		weapon: null,
+		armor: null,
+		potion: {
+			effects: [
+				ActionEffects.addCondition(ConditionLogic.createSkillCategoryBonusCondition(TraitType.Resolve, 3, SkillCategoryType.Mental)),
+				ActionEffects.addCondition(ConditionLogic.createSkillCategoryBonusCondition(TraitType.Resolve, 3, SkillCategoryType.Physical)),
+				ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Resolve, 2, TraitType.Endurance)),
+				ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Resolve, 2, TraitType.Resolve)),
+				ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Resolve, 2, TraitType.Speed))
+			]
+		},
+		features: [],
+		actions: []
+	};
+
+	static might: ItemModel = {
+		id: 'potion-might',
+		name: 'Elixir of Might',
+		packID: PackData.potions.id,
+		description: 'A glass vial filled with an effervescent blue liquid.',
+		baseItem: '',
+		magic: false,
+		proficiency: ItemProficiencyType.None,
+		location: ItemLocationType.None,
+		slots: 1,
+		weapon: null,
+		armor: null,
+		potion: {
+			effects: [
+				ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Resolve, 5, DamageCategoryType.Physical)),
+				ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Resolve, 5, DamageCategoryType.Energy)),
+				ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Resolve, 5, DamageCategoryType.Corruption))
+			]
+		},
+		features: [],
+		actions: []
+	};
+
+	static resistance: ItemModel = {
+		id: 'potion-resistance',
+		name: 'Potion of Resistance',
+		packID: PackData.potions.id,
+		description: 'A glass vial filled with an iridescent yellow liquid.',
+		baseItem: '',
+		magic: false,
+		proficiency: ItemProficiencyType.None,
+		location: ItemLocationType.None,
+		slots: 1,
+		weapon: null,
+		armor: null,
+		potion: {
+			effects: [
+				ActionEffects.addCondition(ConditionLogic.createDamageCategoryResistanceCondition(TraitType.Resolve, 5, DamageCategoryType.Physical)),
+				ActionEffects.addCondition(ConditionLogic.createDamageCategoryResistanceCondition(TraitType.Resolve, 5, DamageCategoryType.Energy)),
+				ActionEffects.addCondition(ConditionLogic.createDamageCategoryResistanceCondition(TraitType.Resolve, 5, DamageCategoryType.Corruption))
+			]
+		},
+		features: [],
+		actions: []
+	};
+
+	static endurance: ItemModel = {
+		id: 'potion-endurance',
+		name: 'Brew of Endurance',
+		packID: PackData.potions.id,
+		description: 'A glass vial filled with a vaprous brown liquid.',
+		baseItem: '',
+		magic: false,
+		proficiency: ItemProficiencyType.None,
+		location: ItemLocationType.None,
+		slots: 1,
+		weapon: null,
+		armor: null,
+		potion: {
+			effects: [
+				ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Resolve, 5, TraitType.Endurance))
+			]
+		},
+		features: [],
+		actions: []
+	};
+
+	static resolve: ItemModel = {
+		id: 'potion-resolve',
+		name: 'Brew of Resolve',
+		packID: PackData.potions.id,
+		description: 'A glass vial filled with a bubbling black liquid.',
+		baseItem: '',
+		magic: false,
+		proficiency: ItemProficiencyType.None,
+		location: ItemLocationType.None,
+		slots: 1,
+		weapon: null,
+		armor: null,
+		potion: {
+			effects: [
+				ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Resolve, 5, TraitType.Resolve))
+			]
+		},
+		features: [],
+		actions: []
+	};
+
+	static speed: ItemModel = {
+		id: 'potion-speed',
+		name: 'Brew of Speed',
+		packID: PackData.potions.id,
+		description: 'A glass vial filled with a churning pink liquid.',
+		baseItem: '',
+		magic: false,
+		proficiency: ItemProficiencyType.None,
+		location: ItemLocationType.None,
+		slots: 1,
+		weapon: null,
+		armor: null,
+		potion: {
+			effects: [
+				ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Resolve, 5, TraitType.Speed))
+			]
+		},
+		features: [],
+		actions: []
+	};
+
 	static getList = (): ItemModel[] => {
 		const list: ItemModel[] = [
-			{
-				id: 'potion-health',
-				name: 'Potion of Health',
-				packID: '',
-				description: 'A glass vial filled with a sparkling red liquid.',
-				baseItem: '',
-				magic: false,
-				proficiency: ItemProficiencyType.None,
-				location: ItemLocationType.None,
-				slots: 1,
-				weapon: null,
-				armor: null,
-				potion: {
-					effects: [
-						ActionEffects.healWounds(1)
-					]
-				},
-				features: [],
-				actions: []
-			},
-			{
-				id: 'potion-luck',
-				name: 'Potion of Luck',
-				packID: '',
-				description: 'A glass vial filled with a scintillating green liquid.',
-				baseItem: '',
-				magic: false,
-				proficiency: ItemProficiencyType.None,
-				location: ItemLocationType.None,
-				slots: 1,
-				weapon: null,
-				armor: null,
-				potion: {
-					effects: [
-						ActionEffects.addCondition(ConditionLogic.createSkillCategoryBonusCondition(TraitType.Resolve, 5, SkillCategoryType.Mental)),
-						ActionEffects.addCondition(ConditionLogic.createSkillCategoryBonusCondition(TraitType.Resolve, 5, SkillCategoryType.Physical))
-					]
-				},
-				features: [],
-				actions: []
-			},
-			{
-				id: 'potion-might',
-				name: 'Potion of Might',
-				packID: '',
-				description: 'A glass vial filled with an effervescent blue liquid.',
-				baseItem: '',
-				magic: false,
-				proficiency: ItemProficiencyType.None,
-				location: ItemLocationType.None,
-				slots: 1,
-				weapon: null,
-				armor: null,
-				potion: {
-					effects: [
-						ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Resolve, 5, DamageCategoryType.Physical)),
-						ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Resolve, 5, DamageCategoryType.Energy)),
-						ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Resolve, 5, DamageCategoryType.Corruption))
-					]
-				},
-				features: [],
-				actions: []
-			},
-			{
-				id: 'potion-resistance',
-				name: 'Potion of Resistance',
-				packID: '',
-				description: 'A glass vial filled with an iridescent yellow liquid.',
-				baseItem: '',
-				magic: false,
-				proficiency: ItemProficiencyType.None,
-				location: ItemLocationType.None,
-				slots: 1,
-				weapon: null,
-				armor: null,
-				potion: {
-					effects: [
-						ActionEffects.addCondition(ConditionLogic.createDamageCategoryResistanceCondition(TraitType.Resolve, 5, DamageCategoryType.Physical)),
-						ActionEffects.addCondition(ConditionLogic.createDamageCategoryResistanceCondition(TraitType.Resolve, 5, DamageCategoryType.Energy)),
-						ActionEffects.addCondition(ConditionLogic.createDamageCategoryResistanceCondition(TraitType.Resolve, 5, DamageCategoryType.Corruption))
-					]
-				},
-				features: [],
-				actions: []
-			}
+			PotionData.aptitude,
+			PotionData.brilliance,
+			PotionData.health,
+			PotionData.luck,
+			PotionData.might,
+			PotionData.resistance,
+			PotionData.endurance,
+			PotionData.resolve,
+			PotionData.speed
 		];
 
 		list.sort((a, b) => a.name.localeCompare(b.name));

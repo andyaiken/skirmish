@@ -33,10 +33,11 @@ export class StructureCard extends Component<Props> {
 
 	render = () => {
 		let content = null;
-		if (this.props.structure.level > 1) {
+		if ((this.props.structure.level > 1) || (this.props.structure.charges > 0)) {
 			content = (
 				<div className='structure-card-front'>
-					<StatValue label='Level' value={this.props.structure.level} />
+					{this.props.structure.level > 1 ? <StatValue label='Level' value={this.props.structure.level} /> : null}
+					{this.props.structure.charges > 0 ? <StatValue label='Charges' value={this.props.structure.charges} /> : null}
 				</div>
 			);
 		}

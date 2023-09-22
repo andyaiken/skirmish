@@ -4,14 +4,16 @@ import { BackgroundData } from '../../../data/background-data';
 import { HeroSpeciesData } from '../../../data/hero-species-data';
 import { ItemData } from '../../../data/item-data';
 import { MonsterSpeciesData } from '../../../data/monster-species-data';
+import { PotionData } from '../../../data/potion-data';
 import { RoleData } from '../../../data/role-data';
+import { StructureData } from '../../../data/structure-data';
 
 import { GameLogic } from '../../../logic/game-logic';
 
 import type { OptionsModel } from '../../../models/options';
 import type { PackModel } from '../../../models/pack';
 
-import { BackgroundCard, ItemCard, PackCard, RoleCard, SpeciesCard } from '../../cards';
+import { BackgroundCard, ItemCard, PackCard, RoleCard, SpeciesCard, StructureCard } from '../../cards';
 import { Badge, CardList, Dialog, Text, TextType } from '../../controls';
 
 import './packs-modal.scss';
@@ -105,6 +107,22 @@ export class PacksModal extends Component<Props, State> {
 			);
 		});
 
+		const potions = PotionData.getList().filter(i => i.packID === packID).map(p => {
+			return (
+				<Badge key={p.id} value={0}>
+					<ItemCard item={p} />
+				</Badge>
+			);
+		});
+
+		const structures = StructureData.getList().filter(s => s.packID === packID).map(s => {
+			return (
+				<Badge key={s.id} value={0}>
+					<StructureCard structure={s} />
+				</Badge>
+			);
+		});
+
 		return (
 			<Dialog
 				content={
@@ -127,6 +145,12 @@ export class PacksModal extends Component<Props, State> {
 						{items.length > 0 ? <hr /> : null}
 						{items.length > 0 ? <Text type={TextType.MinorHeading}>Item Cards</Text> : null}
 						{items.length > 0 ? <CardList cards={items} /> : null}
+						{potions.length > 0 ? <hr /> : null}
+						{potions.length > 0 ? <Text type={TextType.MinorHeading}>Potion Cards</Text> : null}
+						{potions.length > 0 ? <CardList cards={potions} /> : null}
+						{structures.length > 0 ? <hr /> : null}
+						{structures.length > 0 ? <Text type={TextType.MinorHeading}>Structure Cards</Text> : null}
+						{structures.length > 0 ? <CardList cards={structures} /> : null}
 					</div>
 				}
 				level={2}

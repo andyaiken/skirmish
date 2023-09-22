@@ -15,7 +15,6 @@ import { FeatureType } from '../enums/feature-type';
 import { ItemProficiencyType } from '../enums/item-proficiency-type';
 import { SkillCategoryType } from '../enums/skill-category-type';
 import { SkillType } from '../enums/skill-type';
-import { StructureType } from '../enums/structure-type';
 import { TraitType } from '../enums/trait-type';
 
 import type { ActionEffectModel, ActionModel, ActionTargetParameterModel } from '../models/action';
@@ -345,18 +344,6 @@ export class GameLogic {
 		game.heroSlots = Math.max(game.heroSlots - 1, 0);
 		game.heroes.push(hero);
 		game.heroes.sort((a, b) => a.name.localeCompare(b.name));
-	};
-
-	///////////////////////////////////////////////////////////////////////////
-
-	static getHeroLimit = (game: GameModel) => {
-		let count = 0;
-
-		game.stronghold
-			.filter(s => s.type === StructureType.Barracks)
-			.forEach(s => count += s.level * 3);
-
-		return count;
 	};
 
 	///////////////////////////////////////////////////////////////////////////

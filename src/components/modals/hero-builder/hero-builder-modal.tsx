@@ -1,7 +1,10 @@
 import { Component } from 'react';
 
-import { CombatantLogic } from '../../../logic/combatant-logic';
+import { StructureType } from '../../../enums/structure-type';
+
 import { NameGenerator } from '../../../generators/name-generator';
+
+import { CombatantLogic } from '../../../logic/combatant-logic';
 
 import type { CombatantModel } from '../../../models/combatant';
 import type { GameModel } from '../../../models/game';
@@ -21,6 +24,7 @@ interface Props {
 	hero: CombatantModel;
 	game: GameModel;
 	options: OptionsModel;
+	useCharge: (type: StructureType) => void;
 	finished: (hero: CombatantModel) => void;
 }
 
@@ -84,8 +88,10 @@ export class HeroBuilderModal extends Component<Props, State> {
 				// Initial card selection
 				content = (
 					<CardPage
+						game={this.props.game}
 						options={this.props.options}
 						select={this.selectCards}
+						useCharge={this.props.useCharge}
 					/>
 				);
 			} else if (CombatantLogic.getProficiencies(this.state.hero).length !== this.state.hero.items.length) {
@@ -93,8 +99,10 @@ export class HeroBuilderModal extends Component<Props, State> {
 				content = (
 					<EquipmentPage
 						hero={this.state.hero}
+						game={this.props.game}
 						options={this.props.options}
 						addItems={this.addItems}
+						useCharge={this.props.useCharge}
 					/>
 				);
 			} else if (this.state.hero.level === 1) {

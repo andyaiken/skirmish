@@ -390,6 +390,8 @@ export class ActionControls extends Component<Props> {
 					action={action}
 					footer={CombatantLogic.getActionSource(this.props.combatant, action.id)}
 					footerType={CombatantLogic.getActionSourceType(this.props.combatant, action.id)}
+					combatant={this.props.combatant}
+					encounter={this.props.encounter}
 				/>
 				<div className='action-details'>
 					<Text type={TextType.Information}>

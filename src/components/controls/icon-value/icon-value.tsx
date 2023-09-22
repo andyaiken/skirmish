@@ -57,7 +57,6 @@ export class IconValue extends Component<Props> {
 	getTextWeight = () => {
 		switch (this.props.size) {
 			case IconSize.Button:
-				return 600;
 			case IconSize.Large:
 				return 600;
 		}

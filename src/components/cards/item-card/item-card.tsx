@@ -140,7 +140,7 @@ export class ItemCard extends Component<Props, State> {
 
 		return (
 			<PlayingCard
-				type={CardType.Item}
+				type={this.props.item.potion ? CardType.Potion : CardType.Item}
 				front={(
 					<PlaceholderCard
 						text={this.props.count === 1 ? this.props.item.name : `${this.props.item.name} (x${this.props.count})`}
@@ -165,7 +165,7 @@ export class ItemCard extends Component<Props, State> {
 						{empty}
 					</div>
 				)}
-				footerText='Item'
+				footerText={this.props.item.potion ? 'Potion' : 'Item'}
 				footerContent={buttons}
 				flipped={this.state.flipped}
 				disabled={this.props.disabled}

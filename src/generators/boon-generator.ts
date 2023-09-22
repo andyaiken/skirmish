@@ -1,7 +1,10 @@
 import { BoonType } from '../enums/boon-type';
 
+import { GameLogic } from '../logic/game-logic';
+
 import { BoonModel } from '../models/boon';
 
+import { Collections } from '../utils/collections';
 import { Random } from '../utils/random';
 import { Utils } from '../utils/utils';
 
@@ -10,7 +13,7 @@ import { MagicItemGenerator } from './magic-item-generator';
 export class BoonGenerator {
 	static generateBoon = (packIDs: string[]): BoonModel => {
 		let type = BoonType.ExtraHero;
-		switch (Random.randomNumber(6)) {
+		switch (Random.randomNumber(7)) {
 			case 0:
 				type = BoonType.ExtraHero;
 				break;
@@ -29,6 +32,9 @@ export class BoonGenerator {
 			case 5:
 				type = BoonType.EnchantItem;
 				break;
+			case 6:
+				type = BoonType.Structure;
+				break;
 		}
 
 		let data = null;
@@ -41,6 +47,9 @@ export class BoonGenerator {
 				break;
 			case BoonType.Money:
 				data = Random.dice(5) * 5;
+				break;
+			case BoonType.Structure:
+				data = Collections.draw(GameLogic.getStructureDeck(packIDs));
 				break;
 		}
 

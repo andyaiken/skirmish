@@ -10,17 +10,20 @@ import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
 import type { OptionsModel } from '../../../models/options';
 import type { RegionModel } from '../../../models/region';
+import type { StructureModel } from '../../../models/structure';
 
 import { Badge, Selector } from '../../controls';
 
 import { CampaignMapPage } from './campaign-map-page/campaign-map-page';
 import { HeroesPage } from './heroes-page/heroes-page';
 import { ItemsPage } from './items-page/items-page';
+import { StrongholdPage } from './stronghold-page/stronghold-page';
 
 import './campaign-screen.scss';
 
 enum CampaignScreenType {
 	Island = 'island',
+	Stronghold = 'stronghold',
 	Team = 'team',
 	Items = 'items'
 }
@@ -32,6 +35,8 @@ interface Props {
 	showHelp: (file: string) => void;
 	showPacks: () => void;
 	showOptions: () => void;
+	buyStructure: (structure: StructureModel) => void;
+	upgradeStructure: (structure: StructureModel) => void;
 	addHero: (hero: CombatantModel) => void;
 	incrementXP: (hero: CombatantModel) => void;
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
@@ -69,7 +74,6 @@ export class CampaignScreen extends Component<Props, State> {
 
 	render = () => {
 		try {
-			//
 			let content = null;
 			switch (this.state.screen) {
 				case CampaignScreenType.Island:
@@ -79,6 +83,17 @@ export class CampaignScreen extends Component<Props, State> {
 							options={this.props.options}
 							startEncounter={this.props.startEncounter}
 							conquer={this.props.conquer}
+						/>
+					);
+					break;
+				case CampaignScreenType.Stronghold:
+					content = (
+						<StrongholdPage
+							game={this.props.game}
+							options={this.props.options}
+							buyStructure={this.props.buyStructure}
+							upgradeStructure={this.props.upgradeStructure}
+							redeemBoon={this.props.redeemBoon}
 						/>
 					);
 					break;
@@ -119,6 +134,10 @@ export class CampaignScreen extends Component<Props, State> {
 				{
 					id: 'island',
 					display: 'The Island'
+				},
+				{
+					id: 'stronghold',
+					display: 'Your Stronghold'
 				},
 				{
 					id: 'team',

@@ -5,10 +5,12 @@ import { CardType } from '../../../enums/card-type';
 
 import type { BoonModel } from '../../../models/boon';
 import type { ItemModel } from '../../../models/item';
+import type { StructureModel } from '../../../models/structure';
 
 import { IconSize, IconType, IconValue, PlayingCard } from '../../controls';
 import { ItemCard } from '../item-card/item-card';
 import { PlaceholderCard } from '../placeholder-card/placeholder-card';
+import { StructureCard } from '../structure-card/structure-card';
 
 import './boon-card.scss';
 
@@ -57,12 +59,27 @@ export class BoonCard extends Component<Props, State> {
 		}
 	};
 
+	onSelectStructure = (structure: StructureModel) => {
+		if (this.props.onClick) {
+			this.props.onClick(this.props.boon);
+		}
+	};
+
 	render = () => {
 		if (this.props.boon.type === BoonType.MagicItem) {
 			return (
 				<ItemCard
 					item={this.props.boon.data as ItemModel}
 					onClick={this.props.onClick ? this.onSelectItem : null}
+				/>
+			);
+		}
+
+		if (this.props.boon.type === BoonType.Structure) {
+			return (
+				<StructureCard
+					structure={this.props.boon.data as StructureModel}
+					onClick={this.props.onClick ? this.onSelectStructure : null}
 				/>
 			);
 		}

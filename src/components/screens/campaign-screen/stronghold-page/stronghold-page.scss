@@ -1,0 +1,33 @@
+.stronghold-page {
+	height: 100%;
+	padding: 20px;
+	display: flex;
+	gap: 20px;
+
+	.map-content {
+		flex: 1 1 0;
+		border: 2px solid rgb(100, 150, 100);
+		border-radius: 10px;
+		background-color: rgb(140, 200, 140);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.sidebar {
+		flex: 0 0 300px;
+		border: 2px solid rgb(210, 210, 210);
+		border-radius: 10px;
+		padding: 20px;
+		background-color: white;
+		overflow-x: hidden;
+		overflow-y: auto;
+		-webkit-overflow-scrolling: touch;
+
+		.structure-details-card {
+			display: flex;
+			justify-content: center;
+			margin: 15px 0;
+		}
+	}
+}

@@ -124,7 +124,7 @@ export class ItemsPage extends Component<Props, State> {
 		);
 
 		let boons = null;
-		if (this.props.game.boons.filter(boon => !GameLogic.getBoonIsHeroType(boon)).length > 0) {
+		if (this.props.game.boons.filter(boon => GameLogic.getBoonIsItemType(boon)).length > 0) {
 			const cards = this.props.game.boons
 				.filter(boon => !GameLogic.getBoonIsHeroType(boon))
 				.map(b => <BoonCard key={b.id} boon={b} onClick={boon => this.selectBoon(boon)} />);

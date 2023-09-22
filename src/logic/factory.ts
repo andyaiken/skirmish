@@ -1,3 +1,5 @@
+import { StructureData } from '../data/structure-data';
+
 import { CombatantState } from '../enums/combatant-state';
 import { CombatantType } from '../enums/combatant-type';
 import { ConditionType } from '../enums/condition-type';
@@ -10,6 +12,8 @@ import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
 
 import { CampaignMapGenerator } from '../generators/campaign-map-generator';
+
+import { StrongholdMapLogic } from './stronghold-map-logic';
 
 import type { CombatantModel } from '../models/combatant';
 import type { ConditionModel } from '../models/condition';
@@ -60,15 +64,21 @@ export class Factory {
 	};
 
 	static createGame = (packIDs: string[]): GameModel => {
-		return {
+		const game = {
 			heroSlots: 5,
 			heroes: [],
 			items: [],
 			boons: [],
 			money: 0,
 			map: CampaignMapGenerator.generateCampaignMap(packIDs),
+			stronghold: [],
 			encounter: null
 		};
+
+		StrongholdMapLogic.addStructure(game.stronghold, StructureData.barracks);
+		StrongholdMapLogic.addStructure(game.stronghold, StructureData.barracks);
+
+		return game;
 	};
 
 	static createCondition = (type: ConditionType, trait: TraitType, rank: number): ConditionModel => {

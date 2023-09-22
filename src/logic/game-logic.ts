@@ -5,6 +5,7 @@ import { MonsterSpeciesData } from '../data/monster-species-data';
 import { PackData } from '../data/pack-data';
 import { PotionData } from '../data/potion-data';
 import { RoleData } from '../data/role-data';
+import { StructureData } from '../data/structure-data';
 
 import { ActionTargetType } from '../enums/action-target-type';
 import { BoonType } from '../enums/boon-type';
@@ -14,6 +15,7 @@ import { FeatureType } from '../enums/feature-type';
 import { ItemProficiencyType } from '../enums/item-proficiency-type';
 import { SkillCategoryType } from '../enums/skill-category-type';
 import { SkillType } from '../enums/skill-type';
+import { StructureType } from '../enums/structure-type';
 import { TraitType } from '../enums/trait-type';
 
 import type { ActionEffectModel, ActionModel, ActionTargetParameterModel } from '../models/action';
@@ -58,6 +60,10 @@ export class GameLogic {
 		return PotionData.getList().filter(i => (i.packID === '') || packIDs.includes(i.packID));
 	};
 
+	static getStructureDeck = (packIDs: string[]) => {
+		return StructureData.getList().filter(s => (s.packID === '') || packIDs.includes(s.packID));
+	};
+
 	///////////////////////////////////////////////////////////////////////////
 
 	static getPacks = () => {
@@ -73,6 +79,7 @@ export class GameLogic {
 		count += BackgroundData.getList().filter(b => b.packID === packID).length;
 		count += ItemData.getList().filter(i => i.packID === packID).length;
 		count += PotionData.getList().filter(i => i.packID === packID).length;
+		count += StructureData.getList().filter(s => s.packID === packID).length;
 
 		return count;
 	};
@@ -101,6 +108,10 @@ export class GameLogic {
 
 	static getPotion = (id: string) => {
 		return PotionData.getList().find(i => i.id === id) || null;
+	};
+
+	static getStructure = (id: string) => {
+		return StructureData.getList().find(s => s.id === id) || null;
 	};
 
 	static getPack = (id: string) => {
@@ -264,6 +275,26 @@ export class GameLogic {
 		return false;
 	};
 
+	static getBoonIsItemType = (boon: BoonModel) => {
+		switch (boon.type) {
+			case BoonType.EnchantItem:
+			case BoonType.MagicItem:
+			case BoonType.Money:
+				return true;
+		}
+
+		return false;
+	};
+
+	static getBoonIsStrongholdType = (boon: BoonModel) => {
+		switch (boon.type) {
+			case BoonType.Structure:
+				return true;
+		}
+
+		return false;
+	};
+
 	static getDamageCategory = (type: DamageType) => {
 		switch (type) {
 			case DamageType.All:
@@ -314,6 +345,18 @@ export class GameLogic {
 		game.heroSlots = Math.max(game.heroSlots - 1, 0);
 		game.heroes.push(hero);
 		game.heroes.sort((a, b) => a.name.localeCompare(b.name));
+	};
+
+	///////////////////////////////////////////////////////////////////////////
+
+	static getHeroLimit = (game: GameModel) => {
+		let count = 0;
+
+		game.stronghold
+			.filter(s => s.type === StructureType.Barracks)
+			.forEach(s => count += s.level * 3);
+
+		return count;
 	};
 
 	///////////////////////////////////////////////////////////////////////////

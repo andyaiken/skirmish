@@ -2,6 +2,10 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import localforage from 'localforage';
 
+import { StructureData } from './data/structure-data';
+
+import { StrongholdMapLogic } from './logic/stronghold-map-logic';
+
 import type { GameModel } from './models/game';
 import type { OptionsModel } from './models/options';
 
@@ -11,6 +15,12 @@ import './index.scss';
 
 localforage.getItem<GameModel>('skirmish-game').then(game => {
 	if (game) {
+		if (!game.stronghold) {
+			game.stronghold = [];
+			StrongholdMapLogic.addStructure(game.stronghold, StructureData.barracks);
+			StrongholdMapLogic.addStructure(game.stronghold, StructureData.barracks);
+		}
+
 		if (game.encounter) {
 			if (game.encounter.log === undefined) {
 				game.encounter.log = [];

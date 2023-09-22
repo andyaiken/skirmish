@@ -8,7 +8,7 @@ import type { ActionModel } from '../../../../models/action';
 import type { FeatureModel } from '../../../../models/feature';
 import type { OptionsModel } from '../../../../models/options';
 
-import { ActionCard, BackgroundCard, FeatureCard, ItemCard, RoleCard, SpeciesCard } from '../../../cards';
+import { ActionCard, BackgroundCard, FeatureCard, ItemCard, RoleCard, SpeciesCard, StructureCard } from '../../../cards';
 import { Badge, CardList, Dialog, Text, TextType } from '../../../controls';
 
 import './decks-tab.scss';
@@ -108,6 +108,20 @@ export class DecksTab extends Component<Props, State> {
 					);
 				});
 
+			const potions = GameLogic.getPotionDeck(this.props.options.packIDs)
+				.map(p => {
+					return (
+						<ItemCard key={p.id} item={p} />
+					);
+				});
+
+			const structures = GameLogic.getStructureDeck(this.props.options.packIDs)
+				.map(s => {
+					return (
+						<StructureCard key={s.id} structure={s} />
+					);
+				});
+
 			let dialog = null;
 			if (this.state.selected) {
 				const source = this.state.selected.name;
@@ -191,6 +205,14 @@ export class DecksTab extends Component<Props, State> {
 					<Text type={TextType.SubHeading}>Item Cards ({items.length})</Text>
 					{items.length > 0 ? <CardList cards={items} /> : null}
 					{items.length > 0 ? null : <Text type={TextType.Small}>None.</Text>}
+					<hr />
+					<Text type={TextType.SubHeading}>Potion Cards ({potions.length})</Text>
+					{potions.length > 0 ? <CardList cards={potions} /> : null}
+					{potions.length > 0 ? null : <Text type={TextType.Small}>None.</Text>}
+					<hr />
+					<Text type={TextType.SubHeading}>Structure Cards ({structures.length})</Text>
+					{structures.length > 0 ? <CardList cards={structures} /> : null}
+					{structures.length > 0 ? null : <Text type={TextType.Small}>None.</Text>}
 					{dialog}
 				</div>
 			);

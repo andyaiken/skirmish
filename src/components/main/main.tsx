@@ -13,6 +13,7 @@ import { EncounterMapLogic } from '../../logic/encounter-map-logic';
 import { Factory } from '../../logic/factory';
 import { GameLogic } from '../../logic/game-logic';
 import { IntentsLogic } from '../../logic/intents-logic';
+import { StrongholdMapLogic } from '../../logic/stronghold-map-logic';
 
 import type { ActionModel, ActionParameterModel } from '../../models/action';
 import type { BoonModel } from '../../models/boon';
@@ -23,6 +24,7 @@ import type { GameModel } from '../../models/game';
 import type { ItemModel } from '../../models/item';
 import type { OptionsModel } from '../../models/options';
 import type { RegionModel } from '../../models/region';
+import type { StructureModel } from '../../models/structure';
 
 import { Sound } from '../../utils/sound';
 import { Utils } from '../../utils/utils';
@@ -37,6 +39,7 @@ import './main.scss';
 import encounters from '../../assets/docs/encounters.md';
 import island from '../../assets/docs/island.md';
 import items from '../../assets/docs/items.md';
+import stronghold from '../../assets/docs/stronghold.md';
 import team from '../../assets/docs/team.md';
 
 import dong from '../../assets/sounds/dong.mp3';
@@ -100,6 +103,9 @@ export class Main extends Component<Props, State> {
 		});
 		fetch(items).then(response => response.text()).then(text => {
 			rules['items'] = text;
+		});
+		fetch(stronghold).then(response => response.text()).then(text => {
+			rules['stronghold'] = text;
 		});
 		fetch(team).then(response => response.text()).then(text => {
 			rules['team'] = text;
@@ -309,6 +315,48 @@ export class Main extends Component<Props, State> {
 
 	//#endregion
 
+	//#region Stronghold page
+
+	buyStructure = (structure: StructureModel) => {
+		try {
+			const game = this.state.game as GameModel;
+
+			StrongholdMapLogic.addStructure(game.stronghold, structure);
+
+			const money = 50;
+			game.money = Math.max(0, game.money - money);
+
+			this.setState({
+				game: game
+			}, () => {
+				this.saveGame();
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
+	};
+
+	upgradeStructure = (structure: StructureModel) => {
+		try {
+			const game = this.state.game as GameModel;
+
+			const money = 50 * structure.level;
+			game.money = Math.max(0, game.money - money);
+
+			structure.level += 1;
+
+			this.setState({
+				game: game
+			}, () => {
+				this.saveGame();
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
+	};
+
+	//#endregion
+
 	//#region Heroes page
 
 	addHero = (hero: CombatantModel) => {
@@ -445,6 +493,9 @@ export class Main extends Component<Props, State> {
 					});
 					break;
 				}
+				case BoonType.Structure:
+					StrongholdMapLogic.addStructure(game.stronghold, boon.data as StructureModel);
+					break;
 			}
 
 			game.money -= cost;
@@ -1105,6 +1156,8 @@ export class Main extends Component<Props, State> {
 						showHelp={this.showHelp}
 						showPacks={this.showPacks}
 						showOptions={this.showOptions}
+						buyStructure={this.buyStructure}
+						upgradeStructure={this.upgradeStructure}
 						addHero={this.addHero}
 						incrementXP={this.incrementXP}
 						equipItem={this.equipItem}

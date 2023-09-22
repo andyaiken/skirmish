@@ -1,6 +1,6 @@
 {
 	"name": "skirmish",
-	"version": "1.49.0",
+	"version": "1.50.0",
 	"repository": "https://github.com/andyaiken/skirmish.git",
 	"homepage": "https://andyaiken.github.io/skirmish/",
 	"dependencies": {
@@ -20,7 +20,7 @@
 		"eslint-config-react-app": "^7.0.1",
 		"gh-pages": "^5.0.0",
 		"react-scripts": "^5.0.1",
-		"sass": "^1.67.0",
+		"sass": "^1.68.0",
 		"typescript": "^4.9.5"
 	},
 	"scripts": {

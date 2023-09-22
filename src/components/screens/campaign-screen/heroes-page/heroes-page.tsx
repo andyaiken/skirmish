@@ -145,6 +145,7 @@ export class HeroesPage extends Component<Props, State> {
 
 		let blankHeroes = null;
 		if (this.props.game.heroSlots > 0) {
+			const atHeroLimit = this.props.game.heroes.length >= GameLogic.getHeroLimit(this.props.game);
 			blankHeroes = (
 				<div className='center'>
 					<PlayingCard
@@ -152,11 +153,12 @@ export class HeroesPage extends Component<Props, State> {
 						front={
 							<PlaceholderCard
 								text='Recruits Available'
-								subtext='Click here to recruit a new hero.'
+								subtext={atHeroLimit ? 'You can\'t recruit any more heroes until you have more living space in your stronghold.' : 'Click here to recruit a new hero.'}
 								content={<div className='heroes-count'>{this.props.game.heroSlots}</div>}
 								onClick={() => this.setState({ selectedHero: Factory.createCombatant(CombatantType.Hero) })}
 							/>
 						}
+						disabled={atHeroLimit}
 					/>
 				</div>
 			);

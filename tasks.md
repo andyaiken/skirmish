@@ -10,10 +10,6 @@
 
 # Priority
 
-## Strongholds
-* Structures as irregular polygons
-* New structure types
-
 -----------------------------------------------------------------------------------------
 
 # Improvements / Enhancements
@@ -146,6 +142,23 @@
   * Dragon
   * Kruthik / Ankheg
 * Ooze
+
+## Ideas for Structures
+* Structures as irregular polygons
+
+| Structure     | Effect                                                            | Pack   |
+|---------------|-------------------------------------------------------------------|--------|
+| Intelligencer | Allows you to learn about a non-adjacent region                   | Thief  |
+| Shipyard      | Allows you to attack a non-adjacent coastal region                |        |
+| Academy       | Add 1 rank in any physical skill to a hero                        |        |
+| Library       | Add 1 rank in any mental skill to a hero                          |        |
+| XXX           | Add 1 XP to a hero                                                |        |
+| Temple        | Start the next encounter with a random condition on a random hero | Divine |
+| War Room      | Allows you to add an additional hero to an encounter in progress  |        |
+| Drill Hall    | Allows you to take an additional action during an encounter       |        |
+| Laboratory    | Brew 5 potions of a particular type                               | Tech   |
+
+Names: Warehouse / Museum / Gallery / Vault / Bazaar / Spymaster / Cartographer / Tavern / Theatre / Gardens / Monument / Engineer
 
 -----------------------------------------------------------------------------------------
 

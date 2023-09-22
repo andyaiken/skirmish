@@ -1,12 +1,25 @@
 .level-up {
 	display: flex;
-	flex-direction: column;
-	height: 100%;
-	overflow: hidden;
+	width: 870px;
+	margin: 0 auto;
+
+	&.selecting {
+		flex-direction: column;
+	}
+
+	&.selection-made {
+		flex-direction: row;
+		gap: 10px;
+	}
 
 	.selected-feature {
-		margin: 20px 0;
-		display: flex;
+		margin: 10px 0;
+	}
+
+	.additional {
+		flex: 1 1 0;
+		margin: 10px;
+		align-items: flex-start;
 		justify-content: center;
 	}
 }

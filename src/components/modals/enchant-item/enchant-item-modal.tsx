@@ -95,13 +95,11 @@ export class EnchantItemModal extends Component<Props, State> {
 							<div className='enchant-item-modal'>
 								<Text type={TextType.Heading}>Choose an Enchantment</Text>
 								<hr />
-								{this.props.options.developer ? <button className='developer' onClick={() => this.selectItem(this.state.selectedItem as ItemModel)}>Redraw</button> : null}
 								<div className='card-selection-row'>
 									<CardList cards={cards} />
 								</div>
 							</div>
 						}
-						level={2}
 					/>
 				);
 			}

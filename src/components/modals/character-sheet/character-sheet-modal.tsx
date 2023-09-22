@@ -68,6 +68,23 @@ export class CharacterSheetModal extends Component<Props, State> {
 
 	render = () => {
 		try {
+			let selector = null;
+			if (this.props.combatant.quirks.includes(QuirkType.Beast)) {
+				selector = null;
+			} else {
+				const options = [
+					{ id: 'stats', display: 'Statistics' },
+					{ id: 'items', display: 'Equipment' }
+				];
+				selector = (
+					<Tabs
+						options={options}
+						selectedID={this.state.view}
+						onSelect={id => this.setState({ view: id })}
+					/>
+				);
+			}
+
 			let content = null;
 			switch (this.state.view) {
 				case 'stats':
@@ -93,30 +110,15 @@ export class CharacterSheetModal extends Component<Props, State> {
 					break;
 			}
 
-			let selector = null;
-			let sidebar = null;
+			let levelUp = null;
 			if ((this.props.game.encounter === null) && (this.props.combatant.xp >= this.props.combatant.level)) {
-				sidebar = (
-					<div className='sidebar-section'>
-						<LevelUp
-							combatant={this.props.combatant}
-							game={this.props.game}
-							developer={this.props.developer}
-							useCharge={this.props.useCharge}
-							levelUp={this.levelUp}
-						/>
-					</div>
-				);
-			} else {
-				const options = [
-					{ id: 'stats', display: 'Statistics' },
-					{ id: 'items', display: 'Equipment' }
-				];
-				selector = (
-					<Tabs
-						options={options}
-						selectedID={this.state.view}
-						onSelect={id => this.setState({ view: id })}
+				levelUp = (
+					<LevelUp
+						combatant={this.props.combatant}
+						game={this.props.game}
+						developer={this.props.developer}
+						useCharge={this.props.useCharge}
+						levelUp={this.levelUp}
 					/>
 				);
 			}
@@ -124,10 +126,6 @@ export class CharacterSheetModal extends Component<Props, State> {
 			const species = GameLogic.getSpecies(this.props.combatant.speciesID);
 			const role = GameLogic.getRole(this.props.combatant.roleID);
 			const background = GameLogic.getBackground(this.props.combatant.backgroundID);
-
-			if (this.props.combatant.quirks.includes(QuirkType.Beast)) {
-				selector = null;
-			}
 
 			return (
 				<div className='character-sheet-modal'>
@@ -147,7 +145,7 @@ export class CharacterSheetModal extends Component<Props, State> {
 							{content}
 						</div>
 					</div>
-					{sidebar}
+					{levelUp}
 				</div>
 			);
 		} catch {

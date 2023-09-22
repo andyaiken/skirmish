@@ -1,24 +1,16 @@
 .character-sheet-modal {
 	display: flex;
+	flex-direction: column;
 	overflow-x: hidden;
 	overflow-y: hidden;
 	height: 100%;
 
 	.main-section {
-		flex: 1 1 0;
 		display: flex;
 		flex-direction: column;
 		overflow-x: hidden;
 		overflow-y: hidden;
 		height: 100%;
-	}
-
-	.sidebar-section {
-		flex: 0 0 670px;
-		height: 100%;
-		border-left: 2px solid rgb(220, 220, 220);
-		margin-left: 15px;
-		padding-left: 15px;
 	}
 
 	.header {

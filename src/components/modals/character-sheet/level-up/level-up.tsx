@@ -1,5 +1,7 @@
 import { Component } from 'react';
 
+import { BaseData } from '../../../../data/base-data';
+
 import { FeatureType } from '../../../../enums/feature-type';
 import { StructureType } from '../../../../enums/structure-type';
 
@@ -43,22 +45,26 @@ export class LevelUp extends Component<Props, State> {
 	}
 
 	drawFeatures = (combatant: CombatantModel) => {
-		const features = CombatantLogic.getFeatureDeck(combatant)
-			.filter(feature => {
-				// Make sure we can select this feature
-				if (feature.type === FeatureType.Proficiency) {
-					const profs = CombatantLogic.getProficiencies(combatant);
-					if (profs.length >= 9) {
-						// We already have all proficiencies
-						return false;
-					}
-					if (profs.includes(feature.proficiency)) {
-						// We already have this proficiency
-						return false;
-					}
+		let features: FeatureModel[] = [];
+		features.push(...CombatantLogic.getFeatureDeck(combatant));
+		features.push(...BaseData.getBaseFeatures());
+
+		features = features.filter(feature => {
+			// Make sure we can select this feature
+			if (feature.type === FeatureType.Proficiency) {
+				const profs = CombatantLogic.getProficiencies(combatant);
+				if (profs.length >= 9) {
+					// We already have all proficiencies
+					return false;
 				}
-				return true;
-			});
+				if (profs.includes(feature.proficiency)) {
+					// We already have this proficiency
+					return false;
+				}
+			}
+			return true;
+		});
+
 		return Collections.shuffle(features).splice(0, 3);
 	};
 
@@ -73,25 +79,40 @@ export class LevelUp extends Component<Props, State> {
 		});
 	};
 
-	setFeature = (feature: FeatureModel) => {
+	setSelectedFeature = (feature: FeatureModel) => {
 		this.setState({
 			selectedFeature: feature
-		});
-	};
-
-	levelUp = () => {
-		const feature = this.state.selectedFeature as FeatureModel;
-
-		this.setState({
-			features: this.drawFeatures(this.props.combatant),
-			selectedFeature: null
 		}, () => {
-			this.props.levelUp(feature);
+			if (!FeatureLogic.hasChoice(this.state.selectedFeature as FeatureModel)) {
+				// We can just select this
+				this.setState({
+					features: this.drawFeatures(this.props.combatant),
+					selectedFeature: null
+				}, () => {
+					this.props.levelUp(feature);
+				});
+			}
 		});
 	};
 
 	render = () => {
 		try {
+			if (this.state.selectedFeature) {
+				return (
+					<div className='level-up selection-made'>
+						<div className='selected-feature'>
+							<FeatureCard feature={this.state.selectedFeature}
+								footer={CombatantLogic.getFeatureSource(this.props.combatant, this.state.selectedFeature.id) || 'Feature'}
+								footerType={CombatantLogic.getFeatureSourceType(this.props.combatant, this.state.selectedFeature.id)}
+							/>
+						</div>
+						<div className='level-up additional'>
+							<ChoicePanel feature={this.state.selectedFeature} hero={this.props.combatant} onChange={this.setSelectedFeature} />
+						</div>
+					</div>
+				);
+			}
+
 			const featureCards = this.state.features.map(feature => {
 				return (
 					<FeatureCard
@@ -99,7 +120,7 @@ export class LevelUp extends Component<Props, State> {
 						feature={feature}
 						footer={CombatantLogic.getFeatureSource(this.props.combatant, feature.id) || 'Feature'}
 						footerType={CombatantLogic.getFeatureSourceType(this.props.combatant, feature.id)}
-						onClick={f => this.setState({ selectedFeature: f })}
+						onClick={this.setSelectedFeature}
 					/>
 				);
 			});
@@ -116,38 +137,12 @@ export class LevelUp extends Component<Props, State> {
 				);
 			}
 
-			let selected = null;
-			if (this.state.selectedFeature) {
-				selected = (
-					<div className='selected-feature'>
-						<FeatureCard feature={this.state.selectedFeature}
-							footer={CombatantLogic.getFeatureSource(this.props.combatant, this.state.selectedFeature.id) || 'Feature'}
-							footerType={CombatantLogic.getFeatureSourceType(this.props.combatant, this.state.selectedFeature.id)}
-						/>
-					</div>
-				);
-			}
-
-			let choice = null;
-			let canFinish = false;
-			if (this.state.selectedFeature !== null) {
-				choice = FeatureLogic.hasChoice(this.state.selectedFeature) ? <ChoicePanel feature={this.state.selectedFeature} hero={this.props.combatant} onChange={this.setFeature} /> : null;
-				canFinish = !FeatureLogic.hasChoice(this.state.selectedFeature);
-			}
-
 			return (
-				<div className='level-up'>
-					<div className='content'>
-						<Text type={TextType.Information}>
-							<p><b>Level up.</b> Choose a feature for level {this.props.combatant.level + 1}.</p>
-						</Text>
-						{ this.state.selectedFeature === null ? <CardList cards={featureCards} /> : null }
-						{selected}
-						{choice}
-					</div>
-					<div className='footer'>
-						<button className='primary' disabled={!canFinish} onClick={this.levelUp}>Level Up</button>
-					</div>
+				<div className='level-up selecting'>
+					<Text type={TextType.Information}>
+						<p><b>Level up.</b> Choose a feature for level {this.props.combatant.level + 1}.</p>
+					</Text>
+					<CardList cards={featureCards} />
 				</div>
 			);
 		} catch {

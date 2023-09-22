@@ -172,7 +172,11 @@ export class PacksModal extends Component<Props, State> {
 				.map(pack => {
 					return (
 						<Badge key={pack.id} value={this.getBadge(GameLogic.getPackStrength(pack))}>
-							<PackCard pack={pack} onClick={p => this.setState({ selectedPack: p })} onRemove={this.props.options.developer ? p => this.props.removePack(p.id) : null} />
+							<PackCard
+								pack={pack}
+								onClick={p => this.setState({ selectedPack: p })}
+								onRemove={this.props.options.developer ? p => this.props.removePack(p.id) : null}
+							/>
 						</Badge>
 					);
 				});
@@ -184,7 +188,10 @@ export class PacksModal extends Component<Props, State> {
 				.map(pack => {
 					return (
 						<Badge key={pack.id} value={this.getBadge(GameLogic.getPackStrength(pack))}>
-							<PackCard pack={pack} onClick={p => this.setState({ selectedPack: p })} onRemove={this.props.options.developer ? p => this.props.removePack(p.id) : null} />
+							<PackCard
+								pack={pack}
+								onClick={p => this.setState({ selectedPack: p })}
+							/>
 						</Badge>
 					);
 				});

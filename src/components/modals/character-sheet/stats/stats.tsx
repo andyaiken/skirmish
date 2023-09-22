@@ -1,7 +1,6 @@
 import { Component } from 'react';
 
 import { CardType } from '../../../../enums/card-type';
-import { CombatantState } from '../../../../enums/combatant-state';
 import { CombatantType } from '../../../../enums/combatant-type';
 import { DamageType } from '../../../../enums/damage-type';
 import { SkillType } from '../../../../enums/skill-type';
@@ -158,16 +157,6 @@ export class Stats extends Component<Props, State> {
 
 	render = () => {
 		try {
-			let cutDown = false;
-			switch (this.props.combatant.type) {
-				case CombatantType.Hero:
-					cutDown = (this.props.encounter === null) && (this.props.combatant.xp >= this.props.combatant.level);
-					break;
-				case CombatantType.Monster:
-					cutDown = false;
-					break;
-			}
-
 			let combatColumn = null;
 			if (this.props.encounter) {
 				combatColumn = (
@@ -176,71 +165,6 @@ export class Stats extends Component<Props, State> {
 					</div>
 				);
 			}
-
-			const primaryColumn = (
-				<div className='column'>
-					{
-						this.props.encounter && (this.props.combatant.combat.state !== CombatantState.Standing) ?
-							<Text type={TextType.Information}>
-								<p>{this.props.combatant.name} is <b>{this.props.combatant.combat.state}</b>.</p>
-							</Text>
-							: null
-					}
-					{
-						this.props.encounter && this.props.combatant.combat.stunned ?
-							<Text type={TextType.Information}>
-								<p>{this.props.combatant.name} is <b>stunned</b>.</p>
-							</Text>
-							: null
-					}
-					{this.getTraitsSection()}
-					{this.getSkillsSection()}
-					{this.getProficienciesSection()}
-					{this.getAurasSection()}
-					{cutDown ? <DamagePanel label='Damage Bonuses' getValue={this.getDamageBonusValue} /> : null}
-					{cutDown ? <DamagePanel label='Damage Resistances' getValue={this.getDamageResistanceValue} /> : null}
-					{cutDown ? <hr /> : null}
-					{
-						cutDown ?
-							<div className='decks'>
-								<PlayingCard
-									stack={true}
-									type={CardType.Feature}
-									front={<PlaceholderCard text='Feature Deck' onClick={() => this.setDeck('features')} />}
-								/>
-								<PlayingCard
-									stack={true}
-									type={CardType.Action}
-									front={<PlaceholderCard text='Action Deck' onClick={() => this.setDeck('actions')} />}
-								/>
-							</div>
-							: null
-					}
-				</div>
-			);
-
-			const secondaryColumn = (
-				<div className='column'>
-					<DamagePanel label='Damage Bonuses' getValue={this.getDamageBonusValue} />
-					<DamagePanel label='Damage Resistances' getValue={this.getDamageResistanceValue} />
-					{this.props.combatant.type === CombatantType.Hero ? this.getXPSection() : null}
-				</div>
-			);
-
-			const decksColumn = (
-				<div className='column decks'>
-					<PlayingCard
-						stack={true}
-						type={CardType.Feature}
-						front={<PlaceholderCard text='Feature Deck' onClick={() => this.setDeck('features')} />}
-					/>
-					<PlayingCard
-						stack={true}
-						type={CardType.Action}
-						front={<PlaceholderCard text='Action Deck' onClick={() => this.setDeck('actions')} />}
-					/>
-				</div>
-			);
 
 			let dialog = null;
 			if (this.state.deck !== null) {
@@ -289,9 +213,29 @@ export class Stats extends Component<Props, State> {
 			return (
 				<div className='stats'>
 					{combatColumn}
-					{primaryColumn}
-					{cutDown ? null : secondaryColumn}
-					{cutDown ? null : decksColumn}
+					<div className='column'>
+						{this.getTraitsSection()}
+						{this.getSkillsSection()}
+						{this.getProficienciesSection()}
+						{this.getAurasSection()}
+					</div>
+					<div className='column'>
+						<DamagePanel label='Damage Bonuses' getValue={this.getDamageBonusValue} />
+						<DamagePanel label='Damage Resistances' getValue={this.getDamageResistanceValue} />
+						{this.props.combatant.type === CombatantType.Hero ? this.getXPSection() : null}
+					</div>
+					<div className='column decks'>
+						<PlayingCard
+							stack={true}
+							type={CardType.Feature}
+							front={<PlaceholderCard text='Feature Deck' onClick={() => this.setDeck('features')} />}
+						/>
+						<PlayingCard
+							stack={true}
+							type={CardType.Action}
+							front={<PlaceholderCard text='Action Deck' onClick={() => this.setDeck('actions')} />}
+						/>
+					</div>
 					{dialog}
 				</div>
 			);

@@ -61,61 +61,6 @@ export class StrongholdPage extends Component<Props, State> {
 		});
 	};
 
-	getStructureDetails = (structure: StructureModel) => {
-		switch (structure.type) {
-			case StructureType.Barracks:
-				return (
-					<Text>
-						<p>This structure provides living space for up to {structure.level * 3} heroes.</p>
-					</Text>
-				);
-			case StructureType.Hall:
-				return (
-					<Text>
-						<p>When recruiting a new hero, this structure allows you to redraw species, role, or background cards.</p>
-						<p>You gain {structure.level} redraw(s) when the structure is charged.</p>
-					</Text>
-				);
-			case StructureType.Quartermaster:
-				return (
-					<Text>
-						<p>When recruiting a new hero, this structure allows you to redraw item cards.</p>
-						<p>You gain {structure.level} redraw(s) when the structure is charged.</p>
-					</Text>
-				);
-			case StructureType.TrainingGround:
-				return (
-					<Text>
-						<p>When levelling-up a hero, this structure allows you to redraw feature cards.</p>
-						<p>You gain {structure.level} redraw(s) when the structure is charged.</p>
-					</Text>
-				);
-			case StructureType.Observatory:
-				return (
-					<Text>
-						<p>In an encounter, this structure allows you to redraw action cards.</p>
-						<p>You gain {structure.level} redraw(s) when the structure is charged.</p>
-					</Text>
-				);
-			case StructureType.WizardTower:
-				return (
-					<Text>
-						<p>When buying a magic item or potion, this structure allows you to redraw item cards.</p>
-						<p>You gain {structure.level} redraws when the structure is charged.</p>
-					</Text>
-				);
-			case StructureType.Stockpile:
-				return (
-					<Text>
-						<p>When adding a new structure to your stronghold, this allows you to redraw structure cards.</p>
-						<p>You gain {structure.level} redraw(s) when the structure is charged.</p>
-					</Text>
-				);
-		}
-
-		return null;
-	};
-
 	getStrongholdBenefits = () => {
 		const heroRedraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Hall);
 		const itemRedraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Quartermaster);
@@ -160,8 +105,6 @@ export class StrongholdPage extends Component<Props, State> {
 				);
 			}
 
-			const details = this.getStructureDetails(this.state.selectedStructure);
-
 			return (
 				<div key={this.state.selectedStructure.id} className='sidebar'>
 					<div className='structure-details-card'>
@@ -170,8 +113,6 @@ export class StrongholdPage extends Component<Props, State> {
 					{!!charge || !!upgrade ? <hr /> : null}
 					{charge}
 					{upgrade}
-					{details ? <hr /> : null}
-					{details}
 				</div>
 			);
 		}

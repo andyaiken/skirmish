@@ -145,6 +145,7 @@
 
 ## Ideas for Structures
 * Structures as irregular polygons
+* Show number of charges on structures
 
 | Structure     | Effect                                                            | Pack   |
 |---------------|-------------------------------------------------------------------|--------|

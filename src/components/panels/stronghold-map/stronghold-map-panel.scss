@@ -24,6 +24,12 @@
 					}
 				}
 
+				&:hover {
+					.structure-name {
+						opacity: 1;
+					}
+				}
+
 				.structure {
 					z-index: 10;
 					cursor: pointer;
@@ -39,6 +45,7 @@
 					font-size: 12px;
 					text-align: center;
 					pointer-events: none;
+					opacity: 0;
 				}
 			}
 		}

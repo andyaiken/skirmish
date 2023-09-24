@@ -67,7 +67,8 @@ export class StrongholdMapPanel extends Component<Props> {
 						style={{
 							width: `${squareSizePC}%`,
 							left: `${((structure.position.x - dims.left) * squareSizePC)}% `,
-							top: `${((structure.position.y - dims.top) * squareSizePC)}%`
+							top: `${((structure.position.y - dims.top) * squareSizePC)}%`,
+							fontSize: `${squareSizePC * 5}%`
 						}}
 					>
 						{this.getStructure(structure)}

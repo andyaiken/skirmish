@@ -45,7 +45,7 @@ export class PackData {
 
 	static potions: PackModel = {
 		id: 'pack-8',
-		name: 'Potions',
+		name: 'Pure Liquid Magic',
 		description: 'These cards add magical potions to the game.'
 	};
 

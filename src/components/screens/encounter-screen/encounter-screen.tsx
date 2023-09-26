@@ -73,7 +73,7 @@ interface Props {
 	unequipItem: (item: ItemModel, combatant: CombatantModel) => void;
 	pickUpItem: (item: ItemModel, hero: CombatantModel) => void;
 	dropItem: (item: ItemModel, combatant: CombatantModel) => void;
-	useCharge: (type: StructureType) => void;
+	useCharge: (type: StructureType, count: number) => void;
 	finishEncounter: (state: EncounterState) => void;
 }
 

@@ -21,7 +21,7 @@ interface Props {
 	game: GameModel;
 	options: OptionsModel;
 	buyStructure: (structure: StructureModel) => void;
-	useCharge: (type: StructureType) => void;
+	useCharge: (type: StructureType, count: number) => void;
 }
 
 interface State {
@@ -55,7 +55,7 @@ export class BuyStructureModal extends Component<Props, State> {
 			structures: this.getStructures()
 		}, () => {
 			if (!this.props.options.developer) {
-				this.props.useCharge(StructureType.Stockpile);
+				this.props.useCharge(StructureType.Stockpile, 1);
 			}
 		});
 	};

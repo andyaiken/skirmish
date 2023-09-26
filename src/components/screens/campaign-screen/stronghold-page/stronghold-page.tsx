@@ -26,7 +26,7 @@ interface Props {
 	buyStructure: (structure: StructureModel) => void;
 	chargeStructure: (structure: StructureModel) => void;
 	upgradeStructure: (structure: StructureModel) => void;
-	useCharge: (type: StructureType) => void;
+	useCharge: (type: StructureType, count: number) => void;
 	redeemBoon: (boon: BoonModel, hero: CombatantModel | null, item: ItemModel | null, newItem: ItemModel | null, cost: number) => void;
 }
 
@@ -71,6 +71,10 @@ export class StrongholdPage extends Component<Props, State> {
 
 		const redraws = heroRedraws + itemRedraws + featureRedraws + actionRedraws + magicRedraws + structureRedraws;
 
+		const benefitMods = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Temple);
+		const detrimentMods = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Intelligencer);
+		const encounters = benefitMods + detrimentMods;
+
 		return (
 			<Box label='Stronghold Benefits'>
 				<StatValue label='Max Heroes' value={StrongholdLogic.getHeroLimit(this.props.game)} />
@@ -81,6 +85,9 @@ export class StrongholdPage extends Component<Props, State> {
 				{actionRedraws > 0 ? <StatValue label='Action Card Redraws' value={<IconValue type={IconType.Redraw} value={actionRedraws} />} /> : null}
 				{magicRedraws > 0 ? <StatValue label='Magic Item Card Redraws' value={<IconValue type={IconType.Redraw} value={magicRedraws} />} /> : null}
 				{structureRedraws > 0 ? <StatValue label='Structure Card Redraws' value={<IconValue type={IconType.Redraw} value={structureRedraws} />} /> : null}
+				{encounters > 0 ? <hr /> : null}
+				{benefitMods > 0 ? <StatValue label='Encounter Benefits' value={benefitMods} /> : null}
+				{detrimentMods > 0 ? <StatValue label='Encounter Detriments' value={detrimentMods} /> : null}
 			</Box>
 		);
 	};

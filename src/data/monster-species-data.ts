@@ -18,45 +18,69 @@ import { FeatureLogic } from '../logic/feature-logic';
 import type { SpeciesModel } from '../models/species';
 
 export class MonsterSpeciesData {
-	static orc: SpeciesModel = {
-		id: 'species-orc',
-		name: 'Orc',
+	static giant: SpeciesModel = {
+		id: 'species-giant',
+		name: 'Giant',
 		packID: '',
-		description: 'An evil creature bred for war.',
+		description: 'A huge, monstrously strong creature.',
 		type: CombatantType.Monster,
-		size: 1,
+		size: 3,
 		quirks: [],
 		startingFeatures: [
-			FeatureLogic.createTraitFeature('orc-start-1', TraitType.Endurance, 1),
-			FeatureLogic.createTraitFeature('orc-start-2', TraitType.Speed, 1),
-			FeatureLogic.createSkillFeature('orc-start-3', SkillType.Brawl, 2),
-			FeatureLogic.createSkillFeature('orc-start-4', SkillType.Weapon, 2)
+			FeatureLogic.createTraitFeature('giant-start-1', TraitType.Endurance, 3),
+			FeatureLogic.createSkillFeature('giant-start-2', SkillType.Brawl, 2)
 		],
 		features: [
-			FeatureLogic.createDamageResistFeature('orc-feature-1', DamageType.All, 1),
-			FeatureLogic.createSkillFeature('orc-feature-2', SkillType.Brawl, 2),
-			FeatureLogic.createSkillFeature('orc-feature-3', SkillType.Weapon, 2)
+			FeatureLogic.createTraitFeature('giant-feature-1', TraitType.Endurance, 1),
+			FeatureLogic.createTraitFeature('giant-feature-2', TraitType.Resolve, 1),
+			FeatureLogic.createSkillFeature('giant-feature-3', SkillType.Brawl, 2),
+			FeatureLogic.createDamageResistFeature('giant-feature-4', DamageType.All, 1)
 		],
 		actions: [
 			{
-				id: 'orc-action-1',
-				name: 'Bloodlust',
+				id: 'giant-action-1',
+				name: 'Hurl Object',
 				prerequisites: [],
 				parameters: [
-					ActionTargetParameters.self()
+					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 10)
 				],
 				effects: [
-					ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Endurance, 5, SkillType.Brawl)),
-					ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Endurance, 5, SkillType.Weapon)),
-					ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Endurance, 2, DamageCategoryType.Physical))
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Brawl,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Impact, 3),
+							ActionEffects.knockDown()
+						]
+					})
 				]
 			},
 			{
-				id: 'orc-action-2',
-				name: 'Bloodfury',
-				prerequisites: [
-					ActionPrerequisites.wound()
+				id: 'giant-action-2',
+				name: 'Sweep',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Enemies, Number.MAX_VALUE)
 				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Brawl,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Impact, 2),
+							ActionEffects.knockDown()
+						]
+					})
+				]
+			},
+			{
+				id: 'giant-action-3',
+				name: 'Thwack',
+				prerequisites: [],
 				parameters: [
 					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
 				],
@@ -64,13 +88,111 @@ export class MonsterSpeciesData {
 					ActionEffects.attack({
 						weapon: false,
 						skill: SkillType.Brawl,
-						trait: TraitType.Endurance,
+						trait: TraitType.Resolve,
 						skillBonus: 0,
 						hit: [
-							ActionEffects.dealDamage(DamageType.Impact, 3)
+							ActionEffects.dealDamage(DamageType.Impact, 4),
+							ActionEffects.forceMovement(MovementType.Push, 2),
+							ActionEffects.knockDown()
+						]
+					})
+				]
+			}
+		]
+	};
+
+	static gnoll: SpeciesModel = {
+		id: 'species-gnoll',
+		name: 'Gnoll',
+		packID: '',
+		description: 'A humanoid with the head and claws of a hyena.',
+		type: CombatantType.Monster,
+		size: 1,
+		quirks: [],
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('gnoll-start-1', TraitType.Speed, 1),
+			FeatureLogic.createSkillFeature('gnoll-start-2', SkillType.Brawl, 2)
+		],
+		features: [
+			FeatureLogic.createTraitFeature('gnoll-feature-1', TraitType.Speed, 1),
+			FeatureLogic.createSkillFeature('gnoll-feature-2', SkillType.Brawl, 2)
+		],
+		actions: [
+			{
+				id: 'gnoll-action-1',
+				name: 'Frenzied Bite',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Brawl,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Piercing, 3)
+						]
+					})
+				]
+			},
+			{
+				id: 'gnoll-action-2',
+				name: 'Raking Claws',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Brawl,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Edged, 3)
 						]
 					}),
 					ActionEffects.takeAnotherAction()
+				]
+			},
+			{
+				id: 'gnoll-action-3',
+				name: 'Rending Claws',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Brawl,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Edged, 3)
+						]
+					})
+				]
+			},
+			{
+				id: 'gnoll-action-4',
+				name: 'Maniacal Cackle',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 3)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Presence,
+						trait: TraitType.Resolve,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.addCondition(ConditionLogic.createSkillCategoryPenaltyCondition(TraitType.Resolve, 3, SkillCategoryType.Mental))
+						]
+					})
 				]
 			}
 		]
@@ -134,29 +256,30 @@ export class MonsterSpeciesData {
 		]
 	};
 
-	static troll: SpeciesModel = {
-		id: 'species-troll',
-		name: 'Troll',
+	static medusa: SpeciesModel = {
+		id: 'species-medusa',
+		name: 'Medusa',
 		packID: '',
-		description: 'A huge brute of a humanoid.',
+		description: 'A humanoid with snakes for hair and a petrifying gaze.',
 		type: CombatantType.Monster,
-		size: 2,
-		quirks: [
-			QuirkType.Mindless
-		],
+		size: 1,
+		quirks: [],
 		startingFeatures: [
-			FeatureLogic.createTraitFeature('troll-start-1', TraitType.Endurance, 2)
+			FeatureLogic.createSkillFeature('medusa-start-1', SkillType.Brawl, 2),
+			FeatureLogic.createSkillFeature('medusa-start-2', SkillType.Presence, 2),
+			FeatureLogic.createDamageBonusFeature('medusa-start-3', DamageType.Poison, 2),
+			FeatureLogic.createDamageResistFeature('medusa-start-4', DamageType.Poison, 2)
 		],
 		features: [
-			FeatureLogic.createTraitFeature('troll-feature-1', TraitType.Endurance, 1),
-			FeatureLogic.createDamageCategoryResistFeature('troll-feature-2', DamageCategoryType.Physical, 1),
-			FeatureLogic.createDamageCategoryResistFeature('troll-feature-3', DamageCategoryType.Energy, 1),
-			FeatureLogic.createDamageCategoryResistFeature('troll-feature-4', DamageCategoryType.Corruption, 1)
+			FeatureLogic.createSkillFeature('medusa-feature-1', SkillType.Brawl, 2),
+			FeatureLogic.createSkillFeature('medusa-feature-2', SkillType.Presence, 2),
+			FeatureLogic.createDamageBonusFeature('medusa-feature-3', DamageType.Poison, 2),
+			FeatureLogic.createDamageResistFeature('medusa-feature-4', DamageType.Poison, 2)
 		],
 		actions: [
 			{
-				id: 'troll-action-1',
-				name: 'Slam',
+				id: 'medusa-action-1',
+				name: 'Spit Venom',
 				prerequisites: [],
 				parameters: [
 					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
@@ -168,23 +291,28 @@ export class MonsterSpeciesData {
 						trait: TraitType.Endurance,
 						skillBonus: 0,
 						hit: [
-							ActionEffects.dealDamage(DamageType.Impact, 2),
-							ActionEffects.knockDown()
+							ActionEffects.dealDamage(DamageType.Poison, 3)
 						]
 					})
 				]
 			},
 			{
-				id: 'troll-action-2',
-				name: 'Regeneration',
-				prerequisites: [
-					ActionPrerequisites.wound()
-				],
+				id: 'medusa-action-2',
+				name: 'Petrifying Gaze',
+				prerequisites: [],
 				parameters: [
-					ActionTargetParameters.self()
+					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 6)
 				],
 				effects: [
-					ActionEffects.healWounds(1)
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Presence,
+						trait: TraitType.Resolve,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 5, TraitType.All))
+						]
+					})
 				]
 			}
 		]
@@ -194,7 +322,7 @@ export class MonsterSpeciesData {
 		id: 'species-naga',
 		name: 'Naga',
 		packID: '',
-		description: 'A serpentine humanoiod.',
+		description: 'A serpentine humanoid.',
 		type: CombatantType.Monster,
 		size: 1,
 		quirks: [],
@@ -271,29 +399,87 @@ export class MonsterSpeciesData {
 		]
 	};
 
-	static fireElemental: SpeciesModel = {
-		id: 'species-elemental-fire',
-		name: 'Fire Elemental',
-		packID: PackData.elements.id,
-		description: 'Hot blooded and quick to anger, these humanoids are made of living fire.',
+	static orc: SpeciesModel = {
+		id: 'species-orc',
+		name: 'Orc',
+		packID: '',
+		description: 'An evil creature bred for war.',
 		type: CombatantType.Monster,
 		size: 1,
 		quirks: [],
 		startingFeatures: [
-			FeatureLogic.createTraitFeature('elemental-fire-start-1', TraitType.Speed, 1),
-			FeatureLogic.createSkillFeature('elemental-fire-start-2', SkillType.Brawl, 2)
+			FeatureLogic.createTraitFeature('orc-start-1', TraitType.Endurance, 1),
+			FeatureLogic.createTraitFeature('orc-start-2', TraitType.Speed, 1),
+			FeatureLogic.createSkillFeature('orc-start-3', SkillType.Brawl, 2),
+			FeatureLogic.createSkillFeature('orc-start-4', SkillType.Weapon, 2)
 		],
 		features: [
-			FeatureLogic.createTraitFeature('elemental-fire-feature-1', TraitType.Speed, 1),
-			FeatureLogic.createSkillFeature('elemental-fire-feature-2', SkillType.Brawl, 2),
-			FeatureLogic.createDamageBonusFeature('elemental-fire-feature-3', DamageType.Fire, 2),
-			FeatureLogic.createDamageResistFeature('elemental-fire-feature-4', DamageType.Fire, 5),
-			FeatureLogic.createAuraDamageFeature('elemental-fire-feature-5', ConditionType.AutoDamage, DamageType.Fire, 1)
+			FeatureLogic.createDamageResistFeature('orc-feature-1', DamageType.All, 1),
+			FeatureLogic.createSkillFeature('orc-feature-2', SkillType.Brawl, 2),
+			FeatureLogic.createSkillFeature('orc-feature-3', SkillType.Weapon, 2)
 		],
 		actions: [
 			{
-				id: 'elemental-fire-action-1',
-				name: 'Volcanic Flare',
+				id: 'orc-action-1',
+				name: 'Bloodlust',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.self()
+				],
+				effects: [
+					ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Endurance, 5, SkillType.Brawl)),
+					ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Endurance, 5, SkillType.Weapon)),
+					ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Endurance, 2, DamageCategoryType.Physical))
+				]
+			},
+			{
+				id: 'orc-action-2',
+				name: 'Bloodfury',
+				prerequisites: [
+					ActionPrerequisites.wound()
+				],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Brawl,
+						trait: TraitType.Endurance,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Impact, 3)
+						]
+					}),
+					ActionEffects.takeAnotherAction()
+				]
+			}
+		]
+	};
+
+	static troll: SpeciesModel = {
+		id: 'species-troll',
+		name: 'Troll',
+		packID: '',
+		description: 'A huge brute of a humanoid.',
+		type: CombatantType.Monster,
+		size: 2,
+		quirks: [
+			QuirkType.Mindless
+		],
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('troll-start-1', TraitType.Endurance, 2)
+		],
+		features: [
+			FeatureLogic.createTraitFeature('troll-feature-1', TraitType.Endurance, 1),
+			FeatureLogic.createDamageCategoryResistFeature('troll-feature-2', DamageCategoryType.Physical, 1),
+			FeatureLogic.createDamageCategoryResistFeature('troll-feature-3', DamageCategoryType.Energy, 1),
+			FeatureLogic.createDamageCategoryResistFeature('troll-feature-4', DamageCategoryType.Corruption, 1)
+		],
+		actions: [
+			{
+				id: 'troll-action-1',
+				name: 'Slam',
 				prerequisites: [],
 				parameters: [
 					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
@@ -305,54 +491,29 @@ export class MonsterSpeciesData {
 						trait: TraitType.Endurance,
 						skillBonus: 0,
 						hit: [
-							ActionEffects.dealDamage(DamageType.Fire, 1),
-							ActionEffects.dealDamage(DamageType.Light, 1)
+							ActionEffects.dealDamage(DamageType.Impact, 2),
+							ActionEffects.knockDown()
 						]
 					})
 				]
 			},
 			{
-				id: 'elemental-fire-action-2',
-				name: 'Hurl Fire',
-				prerequisites: [],
-				parameters: [
-					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
-				],
-				effects: [
-					ActionEffects.attack({
-						weapon: false,
-						skill: SkillType.Brawl,
-						trait: TraitType.Speed,
-						skillBonus: 2,
-						hit: [
-							ActionEffects.dealDamage(DamageType.Fire, 2)
-						]
-					})
-				]
-			},
-			{
-				id: 'elemental-fire-action-3',
-				name: 'Immolation',
+				id: 'troll-action-2',
+				name: 'Regeneration',
 				prerequisites: [
 					ActionPrerequisites.wound()
 				],
 				parameters: [
-					ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 2)
+					ActionTargetParameters.self()
 				],
 				effects: [
-					ActionEffects.attack({
-						weapon: false,
-						skill: SkillType.Brawl,
-						trait: TraitType.Endurance,
-						skillBonus: 0,
-						hit: [
-							ActionEffects.dealDamage(DamageType.Fire, 3)
-						]
-					})
+					ActionEffects.healWounds(1)
 				]
 			}
 		]
 	};
+
+	// Elementals
 
 	static airElemental: SpeciesModel = {
 		id: 'species-elemental-air',
@@ -361,7 +522,9 @@ export class MonsterSpeciesData {
 		description: 'Air elementals are as changeable as the weather, either calm or tempestuous.',
 		type: CombatantType.Monster,
 		size: 1,
-		quirks: [],
+		quirks: [
+			QuirkType.Amorphous
+		],
 		startingFeatures: [
 			FeatureLogic.createTraitFeature('elemental-air-start-1', TraitType.Resolve, 1),
 			FeatureLogic.createSkillFeature('elemental-air-start-2', SkillType.Brawl, 2)
@@ -503,27 +666,31 @@ export class MonsterSpeciesData {
 		]
 	};
 
-	static scarab: SpeciesModel = {
-		id: 'species-scarab',
-		name: 'Scarab',
-		packID: PackData.beasts.id,
-		description: 'Insects with an acidic bite.',
+	static fireElemental: SpeciesModel = {
+		id: 'species-elemental-fire',
+		name: 'Fire Elemental',
+		packID: PackData.elements.id,
+		description: 'Hot blooded and quick to anger, these humanoids are made of living fire.',
 		type: CombatantType.Monster,
 		size: 1,
 		quirks: [
-			QuirkType.Beast
+			QuirkType.Amorphous
 		],
 		startingFeatures: [
-			FeatureLogic.createSkillFeature('scarab-start-1', SkillType.Brawl, 2)
+			FeatureLogic.createTraitFeature('elemental-fire-start-1', TraitType.Speed, 1),
+			FeatureLogic.createSkillFeature('elemental-fire-start-2', SkillType.Brawl, 2)
 		],
 		features: [
-			FeatureLogic.createSkillFeature('scarab-feature-1', SkillType.Brawl, 2),
-			FeatureLogic.createDamageBonusFeature('scarab-feature-2', DamageType.Acid, 2)
+			FeatureLogic.createTraitFeature('elemental-fire-feature-1', TraitType.Speed, 1),
+			FeatureLogic.createSkillFeature('elemental-fire-feature-2', SkillType.Brawl, 2),
+			FeatureLogic.createDamageBonusFeature('elemental-fire-feature-3', DamageType.Fire, 2),
+			FeatureLogic.createDamageResistFeature('elemental-fire-feature-4', DamageType.Fire, 5),
+			FeatureLogic.createAuraDamageFeature('elemental-fire-feature-5', ConditionType.AutoDamage, DamageType.Fire, 1)
 		],
 		actions: [
 			{
-				id: 'scarab-action-1',
-				name: 'Mandible',
+				id: 'elemental-fire-action-1',
+				name: 'Volcanic Flare',
 				prerequisites: [],
 				parameters: [
 					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
@@ -535,18 +702,39 @@ export class MonsterSpeciesData {
 						trait: TraitType.Endurance,
 						skillBonus: 0,
 						hit: [
-							ActionEffects.dealDamage(DamageType.Edged, 2),
-							ActionEffects.dealDamage(DamageType.Acid, 2)
+							ActionEffects.dealDamage(DamageType.Fire, 1),
+							ActionEffects.dealDamage(DamageType.Light, 1)
 						]
 					})
 				]
 			},
 			{
-				id: 'scarab-action-2',
-				name: 'Stinger',
+				id: 'elemental-fire-action-2',
+				name: 'Hurl Fire',
 				prerequisites: [],
 				parameters: [
-					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Brawl,
+						trait: TraitType.Speed,
+						skillBonus: 2,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Fire, 2)
+						]
+					})
+				]
+			},
+			{
+				id: 'elemental-fire-action-3',
+				name: 'Immolation',
+				prerequisites: [
+					ActionPrerequisites.wound()
+				],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 2)
 				],
 				effects: [
 					ActionEffects.attack({
@@ -555,8 +743,7 @@ export class MonsterSpeciesData {
 						trait: TraitType.Endurance,
 						skillBonus: 0,
 						hit: [
-							ActionEffects.dealDamage(DamageType.Piercing, 2),
-							ActionEffects.dealDamage(DamageType.Acid, 2)
+							ActionEffects.dealDamage(DamageType.Fire, 3)
 						]
 					})
 				]
@@ -564,30 +751,35 @@ export class MonsterSpeciesData {
 		]
 	};
 
-	static giantSpider: SpeciesModel = {
-		id: 'species-giant-spider',
-		name: 'Giant Spider',
-		packID: PackData.beasts.id,
-		description: 'Venomous insects with eight legs.',
+	static waterElemental: SpeciesModel = {
+		id: 'species-elemental-water',
+		name: 'Water Elemental',
+		packID: PackData.elements.id,
+		description: 'Humanoids made of flowing, living water.',
 		type: CombatantType.Monster,
-		size: 2,
+		size: 1,
 		quirks: [
-			QuirkType.Beast
+			QuirkType.Amorphous
 		],
 		startingFeatures: [
-			FeatureLogic.createSkillFeature('giant-spider-start-1', SkillType.Brawl, 2)
+			FeatureLogic.createTraitFeature('elemental-water-start-1', TraitType.Speed, 1),
+			FeatureLogic.createSkillFeature('elemental-water-start-2', SkillType.Brawl, 2),
+			FeatureLogic.createDamageBonusFeature('elemental-water-start-3', DamageType.Impact, 2),
+			FeatureLogic.createDamageResistFeature('elemental-water-start-4', DamageType.Impact, 5)
 		],
 		features: [
-			FeatureLogic.createSkillFeature('giant-spider-feature-1', SkillType.Brawl, 2),
-			FeatureLogic.createDamageBonusFeature('giant-spider-feature-2', DamageType.Poison, 2)
+			FeatureLogic.createTraitFeature('elemental-water-feature-1', TraitType.Speed, 1),
+			FeatureLogic.createSkillFeature('elemental-water-feature-2', SkillType.Brawl, 2),
+			FeatureLogic.createDamageBonusFeature('elemental-water-feature-3', DamageType.Impact, 2),
+			FeatureLogic.createDamageResistFeature('elemental-water-feature-4', DamageType.Impact, 5)
 		],
 		actions: [
 			{
-				id: 'giant-spider-action-1',
-				name: 'Bite',
+				id: 'elemental-water-action-1',
+				name: 'Tsunami',
 				prerequisites: [],
 				parameters: [
-					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					ActionTargetParameters.adjacent(ActionTargetType.Combatants, Number.MAX_VALUE)
 				],
 				effects: [
 					ActionEffects.attack({
@@ -596,34 +788,36 @@ export class MonsterSpeciesData {
 						trait: TraitType.Endurance,
 						skillBonus: 0,
 						hit: [
-							ActionEffects.dealDamage(DamageType.Edged, 2),
-							ActionEffects.dealDamage(DamageType.Poison, 2)
+							ActionEffects.dealDamage(DamageType.Impact, 2),
+							ActionEffects.knockDown()
 						]
 					})
 				]
 			},
 			{
-				id: 'giant-spider-action-2',
-				name: 'Web',
+				id: 'elemental-water-action-2',
+				name: 'Waterspout',
 				prerequisites: [],
 				parameters: [
-					ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 5)
+					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
 				],
 				effects: [
 					ActionEffects.attack({
 						weapon: false,
 						skill: SkillType.Brawl,
-						trait: TraitType.Endurance,
-						skillBonus: 0,
+						trait: TraitType.Speed,
+						skillBonus: 2,
 						hit: [
-							ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Endurance, 2, TraitType.Speed)),
-							ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Endurance, 5))
+							ActionEffects.dealDamage(DamageType.Impact, 2),
+							ActionEffects.knockDown()
 						]
 					})
 				]
 			}
 		]
 	};
+
+	// Beasts
 
 	static bear: SpeciesModel = {
 		id: 'species-bear',
@@ -705,26 +899,27 @@ export class MonsterSpeciesData {
 		]
 	};
 
-	static gnoll: SpeciesModel = {
-		id: 'species-gnoll',
-		name: 'Gnoll',
-		packID: '',
-		description: 'A humanoid with the head and claws of a hyena.',
+	static giantSpider: SpeciesModel = {
+		id: 'species-giant-spider',
+		name: 'Giant Spider',
+		packID: PackData.beasts.id,
+		description: 'Venomous insects with eight legs.',
 		type: CombatantType.Monster,
-		size: 1,
-		quirks: [],
+		size: 2,
+		quirks: [
+			QuirkType.Beast
+		],
 		startingFeatures: [
-			FeatureLogic.createTraitFeature('gnoll-start-1', TraitType.Speed, 1),
-			FeatureLogic.createSkillFeature('gnoll-start-2', SkillType.Brawl, 2)
+			FeatureLogic.createSkillFeature('giant-spider-start-1', SkillType.Brawl, 2)
 		],
 		features: [
-			FeatureLogic.createTraitFeature('gnoll-feature-1', TraitType.Speed, 1),
-			FeatureLogic.createSkillFeature('gnoll-feature-2', SkillType.Brawl, 2)
+			FeatureLogic.createSkillFeature('giant-spider-feature-1', SkillType.Brawl, 2),
+			FeatureLogic.createDamageBonusFeature('giant-spider-feature-2', DamageType.Poison, 2)
 		],
 		actions: [
 			{
-				id: 'gnoll-action-1',
-				name: 'Frenzied Bite',
+				id: 'giant-spider-action-1',
+				name: 'Bite',
 				prerequisites: [],
 				parameters: [
 					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
@@ -733,68 +928,31 @@ export class MonsterSpeciesData {
 					ActionEffects.attack({
 						weapon: false,
 						skill: SkillType.Brawl,
-						trait: TraitType.Speed,
+						trait: TraitType.Endurance,
 						skillBonus: 0,
 						hit: [
-							ActionEffects.dealDamage(DamageType.Piercing, 3)
+							ActionEffects.dealDamage(DamageType.Edged, 2),
+							ActionEffects.dealDamage(DamageType.Poison, 2)
 						]
 					})
 				]
 			},
 			{
-				id: 'gnoll-action-2',
-				name: 'Raking Claws',
+				id: 'giant-spider-action-2',
+				name: 'Web',
 				prerequisites: [],
 				parameters: [
-					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 5)
 				],
 				effects: [
 					ActionEffects.attack({
 						weapon: false,
 						skill: SkillType.Brawl,
-						trait: TraitType.Speed,
+						trait: TraitType.Endurance,
 						skillBonus: 0,
 						hit: [
-							ActionEffects.dealDamage(DamageType.Edged, 3)
-						]
-					}),
-					ActionEffects.takeAnotherAction()
-				]
-			},
-			{
-				id: 'gnoll-action-3',
-				name: 'Rending Claws',
-				prerequisites: [],
-				parameters: [
-					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
-				],
-				effects: [
-					ActionEffects.attack({
-						weapon: false,
-						skill: SkillType.Brawl,
-						trait: TraitType.Speed,
-						skillBonus: 0,
-						hit: [
-							ActionEffects.dealDamage(DamageType.Edged, 3)
-						]
-					})
-				]
-			},
-			{
-				id: 'gnoll-action-4',
-				name: 'Maniacal Cackle',
-				prerequisites: [],
-				parameters: [
-					ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 3)
-				],
-				effects: [
-					ActionEffects.attack({
-						weapon: false,
-						skill: SkillType.Presence,
-						trait: TraitType.Resolve,
-						skillBonus: 0,
-						hit: [
-							ActionEffects.addCondition(ConditionLogic.createSkillCategoryPenaltyCondition(TraitType.Resolve, 3, SkillCategoryType.Mental))
+							ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Endurance, 2, TraitType.Speed)),
+							ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Endurance, 5))
 						]
 					})
 				]
@@ -802,28 +960,27 @@ export class MonsterSpeciesData {
 		]
 	};
 
-	static zombie: SpeciesModel = {
-		id: 'species-zombie',
-		name: 'Zombie',
-		packID: PackData.undead.id,
-		description: 'A re-animated corpse.',
+	static scarab: SpeciesModel = {
+		id: 'species-scarab',
+		name: 'Scarab',
+		packID: PackData.beasts.id,
+		description: 'Insects with an acidic bite.',
 		type: CombatantType.Monster,
 		size: 1,
 		quirks: [
-			QuirkType.Mindless,
-			QuirkType.Undead
+			QuirkType.Beast
 		],
 		startingFeatures: [
-			FeatureLogic.createSkillFeature('zombie-start-1', SkillType.Brawl, 2)
+			FeatureLogic.createSkillFeature('scarab-start-1', SkillType.Brawl, 2)
 		],
 		features: [
-			FeatureLogic.createSkillFeature('zombie-feature-1', SkillType.Brawl, 2),
-			FeatureLogic.createDamageCategoryResistFeature('zombie-feature-2', DamageCategoryType.Corruption, 1)
+			FeatureLogic.createSkillFeature('scarab-feature-1', SkillType.Brawl, 2),
+			FeatureLogic.createDamageBonusFeature('scarab-feature-2', DamageType.Acid, 2)
 		],
 		actions: [
 			{
-				id: 'zombie-action-1',
-				name: 'Rend',
+				id: 'scarab-action-1',
+				name: 'Mandible',
 				prerequisites: [],
 				parameters: [
 					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
@@ -835,18 +992,18 @@ export class MonsterSpeciesData {
 						trait: TraitType.Endurance,
 						skillBonus: 0,
 						hit: [
-							ActionEffects.dealDamage(DamageType.Piercing, 1),
-							ActionEffects.dealDamage(DamageType.Decay, 1)
+							ActionEffects.dealDamage(DamageType.Edged, 2),
+							ActionEffects.dealDamage(DamageType.Acid, 2)
 						]
 					})
 				]
 			},
 			{
-				id: 'zombie-action-2',
-				name: 'Grave Rot',
+				id: 'scarab-action-2',
+				name: 'Tail Lash',
 				prerequisites: [],
 				parameters: [
-					ActionTargetParameters.adjacent(ActionTargetType.Combatants, Number.MAX_VALUE)
+					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
 				],
 				effects: [
 					ActionEffects.attack({
@@ -855,16 +1012,72 @@ export class MonsterSpeciesData {
 						trait: TraitType.Endurance,
 						skillBonus: 0,
 						hit: [
-							ActionEffects.dealDamage(DamageType.Decay, 2),
-							ActionEffects.toSelf([
-								ActionEffects.healDamage(1)
-							])
+							ActionEffects.dealDamage(DamageType.Piercing, 2),
+							ActionEffects.dealDamage(DamageType.Acid, 2)
 						]
 					})
 				]
 			}
 		]
 	};
+
+	static stingerSwarm: SpeciesModel = {
+		id: 'species-stinger-swarm',
+		name: 'Stinger Swarm',
+		packID: PackData.beasts.id,
+		description: 'A swarm of fast-moving flying insects.',
+		type: CombatantType.Monster,
+		size: 2,
+		quirks: [
+			QuirkType.Beast,
+			QuirkType.Swarm
+		],
+		startingFeatures: [
+			FeatureLogic.createSkillFeature('stinger-swarm-start-1', SkillType.Brawl, 2),
+			FeatureLogic.createTraitFeature('stinger-swarm-start-2', TraitType.Speed, 1),
+			FeatureLogic.createDamageBonusFeature('stinger-swarm-start-3', DamageType.Poison, 1)
+		],
+		features: [
+			FeatureLogic.createSkillFeature('stinger-swarm-feature-1', SkillType.Brawl, 2),
+			FeatureLogic.createTraitFeature('stinger-swarm-feature-2', TraitType.Speed, 1),
+			FeatureLogic.createDamageBonusFeature('stinger-swarm-feature-3', DamageType.Poison, 1)
+		],
+		actions: [
+			{
+				id: 'stinger-swarm-action-1',
+				name: 'Follow Scent',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+				],
+				effects: [
+					ActionEffects.forceMovement(MovementType.BesideTarget, 1),
+					ActionEffects.takeAnotherAction()
+				]
+			},
+			{
+				id: 'stinger-swarm-action-2',
+				name: 'Stinger',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Enemies, Number.MAX_VALUE)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Brawl,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Poison, 1)
+						]
+					})
+				]
+			}
+		]
+	};
+
+	// Undead
 
 	static skeleton: SpeciesModel = {
 		id: 'species-skeleton',
@@ -996,28 +1209,29 @@ export class MonsterSpeciesData {
 		]
 	};
 
-	static giant: SpeciesModel = {
-		id: 'species-giant',
-		name: 'Giant',
-		packID: '',
-		description: 'A huge, monstrously strong creature.',
+	static wraith: SpeciesModel = {
+		id: 'species-wraith',
+		name: 'Wraith',
+		packID: PackData.undead.id,
+		description: 'A floating, spectral apparition.',
 		type: CombatantType.Monster,
-		size: 3,
-		quirks: [],
+		size: 1,
+		quirks: [
+			QuirkType.Undead,
+			QuirkType.Amorphous
+		],
 		startingFeatures: [
-			FeatureLogic.createTraitFeature('giant-start-1', TraitType.Endurance, 3),
-			FeatureLogic.createSkillFeature('giant-start-2', SkillType.Brawl, 2)
+			FeatureLogic.createSkillFeature('wraith-start-1', SkillType.Presence, 2),
+			FeatureLogic.createDamageCategoryResistFeature('wraith-start-2', DamageCategoryType.Corruption, 1)
 		],
 		features: [
-			FeatureLogic.createTraitFeature('giant-feature-1', TraitType.Endurance, 1),
-			FeatureLogic.createTraitFeature('giant-feature-2', TraitType.Resolve, 1),
-			FeatureLogic.createSkillFeature('giant-feature-3', SkillType.Brawl, 2),
-			FeatureLogic.createDamageResistFeature('giant-feature-4', DamageType.All, 1)
+			FeatureLogic.createSkillFeature('wraith-feature-1', SkillType.Presence, 2),
+			FeatureLogic.createDamageCategoryResistFeature('wraith-feature-2', DamageCategoryType.Corruption, 1)
 		],
 		actions: [
 			{
-				id: 'giant-action-1',
-				name: 'Hurl Object',
+				id: 'wraith-action-1',
+				name: 'Spectral Visage',
 				prerequisites: [],
 				parameters: [
 					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 10)
@@ -1025,39 +1239,62 @@ export class MonsterSpeciesData {
 				effects: [
 					ActionEffects.attack({
 						weapon: false,
-						skill: SkillType.Brawl,
-						trait: TraitType.Speed,
+						skill: SkillType.Presence,
+						trait: TraitType.Resolve,
 						skillBonus: 0,
 						hit: [
-							ActionEffects.dealDamage(DamageType.Impact, 3),
-							ActionEffects.knockDown()
+							ActionEffects.forceMovement(MovementType.Push, 1),
+							ActionEffects.stun()
 						]
 					})
 				]
 			},
 			{
-				id: 'giant-action-2',
-				name: 'Sweep',
+				id: 'wraith-action-2',
+				name: 'Life Drain',
 				prerequisites: [],
 				parameters: [
-					ActionTargetParameters.adjacent(ActionTargetType.Enemies, Number.MAX_VALUE)
+					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
 				],
 				effects: [
 					ActionEffects.attack({
 						weapon: false,
-						skill: SkillType.Brawl,
-						trait: TraitType.Speed,
+						skill: SkillType.Presence,
+						trait: TraitType.Resolve,
 						skillBonus: 0,
 						hit: [
-							ActionEffects.dealDamage(DamageType.Impact, 2),
-							ActionEffects.knockDown()
+							ActionEffects.dealDamage(DamageType.Decay, 2),
+							ActionEffects.addCondition(ConditionLogic.createSkillCategoryPenaltyCondition(TraitType.Resolve, 3, SkillCategoryType.Mental)),
+							ActionEffects.addCondition(ConditionLogic.createSkillCategoryPenaltyCondition(TraitType.Resolve, 3, SkillCategoryType.Physical))
 						]
 					})
 				]
-			},
+			}
+		]
+	};
+
+	static zombie: SpeciesModel = {
+		id: 'species-zombie',
+		name: 'Zombie',
+		packID: PackData.undead.id,
+		description: 'A re-animated corpse.',
+		type: CombatantType.Monster,
+		size: 1,
+		quirks: [
+			QuirkType.Mindless,
+			QuirkType.Undead
+		],
+		startingFeatures: [
+			FeatureLogic.createSkillFeature('zombie-start-1', SkillType.Brawl, 2)
+		],
+		features: [
+			FeatureLogic.createSkillFeature('zombie-feature-1', SkillType.Brawl, 2),
+			FeatureLogic.createDamageCategoryResistFeature('zombie-feature-2', DamageCategoryType.Corruption, 1)
+		],
+		actions: [
 			{
-				id: 'giant-action-3',
-				name: 'Thwack',
+				id: 'zombie-action-1',
+				name: 'Rend',
 				prerequisites: [],
 				parameters: [
 					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
@@ -1066,12 +1303,33 @@ export class MonsterSpeciesData {
 					ActionEffects.attack({
 						weapon: false,
 						skill: SkillType.Brawl,
-						trait: TraitType.Resolve,
+						trait: TraitType.Endurance,
 						skillBonus: 0,
 						hit: [
-							ActionEffects.dealDamage(DamageType.Impact, 4),
-							ActionEffects.forceMovement(MovementType.Push, 2),
-							ActionEffects.knockDown()
+							ActionEffects.dealDamage(DamageType.Piercing, 1),
+							ActionEffects.dealDamage(DamageType.Decay, 1)
+						]
+					})
+				]
+			},
+			{
+				id: 'zombie-action-2',
+				name: 'Grave Rot',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Combatants, Number.MAX_VALUE)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Brawl,
+						trait: TraitType.Endurance,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Decay, 2),
+							ActionEffects.toSelf([
+								ActionEffects.healDamage(1)
+							])
 						]
 					})
 				]
@@ -1081,21 +1339,28 @@ export class MonsterSpeciesData {
 
 	static getList = (): SpeciesModel[] => {
 		const list = [
-			MonsterSpeciesData.orc,
+			MonsterSpeciesData.giant,
+			MonsterSpeciesData.gnoll,
 			MonsterSpeciesData.goblin,
-			MonsterSpeciesData.troll,
+			MonsterSpeciesData.medusa,
 			MonsterSpeciesData.naga,
-			MonsterSpeciesData.fireElemental,
+			MonsterSpeciesData.orc,
+			MonsterSpeciesData.troll,
+			// Elementals
 			MonsterSpeciesData.airElemental,
 			MonsterSpeciesData.earthElemental,
-			MonsterSpeciesData.scarab,
-			MonsterSpeciesData.giantSpider,
+			MonsterSpeciesData.fireElemental,
+			MonsterSpeciesData.waterElemental,
+			// Beasts
 			MonsterSpeciesData.bear,
-			MonsterSpeciesData.gnoll,
-			MonsterSpeciesData.zombie,
+			MonsterSpeciesData.giantSpider,
+			MonsterSpeciesData.scarab,
+			MonsterSpeciesData.stingerSwarm,
+			// Undead
 			MonsterSpeciesData.skeleton,
 			MonsterSpeciesData.vampire,
-			MonsterSpeciesData.giant
+			MonsterSpeciesData.wraith,
+			MonsterSpeciesData.zombie
 		];
 
 		list.forEach(n => {

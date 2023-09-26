@@ -8,6 +8,7 @@ import { StructureType } from '../../enums/structure-type';
 
 import { CampaignMapLogic } from '../../logic/campaign-map-logic';
 import { CombatantLogic } from '../../logic/combatant-logic';
+import { ConditionLogic } from '../../logic/condition-logic';
 import { EncounterGenerator } from '../../generators/encounter-generator';
 import { EncounterLogic } from '../../logic/encounter-logic';
 import { EncounterMapLogic } from '../../logic/encounter-map-logic';
@@ -19,6 +20,7 @@ import { StrongholdLogic } from '../../logic/stronghold-logic';
 import type { ActionModel, ActionParameterModel } from '../../models/action';
 import type { BoonModel } from '../../models/boon';
 import type { CombatantModel } from '../../models/combatant';
+import type { ConditionModel } from '../../models/condition';
 import type { EncounterModel } from '../../models/encounter';
 import type { FeatureModel } from '../../models/feature';
 import type { GameModel } from '../../models/game';
@@ -27,6 +29,7 @@ import type { OptionsModel } from '../../models/options';
 import type { RegionModel } from '../../models/region';
 import type { StructureModel } from '../../models/structure';
 
+import { Collections } from '../../utils/collections';
 import { Sound } from '../../utils/sound';
 import { Utils } from '../../utils/utils';
 
@@ -375,11 +378,11 @@ export class Main extends Component<Props, State> {
 		}
 	};
 
-	useCharge = (type: StructureType) => {
+	useCharge = (type: StructureType, count: number) => {
 		try {
 			const game = this.state.game as GameModel;
 
-			StrongholdLogic.useCharge(game, type);
+			StrongholdLogic.useCharge(game, type, count);
 
 			this.setState({
 				game: game
@@ -630,14 +633,30 @@ export class Main extends Component<Props, State> {
 
 	//#region Campaign map page
 
-	startEncounter = (region: RegionModel, heroes: CombatantModel[]) => {
+	startEncounter = (region: RegionModel, heroes: CombatantModel[], benefits: number, detriments: number) => {
 		try {
 			if (this.state.game) {
-				heroes.forEach(h => CombatantLogic.resetCombatant(h));
-
 				const game = this.state.game;
+
+				heroes.forEach(h => CombatantLogic.resetCombatant(h));
 				game.heroes = game.heroes.filter(h => !heroes.includes(h));
 				game.encounter = EncounterGenerator.createEncounter(region, heroes, this.state.options.packIDs);
+
+				for (let n = 0; n < benefits; ++n) {
+					const hero = Collections.draw(game.encounter.combatants.filter(c => c.type === CombatantType.Hero));
+					hero.combat.conditions.push(ConditionLogic.createRandomBeneficialCondition() as ConditionModel);
+
+					// eslint-disable-next-line react-hooks/rules-of-hooks
+					StrongholdLogic.useCharge(game, StructureType.Temple, 1);
+				}
+
+				for (let n = 0; n < detriments; ++n) {
+					const hero = Collections.draw(game.encounter.combatants.filter(c => c.type === CombatantType.Monster));
+					hero.combat.conditions.push(ConditionLogic.createRandomDetrimentalCondition() as ConditionModel);
+
+					// eslint-disable-next-line react-hooks/rules-of-hooks
+					StrongholdLogic.useCharge(game, StructureType.Intelligencer, 1);
+				}
 
 				EncounterMapLogic.visibilityCache.reset();
 
@@ -841,7 +860,7 @@ export class Main extends Component<Props, State> {
 			EncounterLogic.drawActions(encounter, combatant);
 
 			if (useCharge) {
-				StrongholdLogic.useCharge(this.state.game as GameModel, useCharge);
+				StrongholdLogic.useCharge(this.state.game as GameModel, useCharge, 1);
 			}
 
 			this.setState({

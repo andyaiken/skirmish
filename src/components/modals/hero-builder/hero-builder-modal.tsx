@@ -24,7 +24,7 @@ interface Props {
 	hero: CombatantModel;
 	game: GameModel;
 	options: OptionsModel;
-	useCharge: (type: StructureType) => void;
+	useCharge: (type: StructureType, count: number) => void;
 	finished: (hero: CombatantModel) => void;
 }
 

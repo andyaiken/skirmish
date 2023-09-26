@@ -28,15 +28,16 @@
 				flex: 0 0 220px;
 			}
 
-			.selected-hero-list {
+			.selected-hero-list,
+			.monster-list,
+			.advanced-options {
 				margin-top: 10px;
+			}
+
+			.selected-hero-list {
 				display: flex;
 				flex-direction: column;
 				gap: 5px;
-			}
-
-			.monster-list {
-				margin-top: 10px;
 			}
 
 			.empty-hero-slot {
@@ -46,6 +47,15 @@
 				border: 1px solid rgb(220, 220, 220);
 				border-radius: 10px;
 				padding: 0 15px;
+			}
+
+			.spin-section {
+				margin: 10px 0;
+				border: 2px solid rgb(200, 200, 200);
+				border-radius: 5px;
+				display: flex;
+				align-items: center;
+				justify-content: space-around;
 			}
 		}
 

@@ -62,7 +62,7 @@ export class Random {
 				return 5;
 		}
 
-		return 0;
+		return 1;
 	};
 
 	static randomColor = (min = 0, max = 256, rng: () => number = Math.random) => {

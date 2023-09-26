@@ -28,7 +28,7 @@ interface Props {
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
 	dropItem: (item: ItemModel, hero: CombatantModel) => void;
 	redeemBoon: (boon: BoonModel, combatant: CombatantModel | null, item: ItemModel | null, newItem: ItemModel | null, cost: number) => void;
-	useCharge: (type: StructureType) => void;
+	useCharge: (type: StructureType, count: number) => void;
 	addMoney: () => void;
 }
 

@@ -40,7 +40,7 @@ interface Props {
 	buyStructure: (structure: StructureModel) => void;
 	chargeStructure: (structure: StructureModel) => void;
 	upgradeStructure: (structure: StructureModel) => void;
-	useCharge: (type: StructureType) => void;
+	useCharge: (type: StructureType, count: number) => void;
 	addHero: (hero: CombatantModel) => void;
 	incrementXP: (hero: CombatantModel) => void;
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
@@ -53,7 +53,7 @@ interface Props {
 	buyItem: (item: ItemModel) => void;
 	sellItem: (item: ItemModel, all: boolean) => void;
 	addMoney: () => void;
-	startEncounter: (region: RegionModel, heroes: CombatantModel[]) => void;
+	startEncounter: (region: RegionModel, heroes: CombatantModel[], benefits: number, detriments: number) => void;
 	conquer: (region: RegionModel) => void;
 }
 

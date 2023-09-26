@@ -5,5 +5,7 @@ export enum StructureType {
 	TrainingGround = 'training ground',
 	Observatory = 'observatory',
 	WizardTower = 'wizard tower',
-	Stockpile = 'stockpile'
+	Stockpile = 'stockpile',
+	Temple = 'temple',
+	Intelligencer = 'intelligencer'
 }

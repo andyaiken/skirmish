@@ -104,6 +104,7 @@
 * Evil
   * Shadowborn
   * Demon
+  * Swarm of imps
 * Fae
   * Pixie
   * Arcane archer
@@ -118,8 +119,6 @@
 * Small:
   * Pixie, Gnome, Goblin, Scarab
 * Quirks:
-  * Swarm / amorphous / ooze
-    * Takes half damage from physical damage
   * Insubstantial / phasing / ghostly
     * Takes half damage from physical damage
     * Move through / see through walls
@@ -128,38 +127,40 @@
     * No movement penalty for water terrain
 * Kobold
 * Ogre
-* Elemental:
-  * Water Elemental
-* Undead:
-  * Wraith
 * Demon
 * Beasts:
-  * Basilisk / medusa / gorgon
   * Lion / tiger / panther etc
   * Wolf
   * Crocodile
-  * Giant rat
+  * Giant rat / rat swarm
   * Dragon
   * Kruthik / Ankheg
 * Ooze
 
 ## Ideas for Structures
 * Structures as irregular polygons
-* Show number of charges on structures
 
-| Structure     | Effect                                                            | Pack   |
-|---------------|-------------------------------------------------------------------|--------|
-| Intelligencer | Allows you to learn about a non-adjacent region                   | Thief  |
-| Shipyard      | Allows you to attack a non-adjacent coastal region                |        |
-| Academy       | Add 1 rank in any physical skill to a hero                        |        |
-| Library       | Add 1 rank in any mental skill to a hero                          |        |
-| XXX           | Add 1 XP to a hero                                                |        |
-| Temple        | Start the next encounter with a random condition on a random hero | Divine |
-| War Room      | Allows you to add an additional hero to an encounter in progress  |        |
-| Drill Hall    | Allows you to take an additional action during an encounter       |        |
-| Laboratory    | Brew 5 potions of a particular type                               | Tech   |
+| Structure     | Effect                                                            | Pack    |
+|---------------|-------------------------------------------------------------------|---------|
+| Shipyard      | Allows you to attack a non-adjacent coastal region                |         |
+| Academy       | Add 1 rank in any physical skill to a hero                        |         |
+| Library       | Add 1 rank in any mental skill to a hero                          |         |
+| XXX           | Add 1 XP to a hero                                                |         |
+| War Room      | Allows you to add an additional hero to an encounter in progress  |         |
+| Drill Hall    | Allows you to take an additional action during an encounter       |         |
 
-Names: Warehouse / Museum / Gallery / Vault / Bazaar / Spymaster / Cartographer / Tavern / Theatre / Gardens / Monument / Engineer
+* Warehouse
+* Museum
+* Gallery
+* Vault
+* Bazaar
+* Cartographer
+* Tavern
+* Theatre
+* Gardens
+* Monument
+* Engineer
+* Laboratory
 
 -----------------------------------------------------------------------------------------
 

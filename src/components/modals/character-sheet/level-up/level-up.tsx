@@ -26,7 +26,7 @@ interface Props {
 	combatant: CombatantModel;
 	game: GameModel;
 	developer: boolean;
-	useCharge: (type: StructureType) => void;
+	useCharge: (type: StructureType, count: number) => void;
 	levelUp: (feature: FeatureModel) => void;
 }
 
@@ -74,7 +74,7 @@ export class LevelUp extends Component<Props, State> {
 			selectedFeature: null
 		}, () => {
 			if (!this.props.developer) {
-				this.props.useCharge(StructureType.TrainingGround);
+				this.props.useCharge(StructureType.TrainingGround, 1);
 			}
 		});
 	};

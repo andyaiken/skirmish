@@ -155,7 +155,7 @@ export class EncounterGenerator {
 			if ((combatant.combat.position.x !== Number.MIN_VALUE) && (combatant.combat.position.y !== Number.MIN_VALUE)) {
 				// Already on the map
 			} else {
-				for (let i = 0; i <= 1000; ++i) {
+				for (let i = 0; i < 1000; ++i) {
 					const square = Collections.draw(encounter.mapSquares, rng);
 
 					const squares = [];

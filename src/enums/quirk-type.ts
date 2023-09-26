@@ -2,5 +2,7 @@ export enum QuirkType {
 	Beast = 'Beast',
 	Drone = 'Drone',
 	Undead = 'Undead',
-	Mindless = 'Mindless'
+	Mindless = 'Mindless',
+	Swarm = 'Swarm',
+	Amorphous = 'Amorphous'
 }

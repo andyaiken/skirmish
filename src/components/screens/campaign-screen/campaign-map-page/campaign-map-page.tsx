@@ -19,7 +19,7 @@ import './campaign-map-page.scss';
 interface Props {
 	game: GameModel;
 	options: OptionsModel;
-	startEncounter: (region: RegionModel, heroes: CombatantModel[]) => void;
+	startEncounter: (region: RegionModel, heroes: CombatantModel[], benefits: number, detriments: number) => void;
 	conquer: (region: RegionModel) => void;
 }
 

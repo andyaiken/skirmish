@@ -144,9 +144,9 @@ export class PotionData {
 		actions: []
 	};
 
-	static endurance: ItemModel = {
-		id: 'potion-endurance',
-		name: 'Brew of Endurance',
+	static strength: ItemModel = {
+		id: 'potion-strength',
+		name: 'Brew of Strength',
 		packID: PackData.potions.id,
 		description: 'A glass vial filled with a vaprous brown liquid.',
 		baseItem: '',
@@ -165,9 +165,9 @@ export class PotionData {
 		actions: []
 	};
 
-	static resolve: ItemModel = {
-		id: 'potion-resolve',
-		name: 'Brew of Resolve',
+	static will: ItemModel = {
+		id: 'potion-will',
+		name: 'Brew of Will',
 		packID: PackData.potions.id,
 		description: 'A glass vial filled with a bubbling black liquid.',
 		baseItem: '',
@@ -186,9 +186,9 @@ export class PotionData {
 		actions: []
 	};
 
-	static speed: ItemModel = {
-		id: 'potion-speed',
-		name: 'Brew of Speed',
+	static quickness: ItemModel = {
+		id: 'potion-quickness',
+		name: 'Brew of Quickness',
 		packID: PackData.potions.id,
 		description: 'A glass vial filled with a churning pink liquid.',
 		baseItem: '',
@@ -215,9 +215,9 @@ export class PotionData {
 			PotionData.luck,
 			PotionData.might,
 			PotionData.resistance,
-			PotionData.endurance,
-			PotionData.resolve,
-			PotionData.speed
+			PotionData.strength,
+			PotionData.will,
+			PotionData.quickness
 		];
 
 		list.sort((a, b) => a.name.localeCompare(b.name));

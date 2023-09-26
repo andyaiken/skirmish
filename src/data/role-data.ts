@@ -1193,7 +1193,7 @@ export class RoleData {
 			},
 			{
 				id: 'gunslinger-action-5',
-				name: 'Careful Shot',
+				name: 'Sharpshooter',
 				prerequisites: [
 					ActionPrerequisites.rangedWeapon()
 				],
@@ -1564,7 +1564,7 @@ export class RoleData {
 			},
 			{
 				id: 'paladin-action-2',
-				name: 'Holy Flame',
+				name: 'Flame of Valor',
 				prerequisites: [],
 				parameters: [
 					ActionTargetParameters.adjacent(ActionTargetType.Enemies, Number.MAX_VALUE)

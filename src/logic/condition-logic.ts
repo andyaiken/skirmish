@@ -6,8 +6,10 @@ import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
 
 import type { ConditionModel } from '../models/condition';
+import { Random } from '../utils/random';
 
 import { Factory } from './factory';
+import { GameLogic } from './game-logic';
 
 export class ConditionLogic {
 	static createAutoHealCondition = (root: TraitType, rank: number) => {
@@ -99,7 +101,7 @@ export class ConditionLogic {
 		return condition;
 	};
 
-	static createDamageCategoryVulnerabillityCondition = (root: TraitType, rank: number, category: DamageCategoryType) => {
+	static createDamageCategoryVulnerabilityCondition = (root: TraitType, rank: number, category: DamageCategoryType) => {
 		const condition = Factory.createCondition(ConditionType.DamageCategoryVulnerability, root, rank);
 		condition.details.damageCategory = category;
 		return condition;
@@ -199,5 +201,43 @@ export class ConditionLogic {
 		}
 
 		return false;
+	};
+
+	static createRandomBeneficialCondition = () => {
+		switch (Random.randomNumber(6)) {
+			case 0:
+				return ConditionLogic.createAutoHealCondition(GameLogic.getRandomTrait(), Random.randomBonus());
+			case 1:
+				return ConditionLogic.createTraitBonusCondition(GameLogic.getRandomTrait(), Random.randomBonus(), GameLogic.getRandomTrait());
+			case 2:
+				return ConditionLogic.createSkillBonusCondition(GameLogic.getRandomTrait(), Random.randomBonus(), GameLogic.getRandomSkill());
+			case 3:
+				return ConditionLogic.createDamageBonusCondition(GameLogic.getRandomTrait(), Random.randomBonus(), GameLogic.getRandomDamageType());
+			case 4:
+				return ConditionLogic.createDamageResistanceCondition(GameLogic.getRandomTrait(), Random.randomBonus(), GameLogic.getRandomDamageType());
+			case 5:
+				return ConditionLogic.createMovementBonusCondition(GameLogic.getRandomTrait(), Random.randomBonus());
+		}
+
+		return null;
+	};
+
+	static createRandomDetrimentalCondition = () => {
+		switch (Random.randomNumber(6)) {
+			case 0:
+				return ConditionLogic.createAutoDamageCondition(GameLogic.getRandomTrait(), Random.randomBonus(), GameLogic.getRandomDamageType());
+			case 1:
+				return ConditionLogic.createTraitPenaltyCondition(GameLogic.getRandomTrait(), Random.randomBonus(), GameLogic.getRandomTrait());
+			case 2:
+				return ConditionLogic.createSkillPenaltyCondition(GameLogic.getRandomTrait(), Random.randomBonus(), GameLogic.getRandomSkill());
+			case 3:
+				return ConditionLogic.createDamagePenaltyCondition(GameLogic.getRandomTrait(), Random.randomBonus(), GameLogic.getRandomDamageType());
+			case 4:
+				return ConditionLogic.createDamageVulnerabilityCondition(GameLogic.getRandomTrait(), Random.randomBonus(), GameLogic.getRandomDamageType());
+			case 5:
+				return ConditionLogic.createMovementPenaltyCondition(GameLogic.getRandomTrait(), Random.randomBonus());
+		}
+
+		return null;
 	};
 }

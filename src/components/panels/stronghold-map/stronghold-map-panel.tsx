@@ -72,7 +72,11 @@ export class StrongholdMapPanel extends Component<Props> {
 						}}
 					>
 						{this.getStructure(structure)}
-						<div className='structure-name'>{structure.name}</div>
+						<div className='structure-name'>
+							{structure.name}
+							{structure.charges > 0 ? <br /> : null}
+							{structure.charges > 0 ? ''.padEnd(structure.charges, '★') : null}
+						</div>
 					</div>
 				);
 			});

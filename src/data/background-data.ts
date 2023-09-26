@@ -61,7 +61,7 @@ export class BackgroundData {
 	static apothecary: BackgroundModel = {
 		id: 'background-apothecary',
 		name: 'Apothecary',
-		packID: PackData.technology.id,
+		packID: PackData.potions.id,
 		description: 'The apothecary creates potions.',
 		startingFeatures: [],
 		features: [
@@ -148,7 +148,7 @@ export class BackgroundData {
 			},
 			{
 				id: 'apothecary-action-7',
-				name: 'Create Brew of Endurance',
+				name: 'Create Brew of Strength',
 				prerequisites: [
 					ActionPrerequisites.carryingCapacity()
 				],
@@ -156,12 +156,12 @@ export class BackgroundData {
 					ActionTargetParameters.self()
 				],
 				effects: [
-					ActionEffects.createPotion(PotionData.endurance.id)
+					ActionEffects.createPotion(PotionData.strength.id)
 				]
 			},
 			{
 				id: 'apothecary-action-8',
-				name: 'Create Brew of Resolve',
+				name: 'Create Brew of Will',
 				prerequisites: [
 					ActionPrerequisites.carryingCapacity()
 				],
@@ -169,12 +169,12 @@ export class BackgroundData {
 					ActionTargetParameters.self()
 				],
 				effects: [
-					ActionEffects.createPotion(PotionData.resolve.id)
+					ActionEffects.createPotion(PotionData.will.id)
 				]
 			},
 			{
 				id: 'apothecary-action-9',
-				name: 'Create Brew of Speed',
+				name: 'Create Brew of Quickness',
 				prerequisites: [
 					ActionPrerequisites.carryingCapacity()
 				],
@@ -182,7 +182,7 @@ export class BackgroundData {
 					ActionTargetParameters.self()
 				],
 				effects: [
-					ActionEffects.createPotion(PotionData.speed.id)
+					ActionEffects.createPotion(PotionData.quickness.id)
 				]
 			}
 		]

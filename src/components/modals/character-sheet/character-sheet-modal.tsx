@@ -29,7 +29,7 @@ interface Props {
 	dropItem: (item: ItemModel, combatant: CombatantModel) => void;
 	levelUp: (feature: FeatureModel, combatant: CombatantModel) => void;
 	retireHero: (combatant: CombatantModel) => void;
-	useCharge: (type: StructureType) => void;
+	useCharge: (type: StructureType, count: number) => void;
 }
 
 interface State {

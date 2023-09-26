@@ -22,7 +22,7 @@ interface Props {
 	game: GameModel;
 	options: OptionsModel;
 	buyItem: (item: ItemModel) => void;
-	useCharge: (type: StructureType) => void;
+	useCharge: (type: StructureType, count: number) => void;
 }
 
 interface State {
@@ -82,7 +82,7 @@ export class BuyMagicItemModal extends Component<Props, State> {
 			magicItems: this.getItems()
 		}, () => {
 			if (!this.props.options.developer) {
-				this.props.useCharge(StructureType.WizardTower);
+				this.props.useCharge(StructureType.WizardTower, 1);
 			}
 		});
 	};

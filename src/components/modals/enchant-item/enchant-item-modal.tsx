@@ -20,7 +20,7 @@ interface Props {
 	game: GameModel;
 	options: OptionsModel;
 	enchantItem: (item: ItemModel, newItem: ItemModel) => void;
-	useCharge: (type: StructureType) => void;
+	useCharge: (type: StructureType, count: number) => void;
 }
 
 interface State {
@@ -62,7 +62,7 @@ export class EnchantItemModal extends Component<Props, State> {
 			magicItems: this.getItems(this.state.selectedItem as ItemModel)
 		}, () => {
 			if (!this.props.options.developer) {
-				this.props.useCharge(StructureType.WizardTower);
+				this.props.useCharge(StructureType.WizardTower, 1);
 			}
 		});
 	};

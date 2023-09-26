@@ -82,6 +82,28 @@ export class StructureData {
 		charges: 0
 	};
 
+	static temple: StructureModel = {
+		id: 'structure-temple',
+		type: StructureType.Temple,
+		name: 'Temple',
+		packID: PackData.faith.id,
+		description: 'A place for heroes to pray to their gods for good fortune.',
+		position: { x: 0, y: 0 },
+		level: 1,
+		charges: 0
+	};
+
+	static intelligencer: StructureModel = {
+		id: 'structure-intelligencer',
+		type: StructureType.Intelligencer,
+		name: 'Intelligencer',
+		packID: PackData.skullduggery.id,
+		description: 'In this building, a spymaster devises schemes to undermine the enemy.',
+		position: { x: 0, y: 0 },
+		level: 1,
+		charges: 0
+	};
+
 	static getList = (): StructureModel[] => {
 		const list = [
 			StructureData.barracks,
@@ -90,7 +112,9 @@ export class StructureData {
 			StructureData.training,
 			StructureData.observatory,
 			StructureData.wizard,
-			StructureData.stockpile
+			StructureData.stockpile,
+			StructureData.temple,
+			StructureData.intelligencer
 		];
 
 		list.sort((a, b) => a.name.localeCompare(b.name));

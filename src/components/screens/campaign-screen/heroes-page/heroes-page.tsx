@@ -33,7 +33,7 @@ interface Props {
 	levelUp: (feature: FeatureModel, hero: CombatantModel) => void;
 	retireHero: (combatant: CombatantModel) => void;
 	redeemBoon: (boon: BoonModel, hero: CombatantModel | null, item: ItemModel | null, newItem: ItemModel | null, cost: number) => void;
-	useCharge: (type: StructureType) => void;
+	useCharge: (type: StructureType, count: number) => void;
 }
 
 interface State {

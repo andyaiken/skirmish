@@ -80,11 +80,15 @@ export class StrongholdLogic {
 		return Collections.sum(game.stronghold.filter(s => s.type === type), s => s.charges);
 	};
 
-	static useCharge = (game: GameModel, type: StructureType) => {
-		const structures = game.stronghold.filter(s => s.type === type).filter(s => s.charges > 0);
-		if (structures.length > 0) {
-			const structure = Collections.draw(structures);
-			structure.charges -= 1;
+	static useCharge = (game: GameModel, type: StructureType, count: number) => {
+		for (let n = 0; n < count; ++n) {
+			const structures = game.stronghold
+				.filter(s => s.type === type)
+				.filter(s => s.charges > 0);
+			if (structures.length > 0) {
+				const structure = Collections.draw(structures);
+				structure.charges -= 1;
+			}
 		}
 	};
 }

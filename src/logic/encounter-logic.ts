@@ -3,6 +3,7 @@ import { BaseData } from '../data/base-data';
 import { CombatantState } from '../enums/combatant-state';
 import { CombatantType } from '../enums/combatant-type';
 import { ConditionType } from '../enums/condition-type';
+import { DamageCategoryType } from '../enums/damage-category-type';
 import { DamageType } from '../enums/damage-type';
 import { EncounterMapSquareType } from '../enums/encounter-map-square-type';
 import { EncounterState } from '../enums/encounter-state';
@@ -11,6 +12,7 @@ import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
 
 import { ActionEffects, ActionLogic, ActionTargetParameters } from './action-logic';
+import { GameLogic } from './game-logic';
 
 import type { ActionModel, ActionOriginParameterModel, ActionTargetParameterModel, ActionWeaponParameterModel } from '../models/action';
 import type { EncounterMapSquareModel, EncounterModel, LootPileModel } from '../models/encounter';
@@ -507,19 +509,26 @@ export class EncounterLogic {
 	static damage = (encounter: EncounterModel, combatant: CombatantModel, value: number, type: DamageType) => {
 		EncounterLogic.log(encounter, `${combatant.name} suffers damage (${type}, ${value} pts)`);
 
+		if (combatant.quirks.includes(QuirkType.Swarm) || combatant.quirks.includes(QuirkType.Amorphous)) {
+			if (GameLogic.getDamageCategory(type) === DamageCategoryType.Physical) {
+				EncounterLogic.log(encounter, `${combatant.name} takes half physical damage`);
+				value = Math.floor(value / 2);
+			}
+		}
+
 		const resistance = EncounterLogic.getDamageResistance(encounter, combatant, type);
 		if (resistance > 0) {
 			EncounterLogic.log(encounter, `${combatant.name} has damage resistance (${type}, ${resistance} pts)`);
+			value -= resistance;
 		}
 
-		const damage = value - resistance;
-		if (damage > 0) {
+		if (value > 0) {
 			if (combatant.quirks.includes(QuirkType.Drone)) {
 				// Drones die if they take any damage
 				EncounterLogic.kill(encounter, combatant);
 			} else {
-				combatant.combat.damage += damage;
-				EncounterLogic.log(encounter, `${combatant.name} takes damage (${damage} pts) and is now at ${combatant.combat.damage}`);
+				combatant.combat.damage += value;
+				EncounterLogic.log(encounter, `${combatant.name} takes damage (${value} pts) and is now at ${combatant.combat.damage}`);
 
 				const rank = EncounterLogic.getTraitRank(encounter, combatant, TraitType.Endurance);
 				const result = Random.dice(rank);

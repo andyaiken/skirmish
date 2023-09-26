@@ -1,13 +1,16 @@
 import { Component } from 'react';
 
+import { StructureType } from '../../../enums/structure-type';
+
 import { CampaignMapLogic } from '../../../logic/campaign-map-logic';
+import { StrongholdLogic } from '../../../logic/stronghold-logic';
 
 import type { CombatantModel } from '../../../models/combatant';
 import type { GameModel } from '../../../models/game';
 import type { OptionsModel } from '../../../models/options';
 import type { RegionModel } from '../../../models/region';
 
-import { CardList, Selector, Tabs, Text, TextType } from '../../controls';
+import { CardList, Selector, StatValue, Tabs, Text, TextType } from '../../controls';
 import { HeroCard, SpeciesCard } from '../../cards';
 import { CombatantRowPanel } from '../../panels/combatant-row/combatant-row-panel';
 
@@ -17,7 +20,7 @@ interface Props {
 	region: RegionModel;
 	game: GameModel;
 	options: OptionsModel;
-	startEncounter: (region: RegionModel, heroes: CombatantModel[]) => void;
+	startEncounter: (region: RegionModel, heroes: CombatantModel[], benefits: number, detriments: number) => void;
 }
 
 interface State {
@@ -25,6 +28,8 @@ interface State {
 	heroSortMode: string;
 	viewMode: string;
 	selectedHeroes: CombatantModel[];
+	benefits: number;
+	detriments: number;
 }
 
 export class EncounterStartModal extends Component<Props, State> {
@@ -34,7 +39,9 @@ export class EncounterStartModal extends Component<Props, State> {
 			heroSelectionMode: 'Name',
 			heroSortMode: 'asc',
 			viewMode: 'heroes',
-			selectedHeroes: []
+			selectedHeroes: [],
+			benefits: 0,
+			detriments: 0
 		};
 	}
 
@@ -56,7 +63,7 @@ export class EncounterStartModal extends Component<Props, State> {
 	};
 
 	startEncounter = () => {
-		this.props.startEncounter(this.props.region, this.state.selectedHeroes);
+		this.props.startEncounter(this.props.region, this.state.selectedHeroes, this.state.benefits, this.state.detriments);
 	};
 
 	render = () => {
@@ -91,6 +98,18 @@ export class EncounterStartModal extends Component<Props, State> {
 				);
 			});
 
+		const options = [
+			{ id: 'heroes', display: 'Selected Heroes' },
+			{ id: 'monsters', display: 'Monsters' }
+		];
+		const charges = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Temple) + StrongholdLogic.getStructureCharges(this.props.game, StructureType.Intelligencer);
+		if (charges > 0) {
+			options.push({
+				id: 'advanced',
+				display: 'Advanced'
+			});
+		}
+
 		let rightContent = null;
 		switch (this.state.viewMode) {
 			case 'heroes': {
@@ -117,9 +136,46 @@ export class EncounterStartModal extends Component<Props, State> {
 
 				rightContent = (
 					<div className='monster-list'>
+						<Text type={TextType.SubHeading}>Monsters in this region</Text>
 						<CardList cards={monsters} />
 					</div>
 				);
+				break;
+			}
+			case 'advanced': {
+				const ben = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Temple);
+				const det = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Intelligencer);
+
+				rightContent = (
+					<div className='advanced-options'>
+						<Text type={TextType.SubHeading}>Advanced Options</Text>
+						{
+							ben > 0 ?
+								<div className='spin-section'>
+									<StatValue orientation='vertical' label='Benefits Available' value={ben} />
+									<div>
+										<button disabled={this.state.benefits === ben} onClick={() => this.setState({ benefits: this.state.benefits + 1 })}>Plus</button>
+										<button disabled={this.state.benefits === 0} onClick={() => this.setState({ benefits: this.state.benefits - 1 })}>Minus</button>
+									</div>
+									<StatValue orientation='vertical' label='Benefits Used' value={this.state.benefits} />
+								</div>
+								: null
+						}
+						{
+							det > 0 ?
+								<div className='spin-section'>
+									<StatValue orientation='vertical' label='Detriments Available' value={ben} />
+									<div>
+										<button disabled={this.state.detriments === det} onClick={() => this.setState({ detriments: this.state.detriments + 1 })}>Plus</button>
+										<button disabled={this.state.detriments === 0} onClick={() => this.setState({ detriments: this.state.detriments - 1 })}>Minus</button>
+									</div>
+									<StatValue orientation='vertical' label='Detriments Used' value={this.state.detriments} />
+								</div>
+								: null
+						}
+					</div>
+				);
+				break;
 			}
 		}
 
@@ -156,7 +212,7 @@ export class EncounterStartModal extends Component<Props, State> {
 					<div className='divider' />
 					<div className='hero-list-column'>
 						<Tabs
-							options={[ { id: 'heroes', display: 'Selected Heroes' }, { id: 'monsters', display: 'Monsters in this Region' } ]}
+							options={options}
 							selectedID={this.state.viewMode}
 							onSelect={id => this.setState({ viewMode: id })}
 						/>

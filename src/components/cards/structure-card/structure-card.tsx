@@ -101,6 +101,20 @@ export class StructureCard extends Component<Props, State> {
 						<p>You gain {this.props.structure.level} redraw(s) when the structure is charged.</p>
 					</Text>
 				);
+			case StructureType.Temple:
+				return (
+					<Text>
+						<p>This structure allows your heroes to begin an encounter with beneficial conditions.</p>
+						<p>You gain {this.props.structure.level} conditions(s) when the structure is charged.</p>
+					</Text>
+				);
+			case StructureType.Intelligencer:
+				return (
+					<Text>
+						<p>This structure forces monsters to begin an encounter with detrimental conditions.</p>
+						<p>You gain {this.props.structure.level} conditions(s) when the structure is charged.</p>
+					</Text>
+				);
 		}
 
 		return null;

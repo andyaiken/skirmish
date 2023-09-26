@@ -39,6 +39,7 @@ When it's a monster's turn to act, you'll see much less information, because the
 Monsters are similar to heroes in most ways, but you may see a few special keywords:
 * **Beast** or **Mindless** - A monster with either of these keywords doesn't have a role or a background.
 * **Drone** - A monster with this keyword is particularly easy to kill; they die as soon as they take any damage.
+* **Swarm** or **Amorphous** - A monster with either of these keywords takes half damage from physical damage types.
 * **Undead** - A monster with this keyword is hard to keep down; if they are unconscious at the start of their turn they have a chance to reanimate.
 
 When the monster has done everything they want to do, the game will move on to the next combatant.

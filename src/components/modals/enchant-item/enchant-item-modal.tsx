@@ -11,8 +11,7 @@ import type { ItemModel } from '../../../models/item';
 import type { OptionsModel } from '../../../models/options';
 
 import { CardList, Dialog, Text, TextType } from '../../controls';
-import { ItemCard } from '../../cards';
-import { RedrawButton } from '../../panels';
+import { ItemCard, StrongholdBenefitCard } from '../../cards';
 
 import './enchant-item-modal.scss';
 
@@ -80,9 +79,10 @@ export class EnchantItemModal extends Component<Props, State> {
 				const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.WizardTower);
 				if ((redraws > 0) || this.props.options.developer) {
 					cards.push(
-						<RedrawButton
+						<StrongholdBenefitCard
 							key='redraw'
-							value={redraws}
+							label='Redraw'
+							available={redraws}
 							developer={this.props.options.developer}
 							onClick={() => this.redraw()}
 						/>

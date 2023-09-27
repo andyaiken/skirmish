@@ -960,6 +960,46 @@ export class MonsterSpeciesData {
 		]
 	};
 
+	static ratSwarm: SpeciesModel = {
+		id: 'species-rat-swarm',
+		name: 'Rat Swarm',
+		packID: PackData.beasts.id,
+		description: 'A swarm of large rodents.',
+		type: CombatantType.Monster,
+		size: 2,
+		quirks: [
+			QuirkType.Beast,
+			QuirkType.Swarm
+		],
+		startingFeatures: [
+			FeatureLogic.createSkillFeature('rat-swarm-start-1', SkillType.Brawl, 2)
+		],
+		features: [
+			FeatureLogic.createSkillFeature('rat-swarm-feature-1', SkillType.Brawl, 2)
+		],
+		actions: [
+			{
+				id: 'rat-swarm-action-1',
+				name: 'Bite',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Enemies, Number.MAX_VALUE)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Brawl,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Piercing, 2)
+						]
+					})
+				]
+			}
+		]
+	};
+
 	static scarab: SpeciesModel = {
 		id: 'species-scarab',
 		name: 'Scarab',
@@ -1072,6 +1112,60 @@ export class MonsterSpeciesData {
 							ActionEffects.dealDamage(DamageType.Poison, 1)
 						]
 					})
+				]
+			}
+		]
+	};
+
+	static wolf: SpeciesModel = {
+		id: 'species-wolf',
+		name: 'Wolf',
+		packID: PackData.beasts.id,
+		description: 'A large canine that hunts in packs.',
+		type: CombatantType.Monster,
+		size: 1,
+		quirks: [
+			QuirkType.Beast
+		],
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('wolf-start-1', TraitType.Endurance, 1),
+			FeatureLogic.createSkillFeature('wolf-start-2', SkillType.Brawl, 2)
+		],
+		features: [
+			FeatureLogic.createTraitFeature('wolf-feature-1', TraitType.Endurance, 1),
+			FeatureLogic.createSkillFeature('wolf-feature-2', SkillType.Brawl, 2)
+		],
+		actions: [
+			{
+				id: 'wolf-action-1',
+				name: 'Bite',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Brawl,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Piercing, 2),
+							ActionEffects.knockDown()
+						]
+					})
+				]
+			},
+			{
+				id: 'wolf-action-2',
+				name: 'Pack Tactics',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Allies, 1, 5)
+				],
+				effects: [
+					ActionEffects.commandMove(),
+					ActionEffects.takeAnotherAction()
 				]
 			}
 		]
@@ -1354,8 +1448,10 @@ export class MonsterSpeciesData {
 			// Beasts
 			MonsterSpeciesData.bear,
 			MonsterSpeciesData.giantSpider,
+			MonsterSpeciesData.ratSwarm,
 			MonsterSpeciesData.scarab,
 			MonsterSpeciesData.stingerSwarm,
+			MonsterSpeciesData.wolf,
 			// Undead
 			MonsterSpeciesData.skeleton,
 			MonsterSpeciesData.vampire,

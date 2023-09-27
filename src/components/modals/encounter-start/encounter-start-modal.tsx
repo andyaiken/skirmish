@@ -10,8 +10,8 @@ import type { GameModel } from '../../../models/game';
 import type { OptionsModel } from '../../../models/options';
 import type { RegionModel } from '../../../models/region';
 
-import { CardList, Selector, StatValue, Tabs, Text, TextType } from '../../controls';
-import { HeroCard, SpeciesCard } from '../../cards';
+import { CardList, Selector, Tabs, Text, TextType } from '../../controls';
+import { HeroCard, SpeciesCard, StrongholdBenefitCard } from '../../cards';
 import { CombatantRowPanel } from '../../panels/combatant-row/combatant-row-panel';
 
 import './encounter-start-modal.scss';
@@ -143,36 +143,44 @@ export class EncounterStartModal extends Component<Props, State> {
 				break;
 			}
 			case 'advanced': {
+				const cards = [];
+
 				const ben = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Temple);
+				if (ben > 0) {
+					cards.push(
+						<div key='bonuses' className='stronghold-benefit'>
+							<StrongholdBenefitCard
+								label='Bonuses'
+								available={ben}
+								used={this.state.benefits}
+								developer={false}
+								onChange={value => this.setState({ benefits: value })}
+							/>
+							<Text>Allow some of your heroes to start with a random beneficial condition.</Text>
+						</div>
+					);
+				}
+
 				const det = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Intelligencer);
+				if (det > 0) {
+					cards.push(
+						<div key='penalties' className='stronghold-benefit'>
+							<StrongholdBenefitCard
+								label='Penalties'
+								available={det}
+								used={this.state.detriments}
+								developer={false}
+								onChange={value => this.setState({ detriments: value })}
+							/>
+							<Text>Force some of your opponents to start with a random detrimental condition.</Text>
+						</div>
+					);
+				}
 
 				rightContent = (
 					<div className='advanced-options'>
 						<Text type={TextType.SubHeading}>Advanced Options</Text>
-						{
-							ben > 0 ?
-								<div className='spin-section'>
-									<StatValue orientation='vertical' label='Benefits Available' value={ben} />
-									<div>
-										<button disabled={this.state.benefits === ben} onClick={() => this.setState({ benefits: this.state.benefits + 1 })}>Plus</button>
-										<button disabled={this.state.benefits === 0} onClick={() => this.setState({ benefits: this.state.benefits - 1 })}>Minus</button>
-									</div>
-									<StatValue orientation='vertical' label='Benefits Used' value={this.state.benefits} />
-								</div>
-								: null
-						}
-						{
-							det > 0 ?
-								<div className='spin-section'>
-									<StatValue orientation='vertical' label='Detriments Available' value={ben} />
-									<div>
-										<button disabled={this.state.detriments === det} onClick={() => this.setState({ detriments: this.state.detriments + 1 })}>Plus</button>
-										<button disabled={this.state.detriments === 0} onClick={() => this.setState({ detriments: this.state.detriments - 1 })}>Minus</button>
-									</div>
-									<StatValue orientation='vertical' label='Detriments Used' value={this.state.detriments} />
-								</div>
-								: null
-						}
+						<CardList cards={cards} />
 					</div>
 				);
 				break;

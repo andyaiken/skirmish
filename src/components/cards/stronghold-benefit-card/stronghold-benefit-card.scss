@@ -1,0 +1,22 @@
+.stronghold-benefit-card {
+	flex: 1 1 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+
+	.spin {
+		width: 100%;
+
+		.spin-buttons {
+			margin-top: 30px;
+			display: flex;
+			align-items: center;
+			justify-content: space-around;
+
+			.icon-btn {
+				width: 50px;
+			}
+		}
+	}	
+}

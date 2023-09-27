@@ -107,7 +107,8 @@
   * Swarm of imps
 * Fae
   * Pixie
-  * Arcane archer
+  * Arcane archer / venator / bowmage / hexbow
+  * Banshee - sonic dmg
 
 ## Ideas for Roles / Backgrounds
 * Gladiator 
@@ -130,9 +131,7 @@
 * Demon
 * Beasts:
   * Lion / tiger / panther etc
-  * Wolf
   * Crocodile
-  * Giant rat / rat swarm
   * Dragon
   * Kruthik / Ankheg
 * Ooze

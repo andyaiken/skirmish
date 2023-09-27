@@ -17,9 +17,8 @@ import type { EncounterModel } from '../../../../models/encounter';
 import type { GameModel } from '../../../../models/game';
 import type { ItemModel } from '../../../../models/item';
 
+import { ActionCard, StrongholdBenefitCard } from '../../../cards';
 import { Badge, Selector, Text, TextType } from '../../../controls';
-import { ActionCard } from '../../../cards';
-import { RedrawButton } from '../../../panels';
 
 import './action-controls.scss';
 
@@ -85,9 +84,10 @@ export class ActionControls extends Component<Props> {
 		const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Observatory);
 		if ((redraws > 0) || this.props.developer) {
 			redrawCard = (
-				<RedrawButton
+				<StrongholdBenefitCard
 					key='redraw'
-					value={redraws}
+					label='Redraw'
+					available={redraws}
 					developer={this.props.developer}
 					onClick={() => this.props.drawActions(this.props.encounter, this.props.combatant, this.props.developer ? null : StructureType.Observatory)}
 				/>

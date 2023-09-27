@@ -13,8 +13,7 @@ import { Collections } from '../../../utils/collections';
 import { Utils } from '../../../utils/utils';
 
 import { CardList, Text, TextType } from '../../controls';
-import { ItemCard } from '../../cards';
-import { RedrawButton } from '../../panels';
+import { ItemCard, StrongholdBenefitCard } from '../../cards';
 
 import './buy-potion-modal.scss';
 
@@ -74,9 +73,10 @@ export class BuyPotionModal extends Component<Props, State> {
 			const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.WizardTower);
 			if ((redraws > 0) || this.props.options.developer) {
 				cards.push(
-					<RedrawButton
+					<StrongholdBenefitCard
 						key='redraw'
-						value={redraws}
+						label='Redraw'
+						available={redraws}
 						developer={this.props.options.developer}
 						onClick={() => this.redraw()}
 					/>

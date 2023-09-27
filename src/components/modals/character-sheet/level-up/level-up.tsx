@@ -16,9 +16,8 @@ import type { GameModel } from '../../../../models/game';
 import { Collections } from '../../../../utils/collections';
 
 import { CardList, Text, TextType } from '../../../controls';
+import { FeatureCard, StrongholdBenefitCard } from '../../../cards';
 import { ChoicePanel } from './choice/choice';
-import { FeatureCard } from '../../../cards';
-import { RedrawButton } from '../../../panels';
 
 import './level-up.scss';
 
@@ -128,9 +127,10 @@ export class LevelUp extends Component<Props, State> {
 			const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.TrainingGround);
 			if ((redraws > 0) || this.props.developer) {
 				featureCards.push(
-					<RedrawButton
+					<StrongholdBenefitCard
 						key='redraw'
-						value={redraws}
+						label='Redraw'
+						available={redraws}
 						developer={this.props.developer}
 						onClick={() => this.setFeatures()}
 					/>

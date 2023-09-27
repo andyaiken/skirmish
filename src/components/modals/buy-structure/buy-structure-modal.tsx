@@ -12,8 +12,7 @@ import type { StructureModel } from '../../../models/structure';
 import { Collections } from '../../../utils/collections';
 
 import { CardList, Text, TextType } from '../../controls';
-import { RedrawButton } from '../../panels';
-import { StructureCard } from '../../cards';
+import { StrongholdBenefitCard, StructureCard } from '../../cards';
 
 import './buy-structure-modal.scss';
 
@@ -69,9 +68,10 @@ export class BuyStructureModal extends Component<Props, State> {
 			const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Stockpile);
 			if ((redraws > 0) || this.props.options.developer) {
 				cards.push(
-					<RedrawButton
+					<StrongholdBenefitCard
 						key='redraw'
-						value={redraws}
+						label='Redraw'
+						available={redraws}
 						developer={this.props.options.developer}
 						onClick={() => this.redraw()}
 					/>

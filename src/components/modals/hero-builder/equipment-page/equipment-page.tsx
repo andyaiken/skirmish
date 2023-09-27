@@ -17,8 +17,7 @@ import { Collections } from '../../../../utils/collections';
 import { Utils } from '../../../../utils/utils';
 
 import { CardList, Expander, PlayingCard, Text, TextType } from '../../../controls';
-import { ItemCard, PlaceholderCard } from '../../../cards';
-import { RedrawButton } from '../../../panels';
+import { ItemCard, PlaceholderCard, StrongholdBenefitCard } from '../../../cards';
 
 import './equipment-page.scss';
 
@@ -115,9 +114,10 @@ export class EquipmentPage extends Component<Props, State> {
 				const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Quartermaster);
 				if ((redraws > 0) || this.props.options.developer) {
 					cards.push(
-						<RedrawButton
+						<StrongholdBenefitCard
 							key='redraw'
-							value={redraws}
+							label='Redraw'
+							available={redraws}
 							developer={this.props.options.developer}
 							onClick={() => this.redraw(slot.proficiency)}
 						/>

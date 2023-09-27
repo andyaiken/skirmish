@@ -10,6 +10,7 @@ import { PlaceholderCard } from './placeholder-card/placeholder-card';
 import { RegionCard } from './region-card/region-card';
 import { RoleCard } from './role-card/role-card';
 import { SpeciesCard } from './species-card/species-card';
+import { StrongholdBenefitCard } from './stronghold-benefit-card/stronghold-benefit-card';
 import { StructureCard } from './structure-card/structure-card';
 
 export {
@@ -25,5 +26,6 @@ export {
 	RegionCard,
 	RoleCard,
 	SpeciesCard,
+	StrongholdBenefitCard,
 	StructureCard
 };

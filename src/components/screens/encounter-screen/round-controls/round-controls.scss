@@ -4,6 +4,7 @@
 	border-radius: 10px;
 	background-color: white;
 	padding: 0 10px;
+	overflow-y: auto;
 
 	.encounter-stats {
 		display: flex;
@@ -14,5 +15,11 @@
 		.box {
 			flex: 1 1 0;
 		}
+	}
+
+	.benefits {
+		margin-top: 10px;
+		display: flex;
+		justify-content: center;
 	}
 }

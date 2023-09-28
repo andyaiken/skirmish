@@ -67,13 +67,18 @@ export class StrongholdPage extends Component<Props, State> {
 		const featureRedraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.TrainingGround);
 		const actionRedraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Observatory);
 		const magicRedraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.WizardTower);
-		const structureRedraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Stockpile);
+		const structureRedraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Forge);
 
 		const redraws = heroRedraws + itemRedraws + featureRedraws + actionRedraws + magicRedraws + structureRedraws;
 
 		const benefitMods = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Temple);
 		const detrimentMods = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Intelligencer);
-		const encounters = benefitMods + detrimentMods;
+		const additionalActions = StrongholdLogic.getStructureCharges(this.props.game, StructureType.ThievesGuild);
+		const additionalHeroes = StrongholdLogic.getStructureCharges(this.props.game, StructureType.WarRoom);
+		const encounters = benefitMods + detrimentMods + additionalActions;
+
+		const heroXP = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Academy);
+		const hero = heroXP;
 
 		return (
 			<Box label='Stronghold Benefits'>
@@ -88,6 +93,10 @@ export class StrongholdPage extends Component<Props, State> {
 				{encounters > 0 ? <hr /> : null}
 				{benefitMods > 0 ? <StatValue label='Encounter Benefits' value={benefitMods} /> : null}
 				{detrimentMods > 0 ? <StatValue label='Encounter Detriments' value={detrimentMods} /> : null}
+				{additionalActions > 0 ? <StatValue label='Additional Actions' value={additionalActions} /> : null}
+				{additionalHeroes > 0 ? <StatValue label='Additional Heroes' value={additionalHeroes} /> : null}
+				{hero > 0 ? <hr /> : null}
+				{heroXP > 0 ? <StatValue label='Additional XP' value={heroXP} /> : null}
 			</Box>
 		);
 	};

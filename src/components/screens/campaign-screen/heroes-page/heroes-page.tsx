@@ -25,7 +25,7 @@ interface Props {
 	game: GameModel;
 	options: OptionsModel;
 	addHero: (hero: CombatantModel) => void;
-	incrementXP: (hero: CombatantModel) => void;
+	addXP: (hero: CombatantModel, useCharge: StructureType | null) => void;
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
 	unequipItem: (item: ItemModel, hero: CombatantModel) => void;
 	pickUpItem: (item: ItemModel, hero: CombatantModel) => void;
@@ -108,7 +108,7 @@ export class HeroesPage extends Component<Props, State> {
 						<Badge value={hero.xp >= hero.level ? 'Level Up' : null}>
 							<HeroCard hero={hero} onCharacterSheet={this.selectHero} onRetire={this.selectRetiringHero} />
 						</Badge>
-						{this.props.options.developer ? <button className='developer' onClick={() => this.props.incrementXP(hero)}>Add XP</button> : null}
+						{this.props.options.developer ? <button className='developer' onClick={() => this.props.addXP(hero, null)}>Add XP</button> : null}
 					</div>
 				);
 			});
@@ -217,6 +217,7 @@ export class HeroesPage extends Component<Props, State> {
 								dropItem={this.props.dropItem}
 								levelUp={this.props.levelUp}
 								retireHero={this.retireHero}
+								addXP={this.props.addXP}
 								useCharge={this.props.useCharge}
 							/>
 						)}

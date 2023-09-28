@@ -21,7 +21,7 @@ export class AboutTab extends Component<Props> {
 		try {
 			return (
 				<div className='about-tab'>
-					<Text>Skirmish designed by Andy Aiken; © Andy Aiken 2023</Text>
+					<Text>Skirmish designed by <a href='mailto:andy.aiken@live.co.uk'>Andy Aiken</a>; © Andy Aiken 2023</Text>
 					<hr />
 					<StatValue label='Version' value={pkg.version} />
 					<hr />

@@ -142,24 +142,23 @@
 | Structure     | Effect                                                            | Pack    |
 |---------------|-------------------------------------------------------------------|---------|
 | Shipyard      | Allows you to attack a non-adjacent coastal region                |         |
-| Academy       | Add 1 rank in any physical skill to a hero                        |         |
-| Library       | Add 1 rank in any mental skill to a hero                          |         |
-| XXX           | Add 1 XP to a hero                                                |         |
-| War Room      | Allows you to add an additional hero to an encounter in progress  |         |
-| Drill Hall    | Allows you to take an additional action during an encounter       |         |
+| XXX           | Add 1 rank in any physical skill to a hero                        |         |
+| XXX           | Add 1 rank in any mental skill to a hero                          |         |
 
 * Warehouse
-* Museum
-* Gallery
+* Bazaar / marketplace
 * Vault
-* Bazaar
 * Cartographer
-* Tavern
-* Theatre
-* Gardens
-* Monument
 * Engineer
 * Laboratory
+* Morale buildings:
+  * Museum
+  * Library
+  * Gallery
+  * Tavern
+  * Theatre
+  * Gardens
+  * Monument
 
 -----------------------------------------------------------------------------------------
 

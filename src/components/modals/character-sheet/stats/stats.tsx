@@ -14,7 +14,7 @@ import type { CombatantModel } from '../../../../models/combatant';
 import type { EncounterModel } from '../../../../models/encounter';
 
 import { ActionCard, FeatureCard, PlaceholderCard } from '../../../cards';
-import { Box, CardList, Dialog, IconType, IconValue, PlayingCard, StatValue, Tag, Text, TextType } from '../../../controls';
+import { Box, CardList, Dialog, Gauge, PlayingCard, StatValue, Tag, Text, TextType } from '../../../controls';
 import { CombatStatsPanel } from '../../../panels/combat-stats/combat-stats-panel';
 import { DamagePanel } from './damage-panel/damage-panel';
 
@@ -149,8 +149,12 @@ export class Stats extends Component<Props, State> {
 	getXPSection = () => {
 		return (
 			<Box label='XP'>
-				<StatValue label='Earned' value={<IconValue type={IconType.XP} value={this.props.combatant.xp} />} />
-				<StatValue label={`Required for level ${this.props.combatant.level + 1}`} value={<IconValue type={IconType.XP} value={this.props.combatant.level} />} />
+				<div className='xp-gauge'>
+					<Gauge
+						progress={this.props.combatant.xp / this.props.combatant.level}
+						content={`${this.props.combatant.xp} XP / ${this.props.combatant.level}`}
+					/>
+				</div>
 			</Box>
 		);
 	};

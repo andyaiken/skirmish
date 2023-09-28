@@ -1,11 +1,14 @@
 export enum StructureType {
+	Academy = 'academy',
 	Barracks = 'barracks',
+	Forge = 'forge',
 	Hall = 'hall',
-	Quartermaster = 'quartermaster',
-	TrainingGround = 'training ground',
+	Intelligencer = 'intelligencer',
 	Observatory = 'observatory',
-	WizardTower = 'wizard tower',
-	Stockpile = 'stockpile',
+	Quartermaster = 'quartermaster',
 	Temple = 'temple',
-	Intelligencer = 'intelligencer'
+	ThievesGuild = 'thieves guild',
+	TrainingGround = 'training ground',
+	WarRoom = 'war room',
+	WizardTower = 'wizard tower'
 }

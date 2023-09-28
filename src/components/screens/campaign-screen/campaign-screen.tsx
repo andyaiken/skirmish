@@ -42,7 +42,7 @@ interface Props {
 	upgradeStructure: (structure: StructureModel) => void;
 	useCharge: (type: StructureType, count: number) => void;
 	addHero: (hero: CombatantModel) => void;
-	incrementXP: (hero: CombatantModel) => void;
+	addXP: (hero: CombatantModel, useCharge: StructureType | null) => void;
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
 	unequipItem: (item: ItemModel, hero: CombatantModel) => void;
 	pickUpItem: (item: ItemModel, hero: CombatantModel) => void;
@@ -109,7 +109,7 @@ export class CampaignScreen extends Component<Props, State> {
 							game={this.props.game}
 							options={this.props.options}
 							addHero={this.props.addHero}
-							incrementXP={this.props.incrementXP}
+							addXP={this.props.addXP}
 							equipItem={this.props.equipItem}
 							unequipItem={this.props.unequipItem}
 							pickUpItem={this.props.pickUpItem}

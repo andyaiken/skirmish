@@ -56,6 +56,7 @@ interface Props {
 	showOptions: () => void;
 	rotateMap: (encounter: EncounterModel, dir: 'l' | 'r') => void;
 	rollInitiative: (encounter: EncounterModel) => void;
+	addHeroToEncounter: (encounter: EncounterModel, hero: CombatantModel, useCharge: StructureType | null) => void;
 	endTurn: (encounter: EncounterModel) => void;
 	move: (encounter: EncounterModel, combatant: CombatantModel, dir: string, cost: number) => void;
 	addMovement: (encounter: EncounterModel, combatant: CombatantModel, value: number) => void;
@@ -637,8 +638,10 @@ export class EncounterScreen extends Component<Props, State> {
 		return (
 			<RoundControls
 				encounter={this.props.encounter}
+				game={this.props.game}
 				options={this.props.options}
 				rollInitiative={this.props.rollInitiative}
+				addHeroToEncounter={this.props.addHeroToEncounter}
 			/>
 		);
 	};
@@ -660,6 +663,7 @@ export class EncounterScreen extends Component<Props, State> {
 								dropItem={this.props.dropItem}
 								levelUp={() => null}
 								retireHero={() => null}
+								addXP={() => null}
 								useCharge={this.props.useCharge}
 							/>
 						}

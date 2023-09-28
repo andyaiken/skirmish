@@ -36,14 +36,15 @@ export class StrongholdLogic {
 		const adj: { x: number, y: number }[] = [];
 
 		stronghold.forEach(s => {
-			adj.push({ x: s.position.x, y: s.position.y - 1 });
-			adj.push({ x: s.position.x + 1, y: s.position.y - 1 });
-			adj.push({ x: s.position.x + 1, y: s.position.y });
-			adj.push({ x: s.position.x + 1, y: s.position.y + 1 });
-			adj.push({ x: s.position.x, y: s.position.y + 1 });
-			adj.push({ x: s.position.x - 1, y: s.position.y + 1 });
-			adj.push({ x: s.position.x - 1, y: s.position.y });
-			adj.push({ x: s.position.x - 1, y: s.position.y - 1 });
+			const minX = s.position.x - 2;
+			const maxX = s.position.x + 2;
+			const minY = s.position.y - 2;
+			const maxY = s.position.y + 2;
+			for (let x = minX; x < maxX; ++x) {
+				for (let y = minY; y < maxY; ++y) {
+					adj.push({ x: x, y: y });
+				}
+			}
 		});
 
 		const empty = adj.filter(sq => !stronghold.find(s => (s.position.x === sq.x) && s.position.y === sq.y));

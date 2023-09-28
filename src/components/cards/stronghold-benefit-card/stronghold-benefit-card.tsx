@@ -13,18 +13,30 @@ interface Props {
 	available: number;
 	used: number;
 	developer: boolean;
-	onClick: null | (() => void);
+	onRedraw: null | (() => void);
+	onUse: null | (() => void);
 	onChange: null | ((value: number) => void);
 }
 
 export class StrongholdBenefitCard extends Component<Props> {
 	static defaultProps = {
 		used: 0,
-		onClick: null,
+		onRedraw: null,
+		onUse: null,
 		onChange: null
 	};
 
-	nudge = (delta: number) => {
+	onClick = () => {
+		if (this.props.onRedraw) {
+			this.props.onRedraw();
+		}
+
+		if (this.props.onUse) {
+			this.props.onUse();
+		}
+	};
+
+	onNudge = (delta: number) => {
 		if (this.props.onChange) {
 			this.props.onChange(this.props.used + delta);
 		}
@@ -33,33 +45,42 @@ export class StrongholdBenefitCard extends Component<Props> {
 	render = () => {
 		try {
 			let content = null;
-			if (this.props.available > 0) {
-				if (this.props.onClick) {
-					content = (
-						<IconValue
-							type={IconType.Redraw}
-							value={this.props.available}
-							size={IconSize.Large}
-						/>
-					);
-				}
 
-				if (this.props.onChange) {
-					content = (
-						<div className='spin'>
-							<StatValue orientation='vertical' label='Available' value={this.props.available - this.props.used} />
-							<div className='spin-buttons'>
-								<button className='icon-btn' disabled={this.props.used === 0} onClick={() => this.nudge(-1)}>
-									<IconCircleMinus />
-								</button>
-								<StatValue orientation='vertical' label='Used' value={this.props.used} />
-								<button className='icon-btn' disabled={this.props.used === this.props.available} onClick={() => this.nudge(1)}>
-									<IconCirclePlus />
-								</button>
-							</div>
+			if (this.props.onRedraw) {
+				content = (
+					<IconValue
+						type={IconType.Redraw}
+						value={this.props.available}
+						size={IconSize.Large}
+					/>
+				);
+			}
+
+			if (this.props.onUse) {
+				content = (
+					<StatValue
+						orientation='vertical'
+						label='Uses'
+						value={this.props.available}
+					/>
+				);
+			}
+
+			if (this.props.onChange) {
+				content = (
+					<div className='spin'>
+						<StatValue orientation='vertical' label='Available' value={this.props.available - this.props.used} />
+						<div className='spin-buttons'>
+							<button className='icon-btn' disabled={this.props.used === 0} onClick={() => this.onNudge(-1)}>
+								<IconCircleMinus />
+							</button>
+							<StatValue orientation='vertical' label='Used' value={this.props.used} />
+							<button className='icon-btn' disabled={this.props.used === this.props.available} onClick={() => this.onNudge(1)}>
+								<IconCirclePlus />
+							</button>
 						</div>
-					);
-				}
+					</div>
+				);
 			}
 
 			return (
@@ -76,7 +97,7 @@ export class StrongholdBenefitCard extends Component<Props> {
 						/>
 					}
 					footerText='Stronghold Benefit'
-					onClick={this.props.onClick}
+					onClick={this.onClick}
 				/>
 			);
 		} catch {

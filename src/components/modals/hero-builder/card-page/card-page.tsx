@@ -182,7 +182,7 @@ export class CardPage extends Component<Props, State> {
 					label='Redraw'
 					available={redraws}
 					developer={this.props.options.developer}
-					onClick={() => this.redraw(CardType.Species)}
+					onRedraw={() => this.redraw(CardType.Species)}
 				/>
 			);
 		}
@@ -214,7 +214,7 @@ export class CardPage extends Component<Props, State> {
 					label='Redraw'
 					available={redraws}
 					developer={this.props.options.developer}
-					onClick={() => this.redraw(CardType.Role)}
+					onRedraw={() => this.redraw(CardType.Role)}
 				/>
 			);
 		}
@@ -246,7 +246,7 @@ export class CardPage extends Component<Props, State> {
 					label='Redraw'
 					available={redraws}
 					developer={this.props.options.developer}
-					onClick={() => this.redraw(CardType.Background)}
+					onRedraw={() => this.redraw(CardType.Background)}
 				/>
 			);
 		}

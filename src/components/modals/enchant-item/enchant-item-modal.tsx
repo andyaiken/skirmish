@@ -84,7 +84,7 @@ export class EnchantItemModal extends Component<Props, State> {
 							label='Redraw'
 							available={redraws}
 							developer={this.props.options.developer}
-							onClick={() => this.redraw()}
+							onRedraw={this.redraw}
 						/>
 					);
 				}

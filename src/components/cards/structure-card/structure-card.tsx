@@ -53,16 +53,44 @@ export class StructureCard extends Component<Props, State> {
 
 	getStructureDetails = () => {
 		switch (this.props.structure.type) {
+			case StructureType.Academy:
+				return (
+					<Text>
+						<p>This structure allows you to add bonus XP to your heroes.</p>
+						<p>You gain {this.props.structure.level} XP when the structure is charged.</p>
+					</Text>
+				);
 			case StructureType.Barracks:
 				return (
 					<Text>
 						<p>This structure provides living space for up to {this.props.structure.level * 3} heroes.</p>
 					</Text>
 				);
+			case StructureType.Forge:
+				return (
+					<Text>
+						<p>When adding a new structure to your stronghold, this allows you to redraw structure cards.</p>
+						<p>You gain {this.props.structure.level} redraw(s) when the structure is charged.</p>
+					</Text>
+				);
 			case StructureType.Hall:
 				return (
 					<Text>
 						<p>When recruiting a new hero, this structure allows you to redraw species, role, or background cards.</p>
+						<p>You gain {this.props.structure.level} redraw(s) when the structure is charged.</p>
+					</Text>
+				);
+			case StructureType.Intelligencer:
+				return (
+					<Text>
+						<p>This structure forces monsters to begin an encounter with detrimental conditions.</p>
+						<p>You gain {this.props.structure.level} conditions(s) when the structure is charged.</p>
+					</Text>
+				);
+			case StructureType.Observatory:
+				return (
+					<Text>
+						<p>In an encounter, this structure allows you to redraw action cards.</p>
 						<p>You gain {this.props.structure.level} redraw(s) when the structure is charged.</p>
 					</Text>
 				);
@@ -73,34 +101,6 @@ export class StructureCard extends Component<Props, State> {
 						<p>You gain {this.props.structure.level} redraw(s) when the structure is charged.</p>
 					</Text>
 				);
-			case StructureType.TrainingGround:
-				return (
-					<Text>
-						<p>When levelling-up a hero, this structure allows you to redraw feature cards.</p>
-						<p>You gain {this.props.structure.level} redraw(s) when the structure is charged.</p>
-					</Text>
-				);
-			case StructureType.Observatory:
-				return (
-					<Text>
-						<p>In an encounter, this structure allows you to redraw action cards.</p>
-						<p>You gain {this.props.structure.level} redraw(s) when the structure is charged.</p>
-					</Text>
-				);
-			case StructureType.WizardTower:
-				return (
-					<Text>
-						<p>When buying a magic item or potion, this structure allows you to redraw item cards.</p>
-						<p>You gain {this.props.structure.level} redraws when the structure is charged.</p>
-					</Text>
-				);
-			case StructureType.Stockpile:
-				return (
-					<Text>
-						<p>When adding a new structure to your stronghold, this allows you to redraw structure cards.</p>
-						<p>You gain {this.props.structure.level} redraw(s) when the structure is charged.</p>
-					</Text>
-				);
 			case StructureType.Temple:
 				return (
 					<Text>
@@ -108,11 +108,32 @@ export class StructureCard extends Component<Props, State> {
 						<p>You gain {this.props.structure.level} conditions(s) when the structure is charged.</p>
 					</Text>
 				);
-			case StructureType.Intelligencer:
+			case StructureType.ThievesGuild:
 				return (
 					<Text>
-						<p>This structure forces monsters to begin an encounter with detrimental conditions.</p>
-						<p>You gain {this.props.structure.level} conditions(s) when the structure is charged.</p>
+						<p>This structure allows your heroes to take additional actions in an encounter.</p>
+						<p>You gain {this.props.structure.level} action(s) when the structure is charged.</p>
+					</Text>
+				);
+			case StructureType.TrainingGround:
+				return (
+					<Text>
+						<p>When levelling-up a hero, this structure allows you to redraw feature cards.</p>
+						<p>You gain {this.props.structure.level} redraw(s) when the structure is charged.</p>
+					</Text>
+				);
+			case StructureType.WarRoom:
+				return (
+					<Text>
+						<p>This structure allows you to add additional heroes to an encounter.</p>
+						<p>You gain {this.props.structure.level} action(s) when the structure is charged.</p>
+					</Text>
+				);
+			case StructureType.WizardTower:
+				return (
+					<Text>
+						<p>When buying a magic item or potion, this structure allows you to redraw item cards.</p>
+						<p>You gain {this.props.structure.level} redraws when the structure is charged.</p>
 					</Text>
 				);
 		}

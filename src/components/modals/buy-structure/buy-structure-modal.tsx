@@ -54,7 +54,7 @@ export class BuyStructureModal extends Component<Props, State> {
 			structures: this.getStructures()
 		}, () => {
 			if (!this.props.options.developer) {
-				this.props.useCharge(StructureType.Stockpile, 1);
+				this.props.useCharge(StructureType.Forge, 1);
 			}
 		});
 	};
@@ -65,7 +65,7 @@ export class BuyStructureModal extends Component<Props, State> {
 				<StructureCard key={s.id} structure={s} onClick={this.props.buyStructure} />
 			));
 
-			const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Stockpile);
+			const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Forge);
 			if ((redraws > 0) || this.props.options.developer) {
 				cards.push(
 					<StrongholdBenefitCard
@@ -73,7 +73,7 @@ export class BuyStructureModal extends Component<Props, State> {
 						label='Redraw'
 						available={redraws}
 						developer={this.props.options.developer}
-						onClick={() => this.redraw()}
+						onRedraw={this.redraw}
 					/>
 				);
 			}

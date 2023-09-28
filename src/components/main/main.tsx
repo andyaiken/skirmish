@@ -428,11 +428,18 @@ export class Main extends Component<Props, State> {
 		}
 	};
 
-	incrementXP = (hero: CombatantModel) => {
+	addXP = (hero: CombatantModel, useCharge: StructureType | null) => {
 		try {
+			const game = this.state.game as GameModel;
+
 			hero.xp += 1;
+
+			if (useCharge) {
+				StrongholdLogic.useCharge(game, useCharge, 1);
+			}
+
 			this.setState({
-				game: this.state.game
+				game: game
 			}, () => {
 				this.saveGame();
 			});
@@ -645,18 +652,14 @@ export class Main extends Component<Props, State> {
 				for (let n = 0; n < benefits; ++n) {
 					const hero = Collections.draw(game.encounter.combatants.filter(c => c.type === CombatantType.Hero));
 					hero.combat.conditions.push(ConditionLogic.createRandomBeneficialCondition() as ConditionModel);
-
-					// eslint-disable-next-line react-hooks/rules-of-hooks
-					StrongholdLogic.useCharge(game, StructureType.Temple, 1);
 				}
+				StrongholdLogic.useCharge(game, StructureType.Temple, benefits);
 
 				for (let n = 0; n < detriments; ++n) {
 					const hero = Collections.draw(game.encounter.combatants.filter(c => c.type === CombatantType.Monster));
 					hero.combat.conditions.push(ConditionLogic.createRandomDetrimentalCondition() as ConditionModel);
-
-					// eslint-disable-next-line react-hooks/rules-of-hooks
-					StrongholdLogic.useCharge(game, StructureType.Intelligencer, 1);
 				}
+				StrongholdLogic.useCharge(game, StructureType.Intelligencer, detriments);
 
 				EncounterMapLogic.visibilityCache.reset();
 
@@ -763,6 +766,29 @@ export class Main extends Component<Props, State> {
 
 			this.setState({
 				game: this.state.game
+			}, () => {
+				this.saveGame();
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
+	};
+
+	addHeroToEncounter = (encounter: EncounterModel, hero: CombatantModel, useCharge: StructureType | null) => {
+		try {
+			const game = this.state.game as GameModel;
+
+			CombatantLogic.resetCombatant(hero);
+			game.heroes = game.heroes.filter(h => h.id !== hero.id);
+			encounter.combatants.push(hero);
+			EncounterGenerator.placeCombatants(encounter, Math.random);
+
+			if (useCharge) {
+				StrongholdLogic.useCharge(game, useCharge, 1);
+			}
+
+			this.setState({
+				game: game
 			}, () => {
 				this.saveGame();
 			});
@@ -1220,7 +1246,7 @@ export class Main extends Component<Props, State> {
 						upgradeStructure={this.upgradeStructure}
 						useCharge={this.useCharge}
 						addHero={this.addHero}
-						incrementXP={this.incrementXP}
+						addXP={this.addXP}
 						equipItem={this.equipItem}
 						unequipItem={this.unequipItem}
 						pickUpItem={this.pickUpItem}
@@ -1246,6 +1272,7 @@ export class Main extends Component<Props, State> {
 						showOptions={this.showOptions}
 						rotateMap={this.rotateMap}
 						rollInitiative={this.rollInitiative}
+						addHeroToEncounter={this.addHeroToEncounter}
 						endTurn={this.endTurn}
 						move={this.move}
 						addMovement={this.addMovement}

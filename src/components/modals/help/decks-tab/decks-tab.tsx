@@ -103,6 +103,15 @@ export class DecksTab extends Component<Props, State> {
 					);
 				});
 
+			const structures = GameLogic.getStructureDeck(this.props.options.packIDs)
+				.map(s => {
+					return (
+						<Badge key={s.id} value={this.getBadge(0, 5, s.packID)}>
+							<StructureCard structure={s} />
+						</Badge>
+					);
+				});
+
 			const items = GameLogic.getItemDeck(this.props.options.packIDs)
 				.map(i => {
 					return (
@@ -117,15 +126,6 @@ export class DecksTab extends Component<Props, State> {
 					return (
 						<Badge key={p.id} value={this.getBadge(0, 5, p.packID)}>
 							<ItemCard item={p} />
-						</Badge>
-					);
-				});
-
-			const structures = GameLogic.getStructureDeck(this.props.options.packIDs)
-				.map(s => {
-					return (
-						<Badge key={s.id} value={this.getBadge(0, 5, s.packID)}>
-							<StructureCard structure={s} />
 						</Badge>
 					);
 				});
@@ -210,6 +210,10 @@ export class DecksTab extends Component<Props, State> {
 					{backgrounds.length > 0 ? <CardList cards={backgrounds} /> : null}
 					{backgrounds.length > 0 ? null : <Text type={TextType.Small}>None.</Text>}
 					<hr />
+					<Text type={TextType.SubHeading}>Structure Cards ({structures.length})</Text>
+					{structures.length > 0 ? <CardList cards={structures} /> : null}
+					{structures.length > 0 ? null : <Text type={TextType.Small}>None.</Text>}
+					<hr />
 					<Text type={TextType.SubHeading}>Item Cards ({items.length})</Text>
 					{items.length > 0 ? <CardList cards={items} /> : null}
 					{items.length > 0 ? null : <Text type={TextType.Small}>None.</Text>}
@@ -217,10 +221,6 @@ export class DecksTab extends Component<Props, State> {
 					<Text type={TextType.SubHeading}>Potion Cards ({potions.length})</Text>
 					{potions.length > 0 ? <CardList cards={potions} /> : null}
 					{potions.length > 0 ? null : <Text type={TextType.Small}>None.</Text>}
-					<hr />
-					<Text type={TextType.SubHeading}>Structure Cards ({structures.length})</Text>
-					{structures.length > 0 ? <CardList cards={structures} /> : null}
-					{structures.length > 0 ? null : <Text type={TextType.Small}>None.</Text>}
 					{dialog}
 				</div>
 			);

@@ -80,16 +80,15 @@ export class ActionControls extends Component<Props> {
 				}
 			});
 
-		let redrawCard = null;
+		let benefit = null;
 		const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Observatory);
 		if ((redraws > 0) || this.props.developer) {
-			redrawCard = (
+			benefit = (
 				<StrongholdBenefitCard
-					key='redraw'
 					label='Redraw'
 					available={redraws}
 					developer={this.props.developer}
-					onClick={() => this.props.drawActions(this.props.encounter, this.props.combatant, this.props.developer ? null : StructureType.Observatory)}
+					onRedraw={() => this.props.drawActions(this.props.encounter, this.props.combatant, this.props.developer ? null : StructureType.Observatory)}
 				/>
 			);
 		}
@@ -97,8 +96,8 @@ export class ActionControls extends Component<Props> {
 		return (
 			<div className='action-controls-content' key={this.props.combatant.id}>
 				{actionCards}
-				{redrawCard ? <div className='separator' /> : null}
-				{redrawCard}
+				{benefit ? <div className='separator' /> : null}
+				{benefit}
 				{baseCards.length > 0 ? <div className='separator' /> : null}
 				{baseCards}
 			</div>
@@ -384,6 +383,19 @@ export class ActionControls extends Component<Props> {
 	};
 
 	getUsed = (action: ActionModel) => {
+		let benefit = null;
+		const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.ThievesGuild);
+		if ((redraws > 0) || this.props.developer) {
+			benefit = (
+				<StrongholdBenefitCard
+					label='Act Again'
+					available={redraws}
+					developer={this.props.developer}
+					onUse={() => this.props.drawActions(this.props.encounter, this.props.combatant, this.props.developer ? null : StructureType.ThievesGuild)}
+				/>
+			);
+		}
+
 		return (
 			<div className='action-controls-content' key={this.props.combatant.id}>
 				<ActionCard
@@ -393,12 +405,12 @@ export class ActionControls extends Component<Props> {
 					combatant={this.props.combatant}
 					encounter={this.props.encounter}
 				/>
+				{benefit}
 				<div className='action-details'>
 					<Text type={TextType.Information}>
 						<p>You have used your action for this turn.</p>
 						{this.props.combatant.combat.movement > 0 ? <p>You still have some movement points you can use.</p> : null }
 					</Text>
-					{this.props.developer ? <button className='developer' onClick={() => this.props.drawActions(this.props.encounter, this.props.combatant, null)}>Act Again</button> : null}
 				</div>
 			</div>
 		);

@@ -153,7 +153,7 @@ export class HeroCard extends Component<Props, State> {
 						<div className='xp'>
 							<Gauge
 								progress={this.props.hero.xp / this.props.hero.level}
-								content={`${this.props.hero.xp} / ${this.props.hero.level}`}
+								content={`${this.props.hero.xp} XP / ${this.props.hero.level}`}
 							/>
 						</div>
 						{items}

@@ -99,6 +99,14 @@ export class PacksModal extends Component<Props, State> {
 			);
 		});
 
+		const structures = StructureData.getList().filter(s => s.packID === packID).map(s => {
+			return (
+				<Badge key={s.id} value={0}>
+					<StructureCard structure={s} />
+				</Badge>
+			);
+		});
+
 		const items = ItemData.getList().filter(i => i.packID === packID).map(i => {
 			return (
 				<Badge key={i.id} value={0}>
@@ -111,14 +119,6 @@ export class PacksModal extends Component<Props, State> {
 			return (
 				<Badge key={p.id} value={0}>
 					<ItemCard item={p} />
-				</Badge>
-			);
-		});
-
-		const structures = StructureData.getList().filter(s => s.packID === packID).map(s => {
-			return (
-				<Badge key={s.id} value={0}>
-					<StructureCard structure={s} />
 				</Badge>
 			);
 		});
@@ -142,15 +142,15 @@ export class PacksModal extends Component<Props, State> {
 						{backgrounds.length > 0 ? <hr /> : null}
 						{backgrounds.length > 0 ? <Text type={TextType.MinorHeading}>Background Cards</Text> : null}
 						{backgrounds.length > 0 ? <CardList cards={backgrounds} /> : null}
+						{structures.length > 0 ? <hr /> : null}
+						{structures.length > 0 ? <Text type={TextType.MinorHeading}>Structure Cards</Text> : null}
+						{structures.length > 0 ? <CardList cards={structures} /> : null}
 						{items.length > 0 ? <hr /> : null}
 						{items.length > 0 ? <Text type={TextType.MinorHeading}>Item Cards</Text> : null}
 						{items.length > 0 ? <CardList cards={items} /> : null}
 						{potions.length > 0 ? <hr /> : null}
 						{potions.length > 0 ? <Text type={TextType.MinorHeading}>Potion Cards</Text> : null}
 						{potions.length > 0 ? <CardList cards={potions} /> : null}
-						{structures.length > 0 ? <hr /> : null}
-						{structures.length > 0 ? <Text type={TextType.MinorHeading}>Structure Cards</Text> : null}
-						{structures.length > 0 ? <CardList cards={structures} /> : null}
 					</div>
 				}
 				level={2}

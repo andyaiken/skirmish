@@ -132,7 +132,7 @@ export class LevelUp extends Component<Props, State> {
 						label='Redraw'
 						available={redraws}
 						developer={this.props.developer}
-						onClick={() => this.setFeatures()}
+						onRedraw={this.setFeatures}
 					/>
 				);
 			}

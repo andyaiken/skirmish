@@ -119,7 +119,7 @@ export class EquipmentPage extends Component<Props, State> {
 							label='Redraw'
 							available={redraws}
 							developer={this.props.options.developer}
-							onClick={() => this.redraw(slot.proficiency)}
+							onRedraw={() => this.redraw(slot.proficiency)}
 						/>
 					);
 				}

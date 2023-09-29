@@ -1165,8 +1165,8 @@ export class Main extends Component<Props, State> {
 								<Text type={TextType.SubHeading}>You lost the encounter in {region.name}, and have no more heroes.</Text>
 								<Text>You can either continue your campaign with a new group of heroes, or abandon it.</Text>
 								<div className='defeat-options'>
-									<PlayingCard front={<PlaceholderCard text='Continue' onClick={() => this.restartCampaign()} />} />
-									<PlayingCard front={<PlaceholderCard text='Abandon' onClick={() => this.endCampaign()} />} />
+									<PlayingCard front={<PlaceholderCard text='Continue' />} onClick={() => this.restartCampaign()} />
+									<PlayingCard front={<PlaceholderCard text='Abandon' />} onClick={() => this.endCampaign()} />
 								</div>
 							</div>
 						);

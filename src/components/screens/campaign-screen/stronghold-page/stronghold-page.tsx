@@ -139,7 +139,7 @@ export class StrongholdPage extends Component<Props, State> {
 		let boons = null;
 		if (this.props.game.boons.filter(boon => GameLogic.getBoonIsStrongholdType(boon)).length > 0) {
 			const cards = this.props.game.boons
-				.filter(boon => !GameLogic.getBoonIsHeroType(boon))
+				.filter(boon => GameLogic.getBoonIsStrongholdType(boon))
 				.map(b => <BoonCard key={b.id} boon={b} onClick={boon => this.selectBoon(boon)} />);
 			boons = (
 				<div>

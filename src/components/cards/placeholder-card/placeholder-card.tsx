@@ -1,4 +1,4 @@
-import { Component, MouseEvent } from 'react';
+import { Component } from 'react';
 
 import './placeholder-card.scss';
 
@@ -6,34 +6,20 @@ interface Props {
 	text: string | JSX.Element | null;
 	subtext: string | JSX.Element | null;
 	content: JSX.Element | null;
-	onClick: (() => void) | null;
 }
 
 export class PlaceholderCard extends Component<Props> {
 	static defaultProps = {
 		text: null,
 		subtext: null,
-		content: null,
-		onClick: null
-	};
-
-	onClick = (e: MouseEvent) => {
-		if (this.props.onClick) {
-			this.props.onClick();
-		}
+		content: null
 	};
 
 	render = () => {
-		let className = 'placeholder-card';
-		if (this.props.onClick) {
-			className += ' clickable';
-		}
-
 		// Text only
 		if (this.props.text && !this.props.subtext && !this.props.content) {
-			className += ' centered';
 			return (
-				<div className={className} onClick={this.onClick}>
+				<div className='placeholder-card centered'>
 					<div className='main-text'>{this.props.text}</div>
 				</div>
 			);
@@ -41,9 +27,8 @@ export class PlaceholderCard extends Component<Props> {
 
 		// Subtext only
 		if (!this.props.text && this.props.subtext && !this.props.content) {
-			className += ' centered';
 			return (
-				<div className={className} onClick={this.onClick}>
+				<div className='placeholder-card centered'>
 					<div className='sub-text'>{this.props.subtext}</div>
 				</div>
 			);
@@ -51,16 +36,15 @@ export class PlaceholderCard extends Component<Props> {
 
 		// Content only
 		if (!this.props.text && !this.props.subtext && this.props.content) {
-			className += ' centered';
 			return (
-				<div className={className} onClick={this.onClick}>
+				<div className='placeholder-card centered'>
 					{this.props.content}
 				</div>
 			);
 		}
 
 		return (
-			<div className={className} onClick={this.onClick}>
+			<div className='placeholder-card'>
 				{this.props.text ? <div className='main-text'>{this.props.text}</div> : null}
 				{this.props.subtext ? <div className='sub-text'>{this.props.subtext}</div> : null}
 				{this.props.content}

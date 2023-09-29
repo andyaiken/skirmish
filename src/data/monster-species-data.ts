@@ -1150,14 +1150,33 @@ export class MonsterSpeciesData {
 						trait: TraitType.Speed,
 						skillBonus: 0,
 						hit: [
-							ActionEffects.dealDamage(DamageType.Piercing, 2),
-							ActionEffects.knockDown()
+							ActionEffects.dealDamage(DamageType.Piercing, 2)
 						]
 					})
 				]
 			},
 			{
 				id: 'wolf-action-2',
+				name: 'Pounce',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 3)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Brawl,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Piercing, 1),
+							ActionEffects.knockDown()
+						]
+					})
+				]
+			},
+			{
+				id: 'wolf-action-3',
 				name: 'Pack Tactics',
 				prerequisites: [],
 				parameters: [

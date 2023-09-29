@@ -6,9 +6,9 @@ import type { CombatantModel } from '../../../../models/combatant';
 import type { EncounterModel } from '../../../../models/encounter';
 import type { OptionsModel } from '../../../../models/options';
 
+import { ActionCard, PlaceholderCard } from '../../../cards';
 import { CombatantNotices, CombatantRowPanel } from '../../../panels';
-import { Expander, Text, TextType } from '../../../controls';
-import { ActionCard } from '../../../cards';
+import { Expander, PlayingCard, Text, TextType } from '../../../controls';
 
 import './monster-controls.scss';
 
@@ -56,13 +56,23 @@ export class MonsterControls extends Component<Props, State> {
 			let action = null;
 			if (this.props.combatant.combat.selectedAction) {
 				action = (
-					<div className='selected-action-card'>
-						<ActionCard
-							action={this.props.combatant.combat.selectedAction.action}
-							footer={CombatantLogic.getActionSource(this.props.combatant, this.props.combatant.combat.selectedAction.action.id)}
-							footerType={CombatantLogic.getActionSourceType(this.props.combatant, this.props.combatant.combat.selectedAction.action.id)}
-						/>
-					</div>
+					<ActionCard
+						action={this.props.combatant.combat.selectedAction.action}
+						footer={CombatantLogic.getActionSource(this.props.combatant, this.props.combatant.combat.selectedAction.action.id)}
+						footerType={CombatantLogic.getActionSourceType(this.props.combatant, this.props.combatant.combat.selectedAction.action.id)}
+					/>
+				);
+			} else {
+				action = (
+					<PlayingCard
+						front={
+							<PlaceholderCard
+								text={this.state.thinking ? 'Thinking' : 'Go'}
+							/>
+						}
+						disabled={this.state.thinking}
+						onClick={this.runMonsterTurn}
+					/>
 				);
 			}
 
@@ -90,10 +100,9 @@ export class MonsterControls extends Component<Props, State> {
 							/>
 							: null
 					}
-					<button className='primary' disabled={this.state.thinking} onClick={() => this.runMonsterTurn()}>
-						{this.state.thinking ? 'Thinking' : 'Go'}
-					</button>
-					{action}
+					<div className='selected-action-card'>
+						{action}
+					</div>
 				</div>
 			);
 		}  catch {

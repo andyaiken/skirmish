@@ -95,7 +95,9 @@ export class ActionCard extends Component<Props, State> {
 				type={CardType.Action}
 				front={(
 					<div className='action-card-front'>
-						<Text type={TextType.SubHeading}>{this.props.action.name}</Text>
+						<div className='action-title'>
+							<Text type={TextType.SubHeading}>{this.props.action.name}</Text>
+						</div>
 						<div className='tags'>
 							<Tag>{ActionLogic.getActionType(this.props.action)}</Tag>
 							{ActionLogic.getActionSpeed(this.props.action) === 'Quick' ? <Tag>Quick</Tag> : null}

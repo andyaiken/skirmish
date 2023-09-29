@@ -198,7 +198,8 @@ export class SetupScreen extends Component<Props, State> {
 								type={CardType.Role}
 								stack={true}
 								disabled={this.props.game.heroes.length < 5}
-								front={<PlaceholderCard text='Begin the Campaign' onClick={this.props.beginCampaign} />}
+								front={<PlaceholderCard text='Begin the Campaign' />}
+								onClick={this.props.beginCampaign}
 							/>
 							{this.props.options.developer ? <button onClick={this.createHeroes}>Randomize</button> : null}
 							{packsBtn}

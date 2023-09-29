@@ -42,7 +42,7 @@ export class PlayingCard extends Component<Props> {
 	render = () => {
 		try {
 			let className = 'playing-card';
-			if (this.props.onClick !== null) {
+			if ((this.props.onClick !== null) && !this.props.disabled) {
 				className += ' clickable';
 			}
 			if (this.props.flipped) {

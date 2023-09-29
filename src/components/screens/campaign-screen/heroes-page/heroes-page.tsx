@@ -158,10 +158,10 @@ export class HeroesPage extends Component<Props, State> {
 								text='Recruits Available'
 								subtext={atHeroLimit ? 'You can\'t recruit any more heroes until you have more living space in your stronghold.' : 'Click here to recruit a new hero.'}
 								content={<div className='heroes-count'>{this.props.game.heroSlots}</div>}
-								onClick={() => this.setState({ selectedHero: Factory.createCombatant(CombatantType.Hero) })}
 							/>
 						}
 						disabled={atHeroLimit}
+						onClick={() => this.setState({ selectedHero: Factory.createCombatant(CombatantType.Hero) })}
 					/>
 				</div>
 			);

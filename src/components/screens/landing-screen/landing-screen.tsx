@@ -32,7 +32,8 @@ export class LandingScreen extends Component<Props> {
 					<PlayingCard
 						type={CardType.Role}
 						stack={true}
-						front={<PlaceholderCard text='Continue' subtext='Click here to continue your campaign.' onClick={this.props.continueCampaign} />}
+						front={<PlaceholderCard text='Continue' subtext='Click here to continue your campaign.' />}
+						onClick={this.props.continueCampaign}
 					/>
 				);
 			} else {
@@ -40,7 +41,8 @@ export class LandingScreen extends Component<Props> {
 					<PlayingCard
 						type={CardType.Role}
 						stack={true}
-						front={<PlaceholderCard text='Start' subtext='Click here to begin a new campaign.' onClick={this.props.startCampaign} />}
+						front={<PlaceholderCard text='Start' subtext='Click here to begin a new campaign.' />}
+						onClick={this.props.startCampaign}
 					/>
 				);
 			}

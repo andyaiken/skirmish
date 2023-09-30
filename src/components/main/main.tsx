@@ -1357,7 +1357,7 @@ export class Main extends Component<Props, State> {
 
 			return (
 				<div className='skirmish'>
-					<Toaster />
+					<Toaster toastOptions={{ duration: 3 * 1000 }} />
 					{this.getContent()}
 					{dialog}
 				</div>

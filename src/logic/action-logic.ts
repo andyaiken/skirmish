@@ -685,8 +685,6 @@ export class ActionEffects {
 					targetIDs.forEach(id => {
 						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
 
-						EncounterLogic.log(encounter, `${combatant.name} attacks ${target.name}`);
-
 						let success = true;
 						const weaponParam = parameters.find(p => p.id === 'weapon');
 						if (weaponParam) {
@@ -1210,7 +1208,6 @@ export class ActionEffects {
 						combatant.combat.trail.push({ x: combatant.combat.position.x, y: combatant.combat.position.y });
 						combatant.combat.position.x = square.x;
 						combatant.combat.position.y = square.y;
-						EncounterLogic.log(encounter, `${combatant.name} has moved`);
 					} else {
 						EncounterLogic.log(encounter, `${combatant.name} can't move`);
 					}

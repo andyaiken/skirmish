@@ -119,9 +119,7 @@ export class EncounterScreen extends Component<Props, State> {
 				<div key={t.id} className='skirmish-notification' onClick={() => toast.dismiss(t.id)}>
 					{messages.map((str, n) => <div key={n}>{str}</div>)}
 				</div>
-			), {
-				duration: 1000 * 3 * messages.length
-			});
+			));
 		};
 	};
 

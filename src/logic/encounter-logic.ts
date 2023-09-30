@@ -166,8 +166,6 @@ export class EncounterLogic {
 		combatant.combat.selectedAction = null;
 		combatant.combat.intents = null;
 
-		EncounterLogic.log(encounter, `Start of turn: ${combatant.name}`);
-
 		if (combatant.combat.state === CombatantState.Unconscious) {
 			const rank = EncounterLogic.getTraitRank(encounter, combatant, TraitType.Resolve);
 			const result = Random.dice(rank);
@@ -333,7 +331,6 @@ export class EncounterLogic {
 		if (combatant.combat.selectedAction !== null) {
 			const action = combatant.combat.selectedAction.action;
 			combatant.combat.selectedAction.used = true;
-			EncounterLogic.log(encounter, `${combatant.name} uses ${action.name}`);
 			action.effects.forEach(effect => ActionEffects.run(effect, encounter, combatant, action.parameters));
 		}
 	};

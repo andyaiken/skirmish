@@ -327,7 +327,7 @@ export class NameGenerator {
 			'striana',
 			'tin',
 			'tor',
-			'tyrd',
+			'tyr',
 			'ur',
 			'us',
 			'va',

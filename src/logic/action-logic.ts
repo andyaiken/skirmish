@@ -693,13 +693,10 @@ export class ActionEffects {
 							if (item) {
 								const weapon = item.weapon as WeaponModel;
 								if (weapon.unreliable > 0) {
-									EncounterLogic.log(encounter, `${item.name} is Unreliable (rank ${weapon.unreliable})`);
 									const roll = Random.dice(weapon.unreliable);
 									if (roll >= 10) {
 										success = false;
-										EncounterLogic.log(encounter, `It fails (rolled ${roll})`);
-									} else {
-										EncounterLogic.log(encounter, `It works (rolled ${roll})`);
+										EncounterLogic.log(encounter, `${item.name} is Unreliable (rank ${weapon.unreliable}); it fails (rolled ${roll})`);
 									}
 								}
 							}
@@ -725,9 +722,6 @@ export class ActionEffects {
 
 						if (success) {
 							targetsSucceeded.push(target.id);
-							EncounterLogic.log(encounter, 'Hit');
-						} else {
-							EncounterLogic.log(encounter, 'Miss');
 						}
 					});
 				}

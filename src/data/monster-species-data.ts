@@ -5,6 +5,7 @@ import { CombatantType } from '../enums/combatant-type';
 import { ConditionType } from '../enums/condition-type';
 import { DamageCategoryType } from '../enums/damage-category-type';
 import { DamageType } from '../enums/damage-type';
+import { ItemProficiencyType } from '../enums/item-proficiency-type';
 import { MovementType } from '../enums/movement-type';
 import { QuirkType } from '../enums/quirk-type';
 import { SkillCategoryType } from '../enums/skill-category-type';
@@ -468,7 +469,8 @@ export class MonsterSpeciesData {
 			QuirkType.Mindless
 		],
 		startingFeatures: [
-			FeatureLogic.createTraitFeature('troll-start-1', TraitType.Endurance, 2)
+			FeatureLogic.createTraitFeature('troll-start-1', TraitType.Endurance, 2),
+			FeatureLogic.createProficiencyFeature('troll-start-2', ItemProficiencyType.LargeWeapons)
 		],
 		features: [
 			FeatureLogic.createTraitFeature('troll-feature-1', TraitType.Endurance, 1),

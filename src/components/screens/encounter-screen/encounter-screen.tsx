@@ -115,11 +115,16 @@ export class EncounterScreen extends Component<Props, State> {
 
 	componentDidMount = () => {
 		EncounterLogic.handleLogMessage = (messages: string[]) => {
-			toast.custom(t => (
-				<div key={t.id} className='skirmish-notification'>
-					{messages.map((str, n) => <div key={n}>{str}</div>)}
-				</div>
-			));
+			toast.custom(t => {
+				setTimeout(() => {
+					toast.dismiss(t.id);
+				}, 5000);
+				return (
+					<div key={t.id} className='skirmish-notification' onClick={() => toast.dismiss(t.id)}>
+						{messages.map((str, n) => <div key={n}>{str}</div>)}
+					</div>
+				);
+			});
 		};
 	};
 

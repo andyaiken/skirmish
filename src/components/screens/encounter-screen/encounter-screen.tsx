@@ -8,14 +8,13 @@ import {
 	IconLayoutBottombarExpand,
 	IconLayoutSidebarLeftCollapse,
 	IconLayoutSidebarLeftExpand,
-	IconList,
-	IconNotes,
 	IconRotate2,
 	IconRotateClockwise2,
 	IconSettings,
 	IconZoomIn,
 	IconZoomOut
 } from '@tabler/icons-react';
+import toast from 'react-hot-toast';
 
 import { ActionTargetType } from '../../../enums/action-target-type';
 import { CardType } from '../../../enums/card-type';
@@ -34,8 +33,8 @@ import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
 import type { OptionsModel } from '../../../models/options';
 
-import { CardList, Dialog, IconSize, IconType, IconValue, PlayingCard, Tabs, Text, TextType } from '../../controls';
-import { CombatantRowPanel, EncounterMapPanel, InitiativeListPanel, TreasureRowPanel, TurnLogPanel } from '../../panels';
+import { CardList, Dialog, IconSize, IconType, IconValue, PlayingCard, Text, TextType } from '../../controls';
+import { CombatantRowPanel, EncounterMapPanel, InitiativeListPanel, TreasureRowPanel } from '../../panels';
 import { ItemCard, PlaceholderCard } from '../../cards';
 import { ActionControls } from './action-controls/action-controls';
 import { CharacterSheetModal } from '../../modals';
@@ -82,7 +81,6 @@ interface State {
 	mapSquareSize: number;
 	showLeftPanel: boolean;
 	showBottomPanel: boolean;
-	leftTab: string;
 	selectedActionParameter: ActionParameterModel | null;
 	selectableCombatantIDs: string[];
 	selectableLootIDs: string[];
@@ -102,7 +100,6 @@ export class EncounterScreen extends Component<Props, State> {
 			mapSquareSize: 15,
 			showLeftPanel: true,
 			showBottomPanel: true,
-			leftTab: 'combatants',
 			selectedActionParameter: null,
 			selectableCombatantIDs: [],
 			selectableLootIDs: [],
@@ -115,6 +112,22 @@ export class EncounterScreen extends Component<Props, State> {
 			detailsLoot: null
 		};
 	}
+
+	componentDidMount = () => {
+		EncounterLogic.handleLogMessage = (messages: string[]) => {
+			toast.custom(t => (
+				<div key={t.id} className='skirmish-notification' onClick={() => toast.dismiss(t.id)}>
+					{messages.map((str, n) => <div key={n}>{str}</div>)}
+				</div>
+			), {
+				duration: 1000 * 3 * messages.length
+			});
+		};
+	};
+
+	componentWillUnmount = () => {
+		EncounterLogic.handleLogMessage = null;
+	};
 
 	mapRef = createRef<EncounterMapPanel>();
 
@@ -138,12 +151,6 @@ export class EncounterScreen extends Component<Props, State> {
 	toggleBottomPanel = () => {
 		this.setState({
 			showBottomPanel: !this.state.showBottomPanel
-		});
-	};
-
-	setLeftTab = (tab: string) => {
-		this.setState({
-			leftTab: tab
 		});
 	};
 
@@ -414,40 +421,14 @@ export class EncounterScreen extends Component<Props, State> {
 	};
 
 	getLeftControls = () => {
-		const options = [
-			{ id: 'combatants', display: <IconList /> },
-			{ id: 'log', display: <IconNotes /> }
-		];
-
 		if (this.state.showLeftPanel) {
-			let content = null;
-			switch (this.state.leftTab) {
-				case 'combatants':
-					content = (
-						<InitiativeListPanel
-							encounter={this.props.encounter}
-							selectedIDs={this.state.selectedCombatantIDs}
-							onSelect={this.selectCombatant}
-						/>
-					);
-					break;
-				case 'log':
-					content = (
-						<TurnLogPanel encounter={this.props.encounter} />
-					);
-					break;
-			}
-
 			return (
 				<div className='encounter-left-column'>
-					<Tabs
-						options={options}
-						selectedID={this.state.leftTab}
-						onSelect={tab => this.setLeftTab(tab)}
+					<InitiativeListPanel
+						encounter={this.props.encounter}
+						selectedIDs={this.state.selectedCombatantIDs}
+						onSelect={this.selectCombatant}
 					/>
-					<div className='tab-content'>
-						{content}
-					</div>
 				</div>
 			);
 		}
@@ -543,6 +524,15 @@ export class EncounterScreen extends Component<Props, State> {
 	};
 
 	getBottomControls = () => {
+		let state = this.state.manualEncounterState;
+		if (state === EncounterState.Active) {
+			state = EncounterLogic.getEncounterState(this.props.encounter);
+		}
+
+		if (state !== EncounterState.Active) {
+			return null;
+		}
+
 		const currentCombatant = EncounterLogic.getActiveCombatants(this.props.encounter).find(c => c.combat.current) || null;
 		if (currentCombatant && (currentCombatant.type === CombatantType.Hero)) {
 			return (

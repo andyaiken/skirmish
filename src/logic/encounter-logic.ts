@@ -30,6 +30,27 @@ import { Factory } from './factory';
 import { Sound } from '../utils/sound';
 
 export class EncounterLogic {
+	static log = (encounter: EncounterModel, message: string) => {
+		encounter.log.push(message);
+
+		EncounterLogic.logMessages.push(message);
+
+		if (EncounterLogic.logTimeout) {
+			clearTimeout(EncounterLogic.logTimeout);
+			EncounterLogic.logTimeout = null;
+		}
+		EncounterLogic.logTimeout = setTimeout(() => {
+			if (EncounterLogic.handleLogMessage) {
+				EncounterLogic.handleLogMessage(EncounterLogic.logMessages);
+				EncounterLogic.logMessages = [];
+			}
+		}, 100);
+	};
+
+	static logMessages: string[] = [];
+	static logTimeout: NodeJS.Timeout | null = null;
+	static handleLogMessage: ((messages: string[]) => void) | null = null;
+
 	static getCombatantSquares = (encounter: EncounterModel, combatant: CombatantModel, position: { x: number, y: number } | null = null) => {
 		const squares = [];
 
@@ -82,10 +103,6 @@ export class EncounterLogic {
 		encounter.loot.forEach(lp => occupied.push(lp.position));
 
 		return encounter.mapSquares.find(s => (s.x === square.x) && (s.y === square.y)) && !occupied.find(s => (s.x === square.x) && (s.y === square.y));
-	};
-
-	static log = (encounter: EncounterModel, message: string) => {
-		encounter.log.push(message);
 	};
 
 	static rollInitiative = (encounter: EncounterModel) => {

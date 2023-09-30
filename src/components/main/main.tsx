@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import { Toaster } from 'react-hot-toast';
 
 import { BoonType } from '../../enums/boon-type';
 import { CombatantState } from '../../enums/combatant-state';
@@ -1356,6 +1357,7 @@ export class Main extends Component<Props, State> {
 
 			return (
 				<div className='skirmish'>
+					<Toaster />
 					{this.getContent()}
 					{dialog}
 				</div>

@@ -1,6 +1,6 @@
 {
 	"name": "skirmish",
-	"version": "1.59.0",
+	"version": "1.60.0",
 	"repository": "https://github.com/andyaiken/skirmish.git",
 	"homepage": "https://andyaiken.github.io/skirmish/",
 	"dependencies": {
@@ -8,6 +8,7 @@
 		"localforage": "^1.10.0",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
+		"react-hot-toast": "^2.4.1",
 		"react-markdown": "^9.0.0"
 	},
 	"devDependencies": {

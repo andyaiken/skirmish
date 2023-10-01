@@ -842,16 +842,18 @@ export class ActionEffects {
 					const targetIDs = targetParameter.value as string[];
 					targetIDs.forEach(id => {
 						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
-						const existing = target.combat.conditions
-							.find(c => (c.trait === condition.trait) && (ConditionLogic.getConditionDescription(c) === ConditionLogic.getConditionDescription(condition)));
-						if (existing) {
-							existing.rank += condition.rank;
-						} else {
-							const copy = JSON.parse(JSON.stringify(condition)) as ConditionModel;
-							copy.id = Utils.guid();
-							target.combat.conditions.push(copy);
+						if (target.combat.state !== CombatantState.Dead) {
+							const existing = target.combat.conditions
+								.find(c => (c.trait === condition.trait) && (ConditionLogic.getConditionDescription(c) === ConditionLogic.getConditionDescription(condition)));
+							if (existing) {
+								existing.rank += condition.rank;
+							} else {
+								const copy = JSON.parse(JSON.stringify(condition)) as ConditionModel;
+								copy.id = Utils.guid();
+								target.combat.conditions.push(copy);
+							}
+							EncounterLogic.log(encounter, `${target.name} is now affected by ${ConditionLogic.getConditionDescription(condition)}, rank ${condition.rank}`);
 						}
-						EncounterLogic.log(encounter, `${target.name} is now affected by ${ConditionLogic.getConditionDescription(condition)}, rank ${condition.rank}`);
 					});
 				}
 				break;

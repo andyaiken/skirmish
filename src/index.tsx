@@ -22,10 +22,6 @@ localforage.getItem<GameModel>('skirmish-game').then(game => {
 		}
 
 		if (game.encounter) {
-			if (game.encounter.log === undefined) {
-				game.encounter.log = [];
-			}
-
 			game.encounter.loot.forEach(lp => {
 				if (lp.money === undefined) {
 					lp.money = 0;

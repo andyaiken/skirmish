@@ -31,8 +31,6 @@ import { Sound } from '../utils/sound';
 
 export class EncounterLogic {
 	static log = (encounter: EncounterModel, message: string) => {
-		encounter.log.push(message);
-
 		EncounterLogic.logMessages.push(message);
 
 		if (EncounterLogic.logTimeout) {
@@ -44,7 +42,7 @@ export class EncounterLogic {
 				EncounterLogic.handleLogMessage(EncounterLogic.logMessages);
 				EncounterLogic.logMessages = [];
 			}
-		}, 100);
+		}, 200);
 	};
 
 	static logMessages: string[] = [];
@@ -107,7 +105,6 @@ export class EncounterLogic {
 
 	static rollInitiative = (encounter: EncounterModel) => {
 		encounter.round += 1;
-		encounter.log = [];
 
 		encounter.combatants.forEach(c => {
 			c.combat.initiative = Number.MIN_VALUE;
@@ -331,6 +328,7 @@ export class EncounterLogic {
 		if (combatant.combat.selectedAction !== null) {
 			const action = combatant.combat.selectedAction.action;
 			combatant.combat.selectedAction.used = true;
+			EncounterLogic.log(encounter, `${combatant.name} uses ${action.name}`);
 			action.effects.forEach(effect => ActionEffects.run(effect, encounter, combatant, action.parameters));
 		}
 	};
@@ -521,6 +519,10 @@ export class EncounterLogic {
 	};
 
 	static damage = (encounter: EncounterModel, combatant: CombatantModel, value: number, type: DamageType) => {
+		if (combatant.combat.state === CombatantState.Dead){
+			return;
+		}
+
 		EncounterLogic.log(encounter, `${combatant.name} suffers damage (${type}, ${value} pts)`);
 
 		if (combatant.quirks.includes(QuirkType.Swarm) || combatant.quirks.includes(QuirkType.Amorphous)) {
@@ -559,6 +561,10 @@ export class EncounterLogic {
 	};
 
 	static wound = (encounter: EncounterModel, combatant: CombatantModel, value: number) => {
+		if (combatant.combat.state === CombatantState.Dead){
+			return;
+		}
+
 		combatant.combat.damage = 0;
 		combatant.combat.wounds += value;
 		EncounterLogic.log(encounter, `${combatant.name} takes wounds (${value}) and is now at ${combatant.combat.damage} damage, ${combatant.combat.wounds} wounds`);
@@ -581,12 +587,15 @@ export class EncounterLogic {
 	};
 
 	static kill = (encounter: EncounterModel, combatant: CombatantModel) => {
-		if (combatant.combat.state !== CombatantState.Dead) {
-			combatant.combat.state = CombatantState.Dead;
-			EncounterLogic.log(encounter, `${combatant.name} is now ${combatant.combat.state}`);
-			EncounterLogic.dropAllItems(encounter, combatant);
-			Sound.play(Sound.dong);
+		if (combatant.combat.state === CombatantState.Dead){
+			return;
 		}
+
+		combatant.combat.state = CombatantState.Dead;
+		combatant.combat.conditions = [];
+		EncounterLogic.log(encounter, `${combatant.name} is now ${combatant.combat.state}`);
+		EncounterLogic.dropAllItems(encounter, combatant);
+		Sound.play(Sound.dong);
 	};
 
 	static goProne = (encounter: EncounterModel, combatant: CombatantModel) => {
@@ -610,6 +619,10 @@ export class EncounterLogic {
 	};
 
 	static stun = (encounter: EncounterModel, combatant: CombatantModel) => {
+		if (combatant.combat.state === CombatantState.Dead){
+			return;
+		}
+
 		combatant.combat.stunned = true;
 		EncounterLogic.log(encounter, `${combatant.name} is stunned`);
 	};
@@ -617,7 +630,7 @@ export class EncounterLogic {
 	static inspire = (encounter: EncounterModel, combatant: CombatantModel) => {
 		const rank = EncounterLogic.getSkillRank(encounter, combatant, SkillType.Presence);
 		const result = Random.dice(rank);
-		EncounterLogic.log(encounter, `${combatant.name} rolls Presence (${rank}) and gets ${result}`);
+		EncounterLogic.log(encounter, `Inspire: ${combatant.name} rolls Presence (${rank}) and gets ${result}`);
 
 		combatant.combat.movement -= 4;
 		if (result > 8) {
@@ -648,7 +661,7 @@ export class EncounterLogic {
 
 		EncounterLogic.checkActionParameters(encounter, combatant);
 
-		EncounterLogic.log(encounter, `${combatant.name} rolls Perception (${rank}) and gets ${result}`);
+		EncounterLogic.log(encounter, `Scan: ${combatant.name} rolls Perception (${rank}) and gets ${result}`);
 	};
 
 	static hide = (encounter: EncounterModel, combatant: CombatantModel) => {
@@ -660,7 +673,7 @@ export class EncounterLogic {
 
 		EncounterLogic.checkActionParameters(encounter, combatant);
 
-		EncounterLogic.log(encounter, `${combatant.name} rolls Stealth (${rank}) and gets ${result}`);
+		EncounterLogic.log(encounter, `Hide: ${combatant.name} rolls Stealth (${rank}) and gets ${result}`);
 	};
 
 	static reveal = (encounter: EncounterModel, combatant: CombatantModel) => {

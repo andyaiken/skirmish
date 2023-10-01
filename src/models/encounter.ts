@@ -22,7 +22,6 @@ export interface EncounterModel {
 	combatants: CombatantModel[];
 	loot: LootPileModel[];
 	mapSquares: EncounterMapSquareModel[];
-	log: string[];
 }
 
 export interface EncounterMapEdgeModel {

@@ -791,6 +791,7 @@ export class MonsterSpeciesData {
 						skillBonus: 0,
 						hit: [
 							ActionEffects.dealDamage(DamageType.Impact, 2),
+							ActionEffects.forceMovement(MovementType.Push, 1),
 							ActionEffects.knockDown()
 						]
 					})

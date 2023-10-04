@@ -44,7 +44,17 @@ export class CampaignMapPanel extends Component<Props> {
 				})
 				.map(square => {
 					const region = this.props.map.regions.find(r => r.id === square.regionID);
-					const color = region ? region.color : 'white';
+					let backgroundColor = 'rgb(255, 255, 255)';
+					let borderColor = 'rgb(200, 230, 255)';
+					if (region) {
+						backgroundColor = region.color;
+						borderColor = CampaignMapLogic.canAttackRegion(this.props.map, region) ? 'rgb(255, 255, 255)' : 'rgb(160, 160, 160)';
+
+						if (this.props.selectedRegion && (this.props.selectedRegion.id === region.id)) {
+							backgroundColor = 'rgb(255, 255, 255)';
+							borderColor = 'rgb(60, 170, 255)';
+						}
+					}
 
 					// Which borders do we need?
 					const top = this.props.map.squares.find(s => (s.x === square.x) && (s.y === square.y - 1) && (s.regionID !== square.regionID));
@@ -57,14 +67,15 @@ export class CampaignMapPanel extends Component<Props> {
 							key={`${square.x} ${square.y}`}
 							className='campaign-map-square'
 							style={{
-								width: `calc(${squareSizePC}% + 2px)`,
-								left: `calc(${((square.x - dims.left) * squareSizePC)}% - 1px)`,
-								top: `calc(${((square.y - dims.top) * squareSizePC)}% - 1px)`,
-								backgroundColor: (this.props.selectedRegion === region) ? 'white' : color,
-								borderTopWidth: top ? 1 : 0,
-								borderRightWidth: right ? 1 : 0,
-								borderBottomWidth: bottom ? 1 : 0,
-								borderLeftWidth: left ? 1 : 0
+								width: `${squareSizePC}%`,
+								height: `${squareSizePC}%`,
+								left: `${((square.x - dims.left) * squareSizePC)}%`,
+								top: `${((square.y - dims.top) * squareSizePC)}%`,
+								backgroundColor: backgroundColor,
+								borderTop: top ? `1px solid ${borderColor}` : `0px solid ${backgroundColor}`,
+								borderRight: right ? `1px solid ${borderColor}` : `0px solid ${backgroundColor}`,
+								borderBottom: bottom ? `1px solid ${borderColor}` : `0px solid ${backgroundColor}`,
+								borderLeft: left ? `1px solid ${borderColor}` : `0px solid ${backgroundColor}`
 							}}
 							title={region ? region.name : 'Conquered'}
 							onClick={e => this.onClick(e, square)}

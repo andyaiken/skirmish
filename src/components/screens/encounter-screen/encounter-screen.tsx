@@ -118,7 +118,7 @@ export class EncounterScreen extends Component<Props, State> {
 			toast.custom(t => {
 				setTimeout(() => {
 					toast.dismiss(t.id);
-				}, 5000);
+				}, 5 * 1000);
 				return (
 					<div key={t.id} className='skirmish-notification' onClick={() => toast.dismiss(t.id)}>
 						{messages.map((str, n) => <div key={n}>{str}</div>)}

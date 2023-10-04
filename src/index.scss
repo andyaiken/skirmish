@@ -228,8 +228,7 @@ textarea {
 }
 
 .skirmish-notification {
-	width: calc(100% - 500px);
-	max-height: 150px;
+	width: 288px;
 	overflow-x: hidden;
 	overflow-y: auto;
 	-webkit-overflow-scrolling: touch;
@@ -238,6 +237,7 @@ textarea {
 	background-color: rgba(0, 0, 0, 0.8);
 	padding: 10px;
 	color: rgb(255, 255, 255);
+	font-size: 12px;
 	cursor: pointer;
 }
 

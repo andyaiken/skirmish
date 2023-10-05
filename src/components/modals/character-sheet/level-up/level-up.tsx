@@ -15,7 +15,6 @@ import type { GameModel } from '../../../../models/game';
 
 import { Collections } from '../../../../utils/collections';
 
-import { CardList, Text, TextType } from '../../../controls';
 import { FeatureCard, StrongholdBenefitCard } from '../../../cards';
 import { ChoicePanel } from './choice/choice';
 
@@ -105,7 +104,7 @@ export class LevelUp extends Component<Props, State> {
 								footerType={CombatantLogic.getFeatureSourceType(this.props.combatant, this.state.selectedFeature.id)}
 							/>
 						</div>
-						<div className='level-up additional'>
+						<div className='level-up-additional'>
 							<ChoicePanel feature={this.state.selectedFeature} hero={this.props.combatant} onChange={this.setSelectedFeature} />
 						</div>
 					</div>
@@ -127,6 +126,9 @@ export class LevelUp extends Component<Props, State> {
 			const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.TrainingGround);
 			if ((redraws > 0) || this.props.developer) {
 				featureCards.push(
+					<div key='separator' className='separator' />
+				);
+				featureCards.push(
 					<StrongholdBenefitCard
 						key='redraw'
 						label='Redraw'
@@ -139,10 +141,7 @@ export class LevelUp extends Component<Props, State> {
 
 			return (
 				<div className='level-up selecting'>
-					<Text type={TextType.Information}>
-						<p><b>Level up.</b> Choose a feature for level {this.props.combatant.level + 1}.</p>
-					</Text>
-					<CardList cards={featureCards} />
+					{featureCards}
 				</div>
 			);
 		} catch {

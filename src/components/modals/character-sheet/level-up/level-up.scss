@@ -1,25 +1,28 @@
 .level-up {
 	display: flex;
-	width: 870px;
-	margin: 0 auto;
-
-	&.selecting {
-		flex-direction: column;
-	}
-
-	&.selection-made {
-		flex-direction: row;
-		gap: 10px;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	border: 2px solid rgb(220, 220, 220);
+	border-radius: 10px;
+	padding: 10px;
+	
+	.separator {
+		margin: 0 10px;
+		flex: 0 0 2px;
+		align-self: center;
+		height: 150px;
+		background-color: rgb(220, 220, 220);
 	}
 
 	.selected-feature {
 		margin: 10px 0;
 	}
 
-	.additional {
+	.level-up-additional {
 		flex: 1 1 0;
-		margin: 10px;
-		align-items: flex-start;
+		display: flex;
+		align-items: center;
 		justify-content: center;
 	}
 }

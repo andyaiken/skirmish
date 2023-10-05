@@ -62,15 +62,17 @@ export class CampaignMapPanel extends Component<Props> {
 					const bottom = this.props.map.squares.find(s => (s.x === square.x) && (s.y === square.y + 1) && (s.regionID !== square.regionID));
 					const left = this.props.map.squares.find(s => (s.x === square.x - 1) && (s.y === square.y) && (s.regionID !== square.regionID));
 
+					const overlap = 0.1;
+
 					return (
 						<div
 							key={`${square.x} ${square.y}`}
 							className='campaign-map-square'
 							style={{
-								width: `${squareSizePC}%`,
-								height: `${squareSizePC}%`,
-								left: `${((square.x - dims.left) * squareSizePC)}%`,
-								top: `${((square.y - dims.top) * squareSizePC)}%`,
+								width: `calc(${squareSizePC}% + ${overlap * 2}px)`,
+								height: `calc(${squareSizePC}% + ${overlap * 2}px)`,
+								left: `calc(${((square.x - dims.left) * squareSizePC)}% - ${overlap}px)`,
+								top: `calc(${((square.y - dims.top) * squareSizePC)}% - ${overlap}px)`,
 								backgroundColor: backgroundColor,
 								borderTop: top ? `1px solid ${borderColor}` : `0px solid ${backgroundColor}`,
 								borderRight: right ? `1px solid ${borderColor}` : `0px solid ${backgroundColor}`,

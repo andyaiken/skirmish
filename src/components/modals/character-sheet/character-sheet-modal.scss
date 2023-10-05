@@ -11,23 +11,16 @@
 		overflow-x: hidden;
 		overflow-y: hidden;
 		height: 100%;
-	}
 
-	.header {
-		flex: 0 0 auto;
-
-		.tags {
-			display: flex;
-			justify-content: center;
-			margin-top: -10px;
-			margin-bottom: 15px;
+		.header {
+			padding: 0 100px 15px 100px;
 		}
-	}
 
-	.content {
-		flex: 1 1 0;
-		overflow-x: hidden;
-		overflow-y: auto;
-		-webkit-overflow-scrolling: touch;
+		.content {
+			flex: 1 1 0;
+			overflow-x: hidden;
+			overflow-y: auto;
+			-webkit-overflow-scrolling: touch;
+		}
 	}
 }

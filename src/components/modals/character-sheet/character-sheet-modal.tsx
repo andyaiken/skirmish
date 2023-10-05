@@ -3,7 +3,7 @@ import { Component } from 'react';
 import { QuirkType } from '../../../enums/quirk-type';
 import { StructureType } from '../../../enums/structure-type';
 
-import { GameLogic } from '../../../logic/game-logic';
+import { CombatantLogic } from '../../../logic/combatant-logic';
 import { StrongholdLogic } from '../../../logic/stronghold-logic';
 
 import type { CombatantModel } from '../../../models/combatant';
@@ -13,11 +13,12 @@ import type { ItemModel } from '../../../models/item';
 
 import { Utils } from '../../../utils/utils';
 
-import { CardList, Tabs, Tag, Text, TextType } from '../../controls';
+import { ActionCard, FeatureCard, StrongholdBenefitCard } from '../../cards';
+import { Badge, CardList, Tabs } from '../../controls';
+import { CombatantRowPanel } from '../../panels';
 import { Items } from './items/items';
 import { LevelUp } from './level-up/level-up';
 import { Stats } from './stats/stats';
-import { StrongholdBenefitCard } from '../../cards';
 
 import './character-sheet-modal.scss';
 
@@ -78,7 +79,9 @@ export class CharacterSheetModal extends Component<Props, State> {
 			} else {
 				const options = [
 					{ id: 'stats', display: 'Statistics' },
-					{ id: 'items', display: 'Equipment' }
+					{ id: 'items', display: 'Equipment' },
+					{ id: 'features', display: 'Features' },
+					{ id: 'actions', display: 'Actions' }
 				];
 
 				const hasXP = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Academy) > 0;
@@ -125,6 +128,34 @@ export class CharacterSheetModal extends Component<Props, State> {
 						/>
 					);
 					break;
+				case 'features': {
+					const cards = CombatantLogic.getFeatureDeck(this.props.combatant).map(f => (
+						<FeatureCard
+							key={f.id}
+							feature={f}
+							footer={CombatantLogic.getFeatureSource(this.props.combatant, f.id)}
+							footerType={CombatantLogic.getFeatureSourceType(this.props.combatant, f.id)}
+						/>
+					));
+					content = (
+						<CardList cards={cards} />
+					);
+					break;
+				}
+				case 'actions':{
+					const cards = CombatantLogic.getActionDeck(this.props.combatant).map(a => (
+						<ActionCard
+							key={a.id}
+							action={a}
+							footer={CombatantLogic.getActionSource(this.props.combatant, a.id)}
+							footerType={CombatantLogic.getActionSourceType(this.props.combatant, a.id)}
+						/>
+					));
+					content = (
+						<CardList cards={cards} />
+					);
+					break;
+				}
 				case 'benefits': {
 					const cards = [];
 
@@ -152,32 +183,23 @@ export class CharacterSheetModal extends Component<Props, State> {
 			let levelUp = null;
 			if ((this.props.game.encounter === null) && (this.props.combatant.xp >= this.props.combatant.level)) {
 				levelUp = (
-					<LevelUp
-						combatant={this.props.combatant}
-						game={this.props.game}
-						developer={this.props.developer}
-						useCharge={this.props.useCharge}
-						levelUp={this.levelUp}
-					/>
+					<Badge value={`Choose a feature for level ${this.props.combatant.level + 1}`}>
+						<LevelUp
+							combatant={this.props.combatant}
+							game={this.props.game}
+							developer={this.props.developer}
+							useCharge={this.props.useCharge}
+							levelUp={this.levelUp}
+						/>
+					</Badge>
 				);
 			}
-
-			const species = GameLogic.getSpecies(this.props.combatant.speciesID);
-			const role = GameLogic.getRole(this.props.combatant.roleID);
-			const background = GameLogic.getBackground(this.props.combatant.backgroundID);
 
 			return (
 				<div className='character-sheet-modal'>
 					<div className='main-section'>
 						<div className='header'>
-							<Text type={TextType.Heading}>{this.props.combatant.name || 'unnamed hero'}</Text>
-							<div className='tags'>
-								{species ? <Tag>{species.name}</Tag> : null}
-								{role ? <Tag>{role.name}</Tag> : null}
-								{background ? <Tag>{background.name}</Tag> : null}
-								<Tag>Level {this.props.combatant.level}</Tag>
-								{this.props.combatant.quirks.map((q, n) => (<Tag key={n}>{q}</Tag>))}
-							</div>
+							<CombatantRowPanel mode='list' combatant={this.props.combatant} />
 						</div>
 						{selector}
 						<div className='content'>

@@ -707,16 +707,17 @@ export class ActionEffects {
 								// Automatic hit
 								EncounterLogic.log(encounter, 'Coup de grâce: no attack roll required');
 							} else {
-								const attackRank = EncounterLogic.getSkillRank(encounter, combatant, data.skill) + data.skillBonus;
-								const defenceRank = EncounterLogic.getTraitRank(encounter, target, data.trait);
+								const atkRank = EncounterLogic.getSkillRank(encounter, combatant, data.skill) + data.skillBonus;
+								const defRank = EncounterLogic.getTraitRank(encounter, target, data.trait);
 
-								const attackRoll = Random.dice(attackRank);
-								const defenceRoll = Random.dice(defenceRank);
+								const atkRoll = Random.dice(atkRank);
+								const defRoll = Random.dice(defRank);
+								success = atkRoll >= defRoll;
 
-								EncounterLogic.log(encounter, `${combatant.name} rolls ${data.skill} (rank ${attackRank}) and gets ${attackRoll}`);
-								EncounterLogic.log(encounter, `${target.name} rolls ${data.trait} (rank ${defenceRank}) and gets ${defenceRoll}`);
-
-								success = attackRoll >= defenceRoll;
+								EncounterLogic.log(
+									encounter,
+									`${combatant.name} rolls ${data.skill} (rank ${atkRank}): ${atkRoll}; ${target.name} rolls ${data.trait} (rank ${defRank}): ${defRoll}; ${success ? 'hit' : 'miss'}`
+								);
 							}
 						}
 

@@ -113,7 +113,7 @@ export class EncounterStartModal extends Component<Props, State> {
 		let rightContent = null;
 		switch (this.state.viewMode) {
 			case 'heroes': {
-				const selected = this.state.selectedHeroes.map(h => <CombatantRowPanel key={h.id} combatant={h} onCancel={hero => this.deselectHero(hero)} />);
+				const selected = this.state.selectedHeroes.map(h => <CombatantRowPanel key={h.id} mode='list' combatant={h} onCancel={hero => this.deselectHero(hero)} />);
 				while (selected.length < 5) {
 					selected.push(
 						<div key={selected.length} className='empty-hero-slot'>

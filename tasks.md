@@ -26,8 +26,6 @@
   * Automatically select the best path
 
 ## Turn Log
-* Make significant log messages appear on the map for a brief time before disappearing
-* Show log messages from an action in the action panel
 * Formatting
   * Indentation
   * Colours

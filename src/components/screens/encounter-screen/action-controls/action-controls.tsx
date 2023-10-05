@@ -18,7 +18,7 @@ import type { GameModel } from '../../../../models/game';
 import type { ItemModel } from '../../../../models/item';
 
 import { ActionCard, StrongholdBenefitCard } from '../../../cards';
-import { Badge, Selector, Text, TextType } from '../../../controls';
+import { Badge, Selector, Tag, Text, TextType } from '../../../controls';
 
 import './action-controls.scss';
 
@@ -94,7 +94,7 @@ export class ActionControls extends Component<Props> {
 		}
 
 		return (
-			<div className='action-controls-content' key={this.props.combatant.id}>
+			<div className='action-controls-content' key='not-selected'>
 				{actionCards}
 				{benefit ? <div className='separator' /> : null}
 				{benefit}
@@ -210,7 +210,7 @@ export class ActionControls extends Component<Props> {
 										// Targets all possible candidates
 										description = list
 											.map(id => EncounterLogic.getCombatant(this.props.encounter, id) as CombatantModel)
-											.map(target => <Text key={target.id} type={TextType.ListItem}>{target.name}</Text>);
+											.map(target => <Tag key={target.id}>{target.name}</Tag>);
 										if (list.length === 0) {
 											description = '[None]';
 										}
@@ -353,7 +353,7 @@ export class ActionControls extends Component<Props> {
 		});
 
 		return (
-			<div className='action-controls-content' key={this.props.combatant.id}>
+			<div className='action-controls-content' key={action.id}>
 				<ActionCard
 					action={action}
 					footer={CombatantLogic.getActionSource(this.props.combatant, action.id)}
@@ -364,19 +364,21 @@ export class ActionControls extends Component<Props> {
 				<div className='action-details'>
 					{prerequisites}
 					{parameters}
-					<button
-						className='primary'
-						disabled={!prerequisitesMet || !parametersSet || (this.props.currentActionParameter !== null)}
-						onClick={() => this.props.runAction(this.props.encounter, this.props.combatant)}
-					>
-						Run this Action
-					</button>
-					<button
-						disabled={this.props.currentActionParameter !== null}
-						onClick={() => this.props.deselectAction(this.props.encounter, this.props.combatant)}
-					>
-						Choose Again
-					</button>
+					<div className='button-row'>
+						<button
+							className='primary'
+							disabled={!prerequisitesMet || !parametersSet || (this.props.currentActionParameter !== null)}
+							onClick={() => this.props.runAction(this.props.encounter, this.props.combatant)}
+						>
+							Run this Action
+						</button>
+						<button
+							disabled={this.props.currentActionParameter !== null}
+							onClick={() => this.props.deselectAction(this.props.encounter, this.props.combatant)}
+						>
+							Choose Again
+						</button>
+					</div>
 				</div>
 			</div>
 		);
@@ -397,7 +399,7 @@ export class ActionControls extends Component<Props> {
 		}
 
 		return (
-			<div className='action-controls-content' key={this.props.combatant.id}>
+			<div className='action-controls-content' key={action.id + ' used'}>
 				<ActionCard
 					action={action}
 					footer={CombatantLogic.getActionSource(this.props.combatant, action.id)}
@@ -430,7 +432,7 @@ export class ActionControls extends Component<Props> {
 			}
 
 			return (
-				<div className={`action-controls ${this.props.collapsed ? 'collapsed' : 'expanded'}`}>
+				<div className={`action-controls ${this.props.collapsed ? 'collapsed' : 'expanded'}`} key={this.props.combatant.id}>
 					{content}
 				</div>
 			);

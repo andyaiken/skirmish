@@ -1,6 +1,5 @@
 import { Component } from 'react';
 
-import { CardType } from '../../../../enums/card-type';
 import { CombatantType } from '../../../../enums/combatant-type';
 import { DamageType } from '../../../../enums/damage-type';
 import { SkillType } from '../../../../enums/skill-type';
@@ -13,8 +12,7 @@ import { EncounterLogic } from '../../../../logic/encounter-logic';
 import type { CombatantModel } from '../../../../models/combatant';
 import type { EncounterModel } from '../../../../models/encounter';
 
-import { ActionCard, FeatureCard, PlaceholderCard } from '../../../cards';
-import { Box, CardList, Dialog, Gauge, PlayingCard, StatValue, Tag, Text, TextType } from '../../../controls';
+import { Box, Gauge, StatValue, Tag, Text } from '../../../controls';
 import { CombatStatsPanel } from '../../../panels/combat-stats/combat-stats-panel';
 import { DamagePanel } from './damage-panel/damage-panel';
 
@@ -26,24 +24,7 @@ interface Props {
 	developer: boolean;
 }
 
-interface State {
-	deck: string | null;
-}
-
-export class Stats extends Component<Props, State> {
-	constructor(props: Props) {
-		super(props);
-		this.state = {
-			deck: null
-		};
-	}
-
-	setDeck = (deck: string | null) => {
-		this.setState({
-			deck: deck
-		});
-	};
-
+export class Stats extends Component<Props> {
 	getTraitRank = (trait: TraitType) => {
 		if (this.props.encounter) {
 			return EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, trait);
@@ -170,79 +151,22 @@ export class Stats extends Component<Props, State> {
 				);
 			}
 
-			let dialog = null;
-			if (this.state.deck !== null) {
-				let heading = '';
-				let cards: JSX.Element[] = [];
-				switch (this.state.deck) {
-					case 'features':
-						heading = 'Features';
-						cards = CombatantLogic.getFeatureDeck(this.props.combatant).map(f => (
-							<FeatureCard
-								key={f.id}
-								feature={f}
-								footer={CombatantLogic.getFeatureSource(this.props.combatant, f.id)}
-								footerType={CombatantLogic.getFeatureSourceType(this.props.combatant, f.id)}
-							/>
-						));
-						break;
-					case 'actions':
-						heading = 'Actions';
-						cards = CombatantLogic.getActionDeck(this.props.combatant).map(a => (
-							<ActionCard
-								key={a.id}
-								action={a}
-								footer={CombatantLogic.getActionSource(this.props.combatant, a.id)}
-								footerType={CombatantLogic.getActionSourceType(this.props.combatant, a.id)}
-								combatant={this.props.combatant}
-							/>
-						));
-						break;
-				}
-				dialog = (
-					<Dialog
-						content={(
-							<div>
-								<Text type={TextType.Heading}>{heading}</Text>
-								<hr />
-								<CardList cards={cards} />
-							</div>
-						)}
-						level={2}
-						onClose={() => this.setDeck(null)}
-					/>
-				);
-			}
-
 			return (
 				<div className='stats'>
 					{combatColumn}
 					<div className='column'>
 						{this.getTraitsSection()}
 						{this.getSkillsSection()}
-						{this.getProficienciesSection()}
-						{this.getAurasSection()}
 					</div>
 					<div className='column'>
 						<DamagePanel label='Damage Bonuses' getValue={this.getDamageBonusValue} />
 						<DamagePanel label='Damage Resistances' getValue={this.getDamageResistanceValue} />
+					</div>
+					<div className='column'>
 						{this.props.combatant.type === CombatantType.Hero ? this.getXPSection() : null}
+						{this.getProficienciesSection()}
+						{this.getAurasSection()}
 					</div>
-					<div className='column decks'>
-						<PlayingCard
-							stack={true}
-							type={CardType.Feature}
-							front={<PlaceholderCard text='Feature Deck' />}
-							onClick={() => this.setDeck('features')}
-						/>
-						<PlayingCard
-							stack={true}
-							type={CardType.Action}
-							front={<PlaceholderCard text='Action Deck' />}
-							onClick={() => this.setDeck('actions')}
-						/>
-					</div>
-					{dialog}
 				</div>
 			);
 		} catch {

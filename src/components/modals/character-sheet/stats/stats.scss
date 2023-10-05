@@ -5,18 +5,6 @@
 
 	.column {
 		flex: 1 1 220px;
-
-		&.decks {
-			flex: 0 0 250px;
-		}
-	}
-
-	.decks {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 30px;
-		margin: 20px 0;
 	}
 
 	.stats-row {

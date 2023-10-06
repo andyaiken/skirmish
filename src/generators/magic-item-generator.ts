@@ -37,7 +37,7 @@ export class MagicItemGenerator {
 		const item = JSON.parse(JSON.stringify(baseItem)) as ItemModel;
 		item.id = Utils.guid();
 		item.name = NameGenerator.generateName();
-		item.description = `Magical ${baseItem.name}`;
+		item.description = `Magical ${baseItem.name.toLowerCase()}`;
 		item.baseItem = baseItem.name;
 		item.magic = true;
 		return item;

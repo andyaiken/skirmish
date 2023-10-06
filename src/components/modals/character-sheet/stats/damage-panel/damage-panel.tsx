@@ -2,7 +2,7 @@ import { Component } from 'react';
 
 import { DamageType } from '../../../../../enums/damage-type';
 
-import { Box, StatValue, Text } from '../../../../controls';
+import { Box, StatValue, Text, TextType } from '../../../../controls';
 
 import { Collections } from '../../../../../utils/collections';
 
@@ -35,7 +35,7 @@ export class DamagePanel extends Component<Props> {
 		if (values.every(pair => pair.value === 0)) {
 			return (
 				<Box label={this.props.label}>
-					<Text>None</Text>
+					<Text type={TextType.Dimmed}>None</Text>
 				</Box>
 			);
 		}

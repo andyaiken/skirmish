@@ -4,6 +4,7 @@ import { QuirkType } from '../../../enums/quirk-type';
 import { StructureType } from '../../../enums/structure-type';
 
 import { CombatantLogic } from '../../../logic/combatant-logic';
+import { GameLogic } from '../../../logic/game-logic';
 import { StrongholdLogic } from '../../../logic/stronghold-logic';
 
 import type { CombatantModel } from '../../../models/combatant';
@@ -14,8 +15,7 @@ import type { ItemModel } from '../../../models/item';
 import { Utils } from '../../../utils/utils';
 
 import { ActionCard, FeatureCard, StrongholdBenefitCard } from '../../cards';
-import { Badge, CardList, Tabs } from '../../controls';
-import { CombatantRowPanel } from '../../panels';
+import { Badge, CardList, Tabs, Tag, Text, TextType } from '../../controls';
 import { Items } from './items/items';
 import { LevelUp } from './level-up/level-up';
 import { Stats } from './stats/stats';
@@ -195,11 +195,22 @@ export class CharacterSheetModal extends Component<Props, State> {
 				);
 			}
 
+			const species = GameLogic.getSpecies(this.props.combatant.speciesID);
+			const role = GameLogic.getRole(this.props.combatant.roleID);
+			const background = GameLogic.getBackground(this.props.combatant.backgroundID);
+
 			return (
 				<div className='character-sheet-modal'>
 					<div className='main-section'>
 						<div className='header'>
-							<CombatantRowPanel mode='list' combatant={this.props.combatant} />
+							<Text type={TextType.Heading}>{this.props.combatant.name || 'unnamed hero'}</Text>
+							<div className='tags'>
+								{species ? <Tag>{species.name}</Tag> : null}
+								{role ? <Tag>{role.name}</Tag> : null}
+								{background ? <Tag>{background.name}</Tag> : null}
+								<Tag>Level {this.props.combatant.level}</Tag>
+								{this.props.combatant.quirks.map((q, n) => (<Tag key={n}>{q}</Tag>))}
+							</div>
 						</div>
 						{selector}
 						<div className='content'>

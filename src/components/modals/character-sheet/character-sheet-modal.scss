@@ -13,7 +13,14 @@
 		height: 100%;
 
 		.header {
-			padding: 0 100px 15px 100px;
+			flex: 0 0 auto;
+
+			.tags {
+				display: flex;
+				justify-content: center;
+				margin-top: -10px;
+				margin-bottom: 15px;
+			}
 		}
 
 		.content {
@@ -21,6 +28,7 @@
 			overflow-x: hidden;
 			overflow-y: auto;
 			-webkit-overflow-scrolling: touch;
+			padding-top: 10px;
 		}
 	}
 }

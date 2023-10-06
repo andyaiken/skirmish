@@ -5,6 +5,7 @@ import './text.scss';
 
 export enum TextType {
 	Default = 'default',
+	Dimmed = 'dimmed',
 	Heading = 'heading',
 	SubHeading = 'subheading',
 	MinorHeading = 'minorheading',

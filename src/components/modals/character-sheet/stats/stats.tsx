@@ -12,7 +12,7 @@ import { EncounterLogic } from '../../../../logic/encounter-logic';
 import type { CombatantModel } from '../../../../models/combatant';
 import type { EncounterModel } from '../../../../models/encounter';
 
-import { Box, Gauge, StatValue, Tag, Text } from '../../../controls';
+import { Box, Gauge, StatValue, Tag, Text, TextType } from '../../../controls';
 import { CombatStatsPanel } from '../../../panels/combat-stats/combat-stats-panel';
 import { DamagePanel } from './damage-panel/damage-panel';
 
@@ -86,7 +86,7 @@ export class Stats extends Component<Props> {
 	getProficienciesSection = () => {
 		let proficiencySection = (
 			<Box label='Proficiencies'>
-				<Text>None</Text>
+				<Text type={TextType.Dimmed}>None</Text>
 			</Box>
 		);
 
@@ -105,7 +105,7 @@ export class Stats extends Component<Props> {
 	getAurasSection = () => {
 		let auraSection = (
 			<Box label='Auras'>
-				<Text>None</Text>
+				<Text type={TextType.Dimmed}>None</Text>
 			</Box>
 		);
 

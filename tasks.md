@@ -107,12 +107,14 @@
 
 ## Ideas for Packs
 * Evil
-  * Shadowborn
-  * Demon
-  * Swarm of imps
+  * hero - Shadowborn
+  * monster - Demon
+  * monster - Swarm of imps
 * Fae
-  * Faun / satyr - leaping
-  * Arcane archer / venator / bowmage / hexbow
+  * hero / monster - Faun / satyr - leaping
+  * role - Arcane archer / venator / bowmage / hexbow
+* Cold Blood
+  * monster - Crocodilian (like lizardfolk)
 
 ## Ideas for Roles / Backgrounds
 * Gladiator 
@@ -135,7 +137,6 @@
 * Demon
 * Beasts:
   * Lion / tiger / panther etc
-  * Crocodile
   * Dragon
   * Kruthik / Ankheg
 * Ooze

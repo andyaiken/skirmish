@@ -321,87 +321,6 @@ export class MonsterSpeciesData {
 		]
 	};
 
-	static naga: SpeciesModel = {
-		id: 'species-naga',
-		name: 'Naga',
-		packID: '',
-		description: 'A serpentine humanoid.',
-		type: CombatantType.Monster,
-		size: 1,
-		quirks: [],
-		startingFeatures: [
-			FeatureLogic.createTraitFeature('naga-start-1', TraitType.Speed, 1),
-			FeatureLogic.createSkillFeature('naga-start-2', SkillType.Brawl, 2),
-			FeatureLogic.createSkillFeature('naga-start-3', SkillType.Presence, 2)
-		],
-		features: [
-			FeatureLogic.createTraitFeature('naga-feature-1', TraitType.Speed, 1),
-			FeatureLogic.createSkillFeature('naga-feature-2', SkillType.Brawl, 2),
-			FeatureLogic.createSkillFeature('naga-feature-3', SkillType.Presence, 2),
-			FeatureLogic.createDamageBonusFeature('naga-feature-4', DamageType.Poison, 2),
-			FeatureLogic.createDamageResistFeature('naga-feature-5', DamageType.Poison, 2)
-		],
-		actions: [
-			{
-				id: 'naga-action-1',
-				name: 'Venomous Bite',
-				prerequisites: [],
-				parameters: [
-					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
-				],
-				effects: [
-					ActionEffects.attack({
-						weapon: false,
-						skill: SkillType.Brawl,
-						trait: TraitType.Speed,
-						skillBonus: 0,
-						hit: [
-							ActionEffects.dealDamage(DamageType.Poison, 4)
-						]
-					})
-				]
-			},
-			{
-				id: 'naga-action-2',
-				name: 'Constrict',
-				prerequisites: [],
-				parameters: [
-					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
-				],
-				effects: [
-					ActionEffects.attack({
-						weapon: false,
-						skill: SkillType.Brawl,
-						trait: TraitType.Endurance,
-						skillBonus: 0,
-						hit: [
-							ActionEffects.dealDamage(DamageType.Impact, 4)
-						]
-					})
-				]
-			},
-			{
-				id: 'naga-action-3',
-				name: 'Beguiling Gaze',
-				prerequisites: [],
-				parameters: [
-					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 8)
-				],
-				effects: [
-					ActionEffects.attack({
-						weapon: false,
-						skill: SkillType.Presence,
-						trait: TraitType.Resolve,
-						skillBonus: 0,
-						hit: [
-							ActionEffects.commandAction()
-						]
-					})
-				]
-			}
-		]
-	};
-
 	static orc: SpeciesModel = {
 		id: 'species-orc',
 		name: 'Orc',
@@ -1518,13 +1437,157 @@ export class MonsterSpeciesData {
 		]
 	};
 
+	// Cold blood
+
+	static crocodilian: SpeciesModel = {
+		id: 'species-crocodilian',
+		name: 'Crocodilian',
+		packID: PackData.coldBlood.id,
+		description: 'An ancient species of humanoid crocodiles with armored skin.',
+		type: CombatantType.Monster,
+		size: 1,
+		quirks: [],
+		startingFeatures: [
+			FeatureLogic.createSkillFeature('crocodilian-start-1', SkillType.Brawl, 2),
+			FeatureLogic.createDamageCategoryResistFeature('crocodilian-start-2', DamageCategoryType.Physical, 2),
+			FeatureLogic.createDamageCategoryResistFeature('crocodilian-start-3', DamageCategoryType.Energy, 2)
+		],
+		features: [
+			FeatureLogic.createSkillFeature('crocodilian-feature-1', SkillType.Brawl, 2),
+			FeatureLogic.createDamageCategoryResistFeature('crocodilian-feature-2', DamageCategoryType.Physical, 2),
+			FeatureLogic.createDamageCategoryResistFeature('crocodilian-feature-3', DamageCategoryType.Energy, 2)
+		],
+		actions: [
+			{
+				id: 'crocodilian-action-1',
+				name: 'Jaws',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Brawl,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Piercing, 3)
+						]
+					})
+				]
+			},
+			{
+				id: 'crocodilian-action-2',
+				name: 'Tail Swipe',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Combatants, Number.MAX_VALUE)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Brawl,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Impact, 3),
+							ActionEffects.forceMovement(MovementType.Push, 1),
+							ActionEffects.knockDown()
+						]
+					})
+				]
+			}
+		]
+	};
+
+	static naga: SpeciesModel = {
+		id: 'species-naga',
+		name: 'Naga',
+		packID: PackData.coldBlood.id,
+		description: 'A serpentine humanoid.',
+		type: CombatantType.Monster,
+		size: 1,
+		quirks: [],
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('naga-start-1', TraitType.Speed, 1),
+			FeatureLogic.createSkillFeature('naga-start-2', SkillType.Brawl, 2),
+			FeatureLogic.createSkillFeature('naga-start-3', SkillType.Presence, 2)
+		],
+		features: [
+			FeatureLogic.createTraitFeature('naga-feature-1', TraitType.Speed, 1),
+			FeatureLogic.createSkillFeature('naga-feature-2', SkillType.Brawl, 2),
+			FeatureLogic.createSkillFeature('naga-feature-3', SkillType.Presence, 2),
+			FeatureLogic.createDamageBonusFeature('naga-feature-4', DamageType.Poison, 2),
+			FeatureLogic.createDamageResistFeature('naga-feature-5', DamageType.Poison, 2)
+		],
+		actions: [
+			{
+				id: 'naga-action-1',
+				name: 'Venomous Bite',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Brawl,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Poison, 4)
+						]
+					})
+				]
+			},
+			{
+				id: 'naga-action-2',
+				name: 'Constrict',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Brawl,
+						trait: TraitType.Endurance,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Impact, 4)
+						]
+					})
+				]
+			},
+			{
+				id: 'naga-action-3',
+				name: 'Beguiling Gaze',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 8)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Presence,
+						trait: TraitType.Resolve,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.commandAction()
+						]
+					})
+				]
+			}
+		]
+	};
+
 	static getList = (): SpeciesModel[] => {
 		const list = [
 			MonsterSpeciesData.giant,
 			MonsterSpeciesData.gnoll,
 			MonsterSpeciesData.goblin,
 			MonsterSpeciesData.medusa,
-			MonsterSpeciesData.naga,
 			MonsterSpeciesData.orc,
 			MonsterSpeciesData.troll,
 			// Elementals
@@ -1545,7 +1608,10 @@ export class MonsterSpeciesData {
 			MonsterSpeciesData.wraith,
 			MonsterSpeciesData.zombie,
 			// Fae
-			MonsterSpeciesData.banshee
+			MonsterSpeciesData.banshee,
+			// Cold blood
+			MonsterSpeciesData.crocodilian,
+			MonsterSpeciesData.naga
 		];
 
 		list.forEach(n => {

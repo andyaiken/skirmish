@@ -473,7 +473,7 @@ export class HeroSpeciesData {
 	static reptilian: SpeciesModel = {
 		id: 'species-reptilian',
 		name: 'Reptilian',
-		packID: PackData.beasts.id,
+		packID: PackData.coldBlood.id,
 		description: 'A scaly humanoid with draconic ancestry.',
 		type: CombatantType.Hero,
 		size: 1,

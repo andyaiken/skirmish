@@ -216,7 +216,7 @@ export class DecksTab extends Component<Props, State> {
 					<Selector
 						options={[
 							{ id: 'heroes', display: 'Heroes' },
-							{ id: 'monsters', display: 'Species' },
+							{ id: 'monsters', display: 'Monsters' },
 							{ id: 'roles', display: 'Roles' },
 							{ id: 'backgrounds', display: 'Backgrounds' },
 							{ id: 'structures', display: 'Structures' },

@@ -1219,7 +1219,7 @@ export class RoleData {
 	static luckweaver: RoleModel = {
 		id: 'role-luckweaver',
 		name: 'Luckweaver',
-		packID: PackData.skullduggery.id,
+		packID: PackData.fae.id,
 		description: 'One who can manipulate the laws of chance.',
 		startingFeatures: [
 			FeatureLogic.createSkillFeature('luckweaver-start-1', SkillType.Spellcasting, 2)

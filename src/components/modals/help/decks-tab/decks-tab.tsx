@@ -9,7 +9,7 @@ import type { FeatureModel } from '../../../../models/feature';
 import type { OptionsModel } from '../../../../models/options';
 
 import { ActionCard, BackgroundCard, FeatureCard, ItemCard, RoleCard, SpeciesCard, StructureCard } from '../../../cards';
-import { Badge, CardList, Dialog, Text, TextType } from '../../../controls';
+import { Badge, CardList, Dialog, Selector, Text, TextType } from '../../../controls';
 
 import './decks-tab.scss';
 
@@ -18,6 +18,7 @@ interface Props {
 }
 
 interface State {
+	tab: string;
 	selected: { name: string, type: CardType, starting: FeatureModel[], features: FeatureModel[], actions: ActionModel[] } | null;
 }
 
@@ -25,9 +26,16 @@ export class DecksTab extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
+			tab: 'heroes',
 			selected: null
 		};
 	}
+
+	setTab = (tab: string) => {
+		this.setState({
+			tab: tab
+		});
+	};
 
 	setActions = (name: string, type: CardType, starting: FeatureModel[], features: FeatureModel[], actions: ActionModel[]) => {
 		this.setState({
@@ -67,68 +75,80 @@ export class DecksTab extends Component<Props, State> {
 
 	render = () => {
 		try {
-			const heroes = GameLogic.getHeroSpeciesDeck(this.props.options.packIDs)
-				.map(s => {
-					return (
-						<Badge key={s.id} value={this.getBadge(GameLogic.getSpeciesStrength(s), 5, s.packID)}>
-							<SpeciesCard species={s} onClick={species => this.setActions(species.name, CardType.Species, species.startingFeatures, species.features, species.actions)} />
-						</Badge>
-					);
-				});
+			const cards: JSX.Element[] = [];
 
-			const monsters = GameLogic.getMonsterSpeciesDeck(this.props.options.packIDs)
-				.map(s => {
-					return (
-						<Badge key={s.id} value={this.getBadge(GameLogic.getSpeciesStrength(s), 5, s.packID)}>
-							<SpeciesCard species={s} onClick={species => this.setActions(species.name, CardType.Species, species.startingFeatures, species.features, species.actions)} />
-						</Badge>
-					);
-				});
-
-			const roles = GameLogic.getRoleDeck(this.props.options.packIDs)
-				.map(r => {
-					return (
-						<Badge key={r.id} value={this.getBadge(GameLogic.getRoleStrength(r), 5, r.packID)}>
-							<RoleCard role={r} onClick={role => this.setActions(role.name, CardType.Role, role.startingFeatures, role.features, role.actions)} />
-						</Badge>
-					);
-				});
-
-			const backgrounds = GameLogic.getBackgroundDeck(this.props.options.packIDs)
-				.map(b => {
-					return (
-						<Badge key={b.id} value={this.getBadge(GameLogic.getBackgroundStrength(b), 5, b.packID)}>
-							<BackgroundCard background={b} onClick={bg => this.setActions(bg.name, CardType.Background, bg.startingFeatures, bg.features, bg.actions)} />
-						</Badge>
-					);
-				});
-
-			const structures = GameLogic.getStructureDeck(this.props.options.packIDs)
-				.map(s => {
-					return (
-						<Badge key={s.id} value={this.getBadge(0, 5, s.packID)}>
-							<StructureCard structure={s} />
-						</Badge>
-					);
-				});
-
-			const items = GameLogic.getItemDeck(this.props.options.packIDs)
-				.map(i => {
-					return (
-						<Badge key={i.id} value={this.getBadge(0, 5, i.packID)}>
-							<ItemCard item={i} />
-						</Badge>
-					);
-				});
-
-			const potions = GameLogic.getPotionDeck(this.props.options.packIDs)
-				.map(p => {
-					return (
-						<Badge key={p.id} value={this.getBadge(0, 5, p.packID)}>
-							<ItemCard item={p} />
-						</Badge>
-					);
-				});
+			switch (this.state.tab) {
+				case 'heroes':
+					GameLogic.getHeroSpeciesDeck(this.props.options.packIDs)
+						.forEach(s => {
+							cards.push(
+								<Badge key={s.id} value={this.getBadge(GameLogic.getSpeciesStrength(s), 5, s.packID)}>
+									<SpeciesCard species={s} onClick={species => this.setActions(species.name, CardType.Species, species.startingFeatures, species.features, species.actions)} />
+								</Badge>
+							);
+						});
+					break;
+				case 'monsters':
+					GameLogic.getMonsterSpeciesDeck(this.props.options.packIDs)
+						.forEach(s => {
+							cards.push(
+								<Badge key={s.id} value={this.getBadge(GameLogic.getSpeciesStrength(s), 5, s.packID)}>
+									<SpeciesCard species={s} onClick={species => this.setActions(species.name, CardType.Species, species.startingFeatures, species.features, species.actions)} />
+								</Badge>
+							);
+						});
+					break;
+				case 'roles':
+					GameLogic.getRoleDeck(this.props.options.packIDs)
+						.forEach(r => {
+							cards.push(
+								<Badge key={r.id} value={this.getBadge(GameLogic.getRoleStrength(r), 5, r.packID)}>
+									<RoleCard role={r} onClick={role => this.setActions(role.name, CardType.Role, role.startingFeatures, role.features, role.actions)} />
+								</Badge>
+							);
+						});
+					break;
+				case 'backgrounds':
+					GameLogic.getBackgroundDeck(this.props.options.packIDs)
+						.forEach(b => {
+							cards.push(
+								<Badge key={b.id} value={this.getBadge(GameLogic.getBackgroundStrength(b), 5, b.packID)}>
+									<BackgroundCard background={b} onClick={bg => this.setActions(bg.name, CardType.Background, bg.startingFeatures, bg.features, bg.actions)} />
+								</Badge>
+							);
+						});
+					break;
+				case 'structures':
+					GameLogic.getStructureDeck(this.props.options.packIDs)
+						.forEach(s => {
+							cards.push(
+								<Badge key={s.id} value={this.getBadge(0, 5, s.packID)}>
+									<StructureCard structure={s} />
+								</Badge>
+							);
+						});
+					break;
+				case 'items':
+					GameLogic.getItemDeck(this.props.options.packIDs)
+						.forEach(i => {
+							cards.push(
+								<Badge key={i.id} value={this.getBadge(0, 5, i.packID)}>
+									<ItemCard item={i} />
+								</Badge>
+							);
+						});
+					break;
+				case 'potions':
+					GameLogic.getPotionDeck(this.props.options.packIDs)
+						.forEach(p => {
+							cards.push(
+								<Badge key={p.id} value={this.getBadge(0, 5, p.packID)}>
+									<ItemCard item={p} />
+								</Badge>
+							);
+						});
+					break;
+			}
 
 			let dialog = null;
 			if (this.state.selected) {
@@ -193,34 +213,21 @@ export class DecksTab extends Component<Props, State> {
 
 			return (
 				<div className='decks-tab'>
-					{this.props.options.developer ? <hr /> : null}
-					<Text type={TextType.SubHeading}>Hero Species Cards ({heroes.length})</Text>
-					{heroes.length > 0 ? <CardList cards={heroes} /> : null}
-					{heroes.length > 0 ? null : <Text type={TextType.Small}>None.</Text>}
-					<hr />
-					<Text type={TextType.SubHeading}>Monster Species Cards ({monsters.length})</Text>
-					{monsters.length > 0 ? <CardList cards={monsters} /> : null}
-					{monsters.length > 0 ? null : <Text type={TextType.Small}>None.</Text>}
-					<hr />
-					<Text type={TextType.SubHeading}>Role Cards ({roles.length})</Text>
-					{roles.length > 0 ? <CardList cards={roles} /> : null}
-					{roles.length > 0 ? null : <Text type={TextType.Small}>None.</Text>}
-					<hr />
-					<Text type={TextType.SubHeading}>Background Cards ({backgrounds.length})</Text>
-					{backgrounds.length > 0 ? <CardList cards={backgrounds} /> : null}
-					{backgrounds.length > 0 ? null : <Text type={TextType.Small}>None.</Text>}
-					<hr />
-					<Text type={TextType.SubHeading}>Structure Cards ({structures.length})</Text>
-					{structures.length > 0 ? <CardList cards={structures} /> : null}
-					{structures.length > 0 ? null : <Text type={TextType.Small}>None.</Text>}
-					<hr />
-					<Text type={TextType.SubHeading}>Item Cards ({items.length})</Text>
-					{items.length > 0 ? <CardList cards={items} /> : null}
-					{items.length > 0 ? null : <Text type={TextType.Small}>None.</Text>}
-					<hr />
-					<Text type={TextType.SubHeading}>Potion Cards ({potions.length})</Text>
-					{potions.length > 0 ? <CardList cards={potions} /> : null}
-					{potions.length > 0 ? null : <Text type={TextType.Small}>None.</Text>}
+					<Selector
+						options={[
+							{ id: 'heroes', display: 'Heroes' },
+							{ id: 'monsters', display: 'Species' },
+							{ id: 'roles', display: 'Roles' },
+							{ id: 'backgrounds', display: 'Backgrounds' },
+							{ id: 'structures', display: 'Structures' },
+							{ id: 'items', display: 'Items' },
+							{ id: 'potions', display: 'Potions' }
+						]}
+						selectedID={this.state.tab}
+						onSelect={this.setTab}
+					/>
+					{cards.length > 0 ? <CardList cards={cards} /> : null}
+					{cards.length > 0 ? null : <Text type={TextType.Small}>None.</Text>}
 					{dialog}
 				</div>
 			);

@@ -145,7 +145,7 @@ export class SetupScreen extends Component<Props, State> {
 			if (heroes.length < 5) {
 				heroes.push(
 					<div key='add' className='empty-panel'>
-						<button onClick={this.createHero}>Recruit a Hero</button>
+						<button className='primary' onClick={this.createHero}>Recruit a Hero</button>
 					</div>
 				);
 			}
@@ -173,9 +173,6 @@ export class SetupScreen extends Component<Props, State> {
 					</div>
 					<div className='setup-content'>
 						<div className='center-panel'>
-							<Text type={TextType.Information}>
-								<p><b>Recruit your team.</b> These five heroes will begin the task of conquering the island.</p>
-							</Text>
 							{heroes}
 						</div>
 						<div className='right-panel'>
@@ -194,14 +191,20 @@ export class SetupScreen extends Component<Props, State> {
 									/>
 									: null
 							}
-							<PlayingCard
-								type={CardType.Role}
-								stack={true}
-								disabled={this.props.game.heroes.length < 5}
-								front={<PlaceholderCard text='Begin the Campaign' />}
-								onClick={this.props.beginCampaign}
-							/>
-							{this.props.options.developer ? <button onClick={this.createHeroes}>Randomize</button> : null}
+							{
+								this.props.game.heroes.length >= 5 ?
+									<PlayingCard
+										type={CardType.Role}
+										stack={true}
+										front={<PlaceholderCard text='Begin the Campaign' />}
+										onClick={this.props.beginCampaign}
+									/>
+									:
+									<Text type={TextType.Information}>
+										<p><b>Recruit your team.</b> These five heroes will begin the task of conquering the island.</p>
+									</Text>
+							}
+							{this.props.options.developer && (this.props.game.heroes.length < 5) ? <button onClick={this.createHeroes}>Randomize</button> : null}
 							{packsBtn}
 						</div>
 					</div>

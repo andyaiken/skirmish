@@ -98,15 +98,21 @@
 
 # Content Ideas
 
+## Summoning
+* Need to ensure that a summoned creature is on the side of the creature that summoned it
+* Druids should summon beasts
+* Necromancers should summon / raise undead
+* Clerics should summon / resurrect dead heroes
+* Elementalist should summon elementals
+
 ## Ideas for Packs
 * Evil
   * Shadowborn
   * Demon
   * Swarm of imps
 * Fae
-  * Pixie
+  * Faun / satyr - leaping
   * Arcane archer / venator / bowmage / hexbow
-  * Banshee - sonic dmg
 
 ## Ideas for Roles / Backgrounds
 * Gladiator 
@@ -144,8 +150,14 @@
 | XXX           | Add 1 rank in any mental skill to a hero                          |         |
 
 * Warehouse
-* Bazaar / marketplace
-* Vault
+* Armory
+* Sanctuary / Sacristy / Reliquary
+* Scriptorium
+* Trophy Room
+* Guildhall
+* Sanctum
+* Archive / Vault
+* Bazaar / Marketplace
 * Cartographer
 * Engineer
 * Laboratory

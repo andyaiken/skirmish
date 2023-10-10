@@ -672,7 +672,7 @@ export class EncounterScreen extends Component<Props, State> {
 							type={CardType.Item}
 							front={
 								<PlaceholderCard
-									subtext={
+									content={
 										<div className='treasure-money'>
 											<IconValue
 												type={IconType.Money}

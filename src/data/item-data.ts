@@ -8,6 +8,7 @@ import { TraitType } from '../enums/trait-type';
 import { FeatureLogic } from '../logic/feature-logic';
 
 import type { ItemModel } from '../models/item';
+import { PackData } from './pack-data';
 
 export class ItemData {
 	static getList = (): ItemModel[] => {
@@ -640,7 +641,7 @@ export class ItemData {
 			{
 				id: 'item-carbine',
 				name: 'Carbine',
-				packID: '',
+				packID: PackData.technology.id,
 				description: 'Smaller than a rifle, larger than a pistol.',
 				baseItem: '',
 				magic: false,
@@ -665,7 +666,7 @@ export class ItemData {
 			{
 				id: 'item-pistol',
 				name: 'Pistol',
-				packID: '',
+				packID: PackData.technology.id,
 				description: 'A less powerful hand-held gun.',
 				baseItem: '',
 				magic: false,

@@ -1453,6 +1453,69 @@ export class MonsterSpeciesData {
 		]
 	};
 
+	// Fae
+
+	static banshee: SpeciesModel = {
+		id: 'species-banshee',
+		name: 'Banshee',
+		packID: PackData.fae.id,
+		description: 'A fae spirit whose unearthly wail presages death.',
+		type: CombatantType.Monster,
+		size: 1,
+		quirks: [
+			QuirkType.Undead
+		],
+		startingFeatures: [
+			FeatureLogic.createSkillFeature('banshee-start-1', SkillType.Presence, 2)
+		],
+		features: [
+			FeatureLogic.createSkillFeature('banshee-feature-1', SkillType.Presence, 2),
+			FeatureLogic.createDamageBonusFeature('banshee-feature-2', DamageType.Sonic, 1)
+		],
+		actions: [
+			{
+				id: 'banshee-action-1',
+				name: 'Deathly Scream',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Presence,
+						trait: TraitType.Resolve,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Sonic, 2),
+							ActionEffects.forceMovement(MovementType.Push, 1),
+							ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Resolve, 3))
+						]
+					})
+				]
+			},
+			{
+				id: 'banshee-action-2',
+				name: 'Keening Wail',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 5)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Presence,
+						trait: TraitType.Resolve,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Sonic, 2)
+						]
+					})
+				]
+			}
+		]
+	};
+
 	static getList = (): SpeciesModel[] => {
 		const list = [
 			MonsterSpeciesData.giant,
@@ -1478,7 +1541,9 @@ export class MonsterSpeciesData {
 			MonsterSpeciesData.skeleton,
 			MonsterSpeciesData.vampire,
 			MonsterSpeciesData.wraith,
-			MonsterSpeciesData.zombie
+			MonsterSpeciesData.zombie,
+			// Fae
+			MonsterSpeciesData.banshee
 		];
 
 		list.forEach(n => {

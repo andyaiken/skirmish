@@ -218,7 +218,7 @@ export class ActionControls extends Component<Props> {
 										// Targets a specific number of candidates
 										description = list
 											.map(id => EncounterLogic.getCombatant(this.props.encounter, id) as CombatantModel)
-											.map(target => <Text key={target.id} type={TextType.ListItem}>{target.name}</Text>);
+											.map(target => <Tag key={target.id}>{target.name}</Tag>);
 										if (list.length === 0) {
 											description = '[None]';
 										}

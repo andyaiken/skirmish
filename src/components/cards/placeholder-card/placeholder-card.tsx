@@ -3,8 +3,8 @@ import { Component } from 'react';
 import './placeholder-card.scss';
 
 interface Props {
-	text: string | JSX.Element | null;
-	subtext: string | JSX.Element | null;
+	text: string | null;
+	subtext: string | null;
 	content: JSX.Element | null;
 }
 

@@ -5,6 +5,7 @@ import type { OptionsModel } from '../../../models/options';
 
 import { Tabs, Text, TextType } from '../../controls';
 import { AboutTab } from './about-tab/about-tab';
+import { CardsTab } from './cards-tab/cards-tab';
 import { DecksTab } from './decks-tab/decks-tab';
 import { RulesTab } from './rules-tab/rules-tab';
 
@@ -37,6 +38,10 @@ export class HelpModal extends Component<Props, State> {
 				{ id: 'about', display: 'About' }
 			];
 
+			if (this.props.options.developer) {
+				tabs.push({ id: 'cards', display: 'Card Grid' });
+			}
+
 			if (this.props.exceptions.length > 0) {
 				tabs.push({ id: 'exceptions', display: 'Exceptions' });
 			}
@@ -64,6 +69,13 @@ export class HelpModal extends Component<Props, State> {
 								game={this.props.game}
 								options={this.props.options}
 							/>
+						</div>
+					);
+					break;
+				case 'cards':
+					content = (
+						<div className='content'>
+							<CardsTab options={this.props.options} />
 						</div>
 					);
 					break;

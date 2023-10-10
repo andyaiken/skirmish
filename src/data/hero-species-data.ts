@@ -427,7 +427,7 @@ export class HeroSpeciesData {
 	static pixie: SpeciesModel = {
 		id: 'species-pixie',
 		name: 'Pixie',
-		packID: '',
+		packID: PackData.fae.id,
 		description: 'A tiny fairy-like creature.',
 		type: CombatantType.Hero,
 		size: 1,

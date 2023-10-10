@@ -49,9 +49,7 @@ export class BuyPotionModal extends Component<Props, State> {
 			}
 		}
 
-		items.sort((a, b) => a.name.localeCompare(b.name));
-
-		return items;
+		return Collections.sort(items, n => n.name);
 	};
 
 	redraw = () => {

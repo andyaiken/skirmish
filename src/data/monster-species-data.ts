@@ -18,6 +18,8 @@ import { FeatureLogic } from '../logic/feature-logic';
 
 import type { SpeciesModel } from '../models/species';
 
+import { Collections } from '../utils/collections';
+
 export class MonsterSpeciesData {
 	static giant: SpeciesModel = {
 		id: 'species-giant',
@@ -1547,9 +1549,9 @@ export class MonsterSpeciesData {
 		];
 
 		list.forEach(n => {
-			n.actions.sort((a, b) => a.name.localeCompare(b.name));
+			n.features = Collections.sort(n.features, f => FeatureLogic.getFeatureTitle(f));
+			n.actions = Collections.sort(n.actions, a => a.name);
 		});
-		list.sort((a, b) => a.name.localeCompare(b.name));
-		return list;
+		return Collections.sort(list, n => n.name);
 	};
 }

@@ -9,6 +9,8 @@ import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
 import type { OptionsModel } from '../../../models/options';
 
+import { Collections } from '../../../utils/collections';
+
 import { CardList, Selector, Text, TextType } from '../../controls';
 import { ItemCard } from '../../cards';
 
@@ -36,13 +38,11 @@ export class BuyEquipmentModal extends Component<Props, State> {
 	}
 
 	getItems = () => {
-		const items: ItemModel[] = GameLogic.getItemDeck(this.props.options.packIDs)
+		const items = GameLogic.getItemDeck(this.props.options.packIDs)
 			.filter(i => (i.proficiency === this.state.proficiency) || (this.state.proficiency === ItemProficiencyType.Any))
 			.filter(i => (i.location === this.state.location) || (this.state.location === ItemLocationType.Any));
 
-		items.sort((a, b) => a.name.localeCompare(b.name));
-
-		return items;
+		return Collections.sort(items, n => n.name);
 	};
 
 	render = () => {

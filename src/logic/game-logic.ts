@@ -343,7 +343,7 @@ export class GameLogic {
 	static addHeroToGame = (game: GameModel, hero: CombatantModel) => {
 		game.heroSlots = Math.max(game.heroSlots - 1, 0);
 		game.heroes.push(hero);
-		game.heroes.sort((a, b) => a.name.localeCompare(b.name));
+		game.heroes = Collections.sort(game.heroes, n => n.name);
 	};
 
 	///////////////////////////////////////////////////////////////////////////

@@ -1,3 +1,5 @@
+import { PackData } from './pack-data';
+
 import { DamageCategoryType } from '../enums/damage-category-type';
 import { DamageType } from '../enums/damage-type';
 import { ItemLocationType } from '../enums/item-location-type';
@@ -8,7 +10,8 @@ import { TraitType } from '../enums/trait-type';
 import { FeatureLogic } from '../logic/feature-logic';
 
 import type { ItemModel } from '../models/item';
-import { PackData } from './pack-data';
+
+import { Collections } from '../utils/collections';
 
 export class ItemData {
 	static getList = (): ItemModel[] => {
@@ -1147,7 +1150,6 @@ export class ItemData {
 			}
 		];
 
-		list.sort((a, b) => a.name.localeCompare(b.name));
-		return list;
+		return Collections.sort(list, n => n.name);
 	};
 }

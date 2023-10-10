@@ -15,6 +15,8 @@ import { FeatureLogic } from '../logic/feature-logic';
 
 import type { SpeciesModel } from '../models/species';
 
+import { Collections } from '../utils/collections';
+
 export class HeroSpeciesData {
 	static human: SpeciesModel = {
 		id: 'species-human',
@@ -713,9 +715,9 @@ export class HeroSpeciesData {
 		];
 
 		list.forEach(n => {
-			n.actions.sort((a, b) => a.name.localeCompare(b.name));
+			n.features = Collections.sort(n.features, f => FeatureLogic.getFeatureTitle(f));
+			n.actions = Collections.sort(n.actions, a => a.name);
 		});
-		list.sort((a, b) => a.name.localeCompare(b.name));
-		return list;
+		return Collections.sort(list, n => n.name);
 	};
 }

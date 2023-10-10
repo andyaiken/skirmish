@@ -1127,7 +1127,7 @@ export class Main extends Component<Props, State> {
 						.filter(c => c.type === CombatantType.Hero)
 						.filter(h => (h.combat.state === CombatantState.Standing) || (h.combat.state === CombatantState.Prone) || (h.combat.state === CombatantState.Unconscious))
 						.forEach(h => game.heroes.push(h));
-					game.heroes.sort((a, b) => a.name.localeCompare(b.name));
+					game.heroes = Collections.sort(game.heroes, n => n.name);
 					// Remove the first encounter for this region
 					region.encounters.splice(0, 1);
 					if (region.encounters.length === 0) {
@@ -1180,7 +1180,7 @@ export class Main extends Component<Props, State> {
 						.filter(c => c.type === CombatantType.Hero)
 						.filter(h => (h.combat.state === CombatantState.Standing) || (h.combat.state === CombatantState.Prone))
 						.forEach(h => game.heroes.push(h));
-					game.heroes.sort((a, b) => a.name.localeCompare(b.name));
+					game.heroes = Collections.sort(game.heroes, n => n.name);
 					// Clear the current encounter
 					game.encounter = null;
 					break;

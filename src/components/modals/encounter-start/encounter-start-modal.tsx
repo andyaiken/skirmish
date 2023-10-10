@@ -10,6 +10,8 @@ import type { GameModel } from '../../../models/game';
 import type { OptionsModel } from '../../../models/options';
 import type { RegionModel } from '../../../models/region';
 
+import { Collections } from '../../../utils/collections';
+
 import { CardList, Selector, Tabs, Text, TextType } from '../../controls';
 import { HeroCard, SpeciesCard, StrongholdBenefitCard } from '../../cards';
 import { CombatantRowPanel } from '../../panels/combatant-row/combatant-row-panel';
@@ -46,9 +48,10 @@ export class EncounterStartModal extends Component<Props, State> {
 	}
 
 	selectHero = (hero: CombatantModel) => {
-		const selected = this.state.selectedHeroes;
+		let selected = this.state.selectedHeroes;
 		selected.push(hero);
-		selected.sort((a, b) => a.name.localeCompare(b.name));
+		selected = Collections.sort(selected, n => n.name);
+
 		this.setState({
 			viewMode: 'heroes',
 			selectedHeroes: selected
@@ -67,19 +70,19 @@ export class EncounterStartModal extends Component<Props, State> {
 	};
 
 	render = () => {
-		const heroes = ([] as CombatantModel[]).concat(this.props.game.heroes);
+		let heroes = ([] as CombatantModel[]).concat(this.props.game.heroes);
 		switch (this.state.heroSelectionMode) {
 			case 'Name':
-				heroes.sort((a, b) => a.name.localeCompare(b.name));
+				heroes = Collections.sort(heroes, n => n.name);
 				break;
 			case 'Species':
-				heroes.sort((a, b) => a.speciesID.localeCompare(b.speciesID));
+				heroes = Collections.sort(heroes, n => n.speciesID);
 				break;
 			case 'Role':
-				heroes.sort((a, b) => a.roleID.localeCompare(b.roleID));
+				heroes = Collections.sort(heroes, n => n.roleID);
 				break;
 			case 'Background':
-				heroes.sort((a, b) => a.backgroundID.localeCompare(b.backgroundID));
+				heroes = Collections.sort(heroes, n => n.backgroundID);
 				break;
 			case 'Level':
 				heroes.sort((a, b) => a.level - b.level);

@@ -1,3 +1,5 @@
+import { PackData } from './pack-data';
+
 import { DamageCategoryType } from '../enums/damage-category-type';
 import { ItemLocationType } from '../enums/item-location-type';
 import { ItemProficiencyType } from '../enums/item-proficiency-type';
@@ -8,7 +10,8 @@ import { ActionEffects } from '../logic/action-logic';
 import { ConditionLogic } from '../logic/condition-logic';
 
 import type { ItemModel } from '../models/item';
-import { PackData } from './pack-data';
+
+import { Collections } from '../utils/collections';
 
 export class PotionData {
 	static aptitude: ItemModel = {
@@ -220,7 +223,6 @@ export class PotionData {
 			PotionData.quickness
 		];
 
-		list.sort((a, b) => a.name.localeCompare(b.name));
-		return list;
+		return Collections.sort(list, n => n.name);
 	};
 }

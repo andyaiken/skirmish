@@ -44,9 +44,7 @@ export class BuyStructureModal extends Component<Props, State> {
 			structures.push(Collections.draw(deck));
 		}
 
-		structures.sort((a, b) => a.name.localeCompare(b.name));
-
-		return structures;
+		return Collections.sort(structures, n => n.name);
 	};
 
 	redraw = () => {

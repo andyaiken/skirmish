@@ -1,5 +1,7 @@
 import type { PackModel } from '../models/pack';
 
+import { Collections } from '../utils/collections';
+
 export class PackData {
 	static arcana: PackModel = {
 		id: 'pack-1',
@@ -68,7 +70,6 @@ export class PackData {
 			PackData.fae
 		];
 
-		list.sort((a, b) => a.name.localeCompare(b.name));
-		return list;
+		return Collections.sort(list, n => n.name);
 	};
 }

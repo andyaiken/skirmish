@@ -1,4 +1,5 @@
 import { PackData } from './pack-data';
+import { PotionData } from './potion-data';
 
 import { ActionTargetType } from '../enums/action-target-type';
 import { ConditionType } from '../enums/condition-type';
@@ -15,7 +16,8 @@ import { ConditionLogic } from '../logic/condition-logic';
 import { FeatureLogic } from '../logic/feature-logic';
 
 import type { BackgroundModel } from '../models/background';
-import { PotionData } from './potion-data';
+
+import { Collections } from '../utils/collections';
 
 export class BackgroundData {
 	static acrobat: BackgroundModel = {
@@ -847,9 +849,9 @@ export class BackgroundData {
 		];
 
 		list.forEach(n => {
-			n.actions.sort((a, b) => a.name.localeCompare(b.name));
+			n.features = Collections.sort(n.features, f => FeatureLogic.getFeatureTitle(f));
+			n.actions = Collections.sort(n.actions, a => a.name);
 		});
-		list.sort((a, b) => a.name.localeCompare(b.name));
-		return list;
+		return Collections.sort(list, n => n.name);
 	};
 }

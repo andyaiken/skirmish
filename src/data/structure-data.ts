@@ -4,6 +4,8 @@ import { StructureType } from '../enums/structure-type';
 
 import type { StructureModel } from '../models/structure';
 
+import { Collections } from '../utils/collections';
+
 export class StructureData {
 	static academy: StructureModel = {
 		id: 'structure-academy',
@@ -153,7 +155,6 @@ export class StructureData {
 			StructureData.wizard
 		];
 
-		list.sort((a, b) => a.name.localeCompare(b.name));
-		return list;
+		return Collections.sort(list, n => n.name);
 	};
 }

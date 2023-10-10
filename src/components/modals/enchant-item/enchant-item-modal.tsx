@@ -10,6 +10,8 @@ import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
 import type { OptionsModel } from '../../../models/options';
 
+import { Collections } from '../../../utils/collections';
+
 import { CardList, Dialog, Text, TextType } from '../../controls';
 import { ItemCard, StrongholdBenefitCard } from '../../cards';
 
@@ -51,9 +53,7 @@ export class EnchantItemModal extends Component<Props, State> {
 			items.push(MagicItemGenerator.generateMagicItem(baseItem, this.props.options.packIDs));
 		}
 
-		items.sort((a, b) => a.name.localeCompare(b.name));
-
-		return items;
+		return Collections.sort(items, n => n.name);
 	};
 
 	redraw = () => {

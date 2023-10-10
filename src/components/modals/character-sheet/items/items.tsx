@@ -199,8 +199,7 @@ export class Items extends Component<Props> {
 
 		const adj = EncounterMapLogic.getAdjacentSquares(this.props.game.encounter.mapSquares, [ this.props.combatant.combat.position ]);
 		const piles = this.props.game.encounter.loot.filter(lp => adj.find(sq => (sq.x === lp.position.x) && (sq.y === lp.position.y)));
-		const items = Collections.distinct(piles.flatMap(pile => pile.items), i => i.name)
-			.sort((a, b) => a.name.localeCompare(b.name));
+		const items = Collections.sort(Collections.distinct(piles.flatMap(pile => pile.items), i => i.name), i => i.name);
 
 		if (items.length === 0) {
 			return null;

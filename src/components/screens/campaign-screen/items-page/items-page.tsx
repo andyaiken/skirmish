@@ -274,7 +274,7 @@ export class ItemsPage extends Component<Props, State> {
 	render = () => {
 		try {
 			let magicItemSection = null;
-			const magicItems = this.props.game.items.filter(i => i.magic).sort((a, b) => a.name.localeCompare(b.name));
+			const magicItems = Collections.sort(this.props.game.items.filter(i => i.magic), n => n.name);
 			if (magicItems.length > 0) {
 				const cards = magicItems.map(item => (
 					<div key={item.id}>
@@ -294,7 +294,7 @@ export class ItemsPage extends Component<Props, State> {
 			}
 
 			let potionSection = null;
-			const potions = this.props.game.items.filter(i => !i.magic && i.potion).sort((a, b) => a.name.localeCompare(b.name));
+			const potions = Collections.sort(this.props.game.items.filter(i => !i.magic && i.potion), n => n.name);
 			if (potions.length > 0) {
 				const cards = Collections.distinct(potions, i => i.name).map(item => {
 					const count = potions.filter(i => i.name === item.name).length;
@@ -333,7 +333,7 @@ export class ItemsPage extends Component<Props, State> {
 			}
 
 			let mundaneItemSection = null;
-			const mundaneItems = this.props.game.items.filter(i => !i.magic && !i.potion).sort((a, b) => a.name.localeCompare(b.name));
+			const mundaneItems = Collections.sort(this.props.game.items.filter(i => !i.magic && !i.potion), n => n.name);
 			if (mundaneItems.length > 0) {
 				const cards = Collections.distinct(mundaneItems, i => i.name).map(item => {
 					const count = mundaneItems.filter(i => i.name === item.name).length;

@@ -1,6 +1,25 @@
 import { Random } from './random';
 
 export class Collections {
+	static sort = <T>(collection: T[], key: (item: T) => string) => {
+		const getText = (item: T) => {
+			let k = key(item);
+			const starts = [ 'a ', 'the ' ];
+			starts.forEach(start => {
+				if (k.toLowerCase().startsWith(start)) {
+					k = k.substring(start.length);
+				}
+			});
+			return k;
+		};
+
+		return collection.sort((a, b) => {
+			const strA = getText(a);
+			const strB = getText(b);
+			return strA.localeCompare(strB);
+		});
+	};
+
 	static shuffle = <T>(collection: T[], rng: () => number = Math.random) => {
 		let currentIndex = collection.length;
 		while (currentIndex !== 0) {

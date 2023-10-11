@@ -274,6 +274,50 @@ export class HeroSpeciesData {
 		]
 	};
 
+	static faun: SpeciesModel = {
+		id: 'species-faun',
+		name: 'Faun',
+		packID: PackData.fae.id,
+		description: 'A humanoid with powerful goat-like legs.',
+		type: CombatantType.Hero,
+		size: 1,
+		quirks: [],
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('faun-start-1', TraitType.Speed, 1),
+			FeatureLogic.createSkillFeature('faun-start-2', SkillType.Reactions, 2)
+		],
+		features: [
+			FeatureLogic.createTraitFeature('faun-feature-1', TraitType.Speed, 1),
+			FeatureLogic.createSkillFeature('faun-feature-2', SkillType.Reactions, 2)
+		],
+		actions: [
+			{
+				id: 'faun-action-1',
+				name: 'Quick Leap',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 4)
+				],
+				effects: [
+					ActionEffects.forceMovement(MovementType.BesideTarget, 1),
+					ActionEffects.takeAnotherAction()
+				]
+			},
+			{
+				id: 'faun-action-2',
+				name: 'Knockdown Jump',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 4)
+				],
+				effects: [
+					ActionEffects.forceMovement(MovementType.BesideTarget, 1),
+					ActionEffects.knockDown()
+				]
+			}
+		]
+	};
+
 	static gnome: SpeciesModel = {
 		id: 'species-gnome',
 		name: 'Gnome',
@@ -706,6 +750,7 @@ export class HeroSpeciesData {
 			HeroSpeciesData.deva,
 			HeroSpeciesData.dwarf,
 			HeroSpeciesData.elf,
+			HeroSpeciesData.faun,
 			HeroSpeciesData.gnome,
 			HeroSpeciesData.minotaur,
 			HeroSpeciesData.pixie,

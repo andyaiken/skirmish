@@ -56,6 +56,18 @@ export class BackgroundData {
 					ActionEffects.addMovement(),
 					ActionEffects.takeAnotherAction()
 				]
+			},
+			{
+				id: 'acrobat-action-3',
+				name: 'Quickness',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.self()
+				],
+				effects: [
+					ActionEffects.addCondition(ConditionLogic.createMovementBonusCondition(TraitType.Endurance, 3)),
+					ActionEffects.takeAnotherAction()
+				]
 			}
 		]
 	};
@@ -685,7 +697,7 @@ export class BackgroundData {
 					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
 				],
 				effects: [
-					ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Speed, 10)),
+					ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Speed, 4)),
 					ActionEffects.takeAnotherAction()
 				]
 			},

@@ -210,13 +210,13 @@ export class ConditionLogic {
 			case 1:
 				return ConditionLogic.createTraitBonusCondition(GameLogic.getRandomTrait(), Random.randomBonus(), GameLogic.getRandomTrait());
 			case 2:
-				return ConditionLogic.createSkillBonusCondition(GameLogic.getRandomTrait(), Random.randomBonus(), GameLogic.getRandomSkill());
+				return ConditionLogic.createSkillBonusCondition(GameLogic.getRandomTrait(), Random.randomBonus() * 2, GameLogic.getRandomSkill());
 			case 3:
-				return ConditionLogic.createDamageBonusCondition(GameLogic.getRandomTrait(), Random.randomBonus(), GameLogic.getRandomDamageType());
+				return ConditionLogic.createDamageBonusCondition(GameLogic.getRandomTrait(), Random.randomBonus() * 3, GameLogic.getRandomDamageType());
 			case 4:
-				return ConditionLogic.createDamageResistanceCondition(GameLogic.getRandomTrait(), Random.randomBonus(), GameLogic.getRandomDamageType());
+				return ConditionLogic.createDamageResistanceCondition(GameLogic.getRandomTrait(), Random.randomBonus() * 3, GameLogic.getRandomDamageType());
 			case 5:
-				return ConditionLogic.createMovementBonusCondition(GameLogic.getRandomTrait(), Random.randomBonus());
+				return ConditionLogic.createMovementBonusCondition(GameLogic.getRandomTrait(), Random.randomBonus() * 2);
 		}
 
 		return null;
@@ -229,13 +229,13 @@ export class ConditionLogic {
 			case 1:
 				return ConditionLogic.createTraitPenaltyCondition(GameLogic.getRandomTrait(), Random.randomBonus(), GameLogic.getRandomTrait());
 			case 2:
-				return ConditionLogic.createSkillPenaltyCondition(GameLogic.getRandomTrait(), Random.randomBonus(), GameLogic.getRandomSkill());
+				return ConditionLogic.createSkillPenaltyCondition(GameLogic.getRandomTrait(), Random.randomBonus() * 2, GameLogic.getRandomSkill());
 			case 3:
-				return ConditionLogic.createDamagePenaltyCondition(GameLogic.getRandomTrait(), Random.randomBonus(), GameLogic.getRandomDamageType());
+				return ConditionLogic.createDamagePenaltyCondition(GameLogic.getRandomTrait(), Random.randomBonus() * 3, GameLogic.getRandomDamageType());
 			case 4:
-				return ConditionLogic.createDamageVulnerabilityCondition(GameLogic.getRandomTrait(), Random.randomBonus(), GameLogic.getRandomDamageType());
+				return ConditionLogic.createDamageVulnerabilityCondition(GameLogic.getRandomTrait(), Random.randomBonus() * 3, GameLogic.getRandomDamageType());
 			case 5:
-				return ConditionLogic.createMovementPenaltyCondition(GameLogic.getRandomTrait(), Random.randomBonus());
+				return ConditionLogic.createMovementPenaltyCondition(GameLogic.getRandomTrait(), Random.randomBonus() * 2);
 		}
 
 		return null;

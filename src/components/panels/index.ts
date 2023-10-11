@@ -1,4 +1,5 @@
 import { CampaignMapPanel } from './campaign-map/campaign-map-panel';
+import { CardGridPanel } from './card-grid/card-grid-panel';
 import { CombatStatsPanel } from './combat-stats/combat-stats-panel';
 import { CombatantNotices } from './combatant-notices/combatant-notices';
 import { CombatantRowPanel } from './combatant-row/combatant-row-panel';
@@ -11,6 +12,7 @@ import { TreasureRowPanel } from './treasure-row/treasure-row-panel';
 
 export {
 	CampaignMapPanel,
+	CardGridPanel,
 	CombatStatsPanel,
 	CombatantNotices,
 	CombatantRowPanel,

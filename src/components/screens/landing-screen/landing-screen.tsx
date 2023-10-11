@@ -3,7 +3,7 @@ import { IconCards } from '@tabler/icons-react';
 
 import { CardType } from '../../../enums/card-type';
 
-import { GameLogic } from '../../../logic/game-logic';
+import { PackLogic } from '../../../logic/pack-logic';
 
 import type { GameModel } from '../../../models/game';
 import type { OptionsModel } from '../../../models/options';
@@ -48,7 +48,7 @@ export class LandingScreen extends Component<Props> {
 			}
 
 			let packsBtn = null;
-			const availablePacks = GameLogic.getPacks().filter(p => !this.props.options.packIDs.includes(p.id)).length;
+			const availablePacks = PackLogic.getPacks().filter(p => !this.props.options.packIDs.includes(p.id)).length;
 			if (availablePacks > 0) {
 				packsBtn = (
 					<button className='packs-btn' onClick={() => this.props.showPacks()}>

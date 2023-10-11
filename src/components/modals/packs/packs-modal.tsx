@@ -8,13 +8,13 @@ import { PotionData } from '../../../data/potion-data';
 import { RoleData } from '../../../data/role-data';
 import { StructureData } from '../../../data/structure-data';
 
-import { GameLogic } from '../../../logic/game-logic';
+import { PackLogic } from '../../../logic/pack-logic';
 
 import type { OptionsModel } from '../../../models/options';
 import type { PackModel } from '../../../models/pack';
 
 import { BackgroundCard, ItemCard, PackCard, RoleCard, SpeciesCard, StructureCard } from '../../cards';
-import { Badge, CardList, Dialog, Text, TextType } from '../../controls';
+import { CardList, Dialog, Text, TextType } from '../../controls';
 
 import './packs-modal.scss';
 
@@ -36,90 +36,66 @@ export class PacksModal extends Component<Props, State> {
 		};
 	}
 
-	getBadge = (strength: number) => {
-		let value = '';
-
-		if (this.props.options.developer) {
-			const scaled = Math.round(strength / 5);
-			for (let n = 0; n < scaled; ++n) {
-				value += '★';
-			}
-		}
-
-		return value;
-	};
-
 	getDialog = () => {
 		if (!this.state.selectedPack) {
 			return null;
 		}
 
 		const packID = this.state.selectedPack.id;
-		const packName = this.state.selectedPack.name;
 
 		let owned = null;
 		if ((packID !== '') && !this.props.options.packIDs.includes(packID)) {
 			owned = (
-				<Text type={TextType.Information}>
-					<p>You <b>do not</b> own this card pack.</p>
-					<button onClick={() => this.props.addPack(packID)}>Get This Pack</button>
-				</Text>
+				<div>
+					<Text type={TextType.Information}>
+						<p>You <b>do not</b> own this card pack.</p>
+					</Text>
+					<button className='primary' onClick={() => this.props.addPack(packID)}>
+						Get This Pack
+					</button>
+				</div>
 			);
 		}
 
 		const heroes = HeroSpeciesData.getList().filter(s => s.packID === packID).map(s => {
 			return (
-				<Badge key={s.id} value={this.getBadge(GameLogic.getSpeciesStrength(s))}>
-					<SpeciesCard species={s} />
-				</Badge>
+				<SpeciesCard key={s.id} species={s} />
 			);
 		});
 
 		const monsters = MonsterSpeciesData.getList().filter(s => s.packID === packID).map(s => {
 			return (
-				<Badge key={s.id} value={this.getBadge(GameLogic.getSpeciesStrength(s))}>
-					<SpeciesCard species={s} />
-				</Badge>
+				<SpeciesCard key={s.id} species={s} />
 			);
 		});
 
 		const roles = RoleData.getList().filter(r => r.packID === packID).map(r => {
 			return (
-				<Badge key={r.id} value={this.getBadge(GameLogic.getRoleStrength(r))}>
-					<RoleCard role={r} />
-				</Badge>
+				<RoleCard key={r.id} role={r} />
 			);
 		});
 
 		const backgrounds = BackgroundData.getList().filter(b => b.packID === packID).map(b => {
 			return (
-				<Badge key={b.id} value={this.getBadge(GameLogic.getBackgroundStrength(b))}>
-					<BackgroundCard background={b} />
-				</Badge>
+				<BackgroundCard key={b.id} background={b} />
 			);
 		});
 
 		const structures = StructureData.getList().filter(s => s.packID === packID).map(s => {
 			return (
-				<Badge key={s.id} value={0}>
-					<StructureCard structure={s} />
-				</Badge>
+				<StructureCard key={s.id} structure={s} />
 			);
 		});
 
 		const items = ItemData.getList().filter(i => i.packID === packID).map(i => {
 			return (
-				<Badge key={i.id} value={0}>
-					<ItemCard item={i} />
-				</Badge>
+				<ItemCard key={i.id} item={i} />
 			);
 		});
 
 		const potions = PotionData.getList().filter(i => i.packID === packID).map(p => {
 			return (
-				<Badge key={p.id} value={0}>
-					<ItemCard item={p} />
-				</Badge>
+				<ItemCard key={p.id} item={p} />
 			);
 		});
 
@@ -127,8 +103,11 @@ export class PacksModal extends Component<Props, State> {
 			<Dialog
 				content={
 					<div>
-						<Text type={TextType.Heading}>{packName}</Text>
-						{owned !== null ? <hr /> : null}
+						<Text type={TextType.Heading}>{this.state.selectedPack.name}</Text>
+						<hr />
+						<Text>
+							<p style={{ textAlign: 'center' }}>{this.state.selectedPack.description}</p>
+						</Text>
 						{owned}
 						{heroes.length > 0 ? <hr /> : null}
 						{heroes.length > 0 ? <Text type={TextType.MinorHeading}>Hero Species Cards</Text> : null}
@@ -167,32 +146,30 @@ export class PacksModal extends Component<Props, State> {
 				description: 'The core cards for the game, available to all.'
 			};
 
-			const owned = GameLogic.getPacks()
+			const owned = PackLogic.getPacks()
 				.filter(pack => this.props.options.packIDs.includes(pack.id))
 				.map(pack => {
 					return (
-						<Badge key={pack.id} value={this.getBadge(GameLogic.getPackStrength(pack))}>
-							<PackCard
-								pack={pack}
-								onClick={p => this.setState({ selectedPack: p })}
-								onRemove={this.props.options.developer ? p => this.props.removePack(p.id) : null}
-							/>
-						</Badge>
+						<PackCard
+							key={pack.id}
+							pack={pack}
+							onClick={p => this.setState({ selectedPack: p })}
+							onRemove={this.props.options.developer ? p => this.props.removePack(p.id) : null}
+						/>
 					);
 				});
 			owned.unshift(
 				<PackCard key='core' pack={core} onClick={p => this.setState({ selectedPack: p })} />
 			);
-			const notOwned = GameLogic.getPacks()
+			const notOwned = PackLogic.getPacks()
 				.filter(pack => !this.props.options.packIDs.includes(pack.id))
 				.map(pack => {
 					return (
-						<Badge key={pack.id} value={this.getBadge(GameLogic.getPackStrength(pack))}>
-							<PackCard
-								pack={pack}
-								onClick={p => this.setState({ selectedPack: p })}
-							/>
-						</Badge>
+						<PackCard
+							key={pack.id}
+							pack={pack}
+							onClick={p => this.setState({ selectedPack: p })}
+						/>
 					);
 				});
 

@@ -967,13 +967,32 @@ export class MonsterSpeciesData {
 				name: 'Tail Lash',
 				prerequisites: [],
 				parameters: [
-					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					ActionTargetParameters.adjacent(ActionTargetType.Enemies, Number.MAX_VALUE)
 				],
 				effects: [
 					ActionEffects.attack({
 						weapon: false,
 						skill: SkillType.Brawl,
 						trait: TraitType.Endurance,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Impact, 3)
+						]
+					})
+				]
+			},
+			{
+				id: 'scarab-action-3',
+				name: 'Tail Stinger',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 2)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Brawl,
+						trait: TraitType.Speed,
 						skillBonus: 0,
 						hit: [
 							ActionEffects.dealDamage(DamageType.Piercing, 2),
@@ -1021,7 +1040,7 @@ export class MonsterSpeciesData {
 			},
 			{
 				id: 'stinger-swarm-action-2',
-				name: 'Stinger',
+				name: 'Sting',
 				prerequisites: [],
 				parameters: [
 					ActionTargetParameters.adjacent(ActionTargetType.Enemies, Number.MAX_VALUE)
@@ -1127,7 +1146,9 @@ export class MonsterSpeciesData {
 			QuirkType.Undead
 		],
 		startingFeatures: [
-			FeatureLogic.createSkillFeature('skeleton-start-1', SkillType.Brawl, 2)
+			FeatureLogic.createSkillFeature('skeleton-start-1', SkillType.Brawl, 2),
+			FeatureLogic.createDamageResistFeature('skeleton-start-2', DamageType.Piercing, 2),
+			FeatureLogic.createDamageCategoryResistFeature('skeleton-start-3', DamageCategoryType.Corruption, 1)
 		],
 		features: [
 			FeatureLogic.createSkillFeature('skeleton-feature-1', SkillType.Brawl, 2),
@@ -1149,7 +1170,7 @@ export class MonsterSpeciesData {
 						trait: TraitType.Speed,
 						skillBonus: 0,
 						hit: [
-							ActionEffects.dealDamage(DamageType.Impact, 1)
+							ActionEffects.dealDamage(DamageType.Impact, 2)
 						]
 					})
 				]
@@ -1162,7 +1183,8 @@ export class MonsterSpeciesData {
 					ActionTargetParameters.self()
 				],
 				effects: [
-					ActionEffects.healDamage(3)
+					ActionEffects.healDamage(3),
+					ActionEffects.healWounds(1)
 				]
 			}
 		]

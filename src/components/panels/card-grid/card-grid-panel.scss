@@ -1,0 +1,58 @@
+.card-grid-panel {
+	display: block;
+
+	.row {
+		display: flex;
+
+		.cell {
+			flex: 1 1 0;
+			border: 1px solid rgb(220, 220, 220);
+			background-color: rgb(255, 255, 255);
+			padding: 5px;
+			max-height: 250px;
+			overflow-x: hidden;
+			overflow-y: auto;
+			-webkit-overflow-scrolling: touch;
+
+			&.column-heading {
+				display: flex;
+				flex-direction: column;
+				justify-content: space-between;
+
+				.pack-name {
+					height: 60px;
+					text-transform: uppercase;
+					font-weight: 600;
+					border-bottom: 1px solid rgb(220, 220, 220);
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					text-align: center;
+				}
+
+				.pack-stats {
+					margin-top: 5px;
+				}
+			}
+
+			&.centered {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+
+			button {
+				display: block;
+				font-size: 13px;
+				text-transform: none;
+				letter-spacing: 0;
+				font-weight: 400;
+				margin: 2px 0;
+				padding: 0 5px;
+				flex-direction: row;
+				text-align: left;
+				min-height: 30px;
+			}
+		}
+	}
+}

@@ -3,7 +3,7 @@ import { Component } from 'react';
 
 import { StructureType } from '../../../enums/structure-type';
 
-import { GameLogic } from '../../../logic/game-logic';
+import { PackLogic } from '../../../logic/pack-logic';
 
 import type { BoonModel } from '../../../models/boon';
 import type { CombatantModel } from '../../../models/combatant';
@@ -17,18 +17,12 @@ import type { StructureModel } from '../../../models/structure';
 import { Badge, Selector } from '../../controls';
 
 import { CampaignMapPage } from './campaign-map-page/campaign-map-page';
+import { DevPage } from './dev-page/dev-page';
 import { HeroesPage } from './heroes-page/heroes-page';
 import { ItemsPage } from './items-page/items-page';
 import { StrongholdPage } from './stronghold-page/stronghold-page';
 
 import './campaign-screen.scss';
-
-enum CampaignScreenType {
-	Island = 'island',
-	Stronghold = 'stronghold',
-	Team = 'team',
-	Items = 'items'
-}
 
 interface Props {
 	game: GameModel;
@@ -58,7 +52,7 @@ interface Props {
 }
 
 interface State {
-	screen: CampaignScreenType;
+	screen: string;
 }
 
 export class CampaignScreen extends Component<Props, State> {
@@ -66,11 +60,11 @@ export class CampaignScreen extends Component<Props, State> {
 		super(props);
 
 		this.state = {
-			screen: CampaignScreenType.Island
+			screen: 'island'
 		};
 	}
 
-	setScreen = (screen: CampaignScreenType) => {
+	setScreen = (screen: string) => {
 		this.setState({
 			screen: screen
 		});
@@ -80,7 +74,7 @@ export class CampaignScreen extends Component<Props, State> {
 		try {
 			let content = null;
 			switch (this.state.screen) {
-				case CampaignScreenType.Island:
+				case 'island':
 					content = (
 						<CampaignMapPage
 							game={this.props.game}
@@ -90,7 +84,7 @@ export class CampaignScreen extends Component<Props, State> {
 						/>
 					);
 					break;
-				case CampaignScreenType.Stronghold:
+				case 'stronghold':
 					content = (
 						<StrongholdPage
 							game={this.props.game}
@@ -103,7 +97,7 @@ export class CampaignScreen extends Component<Props, State> {
 						/>
 					);
 					break;
-				case CampaignScreenType.Team:
+				case 'team':
 					content = (
 						<HeroesPage
 							game={this.props.game}
@@ -121,7 +115,7 @@ export class CampaignScreen extends Component<Props, State> {
 						/>
 					);
 					break;
-				case CampaignScreenType.Items:
+				case 'items':
 					content = (
 						<ItemsPage
 							game={this.props.game}
@@ -133,6 +127,14 @@ export class CampaignScreen extends Component<Props, State> {
 							redeemBoon={this.props.redeemBoon}
 							useCharge={this.props.useCharge}
 							addMoney={this.props.addMoney}
+						/>
+					);
+					break;
+				case 'dev':
+					content = (
+						<DevPage
+							game={this.props.game}
+							options={this.props.options}
 						/>
 					);
 					break;
@@ -157,13 +159,20 @@ export class CampaignScreen extends Component<Props, State> {
 				}
 			];
 
-			const availablePacks = GameLogic.getPacks().filter(p => !this.props.options.packIDs.includes(p.id)).length;
+			if (this.props.options.developer) {
+				options.push({
+					id: 'dev',
+					display: 'Developer'
+				});
+			}
+
+			const availablePacks = PackLogic.getPacks().filter(p => !this.props.options.packIDs.includes(p.id)).length;
 
 			return (
 				<div className='campaign-screen'>
 					<div className='campaign-top-bar'>
 						<div className='logo-text inset-text'>Skirmish</div>
-						<Selector options={options} selectedID={this.state.screen} onSelect={id => this.setScreen(id as CampaignScreenType)} />
+						<Selector options={options} selectedID={this.state.screen} onSelect={this.setScreen} />
 						<div className='buttons'>
 							<Badge value={availablePacks}>
 								<button className='icon-btn' title='Packs' onClick={() => this.props.showPacks()}>

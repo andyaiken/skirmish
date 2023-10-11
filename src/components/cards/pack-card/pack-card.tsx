@@ -3,7 +3,7 @@ import { IconX } from '@tabler/icons-react';
 
 import { CardType } from '../../../enums/card-type';
 
-import { GameLogic } from '../../../logic/game-logic';
+import { PackLogic } from '../../../logic/pack-logic';
 
 import type { PackModel } from '../../../models/pack';
 
@@ -55,7 +55,7 @@ export class PackCard extends Component<Props> {
 		if (this.props.pack.id) {
 			content = (
 				<div className='pack-card-front'>
-					<StatValue label='Cards' value={GameLogic.getPackCardCount(this.props.pack.id)} />
+					<StatValue label='Cards' value={PackLogic.getPackCardCount(this.props.pack.id)} />
 				</div>
 			);
 		}

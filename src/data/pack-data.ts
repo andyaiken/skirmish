@@ -11,8 +11,8 @@ export class PackData {
 
 	static skullduggery: PackModel = {
 		id: 'pack-02',
-		name: 'Skullduggery',
-		description: 'A collection of cards for those who fight with cunning rather than valor.'
+		name: 'Guile and Cunning',
+		description: 'A collection of cards for those who fight with skullduggery rather than valor.'
 	};
 
 	static elements: PackModel = {

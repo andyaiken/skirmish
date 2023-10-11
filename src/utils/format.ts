@@ -19,4 +19,8 @@ export class Format {
 
 		return str;
 	};
+
+	static toCurrency = (value: number, symbol: string) => {
+		return `${symbol}${value.toFixed(2)}`;
+	};
 }

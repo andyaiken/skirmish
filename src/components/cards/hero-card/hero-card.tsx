@@ -90,6 +90,7 @@ export class HeroCard extends Component<Props, State> {
 		if (magicItems.length > 0) {
 			items = (
 				<div className='items'>
+					<hr />
 					<Text type={TextType.MinorHeading}>Magic Items</Text>
 					{magicItems.map(i => (<ListItemPanel key={i.id} item={`${i.name} (${i.baseItem})`} />))}
 				</div>
@@ -143,18 +144,17 @@ export class HeroCard extends Component<Props, State> {
 				)}
 				back={(
 					<div className='hero-card-back'>
-						<Text type={TextType.MinorHeading}>Traits</Text>
-						<div className='traits'>
-							<StatValue orientation='vertical' label='End' value={CombatantLogic.getTraitRank(this.props.hero, [], TraitType.Endurance)} />
-							<StatValue orientation='vertical' label='Res' value={CombatantLogic.getTraitRank(this.props.hero, [], TraitType.Resolve)} />
-							<StatValue orientation='vertical' label='Spd' value={CombatantLogic.getTraitRank(this.props.hero, [], TraitType.Speed)} />
-						</div>
-						<Text type={TextType.MinorHeading}>XP</Text>
 						<div className='xp'>
 							<Gauge
 								progress={this.props.hero.xp / this.props.hero.level}
 								content={`${this.props.hero.xp} XP / ${this.props.hero.level}`}
 							/>
+						</div>
+						<hr />
+						<div className='traits'>
+							<StatValue orientation='vertical' label='End' value={CombatantLogic.getTraitRank(this.props.hero, [], TraitType.Endurance)} />
+							<StatValue orientation='vertical' label='Res' value={CombatantLogic.getTraitRank(this.props.hero, [], TraitType.Resolve)} />
+							<StatValue orientation='vertical' label='Spd' value={CombatantLogic.getTraitRank(this.props.hero, [], TraitType.Speed)} />
 						</div>
 						{items}
 					</div>

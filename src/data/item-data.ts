@@ -619,7 +619,7 @@ export class ItemData {
 			{
 				id: 'item-rifle',
 				name: 'Rifle',
-				packID: '',
+				packID: PackData.technology.id,
 				description: 'A large gun that requires two hands to use.',
 				baseItem: '',
 				magic: false,
@@ -669,7 +669,7 @@ export class ItemData {
 			{
 				id: 'item-pistol',
 				name: 'Pistol',
-				packID: PackData.technology.id,
+				packID: '',
 				description: 'A less powerful hand-held gun.',
 				baseItem: '',
 				magic: false,

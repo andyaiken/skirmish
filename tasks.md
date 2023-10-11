@@ -14,22 +14,11 @@
 
 # Improvements / Enhancements
 
-## Features
-* Mountebank, Ninja, Sensei, and Pixie should have a blur aura
-  * Affects self
-  * When attacked, roll aura rank; 10+ means attack misses
-
 ## Encounters
 * Undo movement
   * Can't undo movement if you've done anything (taken an action, hidden, etc)
 * Drag and drop movement
   * Automatically select the best path
-
-## Turn Log
-* Formatting
-  * Indentation
-  * Colours
-  * Highlighting names, values
 
 ## Map Types
 * Building interior
@@ -76,6 +65,11 @@
 * Sources of light
 * Species with darkvision
 
+## Blur Aura
+* Mountebank, Ninja, Sensei, and Pixie should have a blur aura
+* Affects self
+* When attacked by someone within the aura, roll aura rank; 10+ means attack misses
+
 ## Victory Conditions
 * Get a certain number of heroes to a specific area and stay there for a certain number of rounds
 * Defeat a specific opponent within a certain number of rounds
@@ -111,10 +105,10 @@
   * monster - Demon
   * monster - Swarm of imps
 * Fae
-  * hero / monster - Faun / satyr - leaping
   * role - Arcane archer / venator / bowmage / hexbow
-* Cold Blood
-  * monster - Crocodilian (like lizardfolk)
+  * role - Druid
+* Elements
+  * role - Elementalist
 
 ## Ideas for Roles / Backgrounds
 * Gladiator 
@@ -179,6 +173,7 @@
 * Convert from CRA to Vite
 * Convert to functional components
 * Convert to React Native / Electron
+* Port to ipadOS, macOS
 * Use hooks
 
 -----------------------------------------------------------------------------------------

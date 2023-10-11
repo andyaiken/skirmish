@@ -65,26 +65,6 @@ export class GameLogic {
 
 	///////////////////////////////////////////////////////////////////////////
 
-	static getPacks = () => {
-		return PackData.getList();
-	};
-
-	static getPackCardCount = (packID: string) => {
-		let count = 0;
-
-		count += HeroSpeciesData.getList().filter(s => s.packID === packID).length;
-		count += MonsterSpeciesData.getList().filter(s => s.packID === packID).length;
-		count += RoleData.getList().filter(r => r.packID === packID).length;
-		count += BackgroundData.getList().filter(b => b.packID === packID).length;
-		count += ItemData.getList().filter(i => i.packID === packID).length;
-		count += PotionData.getList().filter(i => i.packID === packID).length;
-		count += StructureData.getList().filter(s => s.packID === packID).length;
-
-		return count;
-	};
-
-	///////////////////////////////////////////////////////////////////////////
-
 	static getSpecies = (id: string) => {
 		const allSpecies = ([] as SpeciesModel[])
 			.concat(HeroSpeciesData.getList())
@@ -355,7 +335,7 @@ export class GameLogic {
 		value += Collections.mean(species.features, feature => GameLogic.getFeatureStrength(feature)) + species.features.length;
 		value += Collections.mean(species.actions, action => GameLogic.getActionStrength(action)) + species.actions.length;
 
-		return Math.round(value);
+		return Math.round(value / 5);
 	};
 
 	static getRoleStrength = (role: RoleModel) => {
@@ -365,7 +345,7 @@ export class GameLogic {
 		value += Collections.mean(role.features, feature => GameLogic.getFeatureStrength(feature)) + role.features.length;
 		value += Collections.mean(role.actions, action => GameLogic.getActionStrength(action)) + role.actions.length;
 
-		return Math.round(value);
+		return Math.round(value / 5);
 	};
 
 	static getBackgroundStrength = (background: BackgroundModel) => {
@@ -375,7 +355,7 @@ export class GameLogic {
 		value += Collections.mean(background.features, feature => GameLogic.getFeatureStrength(feature)) + background.features.length;
 		value += Collections.mean(background.actions, action => GameLogic.getActionStrength(action)) + background.actions.length;
 
-		return Math.round(value);
+		return Math.round(value / 5);
 	};
 
 	static getFeatureStrength = (feature: FeatureModel) => {
@@ -496,6 +476,6 @@ export class GameLogic {
 		values.push(...RoleData.getList().filter(r => r.packID === pack.id).map(r => GameLogic.getRoleStrength(r)));
 		values.push(...BackgroundData.getList().filter(b => b.packID === pack.id).map(b => GameLogic.getBackgroundStrength(b)));
 
-		return Collections.mean(values, n => n);
+		return Math.round(Collections.mean(values, n => n));
 	};
 }

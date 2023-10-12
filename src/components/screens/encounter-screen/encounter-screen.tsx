@@ -544,8 +544,8 @@ export class EncounterScreen extends Component<Props, State> {
 						combatant={currentCombatant}
 						encounter={this.props.encounter}
 						game={this.props.game}
-						currentActionParameter={this.state.selectedActionParameter}
 						developer={this.props.options.developer}
+						currentActionParameter={this.state.selectedActionParameter}
 						collapsed={!this.state.showBottomPanel}
 						drawActions={this.props.drawActions}
 						selectAction={this.selectAction}

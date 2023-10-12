@@ -30,7 +30,7 @@ export class MonsterSpeciesData {
 		size: 3,
 		quirks: [],
 		startingFeatures: [
-			FeatureLogic.createTraitFeature('giant-start-1', TraitType.Endurance, 3),
+			FeatureLogic.createTraitFeature('giant-start-1', TraitType.Endurance, 2),
 			FeatureLogic.createSkillFeature('giant-start-2', SkillType.Brawl, 2)
 		],
 		features: [
@@ -331,14 +331,14 @@ export class MonsterSpeciesData {
 		quirks: [],
 		startingFeatures: [
 			FeatureLogic.createTraitFeature('orc-start-1', TraitType.Endurance, 1),
-			FeatureLogic.createTraitFeature('orc-start-2', TraitType.Speed, 1),
-			FeatureLogic.createSkillFeature('orc-start-3', SkillType.Brawl, 2),
-			FeatureLogic.createSkillFeature('orc-start-4', SkillType.Weapon, 2)
+			FeatureLogic.createSkillFeature('orc-start-2', SkillType.Brawl, 2),
+			FeatureLogic.createSkillFeature('orc-start-3', SkillType.Weapon, 2)
 		],
 		features: [
-			FeatureLogic.createDamageResistFeature('orc-feature-1', DamageType.All, 1),
+			FeatureLogic.createTraitFeature('orc-feature-1', TraitType.Endurance, 1),
 			FeatureLogic.createSkillFeature('orc-feature-2', SkillType.Brawl, 2),
-			FeatureLogic.createSkillFeature('orc-feature-3', SkillType.Weapon, 2)
+			FeatureLogic.createSkillFeature('orc-feature-3', SkillType.Weapon, 2),
+			FeatureLogic.createDamageResistFeature('orc-feature-4', DamageType.All, 1)
 		],
 		actions: [
 			{
@@ -349,8 +349,8 @@ export class MonsterSpeciesData {
 					ActionTargetParameters.self()
 				],
 				effects: [
-					ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Endurance, 5, SkillType.Brawl)),
-					ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Endurance, 5, SkillType.Weapon)),
+					ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Endurance, 3, SkillType.Brawl)),
+					ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Endurance, 3, SkillType.Weapon)),
 					ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Endurance, 2, DamageCategoryType.Physical))
 				]
 			},
@@ -834,7 +834,8 @@ export class MonsterSpeciesData {
 			QuirkType.Beast
 		],
 		startingFeatures: [
-			FeatureLogic.createSkillFeature('giant-spider-start-1', SkillType.Brawl, 2)
+			FeatureLogic.createSkillFeature('giant-spider-start-1', SkillType.Brawl, 2),
+			FeatureLogic.createDamageBonusFeature('giant-spider-start-2', DamageType.Poison, 2)
 		],
 		features: [
 			FeatureLogic.createSkillFeature('giant-spider-feature-1', SkillType.Brawl, 2),
@@ -896,10 +897,12 @@ export class MonsterSpeciesData {
 			QuirkType.Swarm
 		],
 		startingFeatures: [
-			FeatureLogic.createSkillFeature('rat-swarm-start-1', SkillType.Brawl, 2)
+			FeatureLogic.createSkillFeature('rat-swarm-start-1', SkillType.Brawl, 2),
+			FeatureLogic.createTraitFeature('rat-swarm-start-2', TraitType.Endurance, 1)
 		],
 		features: [
-			FeatureLogic.createSkillFeature('rat-swarm-feature-1', SkillType.Brawl, 2)
+			FeatureLogic.createSkillFeature('rat-swarm-feature-1', SkillType.Brawl, 2),
+			FeatureLogic.createTraitFeature('rat-swarm-feature-2', TraitType.Endurance, 1)
 		],
 		actions: [
 			{
@@ -916,7 +919,8 @@ export class MonsterSpeciesData {
 						trait: TraitType.Speed,
 						skillBonus: 0,
 						hit: [
-							ActionEffects.dealDamage(DamageType.Piercing, 2)
+							ActionEffects.dealDamage(DamageType.Piercing, 3),
+							ActionEffects.dealDamage(DamageType.Poison, 1)
 						]
 					})
 				]
@@ -935,11 +939,14 @@ export class MonsterSpeciesData {
 			QuirkType.Beast
 		],
 		startingFeatures: [
-			FeatureLogic.createSkillFeature('scarab-start-1', SkillType.Brawl, 2)
+			FeatureLogic.createSkillFeature('scarab-start-1', SkillType.Brawl, 2),
+			FeatureLogic.createDamageBonusFeature('scarab-start-2', DamageType.Acid, 2),
+			FeatureLogic.createTraitFeature('scarab-start-3', TraitType.Endurance, 1)
 		],
 		features: [
 			FeatureLogic.createSkillFeature('scarab-feature-1', SkillType.Brawl, 2),
-			FeatureLogic.createDamageBonusFeature('scarab-feature-2', DamageType.Acid, 2)
+			FeatureLogic.createDamageBonusFeature('scarab-feature-2', DamageType.Acid, 2),
+			FeatureLogic.createTraitFeature('scarab-feature-3', TraitType.Endurance, 1)
 		],
 		actions: [
 			{
@@ -976,7 +983,7 @@ export class MonsterSpeciesData {
 						trait: TraitType.Endurance,
 						skillBonus: 0,
 						hit: [
-							ActionEffects.dealDamage(DamageType.Impact, 3)
+							ActionEffects.dealDamage(DamageType.Impact, 2)
 						]
 					})
 				]
@@ -1031,7 +1038,7 @@ export class MonsterSpeciesData {
 				name: 'Follow Scent',
 				prerequisites: [],
 				parameters: [
-					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 3)
 				],
 				effects: [
 					ActionEffects.forceMovement(MovementType.BesideTarget, 1),
@@ -1281,11 +1288,13 @@ export class MonsterSpeciesData {
 		],
 		startingFeatures: [
 			FeatureLogic.createSkillFeature('wraith-start-1', SkillType.Presence, 2),
-			FeatureLogic.createDamageCategoryResistFeature('wraith-start-2', DamageCategoryType.Corruption, 1)
+			FeatureLogic.createDamageCategoryResistFeature('wraith-start-2', DamageCategoryType.Corruption, 1),
+			FeatureLogic.createTraitFeature('wraith-start-3', TraitType.Resolve, 1)
 		],
 		features: [
 			FeatureLogic.createSkillFeature('wraith-feature-1', SkillType.Presence, 2),
-			FeatureLogic.createDamageCategoryResistFeature('wraith-feature-2', DamageCategoryType.Corruption, 1)
+			FeatureLogic.createDamageCategoryResistFeature('wraith-feature-2', DamageCategoryType.Corruption, 1),
+			FeatureLogic.createTraitFeature('wraith-feature-3', TraitType.Resolve, 1)
 		],
 		actions: [
 			{
@@ -1344,11 +1353,14 @@ export class MonsterSpeciesData {
 			QuirkType.Undead
 		],
 		startingFeatures: [
-			FeatureLogic.createSkillFeature('zombie-start-1', SkillType.Brawl, 2)
+			FeatureLogic.createSkillFeature('zombie-start-1', SkillType.Brawl, 2),
+			FeatureLogic.createDamageCategoryResistFeature('zombie-start-2', DamageCategoryType.Corruption, 1),
+			FeatureLogic.createTraitFeature('zombie-start-3', TraitType.Endurance, 1)
 		],
 		features: [
 			FeatureLogic.createSkillFeature('zombie-feature-1', SkillType.Brawl, 2),
-			FeatureLogic.createDamageCategoryResistFeature('zombie-feature-2', DamageCategoryType.Corruption, 1)
+			FeatureLogic.createDamageCategoryResistFeature('zombie-feature-2', DamageCategoryType.Corruption, 1),
+			FeatureLogic.createTraitFeature('zombie-feature-3', TraitType.Endurance, 1)
 		],
 		actions: [
 			{
@@ -1365,8 +1377,8 @@ export class MonsterSpeciesData {
 						trait: TraitType.Endurance,
 						skillBonus: 0,
 						hit: [
-							ActionEffects.dealDamage(DamageType.Piercing, 1),
-							ActionEffects.dealDamage(DamageType.Decay, 1)
+							ActionEffects.dealDamage(DamageType.Piercing, 2),
+							ActionEffects.dealDamage(DamageType.Decay, 2)
 						]
 					})
 				]
@@ -1385,7 +1397,7 @@ export class MonsterSpeciesData {
 						trait: TraitType.Endurance,
 						skillBonus: 0,
 						hit: [
-							ActionEffects.dealDamage(DamageType.Decay, 2),
+							ActionEffects.dealDamage(DamageType.Decay, 3),
 							ActionEffects.toSelf([
 								ActionEffects.healDamage(1)
 							])
@@ -1409,11 +1421,14 @@ export class MonsterSpeciesData {
 			QuirkType.Undead
 		],
 		startingFeatures: [
-			FeatureLogic.createSkillFeature('banshee-start-1', SkillType.Presence, 2)
+			FeatureLogic.createSkillFeature('banshee-start-1', SkillType.Presence, 2),
+			FeatureLogic.createDamageBonusFeature('banshee-start-2', DamageType.Sonic, 1),
+			FeatureLogic.createTraitFeature('banshee-start-3', TraitType.Resolve, 1)
 		],
 		features: [
 			FeatureLogic.createSkillFeature('banshee-feature-1', SkillType.Presence, 2),
-			FeatureLogic.createDamageBonusFeature('banshee-feature-2', DamageType.Sonic, 1)
+			FeatureLogic.createDamageBonusFeature('banshee-feature-2', DamageType.Sonic, 1),
+			FeatureLogic.createTraitFeature('banshee-feature-3', TraitType.Resolve, 1)
 		],
 		actions: [
 			{
@@ -1637,6 +1652,7 @@ export class MonsterSpeciesData {
 		];
 
 		list.forEach(n => {
+			n.startingFeatures = Collections.sort(n.startingFeatures, f => FeatureLogic.getFeatureTitle(f));
 			n.features = Collections.sort(n.features, f => FeatureLogic.getFeatureTitle(f));
 			n.actions = Collections.sort(n.actions, a => a.name);
 		});

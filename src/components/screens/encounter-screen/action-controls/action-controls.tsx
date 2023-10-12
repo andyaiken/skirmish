@@ -26,8 +26,8 @@ interface Props {
 	combatant: CombatantModel;
 	encounter: EncounterModel;
 	game: GameModel;
-	currentActionParameter: ActionParameterModel | null;
 	developer: boolean;
+	currentActionParameter: ActionParameterModel | null;
 	collapsed: boolean;
 	drawActions: (encounter: EncounterModel, combatant: CombatantModel, useCharge: StructureType | null) => void;
 	selectAction: (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => void;

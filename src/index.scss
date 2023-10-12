@@ -172,10 +172,13 @@ button {
 		}
 	}
 
-	&.danger:not(:disabled):hover {
+	&.danger:not(:disabled) {
 		border-color: rgb(160, 0, 0);
-		background-color: rgb(255, 230, 230);
 		color: rgb(160, 0, 0);
+
+		&:hover {
+			background-color: rgb(255, 230, 230);
+		}
 	}
 }
 
@@ -257,7 +260,6 @@ textarea {
 	text-transform: uppercase;
 	font-weight: 600;
 }
-
 
 p .tabler-icon,
 li .tabler-icon {

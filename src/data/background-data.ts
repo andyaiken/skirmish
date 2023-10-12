@@ -79,7 +79,7 @@ export class BackgroundData {
 		description: 'The apothecary creates potions.',
 		startingFeatures: [],
 		features: [
-			FeatureLogic.createSkillCategoryFeature('grenadier-feature-1', SkillCategoryType.Mental, 1)
+			FeatureLogic.createSkillCategoryFeature('apothecary-feature-1', SkillCategoryType.Mental, 1)
 		],
 		actions: [
 			{
@@ -233,7 +233,7 @@ export class BackgroundData {
 					ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 10)
 				],
 				effects: [
-					ActionEffects.addCondition(ConditionLogic.createSkillCategoryBonusCondition(TraitType.Resolve, 8, SkillCategoryType.Physical))
+					ActionEffects.addCondition(ConditionLogic.createSkillCategoryBonusCondition(TraitType.Resolve, 3, SkillCategoryType.Physical))
 				]
 			},
 			{
@@ -244,7 +244,7 @@ export class BackgroundData {
 					ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 10)
 				],
 				effects: [
-					ActionEffects.addCondition(ConditionLogic.createSkillCategoryBonusCondition(TraitType.Resolve, 8, SkillCategoryType.Mental))
+					ActionEffects.addCondition(ConditionLogic.createSkillCategoryBonusCondition(TraitType.Resolve, 3, SkillCategoryType.Mental))
 				]
 			},
 			{
@@ -255,9 +255,17 @@ export class BackgroundData {
 					ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 10)
 				],
 				effects: [
-					ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 2, TraitType.Endurance)),
-					ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 2, TraitType.Resolve)),
-					ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 2, TraitType.Speed))
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Presence,
+						trait: TraitType.Resolve,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 2, TraitType.Endurance)),
+							ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 2, TraitType.Resolve)),
+							ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 2, TraitType.Speed))
+						]
+					})
 				]
 			}
 		]
@@ -346,7 +354,7 @@ export class BackgroundData {
 					ActionPrerequisites.emptyHand()
 				],
 				parameters: [
-					ActionTargetParameters.burst(ActionTargetType.Walls, 1, 8)
+					ActionTargetParameters.burst(ActionTargetType.Walls, 1, 10)
 				],
 				effects: [
 					ActionEffects.addSquares()
@@ -360,10 +368,10 @@ export class BackgroundData {
 				],
 				parameters: [
 					ActionOriginParameters.distance(8),
-					ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 3)
+					ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 4)
 				],
 				effects: [
-					ActionEffects.dealDamage(DamageType.Impact, 2),
+					ActionEffects.dealDamage(DamageType.Impact, 3),
 					ActionEffects.knockDown()
 				]
 			},
@@ -375,10 +383,10 @@ export class BackgroundData {
 				],
 				parameters: [
 					ActionOriginParameters.distance(8),
-					ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 3)
+					ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 4)
 				],
 				effects: [
-					ActionEffects.dealDamage(DamageType.Fire, 2),
+					ActionEffects.dealDamage(DamageType.Fire, 3),
 					ActionEffects.addCondition(ConditionLogic.createAutoDamageCondition(TraitType.Endurance, 1, DamageType.Fire))
 				]
 			},
@@ -390,11 +398,9 @@ export class BackgroundData {
 				],
 				parameters: [
 					ActionOriginParameters.distance(8),
-					ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 3)
+					ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 4)
 				],
 				effects: [
-					ActionEffects.dealDamage(DamageType.Light, 1),
-					ActionEffects.dealDamage(DamageType.Sonic, 1),
 					ActionEffects.stun()
 				]
 			}
@@ -524,7 +530,7 @@ export class BackgroundData {
 					ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 5)
 				],
 				effects: [
-					ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Resolve, 5, SkillType.All))
+					ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Resolve, 3, SkillType.All))
 				]
 			},
 			{
@@ -532,10 +538,10 @@ export class BackgroundData {
 				name: 'Dishearten',
 				prerequisites: [],
 				parameters: [
-					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+					ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 5)
 				],
 				effects: [
-					ActionEffects.addCondition(ConditionLogic.createSkillPenaltyCondition(TraitType.Resolve, 5, SkillType.All))
+					ActionEffects.addCondition(ConditionLogic.createSkillPenaltyCondition(TraitType.Resolve, 3, SkillType.All))
 				]
 			},
 			{
@@ -575,7 +581,7 @@ export class BackgroundData {
 				name: 'Remove Affliction',
 				prerequisites: [],
 				parameters: [
-					ActionTargetParameters.adjacent(ActionTargetType.Allies, Number.MAX_VALUE)
+					ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 5)
 				],
 				effects: [
 					ActionEffects.removeCondition(TraitType.Any)
@@ -586,27 +592,15 @@ export class BackgroundData {
 				name: 'First Aid',
 				prerequisites: [],
 				parameters: [
-					ActionTargetParameters.adjacent(ActionTargetType.Allies, Number.MAX_VALUE)
+					ActionTargetParameters.adjacent(ActionTargetType.Allies, 1)
 				],
 				effects: [
 					ActionEffects.healDamage(5),
-					ActionEffects.invertConditions(false)
+					ActionEffects.healWounds(2)
 				]
 			},
 			{
 				id: 'physician-action-3',
-				name: 'Cure Wounds',
-				prerequisites: [],
-				parameters: [
-					ActionTargetParameters.adjacent(ActionTargetType.Allies, Number.MAX_VALUE)
-				],
-				effects: [
-					ActionEffects.healWounds(1),
-					ActionEffects.invertConditions(false)
-				]
-			},
-			{
-				id: 'physician-action-4',
 				name: 'Heal Thyself',
 				prerequisites: [
 					ActionPrerequisites.wound()
@@ -615,8 +609,7 @@ export class BackgroundData {
 					ActionTargetParameters.self()
 				],
 				effects: [
-					ActionEffects.healWounds(1),
-					ActionEffects.invertConditions(true)
+					ActionEffects.healWounds(2)
 				]
 			}
 		]
@@ -791,10 +784,7 @@ export class BackgroundData {
 		name: 'Zealot',
 		packID: PackData.faith.id,
 		description: 'A religious fanatic, empowered by the strength of their convictions.',
-		startingFeatures: [
-			FeatureLogic.createSkillFeature('reaver-start-1', SkillType.Brawl, 2),
-			FeatureLogic.createSkillFeature('reaver-start-2', SkillType.Weapon, 2)
-		],
+		startingFeatures: [],
 		features: [
 			FeatureLogic.createSkillFeature('reaver-feature-1', SkillType.Brawl, 2),
 			FeatureLogic.createSkillFeature('reaver-feature-2', SkillType.Weapon, 2),
@@ -809,9 +799,9 @@ export class BackgroundData {
 					ActionTargetParameters.self()
 				],
 				effects: [
-					ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Resolve, 4, DamageCategoryType.Physical)),
-					ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Resolve, 4, DamageCategoryType.Energy)),
-					ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Resolve, 4, DamageCategoryType.Corruption))
+					ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Resolve, 2, DamageCategoryType.Physical)),
+					ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Resolve, 2, DamageCategoryType.Energy)),
+					ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Resolve, 2, DamageCategoryType.Corruption))
 				]
 			},
 			{
@@ -822,7 +812,7 @@ export class BackgroundData {
 					ActionTargetParameters.self()
 				],
 				effects: [
-					ActionEffects.addCondition(ConditionLogic.createMovementBonusCondition(TraitType.Endurance, 5)),
+					ActionEffects.addCondition(ConditionLogic.createMovementBonusCondition(TraitType.Endurance, 2)),
 					ActionEffects.takeAnotherAction()
 				]
 			},
@@ -835,9 +825,9 @@ export class BackgroundData {
 				],
 				effects: [
 					ActionEffects.invertConditions(false),
-					ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Endurance, 3, TraitType.Endurance)),
-					ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Endurance, 3, TraitType.Resolve)),
-					ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Endurance, 3, TraitType.Resolve))
+					ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Endurance, 2, TraitType.Endurance)),
+					ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Endurance, 2, TraitType.Resolve)),
+					ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Endurance, 2, TraitType.Resolve))
 				]
 			}
 		]
@@ -861,6 +851,7 @@ export class BackgroundData {
 		];
 
 		list.forEach(n => {
+			n.startingFeatures = Collections.sort(n.startingFeatures, f => FeatureLogic.getFeatureTitle(f));
 			n.features = Collections.sort(n.features, f => FeatureLogic.getFeatureTitle(f));
 			n.actions = Collections.sort(n.actions, a => a.name);
 		});

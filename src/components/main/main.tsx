@@ -654,13 +654,17 @@ export class Main extends Component<Props, State> {
 					const hero = Collections.draw(game.encounter.combatants.filter(c => c.type === CombatantType.Hero));
 					hero.combat.conditions.push(ConditionLogic.createRandomBeneficialCondition() as ConditionModel);
 				}
-				StrongholdLogic.useCharge(game, StructureType.Temple, benefits);
+				if (!this.state.options.developer) {
+					StrongholdLogic.useCharge(game, StructureType.Temple, benefits);
+				}
 
 				for (let n = 0; n < detriments; ++n) {
 					const hero = Collections.draw(game.encounter.combatants.filter(c => c.type === CombatantType.Monster));
 					hero.combat.conditions.push(ConditionLogic.createRandomDetrimentalCondition() as ConditionModel);
 				}
-				StrongholdLogic.useCharge(game, StructureType.Intelligencer, detriments);
+				if (!this.state.options.developer) {
+					StrongholdLogic.useCharge(game, StructureType.Intelligencer, detriments);
+				}
 
 				EncounterMapLogic.visibilityCache.reset();
 

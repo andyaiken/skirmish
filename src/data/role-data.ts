@@ -198,9 +198,9 @@ export class RoleData {
 					ActionTargetParameters.burst(ActionTargetType.Allies, 1, 5)
 				],
 				effects: [
-					ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Endurance, 5, DamageCategoryType.Corruption)),
-					ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Endurance, 5, DamageCategoryType.Energy)),
-					ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Endurance, 5, DamageCategoryType.Physical))
+					ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Endurance, 3, DamageCategoryType.Corruption)),
+					ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Endurance, 3, DamageCategoryType.Energy)),
+					ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Endurance, 3, DamageCategoryType.Physical))
 				]
 			},
 			{
@@ -633,7 +633,7 @@ export class RoleData {
 				effects: [
 					ActionEffects.removeCondition(TraitType.Any),
 					ActionEffects.healDamage(1),
-					ActionEffects.addCondition(ConditionLogic.createDamageResistanceCondition(TraitType.Resolve, 5, DamageType.All))
+					ActionEffects.addCondition(ConditionLogic.createDamageResistanceCondition(TraitType.Resolve, 3, DamageType.All))
 				]
 			},
 			{
@@ -641,7 +641,7 @@ export class RoleData {
 				name: 'Holy Light',
 				prerequisites: [],
 				parameters: [
-					ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 8)
+					ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 5)
 				],
 				effects: [
 					ActionEffects.addCondition(ConditionLogic.createDamageResistanceCondition(TraitType.Resolve, 3, DamageType.All))
@@ -652,7 +652,7 @@ export class RoleData {
 				name: 'Bless',
 				prerequisites: [],
 				parameters: [
-					ActionTargetParameters.burst(ActionTargetType.Allies, 1, 8)
+					ActionTargetParameters.burst(ActionTargetType.Allies, 1, 5)
 				],
 				effects: [
 					ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Resolve, 3, TraitType.Endurance)),
@@ -665,7 +665,7 @@ export class RoleData {
 				name: 'Divine Retribution',
 				prerequisites: [],
 				parameters: [
-					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 8)
+					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
 				],
 				effects: [
 					ActionEffects.attack({
@@ -1282,7 +1282,8 @@ export class RoleData {
 					ActionTargetParameters.burst(ActionTargetType.Combatants, 1, 5)
 				],
 				effects: [
-					ActionEffects.forceMovement(MovementType.Random, 20)
+					ActionEffects.forceMovement(MovementType.Random, 20),
+					ActionEffects.stun()
 				]
 			}
 		]
@@ -1445,7 +1446,7 @@ export class RoleData {
 						trait: TraitType.Speed,
 						skillBonus: 2,
 						hit: [
-							ActionEffects.dealDamage(DamageType.Impact, 2)
+							ActionEffects.dealDamage(DamageType.Impact, 3)
 						]
 					})
 				]
@@ -1501,7 +1502,7 @@ export class RoleData {
 						trait: TraitType.Speed,
 						skillBonus: 0,
 						hit: [
-							ActionEffects.dealDamage(DamageType.Impact, 2)
+							ActionEffects.dealDamage(DamageType.Impact, 3)
 						]
 					})
 				]
@@ -1514,10 +1515,10 @@ export class RoleData {
 					ActionTargetParameters.self()
 				],
 				effects: [
-					ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Endurance, 3, TraitType.Speed)),
-					ActionEffects.addCondition(ConditionLogic.createMovementBonusCondition(TraitType.Endurance, 3)),
-					ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Endurance, 3, SkillType.Brawl)),
-					ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Endurance, 3, DamageCategoryType.Physical))
+					ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Endurance, 2, TraitType.Speed)),
+					ActionEffects.addCondition(ConditionLogic.createMovementBonusCondition(TraitType.Endurance, 2)),
+					ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Endurance, 2, SkillType.Brawl)),
+					ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Endurance, 2, DamageCategoryType.Physical))
 				]
 			}
 		]
@@ -1588,10 +1589,10 @@ export class RoleData {
 				name: 'Shield of Justice',
 				prerequisites: [],
 				parameters: [
-					ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 5)
+					ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 3)
 				],
 				effects: [
-					ActionEffects.addCondition(ConditionLogic.createDamageResistanceCondition(TraitType.Resolve, 6, DamageType.All))
+					ActionEffects.addCondition(ConditionLogic.createDamageResistanceCondition(TraitType.Resolve, 3, DamageType.All))
 				]
 			},
 			{
@@ -1735,9 +1736,10 @@ export class RoleData {
 		description: 'A fighter who specializes in ranged weaponry.',
 		startingFeatures: [
 			FeatureLogic.createTraitFeature('ranger-start-1', TraitType.Endurance, 1),
-			FeatureLogic.createSkillFeature('ranger-start-2', SkillType.Weapon, 2),
-			FeatureLogic.createProficiencyFeature('ranger-start-3', ItemProficiencyType.RangedWeapons),
-			FeatureLogic.createProficiencyFeature('ranger-start-4', ItemProficiencyType.LightArmor)
+			FeatureLogic.createSkillFeature('ranger-start-2', SkillType.Perception, 2),
+			FeatureLogic.createSkillFeature('ranger-start-3', SkillType.Weapon, 2),
+			FeatureLogic.createProficiencyFeature('ranger-start-4', ItemProficiencyType.RangedWeapons),
+			FeatureLogic.createProficiencyFeature('ranger-start-5', ItemProficiencyType.LightArmor)
 		],
 		features: [
 			FeatureLogic.createTraitFeature('ranger-feature-1', TraitType.Endurance, 1),
@@ -1819,9 +1821,9 @@ export class RoleData {
 						weapon: true,
 						skill: SkillType.Weapon,
 						trait: TraitType.Speed,
-						skillBonus: 0,
+						skillBonus: -1,
 						hit: [
-							ActionEffects.dealWeaponDamage(-2)
+							ActionEffects.dealWeaponDamage()
 						]
 					})
 				]
@@ -2199,8 +2201,8 @@ export class RoleData {
 					ActionTargetParameters.self()
 				],
 				effects: [
-					ActionEffects.addCondition(ConditionLogic.createDamageCategoryResistanceCondition(TraitType.Resolve, 6, DamageCategoryType.Physical)),
-					ActionEffects.addCondition(ConditionLogic.createDamageCategoryResistanceCondition(TraitType.Resolve, 6, DamageCategoryType.Energy))
+					ActionEffects.addCondition(ConditionLogic.createDamageCategoryResistanceCondition(TraitType.Resolve, 5, DamageCategoryType.Physical)),
+					ActionEffects.addCondition(ConditionLogic.createDamageCategoryResistanceCondition(TraitType.Resolve, 5, DamageCategoryType.Energy))
 				]
 			},
 			{
@@ -2253,6 +2255,7 @@ export class RoleData {
 		];
 
 		list.forEach(n => {
+			n.startingFeatures = Collections.sort(n.startingFeatures, f => FeatureLogic.getFeatureTitle(f));
 			n.features = Collections.sort(n.features, f => FeatureLogic.getFeatureTitle(f));
 			n.actions = Collections.sort(n.actions, a => a.name);
 		});

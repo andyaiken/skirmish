@@ -106,7 +106,7 @@ export class EncounterStartModal extends Component<Props, State> {
 			{ id: 'monsters', display: 'Monsters' }
 		];
 		const charges = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Temple) + StrongholdLogic.getStructureCharges(this.props.game, StructureType.Intelligencer);
-		if (charges > 0) {
+		if ((charges > 0) || this.props.options.developer) {
 			options.push({
 				id: 'advanced',
 				display: 'Advanced'
@@ -149,14 +149,14 @@ export class EncounterStartModal extends Component<Props, State> {
 				const cards = [];
 
 				const ben = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Temple);
-				if (ben > 0) {
+				if ((ben > 0) || this.props.options.developer) {
 					cards.push(
 						<div key='bonuses' className='stronghold-benefit'>
 							<StrongholdBenefitCard
 								label='Bonuses'
 								available={ben}
 								used={this.state.benefits}
-								developer={false}
+								developer={this.props.options.developer}
 								onChange={value => this.setState({ benefits: value })}
 							/>
 							<Text>Allow some of your heroes to start with a random beneficial condition.</Text>
@@ -165,14 +165,14 @@ export class EncounterStartModal extends Component<Props, State> {
 				}
 
 				const det = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Intelligencer);
-				if (det > 0) {
+				if ((det > 0) || this.props.options.developer) {
 					cards.push(
 						<div key='penalties' className='stronghold-benefit'>
 							<StrongholdBenefitCard
 								label='Penalties'
 								available={det}
 								used={this.state.detriments}
-								developer={false}
+								developer={this.props.options.developer}
 								onChange={value => this.setState({ detriments: value })}
 							/>
 							<Text>Force some of your opponents to start with a random detrimental condition.</Text>

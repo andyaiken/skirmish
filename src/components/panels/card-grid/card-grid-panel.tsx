@@ -30,7 +30,7 @@ interface Props {
 }
 
 interface State {
-	selected: { name: string, type: CardType, starting: FeatureModel[], features: FeatureModel[], actions: ActionModel[] } | null;
+	selected: { name: string, description: string, type: CardType, starting: FeatureModel[], features: FeatureModel[], actions: ActionModel[] } | null;
 }
 
 export class CardGridPanel extends Component<Props, State> {
@@ -41,10 +41,11 @@ export class CardGridPanel extends Component<Props, State> {
 		};
 	}
 
-	setActions = (name: string, type: CardType, starting: FeatureModel[], features: FeatureModel[], actions: ActionModel[]) => {
+	setActions = (name: string, description: string, type: CardType, starting: FeatureModel[], features: FeatureModel[], actions: ActionModel[]) => {
 		this.setState({
 			selected: {
 				name: name,
+				description: description,
 				type: type,
 				starting: starting,
 				features: features,
@@ -59,24 +60,17 @@ export class CardGridPanel extends Component<Props, State> {
 		});
 	};
 
-	getBadge = (strength: number, scale: number) => {
-		let value = '';
-
-		const scaled = Math.round(strength / scale);
-		value = value.padEnd(scaled, '★');
-
-		return value;
-	};
-
 	getCards = (type: string, packID: string) => {
 		switch (type) {
 			case 'hero species':
 				return HeroSpeciesData.getList()
 					.filter(s => s.packID === packID)
 					.map(s => {
+						const strength = GameLogic.getSpeciesStrength(s);
+						const className = (strength < 4) || (strength > 6) || s.actions.some(a => (GameLogic.getActionStrength(a) < 1) || (GameLogic.getActionStrength(a) > 12)) ? 'danger' : '';
 						return (
-							<button key={s.id} onClick={() => this.setActions(s.name, CardType.Species, s.startingFeatures, s.features, s.actions)}>
-								<StatValue label={s.name} value={GameLogic.getSpeciesStrength(s)} />
+							<button key={s.id} className={className} onClick={() => this.setActions(s.name, s.description, CardType.Species, s.startingFeatures, s.features, s.actions)}>
+								<StatValue label={s.name} value={strength} />
 							</button>
 						);
 					});
@@ -84,9 +78,11 @@ export class CardGridPanel extends Component<Props, State> {
 				return MonsterSpeciesData.getList()
 					.filter(s => s.packID === packID)
 					.map(s => {
+						const strength = GameLogic.getSpeciesStrength(s);
+						const className = (strength < 4) || (strength > 6) || s.actions.some(a => (GameLogic.getActionStrength(a) < 1) || (GameLogic.getActionStrength(a) > 12)) ? 'danger' : '';
 						return (
-							<button key={s.id} onClick={() => this.setActions(s.name, CardType.Species, s.startingFeatures, s.features, s.actions)}>
-								<StatValue key={s.id} label={s.name} value={GameLogic.getSpeciesStrength(s)} />
+							<button key={s.id} className={className} onClick={() => this.setActions(s.name, s.description, CardType.Species, s.startingFeatures, s.features, s.actions)}>
+								<StatValue label={s.name} value={strength} />
 							</button>
 						);
 					});
@@ -94,9 +90,11 @@ export class CardGridPanel extends Component<Props, State> {
 				return RoleData.getList()
 					.filter(r => r.packID === packID)
 					.map(r => {
+						const strength = GameLogic.getRoleStrength(r);
+						const className = (strength < 4) || (strength > 6) || r.actions.some(a => (GameLogic.getActionStrength(a) < 1) || (GameLogic.getActionStrength(a) > 12)) ? 'danger' : '';
 						return (
-							<button key={r.id} onClick={() => this.setActions(r.name, CardType.Species, r.startingFeatures, r.features, r.actions)}>
-								<StatValue key={r.id} label={r.name} value={GameLogic.getRoleStrength(r)} />
+							<button key={r.id} className={className} onClick={() => this.setActions(r.name, r.description, CardType.Species, r.startingFeatures, r.features, r.actions)}>
+								<StatValue label={r.name} value={strength} />
 							</button>
 						);
 					});
@@ -104,9 +102,11 @@ export class CardGridPanel extends Component<Props, State> {
 				return BackgroundData.getList()
 					.filter(b => b.packID === packID)
 					.map(b => {
+						const strength = GameLogic.getBackgroundStrength(b);
+						const className = (strength < 3) || (strength > 4) || b.actions.some(a => (GameLogic.getActionStrength(a) < 1) || (GameLogic.getActionStrength(a) > 12)) ? 'danger' : '';
 						return (
-							<button key={b.id} onClick={() => this.setActions(b.name, CardType.Species, b.startingFeatures, b.features, b.actions)}>
-								<StatValue key={b.id} label={b.name} value={GameLogic.getBackgroundStrength(b)} />
+							<button key={b.id} className={className} onClick={() => this.setActions(b.name, b.description, CardType.Species, b.startingFeatures, b.features, b.actions)}>
+								<StatValue label={b.name} value={strength} />
 							</button>
 						);
 					});
@@ -190,8 +190,9 @@ export class CardGridPanel extends Component<Props, State> {
 				const type = this.state.selected.type;
 
 				const startingCards = this.state.selected.starting.map(f => {
+					const strength = GameLogic.getFeatureStrength(f);
 					return (
-						<Badge key={f.id} value={this.getBadge(GameLogic.getFeatureStrength(f), 2)}>
+						<Badge key={f.id} value={strength}>
 							<FeatureCard
 								feature={f}
 								footer={source}
@@ -201,8 +202,9 @@ export class CardGridPanel extends Component<Props, State> {
 					);
 				});
 				const featureCards = this.state.selected.features.map(f => {
+					const strength = GameLogic.getFeatureStrength(f);
 					return (
-						<Badge key={f.id} value={this.getBadge(GameLogic.getFeatureStrength(f), 2)}>
+						<Badge key={f.id} value={strength}>
 							<FeatureCard
 								feature={f}
 								footer={source}
@@ -212,10 +214,12 @@ export class CardGridPanel extends Component<Props, State> {
 					);
 				});
 				const actionCards = this.state.selected.actions.map(a => {
+					const strength = GameLogic.getActionStrength(a);
 					return (
-						<Badge key={a.id} value={this.getBadge(GameLogic.getActionStrength(a), 3)}>
+						<Badge key={a.id} value={strength}>
 							<ActionCard
 								action={a}
+								developer={true}
 								footer={source}
 								footerType={type}
 							/>
@@ -225,6 +229,10 @@ export class CardGridPanel extends Component<Props, State> {
 				const content = (
 					<div>
 						<Text type={TextType.Heading}>{this.state.selected.name}</Text>
+						<hr />
+						<Text>
+							<p style={{ textAlign: 'center' }}>{this.state.selected.description}</p>
+						</Text>
 						{startingCards.length > 0 ? <hr /> : null}
 						{startingCards.length > 0 ? <Text type={TextType.SubHeading}>Starting Cards</Text> : null}
 						{startingCards.length > 0 ? <CardList cards={startingCards} /> : null}
@@ -256,7 +264,6 @@ export class CardGridPanel extends Component<Props, State> {
 										<div className='pack-name'>{name}</div>
 										<div className='pack-stats'>
 											{pack ? <StatValue label='Cards' value={PackLogic.getPackCardCount(pack.id)}/> : null}
-											{pack ? <StatValue label='Strength' value={GameLogic.getPackStrength(pack)}/> : null}
 											{pack ? <StatValue label='Price' value={Format.toCurrency(PackLogic.getPackPrice(pack.id), '$')}/> : null}
 										</div>
 									</div>

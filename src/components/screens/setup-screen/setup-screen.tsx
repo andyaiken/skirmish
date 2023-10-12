@@ -124,7 +124,7 @@ export class SetupScreen extends Component<Props, State> {
 					<CharacterSheetModal
 						combatant={this.state.hero}
 						game={this.props.game}
-						developer={false}
+						developer={this.props.options.developer}
 						equipItem={this.props.equipItem}
 						unequipItem={this.props.unequipItem}
 						pickUpItem={this.props.pickUpItem}

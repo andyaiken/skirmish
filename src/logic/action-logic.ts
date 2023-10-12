@@ -296,9 +296,7 @@ export class ActionEffects {
 		};
 	};
 
-	static toSelf = (
-		data: ActionEffectModel[]
-	): ActionEffectModel => {
+	static toSelf = (data: ActionEffectModel[]): ActionEffectModel => {
 		return {
 			id: 'toSelf',
 			data: data,

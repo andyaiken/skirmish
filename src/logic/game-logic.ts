@@ -25,7 +25,6 @@ import type { ConditionModel } from '../models/condition';
 import type { FeatureModel } from '../models/feature';
 import type { GameModel } from '../models/game';
 import type { ItemModel } from '../models/item';
-import type { PackModel } from '../models/pack';
 import type { RoleModel } from '../models/role';
 import type { SpeciesModel } from '../models/species';
 
@@ -331,7 +330,7 @@ export class GameLogic {
 	static getSpeciesStrength = (species: SpeciesModel) => {
 		let value = 0;
 
-		value += Collections.mean(species.startingFeatures, feature => GameLogic.getFeatureStrength(feature)) + species.startingFeatures.length;
+		value += Collections.sum(species.startingFeatures, feature => GameLogic.getFeatureStrength(feature)) + species.startingFeatures.length;
 		value += Collections.mean(species.features, feature => GameLogic.getFeatureStrength(feature)) + species.features.length;
 		value += Collections.mean(species.actions, action => GameLogic.getActionStrength(action)) + species.actions.length;
 
@@ -341,7 +340,7 @@ export class GameLogic {
 	static getRoleStrength = (role: RoleModel) => {
 		let value = 0;
 
-		value += Collections.mean(role.startingFeatures, feature => GameLogic.getFeatureStrength(feature)) + role.startingFeatures.length;
+		value += Collections.sum(role.startingFeatures, feature => GameLogic.getFeatureStrength(feature)) + role.startingFeatures.length;
 		value += Collections.mean(role.features, feature => GameLogic.getFeatureStrength(feature)) + role.features.length;
 		value += Collections.mean(role.actions, action => GameLogic.getActionStrength(action)) + role.actions.length;
 
@@ -351,7 +350,7 @@ export class GameLogic {
 	static getBackgroundStrength = (background: BackgroundModel) => {
 		let value = 0;
 
-		value += Collections.mean(background.startingFeatures, feature => GameLogic.getFeatureStrength(feature)) + background.startingFeatures.length;
+		value += Collections.sum(background.startingFeatures, feature => GameLogic.getFeatureStrength(feature)) + background.startingFeatures.length;
 		value += Collections.mean(background.features, feature => GameLogic.getFeatureStrength(feature)) + background.features.length;
 		value += Collections.mean(background.actions, action => GameLogic.getActionStrength(action)) + background.actions.length;
 
@@ -382,100 +381,97 @@ export class GameLogic {
 			case FeatureType.Trait:
 				factor = (feature.trait === TraitType.Any) ? 8 : 5;
 				break;
+			case FeatureType.Proficiency:
+				factor = 0;
+				break;
 		}
 
 		return feature.rank * factor;
 	};
 
 	static getActionStrength = (action: ActionModel) => {
-		let strength = 0;
+		const targetParam = action.parameters.find(a => a.id === 'targets') as ActionTargetParameterModel;
+		const targetStrength = targetParam ? GameLogic.getActionTargetStrength(targetParam, action) : 1;
 
-		const param = action.parameters.find(a => a.id === 'targets');
-		if (param) {
-			const targetParam = param as ActionTargetParameterModel;
-			if (targetParam.targets) {
-				switch (targetParam.targets.type) {
-					case ActionTargetType.Combatants:
-						strength = Math.min(targetParam.targets.count, 3) * 2;
-						break;
-					case ActionTargetType.Allies:
-						strength = Math.min(targetParam.targets.count, 3) * 3;
-						break;
-					case ActionTargetType.Enemies:
-						strength = Math.min(targetParam.targets.count, 3) * 5;
-						break;
-				}
-			}
-		}
+		const effectStrength = Collections.sum(action.effects, e => GameLogic.getActionEffectStrength(e));
 
-		const mockCombatant = { items: [] as ItemModel[] } as CombatantModel;
-		strength += Math.max(ActionLogic.getActionRange(action, mockCombatant), 1);
-
-		const checkEffects = (effects: ActionEffectModel[]) => {
-			let value = 0;
-
-			effects.forEach(e => {
-				switch (e.id) {
-					case 'attack': {
-						value += checkEffects(e.children) / 2;
-						break;
-					}
-					case 'damage': {
-						value += (e.data as { type: DamageType, rank: number }).rank;
-						break;
-					}
-					case 'weapondamage': {
-						value += 3 + (e.data as number);
-						break;
-					}
-					case 'wound': {
-						value += 5 * (e.data as number);
-						break;
-					}
-					case 'addcondition' : {
-						value += (e.data as ConditionModel).rank;
-						break;
-					}
-					case 'stun': {
-						value += 3;
-						break;
-					}
-					case 'disarm':
-					case 'steal': {
-						value += 10;
-						break;
-					}
-					case 'createPotion': {
-						value += 7;
-						break;
-					}
-					default: {
-						value += 1;
-						break;
-					}
-				}
-			});
-
-			return value;
-		};
-
-		strength += checkEffects(action.effects);
-
+		let strength = Math.round(targetStrength * effectStrength);
 		if (ActionLogic.getActionSpeed(action) === 'Quick') {
-			strength *= 2;
+			strength += 4;
 		}
 
-		return Math.round(strength);
+		return strength;
 	};
 
-	static getPackStrength = (pack: PackModel) => {
-		const values: number[] = [];
+	static getActionTargetStrength = (targetParam: ActionTargetParameterModel, action: ActionModel) => {
+		// Calculate the likely number of useful targets
+		if (targetParam.targets) {
+			const mockCombatant = { items: [] as ItemModel[] } as CombatantModel;
+			const range = Math.max(ActionLogic.getActionRange(action, mockCombatant), 1);
 
-		values.push(...HeroSpeciesData.getList().filter(s => s.packID === pack.id).map(s => GameLogic.getSpeciesStrength(s)));
-		values.push(...MonsterSpeciesData.getList().filter(s => s.packID === pack.id).map(s => GameLogic.getSpeciesStrength(s)));
-		values.push(...RoleData.getList().filter(r => r.packID === pack.id).map(r => GameLogic.getRoleStrength(r)));
-		values.push(...BackgroundData.getList().filter(b => b.packID === pack.id).map(b => GameLogic.getBackgroundStrength(b)));
+			let targetsInRange = 1;
+			switch (range) {
+				case 1:
+				case 2:
+				case 3:
+					targetsInRange = 2;
+					break;
+				case 4:
+				case 5:
+				case 6:
+					targetsInRange = 3;
+					break;
+				default:
+					targetsInRange = 4;
+					break;
+			}
 
-		return Math.round(Collections.mean(values, n => n));
+			let targets = Math.min(targetParam.targets.count, targetsInRange);
+
+			if (targetParam.targets.type === ActionTargetType.Combatants) {
+				targets = Math.max(targets - 1, 1);
+			}
+
+			return targets;
+		}
+
+		// Targets self
+		return 1;
+	};
+
+	static getActionEffectStrength = (effect: ActionEffectModel): number => {
+		switch (effect.id) {
+			case 'attack':
+				return Collections.sum(effect.children, e => GameLogic.getActionEffectStrength(e)) / 2;
+			case 'toSelf':
+				return Collections.sum(effect.children, e => GameLogic.getActionEffectStrength(e));
+			case 'damage':
+				return (effect.data as { type: DamageType, rank: number }).rank;
+			case 'weapondamage':
+				return 3 + (effect.data as number);
+			case 'wound':
+				return 5 * (effect.data as number);
+			case 'addcondition' :
+				return (effect.data as ConditionModel).rank;
+			case 'stun':
+				return 5;
+			case 'knockdown':
+				return 2;
+			case 'disarm':
+			case 'steal':
+				return 10;
+			case 'createPotion':
+				return 7;
+			case 'commandAction':
+				return 5;
+			case 'healdamage':
+				return 2;
+			case 'healwounds':
+				return 5 * (effect.data as number);
+			case 'takeAnotherAction':
+				return 0;
+		}
+
+		return 1;
 	};
 }

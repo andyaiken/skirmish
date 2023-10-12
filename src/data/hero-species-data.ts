@@ -53,7 +53,9 @@ export class HeroSpeciesData {
 				id: 'human-action-2',
 				name: 'Resourceful',
 				prerequisites: [],
-				parameters: [],
+				parameters: [
+					ActionTargetParameters.self()
+				],
 				effects: [
 					ActionEffects.takeAnotherAction(true)
 				]
@@ -129,12 +131,14 @@ export class HeroSpeciesData {
 		quirks: [],
 		startingFeatures: [
 			FeatureLogic.createTraitFeature('deva-start-1', TraitType.Resolve, 1),
-			FeatureLogic.createSkillFeature('deva-start-2', SkillType.Presence, 2)
+			FeatureLogic.createSkillFeature('deva-start-2', SkillType.Presence, 2),
+			FeatureLogic.createDamageCategoryResistFeature('deva-start-3', DamageCategoryType.Corruption, 1)
 		],
 		features: [
-			FeatureLogic.createSkillFeature('deva-feature-1', SkillType.Presence, 2),
-			FeatureLogic.createDamageCategoryResistFeature('deva-feature-2', DamageCategoryType.Corruption, 1),
-			FeatureLogic.createAuraDamageFeature('deva-feature-3', ConditionType.AutoDamage, DamageType.Light, 1)
+			FeatureLogic.createTraitFeature('deva-feature-1', TraitType.Resolve, 1),
+			FeatureLogic.createSkillFeature('deva-feature-2', SkillType.Presence, 2),
+			FeatureLogic.createDamageCategoryResistFeature('deva-feature-3', DamageCategoryType.Corruption, 1),
+			FeatureLogic.createAuraDamageFeature('deva-feature-4', ConditionType.AutoDamage, DamageType.Light, 1)
 		],
 		actions: [
 			{
@@ -142,7 +146,7 @@ export class HeroSpeciesData {
 				name: 'Divine Radiance',
 				prerequisites: [],
 				parameters: [
-					ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 3)
+					ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 2)
 				],
 				effects: [
 					ActionEffects.attack({
@@ -161,7 +165,7 @@ export class HeroSpeciesData {
 				name: 'Divine Light',
 				prerequisites: [],
 				parameters: [
-					ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 3)
+					ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 2)
 				],
 				effects: [
 					ActionEffects.attack({
@@ -187,7 +191,8 @@ export class HeroSpeciesData {
 		size: 1,
 		quirks: [],
 		startingFeatures: [
-			FeatureLogic.createTraitFeature('dwarf-start-1', TraitType.Endurance, 2)
+			FeatureLogic.createTraitFeature('dwarf-start-1', TraitType.Endurance, 1),
+			FeatureLogic.createTraitFeature('dwarf-start-2', TraitType.Resolve, 1)
 		],
 		features: [
 			FeatureLogic.createTraitFeature('dwarf-feature-1', TraitType.Endurance, 1),
@@ -381,7 +386,8 @@ export class HeroSpeciesData {
 		quirks: [],
 		startingFeatures: [
 			FeatureLogic.createTraitFeature('minotaur-start-1', TraitType.Endurance, 1),
-			FeatureLogic.createSkillFeature('minotaur-start-2', SkillType.Brawl, 2)
+			FeatureLogic.createSkillFeature('minotaur-start-2', SkillType.Brawl, 2),
+			FeatureLogic.createDamageCategoryBonusFeature('minotaur-start-3', DamageCategoryType.Physical, 1)
 		],
 		features: [
 			FeatureLogic.createTraitFeature('minotaur-feature-1', TraitType.Endurance, 1),
@@ -480,7 +486,8 @@ export class HeroSpeciesData {
 		quirks: [],
 		startingFeatures: [
 			FeatureLogic.createTraitFeature('pixie-start-1', TraitType.Speed, 1),
-			FeatureLogic.createSkillFeature('pixie-start-2', SkillType.Stealth, 2)
+			FeatureLogic.createSkillFeature('pixie-start-2', SkillType.Stealth, 2),
+			FeatureLogic.createDamageCategoryResistFeature('pixie-start-3', DamageCategoryType.Corruption, 1)
 		],
 		features: [
 			FeatureLogic.createTraitFeature('pixie-feature-1', TraitType.Speed, 1),
@@ -760,6 +767,7 @@ export class HeroSpeciesData {
 		];
 
 		list.forEach(n => {
+			n.startingFeatures = Collections.sort(n.startingFeatures, f => FeatureLogic.getFeatureTitle(f));
 			n.features = Collections.sort(n.features, f => FeatureLogic.getFeatureTitle(f));
 			n.actions = Collections.sort(n.actions, a => a.name);
 		});

@@ -69,13 +69,13 @@ export class StrongholdBenefitCard extends Component<Props> {
 			if (this.props.onChange) {
 				content = (
 					<div className='spin'>
-						<StatValue orientation='vertical' label='Available' value={this.props.available - this.props.used} />
+						<StatValue orientation='vertical' label='Available' value={this.props.developer ? this.props.available : this.props.available - this.props.used} />
 						<div className='spin-buttons'>
 							<button className='icon-btn' disabled={this.props.used === 0} onClick={() => this.onNudge(-1)}>
 								<IconCircleMinus />
 							</button>
 							<StatValue orientation='vertical' label='Used' value={this.props.used} />
-							<button className='icon-btn' disabled={this.props.used === this.props.available} onClick={() => this.onNudge(1)}>
+							<button className='icon-btn' disabled={(this.props.used === this.props.available) && !this.props.developer} onClick={() => this.onNudge(1)}>
 								<IconCirclePlus />
 							</button>
 						</div>

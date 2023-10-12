@@ -1,15 +1,11 @@
 import { Component } from 'react';
 
-import type { GameModel } from '../../../../models/game';
-import type { OptionsModel } from '../../../../models/options';
-
 import { CardGridPanel } from '../../../panels';
 
 import './dev-page.scss';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props {
-	game: GameModel;
-	options: OptionsModel;
 }
 
 export class DevPage extends Component<Props> {

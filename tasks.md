@@ -94,6 +94,7 @@
 
 ## Summoning
 * Need to ensure that a summoned creature is on the side of the creature that summoned it
+  * Make it a hero, but make it a drone
 * Druids should summon beasts
 * Necromancers should summon / raise undead
 * Clerics should summon / resurrect dead heroes
@@ -106,7 +107,7 @@
   * monster - Swarm of imps
 * Fae
   * role - Arcane archer / venator / bowmage / hexbow
-  * role - Druid
+  * role - Druid (destroy walls / summon beast drone / befriend beast)
 * Elements
   * role - Elementalist
 

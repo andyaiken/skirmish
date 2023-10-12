@@ -3,17 +3,19 @@ import { Component, MouseEvent } from 'react';
 import { CardType } from '../../../enums/card-type';
 
 import { ActionEffects, ActionLogic, ActionPrerequisites } from '../../../logic/action-logic';
+import { GameLogic } from '../../../logic/game-logic';
 
-import type { ActionEffectModel, ActionModel } from '../../../models/action';
+import type { ActionEffectModel, ActionModel, ActionTargetParameterModel } from '../../../models/action';
 import type { CombatantModel } from '../../../models/combatant';
 import type { EncounterModel } from '../../../models/encounter';
 
-import { PlayingCard, Tag, Text, TextType } from '../../controls';
+import { Badge, PlayingCard, Tag, Text, TextType } from '../../controls';
 
 import './action-card.scss';
 
 interface Props {
 	action: ActionModel;
+	developer: boolean;
 	footer: string;
 	footerType: CardType;
 	combatant: CombatantModel | null;
@@ -28,6 +30,7 @@ interface State {
 
 export class ActionCard extends Component<Props, State> {
 	static defaultProps = {
+		developer: false,
 		combatant: null,
 		encounter: null,
 		disabled: false,
@@ -68,7 +71,19 @@ export class ActionCard extends Component<Props, State> {
 	};
 
 	getParameters = () => {
-		return this.props.action.parameters.map((p, n) => <div key={n} className='parameter'>{ActionLogic.getParameterDescription(p)}</div>);
+		return this.props.action.parameters.map((p, n) => {
+			if (p.id === 'targets') {
+				return (
+					<Badge key={n} value={this.props.developer ? GameLogic.getActionTargetStrength(p as ActionTargetParameterModel, this.props.action) : 0}>
+						<div className='parameter'>{ActionLogic.getParameterDescription(p)}</div>
+					</Badge>
+				);
+			}
+
+			return (
+				<div key={n} className='parameter'>{ActionLogic.getParameterDescription(p)}</div>
+			);
+		});
 	};
 
 	getEffects = () => {
@@ -80,7 +95,9 @@ export class ActionCard extends Component<Props, State> {
 
 			return (
 				<div>
-					<div className='effect'>{ActionEffects.getDescription(effect, this.props.combatant, this.props.encounter)}</div>
+					<Badge value={this.props.developer ? GameLogic.getActionEffectStrength(effect) : 0}>
+						<div className='effect'>{ActionEffects.getDescription(effect, this.props.combatant, this.props.encounter)}</div>
+					</Badge>
 					{children ? <div className='indent'>{children}</div> : null}
 				</div>
 			);

@@ -19,7 +19,7 @@ interface Props {
 
 interface State {
 	tab: string;
-	selected: { name: string, type: CardType, starting: FeatureModel[], features: FeatureModel[], actions: ActionModel[] } | null;
+	selected: { name: string, description: string, type: CardType, starting: FeatureModel[], features: FeatureModel[], actions: ActionModel[] } | null;
 }
 
 export class DecksTab extends Component<Props, State> {
@@ -37,10 +37,11 @@ export class DecksTab extends Component<Props, State> {
 		});
 	};
 
-	setActions = (name: string, type: CardType, starting: FeatureModel[], features: FeatureModel[], actions: ActionModel[]) => {
+	setActions = (name: string, description: string, type: CardType, starting: FeatureModel[], features: FeatureModel[], actions: ActionModel[]) => {
 		this.setState({
 			selected: {
 				name: name,
+				description: description,
 				type: type,
 				starting: starting,
 				features: features,
@@ -74,7 +75,7 @@ export class DecksTab extends Component<Props, State> {
 						.forEach(s => {
 							cards.push(
 								<Badge key={s.id} value={this.getBadge(s.packID)}>
-									<SpeciesCard species={s} onClick={species => this.setActions(species.name, CardType.Species, species.startingFeatures, species.features, species.actions)} />
+									<SpeciesCard species={s} onClick={s => this.setActions(s.name, s.description, CardType.Species, s.startingFeatures, s.features, s.actions)} />
 								</Badge>
 							);
 						});
@@ -84,7 +85,7 @@ export class DecksTab extends Component<Props, State> {
 						.forEach(s => {
 							cards.push(
 								<Badge key={s.id} value={this.getBadge(s.packID)}>
-									<SpeciesCard species={s} onClick={species => this.setActions(species.name, CardType.Species, species.startingFeatures, species.features, species.actions)} />
+									<SpeciesCard species={s} onClick={s => this.setActions(s.name, s.description, CardType.Species, s.startingFeatures, s.features, s.actions)} />
 								</Badge>
 							);
 						});
@@ -94,7 +95,7 @@ export class DecksTab extends Component<Props, State> {
 						.forEach(r => {
 							cards.push(
 								<Badge key={r.id} value={this.getBadge(r.packID)}>
-									<RoleCard role={r} onClick={role => this.setActions(role.name, CardType.Role, role.startingFeatures, role.features, role.actions)} />
+									<RoleCard role={r} onClick={r => this.setActions(r.name, r.description, CardType.Role, r.startingFeatures, r.features, r.actions)} />
 								</Badge>
 							);
 						});
@@ -104,7 +105,7 @@ export class DecksTab extends Component<Props, State> {
 						.forEach(b => {
 							cards.push(
 								<Badge key={b.id} value={this.getBadge(b.packID)}>
-									<BackgroundCard background={b} onClick={bg => this.setActions(bg.name, CardType.Background, bg.startingFeatures, bg.features, bg.actions)} />
+									<BackgroundCard background={b} onClick={b => this.setActions(b.name, b.description, CardType.Background, b.startingFeatures, b.features, b.actions)} />
 								</Badge>
 							);
 						});
@@ -182,6 +183,10 @@ export class DecksTab extends Component<Props, State> {
 				const content = (
 					<div>
 						<Text type={TextType.Heading}>{this.state.selected.name}</Text>
+						<hr />
+						<Text>
+							<p style={{ textAlign: 'center' }}>{this.state.selected.description}</p>
+						</Text>
 						{startingCards.length > 0 ? <hr /> : null}
 						{startingCards.length > 0 ? <Text type={TextType.SubHeading}>Starting Cards</Text> : null}
 						{startingCards.length > 0 ? <CardList cards={startingCards} /> : null}

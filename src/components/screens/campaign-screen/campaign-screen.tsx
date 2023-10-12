@@ -132,10 +132,7 @@ export class CampaignScreen extends Component<Props, State> {
 					break;
 				case 'dev':
 					content = (
-						<DevPage
-							game={this.props.game}
-							options={this.props.options}
-						/>
+						<DevPage />
 					);
 					break;
 			}

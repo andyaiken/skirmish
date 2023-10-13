@@ -18,6 +18,7 @@ interface Props {
 	options: OptionsModel;
 	showToken: (combatant: CombatantModel) => void;
 	showCharacterSheet: (combatant: CombatantModel) => void;
+	switchAllegiance: (combatant: CombatantModel) => void;
 	runMonsterTurn: (encounter: EncounterModel, combatant: CombatantModel, onFinished: () => void) => void;
 }
 
@@ -103,6 +104,7 @@ export class MonsterControls extends Component<Props, State> {
 					<div className='selected-action-card'>
 						{action}
 					</div>
+					{this.props.options.developer ? <button className='developer' onClick={() => this.props.switchAllegiance(this.props.combatant)}>Switch Allegiance</button> : null}
 				</div>
 			);
 		}  catch {

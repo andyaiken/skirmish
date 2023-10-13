@@ -36,11 +36,13 @@ export class CombatantLogic {
 		const species = GameLogic.getSpecies(speciesID);
 		if (species) {
 			combatant.speciesID = species.id;
+			combatant.type = species.type;
+			combatant.faction = species.type;
 			combatant.size = species.size;
 			species.quirks.forEach(q => combatant.quirks.push(q));
 			species.startingFeatures.forEach(f => combatant.features.push(JSON.parse(JSON.stringify(f)) as FeatureModel));
 
-			if (combatant.type === CombatantType.Monster) {
+			if (combatant.faction === CombatantType.Monster) {
 				combatant.name = species.name;
 			}
 		}
@@ -53,7 +55,7 @@ export class CombatantLogic {
 				combatant.roleID = role.id;
 				role.startingFeatures.forEach(f => combatant.features.push(JSON.parse(JSON.stringify(f)) as FeatureModel));
 
-				if (combatant.type === CombatantType.Monster) {
+				if (combatant.faction === CombatantType.Monster) {
 					combatant.name += ` ${role.name}`;
 				}
 			}

@@ -41,7 +41,7 @@ export class Items extends Component<Props> {
 			.filter(item => location === item.location)
 			.map(item => {
 				let unequip: JSX.Element | string = 'Carry';
-				if (this.props.game.encounter && (this.props.combatant.type === CombatantType.Hero)) {
+				if (this.props.game.encounter && (this.props.combatant.faction === CombatantType.Hero)) {
 					unequip = (
 						<div>Carry<br /><IconValue type={IconType.Movement} value={1} size={IconSize.Button} /></div>
 					);
@@ -57,7 +57,7 @@ export class Items extends Component<Props> {
 						</button>
 					</div>
 				);
-				if (this.props.combatant.type !== CombatantType.Hero) {
+				if (this.props.combatant.faction !== CombatantType.Hero) {
 					options = null;
 				}
 				if (!!this.props.game.encounter && !this.props.combatant.combat.current) {
@@ -97,7 +97,7 @@ export class Items extends Component<Props> {
 			.sort((a, b) => a.name.localeCompare(b.name))
 			.map(item => {
 				let equip: JSX.Element | string = 'Equip';
-				if (this.props.game.encounter && (this.props.combatant.type === CombatantType.Hero)) {
+				if (this.props.game.encounter && (this.props.combatant.faction === CombatantType.Hero)) {
 					equip = (
 						<div>Equip<br /><IconValue type={IconType.Movement} value={1} size={IconSize.Button} /></div>
 					);
@@ -113,7 +113,7 @@ export class Items extends Component<Props> {
 						</button>
 					</div>
 				);
-				if (this.props.combatant.type !== CombatantType.Hero) {
+				if (this.props.combatant.faction !== CombatantType.Hero) {
 					options = null;
 				}
 				if (!!this.props.game.encounter && !this.props.combatant.combat.current) {
@@ -147,7 +147,7 @@ export class Items extends Component<Props> {
 			return null;
 		}
 
-		if (this.props.combatant.type !== CombatantType.Hero) {
+		if (this.props.combatant.faction !== CombatantType.Hero) {
 			return null;
 		}
 
@@ -193,7 +193,7 @@ export class Items extends Component<Props> {
 			return null;
 		}
 
-		if (this.props.combatant.type !== CombatantType.Hero) {
+		if (this.props.combatant.faction !== CombatantType.Hero) {
 			return null;
 		}
 

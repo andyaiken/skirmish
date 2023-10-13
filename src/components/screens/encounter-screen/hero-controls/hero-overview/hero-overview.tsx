@@ -18,6 +18,7 @@ interface Props {
 	inspire: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	scan: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	hide: (encounter: EncounterModel, combatant: CombatantModel) => void;
+	switchAllegiance: (combatant: CombatantModel) => void;
 }
 
 export class HeroOverview extends Component<Props> {
@@ -45,6 +46,7 @@ export class HeroOverview extends Component<Props> {
 							Hide<br /><IconValue value={4} type={IconType.Movement} size={IconSize.Button} />
 						</button>
 					</div>
+					{this.props.options.developer ? <button className='developer' onClick={() => this.props.switchAllegiance(this.props.combatant)}>Switch Allegiance</button> : null}
 					{
 						this.props.options.showTips ?
 							<Expander

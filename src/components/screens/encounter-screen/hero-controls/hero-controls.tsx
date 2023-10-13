@@ -25,6 +25,7 @@ interface Props {
 	inspire: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	scan: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	hide: (encounter: EncounterModel, combatant: CombatantModel) => void;
+	switchAllegiance: (combatant: CombatantModel) => void;
 	drinkPotion: (encounter: EncounterModel, owner: CombatantModel, drinker: CombatantModel, potion: ItemModel) => void;
 	endTurn: () => void;
 }
@@ -82,6 +83,7 @@ export class HeroControls extends Component<Props, State> {
 							inspire={this.props.inspire}
 							scan={this.props.scan}
 							hide={this.props.hide}
+							switchAllegiance={this.props.switchAllegiance}
 						/>
 					);
 					break;

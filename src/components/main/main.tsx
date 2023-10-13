@@ -1123,12 +1123,12 @@ export class Main extends Component<Props, State> {
 					});
 					// Increment XP for surviving heroes
 					encounter.combatants
-						.filter(c => c.type === CombatantType.Hero)
+						.filter(c => (c.type === CombatantType.Hero) && (c.faction === CombatantType.Hero))
 						.filter(h => (h.combat.state === CombatantState.Standing) || (h.combat.state === CombatantState.Prone))
 						.forEach(h => h.xp += 1);
 					// Add surviving heroes back into the game
 					encounter.combatants
-						.filter(c => c.type === CombatantType.Hero)
+						.filter(c => (c.type === CombatantType.Hero) && (c.faction === CombatantType.Hero))
 						.filter(h => (h.combat.state === CombatantState.Standing) || (h.combat.state === CombatantState.Prone) || (h.combat.state === CombatantState.Unconscious))
 						.forEach(h => game.heroes.push(h));
 					game.heroes = Collections.sort(game.heroes, n => n.name);
@@ -1181,7 +1181,7 @@ export class Main extends Component<Props, State> {
 				case EncounterState.Retreat: {
 					// Add conscious heroes back into the game
 					encounter.combatants
-						.filter(c => c.type === CombatantType.Hero)
+						.filter(c => (c.type === CombatantType.Hero) && (c.faction === CombatantType.Hero))
 						.filter(h => (h.combat.state === CombatantState.Standing) || (h.combat.state === CombatantState.Prone))
 						.forEach(h => game.heroes.push(h));
 					game.heroes = Collections.sort(game.heroes, n => n.name);
@@ -1198,6 +1198,23 @@ export class Main extends Component<Props, State> {
 				screen: ScreenType.Campaign,
 				game: game,
 				dialog: dialogContent
+			}, () => {
+				this.saveGame();
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
+	};
+
+	switchAllegiance = (combatant: CombatantModel) => {
+		try {
+			const game = this.state.game as GameModel;
+
+			combatant.faction = (combatant.faction === CombatantType.Hero) ? CombatantType.Monster : CombatantType.Hero;
+			EncounterLogic.drawActions(game.encounter as EncounterModel, combatant);
+
+			this.setState({
+				game: game
 			}, () => {
 				this.saveGame();
 			});
@@ -1296,6 +1313,7 @@ export class Main extends Component<Props, State> {
 						pickUpItem={this.pickUpItem}
 						dropItem={this.dropItem}
 						useCharge={this.useCharge}
+						switchAllegiance={this.switchAllegiance}
 						finishEncounter={this.finishEncounter}
 					/>
 				);

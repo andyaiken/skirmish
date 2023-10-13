@@ -35,22 +35,22 @@ export class RoundControls extends Component<Props> {
 	render = () => {
 		try {
 			const heroesActive = this.props.encounter.combatants
-				.filter(c => c.type === CombatantType.Hero)
+				.filter(c => c.faction === CombatantType.Hero)
 				.filter(c => (c.combat.state === CombatantState.Standing) || (c.combat.state === CombatantState.Prone)).length;
 			const heroesUnconscious = this.props.encounter.combatants
-				.filter(c => c.type === CombatantType.Hero)
+				.filter(c => c.faction === CombatantType.Hero)
 				.filter(c => c.combat.state === CombatantState.Unconscious).length;
 			const heroesDead = this.props.encounter.combatants
-				.filter(c => c.type === CombatantType.Hero)
+				.filter(c => c.faction === CombatantType.Hero)
 				.filter(c => c.combat.state === CombatantState.Dead).length;
 			const monstersActive = this.props.encounter.combatants
-				.filter(c => c.type === CombatantType.Monster)
+				.filter(c => c.faction === CombatantType.Monster)
 				.filter(c => (c.combat.state === CombatantState.Standing) || (c.combat.state === CombatantState.Prone)).length;
 			const monstersUnconscious = this.props.encounter.combatants
-				.filter(c => c.type === CombatantType.Monster)
+				.filter(c => c.faction === CombatantType.Monster)
 				.filter(c => c.combat.state === CombatantState.Unconscious).length;
 			const monstersDead = this.props.encounter.combatants
-				.filter(c => c.type === CombatantType.Monster)
+				.filter(c => c.faction === CombatantType.Monster)
 				.filter(c => c.combat.state === CombatantState.Dead).length;
 
 			const stats = (

@@ -20,7 +20,7 @@ import type { BackgroundModel } from '../models/background';
 import { Collections } from '../utils/collections';
 
 export class BackgroundData {
-	static acrobat: BackgroundModel = {
+	static acrobat = (): BackgroundModel => ({
 		id: 'background-acrobat',
 		name: 'Acrobat',
 		packID: '',
@@ -70,12 +70,12 @@ export class BackgroundData {
 				]
 			}
 		]
-	};
+	});
 
-	static apothecary: BackgroundModel = {
+	static apothecary = (): BackgroundModel => ({
 		id: 'background-apothecary',
 		name: 'Apothecary',
-		packID: PackData.potions.id,
+		packID: PackData.potions().id,
 		description: 'The apothecary creates potions.',
 		startingFeatures: [],
 		features: [
@@ -92,7 +92,7 @@ export class BackgroundData {
 					ActionTargetParameters.self()
 				],
 				effects: [
-					ActionEffects.createPotion(PotionData.aptitude.id)
+					ActionEffects.createPotion(PotionData.aptitude().id)
 				]
 			},
 			{
@@ -105,7 +105,7 @@ export class BackgroundData {
 					ActionTargetParameters.self()
 				],
 				effects: [
-					ActionEffects.createPotion(PotionData.brilliance.id)
+					ActionEffects.createPotion(PotionData.brilliance().id)
 				]
 			},
 			{
@@ -118,7 +118,7 @@ export class BackgroundData {
 					ActionTargetParameters.self()
 				],
 				effects: [
-					ActionEffects.createPotion(PotionData.health.id)
+					ActionEffects.createPotion(PotionData.health().id)
 				]
 			},
 			{
@@ -131,7 +131,7 @@ export class BackgroundData {
 					ActionTargetParameters.self()
 				],
 				effects: [
-					ActionEffects.createPotion(PotionData.luck.id)
+					ActionEffects.createPotion(PotionData.luck().id)
 				]
 			},
 			{
@@ -144,7 +144,7 @@ export class BackgroundData {
 					ActionTargetParameters.self()
 				],
 				effects: [
-					ActionEffects.createPotion(PotionData.might.id)
+					ActionEffects.createPotion(PotionData.might().id)
 				]
 			},
 			{
@@ -157,7 +157,7 @@ export class BackgroundData {
 					ActionTargetParameters.self()
 				],
 				effects: [
-					ActionEffects.createPotion(PotionData.resistance.id)
+					ActionEffects.createPotion(PotionData.resistance().id)
 				]
 			},
 			{
@@ -170,7 +170,7 @@ export class BackgroundData {
 					ActionTargetParameters.self()
 				],
 				effects: [
-					ActionEffects.createPotion(PotionData.strength.id)
+					ActionEffects.createPotion(PotionData.strength().id)
 				]
 			},
 			{
@@ -183,7 +183,7 @@ export class BackgroundData {
 					ActionTargetParameters.self()
 				],
 				effects: [
-					ActionEffects.createPotion(PotionData.will.id)
+					ActionEffects.createPotion(PotionData.will().id)
 				]
 			},
 			{
@@ -196,13 +196,13 @@ export class BackgroundData {
 					ActionTargetParameters.self()
 				],
 				effects: [
-					ActionEffects.createPotion(PotionData.quickness.id)
+					ActionEffects.createPotion(PotionData.quickness().id)
 				]
 			}
 		]
-	};
+	});
 
-	static bard: BackgroundModel = {
+	static bard = (): BackgroundModel => ({
 		id: 'background-bard',
 		name: 'Bard',
 		packID: '',
@@ -269,9 +269,9 @@ export class BackgroundData {
 				]
 			}
 		]
-	};
+	});
 
-	static commander: BackgroundModel = {
+	static commander = (): BackgroundModel => ({
 		id: 'background-commander',
 		name: 'Commander',
 		packID: '',
@@ -335,12 +335,12 @@ export class BackgroundData {
 				]
 			}
 		]
-	};
+	});
 
-	static grenadier: BackgroundModel = {
+	static grenadier = (): BackgroundModel => ({
 		id: 'background-grenadier',
 		name: 'Grenadier',
-		packID: PackData.technology.id,
+		packID: PackData.technology().id,
 		description: 'Grenadiers use explosives, which are dangerous and difficult to master.',
 		startingFeatures: [],
 		features: [
@@ -405,12 +405,12 @@ export class BackgroundData {
 				]
 			}
 		]
-	};
+	});
 
-	static mountebank: BackgroundModel = {
+	static mountebank = (): BackgroundModel => ({
 		id: 'background-mountebank',
 		name: 'Mountebank',
-		packID: PackData.skullduggery.id,
+		packID: PackData.skullduggery().id,
 		description: 'Tricksters and con artists, mountebanks make valuable allies and frustrating foes.',
 		startingFeatures: [],
 		features: [
@@ -454,12 +454,12 @@ export class BackgroundData {
 				]
 			}
 		]
-	};
+	});
 
-	static mystic: BackgroundModel = {
+	static mystic = (): BackgroundModel => ({
 		id: 'background-mystic',
 		name: 'Mystic',
-		packID: PackData.arcana.id,
+		packID: PackData.arcana().id,
 		description: 'Mystics are the masters of the arcane arts.',
 		startingFeatures: [],
 		features: [
@@ -506,9 +506,9 @@ export class BackgroundData {
 				]
 			}
 		]
-	};
+	});
 
-	static noble: BackgroundModel = {
+	static noble = (): BackgroundModel => ({
 		id: 'background-noble',
 		name: 'Noble',
 		packID: '',
@@ -564,9 +564,9 @@ export class BackgroundData {
 				]
 			}
 		]
-	};
+	});
 
-	static physician: BackgroundModel = {
+	static physician = (): BackgroundModel => ({
 		id: 'background-physician',
 		name: 'Physician',
 		packID: '',
@@ -613,9 +613,9 @@ export class BackgroundData {
 				]
 			}
 		]
-	};
+	});
 
-	static reaver: BackgroundModel = {
+	static reaver = (): BackgroundModel => ({
 		id: 'background-reaver',
 		name: 'Reaver',
 		packID: '',
@@ -667,9 +667,9 @@ export class BackgroundData {
 				]
 			}
 		]
-	};
+	});
 
-	static sentinel: BackgroundModel = {
+	static sentinel = (): BackgroundModel => ({
 		id: 'background-sentinel',
 		name: 'Sentinel',
 		packID: '',
@@ -718,12 +718,12 @@ export class BackgroundData {
 				]
 			}
 		]
-	};
+	});
 
-	static thief: BackgroundModel = {
+	static thief = (): BackgroundModel => ({
 		id: 'background-thief',
 		name: 'Thief',
-		packID: PackData.skullduggery.id,
+		packID: PackData.skullduggery().id,
 		description: 'Never put your trust in a thief, even when they\'re on your side.',
 		startingFeatures: [],
 		features: [
@@ -777,12 +777,12 @@ export class BackgroundData {
 				]
 			}
 		]
-	};
+	});
 
-	static zealot: BackgroundModel = {
+	static zealot = (): BackgroundModel => ({
 		id: 'background-zealot',
 		name: 'Zealot',
-		packID: PackData.faith.id,
+		packID: PackData.faith().id,
 		description: 'A religious fanatic, empowered by the strength of their convictions.',
 		startingFeatures: [],
 		features: [
@@ -831,23 +831,23 @@ export class BackgroundData {
 				]
 			}
 		]
-	};
+	});
 
 	static getList = (): BackgroundModel[] => {
 		const list = [
-			BackgroundData.acrobat,
-			BackgroundData.apothecary,
-			BackgroundData.bard,
-			BackgroundData.commander,
-			BackgroundData.grenadier,
-			BackgroundData.mountebank,
-			BackgroundData.mystic,
-			BackgroundData.noble,
-			BackgroundData.physician,
-			BackgroundData.reaver,
-			BackgroundData.sentinel,
-			BackgroundData.thief,
-			BackgroundData.zealot
+			BackgroundData.acrobat(),
+			BackgroundData.apothecary(),
+			BackgroundData.bard(),
+			BackgroundData.commander(),
+			BackgroundData.grenadier(),
+			BackgroundData.mountebank(),
+			BackgroundData.mystic(),
+			BackgroundData.noble(),
+			BackgroundData.physician(),
+			BackgroundData.reaver(),
+			BackgroundData.sentinel(),
+			BackgroundData.thief(),
+			BackgroundData.zealot()
 		];
 
 		list.forEach(n => {

@@ -126,8 +126,8 @@ export class EncounterLogic {
 
 			if (result === 0) {
 				// Sort heroes before monsters
-				const valueA = (a.type === CombatantType.Hero ? 1 : 0);
-				const valueB = (b.type === CombatantType.Hero ? 1 : 0);
+				const valueA = (a.faction === CombatantType.Hero ? 1 : 0);
+				const valueB = (b.faction === CombatantType.Hero ? 1 : 0);
 				result = valueB - valueA;
 			}
 
@@ -277,7 +277,7 @@ export class EncounterLogic {
 
 	static drawActions = (encounter: EncounterModel, combatant: CombatantModel) => {
 		const deck = CombatantLogic.getActionDeck(combatant);
-		switch (combatant.type) {
+		switch (combatant.faction) {
 			case CombatantType.Hero:
 				combatant.combat.actions = Collections.shuffle(deck).splice(0, 3);
 				combatant.combat.actions.push(...BaseData.getBaseActions());
@@ -817,13 +817,13 @@ export class EncounterLogic {
 
 	static getEncounterState = (encounter: EncounterModel): EncounterState => {
 		const allMonstersDead = encounter.combatants
-			.filter(c => c.type === CombatantType.Monster)
+			.filter(c => c.faction === CombatantType.Monster)
 			.every(c => (c.combat.state === CombatantState.Dead) || (c.combat.state === CombatantState.Unconscious));
 		if (allMonstersDead) {
 			return EncounterState.Victory;
 		}
 		const allHeroesDead = encounter.combatants
-			.filter(c => c.type === CombatantType.Hero)
+			.filter(c => c.faction === CombatantType.Hero)
 			.every(c => (c.combat.state === CombatantState.Dead) || (c.combat.state === CombatantState.Unconscious));
 		if (allHeroesDead) {
 			return EncounterState.Defeat;

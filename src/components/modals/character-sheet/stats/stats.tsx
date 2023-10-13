@@ -163,7 +163,7 @@ export class Stats extends Component<Props> {
 						<DamagePanel label='Damage Resistances' getValue={this.getDamageResistanceValue} />
 					</div>
 					<div className='column'>
-						{this.props.combatant.type === CombatantType.Hero ? this.getXPSection() : null}
+						{(this.props.combatant.type === CombatantType.Hero) && (this.props.combatant.faction === CombatantType.Hero) ? this.getXPSection() : null}
 						{this.getProficienciesSection()}
 						{this.getAurasSection()}
 					</div>

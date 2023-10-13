@@ -468,6 +468,8 @@ export class GameLogic {
 				return 2;
 			case 'healwounds':
 				return 5 * (effect.data as number);
+			case 'summon':
+				return 5;
 			case 'takeAnotherAction':
 				return 0;
 		}

@@ -74,6 +74,7 @@ interface Props {
 	pickUpItem: (item: ItemModel, hero: CombatantModel) => void;
 	dropItem: (item: ItemModel, combatant: CombatantModel) => void;
 	useCharge: (type: StructureType, count: number) => void;
+	switchAllegiance: (combatant: CombatantModel) => void;
 	finishEncounter: (state: EncounterState) => void;
 }
 
@@ -537,7 +538,7 @@ export class EncounterScreen extends Component<Props, State> {
 		}
 
 		const currentCombatant = EncounterLogic.getActiveCombatants(this.props.encounter).find(c => c.combat.current) || null;
-		if (currentCombatant && (currentCombatant.type === CombatantType.Hero)) {
+		if (currentCombatant && (currentCombatant.faction === CombatantType.Hero)) {
 			return (
 				<div className='encounter-bottom-panel'>
 					<ActionControls
@@ -597,7 +598,7 @@ export class EncounterScreen extends Component<Props, State> {
 				);
 			}
 
-			if (currentCombatant.type === CombatantType.Monster) {
+			if (currentCombatant.faction === CombatantType.Monster) {
 				return (
 					<MonsterControls
 						combatant={currentCombatant}
@@ -605,6 +606,7 @@ export class EncounterScreen extends Component<Props, State> {
 						options={this.props.options}
 						showToken={() => this.scrollToCombatant('current')}
 						showCharacterSheet={this.showDetailsCombatant}
+						switchAllegiance={this.props.switchAllegiance}
 						runMonsterTurn={this.props.runMonsterTurn}
 					/>
 				);
@@ -622,6 +624,7 @@ export class EncounterScreen extends Component<Props, State> {
 					inspire={this.props.inspire}
 					scan={this.props.scan}
 					hide={this.props.hide}
+					switchAllegiance={this.props.switchAllegiance}
 					drinkPotion={this.props.drinkPotion}
 					endTurn={this.endTurn}
 				/>

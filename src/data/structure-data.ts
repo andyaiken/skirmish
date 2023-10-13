@@ -7,7 +7,7 @@ import type { StructureModel } from '../models/structure';
 import { Collections } from '../utils/collections';
 
 export class StructureData {
-	static academy: StructureModel = {
+	static academy = (): StructureModel => ({
 		id: 'structure-academy',
 		type: StructureType.Academy,
 		name: 'Academy',
@@ -16,9 +16,9 @@ export class StructureData {
 		position: { x: 0, y: 0 },
 		level: 1,
 		charges: 0
-	};
+	});
 
-	static barracks: StructureModel = {
+	static barracks = (): StructureModel => ({
 		id: 'structure-barracks',
 		type: StructureType.Barracks,
 		name: 'Barracks',
@@ -27,20 +27,20 @@ export class StructureData {
 		position: { x: 0, y: 0 },
 		level: 1,
 		charges: 0
-	};
+	});
 
-	static forge: StructureModel = {
+	static forge = (): StructureModel => ({
 		id: 'structure-forge',
 		type: StructureType.Forge,
 		name: 'Forge',
-		packID: PackData.technology.id,
+		packID: PackData.technology().id,
 		description: 'Forges contain materials for building strongholds.',
 		position: { x: 0, y: 0 },
 		level: 1,
 		charges: 0
-	};
+	});
 
-	static recruitment: StructureModel = {
+	static recruitment = (): StructureModel => ({
 		id: 'structure-recruitment',
 		type: StructureType.Hall,
 		name: 'Recruitment Hall',
@@ -49,31 +49,31 @@ export class StructureData {
 		position: { x: 0, y: 0 },
 		level: 1,
 		charges: 0
-	};
+	});
 
-	static intelligencer: StructureModel = {
+	static intelligencer = (): StructureModel => ({
 		id: 'structure-intelligencer',
 		type: StructureType.Intelligencer,
 		name: 'Intelligencer',
-		packID: PackData.skullduggery.id,
+		packID: PackData.skullduggery().id,
 		description: 'In this building, a spymaster devises schemes to undermine the enemy.',
 		position: { x: 0, y: 0 },
 		level: 1,
 		charges: 0
-	};
+	});
 
-	static observatory: StructureModel = {
+	static observatory = (): StructureModel => ({
 		id: 'structure-observatory',
 		type: StructureType.Observatory,
 		name: 'Observatory',
-		packID: PackData.arcana.id,
+		packID: PackData.arcana().id,
 		description: 'By observing the stars, an astrologer can sometimes manipulate the fates.',
 		position: { x: 0, y: 0 },
 		level: 1,
 		charges: 0
-	};
+	});
 
-	static quartermaster: StructureModel = {
+	static quartermaster = (): StructureModel => ({
 		id: 'structure-quartermaster',
 		type: StructureType.Quartermaster,
 		name: 'Quartermaster',
@@ -82,31 +82,31 @@ export class StructureData {
 		position: { x: 0, y: 0 },
 		level: 1,
 		charges: 0
-	};
+	});
 
-	static temple: StructureModel = {
+	static temple = (): StructureModel => ({
 		id: 'structure-temple',
 		type: StructureType.Temple,
 		name: 'Temple',
-		packID: PackData.faith.id,
+		packID: PackData.faith().id,
 		description: 'A place for heroes to pray to their gods for good fortune.',
 		position: { x: 0, y: 0 },
 		level: 1,
 		charges: 0
-	};
+	});
 
-	static thief: StructureModel = {
+	static thief = (): StructureModel => ({
 		id: 'structure-thief',
 		type: StructureType.ThievesGuild,
 		name: 'Thieves\' Guild',
-		packID: PackData.skullduggery.id,
+		packID: PackData.skullduggery().id,
 		description: 'This nondescript structure houses those who utilize every possible advantage.',
 		position: { x: 0, y: 0 },
 		level: 1,
 		charges: 0
-	};
+	});
 
-	static training: StructureModel = {
+	static training = (): StructureModel => ({
 		id: 'structure-training',
 		type: StructureType.TrainingGround,
 		name: 'Training Ground',
@@ -115,9 +115,9 @@ export class StructureData {
 		position: { x: 0, y: 0 },
 		level: 1,
 		charges: 0
-	};
+	});
 
-	static warRoom: StructureModel = {
+	static warRoom = (): StructureModel => ({
 		id: 'structure-war-room',
 		type: StructureType.WarRoom,
 		name: 'War Room',
@@ -126,9 +126,9 @@ export class StructureData {
 		position: { x: 0, y: 0 },
 		level: 1,
 		charges: 0
-	};
+	});
 
-	static wizard: StructureModel = {
+	static wizard = (): StructureModel => ({
 		id: 'structure-wizard',
 		type: StructureType.WizardTower,
 		name: 'Wizard Tower',
@@ -137,22 +137,22 @@ export class StructureData {
 		position: { x: 0, y: 0 },
 		level: 1,
 		charges: 0
-	};
+	});
 
 	static getList = (): StructureModel[] => {
 		const list = [
-			StructureData.academy,
-			StructureData.barracks,
-			StructureData.forge,
-			StructureData.recruitment,
-			StructureData.intelligencer,
-			StructureData.observatory,
-			StructureData.quartermaster,
-			StructureData.temple,
-			StructureData.thief,
-			StructureData.training,
-			StructureData.warRoom,
-			StructureData.wizard
+			StructureData.academy(),
+			StructureData.barracks(),
+			StructureData.forge(),
+			StructureData.recruitment(),
+			StructureData.intelligencer(),
+			StructureData.observatory(),
+			StructureData.quartermaster(),
+			StructureData.temple(),
+			StructureData.thief(),
+			StructureData.training(),
+			StructureData.warRoom(),
+			StructureData.wizard()
 		];
 
 		return Collections.sort(list, n => n.name);

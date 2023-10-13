@@ -1,15 +1,22 @@
 import { BaseData } from '../data/base-data';
+import { MonsterSpeciesData } from '../data/monster-species-data';
 
 import { ActionRangeType } from '../enums/action-range-type';
 import { ActionTargetType } from '../enums/action-target-type';
 import { CombatantState } from '../enums/combatant-state';
+import { CombatantType } from '../enums/combatant-type';
 import { DamageType } from '../enums/damage-type';
 import { EncounterMapSquareType } from '../enums/encounter-map-square-type';
+import { FeatureType } from '../enums/feature-type';
 import { ItemLocationType } from '../enums/item-location-type';
 import { ItemProficiencyType } from '../enums/item-proficiency-type';
 import { MovementType } from '../enums/movement-type';
+import { QuirkType } from '../enums/quirk-type';
 import { SkillType } from '../enums/skill-type';
+import { SummonType } from '../enums/summon-type';
 import { TraitType } from '../enums/trait-type';
+
+import { EncounterGenerator } from '../generators/encounter-generator';
 
 import type {
 	ActionEffectModel,
@@ -531,6 +538,14 @@ export class ActionEffects {
 		};
 	};
 
+	static summon = (type: SummonType): ActionEffectModel => {
+		return {
+			id: 'summon',
+			data: type,
+			children: []
+		};
+	};
+
 	static getDescription = (effect: ActionEffectModel, combatant: CombatantModel | null, encounter: EncounterModel | null): string => {
 		switch (effect.id) {
 			case 'attack': {
@@ -658,6 +673,10 @@ export class ActionEffects {
 				const potionID = effect.data as string;
 				const potion = GameLogic.getPotion(potionID) as ItemModel;
 				return `Create a ${potion.name}`;
+			}
+			case 'summon': {
+				const type = effect.data as SummonType;
+				return `Summon ${type}`;
 			}
 		}
 
@@ -1330,6 +1349,45 @@ export class ActionEffects {
 						copy.id = Utils.guid();
 						target.carried.push(copy);
 					});
+				}
+				break;
+			}
+			case 'summon': {
+				const type = effect.data as SummonType;
+				const list = [];
+				switch (type) {
+					case SummonType.Undead: {
+						list.push(...MonsterSpeciesData.getList().filter(s => s.quirks.includes(QuirkType.Undead)).map(s => s.id));
+						break;
+					}
+					case SummonType.Beast: {
+						list.push(...MonsterSpeciesData.getList().filter(s => s.quirks.includes(QuirkType.Beast)).map(s => s.id));
+						break;
+					}
+					case SummonType.Elemental: {
+						list.push(...MonsterSpeciesData.getList().filter(s => s.name.toLowerCase().includes('elemental')).map(s => s.id));
+						break;
+					}
+				}
+				if (list.length > 0) {
+					const speciesID = Collections.draw(list);
+					const monster = Factory.createCombatant(CombatantType.Monster);
+					CombatantLogic.applyCombatantCards(monster, speciesID, '', '');
+					CombatantLogic.makeFeatureChoices(monster);
+					CombatantLogic.addItems(monster, []);
+
+					while (monster.level < combatant.level) {
+						const featureDeck = CombatantLogic.getFeatureDeck(monster).filter(f => f.type !== FeatureType.Proficiency);
+						CombatantLogic.incrementCombatantLevel(monster, Collections.draw(featureDeck), []);
+						CombatantLogic.makeFeatureChoices(monster);
+					}
+
+					monster.faction = combatant.faction;
+					monster.quirks.push(QuirkType.Drone);
+					CombatantLogic.resetCombatant(monster);
+					encounter.combatants.push(monster);
+					EncounterGenerator.placeCombatants(encounter, Math.random);
+					EncounterLogic.log(encounter, `${combatant.name} has summoned ${monster.name}`);
 				}
 				break;
 			}

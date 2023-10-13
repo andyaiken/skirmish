@@ -92,24 +92,16 @@
 
 # Content Ideas
 
-## Summoning
-* Need to ensure that a summoned creature is on the side of the creature that summoned it
-  * Make it a hero, but make it a drone
-* Druids should summon beasts
-* Necromancers should summon / raise undead
-* Clerics should summon / resurrect dead heroes
-* Elementalist should summon elementals
-
 ## Ideas for Packs
 * Evil
   * hero - Shadowborn
   * monster - Demon
   * monster - Swarm of imps
+  * role - Necromancer should be split into necromancer (undeath) and lifestealer (misc creepy)
 * Fae
   * role - Arcane archer / venator / bowmage / hexbow
-  * role - Druid (destroy walls / summon beast drone / befriend beast)
-* Elements
-  * role - Elementalist
+* Faith
+  * Clerics should summon / resurrect dead heroes
 
 ## Ideas for Roles / Backgrounds
 * Gladiator 

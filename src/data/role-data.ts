@@ -9,6 +9,7 @@ import { ItemProficiencyType } from '../enums/item-proficiency-type';
 import { MovementType } from '../enums/movement-type';
 import { SkillCategoryType } from '../enums/skill-category-type';
 import { SkillType } from '../enums/skill-type';
+import { SummonType } from '../enums/summon-type';
 import { TraitType } from '../enums/trait-type';
 
 import { ActionEffects, ActionOriginParameters, ActionPrerequisites, ActionTargetParameters, ActionWeaponParameters } from '../logic/action-logic';
@@ -20,7 +21,7 @@ import type { RoleModel } from '../models/role';
 import { Collections } from '../utils/collections';
 
 export class RoleData {
-	static arcanist: RoleModel = {
+	static arcanist = (): RoleModel => ({
 		id: 'role-arcanist',
 		name: 'Arcanist',
 		packID: '',
@@ -135,12 +136,12 @@ export class RoleData {
 				]
 			}
 		]
-	};
+	});
 
-	static artificer: RoleModel = {
+	static artificer = (): RoleModel => ({
 		id: 'role-artificer',
 		name: 'Artificer',
-		packID: PackData.technology.id,
+		packID: PackData.technology().id,
 		description: 'A creator of magically-powered inventions.',
 		startingFeatures: [
 			FeatureLogic.createTraitFeature('artificer-start-1', TraitType.Resolve, 1),
@@ -244,12 +245,12 @@ export class RoleData {
 				]
 			}
 		]
-	};
+	});
 
-	static assassin: RoleModel = {
+	static assassin = (): RoleModel => ({
 		id: 'role-assassin',
 		name: 'Assassin',
-		packID: PackData.skullduggery.id,
+		packID: PackData.skullduggery().id,
 		description: 'Assassins operate from the shadows, using poison to kill.',
 		startingFeatures: [
 			FeatureLogic.createTraitFeature('assassin-start-1', TraitType.Speed, 1),
@@ -325,9 +326,9 @@ export class RoleData {
 				]
 			}
 		]
-	};
+	});
 
-	static barbarian: RoleModel = {
+	static barbarian = (): RoleModel => ({
 		id: 'role-barbarian',
 		name: 'Barbarian',
 		packID: '',
@@ -451,9 +452,9 @@ export class RoleData {
 				]
 			}
 		]
-	};
+	});
 
-	static centurion: RoleModel = {
+	static centurion = (): RoleModel => ({
 		id: 'role-centurion',
 		name: 'Centurion',
 		packID: '',
@@ -594,12 +595,12 @@ export class RoleData {
 				]
 			}
 		]
-	};
+	});
 
-	static cleric: RoleModel = {
+	static cleric = (): RoleModel => ({
 		id: 'role-cleric',
 		name: 'Cleric',
-		packID: PackData.faith.id,
+		packID: PackData.faith().id,
 		description: 'Clerics devote their lives to the gods, and receive power in return.',
 		startingFeatures: [
 			FeatureLogic.createTraitFeature('cleric-start-1', TraitType.Resolve, 1),
@@ -681,9 +682,9 @@ export class RoleData {
 				]
 			}
 		]
-	};
+	});
 
-	static dervish: RoleModel = {
+	static dervish = (): RoleModel => ({
 		id: 'role-dervish',
 		name: 'Dervish',
 		packID: '',
@@ -833,12 +834,195 @@ export class RoleData {
 				]
 			}
 		]
-	};
+	});
 
-	static enchanter: RoleModel = {
+	static druid = (): RoleModel => ({
+		id: 'role-druid',
+		name: 'Druid',
+		packID: PackData.fae().id,
+		description: 'A wielder of the magic of the natural world.',
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('druid-start-1', TraitType.Resolve, 1),
+			FeatureLogic.createSkillFeature('druid-start-2', SkillType.Spellcasting, 2)
+		],
+		features: [
+			FeatureLogic.createTraitFeature('druid-feature-1', TraitType.Resolve, 1),
+			FeatureLogic.createSkillFeature('druid-feature-2', SkillType.Spellcasting, 2)
+		],
+		actions: [
+			{
+				id: 'druid-action-1',
+				name: 'Animal Companion',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.self()
+				],
+				effects: [
+					ActionEffects.summon(SummonType.Beast)
+				]
+			},
+			{
+				id: 'druid-action-2',
+				name: 'Stone to Dust',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Walls, 1, 10)
+				],
+				effects: [
+					ActionEffects.addSquares()
+				]
+			},
+			{
+				id: 'druid-action-3',
+				name: 'Sunlight',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 5)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Spellcasting,
+						trait: TraitType.Endurance,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Light, 2),
+							ActionEffects.stun()
+						]
+					})
+				]
+			},
+			{
+				id: 'druid-action-4',
+				name: 'Nature\'s Balm',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 5)
+				],
+				effects: [
+					ActionEffects.healDamage(1),
+					ActionEffects.removeCondition(TraitType.Any)
+				]
+			}
+		]
+	});
+
+	static elementalist = (): RoleModel => ({
+		id: 'role-elementalist',
+		name: 'Elementalist',
+		packID: PackData.elements().id,
+		description: 'A master of manipulating the four elements.',
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('elementalist-start-1', TraitType.Resolve, 1),
+			FeatureLogic.createSkillFeature('elementalist-start-2', SkillType.Spellcasting, 2),
+			FeatureLogic.createProficiencyFeature('elementalist-start-3', ItemProficiencyType.Implements)
+		],
+		features: [
+			FeatureLogic.createTraitFeature('elementalist-feature-1', TraitType.Resolve, 1),
+			FeatureLogic.createSkillFeature('elementalist-feature-2', SkillType.Spellcasting, 2),
+			FeatureLogic.createDamageCategoryBonusFeature('elementalist-feature-3', DamageCategoryType.Energy, 1),
+			FeatureLogic.createDamageCategoryResistFeature('elementalist-feature-4', DamageCategoryType.Energy, 1)
+		],
+		actions: [
+			{
+				id: 'elementalist-action-1',
+				name: 'Summon Elemental',
+				prerequisites: [
+					ActionPrerequisites.implement()
+				],
+				parameters: [
+					ActionTargetParameters.self()
+				],
+				effects: [
+					ActionEffects.summon(SummonType.Elemental)
+				]
+			},
+			{
+				id: 'elementalist-action-2',
+				name: 'Ember',
+				prerequisites: [
+					ActionPrerequisites.implement()
+				],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 10)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Spellcasting,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Fire, 3),
+							ActionEffects.addCondition(ConditionLogic.createAutoDamageCondition(TraitType.Endurance, 2, DamageType.Fire))
+						]
+					})
+				]
+			},
+			{
+				id: 'elementalist-action-3',
+				name: 'Rime',
+				prerequisites: [
+					ActionPrerequisites.implement()
+				],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 10)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Spellcasting,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Cold, 3),
+							ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Endurance, 3))
+						]
+					})
+				]
+			},
+			{
+				id: 'elementalist-action-4',
+				name: 'Thunderbolt',
+				prerequisites: [
+					ActionPrerequisites.implement()
+				],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 10)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Spellcasting,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Electricity, 3),
+							ActionEffects.stun()
+						]
+					})
+				]
+			},
+			{
+				id: 'elementalist-action-5',
+				name: 'Elemental Resistance',
+				prerequisites: [
+					ActionPrerequisites.implement()
+				],
+				parameters: [
+					ActionTargetParameters.self()
+				],
+				effects: [
+					ActionEffects.addCondition(ConditionLogic.createDamageCategoryResistanceCondition(TraitType.Resolve, 5, DamageCategoryType.Energy))
+				]
+			}
+		]
+	});
+
+	static enchanter = (): RoleModel => ({
 		id: 'role-enchanter',
 		name: 'Enchanter',
-		packID: PackData.arcana.id,
+		packID: PackData.arcana().id,
 		description: 'Spellcasters who specialize in magic that confuses the senses.',
 		startingFeatures: [
 			FeatureLogic.createTraitFeature('enchanter-start-1', TraitType.Resolve, 1),
@@ -963,12 +1147,12 @@ export class RoleData {
 				]
 			}
 		]
-	};
+	});
 
-	static geomancer: RoleModel = {
+	static geomancer = (): RoleModel => ({
 		id: 'role-geomancer',
 		name: 'Geomancer',
-		packID: PackData.arcana.id,
+		packID: PackData.arcana().id,
 		description: 'Spellcasters whose magic affects the battlefield itself.',
 		startingFeatures: [
 			FeatureLogic.createTraitFeature('geomancer-start-1', TraitType.Endurance, 1),
@@ -1028,7 +1212,7 @@ export class RoleData {
 					ActionPrerequisites.implement()
 				],
 				parameters: [
-					ActionTargetParameters.burst(ActionTargetType.Walls, 1, 10)
+					ActionTargetParameters.burst(ActionTargetType.Walls, Number.MAX_VALUE, 3)
 				],
 				effects: [
 					ActionEffects.addSquares()
@@ -1079,12 +1263,12 @@ export class RoleData {
 				]
 			}
 		]
-	};
+	});
 
-	static gunslinger: RoleModel = {
+	static gunslinger = (): RoleModel => ({
 		id: 'role-gunslinger',
 		name: 'Gunslinger',
-		packID: PackData.technology.id,
+		packID: PackData.technology().id,
 		description: 'A fighter who uses gunpowder weapons.',
 		startingFeatures: [
 			FeatureLogic.createTraitFeature('gunslinger-start-1', TraitType.Speed, 1),
@@ -1216,12 +1400,12 @@ export class RoleData {
 				]
 			}
 		]
-	};
+	});
 
-	static luckweaver: RoleModel = {
+	static luckweaver = (): RoleModel => ({
 		id: 'role-luckweaver',
 		name: 'Luckweaver',
-		packID: PackData.fae.id,
+		packID: PackData.fae().id,
 		description: 'One who can manipulate the laws of chance.',
 		startingFeatures: [
 			FeatureLogic.createSkillFeature('luckweaver-start-1', SkillType.Spellcasting, 2)
@@ -1287,12 +1471,12 @@ export class RoleData {
 				]
 			}
 		]
-	};
+	});
 
-	static necromancer: RoleModel = {
+	static necromancer = (): RoleModel => ({
 		id: 'role-necromancer',
 		name: 'Necromancer',
-		packID: PackData.undead.id,
+		packID: PackData.undead().id,
 		description: 'A spellcaster whose magic deals with life and death.',
 		startingFeatures: [
 			FeatureLogic.createTraitFeature('necromancer-start-1', TraitType.Resolve, 1),
@@ -1411,11 +1595,24 @@ export class RoleData {
 						]
 					})
 				]
+			},
+			{
+				id: 'necromancer-action-7',
+				name: 'Raise the Dead',
+				prerequisites: [
+					ActionPrerequisites.implement()
+				],
+				parameters: [
+					ActionTargetParameters.self()
+				],
+				effects: [
+					ActionEffects.summon(SummonType.Undead)
+				]
 			}
 		]
-	};
+	});
 
-	static ninja: RoleModel = {
+	static ninja = (): RoleModel => ({
 		id: 'role-ninja',
 		name: 'Ninja',
 		packID: '',
@@ -1522,12 +1719,12 @@ export class RoleData {
 				]
 			}
 		]
-	};
+	});
 
-	static paladin: RoleModel = {
+	static paladin = (): RoleModel => ({
 		id: 'role-paladin',
 		name: 'Paladin',
-		packID: PackData.faith.id,
+		packID: PackData.faith().id,
 		description: 'A holy warrior, driven by unwavering faith.',
 		startingFeatures: [
 			FeatureLogic.createTraitFeature('paladin-start-1', TraitType.Resolve, 1),
@@ -1608,12 +1805,12 @@ export class RoleData {
 				]
 			}
 		]
-	};
+	});
 
-	static psion: RoleModel = {
+	static psion = (): RoleModel => ({
 		id: 'role-psion',
 		name: 'Psion',
-		packID: PackData.arcana.id,
+		packID: PackData.arcana().id,
 		description: 'A master of the power of the mind.',
 		startingFeatures: [
 			FeatureLogic.createTraitFeature('psion-start-1', TraitType.Resolve, 1),
@@ -1727,9 +1924,9 @@ export class RoleData {
 				]
 			}
 		]
-	};
+	});
 
-	static ranger: RoleModel = {
+	static ranger = (): RoleModel => ({
 		id: 'role-ranger',
 		name: 'Ranger',
 		packID: '',
@@ -1874,13 +2071,13 @@ export class RoleData {
 				]
 			}
 		]
-	};
+	});
 
-	static sensei: RoleModel = {
+	static sensei = (): RoleModel => ({
 		id: 'role-sensei',
 		name: 'Sensei',
 		packID: '',
-		description: 'A martial artist who uses elementally-enhanced fighting techniques.',
+		description: 'A martial artist who uses magically-enhanced fighting techniques.',
 		startingFeatures: [
 			FeatureLogic.createTraitFeature('sensei-start-1', TraitType.Speed, 1),
 			FeatureLogic.createSkillFeature('sensei-start-2', SkillType.Brawl, 2)
@@ -1995,12 +2192,12 @@ export class RoleData {
 				]
 			}
 		]
-	};
+	});
 
-	static sorcerer: RoleModel = {
+	static sorcerer = (): RoleModel => ({
 		id: 'role-sorcerer',
 		name: 'Sorcerer',
-		packID: PackData.elements.id,
+		packID: PackData.elements().id,
 		description: 'A magic-user whose spells are elemental and destructive.',
 		startingFeatures: [
 			FeatureLogic.createTraitFeature('sorcerer-start-1', TraitType.Resolve, 1),
@@ -2019,12 +2216,13 @@ export class RoleData {
 		actions: [
 			{
 				id: 'sorcerer-action-1',
-				name: 'Thunderbolt',
+				name: 'Thunderstorm',
 				prerequisites: [
 					ActionPrerequisites.implement()
 				],
 				parameters: [
-					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 10)
+					ActionOriginParameters.distance(10),
+					ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 3)
 				],
 				effects: [
 					ActionEffects.attack({
@@ -2084,27 +2282,14 @@ export class RoleData {
 						]
 					})
 				]
-			},
-			{
-				id: 'sorcerer-action-4',
-				name: 'Elemental Resistance',
-				prerequisites: [
-					ActionPrerequisites.implement()
-				],
-				parameters: [
-					ActionTargetParameters.self()
-				],
-				effects: [
-					ActionEffects.addCondition(ConditionLogic.createDamageCategoryResistanceCondition(TraitType.Resolve, 5, DamageCategoryType.Energy))
-				]
 			}
 		]
-	};
+	});
 
-	static warmage: RoleModel = {
+	static warmage = (): RoleModel => ({
 		id: 'role-warmage',
 		name: 'Warmage',
-		packID: PackData.arcana.id,
+		packID: PackData.arcana().id,
 		description: 'A warrior who bridges martial discipline and arcane power.',
 		startingFeatures: [
 			FeatureLogic.createTraitFeature('warmage-start-1', TraitType.Resolve, 1),
@@ -2229,29 +2414,31 @@ export class RoleData {
 				]
 			}
 		]
-	};
+	});
 
 	static getList = (): RoleModel[] => {
 		const list = [
-			RoleData.arcanist,
-			RoleData.artificer,
-			RoleData.assassin,
-			RoleData.barbarian,
-			RoleData.centurion,
-			RoleData.cleric,
-			RoleData.dervish,
-			RoleData.enchanter,
-			RoleData.geomancer,
-			RoleData.gunslinger,
-			RoleData.luckweaver,
-			RoleData.necromancer,
-			RoleData.ninja,
-			RoleData.paladin,
-			RoleData.psion,
-			RoleData.ranger,
-			RoleData.sensei,
-			RoleData.sorcerer,
-			RoleData.warmage
+			RoleData.arcanist(),
+			RoleData.artificer(),
+			RoleData.assassin(),
+			RoleData.barbarian(),
+			RoleData.centurion(),
+			RoleData.cleric(),
+			RoleData.dervish(),
+			RoleData.druid(),
+			RoleData.elementalist(),
+			RoleData.enchanter(),
+			RoleData.geomancer(),
+			RoleData.gunslinger(),
+			RoleData.luckweaver(),
+			RoleData.necromancer(),
+			RoleData.ninja(),
+			RoleData.paladin(),
+			RoleData.psion(),
+			RoleData.ranger(),
+			RoleData.sensei(),
+			RoleData.sorcerer(),
+			RoleData.warmage()
 		];
 
 		list.forEach(n => {

@@ -15,13 +15,25 @@ import './index.scss';
 
 localforage.getItem<GameModel>('skirmish-game').then(game => {
 	if (game) {
+		game.heroes.forEach(h => {
+			if (h.faction === undefined) {
+				h.faction = h.type;
+			}
+		});
+
 		if (!game.stronghold) {
 			game.stronghold = [];
-			StrongholdLogic.addStructure(game.stronghold, StructureData.barracks);
-			StrongholdLogic.addStructure(game.stronghold, StructureData.barracks);
+			StrongholdLogic.addStructure(game.stronghold, StructureData.barracks());
+			StrongholdLogic.addStructure(game.stronghold, StructureData.barracks());
 		}
 
 		if (game.encounter) {
+			game.encounter.combatants.forEach(c => {
+				if (c.faction === undefined) {
+					c.faction = c.type;
+				}
+			});
+
 			game.encounter.loot.forEach(lp => {
 				if (lp.money === undefined) {
 					lp.money = 0;

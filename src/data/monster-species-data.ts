@@ -21,7 +21,7 @@ import type { SpeciesModel } from '../models/species';
 import { Collections } from '../utils/collections';
 
 export class MonsterSpeciesData {
-	static giant: SpeciesModel = {
+	static giant = (): SpeciesModel => ({
 		id: 'species-giant',
 		name: 'Giant',
 		packID: '',
@@ -102,9 +102,9 @@ export class MonsterSpeciesData {
 				]
 			}
 		]
-	};
+	});
 
-	static gnoll: SpeciesModel = {
+	static gnoll = (): SpeciesModel => ({
 		id: 'species-gnoll',
 		name: 'Gnoll',
 		packID: '',
@@ -199,9 +199,9 @@ export class MonsterSpeciesData {
 				]
 			}
 		]
-	};
+	});
 
-	static goblin: SpeciesModel = {
+	static goblin = (): SpeciesModel => ({
 		id: 'species-goblin',
 		name: 'Goblin',
 		packID: '',
@@ -257,9 +257,9 @@ export class MonsterSpeciesData {
 				]
 			}
 		]
-	};
+	});
 
-	static medusa: SpeciesModel = {
+	static medusa = (): SpeciesModel => ({
 		id: 'species-medusa',
 		name: 'Medusa',
 		packID: '',
@@ -319,9 +319,9 @@ export class MonsterSpeciesData {
 				]
 			}
 		]
-	};
+	});
 
-	static orc: SpeciesModel = {
+	static orc = (): SpeciesModel => ({
 		id: 'species-orc',
 		name: 'Orc',
 		packID: '',
@@ -377,9 +377,9 @@ export class MonsterSpeciesData {
 				]
 			}
 		]
-	};
+	});
 
-	static troll: SpeciesModel = {
+	static troll = (): SpeciesModel => ({
 		id: 'species-troll',
 		name: 'Troll',
 		packID: '',
@@ -434,14 +434,14 @@ export class MonsterSpeciesData {
 				]
 			}
 		]
-	};
+	});
 
 	// Elementals
 
-	static airElemental: SpeciesModel = {
+	static airElemental = (): SpeciesModel => ({
 		id: 'species-elemental-air',
 		name: 'Air Elemental',
-		packID: PackData.elements.id,
+		packID: PackData.elements().id,
 		description: 'Air elementals are as changeable as the weather, either calm or tempestuous.',
 		type: CombatantType.Monster,
 		size: 1,
@@ -502,12 +502,12 @@ export class MonsterSpeciesData {
 				]
 			}
 		]
-	};
+	});
 
-	static earthElemental: SpeciesModel = {
+	static earthElemental = (): SpeciesModel => ({
 		id: 'species-elemental-earth',
 		name: 'Earth Elemental',
-		packID: PackData.elements.id,
+		packID: PackData.elements().id,
 		description: 'Earth elementals are slow but unstoppable.',
 		type: CombatantType.Monster,
 		size: 1,
@@ -587,12 +587,12 @@ export class MonsterSpeciesData {
 				]
 			}
 		]
-	};
+	});
 
-	static fireElemental: SpeciesModel = {
+	static fireElemental = (): SpeciesModel => ({
 		id: 'species-elemental-fire',
 		name: 'Fire Elemental',
-		packID: PackData.elements.id,
+		packID: PackData.elements().id,
 		description: 'Hot blooded and quick to anger, these humanoids are made of living fire.',
 		type: CombatantType.Monster,
 		size: 1,
@@ -672,12 +672,12 @@ export class MonsterSpeciesData {
 				]
 			}
 		]
-	};
+	});
 
-	static waterElemental: SpeciesModel = {
+	static waterElemental = (): SpeciesModel => ({
 		id: 'species-elemental-water',
 		name: 'Water Elemental',
-		packID: PackData.elements.id,
+		packID: PackData.elements().id,
 		description: 'Humanoids made of flowing, living water.',
 		type: CombatantType.Monster,
 		size: 1,
@@ -739,14 +739,14 @@ export class MonsterSpeciesData {
 				]
 			}
 		]
-	};
+	});
 
 	// Beasts
 
-	static bear: SpeciesModel = {
+	static bear = (): SpeciesModel => ({
 		id: 'species-bear',
 		name: 'Bear',
-		packID: PackData.beasts.id,
+		packID: PackData.beasts().id,
 		description: 'A huge, powerful mammal.',
 		type: CombatantType.Monster,
 		size: 2,
@@ -821,12 +821,12 @@ export class MonsterSpeciesData {
 				]
 			}
 		]
-	};
+	});
 
-	static giantSpider: SpeciesModel = {
+	static giantSpider = (): SpeciesModel => ({
 		id: 'species-giant-spider',
 		name: 'Giant Spider',
-		packID: PackData.beasts.id,
+		packID: PackData.beasts().id,
 		description: 'Venomous insects with eight legs.',
 		type: CombatantType.Monster,
 		size: 2,
@@ -883,12 +883,12 @@ export class MonsterSpeciesData {
 				]
 			}
 		]
-	};
+	});
 
-	static ratSwarm: SpeciesModel = {
+	static ratSwarm = (): SpeciesModel => ({
 		id: 'species-rat-swarm',
 		name: 'Rat Swarm',
-		packID: PackData.beasts.id,
+		packID: PackData.beasts().id,
 		description: 'A swarm of large rodents.',
 		type: CombatantType.Monster,
 		size: 2,
@@ -926,13 +926,13 @@ export class MonsterSpeciesData {
 				]
 			}
 		]
-	};
+	});
 
-	static scarab: SpeciesModel = {
+	static scarab = (): SpeciesModel => ({
 		id: 'species-scarab',
 		name: 'Scarab',
-		packID: PackData.beasts.id,
-		description: 'Insects with an acidic bite.',
+		packID: PackData.beasts().id,
+		description: 'Beetles with an acidic bite.',
 		type: CombatantType.Monster,
 		size: 1,
 		quirks: [
@@ -1009,12 +1009,12 @@ export class MonsterSpeciesData {
 				]
 			}
 		]
-	};
+	});
 
-	static stingerSwarm: SpeciesModel = {
+	static stingerSwarm = (): SpeciesModel => ({
 		id: 'species-stinger-swarm',
 		name: 'Stinger Swarm',
-		packID: PackData.beasts.id,
+		packID: PackData.beasts().id,
 		description: 'A swarm of fast-moving flying insects.',
 		type: CombatantType.Monster,
 		size: 2,
@@ -1065,12 +1065,12 @@ export class MonsterSpeciesData {
 				]
 			}
 		]
-	};
+	});
 
-	static wolf: SpeciesModel = {
+	static wolf = (): SpeciesModel => ({
 		id: 'species-wolf',
 		name: 'Wolf',
-		packID: PackData.beasts.id,
+		packID: PackData.beasts().id,
 		description: 'A large canine that hunts in packs.',
 		type: CombatantType.Monster,
 		size: 1,
@@ -1138,14 +1138,14 @@ export class MonsterSpeciesData {
 				]
 			}
 		]
-	};
+	});
 
 	// Undead
 
-	static skeleton: SpeciesModel = {
+	static skeleton = (): SpeciesModel => ({
 		id: 'species-skeleton',
 		name: 'Skeleton',
-		packID: PackData.undead.id,
+		packID: PackData.undead().id,
 		description: 'Re-animated bones.',
 		type: CombatantType.Monster,
 		size: 1,
@@ -1195,12 +1195,12 @@ export class MonsterSpeciesData {
 				]
 			}
 		]
-	};
+	});
 
-	static vampire: SpeciesModel = {
+	static vampire = (): SpeciesModel => ({
 		id: 'species-vampire',
 		name: 'Vampire',
-		packID: PackData.undead.id,
+		packID: PackData.undead().id,
 		description: 'The blood is the life.',
 		type: CombatantType.Monster,
 		size: 1,
@@ -1273,12 +1273,12 @@ export class MonsterSpeciesData {
 				]
 			}
 		]
-	};
+	});
 
-	static wraith: SpeciesModel = {
+	static wraith = (): SpeciesModel => ({
 		id: 'species-wraith',
 		name: 'Wraith',
-		packID: PackData.undead.id,
+		packID: PackData.undead().id,
 		description: 'A floating, spectral apparition.',
 		type: CombatantType.Monster,
 		size: 1,
@@ -1339,12 +1339,12 @@ export class MonsterSpeciesData {
 				]
 			}
 		]
-	};
+	});
 
-	static zombie: SpeciesModel = {
+	static zombie = (): SpeciesModel => ({
 		id: 'species-zombie',
 		name: 'Zombie',
-		packID: PackData.undead.id,
+		packID: PackData.undead().id,
 		description: 'A re-animated corpse.',
 		type: CombatantType.Monster,
 		size: 1,
@@ -1406,14 +1406,14 @@ export class MonsterSpeciesData {
 				]
 			}
 		]
-	};
+	});
 
 	// Fae
 
-	static banshee: SpeciesModel = {
+	static banshee = (): SpeciesModel => ({
 		id: 'species-banshee',
 		name: 'Banshee',
-		packID: PackData.fae.id,
+		packID: PackData.fae().id,
 		description: 'A fae spirit whose unearthly wail presages death.',
 		type: CombatantType.Monster,
 		size: 1,
@@ -1472,14 +1472,14 @@ export class MonsterSpeciesData {
 				]
 			}
 		]
-	};
+	});
 
 	// Cold blood
 
-	static crocodilian: SpeciesModel = {
+	static crocodilian = (): SpeciesModel => ({
 		id: 'species-crocodilian',
 		name: 'Crocodilian',
-		packID: PackData.coldBlood.id,
+		packID: PackData.coldBlood().id,
 		description: 'An ancient species of humanoid crocodiles with armored skin.',
 		type: CombatantType.Monster,
 		size: 1,
@@ -1536,12 +1536,12 @@ export class MonsterSpeciesData {
 				]
 			}
 		]
-	};
+	});
 
-	static naga: SpeciesModel = {
+	static naga = (): SpeciesModel => ({
 		id: 'species-naga',
 		name: 'Naga',
-		packID: PackData.coldBlood.id,
+		packID: PackData.coldBlood().id,
 		description: 'A serpentine humanoid.',
 		type: CombatantType.Monster,
 		size: 1,
@@ -1617,38 +1617,38 @@ export class MonsterSpeciesData {
 				]
 			}
 		]
-	};
+	});
 
 	static getList = (): SpeciesModel[] => {
 		const list = [
-			MonsterSpeciesData.giant,
-			MonsterSpeciesData.gnoll,
-			MonsterSpeciesData.goblin,
-			MonsterSpeciesData.medusa,
-			MonsterSpeciesData.orc,
-			MonsterSpeciesData.troll,
+			MonsterSpeciesData.giant(),
+			MonsterSpeciesData.gnoll(),
+			MonsterSpeciesData.goblin(),
+			MonsterSpeciesData.medusa(),
+			MonsterSpeciesData.orc(),
+			MonsterSpeciesData.troll(),
 			// Elementals
-			MonsterSpeciesData.airElemental,
-			MonsterSpeciesData.earthElemental,
-			MonsterSpeciesData.fireElemental,
-			MonsterSpeciesData.waterElemental,
+			MonsterSpeciesData.airElemental(),
+			MonsterSpeciesData.earthElemental(),
+			MonsterSpeciesData.fireElemental(),
+			MonsterSpeciesData.waterElemental(),
 			// Beasts
-			MonsterSpeciesData.bear,
-			MonsterSpeciesData.giantSpider,
-			MonsterSpeciesData.ratSwarm,
-			MonsterSpeciesData.scarab,
-			MonsterSpeciesData.stingerSwarm,
-			MonsterSpeciesData.wolf,
+			MonsterSpeciesData.bear(),
+			MonsterSpeciesData.giantSpider(),
+			MonsterSpeciesData.ratSwarm(),
+			MonsterSpeciesData.scarab(),
+			MonsterSpeciesData.stingerSwarm(),
+			MonsterSpeciesData.wolf(),
 			// Undead
-			MonsterSpeciesData.skeleton,
-			MonsterSpeciesData.vampire,
-			MonsterSpeciesData.wraith,
-			MonsterSpeciesData.zombie,
+			MonsterSpeciesData.skeleton(),
+			MonsterSpeciesData.vampire(),
+			MonsterSpeciesData.wraith(),
+			MonsterSpeciesData.zombie(),
 			// Fae
-			MonsterSpeciesData.banshee,
+			MonsterSpeciesData.banshee(),
 			// Cold blood
-			MonsterSpeciesData.crocodilian,
-			MonsterSpeciesData.naga
+			MonsterSpeciesData.crocodilian(),
+			MonsterSpeciesData.naga()
 		];
 
 		list.forEach(n => {

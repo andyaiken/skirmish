@@ -154,6 +154,10 @@ export class EncounterGenerator {
 			if ((combatant.combat.position.x !== Number.MIN_VALUE) && (combatant.combat.position.y !== Number.MIN_VALUE)) {
 				// Already on the map
 			} else {
+				const occupiedSquares: { x: number; y: number }[] = [];
+				encounter.combatants.forEach(combatant => occupiedSquares.push(...EncounterLogic.getCombatantSquares(encounter, combatant)));
+				encounter.loot.forEach(lp => occupiedSquares.push(lp.position));
+
 				for (let i = 0; i < 1000; ++i) {
 					const square = Collections.draw(encounter.mapSquares, rng);
 
@@ -163,10 +167,6 @@ export class EncounterGenerator {
 							squares.push({ x: x, y: y });
 						}
 					}
-
-					const occupiedSquares: { x: number; y: number }[] = [];
-					encounter.combatants.forEach(combatant => occupiedSquares.push(...EncounterLogic.getCombatantSquares(encounter, combatant)));
-					encounter.loot.forEach(lp => occupiedSquares.push(lp.position));
 
 					const canPlace = squares.every(sq => {
 						const mapSquare = encounter.mapSquares.find(ms => (ms.x === sq.x) && (ms.y === sq.y));

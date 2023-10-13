@@ -14,10 +14,10 @@ import type { ItemModel } from '../models/item';
 import { Collections } from '../utils/collections';
 
 export class PotionData {
-	static aptitude: ItemModel = {
+	static aptitude = (): ItemModel => ({
 		id: 'potion-aptitude',
 		name: 'Tonic of Aptitude',
-		packID: PackData.potions.id,
+		packID: PackData.potions().id,
 		description: 'A glass vial filled with a viscous orange liquid.',
 		baseItem: '',
 		magic: false,
@@ -33,12 +33,12 @@ export class PotionData {
 		},
 		features: [],
 		actions: []
-	};
+	});
 
-	static brilliance: ItemModel = {
+	static brilliance = (): ItemModel => ({
 		id: 'potion-brilliance',
 		name: 'Tincture of Brilliance',
-		packID: PackData.potions.id,
+		packID: PackData.potions().id,
 		description: 'A glass vial filled with a still purple liquid.',
 		baseItem: '',
 		magic: false,
@@ -54,11 +54,12 @@ export class PotionData {
 		},
 		features: [],
 		actions: []
-	};
-	static health: ItemModel = {
+	});
+
+	static health = (): ItemModel => ({
 		id: 'potion-health',
 		name: 'Potion of Health',
-		packID: PackData.potions.id,
+		packID: PackData.potions().id,
 		description: 'A glass vial filled with a sparkling red liquid.',
 		baseItem: '',
 		magic: false,
@@ -74,14 +75,14 @@ export class PotionData {
 		},
 		features: [],
 		actions: []
-	};
+	});
 
-	static luck: ItemModel = {
+	static luck = (): ItemModel => ({
 		id: 'potion-luck',
 		name: 'Philtre of Luck',
-		packID: PackData.potions.id,
+		packID: PackData.potions().id,
 		description: 'A glass vial filled with a scintillating green liquid.',
-		baseItem: PackData.potions.id,
+		baseItem: '',
 		magic: false,
 		proficiency: ItemProficiencyType.None,
 		location: ItemLocationType.None,
@@ -99,12 +100,12 @@ export class PotionData {
 		},
 		features: [],
 		actions: []
-	};
+	});
 
-	static might: ItemModel = {
+	static might = (): ItemModel => ({
 		id: 'potion-might',
 		name: 'Elixir of Might',
-		packID: PackData.potions.id,
+		packID: PackData.potions().id,
 		description: 'A glass vial filled with an effervescent blue liquid.',
 		baseItem: '',
 		magic: false,
@@ -122,12 +123,12 @@ export class PotionData {
 		},
 		features: [],
 		actions: []
-	};
+	});
 
-	static resistance: ItemModel = {
+	static resistance = (): ItemModel => ({
 		id: 'potion-resistance',
 		name: 'Potion of Resistance',
-		packID: PackData.potions.id,
+		packID: PackData.potions().id,
 		description: 'A glass vial filled with an iridescent yellow liquid.',
 		baseItem: '',
 		magic: false,
@@ -145,12 +146,12 @@ export class PotionData {
 		},
 		features: [],
 		actions: []
-	};
+	});
 
-	static strength: ItemModel = {
+	static strength = (): ItemModel => ({
 		id: 'potion-strength',
 		name: 'Brew of Strength',
-		packID: PackData.potions.id,
+		packID: PackData.potions().id,
 		description: 'A glass vial filled with a vaprous brown liquid.',
 		baseItem: '',
 		magic: false,
@@ -166,12 +167,12 @@ export class PotionData {
 		},
 		features: [],
 		actions: []
-	};
+	});
 
-	static will: ItemModel = {
+	static will = (): ItemModel => ({
 		id: 'potion-will',
 		name: 'Brew of Will',
-		packID: PackData.potions.id,
+		packID: PackData.potions().id,
 		description: 'A glass vial filled with a bubbling black liquid.',
 		baseItem: '',
 		magic: false,
@@ -187,12 +188,12 @@ export class PotionData {
 		},
 		features: [],
 		actions: []
-	};
+	});
 
-	static quickness: ItemModel = {
+	static quickness = (): ItemModel => ({
 		id: 'potion-quickness',
 		name: 'Brew of Quickness',
-		packID: PackData.potions.id,
+		packID: PackData.potions().id,
 		description: 'A glass vial filled with a churning pink liquid.',
 		baseItem: '',
 		magic: false,
@@ -208,19 +209,19 @@ export class PotionData {
 		},
 		features: [],
 		actions: []
-	};
+	});
 
 	static getList = (): ItemModel[] => {
 		const list: ItemModel[] = [
-			PotionData.aptitude,
-			PotionData.brilliance,
-			PotionData.health,
-			PotionData.luck,
-			PotionData.might,
-			PotionData.resistance,
-			PotionData.strength,
-			PotionData.will,
-			PotionData.quickness
+			PotionData.aptitude(),
+			PotionData.brilliance(),
+			PotionData.health(),
+			PotionData.luck(),
+			PotionData.might(),
+			PotionData.resistance(),
+			PotionData.strength(),
+			PotionData.will(),
+			PotionData.quickness()
 		];
 
 		return Collections.sort(list, n => n.name);

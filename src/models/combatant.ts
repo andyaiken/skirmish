@@ -11,6 +11,7 @@ import type { ItemModel } from './item';
 export interface CombatantModel {
 	id: string;
 	type: CombatantType;
+	faction: CombatantType;
 	name: string;
 
 	speciesID: string;

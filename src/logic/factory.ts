@@ -28,6 +28,7 @@ export class Factory {
 		return {
 			id: Utils.guid(),
 			type: type,
+			faction: type,
 			name: '',
 			speciesID: '',
 			roleID: '',
@@ -75,8 +76,8 @@ export class Factory {
 			encounter: null
 		};
 
-		StrongholdLogic.addStructure(game.stronghold, StructureData.barracks);
-		StrongholdLogic.addStructure(game.stronghold, StructureData.barracks);
+		StrongholdLogic.addStructure(game.stronghold, StructureData.barracks());
+		StrongholdLogic.addStructure(game.stronghold, StructureData.barracks());
 
 		return game;
 	};

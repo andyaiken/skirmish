@@ -18,7 +18,7 @@ import type { SpeciesModel } from '../models/species';
 import { Collections } from '../utils/collections';
 
 export class HeroSpeciesData {
-	static human: SpeciesModel = {
+	static human = (): SpeciesModel => ({
 		id: 'species-human',
 		name: 'Human',
 		packID: '',
@@ -61,12 +61,12 @@ export class HeroSpeciesData {
 				]
 			}
 		]
-	};
+	});
 
-	static construct: SpeciesModel = {
+	static construct = (): SpeciesModel => ({
 		id: 'species-construct',
 		name: 'Construct',
-		packID: PackData.technology.id,
+		packID: PackData.technology().id,
 		description: 'A living automaton.',
 		type: CombatantType.Hero,
 		size: 1,
@@ -119,12 +119,12 @@ export class HeroSpeciesData {
 				]
 			}
 		]
-	};
+	});
 
-	static deva: SpeciesModel = {
+	static deva = (): SpeciesModel => ({
 		id: 'species-deva',
 		name: 'Deva',
-		packID: PackData.faith.id,
+		packID: PackData.faith().id,
 		description: 'A humanoid with angelic ancestry.',
 		type: CombatantType.Hero,
 		size: 1,
@@ -180,9 +180,9 @@ export class HeroSpeciesData {
 				]
 			}
 		]
-	};
+	});
 
-	static dwarf: SpeciesModel = {
+	static dwarf = (): SpeciesModel => ({
 		id: 'species-dwarf',
 		name: 'Dwarf',
 		packID: '',
@@ -230,9 +230,9 @@ export class HeroSpeciesData {
 				]
 			}
 		]
-	};
+	});
 
-	static elf: SpeciesModel = {
+	static elf = (): SpeciesModel => ({
 		id: 'species-elf',
 		name: 'Elf',
 		packID: '',
@@ -277,12 +277,12 @@ export class HeroSpeciesData {
 				]
 			}
 		]
-	};
+	});
 
-	static faun: SpeciesModel = {
+	static faun = (): SpeciesModel => ({
 		id: 'species-faun',
 		name: 'Faun',
-		packID: PackData.fae.id,
+		packID: PackData.fae().id,
 		description: 'A humanoid with powerful goat-like legs.',
 		type: CombatantType.Hero,
 		size: 1,
@@ -321,9 +321,9 @@ export class HeroSpeciesData {
 				]
 			}
 		]
-	};
+	});
 
-	static gnome: SpeciesModel = {
+	static gnome = (): SpeciesModel => ({
 		id: 'species-gnome',
 		name: 'Gnome',
 		packID: '',
@@ -374,12 +374,12 @@ export class HeroSpeciesData {
 				]
 			}
 		]
-	};
+	});
 
-	static minotaur: SpeciesModel = {
+	static minotaur = (): SpeciesModel => ({
 		id: 'species-minotaur',
 		name: 'Minotaur',
-		packID: PackData.beasts.id,
+		packID: PackData.beasts().id,
 		description: 'A muscular humanoid with the head of a bull.',
 		type: CombatantType.Hero,
 		size: 1,
@@ -474,12 +474,12 @@ export class HeroSpeciesData {
 				]
 			}
 		]
-	};
+	});
 
-	static pixie: SpeciesModel = {
+	static pixie = (): SpeciesModel => ({
 		id: 'species-pixie',
 		name: 'Pixie',
-		packID: PackData.fae.id,
+		packID: PackData.fae().id,
 		description: 'A tiny fairy-like creature.',
 		type: CombatantType.Hero,
 		size: 1,
@@ -519,12 +519,12 @@ export class HeroSpeciesData {
 				]
 			}
 		]
-	};
+	});
 
-	static reptilian: SpeciesModel = {
+	static reptilian = (): SpeciesModel => ({
 		id: 'species-reptilian',
 		name: 'Reptilian',
-		packID: PackData.coldBlood.id,
+		packID: PackData.coldBlood().id,
 		description: 'A scaly humanoid with draconic ancestry.',
 		type: CombatantType.Hero,
 		size: 1,
@@ -593,9 +593,9 @@ export class HeroSpeciesData {
 				]
 			}
 		]
-	};
+	});
 
-	static shadowborn: SpeciesModel = {
+	static shadowborn = (): SpeciesModel => ({
 		id: 'species-shadowborn',
 		name: 'Shadowborn',
 		packID: '',
@@ -671,12 +671,12 @@ export class HeroSpeciesData {
 				]
 			}
 		]
-	};
+	});
 
-	static werewolf: SpeciesModel = {
+	static werewolf = (): SpeciesModel => ({
 		id: 'species-werewolf',
 		name: 'Werewolf',
-		packID: PackData.beasts.id,
+		packID: PackData.beasts().id,
 		description: 'A creature cursed with a wolf form.',
 		type: CombatantType.Hero,
 		size: 1,
@@ -748,22 +748,22 @@ export class HeroSpeciesData {
 				]
 			}
 		]
-	};
+	});
 
 	static getList = (): SpeciesModel[] => {
 		const list = [
-			HeroSpeciesData.human,
-			HeroSpeciesData.construct,
-			HeroSpeciesData.deva,
-			HeroSpeciesData.dwarf,
-			HeroSpeciesData.elf,
-			HeroSpeciesData.faun,
-			HeroSpeciesData.gnome,
-			HeroSpeciesData.minotaur,
-			HeroSpeciesData.pixie,
-			HeroSpeciesData.reptilian,
-			HeroSpeciesData.shadowborn,
-			HeroSpeciesData.werewolf
+			HeroSpeciesData.human(),
+			HeroSpeciesData.construct(),
+			HeroSpeciesData.deva(),
+			HeroSpeciesData.dwarf(),
+			HeroSpeciesData.elf(),
+			HeroSpeciesData.faun(),
+			HeroSpeciesData.gnome(),
+			HeroSpeciesData.minotaur(),
+			HeroSpeciesData.pixie(),
+			HeroSpeciesData.reptilian(),
+			HeroSpeciesData.shadowborn(),
+			HeroSpeciesData.werewolf()
 		];
 
 		list.forEach(n => {

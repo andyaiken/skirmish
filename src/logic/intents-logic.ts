@@ -99,13 +99,13 @@ export class IntentsLogic {
 		return Collections.max(options, o => Random.dice(o.weight));
 	};
 
-	static getCombatantTargetIntents = (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel, type: CombatantType, paths: PathModel[], edges: EncounterMapEdgeModel) => {
+	static getCombatantTargetIntents = (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel, faction: CombatantType, paths: PathModel[], edges: EncounterMapEdgeModel) => {
 		const range = ActionLogic.getActionRange(action, combatant);
 
 		const intents: IntentsModel[] = [];
 
 		encounter.combatants
-			.filter(c => c.type === type)
+			.filter(c => c.faction === faction)
 			.filter(c => combatant.combat.senses >= c.combat.hidden)
 			.filter(c => (c.combat.state !== CombatantState.Unconscious) && (c.combat.state !== CombatantState.Dead))
 			.forEach(target => {
@@ -176,7 +176,7 @@ export class IntentsLogic {
 								switch (targetParam.targets.type) {
 									case ActionTargetType.Allies:
 										weight = encounter.combatants
-											.filter(c => c.type === CombatantType.Monster)
+											.filter(c => c.faction === CombatantType.Monster)
 											.filter(c => {
 												const dist = EncounterMapLogic.getDistanceAny(EncounterLogic.getCombatantSquares(encounter, c), [ targetSquare ]);
 												return dist <= targetParam.range.radius;
@@ -186,7 +186,7 @@ export class IntentsLogic {
 									case ActionTargetType.Combatants:
 									case ActionTargetType.Enemies:
 										weight = encounter.combatants
-											.filter(c => c.type === CombatantType.Hero)
+											.filter(c => c.faction === CombatantType.Hero)
 											.filter(c => {
 												const dist = EncounterMapLogic.getDistanceAny(EncounterLogic.getCombatantSquares(encounter, c), [ targetSquare ]);
 												return dist <= targetParam.range.radius;
@@ -301,7 +301,7 @@ export class IntentsLogic {
 			// Find the path that will take me furthest from any enemy
 			const path = Collections.max(movePaths, p => {
 				const distances = encounter.combatants
-					.filter(c => c.type === CombatantType.Hero)
+					.filter(c => c.faction === CombatantType.Hero)
 					.filter(c => combatant.combat.senses >= c.combat.hidden)
 					.filter(c => (c.combat.state !== CombatantState.Unconscious) && (c.combat.state !== CombatantState.Dead))
 					.map(c => {
@@ -322,7 +322,7 @@ export class IntentsLogic {
 		} else {
 			const adjacentSquares = EncounterMapLogic.getAdjacentSquares(encounter.mapSquares, EncounterLogic.getCombatantSquares(encounter, combatant));
 			const adjacentToEnemy = encounter.combatants
-				.filter(c => c.type === CombatantType.Hero)
+				.filter(c => c.faction === CombatantType.Hero)
 				.filter(c => combatant.combat.senses >= c.combat.hidden)
 				.filter(c => (c.combat.state !== CombatantState.Unconscious) && (c.combat.state !== CombatantState.Dead))
 				.some(c => {
@@ -333,7 +333,7 @@ export class IntentsLogic {
 				// Move out of melee
 				const disengagePaths = movePaths.filter(p => {
 					const distances = encounter.combatants
-						.filter(c => c.type === CombatantType.Hero)
+						.filter(c => c.faction === CombatantType.Hero)
 						.filter(c => combatant.combat.senses >= c.combat.hidden)
 						.filter(c => (c.combat.state !== CombatantState.Unconscious) && (c.combat.state !== CombatantState.Dead))
 						.map(c => {
@@ -356,7 +356,7 @@ export class IntentsLogic {
 				// Find the path that will take me closest to an enemy
 				const path = Collections.min(movePaths, p => {
 					const distances = encounter.combatants
-						.filter(c => c.type === CombatantType.Hero)
+						.filter(c => c.faction === CombatantType.Hero)
 						.filter(c => combatant.combat.senses >= c.combat.hidden)
 						.filter(c => (c.combat.state !== CombatantState.Unconscious) && (c.combat.state !== CombatantState.Dead))
 						.map(c => {

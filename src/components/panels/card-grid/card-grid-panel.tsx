@@ -252,6 +252,8 @@ export class CardGridPanel extends Component<Props, State> {
 				);
 			}
 
+			const totalPrice = Collections.sum(PackData.getList(), pack => PackLogic.getPackPrice(pack.id));
+
 			return (
 				<div className='card-grid-panel'>
 					<div className='row'>
@@ -273,7 +275,8 @@ export class CardGridPanel extends Component<Props, State> {
 						<div key='total' className='cell column-heading'>
 							<div className='pack-name'>Total</div>
 							<div className='pack-stats'>
-								<StatValue label='Price' value={Format.toCurrency(Collections.sum(PackData.getList(), pack => PackLogic.getPackPrice(pack.id)), '$')}/>
+								<StatValue label='Price' value={Format.toCurrency(totalPrice, '$')}/>
+								<StatValue label='Discount' value={Format.toCurrency(totalPrice * 0.8, '$')}/>
 							</div>
 						</div>
 					</div>

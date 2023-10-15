@@ -97,10 +97,11 @@ export class RegionCard extends Component<Props, State> {
 				back={(
 					<div className='region-card-back'>
 						<StatValue label='Area' value={`${this.props.region.demographics.size} sq mi`} />
-						<StatValue label='Population' value={`${(this.props.region.demographics.population * 100).toLocaleString()}`} />
 						<StatValue label='Terrain' value={this.props.region.demographics.terrain} />
+						<hr />
 						<StatValue label='Denizens' value={monsters} />
-						<StatValue label='Number of Encounters' value={this.props.region.encounters.length} />
+						<hr />
+						<StatValue orientation='vertical' label='Number of Encounters' value={this.props.region.encounters.length} />
 					</div>
 				)}
 				footerText='Region'

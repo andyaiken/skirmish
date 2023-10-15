@@ -1,6 +1,8 @@
 import { Component } from 'react';
 import { Toaster } from 'react-hot-toast';
 
+import { PackData } from '../../data/pack-data';
+
 import { BoonType } from '../../enums/boon-type';
 import { CombatantState } from '../../enums/combatant-state';
 import { CombatantType } from '../../enums/combatant-type';
@@ -199,6 +201,18 @@ export class Main extends Component<Props, State> {
 		options.soundEffectsVolume = value;
 
 		Sound.volume = value;
+
+		this.setState({
+			options: options
+		}, () => {
+			this.saveOptions();
+		});
+	};
+
+	addPacks = () => {
+		const options = this.state.options;
+
+		options.packIDs = PackData.getList().map(p => p.id);
 
 		this.setState({
 			options: options
@@ -1344,6 +1358,7 @@ export class Main extends Component<Props, State> {
 						content={
 							<PacksModal
 								options={this.state.options}
+								addPacks={this.addPacks}
 								addPack={this.addPack}
 								removePack={this.removePack}
 							/>

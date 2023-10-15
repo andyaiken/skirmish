@@ -1,17 +1,3 @@
------------------------------------------------------------------------------------------
-
-# Bugs
-
-## Highlighted Squares
-* If you select a 'square' parameter, and move, the origin candidate squares do not move
-  * Presumably this is the same for other parameter types
-
------------------------------------------------------------------------------------------
-
-# Priority
-
------------------------------------------------------------------------------------------
-
 # Improvements / Enhancements
 
 ## Encounters
@@ -23,8 +9,6 @@
 ## Map Types
 * Building interior
 * Arena
-
------------------------------------------------------------------------------------------
 
 # New Features
 
@@ -87,8 +71,6 @@
   * On victory
   * On defeat
 * Add music
-
------------------------------------------------------------------------------------------
 
 # Content Ideas
 
@@ -158,8 +140,6 @@
   * Gardens
   * Monument
 
------------------------------------------------------------------------------------------
-
 # Tech Debt
 
 * Make the layout responsive for phones
@@ -168,5 +148,3 @@
 * Convert to React Native / Electron
 * Port to ipadOS, macOS
 * Use hooks
-
------------------------------------------------------------------------------------------

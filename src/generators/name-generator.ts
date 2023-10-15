@@ -23,6 +23,7 @@ export class NameGenerator {
 
 	static generateWord = () => {
 		const starts = [
+			'ac',
 			'ad',
 			'adr',
 			'ak',
@@ -35,6 +36,8 @@ export class NameGenerator {
 			'ar',
 			'aram',
 			'are',
+			'arc',
+			'ark',
 			'as',
 			'at',
 			'ba',

@@ -87,7 +87,11 @@ export class CampaignMapPage extends Component<Props, State> {
 		return (
 			<div key='map' className='sidebar'>
 				<Text type={TextType.SubHeading}>The Island</Text>
-				<Text>This is the map of the island. Select a region to learn more about it.</Text>
+				<Text>
+					<p>This is the map of the island.</p>
+					<p>The white area is the part of the island that you control; from here you can attack any adjacent region.</p>
+					<p>Select a region to learn more about it.</p>
+				</Text>
 				{
 					this.props.options.showTips ?
 						<Expander

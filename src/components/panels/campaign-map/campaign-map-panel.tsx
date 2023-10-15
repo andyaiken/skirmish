@@ -36,7 +36,7 @@ export class CampaignMapPanel extends Component<Props> {
 
 			const squares = this.props.map.squares
 				.sort((a, b) => {
-					let result = a.x - b.x;
+					let result: number = a.x - b.x;
 					if (result === 0) {
 						result = a.y - b.y;
 					}
@@ -45,10 +45,10 @@ export class CampaignMapPanel extends Component<Props> {
 				.map(square => {
 					const region = this.props.map.regions.find(r => r.id === square.regionID);
 					let backgroundColor = 'rgb(255, 255, 255)';
-					let borderColor = 'rgb(200, 230, 255)';
+					let borderColor = 'rgb(255, 255, 255)';
 					if (region) {
 						backgroundColor = region.color;
-						borderColor = CampaignMapLogic.canAttackRegion(this.props.map, region) ? 'rgb(255, 255, 255)' : 'rgb(160, 160, 160)';
+						borderColor = 'rgb(0, 0, 0)';
 
 						if (this.props.selectedRegion && (this.props.selectedRegion.id === region.id)) {
 							backgroundColor = 'rgb(255, 255, 255)';
@@ -85,35 +85,11 @@ export class CampaignMapPanel extends Component<Props> {
 					);
 				});
 
-			const labels = this.props.map.regions.map(region => {
-				const square = CampaignMapLogic.getCentralSquare(this.props.map, region);
-				if (square) {
-					return (
-						<div
-							key={`label ${region.id}`}
-							className='campaign-map-label'
-							style={{
-								width: `calc(${squareSizePC}% + 2px)`,
-								left: `calc(${((square.x - dims.left) * squareSizePC)}% - 2px)`,
-								top: `calc(${((square.y - dims.top) * squareSizePC)}% - 2px)`
-							}}
-							title={region ? region.name : 'Conquered'}
-							onClick={e => this.onClick(e, square)}
-						>
-							{region.encounters.length}
-						</div>
-					);
-				}
-
-				return null;
-			});
-
 			return (
 				<div className='campaign-map' onClick={() => this.props.onSelectRegion(null)}>
 					<div className='campaign-map-inner'>
 						<div className='campaign-map-square-container'>
 							{squares}
-							{labels}
 						</div>
 					</div>
 				</div>

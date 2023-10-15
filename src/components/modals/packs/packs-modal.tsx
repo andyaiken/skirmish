@@ -20,6 +20,7 @@ import './packs-modal.scss';
 
 interface Props {
 	options: OptionsModel;
+	addPacks: () => void;
 	addPack: (packID: string) => void;
 	removePack: (packID: string) => void;
 }
@@ -178,6 +179,13 @@ export class PacksModal extends Component<Props, State> {
 					<Text type={TextType.Heading}>Card Packs</Text>
 					<hr />
 					{notOwned.length > 0 ? <Text type={TextType.SubHeading}>Available Packs</Text> : null}
+					{
+						notOwned.length > 1 ?
+							<button className='primary' onClick={() => this.props.addPacks()}>
+								Get All Packs
+							</button>
+							: null
+					}
 					{notOwned.length > 0 ? <CardList cards={notOwned} /> : null}
 					{notOwned.length > 0 ? <hr /> : null}
 					<Text type={TextType.SubHeading}>My Packs</Text>

@@ -30,7 +30,7 @@ export class HeroPotions extends Component<Props> {
 			const adj = EncounterLogic.findCombatants(this.props.encounter, originSquares, 1)
 				.filter(c => c.id !== this.props.combatant.id)
 				.filter(c => c.combat.state !== CombatantState.Dead)
-				.filter(c => c.type === this.props.combatant.type)
+				.filter(c => c.faction === this.props.combatant.faction)
 				.filter(c => EncounterMapLogic.canSeeAny(edges, originSquares, EncounterLogic.getCombatantSquares(this.props.encounter, c)));
 
 			const potionSections = Collections.distinct(this.props.combatant.carried.filter(i => i.potion), i => i.name)

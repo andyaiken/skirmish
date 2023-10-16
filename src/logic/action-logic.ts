@@ -886,7 +886,7 @@ export class ActionEffects {
 						const t = trait === TraitType.Any ? Collections.draw([ TraitType.Endurance, TraitType.Resolve, TraitType.Speed ]) : trait;
 						const conditions = target.combat.conditions
 							.filter(condition => condition.trait === t)
-							.filter(condition => ConditionLogic.getConditionIsBeneficial(condition) === (combatant.type !== target.type));
+							.filter(condition => ConditionLogic.getConditionIsBeneficial(condition) === (combatant.faction !== target.faction));
 						if (conditions.length !== 0) {
 							const maxRank = Math.max(...conditions.map(c => c.rank));
 							const condition = conditions.find(c => c.rank === maxRank) as ConditionModel;
@@ -1009,7 +1009,7 @@ export class ActionEffects {
 					const targetIDs = targetParameter.value as string[];
 					targetIDs.forEach(id => {
 						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
-						const conditions = target.combat.conditions.filter(c => (combatant.type === target.type) !== ConditionLogic.getConditionIsBeneficial(c));
+						const conditions = target.combat.conditions.filter(c => (combatant.faction === target.faction) !== ConditionLogic.getConditionIsBeneficial(c));
 						if (all) {
 							conditions.forEach(condition => invert(target, condition));
 						} else if (conditions.length > 0) {
@@ -1026,7 +1026,7 @@ export class ActionEffects {
 					const targetIDs = targetParameter.value as string[];
 					targetIDs.forEach(id => {
 						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
-						const conditions = combatant.combat.conditions.filter(c => (combatant.type === target.type) === ConditionLogic.getConditionIsBeneficial(c));
+						const conditions = combatant.combat.conditions.filter(c => (combatant.faction === target.faction) === ConditionLogic.getConditionIsBeneficial(c));
 						if (conditions.length > 0) {
 							const condition = Collections.draw(conditions);
 							combatant.combat.conditions = combatant.combat.conditions.filter(c => c !== condition);
@@ -1049,8 +1049,8 @@ export class ActionEffects {
 						target.combat.selectedAction = null;
 						target.combat.actions = CombatantLogic.getActionDeck(target).filter(action => ActionLogic.getActionType(action) === 'Attack');
 						target.combat.actions.push(...BaseData.getBaseActions().filter(action => ActionLogic.getActionType(action) === 'Attack'));
-						EncounterLogic.checkActionParameters(encounter, target, (combatant.type !== target.type));
-						const intents = IntentsLogic.getAttackIntents(encounter, target, (combatant.type !== target.type));
+						EncounterLogic.checkActionParameters(encounter, target, (combatant.faction !== target.faction));
+						const intents = IntentsLogic.getAttackIntents(encounter, target, (combatant.faction !== target.faction));
 						if (intents.length > 0) {
 							target.combat.intents = Collections.draw(intents);
 							IntentsLogic.performIntents(encounter, target);
@@ -1637,7 +1637,7 @@ export class ActionLogic {
 								.filter(c => c.id !== combatant.id)
 								.filter(c => c.combat.state !== CombatantState.Dead)
 								.filter(c => combatant.combat.senses >= c.combat.hidden)
-								.filter(c => invertTargets ? (c.type === combatant.type) : (c.type !== combatant.type))
+								.filter(c => invertTargets ? (c.faction === combatant.faction) : (c.faction !== combatant.faction))
 								.filter(c => EncounterMapLogic.canSeeAny(edges, originSquares, EncounterLogic.getCombatantSquares(encounter, c)))
 								.sort((a, b) => {
 									const squaresCombatant = EncounterLogic.getCombatantSquares(encounter, combatant);
@@ -1655,7 +1655,7 @@ export class ActionLogic {
 							...EncounterLogic.findCombatants(encounter, originSquares, radius)
 								.filter(c => c.id !== combatant.id)
 								.filter(c => c.combat.state !== CombatantState.Dead)
-								.filter(c => invertTargets ? (c.type !== combatant.type) : (c.type === combatant.type))
+								.filter(c => invertTargets ? (c.faction !== combatant.faction) : (c.faction === combatant.faction))
 								.filter(c => EncounterMapLogic.canSeeAny(edges, originSquares, EncounterLogic.getCombatantSquares(encounter, c)))
 								.sort((a, b) => {
 									const squaresCombatant = EncounterLogic.getCombatantSquares(encounter, combatant);

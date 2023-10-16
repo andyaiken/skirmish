@@ -394,7 +394,7 @@ export class EncounterLogic {
 		// Moving out of a space adjacent to (standing, not stunned) opponent: +4
 		const adjacent: { x: number; y: number }[] = [];
 		encounter.combatants
-			.filter(c => c.type !== combatant.type)
+			.filter(c => c.faction !== combatant.faction)
 			.filter(c => c.combat.state === CombatantState.Standing)
 			.filter(c => !c.combat.stunned)
 			.forEach(c => {
@@ -637,7 +637,7 @@ export class EncounterLogic {
 			const edges = EncounterMapLogic.getMapEdges(encounter.mapSquares);
 			const combatantSquares = EncounterLogic.getCombatantSquares(encounter, combatant);
 			encounter.combatants
-				.filter(c => c.type === combatant.type)
+				.filter(c => c.faction === combatant.faction)
 				.filter(c => c.combat.stunned)
 				.forEach(ally => {
 					const allySquares = EncounterLogic.getCombatantSquares(encounter, ally);
@@ -789,7 +789,7 @@ export class EncounterLogic {
 		const items = ([] as ItemModel[]).concat(combatant.items).concat(combatant.carried);
 
 		let money = 0;
-		if (combatant.type === CombatantType.Monster) {
+		if (combatant.faction === CombatantType.Monster) {
 			if (Random.randomBoolean()) {
 				money = Random.dice(1);
 			}
@@ -848,7 +848,7 @@ export class EncounterLogic {
 		// Get all beneficial aura conditions from adjacent allies
 		encounter.combatants
 			.filter(combatant => combatant.combat.state !== CombatantState.Dead)
-			.filter(c => c.type === combatant.type)
+			.filter(c => c.faction === combatant.faction)
 			.filter(c => squares.some(sq => EncounterLogic.getCombatantAuraSquares(encounter, c).find(s => (s.x === sq.x) && (s.y === sq.y))))
 			.flatMap(c => CombatantLogic.getAuras(EncounterLogic.getCombatant(encounter, c.id) as CombatantModel))
 			.filter(aura => ConditionLogic.getConditionIsBeneficial(aura))
@@ -857,7 +857,7 @@ export class EncounterLogic {
 		// Get all non-beneficial aura conditions from adjacent enemies
 		encounter.combatants
 			.filter(combatant => combatant.combat.state !== CombatantState.Dead)
-			.filter(c => c.type !== combatant.type)
+			.filter(c => c.faction !== combatant.faction)
 			.filter(c => squares.some(sq => EncounterLogic.getCombatantAuraSquares(encounter, c).find(s => (s.x === sq.x) && (s.y === sq.y))))
 			.flatMap(c => CombatantLogic.getAuras(EncounterLogic.getCombatant(encounter, c.id) as CombatantModel))
 			.filter(aura => !ConditionLogic.getConditionIsBeneficial(aura))

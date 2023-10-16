@@ -115,7 +115,7 @@ export class EncounterMapPanel extends Component<Props> {
 			let combatants = this.props.encounter.combatants.filter(combatant => combatant.combat.state !== CombatantState.Dead);
 			const current = combatants.find(c => c.combat.current);
 			if (current) {
-				combatants = combatants.filter(c => (c === current) || (c.type === current.type) || (current.combat.senses >= c.combat.hidden));
+				combatants = combatants.filter(c => (c === current) || (c.faction === current.faction) || (current.combat.senses >= c.combat.hidden));
 			}
 
 			const walls = Collections.distinct(EncounterMapLogic.getAdjacentWalls(this.props.encounter.mapSquares, this.props.encounter.mapSquares), sq => `${sq.x} ${sq.y}`)

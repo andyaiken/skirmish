@@ -665,7 +665,7 @@ export class Main extends Component<Props, State> {
 				game.encounter = EncounterGenerator.createEncounter(region, heroes, this.state.options.packIDs);
 
 				for (let n = 0; n < benefits; ++n) {
-					const hero = Collections.draw(game.encounter.combatants.filter(c => c.type === CombatantType.Hero));
+					const hero = Collections.draw(game.encounter.combatants.filter(c => c.faction === CombatantType.Hero));
 					hero.combat.conditions.push(ConditionLogic.createRandomBeneficialCondition() as ConditionModel);
 				}
 				if (!this.state.options.developer) {
@@ -673,7 +673,7 @@ export class Main extends Component<Props, State> {
 				}
 
 				for (let n = 0; n < detriments; ++n) {
-					const hero = Collections.draw(game.encounter.combatants.filter(c => c.type === CombatantType.Monster));
+					const hero = Collections.draw(game.encounter.combatants.filter(c => c.faction === CombatantType.Monster));
 					hero.combat.conditions.push(ConditionLogic.createRandomDetrimentalCondition() as ConditionModel);
 				}
 				if (!this.state.options.developer) {

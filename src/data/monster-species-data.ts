@@ -21,27 +21,27 @@ import type { SpeciesModel } from '../models/species';
 import { Collections } from '../utils/collections';
 
 export class MonsterSpeciesData {
-	static giant = (): SpeciesModel => ({
-		id: 'species-giant',
-		name: 'Giant',
+	static colossus = (): SpeciesModel => ({
+		id: 'species-colossus',
+		name: 'Colossus',
 		packID: '',
 		description: 'A huge, monstrously strong creature.',
 		type: CombatantType.Monster,
 		size: 3,
 		quirks: [],
 		startingFeatures: [
-			FeatureLogic.createTraitFeature('giant-start-1', TraitType.Endurance, 2),
-			FeatureLogic.createSkillFeature('giant-start-2', SkillType.Brawl, 2)
+			FeatureLogic.createTraitFeature('colossus-start-1', TraitType.Endurance, 2),
+			FeatureLogic.createSkillFeature('colossus-start-2', SkillType.Brawl, 2)
 		],
 		features: [
-			FeatureLogic.createTraitFeature('giant-feature-1', TraitType.Endurance, 1),
-			FeatureLogic.createTraitFeature('giant-feature-2', TraitType.Resolve, 1),
-			FeatureLogic.createSkillFeature('giant-feature-3', SkillType.Brawl, 2),
-			FeatureLogic.createDamageResistFeature('giant-feature-4', DamageType.All, 1)
+			FeatureLogic.createTraitFeature('colossus-feature-1', TraitType.Endurance, 1),
+			FeatureLogic.createTraitFeature('colossus-feature-2', TraitType.Resolve, 1),
+			FeatureLogic.createSkillFeature('colossus-feature-3', SkillType.Brawl, 2),
+			FeatureLogic.createDamageResistFeature('colossus-feature-4', DamageType.All, 1)
 		],
 		actions: [
 			{
-				id: 'giant-action-1',
+				id: 'colossus-action-1',
 				name: 'Hurl Object',
 				prerequisites: [],
 				parameters: [
@@ -61,7 +61,7 @@ export class MonsterSpeciesData {
 				]
 			},
 			{
-				id: 'giant-action-2',
+				id: 'colossus-action-2',
 				name: 'Sweep',
 				prerequisites: [],
 				parameters: [
@@ -81,7 +81,7 @@ export class MonsterSpeciesData {
 				]
 			},
 			{
-				id: 'giant-action-3',
+				id: 'colossus-action-3',
 				name: 'Thwack',
 				prerequisites: [],
 				parameters: [
@@ -113,12 +113,14 @@ export class MonsterSpeciesData {
 		size: 1,
 		quirks: [],
 		startingFeatures: [
-			FeatureLogic.createTraitFeature('gnoll-start-1', TraitType.Speed, 1),
-			FeatureLogic.createSkillFeature('gnoll-start-2', SkillType.Brawl, 2)
+			FeatureLogic.createTraitFeature('gnoll-start-1', TraitType.Endurance, 1),
+			FeatureLogic.createTraitFeature('gnoll-start-2', TraitType.Speed, 1),
+			FeatureLogic.createSkillFeature('gnoll-start-3', SkillType.Brawl, 2)
 		],
 		features: [
-			FeatureLogic.createTraitFeature('gnoll-feature-1', TraitType.Speed, 1),
-			FeatureLogic.createSkillFeature('gnoll-feature-2', SkillType.Brawl, 2)
+			FeatureLogic.createTraitFeature('gnoll-feature-1', TraitType.Endurance, 1),
+			FeatureLogic.createTraitFeature('gnoll-feature-2', TraitType.Speed, 1),
+			FeatureLogic.createSkillFeature('gnoll-feature-3', SkillType.Brawl, 2)
 		],
 		actions: [
 			{
@@ -313,7 +315,29 @@ export class MonsterSpeciesData {
 						trait: TraitType.Resolve,
 						skillBonus: 0,
 						hit: [
-							ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 5, TraitType.All))
+							ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 5, TraitType.All)),
+							ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Resolve, 3))
+						]
+					})
+				]
+			},
+			{
+				id: 'medusa-action-3',
+				name: 'Weakening Gaze',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 6)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Presence,
+						trait: TraitType.Resolve,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.addCondition(ConditionLogic.createDamageCategoryPenaltyCondition(TraitType.Resolve, 4, DamageCategoryType.Physical)),
+							ActionEffects.addCondition(ConditionLogic.createDamageCategoryPenaltyCondition(TraitType.Resolve, 4, DamageCategoryType.Energy)),
+							ActionEffects.addCondition(ConditionLogic.createDamageCategoryPenaltyCondition(TraitType.Resolve, 4, DamageCategoryType.Corruption))
 						]
 					})
 				]
@@ -374,6 +398,144 @@ export class MonsterSpeciesData {
 						]
 					}),
 					ActionEffects.takeAnotherAction()
+				]
+			}
+		]
+	});
+
+	static ratfolk = (): SpeciesModel => ({
+		id: 'species-ratfolk',
+		name: 'Ratfolk',
+		packID: '',
+		description: 'XXXX.',
+		type: CombatantType.Monster,
+		size: 1,
+		quirks: [],
+		startingFeatures: [
+			FeatureLogic.createSkillFeature('ratfolk-start-1', SkillType.Brawl, 2),
+			FeatureLogic.createTraitFeature('ratfolk-start-2', TraitType.Endurance, 1),
+			FeatureLogic.createDamageResistFeature('ratfolk-start-3', DamageType.Decay, 2)
+		],
+		features: [
+			FeatureLogic.createSkillFeature('ratfolk-feature-1', SkillType.Brawl, 2),
+			FeatureLogic.createTraitFeature('ratfolk-feature-2', TraitType.Endurance, 1),
+			FeatureLogic.createDamageResistFeature('ratfolk-feature-3', DamageType.Decay, 2)
+		],
+		actions: [
+			{
+				id: 'ratfolk-action-1',
+				name: 'Bite',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Enemies, Number.MAX_VALUE)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Brawl,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Piercing, 3),
+							ActionEffects.dealDamage(DamageType.Decay, 1)
+						]
+					})
+				]
+			},
+			{
+				id: 'ratfolk-action-2',
+				name: 'Scurry',
+				prerequisites: [
+				],
+				parameters: [
+					ActionTargetParameters.self()
+				],
+				effects: [
+					ActionEffects.addMovement(),
+					ActionEffects.takeAnotherAction()
+				]
+			}
+		]
+	});
+
+	static scarab = (): SpeciesModel => ({
+		id: 'species-scarab',
+		name: 'Scarab',
+		packID: '',
+		description: 'Beetles with an acidic bite.',
+		type: CombatantType.Monster,
+		size: 1,
+		quirks: [
+			QuirkType.Beast
+		],
+		startingFeatures: [
+			FeatureLogic.createSkillFeature('scarab-start-1', SkillType.Brawl, 2),
+			FeatureLogic.createDamageBonusFeature('scarab-start-2', DamageType.Acid, 2),
+			FeatureLogic.createTraitFeature('scarab-start-3', TraitType.Endurance, 1)
+		],
+		features: [
+			FeatureLogic.createSkillFeature('scarab-feature-1', SkillType.Brawl, 2),
+			FeatureLogic.createDamageBonusFeature('scarab-feature-2', DamageType.Acid, 2),
+			FeatureLogic.createTraitFeature('scarab-feature-3', TraitType.Endurance, 1)
+		],
+		actions: [
+			{
+				id: 'scarab-action-1',
+				name: 'Mandible',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Brawl,
+						trait: TraitType.Endurance,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Edged, 2),
+							ActionEffects.dealDamage(DamageType.Acid, 2)
+						]
+					})
+				]
+			},
+			{
+				id: 'scarab-action-2',
+				name: 'Tail Lash',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Enemies, Number.MAX_VALUE)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Brawl,
+						trait: TraitType.Endurance,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Impact, 2)
+						]
+					})
+				]
+			},
+			{
+				id: 'scarab-action-3',
+				name: 'Tail Stinger',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 2)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Brawl,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Piercing, 2),
+							ActionEffects.dealDamage(DamageType.Acid, 2)
+						]
+					})
 				]
 			}
 		]
@@ -450,14 +612,15 @@ export class MonsterSpeciesData {
 		],
 		startingFeatures: [
 			FeatureLogic.createTraitFeature('elemental-air-start-1', TraitType.Resolve, 1),
-			FeatureLogic.createSkillFeature('elemental-air-start-2', SkillType.Brawl, 2)
+			FeatureLogic.createSkillFeature('elemental-air-start-2', SkillType.Brawl, 2),
+			FeatureLogic.createDamageBonusFeature('elemental-air-start-3', DamageType.Cold, 2),
+			FeatureLogic.createDamageResistFeature('elemental-air-start-4', DamageType.Cold, 5)
 		],
 		features: [
 			FeatureLogic.createTraitFeature('elemental-air-start-1', TraitType.Resolve, 1),
 			FeatureLogic.createSkillFeature('elemental-air-feature-2', SkillType.Brawl, 2),
 			FeatureLogic.createDamageBonusFeature('elemental-air-feature-3', DamageType.Cold, 2),
-			FeatureLogic.createDamageResistFeature('elemental-air-feature-4', DamageType.Cold, 5),
-			FeatureLogic.createAuraDamageFeature('elemental-air-feature-5', ConditionType.AutoDamage, DamageType.Cold, 1)
+			FeatureLogic.createAuraDamageFeature('elemental-air-feature-4', ConditionType.AutoDamage, DamageType.Cold, 1)
 		],
 		actions: [
 			{
@@ -514,15 +677,16 @@ export class MonsterSpeciesData {
 		quirks: [],
 		startingFeatures: [
 			FeatureLogic.createTraitFeature('elemental-earth-start-1', TraitType.Endurance, 2),
-			FeatureLogic.createTraitFeature('elemental-earth-start-2', TraitType.Speed, -1),
-			FeatureLogic.createSkillFeature('elemental-earth-start-3', SkillType.Brawl, 2)
+			FeatureLogic.createSkillFeature('elemental-earth-start-2', SkillType.Brawl, 2),
+			FeatureLogic.createDamageBonusFeature('elemental-earth-start-3', DamageType.Impact, 2),
+			FeatureLogic.createTraitFeature('elemental-earth-start-4', TraitType.Speed, -1),
+			FeatureLogic.createDamageResistFeature('elemental-earth-start-5', DamageType.Impact, 5)
 		],
 		features: [
 			FeatureLogic.createTraitFeature('elemental-earth-feature-1', TraitType.Endurance, 1),
 			FeatureLogic.createSkillFeature('elemental-earth-feature-2', SkillType.Brawl, 2),
 			FeatureLogic.createDamageBonusFeature('elemental-earth-feature-3', DamageType.Impact, 2),
-			FeatureLogic.createDamageResistFeature('elemental-earth-feature-4', DamageType.Impact, 5),
-			FeatureLogic.createAuraDamageFeature('elemental-earth-feature-5', ConditionType.AutoDamage, DamageType.Impact, 1)
+			FeatureLogic.createAuraDamageFeature('elemental-earth-feature-4', ConditionType.AutoDamage, DamageType.Impact, 1)
 		],
 		actions: [
 			{
@@ -601,14 +765,15 @@ export class MonsterSpeciesData {
 		],
 		startingFeatures: [
 			FeatureLogic.createTraitFeature('elemental-fire-start-1', TraitType.Speed, 1),
-			FeatureLogic.createSkillFeature('elemental-fire-start-2', SkillType.Brawl, 2)
+			FeatureLogic.createSkillFeature('elemental-fire-start-2', SkillType.Brawl, 2),
+			FeatureLogic.createDamageBonusFeature('elemental-fire-start-3', DamageType.Fire, 2),
+			FeatureLogic.createDamageResistFeature('elemental-fire-start-4', DamageType.Fire, 5)
 		],
 		features: [
 			FeatureLogic.createTraitFeature('elemental-fire-feature-1', TraitType.Speed, 1),
 			FeatureLogic.createSkillFeature('elemental-fire-feature-2', SkillType.Brawl, 2),
 			FeatureLogic.createDamageBonusFeature('elemental-fire-feature-3', DamageType.Fire, 2),
-			FeatureLogic.createDamageResistFeature('elemental-fire-feature-4', DamageType.Fire, 5),
-			FeatureLogic.createAuraDamageFeature('elemental-fire-feature-5', ConditionType.AutoDamage, DamageType.Fire, 1)
+			FeatureLogic.createAuraDamageFeature('elemental-fire-feature-4', ConditionType.AutoDamage, DamageType.Fire, 1)
 		],
 		actions: [
 			{
@@ -693,8 +858,7 @@ export class MonsterSpeciesData {
 		features: [
 			FeatureLogic.createTraitFeature('elemental-water-feature-1', TraitType.Speed, 1),
 			FeatureLogic.createSkillFeature('elemental-water-feature-2', SkillType.Brawl, 2),
-			FeatureLogic.createDamageBonusFeature('elemental-water-feature-3', DamageType.Impact, 2),
-			FeatureLogic.createDamageResistFeature('elemental-water-feature-4', DamageType.Impact, 5)
+			FeatureLogic.createDamageBonusFeature('elemental-water-feature-3', DamageType.Impact, 2)
 		],
 		actions: [
 			{
@@ -928,89 +1092,6 @@ export class MonsterSpeciesData {
 		]
 	});
 
-	static scarab = (): SpeciesModel => ({
-		id: 'species-scarab',
-		name: 'Scarab',
-		packID: PackData.beasts().id,
-		description: 'Beetles with an acidic bite.',
-		type: CombatantType.Monster,
-		size: 1,
-		quirks: [
-			QuirkType.Beast
-		],
-		startingFeatures: [
-			FeatureLogic.createSkillFeature('scarab-start-1', SkillType.Brawl, 2),
-			FeatureLogic.createDamageBonusFeature('scarab-start-2', DamageType.Acid, 2),
-			FeatureLogic.createTraitFeature('scarab-start-3', TraitType.Endurance, 1)
-		],
-		features: [
-			FeatureLogic.createSkillFeature('scarab-feature-1', SkillType.Brawl, 2),
-			FeatureLogic.createDamageBonusFeature('scarab-feature-2', DamageType.Acid, 2),
-			FeatureLogic.createTraitFeature('scarab-feature-3', TraitType.Endurance, 1)
-		],
-		actions: [
-			{
-				id: 'scarab-action-1',
-				name: 'Mandible',
-				prerequisites: [],
-				parameters: [
-					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
-				],
-				effects: [
-					ActionEffects.attack({
-						weapon: false,
-						skill: SkillType.Brawl,
-						trait: TraitType.Endurance,
-						skillBonus: 0,
-						hit: [
-							ActionEffects.dealDamage(DamageType.Edged, 2),
-							ActionEffects.dealDamage(DamageType.Acid, 2)
-						]
-					})
-				]
-			},
-			{
-				id: 'scarab-action-2',
-				name: 'Tail Lash',
-				prerequisites: [],
-				parameters: [
-					ActionTargetParameters.adjacent(ActionTargetType.Enemies, Number.MAX_VALUE)
-				],
-				effects: [
-					ActionEffects.attack({
-						weapon: false,
-						skill: SkillType.Brawl,
-						trait: TraitType.Endurance,
-						skillBonus: 0,
-						hit: [
-							ActionEffects.dealDamage(DamageType.Impact, 2)
-						]
-					})
-				]
-			},
-			{
-				id: 'scarab-action-3',
-				name: 'Tail Stinger',
-				prerequisites: [],
-				parameters: [
-					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 2)
-				],
-				effects: [
-					ActionEffects.attack({
-						weapon: false,
-						skill: SkillType.Brawl,
-						trait: TraitType.Speed,
-						skillBonus: 0,
-						hit: [
-							ActionEffects.dealDamage(DamageType.Piercing, 2),
-							ActionEffects.dealDamage(DamageType.Acid, 2)
-						]
-					})
-				]
-			}
-		]
-	});
-
 	static stingerSwarm = (): SpeciesModel => ({
 		id: 'species-stinger-swarm',
 		name: 'Stinger Swarm',
@@ -1100,7 +1181,7 @@ export class MonsterSpeciesData {
 						trait: TraitType.Speed,
 						skillBonus: 0,
 						hit: [
-							ActionEffects.dealDamage(DamageType.Piercing, 2)
+							ActionEffects.dealDamage(DamageType.Piercing, 3)
 						]
 					})
 				]
@@ -1119,7 +1200,7 @@ export class MonsterSpeciesData {
 						trait: TraitType.Speed,
 						skillBonus: 0,
 						hit: [
-							ActionEffects.dealDamage(DamageType.Piercing, 1),
+							ActionEffects.dealDamage(DamageType.Piercing, 2),
 							ActionEffects.knockDown()
 						]
 					})
@@ -1445,7 +1526,7 @@ export class MonsterSpeciesData {
 						trait: TraitType.Resolve,
 						skillBonus: 0,
 						hit: [
-							ActionEffects.dealDamage(DamageType.Sonic, 2),
+							ActionEffects.dealDamage(DamageType.Sonic, 3),
 							ActionEffects.forceMovement(MovementType.Push, 1),
 							ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Resolve, 3))
 						]
@@ -1466,7 +1547,7 @@ export class MonsterSpeciesData {
 						trait: TraitType.Resolve,
 						skillBonus: 0,
 						hit: [
-							ActionEffects.dealDamage(DamageType.Sonic, 2)
+							ActionEffects.dealDamage(DamageType.Sonic, 3)
 						]
 					})
 				]
@@ -1497,7 +1578,7 @@ export class MonsterSpeciesData {
 		actions: [
 			{
 				id: 'crocodilian-action-1',
-				name: 'Jaws',
+				name: 'Snapjaw',
 				prerequisites: [],
 				parameters: [
 					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
@@ -1621,11 +1702,12 @@ export class MonsterSpeciesData {
 
 	static getList = (): SpeciesModel[] => {
 		const list = [
-			MonsterSpeciesData.giant(),
+			MonsterSpeciesData.colossus(),
 			MonsterSpeciesData.gnoll(),
 			MonsterSpeciesData.goblin(),
 			MonsterSpeciesData.medusa(),
 			MonsterSpeciesData.orc(),
+			MonsterSpeciesData.ratfolk(),
 			MonsterSpeciesData.troll(),
 			// Elementals
 			MonsterSpeciesData.airElemental(),

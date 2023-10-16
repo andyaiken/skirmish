@@ -67,7 +67,7 @@ export class IntentsLogic {
 
 		const presense = EncounterLogic.getSkillRank(encounter, combatant, SkillType.Presence);
 		const canSeeStunnedAlly = encounter.combatants
-			.filter(c => c.type === combatant.type)
+			.filter(c => c.faction === combatant.faction)
 			.filter(ally => ally.combat.stunned)
 			.some(ally => EncounterMapLogic.canSeeAny(edges, EncounterLogic.getCombatantSquares(encounter, combatant), EncounterLogic.getCombatantSquares(encounter, ally)));
 		if ((presense > 0) && (combatant.combat.movement >= 4) && canSeeStunnedAlly) {
@@ -265,8 +265,8 @@ export class IntentsLogic {
 							case 'targets': {
 								const targetIDs = param.value as string[];
 								const targets = targetIDs.map(id => EncounterLogic.getCombatant(encounter, id));
-								const allies = targets.filter(t => (t !== null) && (invertTargets ? (t.type !== combatant.type) : (t.type === combatant.type)));
-								const enemies = targets.filter(t => (t !== null) && (invertTargets ? (t.type === combatant.type) : (t.type !== combatant.type)));
+								const allies = targets.filter(t => (t !== null) && (invertTargets ? (t.faction !== combatant.faction) : (t.faction === combatant.faction)));
+								const enemies = targets.filter(t => (t !== null) && (invertTargets ? (t.faction === combatant.faction) : (t.faction !== combatant.faction)));
 								return enemies.length > allies.length;
 							}
 						}

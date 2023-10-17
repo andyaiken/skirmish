@@ -142,7 +142,6 @@
 
 # Tech Debt
 
-* Make the layout responsive for phones
 * Convert from CRA to Vite
 * Convert to functional components
 * Convert to React Native / Electron

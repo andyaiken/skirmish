@@ -101,7 +101,7 @@ export class RegionCard extends Component<Props, State> {
 						<hr />
 						<StatValue label='Denizens' value={monsters} />
 						<hr />
-						<StatValue orientation='vertical' label='Number of Encounters' value={this.props.region.encounters.length} />
+						<StatValue orientation='vertical' label='Encounters' value={this.props.region.encounters.length} />
 					</div>
 				)}
 				footerText='Region'

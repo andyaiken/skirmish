@@ -791,7 +791,7 @@ export class EncounterLogic {
 		let money = 0;
 		if (combatant.faction === CombatantType.Monster) {
 			if (Random.randomBoolean()) {
-				money = Random.dice(1);
+				money = Random.dice(2) + Random.dice(2);
 			}
 		}
 

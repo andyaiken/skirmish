@@ -1,6 +1,6 @@
 {
 	"name": "skirmish",
-	"version": "1.77.0",
+	"version": "1.78.0",
 	"repository": "https://github.com/andyaiken/skirmish.git",
 	"homepage": "https://andyaiken.github.io/skirmish/",
 	"dependencies": {
@@ -9,7 +9,8 @@
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
 		"react-hot-toast": "^2.4.1",
-		"react-markdown": "^9.0.0"
+		"react-markdown": "^9.0.0",
+		"react-responsive": "^9.0.2"
 	},
 	"devDependencies": {
 		"@babel/plugin-proposal-private-property-in-object": "^7.21.11",

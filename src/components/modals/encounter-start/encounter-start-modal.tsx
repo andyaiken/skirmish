@@ -12,7 +12,7 @@ import type { RegionModel } from '../../../models/region';
 
 import { Collections } from '../../../utils/collections';
 
-import { CardList, Selector, Tabs, Text, TextType } from '../../controls';
+import { CardList, Tabs, Text, TextType } from '../../controls';
 import { HeroCard, SpeciesCard, StrongholdBenefitCard } from '../../cards';
 import { CombatantRowPanel } from '../../panels/combatant-row/combatant-row-panel';
 
@@ -26,8 +26,6 @@ interface Props {
 }
 
 interface State {
-	heroSelectionMode: string;
-	heroSortMode: string;
 	viewMode: string;
 	selectedHeroes: CombatantModel[];
 	benefits: number;
@@ -38,14 +36,25 @@ export class EncounterStartModal extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
-			heroSelectionMode: 'Name',
-			heroSortMode: 'asc',
 			viewMode: 'heroes',
 			selectedHeroes: [],
 			benefits: 0,
 			detriments: 0
 		};
 	}
+
+	selectAllHeroes = () => {
+		const heroes = this.props.game.heroes.filter(h => !this.state.selectedHeroes.includes(h));
+
+		let selected = this.state.selectedHeroes;
+		selected.push(...heroes);
+		selected = Collections.sort(selected, n => n.name);
+
+		this.setState({
+			viewMode: 'heroes',
+			selectedHeroes: selected
+		});
+	};
 
 	selectHero = (hero: CombatantModel) => {
 		let selected = this.state.selectedHeroes;
@@ -70,30 +79,7 @@ export class EncounterStartModal extends Component<Props, State> {
 	};
 
 	render = () => {
-		let heroes = ([] as CombatantModel[]).concat(this.props.game.heroes);
-		switch (this.state.heroSelectionMode) {
-			case 'Name':
-				heroes = Collections.sort(heroes, n => n.name);
-				break;
-			case 'Species':
-				heroes = Collections.sort(heroes, n => n.speciesID);
-				break;
-			case 'Role':
-				heroes = Collections.sort(heroes, n => n.roleID);
-				break;
-			case 'Background':
-				heroes = Collections.sort(heroes, n => n.backgroundID);
-				break;
-			case 'Level':
-				heroes.sort((a, b) => a.level - b.level);
-				break;
-		}
-
-		if (this.state.heroSortMode === 'desc') {
-			heroes.reverse();
-		}
-
-		const candidates = heroes
+		const candidates = this.props.game.heroes
 			.filter(h => !this.state.selectedHeroes.includes(h))
 			.map(h => {
 				return (
@@ -126,6 +112,7 @@ export class EncounterStartModal extends Component<Props, State> {
 				}
 				rightContent = (
 					<div className='selected-hero-list'>
+						{(candidates.length <=5) && (this.state.selectedHeroes.length === 0) ? <button className='primary' onClick={this.selectAllHeroes}>Add All Heroes</button> : null}
 						{selected}
 					</div>
 				);
@@ -200,24 +187,6 @@ export class EncounterStartModal extends Component<Props, State> {
 						<Text type={TextType.Information}>
 							<p>Select <b>up to 5 heroes</b> from this list to take part in this encounter.</p>
 						</Text>
-						{
-							heroes.length > 10 ?
-								<Selector
-									options={[ { id: 'Name' }, { id: 'Species' }, { id: 'Role' }, { id: 'Background' }, { id: 'Level' } ]}
-									selectedID={this.state.heroSelectionMode}
-									onSelect={id => this.setState({ heroSelectionMode: id })}
-								/>
-								: null
-						}
-						{
-							heroes.length > 10 ?
-								<Selector
-									options={[ { id: 'asc', display: 'Asc' }, { id: 'desc', display: 'Desc' } ]}
-									selectedID={this.state.heroSortMode}
-									onSelect={id => this.setState({ heroSortMode: id })}
-								/>
-								: null
-						}
 						<CardList cards={candidates} />
 					</div>
 					<div className='divider' />

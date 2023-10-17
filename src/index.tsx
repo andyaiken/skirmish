@@ -9,7 +9,7 @@ import { StrongholdLogic } from './logic/stronghold-logic';
 import type { GameModel } from './models/game';
 import type { OptionsModel } from './models/options';
 
-import { Main } from './components/main/main';
+import { Layout } from './components/layout/layout';
 
 import './index.scss';
 
@@ -71,7 +71,7 @@ localforage.getItem<GameModel>('skirmish-game').then(game => {
 			const root = createRoot(container);
 			root.render(
 				<StrictMode>
-					<Main game={game} options={options} />
+					<Layout game={game} options={options} />
 				</StrictMode>
 			);
 		}

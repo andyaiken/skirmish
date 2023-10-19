@@ -85,6 +85,9 @@ export class BuyPotionModal extends Component<Props, State> {
 				<div className='buy-potion-modal'>
 					<Text type={TextType.Heading}>Choose a Potion</Text>
 					<hr />
+					<Text type={TextType.Information}>
+						<p>Three potion cards have been drawn for you. Choose one card to buy that potion.</p>
+					</Text>
 					<div className='card-selection-row'>
 						<CardList cards={cards} />
 					</div>

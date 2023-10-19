@@ -87,7 +87,6 @@ export class BuyEquipmentModal extends Component<Props, State> {
 								{ id: ItemLocationType.Hand },
 								{ id: ItemLocationType.Ring }
 							]}
-							columnCount={4}
 							selectedID={this.state.location}
 							onSelect={loc => this.setState({ location: loc as ItemLocationType })}
 						/>

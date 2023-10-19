@@ -80,6 +80,9 @@ export class BuyStructureModal extends Component<Props, State> {
 				<div className='buy-structure-modal'>
 					<Text type={TextType.Heading}>Choose a Structure</Text>
 					<hr />
+					<Text type={TextType.Information}>
+						<p>Three structure cards have been drawn for you. Choose one card to add it to your stronghold.</p>
+					</Text>
 					<div className='card-selection-row'>
 						<CardList cards={cards} />
 					</div>

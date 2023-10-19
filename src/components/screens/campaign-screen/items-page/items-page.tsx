@@ -117,6 +117,14 @@ export class ItemsPage extends Component<Props, State> {
 		});
 	};
 
+	sellMagicItem = (item: ItemModel) => {
+		this.setState({
+			selectedMagicItem: null
+		}, () => {
+			this.props.sellItem(item, false);
+		});
+	};
+
 	getSidebar = () => {
 		const moneySection = (
 			<div>
@@ -245,6 +253,7 @@ export class ItemsPage extends Component<Props, State> {
 							game={this.props.game}
 							equipItem={this.equipItem}
 							dropItem={this.props.dropItem}
+							sellItem={this.sellMagicItem}
 						/>
 					)}
 					onClose={() => this.setState({ selectedMagicItem: null })}
@@ -279,11 +288,6 @@ export class ItemsPage extends Component<Props, State> {
 				const cards = magicItems.map(item => (
 					<div key={item.id}>
 						<ItemCard item={item} onClick={i => this.setState({ selectedMagicItem: i })} />
-						<div>
-							<button onClick={() => this.props.sellItem(item, false)}>
-								Sell<br /><IconValue type={IconType.Money} value={50} size={IconSize.Button} />
-							</button>
-						</div>
 					</div>
 				));
 				magicItemSection = (

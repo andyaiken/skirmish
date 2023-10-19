@@ -1,6 +1,6 @@
 {
 	"name": "skirmish",
-	"version": "1.79.0",
+	"version": "1.80.0",
 	"repository": "https://github.com/andyaiken/skirmish.git",
 	"homepage": "https://andyaiken.github.io/skirmish/",
 	"dependencies": {

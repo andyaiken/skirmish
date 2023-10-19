@@ -95,6 +95,9 @@ export class EnchantItemModal extends Component<Props, State> {
 							<div className='enchant-item-modal'>
 								<Text type={TextType.Heading}>Choose an Enchantment</Text>
 								<hr />
+								<Text type={TextType.Information}>
+									<p>Here are three ways in which this item can be enchanted. Choose one of them.</p>
+								</Text>
 								<div className='card-selection-row'>
 									<CardList cards={cards} />
 								</div>
@@ -144,6 +147,9 @@ export class EnchantItemModal extends Component<Props, State> {
 				<div className='enchant-item-modal'>
 					<Text type={TextType.Heading}>Choose an Item</Text>
 					<hr />
+					<Text type={TextType.Information}>
+						<p>Select one of the following items to be enchanted.</p>
+					</Text>
 					{heroes}
 					{other}
 					{dialog}

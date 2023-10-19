@@ -162,12 +162,14 @@ export class StrongholdPage extends Component<Props, State> {
 		return (
 			<div key='map' className='sidebar'>
 				<Text type={TextType.SubHeading}>Your Stronghold</Text>
-				<Text>This is your base of operations. Select a structure on the map to see what it can do.</Text>
+				<Text>This is your base of operations.</Text>
+				<Text>It&apos;s made up of structures, each of which can grant you a unique benefit.</Text>
+				<Text>Select a structure on the map to see what it can do.</Text>
 				{
 					this.props.options.showTips ?
 						<Expander
 							header={
-								<Text type={TextType.Tip}>Your stronghold can provide useful advantages.</Text>
+								<Text type={TextType.Tip}>Your stronghold can provide useful benefits.</Text>
 							}
 							content={
 								<div>
@@ -175,6 +177,7 @@ export class StrongholdPage extends Component<Props, State> {
 									<ul>
 										<li>The Barracks allows you recruit more heroes.</li>
 										<li>Some structures allow you to redraw cards.</li>
+										<li>Some structures provide advantages in encounters.</li>
 									</ul>
 									<p>Structures can be upgraded, which increases their usefulness.</p>
 									<p>Most structures need to be charged before they can be used, which costs money.</p>

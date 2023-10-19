@@ -11,9 +11,9 @@ import type { ItemModel } from '../../../models/item';
 
 import { Collections } from '../../../utils/collections';
 
-import { Dialog, Text, TextType } from '../../controls';
+import { Dialog, IconSize, IconType, IconValue, PlayingCard, Text, TextType } from '../../controls';
+import { ItemCard, PlaceholderCard } from '../../cards';
 import { CombatantRowPanel } from '../../panels';
-import { ItemCard } from '../../cards';
 
 import './magic-item-info-modal.scss';
 
@@ -22,6 +22,7 @@ interface Props {
 	game: GameModel;
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
 	dropItem: (item: ItemModel, hero: CombatantModel) => void;
+	sellItem: (item: ItemModel) => void;
 }
 
 interface State {
@@ -61,6 +62,29 @@ export class MagicItemInfoModal extends Component<Props, State> {
 			return null;
 		}
 
+		const current = this.state.hero.items.filter(i => i.location === this.props.item.location).map(i => (
+			<div key={i.id} className='card-container'>
+				<ItemCard item={i} />
+				<button onClick={() => this.props.dropItem(i, this.state.hero as CombatantModel)}>Drop</button>
+			</div>
+		));
+		if (current.length === 0) {
+			current.push(
+				<div key='empty' className='card-container'>
+					<PlayingCard
+						front={
+							<PlaceholderCard
+								content={
+									<Text type={TextType.Small}>Nothing</Text>
+								}
+							/>
+						}
+						disabled={true}
+					/>
+				</div>
+			);
+		}
+
 		const equippable = this.getIsEquippable(this.state.hero, this.props.item);
 
 		return (
@@ -73,12 +97,7 @@ export class MagicItemInfoModal extends Component<Props, State> {
 						<div className='item-columns'>
 							<div className='item-column'>
 								<Text type={TextType.SubHeading}>Currently Equipped</Text>
-								{this.state.hero.items.filter(i => i.location === this.props.item.location).map(i => (
-									<div key={i.id} className='card-container'>
-										<ItemCard item={i} />
-										<button onClick={() => this.props.dropItem(i, this.state.hero as CombatantModel)}>Drop</button>
-									</div>
-								))}
+								{current}
 							</div>
 							<div className='item-column'>
 								<Text type={TextType.SubHeading}>New Item</Text>
@@ -106,11 +125,11 @@ export class MagicItemInfoModal extends Component<Props, State> {
 					const equippable = this.getIsEquippable(hero, this.props.item);
 					if (equippable) {
 						canEquip.push(
-							<CombatantRowPanel key={hero.id} combatant={hero} onSelect={combatant => this.props.equipItem(this.props.item, combatant)} />
+							<CombatantRowPanel key={hero.id} combatant={hero} onClick={combatant => this.props.equipItem(this.props.item, combatant)} />
 						);
 					} else {
 						canReplace.push(
-							<CombatantRowPanel key={hero.id} combatant={hero} onSelect={combatant => this.setComparison(combatant)} />
+							<CombatantRowPanel key={hero.id} combatant={hero} onClick={combatant => this.setComparison(combatant)} />
 						);
 					}
 				});
@@ -125,9 +144,21 @@ export class MagicItemInfoModal extends Component<Props, State> {
 			} else {
 				content = (
 					<div className='hero-list'>
-						{canEquip.length > 0 ? <div>These heroes can equip this item:</div> : null}
+						{
+							canEquip.length > 0 ?
+								<Text type={TextType.Information}>
+									<p>These heroes can equip this item. Click on one of them to equip it.</p>
+								</Text>
+								: null
+						}
 						{canEquip}
-						{canReplace.length > 0 ? <div>These heroes already have an item in this location:</div> : null}
+						{
+							canReplace.length > 0 ?
+								<Text type={TextType.Information}>
+									<p>These heroes can equip this item, but already have an item in this location. Click on one of them to compare items.</p>
+								</Text>
+								: null
+						}
 						{canReplace}
 					</div>
 				);
@@ -140,6 +171,9 @@ export class MagicItemInfoModal extends Component<Props, State> {
 					<div className='magic-item-info-content'>
 						<div className='card'>
 							<ItemCard item={this.props.item} />
+							<button onClick={() => this.props.sellItem(this.props.item)}>
+								Sell<br /><IconValue type={IconType.Money} value={50} size={IconSize.Button} />
+							</button>
 						</div>
 						{content}
 					</div>

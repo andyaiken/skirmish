@@ -14,7 +14,7 @@ import {
 	IconZoomIn,
 	IconZoomOut
 } from '@tabler/icons-react';
-import toast from 'react-hot-toast';
+import toast, { Toast } from 'react-hot-toast';
 
 import { ActionTargetType } from '../../../enums/action-target-type';
 import { CardType } from '../../../enums/card-type';
@@ -92,6 +92,7 @@ interface State {
 	manualEncounterState: EncounterState;
 	detailsCombatant: CombatantModel | null;
 	detailsLoot: LootPileModel | null;
+	detailsToast: Toast | null;
 }
 
 export class EncounterScreen extends Component<Props, State> {
@@ -110,7 +111,8 @@ export class EncounterScreen extends Component<Props, State> {
 			selectedSquares: [],
 			manualEncounterState: EncounterState.Active,
 			detailsCombatant: null,
-			detailsLoot: null
+			detailsLoot: null,
+			detailsToast: null
 		};
 	}
 
@@ -121,7 +123,7 @@ export class EncounterScreen extends Component<Props, State> {
 					toast.dismiss(t.id);
 				}, 5 * 1000);
 				return (
-					<div key={t.id} className='skirmish-notification' onClick={e => { e.stopPropagation(); toast.dismiss(t.id); }}>
+					<div key={t.id} className='skirmish-notification' onClick={e => { e.stopPropagation(); toast.dismiss(t.id); this.showDetailsToast(t); }}>
 						{messages.map((str, n) => <div key={n}>{str}</div>)}
 					</div>
 				);
@@ -308,21 +310,32 @@ export class EncounterScreen extends Component<Props, State> {
 	showDetailsCombatant = (combatant: CombatantModel)=> {
 		this.setState({
 			detailsCombatant: combatant,
-			detailsLoot: null
+			detailsLoot: null,
+			detailsToast: null
 		});
 	};
 
 	showDetailsLoot = (loot: LootPileModel) => {
 		this.setState({
 			detailsCombatant: null,
-			detailsLoot: loot
+			detailsLoot: loot,
+			detailsToast: null
+		});
+	};
+
+	showDetailsToast = (toast: Toast) => {
+		this.setState({
+			detailsCombatant: null,
+			detailsLoot: null,
+			detailsToast: toast
 		});
 	};
 
 	clearDetails = () => {
 		this.setState({
 			detailsCombatant: null,
-			detailsLoot: null
+			detailsLoot: null,
+			detailsToast: null
 		});
 	};
 
@@ -697,6 +710,21 @@ export class EncounterScreen extends Component<Props, State> {
 								<Text type={TextType.Heading}>Treasure</Text>
 								<hr />
 								<CardList cards={cards} />
+							</div>
+						}
+						onClose={() => this.clearDetails()}
+					/>
+				);
+			}
+			if (this.state.detailsToast) {
+				const fn = this.state.detailsToast.message as (t: Toast) => object;
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				const lines: string[] = (fn(this.state.detailsToast) as any).props.children.map((n: any) => n.props.children);
+				dialog = (
+					<Dialog
+						content={
+							<div>
+								{lines.map((l, n) => <Text key={n}>{l}</Text>)}
 							</div>
 						}
 						onClose={() => this.clearDetails()}

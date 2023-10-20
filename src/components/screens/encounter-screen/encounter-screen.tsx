@@ -551,7 +551,7 @@ export class EncounterScreen extends Component<Props, State> {
 		}
 
 		const currentCombatant = EncounterLogic.getActiveCombatants(this.props.encounter).find(c => c.combat.current) || null;
-		if (currentCombatant && (currentCombatant.faction === CombatantType.Hero)) {
+		if (currentCombatant && (currentCombatant.faction === CombatantType.Hero) && !currentCombatant.combat.stunned) {
 			return (
 				<div className='encounter-bottom-panel'>
 					<ActionControls

@@ -13,8 +13,8 @@ import type { ItemModel } from '../../../../models/item';
 import type { OptionsModel } from '../../../../models/options';
 import type { StructureModel } from '../../../../models/structure';
 
-import { BoonCard, StructureCard } from '../../../cards';
-import { Box, CardList, Dialog, Expander, IconSize, IconType, IconValue, StatValue, Text, TextType } from '../../../controls';
+import { BoonCard, PlaceholderCard, StructureCard } from '../../../cards';
+import { Box, CardList, Dialog, Expander, IconSize, IconType, IconValue, PlayingCard, StatValue, Text, TextType } from '../../../controls';
 import { BuyStructureModal } from '../../../modals/buy-structure/buy-structure-modal';
 import { StrongholdMapPanel } from '../../../panels';
 
@@ -23,7 +23,7 @@ import './stronghold-page.scss';
 interface Props {
 	game: GameModel;
 	options: OptionsModel;
-	buyStructure: (structure: StructureModel) => void;
+	buyStructure: (structure: StructureModel, cost: number) => void;
 	chargeStructure: (structure: StructureModel) => void;
 	upgradeStructure: (structure: StructureModel) => void;
 	useCharge: (type: StructureType, count: number) => void;
@@ -32,7 +32,7 @@ interface Props {
 
 interface State {
 	selectedStructure: StructureModel | null;
-	addingStructure: boolean;
+	addingStructure: '' | 'free' | 'paid';
 }
 
 export class StrongholdPage extends Component<Props, State> {
@@ -40,7 +40,7 @@ export class StrongholdPage extends Component<Props, State> {
 		super(props);
 		this.state = {
 			selectedStructure: null,
-			addingStructure: false
+			addingStructure: ''
 		};
 	}
 
@@ -54,10 +54,11 @@ export class StrongholdPage extends Component<Props, State> {
 	};
 
 	buyStructure = (structure: StructureModel) => {
+		const cost = this.state.addingStructure === 'free' ? 0 : 50;
 		this.setState({
-			addingStructure: false
+			addingStructure: ''
 		}, () => {
-			this.props.buyStructure(structure);
+			this.props.buyStructure(structure, cost);
 		});
 	};
 
@@ -149,11 +150,30 @@ export class StrongholdPage extends Component<Props, State> {
 			);
 		}
 
+		let slots = null;
+		if (this.props.game.structureSlots > 0) {
+			slots = (
+				<div className='center'>
+					<PlayingCard
+						stack={true}
+						front={
+							<PlaceholderCard
+								text='Free Structures Available'
+								subtext='Click here to build a structure for free.'
+								content={<div className='slots-count'>{this.props.game.structureSlots}</div>}
+							/>
+						}
+						onClick={() => this.setState({ addingStructure: 'free' })}
+					/>
+				</div>
+			);
+		}
+
 		let addSection = null;
 		if ((GameLogic.getStructureDeck(this.props.options.packIDs).length > 0) && (this.props.game.money >= 50)) {
 			addSection = (
-				<button onClick={() => this.setState({ addingStructure: true })}>
-					<div>New structure</div>
+				<button onClick={() => this.setState({ addingStructure: 'paid' })}>
+					<div>Buy a Structure</div>
 					<IconValue type={IconType.Money} value={50} size={IconSize.Button} />
 				</button>
 			);
@@ -190,6 +210,8 @@ export class StrongholdPage extends Component<Props, State> {
 				{this.getStrongholdBenefits()}
 				{boons !== null ? <hr /> : null}
 				{boons}
+				{slots !== null ? <hr /> : null}
+				{slots}
 				{addSection !== null ? <hr /> : null}
 				{addSection}
 			</div>
@@ -197,7 +219,7 @@ export class StrongholdPage extends Component<Props, State> {
 	};
 
 	getDialog = () => {
-		if (this.state.addingStructure) {
+		if (this.state.addingStructure !== '') {
 			return (
 				<Dialog
 					content={(

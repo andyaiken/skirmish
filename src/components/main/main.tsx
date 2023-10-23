@@ -336,14 +336,17 @@ export class Main extends Component<Props, State> {
 
 	//#region Stronghold page
 
-	buyStructure = (structure: StructureModel) => {
+	buyStructure = (structure: StructureModel, cost: number) => {
 		try {
 			const game = this.state.game as GameModel;
 
 			StrongholdLogic.addStructure(game.stronghold, structure);
 
-			const money = 50;
-			game.money = Math.max(0, game.money - money);
+			if (cost > 0) {
+				game.money = Math.max(0, game.money - cost);
+			} else {
+				game.structureSlots = Math.max(game.structureSlots - 1, 0);
+			}
 
 			this.setState({
 				game: game
@@ -701,6 +704,7 @@ export class Main extends Component<Props, State> {
 
 				CampaignMapLogic.conquerRegion(game.map, region);
 				game.heroSlots += 1;
+				game.structureSlots += 1;
 				game.boons.push(region.boon);
 
 				this.setState({
@@ -1164,6 +1168,8 @@ export class Main extends Component<Props, State> {
 						} else {
 							// Add a new hero slot
 							game.heroSlots += 1;
+							// Add a new structure slot
+							game.structureSlots += 1;
 							// Add the region's boon
 							game.boons.push(region.boon);
 						}

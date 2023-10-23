@@ -90,18 +90,18 @@ export class RegionCard extends Component<Props, State> {
 										borderColor: colorDark
 									}}
 								/>
+								<StatValue orientation='vertical' label='Encounters' value={this.props.region.encounters.length} />
 							</div>
 						)}
 					/>
 				)}
 				back={(
 					<div className='region-card-back'>
+						<StatValue label='Population' value={`${this.props.region.demographics.population},000`} />
 						<StatValue label='Area' value={`${this.props.region.demographics.size} sq mi`} />
 						<StatValue label='Terrain' value={this.props.region.demographics.terrain} />
 						<hr />
 						<StatValue label='Denizens' value={monsters} />
-						<hr />
-						<StatValue orientation='vertical' label='Encounters' value={this.props.region.encounters.length} />
 					</div>
 				)}
 				footerText='Region'

@@ -146,10 +146,10 @@ export class HeroesPage extends Component<Props, State> {
 			);
 		}
 
-		let blankHeroes = null;
+		let slots = null;
 		if (this.props.game.heroSlots > 0) {
 			const atHeroLimit = this.props.game.heroes.length >= StrongholdLogic.getHeroLimit(this.props.game);
-			blankHeroes = (
+			slots = (
 				<div className='center'>
 					<PlayingCard
 						stack={true}
@@ -157,7 +157,7 @@ export class HeroesPage extends Component<Props, State> {
 							<PlaceholderCard
 								text='Recruits Available'
 								subtext={atHeroLimit ? 'You can\'t recruit any more heroes until you have more living space in your stronghold.' : 'Click here to recruit a new hero.'}
-								content={<div className='heroes-count'>{this.props.game.heroSlots}</div>}
+								content={<div className='slots-count'>{this.props.game.heroSlots}</div>}
 							/>
 						}
 						disabled={atHeroLimit}
@@ -173,8 +173,8 @@ export class HeroesPage extends Component<Props, State> {
 				<Text>This page shows the heroes that you have recruited.</Text>
 				{boons !== null ? <hr /> : null}
 				{boons}
-				{blankHeroes !== null ? <hr /> : null}
-				{blankHeroes}
+				{slots !== null ? <hr /> : null}
+				{slots}
 			</div>
 		);
 	};

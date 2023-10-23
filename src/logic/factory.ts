@@ -67,6 +67,7 @@ export class Factory {
 	static createGame = (packIDs: string[]): GameModel => {
 		const game = {
 			heroSlots: 5,
+			structureSlots: 0,
 			heroes: [],
 			items: [],
 			boons: [],

@@ -71,7 +71,10 @@ export class CampaignMapPage extends Component<Props, State> {
 					<div className='region-details-card'>
 						<RegionCard region={this.state.selectedRegion} options={this.props.options} />
 					</div>
-					<Text>If you take control of {this.state.selectedRegion.name}, you will recieve:</Text>
+					<hr />
+					<Text>
+						If you take control of {this.state.selectedRegion.name}, you can recruit a new hero, build a new structure in your stronghold, and you will receive this reward:
+					</Text>
 					<div className='region-details-boon'>
 						<BoonCard boon={this.state.selectedRegion.boon} />
 					</div>

@@ -15,6 +15,10 @@ import './index.scss';
 
 localforage.getItem<GameModel>('skirmish-game').then(game => {
 	if (game) {
+		if (game.structureSlots === undefined) {
+			game.structureSlots = 0;
+		}
+
 		game.heroes.forEach(h => {
 			if (h.faction === undefined) {
 				h.faction = h.type;

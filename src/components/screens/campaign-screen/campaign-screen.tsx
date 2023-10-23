@@ -31,7 +31,7 @@ interface Props {
 	showHelp: (file: string) => void;
 	showPacks: () => void;
 	showOptions: () => void;
-	buyStructure: (structure: StructureModel) => void;
+	buyStructure: (structure: StructureModel, cost: number) => void;
 	chargeStructure: (structure: StructureModel) => void;
 	upgradeStructure: (structure: StructureModel) => void;
 	useCharge: (type: StructureType, count: number) => void;

@@ -15,10 +15,9 @@ interface Props {
 }
 
 export class StrongholdMapPanel extends Component<Props> {
-	onClick = (e: React.MouseEvent, square: StructureModel) => {
+	onClick = (e: React.MouseEvent, structure: StructureModel) => {
 		e.stopPropagation();
-		const region = this.props.stronghold.find(s => s.id === square.id) ?? null;
-		this.props.onSelectStructure(region);
+		this.props.onSelectStructure(structure);
 	};
 
 	getStructure = (structure: StructureModel) => {
@@ -27,21 +26,85 @@ export class StrongholdMapPanel extends Component<Props> {
 		const width = (Random.randomDecimal(rng) * 40) + 40;
 		const height = (Random.randomDecimal(rng) * 40) + 40;
 		const degrees = (Random.randomDecimal(rng) * 360);
-		const color = Random.randomColor(80, 120, rng);
+		let color = Random.randomColor(80, 120, rng);
+		if (structure === this.props.selectedStructure) {
+			color = 'rgb(255, 255, 255)';
+		}
+
+		let points: { x: number, y: number }[] = [];
+		switch (Random.randomNumber(4, rng)) {
+			case 0:
+				// Square
+				points = [
+					{ x: 0, y: 0 },
+					{ x: width, y: 0 },
+					{ x: width, y: height },
+					{ x: 0, y: height }
+				];
+				break;
+			case 1: {
+				// L-shape
+				const x = Random.randomNumber(width / 3, rng) + (width / 3);
+				const y = Random.randomNumber(height / 3, rng) + (height / 3);
+				points = [
+					{ x: 0, y: 0 },
+					{ x: x, y: 0 },
+					{ x: x, y: y },
+					{ x: width, y: y },
+					{ x: width, y: height },
+					{ x: 0, y: height }
+				];
+				break;
+			}
+			case 2: {
+				// N-shape
+				const x = Random.randomNumber(width / 3, rng) + (width / 3);
+				const y1 = Random.randomNumber(height / 6, rng) + (height / 6);
+				const y2 = Random.randomNumber(height / 6, rng) + (height / 6) + (height / 2);
+				points = [
+					{ x: 0, y: 0 },
+					{ x: width, y: 0 },
+					{ x: width, y: y1 },
+					{ x: x, y: y1 },
+					{ x: x, y: y2 },
+					{ x: width, y: y2 },
+					{ x: width, y: height },
+					{ x: 0, y: height }
+				];
+				break;
+			}
+			case 3: {
+				// T-shape
+				const x1 = Random.randomNumber(width / 6, rng) + (width / 6) + (width / 2);
+				const x2 = Random.randomNumber(width / 6, rng) + (width / 6);
+				const y1 = Random.randomNumber(height / 3, rng) + (height / 3);
+				const y2 = Random.randomNumber(height / 3, rng) + (height / 3);
+				points = [
+					{ x: 0, y: 0 },
+					{ x: width, y: 0 },
+					{ x: width, y: y1 },
+					{ x: x1, y: y1 },
+					{ x: x1, y: height },
+					{ x: x2, y: height },
+					{ x: x2, y: y2 },
+					{ x: 0, y: y2 }
+				];
+				break;
+			}
+		}
+
+		const offsetX = (100 - width) / 2;
+		const offsetY = (100 - height) / 2;
 
 		return (
-			<div
-				key={structure.id}
-				className='structure'
-				style={{
-					width: `${width}%`,
-					height: `${height}%`,
-					transform: `rotate(${degrees}deg)`,
-					backgroundColor: color
-				}}
-				title={structure.name}
-				onClick={e => this.onClick(e, structure)}
-			/>
+			<svg key={structure.id} className='structure-container' viewBox='0 0 100 100'>
+				<polygon
+					className='structure'
+					points={points.map(pt => `${pt.x + offsetX},${pt.y + offsetY}`).join(' ')}
+					style={{ fill: color, rotate: `${degrees}deg` }}
+					onClick={e => this.onClick(e, structure)}
+				/>
+			</svg>
 		);
 	};
 
@@ -57,7 +120,8 @@ export class StrongholdMapPanel extends Component<Props> {
 			// Determine the percentage width and height of a square
 			const width = 1 + (dims.right - dims.left);
 			const height = 1 + (dims.bottom - dims.top);
-			const squareSizePC = 100 / Math.max(width, height);
+			const widthPC = 100 / width;
+			const heightPC = 100 / height;
 
 			const squares = this.props.stronghold.map(structure => {
 				return (
@@ -65,10 +129,11 @@ export class StrongholdMapPanel extends Component<Props> {
 						key={`${structure.position.x} ${structure.position.y}`}
 						className={`stronghold-map-square ${this.props.selectedStructure === structure ? 'selected' : ''}`}
 						style={{
-							width: `${squareSizePC}%`,
-							left: `${((structure.position.x - dims.left) * squareSizePC)}% `,
-							top: `${((structure.position.y - dims.top) * squareSizePC)}%`,
-							fontSize: `${squareSizePC * 5}%`
+							width: `${widthPC}%`,
+							height: `${heightPC}%`,
+							left: `${((structure.position.x - dims.left) * widthPC)}% `,
+							top: `${((structure.position.y - dims.top) * heightPC)}%`,
+							fontSize: `${Math.min(widthPC, heightPC) * 8}%`
 						}}
 					>
 						{this.getStructure(structure)}
@@ -83,11 +148,7 @@ export class StrongholdMapPanel extends Component<Props> {
 
 			return (
 				<div className='stronghold-map' onClick={() => this.props.onSelectStructure(null)}>
-					<div className='stronghold-map-inner'>
-						<div className='stronghold-map-square-container'>
-							{squares}
-						</div>
-					</div>
+					{squares}
 				</div>
 			);
 		} catch {

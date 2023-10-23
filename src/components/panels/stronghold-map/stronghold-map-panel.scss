@@ -1,48 +1,46 @@
 .stronghold-map {
-	.stronghold-map-inner {
-		width: 600px;
-		height: 600px;
-		margin: 0 auto;
+	width: 100%;
+	height: 100%;
+	position: relative;
 
-		.stronghold-map-square-container {
-			position: relative;
-			width: 100%;
-			height: 100%;
-	
-			.stronghold-map-square {
-				aspect-ratio: 1 / 1;
-				position: absolute;
-				display: flex;
-				align-items: center;
-				justify-content: center;
+	.stronghold-map-square {
+		position: absolute;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 
-				&.selected {
-					.structure {
-						background-color: rgb(255, 255, 255) !important;
-						pointer-events: none;
-					}
-
-					.structure-name {
-						color: rgb(0, 0, 0);
-					}
-				}
-
-				.structure {
-					z-index: 10;
-					cursor: pointer;
-				}
-
-				.structure-name {
-					position: absolute;
-					z-index: 20;
-					border-radius: 5px;
-					padding: 2px 5px;
-					color: rgb(255, 255, 255);
-					font-weight: 600;
-					text-align: center;
-					pointer-events: none;
-				}
+		&.selected {
+			.structure {
+				pointer-events: none;
 			}
+
+			.structure-name {
+				color: rgb(0, 0, 0);
+			}
+		}
+
+		.structure-container {
+			overflow: visible;
+
+			.structure {
+				stroke: rgb(0, 0, 0);
+				stroke-width: 2;
+				stroke-linejoin: round;
+				transform-origin: center;
+				z-index: 10;
+				cursor: pointer;
+			}
+		}
+
+		.structure-name {
+			position: absolute;
+			z-index: 20;
+			border-radius: 5px;
+			padding: 2px 5px;
+			color: rgb(255, 255, 255);
+			font-weight: 600;
+			text-align: center;
+			pointer-events: none;
 		}
 	}
 }

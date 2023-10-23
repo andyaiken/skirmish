@@ -111,7 +111,6 @@
 * Ooze
 
 ## Ideas for Structures
-* Structures as irregular polygons
 
 | Structure     | Effect                                                            | Pack    |
 |---------------|-------------------------------------------------------------------|---------|

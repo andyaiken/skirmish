@@ -1,3 +1,4 @@
+import { IconHexagon, IconHexagonFilled } from '@tabler/icons-react';
 import { Component } from 'react';
 
 import { BoonType } from '../../../../enums/boon-type';
@@ -104,25 +105,35 @@ export class StrongholdPage extends Component<Props, State> {
 
 	getSidebar = () => {
 		if (this.state.selectedStructure) {
-			let charge = null;
-			if (StrongholdLogic.canCharge(this.state.selectedStructure) && (this.props.game.money >= 100)) {
-				charge = (
-					<button disabled={this.state.selectedStructure.charges > 0} onClick={() => this.props.chargeStructure(this.state.selectedStructure as StructureModel)}>
-						<div>Charge structure</div>
-						<IconValue type={IconType.Money} value={100} size={IconSize.Button} />
-					</button>
-				);
-			}
-
-			let upgrade = null;
 			const upgradeCost = this.state.selectedStructure.level * 50;
-			if (this.props.game.money >= upgradeCost) {
-				upgrade = (
-					<button onClick={() => this.props.upgradeStructure(this.state.selectedStructure as StructureModel)}>
-						<div>Upgrade structure</div>
-						<IconValue type={IconType.Money} value={upgradeCost} size={IconSize.Button} />
-					</button>
-				);
+
+			let charge = null;
+			if (StrongholdLogic.canCharge(this.state.selectedStructure)) {
+				if (this.state.selectedStructure.charges > 0) {
+					const bolts = [];
+					for (let n = 0; n < this.state.selectedStructure.level; ++n) {
+						bolts.push(n >= this.state.selectedStructure.charges ? <IconHexagon key={n} size={50} /> : <IconHexagonFilled key={n} size={50} />);
+					}
+
+					charge = (
+						<StatValue
+							orientation='vertical'
+							label='Charges'
+							value={
+								<div className='bolts'>
+									{bolts}
+								</div>
+							}
+						/>
+					);
+				} else {
+					charge = (
+						<button disabled={this.props.game.money < 100} onClick={() => this.props.chargeStructure(this.state.selectedStructure as StructureModel)}>
+							<div>Recharge structure</div>
+							<IconValue type={IconType.Money} value={100} size={IconSize.Button} />
+						</button>
+					);
+				}
 			}
 
 			return (
@@ -130,9 +141,16 @@ export class StrongholdPage extends Component<Props, State> {
 					<div className='structure-details-card'>
 						<StructureCard structure={this.state.selectedStructure} />
 					</div>
-					{!!charge || !!upgrade ? <hr /> : null}
+					<hr />
+					<div className='upgrade-section'>
+						<StatValue orientation='vertical' label='Level' value={this.state.selectedStructure.level} />
+						<button disabled={this.props.game.money < upgradeCost} onClick={() => this.props.upgradeStructure(this.state.selectedStructure as StructureModel)}>
+							<div>Upgrade<br/>structure</div>
+							<IconValue type={IconType.Money} value={upgradeCost} size={IconSize.Button} />
+						</button>
+					</div>
+					{charge !== null ? <hr /> : null}
 					{charge}
-					{upgrade}
 				</div>
 			);
 		}
@@ -170,9 +188,9 @@ export class StrongholdPage extends Component<Props, State> {
 		}
 
 		let addSection = null;
-		if ((GameLogic.getStructureDeck(this.props.options.packIDs).length > 0) && (this.props.game.money >= 50)) {
+		if (GameLogic.getStructureDeck(this.props.options.packIDs).length > 0) {
 			addSection = (
-				<button onClick={() => this.setState({ addingStructure: 'paid' })}>
+				<button disabled={this.props.game.money < 50} onClick={() => this.setState({ addingStructure: 'paid' })}>
 					<div>Buy a Structure</div>
 					<IconValue type={IconType.Money} value={50} size={IconSize.Button} />
 				</button>

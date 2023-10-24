@@ -133,14 +133,14 @@ export class StrongholdMapPanel extends Component<Props> {
 							height: `${heightPC}%`,
 							left: `${((structure.position.x - dims.left) * widthPC)}% `,
 							top: `${((structure.position.y - dims.top) * heightPC)}%`,
-							fontSize: `${Math.min(widthPC, heightPC) * 8}%`
+							fontSize: `${Math.min(widthPC, heightPC) * 1.5}pt`
 						}}
 					>
 						{this.getStructure(structure)}
 						<div className='structure-name'>
 							{structure.name}
 							{structure.charges > 0 ? <br /> : null}
-							{structure.charges > 0 ? ''.padEnd(structure.charges, '★') : null}
+							{structure.charges > 0 ? ''.padEnd(structure.charges, '⬢') : null}
 						</div>
 					</div>
 				);

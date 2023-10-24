@@ -188,16 +188,29 @@ export class CombatantRowPanel extends Component<Props> {
 		}
 
 		const resolve = this.props.encounter ? EncounterLogic.getTraitRank(this.props.encounter as EncounterModel, this.props.combatant, TraitType.Resolve) : 0;
-		const hearts = [];
+		const rows = [];
+		let hearts = [];
 		for (let n = 0; n < resolve; ++n) {
 			hearts.push(n < this.props.combatant.combat.wounds ? <IconHeartOff key={n} size={12} /> : <IconHeartFilled key={n} size={12} />);
+			if (hearts.length >= 5) {
+				rows.push(
+					<div key={rows.length}>{hearts}</div>
+				);
+				hearts = [];
+			}
+		}
+		if (hearts.length > 0) {
+			rows.push(
+				<div key={rows.length}>{hearts}</div>
+			);
+			hearts = [];
 		}
 
 		return (
 			<StatValue
 				orientation='compact'
 				label='Wounds'
-				value={<div className='hearts'>{hearts}</div>}
+				value={<div className='hearts'>{rows}</div>}
 			/>
 		);
 	};

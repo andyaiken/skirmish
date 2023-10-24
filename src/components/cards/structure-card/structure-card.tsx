@@ -6,7 +6,7 @@ import { StructureType } from '../../../enums/structure-type';
 
 import type { StructureModel } from '../../../models/structure';
 
-import { PlayingCard, StatValue, Text } from '../../controls';
+import { PlayingCard, Text } from '../../controls';
 
 import { PlaceholderCard } from '../placeholder-card/placeholder-card';
 
@@ -142,16 +142,6 @@ export class StructureCard extends Component<Props, State> {
 	};
 
 	render = () => {
-		let content = null;
-		if ((this.props.structure.level > 1) || (this.props.structure.charges > 0)) {
-			content = (
-				<div className='structure-card-front'>
-					{this.props.structure.level > 1 ? <StatValue label='Level' value={this.props.structure.level} /> : null}
-					{this.props.structure.charges > 0 ? <StatValue label='Charges' value={this.props.structure.charges} /> : null}
-				</div>
-			);
-		}
-
 		const buttons: JSX.Element[] = [];
 		buttons.push(
 			<button key='flip' className='icon-btn' title='Flip' onClick={this.onFlip}><IconRefresh /></button>
@@ -164,7 +154,6 @@ export class StructureCard extends Component<Props, State> {
 					<PlaceholderCard
 						text={this.props.structure.name}
 						subtext={this.props.structure.description}
-						content={content}
 					/>
 				}
 				back={

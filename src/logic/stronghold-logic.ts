@@ -29,11 +29,14 @@ export class StrongholdLogic {
 		const copy = JSON.parse(JSON.stringify(structure)) as StructureModel;
 		copy.id = Utils.guid();
 		copy.position = StrongholdLogic.getEmptyPosition(stronghold);
+		if (StrongholdLogic.canCharge(copy)) {
+			copy.charges = copy.level;
+		}
 		stronghold.push(copy);
 	};
 
 	static getEmptyPosition = (stronghold: StructureModel[]) => {
-		const adj: { x: number, y: number }[] = [];
+		const adj: { x: number, y: number, count: number }[] = [];
 
 		stronghold.forEach(s => {
 			const minX = s.position.x - 2;
@@ -42,20 +45,31 @@ export class StrongholdLogic {
 			const maxY = s.position.y + 2;
 			for (let x = minX; x < maxX; ++x) {
 				for (let y = minY; y < maxY; ++y) {
-					adj.push({ x: x, y: y });
+					const exist = adj.find(sq => (sq.x === x) && (sq.y === y));
+					if (exist) {
+						exist.count += 1;
+					} else {
+						adj.push({ x: x, y: y, count: 1 });
+					}
 				}
 			}
 		});
 
 		const empty = adj.filter(sq => !stronghold.find(s => (s.position.x === sq.x) && s.position.y === sq.y));
-		if (empty.length === 0) {
+		const squares = empty.filter(sq => sq.count === 1);
+		if (squares.length === 0) {
 			return {
 				x: 0,
 				y: 0
 			};
 		}
 
-		return Collections.draw(empty);
+		const square = Collections.draw(squares);
+
+		return {
+			x: square.x,
+			y: square.y
+		};
 	};
 
 	static canCharge = (structure: StructureModel) => {

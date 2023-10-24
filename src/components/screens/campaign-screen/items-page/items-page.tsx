@@ -147,36 +147,26 @@ export class ItemsPage extends Component<Props, State> {
 		}
 
 		const buySection = [];
-		if ((GameLogic.getItemDeck(this.props.options.packIDs).length > 0) && (this.props.game.money >= 2)) {
+		if (GameLogic.getItemDeck(this.props.options.packIDs).length > 0) {
 			buySection.push(
-				<button key='mundane' onClick={() => this.showMarket('mundane')}>
+				<button key='mundane' disabled={this.props.game.money < 2} onClick={() => this.showMarket('mundane')}>
 					<div>Buy equipment</div>
 					<IconValue type={IconType.Money} value={2} size={IconSize.Button} />
 				</button>
 			);
 		}
-		if ((GameLogic.getPotionDeck(this.props.options.packIDs).length > 0) && (this.props.game.money >= 20)) {
+		if (GameLogic.getPotionDeck(this.props.options.packIDs).length > 0) {
 			buySection.push(
-				<button key='potion' onClick={() => this.showMarket('potion')}>
+				<button key='potion' disabled={this.props.game.money < 20} onClick={() => this.showMarket('potion')}>
 					<div>Buy a potion</div>
 					<IconValue type={IconType.Money} value={20} size={IconSize.Button} />
 				</button>
 			);
 		}
-		if ((GameLogic.getItemDeck(this.props.options.packIDs).length > 0) && (this.props.game.money >= 100)) {
+		if (GameLogic.getItemDeck(this.props.options.packIDs).length > 0) {
 			buySection.push(
-				<button key='magical' onClick={() => this.showMarket('magical')}>
+				<button key='magical' disabled={this.props.game.money < 100} onClick={() => this.showMarket('magical')}>
 					<div>Buy a magic item</div>
-					<IconValue type={IconType.Money} value={100} size={IconSize.Button} />
-				</button>
-			);
-		}
-
-		let enchantSection = null;
-		if (this.props.game.money >= 100) {
-			enchantSection = (
-				<button onClick={() => this.showEnchant(true)}>
-					<div>Enchant an item</div>
 					<IconValue type={IconType.Money} value={100} size={IconSize.Button} />
 				</button>
 			);
@@ -192,8 +182,11 @@ export class ItemsPage extends Component<Props, State> {
 				{boons}
 				{buySection.length !== 0 ? <hr /> : null}
 				{buySection}
-				{enchantSection !== null ? <hr /> : null}
-				{enchantSection}
+				<hr />
+				<button disabled={this.props.game.money < 100} onClick={() => this.showEnchant(true)}>
+					<div>Enchant an item</div>
+					<IconValue type={IconType.Money} value={100} size={IconSize.Button} />
+				</button>
 			</div>
 		);
 	};

@@ -42,5 +42,23 @@
 			justify-content: center;
 			margin: 15px 0;
 		}
+
+		.upgrade-section {
+			display: flex;
+			gap: 20px;
+			align-items: center;
+
+			.stat-value {
+				flex: 1 1 0;
+			}
+
+			button {
+				flex: 0 0 160px;
+			}
+		}
+
+		.bolts {
+			color: rgb(24, 0, 150);
+		}
 	}
 }

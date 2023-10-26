@@ -553,13 +553,15 @@ export class MonsterSpeciesData {
 		],
 		startingFeatures: [
 			FeatureLogic.createTraitFeature('troll-start-1', TraitType.Endurance, 2),
-			FeatureLogic.createProficiencyFeature('troll-start-2', ItemProficiencyType.LargeWeapons)
+			FeatureLogic.createProficiencyFeature('troll-start-2', ItemProficiencyType.LargeWeapons),
+			FeatureLogic.createSkillFeature('troll-start-3', SkillType.Brawl, 2)
 		],
 		features: [
 			FeatureLogic.createTraitFeature('troll-feature-1', TraitType.Endurance, 1),
-			FeatureLogic.createDamageCategoryResistFeature('troll-feature-2', DamageCategoryType.Physical, 1),
-			FeatureLogic.createDamageCategoryResistFeature('troll-feature-3', DamageCategoryType.Energy, 1),
-			FeatureLogic.createDamageCategoryResistFeature('troll-feature-4', DamageCategoryType.Corruption, 1)
+			FeatureLogic.createSkillFeature('troll-feature-2', SkillType.Brawl, 2),
+			FeatureLogic.createDamageCategoryResistFeature('troll-feature-3', DamageCategoryType.Physical, 1),
+			FeatureLogic.createDamageCategoryResistFeature('troll-feature-4', DamageCategoryType.Energy, 1),
+			FeatureLogic.createDamageCategoryResistFeature('troll-feature-5', DamageCategoryType.Corruption, 1)
 		],
 		actions: [
 			{
@@ -699,7 +701,7 @@ export class MonsterSpeciesData {
 				effects: [
 					ActionEffects.attack({
 						weapon: false,
-						skill: SkillType.Spellcasting,
+						skill: SkillType.Brawl,
 						trait: TraitType.Endurance,
 						skillBonus: 0,
 						hit: [

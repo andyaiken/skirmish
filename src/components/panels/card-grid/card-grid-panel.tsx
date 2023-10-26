@@ -60,6 +60,44 @@ export class CardGridPanel extends Component<Props, State> {
 		});
 	};
 
+	getMarked = (card: { name: string, features: FeatureModel[], actions: ActionModel[] }, strength: number,  min: number, max: number) => {
+		if ((strength < min) || (strength > max)) {
+			return true;
+		}
+
+		if (card.actions.some(a => (GameLogic.getActionStrength(a) < 1) || (GameLogic.getActionStrength(a) > 12))) {
+			return true;
+		}
+
+		/*
+		// Check if any attack action uses a skill we don't have a feature bonus for
+		const usedSkills: SkillType[] = [];
+		card.actions.forEach(a => {
+			a.effects
+				.filter(e => e.id === 'attack')
+				.forEach(e => {
+					const attack = e.data as { skill: SkillType };
+					if (!usedSkills.includes(attack.skill)) {
+						usedSkills.push(attack.skill);
+					}
+				});
+		});
+		const bonusSkills: SkillType[] = [];
+		card.features.filter(f => f.type === FeatureType.Skill).forEach(f => {
+			if (!bonusSkills.includes(f.skill)) {
+				bonusSkills.push(f.skill);
+			}
+		});
+		const missingSkills: SkillType[] = usedSkills.filter(skill => !bonusSkills.includes(skill));
+		if (missingSkills.length > 0) {
+			console.log(card.name, missingSkills.join(', '));
+			return true;
+		}
+		*/
+
+		return false;
+	};
+
 	getCards = (type: string, packID: string) => {
 		switch (type) {
 			case 'hero species':
@@ -67,7 +105,7 @@ export class CardGridPanel extends Component<Props, State> {
 					.filter(s => s.packID === packID)
 					.map(s => {
 						const strength = GameLogic.getSpeciesStrength(s);
-						const className = (strength < 4) || (strength > 6) || s.actions.some(a => (GameLogic.getActionStrength(a) < 1) || (GameLogic.getActionStrength(a) > 12)) ? 'danger' : '';
+						const className = this.getMarked(s, strength, 4, 6) ? 'danger' : '';
 						return (
 							<button key={s.id} className={className} onClick={() => this.setActions(s.name, s.description, CardType.Species, s.startingFeatures, s.features, s.actions)}>
 								<StatValue label={s.name} value={strength} />
@@ -79,7 +117,7 @@ export class CardGridPanel extends Component<Props, State> {
 					.filter(s => s.packID === packID)
 					.map(s => {
 						const strength = GameLogic.getSpeciesStrength(s);
-						const className = (strength < 4) || (strength > 6) || s.actions.some(a => (GameLogic.getActionStrength(a) < 1) || (GameLogic.getActionStrength(a) > 12)) ? 'danger' : '';
+						const className = this.getMarked(s, strength, 4, 6) ? 'danger' : '';
 						return (
 							<button key={s.id} className={className} onClick={() => this.setActions(s.name, s.description, CardType.Species, s.startingFeatures, s.features, s.actions)}>
 								<StatValue label={s.name} value={strength} />
@@ -91,7 +129,7 @@ export class CardGridPanel extends Component<Props, State> {
 					.filter(r => r.packID === packID)
 					.map(r => {
 						const strength = GameLogic.getRoleStrength(r);
-						const className = (strength < 4) || (strength > 6) || r.actions.some(a => (GameLogic.getActionStrength(a) < 1) || (GameLogic.getActionStrength(a) > 12)) ? 'danger' : '';
+						const className = this.getMarked(r, strength, 4, 6) ? 'danger' : '';
 						return (
 							<button key={r.id} className={className} onClick={() => this.setActions(r.name, r.description, CardType.Species, r.startingFeatures, r.features, r.actions)}>
 								<StatValue label={r.name} value={strength} />
@@ -103,7 +141,7 @@ export class CardGridPanel extends Component<Props, State> {
 					.filter(b => b.packID === packID)
 					.map(b => {
 						const strength = GameLogic.getBackgroundStrength(b);
-						const className = (strength < 3) || (strength > 4) || b.actions.some(a => (GameLogic.getActionStrength(a) < 1) || (GameLogic.getActionStrength(a) > 12)) ? 'danger' : '';
+						const className = this.getMarked(b, strength, 3, 4) ? 'danger' : '';
 						return (
 							<button key={b.id} className={className} onClick={() => this.setActions(b.name, b.description, CardType.Species, b.startingFeatures, b.features, b.actions)}>
 								<StatValue label={b.name} value={strength} />

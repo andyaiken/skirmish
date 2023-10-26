@@ -296,12 +296,12 @@ export class IntentsLogic {
 
 		const intents: IntentsModel[] = [];
 
-		const resolve = EncounterLogic.getTraitRank(encounter, combatant, TraitType.Resolve);
-		if ((combatant.combat.damage > 0) && (combatant.combat.wounds >= resolve)) {
+		const maxWounds = Math.max(EncounterLogic.getTraitRank(encounter, combatant, TraitType.Resolve) - 1, 1);
+		if ((combatant.combat.damage > 0) && (combatant.combat.wounds >= maxWounds)) {
 			// Find the path that will take me furthest from any enemy
 			const path = Collections.max(movePaths, p => {
 				const distances = encounter.combatants
-					.filter(c => c.faction === CombatantType.Hero)
+					.filter(c => c.faction !== combatant.faction)
 					.filter(c => combatant.combat.senses >= c.combat.hidden)
 					.filter(c => (c.combat.state !== CombatantState.Unconscious) && (c.combat.state !== CombatantState.Dead))
 					.map(c => {
@@ -320,60 +320,26 @@ export class IntentsLogic {
 				});
 			}
 		} else {
-			const adjacentSquares = EncounterMapLogic.getAdjacentSquares(encounter.mapSquares, EncounterLogic.getCombatantSquares(encounter, combatant));
-			const adjacentToEnemy = encounter.combatants
-				.filter(c => c.faction === CombatantType.Hero)
-				.filter(c => combatant.combat.senses >= c.combat.hidden)
-				.filter(c => (c.combat.state !== CombatantState.Unconscious) && (c.combat.state !== CombatantState.Dead))
-				.some(c => {
-					const enemySquares = EncounterLogic.getCombatantSquares(encounter, c);
-					return enemySquares.some(sq => adjacentSquares.find(s => (s.x === sq.x) && (s.y === sq.y)));
-				});
-			if (adjacentToEnemy) {
-				// Move out of melee
-				const disengagePaths = movePaths.filter(p => {
-					const distances = encounter.combatants
-						.filter(c => c.faction === CombatantType.Hero)
-						.filter(c => combatant.combat.senses >= c.combat.hidden)
-						.filter(c => (c.combat.state !== CombatantState.Unconscious) && (c.combat.state !== CombatantState.Dead))
-						.map(c => {
-							const squares = EncounterLogic.getCombatantSquares(encounter, c);
-							return EncounterMapLogic.getDistanceAny(squares, [ p ]);
-						});
-					return Math.min(...distances) >= 2;
-				});
-				if (disengagePaths.length > 0) {
-					const path = Collections.draw(disengagePaths);
-					intents.push({
-						description: 'Disengage',
-						intents: [
-							...path.steps.map(step => IntentsData.move(step))
-						],
-						weight: 0
+			// Find the path that will take me closest to an enemy
+			const path = Collections.min(movePaths, p => {
+				const distances = encounter.combatants
+					.filter(c => c.faction !== combatant.faction)
+					.filter(c => combatant.combat.senses >= c.combat.hidden)
+					.filter(c => (c.combat.state !== CombatantState.Unconscious) && (c.combat.state !== CombatantState.Dead))
+					.map(c => {
+						const squares = EncounterLogic.getCombatantSquares(encounter, c);
+						return EncounterMapLogic.getDistanceAny(squares, [ p ]);
 					});
-				}
-			} else {
-				// Find the path that will take me closest to an enemy
-				const path = Collections.min(movePaths, p => {
-					const distances = encounter.combatants
-						.filter(c => c.faction === CombatantType.Hero)
-						.filter(c => combatant.combat.senses >= c.combat.hidden)
-						.filter(c => (c.combat.state !== CombatantState.Unconscious) && (c.combat.state !== CombatantState.Dead))
-						.map(c => {
-							const squares = EncounterLogic.getCombatantSquares(encounter, c);
-							return EncounterMapLogic.getDistanceAny(squares, [ p ]);
-						});
-					return Math.min(...distances);
+				return Math.min(...distances);
+			});
+			if (path) {
+				intents.push({
+					description: 'Move',
+					intents: [
+						...path.steps.map(step => IntentsData.move(step))
+					],
+					weight: 0
 				});
-				if (path) {
-					intents.push({
-						description: 'Move',
-						intents: [
-							...path.steps.map(step => IntentsData.move(step))
-						],
-						weight: 0
-					});
-				}
 			}
 		}
 

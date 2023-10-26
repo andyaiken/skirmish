@@ -73,13 +73,13 @@ export class HeroSpeciesData {
 		quirks: [],
 		startingFeatures: [
 			FeatureLogic.createTraitFeature('construct-start-1', TraitType.Endurance, 1),
-			FeatureLogic.createTraitFeature('construct-start-2', TraitType.Resolve, 1),
+			FeatureLogic.createSkillFeature('construct-start-2', SkillType.Brawl, 2),
 			FeatureLogic.createDamageResistFeature('construct-start-3', DamageType.Poison, 2),
 			FeatureLogic.createDamageResistFeature('construct-start-4', DamageType.Psychic, 2)
 		],
 		features: [
 			FeatureLogic.createTraitFeature('construct-feature-1', TraitType.Endurance, 1),
-			FeatureLogic.createTraitFeature('construct-feature-2', TraitType.Resolve, 1),
+			FeatureLogic.createSkillFeature('construct-start-2', SkillType.Brawl, 2),
 			FeatureLogic.createDamageResistFeature('construct-feature-3', DamageType.Poison, 2),
 			FeatureLogic.createDamageResistFeature('construct-feature-4', DamageType.Psychic, 2)
 		],
@@ -387,12 +387,14 @@ export class HeroSpeciesData {
 		startingFeatures: [
 			FeatureLogic.createTraitFeature('minotaur-start-1', TraitType.Endurance, 1),
 			FeatureLogic.createSkillFeature('minotaur-start-2', SkillType.Brawl, 2),
-			FeatureLogic.createDamageCategoryBonusFeature('minotaur-start-3', DamageCategoryType.Physical, 1)
+			FeatureLogic.createSkillFeature('minotaur-start-3', SkillType.Presence, 2),
+			FeatureLogic.createDamageCategoryBonusFeature('minotaur-start-4', DamageCategoryType.Physical, 1)
 		],
 		features: [
 			FeatureLogic.createTraitFeature('minotaur-feature-1', TraitType.Endurance, 1),
 			FeatureLogic.createSkillFeature('minotaur-feature-2', SkillType.Brawl, 2),
-			FeatureLogic.createDamageCategoryBonusFeature('minotaur-feature-3', DamageCategoryType.Physical, 1)
+			FeatureLogic.createSkillFeature('minotaur-feature-3', SkillType.Presence, 2),
+			FeatureLogic.createDamageCategoryBonusFeature('minotaur-feature-4', DamageCategoryType.Physical, 1)
 		],
 		actions: [
 			{
@@ -531,13 +533,15 @@ export class HeroSpeciesData {
 		quirks: [],
 		startingFeatures: [
 			FeatureLogic.createTraitFeature('reptilian-start-1', TraitType.Speed, 1),
-			FeatureLogic.createSkillFeature('reptilian-start-2', SkillType.Brawl, 2)
+			FeatureLogic.createSkillFeature('reptilian-start-2', SkillType.Brawl, 2),
+			FeatureLogic.createSkillFeature('reptilian-start-3', SkillType.Presence, 2)
 		],
 		features: [
 			FeatureLogic.createTraitFeature('reptilian-feature-1', TraitType.Speed, 1),
 			FeatureLogic.createSkillFeature('reptilian-feature-2', SkillType.Brawl, 2),
-			FeatureLogic.createDamageCategoryResistFeature('reptilian-feature-3', DamageCategoryType.Physical, 1),
-			FeatureLogic.createDamageResistFeature('reptilian-feature-4', DamageType.Psychic, 2)
+			FeatureLogic.createSkillFeature('reptilian-feature-3', SkillType.Presence, 2),
+			FeatureLogic.createDamageCategoryResistFeature('reptilian-feature-4', DamageCategoryType.Physical, 1),
+			FeatureLogic.createDamageResistFeature('reptilian-feature-5', DamageType.Psychic, 2)
 		],
 		actions: [
 			{
@@ -606,14 +610,16 @@ export class HeroSpeciesData {
 		startingFeatures: [
 			FeatureLogic.createTraitFeature('shadowborn-start-1', TraitType.Resolve, 1),
 			FeatureLogic.createSkillFeature('shadowborn-start-2', SkillType.Brawl, 2),
-			FeatureLogic.createSkillFeature('shadowborn-start-3', SkillType.Stealth, 2)
+			FeatureLogic.createSkillFeature('shadowborn-start-3', SkillType.Presence, 2),
+			FeatureLogic.createSkillFeature('shadowborn-start-4', SkillType.Stealth, 2)
 		],
 		features: [
 			FeatureLogic.createTraitFeature('shadowborn-feature-1', TraitType.Resolve, 1),
 			FeatureLogic.createSkillFeature('shadowborn-feature-2', SkillType.Brawl, 2),
-			FeatureLogic.createSkillFeature('shadowborn-feature-3', SkillType.Stealth, 2),
-			FeatureLogic.createDamageCategoryResistFeature('shadowborn-feature-4', DamageCategoryType.Corruption, 1),
-			FeatureLogic.createAuraDamageFeature('shadowborn-feature-5', ConditionType.AutoDamage, DamageType.Decay, 1)
+			FeatureLogic.createSkillFeature('shadowborn-feature-3', SkillType.Presence, 2),
+			FeatureLogic.createSkillFeature('shadowborn-feature-4', SkillType.Stealth, 2),
+			FeatureLogic.createDamageCategoryResistFeature('shadowborn-feature-5', DamageCategoryType.Corruption, 1),
+			FeatureLogic.createAuraDamageFeature('shadowborn-feature-6', ConditionType.AutoDamage, DamageType.Decay, 1)
 		],
 		actions: [
 			{
@@ -639,7 +645,7 @@ export class HeroSpeciesData {
 				effects: [
 					ActionEffects.attack({
 						weapon: false,
-						skill: SkillType.Spellcasting,
+						skill: SkillType.Presence,
 						trait: TraitType.Resolve,
 						skillBonus: 0,
 						hit: [

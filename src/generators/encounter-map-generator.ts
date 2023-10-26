@@ -11,23 +11,29 @@ export class EncounterMapGenerator {
 	static generateEncounterMap = (rng: () => number): EncounterMapSquareModel[] => {
 		EncounterMapLogic.visibilityCache.reset();
 
-		const mapTypes = [ 'dungeon', 'cavern', 'street' ];
-		switch (Collections.draw(mapTypes, rng)) {
-			case 'dungeon':
-				return EncounterMapGenerator.generateDungeonMap(rng);
-			case 'cavern':
-				return EncounterMapGenerator.generateCavernMap(rng);
-			case 'street':
-				return EncounterMapGenerator.generateStreetMap(rng);
+		const mapTypes = [
+			EncounterMapGenerator.generateDungeonMap,
+			EncounterMapGenerator.generateRuinMap,
+			EncounterMapGenerator.generateCavernMap,
+			EncounterMapGenerator.generateStreetMap
+		];
+		const fn = Collections.draw(mapTypes, rng);
+		const map = fn(400, rng);
+
+		while (Random.randomNumber(3, rng) !== 0) {
+			// Add a blob of obstructed terrain
+			const start = Collections.draw(map, rng);
+			const blob = EncounterMapLogic.getFloorBlob(map, start, rng);
+			blob.forEach(sq => sq.type = EncounterMapSquareType.Obstructed);
 		}
 
-		return [];
+		return EncounterMapGenerator.simplifyMap(map);
 	};
 
-	static generateDungeonMap = (rng: () => number): EncounterMapSquareModel[] => {
+	static generateDungeonMap = (size: number, rng: () => number): EncounterMapSquareModel[] => {
 		const map: EncounterMapSquareModel[] = [];
 
-		while (map.length < 400) {
+		while (map.length < size) {
 			const dirs = [ 'n', 'e', 's', 'w' ];
 			const dir = Collections.draw(dirs, rng);
 
@@ -67,17 +73,73 @@ export class EncounterMapGenerator {
 			}
 		}
 
-		while (Random.randomNumber(3, rng) !== 0) {
-			// Add a blob of obstructed terrain
-			const start = Collections.draw(map, rng);
-			const blob = EncounterMapLogic.getFloorBlob(map, start, rng);
-			blob.forEach(sq => sq.type = EncounterMapSquareType.Obstructed);
-		}
-
-		return EncounterMapGenerator.simplifyMap(map);
+		return map;
 	};
 
-	static generateCavernMap = (rng: () => number): EncounterMapSquareModel[] => {
+	static generateRuinMap = (size: number, rng: () => number): EncounterMapSquareModel[] => {
+		const map: EncounterMapSquareModel[] = [];
+
+		while (map.length < size) {
+			const dirs = [ 'n', 'e', 's', 'w' ];
+			const dir = Collections.draw(dirs, rng);
+
+			if (Random.randomBoolean(rng)) {
+				// 0, 1 = room, 2 = corridor
+				const type = Random.randomNumber(3, rng);
+
+				const size = {
+					width: (type === 2) && ((dir === 'n') || (dir === 's')) ? 2 : Random.dice(2, rng),
+					height: (type === 2) && ((dir === 'e') || (dir === 'w')) ? 2 : Random.dice(2, rng)
+				};
+
+				const position = { x: 0, y: 0 };
+				if (map.length > 0) {
+					const adj = EncounterMapLogic.getAdjacentWalls(map, map, [ dir as 'n' | 'e' | 's' | 'w' ]);
+					const sq = Collections.draw(adj, rng);
+					if (dir === 'n') {
+						sq.y -= (size.height - 1);
+					}
+					if (dir === 'w') {
+						sq.x -= (size.width - 1);
+					}
+					position.x = sq.x;
+					position.y = sq.y;
+				}
+
+				for (let x = position.x; x < position.x + size.width; ++x) {
+					for (let y = position.y; y < position.y + size.height; ++y) {
+						if (!map.find(t => (t.x === x) && (t.y === y))) {
+							const square: EncounterMapSquareModel = {
+								x: x,
+								y: y,
+								type: EncounterMapSquareType.Clear
+							};
+							map.push(square);
+						}
+					}
+				}
+			} else {
+				const walls = EncounterMapLogic.getAdjacentWalls(map, map, [ 'n', 'e', 's', 'w' ]);
+				if (walls.length > 0) {
+					const wall = Collections.draw(walls, rng);
+
+					const blob = EncounterMapLogic.getWallBlob(map, wall, rng);
+					blob.forEach(sq => {
+						const square: EncounterMapSquareModel = {
+							x: sq.x,
+							y: sq.y,
+							type: EncounterMapSquareType.Clear
+						};
+						map.push(square);
+					});
+				}
+			}
+		}
+
+		return map;
+	};
+
+	static generateCavernMap = (size: number, rng: () => number): EncounterMapSquareModel[] => {
 		const map: EncounterMapSquareModel[] = [
 			{
 				x: 0,
@@ -86,37 +148,32 @@ export class EncounterMapGenerator {
 			}
 		];
 
-		while (map.length < 400) {
+		while (map.length < size) {
 			const walls = EncounterMapLogic.getAdjacentWalls(map, map, [ 'n', 'e', 's', 'w' ]);
-			const wall = Collections.draw(walls, rng);
+			if (walls.length > 0) {
+				const wall = Collections.draw(walls, rng);
 
-			const blob = EncounterMapLogic.getWallBlob(map, wall, rng);
-			blob.forEach(sq => {
-				const square: EncounterMapSquareModel = {
-					x: sq.x,
-					y: sq.y,
-					type: EncounterMapSquareType.Clear
-				};
-				map.push(square);
-			});
+				const blob = EncounterMapLogic.getWallBlob(map, wall, rng);
+				blob.forEach(sq => {
+					const square: EncounterMapSquareModel = {
+						x: sq.x,
+						y: sq.y,
+						type: EncounterMapSquareType.Clear
+					};
+					map.push(square);
+				});
+			}
 		}
 
-		while (Random.randomNumber(3, rng) !== 0) {
-			// Add a blob of obstructed terrain
-			const start = Collections.draw(map, rng);
-			const blob = EncounterMapLogic.getFloorBlob(map, start, rng);
-			blob.forEach(sq => sq.type = EncounterMapSquareType.Obstructed);
-		}
-
-		return EncounterMapGenerator.simplifyMap(map);
+		return map;
 	};
 
-	static generateStreetMap = (rng: () => number): EncounterMapSquareModel[] => {
+	static generateStreetMap = (size: number, rng: () => number): EncounterMapSquareModel[] => {
 		const map: EncounterMapSquareModel[] = [];
 
 		const intersections: { x: number, y: number, used: { n: boolean, e: boolean, s: boolean, w: boolean } }[] = [];
 
-		while (map.length < 400) {
+		while (map.length < size) {
 			const position = { x: 0, y: 0 };
 			const length = 8 + Random.dice(5, rng);
 
@@ -213,14 +270,7 @@ export class EncounterMapGenerator {
 			}
 		}
 
-		while (Random.randomNumber(3, rng) !== 0) {
-			// Add a blob of obstructed terrain
-			const start = Collections.draw(map, rng);
-			const blob = EncounterMapLogic.getFloorBlob(map, start, rng);
-			blob.forEach(sq => sq.type = EncounterMapSquareType.Obstructed);
-		}
-
-		return EncounterMapGenerator.simplifyMap(map);
+		return map;
 	};
 
 	static simplifyMap = (map: EncounterMapSquareModel[]) => {

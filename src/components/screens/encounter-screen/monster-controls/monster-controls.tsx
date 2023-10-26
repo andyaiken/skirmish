@@ -86,7 +86,6 @@ export class MonsterControls extends Component<Props, State> {
 						onTokenClick={this.props.showToken}
 						onDetails={this.props.showCharacterSheet}
 					/>
-					<CombatantNotices combatant={this.props.combatant} />
 					{
 						this.props.options.showTips ?
 							<Expander
@@ -105,6 +104,7 @@ export class MonsterControls extends Component<Props, State> {
 						{action}
 					</div>
 					{this.props.options.developer ? <button className='developer' onClick={() => this.props.switchAllegiance(this.props.combatant)}>Switch Allegiance</button> : null}
+					<CombatantNotices combatant={this.props.combatant} />
 				</div>
 			);
 		}  catch {

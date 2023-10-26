@@ -163,7 +163,7 @@ export class HeroCard extends Component<Props, State> {
 				footerContent={buttons}
 				flipped={this.state.flipped}
 				disabled={this.props.disabled}
-				onClick={this.props.onClick ? this.onClick : null}
+				onClick={this.props.onClick ? this.onClick : this.onFlip}
 			/>
 		);
 	};

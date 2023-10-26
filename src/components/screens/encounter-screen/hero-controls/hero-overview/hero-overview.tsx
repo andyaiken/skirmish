@@ -33,7 +33,6 @@ export class HeroOverview extends Component<Props> {
 						onTokenClick={this.props.showToken}
 						onDetails={this.props.showCharacterSheet}
 					/>
-					<CombatantNotices combatant={this.props.combatant} />
 					<CombatStatsPanel combatant={this.props.combatant} encounter={this.props.encounter} />
 					<div className='quick-actions'>
 						<button disabled={this.props.combatant.combat.movement < 4} onClick={() => this.props.inspire(this.props.encounter, this.props.combatant)}>
@@ -46,6 +45,7 @@ export class HeroOverview extends Component<Props> {
 							Hide<br /><IconValue value={4} type={IconType.Movement} size={IconSize.Button} />
 						</button>
 					</div>
+					<CombatantNotices combatant={this.props.combatant} />
 					{this.props.options.developer ? <button className='developer' onClick={() => this.props.switchAllegiance(this.props.combatant)}>Switch Allegiance</button> : null}
 					{
 						this.props.options.showTips ?

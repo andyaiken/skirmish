@@ -20,29 +20,10 @@ interface Props {
 	onClick: ((boon: BoonModel) => void) | null;
 }
 
-interface State {
-	flipped: boolean;
-}
-
-export class BoonCard extends Component<Props, State> {
+export class BoonCard extends Component<Props> {
 	static defaultProps = {
 		disabled: false,
 		onClick: null
-	};
-
-	constructor(props: Props) {
-		super(props);
-		this.state = {
-			flipped: false
-		};
-	}
-
-	onFlip = (e: MouseEvent) => {
-		e.stopPropagation();
-
-		this.setState({
-			flipped: !this.state.flipped
-		});
 	};
 
 	onClick = (e: MouseEvent) => {
@@ -120,7 +101,6 @@ export class BoonCard extends Component<Props, State> {
 					/>
 				)}
 				footerText='Reward'
-				flipped={this.state.flipped}
 				disabled={this.props.disabled}
 				onClick={this.props.onClick ? this.onClick : null}
 			/>

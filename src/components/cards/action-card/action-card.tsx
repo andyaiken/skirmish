@@ -24,32 +24,13 @@ interface Props {
 	onClick: ((action: ActionModel) => void) | null;
 }
 
-interface State {
-	flipped: boolean;
-}
-
-export class ActionCard extends Component<Props, State> {
+export class ActionCard extends Component<Props> {
 	static defaultProps = {
 		developer: false,
 		combatant: null,
 		encounter: null,
 		disabled: false,
 		onClick: null
-	};
-
-	constructor(props: Props) {
-		super(props);
-		this.state = {
-			flipped: false
-		};
-	}
-
-	onFlip = (e: MouseEvent) => {
-		e.stopPropagation();
-
-		this.setState({
-			flipped: !this.state.flipped
-		});
 	};
 
 	onClick = (e: MouseEvent) => {
@@ -126,7 +107,6 @@ export class ActionCard extends Component<Props, State> {
 				)}
 				footerText={this.props.footer || 'Action'}
 				footerType={this.props.footerType}
-				flipped={this.state.flipped}
 				disabled={this.props.disabled}
 				onClick={this.props.onClick ? this.onClick : null}
 			/>

@@ -1,13 +1,13 @@
 import { Component } from 'react';
 
-import type { GameModel } from '../../../models/game';
-import type { OptionsModel } from '../../../models/options';
+import type { GameModel } from '../../../../models/game';
+import type { OptionsModel } from '../../../../models/options';
 
-import { Sound } from '../../../utils/sound';
+import { Sound } from '../../../../utils/sound';
 
-import { ConfirmButton, StatValue, Switch, Text, TextType } from '../../controls';
+import { ConfirmButton, StatValue, Switch, Text, TextType } from '../../../controls';
 
-import './options-modal.scss';
+import './options-tab.scss';
 
 interface Props {
 	game: GameModel | null;
@@ -18,7 +18,7 @@ interface Props {
 	setSoundEffectsVolume: (value: number) => void;
 }
 
-export class OptionsModal extends Component<Props> {
+export class OptionsTab extends Component<Props> {
 	setSoundEffectsVolume = (value: number) => {
 		this.props.setSoundEffectsVolume(value);
 		Sound.play(Sound.dong);
@@ -29,9 +29,7 @@ export class OptionsModal extends Component<Props> {
 			const local = window.location.href.includes('localhost');
 
 			return (
-				<div className='options-modal'>
-					<Text type={TextType.Heading}>Options</Text>
-					<hr />
+				<div className='options-tab'>
 					<Text type={TextType.SubHeading}>Sound</Text>
 					<StatValue label='Sound effects volume' value={`${this.props.options.soundEffectsVolume * 100}%`} />
 					<input
@@ -50,7 +48,7 @@ export class OptionsModal extends Component<Props> {
 				</div>
 			);
 		} catch {
-			return <div className='options-modal render-error' />;
+			return <div className='options-tab render-error' />;
 		}
 	};
 }

@@ -6,6 +6,7 @@ import type { OptionsModel } from '../../../models/options';
 import { Tabs, Text, TextType } from '../../controls';
 import { AboutTab } from './about-tab/about-tab';
 import { DecksTab } from './decks-tab/decks-tab';
+import { OptionsTab } from './options-tab/options-tab';
 import { RulesTab } from './rules-tab/rules-tab';
 
 import './help-modal.scss';
@@ -15,6 +16,10 @@ interface Props {
 	options: OptionsModel;
 	exceptions: string[];
 	rules: string;
+	endCampaign: () => void;
+	setDeveloperMode: (value: boolean) => void;
+	setShowTips: (value: boolean) => void;
+	setSoundEffectsVolume: (value: number) => void;
 }
 
 interface State {
@@ -34,6 +39,7 @@ export class HelpModal extends Component<Props, State> {
 			const tabs = [
 				{ id: 'rules', display: 'Game Rules' },
 				{ id: 'decks', display: 'Your Cards' },
+				{ id: 'options', display: 'Options' },
 				{ id: 'about', display: 'About' }
 			];
 
@@ -54,6 +60,20 @@ export class HelpModal extends Component<Props, State> {
 					content = (
 						<div className='content'>
 							<DecksTab options={this.props.options} />
+						</div>
+					);
+					break;
+				case 'options':
+					content = (
+						<div className='content'>
+							<OptionsTab
+								game={this.props.game}
+								options={this.props.options}
+								endCampaign={this.props.endCampaign}
+								setDeveloperMode={this.props.setDeveloperMode}
+								setShowTips={this.props.setShowTips}
+								setSoundEffectsVolume={this.props.setSoundEffectsVolume}
+							/>
 						</div>
 					);
 					break;

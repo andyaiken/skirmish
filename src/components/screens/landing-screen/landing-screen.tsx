@@ -13,6 +13,7 @@ import { PlaceholderCard } from '../../cards';
 
 import './landing-screen.scss';
 
+import logo from '../../../assets/images/logo.png';
 import pkg from '../../../../package.json';
 
 interface Props {
@@ -32,7 +33,13 @@ export class LandingScreen extends Component<Props> {
 					<PlayingCard
 						type={CardType.Role}
 						stack={true}
-						front={<PlaceholderCard text='Continue' subtext='Click here to continue your campaign.' />}
+						front={
+							<PlaceholderCard
+								text='Continue'
+								subtext='Click here to continue your campaign.'
+								content={<img className='logo' alt='Logo' src={logo} />}
+							/>
+						}
 						onClick={this.props.continueCampaign}
 					/>
 				);
@@ -41,7 +48,13 @@ export class LandingScreen extends Component<Props> {
 					<PlayingCard
 						type={CardType.Role}
 						stack={true}
-						front={<PlaceholderCard text='Start' subtext='Click here to begin a new campaign.' />}
+						front={
+							<PlaceholderCard
+								text='Start'
+								subtext='Click here to begin a new campaign.'
+								content={<img className='logo' alt='Logo' src={logo} />}
+							/>
+						}
 						onClick={this.props.startCampaign}
 					/>
 				);

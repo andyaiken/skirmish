@@ -38,7 +38,7 @@ import { Utils } from '../../utils/utils';
 
 import { CampaignScreen, EncounterScreen, LandingScreen, SetupScreen } from '../screens';
 import { Dialog, PlayingCard, Text, TextType } from '../controls';
-import { HelpModal, OptionsModal, PacksModal } from '../modals';
+import { HelpModal, PacksModal } from '../modals';
 import { PlaceholderCard } from '../cards';
 
 import './main.scss';
@@ -71,7 +71,6 @@ interface State {
 	screen: ScreenType;
 	showHelp: string | null;
 	showPacks: boolean;
-	showOptions: boolean;
 	dialog: JSX.Element | null;
 	exceptions: string[];
 }
@@ -88,7 +87,6 @@ export class Main extends Component<Props, State> {
 			screen: ScreenType.Landing,
 			showHelp: null,
 			showPacks: false,
-			showOptions: false,
 			dialog: null,
 			exceptions: []
 		};
@@ -151,7 +149,6 @@ export class Main extends Component<Props, State> {
 		this.setState({
 			showHelp: filename,
 			showPacks: false,
-			showOptions: false,
 			dialog: null
 		});
 	};
@@ -160,16 +157,6 @@ export class Main extends Component<Props, State> {
 		this.setState({
 			showHelp: null,
 			showPacks: true,
-			showOptions: false,
-			dialog: null
-		});
-	};
-
-	showOptions = () => {
-		this.setState({
-			showHelp: null,
-			showPacks: false,
-			showOptions: true,
 			dialog: null
 		});
 	};
@@ -257,7 +244,6 @@ export class Main extends Component<Props, State> {
 				screen: ScreenType.Setup,
 				showHelp: null,
 				showPacks: false,
-				showOptions: false,
 				dialog: null
 			}, () => {
 				this.saveGame();
@@ -291,6 +277,27 @@ export class Main extends Component<Props, State> {
 		}
 	};
 
+	nextIsland = () => {
+		try {
+			const currentGame = this.state.game as GameModel;
+			const game = Factory.createGame(this.state.options.packIDs);
+			game.heroes = currentGame.heroes;
+			game.heroSlots = 0;
+
+			this.setState({
+				game: game,
+				screen: ScreenType.Campaign,
+				showHelp: null,
+				showPacks: false,
+				dialog: null
+			}, () => {
+				this.saveGame();
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
+	};
+
 	restartCampaign = () => {
 		try {
 			const game = this.state.game as GameModel;
@@ -305,7 +312,6 @@ export class Main extends Component<Props, State> {
 				screen: ScreenType.Campaign,
 				showHelp: null,
 				showPacks: false,
-				showOptions: false,
 				dialog: null
 			}, () => {
 				this.saveGame();
@@ -322,7 +328,6 @@ export class Main extends Component<Props, State> {
 				screen: ScreenType.Landing,
 				showHelp: null,
 				showPacks: false,
-				showOptions: false,
 				dialog: null
 			}, () => {
 				this.saveGame();
@@ -703,6 +708,7 @@ export class Main extends Component<Props, State> {
 				const game = this.state.game;
 
 				CampaignMapLogic.conquerRegion(game.map, region);
+				game.heroes.forEach(h => h.xp += region.encounters.length);
 				game.heroSlots += 1;
 				game.structureSlots += 1;
 				game.boons.push(region.boon);
@@ -1161,8 +1167,14 @@ export class Main extends Component<Props, State> {
 								<div>
 									<Text type={TextType.Heading}>Victory</Text>
 									<Text type={TextType.SubHeading}>You control the island!</Text>
-									<Text><b>Congratulations!</b> There are no more regions to conquer.</Text>
-									<button onClick={() => this.endCampaign()}>Start Again</button>
+									<Text>
+										<p><b>Congratulations!</b> There are no more regions to conquer.</p>
+										<p>You can now choose to take your heroes to a new island, or you can start a fresh new campaign.</p>
+									</Text>
+									<div className='card-options'>
+										<PlayingCard front={<PlaceholderCard text='New Island' />} onClick={() => this.nextIsland()} />
+										<PlayingCard front={<PlaceholderCard text='Fresh Start' />} onClick={() => this.endCampaign()} />
+									</div>
 								</div>
 							);
 						} else {
@@ -1189,7 +1201,7 @@ export class Main extends Component<Props, State> {
 								<Text type={TextType.Heading}>Defeat</Text>
 								<Text type={TextType.SubHeading}>You lost the encounter in {region.name}, and have no more heroes.</Text>
 								<Text>You can either continue your campaign with a new group of heroes, or abandon it.</Text>
-								<div className='defeat-options'>
+								<div className='card-options'>
 									<PlayingCard front={<PlaceholderCard text='Continue' />} onClick={() => this.restartCampaign()} />
 									<PlayingCard front={<PlaceholderCard text='Abandon' />} onClick={() => this.endCampaign()} />
 								</div>
@@ -1282,7 +1294,6 @@ export class Main extends Component<Props, State> {
 						hasExceptions={this.state.exceptions.length > 0}
 						showHelp={this.showHelp}
 						showPacks={this.showPacks}
-						showOptions={this.showOptions}
 						buyStructure={this.buyStructure}
 						chargeStructure={this.chargeStructure}
 						upgradeStructure={this.upgradeStructure}
@@ -1311,7 +1322,6 @@ export class Main extends Component<Props, State> {
 						options={this.state.options}
 						hasExceptions={this.state.exceptions.length > 0}
 						showHelp={this.showHelp}
-						showOptions={this.showOptions}
 						rotateMap={this.rotateMap}
 						rollInitiative={this.rollInitiative}
 						addHeroToEncounter={this.addHeroToEncounter}
@@ -1352,6 +1362,10 @@ export class Main extends Component<Props, State> {
 								exceptions={this.state.exceptions}
 								rules={rules[this.state.showHelp]}
 								options={this.state.options}
+								endCampaign={this.endCampaign}
+								setDeveloperMode={this.setDeveloperMode}
+								setShowTips={this.setShowTips}
+								setSoundEffectsVolume={this.setSoundEffectsVolume}
 							/>
 						}
 						onClose={() => this.setState({ showHelp: null })}
@@ -1370,23 +1384,6 @@ export class Main extends Component<Props, State> {
 							/>
 						}
 						onClose={() => this.setState({ showPacks: false })}
-					/>
-				);
-			}
-			if (this.state.showOptions) {
-				dialog = (
-					<Dialog
-						content={
-							<OptionsModal
-								game={this.state.game}
-								options={this.state.options}
-								endCampaign={this.endCampaign}
-								setDeveloperMode={this.setDeveloperMode}
-								setShowTips={this.setShowTips}
-								setSoundEffectsVolume={this.setSoundEffectsVolume}
-							/>
-						}
-						onClose={() => this.setState({ showOptions: false })}
 					/>
 				);
 			}

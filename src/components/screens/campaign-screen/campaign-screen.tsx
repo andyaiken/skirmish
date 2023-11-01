@@ -1,4 +1,4 @@
-import { IconCards, IconHelpCircle, IconHelpCircleFilled, IconSettings } from '@tabler/icons-react';
+import { IconCards, IconHelpCircle, IconHelpCircleFilled } from '@tabler/icons-react';
 import { Component } from 'react';
 
 import { StructureType } from '../../../enums/structure-type';
@@ -24,13 +24,14 @@ import { StrongholdPage } from './stronghold-page/stronghold-page';
 
 import './campaign-screen.scss';
 
+import logo from '../../../assets/images/logo.png';
+
 interface Props {
 	game: GameModel;
 	options: OptionsModel;
 	hasExceptions: boolean;
 	showHelp: (file: string) => void;
 	showPacks: () => void;
-	showOptions: () => void;
 	buyStructure: (structure: StructureModel, cost: number) => void;
 	chargeStructure: (structure: StructureModel) => void;
 	upgradeStructure: (structure: StructureModel) => void;
@@ -168,6 +169,7 @@ export class CampaignScreen extends Component<Props, State> {
 			return (
 				<div className='campaign-screen'>
 					<div className='campaign-top-bar'>
+						<img className='logo' alt='Logo' src={logo} />
 						<div className='logo-text inset-text'>Skirmish</div>
 						<Selector options={options} selectedID={this.state.screen} onSelect={this.setScreen} />
 						<div className='buttons'>
@@ -178,9 +180,6 @@ export class CampaignScreen extends Component<Props, State> {
 							</Badge>
 							<button className='icon-btn' title='Help' onClick={() => this.props.showHelp(this.state.screen)}>
 								{this.props.options.developer && this.props.hasExceptions ? <IconHelpCircleFilled /> : <IconHelpCircle />}
-							</button>
-							<button className='icon-btn' title='Options' onClick={() => this.props.showOptions()}>
-								<IconSettings />
 							</button>
 						</div>
 					</div>

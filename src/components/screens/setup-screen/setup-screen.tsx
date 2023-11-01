@@ -26,6 +26,8 @@ import { PlaceholderCard } from '../../cards';
 
 import './setup-screen.scss';
 
+import logo from '../../../assets/images/logo.png';
+
 interface Props {
 	game: GameModel;
 	options: OptionsModel;
@@ -197,7 +199,7 @@ export class SetupScreen extends Component<Props, State> {
 									<PlayingCard
 										type={CardType.Role}
 										stack={true}
-										front={<PlaceholderCard text='Begin the Campaign' />}
+										front={<PlaceholderCard text='Begin the Campaign' content={<img className='logo' alt='Logo' src={logo} />} />}
 										onClick={this.props.beginCampaign}
 									/>
 									:

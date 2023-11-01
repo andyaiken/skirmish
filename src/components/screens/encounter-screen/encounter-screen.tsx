@@ -10,7 +10,6 @@ import {
 	IconLayoutSidebarLeftExpand,
 	IconRotate2,
 	IconRotateClockwise2,
-	IconSettings,
 	IconZoomIn,
 	IconZoomOut
 } from '@tabler/icons-react';
@@ -52,7 +51,6 @@ interface Props {
 	options: OptionsModel;
 	hasExceptions: boolean;
 	showHelp: (file: string) => void;
-	showOptions: () => void;
 	rotateMap: (encounter: EncounterModel, dir: 'l' | 'r') => void;
 	rollInitiative: (encounter: EncounterModel) => void;
 	addHeroToEncounter: (encounter: EncounterModel, hero: CombatantModel, useCharge: StructureType | null) => void;
@@ -531,9 +529,6 @@ export class EncounterScreen extends Component<Props, State> {
 				<div className='icon-section'>
 					<button className='icon-btn' title='Help' onClick={() => this.props.showHelp('encounters')}>
 						{this.props.options.developer && this.props.hasExceptions ? <IconHelpCircleFilled /> : <IconHelpCircle />}
-					</button>
-					<button className='icon-btn' title='Options' onClick={() => this.props.showOptions()}>
-						<IconSettings />
 					</button>
 				</div>
 			</div>

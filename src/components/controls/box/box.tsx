@@ -1,5 +1,3 @@
-import { Component } from 'react';
-
 import './box.scss';
 
 interface Props {
@@ -7,21 +5,19 @@ interface Props {
 	children: JSX.Element | null | (JSX.Element | null)[];
 }
 
-export class Box extends Component<Props> {
-	render = () => {
-		try {
-			return (
-				<div className='box'>
-					<div className='box-content'>
-						{this.props.children}
-					</div>
-					<div className='box-label'>
-						{this.props.label}
-					</div>
+export const Box = (props: Props) => {
+	try {
+		return (
+			<div className='box'>
+				<div className='box-content'>
+					{props.children}
 				</div>
-			);
-		} catch {
-			return <div className='box render-error' />;
-		}
-	};
-}
+				<div className='box-label'>
+					{props.label}
+				</div>
+			</div>
+		);
+	} catch {
+		return <div className='box render-error' />;
+	}
+};

@@ -1,5 +1,5 @@
-import { Component, MouseEvent } from 'react';
 import { IconCircle, IconCircleCheckFilled } from '@tabler/icons-react';
+import { MouseEvent } from 'react';
 
 import './switch.scss';
 
@@ -9,22 +9,20 @@ interface Props {
 	onChange: (value: boolean) => void;
 }
 
-export class Switch extends Component<Props> {
-	onClick = (e: MouseEvent) => {
+export const Switch = (props: Props) => {
+	const onClick = (e: MouseEvent) => {
 		e.stopPropagation();
-		this.props.onChange(!this.props.checked);
+		props.onChange(!props.checked);
 	};
 
-	render = () => {
-		try {
-			return (
-				<div className='switch' onClick={this.onClick}>
-					<div className='switch-label'>{this.props.label}</div>
-					{this.props.checked ? <IconCircleCheckFilled className='switch-icon checked' /> : <IconCircle className='switch-icon' />}
-				</div>
-			);
-		} catch {
-			return <div className='switch render-error' />;
-		}
-	};
-}
+	try {
+		return (
+			<div className='switch' onClick={onClick}>
+				<div className='switch-label'>{props.label}</div>
+				{props.checked ? <IconCircleCheckFilled className='switch-icon checked' /> : <IconCircle className='switch-icon' />}
+			</div>
+		);
+	} catch {
+		return <div className='switch render-error' />;
+	}
+};

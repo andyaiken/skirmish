@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState } from 'react';
 
 import { Text } from '../../controls';
 
@@ -9,58 +9,41 @@ interface Props {
 	onClick: () => void;
 }
 
-interface State {
-	view: 'button' | 'query';
-}
+export const ConfirmButton = (props: Props) => {
+	const [ view, setView ] = useState<'button' | 'query'>('button');
 
-export class ConfirmButton extends Component<Props, State> {
-	constructor(props: Props) {
-		super(props);
+	const showDialog = () => {
+		setView('query');
+	};
 
-		this.state = {
-			view: 'button'
-		};
+	const onConfirm = () => {
+		setView('button');
+		props.onClick();
+	};
+
+	const onCancel = () => {
+		setView('button');
+	};
+
+	if (view === 'button') {
+		return (
+			<button className='danger' onClick={showDialog}>{props.label}</button>
+		);
 	}
 
-	showDialog = () => {
-		this.setState({
-			view: 'query'
-		});
-	};
-
-	onConfirm = () => {
-		this.setState({
-			view: 'button'
-		}, () => {
-			this.props.onClick();
-		});
-	};
-
-	onCancel = () => {
-		this.setState({
-			view: 'button'
-		});
-	};
-
-	render = () => {
-		if (this.state.view === 'button') {
-			return (
-				<button className='danger' onClick={this.showDialog}>{this.props.label}</button>
-			);
-		}
-
-		if (this.state.view === 'query') {
-			return (
-				<div className='confirm-query'>
-					<Text>
-						<b>{`${this.props.label} - are you sure?`}</b>
-					</Text>
-					<div className='button-row'>
-						<button onClick={this.onConfirm}>OK</button>
-						<button onClick={this.onCancel}>Cancel</button>
-					</div>
+	try {
+		return (
+			<div className='confirm-query'>
+				<Text>
+					<b>{`${props.label} - are you sure?`}</b>
+				</Text>
+				<div className='button-row'>
+					<button onClick={onConfirm}>OK</button>
+					<button onClick={onCancel}>Cancel</button>
 				</div>
-			);
-		}
-	};
-}
+			</div>
+		);
+	} catch {
+		return <div className='confirm-query render-error' />;
+	}
+};

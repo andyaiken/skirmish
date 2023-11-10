@@ -10,9 +10,8 @@
 		top: 0;
 		width: 100%;
 		height: 100%;
-		border: 2px solid rgb(220, 220, 220);
 		border-radius: 15px;
-		box-shadow: 1px 1px 1px 0 rgba(0, 0, 0, 0.1);
+		box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.1);
 	}
 
 	.playing-card-inner {
@@ -37,7 +36,7 @@
 			border-radius: 15px;
 			display: flex;
 			flex-direction: column;
-			box-shadow: 2px 2px 2px 0 rgba(0, 0, 0, 0.2);
+			box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.2);
 
 			.card-content {
 				flex: 1 1 0;
@@ -48,7 +47,6 @@
 
 			.card-footer {
 				flex: 0 0 auto;
-				border-top: 1px solid rgb(220, 220, 220);
 				border-radius: 0 0 13px 13px;
 				background-color: rgb(240, 240, 240);
 				display: flex;

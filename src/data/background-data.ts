@@ -227,7 +227,7 @@ export class BackgroundData {
 			},
 			{
 				id: 'bard-action-2',
-				name: 'Song of Inspiration',
+				name: 'Anthem of Inspiration',
 				prerequisites: [],
 				parameters: [
 					ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 10)
@@ -238,7 +238,7 @@ export class BackgroundData {
 			},
 			{
 				id: 'bard-action-3',
-				name: 'Song of Courage',
+				name: 'Melody of Courage',
 				prerequisites: [],
 				parameters: [
 					ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 10)
@@ -249,7 +249,7 @@ export class BackgroundData {
 			},
 			{
 				id: 'bard-action-4',
-				name: 'Song of Victory',
+				name: 'Threnody of Lamentation',
 				prerequisites: [],
 				parameters: [
 					ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 10)

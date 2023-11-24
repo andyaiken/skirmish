@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/skirmish/static/css/main.4b004215.css",
-    "main.js": "/skirmish/static/js/main.99c34b20.js",
+    "main.css": "/skirmish/static/css/main.43e0de95.css",
+    "main.js": "/skirmish/static/js/main.549dee9e.js",
     "static/js/315.9f0ac31c.chunk.js": "/skirmish/static/js/315.9f0ac31c.chunk.js",
     "static/js/842.6b529014.chunk.js": "/skirmish/static/js/842.6b529014.chunk.js",
     "static/media/PTSans-Bold.ttf": "/skirmish/static/media/PTSans-Bold.610bc32a7e32c292ce59.ttf",
@@ -15,13 +15,13 @@
     "index.html": "/skirmish/index.html",
     "static/media/island.md": "/skirmish/static/media/island.f996098b2607f785de03.md",
     "static/media/stronghold.md": "/skirmish/static/media/stronghold.8da01c7ef4d2efd7ad40.md",
-    "main.4b004215.css.map": "/skirmish/static/css/main.4b004215.css.map",
-    "main.99c34b20.js.map": "/skirmish/static/js/main.99c34b20.js.map",
+    "main.43e0de95.css.map": "/skirmish/static/css/main.43e0de95.css.map",
+    "main.549dee9e.js.map": "/skirmish/static/js/main.549dee9e.js.map",
     "315.9f0ac31c.chunk.js.map": "/skirmish/static/js/315.9f0ac31c.chunk.js.map",
     "842.6b529014.chunk.js.map": "/skirmish/static/js/842.6b529014.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.4b004215.css",
-    "static/js/main.99c34b20.js"
+    "static/css/main.43e0de95.css",
+    "static/js/main.549dee9e.js"
   ]
 }

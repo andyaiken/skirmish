@@ -69,9 +69,8 @@ export class CombatantLogic {
 	};
 
 	static incrementCombatantLevel = (combatant: CombatantModel, feature: FeatureModel, packIDs: string[]) => {
-		// Increment level, remove XP
-		combatant.level += 1;
 		combatant.xp = Math.max(combatant.xp - combatant.level, 0);
+		combatant.level += 1;
 
 		// Add the new feature
 		combatant.features.push(feature);

@@ -3,6 +3,7 @@ import { Component } from 'react';
 
 import { StructureType } from '../../../enums/structure-type';
 
+import { GameLogic } from '../../../logic/game-logic';
 import { PackLogic } from '../../../logic/pack-logic';
 
 import type { BoonModel } from '../../../models/boon';
@@ -49,6 +50,7 @@ interface Props {
 	sellItem: (item: ItemModel, all: boolean) => void;
 	addMoney: () => void;
 	startEncounter: (region: RegionModel, heroes: CombatantModel[], benefits: number, detriments: number) => void;
+	regenerateCampaignMap: () => void;
 	conquer: (region: RegionModel) => void;
 }
 
@@ -81,6 +83,7 @@ export class CampaignScreen extends Component<Props, State> {
 							game={this.props.game}
 							options={this.props.options}
 							startEncounter={this.props.startEncounter}
+							regenerateCampaignMap={this.props.regenerateCampaignMap}
 							conquer={this.props.conquer}
 						/>
 					);
@@ -141,26 +144,49 @@ export class CampaignScreen extends Component<Props, State> {
 			const options = [
 				{
 					id: 'island',
-					display: 'The Island'
+					display: (
+						<div className='page-btn'>
+							The Island
+						</div>
+					)
 				},
 				{
 					id: 'stronghold',
-					display: 'Your Stronghold'
+					display: (
+						<div className='page-btn'>
+							<div>Your Stronghold</div>
+							{this.props.game.boons.some(b => GameLogic.getBoonIsStrongholdType(b)) || this.props.game.heroes.some(h => h.xp >= h.level) ? <div>⭑</div> : null}
+						</div>
+					)
 				},
 				{
 					id: 'team',
-					display: 'Your Team'
+					display: (
+						<div className='page-btn'>
+							<div>Your Team</div>
+							{this.props.game.boons.some(b => GameLogic.getBoonIsHeroType(b)) ? <div>⭑</div> : null}
+						</div>
+					)
 				},
 				{
 					id: 'items',
-					display: 'Your Equipment'
+					display: (
+						<div className='page-btn'>
+							<div>Your Equipment</div>
+							{this.props.game.boons.some(b => GameLogic.getBoonIsItemType(b)) ? <div>⭑</div> : null}
+						</div>
+					)
 				}
 			];
 
 			if (this.props.options.developer) {
 				options.push({
 					id: 'dev',
-					display: 'Developer'
+					display: (
+						<div className='page-btn'>
+							Developer
+						</div>
+					)
 				});
 			}
 

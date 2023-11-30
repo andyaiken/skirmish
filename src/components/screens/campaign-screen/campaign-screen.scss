@@ -23,6 +23,13 @@
 
 		.selector {
 			flex: 1 1 0;
+
+			.page-btn {
+				display: flex;
+				gap: 5px;
+				align-items: center;
+				justify-content: center;
+			}
 		}
 
 		.buttons {

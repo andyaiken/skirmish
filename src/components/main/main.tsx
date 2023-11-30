@@ -9,10 +9,12 @@ import { CombatantType } from '../../enums/combatant-type';
 import { EncounterState } from '../../enums/encounter-state';
 import { StructureType } from '../../enums/structure-type';
 
+import { CampaignMapGenerator } from '../../generators/campaign-map-generator';
+import { EncounterGenerator } from '../../generators/encounter-generator';
+
 import { CampaignMapLogic } from '../../logic/campaign-map-logic';
 import { CombatantLogic } from '../../logic/combatant-logic';
 import { ConditionLogic } from '../../logic/condition-logic';
-import { EncounterGenerator } from '../../generators/encounter-generator';
 import { EncounterLogic } from '../../logic/encounter-logic';
 import { EncounterMapLogic } from '../../logic/encounter-map-logic';
 import { Factory } from '../../logic/factory';
@@ -702,6 +704,24 @@ export class Main extends Component<Props, State> {
 		}
 	};
 
+	regenerateCampaignMap = () => {
+		try {
+			if (this.state.game) {
+				const game = this.state.game;
+
+				game.map = CampaignMapGenerator.generateCampaignMap(this.state.options.packIDs);
+
+				this.setState({
+					game: game
+				}, () => {
+					this.saveGame();
+				});
+			}
+		} catch (ex) {
+			this.logException(ex);
+		}
+	};
+
 	conquer = (region: RegionModel) => {
 		try {
 			if (this.state.game) {
@@ -1311,6 +1331,7 @@ export class Main extends Component<Props, State> {
 						sellItem={this.sellItem}
 						addMoney={this.addMoney}
 						startEncounter={this.startEncounter}
+						regenerateCampaignMap={this.regenerateCampaignMap}
 						conquer={this.conquer}
 					/>
 				);

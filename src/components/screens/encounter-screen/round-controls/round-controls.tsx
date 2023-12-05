@@ -22,7 +22,8 @@ interface Props {
 	encounter: EncounterModel;
 	game: GameModel;
 	options: OptionsModel;
-	rollInitiative: (encounter: EncounterModel) => void;
+	rollInitiative: () => void;
+	regenerateEncounterMap: () => void;
 	addHeroToEncounter: (encounter: EncounterModel, hero: CombatantModel, useCharge: StructureType | null) => void;
 }
 
@@ -110,7 +111,8 @@ export class RoundControls extends Component<Props> {
 							/>
 							: null
 					}
-					<button className='primary' onClick={() => this.props.rollInitiative(this.props.encounter)}>Roll Initiative</button>
+					<button className='primary' onClick={this.props.rollInitiative}>Roll Initiative</button>
+					{this.props.options.developer ? <button className='developer' onClick={this.props.regenerateEncounterMap}>Regenerate Map</button> : null}
 				</div>
 			);
 		} catch {

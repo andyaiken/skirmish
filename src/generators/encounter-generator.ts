@@ -121,6 +121,8 @@ export class EncounterGenerator {
 		monsters.forEach(m => CombatantLogic.resetCombatant(m));
 		encounter.combatants.push(...monsters);
 
+		EncounterGenerator.placeCombatants(encounter, rng);
+
 		const loot: LootPileModel[] = [];
 		if (Random.randomNumber(5, rng) === 0) {
 			const lp = Factory.createLootPile();
@@ -141,11 +143,6 @@ export class EncounterGenerator {
 		}
 		encounter.loot.push(...loot);
 
-		EncounterGenerator.placeCombatants(encounter, rng);
-
-		// If any combatants could not be not placed on the map, remove them from the encounter
-		encounter.combatants = encounter.combatants.filter(c => (c.combat.position.x !== Number.MIN_VALUE) && (c.combat.position.y !== Number.MIN_VALUE));
-
 		return encounter;
 	};
 
@@ -154,10 +151,6 @@ export class EncounterGenerator {
 			if ((combatant.combat.position.x !== Number.MIN_VALUE) && (combatant.combat.position.y !== Number.MIN_VALUE)) {
 				// Already on the map
 			} else {
-				const occupiedSquares: { x: number; y: number }[] = [];
-				encounter.combatants.forEach(combatant => occupiedSquares.push(...EncounterLogic.getCombatantSquares(encounter, combatant)));
-				encounter.loot.forEach(lp => occupiedSquares.push(lp.position));
-
 				for (let i = 0; i < 1000; ++i) {
 					const square = Collections.draw(encounter.mapSquares, rng);
 
@@ -168,22 +161,7 @@ export class EncounterGenerator {
 						}
 					}
 
-					const canPlace = squares.every(sq => {
-						const mapSquare = encounter.mapSquares.find(ms => (ms.x === sq.x) && (ms.y === sq.y));
-						if (!mapSquare) {
-							// Off the map
-							return false;
-						} else if (mapSquare.type !== EncounterMapSquareType.Clear) {
-							// Not a clear square
-							return false;
-						} else if (occupiedSquares.find(os => (os.x === sq.x) && (os.y === sq.y))) {
-							// Someone else is here
-							return false;
-						}
-
-						return true;
-					});
-
+					const canPlace = squares.every(sq => EncounterGenerator.canPlaceHere(encounter, sq));
 					if (canPlace) {
 						combatant.combat.position.x = square.x;
 						combatant.combat.position.y = square.y;
@@ -192,5 +170,53 @@ export class EncounterGenerator {
 				}
 			}
 		});
+
+		// If any combatants could not be not placed on the map, remove them from the encounter
+		encounter.combatants = encounter.combatants.filter(c => (c.combat.position.x !== Number.MIN_VALUE) && (c.combat.position.y !== Number.MIN_VALUE));
+	};
+
+	static placeLoot = (encounter: EncounterModel, rng: () => number) => {
+		encounter.loot.forEach(lp => {
+			if ((lp.position.x !== Number.MIN_VALUE) && (lp.position.y !== Number.MIN_VALUE)) {
+				// Already on the map
+			} else {
+				for (let i = 0; i < 1000; ++i) {
+					const square = Collections.draw(encounter.mapSquares, rng);
+					if (EncounterGenerator.canPlaceHere(encounter, square)) {
+						lp.position.x = square.x;
+						lp.position.y = square.y;
+						break;
+					}
+				}
+			}
+		});
+
+		// If any combatants could not be not placed on the map, remove them from the encounter
+		encounter.combatants = encounter.combatants.filter(c => (c.combat.position.x !== Number.MIN_VALUE) && (c.combat.position.y !== Number.MIN_VALUE));
+	};
+
+	static canPlaceHere = (encounter: EncounterModel, square: { x: number, y: number }) => {
+		const mapSquare = encounter.mapSquares.find(ms => (ms.x === square.x) && (ms.y === square.y));
+
+		if (!mapSquare) {
+			// Off the map
+			return false;
+		}
+
+		if (mapSquare.type !== EncounterMapSquareType.Clear) {
+			// Not a clear square
+			return false;
+		}
+
+		const occupiedSquares: { x: number; y: number }[] = [];
+		encounter.combatants.forEach(combatant => occupiedSquares.push(...EncounterLogic.getCombatantSquares(encounter, combatant)));
+		encounter.loot.forEach(lp => occupiedSquares.push(lp.position));
+
+		if (occupiedSquares.find(os => (os.x === square.x) && (os.y === square.y))) {
+			// Someone else is here
+			return false;
+		}
+
+		return true;
 	};
 }

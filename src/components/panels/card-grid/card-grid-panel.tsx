@@ -17,7 +17,6 @@ import { PackLogic } from '../../../logic/pack-logic';
 import type { ActionModel } from '../../../models/action';
 import type { FeatureModel } from '../../../models/feature';
 
-import { Collections } from '../../../utils/collections';
 import { Format } from '../../../utils/format';
 
 import { ActionCard, FeatureCard } from '../../cards';
@@ -203,7 +202,7 @@ export class CardGridPanel extends Component<Props, State> {
 			const rows = types.map(type => {
 				return (
 					<div key={type}>
-						<Text type={TextType.SubHeading}>{type}</Text>
+						<Text type={TextType.SubHeading}>{type} ({this.getCardCount(type)})</Text>
 						<div className='row'>
 							{
 								packIDs.map(id => {
@@ -214,9 +213,6 @@ export class CardGridPanel extends Component<Props, State> {
 									);
 								})
 							}
-							<div key='total' className='cell centered'>
-								<StatValue orientation='vertical' label='Cards' value={this.getCardCount(type)} />
-							</div>
 						</div>
 					</div>
 				);
@@ -290,8 +286,6 @@ export class CardGridPanel extends Component<Props, State> {
 				);
 			}
 
-			const totalPrice = Collections.sum(PackData.getList(), pack => PackLogic.getPackPrice(pack.id));
-
 			return (
 				<div className='card-grid-panel'>
 					<div className='row'>
@@ -310,13 +304,6 @@ export class CardGridPanel extends Component<Props, State> {
 								);
 							})
 						}
-						<div key='total' className='cell column-heading'>
-							<div className='pack-name'>Total</div>
-							<div className='pack-stats'>
-								<StatValue label='Price' value={Format.toCurrency(totalPrice, '$')}/>
-								<StatValue label='Discount' value={Format.toCurrency(totalPrice * 0.8, '$')}/>
-							</div>
-						</div>
 					</div>
 					{rows}
 					{dialog}

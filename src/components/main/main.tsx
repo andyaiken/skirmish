@@ -11,6 +11,7 @@ import { StructureType } from '../../enums/structure-type';
 
 import { CampaignMapGenerator } from '../../generators/campaign-map-generator';
 import { EncounterGenerator } from '../../generators/encounter-generator';
+import { EncounterMapGenerator } from '../../generators/encounter-map-generator';
 
 import { CampaignMapLogic } from '../../logic/campaign-map-logic';
 import { CombatantLogic } from '../../logic/combatant-logic';
@@ -803,8 +804,10 @@ export class Main extends Component<Props, State> {
 		}
 	};
 
-	rollInitiative = (encounter: EncounterModel) => {
+	rollInitiative = () => {
 		try {
+			const game = this.state.game as GameModel;
+			const encounter = game.encounter as EncounterModel;
 			EncounterLogic.rollInitiative(encounter);
 
 			const acting = EncounterLogic.getActiveCombatants(encounter);
@@ -814,7 +817,30 @@ export class Main extends Component<Props, State> {
 			}
 
 			this.setState({
-				game: this.state.game
+				game: game
+			}, () => {
+				this.saveGame();
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
+	};
+
+	regenerateEncounterMap = () => {
+		try {
+			const game = this.state.game as GameModel;
+			const encounter = game.encounter as EncounterModel;
+
+			encounter.mapSquares = EncounterMapGenerator.generateEncounterMap(Math.random);
+
+			encounter.combatants.forEach(c => c.combat.position = { x: Number.MIN_VALUE, y: Number.MIN_VALUE });
+			encounter.loot.forEach(lp => lp.position = { x: Number.MIN_VALUE, y: Number.MIN_VALUE });
+
+			EncounterGenerator.placeCombatants(encounter, Math.random);
+			EncounterGenerator.placeLoot(encounter, Math.random);
+
+			this.setState({
+				game: game
 			}, () => {
 				this.saveGame();
 			});
@@ -1345,6 +1371,7 @@ export class Main extends Component<Props, State> {
 						showHelp={this.showHelp}
 						rotateMap={this.rotateMap}
 						rollInitiative={this.rollInitiative}
+						regenerateEncounterMap={this.regenerateEncounterMap}
 						addHeroToEncounter={this.addHeroToEncounter}
 						endTurn={this.endTurn}
 						move={this.move}

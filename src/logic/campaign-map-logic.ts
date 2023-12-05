@@ -87,8 +87,6 @@ export class CampaignMapLogic {
 
 		const rng = Random.getSeededRNG(region.id);
 		const count = Random.randomNumber(2, rng) + 2;
-		return [
-			...Collections.shuffle(monsterIDs, rng).slice(0, count)
-		];
+		return Collections.shuffle(monsterIDs, rng).slice(0, count);
 	};
 }

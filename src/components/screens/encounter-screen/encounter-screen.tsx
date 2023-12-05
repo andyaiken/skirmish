@@ -52,7 +52,8 @@ interface Props {
 	hasExceptions: boolean;
 	showHelp: (file: string) => void;
 	rotateMap: (encounter: EncounterModel, dir: 'l' | 'r') => void;
-	rollInitiative: (encounter: EncounterModel) => void;
+	rollInitiative: () => void;
+	regenerateEncounterMap: () => void;
 	addHeroToEncounter: (encounter: EncounterModel, hero: CombatantModel, useCharge: StructureType | null) => void;
 	endTurn: (encounter: EncounterModel) => void;
 	move: (encounter: EncounterModel, combatant: CombatantModel, dir: string, cost: number) => void;
@@ -645,6 +646,7 @@ export class EncounterScreen extends Component<Props, State> {
 				game={this.props.game}
 				options={this.props.options}
 				rollInitiative={this.props.rollInitiative}
+				regenerateEncounterMap={this.props.regenerateEncounterMap}
 				addHeroToEncounter={this.props.addHeroToEncounter}
 			/>
 		);

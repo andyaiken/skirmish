@@ -95,7 +95,7 @@ export class CampaignMapPage extends Component<Props, State> {
 					<p>The white area is the part of the island that you control; from here you can attack any adjacent region.</p>
 					<p>Select a region to learn more about it.</p>
 				</Text>
-				{this.props.options.developer ? <button className='developer' onClick={() => this.props.regenerateCampaignMap()}>Regenerate</button> : null}
+				{this.props.options.developer ? <button className='developer' onClick={this.props.regenerateCampaignMap}>Regenerate Map</button> : null}
 				{
 					this.props.options.showTips ?
 						<Expander

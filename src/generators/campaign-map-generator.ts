@@ -23,31 +23,16 @@ export class CampaignMapGenerator {
 		while (map.squares.length < 1000) {
 			const parent = Collections.draw(map.squares);
 
-			let x = parent.x;
-			let y = parent.y;
-			const dir = Random.randomNumber(4);
-			switch (dir) {
-				case 0:
-					y -= 1;
-					break;
-				case 1:
-					x += 1;
-					break;
-				case 2:
-					y += 1;
-					break;
-				case 3:
-					x -= 1;
-					break;
-			}
+			const empty = [
+				{ x: parent.x, y: parent.y - 1, regionID: '' },
+				{ x: parent.x + 1, y: parent.y, regionID: '' },
+				{ x: parent.x, y: parent.y + 1, regionID: '' },
+				{ x: parent.x - 1, y: parent.y, regionID: '' }
+			].filter(e => !map.squares.find(sq => (sq.x === e.x) && (sq.y === e.y)));
 
-			const exists = map.squares.find(sq => (sq.x === x) && (sq.y === y));
-			if (!exists) {
-				map.squares.push({
-					x: x,
-					y: y,
-					regionID: ''
-				});
+			if (empty.length > 0) {
+				const sq = Collections.draw(empty);
+				map.squares.push(sq);
 			}
 		}
 

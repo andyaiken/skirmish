@@ -256,7 +256,7 @@ export class HeroesPage extends Component<Props, State> {
 						<div>
 							<Text type={TextType.Heading}>Choose a Hero</Text>
 							<Text type={TextType.Information}>
-								<p>Choose a hero to receive this reward:</p>
+								<p>Choose a hero to receive this reward.</p>
 							</Text>
 							<CardList cards={heroCards} />
 						</div>

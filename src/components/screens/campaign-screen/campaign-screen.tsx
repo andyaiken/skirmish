@@ -155,7 +155,7 @@ export class CampaignScreen extends Component<Props, State> {
 					display: (
 						<div className='page-btn'>
 							<div>Your Stronghold</div>
-							{this.props.game.boons.some(b => GameLogic.getBoonIsStrongholdType(b)) || this.props.game.heroes.some(h => h.xp >= h.level) ? <div>⭑</div> : null}
+							{this.props.game.boons.some(b => GameLogic.getBoonIsStrongholdType(b)) ? <div>⭑</div> : null}
 						</div>
 					)
 				},
@@ -164,7 +164,7 @@ export class CampaignScreen extends Component<Props, State> {
 					display: (
 						<div className='page-btn'>
 							<div>Your Team</div>
-							{this.props.game.boons.some(b => GameLogic.getBoonIsHeroType(b)) ? <div>⭑</div> : null}
+							{this.props.game.boons.some(b => GameLogic.getBoonIsHeroType(b)) || this.props.game.heroes.some(h => h.xp >= h.level) ? <div>⭑</div> : null}
 						</div>
 					)
 				},

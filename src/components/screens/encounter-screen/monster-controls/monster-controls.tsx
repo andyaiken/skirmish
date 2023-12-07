@@ -6,9 +6,9 @@ import type { CombatantModel } from '../../../../models/combatant';
 import type { EncounterModel } from '../../../../models/encounter';
 import type { OptionsModel } from '../../../../models/options';
 
-import { ActionCard, PlaceholderCard } from '../../../cards';
 import { CombatantNotices, CombatantRowPanel } from '../../../panels';
-import { Expander, PlayingCard, Text, TextType } from '../../../controls';
+import { Expander, Text, TextType } from '../../../controls';
+import { ActionCard } from '../../../cards';
 
 import './monster-controls.scss';
 
@@ -63,18 +63,6 @@ export class MonsterControls extends Component<Props, State> {
 						footerType={CombatantLogic.getActionSourceType(this.props.combatant, this.props.combatant.combat.selectedAction.action.id)}
 					/>
 				);
-			} else {
-				action = (
-					<PlayingCard
-						front={
-							<PlaceholderCard
-								text={this.state.thinking ? 'Thinking' : 'Go'}
-							/>
-						}
-						disabled={this.state.thinking}
-						onClick={this.runMonsterTurn}
-					/>
-				);
 			}
 
 			return (
@@ -100,10 +88,15 @@ export class MonsterControls extends Component<Props, State> {
 							/>
 							: null
 					}
+					<button disabled={this.state.thinking} onClick={this.runMonsterTurn}>{this.state.thinking ? 'Thinking' : 'Go'}</button>
+					{
+						this.props.options.developer ?
+							<button className='developer' disabled={this.state.thinking} onClick={() => this.props.switchAllegiance(this.props.combatant)}>Switch Allegiance</button>
+							: null
+					}
 					<div className='selected-action-card'>
 						{action}
 					</div>
-					{this.props.options.developer ? <button className='developer' onClick={() => this.props.switchAllegiance(this.props.combatant)}>Switch Allegiance</button> : null}
 					<CombatantNotices combatant={this.props.combatant} />
 				</div>
 			);

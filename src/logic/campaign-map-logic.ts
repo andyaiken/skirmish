@@ -60,19 +60,19 @@ export class CampaignMapLogic {
 		return adj;
 	};
 
-	static getDimensions = (map: CampaignMapModel) => {
+	static getDimensions = (squares: CampaignMapSquareModel[]) => {
 		const dims = {
-			left: Number.MAX_VALUE,
-			top: Number.MAX_VALUE,
+			left: Number.MIN_VALUE,
+			top: Number.MIN_VALUE,
 			right: Number.MIN_VALUE,
 			bottom: Number.MIN_VALUE
 		};
 
-		map.squares.forEach(sq => {
-			dims.left = Math.min(dims.left, sq.x);
-			dims.top = Math.min(dims.top, sq.y);
-			dims.right = Math.max(dims.right, sq.x);
-			dims.bottom = Math.max(dims.bottom, sq.y);
+		squares.forEach(sq => {
+			dims.left = dims.left === Number.MIN_VALUE ? sq.x : Math.min(dims.left, sq.x);
+			dims.top = dims.top === Number.MIN_VALUE ? sq.y : Math.min(dims.top, sq.y);
+			dims.right = dims.right === Number.MIN_VALUE ? sq.x : Math.max(dims.right, sq.x);
+			dims.bottom = dims.bottom === Number.MIN_VALUE ? sq.y : Math.max(dims.bottom, sq.y);
 		});
 
 		return dims;

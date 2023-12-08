@@ -21,56 +21,54 @@ export class CampaignMapPanel extends Component<Props> {
 
 	render = () => {
 		try {
-			const squares = this.props.map.squares
-				.map(square => {
-					let backgroundColor = 'rgb(255, 255, 255)';
-					let borderColor = 'rgb(240, 240, 240)';
+			const squares = this.props.map.squares.map(square => {
+				let backgroundColor = 'rgb(255, 255, 255)';
+				let borderColor = 'rgb(240, 240, 240)';
 
-					const region = this.props.map.regions.find(r => r.id === square.regionID) || null;
-					if (region) {
-						backgroundColor = region.color;
-						borderColor = region.colorDark;
+				const region = this.props.map.regions.find(r => r.id === square.regionID) || null;
+				if (region) {
+					backgroundColor = region.color;
+					borderColor = region.colorDark;
 
-						if (this.props.selectedRegion && (this.props.selectedRegion.id === region.id)) {
-							backgroundColor = region.colorLight;
-							borderColor = region.color;
-						}
+					if (this.props.selectedRegion && (this.props.selectedRegion.id === region.id)) {
+						backgroundColor = region.colorLight;
+						borderColor = region.color;
 					}
+				}
 
-					const padding = 0.024;
-					const dx = 0.1;
-					const points = [
-						{ x: square.x + padding + dx, y: square.y + padding },
-						{ x: square.x + 1 - padding - dx, y: square.y + padding },
-						{ x: square.x + 1 + dx - padding, y: square.y + 0.5 },
-						{ x: square.x + 1 - padding - dx, y: square.y + 1 - padding },
-						{ x: square.x + padding + dx, y: square.y + 1 - padding },
-						{ x: square.x + padding - dx, y: square.y + 0.5 }
-					];
+				const padding = 0.024;
+				const dx = 0.1;
+				const points = [
+					{ x: square.x + padding + dx, y: square.y + padding },
+					{ x: square.x + 1 - padding - dx, y: square.y + padding },
+					{ x: square.x + 1 + dx - padding, y: square.y + 0.5 },
+					{ x: square.x + 1 - padding - dx, y: square.y + 1 - padding },
+					{ x: square.x + padding + dx, y: square.y + 1 - padding },
+					{ x: square.x + padding - dx, y: square.y + 0.5 }
+				];
 
-					if (square.x % 2 === 0) {
-						points.forEach(pt => pt.y += 0.25);
-					} else {
-						points.forEach(pt => pt.y -= 0.25);
-					}
+				if (square.x % 2 === 0) {
+					points.forEach(pt => pt.y += 0.25);
+				} else {
+					points.forEach(pt => pt.y -= 0.25);
+				}
 
-					return (
-						<polygon
-							key={`${square.x} ${square.y}`}
-							aria-description={`${square.x}, ${square.y}`}
-							className='campaign-map-square'
-							points={points.map(pt => `${pt.x},${pt.y}`).join(' ')}
-							style={{
-								fill: backgroundColor,
-								stroke: borderColor
-							}}
-							onClick={e => this.onClick(e, region)}
-						/>
-					);
-				});
+				return (
+					<polygon
+						key={`${square.x} ${square.y}`}
+						className='campaign-map-square'
+						points={points.map(pt => `${pt.x},${pt.y}`).join(' ')}
+						style={{
+							fill: backgroundColor,
+							stroke: borderColor
+						}}
+						onClick={e => this.onClick(e, region)}
+					/>
+				);
+			});
 
 			// Get dimensions, adding a 1-square border
-			const dims = CampaignMapLogic.getDimensions(this.props.map);
+			const dims = CampaignMapLogic.getDimensions(this.props.map.squares);
 			dims.left -= 1;
 			dims.top -= 1;
 			dims.right += 1;

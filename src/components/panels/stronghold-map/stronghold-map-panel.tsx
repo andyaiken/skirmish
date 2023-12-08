@@ -26,9 +26,11 @@ export class StrongholdMapPanel extends Component<Props> {
 		const width = (Random.randomDecimal(rng) * 40) + 40;
 		const height = (Random.randomDecimal(rng) * 40) + 40;
 		const degrees = (Random.randomDecimal(rng) * 360);
-		let color = Random.randomColor(80, 120, rng);
+		const color = Random.randomColor(80, 120, rng);
 		if (structure === this.props.selectedStructure) {
-			color = 'rgb(255, 255, 255)';
+			color.r = 255;
+			color.g = 255;
+			color.b = 255;
 		}
 
 		let points: { x: number, y: number }[] = [];
@@ -101,7 +103,7 @@ export class StrongholdMapPanel extends Component<Props> {
 				<polygon
 					className='structure'
 					points={points.map(pt => `${pt.x + offsetX},${pt.y + offsetY}`).join(' ')}
-					style={{ fill: color, rotate: `${degrees}deg` }}
+					style={{ fill: `rgb(${color.r}, ${color.g}, ${color.b})`, rotate: `${degrees}deg` }}
 					onClick={e => this.onClick(e, structure)}
 				/>
 			</svg>

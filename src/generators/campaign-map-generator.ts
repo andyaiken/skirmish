@@ -3,6 +3,7 @@ import { CampaignMapLogic } from '../logic/campaign-map-logic';
 import type { CampaignMapModel, CampaignMapSquareModel } from '../models/campaign-map';
 
 import { Collections } from '../utils/collections';
+import { Color } from '../utils/color';
 import { Random } from '../utils/random';
 import { Utils } from '../utils/utils';
 
@@ -23,13 +24,28 @@ export class CampaignMapGenerator {
 		while (map.squares.length < 1000) {
 			const parent = Collections.draw(map.squares);
 
-			const empty = [
-				{ x: parent.x, y: parent.y - 1, regionID: '' },
-				{ x: parent.x + 1, y: parent.y, regionID: '' },
-				{ x: parent.x, y: parent.y + 1, regionID: '' },
-				{ x: parent.x - 1, y: parent.y, regionID: '' }
-			].filter(e => !map.squares.find(sq => (sq.x === e.x) && (sq.y === e.y)));
+			let adjacent = [];
+			if (parent.x % 2 === 0) {
+				adjacent = [
+					{ x: parent.x, y: parent.y - 1, regionID: '' },
+					{ x: parent.x + 1, y: parent.y, regionID: '' },
+					{ x: parent.x + 1, y: parent.y + 1, regionID: '' },
+					{ x: parent.x, y: parent.y + 1, regionID: '' },
+					{ x: parent.x - 1, y: parent.y + 1, regionID: '' },
+					{ x: parent.x - 1, y: parent.y, regionID: '' }
+				];
+			} else {
+				adjacent = [
+					{ x: parent.x, y: parent.y - 1, regionID: '' },
+					{ x: parent.x + 1, y: parent.y - 1, regionID: '' },
+					{ x: parent.x + 1, y: parent.y, regionID: '' },
+					{ x: parent.x, y: parent.y + 1, regionID: '' },
+					{ x: parent.x - 1, y: parent.y, regionID: '' },
+					{ x: parent.x - 1, y: parent.y - 1, regionID: '' }
+				];
+			}
 
+			const empty = adjacent.filter(e => !map.squares.find(sq => (sq.x === e.x) && (sq.y === e.y)));
 			if (empty.length > 0) {
 				const sq = Collections.draw(empty);
 				map.squares.push(sq);
@@ -40,12 +56,16 @@ export class CampaignMapGenerator {
 		while (map.regions.length !== regionCount) {
 			// The lightest colour we will allow is rgb(229, 229, 229)
 			// This is so that the player (white) stands out
-			const color = Random.randomColor(0, 230);
+			const color = Random.randomColor(20, 230);
+			const colorLight = Color.lighten(color, 0.8);
+			const colorDark = Color.darken(color, 0.95);
 
 			map.regions.push({
 				id: Utils.guid(),
 				name: NameGenerator.generateName(),
-				color: color,
+				color: `rgb(${color.r}, ${color.g}, ${color.b})`,
+				colorLight: `rgb(${colorLight.r}, ${colorLight.g}, ${colorLight.b})`,
+				colorDark: `rgb(${colorDark.r}, ${colorDark.g}, ${colorDark.b})`,
 				encounters: [],
 				boon: BoonGenerator.generateBoon(packIDs),
 				demographics: {
@@ -121,7 +141,7 @@ export class CampaignMapGenerator {
 		// Find a coastal region and conquer it
 		const coastalRegions = map.regions.filter(region => {
 			const squares = CampaignMapLogic.getSquares(map, region);
-			return squares.some(sq => CampaignMapLogic.getAdjacentSquares(map, sq.x, sq.y).length !== 4);
+			return squares.some(sq => CampaignMapLogic.getAdjacentSquares(map, sq.x, sq.y).length !== 6);
 		});
 		const startingRegion = Collections.draw(coastalRegions);
 		CampaignMapLogic.conquerRegion(map, startingRegion);

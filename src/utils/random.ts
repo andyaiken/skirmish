@@ -69,7 +69,11 @@ export class Random {
 		const r = Random.randomNumber(max - min, rng) + min;
 		const g = Random.randomNumber(max - min, rng) + min;
 		const b = Random.randomNumber(max - min, rng) + min;
-		return `rgb(${r}, ${g}, ${b})`;
+		return {
+			r: r,
+			g: g,
+			b: b
+		};
 	};
 
 	static getSeededRNG = (seed: string) => {

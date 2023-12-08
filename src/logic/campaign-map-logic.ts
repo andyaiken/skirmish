@@ -14,17 +14,47 @@ export class CampaignMapLogic {
 		if (n) {
 			adj.push(n);
 		}
-		const e = map.squares.find(sq => (sq.x === x + 1) && (sq.y === y));
-		if (e) {
-			adj.push(e);
+		if (x % 2 === 0) {
+			const ne = map.squares.find(sq => (sq.x === x + 1) && (sq.y === y));
+			if (ne) {
+				adj.push(ne);
+			}
+			const se = map.squares.find(sq => (sq.x === x + 1) && (sq.y === y + 1));
+			if (se) {
+				adj.push(se);
+			}
+		} else {
+			const ne = map.squares.find(sq => (sq.x === x + 1) && (sq.y === y - 1));
+			if (ne) {
+				adj.push(ne);
+			}
+			const se = map.squares.find(sq => (sq.x === x + 1) && (sq.y === y));
+			if (se) {
+				adj.push(se);
+			}
 		}
 		const s = map.squares.find(sq => (sq.x === x) && (sq.y === y + 1));
 		if (s) {
 			adj.push(s);
 		}
-		const w = map.squares.find(sq => (sq.x === x - 1) && (sq.y === y));
-		if (w) {
-			adj.push(w);
+		if (x % 2 === 0) {
+			const sw = map.squares.find(sq => (sq.x === x - 1) && (sq.y === y + 1));
+			if (sw) {
+				adj.push(sw);
+			}
+			const nw = map.squares.find(sq => (sq.x === x - 1) && (sq.y === y));
+			if (nw) {
+				adj.push(nw);
+			}
+		} else {
+			const sw = map.squares.find(sq => (sq.x === x - 1) && (sq.y === y));
+			if (sw) {
+				adj.push(sw);
+			}
+			const nw = map.squares.find(sq => (sq.x === x - 1) && (sq.y === y - 1));
+			if (nw) {
+				adj.push(nw);
+			}
 		}
 
 		return adj;
@@ -50,17 +80,6 @@ export class CampaignMapLogic {
 
 	static getSquares = (map: CampaignMapModel, region: RegionModel) => {
 		return map.squares.filter(sq => sq.regionID === region.id);
-	};
-
-	static getCentralSquare = (map: CampaignMapModel, region: RegionModel) => {
-		const squares = CampaignMapLogic.getSquares(map, region);
-		const x = Collections.mean(squares, s => s.x);
-		const y = Collections.mean(squares, s => s.y);
-		return Collections.min(squares, s => {
-			const x2 = Math.pow(s.x - x, 2);
-			const y2 = Math.pow(s.y - y, 2);
-			return Math.sqrt(x2 + y2);
-		});
 	};
 
 	static canAttackRegion = (map: CampaignMapModel, region: RegionModel) => {

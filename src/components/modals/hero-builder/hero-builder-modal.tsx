@@ -36,9 +36,11 @@ export class HeroBuilderModal extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 
+		const color = Random.randomColor(20, 180);
+
 		const hero = JSON.parse(JSON.stringify(props.hero)) as CombatantModel;
 		hero.name = NameGenerator.generateName();
-		hero.color = Random.randomColor(20, 180);
+		hero.color = `rgb(${color.r}, ${color.g}, ${color.b})`;
 
 		this.state = {
 			hero: hero
@@ -64,14 +66,18 @@ export class HeroBuilderModal extends Component<Props, State> {
 	rename = () => {
 		const hero = this.state.hero;
 		hero.name = NameGenerator.generateName();
+
 		this.setState({
 			hero: hero
 		});
 	};
 
 	recolor = () => {
+		const color = Random.randomColor(20, 180);
+
 		const hero = this.state.hero;
-		hero.color = Random.randomColor(20, 180);
+		hero.color = `rgb(${color.r}, ${color.g}, ${color.b})`;
+
 		this.setState({
 			hero: hero
 		});

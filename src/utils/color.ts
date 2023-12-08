@@ -28,8 +28,7 @@ export class Color {
 		return null;
 	};
 
-	static lighten = (color: RGB): RGB => {
-		const factor = 0.3;
+	static lighten = (color: RGB, factor = 0.3): RGB => {
 		return {
 			r: color.r + ((255 - color.r) * factor),
 			g: color.g + ((255 - color.g) * factor),
@@ -37,8 +36,7 @@ export class Color {
 		};
 	};
 
-	static darken = (color: RGB): RGB => {
-		const factor = 0.7;
+	static darken = (color: RGB, factor = 0.7): RGB => {
 		return {
 			r: color.r * factor,
 			g: color.g * factor,

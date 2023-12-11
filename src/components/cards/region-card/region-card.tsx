@@ -5,17 +5,18 @@ import { CardType } from '../../../enums/card-type';
 
 import { CampaignMapLogic } from '../../../logic/campaign-map-logic';
 
+import type { CampaignMapModel } from '../../../models/campaign-map';
 import type { OptionsModel } from '../../../models/options';
 import type { RegionModel } from '../../../models/region';
 
-import { Color } from '../../../utils/color';
-
 import { PlayingCard, StatValue, Tag } from '../../controls';
+import { CampaignMapPanel } from '../../panels';
 import { PlaceholderCard } from '../placeholder-card/placeholder-card';
 
 import './region-card.scss';
 
 interface Props {
+	map: CampaignMapModel;
 	region: RegionModel;
 	options: OptionsModel;
 	disabled: boolean;
@@ -56,14 +57,6 @@ export class RegionCard extends Component<Props, State> {
 	};
 
 	render = () => {
-		let colorDark = this.props.region.color;
-		let colorLight = this.props.region.color;
-		const color = Color.parse(this.props.region.color);
-		if (color) {
-			colorDark = Color.toString(Color.darken(color));
-			colorLight = Color.toString(Color.lighten(color));
-		}
-
 		const monsters = CampaignMapLogic.getMonsters(this.props.region, this.props.options.packIDs)
 			.map(species => species.name)
 			.sort()
@@ -83,13 +76,18 @@ export class RegionCard extends Component<Props, State> {
 						text={this.props.region.name}
 						content={(
 							<div className='region-card-front'>
-								<div
-									className='color-box'
-									style={{
-										backgroundImage: `linear-gradient(135deg, ${colorLight}, ${this.props.region.color})`,
-										borderColor: colorDark
-									}}
-								/>
+								<div className='map-container'>
+									<CampaignMapPanel
+										map={this.props.map}
+										mode='region'
+										selectedRegion={this.props.region}
+										onSelectRegion={() => {
+											this.setState({
+												flipped: !this.state.flipped
+											});
+										}}
+									/>
+								</div>
 								<StatValue orientation='vertical' label='Encounters' value={this.props.region.encounters.length} />
 							</div>
 						)}

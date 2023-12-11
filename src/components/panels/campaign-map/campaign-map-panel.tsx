@@ -5,15 +5,23 @@ import { CampaignMapLogic } from '../../../logic/campaign-map-logic';
 import type { CampaignMapModel } from '../../../models/campaign-map';
 import type { RegionModel } from '../../../models/region';
 
+import { Color } from '../../../utils/color';
+
 import './campaign-map-panel.scss';
 
 interface Props {
 	map: CampaignMapModel;
+	mode: 'map' | 'region';
 	selectedRegion: RegionModel | null;
 	onSelectRegion: (region: RegionModel | null) => void;
 }
 
 export class CampaignMapPanel extends Component<Props> {
+	public static defaultProps = {
+		mode: 'map',
+		onSelectRegion: () => null
+	};
+
 	onClick = (e: React.MouseEvent, region: RegionModel | null) => {
 		e.stopPropagation();
 		this.props.onSelectRegion(region);
@@ -21,18 +29,27 @@ export class CampaignMapPanel extends Component<Props> {
 
 	render = () => {
 		try {
-			const squares = this.props.map.squares.map(square => {
+			let mapSquares = this.props.map.squares;
+			if ((this.props.mode === 'region') && (this.props.selectedRegion !== null)) {
+				const regionID = this.props.selectedRegion.id;
+				mapSquares = mapSquares.filter(square => square.regionID === regionID);
+			}
+
+			const squares = mapSquares.map(square => {
 				let backgroundColor = 'rgb(255, 255, 255)';
 				let borderColor = 'rgb(240, 240, 240)';
 
 				const region = this.props.map.regions.find(r => r.id === square.regionID) || null;
 				if (region) {
-					backgroundColor = region.color;
-					borderColor = region.colorDark;
+					const color = Color.parse(region.color);
+					if (color) {
+						backgroundColor = region.color;
+						borderColor = Color.toString(Color.darken(color, 0.95));
 
-					if (this.props.selectedRegion && (this.props.selectedRegion.id === region.id)) {
-						backgroundColor = region.colorLight;
-						borderColor = region.color;
+						if (this.props.selectedRegion && (this.props.selectedRegion.id === region.id)) {
+							backgroundColor = Color.toString(Color.lighten(color, 0.7));
+							borderColor = region.color;
+						}
 					}
 				}
 
@@ -68,7 +85,7 @@ export class CampaignMapPanel extends Component<Props> {
 			});
 
 			// Get dimensions, adding a 1-square border
-			const dims = CampaignMapLogic.getDimensions(this.props.map.squares);
+			const dims = CampaignMapLogic.getDimensions(mapSquares);
 			dims.left -= 1;
 			dims.top -= 1;
 			dims.right += 1;

@@ -45,15 +45,6 @@ localforage.getItem<GameModel>('skirmish-game').then(game => {
 			});
 		}
 
-		game.map.regions.forEach(region => {
-			if (region.colorLight === undefined) {
-				region.colorLight = region.color;
-			}
-			if (region.colorDark === undefined) {
-				region.colorDark = region.color;
-			}
-		});
-
 		game.map.regions
 			.filter(r => r.encounters.length > 10)
 			.forEach(r => {

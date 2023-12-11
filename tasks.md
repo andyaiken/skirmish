@@ -130,6 +130,7 @@
 * Cartographer
 * Engineer
 * Laboratory
+* Hospital / Sanatorium
 * Morale buildings:
   * Museum
   * Library

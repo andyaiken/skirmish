@@ -3,7 +3,6 @@ import { CampaignMapLogic } from '../logic/campaign-map-logic';
 import type { CampaignMapModel, CampaignMapSquareModel } from '../models/campaign-map';
 
 import { Collections } from '../utils/collections';
-import { Color } from '../utils/color';
 import { Random } from '../utils/random';
 import { Utils } from '../utils/utils';
 
@@ -57,15 +56,11 @@ export class CampaignMapGenerator {
 			// The lightest colour we will allow is rgb(229, 229, 229)
 			// This is so that the player (white) stands out
 			const color = Random.randomColor(20, 230);
-			const colorLight = Color.lighten(color, 0.8);
-			const colorDark = Color.darken(color, 0.95);
 
 			map.regions.push({
 				id: Utils.guid(),
 				name: NameGenerator.generateName(),
 				color: `rgb(${color.r}, ${color.g}, ${color.b})`,
-				colorLight: `rgb(${colorLight.r}, ${colorLight.g}, ${colorLight.b})`,
-				colorDark: `rgb(${colorDark.r}, ${colorDark.g}, ${colorDark.b})`,
 				encounters: [],
 				boon: BoonGenerator.generateBoon(packIDs),
 				demographics: {

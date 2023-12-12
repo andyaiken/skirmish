@@ -9,10 +9,9 @@ import { GameLogic } from '../../../logic/game-logic';
 
 import type { CombatantModel } from '../../../models/combatant';
 
-import { Color } from '../../../utils/color';
-
 import { Gauge, PlayingCard, StatValue, Tag, Text, TextType } from '../../controls';
 import { ListItemPanel } from '../../panels';
+import { MiniToken } from '../../panels/encounter-map/mini-token/mini-token';
 import { PlaceholderCard } from '../placeholder-card/placeholder-card';
 
 import './hero-card.scss';
@@ -77,14 +76,6 @@ export class HeroCard extends Component<Props, State> {
 	};
 
 	render = () => {
-		let colorDark = this.props.hero.color;
-		let colorLight = this.props.hero.color;
-		const color = Color.parse(this.props.hero.color);
-		if (color) {
-			colorDark = Color.toString(Color.darken(color));
-			colorLight = Color.toString(Color.lighten(color));
-		}
-
 		let items = null;
 		const magicItems = this.props.hero.items.filter(i => i.magic);
 		if (magicItems.length > 0) {
@@ -124,13 +115,17 @@ export class HeroCard extends Component<Props, State> {
 						text={this.props.hero.name}
 						content={(
 							<div className='hero-card-front'>
-								<div
-									className='color-box'
-									style={{
-										backgroundImage: `linear-gradient(135deg, ${colorLight}, ${this.props.hero.color})`,
-										borderColor: colorDark
-									}}
-								/>
+								<div className='token-container'>
+									<MiniToken
+										combatant={this.props.hero}
+										encounter={null}
+										squareSize={70}
+										mapDimensions={{ left: 0, top: 0 }}
+										selectable={true}
+										selected={false}
+										onClick={() => null}
+									/>
+								</div>
 								<div className='tags'>
 									{species ? <Tag>{species.name}</Tag> : null}
 									{role ? <Tag>{role.name}</Tag> : null}
@@ -147,7 +142,9 @@ export class HeroCard extends Component<Props, State> {
 						<div className='xp'>
 							<Gauge
 								progress={this.props.hero.xp / this.props.hero.level}
-								content={`${this.props.hero.xp} XP / ${this.props.hero.level}`}
+								content={(
+									<div><b>{this.props.hero.xp} XP</b> / {this.props.hero.level}</div>
+								)}
 							/>
 						</div>
 						<hr />

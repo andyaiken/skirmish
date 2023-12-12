@@ -81,14 +81,15 @@ export class RegionCard extends Component<Props, State> {
 										map={this.props.map}
 										mode='region'
 										selectedRegion={this.props.region}
-										onSelectRegion={() => {
-											this.setState({
-												flipped: !this.state.flipped
-											});
-										}}
 									/>
 								</div>
-								<StatValue orientation='vertical' label='Encounters' value={this.props.region.encounters.length} />
+								<div className='stat-container'>
+									<StatValue
+										orientation='vertical'
+										label={this.props.region.encounters.length === 1 ? 'Encounter' : 'Encounters'}
+										value={this.props.region.encounters.length}
+									/>
+								</div>
 							</div>
 						)}
 					/>

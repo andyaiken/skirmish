@@ -118,7 +118,7 @@ export class CampaignMapPage extends Component<Props, State> {
 					<StatValue
 						orientation='vertical'
 						label='Island Controlled'
-						value={<Gauge progress={ownedFraction} content={`${Math.floor(ownedFraction * 100)}%`} />}
+						value={<Gauge progress={ownedFraction} content={<b>{Math.floor(ownedFraction * 100)}%</b>} />}
 					/>
 				</div>
 				<div className='map-stats'>

@@ -133,7 +133,9 @@ export class Stats extends Component<Props> {
 				<div className='xp-gauge'>
 					<Gauge
 						progress={this.props.combatant.xp / this.props.combatant.level}
-						content={`${this.props.combatant.xp} XP / ${this.props.combatant.level}`}
+						content={(
+							<div><b>{this.props.combatant.xp} XP</b> / {this.props.combatant.level}</div>
+						)}
 					/>
 				</div>
 			</Box>

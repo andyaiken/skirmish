@@ -1,8 +1,24 @@
 .region-card-front {
 
+	.map-container,
+	.stat-container {
+		position: absolute;
+		top: 60px;
+		left: 0;
+		width: 100%;
+		height: calc(100% - 100px);
+		padding: 10px;
+	}
+
 	.map-container {
-		height: 60px;
-		margin-bottom: 15px;
+		opacity: 0.5;
+		pointer-events: none;
+	}
+
+	.stat-container {
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 }
 

@@ -2,7 +2,7 @@ import { Component } from 'react';
 
 import { StrongholdLogic } from '../../../logic/stronghold-logic';
 
-import { type StructureModel } from '../../../models/structure';
+import type { StructureModel } from '../../../models/structure';
 
 import { Random } from '../../../utils/random';
 
@@ -10,12 +10,18 @@ import './stronghold-map-panel.scss';
 
 interface Props {
 	stronghold: StructureModel[];
+	mode: 'map' | 'structure';
 	selectedStructure: StructureModel | null;
 	onSelectStructure: (structure: StructureModel | null) => void;
 }
 
 export class StrongholdMapPanel extends Component<Props> {
-	onClick = (e: React.MouseEvent, structure: StructureModel) => {
+	public static defaultProps = {
+		mode: 'map',
+		onSelectStructure: () => null
+	};
+
+	onClick = (e: React.MouseEvent, structure: StructureModel | null) => {
 		e.stopPropagation();
 		this.props.onSelectStructure(structure);
 	};
@@ -27,11 +33,6 @@ export class StrongholdMapPanel extends Component<Props> {
 		const height = (Random.randomDecimal(rng) * 40) + 40;
 		const degrees = (Random.randomDecimal(rng) * 360);
 		const color = Random.randomColor(80, 120, rng);
-		if (structure === this.props.selectedStructure) {
-			color.r = 255;
-			color.g = 255;
-			color.b = 255;
-		}
 
 		let points: { x: number, y: number }[] = [];
 		switch (Random.randomNumber(4, rng)) {
@@ -98,60 +99,57 @@ export class StrongholdMapPanel extends Component<Props> {
 		const offsetX = (100 - width) / 2;
 		const offsetY = (100 - height) / 2;
 
+		if (structure === this.props.selectedStructure) {
+			color.r = 255;
+			color.g = 255;
+			color.b = 255;
+		}
+
 		return (
-			<svg key={structure.id} className='structure-container' viewBox='0 0 100 100'>
+			<g key={structure.id}>
 				<polygon
 					className='structure'
-					points={points.map(pt => `${pt.x + offsetX},${pt.y + offsetY}`).join(' ')}
-					style={{ fill: `rgb(${color.r}, ${color.g}, ${color.b})`, rotate: `${degrees}deg` }}
+					points={
+						points
+							.map(pt => {
+								const dx = (pt.x + offsetX) / 100;
+								const dy = (pt.y + offsetY) / 100;
+								return `${structure.position.x + dx},${structure.position.y + dy}`;
+							})
+							.join(' ')
+					}
+					style={{
+						fill: `rgb(${color.r}, ${color.g}, ${color.b})`,
+						rotate: `${degrees}deg`
+					}}
 					onClick={e => this.onClick(e, structure)}
 				/>
-			</svg>
+			</g>
 		);
 	};
 
 	render = () => {
 		try {
+			let structures = this.props.stronghold;
+			if ((this.props.mode === 'structure') && (this.props.selectedStructure !== null)) {
+				const structureID = this.props.selectedStructure.id;
+				structures = structures.filter(s => s.id === structureID);
+			}
+
 			// Get dimensions, adding a 1-square border
-			const dims = StrongholdLogic.getDimensions(this.props.stronghold);
+			const dims = StrongholdLogic.getDimensions(structures);
 			dims.left -= 1;
 			dims.top -= 1;
 			dims.right += 1;
 			dims.bottom += 1;
 
-			// Determine the percentage width and height of a square
 			const width = 1 + (dims.right - dims.left);
 			const height = 1 + (dims.bottom - dims.top);
-			const widthPC = 100 / width;
-			const heightPC = 100 / height;
-
-			const squares = this.props.stronghold.map(structure => {
-				return (
-					<div
-						key={`${structure.position.x} ${structure.position.y}`}
-						className={`stronghold-map-square ${this.props.selectedStructure === structure ? 'selected' : ''}`}
-						style={{
-							width: `${widthPC}%`,
-							height: `${heightPC}%`,
-							left: `${((structure.position.x - dims.left) * widthPC)}% `,
-							top: `${((structure.position.y - dims.top) * heightPC)}%`,
-							fontSize: `${Math.min(widthPC, heightPC) * 1.5}pt`
-						}}
-					>
-						{this.getStructure(structure)}
-						<div className='structure-name'>
-							{structure.name}
-							{structure.charges > 0 ? <br /> : null}
-							{structure.charges > 0 ? ''.padEnd(structure.charges, '⬢') : null}
-						</div>
-					</div>
-				);
-			});
 
 			return (
-				<div className='stronghold-map' onClick={() => this.props.onSelectStructure(null)}>
-					{squares}
-				</div>
+				<svg className='stronghold-map' viewBox={`${dims.left} ${dims.top} ${width} ${height}`} onClick={e => this.onClick(e, null)}>
+					{structures.map(this.getStructure)}
+				</svg>
 			);
 		} catch {
 			return <div className='stronghold-map render-error' />;

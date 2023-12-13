@@ -9,17 +9,17 @@ import { Utils } from '../utils/utils';
 export class StrongholdLogic {
 	static getDimensions = (stronghold: StructureModel[]) => {
 		const dims = {
-			left: Number.MAX_VALUE,
-			top: Number.MAX_VALUE,
+			left: Number.MIN_VALUE,
+			top: Number.MIN_VALUE,
 			right: Number.MIN_VALUE,
 			bottom: Number.MIN_VALUE
 		};
 
-		stronghold.forEach(s => {
-			dims.left = Math.min(dims.left, s.position.x);
-			dims.top = Math.min(dims.top, s.position.y);
-			dims.right = Math.max(dims.right, s.position.x);
-			dims.bottom = Math.max(dims.bottom, s.position.y);
+		stronghold.forEach(structure => {
+			dims.left = dims.left === Number.MIN_VALUE ? structure.position.x : Math.min(dims.left, structure.position.x);
+			dims.top = dims.top === Number.MIN_VALUE ? structure.position.y : Math.min(dims.top, structure.position.y);
+			dims.right = dims.right === Number.MIN_VALUE ? structure.position.x : Math.max(dims.right, structure.position.x);
+			dims.bottom = dims.bottom === Number.MIN_VALUE ? structure.position.y : Math.max(dims.bottom, structure.position.y);
 		});
 
 		return dims;

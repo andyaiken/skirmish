@@ -3,14 +3,18 @@
 	height: 100%;
 	filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.4));
 
-	.campaign-map-square {
+	.campaign-map-hex {
 		stroke-width: 0.05;
+		stroke-linejoin: round;
+		transform-origin: center;
 	}
 
 	.campaign-map-label-container {
 		fill: rgb(255, 255, 255);
 		stroke: rgb(200, 200, 200);
 		stroke-width: 0.1;
+		stroke-linejoin: round;
+		transform-origin: center;
 	}
 
 	.campaign-map-label-text {

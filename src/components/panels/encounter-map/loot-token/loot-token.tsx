@@ -41,9 +41,10 @@ export class LootToken extends Component<Props, State> {
 
 	render = () => {
 		try {
+			const onMap = this.props.encounter ? 'on-map' : '';
 			const selected = this.props.selected ? 'selected' : '';
 			const selectable = this.props.selectable ? 'selectable' : '';
-			const className = `encounter-map-loot-token ${selected} ${selectable}`;
+			const className = `encounter-map-loot-token ${onMap} ${selected} ${selectable}`;
 
 			return (
 				<div

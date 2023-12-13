@@ -127,7 +127,7 @@ export class CampaignMapGenerator {
 			];
 			region.demographics.terrain = Collections.draw(terrains);
 
-			const count = Random.randomNumber(10) + 1;
+			const count = Random.randomNumber(9) + 1;
 			while (region.encounters.length < count) {
 				region.encounters.push(Utils.guid());
 			}

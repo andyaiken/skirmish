@@ -82,6 +82,17 @@ export class CampaignMapLogic {
 		return map.squares.filter(sq => sq.regionID === region.id);
 	};
 
+	static getCentralSquare = (map: CampaignMapModel, region: RegionModel) => {
+		const squares = CampaignMapLogic.getSquares(map, region);
+		const x = Collections.mean(squares, s => s.x);
+		const y = Collections.mean(squares, s => s.y);
+		return Collections.min(squares, s => {
+			const x2 = Math.pow(s.x - x, 2);
+			const y2 = Math.pow(s.y - y, 2);
+			return Math.sqrt(x2 + y2);
+		});
+	};
+
 	static canAttackRegion = (map: CampaignMapModel, region: RegionModel) => {
 		const squares = CampaignMapLogic.getSquares(map, region);
 		return squares.some(sq => CampaignMapLogic.getAdjacentSquares(map, sq.x, sq.y).some(a => a.regionID === ''));

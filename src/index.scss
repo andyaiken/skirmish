@@ -44,6 +44,7 @@ body {
 * {
 	box-sizing: border-box;
 	user-select: none;
+	backface-visibility: hidden;
 	transition:
 		width ease-in-out 0.2s,
 		height ease-in-out 0.2s,

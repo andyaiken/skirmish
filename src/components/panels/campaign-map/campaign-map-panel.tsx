@@ -84,6 +84,42 @@ export class CampaignMapPanel extends Component<Props> {
 				);
 			});
 
+			const labels = this.props.map.regions.map(region => {
+				const square = CampaignMapLogic.getCentralSquare(this.props.map, region);
+				if (square) {
+
+					let y = square.y;
+					if (square.x % 2 === 0) {
+						y += 0.25;
+					} else {
+						y -= 0.25;
+					}
+
+					return (
+						<g key={region.id} onClick={e => this.onClick(e, region)}>
+							<circle
+								className='campaign-map-label-container'
+								cx={square.x + 0.5}
+								cy={y + 0.5}
+								r={0.4}
+							/>
+							<text
+								className='campaign-map-label-text'
+								x={square.x + 0.75}
+								y={y + 0.55}
+								textLength={1}
+								dominantBaseline='middle'
+								textAnchor='middle'
+							>
+								{region.encounters.length}
+							</text>
+						</g>
+					);
+				}
+
+				return null;
+			});
+
 			// Get dimensions, adding a 1-square border
 			const dims = CampaignMapLogic.getDimensions(mapSquares);
 			dims.left -= 1;
@@ -97,6 +133,7 @@ export class CampaignMapPanel extends Component<Props> {
 			return (
 				<svg className='campaign-map' viewBox={`${dims.left} ${dims.top} ${width} ${height}`} onClick={e => this.onClick(e, null)}>
 					{squares}
+					{this.props.mode === 'map' ? labels : null}
 				</svg>
 			);
 		} catch {

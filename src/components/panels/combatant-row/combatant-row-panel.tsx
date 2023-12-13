@@ -275,17 +275,15 @@ export class CombatantRowPanel extends Component<Props> {
 
 			return (
 				<div className={className} onClick={e => this.onClick(e)}>
-					<div className='token-container'>
-						<MiniToken
-							combatant={this.props.combatant}
-							encounter={null}
-							squareSize={40}
-							mapDimensions={{ left: 0, top: 0 }}
-							selectable={true}
-							selected={false}
-							onClick={c => this.props.onTokenClick ? this.props.onTokenClick(c) : null}
-						/>
-					</div>
+					<MiniToken
+						combatant={this.props.combatant}
+						encounter={null}
+						squareSize={40}
+						mapDimensions={{ left: 0, top: 0 }}
+						selectable={true}
+						selected={false}
+						onClick={c => this.props.onTokenClick ? this.props.onTokenClick(c) : null}
+					/>
 					<div className='name'>
 						<Text type={TextType.MinorHeading}>{this.props.combatant.name}</Text>
 						{infoBelow}

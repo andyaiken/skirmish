@@ -777,7 +777,7 @@ export class ActionEffects {
 							weapon.damage.forEach(dmg => {
 								const rank = dmg.rank + rankModifier;
 								const result = Random.dice(rank);
-								EncounterLogic.log(encounter, `${combatant.name} rolls weapon damage for ${target.name} (rank ${rank}) and gets ${result}`);
+								EncounterLogic.log(encounter, `${combatant.name} rolls weapon damage (${dmg.type}) for ${target.name} (rank ${rank}) and gets ${result}`);
 								const bonus = EncounterLogic.getDamageBonus(encounter, combatant, dmg.type);
 								if (bonus > 0) {
 									EncounterLogic.log(encounter, `${combatant.name} deals ${bonus} additional ${dmg.type} damage`);

@@ -69,12 +69,13 @@ export class MiniToken extends Component<Props, State> {
 
 	render = () => {
 		try {
+			const onMap = this.props.encounter ? 'on-map' : '';
 			const current = this.props.combatant.combat.current ? 'current' : '';
 			const selectable = this.props.selectable ? 'selectable' : '';
 			const selected = this.props.selected ? 'selected' : '';
 			const hidden = !!this.props.encounter && (this.props.combatant.combat.hidden > 0) ? 'hidden' : '';
 			const mouseOver = this.state.mouseOver ? 'mouse-over' : '';
-			const className = `encounter-map-mini-token ${current} ${selectable} ${selected} ${hidden} ${mouseOver}`;
+			const className = `encounter-map-mini-token ${onMap} ${current} ${selectable} ${selected} ${hidden} ${mouseOver}`;
 
 			let prone = null;
 			if (this.props.encounter && (this.props.combatant.combat.state === CombatantState.Prone)) {

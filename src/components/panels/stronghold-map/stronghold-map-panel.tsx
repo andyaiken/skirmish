@@ -29,8 +29,8 @@ export class StrongholdMapPanel extends Component<Props> {
 	getStructure = (structure: StructureModel) => {
 		const rng = Random.getSeededRNG(structure.id);
 
-		const width = (Random.randomDecimal(rng) * 40) + 40;
-		const height = (Random.randomDecimal(rng) * 40) + 40;
+		const width = (Random.randomDecimal(rng) * 40) + 50;
+		const height = (Random.randomDecimal(rng) * 40) + 50;
 		const degrees = (Random.randomDecimal(rng) * 360);
 		const color = Random.randomColor(80, 120, rng);
 
@@ -60,8 +60,8 @@ export class StrongholdMapPanel extends Component<Props> {
 				break;
 			}
 			case 2: {
-				// N-shape
-				const x = Random.randomNumber(width / 3, rng) + (width / 3);
+				// C-shape
+				const x = Random.randomNumber(width / 4, rng) + (width / 2);
 				const y1 = Random.randomNumber(height / 6, rng) + (height / 6);
 				const y2 = Random.randomNumber(height / 6, rng) + (height / 6) + (height / 2);
 				points = [
@@ -108,7 +108,7 @@ export class StrongholdMapPanel extends Component<Props> {
 		return (
 			<g key={structure.id}>
 				<polygon
-					className='structure'
+					className={StrongholdLogic.canCharge(structure) && (structure.charges === 0) ? 'structure uncharged' : 'structure'}
 					points={
 						points
 							.map(pt => {
@@ -123,7 +123,9 @@ export class StrongholdMapPanel extends Component<Props> {
 						rotate: `${degrees}deg`
 					}}
 					onClick={e => this.onClick(e, structure)}
-				/>
+				>
+					<title>{structure.name}</title>
+				</polygon>
 			</g>
 		);
 	};

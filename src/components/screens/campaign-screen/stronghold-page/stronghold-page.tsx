@@ -86,12 +86,12 @@ export class StrongholdPage extends Component<Props, State> {
 			<Box label='Stronghold Benefits'>
 				<StatValue label='Max Heroes' value={StrongholdLogic.getHeroLimit(this.props.game)} />
 				{redraws > 0 ? <hr /> : null}
-				{heroRedraws > 0 ? <StatValue label='Hero Card Redraws' value={<IconValue type={IconType.Redraw} value={heroRedraws} />} /> : null}
-				{itemRedraws > 0 ? <StatValue label='Item Card Redraws' value={<IconValue type={IconType.Redraw} value={itemRedraws} />} /> : null}
-				{featureRedraws > 0 ? <StatValue label='Feature Card Redraws' value={<IconValue type={IconType.Redraw} value={featureRedraws} />} /> : null}
-				{actionRedraws > 0 ? <StatValue label='Action Card Redraws' value={<IconValue type={IconType.Redraw} value={actionRedraws} />} /> : null}
-				{magicRedraws > 0 ? <StatValue label='Magic Item Card Redraws' value={<IconValue type={IconType.Redraw} value={magicRedraws} />} /> : null}
-				{structureRedraws > 0 ? <StatValue label='Structure Card Redraws' value={<IconValue type={IconType.Redraw} value={structureRedraws} />} /> : null}
+				{heroRedraws > 0 ? <StatValue label='Hero Card Redraws' value={heroRedraws} /> : null}
+				{itemRedraws > 0 ? <StatValue label='Item Card Redraws' value={itemRedraws} /> : null}
+				{featureRedraws > 0 ? <StatValue label='Feature Card Redraws' value={featureRedraws} /> : null}
+				{actionRedraws > 0 ? <StatValue label='Action Card Redraws' value={actionRedraws} /> : null}
+				{magicRedraws > 0 ? <StatValue label='Magic Item Card Redraws' value={magicRedraws} /> : null}
+				{structureRedraws > 0 ? <StatValue label='Structure Card Redraws' value={structureRedraws} /> : null}
 				{encounters > 0 ? <hr /> : null}
 				{benefitMods > 0 ? <StatValue label='Encounter Benefits' value={benefitMods} /> : null}
 				{detrimentMods > 0 ? <StatValue label='Encounter Detriments' value={detrimentMods} /> : null}

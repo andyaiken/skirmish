@@ -10,5 +10,9 @@
 		transform-box: fill-box;
 		transform-origin: center;
 		cursor: pointer;
+
+		&.uncharged {
+			opacity: 0.2;
+		}
 	}
 }

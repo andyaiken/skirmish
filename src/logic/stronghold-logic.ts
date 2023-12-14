@@ -36,35 +36,29 @@ export class StrongholdLogic {
 	};
 
 	static getEmptyPosition = (stronghold: StructureModel[]) => {
-		const adj: { x: number, y: number, count: number }[] = [];
+		const adj: { x: number, y: number }[] = [];
 
 		stronghold.forEach(s => {
-			const minX = s.position.x - 2;
-			const maxX = s.position.x + 2;
-			const minY = s.position.y - 2;
-			const maxY = s.position.y + 2;
+			const minX = s.position.x - 3;
+			const maxX = s.position.x + 3;
+			const minY = s.position.y - 3;
+			const maxY = s.position.y + 3;
 			for (let x = minX; x < maxX; ++x) {
 				for (let y = minY; y < maxY; ++y) {
-					const exist = adj.find(sq => (sq.x === x) && (sq.y === y));
-					if (exist) {
-						exist.count += 1;
-					} else {
-						adj.push({ x: x, y: y, count: 1 });
-					}
+					adj.push({ x: x, y: y });
 				}
 			}
 		});
 
 		const empty = adj.filter(sq => !stronghold.find(s => (s.position.x === sq.x) && s.position.y === sq.y));
-		const squares = empty.filter(sq => sq.count === 1);
-		if (squares.length === 0) {
+		if (empty.length === 0) {
 			return {
 				x: 0,
 				y: 0
 			};
 		}
 
-		const square = Collections.draw(squares);
+		const square = Collections.draw(empty);
 
 		return {
 			x: square.x,

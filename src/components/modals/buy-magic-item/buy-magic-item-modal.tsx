@@ -113,7 +113,7 @@ export class BuyMagicItemModal extends Component<Props, State> {
 						<p>Three magic items have been drawn for you. Choose one card to buy that item.</p>
 					</Text>
 					<div className='card-selection-row'>
-						<CardList cards={cards} />
+						<CardList mode='row' cards={cards} />
 					</div>
 				</div>
 			);

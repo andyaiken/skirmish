@@ -126,7 +126,7 @@ export class EquipmentPage extends Component<Props, State> {
 
 				return (
 					<div key={n} className='card-selection-row'>
-						<CardList cards={cards} />
+						<CardList mode='row' cards={cards} />
 					</div>
 				);
 			});
@@ -136,7 +136,7 @@ export class EquipmentPage extends Component<Props, State> {
 			return (
 				<div className='equipment-page'>
 					<div className='card-selection-row'>
-						<CardList cards={overviewCards} />
+						<CardList mode='row' cards={overviewCards} />
 					</div>
 					{
 						this.props.options.showTips ?

@@ -157,7 +157,7 @@ export class CardPage extends Component<Props, State> {
 
 		return (
 			<div className='card-selection-row'>
-				<CardList cards={[ speciesCard, roleCard, backgroundCard ]} />
+				<CardList mode='row' cards={[ speciesCard, roleCard, backgroundCard ]} />
 			</div>
 		);
 	};
@@ -189,7 +189,7 @@ export class CardPage extends Component<Props, State> {
 
 		return (
 			<div className='card-selection-row'>
-				<CardList cards={cards} />
+				<CardList mode='row' cards={cards} />
 			</div>
 		);
 	};
@@ -221,7 +221,7 @@ export class CardPage extends Component<Props, State> {
 
 		return (
 			<div className='card-selection-row'>
-				<CardList cards={cards} />
+				<CardList mode='row' cards={cards} />
 			</div>
 		);
 	};
@@ -253,7 +253,7 @@ export class CardPage extends Component<Props, State> {
 
 		return (
 			<div className='card-selection-row'>
-				<CardList cards={cards} />
+				<CardList mode='row' cards={cards} />
 			</div>
 		);
 	};
@@ -269,7 +269,11 @@ export class CardPage extends Component<Props, State> {
 						this.props.options.showTips ?
 							<Expander
 								header={
-									<Text type={TextType.Tip}>To make a hero choose one Species card, one Role card, and one Background card.</Text>
+									<Text type={TextType.Tip}>
+										<p>
+											To make a hero, choose one <b>Species</b> card, one <b>Role</b> card, and one <b>Background</b> card.
+										</p>
+									</Text>
 								}
 								content={
 									<div>

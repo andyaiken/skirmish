@@ -99,7 +99,7 @@ export class EnchantItemModal extends Component<Props, State> {
 									<p>Here are three ways in which this item can be enchanted. Choose one of them.</p>
 								</Text>
 								<div className='card-selection-row'>
-									<CardList cards={cards} />
+									<CardList mode='row' cards={cards} />
 								</div>
 							</div>
 						}

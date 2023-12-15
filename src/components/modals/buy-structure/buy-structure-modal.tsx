@@ -84,7 +84,7 @@ export class BuyStructureModal extends Component<Props, State> {
 						<p>Three structure cards have been drawn for you. Choose one card to add it to your stronghold.</p>
 					</Text>
 					<div className='card-selection-row'>
-						<CardList cards={cards} />
+						<CardList mode='row' cards={cards} />
 					</div>
 				</div>
 			);

@@ -101,9 +101,9 @@ export class CampaignMapPanel extends Component<Props> {
 					/>
 					<text
 						className='campaign-map-label-text'
-						x={square.x + 0.75}
+						x={square.x + 0.51}
 						y={y + 0.55}
-						textLength={1}
+						textLength={0.5}
 						dominantBaseline='middle'
 						textAnchor='middle'
 					>

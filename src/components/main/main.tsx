@@ -362,6 +362,23 @@ export class Main extends Component<Props, State> {
 		}
 	};
 
+	sellStructure = (structure: StructureModel) => {
+		try {
+			const game = this.state.game as GameModel;
+
+			game.stronghold = game.stronghold.filter(s => s.id !== structure.id);
+			game.money += StrongholdLogic.getStructureValue(structure);
+
+			this.setState({
+				game: game
+			}, () => {
+				this.saveGame();
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
+	};
+
 	chargeStructure = (structure: StructureModel) => {
 		try {
 			const game = this.state.game as GameModel;
@@ -1338,6 +1355,7 @@ export class Main extends Component<Props, State> {
 						showHelp={this.showHelp}
 						showPacks={this.showPacks}
 						buyStructure={this.buyStructure}
+						sellStructure={this.sellStructure}
 						chargeStructure={this.chargeStructure}
 						upgradeStructure={this.upgradeStructure}
 						useCharge={this.useCharge}

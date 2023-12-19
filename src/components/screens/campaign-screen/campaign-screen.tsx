@@ -37,6 +37,7 @@ interface Props {
 	showHelp: (file: string) => void;
 	showPacks: () => void;
 	buyStructure: (structure: StructureModel, cost: number) => void;
+	sellStructure: (structure: StructureModel) => void;
 	chargeStructure: (structure: StructureModel) => void;
 	upgradeStructure: (structure: StructureModel) => void;
 	useCharge: (type: StructureType, count: number) => void;
@@ -97,6 +98,7 @@ export class CampaignScreen extends Component<Props, State> {
 							game={this.props.game}
 							options={this.props.options}
 							buyStructure={this.props.buyStructure}
+							sellStructure={this.props.sellStructure}
 							chargeStructure={this.props.chargeStructure}
 							upgradeStructure={this.props.upgradeStructure}
 							useCharge={this.props.useCharge}

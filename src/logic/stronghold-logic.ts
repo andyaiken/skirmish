@@ -66,6 +66,14 @@ export class StrongholdLogic {
 		};
 	};
 
+	static getUpgradeCost = (structure: StructureModel) => {
+		return structure.level * 50;
+	};
+
+	static getStructureValue = (structure: StructureModel) => {
+		return 25 * structure.level;
+	};
+
 	static canCharge = (structure: StructureModel) => {
 		switch (structure.type) {
 			case StructureType.Barracks:

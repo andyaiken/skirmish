@@ -25,6 +25,7 @@ interface Props {
 	game: GameModel;
 	options: OptionsModel;
 	buyStructure: (structure: StructureModel, cost: number) => void;
+	sellStructure: (structure: StructureModel) => void;
 	chargeStructure: (structure: StructureModel) => void;
 	upgradeStructure: (structure: StructureModel) => void;
 	useCharge: (type: StructureType, count: number) => void;
@@ -60,6 +61,14 @@ export class StrongholdPage extends Component<Props, State> {
 			addingStructure: ''
 		}, () => {
 			this.props.buyStructure(structure, cost);
+		});
+	};
+
+	sellStructure = (structure: StructureModel) => {
+		this.setState({
+			selectedStructure: null
+		}, () => {
+			this.props.sellStructure(structure);
 		});
 	};
 
@@ -105,7 +114,7 @@ export class StrongholdPage extends Component<Props, State> {
 
 	getSidebar = () => {
 		if (this.state.selectedStructure) {
-			const upgradeCost = this.state.selectedStructure.level * 50;
+			const upgradeCost = StrongholdLogic.getUpgradeCost(this.state.selectedStructure);
 
 			let charge = null;
 			if (StrongholdLogic.canCharge(this.state.selectedStructure)) {
@@ -149,6 +158,10 @@ export class StrongholdPage extends Component<Props, State> {
 							<IconValue type={IconType.Money} value={upgradeCost} size={IconSize.Button} />
 						</button>
 					</div>
+					<button onClick={() => this.sellStructure(this.state.selectedStructure as StructureModel)}>
+						<div>Sell<br/>structure</div>
+						<IconValue type={IconType.Money} value={StrongholdLogic.getStructureValue(this.state.selectedStructure)} size={IconSize.Button} />
+					</button>
 					{charge !== null ? <hr /> : null}
 					{charge}
 				</div>

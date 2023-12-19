@@ -15,6 +15,8 @@ import type { OptionsModel } from '../../../models/options';
 import type { RegionModel } from '../../../models/region';
 import type { StructureModel } from '../../../models/structure';
 
+import type { Platform } from '../../../platform/platform';
+
 import { Badge, Selector } from '../../controls';
 
 import { CampaignMapPage } from './campaign-map-page/campaign-map-page';
@@ -30,6 +32,7 @@ import logo from '../../../assets/images/logo.png';
 interface Props {
 	game: GameModel;
 	options: OptionsModel;
+	platform: Platform;
 	hasExceptions: boolean;
 	showHelp: (file: string) => void;
 	showPacks: () => void;
@@ -136,7 +139,7 @@ export class CampaignScreen extends Component<Props, State> {
 					break;
 				case 'dev':
 					content = (
-						<DevPage />
+						<DevPage options={this.props.options} platform={this.props.platform} />
 					);
 					break;
 			}

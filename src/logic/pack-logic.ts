@@ -25,10 +25,4 @@ export class PackLogic {
 
 		return count;
 	};
-
-	static getPackPrice = (packID: string) => {
-		const cards = PackLogic.getPackCardCount(packID);
-		const cents = Math.max((cards - 1) * 50, 100);
-		return (cents - 1) / 100;
-	};
 }

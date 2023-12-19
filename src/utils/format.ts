@@ -21,6 +21,10 @@ export class Format {
 	};
 
 	static toCurrency = (value: number, symbol: string) => {
+		if (value <= 0) {
+			return 'FREE';
+		}
+
 		return `${symbol}${value.toFixed(2)}`;
 	};
 }

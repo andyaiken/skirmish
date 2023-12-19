@@ -3,6 +3,8 @@ import { useMediaQuery } from 'react-responsive';
 import type { GameModel } from '../../models/game';
 import type { OptionsModel } from '../../models/options';
 
+import type { Platform } from '../../platform/platform';
+
 import { Main } from '../main/main';
 
 import './layout.scss';
@@ -10,6 +12,7 @@ import './layout.scss';
 interface Props {
 	game: GameModel | null;
 	options: OptionsModel;
+	platform: Platform;
 }
 
 export const Layout = (props: Props) => {
@@ -22,6 +25,7 @@ export const Layout = (props: Props) => {
 			<Main
 				game={props.game}
 				options={props.options}
+				platform={props.platform}
 			/>
 		);
 	}

@@ -3,8 +3,8 @@
 
 import localforage from 'localforage';
 
-import type { GameModel } from '../../models/game';
-import type { OptionsModel } from '../../models/options';
+import type { GameModel } from '../models/game';
+import type { OptionsModel } from '../models/options';
 
 const GAME_KEY = 'skirmish-game';
 const OPTIONS_KEY = 'skirmish-options';

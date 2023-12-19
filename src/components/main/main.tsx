@@ -1,8 +1,6 @@
 import { Component } from 'react';
 import { Toaster } from 'react-hot-toast';
 
-import { PackData } from '../../data/pack-data';
-
 import { BoonType } from '../../enums/boon-type';
 import { CombatantState } from '../../enums/combatant-state';
 import { CombatantType } from '../../enums/combatant-type';
@@ -32,8 +30,11 @@ import type { FeatureModel } from '../../models/feature';
 import type { GameModel } from '../../models/game';
 import type { ItemModel } from '../../models/item';
 import type { OptionsModel } from '../../models/options';
+import type { PackModel } from '../../models/pack';
 import type { RegionModel } from '../../models/region';
 import type { StructureModel } from '../../models/structure';
+
+import type { Platform } from '../../platform/platform';
 
 import { Collections } from '../../utils/collections';
 import { Sound } from '../../utils/sound';
@@ -66,6 +67,7 @@ enum ScreenType {
 interface Props {
 	game: GameModel | null;
 	options: OptionsModel;
+	platform: Platform;
 }
 
 interface State {
@@ -79,8 +81,6 @@ interface State {
 }
 
 export class Main extends Component<Props, State> {
-	worker: Worker;
-
 	constructor(props: Props) {
 		super(props);
 
@@ -94,10 +94,9 @@ export class Main extends Component<Props, State> {
 			exceptions: []
 		};
 
-		this.worker = new Worker(new URL('./worker.ts', import.meta.url));
-		this.worker.onmessage = message => {
-			this.logException(message);
-		};
+		this.props.platform.getGame = () => this.state.game;
+		this.props.platform.getOptions = () => this.state.options;
+		this.props.platform.logException = ex => this.logException(ex);
 
 		Sound.volume = this.state.options.soundEffectsVolume;
 	}
@@ -134,11 +133,11 @@ export class Main extends Component<Props, State> {
 	};
 
 	saveGame = Utils.debounce(() => {
-		this.worker.postMessage({ type: 'game', payload: this.state.game });
+		this.props.platform.saveGame();
 	});
 
 	saveOptions = Utils.debounce(() => {
-		this.worker.postMessage({ type: 'options', payload: this.state.options });
+		this.props.platform.saveOptions();
 	});
 
 	setScreen = (screen: ScreenType) => {
@@ -199,35 +198,32 @@ export class Main extends Component<Props, State> {
 		});
 	};
 
-	addPacks = () => {
-		const options = this.state.options;
-
-		options.packIDs = PackData.getList().map(p => p.id);
-
-		this.setState({
-			options: options
-		}, () => {
-			this.saveOptions();
-		});
+	getPackPrice = (packs: PackModel[]) => {
+		return this.props.platform.getPackPrice(packs, this.state.options);
 	};
 
-	addPack = (packID: string) => {
+	addPacks = (packs: PackModel[]) => {
 		const options = this.state.options;
-		if (!options.packIDs.includes(packID)) {
-			options.packIDs.push(packID);
+
+		this.props.platform.getPacks(packs, this.state.options).then(() => {
+			packs.forEach(pack => {
+				if (!options.packIDs.includes(pack.id)) {
+					options.packIDs.push(pack.id);
+				}
+			});
 			options.packIDs.sort();
-		}
 
-		this.setState({
-			options: options
-		}, () => {
-			this.saveOptions();
+			this.setState({
+				options: options
+			}, () => {
+				this.saveOptions();
+			});
 		});
 	};
 
-	removePack = (packID: string) => {
+	removePack = (pack: PackModel) => {
 		const options = this.state.options;
-		options.packIDs = options.packIDs.filter(p => p !== packID);
+		options.packIDs = options.packIDs.filter(p => p !== pack.id);
 
 		this.setState({
 			options: options
@@ -1337,6 +1333,7 @@ export class Main extends Component<Props, State> {
 					<CampaignScreen
 						game={this.state.game as GameModel}
 						options={this.state.options}
+						platform={this.props.platform}
 						hasExceptions={this.state.exceptions.length > 0}
 						showHelp={this.showHelp}
 						showPacks={this.showPacks}
@@ -1426,8 +1423,8 @@ export class Main extends Component<Props, State> {
 						content={
 							<PacksModal
 								options={this.state.options}
+								getPrice={this.getPackPrice}
 								addPacks={this.addPacks}
-								addPack={this.addPack}
 								removePack={this.removePack}
 							/>
 						}

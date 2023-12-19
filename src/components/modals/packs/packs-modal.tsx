@@ -13,6 +13,8 @@ import { PackLogic } from '../../../logic/pack-logic';
 import type { OptionsModel } from '../../../models/options';
 import type { PackModel } from '../../../models/pack';
 
+import { Format } from '../../../utils/format';
+
 import { BackgroundCard, ItemCard, PackCard, RoleCard, SpeciesCard, StructureCard } from '../../cards';
 import { CardList, Dialog, Text, TextType } from '../../controls';
 
@@ -20,9 +22,9 @@ import './packs-modal.scss';
 
 interface Props {
 	options: OptionsModel;
-	addPacks: () => void;
-	addPack: (packID: string) => void;
-	removePack: (packID: string) => void;
+	getPrice: (packs: PackModel[]) => number;
+	addPacks: (packs: PackModel[]) => void;
+	removePack: (pack: PackModel) => void;
 }
 
 interface State {
@@ -42,59 +44,61 @@ export class PacksModal extends Component<Props, State> {
 			return null;
 		}
 
-		const packID = this.state.selectedPack.id;
+		const pack = this.state.selectedPack;
 
 		let owned = null;
-		if ((packID !== '') && !this.props.options.packIDs.includes(packID)) {
+		if ((pack.id === '') || this.props.options.packIDs.includes(pack.id)) {
+			owned = null;
+		} else {
 			owned = (
 				<div>
 					<Text type={TextType.Information}>
 						<p>You <b>do not</b> own this card pack.</p>
 					</Text>
-					<button className='primary' onClick={() => this.props.addPack(packID)}>
-						Get This Pack
+					<button className='primary' onClick={() => this.props.addPacks([ pack ])}>
+						Get This Pack ({Format.toCurrency(this.props.getPrice([ pack ]), '$')})
 					</button>
 				</div>
 			);
 		}
 
-		const heroes = HeroSpeciesData.getList().filter(s => s.packID === packID).map(s => {
+		const heroes = HeroSpeciesData.getList().filter(s => s.packID === pack.id).map(s => {
 			return (
 				<SpeciesCard key={s.id} species={s} />
 			);
 		});
 
-		const monsters = MonsterSpeciesData.getList().filter(s => s.packID === packID).map(s => {
+		const monsters = MonsterSpeciesData.getList().filter(s => s.packID === pack.id).map(s => {
 			return (
 				<SpeciesCard key={s.id} species={s} />
 			);
 		});
 
-		const roles = RoleData.getList().filter(r => r.packID === packID).map(r => {
+		const roles = RoleData.getList().filter(r => r.packID === pack.id).map(r => {
 			return (
 				<RoleCard key={r.id} role={r} />
 			);
 		});
 
-		const backgrounds = BackgroundData.getList().filter(b => b.packID === packID).map(b => {
+		const backgrounds = BackgroundData.getList().filter(b => b.packID === pack.id).map(b => {
 			return (
 				<BackgroundCard key={b.id} background={b} />
 			);
 		});
 
-		const structures = StructureData.getList().filter(s => s.packID === packID).map(s => {
+		const structures = StructureData.getList().filter(s => s.packID === pack.id).map(s => {
 			return (
 				<StructureCard key={s.id} structure={s} />
 			);
 		});
 
-		const items = ItemData.getList().filter(i => i.packID === packID).map(i => {
+		const items = ItemData.getList().filter(i => i.packID === pack.id).map(i => {
 			return (
 				<ItemCard key={i.id} item={i} />
 			);
 		});
 
-		const potions = PotionData.getList().filter(i => i.packID === packID).map(p => {
+		const potions = PotionData.getList().filter(i => i.packID === pack.id).map(p => {
 			return (
 				<ItemCard key={p.id} item={p} />
 			);
@@ -147,32 +151,31 @@ export class PacksModal extends Component<Props, State> {
 				description: 'The core cards for the game, available to all.'
 			};
 
-			const owned = PackLogic.getPacks()
-				.filter(pack => this.props.options.packIDs.includes(pack.id))
-				.map(pack => {
-					return (
-						<PackCard
-							key={pack.id}
-							pack={pack}
-							onClick={p => this.setState({ selectedPack: p })}
-							onRemove={this.props.options.developer ? p => this.props.removePack(p.id) : null}
-						/>
-					);
-				});
+			const ownedPacks = PackLogic.getPacks().filter(pack => (pack.id === '') || this.props.options.packIDs.includes(pack.id));
+			const notOwnedPacks = PackLogic.getPacks().filter(pack => (pack.id !== '') && !this.props.options.packIDs.includes(pack.id));
+
+			const owned = ownedPacks.map(pack => {
+				return (
+					<PackCard
+						key={pack.id}
+						pack={pack}
+						onClick={p => this.setState({ selectedPack: p })}
+						onRemove={this.props.options.developer ? p => this.props.removePack(p) : null}
+					/>
+				);
+			});
 			owned.unshift(
 				<PackCard key='core' pack={core} onClick={p => this.setState({ selectedPack: p })} />
 			);
-			const notOwned = PackLogic.getPacks()
-				.filter(pack => !this.props.options.packIDs.includes(pack.id))
-				.map(pack => {
-					return (
-						<PackCard
-							key={pack.id}
-							pack={pack}
-							onClick={p => this.setState({ selectedPack: p })}
-						/>
-					);
-				});
+			const notOwned = notOwnedPacks.map(pack => {
+				return (
+					<PackCard
+						key={pack.id}
+						pack={pack}
+						onClick={p => this.setState({ selectedPack: p })}
+					/>
+				);
+			});
 
 			return (
 				<div className='packs-modal'>
@@ -181,8 +184,8 @@ export class PacksModal extends Component<Props, State> {
 					{notOwned.length > 0 ? <Text type={TextType.SubHeading}>Available Packs</Text> : null}
 					{
 						notOwned.length > 1 ?
-							<button className='primary' onClick={() => this.props.addPacks()}>
-								Get All Packs
+							<button className='primary' onClick={() => this.props.addPacks(notOwnedPacks)}>
+								Get All Packs ({Format.toCurrency(this.props.getPrice(notOwnedPacks), '$')})
 							</button>
 							: null
 					}

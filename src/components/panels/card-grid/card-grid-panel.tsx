@@ -12,20 +12,21 @@ import { StructureData } from '../../../data/structure-data';
 import { CardType } from '../../../enums/card-type';
 
 import { GameLogic } from '../../../logic/game-logic';
-import { PackLogic } from '../../../logic/pack-logic';
 
 import type { ActionModel } from '../../../models/action';
 import type { FeatureModel } from '../../../models/feature';
+import type { OptionsModel } from '../../../models/options';
 
-import { Format } from '../../../utils/format';
+import type { Platform } from '../../../platform/platform';
 
 import { ActionCard, FeatureCard } from '../../cards';
 import { Badge, CardList, Dialog, StatValue, Text, TextType } from '../../controls';
 
 import './card-grid-panel.scss';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props {
+	options: OptionsModel
+	platform: Platform;
 }
 
 interface State {
@@ -295,11 +296,7 @@ export class CardGridPanel extends Component<Props, State> {
 								const name = pack ? pack.name : 'Skirmish';
 								return (
 									<div key={id} className='cell column-heading'>
-										<div className='pack-name'>{name}</div>
-										<div className='pack-stats'>
-											{pack ? <StatValue label='Cards' value={PackLogic.getPackCardCount(pack.id)}/> : null}
-											{pack ? <StatValue label='Price' value={Format.toCurrency(PackLogic.getPackPrice(pack.id), '$')}/> : null}
-										</div>
+										{name}
 									</div>
 								);
 							})

@@ -127,7 +127,7 @@ export class StrongholdPage extends Component<Props, State> {
 					charge = (
 						<StatValue
 							orientation='vertical'
-							label='Charges'
+							label='Charges Remaining'
 							value={
 								<div className='bolts'>
 									{bolts}
@@ -159,8 +159,8 @@ export class StrongholdPage extends Component<Props, State> {
 						</button>
 					</div>
 					<button onClick={() => this.sellStructure(this.state.selectedStructure as StructureModel)}>
-						<div>Sell<br/>structure</div>
-						<IconValue type={IconType.Money} value={StrongholdLogic.getStructureValue(this.state.selectedStructure)} size={IconSize.Button} />
+						<div>Demolish structure</div>
+						<IconValue type={IconType.Money} value={25} size={IconSize.Button} />
 					</button>
 					{charge !== null ? <hr /> : null}
 					{charge}
@@ -204,7 +204,7 @@ export class StrongholdPage extends Component<Props, State> {
 		if (GameLogic.getStructureDeck(this.props.options.packIDs).length > 0) {
 			addSection = (
 				<button disabled={this.props.game.money < 50} onClick={() => this.setState({ addingStructure: 'paid' })}>
-					<div>Buy a Structure</div>
+					<div>Build a Structure</div>
 					<IconValue type={IconType.Money} value={50} size={IconSize.Button} />
 				</button>
 			);

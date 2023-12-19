@@ -367,7 +367,7 @@ export class Main extends Component<Props, State> {
 			const game = this.state.game as GameModel;
 
 			game.stronghold = game.stronghold.filter(s => s.id !== structure.id);
-			game.money += StrongholdLogic.getStructureValue(structure);
+			game.money += 25;
 
 			this.setState({
 				game: game

@@ -43,19 +43,6 @@ export class EncounterStartModal extends Component<Props, State> {
 		};
 	}
 
-	selectAllHeroes = () => {
-		const heroes = this.props.game.heroes.filter(h => !this.state.selectedHeroes.includes(h));
-
-		let selected = this.state.selectedHeroes;
-		selected.push(...heroes);
-		selected = Collections.sort(selected, n => n.name);
-
-		this.setState({
-			viewMode: 'heroes',
-			selectedHeroes: selected
-		});
-	};
-
 	selectHero = (hero: CombatantModel) => {
 		let selected = this.state.selectedHeroes;
 		selected.push(hero);
@@ -78,7 +65,7 @@ export class EncounterStartModal extends Component<Props, State> {
 		this.props.startEncounter(this.props.region, this.state.selectedHeroes, this.state.benefits, this.state.detriments);
 	};
 
-	render = () => {
+	getHeroes = () => {
 		const candidates = this.props.game.heroes
 			.filter(h => !this.state.selectedHeroes.includes(h))
 			.map(h => {
@@ -87,92 +74,126 @@ export class EncounterStartModal extends Component<Props, State> {
 				);
 			});
 
+		const selected = this.state.selectedHeroes.map(h => <CombatantRowPanel key={h.id} mode='list' combatant={h} onCancel={hero => this.deselectHero(hero)} />);
+		while (selected.length < 5) {
+			selected.push(
+				<div key={selected.length} className='empty-hero-slot'>
+					[No hero selected]
+				</div>
+			);
+		}
+
+		return (
+			<div className='hero-page'>
+				<div className='hero-list-column'>
+					{
+						candidates.length === 0 ?
+							<div className='empty'>
+								<Text type={TextType.Small}>
+									<p>There are no more available heroes.</p>
+								</Text>
+							</div>
+							: null
+					}
+					<CardList cards={candidates} />
+				</div>
+				<div className='divider' />
+				<div className='hero-list-column'>
+					<div className='selected-hero-list'>
+						{
+							this.state.selectedHeroes.length === 0 ?
+								<Text type={TextType.Information}>
+									<p>Select <b>up to 5 heroes</b> to take part in this encounter.</p>
+								</Text>
+								: null
+						}
+						{selected}
+					</div>
+				</div>
+			</div>
+		);
+	};
+
+	getMonsters = () => {
+		const monsters = CampaignMapLogic.getMonsters(this.props.region, this.props.options.packIDs)
+			.map(species => (
+				<SpeciesCard key={species.id} species={species} />
+			));
+
+		return (
+			<div className='monster-page'>
+				<CardList cards={monsters} />
+			</div>
+		);
+	};
+
+	getAdvanced = () => {
+		const cards = [];
+
+		const ben = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Temple);
+		if ((ben > 0) || this.props.options.developer) {
+			cards.push(
+				<div key='bonuses' className='stronghold-benefit'>
+					<StrongholdBenefitCard
+						label='Bonuses'
+						available={ben}
+						used={this.state.benefits}
+						developer={this.props.options.developer}
+						onChange={value => this.setState({ benefits: value })}
+					/>
+					<Text>Allow some of your heroes to start with a random beneficial condition.</Text>
+				</div>
+			);
+		}
+
+		const det = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Intelligencer);
+		if ((det > 0) || this.props.options.developer) {
+			cards.push(
+				<div key='penalties' className='stronghold-benefit'>
+					<StrongholdBenefitCard
+						label='Penalties'
+						available={det}
+						used={this.state.detriments}
+						developer={this.props.options.developer}
+						onChange={value => this.setState({ detriments: value })}
+					/>
+					<Text>Force some of your opponents to start with a random detrimental condition.</Text>
+				</div>
+			);
+		}
+
+		return (
+			<div className='advanced-page'>
+				<CardList cards={cards} />
+			</div>
+		);
+	};
+
+	render = () => {
 		const options = [
 			{ id: 'heroes', display: 'Selected Heroes' },
-			{ id: 'monsters', display: 'Monsters' }
+			{ id: 'monsters', display: 'Monsters in this Region' }
 		];
 		const charges = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Temple) + StrongholdLogic.getStructureCharges(this.props.game, StructureType.Intelligencer);
 		if ((charges > 0) || this.props.options.developer) {
 			options.push({
 				id: 'advanced',
-				display: 'Advanced'
+				display: 'Advanced Options'
 			});
 		}
 
-		let rightContent = null;
+		let content = null;
 		switch (this.state.viewMode) {
 			case 'heroes': {
-				const selected = this.state.selectedHeroes.map(h => <CombatantRowPanel key={h.id} mode='list' combatant={h} onCancel={hero => this.deselectHero(hero)} />);
-				while (selected.length < 5) {
-					selected.push(
-						<div key={selected.length} className='empty-hero-slot'>
-							[No hero selected]
-						</div>
-					);
-				}
-				rightContent = (
-					<div className='selected-hero-list'>
-						{(candidates.length <=5) && (this.state.selectedHeroes.length === 0) ? <button className='primary' onClick={this.selectAllHeroes}>Add All Heroes</button> : null}
-						{selected}
-					</div>
-				);
+				content = this.getHeroes();
 				break;
 			}
 			case 'monsters': {
-				const monsters = CampaignMapLogic.getMonsters(this.props.region, this.props.options.packIDs)
-					.map(species => (
-						<SpeciesCard key={species.id} species={species} />
-					));
-
-				rightContent = (
-					<div className='monster-list'>
-						<Text type={TextType.SubHeading}>Monsters in this region</Text>
-						<CardList cards={monsters} />
-					</div>
-				);
+				content = this.getMonsters();
 				break;
 			}
 			case 'advanced': {
-				const cards = [];
-
-				const ben = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Temple);
-				if ((ben > 0) || this.props.options.developer) {
-					cards.push(
-						<div key='bonuses' className='stronghold-benefit'>
-							<StrongholdBenefitCard
-								label='Bonuses'
-								available={ben}
-								used={this.state.benefits}
-								developer={this.props.options.developer}
-								onChange={value => this.setState({ benefits: value })}
-							/>
-							<Text>Allow some of your heroes to start with a random beneficial condition.</Text>
-						</div>
-					);
-				}
-
-				const det = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Intelligencer);
-				if ((det > 0) || this.props.options.developer) {
-					cards.push(
-						<div key='penalties' className='stronghold-benefit'>
-							<StrongholdBenefitCard
-								label='Penalties'
-								available={det}
-								used={this.state.detriments}
-								developer={this.props.options.developer}
-								onChange={value => this.setState({ detriments: value })}
-							/>
-							<Text>Force some of your opponents to start with a random detrimental condition.</Text>
-						</div>
-					);
-				}
-
-				rightContent = (
-					<div className='advanced-options'>
-						<Text type={TextType.SubHeading}>Advanced Options</Text>
-						<CardList cards={cards} />
-					</div>
-				);
+				content = this.getAdvanced();
 				break;
 			}
 		}
@@ -182,31 +203,19 @@ export class EncounterStartModal extends Component<Props, State> {
 				<div className='header'>
 					<Text type={TextType.Heading}>Choose your Heroes</Text>
 				</div>
-				<div className='hero-lists'>
-					<div className={(candidates.length === 0) || (this.state.selectedHeroes.length >= 5) ? 'hero-list-column narrow' : 'hero-list-column'}>
-						<Text type={TextType.Information}>
-							<p>Select <b>up to 5 heroes</b> from this list to take part in this encounter.</p>
-						</Text>
-						<CardList cards={candidates} />
-					</div>
-					<div className='divider' />
-					<div className='hero-list-column'>
-						<Tabs
-							options={options}
-							selectedID={this.state.viewMode}
-							onSelect={id => this.setState({ viewMode: id })}
-						/>
-						{rightContent}
-						<hr />
-						<button
-							className='primary'
-							disabled={(this.state.selectedHeroes.length < 1) || (this.state.selectedHeroes.length > 5)}
-							onClick={this.startEncounter}
-						>
-							Start the Encounter
-						</button>
-					</div>
-				</div>
+				<Tabs
+					options={options}
+					selectedID={this.state.viewMode}
+					onSelect={id => this.setState({ viewMode: id })}
+				/>
+				{content}
+				<button
+					className='primary'
+					disabled={(this.state.selectedHeroes.length < 1) || (this.state.selectedHeroes.length > 5)}
+					onClick={this.startEncounter}
+				>
+					Start the Encounter
+				</button>
 			</div>
 		);
 	};

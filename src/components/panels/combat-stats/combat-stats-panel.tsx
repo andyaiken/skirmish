@@ -1,5 +1,6 @@
 import { IconHeartFilled, IconHeartOff } from '@tabler/icons-react';
 import { Component } from 'react';
+import { QuirkType } from '../../../enums/quirk-type';
 
 import { TraitType } from '../../../enums/trait-type';
 
@@ -19,25 +20,40 @@ interface Props {
 }
 
 export class CombatStatsPanel extends Component<Props> {
+	getHealth = () => {
+		if (this.props.combatant.quirks.includes(QuirkType.Drone)) {
+			return null;
+		}
+
+		let wounds: JSX.Element[] = [];
+		const resolveRank = EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Resolve);
+		for (let n = 0; n < resolveRank; ++n) {
+			wounds.push(n < this.props.combatant.combat.wounds ? <IconHeartOff key={n} size={30} /> : <IconHeartFilled key={n} className='heartbeat' size={30} />);
+		}
+		wounds.reverse();
+
+		const woundsPerRow = (wounds.length === 4) ? 2 : 3;
+		const woundsInRows: JSX.Element[] = [];
+		while (wounds.length > woundsPerRow) {
+			woundsInRows.push(<div key={woundsInRows.length} className='wounds'>{wounds.slice(0, woundsPerRow)}</div>);
+			wounds = wounds.slice(woundsPerRow);
+		}
+		if (wounds.length !== 0) {
+			woundsInRows.push(<div key={woundsInRows.length} className='wounds'>{wounds}</div>);
+		}
+
+		return (
+			<Box label='Health'>
+				<div className='combat-stats-row'>
+					<StatValue orientation='vertical' label='Damage' value={this.props.combatant.combat.damage} />
+					<StatValue orientation='vertical' label='Wounds' value={<div className='wounds-section'>{woundsInRows}</div>} />
+				</div>
+			</Box>
+		);
+	};
+
 	render = () => {
 		try {
-			let wounds: JSX.Element[] = [];
-			const resolveRank = EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Resolve);
-			for (let n = 0; n < resolveRank; ++n) {
-				wounds.push(n < this.props.combatant.combat.wounds ? <IconHeartOff key={n} size={30} /> : <IconHeartFilled key={n} className='heartbeat' size={30} />);
-			}
-			wounds.reverse();
-
-			const woundsPerRow = (wounds.length === 4) ? 2 : 3;
-			const woundsInRows: JSX.Element[] = [];
-			while (wounds.length > woundsPerRow) {
-				woundsInRows.push(<div key={woundsInRows.length} className='wounds'>{wounds.slice(0, woundsPerRow)}</div>);
-				wounds = wounds.slice(woundsPerRow);
-			}
-			if (wounds.length !== 0) {
-				woundsInRows.push(<div key={woundsInRows.length} className='wounds'>{wounds}</div>);
-			}
-
 			return (
 				<div className='combat-stats-panel'>
 					<Box label='This Round'>
@@ -47,12 +63,7 @@ export class CombatStatsPanel extends Component<Props> {
 							<StatValue orientation='vertical' label='Hidden' value={this.props.combatant.combat.hidden} />
 						</div>
 					</Box>
-					<Box label='Health'>
-						<div className='combat-stats-row'>
-							<StatValue orientation='vertical' label='Damage' value={this.props.combatant.combat.damage} />
-							<StatValue orientation='vertical' label='Wounds' value={<div className='wounds-section'>{woundsInRows}</div>} />
-						</div>
-					</Box>
+					{this.getHealth()}
 					<ConditionsPanel combatant={this.props.combatant} encounter={this.props.encounter} />
 				</div>
 			);

@@ -3,6 +3,7 @@ import { CardGridPanel } from './card-grid/card-grid-panel';
 import { CombatStatsPanel } from './combat-stats/combat-stats-panel';
 import { CombatantNotices } from './combatant-notices/combatant-notices';
 import { CombatantRowPanel } from './combatant-row/combatant-row-panel';
+import { ConditionsPanel } from './conditions/conditions-panel';
 import { DirectionPanel } from './direction/direction-panel';
 import { EncounterMapPanel } from './encounter-map/encounter-map-panel';
 import { InitiativeListPanel } from './initiative-list/initiative-list-panel';
@@ -16,6 +17,7 @@ export {
 	CombatStatsPanel,
 	CombatantNotices,
 	CombatantRowPanel,
+	ConditionsPanel,
 	DirectionPanel,
 	EncounterMapPanel,
 	InitiativeListPanel,

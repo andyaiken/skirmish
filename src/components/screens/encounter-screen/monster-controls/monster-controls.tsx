@@ -6,10 +6,9 @@ import type { CombatantModel } from '../../../../models/combatant';
 import type { EncounterModel } from '../../../../models/encounter';
 import type { OptionsModel } from '../../../../models/options';
 
-import { CombatantNotices, CombatantRowPanel } from '../../../panels';
+import { CombatStatsPanel, CombatantNotices, CombatantRowPanel } from '../../../panels';
 import { Expander, Text, TextType } from '../../../controls';
 import { ActionCard } from '../../../cards';
-import { ConditionsPanel } from '../../../panels/conditions/conditions-panel';
 
 import './monster-controls.scss';
 
@@ -58,11 +57,13 @@ export class MonsterControls extends Component<Props, State> {
 			let action = null;
 			if (this.props.combatant.combat.selectedAction) {
 				action = (
-					<ActionCard
-						action={this.props.combatant.combat.selectedAction.action}
-						footer={CombatantLogic.getActionSource(this.props.combatant, this.props.combatant.combat.selectedAction.action.id)}
-						footerType={CombatantLogic.getActionSourceType(this.props.combatant, this.props.combatant.combat.selectedAction.action.id)}
-					/>
+					<div className='selected-action-card'>
+						<ActionCard
+							action={this.props.combatant.combat.selectedAction.action}
+							footer={CombatantLogic.getActionSource(this.props.combatant, this.props.combatant.combat.selectedAction.action.id)}
+							footerType={CombatantLogic.getActionSourceType(this.props.combatant, this.props.combatant.combat.selectedAction.action.id)}
+						/>
+					</div>
 				);
 			}
 
@@ -89,16 +90,15 @@ export class MonsterControls extends Component<Props, State> {
 							/>
 							: null
 					}
-					<ConditionsPanel combatant={this.props.combatant} encounter={this.props.encounter} />
+					<CombatStatsPanel combatant={this.props.combatant} encounter={this.props.encounter} />
+					<hr />
 					<button disabled={this.state.thinking} onClick={this.runMonsterTurn}>{this.state.thinking ? 'Thinking' : 'Go'}</button>
 					{
 						this.props.options.developer ?
 							<button className='developer' disabled={this.state.thinking} onClick={() => this.props.switchAllegiance(this.props.combatant)}>Switch Allegiance</button>
 							: null
 					}
-					<div className='selected-action-card'>
-						{action}
-					</div>
+					{action}
 					<CombatantNotices combatant={this.props.combatant} />
 				</div>
 			);

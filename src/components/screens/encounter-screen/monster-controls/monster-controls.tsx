@@ -9,6 +9,7 @@ import type { OptionsModel } from '../../../../models/options';
 import { CombatantNotices, CombatantRowPanel } from '../../../panels';
 import { Expander, Text, TextType } from '../../../controls';
 import { ActionCard } from '../../../cards';
+import { ConditionsPanel } from '../../../panels/conditions/conditions-panel';
 
 import './monster-controls.scss';
 
@@ -88,6 +89,7 @@ export class MonsterControls extends Component<Props, State> {
 							/>
 							: null
 					}
+					<ConditionsPanel combatant={this.props.combatant} encounter={this.props.encounter} />
 					<button disabled={this.state.thinking} onClick={this.runMonsterTurn}>{this.state.thinking ? 'Thinking' : 'Go'}</button>
 					{
 						this.props.options.developer ?

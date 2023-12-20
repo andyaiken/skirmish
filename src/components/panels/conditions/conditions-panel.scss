@@ -1,0 +1,12 @@
+.conditions-panel {
+	.condition-row {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: 5px;
+
+		.details {
+			flex: 1 1 0;
+		}
+	}
+}

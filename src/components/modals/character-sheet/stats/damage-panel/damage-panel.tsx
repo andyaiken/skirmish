@@ -48,7 +48,7 @@ export class DamagePanel extends Component<Props> {
 			);
 		}
 
-		const physicalTypes = [ DamageType.Acid, DamageType.Edged, DamageType.Impact, DamageType.Piercing ];
+		const physicalTypes = [ DamageType.Edged, DamageType.Impact, DamageType.Piercing ];
 		const physicalValues = [ ...physicalTypes.map(type => ({ type: type, value: this.props.getValue(type) })) ];
 		let physical = null;
 		if (physicalValues.every(pair => pair.value === 0)) {
@@ -62,7 +62,7 @@ export class DamagePanel extends Component<Props> {
 		} else {
 			physical = (
 				<div>
-					{physicalTypes.map(type => <StatValue key={type} label={type} value={values.find(p => p.type === type)?.value || 0}/>)}
+					{physicalTypes.map(type => <StatValue key={type} label={'Physical: ' + type} value={values.find(p => p.type === type)?.value || 0}/>)}
 				</div>
 			);
 		}
@@ -81,12 +81,12 @@ export class DamagePanel extends Component<Props> {
 		} else {
 			energy = (
 				<div>
-					{energyTypes.map(type => <StatValue key={type} label={type} value={values.find(p => p.type === type)?.value || 0}/>)}
+					{energyTypes.map(type => <StatValue key={type} label={'Energy: ' + type} value={values.find(p => p.type === type)?.value || 0}/>)}
 				</div>
 			);
 		}
 
-		const corruptionTypes = [ DamageType.Decay, DamageType.Poison, DamageType.Psychic ];
+		const corruptionTypes = [ DamageType.Acid, DamageType.Decay, DamageType.Poison, DamageType.Psychic ];
 		const corruptionValues = [ ...corruptionTypes.map(type => ({ type: type, value: this.props.getValue(type) })) ];
 		let corruption = null;
 		if (corruptionValues.every(pair => pair.value === 0)) {
@@ -100,7 +100,7 @@ export class DamagePanel extends Component<Props> {
 		} else {
 			corruption = (
 				<div>
-					{corruptionTypes.map(type => <StatValue key={type} label={type} value={values.find(p => p.type === type)?.value || 0}/>)}
+					{corruptionTypes.map(type => <StatValue key={type} label={'Corruption: ' + type} value={values.find(p => p.type === type)?.value || 0}/>)}
 				</div>
 			);
 		}

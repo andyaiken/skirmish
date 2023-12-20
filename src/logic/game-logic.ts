@@ -98,14 +98,19 @@ export class GameLogic {
 
 	///////////////////////////////////////////////////////////////////////////
 
-	static getRandomAction = (item: ItemModel, packIDs: string[]) => {
-		const allActions: ActionModel[] = [];
-		GameLogic.getHeroSpeciesDeck(packIDs).forEach(s => allActions.push(...s.actions));
-		GameLogic.getMonsterSpeciesDeck(packIDs).forEach(s => allActions.push(...s.actions));
-		GameLogic.getRoleDeck(packIDs).forEach(r => allActions.push(...r.actions));
-		GameLogic.getBackgroundDeck(packIDs).forEach(b => allActions.push(...b.actions));
+	static getAllActions = (packIDs: string[]) => {
+		const actions: ActionModel[] = [];
 
-		const actions = allActions.filter(a => {
+		GameLogic.getHeroSpeciesDeck(packIDs).forEach(s => actions.push(...s.actions));
+		GameLogic.getMonsterSpeciesDeck(packIDs).forEach(s => actions.push(...s.actions));
+		GameLogic.getRoleDeck(packIDs).forEach(r => actions.push(...r.actions));
+		GameLogic.getBackgroundDeck(packIDs).forEach(b => actions.push(...b.actions));
+
+		return actions;
+	};
+
+	static getRandomAction = (item: ItemModel, packIDs: string[]) => {
+		const actions = GameLogic.getAllActions(packIDs).filter(a => {
 			// Ignore actions that require a different sort of item
 			const prerequisite = a.prerequisites.find(p => p.id === 'item');
 			if (prerequisite) {
@@ -144,7 +149,6 @@ export class GameLogic {
 				options.push(DamageType.Sonic);
 				break;
 			case DamageCategoryType.Physical:
-				options.push(DamageType.Acid);
 				options.push(DamageType.Edged);
 				options.push(DamageType.Impact);
 				options.push(DamageType.Piercing);
@@ -157,6 +161,7 @@ export class GameLogic {
 				options.push(DamageType.Sonic);
 				break;
 			case DamageCategoryType.Corruption:
+				options.push(DamageType.Acid);
 				options.push(DamageType.Decay);
 				options.push(DamageType.Poison);
 				options.push(DamageType.Psychic);
@@ -277,7 +282,6 @@ export class GameLogic {
 		switch (type) {
 			case DamageType.All:
 				return DamageCategoryType.All;
-			case DamageType.Acid:
 			case DamageType.Edged:
 			case DamageType.Impact:
 			case DamageType.Piercing:
@@ -288,6 +292,7 @@ export class GameLogic {
 			case DamageType.Light:
 			case DamageType.Sonic:
 				return DamageCategoryType.Energy;
+			case DamageType.Acid:
 			case DamageType.Decay:
 			case DamageType.Poison:
 			case DamageType.Psychic:

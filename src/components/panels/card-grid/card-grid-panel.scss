@@ -9,10 +9,6 @@
 			border: 0.5px solid rgb(220, 220, 220);
 			background-color: rgb(255, 255, 255);
 			padding: 5px;
-			max-height: 275px;
-			overflow-x: hidden;
-			overflow-y: auto;
-			-webkit-overflow-scrolling: touch;
 
 			&.column-heading {
 				display: flex;

@@ -1,7 +1,20 @@
 .dev-page {
 	height: 100%;
-	padding: 20px;
-	overflow-x: hidden;
-	overflow-y: auto;
-	-webkit-overflow-scrolling: touch;
+	padding: 10px 20px 20px 20px;
+	display: flex;
+	flex-direction: column;
+
+	.dev-page-content {
+		overflow-x: hidden;
+		overflow-y: auto;
+		-webkit-overflow-scrolling: touch;
+
+		.damage-container {
+			display: flex;
+
+			.damage-category {
+				flex: 1 1 0;
+			}
+		}
+	}
 }

@@ -450,6 +450,17 @@ export class RoleData {
 				effects: [
 					ActionEffects.destroyWalls()
 				]
+			},
+			{
+				id: 'barbarian-action-6',
+				name: 'Fury',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.self()
+				],
+				effects: [
+					ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Resolve, 5, DamageCategoryType.Physical))
+				]
 			}
 		]
 	});
@@ -1615,7 +1626,7 @@ export class RoleData {
 	static ninja = (): RoleModel => ({
 		id: 'role-ninja',
 		name: 'Ninja',
-		packID: '',
+		packID: PackData.skullduggery().id,
 		description: 'A martial artist who hones their abilities with extreme training and self-discipline.',
 		startingFeatures: [
 			FeatureLogic.createTraitFeature('ninja-start-1', TraitType.Speed, 1),
@@ -2416,6 +2427,121 @@ export class RoleData {
 		]
 	});
 
+	static valkyrie = (): RoleModel => ({
+		id: 'role-valkyrie',
+		name: 'Valkyrie',
+		packID: '',
+		description: 'Heavily armed and armored, valkyries are a force to be reckoned with.',
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('valkyrie-start-1', TraitType.Endurance, 1),
+			FeatureLogic.createTraitFeature('valkyrie-start-2', TraitType.Resolve, 1),
+			FeatureLogic.createSkillFeature('valkyrie-start-3', SkillType.Weapon, 2),
+			FeatureLogic.createProficiencyFeature('valkyrie-start-4', ItemProficiencyType.LargeWeapons),
+			FeatureLogic.createProficiencyFeature('valkyrie-start-5', ItemProficiencyType.HeavyArmor)
+		],
+		features: [
+			FeatureLogic.createTraitFeature('valkyrie-feature-1', TraitType.Endurance, 1),
+			FeatureLogic.createTraitFeature('valkyrie-feature-2', TraitType.Resolve, 1),
+			FeatureLogic.createSkillFeature('valkyrie-feature-3', SkillType.Weapon, 2)
+		],
+		actions: [
+			{
+				id: 'valkyrie-action-1',
+				name: 'Valhalla Charge',
+				prerequisites: [
+					ActionPrerequisites.meleeWeapon()
+				],
+				parameters: [
+					ActionWeaponParameters.melee(),
+					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 8)
+				],
+				effects: [
+					ActionEffects.moveToTargetSquare(),
+					ActionEffects.attack({
+						weapon: true,
+						skill: SkillType.Weapon,
+						trait: TraitType.Endurance,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealWeaponDamage(2)
+						]
+					})
+				]
+			},
+			{
+				id: 'valkyrie-action-2',
+				name: 'Onslaught',
+				prerequisites: [
+					ActionPrerequisites.meleeWeapon()
+				],
+				parameters: [
+					ActionWeaponParameters.melee(),
+					ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: true,
+						skill: SkillType.Weapon,
+						trait: TraitType.Endurance,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealWeaponDamage(),
+							ActionEffects.knockDown()
+						]
+					})
+				]
+			},
+			{
+				id: 'valkyrie-action-3',
+				name: 'Weakening Thrust',
+				prerequisites: [
+					ActionPrerequisites.meleeWeapon()
+				],
+				parameters: [
+					ActionWeaponParameters.melee(),
+					ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: true,
+						skill: SkillType.Weapon,
+						trait: TraitType.Endurance,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealWeaponDamage(-1),
+							ActionEffects.addCondition(ConditionLogic.createDamageCategoryPenaltyCondition(TraitType.Endurance, 3, DamageCategoryType.Physical)),
+							ActionEffects.addCondition(ConditionLogic.createDamageCategoryPenaltyCondition(TraitType.Endurance, 3, DamageCategoryType.Energy)),
+							ActionEffects.addCondition(ConditionLogic.createDamageCategoryPenaltyCondition(TraitType.Endurance, 3, DamageCategoryType.Corruption))
+						]
+					})
+				]
+			},
+			{
+				id: 'valkyrie-action-4',
+				name: 'Swirling Storm',
+				prerequisites: [
+					ActionPrerequisites.meleeWeapon()
+				],
+				parameters: [
+					ActionWeaponParameters.melee(),
+					ActionTargetParameters.weapon(ActionTargetType.Enemies, Number.MAX_VALUE, 0)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: true,
+						skill: SkillType.Weapon,
+						trait: TraitType.Endurance,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealWeaponDamage(),
+							ActionEffects.dealDamage(DamageType.Electricity, 1)
+						]
+					})
+				]
+			}
+		]
+	});
+
 	static getList = (): RoleModel[] => {
 		const list = [
 			RoleData.arcanist(),
@@ -2438,7 +2564,8 @@ export class RoleData {
 			RoleData.ranger(),
 			RoleData.sensei(),
 			RoleData.sorcerer(),
-			RoleData.warmage()
+			RoleData.warmage(),
+			RoleData.valkyrie()
 		];
 
 		list.forEach(n => {

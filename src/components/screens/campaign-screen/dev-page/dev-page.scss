@@ -16,5 +16,14 @@
 				flex: 1 1 0;
 			}
 		}
+
+		.effect-container {
+			display: flex;
+			flex-direction: column;
+
+			.effect-type {
+				flex: 1 1 0;
+			}
+		}
 	}
 }

@@ -35,7 +35,7 @@ export class DevPage extends Component<Props, State> {
 	}
 
 	getDamage = () => {
-		const checkEffects: (damage: DamageType, effects: ActionEffectModel[]) => boolean = (damage: DamageType, effects: ActionEffectModel[]) => {
+		const checkDamage: (damage: DamageType, effects: ActionEffectModel[]) => boolean = (damage: DamageType, effects: ActionEffectModel[]) => {
 			const found = effects.filter(e => e.id === 'damage').some(e => {
 				const data = e.data as { type: DamageType, rank: number };
 				return damage === data.type;
@@ -44,7 +44,7 @@ export class DevPage extends Component<Props, State> {
 				return true;
 			}
 
-			return effects.some(e => checkEffects(damage, e.children));
+			return effects.some(e => checkDamage(damage, e.children));
 		};
 
 		const categories = [
@@ -92,7 +92,7 @@ export class DevPage extends Component<Props, State> {
 											<div className='damage-actions'>
 												{
 													actions
-														.filter(a => checkEffects(type, a.effects))
+														.filter(a => checkDamage(type, a.effects))
 														.sort((a, b) => a.name.localeCompare(b.name))
 														.map(a => <Text key={a.id} type={TextType.Small}>{a.name}</Text>)
 												}
@@ -109,7 +109,37 @@ export class DevPage extends Component<Props, State> {
 	};
 
 	getEffects = () => {
-		//
+		const list: { id: string, data: unknown[] }[] = [];
+
+		const addToList = (effects: ActionEffectModel[]) => {
+			effects.forEach(e => {
+				let existing = list.find(item => item.id === e.id);
+				if (!existing) {
+					existing = { id: e.id, data: [] };
+					list.push(existing);
+				}
+				existing.data.push(e.data);
+				addToList(e.children);
+			});
+		};
+
+		const actions = GameLogic.getAllActions(PackData.getList().map(p => p.id));
+		actions.forEach(a => addToList(a.effects));
+
+		return (
+			<div className='effect-container'>
+				{list.map(item => {
+					return (
+						<div key={item.id} className='effect-type'>
+							<Text type={TextType.MinorHeading}>{item.id}</Text>
+							<div className='effect-data'>
+								{item.data.map((data, n) => <Text key={n} type={TextType.Small}>{JSON.stringify(data)}</Text>)}
+							</div>
+						</div>
+					);
+				})}
+			</div>
+		);
 	};
 
 	render = () => {
@@ -129,7 +159,7 @@ export class DevPage extends Component<Props, State> {
 					content = this.getDamage();
 					break;
 				case 'effects':
-					content = null;
+					content = this.getEffects();
 					break;
 			}
 

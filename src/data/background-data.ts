@@ -679,7 +679,10 @@ export class BackgroundData {
 			FeatureLogic.createTraitFeature('sentinel-feature-1', TraitType.Endurance, 1),
 			FeatureLogic.createTraitFeature('sentinel-feature-2', TraitType.Resolve, 1),
 			FeatureLogic.createDamageResistFeature('sentinel-feature-3', DamageType.All, 1),
-			FeatureLogic.createAuraFeature('sentinel-feature-4', ConditionType.MovementPenalty, 1)
+			FeatureLogic.createAuraFeature('sentinel-feature-4', ConditionType.MovementPenalty, 1),
+			FeatureLogic.createAuraDamageCategoryFeature('sentinel-feature-5', ConditionType.DamageCategoryResistance, DamageCategoryType.Physical, 3),
+			FeatureLogic.createAuraDamageCategoryFeature('sentinel-feature-6', ConditionType.DamageCategoryResistance, DamageCategoryType.Energy, 3),
+			FeatureLogic.createAuraDamageCategoryFeature('sentinel-feature-7', ConditionType.DamageCategoryResistance, DamageCategoryType.Corruption, 3)
 		],
 		actions: [
 			{

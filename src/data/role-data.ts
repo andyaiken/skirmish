@@ -1738,17 +1738,18 @@ export class RoleData {
 		packID: PackData.faith().id,
 		description: 'A holy warrior, driven by unwavering faith.',
 		startingFeatures: [
-			FeatureLogic.createTraitFeature('paladin-start-1', TraitType.Resolve, 1),
-			FeatureLogic.createSkillFeature('paladin-start-2', SkillType.Presence, 2),
-			FeatureLogic.createSkillFeature('paladin-start-3', SkillType.Weapon, 2),
-			FeatureLogic.createProficiencyFeature('paladin-start-4', ItemProficiencyType.MilitaryWeapons),
-			FeatureLogic.createProficiencyFeature('paladin-start-5', ItemProficiencyType.HeavyArmor),
-			FeatureLogic.createProficiencyFeature('paladin-start-6', ItemProficiencyType.Shields)
+			FeatureLogic.createSkillFeature('paladin-start-1', SkillType.Presence, 2),
+			FeatureLogic.createSkillFeature('paladin-start-2', SkillType.Weapon, 2),
+			FeatureLogic.createProficiencyFeature('paladin-start-3', ItemProficiencyType.MilitaryWeapons),
+			FeatureLogic.createProficiencyFeature('paladin-start-4', ItemProficiencyType.HeavyArmor),
+			FeatureLogic.createProficiencyFeature('paladin-start-5', ItemProficiencyType.Shields)
 		],
 		features: [
-			FeatureLogic.createTraitFeature('paladin-feature-1', TraitType.Resolve, 1),
-			FeatureLogic.createSkillFeature('paladin-feature-2', SkillType.Presence, 2),
-			FeatureLogic.createSkillFeature('paladin-feature-3', SkillType.Weapon, 2)
+			FeatureLogic.createSkillFeature('paladin-feature-1', SkillType.Presence, 2),
+			FeatureLogic.createSkillFeature('paladin-feature-2', SkillType.Weapon, 2),
+			FeatureLogic.createAuraDamageCategoryFeature('paladin-feature-3', ConditionType.DamageCategoryResistance, DamageCategoryType.Physical, 3),
+			FeatureLogic.createAuraDamageCategoryFeature('paladin-feature-4', ConditionType.DamageCategoryResistance, DamageCategoryType.Energy, 3),
+			FeatureLogic.createAuraDamageCategoryFeature('paladin-feature-5', ConditionType.DamageCategoryResistance, DamageCategoryType.Corruption, 3)
 		],
 		actions: [
 			{
@@ -1878,7 +1879,7 @@ export class RoleData {
 						trait: TraitType.Resolve,
 						skillBonus: 0,
 						hit: [
-							ActionEffects.dealDamage(DamageType.Psychic, 3)
+							ActionEffects.dealDamage(DamageType.Psychic, 4)
 						]
 					})
 				]
@@ -1897,7 +1898,7 @@ export class RoleData {
 						trait: TraitType.Resolve,
 						skillBonus: 0,
 						hit: [
-							ActionEffects.addCondition(ConditionLogic.createDamagePenaltyCondition(TraitType.Resolve, 5, DamageType.All))
+							ActionEffects.addCondition(ConditionLogic.createDamagePenaltyCondition(TraitType.Resolve, 6, DamageType.All))
 						]
 					})
 				]
@@ -1916,7 +1917,7 @@ export class RoleData {
 						trait: TraitType.Resolve,
 						skillBonus: 0,
 						hit: [
-							ActionEffects.dealDamage(DamageType.Psychic, 4)
+							ActionEffects.dealDamage(DamageType.Psychic, 5)
 						]
 					})
 				]

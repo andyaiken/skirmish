@@ -1,19 +1,13 @@
 import { Component } from 'react';
 
-import { PackData } from '../../../../data/pack-data';
-
-import { DamageCategoryType } from '../../../../enums/damage-category-type';
-import { DamageType } from '../../../../enums/damage-type';
-
-import { GameLogic } from '../../../../logic/game-logic';
-
-import type { ActionEffectModel } from '../../../../models/action';
 import type { OptionsModel } from '../../../../models/options';
 
 import { Platform } from '../../../../platform/platform';
 
-import { Selector, Text, TextType } from '../../../controls';
-import { CardGridPanel } from '../../../panels';
+import { CardListPanel } from './card-list/card-list-panel';
+import { DamageListPanel } from './damage-list/damage-list-panel';
+import { EffectListPanel } from './effect-list/effect-list-panel';
+import { Selector } from '../../../controls';
 
 import './dev-page.scss';
 
@@ -34,114 +28,6 @@ export class DevPage extends Component<Props, State> {
 		};
 	}
 
-	getDamage = () => {
-		const checkDamage: (damage: DamageType, effects: ActionEffectModel[]) => boolean = (damage: DamageType, effects: ActionEffectModel[]) => {
-			const found = effects.filter(e => e.id === 'damage').some(e => {
-				const data = e.data as { type: DamageType, rank: number };
-				return damage === data.type;
-			});
-			if (found) {
-				return true;
-			}
-
-			return effects.some(e => checkDamage(damage, e.children));
-		};
-
-		const categories = [
-			{
-				category: DamageCategoryType.Physical,
-				types: [
-					DamageType.Edged,
-					DamageType.Impact,
-					DamageType.Piercing
-				]
-			},
-			{
-				category: DamageCategoryType.Energy,
-				types: [
-					DamageType.Cold,
-					DamageType.Electricity,
-					DamageType.Fire,
-					DamageType.Light,
-					DamageType.Sonic
-				]
-			},
-			{
-				category: DamageCategoryType.Corruption,
-				types: [
-					DamageType.Acid,
-					DamageType.Decay,
-					DamageType.Poison,
-					DamageType.Psychic
-				]
-			}
-		];
-		const actions = GameLogic.getAllActions(PackData.getList().map(p => p.id));
-
-		return (
-			<div className='damage-container'>
-				{categories.map(c => {
-					return (
-						<div key={c.category} className='damage-category'>
-							<Text type={TextType.SubHeading}>{c.category}</Text>
-							<div>
-								{c.types.map(type => {
-									return (
-										<div key={type} className='damage-type'>
-											<Text type={TextType.MinorHeading}>{type}</Text>
-											<div className='damage-actions'>
-												{
-													actions
-														.filter(a => checkDamage(type, a.effects))
-														.sort((a, b) => a.name.localeCompare(b.name))
-														.map(a => <Text key={a.id} type={TextType.Small}>{a.name}</Text>)
-												}
-											</div>
-										</div>
-									);
-								})}
-							</div>
-						</div>
-					);
-				})}
-			</div>
-		);
-	};
-
-	getEffects = () => {
-		const list: { id: string, data: unknown[] }[] = [];
-
-		const addToList = (effects: ActionEffectModel[]) => {
-			effects.forEach(e => {
-				let existing = list.find(item => item.id === e.id);
-				if (!existing) {
-					existing = { id: e.id, data: [] };
-					list.push(existing);
-				}
-				existing.data.push(e.data);
-				addToList(e.children);
-			});
-		};
-
-		const actions = GameLogic.getAllActions(PackData.getList().map(p => p.id));
-		actions.forEach(a => addToList(a.effects));
-
-		return (
-			<div className='effect-container'>
-				{list.map(item => {
-					return (
-						<div key={item.id} className='effect-type'>
-							<Text type={TextType.MinorHeading}>{item.id}</Text>
-							<div className='effect-data'>
-								{item.data.map((data, n) => <Text key={n} type={TextType.Small}>{JSON.stringify(data)}</Text>)}
-							</div>
-						</div>
-					);
-				})}
-			</div>
-		);
-	};
-
 	render = () => {
 		try {
 			const options = [
@@ -153,13 +39,13 @@ export class DevPage extends Component<Props, State> {
 			let content = null;
 			switch (this.state.view) {
 				case 'cards':
-					content = <CardGridPanel options={this.props.options} platform={this.props.platform} />;
+					content = <CardListPanel options={this.props.options} platform={this.props.platform} />;
 					break;
 				case 'damage':
-					content = this.getDamage();
+					content = <DamageListPanel options={this.props.options} platform={this.props.platform} />;
 					break;
 				case 'effects':
-					content = this.getEffects();
+					content = <EffectListPanel options={this.props.options} platform={this.props.platform} />;
 					break;
 			}
 

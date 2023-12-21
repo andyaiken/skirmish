@@ -734,7 +734,7 @@ export class HeroSpeciesData {
 			},
 			{
 				id: 'werewolf-action-3',
-				name: 'Rending Claws',
+				name: 'Maul',
 				prerequisites: [
 					ActionPrerequisites.emptyHand()
 				],

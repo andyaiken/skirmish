@@ -8,22 +8,5 @@
 		overflow-x: hidden;
 		overflow-y: auto;
 		-webkit-overflow-scrolling: touch;
-
-		.damage-container {
-			display: flex;
-
-			.damage-category {
-				flex: 1 1 0;
-			}
-		}
-
-		.effect-container {
-			display: flex;
-			flex-direction: column;
-
-			.effect-type {
-				flex: 1 1 0;
-			}
-		}
 	}
 }

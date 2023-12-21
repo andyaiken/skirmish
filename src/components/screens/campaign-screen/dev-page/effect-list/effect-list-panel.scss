@@ -1,0 +1,8 @@
+.effect-list-panel {
+	display: flex;
+	flex-direction: column;
+
+	.effect-type {
+		flex: 1 1 0;
+	}
+}

@@ -145,11 +145,17 @@ export class PacksModal extends Component<Props, State> {
 
 	render = () => {
 		try {
-			const core = {
-				id: '',
-				name: 'Skirmish',
-				description: 'The core cards for the game, available to all.'
-			};
+			const core = (
+				<PackCard
+					key='core'
+					pack={{
+						id: '',
+						name: 'Skirmish',
+						description: 'The core cards for the game, available to all.'
+					}}
+					onClick={p => this.setState({ selectedPack: p })}
+				/>
+			);
 
 			const ownedPacks = PackLogic.getPacks().filter(pack => (pack.id === '') || this.props.options.packIDs.includes(pack.id));
 			const notOwnedPacks = PackLogic.getPacks().filter(pack => (pack.id !== '') && !this.props.options.packIDs.includes(pack.id));
@@ -164,9 +170,6 @@ export class PacksModal extends Component<Props, State> {
 					/>
 				);
 			});
-			owned.unshift(
-				<PackCard key='core' pack={core} onClick={p => this.setState({ selectedPack: p })} />
-			);
 			const notOwned = notOwnedPacks.map(pack => {
 				return (
 					<PackCard
@@ -180,6 +183,9 @@ export class PacksModal extends Component<Props, State> {
 			return (
 				<div className='packs-modal'>
 					<Text type={TextType.Heading}>Card Packs</Text>
+					<hr />
+					<Text type={TextType.SubHeading}>Core Game</Text>
+					<CardList cards={[ core ]} />
 					<hr />
 					{notOwned.length > 0 ? <Text type={TextType.SubHeading}>Available Packs</Text> : null}
 					{

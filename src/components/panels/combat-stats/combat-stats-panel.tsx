@@ -28,7 +28,7 @@ export class CombatStatsPanel extends Component<Props> {
 		let wounds: JSX.Element[] = [];
 		const resolveRank = EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Resolve);
 		for (let n = 0; n < resolveRank; ++n) {
-			wounds.push(n < this.props.combatant.combat.wounds ? <IconHeartOff key={n} size={30} /> : <IconHeartFilled key={n} className='heartbeat' size={30} />);
+			wounds.push(n < this.props.combatant.combat.wounds ? <IconHeartOff key={n} size={25} /> : <IconHeartFilled key={n} className='heartbeat' size={25} />);
 		}
 		wounds.reverse();
 

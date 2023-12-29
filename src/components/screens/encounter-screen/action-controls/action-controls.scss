@@ -1,11 +1,23 @@
 .action-controls {
 
 	&.collapsed {
-		height: 40px;
+		height: 45px;
 
 		.action-controls-content {
 			pointer-events: none;
 		}
+	}
+
+	.banner {
+		background-color: rgb(220, 220, 220);
+		color: rgb(100, 100, 100);
+		font-size: 11px;
+		height: 20px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 5px;
+		margin-bottom: 5px;
 	}
 
 	.action-controls-content {

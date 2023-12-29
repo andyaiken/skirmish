@@ -30,9 +30,9 @@ export class HeroEndturn extends Component<Props> {
 							label='Action Taken'
 							value={
 								this.props.combatant.combat.selectedAction && this.props.combatant.combat.selectedAction.used ?
-									<IconCircleCheckFilled className='checked' size={50} />
+									<IconCircleCheckFilled className='checked' size={40} />
 									:
-									<IconX size={50} />}
+									<IconX size={40} />}
 						/>
 					</div>
 					<button className='primary' onClick={this.props.endTurn}>End your Turn</button>

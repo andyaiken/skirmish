@@ -29,6 +29,7 @@ interface Props {
 	developer: boolean;
 	currentActionParameter: ActionParameterModel | null;
 	collapsed: boolean;
+	toggleCollapsed: () => void;
 	drawActions: (encounter: EncounterModel, combatant: CombatantModel, useCharge: StructureType | null) => void;
 	selectAction: (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => void;
 	deselectAction: (encounter: EncounterModel, combatant: CombatantModel) => void;
@@ -94,7 +95,7 @@ export class ActionControls extends Component<Props> {
 		}
 
 		return (
-			<div className='action-controls-content' key='not-selected'>
+			<div key='not-selected' className='action-controls-content'>
 				{actionCards}
 				{benefit ? <div className='separator' /> : null}
 				{benefit}
@@ -353,7 +354,7 @@ export class ActionControls extends Component<Props> {
 		});
 
 		return (
-			<div className='action-controls-content' key={action.id}>
+			<div key={action.id} className='action-controls-content'>
 				<ActionCard
 					action={action}
 					footer={CombatantLogic.getActionSource(this.props.combatant, action.id)}
@@ -399,7 +400,7 @@ export class ActionControls extends Component<Props> {
 		}
 
 		return (
-			<div className='action-controls-content' key={action.id + ' used'}>
+			<div key={action.id + ' used'} className='action-controls-content'>
 				<ActionCard
 					action={action}
 					footer={CombatantLogic.getActionSource(this.props.combatant, action.id)}
@@ -420,6 +421,7 @@ export class ActionControls extends Component<Props> {
 
 	render = () => {
 		try {
+			let banner = null;
 			let content = null;
 			if (this.props.combatant.combat.selectedAction) {
 				if (this.props.combatant.combat.selectedAction.used) {
@@ -428,11 +430,27 @@ export class ActionControls extends Component<Props> {
 					content = this.getInProgress(this.props.combatant.combat.selectedAction.action);
 				}
 			} else {
+				if (!this.props.collapsed) {
+					banner = (
+						<div className='banner'>
+							Scroll left and right to see all the action cards in your hand.
+						</div>
+					);
+				}
 				content = this.getNotSelected();
 			}
 
 			return (
-				<div className={`action-controls ${this.props.collapsed ? 'collapsed' : 'expanded'}`} key={this.props.combatant.id}>
+				<div
+					key={this.props.combatant.id}
+					className={`action-controls ${this.props.collapsed ? 'collapsed' : 'expanded'}`}
+					onClick={() => {
+						if (this.props.collapsed) {
+							this.props.toggleCollapsed();
+						}
+					}}
+				>
+					{banner}
 					{content}
 				</div>
 			);

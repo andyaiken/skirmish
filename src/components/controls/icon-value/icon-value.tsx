@@ -37,7 +37,7 @@ export class IconValue extends Component<Props> {
 			case IconSize.Button:
 				return 15;
 			case IconSize.Large:
-				return 40;
+				return 30;
 		}
 
 		return 15;

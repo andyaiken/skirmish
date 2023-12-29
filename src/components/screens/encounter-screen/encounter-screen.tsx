@@ -557,6 +557,7 @@ export class EncounterScreen extends Component<Props, State> {
 						developer={this.props.options.developer}
 						currentActionParameter={this.state.selectedActionParameter}
 						collapsed={!this.state.showBottomPanel}
+						toggleCollapsed={() => this.setState({ showBottomPanel: !this.state.showBottomPanel })}
 						drawActions={this.props.drawActions}
 						selectAction={this.selectAction}
 						deselectAction={this.props.deselectAction}

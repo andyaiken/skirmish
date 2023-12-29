@@ -80,8 +80,8 @@ export class CharacterSheetModal extends Component<Props, State> {
 				const options = [
 					{ id: 'stats', display: 'Statistics' },
 					{ id: 'items', display: 'Equipment' },
-					{ id: 'features', display: 'Features' },
-					{ id: 'actions', display: 'Actions' }
+					{ id: 'features', display: 'Feature Cards' },
+					{ id: 'actions', display: 'Action Cards' }
 				];
 
 				const hasXP = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Academy) > 0;

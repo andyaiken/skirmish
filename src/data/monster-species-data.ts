@@ -1094,9 +1094,9 @@ export class MonsterSpeciesData {
 		]
 	});
 
-	static stingerSwarm = (): SpeciesModel => ({
-		id: 'species-stinger-swarm',
-		name: 'Stinger Swarm',
+	static vespineSwarm = (): SpeciesModel => ({
+		id: 'species-vespine-swarm',
+		name: 'Vespine Swarm',
 		packID: PackData.beasts().id,
 		description: 'A swarm of fast-moving flying insects.',
 		type: CombatantType.Monster,
@@ -1106,18 +1106,18 @@ export class MonsterSpeciesData {
 			QuirkType.Swarm
 		],
 		startingFeatures: [
-			FeatureLogic.createSkillFeature('stinger-swarm-start-1', SkillType.Brawl, 2),
-			FeatureLogic.createTraitFeature('stinger-swarm-start-2', TraitType.Speed, 1),
-			FeatureLogic.createDamageBonusFeature('stinger-swarm-start-3', DamageType.Poison, 1)
+			FeatureLogic.createSkillFeature('vespine-swarm-start-1', SkillType.Brawl, 2),
+			FeatureLogic.createTraitFeature('vespine-swarm-start-2', TraitType.Speed, 1),
+			FeatureLogic.createDamageBonusFeature('vespine-swarm-start-3', DamageType.Poison, 1)
 		],
 		features: [
-			FeatureLogic.createSkillFeature('stinger-swarm-feature-1', SkillType.Brawl, 2),
-			FeatureLogic.createTraitFeature('stinger-swarm-feature-2', TraitType.Speed, 1),
-			FeatureLogic.createDamageBonusFeature('stinger-swarm-feature-3', DamageType.Poison, 1)
+			FeatureLogic.createSkillFeature('vespine-swarm-feature-1', SkillType.Brawl, 2),
+			FeatureLogic.createTraitFeature('vespine-swarm-feature-2', TraitType.Speed, 1),
+			FeatureLogic.createDamageBonusFeature('vespine-swarm-feature-3', DamageType.Poison, 1)
 		],
 		actions: [
 			{
-				id: 'stinger-swarm-action-1',
+				id: 'vespine-swarm-action-1',
 				name: 'Follow Scent',
 				prerequisites: [],
 				parameters: [
@@ -1129,7 +1129,7 @@ export class MonsterSpeciesData {
 				]
 			},
 			{
-				id: 'stinger-swarm-action-2',
+				id: 'vespine-swarm-action-2',
 				name: 'Sting',
 				prerequisites: [],
 				parameters: [
@@ -1721,7 +1721,7 @@ export class MonsterSpeciesData {
 			MonsterSpeciesData.giantSpider(),
 			MonsterSpeciesData.ratSwarm(),
 			MonsterSpeciesData.scarab(),
-			MonsterSpeciesData.stingerSwarm(),
+			MonsterSpeciesData.vespineSwarm(),
 			MonsterSpeciesData.wolf(),
 			// Undead
 			MonsterSpeciesData.skeleton(),

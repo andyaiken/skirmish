@@ -161,10 +161,6 @@ button {
 		color: rgb(75, 75, 75);
 		cursor: pointer;
 
-		&:hover {
-			background-color: rgb(200, 230, 255);
-		}
-
 		&.primary {
 			background-color: rgb(95, 185, 255);
 			color: rgb(255, 255, 255);
@@ -178,10 +174,6 @@ button {
 	&.danger:not(:disabled) {
 		border-color: rgb(160, 0, 0);
 		color: rgb(160, 0, 0);
-
-		&:hover {
-			background-color: rgb(255, 230, 230);
-		}
 	}
 }
 

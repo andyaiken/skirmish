@@ -94,6 +94,7 @@ interface State {
 	detailsCombatant: CombatantModel | null;
 	detailsLoot: LootPileModel | null;
 	detailsToast: Toast | null;
+	thinking: boolean;
 }
 
 export class EncounterScreen extends Component<Props, State> {
@@ -113,7 +114,8 @@ export class EncounterScreen extends Component<Props, State> {
 			manualEncounterState: EncounterState.Active,
 			detailsCombatant: null,
 			detailsLoot: null,
-			detailsToast: null
+			detailsToast: null,
+			thinking: false
 		};
 	}
 
@@ -438,20 +440,20 @@ export class EncounterScreen extends Component<Props, State> {
 		});
 	};
 
-	getLeftControls = () => {
-		if (this.state.showLeftPanel) {
-			return (
-				<div className='encounter-left-column'>
-					<InitiativeListPanel
-						encounter={this.props.encounter}
-						selectedIDs={this.state.selectedCombatantIDs}
-						onSelect={this.selectCombatant}
-					/>
-				</div>
-			);
-		}
+	runMonsterTurn = () => {
+		const currentCombatant = EncounterLogic.getActiveCombatants(this.props.encounter).find(c => c.combat.current) || null;
 
-		return null;
+		if (currentCombatant && (currentCombatant.faction === CombatantType.Monster)) {
+			this.setState({
+				thinking: true
+			}, () => {
+				this.props.runMonsterTurn(this.props.encounter, currentCombatant as CombatantModel, () => {
+					this.setState({
+						thinking: false
+					});
+				});
+			});
+		}
 	};
 
 	getTopControls = () => {
@@ -461,9 +463,7 @@ export class EncounterScreen extends Component<Props, State> {
 		}
 
 		if (state !== EncounterState.Active) {
-			return (
-				<div className='encounter-top-panel' />
-			);
+			return null;
 		}
 
 		if (this.state.selectedCombatantIDs.length === 1) {
@@ -490,6 +490,8 @@ export class EncounterScreen extends Component<Props, State> {
 				);
 			}
 		}
+
+		const currentCombatant = EncounterLogic.getActiveCombatants(this.props.encounter).find(c => c.combat.current) || null;
 
 		return (
 			<div className='encounter-top-panel'>
@@ -534,8 +536,43 @@ export class EncounterScreen extends Component<Props, State> {
 						{this.props.options.developer && this.props.hasExceptions ? <IconHelpCircleFilled /> : <IconHelpCircle />}
 					</button>
 				</div>
+				{
+					currentCombatant !== null ?
+						<div className='icon-section'>
+							{
+								currentCombatant.faction === CombatantType.Hero ?
+									<button className='primary' onClick={() => this.endTurn()}>End My Turn</button>
+									: null
+							}
+							{
+								currentCombatant.faction === CombatantType.Monster ?
+									<button className='primary' disabled={this.state.thinking} onClick={() => this.runMonsterTurn()}>Take Monster Turn</button>
+									: null
+							}
+						</div>
+						:
+						<div className='icon-section'>
+							<button className='primary' onClick={() => this.props.rollInitiative()}>Roll Initiative</button>
+						</div>
+				}
 			</div>
 		);
+	};
+
+	getLeftControls = () => {
+		if (this.state.showLeftPanel) {
+			return (
+				<div className='encounter-left-column'>
+					<InitiativeListPanel
+						encounter={this.props.encounter}
+						selectedIDs={this.state.selectedCombatantIDs}
+						onSelect={this.selectCombatant}
+					/>
+				</div>
+			);
+		}
+
+		return null;
 	};
 
 	getBottomControls = () => {
@@ -581,14 +618,16 @@ export class EncounterScreen extends Component<Props, State> {
 		}
 		if (state !== EncounterState.Active) {
 			return (
-				<EncounterControls
-					encounter={this.props.encounter}
-					game={this.props.game}
-					options={this.props.options}
-					state={state}
-					setEncounterState={this.setManualEncounterState}
-					finishEncounter={this.props.finishEncounter}
-				/>
+				<div className='encounter-right-column'>
+					<EncounterControls
+						encounter={this.props.encounter}
+						game={this.props.game}
+						options={this.props.options}
+						state={state}
+						setEncounterState={this.setManualEncounterState}
+						finishEncounter={this.props.finishEncounter}
+					/>
+				</div>
 			);
 		}
 
@@ -599,167 +638,211 @@ export class EncounterScreen extends Component<Props, State> {
 			const stunned = currentCombatant.combat.stunned;
 			if (unconscious || dead || stunned) {
 				return (
-					<InactiveControls
-						combatant={currentCombatant}
-						encounter={this.props.encounter}
-						options={this.props.options}
-						showToken={() => this.scrollToCombatant('current')}
-						showCharacterSheet={this.showDetailsCombatant}
-						endTurn={this.endTurn}
-					/>
+					<div className='encounter-right-column'>
+						<InactiveControls
+							combatant={currentCombatant}
+							encounter={this.props.encounter}
+							options={this.props.options}
+							showToken={() => this.scrollToCombatant('current')}
+							showCharacterSheet={this.showDetailsCombatant}
+							endTurn={this.endTurn}
+						/>
+					</div>
 				);
 			}
 
 			if (currentCombatant.faction === CombatantType.Monster) {
 				return (
-					<MonsterControls
+					<div className='encounter-right-column'>
+						<MonsterControls
+							combatant={currentCombatant}
+							encounter={this.props.encounter}
+							options={this.props.options}
+							showToken={() => this.scrollToCombatant('current')}
+							showCharacterSheet={this.showDetailsCombatant}
+							switchAllegiance={this.props.switchAllegiance}
+						/>
+					</div>
+				);
+			}
+
+			return (
+				<div className='encounter-right-column'>
+					<HeroControls
 						combatant={currentCombatant}
 						encounter={this.props.encounter}
 						options={this.props.options}
 						showToken={() => this.scrollToCombatant('current')}
 						showCharacterSheet={this.showDetailsCombatant}
+						move={this.move}
+						addMovement={this.props.addMovement}
+						inspire={this.props.inspire}
+						scan={this.props.scan}
+						hide={this.props.hide}
 						switchAllegiance={this.props.switchAllegiance}
-						runMonsterTurn={this.props.runMonsterTurn}
+						drinkPotion={this.props.drinkPotion}
 					/>
-				);
-			}
-
-			return (
-				<HeroControls
-					combatant={currentCombatant}
-					encounter={this.props.encounter}
-					options={this.props.options}
-					showToken={() => this.scrollToCombatant('current')}
-					showCharacterSheet={this.showDetailsCombatant}
-					move={this.move}
-					addMovement={this.props.addMovement}
-					inspire={this.props.inspire}
-					scan={this.props.scan}
-					hide={this.props.hide}
-					switchAllegiance={this.props.switchAllegiance}
-					drinkPotion={this.props.drinkPotion}
-					endTurn={this.endTurn}
-				/>
+				</div>
 			);
 		}
 
 		return (
-			<RoundControls
-				encounter={this.props.encounter}
-				game={this.props.game}
-				options={this.props.options}
-				rollInitiative={this.props.rollInitiative}
-				regenerateEncounterMap={this.props.regenerateEncounterMap}
-				addHeroToEncounter={this.props.addHeroToEncounter}
-			/>
+			<div className='encounter-right-column'>
+				<RoundControls
+					encounter={this.props.encounter}
+					game={this.props.game}
+					options={this.props.options}
+					regenerateEncounterMap={this.props.regenerateEncounterMap}
+					addHeroToEncounter={this.props.addHeroToEncounter}
+				/>
+			</div>
 		);
+	};
+
+	getDialog = () => {
+		if (this.state.detailsCombatant) {
+			return (
+				<Dialog
+					content={
+						<CharacterSheetModal
+							combatant={this.state.detailsCombatant}
+							game={this.props.game}
+							developer={this.props.options.developer}
+							equipItem={this.props.equipItem}
+							unequipItem={this.props.unequipItem}
+							pickUpItem={this.props.pickUpItem}
+							dropItem={this.props.dropItem}
+							levelUp={() => null}
+							retireHero={() => null}
+							useCharge={this.props.useCharge}
+						/>
+					}
+					onClose={() => this.clearDetails()}
+				/>
+			);
+		}
+
+		if (this.state.detailsLoot) {
+			const cards = this.state.detailsLoot.items.map(i => <ItemCard key={i.id} item={i} />);
+			if (this.state.detailsLoot.money > 0) {
+				cards.push(
+					<PlayingCard
+						type={CardType.Item}
+						front={
+							<PlaceholderCard
+								content={
+									<div className='treasure-money'>
+										<IconValue
+											type={IconType.Money}
+											value={this.state.detailsLoot.money}
+											size={IconSize.Large}
+										/>
+									</div>
+								}
+							/>
+						}
+						footerText='Money'
+					/>
+				);
+			}
+			return (
+				<Dialog
+					content={
+						<div>
+							<Text type={TextType.Heading}>Treasure</Text>
+							<hr />
+							<CardList cards={cards} />
+						</div>
+					}
+					onClose={() => this.clearDetails()}
+				/>
+			);
+		}
+
+		if (this.state.detailsToast) {
+			const fn = this.state.detailsToast.message as (t: Toast) => object;
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const lines: string[] = (fn(this.state.detailsToast) as any).props.children.map((n: any) => n.props.children);
+			return (
+				<Dialog
+					content={
+						<div>
+							{lines.map((l, n) => <Text key={n}>{l}</Text>)}
+						</div>
+					}
+					onClose={() => this.clearDetails()}
+				/>
+			);
+		}
+
+		return null;
 	};
 
 	render = () => {
 		try {
-			let dialog = null;
-			if (this.state.detailsCombatant) {
-				dialog = (
-					<Dialog
-						content={
-							<CharacterSheetModal
-								combatant={this.state.detailsCombatant}
-								game={this.props.game}
-								developer={this.props.options.developer}
-								equipItem={this.props.equipItem}
-								unequipItem={this.props.unequipItem}
-								pickUpItem={this.props.pickUpItem}
-								dropItem={this.props.dropItem}
-								levelUp={() => null}
-								retireHero={() => null}
-								addXP={() => null}
-								useCharge={this.props.useCharge}
-							/>
-						}
-						onClose={() => this.clearDetails()}
-					/>
-				);
-			}
-			if (this.state.detailsLoot) {
-				const cards = this.state.detailsLoot.items.map(i => <ItemCard key={i.id} item={i} />);
-				if (this.state.detailsLoot.money > 0) {
-					cards.push(
-						<PlayingCard
-							type={CardType.Item}
-							front={
-								<PlaceholderCard
-									content={
-										<div className='treasure-money'>
-											<IconValue
-												type={IconType.Money}
-												value={this.state.detailsLoot.money}
-												size={IconSize.Large}
-											/>
-										</div>
-									}
-								/>
-							}
-							footerText='Money'
-						/>
-					);
-				}
-				dialog = (
-					<Dialog
-						content={
-							<div>
-								<Text type={TextType.Heading}>Treasure</Text>
-								<hr />
-								<CardList cards={cards} />
+			if (this.props.orientation === OrientationType.Portrait) {
+				return (
+					<div className={`encounter-screen ${this.props.orientation}`}>
+						{this.getTopControls()}
+						<div className='encounter-main-panel'>
+							<div className='encounter-central-column'>
+								<div className='encounter-center-panel'>
+									<EncounterMapPanel
+										ref={this.mapRef}
+										encounter={this.props.encounter}
+										squareSize={this.state.mapSquareSize}
+										selectableCombatantIDs={this.state.selectableCombatantIDs}
+										selectableLootIDs={this.state.selectableLootIDs}
+										selectableSquares={this.state.selectableSquares}
+										selectedCombatantIDs={this.state.selectedCombatantIDs}
+										selectedLootIDs={this.state.selectedLootIDs}
+										selectedSquares={this.state.selectedSquares}
+										onClickCombatant={this.selectCombatant}
+										onClickLoot={this.selectLoot}
+										onClickSquare={this.selectSquare}
+										onClickOff={this.clearSelection}
+									/>
+								</div>
+								{this.getBottomControls()}
 							</div>
-						}
-						onClose={() => this.clearDetails()}
-					/>
-				);
-			}
-			if (this.state.detailsToast) {
-				const fn = this.state.detailsToast.message as (t: Toast) => object;
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				const lines: string[] = (fn(this.state.detailsToast) as any).props.children.map((n: any) => n.props.children);
-				dialog = (
-					<Dialog
-						content={
-							<div>
-								{lines.map((l, n) => <Text key={n}>{l}</Text>)}
+							<div className='encounter-side-columns'>
+								{this.getLeftControls()}
+								{this.getRightControls()}
 							</div>
-						}
-						onClose={() => this.clearDetails()}
-					/>
+						</div>
+						{this.getDialog()}
+					</div>
 				);
 			}
 
 			return (
 				<div className={`encounter-screen ${this.props.orientation}`}>
-					{this.getLeftControls()}
-					<div className='encounter-central-column'>
-						{this.getTopControls()}
-						<div className='encounter-center-panel'>
-							<EncounterMapPanel
-								ref={this.mapRef}
-								encounter={this.props.encounter}
-								squareSize={this.state.mapSquareSize}
-								selectableCombatantIDs={this.state.selectableCombatantIDs}
-								selectableLootIDs={this.state.selectableLootIDs}
-								selectableSquares={this.state.selectableSquares}
-								selectedCombatantIDs={this.state.selectedCombatantIDs}
-								selectedLootIDs={this.state.selectedLootIDs}
-								selectedSquares={this.state.selectedSquares}
-								onClickCombatant={this.selectCombatant}
-								onClickLoot={this.selectLoot}
-								onClickSquare={this.selectSquare}
-								onClickOff={this.clearSelection}
-							/>
+					{this.getTopControls()}
+					<div className='encounter-main-panel'>
+						{this.getLeftControls()}
+						<div className='encounter-central-column'>
+							<div className='encounter-center-panel'>
+								<EncounterMapPanel
+									ref={this.mapRef}
+									encounter={this.props.encounter}
+									squareSize={this.state.mapSquareSize}
+									selectableCombatantIDs={this.state.selectableCombatantIDs}
+									selectableLootIDs={this.state.selectableLootIDs}
+									selectableSquares={this.state.selectableSquares}
+									selectedCombatantIDs={this.state.selectedCombatantIDs}
+									selectedLootIDs={this.state.selectedLootIDs}
+									selectedSquares={this.state.selectedSquares}
+									onClickCombatant={this.selectCombatant}
+									onClickLoot={this.selectLoot}
+									onClickSquare={this.selectSquare}
+									onClickOff={this.clearSelection}
+								/>
+							</div>
+							{this.getBottomControls()}
 						</div>
-						{this.getBottomControls()}
-					</div>
-					<div className='encounter-right-column'>
 						{this.getRightControls()}
 					</div>
-					{dialog}
+					{this.getDialog()}
 				</div>
 			);
 		} catch {

@@ -84,7 +84,7 @@ export class StrongholdLogic {
 
 		game.stronghold
 			.filter(s => s.type === StructureType.Barracks)
-			.forEach(s => count += s.level * 3);
+			.forEach(s => count += s.level * 5);
 
 		return count;
 	};

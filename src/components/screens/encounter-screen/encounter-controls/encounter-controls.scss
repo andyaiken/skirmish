@@ -4,6 +4,10 @@
 	border-radius: 10px;
 	background-color: white;
 	padding: 0 10px;
+	overflow-x: hidden;
+	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
+
 
 	.region-reward {
 		display: flex;

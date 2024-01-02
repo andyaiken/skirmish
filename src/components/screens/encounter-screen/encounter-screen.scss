@@ -2,71 +2,108 @@
 	height: 100%;
 	padding: 10px;
 	display: flex;
+	flex-direction: column;
 	gap: 10px;
 
-	.encounter-left-column,
-	.encounter-right-column {
+	&.portrait {
+		flex-direction: column;
+
+		.encounter-main-panel {
+			flex-direction: column;
+
+			.encounter-central-column {
+				flex: 2 2 0;
+			}
+
+			.encounter-side-columns {
+				flex: 1 1 0;
+				display: flex;
+				flex-direction: row;
+				gap: 10px;
+				overflow-x: hidden;
+				overflow-y: auto;
+				-webkit-overflow-scrolling: touch;
+		
+				.encounter-left-column,
+				.encounter-right-column {
+					flex: 1 1 0;
+				}
+			}
+		}
+	}
+
+	.encounter-top-panel {
+		padding: 0 20px;
+		flex: 0 0 75px;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		border: 2px solid rgb(220, 220, 220);
+		border-radius: 10px;
+		background-color: white;
+
+		.icon-section {
+			display: flex;
+			gap: 5px;
+
+			button:not(.icon-btn) {
+				min-width: 250px;
+			}
+		}
+	}
+
+	.encounter-main-panel {
 		height: 100%;
 		display: flex;
-		flex-direction: column;
-	}
+		flex-direction: row;
+		gap: 10px;
+		overflow: hidden;
 
-	.encounter-left-column {
-		flex: 0 0 250px;
-		overflow-x: hidden;
-		overflow-y: auto;
-		-webkit-overflow-scrolling: touch;
-	}
+		.encounter-left-column,
+		.encounter-right-column {
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+		}
 
-	.encounter-right-column {
-		flex: 0 0 300px;
-
-		.tab-content {
-			flex: 1 1 0;
-			border: 2px solid rgb(220, 220, 220);
-			border-top: none;
-			border-radius: 0 0 10px 10px;
-			background-color: rgb(255, 255, 255);
-			padding: 0 10px;
+		.encounter-left-column {
+			flex: 0 0 250px;
 			overflow-x: hidden;
 			overflow-y: auto;
 			-webkit-overflow-scrolling: touch;
 		}
-	}
 
-	.encounter-central-column {
-		flex: 1 1 0;
-		height: 100%;
-		display: flex;
-		flex-direction: column;
-		gap: 10px;
-		overflow: hidden;
+		.encounter-right-column {
+			flex: 0 0 300px;
 
-		.encounter-top-panel {
-			flex: 0 0 75px;
-			display: flex;
-			align-items: center;
-			justify-content: space-around;
-			border: 2px solid rgb(220, 220, 220);
-			border-radius: 10px;
-			background-color: white;
-
-			.icon-section {
-				display: flex;
-				gap: 5px;
-
-				.icon-btn {
-					flex: 0 0 40px;
-				}
+			.tab-content {
+				flex: 1 1 0;
+				border: 2px solid rgb(220, 220, 220);
+				border-top: none;
+				border-radius: 0 0 10px 10px;
+				background-color: rgb(255, 255, 255);
+				padding: 0 10px;
+				overflow-x: hidden;
+				overflow-y: auto;
+				-webkit-overflow-scrolling: touch;
 			}
 		}
 
-		.encounter-center-panel {
+		.encounter-central-column {
 			flex: 1 1 0;
-		}
-
-		.encounter-bottom-panel {
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
 			overflow: hidden;
+
+			.encounter-center-panel {
+				flex: 1 1 0;
+			}
+
+			.encounter-bottom-panel {
+				overflow: hidden;
+			}
 		}
 	}
 

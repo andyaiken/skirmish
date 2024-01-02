@@ -137,13 +137,6 @@ export class StrongholdPage extends Component<Props, State> {
 							}
 						/>
 					);
-				} else {
-					charge = (
-						<button disabled={this.props.game.money < 100} onClick={() => this.props.chargeStructure(this.state.selectedStructure as StructureModel)}>
-							<div>Recharge structure</div>
-							<IconValue type={IconType.Money} value={100} size={IconSize.Button} />
-						</button>
-					);
 				}
 			}
 
@@ -163,6 +156,10 @@ export class StrongholdPage extends Component<Props, State> {
 						<button onClick={() => this.sellStructure(this.state.selectedStructure as StructureModel)}>
 							<div>Demolish structure</div>
 							<IconValue type={IconType.Money} value={25} size={IconSize.Button} />
+						</button>
+						<button disabled={this.props.game.money < 100} onClick={() => this.props.chargeStructure(this.state.selectedStructure as StructureModel)}>
+							<div>Recharge structure</div>
+							<IconValue type={IconType.Money} value={100} size={IconSize.Button} />
 						</button>
 					</div>
 					{

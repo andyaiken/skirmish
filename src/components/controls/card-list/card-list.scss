@@ -8,8 +8,10 @@
 	&.row {
 		display: flex;
 		align-items: flex-start;
-		justify-content: center;
 		gap: 20px;
+		overflow-x: auto;
+		overflow-y: hidden;
+		-webkit-overflow-scrolling: touch;
 	}
 
 	.card-container {

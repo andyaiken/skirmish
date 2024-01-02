@@ -5,7 +5,6 @@ import { StructureType } from '../../../enums/structure-type';
 
 import { CombatantLogic } from '../../../logic/combatant-logic';
 import { GameLogic } from '../../../logic/game-logic';
-import { StrongholdLogic } from '../../../logic/stronghold-logic';
 
 import type { CombatantModel } from '../../../models/combatant';
 import type { FeatureModel } from '../../../models/feature';
@@ -14,7 +13,7 @@ import type { ItemModel } from '../../../models/item';
 
 import { Utils } from '../../../utils/utils';
 
-import { ActionCard, FeatureCard, StrongholdBenefitCard } from '../../cards';
+import { ActionCard, FeatureCard } from '../../cards';
 import { Badge, CardList, Tabs, Tag, Text, TextType } from '../../controls';
 import { Items } from './items/items';
 import { LevelUp } from './level-up/level-up';
@@ -32,7 +31,6 @@ interface Props {
 	dropItem: (item: ItemModel, combatant: CombatantModel) => void;
 	levelUp: (feature: FeatureModel, combatant: CombatantModel) => void;
 	retireHero: (combatant: CombatantModel) => void;
-	addXP: (combatant: CombatantModel, useCharge: StructureType | null) => void;
 	useCharge: (type: StructureType, count: number) => void;
 }
 
@@ -72,7 +70,6 @@ export class CharacterSheetModal extends Component<Props, State> {
 
 	render = () => {
 		try {
-			let view = this.state.view;
 			let selector = null;
 			if (this.props.combatant.quirks.includes(QuirkType.Beast)) {
 				selector = null;
@@ -80,33 +77,21 @@ export class CharacterSheetModal extends Component<Props, State> {
 				const options = [
 					{ id: 'stats', display: 'Statistics' },
 					{ id: 'items', display: 'Equipment' },
-					{ id: 'features', display: 'Feature Cards' },
-					{ id: 'actions', display: 'Action Cards' }
+					{ id: 'features', display: 'Features' },
+					{ id: 'actions', display: 'Actions' }
 				];
-
-				const hasXP = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Academy) > 0;
-				if ((this.props.game.encounter === null) && (hasXP || this.props.developer)) {
-					options.push({
-						id: 'benefits',
-						display: 'Benefits'
-					});
-				} else {
-					if (view === 'benefits') {
-						view = 'stats';
-					}
-				}
 
 				selector = (
 					<Tabs
 						options={options}
-						selectedID={view}
+						selectedID={this.state.view}
 						onSelect={id => this.setState({ view: id })}
 					/>
 				);
 			}
 
 			let content = null;
-			switch (view) {
+			switch (this.state.view) {
 				case 'stats':
 					content = (
 						<Stats
@@ -151,28 +136,6 @@ export class CharacterSheetModal extends Component<Props, State> {
 							footerType={CombatantLogic.getActionSourceType(this.props.combatant, a.id)}
 						/>
 					));
-					content = (
-						<CardList cards={cards} />
-					);
-					break;
-				}
-				case 'benefits': {
-					const cards = [];
-
-					const xp = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Academy);
-					if ((xp > 0) || this.props.developer) {
-						cards.push(
-							<StrongholdBenefitCard
-								key='xp'
-								label='Bonus XP'
-								available={xp}
-								developer={this.props.developer}
-								onUse={() => this.props.addXP(this.props.combatant, this.props.developer ? null : StructureType.Academy)}
-							/>
-
-						);
-					}
-
 					content = (
 						<CardList cards={cards} />
 					);

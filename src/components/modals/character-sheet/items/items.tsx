@@ -47,13 +47,20 @@ export class Items extends Component<Props> {
 					);
 				}
 
+				let drop: JSX.Element | string = 'Drop';
+				if (this.props.game.encounter && (this.props.combatant.faction === CombatantType.Hero)) {
+					drop = (
+						<div>Drop<br /><IconValue type={IconType.Movement} value={0} size={IconSize.Button} /></div>
+					);
+				}
+
 				let options: JSX.Element | null = (
 					<div className='item-options'>
 						<button disabled={this.props.combatant.carried.length >= CombatantLogic.CARRY_CAPACITY} onClick={() => this.props.unequipItem(item)}>
 							{unequip}
 						</button>
 						<button onClick={() => this.props.dropItem(item)}>
-							Drop
+							{drop}
 						</button>
 					</div>
 				);
@@ -103,13 +110,20 @@ export class Items extends Component<Props> {
 					);
 				}
 
+				let drop: JSX.Element | string = 'Drop';
+				if (this.props.game.encounter && (this.props.combatant.faction === CombatantType.Hero)) {
+					drop = (
+						<div>Drop<br /><IconValue type={IconType.Movement} value={0} size={IconSize.Button} /></div>
+					);
+				}
+
 				let options: JSX.Element | null = (
 					<div className='item-options'>
 						<button disabled={!CombatantLogic.canEquip(this.props.combatant, item)} onClick={() => this.props.equipItem(item)}>
 							{equip}
 						</button>
 						<button onClick={() => this.props.dropItem(item)}>
-							Drop
+							{drop}
 						</button>
 					</div>
 				);

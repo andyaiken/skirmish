@@ -17,7 +17,7 @@ import type { ItemModel } from '../../../../models/item';
 import type { OptionsModel } from '../../../../models/options';
 
 import { Badge, CardList, ConfirmButton, Dialog, PlayingCard, Text, TextType } from '../../../controls';
-import { BoonCard, HeroCard, PlaceholderCard } from '../../../cards';
+import { BoonCard, HeroCard, PlaceholderCard, StrongholdBenefitCard } from '../../../cards';
 import { CharacterSheetModal, HeroBuilderModal } from '../../../modals';
 
 import './heroes-page.scss';
@@ -42,6 +42,7 @@ interface State {
 	selectedHero: CombatantModel | null;
 	selectedBoon: BoonModel | null;
 	retiringHero: CombatantModel | null;
+	selectingHero: boolean;
 }
 
 export class HeroesPage extends Component<Props, State> {
@@ -50,7 +51,8 @@ export class HeroesPage extends Component<Props, State> {
 		this.state = {
 			selectedHero: null,
 			selectedBoon: null,
-			retiringHero: null
+			retiringHero: null,
+			selectingHero: false
 		};
 	}
 
@@ -93,6 +95,14 @@ export class HeroesPage extends Component<Props, State> {
 		});
 	};
 
+	addXP = (hero: CombatantModel) => {
+		this.setState({
+			selectingHero: false
+		}, () => {
+			this.props.addXP(hero, this.props.options.developer ? null : StructureType.Academy);
+		});
+	};
+
 	getContent = () => {
 		let levelUp = null;
 		if (this.props.game.heroes.some(h => h.xp >= h.level)) {
@@ -110,7 +120,6 @@ export class HeroesPage extends Component<Props, State> {
 						<Badge value={hero.xp >= hero.level ? 'Level Up' : null}>
 							<HeroCard hero={hero} onCharacterSheet={this.selectHero} onRetire={this.selectRetiringHero} />
 						</Badge>
-						{this.props.options.developer ? <button className='developer' onClick={() => this.props.addXP(hero, null)}>Add XP</button> : null}
 					</div>
 				);
 			});
@@ -170,16 +179,36 @@ export class HeroesPage extends Component<Props, State> {
 			);
 		}
 
+		let benefits = null;
+		if (StrongholdLogic.getStructureCharges(this.props.game, StructureType.Academy) > 0) {
+			benefits = (
+				<CardList cards={[
+					<StrongholdBenefitCard
+						key='xp'
+						label='Bonus XP'
+						available={StrongholdLogic.getStructureCharges(this.props.game, StructureType.Academy)}
+						developer={this.props.options.developer}
+						onUse={() => this.setState({ selectingHero: true })}
+					/>
+				]}/>
+			);
+		}
+
 		return (
 			<div className='sidebar'>
 				<div className='sidebar-section'>
 					<Text type={TextType.SubHeading}>Your Team</Text>
-					<Text>This page shows the heroes that you have recruited.</Text>
+					<Text>
+						<p>This page shows the heroes that you have recruited.</p>
+						<p>You can flip a hero&apos;s card over to see some important stats, or press the button to see their character sheet.</p>
+					</Text>
 				</div>
 				{
-					boons !== null ?
+					(boons !== null) || (benefits !== null) ?
 						<div className='sidebar-section'>
 							{boons}
+							{(boons !== null) && (benefits !== null) ? <hr /> : null}
+							{benefits}
 						</div>
 						: null
 				}
@@ -232,7 +261,6 @@ export class HeroesPage extends Component<Props, State> {
 								dropItem={this.props.dropItem}
 								levelUp={this.props.levelUp}
 								retireHero={this.retireHero}
-								addXP={this.props.addXP}
 								useCharge={this.props.useCharge}
 							/>
 						)}
@@ -323,6 +351,24 @@ export class HeroesPage extends Component<Props, State> {
 							retiringHero: null
 						});
 					}}
+				/>
+			);
+		}
+
+		if (this.state.selectingHero) {
+			return (
+				<Dialog
+					content={(
+						<div>
+							<Text type={TextType.Heading}>Choose a Hero</Text>
+							<hr />
+							<Text type={TextType.Information}>
+								<p>Choose the hero to gain 1 XP.</p>
+							</Text>
+							<CardList cards={this.props.game.heroes.map(h => <HeroCard key={h.id} hero={h} onClick={() => this.addXP(h)} />)} />
+						</div>
+					)}
+					onClose={() => this.setState({ selectingHero: false })}
 				/>
 			);
 		}

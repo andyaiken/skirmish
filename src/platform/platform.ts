@@ -75,7 +75,6 @@ export class Platform {
 		if (!game.stronghold) {
 			game.stronghold = [];
 			StrongholdLogic.addStructure(game.stronghold, StructureData.barracks());
-			StrongholdLogic.addStructure(game.stronghold, StructureData.barracks());
 		}
 
 		if (game.encounter) {

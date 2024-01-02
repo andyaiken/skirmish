@@ -136,7 +136,6 @@ export class SetupScreen extends Component<Props, State> {
 						dropItem={this.props.dropItem}
 						levelUp={() => null}
 						retireHero={() => null}
-						addXP={() => null}
 						useCharge={() => null}
 					/>
 				}

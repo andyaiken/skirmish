@@ -1,11 +1,13 @@
 .level-up {
 	display: flex;
 	align-items: center;
-	justify-content: center;
 	gap: 10px;
 	border: 2px solid rgb(220, 220, 220);
 	border-radius: 10px;
 	padding: 10px;
+	overflow-x: auto;
+	overflow-y: hidden;
+	-webkit-overflow-scrolling: touch;
 	
 	.separator {
 		margin: 0 10px;

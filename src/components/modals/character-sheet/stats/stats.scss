@@ -1,24 +1,34 @@
 .stats {
 	display: flex;
-	align-items: flex-start;
-	gap: 10px;
+	flex-direction: column;
 
-	.column {
-		flex: 1 1 220px;
-	}
-
-	.stats-row {
+	.row {
 		display: flex;
-		align-items: center;
-		justify-content: center;
+		align-items: flex-start;
+		gap: 10px;
 
-		&>* {
-			flex: 1 1 0;
+		&.combat {
+			width: 300px;
+			margin: 0 auto;
 		}
-	}
 
-	.xp-gauge {
-		display: flex;
-		justify-content: center;
+		.column {
+			flex: 1 1 220px;
+		}
+
+		.stats-row {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+
+			&>* {
+				flex: 1 1 0;
+			}
+		}
+
+		.xp-gauge {
+			display: flex;
+			justify-content: center;
+		}
 	}
 }

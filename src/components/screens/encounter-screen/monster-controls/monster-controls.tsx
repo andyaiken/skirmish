@@ -19,7 +19,6 @@ interface Props {
 	showToken: (combatant: CombatantModel) => void;
 	showCharacterSheet: (combatant: CombatantModel) => void;
 	switchAllegiance: (combatant: CombatantModel) => void;
-	runMonsterTurn: (encounter: EncounterModel, combatant: CombatantModel, onFinished: () => void) => void;
 }
 
 interface State {
@@ -37,18 +36,6 @@ export class MonsterControls extends Component<Props, State> {
 	setThinking = (value: boolean) => {
 		this.setState({
 			thinking: value
-		});
-	};
-
-	runMonsterTurn = () => {
-		this.setState({
-			thinking: true
-		}, () => {
-			this.props.runMonsterTurn(this.props.encounter, this.props.combatant, () => {
-				this.setState({
-					thinking: false
-				});
-			});
 		});
 	};
 
@@ -92,14 +79,13 @@ export class MonsterControls extends Component<Props, State> {
 					}
 					<CombatStatsPanel combatant={this.props.combatant} encounter={this.props.encounter} />
 					<hr />
-					<button className='primary' disabled={this.state.thinking} onClick={this.runMonsterTurn}>{this.state.thinking ? 'Thinking' : 'Go'}</button>
 					{
 						this.props.options.developer ?
 							<button className='developer' disabled={this.state.thinking} onClick={() => this.props.switchAllegiance(this.props.combatant)}>Switch Allegiance</button>
 							: null
 					}
-					{action}
 					<CombatantNotices combatant={this.props.combatant} />
+					{action}
 				</div>
 			);
 		}  catch {

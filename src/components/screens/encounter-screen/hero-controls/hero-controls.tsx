@@ -1,4 +1,4 @@
-import { IconArrowsMove, IconCircleCheck, IconCircleCheckFilled, IconFlask2, IconUser } from '@tabler/icons-react';
+import { IconArrowsMove, IconFlask2, IconUser } from '@tabler/icons-react';
 import { Component } from 'react';
 
 import type { CombatantModel } from '../../../../models/combatant';
@@ -7,7 +7,6 @@ import type { ItemModel } from '../../../../models/item';
 import type { OptionsModel } from '../../../../models/options';
 
 import { Expander, Tabs, Text, TextType } from '../../../controls';
-import { HeroEndturn } from './hero-endturn/hero-endturn';
 import { HeroMove } from './hero-move/hero-move';
 import { HeroOverview } from './hero-overview/hero-overview';
 import { HeroPotions } from './hero-potions/hero-potions';
@@ -27,7 +26,6 @@ interface Props {
 	hide: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	switchAllegiance: (combatant: CombatantModel) => void;
 	drinkPotion: (encounter: EncounterModel, owner: CombatantModel, drinker: CombatantModel, potion: ItemModel) => void;
-	endTurn: () => void;
 }
 
 interface State {
@@ -48,22 +46,11 @@ export class HeroControls extends Component<Props, State> {
 		});
 	};
 
-	endTurn = () => {
-		this.setState({
-			tab: 'stats'
-		}, () => {
-			this.props.endTurn();
-		});
-	};
-
 	render = () => {
 		try {
-			const finished = (this.props.combatant.combat.movement === 0) && this.props.combatant.combat.selectedAction && this.props.combatant.combat.selectedAction.used;
-
 			const options = [
 				{ id: 'stats', display: <IconUser /> },
-				{ id: 'move', display: <IconArrowsMove /> },
-				{ id: 'endturn', display: finished ? <IconCircleCheckFilled className='checked' /> : <IconCircleCheck /> }
+				{ id: 'move', display: <IconArrowsMove /> }
 			];
 
 			if (this.props.combatant.carried.some(i => i.potion)) {
@@ -107,15 +94,6 @@ export class HeroControls extends Component<Props, State> {
 						/>
 					);
 					break;
-				case 'endturn':
-					content = (
-						<HeroEndturn
-							combatant={this.props.combatant}
-							encounter={this.props.encounter}
-							endTurn={this.endTurn}
-						/>
-					);
-					break;
 			}
 
 			return (
@@ -133,7 +111,7 @@ export class HeroControls extends Component<Props, State> {
 											<li>You can move your hero around the map with the <IconArrowsMove size={15} /> tab.</li>
 											<li>You can choose your action - you only get one per turn! Your action cards are shown below the map.</li>
 										</ul>
-										<p>When you&apos;re finished, select <b>End Turn</b> on the <IconCircleCheck size={15} /> tab.</p>
+										<p>When you&apos;re finished, select <b>End My Turn</b> above.</p>
 									</div>
 								}
 							/>

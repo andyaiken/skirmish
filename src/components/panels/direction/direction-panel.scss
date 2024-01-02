@@ -8,6 +8,7 @@
 
 	.dir,
 	.center {
+		position: relative;
 		width: 80px;
 		height: 80px;
 		display: flex;
@@ -30,7 +31,6 @@
 	}
 
 	.dir {
-		position: relative;
 		border: 2px solid rgb(220, 220, 220);
 		border-radius: 10px;
 		background-color: rgb(250, 250, 250);

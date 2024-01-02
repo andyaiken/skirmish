@@ -35,7 +35,6 @@ export class EncounterControls extends Component<EncounterControlsProps> {
 							<div className='encounter-controls'>
 								<Text type={TextType.Heading}>Victory</Text>
 								<Text type={TextType.MinorHeading}>You won the encounter in {region.name}!</Text>
-								<hr />
 								<ul>
 									<li>Each surviving hero who took part in this encounter gains 1 XP.</li>
 									<li>Any heroes who died have been lost.</li>
@@ -54,7 +53,6 @@ export class EncounterControls extends Component<EncounterControlsProps> {
 							<div className='encounter-controls'>
 								<Text type={TextType.Heading}>Victory</Text>
 								<Text type={TextType.MinorHeading}>You have taken control of {region.name}!</Text>
-								<hr />
 								<ul>
 									<li>Each surviving hero who took part in this encounter gains 1 XP.</li>
 									<li>Any heroes who died have been lost.</li>
@@ -79,7 +77,6 @@ export class EncounterControls extends Component<EncounterControlsProps> {
 						<div className='encounter-controls'>
 							<Text type={TextType.Heading}>Defeated</Text>
 							<Text type={TextType.MinorHeading}>You lost the encounter in {region.name}.</Text>
-							<hr />
 							<ul>
 								<li>Those heroes who took part have been lost, along with all their equipment.</li>
 							</ul>
@@ -97,7 +94,6 @@ export class EncounterControls extends Component<EncounterControlsProps> {
 						<div className='encounter-controls'>
 							<Text type={TextType.Heading}>Retreat</Text>
 							<Text type={TextType.MinorHeading}>You retreated from the encounter in {region.name}.</Text>
-							<hr />
 							<ul>
 								<li>Any heroes who fell have been lost, along with all their equipment.</li>
 							</ul>

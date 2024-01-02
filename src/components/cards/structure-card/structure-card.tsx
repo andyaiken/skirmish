@@ -63,7 +63,7 @@ export class StructureCard extends Component<Props, State> {
 			case StructureType.Barracks:
 				return (
 					<Text>
-						<p>This structure provides living space for up to {this.props.structure.level * 3} heroes.</p>
+						<p>This structure provides living space for up to {this.props.structure.level * 5} heroes.</p>
 					</Text>
 				);
 			case StructureType.Forge:

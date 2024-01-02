@@ -2,6 +2,7 @@ import { Component } from 'react';
 import { IconCards } from '@tabler/icons-react';
 
 import { CardType } from '../../../enums/card-type';
+import { OrientationType } from '../../../enums/orientation-type';
 
 import { PackLogic } from '../../../logic/pack-logic';
 
@@ -19,6 +20,7 @@ import pkg from '../../../../package.json';
 interface Props {
 	game: GameModel | null;
 	options: OptionsModel;
+	orientation: OrientationType;
 	startCampaign: () => void;
 	continueCampaign: () => void;
 	showPacks: () => void;
@@ -72,7 +74,7 @@ export class LandingScreen extends Component<Props> {
 			}
 
 			return (
-				<div className='landing-screen'>
+				<div className={`landing-screen ${this.props.orientation}`}>
 					<div className='landing-top-bar'>
 						<div className='logo-text inset-text'>Skirmish</div>
 					</div>

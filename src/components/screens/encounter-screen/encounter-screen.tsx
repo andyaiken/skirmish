@@ -20,6 +20,7 @@ import { CardType } from '../../../enums/card-type';
 import { CombatantState } from '../../../enums/combatant-state';
 import { CombatantType } from '../../../enums/combatant-type';
 import { EncounterState } from '../../../enums/encounter-state';
+import { OrientationType } from '../../../enums/orientation-type';
 import { StructureType } from '../../../enums/structure-type';
 
 import { ActionLogic } from '../../../logic/action-logic';
@@ -49,6 +50,7 @@ interface Props {
 	encounter: EncounterModel;
 	game: GameModel;
 	options: OptionsModel;
+	orientation: OrientationType;
 	hasExceptions: boolean;
 	showHelp: (file: string) => void;
 	rotateMap: (encounter: EncounterModel, dir: 'l' | 'r') => void;
@@ -731,7 +733,7 @@ export class EncounterScreen extends Component<Props, State> {
 			}
 
 			return (
-				<div className='encounter-screen'>
+				<div className={`encounter-screen ${this.props.orientation}`}>
 					{this.getLeftControls()}
 					<div className='encounter-central-column'>
 						{this.getTopControls()}

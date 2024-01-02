@@ -3,6 +3,7 @@ import { IconCards } from '@tabler/icons-react';
 
 import { CardType } from '../../../enums/card-type';
 import { CombatantType } from '../../../enums/combatant-type';
+import { OrientationType } from '../../../enums/orientation-type';
 
 import { NameGenerator } from '../../../generators/name-generator';
 
@@ -31,6 +32,7 @@ import logo from '../../../assets/images/logo.png';
 interface Props {
 	game: GameModel;
 	options: OptionsModel;
+	orientation: OrientationType;
 	addHero: (hero: CombatantModel) => void;
 	addHeroes: (heroes: CombatantModel[]) => void;
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
@@ -171,15 +173,28 @@ export class SetupScreen extends Component<Props, State> {
 			}
 
 			return (
-				<div className='setup-screen'>
+				<div className={`setup-screen ${this.props.orientation}`}>
 					<div className='setup-top-bar'>
 						<div className='logo-text inset-text'>Skirmish</div>
 					</div>
 					<div className='setup-content'>
-						<div className='center-panel'>
+						<div className='left-panel'>
 							{heroes}
 						</div>
 						<div className='right-panel'>
+							{
+								this.props.game.heroes.length >= 5 ?
+									<PlayingCard
+										type={CardType.Role}
+										stack={true}
+										front={<PlaceholderCard text='Begin the Campaign' content={<img className='logo' alt='Logo' src={logo} />} />}
+										onClick={this.props.beginCampaign}
+									/>
+									:
+									<Text type={TextType.Information}>
+										<p><b>Recruit your team.</b> These five heroes will begin the task of conquering the island.</p>
+									</Text>
+							}
 							{
 								this.props.options.showTips ?
 									<Expander
@@ -195,20 +210,7 @@ export class SetupScreen extends Component<Props, State> {
 									/>
 									: null
 							}
-							{
-								this.props.game.heroes.length >= 5 ?
-									<PlayingCard
-										type={CardType.Role}
-										stack={true}
-										front={<PlaceholderCard text='Begin the Campaign' content={<img className='logo' alt='Logo' src={logo} />} />}
-										onClick={this.props.beginCampaign}
-									/>
-									:
-									<Text type={TextType.Information}>
-										<p><b>Recruit your team.</b> These five heroes will begin the task of conquering the island.</p>
-									</Text>
-							}
-							{this.props.options.developer && (this.props.game.heroes.length < 5) ? <button onClick={this.createHeroes}>Randomize</button> : null}
+							{this.props.options.developer && (this.props.game.heroes.length < 5) ? <button className='developer' onClick={this.createHeroes}>Randomize</button> : null}
 							{packsBtn}
 						</div>
 					</div>

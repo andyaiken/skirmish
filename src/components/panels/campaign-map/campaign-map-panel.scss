@@ -1,6 +1,7 @@
 .campaign-map {
 	width: 100%;
 	height: 100%;
+	position: absolute;
 	filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.6));
 
 	.campaign-map-hex {

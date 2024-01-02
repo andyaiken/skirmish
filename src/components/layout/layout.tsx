@@ -1,4 +1,9 @@
 import { useMediaQuery } from 'react-responsive';
+import { useState } from 'react';
+
+import { OrientationType } from '../../enums/orientation-type';
+import { PageType } from '../../enums/page-type';
+import { ScreenType } from '../../enums/screen-type';
 
 import type { GameModel } from '../../models/game';
 import type { OptionsModel } from '../../models/options';
@@ -16,25 +21,41 @@ interface Props {
 }
 
 export const Layout = (props: Props) => {
-	const isWideEnough = useMediaQuery({ query: '(min-width: 1024px)' });
-	const isTallEnough = useMediaQuery({ query: '(min-height: 1024px)' });
-	const isPortrait = useMediaQuery({ query: '(orientation: portrait)' });
 
-	if (isWideEnough) {
+	const [ screen, setScreen ] = useState(ScreenType.Landing);
+	const [ page, setPage ] = useState(PageType.Island);
+	const isLandscapeWidth = useMediaQuery({ query: '(min-width: 1024px)' });
+	const isLandscapeHeight = useMediaQuery({ query: '(min-height: 768px)' });
+	const isPortraitWidth = useMediaQuery({ query: '(min-width: 768px)' });
+	const isPortraitHeight = useMediaQuery({ query: '(min-height: 1024px)' });
+
+	if (isLandscapeWidth && isLandscapeHeight) {
 		return (
 			<Main
 				game={props.game}
 				options={props.options}
 				platform={props.platform}
+				orientation={OrientationType.Landscape}
+				screen={screen}
+				page={page}
+				setScreen={setScreen}
+				setPage={setPage}
 			/>
 		);
 	}
 
-	if (isPortrait && isTallEnough) {
+	if (isPortraitWidth && isPortraitHeight) {
 		return (
-			<div className='layout'>
-				To play Skirmish, use your device in landscape mode.
-			</div>
+			<Main
+				game={props.game}
+				options={props.options}
+				platform={props.platform}
+				orientation={OrientationType.Portrait}
+				screen={screen}
+				page={page}
+				setScreen={setScreen}
+				setPage={setPage}
+			/>
 		);
 	}
 

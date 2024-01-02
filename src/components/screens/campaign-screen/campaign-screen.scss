@@ -10,28 +10,18 @@
 		padding: 0 25px;
 		display: flex;
 		align-items: center;
+		justify-content: space-between;
 		gap: 25px;
 
 		.logo {
-			width: 50px;
+			width: 40px;
+			margin: 10px 0;
 			filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.4));
 		}
 
 		.logo-text {
-			font-size: 30px;
-			letter-spacing: 5px;
-		}
-
-		.selector {
-			flex: 1 1 0;
-
-			.page-btn {
-				display: flex;
-				gap: 5px;
-				align-items: center;
-				justify-content: center;
-				text-align: center;
-			}
+			font-size: 36px;
+			letter-spacing: 6px;
 		}
 
 		.buttons {
@@ -45,9 +35,22 @@
 		}
 	}
 
+	.selector {
+		margin: 10px;
+
+		.page-btn {
+			display: flex;
+			gap: 5px;
+			align-items: center;
+			justify-content: center;
+			text-align: center;
+		}
+	}
+
 	.campaign-content {
 		flex: 1 1 0;
 		overflow-x: hidden;
 		overflow-y: hidden;
+		padding: 0 10px 10px 10px;
 	}
 }

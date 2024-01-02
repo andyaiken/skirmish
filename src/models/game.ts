@@ -7,7 +7,6 @@ import type { StructureModel } from './structure';
 
 export interface GameModel {
 	heroSlots: number;
-	structureSlots: number;
 	heroes: CombatantModel[];
 	items: ItemModel[];
 	boons: BoonModel[];

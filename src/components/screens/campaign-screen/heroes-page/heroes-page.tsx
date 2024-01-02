@@ -2,6 +2,7 @@ import { Component } from 'react';
 
 import { BoonType } from '../../../../enums/boon-type';
 import { CombatantType } from '../../../../enums/combatant-type';
+import { OrientationType } from '../../../../enums/orientation-type';
 import { StructureType } from '../../../../enums/structure-type';
 
 import { Factory } from '../../../../logic/factory';
@@ -24,6 +25,7 @@ import './heroes-page.scss';
 interface Props {
 	game: GameModel;
 	options: OptionsModel;
+	orientation: OrientationType;
 	addHero: (hero: CombatantModel) => void;
 	addXP: (hero: CombatantModel, useCharge: StructureType | null) => void;
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
@@ -150,8 +152,9 @@ export class HeroesPage extends Component<Props, State> {
 		if (this.props.game.heroSlots > 0) {
 			const atHeroLimit = this.props.game.heroes.length >= StrongholdLogic.getHeroLimit(this.props.game);
 			slots = (
-				<div className='center'>
+				<CardList cards={[
 					<PlayingCard
+						key='recruits'
 						stack={true}
 						front={
 							<PlaceholderCard
@@ -163,18 +166,30 @@ export class HeroesPage extends Component<Props, State> {
 						disabled={atHeroLimit}
 						onClick={() => this.setState({ selectedHero: Factory.createCombatant(CombatantType.Hero) })}
 					/>
-				</div>
+				]}/>
 			);
 		}
 
 		return (
 			<div className='sidebar'>
-				<Text type={TextType.SubHeading}>Your Team</Text>
-				<Text>This page shows the heroes that you have recruited.</Text>
-				{boons !== null ? <hr /> : null}
-				{boons}
-				{slots !== null ? <hr /> : null}
-				{slots}
+				<div className='sidebar-section'>
+					<Text type={TextType.SubHeading}>Your Team</Text>
+					<Text>This page shows the heroes that you have recruited.</Text>
+				</div>
+				{
+					boons !== null ?
+						<div className='sidebar-section'>
+							{boons}
+						</div>
+						: null
+				}
+				{
+					slots !== null ?
+						<div className='sidebar-section'>
+							{slots}
+						</div>
+						: null
+				}
 			</div>
 		);
 	};
@@ -318,7 +333,7 @@ export class HeroesPage extends Component<Props, State> {
 	render = () => {
 		try {
 			return (
-				<div className='heroes-page'>
+				<div className={`heroes-page ${this.props.orientation}`}>
 					<div className='heroes-content'>
 						{this.getContent()}
 					</div>

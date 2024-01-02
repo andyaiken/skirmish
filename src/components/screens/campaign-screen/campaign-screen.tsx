@@ -1,6 +1,8 @@
 import { IconCards, IconHelpCircle, IconHelpCircleFilled } from '@tabler/icons-react';
 import { Component } from 'react';
 
+import { OrientationType } from '../../../enums/orientation-type';
+import { PageType } from '../../../enums/page-type';
 import { StructureType } from '../../../enums/structure-type';
 
 import { GameLogic } from '../../../logic/game-logic';
@@ -33,7 +35,10 @@ interface Props {
 	game: GameModel;
 	options: OptionsModel;
 	platform: Platform;
+	orientation: OrientationType;
+	page: PageType;
 	hasExceptions: boolean;
+	setPage: (page: PageType) => void;
 	showHelp: (file: string) => void;
 	showPacks: () => void;
 	buyStructure: (structure: StructureModel, cost: number) => void;
@@ -58,45 +63,29 @@ interface Props {
 	conquer: (region: RegionModel) => void;
 }
 
-interface State {
-	screen: string;
-}
-
-export class CampaignScreen extends Component<Props, State> {
-	constructor(props: Props) {
-		super(props);
-
-		this.state = {
-			screen: 'island'
-		};
-	}
-
-	setScreen = (screen: string) => {
-		this.setState({
-			screen: screen
-		});
-	};
-
+export class CampaignScreen extends Component<Props> {
 	render = () => {
 		try {
 			let content = null;
-			switch (this.state.screen) {
-				case 'island':
+			switch (this.props.page) {
+				case PageType.Island:
 					content = (
 						<CampaignMapPage
 							game={this.props.game}
 							options={this.props.options}
+							orientation={this.props.orientation}
 							startEncounter={this.props.startEncounter}
 							regenerateCampaignMap={this.props.regenerateCampaignMap}
 							conquer={this.props.conquer}
 						/>
 					);
 					break;
-				case 'stronghold':
+				case PageType.Stronghold:
 					content = (
 						<StrongholdPage
 							game={this.props.game}
 							options={this.props.options}
+							orientation={this.props.orientation}
 							buyStructure={this.props.buyStructure}
 							sellStructure={this.props.sellStructure}
 							chargeStructure={this.props.chargeStructure}
@@ -106,11 +95,12 @@ export class CampaignScreen extends Component<Props, State> {
 						/>
 					);
 					break;
-				case 'team':
+				case PageType.Team:
 					content = (
 						<HeroesPage
 							game={this.props.game}
 							options={this.props.options}
+							orientation={this.props.orientation}
 							addHero={this.props.addHero}
 							addXP={this.props.addXP}
 							equipItem={this.props.equipItem}
@@ -124,11 +114,12 @@ export class CampaignScreen extends Component<Props, State> {
 						/>
 					);
 					break;
-				case 'items':
+				case PageType.Items:
 					content = (
 						<ItemsPage
 							game={this.props.game}
 							options={this.props.options}
+							orientation={this.props.orientation}
 							buyItem={this.props.buyItem}
 							sellItem={this.props.sellItem}
 							equipItem={this.props.equipItem}
@@ -139,7 +130,7 @@ export class CampaignScreen extends Component<Props, State> {
 						/>
 					);
 					break;
-				case 'dev':
+				case PageType.Developer:
 					content = (
 						<DevPage options={this.props.options} platform={this.props.platform} />
 					);
@@ -148,7 +139,7 @@ export class CampaignScreen extends Component<Props, State> {
 
 			const options = [
 				{
-					id: 'island',
+					id: PageType.Island,
 					display: (
 						<div className='page-btn'>
 							The Island
@@ -156,7 +147,7 @@ export class CampaignScreen extends Component<Props, State> {
 					)
 				},
 				{
-					id: 'stronghold',
+					id: PageType.Stronghold,
 					display: (
 						<div className='page-btn'>
 							<div>Your Stronghold</div>
@@ -165,7 +156,7 @@ export class CampaignScreen extends Component<Props, State> {
 					)
 				},
 				{
-					id: 'team',
+					id: PageType.Team,
 					display: (
 						<div className='page-btn'>
 							<div>Your Team</div>
@@ -174,7 +165,7 @@ export class CampaignScreen extends Component<Props, State> {
 					)
 				},
 				{
-					id: 'items',
+					id: PageType.Items,
 					display: (
 						<div className='page-btn'>
 							<div>Your Equipment</div>
@@ -186,9 +177,9 @@ export class CampaignScreen extends Component<Props, State> {
 
 			if (this.props.options.developer) {
 				options.push({
-					id: 'dev',
+					id: PageType.Developer,
 					display: (
-						<div className='page-btn'>
+						<div className='page-btn developer'>
 							Developer
 						</div>
 					)
@@ -198,22 +189,22 @@ export class CampaignScreen extends Component<Props, State> {
 			const availablePacks = PackLogic.getPacks().filter(p => !this.props.options.packIDs.includes(p.id)).length;
 
 			return (
-				<div className='campaign-screen'>
+				<div className={`campaign-screen ${this.props.orientation}`}>
 					<div className='campaign-top-bar'>
 						<img className='logo' alt='Logo' src={logo} />
 						<div className='logo-text inset-text'>Skirmish</div>
-						<Selector options={options} selectedID={this.state.screen} onSelect={this.setScreen} />
 						<div className='buttons'>
 							<Badge value={availablePacks}>
 								<button className='icon-btn' title='Packs' onClick={() => this.props.showPacks()}>
 									<IconCards />
 								</button>
 							</Badge>
-							<button className='icon-btn' title='Help' onClick={() => this.props.showHelp(this.state.screen)}>
+							<button className='icon-btn' title='Help' onClick={() => this.props.showHelp(this.props.page)}>
 								{this.props.options.developer && this.props.hasExceptions ? <IconHelpCircleFilled /> : <IconHelpCircle />}
 							</button>
 						</div>
 					</div>
+					<Selector options={options} selectedID={this.props.page} onSelect={id => this.props.setPage(id as PageType)} />
 					<div className='campaign-content'>
 						{content}
 					</div>

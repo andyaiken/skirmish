@@ -1,6 +1,7 @@
 import { Component } from 'react';
 
 import { BoonType } from '../../../../enums/boon-type';
+import { OrientationType } from '../../../../enums/orientation-type';
 import { StructureType } from '../../../../enums/structure-type';
 
 import { GameLogic } from '../../../../logic/game-logic';
@@ -23,6 +24,7 @@ import './items-page.scss';
 interface Props {
 	game: GameModel;
 	options: OptionsModel;
+	orientation: OrientationType;
 	buyItem: (item: ItemModel) => void;
 	sellItem: (item: ItemModel, all: boolean) => void;
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
@@ -174,19 +176,26 @@ export class ItemsPage extends Component<Props, State> {
 
 		return (
 			<div className='sidebar'>
-				<Text type={TextType.SubHeading}>Your Equipment</Text>
-				<Text>This page lists the items that your heroes aren&apos;t currently using.</Text>
-				<hr />
-				{moneySection}
-				{boons !== null ? <hr /> : null}
-				{boons}
-				{buySection.length !== 0 ? <hr /> : null}
-				{buySection}
-				<hr />
-				<button disabled={this.props.game.money < 100} onClick={() => this.showEnchant(true)}>
-					<div>Enchant an item</div>
-					<IconValue type={IconType.Money} value={100} size={IconSize.Button} />
-				</button>
+				<div className='sidebar-section'>
+					<Text type={TextType.SubHeading}>Your Equipment</Text>
+					<Text>This page lists the items that your heroes aren&apos;t currently using.</Text>
+					<hr />
+					{moneySection}
+				</div>
+				{
+					boons !== null ?
+						<div className='sidebar-section'>
+							{boons}
+						</div>
+						: null
+				}
+				<div className='sidebar-section'>
+					{buySection}
+					<button disabled={this.props.game.money < 100} onClick={() => this.showEnchant(true)}>
+						<div>Enchant an item</div>
+						<IconValue type={IconType.Money} value={100} size={IconSize.Button} />
+					</button>
+				</div>
 			</div>
 		);
 	};
@@ -372,7 +381,7 @@ export class ItemsPage extends Component<Props, State> {
 			}
 
 			return (
-				<div className='items-page'>
+				<div className={`items-page ${this.props.orientation}`}>
 					<div className='items-content'>
 						{magicItemSection ? <Text type={TextType.SubHeading}>Magic Items</Text> : null}
 						{magicItemSection}

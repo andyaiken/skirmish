@@ -5,6 +5,9 @@ import { BoonType } from '../../enums/boon-type';
 import { CombatantState } from '../../enums/combatant-state';
 import { CombatantType } from '../../enums/combatant-type';
 import { EncounterState } from '../../enums/encounter-state';
+import { OrientationType } from '../../enums/orientation-type';
+import { PageType } from '../../enums/page-type';
+import { ScreenType } from '../../enums/screen-type';
 import { StructureType } from '../../enums/structure-type';
 
 import { CampaignMapGenerator } from '../../generators/campaign-map-generator';
@@ -57,23 +60,20 @@ import dong from '../../assets/sounds/dong.mp3';
 
 const rules: Record<string, string> = {};
 
-enum ScreenType {
-	Landing = 'landing',
-	Setup = 'setup',
-	Campaign = 'campaign',
-	Encounter = 'encounter'
-}
-
 interface Props {
 	game: GameModel | null;
 	options: OptionsModel;
 	platform: Platform;
+	orientation: OrientationType;
+	screen: ScreenType;
+	page: PageType;
+	setScreen: (screen: ScreenType) => void;
+	setPage: (page: PageType) => void;
 }
 
 interface State {
 	game: GameModel | null;
 	options: OptionsModel;
-	screen: ScreenType;
 	showHelp: string | null;
 	showPacks: boolean;
 	dialog: JSX.Element | null;
@@ -87,7 +87,6 @@ export class Main extends Component<Props, State> {
 		this.state = {
 			game: props.game,
 			options: props.options,
-			screen: ScreenType.Landing,
 			showHelp: null,
 			showPacks: false,
 			dialog: null,
@@ -142,8 +141,9 @@ export class Main extends Component<Props, State> {
 
 	setScreen = (screen: ScreenType) => {
 		this.setState({
-			screen: screen,
 			dialog: null
+		}, () => {
+			this.props.setScreen(screen);
 		});
 	};
 
@@ -240,12 +240,12 @@ export class Main extends Component<Props, State> {
 
 			this.setState({
 				game: game,
-				screen: ScreenType.Setup,
 				showHelp: null,
 				showPacks: false,
 				dialog: null
 			}, () => {
 				this.saveGame();
+				this.props.setScreen(ScreenType.Setup);
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -254,11 +254,8 @@ export class Main extends Component<Props, State> {
 
 	beginCampaign = () => {
 		try {
-			this.setState({
-				screen: ScreenType.Campaign
-			}, () => {
-				this.saveGame();
-			});
+			this.saveGame();
+			this.props.setScreen(ScreenType.Campaign);
 		} catch (ex) {
 			this.logException(ex);
 		}
@@ -266,11 +263,8 @@ export class Main extends Component<Props, State> {
 
 	continueCampaign = () => {
 		try {
-			this.setState({
-				screen: !this.state.game?.encounter ? ScreenType.Campaign : ScreenType.Encounter
-			}, () => {
-				this.saveGame();
-			});
+			this.saveGame();
+			this.props.setScreen(!this.state.game?.encounter ? ScreenType.Campaign : ScreenType.Encounter);
 		} catch (ex) {
 			this.logException(ex);
 		}
@@ -285,12 +279,12 @@ export class Main extends Component<Props, State> {
 
 			this.setState({
 				game: game,
-				screen: ScreenType.Campaign,
 				showHelp: null,
 				showPacks: false,
 				dialog: null
 			}, () => {
 				this.saveGame();
+				this.props.setScreen(ScreenType.Campaign);
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -308,12 +302,12 @@ export class Main extends Component<Props, State> {
 
 			this.setState({
 				game: game,
-				screen: ScreenType.Campaign,
 				showHelp: null,
 				showPacks: false,
 				dialog: null
 			}, () => {
 				this.saveGame();
+				this.props.setScreen(ScreenType.Campaign);
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -324,12 +318,12 @@ export class Main extends Component<Props, State> {
 		try {
 			this.setState({
 				game: null,
-				screen: ScreenType.Landing,
 				showHelp: null,
 				showPacks: false,
 				dialog: null
 			}, () => {
 				this.saveGame();
+				this.props.setScreen(ScreenType.Landing);
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -348,8 +342,6 @@ export class Main extends Component<Props, State> {
 
 			if (cost > 0) {
 				game.money = Math.max(0, game.money - cost);
-			} else {
-				game.structureSlots = Math.max(game.structureSlots - 1, 0);
 			}
 
 			this.setState({
@@ -707,10 +699,10 @@ export class Main extends Component<Props, State> {
 				EncounterMapLogic.visibilityCache.reset();
 
 				this.setState({
-					game: game,
-					screen: ScreenType.Encounter
+					game: game
 				}, () => {
 					this.saveGame();
+					this.props.setScreen(ScreenType.Encounter);
 				});
 			}
 		} catch (ex) {
@@ -744,7 +736,6 @@ export class Main extends Component<Props, State> {
 				CampaignMapLogic.conquerRegion(game.map, region);
 				game.heroes.forEach(h => h.xp += region.encounters.length);
 				game.heroSlots += 1;
-				game.structureSlots += 1;
 				game.boons.push(region.boon);
 
 				this.setState({
@@ -1239,8 +1230,6 @@ export class Main extends Component<Props, State> {
 						} else {
 							// Add a new hero slot
 							game.heroSlots += 1;
-							// Add a new structure slot
-							game.structureSlots += 1;
 							// Add the region's boon
 							game.boons.push(region.boon);
 						}
@@ -1286,11 +1275,11 @@ export class Main extends Component<Props, State> {
 			EncounterMapLogic.visibilityCache.reset();
 
 			this.setState({
-				screen: ScreenType.Campaign,
 				game: game,
 				dialog: dialogContent
 			}, () => {
 				this.saveGame();
+				this.props.setScreen(ScreenType.Campaign);
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -1319,12 +1308,13 @@ export class Main extends Component<Props, State> {
 	//#region Rendering
 
 	getContent = () => {
-		switch (this.state.screen) {
+		switch (this.props.screen) {
 			case ScreenType.Landing:
 				return (
 					<LandingScreen
 						game={this.state.game}
 						options={this.state.options}
+						orientation={this.props.orientation}
 						startCampaign={this.startCampaign}
 						continueCampaign={this.continueCampaign}
 						showPacks={this.showPacks}
@@ -1335,6 +1325,7 @@ export class Main extends Component<Props, State> {
 					<SetupScreen
 						game={this.state.game as GameModel}
 						options={this.state.options}
+						orientation={this.props.orientation}
 						addHero={this.addHero}
 						addHeroes={this.addHeroes}
 						equipItem={this.equipItem}
@@ -1351,7 +1342,10 @@ export class Main extends Component<Props, State> {
 						game={this.state.game as GameModel}
 						options={this.state.options}
 						platform={this.props.platform}
+						orientation={this.props.orientation}
+						page={this.props.page}
 						hasExceptions={this.state.exceptions.length > 0}
+						setPage={this.props.setPage}
 						showHelp={this.showHelp}
 						showPacks={this.showPacks}
 						buyStructure={this.buyStructure}
@@ -1382,6 +1376,7 @@ export class Main extends Component<Props, State> {
 						encounter={this.state.game?.encounter as EncounterModel}
 						game={this.state.game as GameModel}
 						options={this.state.options}
+						orientation={this.props.orientation}
 						hasExceptions={this.state.exceptions.length > 0}
 						showHelp={this.showHelp}
 						rotateMap={this.rotateMap}

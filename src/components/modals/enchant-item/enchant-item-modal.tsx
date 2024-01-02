@@ -103,6 +103,7 @@ export class EnchantItemModal extends Component<Props, State> {
 								</div>
 							</div>
 						}
+						level={2}
 					/>
 				);
 			}

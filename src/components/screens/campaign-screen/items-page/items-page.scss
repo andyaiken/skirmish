@@ -1,8 +1,31 @@
 .items-page {
 	height: 100%;
-	padding: 20px;
 	display: flex;
+	flex-direction: row;
+	align-items: center;
 	gap: 20px;
+
+	&.landscape {
+		.items-content,
+		.sidebar {
+			height: 100%;
+		}
+	}
+
+	&.portrait {
+		flex-direction: column;
+
+		.items-content,
+		.sidebar {
+			width: 100%;
+		}
+
+		.sidebar {
+			flex-basis: 365px;
+			flex-direction: row;
+			align-items: flex-start;
+		}
+	}
 
 	.items-content {
 		flex: 1 1 0;
@@ -17,8 +40,17 @@
 		border-radius: 10px;
 		padding: 20px;
 		background-color: white;
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
 		overflow-x: hidden;
 		overflow-y: auto;
 		-webkit-overflow-scrolling: touch;
+
+		.sidebar-section {
+			flex: 1 1 0;
+			display: flex;
+			flex-direction: column;
+		}
 	}
 }

@@ -1,8 +1,31 @@
 .stronghold-page {
 	height: 100%;
-	padding: 20px;
 	display: flex;
+	flex-direction: row;
+	align-items: center;
 	gap: 20px;
+
+	&.landscape {
+		.map-content,
+		.sidebar {
+			height: 100%;
+		}
+	}
+
+	&.portrait {
+		flex-direction: column;
+
+		.map-content,
+		.sidebar {
+			width: 100%;
+		}
+
+		.sidebar {
+			flex-basis: 365px;
+			flex-direction: row;
+			align-items: flex-start;
+		}
+	}
 
 	.map-content {
 		flex: 1 1 0;
@@ -12,6 +35,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		position: relative;
 	}
 
 	.sidebar {
@@ -19,28 +43,24 @@
 		border: 2px solid rgb(220, 220, 220);
 		border-radius: 10px;
 		padding: 20px;
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
 		background-color: white;
 		overflow-x: hidden;
 		overflow-y: auto;
 		-webkit-overflow-scrolling: touch;
 
+		.sidebar-section {
+			flex: 1 1 0;
+			display: flex;
+			flex-direction: column;
+		}
+
 		.slots-count {
 			font-size: 40px;
 			font-weight: 600;
 			margin-top: 20px;
-		}
-
-		.center {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			margin: 20px 0;
-		}
-
-		.structure-details-card {
-			display: flex;
-			justify-content: center;
-			margin: 15px 0;
 		}
 
 		.upgrade-section {

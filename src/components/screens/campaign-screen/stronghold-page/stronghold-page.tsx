@@ -2,6 +2,7 @@ import { IconHexagon, IconHexagonFilled } from '@tabler/icons-react';
 import { Component } from 'react';
 
 import { BoonType } from '../../../../enums/boon-type';
+import { OrientationType } from '../../../../enums/orientation-type';
 import { StructureType } from '../../../../enums/structure-type';
 
 import { GameLogic } from '../../../../logic/game-logic';
@@ -14,8 +15,8 @@ import type { ItemModel } from '../../../../models/item';
 import type { OptionsModel } from '../../../../models/options';
 import type { StructureModel } from '../../../../models/structure';
 
-import { BoonCard, PlaceholderCard, StructureCard } from '../../../cards';
-import { Box, CardList, Dialog, Expander, IconSize, IconType, IconValue, PlayingCard, StatValue, Text, TextType } from '../../../controls';
+import { BoonCard, StructureCard } from '../../../cards';
+import { Box, CardList, Dialog, Expander, IconSize, IconType, IconValue, StatValue, Text, TextType } from '../../../controls';
 import { BuyStructureModal } from '../../../modals/buy-structure/buy-structure-modal';
 import { StrongholdMapPanel } from '../../../panels';
 
@@ -24,6 +25,7 @@ import './stronghold-page.scss';
 interface Props {
 	game: GameModel;
 	options: OptionsModel;
+	orientation: OrientationType;
 	buyStructure: (structure: StructureModel, cost: number) => void;
 	sellStructure: (structure: StructureModel) => void;
 	chargeStructure: (structure: StructureModel) => void;
@@ -147,23 +149,29 @@ export class StrongholdPage extends Component<Props, State> {
 
 			return (
 				<div key={this.state.selectedStructure.id} className='sidebar'>
-					<div className='structure-details-card'>
-						<StructureCard structure={this.state.selectedStructure} />
+					<div className='sidebar-section'>
+						<CardList cards={[ <StructureCard key='selected' structure={this.state.selectedStructure} /> ]} />
 					</div>
-					<hr />
-					<div className='upgrade-section'>
-						<StatValue orientation='vertical' label='Level' value={this.state.selectedStructure.level} />
-						<button disabled={this.props.game.money < upgradeCost} onClick={() => this.props.upgradeStructure(this.state.selectedStructure as StructureModel)}>
-							<div>Upgrade<br/>structure</div>
-							<IconValue type={IconType.Money} value={upgradeCost} size={IconSize.Button} />
+					<div className='sidebar-section'>
+						<div className='upgrade-section'>
+							<StatValue orientation='vertical' label='Level' value={this.state.selectedStructure.level} />
+							<button disabled={this.props.game.money < upgradeCost} onClick={() => this.props.upgradeStructure(this.state.selectedStructure as StructureModel)}>
+								<div>Upgrade<br/>structure</div>
+								<IconValue type={IconType.Money} value={upgradeCost} size={IconSize.Button} />
+							</button>
+						</div>
+						<button onClick={() => this.sellStructure(this.state.selectedStructure as StructureModel)}>
+							<div>Demolish structure</div>
+							<IconValue type={IconType.Money} value={25} size={IconSize.Button} />
 						</button>
 					</div>
-					<button onClick={() => this.sellStructure(this.state.selectedStructure as StructureModel)}>
-						<div>Demolish structure</div>
-						<IconValue type={IconType.Money} value={25} size={IconSize.Button} />
-					</button>
-					{charge !== null ? <hr /> : null}
-					{charge}
+					{
+						charge !== null ?
+							<div className='sidebar-section'>
+								{charge}
+							</div>
+							: null
+					}
 				</div>
 			);
 		}
@@ -181,25 +189,6 @@ export class StrongholdPage extends Component<Props, State> {
 			);
 		}
 
-		let slots = null;
-		if (this.props.game.structureSlots > 0) {
-			slots = (
-				<div className='center'>
-					<PlayingCard
-						stack={true}
-						front={
-							<PlaceholderCard
-								text='Free Structures Available'
-								subtext='Click here to build a structure for free.'
-								content={<div className='slots-count'>{this.props.game.structureSlots}</div>}
-							/>
-						}
-						onClick={() => this.setState({ addingStructure: 'free' })}
-					/>
-				</div>
-			);
-		}
-
 		let addSection = null;
 		if (GameLogic.getStructureDeck(this.props.options.packIDs).length > 0) {
 			addSection = (
@@ -212,39 +201,45 @@ export class StrongholdPage extends Component<Props, State> {
 
 		return (
 			<div key='map' className='sidebar'>
-				<Text type={TextType.SubHeading}>Your Stronghold</Text>
-				<Text>This is your base of operations.</Text>
-				<Text>It&apos;s made up of structures, each of which can grant you a unique benefit.</Text>
-				<Text>Select a structure on the map to see what it can do.</Text>
+				<div className='sidebar-section'>
+					<Text type={TextType.SubHeading}>Your Stronghold</Text>
+					<Text>This is your base of operations.</Text>
+					<Text>It&apos;s made up of structures, each of which can grant you a unique benefit.</Text>
+					<Text>Select a structure on the map to see what it can do.</Text>
+					{
+						this.props.options.showTips ?
+							<Expander
+								header={
+									<Text type={TextType.Tip}>Your stronghold can provide useful benefits.</Text>
+								}
+								content={
+									<div>
+										<p>The different structures have different effects:</p>
+										<ul>
+											<li>The Barracks allows you recruit more heroes.</li>
+											<li>Some structures allow you to redraw cards.</li>
+											<li>Some structures provide advantages in encounters.</li>
+										</ul>
+										<p>Structures can be upgraded, which increases their usefulness.</p>
+										<p>Most structures need to be charged before they can be used, which costs money.</p>
+									</div>
+								}
+							/>
+							: null
+					}
+				</div>
+				<div className='sidebar-section'>
+					{this.getStrongholdBenefits()}
+				</div>
 				{
-					this.props.options.showTips ?
-						<Expander
-							header={
-								<Text type={TextType.Tip}>Your stronghold can provide useful benefits.</Text>
-							}
-							content={
-								<div>
-									<p>The different structures have different effects:</p>
-									<ul>
-										<li>The Barracks allows you recruit more heroes.</li>
-										<li>Some structures allow you to redraw cards.</li>
-										<li>Some structures provide advantages in encounters.</li>
-									</ul>
-									<p>Structures can be upgraded, which increases their usefulness.</p>
-									<p>Most structures need to be charged before they can be used, which costs money.</p>
-								</div>
-							}
-						/>
+					(boons !== null) || (addSection !== null) ?
+						<div className='sidebar-section'>
+							{boons}
+							{(boons !== null) && (addSection !== null) ? <hr /> : null}
+							{addSection}
+						</div>
 						: null
 				}
-				<hr />
-				{this.getStrongholdBenefits()}
-				{boons !== null ? <hr /> : null}
-				{boons}
-				{slots !== null ? <hr /> : null}
-				{slots}
-				{addSection !== null ? <hr /> : null}
-				{addSection}
 			</div>
 		);
 	};
@@ -271,7 +266,7 @@ export class StrongholdPage extends Component<Props, State> {
 	render = () => {
 		try {
 			return (
-				<div className='stronghold-page'>
+				<div className={`stronghold-page ${this.props.orientation}`}>
 					<div className='map-content' onClick={() => this.setState({ selectedStructure: null })}>
 						<StrongholdMapPanel
 							stronghold={this.props.game.stronghold}

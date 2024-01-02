@@ -66,10 +66,6 @@ export class Platform {
 	};
 
 	private updateGame = (game: GameModel) => {
-		if (game.structureSlots === undefined) {
-			game.structureSlots = 0;
-		}
-
 		game.heroes.forEach(h => {
 			if (h.faction === undefined) {
 				h.faction = h.type;

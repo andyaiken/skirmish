@@ -11,7 +11,9 @@ import type { OptionsModel } from '../../../../../models/options';
 
 import type { Platform } from '../../../../../platform/platform';
 
-import { StatValue, Text, TextType } from '../../../../controls';
+import { Collections } from '../../../../../utils/collections';
+
+import { StatValue } from '../../../../controls';
 
 import './effect-list-panel.scss';
 
@@ -20,13 +22,31 @@ interface Props {
 	platform: Platform;
 }
 
-export class EffectListPanel extends Component<Props> {
-	addToList = (effects: ActionEffectModel[], list: { id: string, effects: { desc: string, count: number }[] }[]) => {
+interface State {
+	selectedEffectID: string;
+}
+
+export class EffectListPanel extends Component<Props, State> {
+	constructor(props: Props) {
+		super(props);
+
+		const actions = GameLogic.getAllActions(PackData.getList().map(p => p.id));
+		actions.forEach(a => this.addToList(a.effects));
+		this.list.forEach(item => item.effects.sort((a, b) => a.desc.localeCompare(b.desc)));
+
+		this.state = {
+			selectedEffectID: this.list[0].effectID
+		};
+	}
+
+	list: { effectID: string, effects: { desc: string, count: number }[] }[] = [];
+
+	addToList = (effects: ActionEffectModel[]) => {
 		effects.forEach(e => {
-			let existingEffect = list.find(item => item.id === e.id);
+			let existingEffect = this.list.find(item => item.effectID === e.id);
 			if (!existingEffect) {
-				existingEffect = { id: e.id, effects: [] };
-				list.push(existingEffect);
+				existingEffect = { effectID: e.id, effects: [] };
+				this.list.push(existingEffect);
 			}
 			const desc = ActionEffects.getDescription(e, null, null);
 			let existingDesc = existingEffect.effects.find(item => item.desc === desc);
@@ -35,30 +55,28 @@ export class EffectListPanel extends Component<Props> {
 				existingEffect.effects.push(existingDesc);
 			}
 			existingDesc.count += 1;
-			this.addToList(e.children, list);
+			this.addToList(e.children);
 		});
 	};
 
 	render = () => {
 		try {
-			const list: { id: string, effects: { desc: string, count: number }[] }[] = [];
-
-			const actions = GameLogic.getAllActions(PackData.getList().map(p => p.id));
-			actions.forEach(a => this.addToList(a.effects, list));
-			list.forEach(item => item.effects.sort((a, b) => a.desc.localeCompare(b.desc)));
+			const selected = this.list.find(item => item.effectID === this.state.selectedEffectID);
 
 			return (
 				<div className='effect-list-panel'>
-					{list.map(item => {
-						return (
-							<div key={item.id} className='effect-type'>
-								<Text type={TextType.MinorHeading}>{item.id}</Text>
-								<div className='effect-data'>
-									{item.effects.map((effect, n) => <StatValue key={n} label={effect.desc} value={effect.count} />)}
-								</div>
-							</div>
-						);
-					})}
+					<div className='effect-type-column'>
+						{this.list.map(item => {
+							return (
+								<button key={item.effectID} className='effect-type' onClick={() => this.setState({ selectedEffectID: item.effectID })}>
+									<StatValue label={item.effectID} value={Collections.sum(item.effects, e => e.count)} />
+								</button>
+							);
+						})}
+					</div>
+					<div className='effect-list-column'>
+						{selected?.effects.map((effect, n) => <StatValue key={n} label={effect.desc} value={effect.count} />)}
+					</div>
 				</div>
 			);
 		} catch {

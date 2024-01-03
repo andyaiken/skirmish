@@ -82,7 +82,7 @@ export class BoonCard extends Component<Props> {
 				extra = <IconValue type={IconType.Money} value={this.props.boon.data as number} size={IconSize.Large} />;
 				break;
 			case BoonType.EnchantItem:
-				extra = 'Enchant one of your items.';
+				desc = 'Enchant one of your items.';
 				break;
 		}
 

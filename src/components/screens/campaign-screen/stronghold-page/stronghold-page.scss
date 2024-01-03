@@ -10,6 +10,12 @@
 		.sidebar {
 			height: 100%;
 		}
+
+		.sidebar {
+			.sidebar-section {
+				flex: 0 0 auto;
+			}
+		}
 	}
 
 	&.portrait {

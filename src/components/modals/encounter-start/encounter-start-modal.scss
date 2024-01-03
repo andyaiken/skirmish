@@ -25,14 +25,22 @@
 		overflow-y: hidden;
 
 		.hero-list-column {
-			flex: 1 1 0;
 			padding-bottom: 5px;
 			overflow-x: hidden;
 			overflow-y: auto;
 			-webkit-overflow-scrolling: touch;
 
+			&.candidates {
+				flex: 0 0 220px;
+			}
+
+			&.selected {
+				flex: 1 1 0;
+			}
+
 			.empty {
-				margin-top: 100px;
+				height: 100%;
+				display: flex;
 				text-align: center;
 			}
 

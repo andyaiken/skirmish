@@ -20,11 +20,11 @@
 
 		&.selected {
 			font-weight: 600;
-			background-color: rgb(240, 240, 240);
+			background-color: rgb(200, 230, 255);
 			pointer-events: none;
 		}
 
-		&:hover:not(.selected) {
+		&:hover {
 			background-color: rgb(200, 230, 255);
 		}
 	}

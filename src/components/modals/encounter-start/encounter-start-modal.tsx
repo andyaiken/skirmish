@@ -85,7 +85,7 @@ export class EncounterStartModal extends Component<Props, State> {
 
 		return (
 			<div className='hero-page'>
-				<div className='hero-list-column'>
+				<div className='hero-list-column candidates'>
 					{
 						candidates.length === 0 ?
 							<div className='empty'>
@@ -98,12 +98,12 @@ export class EncounterStartModal extends Component<Props, State> {
 					<CardList cards={candidates} />
 				</div>
 				<div className='divider' />
-				<div className='hero-list-column'>
+				<div className='hero-list-column selected'>
 					<div className='selected-hero-list'>
 						{
 							this.state.selectedHeroes.length === 0 ?
 								<Text type={TextType.Information}>
-									<p>Select <b>up to 5 heroes</b> to take part in this encounter.</p>
+									<p>Select <b>up to 5 heroes</b> from the list on the left to take part in this encounter.</p>
 								</Text>
 								: null
 						}

@@ -7,7 +7,7 @@ import { Platform } from '../../../../platform/platform';
 import { CardListPanel } from './card-list/card-list-panel';
 import { DamageListPanel } from './damage-list/damage-list-panel';
 import { EffectListPanel } from './effect-list/effect-list-panel';
-import { Selector } from '../../../controls';
+import { Tabs } from '../../../controls';
 
 import './dev-page.scss';
 
@@ -51,7 +51,7 @@ export class DevPage extends Component<Props, State> {
 
 			return (
 				<div className='dev-page'>
-					<Selector options={options} selectedID={this.state.view} onSelect={id => this.setState({ view: id })} />
+					<Tabs options={options} selectedID={this.state.view} onSelect={id => this.setState({ view: id })} />
 					<div className='dev-page-content'>
 						{content}
 					</div>

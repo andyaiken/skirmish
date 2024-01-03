@@ -17,7 +17,7 @@ import { Utils } from '../../../../utils/utils';
 
 import { BoonCard, ItemCard } from '../../../cards';
 import { BuyEquipmentModal, BuyMagicItemModal, BuyPotionModal, EnchantItemModal, MagicItemInfoModal } from '../../../modals';
-import { CardList, Dialog, IconSize, IconType, IconValue, StatValue, Text, TextType } from '../../../controls';
+import { CardList, Dialog, IconSize, IconType, IconValue, Text, TextType } from '../../../controls';
 
 import './items-page.scss';
 
@@ -128,13 +128,6 @@ export class ItemsPage extends Component<Props, State> {
 	};
 
 	getSidebar = () => {
-		const moneySection = (
-			<div>
-				<StatValue orientation='vertical' label='Money' value={<IconValue type={IconType.Money} value={this.props.game.money} size={IconSize.Large} />} />
-				{this.props.options.developer ? <button className='developer' onClick={() => this.props.addMoney()}>Add money</button> : null}
-			</div>
-		);
-
 		let boons = null;
 		if (this.props.game.boons.filter(boon => GameLogic.getBoonIsItemType(boon)).length > 0) {
 			const cards = this.props.game.boons
@@ -179,8 +172,6 @@ export class ItemsPage extends Component<Props, State> {
 				<div className='sidebar-section'>
 					<Text type={TextType.SubHeading}>Your Equipment</Text>
 					<Text>This page lists the items that your heroes aren&apos;t currently using.</Text>
-					<hr />
-					{moneySection}
 				</div>
 				{
 					boons !== null ?

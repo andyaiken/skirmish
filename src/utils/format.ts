@@ -1,4 +1,8 @@
 export class Format {
+	static toText = (value: number) => {
+		return value.toLocaleString();
+	};
+
 	static toSize = (value: number) => {
 		let str = `${value} B`;
 

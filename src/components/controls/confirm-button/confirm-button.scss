@@ -1,13 +1,14 @@
-.confirm-button {
-	display: block;
-}
-
 .confirm-query {
 	margin: 10px 0;
 	border: 2px solid red;
 	border-radius: 10px;
 	padding: 10px 15px;
-	background-color: rgb(255, 200, 200);
+	background-color: rgb(255, 240, 240);
+
+	.query-label {
+		text-transform: uppercase;
+		letter-spacing: 2px;
+	}
 
 	.button-row {
 		display: flex;

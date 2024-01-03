@@ -78,7 +78,6 @@ export class MonsterControls extends Component<Props, State> {
 							: null
 					}
 					<CombatStatsPanel combatant={this.props.combatant} encounter={this.props.encounter} />
-					<hr />
 					{
 						this.props.options.developer ?
 							<button className='developer' disabled={this.state.thinking} onClick={() => this.props.switchAllegiance(this.props.combatant)}>Switch Allegiance</button>

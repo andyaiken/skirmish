@@ -13,24 +13,24 @@
 		justify-content: space-between;
 		gap: 25px;
 
-		.logo {
-			width: 40px;
-			margin: 10px 0;
-			filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.4));
-		}
-
-		.logo-text {
-			font-size: 36px;
-			letter-spacing: 6px;
-		}
-
+		.branding,
+		.money,
 		.buttons {
 			display: flex;
 			align-items: center;
-			gap: 5px;
+			gap: 15px;
+		}
 
-			.icon-btn {
-				flex: 0 0 40px;
+		.branding {
+			.logo {
+				width: 40px;
+				margin: 10px 0;
+				filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.4));
+			}
+
+			.logo-text {
+				font-size: 36px;
+				letter-spacing: 6px;
 			}
 		}
 	}

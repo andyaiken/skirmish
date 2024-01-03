@@ -1,4 +1,4 @@
-import { IconCards, IconHelpCircle, IconHelpCircleFilled } from '@tabler/icons-react';
+import { IconCards, IconCirclePlus, IconHelpCircle, IconHelpCircleFilled } from '@tabler/icons-react';
 import { Component } from 'react';
 
 import { OrientationType } from '../../../enums/orientation-type';
@@ -19,7 +19,9 @@ import type { StructureModel } from '../../../models/structure';
 
 import type { Platform } from '../../../platform/platform';
 
-import { Badge, Selector } from '../../controls';
+import { Format } from '../../../utils/format';
+
+import { Badge, IconSize, IconType, IconValue, Selector } from '../../controls';
 
 import { CampaignMapPage } from './campaign-map-page/campaign-map-page';
 import { DevPage } from './dev-page/dev-page';
@@ -191,8 +193,14 @@ export class CampaignScreen extends Component<Props> {
 			return (
 				<div className={`campaign-screen ${this.props.orientation}`}>
 					<div className='campaign-top-bar'>
-						<img className='logo' alt='Logo' src={logo} />
-						<div className='logo-text inset-text'>Skirmish</div>
+						<div className='branding'>
+							<img className='logo' alt='Logo' src={logo} />
+							<div className='logo-text inset-text'>Skirmish</div>
+						</div>
+						<div className='money'>
+							<IconValue type={IconType.Money} value={Format.toText(this.props.game.money)} size={IconSize.Large} />
+							{this.props.options.developer ? <button className='developer icon-btn' onClick={() => this.props.addMoney()}><IconCirclePlus /></button> : null}
+						</div>
 						<div className='buttons'>
 							<Badge value={availablePacks}>
 								<button className='icon-btn' title='Packs' onClick={() => this.props.showPacks()}>

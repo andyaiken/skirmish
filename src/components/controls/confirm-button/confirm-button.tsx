@@ -35,7 +35,7 @@ export const ConfirmButton = (props: Props) => {
 		return (
 			<div className='confirm-query'>
 				<Text>
-					<b>{`${props.label} - are you sure?`}</b>
+					<b><span className='query-label'>{props.label}</span> - are you sure?</b>
 				</Text>
 				<div className='button-row'>
 					<button onClick={onConfirm}>OK</button>

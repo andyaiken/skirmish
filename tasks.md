@@ -4,7 +4,7 @@
 * Undo movement
   * Can't undo movement if you've done anything (taken an action, hidden, etc)
 * Drag and drop movement
-  * Automatically select the best path
+  * Automatically select the best path to a selected square
 
 ## Map Types
 * Building interior
@@ -83,7 +83,7 @@
 * Fae
   * role - Arcane archer / venator / bowmage / hexbow
 * Faith
-  * Clerics should summon / resurrect dead heroes
+  * Clerics should be able to summon / resurrect dead heroes
 
 ## Ideas for Roles / Backgrounds
 * Gladiator 

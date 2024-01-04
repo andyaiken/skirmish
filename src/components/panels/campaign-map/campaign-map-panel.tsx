@@ -83,26 +83,18 @@ export class CampaignMapPanel extends Component<Props> {
 	getLabel = (region: RegionModel) => {
 		const square = CampaignMapLogic.getCentralSquare(this.props.map, region);
 		if (square) {
-
-			let y = square.y;
-			if (square.x % 2 === 0) {
-				y += 0.25;
-			} else {
-				y -= 0.25;
-			}
-
 			return (
 				<g key={region.id} onClick={e => this.onClick(e, region)}>
 					<circle
 						className='campaign-map-label-container'
 						cx={square.x + 0.5}
-						cy={y + 0.5}
-						r={0.4}
+						cy={square.y + 0.5 + ((square.x % 2 === 0) ? 0.25 : -0.25)}
+						r={0.33}
 					/>
 					<text
 						className='campaign-map-label-text'
-						x={square.x + 0.51}
-						y={y + 0.54}
+						x={square.x + 0.495}
+						y={square.y + 0.53 + ((square.x % 2 === 0) ? 0.25 : -0.25)}
 						textLength={0.5}
 						dominantBaseline='middle'
 						textAnchor='middle'

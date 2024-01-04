@@ -33,6 +33,7 @@ export class EffectListPanel extends Component<Props, State> {
 		const actions = GameLogic.getAllActions(PackData.getList().map(p => p.id));
 		actions.forEach(a => this.addToList(a.effects));
 		this.list.forEach(item => item.effects.sort((a, b) => a.desc.localeCompare(b.desc)));
+		this.list.sort((a, b) => Collections.sum(b.effects, e => e.count) - Collections.sum(a.effects, e => e.count));
 
 		this.state = {
 			selectedEffectID: this.list[0].effectID

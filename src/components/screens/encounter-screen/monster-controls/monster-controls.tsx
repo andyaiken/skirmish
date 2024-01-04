@@ -71,7 +71,8 @@ export class MonsterControls extends Component<Props, State> {
 								}
 								content={
 									<div>
-										<p>You can&apos;t control a monster directly; press the <b>Go</b> button and it will take its turn.</p>
+										<p>{this.props.combatant.name} is a monster.</p>
+										<p>You can&apos;t control a monster directly; press the <b>Take Monster Turn</b> button and it will take its turn.</p>
 									</div>
 								}
 							/>

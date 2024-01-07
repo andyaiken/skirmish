@@ -645,7 +645,6 @@ export class EncounterScreen extends Component<Props, State> {
 							options={this.props.options}
 							showToken={() => this.scrollToCombatant('current')}
 							showCharacterSheet={this.showDetailsCombatant}
-							endTurn={this.endTurn}
 						/>
 					</div>
 				);

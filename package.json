@@ -1,6 +1,6 @@
 {
 	"name": "skirmish",
-	"version": "1.116.0",
+	"version": "1.117.0",
 	"repository": "https://github.com/andyaiken/skirmish.git",
 	"homepage": "https://andyaiken.github.io/skirmish/",
 	"dependencies": {
@@ -14,7 +14,7 @@
 	},
 	"devDependencies": {
 		"@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-		"@types/react": "^18.2.46",
+		"@types/react": "^18.2.47",
 		"@types/react-dom": "^18.2.18",
 		"@typescript-eslint/eslint-plugin": "^5.61.0",
 		"@typescript-eslint/parser": "^5.61.0",

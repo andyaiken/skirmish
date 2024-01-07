@@ -14,7 +14,6 @@ interface Props {
 	options: OptionsModel;
 	showToken: (combatant: CombatantModel) => void;
 	showCharacterSheet: (combatant: CombatantModel) => void;
-	endTurn: () => void;
 }
 
 export class InactiveControls extends Component<Props> {
@@ -30,7 +29,6 @@ export class InactiveControls extends Component<Props> {
 						onDetails={this.props.showCharacterSheet}
 					/>
 					<CombatantNotices combatant={this.props.combatant} />
-					<button onClick={this.props.endTurn}>End Turn</button>
 				</div>
 			);
 		}  catch {

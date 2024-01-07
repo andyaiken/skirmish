@@ -79,7 +79,8 @@ export class ItemsPage extends Component<Props, State> {
 
 	showEnchant = (show: boolean) => {
 		this.setState({
-			showEnchant: show
+			showEnchant: show,
+			selectedBoon: null
 		});
 	};
 

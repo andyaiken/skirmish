@@ -15,7 +15,7 @@ import { ActionEffects, ActionLogic, ActionTargetParameters } from './action-log
 import { GameLogic } from './game-logic';
 
 import type { ActionModel, ActionOriginParameterModel, ActionTargetParameterModel, ActionWeaponParameterModel } from '../models/action';
-import type { EncounterMapSquareModel, EncounterModel, LootPileModel } from '../models/encounter';
+import type { EncounterMapSquareModel, EncounterModel, LogMessageModel, LogMessagePartModel, LootPileModel } from '../models/encounter';
 import type { CombatantModel } from '../models/combatant';
 import type { ConditionModel } from '../models/condition';
 import type { ItemModel } from '../models/item';
@@ -28,26 +28,45 @@ import { ConditionLogic } from './condition-logic';
 import { EncounterMapLogic } from './encounter-map-logic';
 import { Factory } from './factory';
 import { Sound } from '../utils/sound';
+import { Utils } from '../utils/utils';
 
 export class EncounterLogic {
-	static log = (encounter: EncounterModel, message: string) => {
-		EncounterLogic.logMessages.push(message);
+	static log = (encounter: EncounterModel, message: string, notify = false) => {
+		const lmm: LogMessageModel = {
+			id: Utils.guid(),
+			timestamp: Date.now(),
+			message: [ {
+				type: 'text',
+				data: message
+			} ]
+		};
 
-		if (EncounterLogic.logTimeout) {
-			clearTimeout(EncounterLogic.logTimeout);
-			EncounterLogic.logTimeout = null;
-		}
-		EncounterLogic.logTimeout = setTimeout(() => {
-			if (EncounterLogic.handleLogMessage) {
-				EncounterLogic.handleLogMessage(EncounterLogic.logMessages);
-				EncounterLogic.logMessages = [];
+		// Add this message to the TOP of the log
+		encounter.log.unshift(lmm);
+
+		if (notify) {
+			EncounterLogic.logMessages.push(lmm);
+
+			if (EncounterLogic.logTimeout) {
+				clearTimeout(EncounterLogic.logTimeout);
+				EncounterLogic.logTimeout = null;
 			}
-		}, 200);
+			EncounterLogic.logTimeout = setTimeout(() => {
+				if (EncounterLogic.handleLogMessage) {
+					EncounterLogic.handleLogMessage(EncounterLogic.logMessages);
+					EncounterLogic.logMessages = [];
+				}
+			}, 250);
+		}
 	};
 
-	static logMessages: string[] = [];
+	static getLogMessage = (message: LogMessagePartModel[]) => {
+		return message.map(m => m.data).join(' ');
+	};
+
+	static logMessages: LogMessageModel[] = [];
 	static logTimeout: NodeJS.Timeout | null = null;
-	static handleLogMessage: ((messages: string[]) => void) | null = null;
+	static handleLogMessage: ((messages: LogMessageModel[]) => void) | null = null;
 
 	static getCombatantSquares = (encounter: EncounterModel, combatant: CombatantModel, position: { x: number, y: number } | null = null) => {
 		const squares = [];
@@ -328,7 +347,7 @@ export class EncounterLogic {
 		if (combatant.combat.selectedAction !== null) {
 			const action = combatant.combat.selectedAction.action;
 			combatant.combat.selectedAction.used = true;
-			EncounterLogic.log(encounter, `${combatant.name} uses ${action.name}`);
+			EncounterLogic.log(encounter, `${combatant.name} selects ${action.name}`);
 			action.effects.forEach(effect => ActionEffects.run(effect, encounter, combatant, action.parameters));
 		}
 	};
@@ -593,7 +612,7 @@ export class EncounterLogic {
 
 		combatant.combat.state = CombatantState.Dead;
 		combatant.combat.conditions = [];
-		EncounterLogic.log(encounter, `${combatant.name} is now ${combatant.combat.state}`);
+		EncounterLogic.log(encounter, `${combatant.name} is now ${combatant.combat.state}`, true);
 		EncounterLogic.dropAllItems(encounter, combatant);
 		Sound.play(Sound.dong);
 	};
@@ -604,7 +623,7 @@ export class EncounterLogic {
 
 			EncounterLogic.checkActionParameters(encounter, combatant);
 
-			EncounterLogic.log(encounter, `${combatant.name} is now ${combatant.combat.state}`);
+			EncounterLogic.log(encounter, `${combatant.name} is now ${combatant.combat.state}`, true);
 		}
 	};
 
@@ -614,7 +633,7 @@ export class EncounterLogic {
 
 			EncounterLogic.checkActionParameters(encounter, combatant);
 
-			EncounterLogic.log(encounter, `${combatant.name} is now ${combatant.combat.state}`);
+			EncounterLogic.log(encounter, `${combatant.name} is now ${combatant.combat.state}`, true);
 		}
 	};
 
@@ -624,7 +643,7 @@ export class EncounterLogic {
 		}
 
 		combatant.combat.stunned = true;
-		EncounterLogic.log(encounter, `${combatant.name} is stunned`);
+		EncounterLogic.log(encounter, `${combatant.name} is stunned`, true);
 	};
 
 	static inspire = (encounter: EncounterModel, combatant: CombatantModel) => {

@@ -8,12 +8,14 @@ import {
 	IconLayoutBottombarExpand,
 	IconLayoutSidebarLeftCollapse,
 	IconLayoutSidebarLeftExpand,
+	IconListDetails,
+	IconNotes,
 	IconRotate2,
 	IconRotateClockwise2,
 	IconZoomIn,
 	IconZoomOut
 } from '@tabler/icons-react';
-import toast, { Toast } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 import { ActionTargetType } from '../../../enums/action-target-type';
 import { CardType } from '../../../enums/card-type';
@@ -27,14 +29,14 @@ import { ActionLogic } from '../../../logic/action-logic';
 import { EncounterLogic } from '../../../logic/encounter-logic';
 
 import type { ActionModel, ActionOriginParameterModel, ActionParameterModel, ActionTargetParameterModel } from '../../../models/action';
-import type { EncounterModel, LootPileModel } from '../../../models/encounter';
+import type { EncounterModel, LogMessageModel, LootPileModel } from '../../../models/encounter';
 import type { CombatantModel } from '../../../models/combatant';
 import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
 import type { OptionsModel } from '../../../models/options';
 
-import { CardList, Dialog, IconSize, IconType, IconValue, PlayingCard, Text, TextType } from '../../controls';
-import { CombatantRowPanel, EncounterMapPanel, InitiativeListPanel, TreasureRowPanel } from '../../panels';
+import { CardList, Dialog, IconSize, IconType, IconValue, PlayingCard, Tabs, Text, TextType } from '../../controls';
+import { CombatantRowPanel, EncounterLogPanel, EncounterMapPanel, InitiativeListPanel, TreasureRowPanel } from '../../panels';
 import { ItemCard, PlaceholderCard } from '../../cards';
 import { ActionControls } from './action-controls/action-controls';
 import { CharacterSheetModal } from '../../modals';
@@ -83,6 +85,7 @@ interface State {
 	mapSquareSize: number;
 	showLeftPanel: boolean;
 	showBottomPanel: boolean;
+	leftTab: string;
 	selectedActionParameter: ActionParameterModel | null;
 	selectableCombatantIDs: string[];
 	selectableLootIDs: string[];
@@ -93,7 +96,6 @@ interface State {
 	manualEncounterState: EncounterState;
 	detailsCombatant: CombatantModel | null;
 	detailsLoot: LootPileModel | null;
-	detailsToast: Toast | null;
 	thinking: boolean;
 }
 
@@ -104,6 +106,7 @@ export class EncounterScreen extends Component<Props, State> {
 			mapSquareSize: 15,
 			showLeftPanel: true,
 			showBottomPanel: true,
+			leftTab: 'init',
 			selectedActionParameter: null,
 			selectableCombatantIDs: [],
 			selectableLootIDs: [],
@@ -114,20 +117,19 @@ export class EncounterScreen extends Component<Props, State> {
 			manualEncounterState: EncounterState.Active,
 			detailsCombatant: null,
 			detailsLoot: null,
-			detailsToast: null,
 			thinking: false
 		};
 	}
 
 	componentDidMount = () => {
-		EncounterLogic.handleLogMessage = (messages: string[]) => {
+		EncounterLogic.handleLogMessage = (messages: LogMessageModel[]) => {
 			toast.custom(t => {
 				setTimeout(() => {
 					toast.dismiss(t.id);
 				}, 5 * 1000);
 				return (
-					<div key={t.id} className='skirmish-notification' onClick={e => { e.stopPropagation(); toast.dismiss(t.id); this.showDetailsToast(t); }}>
-						{messages.map((str, n) => <div key={n}>{str}</div>)}
+					<div key={t.id} className='skirmish-notification'>
+						{messages.map((m, n) => <div key={n}>{EncounterLogic.getLogMessage(m.message)}</div>)}
 					</div>
 				);
 			});
@@ -313,32 +315,21 @@ export class EncounterScreen extends Component<Props, State> {
 	showDetailsCombatant = (combatant: CombatantModel)=> {
 		this.setState({
 			detailsCombatant: combatant,
-			detailsLoot: null,
-			detailsToast: null
+			detailsLoot: null
 		});
 	};
 
 	showDetailsLoot = (loot: LootPileModel) => {
 		this.setState({
 			detailsCombatant: null,
-			detailsLoot: loot,
-			detailsToast: null
-		});
-	};
-
-	showDetailsToast = (toast: Toast) => {
-		this.setState({
-			detailsCombatant: null,
-			detailsLoot: null,
-			detailsToast: toast
+			detailsLoot: loot
 		});
 	};
 
 	clearDetails = () => {
 		this.setState({
 			detailsCombatant: null,
-			detailsLoot: null,
-			detailsToast: null
+			detailsLoot: null
 		});
 	};
 
@@ -466,18 +457,33 @@ export class EncounterScreen extends Component<Props, State> {
 			return null;
 		}
 
+		const currentCombatant = EncounterLogic.getActiveCombatants(this.props.encounter).find(c => c.combat.current) || null;
+
+		let actionBtn = <button className='primary action' onClick={() => this.props.rollInitiative()}>Roll Initiative</button>;
+		if (currentCombatant) {
+			if (currentCombatant.faction === CombatantType.Hero) {
+				actionBtn = <button className='primary action' onClick={() => this.endTurn()}>End My Turn</button>;
+			}
+			if (currentCombatant.faction === CombatantType.Monster) {
+				actionBtn = <button className='primary action' disabled={this.state.thinking} onClick={() => this.runMonsterTurn()}>Take Monster Turn</button>;
+			}
+		}
+
 		if (this.state.selectedCombatantIDs.length === 1) {
 			const combatant = EncounterLogic.getCombatant(this.props.encounter, this.state.selectedCombatantIDs[0]);
 			if (combatant) {
 				return (
-					<CombatantRowPanel
-						mode='detailed'
-						combatant={combatant}
-						encounter={this.props.encounter}
-						onTokenClick={() => this.scrollToCombatant('selected')}
-						onDetails={this.showDetailsCombatant}
-						onCancel={this.clearSelection}
-					/>
+					<div className='encounter-top-panel'>
+						<CombatantRowPanel
+							mode='detailed'
+							combatant={combatant}
+							encounter={this.props.encounter}
+							onTokenClick={() => this.scrollToCombatant('selected')}
+							onDetails={this.showDetailsCombatant}
+							onCancel={this.clearSelection}
+						/>
+						{actionBtn}
+					</div>
 				);
 			}
 		}
@@ -486,88 +492,103 @@ export class EncounterScreen extends Component<Props, State> {
 			const loot = EncounterLogic.getLoot(this.props.encounter, this.state.selectedLootIDs[0]);
 			if (loot) {
 				return (
-					<TreasureRowPanel loot={loot} onDetails={this.showDetailsLoot} onCancel={this.clearSelection} />
+					<div className='encounter-top-panel'>
+						<TreasureRowPanel
+							loot={loot}
+							onDetails={this.showDetailsLoot}
+							onCancel={this.clearSelection}
+						/>
+						{actionBtn}
+					</div>
 				);
 			}
 		}
 
-		const currentCombatant = EncounterLogic.getActiveCombatants(this.props.encounter).find(c => c.combat.current) || null;
-
 		return (
 			<div className='encounter-top-panel'>
-				<div className='icon-section'>
-					<button className='icon-btn' title='Left Sidebar' onClick={() => this.toggleLeftPanel()}>
-						{this.state.showLeftPanel ? <IconLayoutSidebarLeftCollapse /> : <IconLayoutSidebarLeftExpand />}
-					</button>
-					<button className='icon-btn' title='Action Cards' onClick={() => this.toggleBottomPanel()}>
-						{this.state.showBottomPanel ? <IconLayoutBottombarCollapse /> : <IconLayoutBottombarExpand />}
-					</button>
+				<div className='encounter-toolbar'>
+					<div className='icon-section'>
+						<button className='icon-btn' title='Left Sidebar' onClick={() => this.toggleLeftPanel()}>
+							{this.state.showLeftPanel ? <IconLayoutSidebarLeftCollapse /> : <IconLayoutSidebarLeftExpand />}
+						</button>
+						<button className='icon-btn' title='Action Cards' onClick={() => this.toggleBottomPanel()}>
+							{this.state.showBottomPanel ? <IconLayoutBottombarCollapse /> : <IconLayoutBottombarExpand />}
+						</button>
+					</div>
+					<div className='icon-section'>
+						<button className='icon-btn' title='Rotate Left' onClick={() => this.props.rotateMap(this.props.encounter, 'l')}>
+							<IconRotate2 />
+						</button>
+						<button className='icon-btn' title='Rotate Right' onClick={() => this.props.rotateMap(this.props.encounter, 'r')}>
+							<IconRotateClockwise2 />
+						</button>
+					</div>
+					<div className='icon-section'>
+						<button disabled={this.state.mapSquareSize <= 5} className='icon-btn' title='Zoom Out' onClick={() => this.nudgeMapSize(-5)}>
+							<IconZoomOut />
+						</button>
+						<button disabled={this.state.mapSquareSize >= 50} className='icon-btn' title='Zoom In' onClick={() => this.nudgeMapSize(+5)}>
+							<IconZoomIn />
+						</button>
+					</div>
+					<div className='icon-section'>
+						<button className='icon-btn' title='Retreat' onClick={() => this.setManualEncounterState(EncounterState.Retreat)}>
+							<IconArrowBackUpDouble />
+						</button>
+						{
+							this.props.options.developer ?
+								<button className='icon-btn developer' title='Win' onClick={() => this.setManualEncounterState(EncounterState.Victory)}>
+									<IconConfetti />
+								</button>
+								: null
+						}
+					</div>
+					<div className='icon-section'>
+						<button className='icon-btn' title='Help' onClick={() => this.props.showHelp('encounters')}>
+							{this.props.options.developer && this.props.hasExceptions ? <IconHelpCircleFilled /> : <IconHelpCircle />}
+						</button>
+					</div>
 				</div>
-				<div className='icon-section'>
-					<button className='icon-btn' title='Rotate Left' onClick={() => this.props.rotateMap(this.props.encounter, 'l')}>
-						<IconRotate2 />
-					</button>
-					<button className='icon-btn' title='Rotate Right' onClick={() => this.props.rotateMap(this.props.encounter, 'r')}>
-						<IconRotateClockwise2 />
-					</button>
-				</div>
-				<div className='icon-section'>
-					<button disabled={this.state.mapSquareSize <= 5} className='icon-btn' title='Zoom Out' onClick={() => this.nudgeMapSize(-5)}>
-						<IconZoomOut />
-					</button>
-					<button disabled={this.state.mapSquareSize >= 50} className='icon-btn' title='Zoom In' onClick={() => this.nudgeMapSize(+5)}>
-						<IconZoomIn />
-					</button>
-				</div>
-				<div className='icon-section'>
-					<button className='icon-btn' title='Retreat' onClick={() => this.setManualEncounterState(EncounterState.Retreat)}>
-						<IconArrowBackUpDouble />
-					</button>
-					{
-						this.props.options.developer ?
-							<button className='icon-btn developer' title='Win' onClick={() => this.setManualEncounterState(EncounterState.Victory)}>
-								<IconConfetti />
-							</button>
-							: null
-					}
-				</div>
-				<div className='icon-section'>
-					<button className='icon-btn' title='Help' onClick={() => this.props.showHelp('encounters')}>
-						{this.props.options.developer && this.props.hasExceptions ? <IconHelpCircleFilled /> : <IconHelpCircle />}
-					</button>
-				</div>
-				{
-					currentCombatant !== null ?
-						<div className='icon-section'>
-							{
-								currentCombatant.faction === CombatantType.Hero ?
-									<button className='primary' onClick={() => this.endTurn()}>End My Turn</button>
-									: null
-							}
-							{
-								currentCombatant.faction === CombatantType.Monster ?
-									<button className='primary' disabled={this.state.thinking} onClick={() => this.runMonsterTurn()}>Take Monster Turn</button>
-									: null
-							}
-						</div>
-						:
-						<div className='icon-section'>
-							<button className='primary' onClick={() => this.props.rollInitiative()}>Roll Initiative</button>
-						</div>
-				}
+				{actionBtn}
 			</div>
 		);
 	};
 
 	getLeftControls = () => {
 		if (this.state.showLeftPanel) {
+			let content = null;
+			switch (this.state.leftTab) {
+				case 'init':
+					content = (
+						<InitiativeListPanel
+							encounter={this.props.encounter}
+							selectedIDs={this.state.selectedCombatantIDs}
+							onSelect={this.selectCombatant}
+						/>
+					);
+					break;
+				case 'log':
+					content = (
+						<EncounterLogPanel
+							encounter={this.props.encounter}
+						/>
+					);
+					break;
+			}
+
 			return (
 				<div className='encounter-left-column'>
-					<InitiativeListPanel
-						encounter={this.props.encounter}
-						selectedIDs={this.state.selectedCombatantIDs}
-						onSelect={this.selectCombatant}
+					<Tabs
+						options={[
+							{ id: 'init', display: <IconListDetails /> },
+							{ id: 'log', display: <IconNotes /> }
+						]}
+						selectedID={this.state.leftTab}
+						onSelect={id => this.setState({ leftTab: id })}
 					/>
+					<div className='tab-content'>
+						{content}
+					</div>
 				</div>
 			);
 		}
@@ -751,22 +772,6 @@ export class EncounterScreen extends Component<Props, State> {
 							<Text type={TextType.Heading}>Treasure</Text>
 							<hr />
 							<CardList cards={cards} />
-						</div>
-					}
-					onClose={() => this.clearDetails()}
-				/>
-			);
-		}
-
-		if (this.state.detailsToast) {
-			const fn = this.state.detailsToast.message as (t: Toast) => object;
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const lines: string[] = (fn(this.state.detailsToast) as any).props.children.map((n: any) => n.props.children);
-			return (
-				<Dialog
-					content={
-						<div>
-							{lines.map((l, n) => <Text key={n}>{l}</Text>)}
 						</div>
 					}
 					onClose={() => this.clearDetails()}

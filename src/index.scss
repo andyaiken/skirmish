@@ -164,10 +164,6 @@ button {
 		&.primary {
 			background-color: rgb(95, 185, 255);
 			color: rgb(255, 255, 255);
-
-			&:hover {
-				background-color: rgb(60, 170, 255);
-			}
 		}
 	}
 
@@ -238,7 +234,6 @@ textarea {
 	padding: 10px;
 	color: rgb(255, 255, 255);
 	font-size: 12px;
-	cursor: pointer;
 }
 
 .developer {

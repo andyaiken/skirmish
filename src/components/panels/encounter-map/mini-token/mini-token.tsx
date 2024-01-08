@@ -118,15 +118,18 @@ export class MiniToken extends Component<Props, State> {
 				colorLight = Color.toString(Color.lighten(color));
 			}
 
+			const size = this.props.encounter ? this.props.squareSize * this.props.combatant.size : this.props.squareSize;
+
 			return (
 				<div
 					ref={this.tokenRef}
 					className={className}
 					style={{
-						width: this.props.encounter ? `${this.props.squareSize * this.props.combatant.size}px` : `${this.props.squareSize}px`,
+						width: `${size}px`,
+						height: `${size}px`,
+						fontSize: `${size * 0.35}px`,
 						left: this.props.encounter ? `${((this.props.combatant.combat.position.x - this.props.mapDimensions.left) * this.props.squareSize)}px` : '0',
 						top: this.props.encounter ? `${((this.props.combatant.combat.position.y - this.props.mapDimensions.top) * this.props.squareSize)}px` : '0',
-						fontSize: this.props.encounter ? `${this.props.squareSize * this.props.combatant.size * 0.35}px` : `${this.props.squareSize * 0.35}px`,
 						backgroundImage: `linear-gradient(135deg, ${this.props.combatant.color}, ${colorDark})`
 					}}
 					onClick={e => this.onClick(e)}

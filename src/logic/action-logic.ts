@@ -730,10 +730,12 @@ export class ActionEffects {
 								const atkRoll = Random.dice(atkRank);
 								const defRoll = Random.dice(defRank);
 								success = atkRoll >= defRoll;
+								const successText = success ? 'hit' : 'miss';
 
 								EncounterLogic.log(
 									encounter,
-									`${combatant.name} rolls ${data.skill} (rank ${atkRank}): ${atkRoll}; ${target.name} rolls ${data.trait} (rank ${defRank}): ${defRoll}; ${success ? 'hit' : 'miss'}`
+									`${combatant.name} rolls ${data.skill} (rank ${atkRank}): ${atkRoll}; ${target.name} rolls ${data.trait} (rank ${defRank}): ${defRoll}; ${successText}`,
+									true
 								);
 							}
 						}

@@ -2458,7 +2458,7 @@ export class RoleData {
 					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 8)
 				],
 				effects: [
-					ActionEffects.moveToTargetSquare(),
+					ActionEffects.forceMovement(MovementType.BesideTarget, 1),
 					ActionEffects.attack({
 						weapon: true,
 						skill: SkillType.Weapon,

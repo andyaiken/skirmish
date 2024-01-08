@@ -89,6 +89,10 @@ export class Platform {
 					lp.money = 0;
 				}
 			});
+
+			if (game.encounter.log === undefined) {
+				game.encounter.log = [];
+			}
 		}
 
 		game.map.regions

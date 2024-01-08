@@ -4,6 +4,7 @@ import { CombatantNotices } from './combatant-notices/combatant-notices';
 import { CombatantRowPanel } from './combatant-row/combatant-row-panel';
 import { ConditionsPanel } from './conditions/conditions-panel';
 import { DirectionPanel } from './direction/direction-panel';
+import { EncounterLogPanel } from './encounter-log/encounter-log-panel';
 import { EncounterMapPanel } from './encounter-map/encounter-map-panel';
 import { InitiativeListPanel } from './initiative-list/initiative-list-panel';
 import { ListItemPanel } from './list-item/list-item-panel';
@@ -17,6 +18,7 @@ export {
 	CombatantRowPanel,
 	ConditionsPanel,
 	DirectionPanel,
+	EncounterLogPanel,
 	EncounterMapPanel,
 	InitiativeListPanel,
 	ListItemPanel,

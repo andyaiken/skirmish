@@ -1,0 +1,9 @@
+.encounter-log-panel {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+
+	.encounter-log-item {
+		display: block;
+	}
+}

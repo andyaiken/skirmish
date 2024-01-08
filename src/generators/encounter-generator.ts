@@ -30,7 +30,8 @@ export class EncounterGenerator {
 			round: 0,
 			combatants: [ ...heroes ],
 			loot: [],
-			mapSquares: EncounterMapGenerator.generateEncounterMap(rng)
+			mapSquares: EncounterMapGenerator.generateEncounterMap(rng),
+			log: []
 		};
 
 		const monsters: CombatantModel[] = [];

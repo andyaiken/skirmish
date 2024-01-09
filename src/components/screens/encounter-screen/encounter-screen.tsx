@@ -26,6 +26,7 @@ import { OrientationType } from '../../../enums/orientation-type';
 import { StructureType } from '../../../enums/structure-type';
 
 import { ActionLogic } from '../../../logic/action-logic';
+import { EncounterLogLogic } from '../../../logic/encounter-log-logic';
 import { EncounterLogic } from '../../../logic/encounter-logic';
 
 import type { ActionModel, ActionOriginParameterModel, ActionParameterModel, ActionTargetParameterModel } from '../../../models/action';
@@ -122,14 +123,14 @@ export class EncounterScreen extends Component<Props, State> {
 	}
 
 	componentDidMount = () => {
-		EncounterLogic.handleLogMessage = (messages: LogMessageModel[]) => {
+		EncounterLogLogic.handleLogMessage = (messages: LogMessageModel[]) => {
 			toast.custom(t => {
 				setTimeout(() => {
 					toast.dismiss(t.id);
 				}, 5 * 1000);
 				return (
 					<div key={t.id} className='skirmish-notification'>
-						{messages.map((m, n) => <div key={n}>{EncounterLogic.getLogMessage(m.message)}</div>)}
+						{messages.map((m, n) => <div key={n}>{EncounterLogLogic.getLogMessage(this.props.encounter, m)}</div>)}
 					</div>
 				);
 			});
@@ -137,7 +138,7 @@ export class EncounterScreen extends Component<Props, State> {
 	};
 
 	componentWillUnmount = () => {
-		EncounterLogic.handleLogMessage = null;
+		EncounterLogLogic.handleLogMessage = null;
 	};
 
 	mapRef = createRef<EncounterMapPanel>();

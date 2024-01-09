@@ -15,7 +15,7 @@ import { ActionEffects, ActionLogic, ActionTargetParameters } from './action-log
 import { GameLogic } from './game-logic';
 
 import type { ActionModel, ActionOriginParameterModel, ActionTargetParameterModel, ActionWeaponParameterModel } from '../models/action';
-import type { EncounterMapSquareModel, EncounterModel, LogMessageModel, LogMessagePartModel, LootPileModel } from '../models/encounter';
+import type { EncounterMapSquareModel, EncounterModel, LootPileModel } from '../models/encounter';
 import type { CombatantModel } from '../models/combatant';
 import type { ConditionModel } from '../models/condition';
 import type { ItemModel } from '../models/item';
@@ -25,49 +25,12 @@ import { Random } from '../utils/random';
 
 import { CombatantLogic } from './combatant-logic';
 import { ConditionLogic } from './condition-logic';
+import { EncounterLogLogic } from './encounter-log-logic';
 import { EncounterMapLogic } from './encounter-map-logic';
 import { Factory } from './factory';
 import { Sound } from '../utils/sound';
-import { Utils } from '../utils/utils';
 
 export class EncounterLogic {
-	static log = (encounter: EncounterModel, message: string, notify = false) => {
-		const lmm: LogMessageModel = {
-			id: Utils.guid(),
-			timestamp: Date.now(),
-			message: [ {
-				type: 'text',
-				data: message
-			} ]
-		};
-
-		// Add this message to the TOP of the log
-		encounter.log.unshift(lmm);
-
-		if (notify) {
-			EncounterLogic.logMessages.push(lmm);
-
-			if (EncounterLogic.logTimeout) {
-				clearTimeout(EncounterLogic.logTimeout);
-				EncounterLogic.logTimeout = null;
-			}
-			EncounterLogic.logTimeout = setTimeout(() => {
-				if (EncounterLogic.handleLogMessage) {
-					EncounterLogic.handleLogMessage(EncounterLogic.logMessages);
-					EncounterLogic.logMessages = [];
-				}
-			}, 250);
-		}
-	};
-
-	static getLogMessage = (message: LogMessagePartModel[]) => {
-		return message.map(m => m.data).join(' ');
-	};
-
-	static logMessages: LogMessageModel[] = [];
-	static logTimeout: NodeJS.Timeout | null = null;
-	static handleLogMessage: ((messages: LogMessageModel[]) => void) | null = null;
-
 	static getCombatantSquares = (encounter: EncounterModel, combatant: CombatantModel, position: { x: number, y: number } | null = null) => {
 		const squares = [];
 
@@ -185,13 +148,16 @@ export class EncounterLogic {
 		if (combatant.combat.state === CombatantState.Unconscious) {
 			const rank = EncounterLogic.getTraitRank(encounter, combatant, TraitType.Resolve);
 			const result = Random.dice(rank);
-			EncounterLogic.log(encounter, `${combatant.name} is unconscious: rolls Resolve (${rank}) and gets ${result}`);
+			EncounterLogLogic.log(encounter, [
+				EncounterLogLogic.combatant(combatant),
+				EncounterLogLogic.text(`is unconscious: rolls Resolve (${rank}) and gets ${result}`)
+			]);
 			if (result <= 1) {
 				EncounterLogic.kill(encounter, combatant);
 			} else if ((result >= 10) && (combatant.quirks.includes(QuirkType.Undead))) {
 				combatant.combat.wounds = rank - 1;
 				combatant.combat.state = CombatantState.Prone;
-				EncounterLogic.log(encounter, `${combatant.name} is now ${combatant.combat.state}`);
+				EncounterLogLogic.logState(encounter, combatant);
 			}
 		}
 
@@ -200,24 +166,34 @@ export class EncounterLogic {
 			.concat(EncounterLogic.getAuraConditions(encounter, combatant));
 
 		conditions.forEach(condition => {
-			EncounterLogic.log(encounter, `${combatant.name} is currently affected by ${ConditionLogic.getConditionDescription(condition)}, rank ${condition.rank}`);
+			EncounterLogLogic.log(encounter, [
+				EncounterLogLogic.combatant(combatant),
+				EncounterLogLogic.text(`is currently affected by ${ConditionLogic.getConditionDescription(condition)}, rank ${condition.rank}`)
+			]);
 		});
 
 		if (combatant.combat.stunned) {
-			EncounterLogic.log(encounter, `${combatant.name} is stunned`);
+			EncounterLogLogic.log(encounter, [
+				EncounterLogLogic.combatant(combatant),
+				EncounterLogLogic.text('is stunned')
+			]);
 		}
 
 		conditions
 			.filter(condition => condition.type === ConditionType.AutoHeal)
 			.forEach(condition => {
-				EncounterLogic.log(encounter, `Healing condition (${condition.rank})`);
+				EncounterLogLogic.log(encounter, [
+					EncounterLogLogic.text(`Healing condition (${condition.rank})`)
+				]);
 				EncounterLogic.healDamage(encounter, combatant, condition.rank);
 			});
 
 		conditions
 			.filter(condition => condition.type === ConditionType.AutoDamage)
 			.forEach(condition => {
-				EncounterLogic.log(encounter, `Damage condition (${condition.details.damage}, ${condition.rank})`);
+				EncounterLogLogic.log(encounter, [
+					EncounterLogLogic.text(`Damage condition (${condition.details.damage}, ${condition.rank})`)
+				]);
 				const value = Random.dice(condition.rank);
 				EncounterLogic.damage(encounter, combatant, value, condition.details.damage);
 			});
@@ -229,13 +205,17 @@ export class EncounterLogic {
 			conditions
 				.filter(condition => condition.type === ConditionType.MovementBonus)
 				.forEach(condition => {
-					EncounterLogic.log(encounter, `Movement bonus condition (${condition.rank})`);
+					EncounterLogLogic.log(encounter, [
+						EncounterLogLogic.text(`Movement bonus condition (${condition.rank})`)
+					]);
 					combatant.combat.movement += Random.dice(condition.rank);
 				});
 			conditions
 				.filter(condition => condition.type === ConditionType.MovementPenalty)
 				.forEach(condition => {
-					EncounterLogic.log(encounter, `Movement penalty condition (${condition.rank})`);
+					EncounterLogLogic.log(encounter, [
+						EncounterLogLogic.text(`Movement penalty condition (${condition.rank})`)
+					]);
 					combatant.combat.movement = Math.max(0, combatant.combat.movement - condition.rank);
 				});
 
@@ -246,7 +226,9 @@ export class EncounterLogic {
 		combatant.combat.conditions.forEach(condition => {
 			if (ConditionLogic.getConditionIsBeneficial(condition)) {
 				condition.rank -= 1;
-				EncounterLogic.log(encounter, `Condition '${ConditionLogic.getConditionDescription(condition)}' reduced to rank ${condition.rank}`);
+				EncounterLogLogic.log(encounter, [
+					EncounterLogLogic.text(`Condition '${ConditionLogic.getConditionDescription(condition)}' reduced to rank ${condition.rank}`)
+				]);
 			} else {
 				const trait = EncounterLogic.getTraitRank(encounter, combatant, condition.trait);
 				if (Random.dice(trait) >= Random.dice(condition.rank)) {
@@ -254,7 +236,9 @@ export class EncounterLogic {
 				} else {
 					condition.rank -= 1;
 				}
-				EncounterLogic.log(encounter, `Condition '${ConditionLogic.getConditionDescription(condition)}' reduced to rank ${condition.rank}`);
+				EncounterLogLogic.log(encounter, [
+					EncounterLogLogic.text(`Condition '${ConditionLogic.getConditionDescription(condition)}' reduced to rank ${condition.rank}`)
+				]);
 			}
 		});
 		combatant.combat.conditions = combatant.combat.conditions.filter(c => c.rank > 0);
@@ -263,7 +247,7 @@ export class EncounterLogic {
 		const resolve = EncounterLogic.getTraitRank(encounter, combatant, TraitType.Resolve);
 		if ((combatant.combat.wounds === resolve) && ((combatant.combat.state === CombatantState.Standing) || (combatant.combat.state === CombatantState.Unconscious))) {
 			combatant.combat.state = CombatantState.Unconscious;
-			EncounterLogic.log(encounter, `${combatant.name} is now ${combatant.combat.state}`);
+			EncounterLogLogic.logState(encounter, combatant);
 		}
 		if ((combatant.combat.wounds > resolve) && (combatant.combat.state !== CombatantState.Dead)) {
 			EncounterLogic.kill(encounter, combatant);
@@ -347,7 +331,10 @@ export class EncounterLogic {
 		if (combatant.combat.selectedAction !== null) {
 			const action = combatant.combat.selectedAction.action;
 			combatant.combat.selectedAction.used = true;
-			EncounterLogic.log(encounter, `${combatant.name} selects ${action.name}`);
+			EncounterLogLogic.log(encounter, [
+				EncounterLogLogic.combatant(combatant),
+				EncounterLogLogic.text(`selects ${action.name}`)
+			]);
 			action.effects.forEach(effect => ActionEffects.run(effect, encounter, combatant, action.parameters));
 		}
 	};
@@ -498,9 +485,16 @@ export class EncounterLogic {
 		}
 
 		if (owner.id === drinker.id) {
-			EncounterLogic.log(encounter, `${owner.name} drinks ${potion.name}`);
+			EncounterLogLogic.log(encounter, [
+				EncounterLogLogic.combatant(owner),
+				EncounterLogLogic.text(`drinks ${potion.name}`)
+			]);
 		} else {
-			EncounterLogic.log(encounter, `${owner.name} gives ${potion.name} to ${drinker.name}`);
+			EncounterLogLogic.log(encounter, [
+				EncounterLogLogic.combatant(owner),
+				EncounterLogLogic.text(`gives ${potion.name} to`),
+				EncounterLogLogic.combatant(drinker)
+			]);
 		}
 
 		owner.combat.movement -= 2;
@@ -520,18 +514,24 @@ export class EncounterLogic {
 
 		EncounterLogic.checkActionParameters(encounter, combatant);
 
-		EncounterLogic.log(encounter, `${combatant.name} heals damage (${value} pts) and is now at ${combatant.combat.damage}`);
+		EncounterLogLogic.log(encounter, [
+			EncounterLogLogic.combatant(combatant),
+			EncounterLogLogic.text(`heals damage (${value} pts) and is now at ${combatant.combat.damage}`)
+		]);
 	};
 
 	static healWounds = (encounter: EncounterModel, combatant: CombatantModel, value: number) => {
 		combatant.combat.wounds = Math.max(0, combatant.combat.wounds - value);
 
-		EncounterLogic.log(encounter, `${combatant.name} heals wounds (${value}) and is now at ${combatant.combat.wounds}`);
+		EncounterLogLogic.log(encounter, [
+			EncounterLogLogic.combatant(combatant),
+			EncounterLogLogic.text(`heals wounds (${value}) and is now at ${combatant.combat.wounds}`)
+		]);
 
 		const resolve = EncounterLogic.getTraitRank(encounter, combatant, TraitType.Resolve);
 		if ((combatant.combat.wounds < resolve) && (combatant.combat.state === CombatantState.Unconscious)) {
 			combatant.combat.state = CombatantState.Prone;
-			EncounterLogic.log(encounter, `${combatant.name} is now ${combatant.combat.state}`);
+			EncounterLogLogic.logState(encounter, combatant);
 		}
 
 		EncounterLogic.checkActionParameters(encounter, combatant);
@@ -542,18 +542,27 @@ export class EncounterLogic {
 			return;
 		}
 
-		EncounterLogic.log(encounter, `${combatant.name} suffers damage (${type}, ${value} pts)`);
+		EncounterLogLogic.log(encounter, [
+			EncounterLogLogic.combatant(combatant),
+			EncounterLogLogic.text(`suffers damage (${type}, ${value} pts)`)
+		]);
 
 		if (combatant.quirks.includes(QuirkType.Swarm) || combatant.quirks.includes(QuirkType.Amorphous)) {
 			if (GameLogic.getDamageCategory(type) === DamageCategoryType.Physical) {
-				EncounterLogic.log(encounter, `${combatant.name} takes half physical damage`);
+				EncounterLogLogic.log(encounter, [
+					EncounterLogLogic.combatant(combatant),
+					EncounterLogLogic.text('takes half physical damage')
+				]);
 				value = Math.floor(value / 2);
 			}
 		}
 
 		const resistance = EncounterLogic.getDamageResistance(encounter, combatant, type);
 		if (resistance > 0) {
-			EncounterLogic.log(encounter, `${combatant.name} has damage resistance (${type}, ${resistance} pts)`);
+			EncounterLogLogic.log(encounter, [
+				EncounterLogLogic.combatant(combatant),
+				EncounterLogLogic.text(`has damage resistance (${type}, ${resistance} pts)`)
+			]);
 			value -= resistance;
 		}
 
@@ -563,17 +572,26 @@ export class EncounterLogic {
 				EncounterLogic.kill(encounter, combatant);
 			} else {
 				combatant.combat.damage += value;
-				EncounterLogic.log(encounter, `${combatant.name} takes damage (${value} pts) and is now at ${combatant.combat.damage}`);
+				EncounterLogLogic.log(encounter, [
+					EncounterLogLogic.combatant(combatant),
+					EncounterLogLogic.text(`takes damage (${value} pts) and is now at ${combatant.combat.damage}`)
+				]);
 
 				const rank = EncounterLogic.getTraitRank(encounter, combatant, TraitType.Endurance);
 				const result = Random.dice(rank);
-				EncounterLogic.log(encounter, `${combatant.name} rolls Endurance (${rank}) and gets ${result}`);
+				EncounterLogLogic.log(encounter, [
+					EncounterLogLogic.combatant(combatant),
+					EncounterLogLogic.text(`rolls Endurance (${rank}) and gets ${result}`)
+				]);
 				if (result < combatant.combat.damage) {
 					EncounterLogic.wound(encounter, combatant, 1);
 				}
 			}
 		} else {
-			EncounterLogic.log(encounter, `${combatant.name} takes no damage`);
+			EncounterLogLogic.log(encounter, [
+				EncounterLogLogic.combatant(combatant),
+				EncounterLogLogic.text('takes no damage')
+			]);
 		}
 
 		EncounterLogic.checkActionParameters(encounter, combatant);
@@ -586,7 +604,10 @@ export class EncounterLogic {
 
 		combatant.combat.damage = 0;
 		combatant.combat.wounds += value;
-		EncounterLogic.log(encounter, `${combatant.name} takes wounds (${value}) and is now at ${combatant.combat.damage} damage, ${combatant.combat.wounds} wounds`);
+		EncounterLogLogic.log(encounter, [
+			EncounterLogLogic.combatant(combatant),
+			EncounterLogLogic.text(`takes wounds (${value}) and is now at ${combatant.combat.damage} damage, ${combatant.combat.wounds} wounds`)
+		]);
 
 		if (combatant.quirks.includes(QuirkType.Drone)) {
 			// Drones die if they take any damage
@@ -595,7 +616,7 @@ export class EncounterLogic {
 			const resolve = EncounterLogic.getTraitRank(encounter, combatant, TraitType.Resolve);
 			if (combatant.combat.wounds === resolve) {
 				combatant.combat.state = CombatantState.Unconscious;
-				EncounterLogic.log(encounter, `${combatant.name} is now ${combatant.combat.state}`);
+				EncounterLogLogic.logState(encounter, combatant);
 			}
 			if (combatant.combat.wounds > resolve) {
 				EncounterLogic.kill(encounter, combatant);
@@ -612,7 +633,7 @@ export class EncounterLogic {
 
 		combatant.combat.state = CombatantState.Dead;
 		combatant.combat.conditions = [];
-		EncounterLogic.log(encounter, `${combatant.name} is now ${combatant.combat.state}`, true);
+		EncounterLogLogic.logState(encounter, combatant);
 		EncounterLogic.dropAllItems(encounter, combatant);
 		Sound.play(Sound.dong);
 	};
@@ -623,7 +644,7 @@ export class EncounterLogic {
 
 			EncounterLogic.checkActionParameters(encounter, combatant);
 
-			EncounterLogic.log(encounter, `${combatant.name} is now ${combatant.combat.state}`, true);
+			EncounterLogLogic.logState(encounter, combatant);
 		}
 	};
 
@@ -633,7 +654,7 @@ export class EncounterLogic {
 
 			EncounterLogic.checkActionParameters(encounter, combatant);
 
-			EncounterLogic.log(encounter, `${combatant.name} is now ${combatant.combat.state}`, true);
+			EncounterLogLogic.logState(encounter, combatant);
 		}
 	};
 
@@ -643,13 +664,20 @@ export class EncounterLogic {
 		}
 
 		combatant.combat.stunned = true;
-		EncounterLogic.log(encounter, `${combatant.name} is stunned`, true);
+		EncounterLogLogic.log(encounter, [
+			EncounterLogLogic.combatant(combatant),
+			EncounterLogLogic.text('is stunned')
+		], true);
 	};
 
 	static inspire = (encounter: EncounterModel, combatant: CombatantModel) => {
 		const rank = EncounterLogic.getSkillRank(encounter, combatant, SkillType.Presence);
 		const result = Random.dice(rank);
-		EncounterLogic.log(encounter, `Inspire: ${combatant.name} rolls Presence (${rank}) and gets ${result}`);
+		EncounterLogLogic.log(encounter, [
+			EncounterLogLogic.text('Inspire:'),
+			EncounterLogLogic.combatant(combatant),
+			EncounterLogLogic.text(`rolls Presence (${rank}) and gets ${result}`)
+		]);
 
 		combatant.combat.movement -= 4;
 		if (result > 8) {
@@ -662,7 +690,10 @@ export class EncounterLogic {
 					const allySquares = EncounterLogic.getCombatantSquares(encounter, ally);
 					if (EncounterMapLogic.canSeeAny(edges, combatantSquares, allySquares)) {
 						ally.combat.stunned = false;
-						EncounterLogic.log(encounter, `${ally.name} is no longer stunned`);
+						EncounterLogLogic.log(encounter, [
+							EncounterLogLogic.combatant(ally),
+							EncounterLogLogic.text('is no longer stunned')
+						]);
 					}
 				});
 		}
@@ -680,7 +711,11 @@ export class EncounterLogic {
 
 		EncounterLogic.checkActionParameters(encounter, combatant);
 
-		EncounterLogic.log(encounter, `Scan: ${combatant.name} rolls Perception (${rank}) and gets ${result}`);
+		EncounterLogLogic.log(encounter, [
+			EncounterLogLogic.text('Scan:'),
+			EncounterLogLogic.combatant(combatant),
+			EncounterLogLogic.text(`rolls Perception (${rank}) and gets ${result}`)
+		]);
 	};
 
 	static hide = (encounter: EncounterModel, combatant: CombatantModel) => {
@@ -692,7 +727,11 @@ export class EncounterLogic {
 
 		EncounterLogic.checkActionParameters(encounter, combatant);
 
-		EncounterLogic.log(encounter, `Hide: ${combatant.name} rolls Stealth (${rank}) and gets ${result}`);
+		EncounterLogLogic.log(encounter, [
+			EncounterLogLogic.text('Hide:'),
+			EncounterLogLogic.combatant(combatant),
+			EncounterLogLogic.text(`rolls Stealth (${rank}) and gets ${result}`)
+		]);
 	};
 
 	static reveal = (encounter: EncounterModel, combatant: CombatantModel) => {
@@ -701,7 +740,10 @@ export class EncounterLogic {
 
 			EncounterLogic.checkActionParameters(encounter, combatant);
 
-			EncounterLogic.log(encounter, `${combatant.name} is no longer hidden`);
+			EncounterLogLogic.log(encounter, [
+				EncounterLogLogic.combatant(combatant),
+				EncounterLogLogic.text('is no longer hidden')
+			]);
 		}
 	};
 
@@ -719,7 +761,10 @@ export class EncounterLogic {
 
 		EncounterLogic.checkActionParameters(encounter, combatant);
 
-		EncounterLogic.log(encounter, `${combatant.name} equips ${item.name}`);
+		EncounterLogLogic.log(encounter, [
+			EncounterLogLogic.combatant(combatant),
+			EncounterLogLogic.text(`equips ${item.name}`)
+		]);
 	};
 
 	static unequipItem = (encounter: EncounterModel, combatant: CombatantModel, item: ItemModel) => {
@@ -736,7 +781,10 @@ export class EncounterLogic {
 
 		EncounterLogic.checkActionParameters(encounter, combatant);
 
-		EncounterLogic.log(encounter, `${combatant.name} unequips ${item.name}`);
+		EncounterLogLogic.log(encounter, [
+			EncounterLogLogic.combatant(combatant),
+			EncounterLogLogic.text(`unequips ${item.name}`)
+		]);
 	};
 
 	static pickUpItem = (encounter: EncounterModel, combatant: CombatantModel, item: ItemModel) => {
@@ -761,7 +809,10 @@ export class EncounterLogic {
 
 		EncounterLogic.checkActionParameters(encounter, combatant);
 
-		EncounterLogic.log(encounter, `${combatant.name} picks up ${item.name}`);
+		EncounterLogLogic.log(encounter, [
+			EncounterLogLogic.combatant(combatant),
+			EncounterLogLogic.text(`picks up ${item.name}`)
+		]);
 	};
 
 	static dropItem = (encounter: EncounterModel, combatant: CombatantModel, item: ItemModel) => {
@@ -796,7 +847,10 @@ export class EncounterLogic {
 
 		EncounterLogic.checkActionParameters(encounter, combatant);
 
-		EncounterLogic.log(encounter, `${combatant.name} drops ${item.name}`);
+		EncounterLogLogic.log(encounter, [
+			EncounterLogLogic.combatant(combatant),
+			EncounterLogLogic.text(`drops ${item.name}`)
+		]);
 	};
 
 	static dropAllItems = (encounter: EncounterModel, combatant: CombatantModel) => {

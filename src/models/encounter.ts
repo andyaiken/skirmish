@@ -1,4 +1,5 @@
 import { EncounterMapSquareType } from '../enums/encounter-map-square-type';
+import { LogPartType } from '../enums/log-part-type';
 
 import type { CombatantModel } from './combatant';
 import type { ItemModel } from './item';
@@ -16,15 +17,15 @@ export interface EncounterMapSquareModel {
 	type: EncounterMapSquareType;
 }
 
-export interface LogMessagePartModel {
-	type: 'text';
+export interface LogPartModel {
+	type: LogPartType;
 	data: string;
 }
 
 export interface LogMessageModel {
 	id: string;
 	timestamp: number;
-	message: LogMessagePartModel[];
+	parts: LogPartModel[];
 }
 
 export interface EncounterModel {

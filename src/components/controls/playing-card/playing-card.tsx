@@ -101,11 +101,8 @@ export class PlayingCard extends Component<Props> {
 							{
 								hasFooter ?
 									<div className={`card-footer ${footerType}`}>
-										<div className={this.props.footerContent.length === 0 ? 'card-footer-text card-footer-text-full' : 'card-footer-text card-footer-text-left'}>
+										<div className='card-footer-text card-footer-text-full'>
 											{this.props.footerText}
-										</div>
-										<div className='card-footer-content'>
-											{this.props.disabled ? null : this.props.footerContent}
 										</div>
 									</div>
 									: null

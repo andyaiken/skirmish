@@ -7,6 +7,7 @@ import type { ItemModel } from '../../../../models/item';
 import type { OptionsModel } from '../../../../models/options';
 
 import { Expander, Tabs, Text, TextType } from '../../../controls';
+import { CombatantRowPanel } from '../../../panels';
 import { HeroMove } from './hero-move/hero-move';
 import { HeroOverview } from './hero-overview/hero-overview';
 import { HeroPotions } from './hero-potions/hero-potions';
@@ -65,8 +66,6 @@ export class HeroControls extends Component<Props, State> {
 							combatant={this.props.combatant}
 							encounter={this.props.encounter}
 							options={this.props.options}
-							showToken={this.props.showToken}
-							showCharacterSheet={this.props.showCharacterSheet}
 							inspire={this.props.inspire}
 							scan={this.props.scan}
 							hide={this.props.hide}
@@ -98,6 +97,13 @@ export class HeroControls extends Component<Props, State> {
 
 			return (
 				<div className='hero-controls' key={this.props.combatant.id}>
+					<CombatantRowPanel
+						mode='header'
+						combatant={this.props.combatant}
+						encounter={this.props.encounter}
+						onTokenClick={this.props.showToken}
+						onDetails={this.props.showCharacterSheet}
+					/>
 					{
 						this.props.options.showTips ?
 							<Expander

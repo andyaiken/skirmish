@@ -12,8 +12,8 @@ import type { OptionsModel } from '../../../models/options';
 import { Collections } from '../../../utils/collections';
 import { Utils } from '../../../utils/utils';
 
-import { CardList, Text, TextType } from '../../controls';
-import { ItemCard, StrongholdBenefitCard } from '../../cards';
+import { CardList, IconSize, IconType, IconValue, Text, TextType } from '../../controls';
+import { ItemCard } from '../../cards';
 
 import './buy-potion-modal.scss';
 
@@ -69,17 +69,6 @@ export class BuyPotionModal extends Component<Props, State> {
 			));
 
 			const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.WizardTower);
-			if ((redraws > 0) || this.props.options.developer) {
-				cards.push(
-					<StrongholdBenefitCard
-						key='redraw'
-						label='Redraw'
-						available={redraws}
-						developer={this.props.options.developer}
-						onRedraw={this.redraw}
-					/>
-				);
-			}
 
 			return (
 				<div className='buy-potion-modal'>
@@ -90,6 +79,15 @@ export class BuyPotionModal extends Component<Props, State> {
 					</Text>
 					<div className='card-selection-row'>
 						<CardList mode='row' cards={cards} />
+						{
+							(redraws > 0) || this.props.options.developer ?
+								<button className={this.props.options.developer ? 'developer' : ''} onClick={() => this.redraw()}>
+									Redraw Potion Cards
+									<br />
+									<IconValue type={IconType.Redraw} value={redraws} size={IconSize.Button} />
+								</button>
+								: null
+						}
 					</div>
 				</div>
 			);

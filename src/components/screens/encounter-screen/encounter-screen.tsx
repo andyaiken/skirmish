@@ -129,7 +129,7 @@ export class EncounterScreen extends Component<Props, State> {
 					toast.dismiss(t.id);
 				}, 5 * 1000);
 				return (
-					<div key={t.id} className='skirmish-notification'>
+					<div key={t.id} className='skirmish-notification' onClick={e => { e.stopPropagation(); toast.dismiss(t.id); }}>
 						{messages.map((m, n) => <div key={n}>{EncounterLogLogic.getLogMessage(this.props.encounter, m)}</div>)}
 					</div>
 				);

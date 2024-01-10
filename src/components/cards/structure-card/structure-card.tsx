@@ -46,7 +46,9 @@ export class StructureCard extends Component<Props, State> {
 	onClick = (e: MouseEvent) => {
 		e.stopPropagation();
 
-		if (this.props.onClick) {
+		if (this.state.flipped) {
+			this.onFlip(e);
+		} else if (this.props.onClick) {
 			this.props.onClick(this.props.structure);
 		}
 	};

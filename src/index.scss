@@ -244,15 +244,6 @@ textarea {
 	background-image: repeating-linear-gradient(-45deg, rgb(255, 255, 0), rgb(255, 255, 0) 10px, rgb(0, 0, 0) 10px, rgb(0, 0, 0) 20px) !important;
 }
 
-.inset-text {
-	background-color: rgb(100, 100, 100);
-	background-clip: text;
-	color: transparent;
-	text-shadow: rgba(255, 255, 255, 0.5) 2px 2px 5px;
-	text-transform: uppercase;
-	font-weight: 600;
-}
-
 p .tabler-icon,
 li .tabler-icon {
 	margin-bottom: -2px;

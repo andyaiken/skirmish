@@ -21,13 +21,11 @@ import { Collections } from '../../../utils/collections';
 import { Random } from '../../../utils/random';
 
 import { CharacterSheetModal, HeroBuilderModal } from '../../modals';
+import { CombatantRowPanel, LogoPanel } from '../../panels';
 import { Dialog, Expander, PlayingCard, Text, TextType } from '../../controls';
-import { CombatantRowPanel } from '../../panels';
 import { PlaceholderCard } from '../../cards';
 
 import './setup-screen.scss';
-
-import logo from '../../../assets/images/logo.png';
 
 interface Props {
 	game: GameModel;
@@ -174,7 +172,7 @@ export class SetupScreen extends Component<Props, State> {
 			return (
 				<div className={`setup-screen ${this.props.orientation}`}>
 					<div className='setup-top-bar'>
-						<div className='logo-text inset-text'>Skirmish</div>
+						<LogoPanel size={100} />
 					</div>
 					<div className='setup-content'>
 						<div className='left-panel'>
@@ -186,7 +184,12 @@ export class SetupScreen extends Component<Props, State> {
 									<PlayingCard
 										type={CardType.Role}
 										stack={true}
-										front={<PlaceholderCard text='Begin the Campaign' content={<img className='logo' alt='Logo' src={logo} />} />}
+										front={
+											<PlaceholderCard
+												text='Begin the Campaign'
+												content={<LogoPanel size={170} showText={false} />}
+											/>
+										}
 										onClick={this.props.beginCampaign}
 									/>
 									:

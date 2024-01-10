@@ -27,11 +27,10 @@ import { CampaignMapPage } from './campaign-map-page/campaign-map-page';
 import { DevPage } from './dev-page/dev-page';
 import { HeroesPage } from './heroes-page/heroes-page';
 import { ItemsPage } from './items-page/items-page';
+import { LogoPanel } from '../../panels';
 import { StrongholdPage } from './stronghold-page/stronghold-page';
 
 import './campaign-screen.scss';
-
-import logo from '../../../assets/images/logo.png';
 
 interface Props {
 	game: GameModel;
@@ -194,8 +193,7 @@ export class CampaignScreen extends Component<Props> {
 				<div className={`campaign-screen ${this.props.orientation}`}>
 					<div className='campaign-top-bar'>
 						<div className='branding'>
-							<img className='logo' alt='Logo' src={logo} />
-							<div className='logo-text inset-text'>Skirmish</div>
+							<LogoPanel size={36} />
 						</div>
 						<div className='money'>
 							<IconValue type={IconType.Money} value={Format.toText(this.props.game.money)} size={IconSize.Large} />

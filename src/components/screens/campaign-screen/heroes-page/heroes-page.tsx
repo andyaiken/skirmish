@@ -180,7 +180,7 @@ export class HeroesPage extends Component<Props, State> {
 		}
 
 		let benefits = null;
-		if (StrongholdLogic.getStructureCharges(this.props.game, StructureType.Academy) > 0) {
+		if ((StrongholdLogic.getStructureCharges(this.props.game, StructureType.Academy) > 0) || this.props.options.developer) {
 			benefits = (
 				<CardList cards={[
 					<StrongholdBenefitCard

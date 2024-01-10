@@ -11,8 +11,8 @@ import type { StructureModel } from '../../../models/structure';
 
 import { Collections } from '../../../utils/collections';
 
-import { CardList, Text, TextType } from '../../controls';
-import { StrongholdBenefitCard, StructureCard } from '../../cards';
+import { CardList, IconSize, IconType, IconValue, Text, TextType } from '../../controls';
+import { StructureCard } from '../../cards';
 
 import './buy-structure-modal.scss';
 
@@ -64,17 +64,6 @@ export class BuyStructureModal extends Component<Props, State> {
 			));
 
 			const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Forge);
-			if ((redraws > 0) || this.props.options.developer) {
-				cards.push(
-					<StrongholdBenefitCard
-						key='redraw'
-						label='Redraw'
-						available={redraws}
-						developer={this.props.options.developer}
-						onRedraw={this.redraw}
-					/>
-				);
-			}
 
 			return (
 				<div className='buy-structure-modal'>
@@ -85,6 +74,15 @@ export class BuyStructureModal extends Component<Props, State> {
 					</Text>
 					<div className='card-selection-row'>
 						<CardList mode='row' cards={cards} />
+						{
+							(redraws > 0) || this.props.options.developer ?
+								<button className={this.props.options.developer ? 'developer' : ''} onClick={() => this.redraw()}>
+									Redraw Species Cards
+									<br />
+									<IconValue type={IconType.Redraw} value={redraws} size={IconSize.Button} />
+								</button>
+								: null
+						}
 					</div>
 				</div>
 			);

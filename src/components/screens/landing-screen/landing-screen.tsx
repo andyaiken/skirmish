@@ -10,11 +10,11 @@ import type { GameModel } from '../../../models/game';
 import type { OptionsModel } from '../../../models/options';
 
 import { PlayingCard, Tag, Text } from '../../controls';
+import { LogoPanel } from '../../panels';
 import { PlaceholderCard } from '../../cards';
 
 import './landing-screen.scss';
 
-import logo from '../../../assets/images/logo.png';
 import pkg from '../../../../package.json';
 
 interface Props {
@@ -39,7 +39,7 @@ export class LandingScreen extends Component<Props> {
 							<PlaceholderCard
 								text='Continue'
 								subtext='Click here to continue your campaign.'
-								content={<img className='logo' alt='Logo' src={logo} />}
+								content={<LogoPanel size={60} showText={false} />}
 							/>
 						}
 						onClick={this.props.continueCampaign}
@@ -54,7 +54,7 @@ export class LandingScreen extends Component<Props> {
 							<PlaceholderCard
 								text='Start'
 								subtext='Click here to begin a new campaign.'
-								content={<img className='logo' alt='Logo' src={logo} />}
+								content={<LogoPanel size={60} showText={false} />}
 							/>
 						}
 						onClick={this.props.startCampaign}
@@ -76,7 +76,7 @@ export class LandingScreen extends Component<Props> {
 			return (
 				<div className={`landing-screen ${this.props.orientation}`}>
 					<div className='landing-top-bar'>
-						<div className='logo-text inset-text'>Skirmish</div>
+						<LogoPanel size={this.props.orientation === OrientationType.Landscape ? 140 : 100} />
 					</div>
 					<div className='landing-content'>
 						<Text>

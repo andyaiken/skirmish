@@ -43,6 +43,12 @@ export class EncounterLogPanel extends Component<Props> {
 					);
 				}
 			}
+			case LogPartType.Rank: {
+				return <span key={index} className='encounter-log-part-rank'>{part.data}</span>;
+			}
+			case LogPartType.Result: {
+				return <span key={index} className='encounter-log-part-result'>{part.data}</span>;
+			}
 		}
 
 		return (

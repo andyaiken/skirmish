@@ -4,7 +4,7 @@ import type { CombatantModel } from '../../../../../models/combatant';
 import type { EncounterModel } from '../../../../../models/encounter';
 import type { OptionsModel } from '../../../../../models/options';
 
-import { CombatStatsPanel, CombatantNotices, CombatantRowPanel } from '../../../../panels';
+import { CombatStatsPanel, CombatantNotices } from '../../../../panels';
 import { Expander, IconSize, IconType, IconValue, Text, TextType } from '../../../../controls';
 
 import './hero-overview.scss';
@@ -13,8 +13,6 @@ interface Props {
 	combatant: CombatantModel;
 	encounter: EncounterModel;
 	options: OptionsModel;
-	showToken: (combatant: CombatantModel) => void;
-	showCharacterSheet: (combatant: CombatantModel) => void;
 	inspire: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	scan: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	hide: (encounter: EncounterModel, combatant: CombatantModel) => void;
@@ -26,13 +24,6 @@ export class HeroOverview extends Component<Props> {
 		try {
 			return (
 				<div className='hero-overview'>
-					<CombatantRowPanel
-						mode='header'
-						combatant={this.props.combatant}
-						encounter={this.props.encounter}
-						onTokenClick={this.props.showToken}
-						onDetails={this.props.showCharacterSheet}
-					/>
 					<CombatStatsPanel combatant={this.props.combatant} encounter={this.props.encounter} />
 					<div className='quick-actions'>
 						<button disabled={this.props.combatant.combat.movement < 4} onClick={() => this.props.inspire(this.props.encounter, this.props.combatant)}>

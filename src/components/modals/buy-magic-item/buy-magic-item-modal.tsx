@@ -14,8 +14,8 @@ import type { OptionsModel } from '../../../models/options';
 
 import { Collections } from '../../../utils/collections';
 
-import { CardList, Text, TextType } from '../../controls';
-import { ItemCard, StrongholdBenefitCard } from '../../cards';
+import { CardList, IconSize, IconType, IconValue, Text, TextType } from '../../controls';
+import { ItemCard } from '../../cards';
 
 import './buy-magic-item-modal.scss';
 
@@ -42,16 +42,19 @@ export class BuyMagicItemModal extends Component<Props, State> {
 	getItems = () => {
 		const items: ItemModel[] = [];
 
-		while (items.length < 3) {
+		let fails = 0;
+		while ((items.length < 3) && (fails < 1000)) {
 			const item = MagicItemGenerator.generateRandomMagicItem(this.props.options.packIDs);
 
 			let ok = true;
 
 			// Make sure at least one hero can use this item
-			const heroes = this.props.game.heroes
-				.filter(h => (item.proficiency === ItemProficiencyType.None) || CombatantLogic.getProficiencies(h).includes(item.proficiency));
-			if (heroes.length === 0) {
-				ok = false;
+			if (this.props.game.heroes.length > 0) {
+				const heroes = this.props.game.heroes
+					.filter(h => (item.proficiency === ItemProficiencyType.None) || CombatantLogic.getProficiencies(h).includes(item.proficiency));
+				if (heroes.length === 0) {
+					ok = false;
+				}
 			}
 
 			// Make sure we don't suggest more than one weapon
@@ -70,6 +73,8 @@ export class BuyMagicItemModal extends Component<Props, State> {
 
 			if (ok) {
 				items.push(item);
+			} else {
+				fails += 1;
 			}
 		}
 
@@ -93,17 +98,6 @@ export class BuyMagicItemModal extends Component<Props, State> {
 			));
 
 			const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.WizardTower);
-			if ((redraws > 0) || this.props.options.developer) {
-				cards.push(
-					<StrongholdBenefitCard
-						key='redraw'
-						label='Redraw'
-						available={redraws}
-						developer={this.props.options.developer}
-						onRedraw={this.redraw}
-					/>
-				);
-			}
 
 			return (
 				<div className='buy-magic-item-modal'>
@@ -114,6 +108,15 @@ export class BuyMagicItemModal extends Component<Props, State> {
 					</Text>
 					<div className='card-selection-row'>
 						<CardList mode='row' cards={cards} />
+						{
+							(redraws > 0) || this.props.options.developer ?
+								<button className={this.props.options.developer ? 'developer' : ''} onClick={() => this.redraw()}>
+									Redraw Magic Item Cards
+									<br />
+									<IconValue type={IconType.Redraw} value={redraws} size={IconSize.Button} />
+								</button>
+								: null
+						}
 					</div>
 				</div>
 			);

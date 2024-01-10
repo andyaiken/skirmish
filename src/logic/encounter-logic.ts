@@ -150,7 +150,10 @@ export class EncounterLogic {
 			const result = Random.dice(rank);
 			EncounterLogLogic.log(encounter, [
 				EncounterLogLogic.combatant(combatant),
-				EncounterLogLogic.text(`is unconscious: rolls Resolve (${rank}) and gets ${result}`)
+				EncounterLogLogic.text('is unconscious: rolls'),
+				EncounterLogLogic.rank('Resolve', rank),
+				EncounterLogLogic.text('and gets'),
+				EncounterLogLogic.result(result)
 			]);
 			if (result <= 1) {
 				EncounterLogic.kill(encounter, combatant);
@@ -158,6 +161,11 @@ export class EncounterLogic {
 				combatant.combat.wounds = rank - 1;
 				combatant.combat.state = CombatantState.Prone;
 				EncounterLogLogic.logState(encounter, combatant);
+			} else {
+				EncounterLogLogic.log(encounter, [
+					EncounterLogLogic.combatant(combatant),
+					EncounterLogLogic.text('remains unconscious')
+				]);
 			}
 		}
 
@@ -168,7 +176,8 @@ export class EncounterLogic {
 		conditions.forEach(condition => {
 			EncounterLogLogic.log(encounter, [
 				EncounterLogLogic.combatant(combatant),
-				EncounterLogLogic.text(`is currently affected by ${ConditionLogic.getConditionDescription(condition)}, rank ${condition.rank}`)
+				EncounterLogLogic.text('is currently affected by'),
+				EncounterLogLogic.rank(ConditionLogic.getConditionDescription(condition), condition.rank)
 			]);
 		});
 
@@ -195,7 +204,7 @@ export class EncounterLogic {
 					EncounterLogLogic.text(`Damage condition (${condition.details.damage}, ${condition.rank})`)
 				]);
 				const value = Random.dice(condition.rank);
-				EncounterLogic.damage(encounter, combatant, value, condition.details.damage);
+				EncounterLogic.takeDamage(encounter, combatant, value, condition.details.damage);
 			});
 
 		if ((combatant.combat.state === CombatantState.Standing) || (combatant.combat.state === CombatantState.Prone)) {
@@ -537,64 +546,94 @@ export class EncounterLogic {
 		EncounterLogic.checkActionParameters(encounter, combatant);
 	};
 
-	static damage = (encounter: EncounterModel, combatant: CombatantModel, value: number, type: DamageType) => {
-		if (combatant.combat.state === CombatantState.Dead){
+	static dealDamage = (encounter: EncounterModel, combatant: CombatantModel, target: CombatantModel, rank: number, type: DamageType) => {
+		if (target.combat.state === CombatantState.Dead){
 			return;
 		}
 
+		const result = Random.dice(rank);
 		EncounterLogLogic.log(encounter, [
 			EncounterLogLogic.combatant(combatant),
+			EncounterLogLogic.text('rolls weapon damage for'),
+			EncounterLogLogic.combatant(target),
+			EncounterLogLogic.rank(type, rank),
+			EncounterLogLogic.text('and gets'),
+			EncounterLogLogic.result(result)
+		]);
+		const bonus = EncounterLogic.getDamageBonus(encounter, combatant, type);
+		if (bonus > 0) {
+			EncounterLogLogic.log(encounter, [
+				EncounterLogLogic.combatant(combatant),
+				EncounterLogLogic.text(`deals ${bonus} additional ${type} damage`)
+			]);
+		}
+		if (bonus < 0) {
+			EncounterLogLogic.log(encounter, [
+				EncounterLogLogic.combatant(combatant),
+				EncounterLogLogic.text(`deals ${bonus} less ${type} damage`)
+			]);
+		}
+
+		EncounterLogic.takeDamage(encounter, target, result + bonus, type);
+	};
+
+	static takeDamage = (encounter: EncounterModel, target: CombatantModel, value: number, type: DamageType) => {
+		EncounterLogLogic.log(encounter, [
+			EncounterLogLogic.combatant(target),
 			EncounterLogLogic.text(`suffers damage (${type}, ${value} pts)`)
 		]);
 
-		if (combatant.quirks.includes(QuirkType.Swarm) || combatant.quirks.includes(QuirkType.Amorphous)) {
+		if (target.quirks.includes(QuirkType.Swarm) || target.quirks.includes(QuirkType.Amorphous)) {
 			if (GameLogic.getDamageCategory(type) === DamageCategoryType.Physical) {
 				EncounterLogLogic.log(encounter, [
-					EncounterLogLogic.combatant(combatant),
+					EncounterLogLogic.combatant(target),
 					EncounterLogLogic.text('takes half physical damage')
 				]);
 				value = Math.floor(value / 2);
 			}
 		}
 
-		const resistance = EncounterLogic.getDamageResistance(encounter, combatant, type);
+		const resistance = EncounterLogic.getDamageResistance(encounter, target, type);
 		if (resistance > 0) {
 			EncounterLogLogic.log(encounter, [
-				EncounterLogLogic.combatant(combatant),
+				EncounterLogLogic.combatant(target),
 				EncounterLogLogic.text(`has damage resistance (${type}, ${resistance} pts)`)
 			]);
 			value -= resistance;
 		}
 
 		if (value > 0) {
-			if (combatant.quirks.includes(QuirkType.Drone)) {
+			if (target.quirks.includes(QuirkType.Drone)) {
 				// Drones die if they take any damage
-				EncounterLogic.kill(encounter, combatant);
+				EncounterLogic.kill(encounter, target);
 			} else {
-				combatant.combat.damage += value;
+				target.combat.damage += value;
 				EncounterLogLogic.log(encounter, [
-					EncounterLogLogic.combatant(combatant),
-					EncounterLogLogic.text(`takes damage (${value} pts) and is now at ${combatant.combat.damage}`)
+					EncounterLogLogic.combatant(target),
+					EncounterLogLogic.text(`takes damage (${value} pts) and is now at ${target.combat.damage}`)
 				]);
 
-				const rank = EncounterLogic.getTraitRank(encounter, combatant, TraitType.Endurance);
+				const rank = EncounterLogic.getTraitRank(encounter, target, TraitType.Endurance);
 				const result = Random.dice(rank);
 				EncounterLogLogic.log(encounter, [
-					EncounterLogLogic.combatant(combatant),
-					EncounterLogLogic.text(`rolls Endurance (${rank}) and gets ${result}`)
+					EncounterLogLogic.combatant(target),
+					EncounterLogLogic.text('rolls'),
+					EncounterLogLogic.rank('Endurance', rank),
+					EncounterLogLogic.text('and gets'),
+					EncounterLogLogic.result(result)
 				]);
-				if (result < combatant.combat.damage) {
-					EncounterLogic.wound(encounter, combatant, 1);
+				if (result < target.combat.damage) {
+					EncounterLogic.wound(encounter, target, 1);
 				}
 			}
 		} else {
 			EncounterLogLogic.log(encounter, [
-				EncounterLogLogic.combatant(combatant),
+				EncounterLogLogic.combatant(target),
 				EncounterLogLogic.text('takes no damage')
 			]);
 		}
 
-		EncounterLogic.checkActionParameters(encounter, combatant);
+		EncounterLogic.checkActionParameters(encounter, target);
 	};
 
 	static wound = (encounter: EncounterModel, combatant: CombatantModel, value: number) => {
@@ -676,7 +715,10 @@ export class EncounterLogic {
 		EncounterLogLogic.log(encounter, [
 			EncounterLogLogic.text('Inspire:'),
 			EncounterLogLogic.combatant(combatant),
-			EncounterLogLogic.text(`rolls Presence (${rank}) and gets ${result}`)
+			EncounterLogLogic.text('rolls'),
+			EncounterLogLogic.rank('Presence', rank),
+			EncounterLogLogic.text('and gets'),
+			EncounterLogLogic.result(result)
 		]);
 
 		combatant.combat.movement -= 4;
@@ -714,7 +756,10 @@ export class EncounterLogic {
 		EncounterLogLogic.log(encounter, [
 			EncounterLogLogic.text('Scan:'),
 			EncounterLogLogic.combatant(combatant),
-			EncounterLogLogic.text(`rolls Perception (${rank}) and gets ${result}`)
+			EncounterLogLogic.text('rolls'),
+			EncounterLogLogic.rank('Perception', rank),
+			EncounterLogLogic.text('and gets'),
+			EncounterLogLogic.result(result)
 		]);
 	};
 
@@ -730,7 +775,10 @@ export class EncounterLogic {
 		EncounterLogLogic.log(encounter, [
 			EncounterLogLogic.text('Hide:'),
 			EncounterLogLogic.combatant(combatant),
-			EncounterLogLogic.text(`rolls Stealth (${rank}) and gets ${result}`)
+			EncounterLogLogic.text('rolls'),
+			EncounterLogLogic.rank('Stealth', rank),
+			EncounterLogLogic.text('and gets'),
+			EncounterLogLogic.result(result)
 		]);
 	};
 

@@ -10,7 +10,6 @@ import { EncounterMapSquareType } from '../enums/encounter-map-square-type';
 import { FeatureType } from '../enums/feature-type';
 import { ItemLocationType } from '../enums/item-location-type';
 import { ItemProficiencyType } from '../enums/item-proficiency-type';
-import { LogPartType } from '../enums/log-part-type';
 import { MovementType } from '../enums/movement-type';
 import { QuirkType } from '../enums/quirk-type';
 import { SkillType } from '../enums/skill-type';
@@ -716,7 +715,8 @@ export class ActionEffects {
 									if (roll >= 10) {
 										success = false;
 										EncounterLogLogic.log(encounter, [
-											EncounterLogLogic.text(`${item.name} is Unreliable (rank ${weapon.unreliable}); it fails (rolled ${roll})`)
+											EncounterLogLogic.text(`${item.name} is Unreliable (rank ${weapon.unreliable}); it fails with`),
+											EncounterLogLogic.result(roll)
 										]);
 									}
 								}
@@ -740,26 +740,19 @@ export class ActionEffects {
 								EncounterLogLogic.log(
 									encounter,
 									[
-										{
-											type: LogPartType.Combatant,
-											data: combatant.id
-										},
-										{
-											type: LogPartType.Text,
-											data: `rolls ${data.skill} (rank ${atkRank}): ${atkRoll};`
-										},
-										{
-											type: LogPartType.Combatant,
-											data: target.id
-										},
-										{
-											type: LogPartType.Text,
-											data: `rolls ${data.trait} (rank ${defRank}): ${defRoll};`
-										},
-										{
-											type: LogPartType.Text,
-											data: success ? 'hit' : 'miss'
-										}
+										EncounterLogLogic.combatant(combatant),
+										EncounterLogLogic.text('attacks with'),
+										EncounterLogLogic.rank(data.skill, atkRank),
+										EncounterLogLogic.text('and gets'),
+										EncounterLogLogic.result(atkRoll),
+										EncounterLogLogic.text('-'),
+										EncounterLogLogic.combatant(target),
+										EncounterLogLogic.text('defends with'),
+										EncounterLogLogic.rank(data.trait, defRank),
+										EncounterLogLogic.text('and gets'),
+										EncounterLogLogic.result(defRoll),
+										EncounterLogLogic.text('-'),
+										success ? EncounterLogLogic.text('HIT') : EncounterLogLogic.text('MISS')
 									],
 									true
 								);
@@ -803,28 +796,7 @@ export class ActionEffects {
 						targetIDs.forEach(id => {
 							const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
 							weapon.damage.forEach(dmg => {
-								const rank = dmg.rank + rankModifier;
-								const result = Random.dice(rank);
-								EncounterLogLogic.log(encounter, [
-									EncounterLogLogic.combatant(combatant),
-									EncounterLogLogic.text(`rolls weapon damage (${dmg.type}) for`),
-									EncounterLogLogic.combatant(target),
-									EncounterLogLogic.text(`(rank ${rank}) and gets ${result}`)
-								]);
-								const bonus = EncounterLogic.getDamageBonus(encounter, combatant, dmg.type);
-								if (bonus > 0) {
-									EncounterLogLogic.log(encounter, [
-										EncounterLogLogic.combatant(combatant),
-										EncounterLogLogic.text(`deals ${bonus} additional ${dmg.type} damage`)
-									]);
-								}
-								if (bonus < 0) {
-									EncounterLogLogic.log(encounter, [
-										EncounterLogLogic.combatant(combatant),
-										EncounterLogLogic.text(`deals ${bonus} less ${dmg.type} damage`)
-									]);
-								}
-								EncounterLogic.damage(encounter, target, result + bonus, dmg.type);
+								EncounterLogic.dealDamage(encounter, combatant, target, dmg.rank + rankModifier, dmg.type);
 							});
 						});
 					}
@@ -841,27 +813,7 @@ export class ActionEffects {
 					const targetIDs = targetParameter.value as string[];
 					targetIDs.forEach(id => {
 						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
-						const result = Random.dice(data.rank);
-						EncounterLogLogic.log(encounter, [
-							EncounterLogLogic.combatant(combatant),
-							EncounterLogLogic.text('rolls damage for'),
-							EncounterLogLogic.combatant(target),
-							EncounterLogLogic.text(`(rank ${data.rank}) and gets ${result}`)
-						]);
-						const bonus = EncounterLogic.getDamageBonus(encounter, combatant, data.type);
-						if (bonus > 0) {
-							EncounterLogLogic.log(encounter, [
-								EncounterLogLogic.combatant(combatant),
-								EncounterLogLogic.text(`deals ${bonus} additional ${data.type} damage`)
-							]);
-						}
-						if (bonus < 0) {
-							EncounterLogLogic.log(encounter, [
-								EncounterLogLogic.combatant(combatant),
-								EncounterLogLogic.text(`deals ${bonus} less ${data.type} damage`)
-							]);
-						}
-						EncounterLogic.damage(encounter, target, result + bonus, data.type);
+						EncounterLogic.dealDamage(encounter, combatant, target, data.rank, data.type);
 					});
 				}
 				break;
@@ -964,7 +916,11 @@ export class ActionEffects {
 						target.combat.movement += result;
 						EncounterLogLogic.log(encounter, [
 							EncounterLogLogic.combatant(target),
-							EncounterLogLogic.text(`rolls Speed (rank ${rank}) and gets ${result} additional movement`)
+							EncounterLogLogic.text('rolls'),
+							EncounterLogLogic.rank('Speed', rank),
+							EncounterLogLogic.text('and gets'),
+							EncounterLogLogic.result(result),
+							EncounterLogLogic.text('additional movement')
 						]);
 					});
 				}
@@ -1102,11 +1058,13 @@ export class ActionEffects {
 							target.combat.conditions.push(copy);
 							EncounterLogLogic.log(encounter, [
 								EncounterLogLogic.combatant(combatant),
-								EncounterLogLogic.text(`is no longer affected by ${ConditionLogic.getConditionDescription(condition)}`)
+								EncounterLogLogic.text('is no longer affected by'),
+								EncounterLogLogic.rank(ConditionLogic.getConditionDescription(condition), condition.rank)
 							]);
 							EncounterLogLogic.log(encounter, [
 								EncounterLogLogic.combatant(target),
-								EncounterLogLogic.text(`is now affected by ${ConditionLogic.getConditionDescription(copy)}`)
+								EncounterLogLogic.text('is now affected by'),
+								EncounterLogLogic.rank(ConditionLogic.getConditionDescription(copy), copy.rank)
 							]);
 						}
 					});

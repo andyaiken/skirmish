@@ -14,7 +14,7 @@ import type { ItemModel } from '../../../models/item';
 import { Utils } from '../../../utils/utils';
 
 import { ActionCard, FeatureCard } from '../../cards';
-import { Badge, CardList, Tabs, Tag, Text, TextType } from '../../controls';
+import { CardList, Tabs, Tag, Text, TextType } from '../../controls';
 import { Items } from './items/items';
 import { LevelUp } from './level-up/level-up';
 import { Stats } from './stats/stats';
@@ -146,15 +146,14 @@ export class CharacterSheetModal extends Component<Props, State> {
 			let levelUp = null;
 			if ((this.props.game.encounter === null) && (this.props.combatant.xp >= this.props.combatant.level)) {
 				levelUp = (
-					<Badge value={`Choose a feature for level ${this.props.combatant.level + 1}`}>
-						<LevelUp
-							combatant={this.props.combatant}
-							game={this.props.game}
-							developer={this.props.developer}
-							useCharge={this.props.useCharge}
-							levelUp={this.levelUp}
-						/>
-					</Badge>
+					<LevelUp
+						combatant={this.props.combatant}
+						game={this.props.game}
+						developer={this.props.developer}
+						level={this.props.combatant.level + 1}
+						useCharge={this.props.useCharge}
+						levelUp={this.levelUp}
+					/>
 				);
 			}
 

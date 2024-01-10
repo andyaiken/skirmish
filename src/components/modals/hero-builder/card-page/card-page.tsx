@@ -15,8 +15,8 @@ import type { SpeciesModel } from '../../../../models/species';
 
 import { Collections } from '../../../../utils/collections';
 
-import { BackgroundCard, PlaceholderCard, RoleCard, SpeciesCard, StrongholdBenefitCard } from '../../../cards';
-import { CardList, Expander, PlayingCard, Text, TextType } from '../../../controls';
+import { BackgroundCard, PlaceholderCard, RoleCard, SpeciesCard } from '../../../cards';
+import { CardList, Expander, IconSize, IconType, IconValue, PlayingCard, Text, TextType } from '../../../controls';
 
 import './card-page.scss';
 
@@ -175,21 +175,19 @@ export class CardPage extends Component<Props, State> {
 		});
 
 		const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Hall);
-		if ((redraws > 0) || this.props.options.developer) {
-			cards.push(
-				<StrongholdBenefitCard
-					key='redraw'
-					label='Redraw'
-					available={redraws}
-					developer={this.props.options.developer}
-					onRedraw={() => this.redraw(CardType.Species)}
-				/>
-			);
-		}
 
 		return (
 			<div className='card-selection-row'>
 				<CardList mode='row' cards={cards} />
+				{
+					(redraws > 0) || this.props.options.developer ?
+						<button className={this.props.options.developer ? 'developer' : ''} onClick={() => this.redraw(CardType.Species)}>
+							Redraw Species Cards
+							<br />
+							<IconValue type={IconType.Redraw} value={redraws} size={IconSize.Button} />
+						</button>
+						: null
+				}
 			</div>
 		);
 	};
@@ -207,21 +205,19 @@ export class CardPage extends Component<Props, State> {
 		});
 
 		const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Hall);
-		if ((redraws > 0) || this.props.options.developer) {
-			cards.push(
-				<StrongholdBenefitCard
-					key='redraw'
-					label='Redraw'
-					available={redraws}
-					developer={this.props.options.developer}
-					onRedraw={() => this.redraw(CardType.Role)}
-				/>
-			);
-		}
 
 		return (
 			<div className='card-selection-row'>
 				<CardList mode='row' cards={cards} />
+				{
+					(redraws > 0) || this.props.options.developer ?
+						<button className={this.props.options.developer ? 'developer' : ''} onClick={() => this.redraw(CardType.Role)}>
+							Redraw Role Cards
+							<br />
+							<IconValue type={IconType.Redraw} value={redraws} size={IconSize.Button} />
+						</button>
+						: null
+				}
 			</div>
 		);
 	};
@@ -239,21 +235,19 @@ export class CardPage extends Component<Props, State> {
 		});
 
 		const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Hall);
-		if ((redraws > 0) || this.props.options.developer) {
-			cards.push(
-				<StrongholdBenefitCard
-					key='redraw'
-					label='Redraw'
-					available={redraws}
-					developer={this.props.options.developer}
-					onRedraw={() => this.redraw(CardType.Background)}
-				/>
-			);
-		}
 
 		return (
 			<div className='card-selection-row'>
 				<CardList mode='row' cards={cards} />
+				{
+					(redraws > 0) || this.props.options.developer ?
+						<button className={this.props.options.developer ? 'developer' : ''} onClick={() => this.redraw(CardType.Background)}>
+							Redraw Background Cards
+							<br />
+							<IconValue type={IconType.Redraw} value={redraws} size={IconSize.Button} />
+						</button>
+						: null
+				}
 			</div>
 		);
 	};

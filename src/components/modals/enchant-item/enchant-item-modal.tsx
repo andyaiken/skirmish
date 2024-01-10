@@ -12,8 +12,8 @@ import type { OptionsModel } from '../../../models/options';
 
 import { Collections } from '../../../utils/collections';
 
-import { CardList, Dialog, Text, TextType } from '../../controls';
-import { ItemCard, StrongholdBenefitCard } from '../../cards';
+import { CardList, Dialog, IconSize, IconType, IconValue, Text, TextType } from '../../controls';
+import { ItemCard } from '../../cards';
 
 import './enchant-item-modal.scss';
 
@@ -77,17 +77,6 @@ export class EnchantItemModal extends Component<Props, State> {
 				));
 
 				const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.WizardTower);
-				if ((redraws > 0) || this.props.options.developer) {
-					cards.push(
-						<StrongholdBenefitCard
-							key='redraw'
-							label='Redraw'
-							available={redraws}
-							developer={this.props.options.developer}
-							onRedraw={this.redraw}
-						/>
-					);
-				}
 
 				dialog = (
 					<Dialog
@@ -100,6 +89,15 @@ export class EnchantItemModal extends Component<Props, State> {
 								</Text>
 								<div className='card-selection-row'>
 									<CardList mode='row' cards={cards} />
+									{
+										(redraws > 0) || this.props.options.developer ?
+											<button className={this.props.options.developer ? 'developer' : ''} onClick={() => this.redraw()}>
+												Redraw Magic Item Cards
+												<br />
+												<IconValue type={IconType.Redraw} value={redraws} size={IconSize.Button} />
+											</button>
+											: null
+									}
 								</div>
 							</div>
 						}

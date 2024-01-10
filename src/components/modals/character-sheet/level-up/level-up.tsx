@@ -15,8 +15,9 @@ import type { GameModel } from '../../../../models/game';
 
 import { Collections } from '../../../../utils/collections';
 
-import { FeatureCard, StrongholdBenefitCard } from '../../../cards';
+import { CardList, IconSize, IconType, IconValue, Text, TextType } from '../../../controls';
 import { ChoicePanel } from './choice/choice';
+import { FeatureCard } from '../../../cards';
 
 import './level-up.scss';
 
@@ -24,6 +25,7 @@ interface Props {
 	combatant: CombatantModel;
 	game: GameModel;
 	developer: boolean;
+	level: number;
 	useCharge: (type: StructureType, count: number) => void;
 	levelUp: (feature: FeatureModel) => void;
 }
@@ -95,9 +97,10 @@ export class LevelUp extends Component<Props, State> {
 
 	render = () => {
 		try {
+			let content = null;
 			if (this.state.selectedFeature) {
-				return (
-					<div className='level-up selection-made'>
+				content = (
+					<div className='feature-detail-selection'>
 						<div className='selected-feature'>
 							<FeatureCard feature={this.state.selectedFeature}
 								footer={CombatantLogic.getFeatureSource(this.props.combatant, this.state.selectedFeature.id) || 'Feature'}
@@ -109,39 +112,39 @@ export class LevelUp extends Component<Props, State> {
 						</div>
 					</div>
 				);
-			}
+			} else {
+				const featureCards = this.state.features.map(feature => {
+					return (
+						<FeatureCard
+							key={feature.id}
+							feature={feature}
+							footer={CombatantLogic.getFeatureSource(this.props.combatant, feature.id) || 'Feature'}
+							footerType={CombatantLogic.getFeatureSourceType(this.props.combatant, feature.id)}
+							onClick={this.setSelectedFeature}
+						/>
+					);
+				});
 
-			const featureCards = this.state.features.map(feature => {
-				return (
-					<FeatureCard
-						key={feature.id}
-						feature={feature}
-						footer={CombatantLogic.getFeatureSource(this.props.combatant, feature.id) || 'Feature'}
-						footerType={CombatantLogic.getFeatureSourceType(this.props.combatant, feature.id)}
-						onClick={this.setSelectedFeature}
-					/>
+				content = (
+					<CardList mode='row' cards={featureCards} />
 				);
-			});
+			}
 
 			const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.TrainingGround);
-			if ((redraws > 0) || this.props.developer) {
-				featureCards.push(
-					<div key='separator' className='separator' />
-				);
-				featureCards.push(
-					<StrongholdBenefitCard
-						key='redraw'
-						label='Redraw'
-						available={redraws}
-						developer={this.props.developer}
-						onRedraw={this.setFeatures}
-					/>
-				);
-			}
 
 			return (
-				<div className='level-up selecting'>
-					{featureCards}
+				<div className='level-up'>
+					<Text type={TextType.MinorHeading}>Choose a feature for level {this.props.level}</Text>
+					{content}
+					{
+						(redraws > 0) || this.props.developer ?
+							<button className={this.props.developer ? 'developer' : ''} onClick={() => this.setFeatures()}>
+								Redraw Feature Cards
+								<br />
+								<IconValue type={IconType.Redraw} value={redraws} size={IconSize.Button} />
+							</button>
+							: null
+					}
 				</div>
 			);
 		} catch {

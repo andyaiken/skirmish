@@ -16,8 +16,8 @@ import type { OptionsModel } from '../../../../models/options';
 import { Collections } from '../../../../utils/collections';
 import { Utils } from '../../../../utils/utils';
 
-import { CardList, Expander, PlayingCard, Text, TextType } from '../../../controls';
-import { ItemCard, PlaceholderCard, StrongholdBenefitCard } from '../../../cards';
+import { CardList, Expander, IconSize, IconType, IconValue, PlayingCard, Text, TextType } from '../../../controls';
+import { ItemCard, PlaceholderCard } from '../../../cards';
 
 import './equipment-page.scss';
 
@@ -112,21 +112,19 @@ export class EquipmentPage extends Component<Props, State> {
 				const cards = slot.candidates.map(item => <ItemCard key={item.id} item={item} onClick={this.selectItem} />);
 
 				const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Quartermaster);
-				if ((redraws > 0) || this.props.options.developer) {
-					cards.push(
-						<StrongholdBenefitCard
-							key='redraw'
-							label='Redraw'
-							available={redraws}
-							developer={this.props.options.developer}
-							onRedraw={() => this.redraw(slot.proficiency)}
-						/>
-					);
-				}
 
 				return (
 					<div key={n} className='card-selection-row'>
 						<CardList mode='row' cards={cards} />
+						{
+							(redraws > 0) || this.props.options.developer ?
+								<button className={this.props.options.developer ? 'developer' : ''} onClick={() => this.redraw(slot.proficiency)}>
+									Redraw Item Cards
+									<br />
+									<IconValue type={IconType.Redraw} value={redraws} size={IconSize.Button} />
+								</button>
+								: null
+						}
 					</div>
 				);
 			});

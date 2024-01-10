@@ -7,7 +7,6 @@
 		.setup-content {
 			margin: 10px;
 			flex-direction: column;
-			align-items: center;
 
 			.left-panel {
 				gap: 20px;
@@ -26,18 +25,13 @@
 		border-bottom: 2px solid rgb(220, 220, 220);
 		text-align: center;
 		padding: 10px 0;
-
-		.logo-text {
-			font-size: 90px;
-			letter-spacing: 15px;
-		}
 	}
 
 	.setup-content {
 		flex: 1 1 0;
         display: flex;
 		flex-direction: row;
-		align-items: flex-start;
+		align-items: center;
         justify-content: space-evenly;
 		gap: 10px;
 		margin: 50px 10px;
@@ -57,12 +51,6 @@
 			align-items: center;
 			justify-content: center;
 			gap: 30px;
-
-			.logo {
-				height: 170px;
-				margin: 0 auto;
-				filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.4));
-			}
 
 			.packs-btn {
 				width: 200px;

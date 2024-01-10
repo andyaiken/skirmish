@@ -4,13 +4,6 @@
     flex-direction: column;
 
 	&.portrait {
-		.landing-top-bar {
-			.logo-text {
-				font-size: 120px;
-				letter-spacing: 20px;
-			}
-		}
-
 		.landing-content {
 			flex-direction: column;
 		}
@@ -22,11 +15,6 @@
 		border-bottom: 2px solid rgb(220, 220, 220);
 		text-align: center;
 		padding: 30px 0;
-
-		.logo-text {
-			font-size: 150px;
-			letter-spacing: 25px;
-		}
 	}
 
 	.landing-content {
@@ -50,10 +38,8 @@
 			align-items: center;
 			gap: 20px;
 
-			.logo {
-				height: 60px;
-				margin: 20px auto 0 auto;
-				filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.4));
+			.logo-panel {
+				margin-top: 20px;
 			}
 
 			.packs-btn {

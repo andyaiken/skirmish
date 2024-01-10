@@ -90,7 +90,7 @@ export class EncounterStartModal extends Component<Props, State> {
 						candidates.length === 0 ?
 							<div className='empty'>
 								<Text type={TextType.Small}>
-									<p>There are no more available heroes.</p>
+									<p>You have no more available heroes.</p>
 								</Text>
 							</div>
 							: null
@@ -100,13 +100,6 @@ export class EncounterStartModal extends Component<Props, State> {
 				<div className='divider' />
 				<div className='hero-list-column selected'>
 					<div className='selected-hero-list'>
-						{
-							this.state.selectedHeroes.length === 0 ?
-								<Text type={TextType.Information}>
-									<p>Select <b>up to 5 heroes</b> from the list on the left to take part in this encounter.</p>
-								</Text>
-								: null
-						}
 						{selected}
 					</div>
 				</div>
@@ -208,6 +201,20 @@ export class EncounterStartModal extends Component<Props, State> {
 					selectedID={this.state.viewMode}
 					onSelect={id => this.setState({ viewMode: id })}
 				/>
+				{
+					(this.state.viewMode === 'heroes') && (this.state.selectedHeroes.length === 0) ?
+						<Text type={TextType.Information}>
+							<p>Select <b>up to 5 heroes</b> from the list on the left to take part in this encounter.</p>
+						</Text>
+						: null
+				}
+				{
+					(this.state.viewMode === 'monsters') ?
+						<Text type={TextType.Information}>
+							<p>The following monsters are common in the region you are attacking.</p>
+						</Text>
+						: null
+				}
 				{content}
 				<button
 					className='primary'

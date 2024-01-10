@@ -6,6 +6,8 @@
 	.encounter-log-item {
 
 		.encounter-log-part-combatant,
+		.encounter-log-part-rank,
+		.encounter-log-part-result,
 		.encounter-log-part-text {
 			display: inline;
 			vertical-align: middle;
@@ -20,6 +22,20 @@
 			.encounter-log-part-combatant-name {
 				font-weight: 600;
 			}
+		}
+
+		.encounter-log-part-rank {
+			border: 2px solid rgb(220, 220, 220);
+			border-radius: 5px;
+			padding: 0 5px 1px 5px;
+		}
+
+		.encounter-log-part-result {
+			background-color: rgb(220, 220, 220);
+			border-radius: 5px;
+			padding: 0 5px 1px 5px;
+			font-size: 16px;
+			font-weight: 600;
 		}
 	}
 }

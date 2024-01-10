@@ -8,17 +8,31 @@ import type { CombatantModel } from '../models/combatant';
 import { Utils } from '../utils/utils';
 
 export class EncounterLogLogic {
-	static text = (text: string) => {
-		return {
-			type: LogPartType.Text,
-			data: text
-		};
-	};
-
 	static combatant = (combatant: CombatantModel) => {
 		return {
 			type: LogPartType.Combatant,
 			data: combatant.id
+		};
+	};
+
+	static rank = (name: string, rank: number) => {
+		return {
+			type: LogPartType.Rank,
+			data: `${name} (${rank})`
+		};
+	};
+
+	static result = (value: number) => {
+		return {
+			type: LogPartType.Result,
+			data: value.toString()
+		};
+	};
+
+	static text = (text: string) => {
+		return {
+			type: LogPartType.Text,
+			data: text
 		};
 	};
 

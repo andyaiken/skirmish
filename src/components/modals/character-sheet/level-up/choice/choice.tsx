@@ -165,7 +165,7 @@ export class ChoicePanel extends Component<Props, State> {
 								{ id: ItemProficiencyType.HeavyArmor },
 								{ id: ItemProficiencyType.Shields }
 							].filter(o => !got.includes(o.id))}
-							columnCount={5}
+							columnCount={4}
 							selectedID={this.state.feature.proficiency}
 							onSelect={id => this.selectProficiency(id as ItemProficiencyType)}
 						/>
@@ -192,7 +192,7 @@ export class ChoicePanel extends Component<Props, State> {
 								{ id: DamageType.Poison, display: <IconValue type={DamageType.Poison} value='Poison' /> },
 								{ id: DamageType.Psychic, display: <IconValue type={DamageType.Psychic} value='Psychic' /> }
 							]}
-							columnCount={6}
+							columnCount={4}
 							selectedID={this.state.feature.damage}
 							onSelect={id => this.selectDamage(id as DamageType)}
 						/>

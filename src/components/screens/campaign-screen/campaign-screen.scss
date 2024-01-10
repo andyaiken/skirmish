@@ -4,7 +4,7 @@
     flex-direction: column;
 
 	.campaign-top-bar {
-		flex: 0 0 auto;
+		flex: 0 0 75px;
 		background-color: rgb(230, 230, 230);
 		border-bottom: 2px solid rgb(220, 220, 220);
 		padding: 0 25px;
@@ -19,19 +19,6 @@
 			display: flex;
 			align-items: center;
 			gap: 15px;
-		}
-
-		.branding {
-			.logo {
-				width: 40px;
-				margin: 10px 0;
-				filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.4));
-			}
-
-			.logo-text {
-				font-size: 36px;
-				letter-spacing: 6px;
-			}
 		}
 	}
 

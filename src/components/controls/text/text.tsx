@@ -12,7 +12,8 @@ export enum TextType {
 	ListItem = 'listitem',
 	Information = 'information',
 	Tip = 'tip',
-	Small = 'small'
+	Small = 'small',
+	Empty = 'empty'
 }
 
 interface Props {

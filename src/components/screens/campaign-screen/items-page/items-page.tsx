@@ -366,8 +366,8 @@ export class ItemsPage extends Component<Props, State> {
 			let empty = null;
 			if (this.props.game.items.length === 0) {
 				empty = (
-					<Text type={TextType.Information}>
-						<p>You have no unequipped items.</p>
+					<Text type={TextType.Empty}>
+						You have no unequipped items.
 					</Text>
 				);
 			}

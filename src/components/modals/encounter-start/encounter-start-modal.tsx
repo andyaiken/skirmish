@@ -88,11 +88,9 @@ export class EncounterStartModal extends Component<Props, State> {
 				<div className='hero-list-column candidates'>
 					{
 						candidates.length === 0 ?
-							<div className='empty'>
-								<Text type={TextType.Small}>
-									<p>You have no more available heroes.</p>
-								</Text>
-							</div>
+							<Text type={TextType.Empty}>
+								You have no more available heroes.
+							</Text>
 							: null
 					}
 					<CardList cards={candidates} />

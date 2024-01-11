@@ -12,7 +12,7 @@ import type { ItemModel } from '../../../../models/item';
 
 import { Collections } from '../../../../utils/collections';
 
-import { Box, CardList, IconSize, IconType, IconValue, PlayingCard, Text, TextType } from '../../../controls';
+import { CardList, IconSize, IconType, IconValue, PlayingCard, Selector, Text, TextType } from '../../../controls';
 import { ItemCard, PlaceholderCard } from '../../../cards';
 
 import './items.scss';
@@ -26,58 +26,81 @@ interface Props {
 	dropItem: (item: ItemModel) => void;
 }
 
-export class Items extends Component<Props> {
+interface State {
+	view: ItemLocationType;
+}
+
+export class Items extends Component<Props, State> {
+	constructor(props: Props) {
+		super(props);
+		this.state = {
+			view: ItemLocationType.Hand
+		};
+	}
+
 	getLocationSection = (location: ItemLocationType) => {
-		let className = 'location-section';
 		let label = location.toString();
+		let maxSlots = 0;
 		switch (location) {
 			case ItemLocationType.Hand:
 			case ItemLocationType.Ring:
-				className += ' double';
 				label += 's';
+				maxSlots = 2;
+				break;
 		}
 
-		const cards = this.props.combatant.items
-			.filter(item => location === item.location)
-			.map(item => {
-				let unequip: JSX.Element | string = 'Carry';
-				if (this.props.game.encounter && (this.props.combatant.faction === CombatantType.Hero)) {
-					unequip = (
-						<div>Carry<br /><IconValue type={IconType.Movement} value={1} size={IconSize.Button} /></div>
-					);
-				}
+		const items = this.props.combatant.items.filter(item => location === item.location);
+		const usedSlots = Collections.sum(items, i => i.slots);
 
-				let drop: JSX.Element | string = 'Drop';
-				if (this.props.game.encounter && (this.props.combatant.faction === CombatantType.Hero)) {
-					drop = (
-						<div>Drop<br /><IconValue type={IconType.Movement} value={0} size={IconSize.Button} /></div>
-					);
-				}
-
-				let options: JSX.Element | null = (
-					<div className='item-options'>
-						<button disabled={this.props.combatant.carried.length >= CombatantLogic.CARRY_CAPACITY} onClick={() => this.props.unequipItem(item)}>
-							{unequip}
-						</button>
-						<button onClick={() => this.props.dropItem(item)}>
-							{drop}
-						</button>
-					</div>
+		const cards = items.map(item => {
+			let unequip: JSX.Element | string = 'Carry';
+			if (this.props.game.encounter && (this.props.combatant.faction === CombatantType.Hero)) {
+				unequip = (
+					<div>Carry<br /><IconValue type={IconType.Movement} value={1} size={IconSize.Button} /></div>
 				);
-				if (this.props.combatant.faction !== CombatantType.Hero) {
-					options = null;
-				}
-				if (!!this.props.game.encounter && !this.props.combatant.combat.current) {
-					options = null;
-				}
+			}
 
-				return (
-					<div key={item.id} className='item'>
-						<ItemCard item={item} />
-						{options}
-					</div>
+			let drop: JSX.Element | string = 'Drop';
+			if (this.props.game.encounter && (this.props.combatant.faction === CombatantType.Hero)) {
+				drop = (
+					<div>Drop<br /><IconValue type={IconType.Movement} value={0} size={IconSize.Button} /></div>
 				);
-			});
+			}
+
+			let options: JSX.Element | null = (
+				<div className='item-options'>
+					<button disabled={this.props.combatant.carried.length >= CombatantLogic.CARRY_CAPACITY} onClick={() => this.props.unequipItem(item)}>
+						{unequip}
+					</button>
+					<button onClick={() => this.props.dropItem(item)}>
+						{drop}
+					</button>
+				</div>
+			);
+			if (this.props.combatant.faction !== CombatantType.Hero) {
+				options = null;
+			}
+			if (!!this.props.game.encounter && !this.props.combatant.combat.current) {
+				options = null;
+			}
+
+			return (
+				<div key={item.id} className='item'>
+					<ItemCard item={item} />
+					{options}
+				</div>
+			);
+		});
+
+		const emptySlots = maxSlots - usedSlots;
+		for (let n = 0; n < emptySlots; ++n) {
+			cards.push(
+				<div key={`empty ${n}`} className='item'>
+					<PlayingCard front={<PlaceholderCard subtext='No item' />} />
+					<div className='item-options' />
+				</div>
+			);
+		}
 
 		if (cards.length === 0) {
 			cards.push(
@@ -89,12 +112,11 @@ export class Items extends Component<Props> {
 		}
 
 		return (
-			<div className={className}>
-				<Box label={label}>
-					<div className='cards'>
-						{cards}
-					</div>
-				</Box>
+			<div>
+				<Text type={TextType.SubHeading}>{label}</Text>
+				<div className='cards'>
+					{cards}
+				</div>
 			</div>
 		);
 	};
@@ -152,7 +174,9 @@ export class Items extends Component<Props> {
 		}
 
 		return (
-			<CardList cards={cards} />
+			<div className='cards'>
+				<CardList cards={cards} />
+			</div>
 		);
 	};
 
@@ -194,7 +218,9 @@ export class Items extends Component<Props> {
 			});
 
 		return (
-			<CardList cards={cards} />
+			<div className='cards'>
+				<CardList cards={cards} />
+			</div>
 		);
 	};
 
@@ -238,43 +264,77 @@ export class Items extends Component<Props> {
 			});
 
 		return (
-			<CardList cards={cards} />
+			<div className='cards'>
+				<CardList cards={cards} />
+			</div>
+		);
+	};
+
+	getSidebar = () => {
+		return (
+			<div className='items-sidebar'>
+				<Selector
+					options={[
+						{
+							id: ItemLocationType.Hand,
+							display: 'Hands'
+						},
+						{
+							id: ItemLocationType.Body,
+							display: 'Body'
+						},
+						{
+							id: ItemLocationType.Head,
+							display: 'Head'
+						},
+						{
+							id: ItemLocationType.Feet,
+							display: 'Feet'
+						},
+						{
+							id: ItemLocationType.Neck,
+							display: 'Neck'
+						},
+						{
+							id: ItemLocationType.Ring,
+							display: 'Rings'
+						}
+					]}
+					selectedID={this.state.view}
+					columnCount={1}
+					onSelect={id => this.setState({ view: id as ItemLocationType })}
+				/>
+			</div>
+		);
+	};
+
+	getContent = () => {
+		const carried = this.getCarriedItemSection();
+		const party = this.getPartyItemSection();
+		const nearby = this.getNearbyItemSection();
+
+		return (
+			<div className='items-details'>
+				{this.getLocationSection(this.state.view)}
+				{carried !== null ? <hr /> : null}
+				{carried !== null ? <Text type={TextType.SubHeading}>Carried Items</Text> : null}
+				{carried}
+				{party !== null ? <hr /> : null}
+				{party !== null ? <Text type={TextType.SubHeading}>Party Items</Text> : null}
+				{party}
+				{nearby !== null ? <hr /> : null}
+				{nearby !== null ? <Text type={TextType.SubHeading}>Nearby Items</Text> : null}
+				{nearby}
+			</div>
 		);
 	};
 
 	render = () => {
 		try {
-			const carried = this.getCarriedItemSection();
-			const party = this.getPartyItemSection();
-			const nearby = this.getNearbyItemSection();
-
 			return (
 				<div className='items'>
-					<Text type={TextType.SubHeading}>Equipped Items</Text>
-					<div className='equipped'>
-						<div className='grid-cell'>
-							{this.getLocationSection(ItemLocationType.Hand)}
-						</div>
-						<div className='grid-cell'>
-							{this.getLocationSection(ItemLocationType.Body)}
-							{this.getLocationSection(ItemLocationType.Feet)}
-						</div>
-						<div className='grid-cell'>
-							{this.getLocationSection(ItemLocationType.Head)}
-							{this.getLocationSection(ItemLocationType.Neck)}
-						</div>
-						<div className='grid-cell'>
-							{this.getLocationSection(ItemLocationType.Ring)}
-						</div>
-					</div>
-					<hr />
-					<Text type={TextType.SubHeading}>Carried Items ({this.props.combatant.carried.length} / {CombatantLogic.CARRY_CAPACITY})</Text>
-					{carried}
-					<hr />
-					{party !== null ? <Text type={TextType.SubHeading}>Party Items</Text> : null}
-					{nearby !== null ? <Text type={TextType.SubHeading}>Nearby Items</Text> : null}
-					{party}
-					{nearby}
+					{this.getSidebar()}
+					{this.getContent()}
 				</div>
 			);
 		} catch {

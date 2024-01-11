@@ -133,11 +133,9 @@ export class HeroesPage extends Component<Props, State> {
 		}
 
 		return (
-			<div>
-				<Text type={TextType.Information}>
-					<p>You have no heroes.</p>
-				</Text>
-			</div>
+			<Text type={TextType.Empty}>
+				You have no heroes.
+			</Text>
 		);
 	};
 

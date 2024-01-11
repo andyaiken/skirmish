@@ -1,37 +1,38 @@
 .items {
-	.equipped {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-		gap: 0 10px;
+	height: 100%;
+	display: flex;
+	flex-direction: row;
+	gap: 20px;
 
-		.grid-cell {
-			display: flex;
-			gap: 10px;
-
-			.location-section {
-				flex: 1 1 0;
-
-				&.double {
-					flex: 2 2 0;
-				}
-
-				.cards {
-					display: flex;
-					justify-content: space-around;
-				}
-			}
-		}
+	.items-sidebar {
+		flex: 0 0 200px;
+		overflow-x: hidden;
+		overflow-y: auto;
+		-webkit-overflow-scrolling: touch;
 	}
 
-	.item-options {
-		min-height: 75px;
-		display: flex;
-		align-items: center;
-		gap: 5px;
+	.items-details {
+		flex: 1 1 0;
+		overflow-x: hidden;
+		overflow-y: auto;
+		-webkit-overflow-scrolling: touch;
 
-		button {
-			flex: 1 1 0;
-			padding: 5px;
+		.cards {
+			display: flex;
+			justify-content: space-around;
+
+			.item {
+				.item-options {
+					display: flex;
+					align-items: center;
+					gap: 5px;
+
+					button {
+						flex: 1 1 0;
+						padding: 5px;
+					}
+				}
+			}
 		}
 	}
 }

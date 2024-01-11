@@ -137,8 +137,8 @@ export class MagicItemInfoModal extends Component<Props, State> {
 			let content = null;
 			if (canEquip.length + canReplace.length === 0) {
 				content = (
-					<div className='hero-list empty'>
-						<Text type={TextType.Small}>Usable by none of your current heroes.</Text>
+					<div className='hero-list'>
+						<Text type={TextType.Empty}>Usable by none of your current heroes.</Text>
 					</div>
 				);
 			} else {

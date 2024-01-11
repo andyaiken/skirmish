@@ -97,9 +97,7 @@ export class EncounterStartModal extends Component<Props, State> {
 				</div>
 				<div className='divider' />
 				<div className='hero-list-column selected'>
-					<div className='selected-hero-list'>
-						{selected}
-					</div>
+					{selected}
 				</div>
 			</div>
 		);
@@ -200,7 +198,7 @@ export class EncounterStartModal extends Component<Props, State> {
 					onSelect={id => this.setState({ viewMode: id })}
 				/>
 				{
-					(this.state.viewMode === 'heroes') && (this.state.selectedHeroes.length === 0) ?
+					(this.state.viewMode === 'heroes') ?
 						<Text type={TextType.Information}>
 							<p>Select <b>up to 5 heroes</b> from the list on the left to take part in this encounter.</p>
 						</Text>
@@ -210,6 +208,13 @@ export class EncounterStartModal extends Component<Props, State> {
 					(this.state.viewMode === 'monsters') ?
 						<Text type={TextType.Information}>
 							<p>The following monsters are common in the region you are attacking.</p>
+						</Text>
+						: null
+				}
+				{
+					(this.state.viewMode === 'advanced') ?
+						<Text type={TextType.Information}>
+							<p>The buildings in your stronghold allow you to use the following options.</p>
 						</Text>
 						: null
 				}

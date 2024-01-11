@@ -407,19 +407,21 @@ export class MonsterSpeciesData {
 		id: 'species-ratfolk',
 		name: 'Ratfolk',
 		packID: '',
-		description: 'XXXX.',
+		description: 'Nimble humanoid vermin.',
 		type: CombatantType.Monster,
 		size: 1,
 		quirks: [],
 		startingFeatures: [
-			FeatureLogic.createSkillFeature('ratfolk-start-1', SkillType.Brawl, 2),
-			FeatureLogic.createTraitFeature('ratfolk-start-2', TraitType.Endurance, 1),
-			FeatureLogic.createDamageResistFeature('ratfolk-start-3', DamageType.Decay, 2)
+			FeatureLogic.createTraitFeature('ratfolk-start-1', TraitType.Speed, 1),
+			FeatureLogic.createSkillFeature('ratfolk-start-2', SkillType.Brawl, 2),
+			FeatureLogic.createTraitFeature('ratfolk-start-3', TraitType.Endurance, 1),
+			FeatureLogic.createDamageResistFeature('ratfolk-start-4', DamageType.Decay, 2)
 		],
 		features: [
-			FeatureLogic.createSkillFeature('ratfolk-feature-1', SkillType.Brawl, 2),
-			FeatureLogic.createTraitFeature('ratfolk-feature-2', TraitType.Endurance, 1),
-			FeatureLogic.createDamageResistFeature('ratfolk-feature-3', DamageType.Decay, 2)
+			FeatureLogic.createTraitFeature('ratfolk-feature-1', TraitType.Speed, 1),
+			FeatureLogic.createSkillFeature('ratfolk-feature-2', SkillType.Brawl, 2),
+			FeatureLogic.createTraitFeature('ratfolk-feature-3', TraitType.Endurance, 1),
+			FeatureLogic.createDamageResistFeature('ratfolk-feature-4', DamageType.Decay, 2)
 		],
 		actions: [
 			{

@@ -1,3 +1,4 @@
+import { IconSquare, IconSquareFilled } from '@tabler/icons-react';
 import { Component } from 'react';
 
 import { CombatantType } from '../../../../enums/combatant-type';
@@ -12,7 +13,7 @@ import type { ItemModel } from '../../../../models/item';
 
 import { Collections } from '../../../../utils/collections';
 
-import { CardList, IconSize, IconType, IconValue, PlayingCard, Selector, Text, TextType } from '../../../controls';
+import { CardList, IconSize, IconType, IconValue, PlayingCard, Selector, StatValue, Text, TextType } from '../../../controls';
 import { ItemCard, PlaceholderCard } from '../../../cards';
 
 import './items.scss';
@@ -38,18 +39,50 @@ export class Items extends Component<Props, State> {
 		};
 	}
 
-	getLocationSection = (location: ItemLocationType) => {
-		let label = location.toString();
-		let maxSlots = 0;
+	getLocationSlots = (location: ItemLocationType) => {
+		let maxSlots = 1;
 		switch (location) {
 			case ItemLocationType.Hand:
 			case ItemLocationType.Ring:
-				label += 's';
 				maxSlots = 2;
 				break;
 		}
 
-		const items = this.props.combatant.items.filter(item => location === item.location);
+		const slots = [];
+		this.props.combatant.items
+			.filter(item => location === item.location)
+			.forEach(i => {
+				for (let n = 0; n < i.slots; ++n) {
+					slots.push(<IconSquareFilled key={`${i.id} ${n}`} />);
+				}
+			});
+
+		while (slots.length < maxSlots) {
+			slots.push(<IconSquare key={slots.length} />);
+		}
+
+		return (
+			<StatValue
+				label={`${location}${maxSlots > 1 ? 's' : ''}`}
+				value={
+					<div className='slot-icons'>
+						{slots}
+					</div>
+				}
+			/>
+		);
+	};
+
+	getLocationSection = () => {
+		let maxSlots = 1;
+		switch (this.state.view) {
+			case ItemLocationType.Hand:
+			case ItemLocationType.Ring:
+				maxSlots = 2;
+				break;
+		}
+
+		const items = this.props.combatant.items.filter(item => this.state.view === item.location);
 		const usedSlots = Collections.sum(items, i => i.slots);
 
 		const cards = items.map(item => {
@@ -112,16 +145,41 @@ export class Items extends Component<Props, State> {
 		}
 
 		return (
-			<div>
-				<Text type={TextType.SubHeading}>{label}</Text>
-				<div className='cards'>
-					{cards}
+			<div className='location-section'>
+				<div className='location-sidebar'>
+					<Selector
+						options={[
+							ItemLocationType.Hand,
+							ItemLocationType.Body,
+							ItemLocationType.Head,
+							ItemLocationType.Feet,
+							ItemLocationType.Neck,
+							ItemLocationType.Ring
+						].map(loc => {
+							return {
+								id: loc,
+								display: this.getLocationSlots(loc)
+							};
+						})}
+						selectedID={this.state.view}
+						columnCount={1}
+						onSelect={id => this.setState({ view: id as ItemLocationType })}
+					/>
+				</div>
+				<div className='location-details'>
+					<CardList cards={cards} />
 				</div>
 			</div>
 		);
 	};
 
 	getCarriedItemSection = () => {
+		if (this.props.combatant.carried.length === 0) {
+			return (
+				<Text type={TextType.Empty}>No carried items</Text>
+			);
+		}
+
 		const cards = this.props.combatant.carried
 			.sort((a, b) => a.name.localeCompare(b.name))
 			.map(item => {
@@ -164,19 +222,8 @@ export class Items extends Component<Props, State> {
 				);
 			});
 
-		if (this.props.combatant.carried.length === 0) {
-			cards.push(
-				<div key='empty' className='item'>
-					<PlayingCard front={<PlaceholderCard subtext='No Item' />} />
-					<div className='item-options' />
-				</div>
-			);
-		}
-
 		return (
-			<div className='cards'>
-				<CardList cards={cards} />
-			</div>
+			<CardList cards={cards} />
 		);
 	};
 
@@ -218,9 +265,7 @@ export class Items extends Component<Props, State> {
 			});
 
 		return (
-			<div className='cards'>
-				<CardList cards={cards} />
-			</div>
+			<CardList cards={cards} />
 		);
 	};
 
@@ -264,77 +309,37 @@ export class Items extends Component<Props, State> {
 			});
 
 		return (
-			<div className='cards'>
-				<CardList cards={cards} />
-			</div>
-		);
-	};
-
-	getSidebar = () => {
-		return (
-			<div className='items-sidebar'>
-				<Selector
-					options={[
-						{
-							id: ItemLocationType.Hand,
-							display: 'Hands'
-						},
-						{
-							id: ItemLocationType.Body,
-							display: 'Body'
-						},
-						{
-							id: ItemLocationType.Head,
-							display: 'Head'
-						},
-						{
-							id: ItemLocationType.Feet,
-							display: 'Feet'
-						},
-						{
-							id: ItemLocationType.Neck,
-							display: 'Neck'
-						},
-						{
-							id: ItemLocationType.Ring,
-							display: 'Rings'
-						}
-					]}
-					selectedID={this.state.view}
-					columnCount={1}
-					onSelect={id => this.setState({ view: id as ItemLocationType })}
-				/>
-			</div>
-		);
-	};
-
-	getContent = () => {
-		const carried = this.getCarriedItemSection();
-		const party = this.getPartyItemSection();
-		const nearby = this.getNearbyItemSection();
-
-		return (
-			<div className='items-details'>
-				{this.getLocationSection(this.state.view)}
-				{carried !== null ? <hr /> : null}
-				{carried !== null ? <Text type={TextType.SubHeading}>Carried Items</Text> : null}
-				{carried}
-				{party !== null ? <hr /> : null}
-				{party !== null ? <Text type={TextType.SubHeading}>Party Items</Text> : null}
-				{party}
-				{nearby !== null ? <hr /> : null}
-				{nearby !== null ? <Text type={TextType.SubHeading}>Nearby Items</Text> : null}
-				{nearby}
-			</div>
+			<CardList cards={cards} />
 		);
 	};
 
 	render = () => {
 		try {
+			let label = this.state.view.toString();
+			switch (this.state.view) {
+				case ItemLocationType.Hand:
+				case ItemLocationType.Ring:
+					label += 's (2 slots)';
+					break;
+			}
+
+			const carried = this.getCarriedItemSection();
+			const party = this.getPartyItemSection();
+			const nearby = this.getNearbyItemSection();
+
 			return (
 				<div className='items'>
-					{this.getSidebar()}
-					{this.getContent()}
+					<Text type={TextType.SubHeading}>Equipped Items - {label}</Text>
+					{this.getLocationSection()}
+					{carried !== null ? <hr /> : null}
+					{carried !== null ? <Text type={TextType.SubHeading}>Carried Items ({this.props.combatant.carried.length} of {CombatantLogic.CARRY_CAPACITY})</Text> : null}
+					{carried}
+					{party !== null ? <hr /> : null}
+					{party !== null ? <Text type={TextType.SubHeading}>Party Items</Text> : null}
+					{party}
+					{nearby !== null ? <hr /> : null}
+					{nearby !== null ? <Text type={TextType.SubHeading}>Nearby Items</Text> : null}
+					{nearby}
 				</div>
 			);
 		} catch {

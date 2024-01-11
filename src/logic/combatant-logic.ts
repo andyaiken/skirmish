@@ -30,7 +30,7 @@ import { Factory } from './factory';
 import { GameLogic } from './game-logic';
 
 export class CombatantLogic {
-	static CARRY_CAPACITY = 4;
+	static CARRY_CAPACITY = 3;
 
 	static applyCombatantCards = (combatant: CombatantModel, speciesID: string, roleID: string, backgroundID: string) => {
 		const species = GameLogic.getSpecies(speciesID);
@@ -538,7 +538,7 @@ export class CombatantLogic {
 						&& (a.details.damage === f.damage)
 						&& (a.details.damageCategory === f.damageCategory));
 					if (original) {
-						original.rank += 1;
+						original.rank += f.rank;
 					} else {
 						const aura = Factory.createCondition(f.aura, TraitType.None, f.rank);
 						aura.details.trait = f.trait;

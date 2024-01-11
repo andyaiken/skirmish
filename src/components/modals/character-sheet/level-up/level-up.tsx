@@ -126,7 +126,7 @@ export class LevelUp extends Component<Props, State> {
 				});
 
 				content = (
-					<CardList mode='row' cards={featureCards} />
+					<CardList cards={featureCards} />
 				);
 			}
 

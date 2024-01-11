@@ -73,7 +73,7 @@ export class BuyStructureModal extends Component<Props, State> {
 						<p>Three structure cards have been drawn for you. Choose one card to add it to your stronghold.</p>
 					</Text>
 					<div className='card-selection-row'>
-						<CardList mode='row' cards={cards} />
+						<CardList cards={cards} />
 						{
 							(redraws > 0) || this.props.options.developer ?
 								<button className={this.props.options.developer ? 'developer' : ''} onClick={() => this.redraw()}>

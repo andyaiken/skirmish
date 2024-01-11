@@ -115,7 +115,7 @@ export class EquipmentPage extends Component<Props, State> {
 
 				return (
 					<div key={n} className='card-selection-row'>
-						<CardList mode='row' cards={cards} />
+						<CardList cards={cards} />
 						{
 							(redraws > 0) || this.props.options.developer ?
 								<button className={this.props.options.developer ? 'developer' : ''} onClick={() => this.redraw(slot.proficiency)}>
@@ -134,7 +134,7 @@ export class EquipmentPage extends Component<Props, State> {
 			return (
 				<div className='equipment-page'>
 					<div className='card-selection-row'>
-						<CardList mode='row' cards={overviewCards} />
+						<CardList cards={overviewCards} />
 					</div>
 					{
 						this.props.options.showTips ?

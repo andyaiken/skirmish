@@ -14,7 +14,6 @@
 	.hero-page,
 	.monster-page,
 	.advanced-page {
-		margin-top: 10px;
 		flex: 1 1 0;
 	}
 
@@ -25,23 +24,19 @@
 		overflow-y: hidden;
 
 		.hero-list-column {
-			padding-bottom: 5px;
 			overflow-x: hidden;
 			overflow-y: auto;
 			-webkit-overflow-scrolling: touch;
 
 			&.candidates {
-				flex: 0 0 220px;
+				flex: 0 0 225px;
 			}
 
 			&.selected {
 				flex: 1 1 0;
-			}
-
-			.selected-hero-list {
 				display: flex;
 				flex-direction: column;
-				gap: 10px;
+				gap: 5px;
 			}
 
 			.empty-hero-slot {

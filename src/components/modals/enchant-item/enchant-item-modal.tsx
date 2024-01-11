@@ -88,7 +88,7 @@ export class EnchantItemModal extends Component<Props, State> {
 									<p>Here are three ways in which this item can be enchanted. Choose one of them.</p>
 								</Text>
 								<div className='card-selection-row'>
-									<CardList mode='row' cards={cards} />
+									<CardList cards={cards} />
 									{
 										(redraws > 0) || this.props.options.developer ?
 											<button className={this.props.options.developer ? 'developer' : ''} onClick={() => this.redraw()}>

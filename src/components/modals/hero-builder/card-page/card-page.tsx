@@ -157,7 +157,7 @@ export class CardPage extends Component<Props, State> {
 
 		return (
 			<div className='card-selection-row'>
-				<CardList mode='row' cards={[ speciesCard, roleCard, backgroundCard ]} />
+				<CardList cards={[ speciesCard, roleCard, backgroundCard ]} />
 			</div>
 		);
 	};
@@ -178,7 +178,7 @@ export class CardPage extends Component<Props, State> {
 
 		return (
 			<div className='card-selection-row'>
-				<CardList mode='row' cards={cards} />
+				<CardList cards={cards} />
 				{
 					(redraws > 0) || this.props.options.developer ?
 						<button className={this.props.options.developer ? 'developer' : ''} onClick={() => this.redraw(CardType.Species)}>
@@ -208,7 +208,7 @@ export class CardPage extends Component<Props, State> {
 
 		return (
 			<div className='card-selection-row'>
-				<CardList mode='row' cards={cards} />
+				<CardList cards={cards} />
 				{
 					(redraws > 0) || this.props.options.developer ?
 						<button className={this.props.options.developer ? 'developer' : ''} onClick={() => this.redraw(CardType.Role)}>
@@ -238,7 +238,7 @@ export class CardPage extends Component<Props, State> {
 
 		return (
 			<div className='card-selection-row'>
-				<CardList mode='row' cards={cards} />
+				<CardList cards={cards} />
 				{
 					(redraws > 0) || this.props.options.developer ?
 						<button className={this.props.options.developer ? 'developer' : ''} onClick={() => this.redraw(CardType.Background)}>

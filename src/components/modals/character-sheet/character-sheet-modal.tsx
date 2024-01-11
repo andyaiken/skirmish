@@ -164,16 +164,20 @@ export class CharacterSheetModal extends Component<Props, State> {
 			return (
 				<div className='character-sheet-modal'>
 					<div className='main-section'>
-						<div className='header'>
-							<Text type={TextType.Heading}>{this.props.combatant.name || 'unnamed hero'}</Text>
-							<div className='tags'>
-								{species ? <Tag>{species.name}</Tag> : null}
-								{role ? <Tag>{role.name}</Tag> : null}
-								{background ? <Tag>{background.name}</Tag> : null}
-								<Tag>Level {this.props.combatant.level}</Tag>
-								{this.props.combatant.quirks.map((q, n) => (<Tag key={n}>{q}</Tag>))}
-							</div>
-						</div>
+						{
+							levelUp === null ?
+								<div className='header'>
+									<Text type={TextType.Heading}>{this.props.combatant.name || 'unnamed hero'}</Text>
+									<div className='tags'>
+										{species ? <Tag>{species.name}</Tag> : null}
+										{role ? <Tag>{role.name}</Tag> : null}
+										{background ? <Tag>{background.name}</Tag> : null}
+										<Tag>Level {this.props.combatant.level}</Tag>
+										{this.props.combatant.quirks.map((q, n) => (<Tag key={n}>{q}</Tag>))}
+									</div>
+								</div>
+								: null
+						}
 						{selector}
 						<div className='content'>
 							{content}

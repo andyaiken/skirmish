@@ -9,7 +9,9 @@ You can sell any non-magic items you don't want for 1 money each.
 
 ## Money
 
-The right-hand column shows how much money your heroes have. You can use this money to buy a magic item, or to enchant an existing item. You'll be given a choice of three item cards, from which you can pick one, at a cost of 100 money.
+At the top of the screen you can see how much money your heroes have. You can use this money to buy a magic (or mundane) item, or to enchant an existing item.
+
+You'll be given a choice of three item cards, from which you can pick one, at a cost of 100 money.
 
 ## Item Rewards
 

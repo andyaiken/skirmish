@@ -119,7 +119,9 @@
 			flex: 0 0 300px;
 
 			&.collapsed {
+				align-items: center;
 				flex: 0 0 auto;
+				cursor: w-resize;
 			}
 		}
 

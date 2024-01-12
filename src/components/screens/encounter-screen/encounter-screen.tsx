@@ -752,7 +752,7 @@ export class EncounterScreen extends Component<Props, State> {
 		}
 
 		return (
-			<div className='encounter-right-column collapsed'>
+			<div className='encounter-right-column collapsed' onClick={() => this.toggleRightPanel()}>
 				<CombatantRowPanel
 					mode='column'
 					combatant={currentCombatant}
@@ -860,7 +860,7 @@ export class EncounterScreen extends Component<Props, State> {
 								{bottom}
 							</div>
 							{
-								(left !== null) || (right !== null) ?
+								this.state.showLeftPanel || this.state.showRightPanel ?
 									<div className='encounter-side-columns'>
 										{left}
 										{right}

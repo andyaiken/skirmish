@@ -20,7 +20,7 @@ import { MiniToken } from '../encounter-map/mini-token/mini-token';
 import './combatant-row-panel.scss';
 
 interface Props {
-	mode: 'list' | 'initiative' | 'detailed' | 'header';
+	mode: 'list' | 'initiative' | 'detailed' | 'header' | 'column';
 	combatant: CombatantModel;
 	encounter: EncounterModel | null;
 	onClick: ((combatant: CombatantModel) => void) | null;

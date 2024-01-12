@@ -450,8 +450,8 @@ export class ActionControls extends Component<Props> {
 						}
 					}}
 				>
-					{content}
 					{banner}
+					{content}
 				</div>
 			);
 		} catch {

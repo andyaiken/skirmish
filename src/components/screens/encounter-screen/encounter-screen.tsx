@@ -8,6 +8,8 @@ import {
 	IconLayoutBottombarExpand,
 	IconLayoutSidebarLeftCollapse,
 	IconLayoutSidebarLeftExpand,
+	IconLayoutSidebarRightCollapse,
+	IconLayoutSidebarRightExpand,
 	IconListDetails,
 	IconNotes,
 	IconRotate2,
@@ -86,6 +88,7 @@ interface State {
 	mapSquareSize: number;
 	showLeftPanel: boolean;
 	showBottomPanel: boolean;
+	showRightPanel: boolean;
 	leftTab: string;
 	selectedActionParameter: ActionParameterModel | null;
 	selectableCombatantIDs: string[];
@@ -107,6 +110,7 @@ export class EncounterScreen extends Component<Props, State> {
 			mapSquareSize: 15,
 			showLeftPanel: true,
 			showBottomPanel: true,
+			showRightPanel: true,
 			leftTab: 'init',
 			selectedActionParameter: null,
 			selectableCombatantIDs: [],
@@ -163,6 +167,12 @@ export class EncounterScreen extends Component<Props, State> {
 	toggleBottomPanel = () => {
 		this.setState({
 			showBottomPanel: !this.state.showBottomPanel
+		});
+	};
+
+	toggleRightPanel = () => {
+		this.setState({
+			showRightPanel: !this.state.showRightPanel
 		});
 	};
 
@@ -509,11 +519,14 @@ export class EncounterScreen extends Component<Props, State> {
 			<div className='encounter-top-panel'>
 				<div className='encounter-toolbar'>
 					<div className='icon-section'>
-						<button className='icon-btn' title='Left Sidebar' onClick={() => this.toggleLeftPanel()}>
+						<button className='icon-btn' title='Left Panel' onClick={() => this.toggleLeftPanel()}>
 							{this.state.showLeftPanel ? <IconLayoutSidebarLeftCollapse /> : <IconLayoutSidebarLeftExpand />}
 						</button>
-						<button className='icon-btn' title='Action Cards' onClick={() => this.toggleBottomPanel()}>
+						<button className='icon-btn' title='Bottom Panel' onClick={() => this.toggleBottomPanel()}>
 							{this.state.showBottomPanel ? <IconLayoutBottombarCollapse /> : <IconLayoutBottombarExpand />}
+						</button>
+						<button className='icon-btn' title='Right Panal' onClick={() => this.toggleRightPanel()}>
+							{this.state.showRightPanel ? <IconLayoutSidebarRightCollapse /> : <IconLayoutSidebarRightExpand />}
 						</button>
 					</div>
 					<div className='icon-section'>
@@ -553,6 +566,59 @@ export class EncounterScreen extends Component<Props, State> {
 				{actionBtn}
 			</div>
 		);
+	};
+
+	getBottomControls = () => {
+		let state = this.state.manualEncounterState;
+		if (state === EncounterState.Active) {
+			state = EncounterLogic.getEncounterState(this.props.encounter);
+		}
+
+		if (state !== EncounterState.Active) {
+			return null;
+		}
+
+		const currentCombatant = EncounterLogic.getActiveCombatants(this.props.encounter).find(c => c.combat.current) || null;
+		if (currentCombatant) {
+			switch (currentCombatant.faction) {
+				case CombatantType.Hero: {
+					if (!currentCombatant.combat.stunned) {
+						return (
+							<div className='encounter-bottom-panel'>
+								<ActionControls
+									combatant={currentCombatant}
+									encounter={this.props.encounter}
+									game={this.props.game}
+									developer={this.props.options.developer}
+									currentActionParameter={this.state.selectedActionParameter}
+									collapsed={!this.state.showBottomPanel}
+									toggleCollapsed={() => this.setState({ showBottomPanel: !this.state.showBottomPanel })}
+									drawActions={this.props.drawActions}
+									selectAction={this.selectAction}
+									deselectAction={this.props.deselectAction}
+									setActionParameter={this.setActionParameter}
+									setActionParameterValue={this.setActionParameter}
+									runAction={this.runAction}
+								/>
+							</div>
+						);
+					}
+					break;
+				}
+				case CombatantType.Monster: {
+					if (this.state.showBottomPanel) {
+						return (
+							<div className='encounter-bottom-panel'>
+								<div className='bottom-message'>The current combatant is a <b>monster</b>.</div>
+							</div>
+						);
+					}
+					break;
+				}
+			}
+		}
+
+		return null;
 	};
 
 	getLeftControls = () => {
@@ -597,42 +663,6 @@ export class EncounterScreen extends Component<Props, State> {
 		return null;
 	};
 
-	getBottomControls = () => {
-		let state = this.state.manualEncounterState;
-		if (state === EncounterState.Active) {
-			state = EncounterLogic.getEncounterState(this.props.encounter);
-		}
-
-		if (state !== EncounterState.Active) {
-			return null;
-		}
-
-		const currentCombatant = EncounterLogic.getActiveCombatants(this.props.encounter).find(c => c.combat.current) || null;
-		if (currentCombatant && (currentCombatant.faction === CombatantType.Hero) && !currentCombatant.combat.stunned) {
-			return (
-				<div className='encounter-bottom-panel'>
-					<ActionControls
-						combatant={currentCombatant}
-						encounter={this.props.encounter}
-						game={this.props.game}
-						developer={this.props.options.developer}
-						currentActionParameter={this.state.selectedActionParameter}
-						collapsed={!this.state.showBottomPanel}
-						toggleCollapsed={() => this.setState({ showBottomPanel: !this.state.showBottomPanel })}
-						drawActions={this.props.drawActions}
-						selectAction={this.selectAction}
-						deselectAction={this.props.deselectAction}
-						setActionParameter={this.setActionParameter}
-						setActionParameterValue={this.setActionParameter}
-						runAction={this.runAction}
-					/>
-				</div>
-			);
-		}
-
-		return null;
-	};
-
 	getRightControls = () => {
 		let state = this.state.manualEncounterState;
 		if (state === EncounterState.Active) {
@@ -654,7 +684,21 @@ export class EncounterScreen extends Component<Props, State> {
 		}
 
 		const currentCombatant = EncounterLogic.getActiveCombatants(this.props.encounter).find(c => c.combat.current) || null;
-		if (currentCombatant !== null) {
+		if (currentCombatant === null) {
+			return (
+				<div className='encounter-right-column'>
+					<RoundControls
+						encounter={this.props.encounter}
+						game={this.props.game}
+						options={this.props.options}
+						regenerateEncounterMap={this.props.regenerateEncounterMap}
+						addHeroToEncounter={this.props.addHeroToEncounter}
+					/>
+				</div>
+			);
+		}
+
+		if (this.state.showRightPanel) {
 			const unconscious = currentCombatant.combat.state === CombatantState.Unconscious;
 			const dead = currentCombatant.combat.state === CombatantState.Dead;
 			const stunned = currentCombatant.combat.stunned;
@@ -708,13 +752,13 @@ export class EncounterScreen extends Component<Props, State> {
 		}
 
 		return (
-			<div className='encounter-right-column'>
-				<RoundControls
+			<div className='encounter-right-column collapsed'>
+				<CombatantRowPanel
+					mode='column'
+					combatant={currentCombatant}
 					encounter={this.props.encounter}
-					game={this.props.game}
-					options={this.props.options}
-					regenerateEncounterMap={this.props.regenerateEncounterMap}
-					addHeroToEncounter={this.props.addHeroToEncounter}
+					onTokenClick={() => this.scrollToCombatant('current')}
+					onDetails={this.showDetailsCombatant}
 				/>
 			</div>
 		);
@@ -785,10 +829,15 @@ export class EncounterScreen extends Component<Props, State> {
 
 	render = () => {
 		try {
+			const top = this.getTopControls();
+			const bottom = this.getBottomControls();
+			const left = this.getLeftControls();
+			const right = this.getRightControls();
+
 			if (this.props.orientation === OrientationType.Portrait) {
 				return (
 					<div className={`encounter-screen ${this.props.orientation}`}>
-						{this.getTopControls()}
+						{top}
 						<div className='encounter-main-panel'>
 							<div className='encounter-central-column'>
 								<div className='encounter-center-panel'>
@@ -808,12 +857,16 @@ export class EncounterScreen extends Component<Props, State> {
 										onClickOff={this.clearSelection}
 									/>
 								</div>
-								{this.getBottomControls()}
+								{bottom}
 							</div>
-							<div className='encounter-side-columns'>
-								{this.getLeftControls()}
-								{this.getRightControls()}
-							</div>
+							{
+								(left !== null) || (right !== null) ?
+									<div className='encounter-side-columns'>
+										{left}
+										{right}
+									</div>
+									: null
+							}
 						</div>
 						{this.getDialog()}
 					</div>
@@ -822,9 +875,9 @@ export class EncounterScreen extends Component<Props, State> {
 
 			return (
 				<div className={`encounter-screen ${this.props.orientation}`}>
-					{this.getTopControls()}
+					{top}
 					<div className='encounter-main-panel'>
-						{this.getLeftControls()}
+						{left}
 						<div className='encounter-central-column'>
 							<div className='encounter-center-panel'>
 								<EncounterMapPanel
@@ -843,9 +896,9 @@ export class EncounterScreen extends Component<Props, State> {
 									onClickOff={this.clearSelection}
 								/>
 							</div>
-							{this.getBottomControls()}
+							{bottom}
 						</div>
-						{this.getRightControls()}
+						{right}
 					</div>
 					{this.getDialog()}
 				</div>

@@ -45,9 +45,22 @@ export class ConditionsPanel extends Component<Props> {
 
 	getAuras = () => {
 		return EncounterLogic.getAuraConditions(this.props.encounter, this.props.combatant)
-			.map(c => (
-				<StatValue key={c.id} orientation='compact' label={ConditionLogic.getConditionDescription(c)} value={c.rank} />
-			));
+			.map(c => {
+				const color = ConditionLogic.getConditionIsBeneficial(c) ? 'darkgreen' : 'darkred';
+				const rotate = ConditionLogic.getConditionIsBeneficial(c) ? '0deg': '180deg';
+				return (
+					<div key={c.id} className='condition-row'>
+						<IconNavigationFilled size={15} style={{ color: color, rotate: rotate }}/>
+						<div className='details'>
+							<StatValue
+								orientation='compact'
+								label={ConditionLogic.getConditionDescription(c)}
+								value={c.rank}
+							/>
+						</div>
+					</div>
+				);
+			});
 	};
 
 	render = () => {
@@ -62,13 +75,13 @@ export class ConditionsPanel extends Component<Props> {
 				conditions = (
 					<Box label='Conditions'>
 						<div>
-							{ endurance.length > 0 ? <Text type={TextType.MinorHeading}>Endurance Conditions</Text> : null }
+							{endurance.length > 0 ? <Text type={TextType.MinorHeading}>Endurance Conditions</Text> : null}
 							{endurance}
-							{ resolve.length > 0 ? <Text type={TextType.MinorHeading}>Resolve Conditions</Text> : null }
+							{resolve.length > 0 ? <Text type={TextType.MinorHeading}>Resolve Conditions</Text> : null}
 							{resolve}
-							{ speed.length > 0 ? <Text type={TextType.MinorHeading}>Speed Conditions</Text> : null }
+							{speed.length > 0 ? <Text type={TextType.MinorHeading}>Speed Conditions</Text> : null}
 							{speed}
-							{ auras.length > 0 ? <Text type={TextType.MinorHeading}>In Auras</Text> : null }
+							{auras.length > 0 ? <Text type={TextType.MinorHeading}>Conditions from Auras</Text> : null}
 							{auras}
 						</div>
 					</Box>

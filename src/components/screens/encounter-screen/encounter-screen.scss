@@ -8,6 +8,19 @@
 	&.portrait {
 		flex-direction: column;
 
+		.encounter-top-panel {
+			flex-direction: column;
+			gap: 0;
+
+			.encounter-toolbar {
+				width: 100%;
+			}
+
+			.action {
+				max-height: 40px;
+			}
+		}
+
 		.encounter-main-panel {
 			flex-direction: column;
 
@@ -27,6 +40,10 @@
 				.encounter-left-column,
 				.encounter-right-column {
 					flex: 1 1 0;
+
+					&.collapsed {
+						flex: 0 0 auto;
+					}
 				}
 			}
 		}
@@ -100,6 +117,10 @@
 
 		.encounter-right-column {
 			flex: 0 0 300px;
+
+			&.collapsed {
+				flex: 0 0 auto;
+			}
 		}
 
 		.encounter-central-column {
@@ -116,6 +137,12 @@
 
 			.encounter-bottom-panel {
 				overflow: hidden;
+
+				.bottom-message {
+					font-size: 22px;
+					text-align: center;
+					margin-bottom: 5px;
+				}
 			}
 		}
 	}

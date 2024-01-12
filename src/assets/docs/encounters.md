@@ -34,7 +34,7 @@ Below the map you'll see your action cards for this turn; this allows you to sel
 
 ## Monster Controls
 
-When it's a monster's turn to act, you'll see much less information, because the monster has already decided what they want to do; press the `Go` button at the bottom and they'll do it.
+When it's a monster's turn to act, you'll see much less information, because the monster has already decided what they want to do; press the `Take Monster Turn` button at the bottom and they'll do it.
 
 Monsters are similar to heroes in most ways, but you may see a few special keywords:
 * **Beast** or **Mindless** - A monster with either of these keywords doesn't have a role or a background.

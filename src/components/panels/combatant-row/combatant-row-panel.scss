@@ -18,6 +18,19 @@
 		min-height: 60px;
 	}
 
+	&.column {
+		flex-direction: column;
+		padding: 10px;
+
+		.name {
+			writing-mode: vertical-rl;
+		}
+	}
+
+	.encounter-map-mini-token {
+		flex: 0 0 auto;
+	}
+
 	.name {
 		flex: 1 1 auto;
 	}

@@ -4,6 +4,9 @@ import { CombatantState } from '../../../../enums/combatant-state';
 import { CombatantType } from '../../../../enums/combatant-type';
 import { StructureType } from '../../../../enums/structure-type';
 
+import { CombatantLogic } from '../../../../logic/combatant-logic';
+import { Factory } from '../../../../logic/factory';
+import { GameLogic } from '../../../../logic/game-logic';
 import { StrongholdLogic } from '../../../../logic/stronghold-logic';
 
 import type { CombatantModel } from '../../../../models/combatant';
@@ -23,13 +26,24 @@ interface Props {
 	game: GameModel;
 	options: OptionsModel;
 	regenerateEncounterMap: () => void;
-	addHeroToEncounter: (encounter: EncounterModel, hero: CombatantModel, useCharge: StructureType | null) => void;
+	addCombatantToEncounter: (encounter: EncounterModel, combatant: CombatantModel, useCharge: StructureType | null) => void;
 }
 
 export class RoundControls extends Component<Props> {
 	addHero = () => {
 		const hero = Collections.draw(this.props.game.heroes);
-		this.props.addHeroToEncounter(this.props.encounter, hero, this.props.options.developer ? null : StructureType.WarRoom);
+		this.props.addCombatantToEncounter(this.props.encounter, hero, this.props.options.developer ? null : StructureType.WarRoom);
+	};
+
+	addMonster = () => {
+		const combatant = Factory.createCombatant(CombatantType.Monster);
+
+		const monsterIDs = GameLogic.getMonsterSpeciesDeck(this.props.options.packIDs);
+		const roleIDs = GameLogic.getRoleDeck(this.props.options.packIDs);
+		const backgroundIDs = GameLogic.getBackgroundDeck(this.props.options.packIDs);
+		CombatantLogic.applyCombatantCards(combatant, Collections.draw(monsterIDs).id, Collections.draw(roleIDs).id, Collections.draw(backgroundIDs).id);
+
+		this.props.addCombatantToEncounter(this.props.encounter, combatant, null);
 	};
 
 	render = () => {
@@ -110,6 +124,7 @@ export class RoundControls extends Component<Props> {
 					}
 					{benefit}
 					{this.props.options.developer ? <button className='developer' onClick={this.props.regenerateEncounterMap}>Regenerate Map</button> : null}
+					{this.props.options.developer ? <button className='developer' onClick={this.addMonster}>Add Monster</button> : null}
 				</div>
 			);
 		} catch {

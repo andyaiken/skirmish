@@ -18,7 +18,9 @@ interface Props {
 	options: OptionsModel;
 	showToken: (combatant: CombatantModel) => void;
 	showCharacterSheet: (combatant: CombatantModel) => void;
+	levelUp: (combatant: CombatantModel) => void;
 	switchAllegiance: (combatant: CombatantModel) => void;
+	skipTurn: (combatant: CombatantModel) => void;
 }
 
 interface State {
@@ -81,7 +83,17 @@ export class MonsterControls extends Component<Props, State> {
 					<CombatStatsPanel combatant={this.props.combatant} encounter={this.props.encounter} />
 					{
 						this.props.options.developer ?
+							<button className='developer' onClick={() => this.props.levelUp(this.props.combatant)}>Level Up</button>
+							: null
+					}
+					{
+						this.props.options.developer ?
 							<button className='developer' disabled={this.state.thinking} onClick={() => this.props.switchAllegiance(this.props.combatant)}>Switch Allegiance</button>
+							: null
+					}
+					{
+						this.props.options.developer ?
+							<button className='developer' onClick={() => this.props.skipTurn(this.props.combatant)}>Skip Turn</button>
 							: null
 					}
 					<CombatantNotices combatant={this.props.combatant} />

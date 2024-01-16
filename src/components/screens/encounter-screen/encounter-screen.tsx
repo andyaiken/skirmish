@@ -61,7 +61,7 @@ interface Props {
 	rotateMap: (encounter: EncounterModel, dir: 'l' | 'r') => void;
 	rollInitiative: () => void;
 	regenerateEncounterMap: () => void;
-	addHeroToEncounter: (encounter: EncounterModel, hero: CombatantModel, useCharge: StructureType | null) => void;
+	addCombatantToEncounter: (encounter: EncounterModel, combatant: CombatantModel, useCharge: StructureType | null) => void;
 	endTurn: (encounter: EncounterModel) => void;
 	move: (encounter: EncounterModel, combatant: CombatantModel, dir: string, cost: number) => void;
 	addMovement: (encounter: EncounterModel, combatant: CombatantModel, value: number) => void;
@@ -80,6 +80,7 @@ interface Props {
 	pickUpItem: (item: ItemModel, hero: CombatantModel) => void;
 	dropItem: (item: ItemModel, combatant: CombatantModel) => void;
 	useCharge: (type: StructureType, count: number) => void;
+	levelUp: (combatant: CombatantModel) => void;
 	switchAllegiance: (combatant: CombatantModel) => void;
 	finishEncounter: (state: EncounterState) => void;
 }
@@ -692,7 +693,7 @@ export class EncounterScreen extends Component<Props, State> {
 						game={this.props.game}
 						options={this.props.options}
 						regenerateEncounterMap={this.props.regenerateEncounterMap}
-						addHeroToEncounter={this.props.addHeroToEncounter}
+						addCombatantToEncounter={this.props.addCombatantToEncounter}
 					/>
 				</div>
 			);
@@ -725,7 +726,9 @@ export class EncounterScreen extends Component<Props, State> {
 							options={this.props.options}
 							showToken={() => this.scrollToCombatant('current')}
 							showCharacterSheet={this.showDetailsCombatant}
+							levelUp={this.props.levelUp}
 							switchAllegiance={this.props.switchAllegiance}
+							skipTurn={this.endTurn}
 						/>
 					</div>
 				);

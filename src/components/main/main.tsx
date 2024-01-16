@@ -5,6 +5,7 @@ import { BoonType } from '../../enums/boon-type';
 import { CombatantState } from '../../enums/combatant-state';
 import { CombatantType } from '../../enums/combatant-type';
 import { EncounterState } from '../../enums/encounter-state';
+import { FeatureType } from '../../enums/feature-type';
 import { OrientationType } from '../../enums/orientation-type';
 import { PageType } from '../../enums/page-type';
 import { ScreenType } from '../../enums/screen-type';
@@ -853,13 +854,16 @@ export class Main extends Component<Props, State> {
 		}
 	};
 
-	addHeroToEncounter = (encounter: EncounterModel, hero: CombatantModel, useCharge: StructureType | null) => {
+	addCombatantToEncounter = (encounter: EncounterModel, combatant: CombatantModel, useCharge: StructureType | null) => {
 		try {
 			const game = this.state.game as GameModel;
 
-			CombatantLogic.resetCombatant(hero);
-			game.heroes = game.heroes.filter(h => h.id !== hero.id);
-			encounter.combatants.push(hero);
+			if (combatant.type === CombatantType.Hero) {
+				game.heroes = game.heroes.filter(h => h.id !== combatant.id);
+			}
+
+			CombatantLogic.resetCombatant(combatant);
+			encounter.combatants.push(combatant);
 			EncounterGenerator.placeCombatants(encounter, Math.random);
 
 			if (useCharge) {
@@ -1286,6 +1290,24 @@ export class Main extends Component<Props, State> {
 		}
 	};
 
+	incrementMonsterLevel = (combatant: CombatantModel) => {
+		try {
+			const game = this.state.game as GameModel;
+
+			const featureDeck = CombatantLogic.getFeatureDeck(combatant).filter(f => f.type !== FeatureType.Proficiency);
+			CombatantLogic.incrementCombatantLevel(combatant, Collections.draw(featureDeck), this.props.options.packIDs);
+			EncounterLogic.drawActions(game.encounter as EncounterModel, combatant);
+
+			this.setState({
+				game: game
+			}, () => {
+				this.saveGame();
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
+	};
+
 	switchAllegiance = (combatant: CombatantModel) => {
 		try {
 			const game = this.state.game as GameModel;
@@ -1382,7 +1404,7 @@ export class Main extends Component<Props, State> {
 						rotateMap={this.rotateMap}
 						rollInitiative={this.rollInitiative}
 						regenerateEncounterMap={this.regenerateEncounterMap}
-						addHeroToEncounter={this.addHeroToEncounter}
+						addCombatantToEncounter={this.addCombatantToEncounter}
 						endTurn={this.endTurn}
 						move={this.move}
 						addMovement={this.addMovement}
@@ -1401,6 +1423,7 @@ export class Main extends Component<Props, State> {
 						pickUpItem={this.pickUpItem}
 						dropItem={this.dropItem}
 						useCharge={this.useCharge}
+						levelUp={this.incrementMonsterLevel}
 						switchAllegiance={this.switchAllegiance}
 						finishEncounter={this.finishEncounter}
 					/>

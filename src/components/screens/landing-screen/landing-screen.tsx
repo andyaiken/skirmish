@@ -9,6 +9,8 @@ import { PackLogic } from '../../../logic/pack-logic';
 import type { GameModel } from '../../../models/game';
 import type { OptionsModel } from '../../../models/options';
 
+import { Format } from '../../../utils/format';
+
 import { PlayingCard, Tag, Text } from '../../controls';
 import { LogoPanel } from '../../panels';
 import { PlaceholderCard } from '../../cards';
@@ -106,6 +108,7 @@ export class LandingScreen extends Component<Props> {
 					<div className='landing-footer'>
 						<Tag>Version {pkg.version}</Tag>
 						<Tag>© Andy Aiken 2023</Tag>
+						{this.props.options.developer ? <Tag>{Format.capitalize(this.props.options.renderer)}</Tag> : null}
 					</div>
 				</div>
 			);

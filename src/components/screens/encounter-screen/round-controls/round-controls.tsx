@@ -124,7 +124,7 @@ export class RoundControls extends Component<Props> {
 					}
 					{benefit}
 					{this.props.options.developer ? <button className='developer' onClick={this.props.regenerateEncounterMap}>Regenerate Map</button> : null}
-					{this.props.options.developer ? <button className='developer' onClick={this.addMonster}>Add Monster</button> : null}
+					{this.props.options.developer ? <button className='developer' onClick={this.addMonster}>Add a Monster</button> : null}
 				</div>
 			);
 		} catch {

@@ -20,6 +20,7 @@ interface Props {
 	setDeveloperMode: (value: boolean) => void;
 	setShowTips: (value: boolean) => void;
 	setSoundEffectsVolume: (value: number) => void;
+	setRenderer: (value: string) => void;
 }
 
 interface State {
@@ -73,6 +74,7 @@ export class HelpModal extends Component<Props, State> {
 								setDeveloperMode={this.props.setDeveloperMode}
 								setShowTips={this.props.setShowTips}
 								setSoundEffectsVolume={this.props.setSoundEffectsVolume}
+								setRenderer={this.props.setRenderer}
 							/>
 						</div>
 					);

@@ -3,6 +3,7 @@ import { Component } from 'react';
 import { CampaignMapLogic } from '../../../logic/campaign-map-logic';
 
 import type { CampaignMapModel, CampaignMapSquareModel } from '../../../models/campaign-map';
+import type { OptionsModel } from '../../../models/options';
 import type { RegionModel } from '../../../models/region';
 
 import { Color } from '../../../utils/color';
@@ -11,6 +12,7 @@ import './campaign-map-panel.scss';
 
 interface Props {
 	map: CampaignMapModel;
+	options: OptionsModel;
 	mode: 'map' | 'region';
 	selectedRegion: RegionModel | null;
 	onSelectRegion: (region: RegionModel | null) => void;
@@ -83,6 +85,21 @@ export class CampaignMapPanel extends Component<Props> {
 	getLabel = (region: RegionModel) => {
 		const square = CampaignMapLogic.getCentralSquare(this.props.map, region);
 		if (square) {
+			let dx = 0;
+			let dy = 0;
+			switch (this.props.options.renderer) {
+				case 'chrome':
+				case 'edge':
+				case 'firefox':
+					dx = 0.24;
+					dy = 0.03;
+					break;
+				case 'safari':
+					dx = -0.005;
+					dy = 0.03;
+					break;
+			}
+
 			return (
 				<g key={region.id} onClick={e => this.onClick(e, region)}>
 					<circle
@@ -93,8 +110,8 @@ export class CampaignMapPanel extends Component<Props> {
 					/>
 					<text
 						className='campaign-map-label-text'
-						x={square.x + 0.495}
-						y={square.y + 0.53 + ((square.x % 2 === 0) ? 0.25 : -0.25)}
+						x={square.x + 0.5 + dx}
+						y={square.y + 0.5 + dy + ((square.x % 2 === 0) ? 0.25 : -0.25)}
 						textLength={0.5}
 						dominantBaseline='middle'
 						textAnchor='middle'

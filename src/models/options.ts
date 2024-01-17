@@ -3,4 +3,5 @@ export interface OptionsModel {
 	showTips: boolean;
 	soundEffectsVolume: number;
 	packIDs: string[];
+	renderer: string;
 }

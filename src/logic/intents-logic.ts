@@ -387,8 +387,10 @@ export class IntentsLogic {
 				break;
 			}
 			case 'action': {
-				const action = intent.data as ActionModel;
-				EncounterLogic.selectAction(encounter, combatant, action);
+				combatant.combat.selectedAction = {
+					action: intent.data as ActionModel,
+					used: false
+				};
 				EncounterLogic.runAction(encounter, combatant);
 				break;
 			}

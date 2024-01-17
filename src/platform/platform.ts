@@ -55,9 +55,11 @@ export class Platform {
 									developer: false,
 									showTips: true,
 									soundEffectsVolume: 0.5,
-									packIDs: []
+									packIDs: [],
+									renderer: ''
 								};
 							}
+							options.renderer = this.getRenderer();
 
 							resolve({ game: game, options: options });
 						});
@@ -110,6 +112,22 @@ export class Platform {
 		if (options.packIDs === undefined) {
 			options.packIDs = [];
 		}
+	};
+
+	private getRenderer = () => {
+		if (navigator.userAgent.toLowerCase().includes('edg/')) {
+			return 'edge';
+		}
+
+		if (navigator.userAgent.toLowerCase().includes('chrome/')) {
+			return 'chrome';
+		}
+
+		if (navigator.userAgent.toLowerCase().includes('firefox/')) {
+			return 'firefox';
+		}
+
+		return 'safari';
 	};
 
 	saveGame = Utils.debounce(() => {

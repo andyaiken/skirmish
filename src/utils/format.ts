@@ -1,4 +1,12 @@
 export class Format {
+	static capitalize = (text: string) => {
+		if (text.length === 0) {
+			return '';
+		}
+
+		return `${text[0].toUpperCase()}${text.substring(1)}`;
+	};
+
 	static toText = (value: number) => {
 		return value.toLocaleString();
 	};

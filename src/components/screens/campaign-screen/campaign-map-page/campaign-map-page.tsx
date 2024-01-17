@@ -182,6 +182,7 @@ export class CampaignMapPage extends Component<Props, State> {
 					<div className='map-content' onClick={() => this.setState({ selectedRegion: null })}>
 						<CampaignMapPanel
 							map={this.props.game.map}
+							options={this.props.options}
 							selectedRegion={this.state.selectedRegion}
 							onSelectRegion={region => this.setState({ selectedRegion: region })}
 						/>

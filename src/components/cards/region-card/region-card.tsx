@@ -81,6 +81,7 @@ export class RegionCard extends Component<Props, State> {
 								<div className='map-container'>
 									<CampaignMapPanel
 										map={this.props.map}
+										options={this.props.options}
 										mode='region'
 										selectedRegion={this.props.region}
 									/>

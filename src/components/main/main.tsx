@@ -199,6 +199,17 @@ export class Main extends Component<Props, State> {
 		});
 	};
 
+	setRenderer = (value: string) => {
+		const options = this.state.options;
+		options.renderer = value;
+
+		this.setState({
+			options: options
+		}, () => {
+			this.saveOptions();
+		});
+	};
+
 	getPackPrice = (packs: PackModel[]) => {
 		return this.props.platform.getPackPrice(packs, this.state.options);
 	};
@@ -1447,6 +1458,7 @@ export class Main extends Component<Props, State> {
 								setDeveloperMode={this.setDeveloperMode}
 								setShowTips={this.setShowTips}
 								setSoundEffectsVolume={this.setSoundEffectsVolume}
+								setRenderer={this.setRenderer}
 							/>
 						}
 						onClose={() => this.setState({ showHelp: null })}

@@ -5,7 +5,7 @@ import type { OptionsModel } from '../../../../models/options';
 
 import { Sound } from '../../../../utils/sound';
 
-import { ConfirmButton, StatValue, Switch, Text, TextType } from '../../../controls';
+import { ConfirmButton, Selector, StatValue, Switch, Text, TextType } from '../../../controls';
 
 import './options-tab.scss';
 
@@ -16,6 +16,7 @@ interface Props {
 	setDeveloperMode: (value: boolean) => void;
 	setShowTips: (value: boolean) => void;
 	setSoundEffectsVolume: (value: number) => void;
+	setRenderer: (value: string) => void;
 }
 
 export class OptionsTab extends Component<Props> {
@@ -43,6 +44,18 @@ export class OptionsTab extends Component<Props> {
 					<hr />
 					{local ? <Switch label='Developer Mode' checked={this.props.options.developer} onChange={this.props.setDeveloperMode} /> : null}
 					<Switch label='Show Tips' checked={this.props.options.showTips} onChange={this.props.setShowTips} />
+					<hr />
+					<Text type={TextType.SubHeading}>Platform</Text>
+					<Selector
+						options={[
+							{ id: 'chrome', display: 'Chrome' },
+							{ id: 'edge', display: 'Edge' },
+							{ id: 'firefox', display: 'Firefox' },
+							{ id: 'safari', display: 'Safari' }
+						]}
+						selectedID={this.props.options.renderer}
+						onSelect={this.props.setRenderer}
+					/>
 					<hr />
 					{this.props.game ? <ConfirmButton label='Abandon this campaign' onClick={() => this.props.endCampaign()} /> : null}
 				</div>

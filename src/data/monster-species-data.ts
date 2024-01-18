@@ -923,7 +923,8 @@ export class MonsterSpeciesData {
 		],
 		startingFeatures: [
 			FeatureLogic.createTraitFeature('bear-start-1', TraitType.Endurance, 1),
-			FeatureLogic.createSkillFeature('bear-start-2', SkillType.Brawl, 2)
+			FeatureLogic.createSkillFeature('bear-start-2', SkillType.Brawl, 2),
+			FeatureLogic.createDamageCategoryBonusFeature('bear-start-3', DamageCategoryType.Physical, 1)
 		],
 		features: [
 			FeatureLogic.createTraitFeature('bear-feature-1', TraitType.Endurance, 1),
@@ -1025,7 +1026,7 @@ export class MonsterSpeciesData {
 						skillBonus: 0,
 						hit: [
 							ActionEffects.dealDamage(DamageType.Edged, 2),
-							ActionEffects.dealDamage(DamageType.Poison, 2)
+							ActionEffects.dealDamage(DamageType.Poison, 3)
 						]
 					})
 				]
@@ -1048,6 +1049,18 @@ export class MonsterSpeciesData {
 							ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Endurance, 5))
 						]
 					})
+				]
+			},
+			{
+				id: 'giant-spider-action-3',
+				name: 'Cocoon',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+				],
+				effects: [
+					ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Endurance, 3, TraitType.Speed)),
+					ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Endurance, 5))
 				]
 			}
 		]
@@ -1262,7 +1275,8 @@ export class MonsterSpeciesData {
 						trait: TraitType.Speed,
 						skillBonus: 0,
 						hit: [
-							ActionEffects.dealDamage(DamageType.Impact, 2)
+							ActionEffects.dealDamage(DamageType.Impact, 3),
+							ActionEffects.dealDamage(DamageType.Decay, 2)
 						]
 					})
 				]
@@ -1277,6 +1291,26 @@ export class MonsterSpeciesData {
 				effects: [
 					ActionEffects.healDamage(3),
 					ActionEffects.healWounds(1)
+				]
+			},
+			{
+				id: 'skeleton-action-3',
+				name: 'Boneshard',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Brawl,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Piercing, 3),
+							ActionEffects.dealDamage(DamageType.Decay, 2)
+						]
+					})
 				]
 			}
 		]
@@ -1294,7 +1328,8 @@ export class MonsterSpeciesData {
 		],
 		startingFeatures: [
 			FeatureLogic.createSkillFeature('vampire-start-1', SkillType.Brawl, 2),
-			FeatureLogic.createSkillFeature('vampire-start-2', SkillType.Presence, 2)
+			FeatureLogic.createSkillFeature('vampire-start-2', SkillType.Presence, 2),
+			FeatureLogic.createDamageCategoryResistFeature('vampire-start-3', DamageCategoryType.Corruption, 1)
 		],
 		features: [
 			FeatureLogic.createSkillFeature('vampire-feature-1', SkillType.Brawl, 2),
@@ -1530,7 +1565,7 @@ export class MonsterSpeciesData {
 						trait: TraitType.Resolve,
 						skillBonus: 0,
 						hit: [
-							ActionEffects.dealDamage(DamageType.Sonic, 3),
+							ActionEffects.dealDamage(DamageType.Sonic, 4),
 							ActionEffects.forceMovement(MovementType.Push, 1),
 							ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Resolve, 3))
 						]
@@ -1552,6 +1587,26 @@ export class MonsterSpeciesData {
 						skillBonus: 0,
 						hit: [
 							ActionEffects.dealDamage(DamageType.Sonic, 3)
+						]
+					})
+				]
+			},
+			{
+				id: 'banshee-action-3',
+				name: 'Siren Call',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Presence,
+						trait: TraitType.Resolve,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.commandAction(),
+							ActionEffects.stun()
 						]
 					})
 				]

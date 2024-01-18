@@ -114,7 +114,7 @@ export class CardPage extends Component<Props, State> {
 			<PlayingCard
 				type={CardType.Species}
 				disabled={true}
-				front={<PlaceholderCard text='Species' subtext='Choose one of the Species cards below' />}
+				front={<PlaceholderCard text='Species' subtext='Choose one of the three Species cards below' />}
 			/>
 		);
 
@@ -122,7 +122,7 @@ export class CardPage extends Component<Props, State> {
 			<PlayingCard
 				type={CardType.Role}
 				disabled={true}
-				front={<PlaceholderCard text='Role' subtext='Choose one of the Role cards below' />}
+				front={<PlaceholderCard text='Role' subtext='Choose one of the three Role cards below' />}
 			/>
 		);
 
@@ -130,7 +130,7 @@ export class CardPage extends Component<Props, State> {
 			<PlayingCard
 				type={CardType.Background}
 				disabled={true}
-				front={<PlaceholderCard text='Background' subtext='Choose one of the Background cards below' />}
+				front={<PlaceholderCard text='Background' subtext='Choose one of the three Background cards below' />}
 			/>
 		);
 
@@ -289,7 +289,9 @@ export class CardPage extends Component<Props, State> {
 						{this.getRoleSection()}
 						{this.getBackgroundSection()}
 					</div>
-					<button className='primary' disabled={!canSelect} onClick={() => this.select()}>Next</button>
+					<button className='action primary' disabled={!canSelect} onClick={() => this.select()}>
+						Next
+					</button>
 				</div>
 			);
 		} catch {

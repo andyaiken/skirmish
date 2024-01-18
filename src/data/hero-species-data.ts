@@ -289,11 +289,13 @@ export class HeroSpeciesData {
 		quirks: [],
 		startingFeatures: [
 			FeatureLogic.createTraitFeature('faun-start-1', TraitType.Speed, 1),
-			FeatureLogic.createSkillFeature('faun-start-2', SkillType.Reactions, 2)
+			FeatureLogic.createSkillFeature('faun-start-2', SkillType.Brawl, 2),
+			FeatureLogic.createSkillFeature('faun-start-3', SkillType.Reactions, 2)
 		],
 		features: [
 			FeatureLogic.createTraitFeature('faun-feature-1', TraitType.Speed, 1),
-			FeatureLogic.createSkillFeature('faun-feature-2', SkillType.Reactions, 2)
+			FeatureLogic.createSkillFeature('faun-feature-2', SkillType.Brawl, 2),
+			FeatureLogic.createSkillFeature('faun-feature-3', SkillType.Reactions, 2)
 		],
 		actions: [
 			{
@@ -318,6 +320,26 @@ export class HeroSpeciesData {
 				effects: [
 					ActionEffects.forceMovement(MovementType.BesideTarget, 1),
 					ActionEffects.knockDown()
+				]
+			},
+			{
+				id: 'faun-action-2',
+				name: 'Powerful Kick',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Brawl,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Impact, 3),
+							ActionEffects.forceMovement(MovementType.Push, 1)
+						]
+					})
 				]
 			}
 		]

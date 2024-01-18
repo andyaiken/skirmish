@@ -36,13 +36,15 @@ interface Props {
 
 interface State {
 	view: string;
+	levelUpActive: boolean;
 }
 
 export class CharacterSheetModal extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
-			view: 'stats'
+			view: 'stats',
+			levelUpActive: false
 		};
 	}
 
@@ -63,9 +65,13 @@ export class CharacterSheetModal extends Component<Props, State> {
 	};
 
 	levelUp = (feature: FeatureModel) => {
-		const copy = JSON.parse(JSON.stringify(feature)) as FeatureModel;
-		copy.id = Utils.guid();
-		this.props.levelUp(copy, this.props.combatant);
+		this.setState({
+			levelUpActive: false
+		}, () => {
+			const copy = JSON.parse(JSON.stringify(feature)) as FeatureModel;
+			copy.id = Utils.guid();
+			this.props.levelUp(copy, this.props.combatant);
+		});
 	};
 
 	render = () => {
@@ -150,7 +156,9 @@ export class CharacterSheetModal extends Component<Props, State> {
 						combatant={this.props.combatant}
 						game={this.props.game}
 						developer={this.props.developer}
+						expanded={this.state.levelUpActive}
 						level={this.props.combatant.level + 1}
+						onExpand={() => this.setState({ levelUpActive: true })}
 						useCharge={this.props.useCharge}
 						levelUp={this.levelUp}
 					/>
@@ -165,7 +173,7 @@ export class CharacterSheetModal extends Component<Props, State> {
 				<div className='character-sheet-modal'>
 					<div className='main-section'>
 						{
-							levelUp === null ?
+							!this.state.levelUpActive ?
 								<div className='header'>
 									<Text type={TextType.Heading}>{this.props.combatant.name || 'unnamed hero'}</Text>
 									<div className='tags'>

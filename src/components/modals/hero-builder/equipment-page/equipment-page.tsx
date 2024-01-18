@@ -103,7 +103,7 @@ export class EquipmentPage extends Component<Props, State> {
 						key={n}
 						type={CardType.Item}
 						disabled={true}
-						front={<PlaceholderCard text={slot.proficiency} subtext={`Choose one of the ${slot.proficiency} cards below`} />}
+						front={<PlaceholderCard text={slot.proficiency} subtext={`Choose one of the three ${slot.proficiency} cards below`} />}
 					/>
 				);
 			});
@@ -155,7 +155,9 @@ export class EquipmentPage extends Component<Props, State> {
 						{canSelect ? null : <hr />}
 						{slots}
 					</div>
-					<button className='primary' disabled={!canSelect} onClick={() => this.addItems()}>Next</button>
+					<button className='action primary' disabled={!canSelect} onClick={() => this.addItems()}>
+						Next
+					</button>
 				</div>
 			);
 		} catch {

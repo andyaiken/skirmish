@@ -25,7 +25,9 @@ interface Props {
 	combatant: CombatantModel;
 	game: GameModel;
 	developer: boolean;
+	expanded: boolean;
 	level: number;
+	onExpand: () => void;
 	useCharge: (type: StructureType, count: number) => void;
 	levelUp: (feature: FeatureModel) => void;
 }
@@ -97,6 +99,17 @@ export class LevelUp extends Component<Props, State> {
 
 	render = () => {
 		try {
+			if (!this.props.expanded) {
+				return (
+					<div className='level-up'>
+						<Text type={TextType.Heading}>Level Up</Text>
+						<button className='primary' onClick={this.props.onExpand}>
+							Choose a feature for level {this.props.level}
+						</button>
+					</div>
+				);
+			}
+
 			let content = null;
 			if (this.state.selectedFeature) {
 				content = (
@@ -134,7 +147,6 @@ export class LevelUp extends Component<Props, State> {
 
 			return (
 				<div className='level-up'>
-					<Text type={TextType.MinorHeading}>Choose a feature for level {this.props.level}</Text>
 					{content}
 					{
 						(redraws > 0) || this.props.developer ?

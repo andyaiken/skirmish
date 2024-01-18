@@ -24,8 +24,9 @@
 				justify-content: center;
 			}
 
-			button {
+			.card-btn {
 				display: block;
+				background-color: rgb(245, 245, 245);
 				font-size: 13px;
 				text-transform: none;
 				letter-spacing: 0;
@@ -35,6 +36,10 @@
 				flex-direction: row;
 				text-align: left;
 				min-height: 30px;
+
+				&:hover {
+					background-color: rgb(200, 230, 255);
+				}
 			}
 		}
 	}

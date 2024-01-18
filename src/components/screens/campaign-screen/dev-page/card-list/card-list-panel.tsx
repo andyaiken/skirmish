@@ -105,7 +105,7 @@ export class CardListPanel extends Component<Props, State> {
 					.filter(s => s.packID === packID)
 					.map(s => {
 						const strength = GameLogic.getSpeciesStrength(s);
-						const className = this.getMarked(s, strength, 4, 6) ? 'danger' : '';
+						const className = this.getMarked(s, strength, 4, 6) ? 'card-btn danger' : 'card-btn';
 						return (
 							<button key={s.id} className={className} onClick={() => this.setActions(s.name, s.description, CardType.Species, s.startingFeatures, s.features, s.actions)}>
 								<StatValue label={s.name} value={strength} />
@@ -117,7 +117,7 @@ export class CardListPanel extends Component<Props, State> {
 					.filter(s => s.packID === packID)
 					.map(s => {
 						const strength = GameLogic.getSpeciesStrength(s);
-						const className = this.getMarked(s, strength, 4, 6) ? 'danger' : '';
+						const className = this.getMarked(s, strength, 4, 6) ? 'card-btn danger' : 'card-btn';
 						return (
 							<button key={s.id} className={className} onClick={() => this.setActions(s.name, s.description, CardType.Species, s.startingFeatures, s.features, s.actions)}>
 								<StatValue label={s.name} value={strength} />
@@ -129,7 +129,7 @@ export class CardListPanel extends Component<Props, State> {
 					.filter(r => r.packID === packID)
 					.map(r => {
 						const strength = GameLogic.getRoleStrength(r);
-						const className = this.getMarked(r, strength, 4, 6) ? 'danger' : '';
+						const className = this.getMarked(r, strength, 4, 6) ? 'card-btn danger' : 'card-btn';
 						return (
 							<button key={r.id} className={className} onClick={() => this.setActions(r.name, r.description, CardType.Species, r.startingFeatures, r.features, r.actions)}>
 								<StatValue label={r.name} value={strength} />
@@ -141,7 +141,7 @@ export class CardListPanel extends Component<Props, State> {
 					.filter(b => b.packID === packID)
 					.map(b => {
 						const strength = GameLogic.getBackgroundStrength(b);
-						const className = this.getMarked(b, strength, 3, 4) ? 'danger' : '';
+						const className = this.getMarked(b, strength, 3, 4) ? 'card-btn danger' : 'card-btn';
 						return (
 							<button key={b.id} className={className} onClick={() => this.setActions(b.name, b.description, CardType.Species, b.startingFeatures, b.features, b.actions)}>
 								<StatValue label={b.name} value={strength} />

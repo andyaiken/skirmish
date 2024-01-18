@@ -250,12 +250,12 @@ export class ActionTargetParameters {
 		};
 	};
 
-	static weapon = (type: ActionTargetType, count: number, bonus: number): ActionTargetParameterModel => {
+	static weapon = (type: ActionTargetType, count: number, radius: number): ActionTargetParameterModel => {
 		return {
 			id: 'targets',
 			range: {
 				type: ActionRangeType.Weapon,
-				radius: bonus
+				radius: radius
 			},
 			targets: {
 				type: type,

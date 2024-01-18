@@ -220,7 +220,7 @@ export class EncounterStartModal extends Component<Props, State> {
 				}
 				{content}
 				<button
-					className='primary'
+					className='action primary'
 					disabled={(this.state.selectedHeroes.length < 1) || (this.state.selectedHeroes.length > 5)}
 					onClick={this.startEncounter}
 				>

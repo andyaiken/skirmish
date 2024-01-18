@@ -21,26 +21,27 @@ export class FinishPage extends Component<Props> {
 		try {
 			return (
 				<div className='finish-page'>
-					<CombatantRowPanel combatant={this.props.hero} />
-					{
-						this.props.options.showTips ?
-							<Expander
-								header={
-									<Text type={TextType.Tip}>Choose a name and a color for your hero.</Text>
-								}
-								content={
-									<div>
-										<p>You can press <b>Change Name</b> to change your hero&apos;s name.</p>
-										<p>You can press <b>Change Color</b> to change your hero&apos;s color. This will be used to help identify your hero&apos;s token on the encounter map.</p>
-									</div>
-								}
-							/>
-							: null
-					}
-					<hr />
-					<button onClick={this.props.rename}>Change Name</button>
-					<button onClick={this.props.recolor}>Change Color</button>
-					<hr />
+					<div className='finish-page-content'>
+						<CombatantRowPanel combatant={this.props.hero} />
+						{
+							this.props.options.showTips ?
+								<Expander
+									header={
+										<Text type={TextType.Tip}>Choose a name and a color for your hero.</Text>
+									}
+									content={
+										<div>
+											<p>You can press <b>Change Name</b> to change your hero&apos;s name.</p>
+											<p>You can press <b>Change Color</b> to change your hero&apos;s color. This will be used to help identify your hero&apos;s token on the encounter map.</p>
+										</div>
+									}
+								/>
+								: null
+						}
+						<hr />
+						<button onClick={this.props.rename}>Change Name</button>
+						<button onClick={this.props.recolor}>Change Color</button>
+					</div>
 					<button className='primary' onClick={this.props.finished}>Finished</button>
 				</div>
 			);

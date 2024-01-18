@@ -1,8 +1,17 @@
 .equipment-page {
-	display: block;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
 
-	.card-selection-row {
-		margin: 20px auto;
-		width: 650px;
+	.equipment-page-content {
+		flex: 1 1 0;
+		overflow-x: hidden;
+		overflow-y: auto;
+		-webkit-overflow-scrolling: touch;
+
+		.card-selection-row {
+			margin: 0 auto;
+			width: 650px;
+		}
 	}
 }

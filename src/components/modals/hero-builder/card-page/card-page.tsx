@@ -258,36 +258,38 @@ export class CardPage extends Component<Props, State> {
 
 			return (
 				<div className='card-page'>
-					{this.getOverviewSection()}
-					{
-						this.props.options.showTips ?
-							<Expander
-								header={
-									<Text type={TextType.Tip}>
-										<p>
-											To make a hero, choose one <b>Species</b> card, one <b>Role</b> card, and one <b>Background</b> card.
-										</p>
-									</Text>
-								}
-								content={
-									<div>
-										<p>Click on a card to select it.</p>
-										<p>You can click on the <IconRefresh size={15} /> button to flip a card over and see its details.</p>
-										<p>Each card gives the hero a set of <b>features</b> and <b>actions</b>.</p>
-										<ul>
-											<li>Features are used when the hero gains a level.</li>
-											<li>Actions are used in encounters.</li>
-										</ul>
-									</div>
-								}
-							/>
-							: null
-					}
-					<hr />
-					{this.getSpeciesSection()}
-					{this.getRoleSection()}
-					{this.getBackgroundSection()}
-					{ canSelect ? <button className='primary' onClick={() => this.select()}>Next</button> : null }
+					<div className='card-page-content'>
+						{this.getOverviewSection()}
+						{
+							this.props.options.showTips ?
+								<Expander
+									header={
+										<Text type={TextType.Tip}>
+											<p>
+												To make a hero, choose one <b>Species</b> card, one <b>Role</b> card, and one <b>Background</b> card.
+											</p>
+										</Text>
+									}
+									content={
+										<div>
+											<p>Click on a card to select it.</p>
+											<p>You can click on the <IconRefresh size={15} /> button to flip a card over and see its details.</p>
+											<p>Each card gives the hero a set of <b>features</b> and <b>actions</b>.</p>
+											<ul>
+												<li>Features are used when the hero gains a level.</li>
+												<li>Actions are used in encounters.</li>
+											</ul>
+										</div>
+									}
+								/>
+								: null
+						}
+						{canSelect ? null : <hr />}
+						{this.getSpeciesSection()}
+						{this.getRoleSection()}
+						{this.getBackgroundSection()}
+					</div>
+					<button className='primary' disabled={!canSelect} onClick={() => this.select()}>Next</button>
 				</div>
 			);
 		} catch {

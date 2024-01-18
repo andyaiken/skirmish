@@ -133,27 +133,29 @@ export class EquipmentPage extends Component<Props, State> {
 
 			return (
 				<div className='equipment-page'>
-					<div className='card-selection-row'>
-						<CardList cards={overviewCards} />
+					<div className='equipment-page-content'>
+						<div className='card-selection-row'>
+							<CardList cards={overviewCards} />
+						</div>
+						{
+							this.props.options.showTips ?
+								<Expander
+									header={
+										<Text type={TextType.Tip}>Your hero can choose starting equipment.</Text>
+									}
+									content={
+										<div>
+											<p>Your hero&apos;s starting features include <b>Proficiencies</b> for weapons, armor, or magical implements.</p>
+											<p>For each proficiency, you can choose an item for your hero to use.</p>
+										</div>
+									}
+								/>
+								: null
+						}
+						{canSelect ? null : <hr />}
+						{slots}
 					</div>
-					{
-						this.props.options.showTips ?
-							<Expander
-								header={
-									<Text type={TextType.Tip}>Your hero can choose starting equipment.</Text>
-								}
-								content={
-									<div>
-										<p>Your hero&apos;s starting features include <b>Proficiencies</b> for weapons, armor, or magical implements.</p>
-										<p>For each proficiency, you can choose an item for your hero to use.</p>
-									</div>
-								}
-							/>
-							: null
-					}
-					<hr />
-					{slots}
-					{ canSelect ? <button className='primary' onClick={() => this.addItems()}>Next</button> : null }
+					<button className='primary' disabled={!canSelect} onClick={() => this.addItems()}>Next</button>
 				</div>
 			);
 		} catch {

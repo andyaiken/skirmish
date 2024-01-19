@@ -598,7 +598,17 @@ export class EncounterScreen extends Component<Props, State> {
 									selectAction={this.selectAction}
 									deselectAction={this.props.deselectAction}
 									setActionParameter={this.setActionParameter}
-									setActionParameterValue={this.setActionParameter}
+									setActionParameterValue={this.props.setActionParameterValue}
+									setOriginParameterValue={(param, sq) => {
+										param.value = [ sq ];
+										const combatant = this.props.encounter.combatants.find(c => c.combat.current) as CombatantModel;
+										const action = combatant.combat.selectedAction ? combatant.combat.selectedAction.action : null;
+										if (action) {
+											const targetParam = action.parameters.find(a => a.id === 'targets') as ActionTargetParameterModel;
+											ActionLogic.checkTargetParameter(targetParam, this.props.encounter, combatant, action, false);
+										}
+										this.props.setActionParameterValue(param, [ sq ]);
+									}}
 									runAction={this.runAction}
 								/>
 							</div>

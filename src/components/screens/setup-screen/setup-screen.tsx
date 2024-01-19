@@ -187,7 +187,7 @@ export class SetupScreen extends Component<Props, State> {
 										front={
 											<PlaceholderCard
 												text='Begin the Campaign'
-												content={<LogoPanel size={170} showText={false} />}
+												content={<LogoPanel text={null} size={170} />}
 											/>
 										}
 										onClick={this.props.beginCampaign}

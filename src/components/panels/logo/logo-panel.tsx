@@ -5,13 +5,13 @@ import './logo-panel.scss';
 import logo from '../../../assets/images/logo.png';
 
 interface Props {
+	text: string | null;
 	size: number;
-	showText: boolean;
 }
 
 export class LogoPanel extends Component<Props> {
 	static defaultProps = {
-		showText: true
+		text: 'Skirmish'
 	};
 
 	render = () => {
@@ -32,7 +32,7 @@ export class LogoPanel extends Component<Props> {
 						}}
 					/>
 					{
-						this.props.showText ?
+						this.props.text ?
 							<div
 								className='logo-text'
 								style={{
@@ -40,7 +40,7 @@ export class LogoPanel extends Component<Props> {
 									letterSpacing: `${this.props.size / 6}px`
 								}}
 							>
-								Skirmish
+								{this.props.text}
 							</div>
 							: null
 					}

@@ -255,11 +255,22 @@ export class EncounterMapPanel extends Component<Props> {
 			if (effect) {
 				overlays.push(
 					<Overlay
-						key='effect'
+						key='effect-radius'
 						x={effect.x}
 						y={effect.y}
 						size={effect.size}
 						radius={effect.radius}
+						squareSize={this.props.squareSize}
+						mapDimensions={dims}
+					/>
+				);
+				overlays.push(
+					<Overlay
+						key='effect-origin'
+						x={effect.x}
+						y={effect.y}
+						size={effect.size}
+						radius={0}
 						squareSize={this.props.squareSize}
 						mapDimensions={dims}
 					/>

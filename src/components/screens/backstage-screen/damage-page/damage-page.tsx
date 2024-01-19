@@ -1,27 +1,24 @@
 import { Component } from 'react';
 
-import { PackData } from '../../../../../data/pack-data';
+import { PackData } from '../../../../data/pack-data';
 
-import { DamageCategoryType } from '../../../../../enums/damage-category-type';
-import { DamageType } from '../../../../../enums/damage-type';
+import { DamageCategoryType } from '../../../../enums/damage-category-type';
+import { DamageType } from '../../../../enums/damage-type';
 
-import { GameLogic } from '../../../../../logic/game-logic';
+import { GameLogic } from '../../../../logic/game-logic';
 
-import type { ActionEffectModel } from '../../../../../models/action';
-import type { OptionsModel } from '../../../../../models/options';
+import type { ActionEffectModel } from '../../../../models/action';
+import type { OptionsModel } from '../../../../models/options';
 
-import type { Platform } from '../../../../../platform/platform';
+import { Text, TextType } from '../../../controls';
 
-import { Text, TextType } from '../../../../controls';
-
-import './damage-list-panel.scss';
+import './damage-page.scss';
 
 interface Props {
 	options: OptionsModel
-	platform: Platform;
 }
 
-export class DamageListPanel extends Component<Props> {
+export class DamagePage extends Component<Props> {
 	checkDamage: (damage: DamageType, effects: ActionEffectModel[]) => boolean = (damage: DamageType, effects: ActionEffectModel[]) => {
 		const found = effects.filter(e => e.id === 'damage').some(e => {
 			const data = e.data as { type: DamageType, rank: number };
@@ -68,7 +65,7 @@ export class DamageListPanel extends Component<Props> {
 			const actions = GameLogic.getAllActions(PackData.getList().map(p => p.id));
 
 			return (
-				<div className='damage-list-panel'>
+				<div className='damage-page'>
 					{categories.map(c => {
 						return (
 							<div key={c.category} className='damage-category'>
@@ -98,7 +95,7 @@ export class DamageListPanel extends Component<Props> {
 				</div>
 			);
 		} catch {
-			return <div className='damage-list-panel render-error' />;
+			return <div className='damage-page render-error' />;
 		}
 	};
 }

@@ -1,4 +1,4 @@
-import { IconCards, IconCirclePlus, IconHelpCircle, IconHelpCircleFilled } from '@tabler/icons-react';
+import { IconCards, IconCirclePlus, IconCodeCircle2, IconHelpCircle, IconHelpCircleFilled } from '@tabler/icons-react';
 import { Component } from 'react';
 
 import { OrientationType } from '../../../enums/orientation-type';
@@ -24,7 +24,6 @@ import { Format } from '../../../utils/format';
 import { Badge, IconSize, IconType, IconValue, Selector } from '../../controls';
 
 import { CampaignMapPage } from './campaign-map-page/campaign-map-page';
-import { DevPage } from './dev-page/dev-page';
 import { HeroesPage } from './heroes-page/heroes-page';
 import { ItemsPage } from './items-page/items-page';
 import { LogoPanel } from '../../panels';
@@ -42,6 +41,7 @@ interface Props {
 	setPage: (page: PageType) => void;
 	showHelp: (file: string) => void;
 	showPacks: () => void;
+	toggleBackstage: () => void;
 	buyStructure: (structure: StructureModel, cost: number) => void;
 	sellStructure: (structure: StructureModel) => void;
 	chargeStructure: (structure: StructureModel) => void;
@@ -131,11 +131,6 @@ export class CampaignScreen extends Component<Props> {
 						/>
 					);
 					break;
-				case PageType.Developer:
-					content = (
-						<DevPage options={this.props.options} platform={this.props.platform} />
-					);
-					break;
 			}
 
 			const options = [
@@ -176,17 +171,6 @@ export class CampaignScreen extends Component<Props> {
 				}
 			];
 
-			if (this.props.options.developer) {
-				options.push({
-					id: PageType.Developer,
-					display: (
-						<div className='page-btn developer'>
-							Developer
-						</div>
-					)
-				});
-			}
-
 			const availablePacks = PackLogic.getPacks().filter(p => !this.props.options.packIDs.includes(p.id)).length;
 
 			return (
@@ -208,6 +192,7 @@ export class CampaignScreen extends Component<Props> {
 							<button className='icon-btn' title='Help' onClick={() => this.props.showHelp(this.props.page)}>
 								{this.props.options.developer && this.props.hasExceptions ? <IconHelpCircleFilled /> : <IconHelpCircle />}
 							</button>
+							{this.props.options.developer ? <button className='icon-btn developer' title='Backstage' onClick={this.props.toggleBackstage}><IconCodeCircle2 /></button> : null}
 						</div>
 					</div>
 					<Selector options={options} selectedID={this.props.page} onSelect={id => this.props.setPage(id as PageType)} />

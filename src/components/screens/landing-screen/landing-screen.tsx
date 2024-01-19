@@ -9,15 +9,11 @@ import { PackLogic } from '../../../logic/pack-logic';
 import type { GameModel } from '../../../models/game';
 import type { OptionsModel } from '../../../models/options';
 
-import { Format } from '../../../utils/format';
-
 import { PlayingCard, Tag, Text } from '../../controls';
 import { LogoPanel } from '../../panels';
 import { PlaceholderCard } from '../../cards';
 
 import './landing-screen.scss';
-
-import pkg from '../../../../package.json';
 
 interface Props {
 	game: GameModel | null;
@@ -41,7 +37,7 @@ export class LandingScreen extends Component<Props> {
 							<PlaceholderCard
 								text='Continue'
 								subtext='Click here to continue your campaign.'
-								content={<LogoPanel size={60} showText={false} />}
+								content={<LogoPanel text={null} size={60} />}
 							/>
 						}
 						onClick={this.props.continueCampaign}
@@ -56,7 +52,7 @@ export class LandingScreen extends Component<Props> {
 							<PlaceholderCard
 								text='Start'
 								subtext='Click here to begin a new campaign.'
-								content={<LogoPanel size={60} showText={false} />}
+								content={<LogoPanel text={null} size={60} />}
 							/>
 						}
 						onClick={this.props.startCampaign}
@@ -106,9 +102,8 @@ export class LandingScreen extends Component<Props> {
 						</div>
 					</div>
 					<div className='landing-footer'>
-						<Tag>Version {pkg.version}</Tag>
-						<Tag>© Andy Aiken 2023</Tag>
-						{this.props.options.developer ? <Tag>{Format.capitalize(this.props.options.renderer)}</Tag> : null}
+						<Tag>Version {this.props.options.version}</Tag>
+						<Tag>© Andy Aiken 2024</Tag>
 					</div>
 				</div>
 			);

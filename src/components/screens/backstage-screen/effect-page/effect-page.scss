@@ -1,7 +1,5 @@
-.effect-list-panel {
+.effect-page {
 	display: flex;
-	background-color: rgb(255, 255, 255);
-	padding: 10px;
 	gap: 20px;
 	height: 100%;
 
@@ -25,6 +23,16 @@
 			flex-direction: row;
 			text-align: left;
 			min-height: 30px;
+			background-color: rgb(245, 245, 245);
+
+			&:hover {
+				background-color: rgb(200, 230, 255);
+			}
+
+			&.selected {
+				background-color: rgb(60, 170, 255);
+				color: rgb(255, 255, 255);
+			}
 		}
 	}
 
@@ -36,11 +44,5 @@
 		overflow-x: hidden;
 		overflow-y: auto;
 		-webkit-overflow-scrolling: touch;
-
-
-		.effect-type {
-			display: flex;
-			flex-direction: column;
-		}
 	}
 }

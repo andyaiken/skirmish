@@ -2,5 +2,6 @@ export enum ScreenType {
 	Landing = 'landing',
 	Setup = 'setup',
 	Campaign = 'campaign',
-	Encounter = 'encounter'
+	Encounter = 'encounter',
+	Backstage = 'backstage'
 }

@@ -6,6 +6,30 @@
 	grid-template-columns: repeat(3, 1fr);
 	gap: 5px;
 
+	&.compact {
+		margin: 0;
+		width: 100px;
+		height: 100px;
+
+		.dir,
+		.center {
+			width: 30px;
+			height: 30px;
+
+			&.n .arrow {
+				top: 0;
+			}
+
+			&.e .arrow {
+				right: -10%;
+			}
+
+			&.w .arrow {
+				left: -10%;
+			}
+		}
+	}
+
 	.dir,
 	.center {
 		position: relative;
@@ -36,6 +60,11 @@
 		background-color: rgb(250, 250, 250);
 
 		&.nw {
+			.arrow {
+				position: relative;
+				top: 2px;
+			}
+
 			.cost {
 				right: 12%;
 				bottom: 12%;
@@ -45,7 +74,7 @@
 		&.n {
 			.arrow {
 				position: relative;
-				top: -10px;
+				top: -15%;
 			}
 
 			.cost {
@@ -54,6 +83,11 @@
 		}
 
 		&.ne {
+			.arrow {
+				position: relative;
+				top: 2px;
+			}
+
 			.cost {
 				left: 12%;
 				bottom: 12%;
@@ -63,7 +97,8 @@
 		&.w {
 			.arrow {
 				position: relative;
-				left: -10px;
+				left: -20%;
+				top: 2px;
 			}
 
 			.cost {
@@ -74,7 +109,8 @@
 		&.e {
 			.arrow {
 				position: relative;
-				right: -10px;
+				right: -20%;
+				top: 2px;
 			}
 
 			.cost {
@@ -83,6 +119,11 @@
 		}
 
 		&.sw {
+			.arrow {
+				position: relative;
+				bottom: -2px;
+			}
+
 			.cost {
 				right: 12%;
 				top: 12%;
@@ -92,7 +133,7 @@
 		&.s {
 			.arrow {
 				position: relative;
-				bottom: -10px;
+				bottom: -15%;
 			}
 
 			.cost {
@@ -101,6 +142,11 @@
 		}
 
 		&.se {
+			.arrow {
+				position: relative;
+				bottom: -2px;
+			}
+
 			.cost {
 				left: 15%;
 				top: 15%;

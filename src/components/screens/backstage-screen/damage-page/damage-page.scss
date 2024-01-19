@@ -1,7 +1,9 @@
-.damage-list-panel {
+.damage-page {
+	height: 100%;
 	display: flex;
-	background-color: rgb(255, 255, 255);
-	padding: 10px;
+	overflow-x: hidden;
+	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
 
 	.damage-category {
 		flex: 1 1 0;

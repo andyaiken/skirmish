@@ -1,39 +1,36 @@
 import { Component } from 'react';
 
-import { BackgroundData } from '../../../../../data/background-data';
-import { HeroSpeciesData } from '../../../../../data/hero-species-data';
-import { ItemData } from '../../../../../data/item-data';
-import { MonsterSpeciesData } from '../../../../../data/monster-species-data';
-import { PackData } from '../../../../../data/pack-data';
-import { PotionData } from '../../../../../data/potion-data';
-import { RoleData } from '../../../../../data/role-data';
-import { StructureData } from '../../../../../data/structure-data';
+import { BackgroundData } from '../../../../data/background-data';
+import { HeroSpeciesData } from '../../../../data/hero-species-data';
+import { ItemData } from '../../../../data/item-data';
+import { MonsterSpeciesData } from '../../../../data/monster-species-data';
+import { PackData } from '../../../../data/pack-data';
+import { PotionData } from '../../../../data/potion-data';
+import { RoleData } from '../../../../data/role-data';
+import { StructureData } from '../../../../data/structure-data';
 
-import { CardType } from '../../../../../enums/card-type';
+import { CardType } from '../../../../enums/card-type';
 
-import { GameLogic } from '../../../../../logic/game-logic';
+import { GameLogic } from '../../../../logic/game-logic';
 
-import type { ActionModel } from '../../../../../models/action';
-import type { FeatureModel } from '../../../../../models/feature';
-import type { OptionsModel } from '../../../../../models/options';
+import type { ActionModel } from '../../../../models/action';
+import type { FeatureModel } from '../../../../models/feature';
+import type { OptionsModel } from '../../../../models/options';
 
-import type { Platform } from '../../../../../platform/platform';
+import { ActionCard, FeatureCard } from '../../../cards';
+import { Badge, CardList, Dialog, StatValue, Text, TextType } from '../../../controls';
 
-import { ActionCard, FeatureCard } from '../../../../cards';
-import { Badge, CardList, Dialog, StatValue, Text, TextType } from '../../../../controls';
-
-import './card-list-panel.scss';
+import './card-page.scss';
 
 interface Props {
 	options: OptionsModel
-	platform: Platform;
 }
 
 interface State {
 	selected: { name: string, description: string, type: CardType, starting: FeatureModel[], features: FeatureModel[], actions: ActionModel[] } | null;
 }
 
-export class CardListPanel extends Component<Props, State> {
+export class CardPage extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
@@ -288,26 +285,30 @@ export class CardListPanel extends Component<Props, State> {
 			}
 
 			return (
-				<div className='card-list-panel'>
-					<div className='row'>
-						{
-							packIDs.map(id => {
-								const pack = GameLogic.getPack(id);
-								const name = pack ? pack.name : 'Skirmish';
-								return (
-									<div key={id} className='cell column-heading'>
-										{name}
-									</div>
-								);
-							})
-						}
+				<div className='card-page'>
+					<div className='card-grid-header'>
+						<div className='row'>
+							{
+								packIDs.map(id => {
+									const pack = GameLogic.getPack(id);
+									const name = pack ? pack.name : 'Skirmish';
+									return (
+										<div key={id} className='cell column-heading'>
+											{name}
+										</div>
+									);
+								})
+							}
+						</div>
 					</div>
-					{rows}
+					<div className='card-grid-content'>
+						{rows}
+					</div>
 					{dialog}
 				</div>
 			);
 		} catch {
-			return <div className='card-list-panel render-error' />;
+			return <div className='card-page render-error' />;
 		}
 	};
 }

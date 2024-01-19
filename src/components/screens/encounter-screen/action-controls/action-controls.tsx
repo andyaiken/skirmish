@@ -19,6 +19,7 @@ import type { ItemModel } from '../../../../models/item';
 
 import { ActionCard, StrongholdBenefitCard } from '../../../cards';
 import { Badge, Selector, Tag, Text, TextType } from '../../../controls';
+import { DirectionPanel } from '../../../panels';
 
 import './action-controls.scss';
 
@@ -35,6 +36,7 @@ interface Props {
 	deselectAction: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	setActionParameter: (parameter: ActionParameterModel) => void;
 	setActionParameterValue: (parameter: ActionParameterModel, value: unknown) => void;
+	setOriginParameterValue: (parameter: ActionParameterModel, square: { x: number, y: number }) => void;
 	runAction: (encounter: EncounterModel, combatant: CombatantModel) => void;
 }
 
@@ -169,11 +171,61 @@ export class ActionControls extends Component<Props> {
 								const combatantSquares = EncounterLogic.getCombatantSquares(this.props.encounter, this.props.combatant);
 								const distance = EncounterMapLogic.getDistanceAny(combatantSquares, [ square ]);
 								const angle = EncounterMapLogic.getDirection(this.props.combatant.combat.position, square);
+								const candidates = originParam.candidates as { x: number, y: number }[];
 								description = [
 									<div key={`${square.x} ${square.y}`} className='square-indicator'>
-										<IconArrowUp style={{ transform: `rotate(${angle}deg)` }} />
+										{distance > 0 ? <IconArrowUp style={{ transform: `rotate(${angle}deg)` }} /> : null}
 										<span>{distance}</span>
-									</div>
+									</div>,
+									<DirectionPanel
+										key='d-pad'
+										mode='compact'
+										movement={0}
+										costs={{
+											'n': candidates.find(s => (s.x === square.x) && (s.y === square.y - 1)) ? 0 : Number.MAX_VALUE,
+											'ne': candidates.find(s => (s.x === square.x + 1) && (s.y === square.y - 1)) ? 0 : Number.MAX_VALUE,
+											'e': candidates.find(s => (s.x === square.x + 1) && (s.y === square.y)) ? 0 : Number.MAX_VALUE,
+											'se': candidates.find(s => (s.x === square.x + 1) && (s.y === square.y + 1)) ? 0 : Number.MAX_VALUE,
+											's': candidates.find(s => (s.x === square.x) && (s.y === square.y + 1)) ? 0 : Number.MAX_VALUE,
+											'sw': candidates.find(s => (s.x === square.x - 1) && (s.y === square.y + 1)) ? 0 : Number.MAX_VALUE,
+											'w': candidates.find(s => (s.x === square.x - 1) && (s.y === square.y)) ? 0 : Number.MAX_VALUE,
+											'nw': candidates.find(s => (s.x === square.x - 1) && (s.y === square.y - 1)) ? 0 : Number.MAX_VALUE
+										}}
+										onMove={(dir, cost) => {
+											const sq = { x: square.x, y: square.y };
+											switch (dir) {
+												case 'n':
+													sq.y -= 1;
+													break;
+												case 'ne':
+													sq.x += 1;
+													sq.y -= 1;
+													break;
+												case 'e':
+													sq.x += 1;
+													break;
+												case 'se':
+													sq.x += 1;
+													sq.y += 1;
+													break;
+												case 's':
+													sq.y += 1;
+													break;
+												case 'sw':
+													sq.x -= 1;
+													sq.y += 1;
+													break;
+												case 'w':
+													sq.x -= 1;
+													break;
+												case 'nw':
+													sq.x -= 1;
+													sq.y -= 1;
+													break;
+											}
+											this.props.setOriginParameterValue(originParam, sq);
+										}}
+									/>
 								];
 							} else {
 								parameterSet = false;

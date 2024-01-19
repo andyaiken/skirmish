@@ -31,7 +31,12 @@ export class HeroMove extends Component<Props> {
 			return (
 				<div className='hero-move'>
 					{this.props.options.developer ? <button className='developer' onClick={() => this.props.addMovement(this.props.encounter, this.props.combatant, 10)}>Add Movement</button> : null}
-					<DirectionPanel combatant={this.props.combatant} costs={moveCosts} onMove={(dir, cost) => this.props.move(this.props.encounter, this.props.combatant, dir, cost)} />
+					<DirectionPanel
+						mode='full'
+						movement={this.props.combatant.combat.movement}
+						costs={moveCosts}
+						onMove={(dir, cost) => this.props.move(this.props.encounter, this.props.combatant, dir, cost)}
+					/>
 					{
 						this.props.combatant.combat.movement === 0 ?
 							<Text type={TextType.Information}>

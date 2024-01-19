@@ -44,7 +44,7 @@ import { Collections } from '../../utils/collections';
 import { Sound } from '../../utils/sound';
 import { Utils } from '../../utils/utils';
 
-import { CampaignScreen, EncounterScreen, LandingScreen, SetupScreen } from '../screens';
+import { BackstageScreen, CampaignScreen, EncounterScreen, LandingScreen, SetupScreen } from '../screens';
 import { Dialog, PlayingCard, Text, TextType } from '../controls';
 import { HelpModal, PacksModal } from '../modals';
 import { PlaceholderCard } from '../cards';
@@ -1381,6 +1381,7 @@ export class Main extends Component<Props, State> {
 						setPage={this.props.setPage}
 						showHelp={this.showHelp}
 						showPacks={this.showPacks}
+						toggleBackstage={() => this.setScreen(ScreenType.Backstage)}
 						buyStructure={this.buyStructure}
 						sellStructure={this.sellStructure}
 						chargeStructure={this.chargeStructure}
@@ -1439,6 +1440,14 @@ export class Main extends Component<Props, State> {
 						finishEncounter={this.finishEncounter}
 					/>
 				);
+			case ScreenType.Backstage: {
+				return (
+					<BackstageScreen
+						options={this.props.options}
+						toggleBackstage={() => this.setScreen(ScreenType.Campaign)}
+					/>
+				);
+			}
 		}
 	};
 

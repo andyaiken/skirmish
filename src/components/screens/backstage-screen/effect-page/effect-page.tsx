@@ -1,32 +1,28 @@
 import { Component } from 'react';
 
-import { PackData } from '../../../../../data/pack-data';
+import { PackData } from '../../../../data/pack-data';
 
-import { ActionEffects } from '../../../../../logic/action-logic';
+import { ActionEffects } from '../../../../logic/action-logic';
+import { GameLogic } from '../../../../logic/game-logic';
 
-import { GameLogic } from '../../../../../logic/game-logic';
+import type { ActionEffectModel } from '../../../../models/action';
+import type { OptionsModel } from '../../../../models/options';
 
-import type { ActionEffectModel } from '../../../../../models/action';
-import type { OptionsModel } from '../../../../../models/options';
+import { Collections } from '../../../../utils/collections';
 
-import type { Platform } from '../../../../../platform/platform';
+import { StatValue } from '../../../controls';
 
-import { Collections } from '../../../../../utils/collections';
-
-import { StatValue } from '../../../../controls';
-
-import './effect-list-panel.scss';
+import './effect-page.scss';
 
 interface Props {
 	options: OptionsModel
-	platform: Platform;
 }
 
 interface State {
 	selectedEffectID: string;
 }
 
-export class EffectListPanel extends Component<Props, State> {
+export class EffectPage extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 
@@ -65,11 +61,15 @@ export class EffectListPanel extends Component<Props, State> {
 			const selected = this.list.find(item => item.effectID === this.state.selectedEffectID);
 
 			return (
-				<div className='effect-list-panel'>
+				<div className='effect-page'>
 					<div className='effect-type-column'>
 						{this.list.map(item => {
 							return (
-								<button key={item.effectID} className='effect-type' onClick={() => this.setState({ selectedEffectID: item.effectID })}>
+								<button
+									key={item.effectID}
+									className={selected?.effectID === item.effectID ? 'selected' : ''}
+									onClick={() => this.setState({ selectedEffectID: item.effectID })}
+								>
 									<StatValue label={item.effectID} value={Collections.sum(item.effects, e => e.count)} />
 								</button>
 							);
@@ -81,7 +81,7 @@ export class EffectListPanel extends Component<Props, State> {
 				</div>
 			);
 		} catch {
-			return <div className='effect-list-panel render-error' />;
+			return <div className='effect-page render-error' />;
 		}
 	};
 }

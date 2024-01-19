@@ -323,7 +323,7 @@ export class HeroSpeciesData {
 				]
 			},
 			{
-				id: 'faun-action-2',
+				id: 'faun-action-3',
 				name: 'Powerful Kick',
 				prerequisites: [],
 				parameters: [

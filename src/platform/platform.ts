@@ -10,6 +10,8 @@ import type { PackModel } from '../models/pack';
 
 import { Utils } from '../utils/utils';
 
+import pkg from '../../package.json';
+
 export class Platform {
 	worker: Worker;
 
@@ -52,6 +54,7 @@ export class Platform {
 								this.updateOptions(options);
 							} else {
 								options = {
+									version: '',
 									developer: false,
 									showTips: true,
 									soundEffectsVolume: 0.5,
@@ -59,6 +62,8 @@ export class Platform {
 									renderer: ''
 								};
 							}
+
+							options.version = pkg.version;
 							options.renderer = this.getRenderer();
 
 							resolve({ game: game, options: options });

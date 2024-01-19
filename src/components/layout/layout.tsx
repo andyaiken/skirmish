@@ -24,6 +24,7 @@ export const Layout = (props: Props) => {
 
 	const [ screen, setScreen ] = useState(ScreenType.Landing);
 	const [ page, setPage ] = useState(PageType.Island);
+
 	const isLandscapeWidth = useMediaQuery({ query: '(min-width: 1024px)' });
 	const isLandscapeHeight = useMediaQuery({ query: '(min-height: 768px)' });
 	const isPortraitWidth = useMediaQuery({ query: '(min-width: 768px)' });

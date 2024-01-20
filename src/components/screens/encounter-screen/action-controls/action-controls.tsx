@@ -173,59 +173,60 @@ export class ActionControls extends Component<Props> {
 								const angle = EncounterMapLogic.getDirection(this.props.combatant.combat.position, square);
 								const candidates = originParam.candidates as { x: number, y: number }[];
 								description = [
-									<div key={`${square.x} ${square.y}`} className='square-indicator'>
-										{distance > 0 ? <IconArrowUp style={{ transform: `rotate(${angle}deg)` }} /> : null}
-										<span>{distance}</span>
-									</div>,
-									<DirectionPanel
-										key='d-pad'
-										mode='compact'
-										movement={0}
-										costs={{
-											'n': candidates.find(s => (s.x === square.x) && (s.y === square.y - 1)) ? 0 : Number.MAX_VALUE,
-											'ne': candidates.find(s => (s.x === square.x + 1) && (s.y === square.y - 1)) ? 0 : Number.MAX_VALUE,
-											'e': candidates.find(s => (s.x === square.x + 1) && (s.y === square.y)) ? 0 : Number.MAX_VALUE,
-											'se': candidates.find(s => (s.x === square.x + 1) && (s.y === square.y + 1)) ? 0 : Number.MAX_VALUE,
-											's': candidates.find(s => (s.x === square.x) && (s.y === square.y + 1)) ? 0 : Number.MAX_VALUE,
-											'sw': candidates.find(s => (s.x === square.x - 1) && (s.y === square.y + 1)) ? 0 : Number.MAX_VALUE,
-											'w': candidates.find(s => (s.x === square.x - 1) && (s.y === square.y)) ? 0 : Number.MAX_VALUE,
-											'nw': candidates.find(s => (s.x === square.x - 1) && (s.y === square.y - 1)) ? 0 : Number.MAX_VALUE
-										}}
-										onMove={(dir, cost) => {
-											const sq = { x: square.x, y: square.y };
-											switch (dir) {
-												case 'n':
-													sq.y -= 1;
-													break;
-												case 'ne':
-													sq.x += 1;
-													sq.y -= 1;
-													break;
-												case 'e':
-													sq.x += 1;
-													break;
-												case 'se':
-													sq.x += 1;
-													sq.y += 1;
-													break;
-												case 's':
-													sq.y += 1;
-													break;
-												case 'sw':
-													sq.x -= 1;
-													sq.y += 1;
-													break;
-												case 'w':
-													sq.x -= 1;
-													break;
-												case 'nw':
-													sq.x -= 1;
-													sq.y -= 1;
-													break;
-											}
-											this.props.setOriginParameterValue(originParam, sq);
-										}}
-									/>
+									<div key='origin-square' className='parameter-row'>
+										<div className='square-indicator'>
+											{distance > 0 ? <IconArrowUp style={{ transform: `rotate(${angle}deg)` }} /> : null}
+											<span>{distance}</span>
+										</div>
+										<DirectionPanel
+											mode='compact'
+											movement={0}
+											costs={{
+												'n': candidates.find(s => (s.x === square.x) && (s.y === square.y - 1)) ? 0 : Number.MAX_VALUE,
+												'ne': candidates.find(s => (s.x === square.x + 1) && (s.y === square.y - 1)) ? 0 : Number.MAX_VALUE,
+												'e': candidates.find(s => (s.x === square.x + 1) && (s.y === square.y)) ? 0 : Number.MAX_VALUE,
+												'se': candidates.find(s => (s.x === square.x + 1) && (s.y === square.y + 1)) ? 0 : Number.MAX_VALUE,
+												's': candidates.find(s => (s.x === square.x) && (s.y === square.y + 1)) ? 0 : Number.MAX_VALUE,
+												'sw': candidates.find(s => (s.x === square.x - 1) && (s.y === square.y + 1)) ? 0 : Number.MAX_VALUE,
+												'w': candidates.find(s => (s.x === square.x - 1) && (s.y === square.y)) ? 0 : Number.MAX_VALUE,
+												'nw': candidates.find(s => (s.x === square.x - 1) && (s.y === square.y - 1)) ? 0 : Number.MAX_VALUE
+											}}
+											onMove={(dir, cost) => {
+												const sq = { x: square.x, y: square.y };
+												switch (dir) {
+													case 'n':
+														sq.y -= 1;
+														break;
+													case 'ne':
+														sq.x += 1;
+														sq.y -= 1;
+														break;
+													case 'e':
+														sq.x += 1;
+														break;
+													case 'se':
+														sq.x += 1;
+														sq.y += 1;
+														break;
+													case 's':
+														sq.y += 1;
+														break;
+													case 'sw':
+														sq.x -= 1;
+														sq.y += 1;
+														break;
+													case 'w':
+														sq.x -= 1;
+														break;
+													case 'nw':
+														sq.x -= 1;
+														sq.y -= 1;
+														break;
+												}
+												this.props.setOriginParameterValue(originParam, sq);
+											}}
+										/>
+									</div>
 								];
 							} else {
 								parameterSet = false;

@@ -49,19 +49,24 @@
 
 					.action-parameter-value {
 						flex: 1 1 0;
-						display: flex;
-						align-items: center;
-						justify-content: flex-end;
-						gap: 20px;
+						text-align: right;
 
-						.square-indicator {
-							border: 1px solid rgb(220, 220, 220);
-							border-radius: 5px;
-							background-color: rgb(255, 255, 255);
-							padding: 5px;
-							display: inline-flex;
+						.parameter-row {
+							display: flex;
 							align-items: center;
-							gap: 3px;
+							justify-content: flex-end;
+							gap: 20px;
+	
+							.square-indicator {
+								border: 1px solid rgb(220, 220, 220);
+								border-radius: 5px;
+								background-color: rgb(255, 255, 255);
+								padding: 5px;
+								display: inline-flex;
+								align-items: center;
+								gap: 3px;
+							}
+
 						}
 					}
 

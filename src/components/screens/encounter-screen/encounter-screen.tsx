@@ -491,7 +491,7 @@ export class EncounterScreen extends Component<Props, State> {
 						<StatValue
 							orientation='vertical'
 							label='Action'
-							value={actionTaken ? <IconCircleCheck size={39} /> : <IconDots size={39} />}
+							value={actionTaken ? <IconCircleCheck className='action-taken' size={39} /> : <IconDots size={39} />}
 						/>
 						<button className={actionTaken ? 'primary action' : 'action'} onClick={() => this.endTurn()}>End My Turn</button>
 					</div>

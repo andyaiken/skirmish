@@ -1,5 +1,8 @@
 import { Component } from 'react';
 
+import { BaseData } from '../../../data/base-data';
+
+import { FeatureType } from '../../../enums/feature-type';
 import { QuirkType } from '../../../enums/quirk-type';
 import { StructureType } from '../../../enums/structure-type';
 
@@ -11,6 +14,7 @@ import type { FeatureModel } from '../../../models/feature';
 import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
 
+import { Collections } from '../../../utils/collections';
 import { Utils } from '../../../utils/utils';
 
 import { ActionCard, FeatureCard } from '../../cards';
@@ -36,17 +40,41 @@ interface Props {
 
 interface State {
 	view: string;
-	levelUpActive: boolean;
+	features: FeatureModel[];
 }
 
 export class CharacterSheetModal extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
-			view: 'stats',
-			levelUpActive: false
+			view: (props.game.encounter === null) && (props.combatant.xp >= props.combatant.level) ? 'levelup' : 'stats',
+			features: this.drawFeatures(props.combatant)
 		};
 	}
+
+	drawFeatures = (combatant: CombatantModel) => {
+		let features: FeatureModel[] = [];
+		features.push(...CombatantLogic.getFeatureDeck(combatant));
+		features.push(...BaseData.getBaseFeatures());
+
+		features = features.filter(feature => {
+			// Make sure we can select this feature
+			if (feature.type === FeatureType.Proficiency) {
+				const profs = CombatantLogic.getProficiencies(combatant);
+				if (profs.length >= 9) {
+					// We already have all proficiencies
+					return false;
+				}
+				if (profs.includes(feature.proficiency)) {
+					// We already have this proficiency
+					return false;
+				}
+			}
+			return true;
+		});
+
+		return Collections.shuffle(features).splice(0, 3);
+	};
 
 	equipItem = (item: ItemModel) => {
 		this.props.equipItem(item, this.props.combatant);
@@ -65,8 +93,10 @@ export class CharacterSheetModal extends Component<Props, State> {
 	};
 
 	levelUp = (feature: FeatureModel) => {
+		const canLevelUpAgain = (this.props.combatant.xp - this.props.combatant.level) >= (this.props.combatant.level + 1);
 		this.setState({
-			levelUpActive: false
+			view: canLevelUpAgain ? 'levelup' : 'stats',
+			features: this.drawFeatures(this.props.combatant)
 		}, () => {
 			const copy = JSON.parse(JSON.stringify(feature)) as FeatureModel;
 			copy.id = Utils.guid();
@@ -76,28 +106,45 @@ export class CharacterSheetModal extends Component<Props, State> {
 
 	render = () => {
 		try {
-			let selector = null;
-			if (this.props.combatant.quirks.includes(QuirkType.Beast)) {
-				selector = null;
-			} else {
-				const options = [
-					{ id: 'stats', display: 'Statistics' },
-					{ id: 'items', display: 'Equipment' },
-					{ id: 'features', display: 'Features' },
-					{ id: 'actions', display: 'Actions' }
-				];
+			let options = [
+				{ id: 'stats', display: 'Statistics' },
+				{ id: 'items', display: 'Equipment' },
+				{ id: 'features', display: 'Features' },
+				{ id: 'actions', display: 'Actions' }
+			];
 
-				selector = (
-					<Tabs
-						options={options}
-						selectedID={this.state.view}
-						onSelect={id => this.setState({ view: id })}
-					/>
-				);
+			if (this.props.combatant.quirks.includes(QuirkType.Beast)) {
+				options = options.filter(o => o.id !== 'items');
+			}
+
+			if ((this.props.game.encounter === null) && (this.props.combatant.xp >= this.props.combatant.level)) {
+				options.unshift({ id: 'levelup', display: 'Level Up' });
 			}
 
 			let content = null;
 			switch (this.state.view) {
+				case 'levelup':
+					content = (
+						<LevelUp
+							combatant={this.props.combatant}
+							game={this.props.game}
+							developer={this.props.developer}
+							level={this.props.combatant.level + 1}
+							features={this.state.features}
+							useCharge={this.props.useCharge}
+							levelUp={this.levelUp}
+							redrawFeatures={useCharge => {
+								this.setState({
+									features: this.drawFeatures(this.props.combatant)
+								}, () => {
+									if (useCharge) {
+										this.props.useCharge(StructureType.TrainingGround, 1);
+									}
+								});
+							}}
+						/>
+					);
+					break;
 				case 'stats':
 					content = (
 						<Stats
@@ -149,22 +196,6 @@ export class CharacterSheetModal extends Component<Props, State> {
 				}
 			}
 
-			let levelUp = null;
-			if ((this.props.game.encounter === null) && (this.props.combatant.xp >= this.props.combatant.level)) {
-				levelUp = (
-					<LevelUp
-						combatant={this.props.combatant}
-						game={this.props.game}
-						developer={this.props.developer}
-						expanded={this.state.levelUpActive}
-						level={this.props.combatant.level + 1}
-						onExpand={() => this.setState({ levelUpActive: true })}
-						useCharge={this.props.useCharge}
-						levelUp={this.levelUp}
-					/>
-				);
-			}
-
 			const species = GameLogic.getSpecies(this.props.combatant.speciesID);
 			const role = GameLogic.getRole(this.props.combatant.roleID);
 			const background = GameLogic.getBackground(this.props.combatant.backgroundID);
@@ -172,26 +203,25 @@ export class CharacterSheetModal extends Component<Props, State> {
 			return (
 				<div className='character-sheet-modal'>
 					<div className='main-section'>
-						{
-							!this.state.levelUpActive ?
-								<div className='header'>
-									<Text type={TextType.Heading}>{this.props.combatant.name || 'unnamed hero'}</Text>
-									<div className='tags'>
-										{species ? <Tag>{species.name}</Tag> : null}
-										{role ? <Tag>{role.name}</Tag> : null}
-										{background ? <Tag>{background.name}</Tag> : null}
-										<Tag>Level {this.props.combatant.level}</Tag>
-										{this.props.combatant.quirks.map((q, n) => (<Tag key={n}>{q}</Tag>))}
-									</div>
-								</div>
-								: null
-						}
-						{selector}
+						<div className='header'>
+							<Text type={TextType.Heading}>{this.props.combatant.name || 'unnamed hero'}</Text>
+							<div className='tags'>
+								{species ? <Tag>{species.name}</Tag> : null}
+								{role ? <Tag>{role.name}</Tag> : null}
+								{background ? <Tag>{background.name}</Tag> : null}
+								<Tag>Level {this.props.combatant.level}</Tag>
+								{this.props.combatant.quirks.map((q, n) => (<Tag key={n}>{q}</Tag>))}
+							</div>
+						</div>
+						<Tabs
+							options={options}
+							selectedID={this.state.view}
+							onSelect={id => this.setState({ view: id })}
+						/>
 						<div className='content'>
 							{content}
 						</div>
 					</div>
-					{levelUp}
 				</div>
 			);
 		} catch {

@@ -7,6 +7,7 @@ import type { OptionsModel } from '../../../models/options';
 import type { RegionModel } from '../../../models/region';
 
 import { Color } from '../../../utils/color';
+import { Random } from '../../../utils/random';
 
 import './campaign-map-panel.scss';
 
@@ -35,14 +36,18 @@ export class CampaignMapPanel extends Component<Props> {
 
 		const region = this.props.map.regions.find(r => r.id === square.regionID) || null;
 		if (region) {
-			const color = Color.parse(region.color);
+			let color = Color.parse(region.color);
 			if (color) {
-				backgroundColor = region.color;
+				const id = `${square.x} ${square.y}`;
+				const rng = Random.getSeededRNG(id);
+				color = Color.tweak(color, 6, rng);
+
+				backgroundColor = Color.toString(color);
 				borderColor = Color.toString(Color.darken(color, 0.95));
 
 				if (this.props.selectedRegion && (this.props.selectedRegion.id === region.id)) {
 					backgroundColor = Color.toString(Color.lighten(color, 0.7));
-					borderColor = region.color;
+					borderColor = Color.toString(color);
 				}
 			}
 		}

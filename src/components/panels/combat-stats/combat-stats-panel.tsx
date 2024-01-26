@@ -52,6 +52,8 @@ export class CombatStatsPanel extends Component<Props> {
 
 	render = () => {
 		try {
+			const health = this.getHealth();
+
 			return (
 				<div className='combat-stats-panel'>
 					<Box label='Stats'>
@@ -59,8 +61,8 @@ export class CombatStatsPanel extends Component<Props> {
 							<StatValue orientation='vertical' label='Senses' value={this.props.combatant.combat.senses} />
 							<StatValue orientation='vertical' label='Hidden' value={this.props.combatant.combat.hidden} />
 						</div>
-						<hr />
-						{this.getHealth()}
+						{health ? <hr /> : null}
+						{health}
 					</Box>
 					<ConditionsPanel combatant={this.props.combatant} encounter={this.props.encounter} />
 				</div>

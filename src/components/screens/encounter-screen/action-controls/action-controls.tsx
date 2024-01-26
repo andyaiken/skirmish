@@ -62,7 +62,7 @@ export class ActionControls extends Component<Props> {
 				switch (parameter.id) {
 					case 'weapon': {
 						const weaponParam = parameter as ActionWeaponParameterModel;
-						parameterSet = !weaponParam.value;
+						parameterSet = !!weaponParam.value;
 						break;
 					}
 					case 'origin': {
@@ -209,13 +209,7 @@ export class ActionControls extends Component<Props> {
 					switch (parameter.id) {
 						case 'weapon': {
 							const weaponParam = parameter as ActionWeaponParameterModel;
-							if (weaponParam.value) {
-								const itemID = parameter.value as string;
-								const item = this.props.combatant.items.find(i => i.id === itemID) as ItemModel;
-								paramControls.push(
-									<Text key={item.id}>{item.name}</Text>
-								);
-							} else {
+							if (!weaponParam.value) {
 								paramControls.push(
 									<Text key='weapon-none'>[Not set]</Text>
 								);

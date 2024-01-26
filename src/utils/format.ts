@@ -1,10 +1,15 @@
 export class Format {
 	static capitalize = (text: string) => {
-		if (text.length === 0) {
-			return '';
-		}
+		return text
+			.split(' ')
+			.map(token => {
+				if (token.length === 0) {
+					return '';
+				}
 
-		return `${text[0].toUpperCase()}${text.substring(1)}`;
+				return `${token[0].toUpperCase()}${token.substring(1)}`;
+			})
+			.join(' ');
 	};
 
 	static toText = (value: number) => {

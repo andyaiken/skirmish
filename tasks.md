@@ -58,6 +58,10 @@
 * Get a certain number of heroes to a specific area and stay there for a certain number of rounds
 * Defeat a specific opponent within a certain number of rounds
 
+## Hero History
+* Randomly generated history of a hero
+* Shown on the character sheet
+
 ## Styling
 * Dark mode
 * Action animations (fireball etc)

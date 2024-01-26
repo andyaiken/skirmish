@@ -1,170 +1,177 @@
 .direction-panel {
-	margin: 0 auto;
-	width: 250px;
-	height: 250px;
-	display: grid;
-	grid-template-columns: repeat(3, 1fr);
+	display: flex;
+	flex-direction: column;
 	gap: 5px;
 
 	&.compact {
-		margin: 0;
-		width: 100px;
-		height: 100px;
+		.direction-row {
+			.dir,
+			.center {
+				width: 22px;
+				height: 22px;
+
+				&.n .arrow {
+					top: 0;
+				}
+
+				&.e .arrow {
+					right: -10%;
+				}
+
+				&.w .arrow {
+					left: -10%;
+				}
+			}
+
+			.dir {
+				border-radius: 5px;
+			}
+		}
+	}
+
+	.direction-row {
+		flex: 1 1 0;
+		display: flex;
+		flex-direction: row;
+		gap: 5px;
 
 		.dir,
 		.center {
-			width: 30px;
-			height: 30px;
+			flex: 1 1 0;
+			position: relative;
+			width: 80px;
+			height: 80px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
 
-			&.n .arrow {
-				top: 0;
-			}
+			.cost {
+				position: absolute;
+				border: 1px solid rgb(220, 220, 220);
+				border-radius: 3px;
+				background-color: rgb(250, 250, 250);
+				padding: 2px;
 
-			&.e .arrow {
-				right: -10%;
-			}
-
-			&.w .arrow {
-				left: -10%;
+				&.big {
+					border: unset;
+					padding: unset;
+					background-color: unset;
+				}
 			}
 		}
-	}
 
-	.dir,
-	.center {
-		position: relative;
-		width: 80px;
-		height: 80px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-
-		.cost {
-			position: absolute;
-			border: 1px solid rgb(220, 220, 220);
-			border-radius: 3px;
+		.dir {
+			border: 2px solid rgb(220, 220, 220);
+			border-radius: 10px;
 			background-color: rgb(250, 250, 250);
-			padding: 2px;
 
-			&.big {
-				border: unset;
-				padding: unset;
-				background-color: unset;
-			}
-		}
-	}
+			&.nw {
+				.arrow {
+					position: relative;
+					top: 2px;
+				}
 
-	.dir {
-		border: 2px solid rgb(220, 220, 220);
-		border-radius: 10px;
-		background-color: rgb(250, 250, 250);
-
-		&.nw {
-			.arrow {
-				position: relative;
-				top: 2px;
+				.cost {
+					right: 12%;
+					bottom: 12%;
+				}
 			}
 
-			.cost {
-				right: 12%;
-				bottom: 12%;
-			}
-		}
+			&.n {
+				.arrow {
+					position: relative;
+					top: -15%;
+				}
 
-		&.n {
-			.arrow {
-				position: relative;
-				top: -15%;
-			}
-
-			.cost {
-				bottom: 12%;
-			}
-		}
-
-		&.ne {
-			.arrow {
-				position: relative;
-				top: 2px;
+				.cost {
+					bottom: 12%;
+				}
 			}
 
-			.cost {
-				left: 12%;
-				bottom: 12%;
-			}
-		}
+			&.ne {
+				.arrow {
+					position: relative;
+					top: 2px;
+				}
 
-		&.w {
-			.arrow {
-				position: relative;
-				left: -20%;
-				top: 2px;
-			}
-
-			.cost {
-				right: 12%;
-			}
-		}
-
-		&.e {
-			.arrow {
-				position: relative;
-				right: -20%;
-				top: 2px;
+				.cost {
+					left: 12%;
+					bottom: 12%;
+				}
 			}
 
-			.cost {
-				left: 12%;
-			}
-		}
+			&.w {
+				.arrow {
+					position: relative;
+					left: -20%;
+					top: 2px;
+				}
 
-		&.sw {
-			.arrow {
-				position: relative;
-				bottom: -2px;
-			}
-
-			.cost {
-				right: 12%;
-				top: 12%;
-			}
-		}
-
-		&.s {
-			.arrow {
-				position: relative;
-				bottom: -15%;
+				.cost {
+					right: 12%;
+				}
 			}
 
-			.cost {
-				top: 12%;
+			&.e {
+				.arrow {
+					position: relative;
+					right: -20%;
+					top: 2px;
+				}
+
+				.cost {
+					left: 12%;
+				}
 			}
-		}
 
-		&.se {
-			.arrow {
-				position: relative;
-				bottom: -2px;
+			&.sw {
+				.arrow {
+					position: relative;
+					bottom: -2px;
+				}
+
+				.cost {
+					right: 12%;
+					top: 12%;
+				}
 			}
 
-			.cost {
-				left: 15%;
-				top: 15%;
+			&.s {
+				.arrow {
+					position: relative;
+					bottom: -15%;
+				}
+
+				.cost {
+					top: 12%;
+				}
 			}
-		}
 
-		&.enabled {
-			border-color: rgb(60, 170, 255);
-			cursor: pointer;
+			&.se {
+				.arrow {
+					position: relative;
+					bottom: -2px;
+				}
 
-			&:hover {
-				background-color: rgb(200, 230, 255);
+				.cost {
+					left: 15%;
+					top: 15%;
+				}
 			}
-		}
 
-		&.disabled {
-			opacity: 0.3;
-			pointer-events: none;
+			&.enabled {
+				border-color: rgb(60, 170, 255);
+				cursor: pointer;
+
+				&:hover {
+					background-color: rgb(200, 230, 255);
+				}
+			}
+
+			&.disabled {
+				opacity: 0.3;
+				pointer-events: none;
+			}
 		}
 	}
 }

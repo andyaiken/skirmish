@@ -1,7 +1,9 @@
 import { Component, createRef } from 'react';
 import {
 	IconArrowBackUpDouble,
+	IconCircleCheck,
 	IconConfetti,
+	IconDots,
 	IconHelpCircle,
 	IconHelpCircleFilled,
 	IconLayoutBottombarCollapse,
@@ -38,7 +40,7 @@ import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
 import type { OptionsModel } from '../../../models/options';
 
-import { CardList, Dialog, IconSize, IconType, IconValue, PlayingCard, Tabs, Text, TextType } from '../../controls';
+import { CardList, Dialog, IconSize, IconType, IconValue, PlayingCard, StatValue, Tabs, Text, TextType } from '../../controls';
 import { CombatantRowPanel, EncounterLogPanel, EncounterMapPanel, InitiativeListPanel, TreasureRowPanel } from '../../panels';
 import { ItemCard, PlaceholderCard } from '../../cards';
 import { ActionControls } from './action-controls/action-controls';
@@ -471,13 +473,36 @@ export class EncounterScreen extends Component<Props, State> {
 
 		const currentCombatant = EncounterLogic.getActiveCombatants(this.props.encounter).find(c => c.combat.current) || null;
 
-		let actionBtn = <button className='primary action' onClick={() => this.props.rollInitiative()}>Roll Initiative</button>;
+		let actionBtn = (
+			<div className='action-container'>
+				<button className='primary action' onClick={() => this.props.rollInitiative()}>Roll Initiative</button>
+			</div>
+		);
 		if (currentCombatant) {
 			if (currentCombatant.faction === CombatantType.Hero) {
-				actionBtn = <button className='primary action' onClick={() => this.endTurn()}>End My Turn</button>;
+				const actionTaken = currentCombatant.combat.selectedAction && currentCombatant.combat.selectedAction.used;
+				actionBtn = (
+					<div className='action-container'>
+						<StatValue
+							orientation='vertical'
+							label='Movement'
+							value={<IconValue value={currentCombatant.combat.movement} type={IconType.Movement} size={IconSize.Large} />}
+						/>
+						<StatValue
+							orientation='vertical'
+							label='Action'
+							value={actionTaken ? <IconCircleCheck size={39} /> : <IconDots size={39} />}
+						/>
+						<button className={actionTaken ? 'primary action' : 'action'} onClick={() => this.endTurn()}>End My Turn</button>
+					</div>
+				);
 			}
 			if (currentCombatant.faction === CombatantType.Monster) {
-				actionBtn = <button className='primary action' disabled={this.state.thinking} onClick={() => this.runMonsterTurn()}>Take Monster Turn</button>;
+				actionBtn = (
+					<div className='action-container'>
+						<button className='primary action' disabled={this.state.thinking} onClick={() => this.runMonsterTurn()}>Take Monster Turn</button>
+					</div>
+				);
 			}
 		}
 

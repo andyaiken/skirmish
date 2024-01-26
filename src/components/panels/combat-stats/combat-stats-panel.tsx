@@ -9,7 +9,7 @@ import { EncounterLogic } from '../../../logic/encounter-logic';
 import type { CombatantModel } from '../../../models/combatant';
 import type { EncounterModel } from '../../../models/encounter';
 
-import { Box, IconSize, IconType, IconValue, StatValue } from '../../controls';
+import { Box, StatValue } from '../../controls';
 import { ConditionsPanel } from '../conditions/conditions-panel';
 
 import './combat-stats-panel.scss';
@@ -43,12 +43,10 @@ export class CombatStatsPanel extends Component<Props> {
 		}
 
 		return (
-			<Box label='Health'>
-				<div className='combat-stats-row'>
-					<StatValue orientation='vertical' label='Damage' value={this.props.combatant.combat.damage} />
-					<StatValue orientation='vertical' label='Wounds' value={<div className='wounds-section'>{woundsInRows}</div>} />
-				</div>
-			</Box>
+			<div className='combat-stats-row'>
+				<StatValue orientation='vertical' label='Damage' value={this.props.combatant.combat.damage} />
+				<StatValue orientation='vertical' label='Wounds' value={<div className='wounds-section'>{woundsInRows}</div>} />
+			</div>
 		);
 	};
 
@@ -56,14 +54,14 @@ export class CombatStatsPanel extends Component<Props> {
 		try {
 			return (
 				<div className='combat-stats-panel'>
-					<Box label='This Round'>
+					<Box label='Stats'>
 						<div className='combat-stats-row'>
-							<StatValue orientation='vertical' label='Movement' value={<IconValue value={this.props.combatant.combat.movement} type={IconType.Movement} size={IconSize.Large} />} />
 							<StatValue orientation='vertical' label='Senses' value={this.props.combatant.combat.senses} />
 							<StatValue orientation='vertical' label='Hidden' value={this.props.combatant.combat.hidden} />
 						</div>
+						<hr />
+						{this.getHealth()}
 					</Box>
-					{this.getHealth()}
 					<ConditionsPanel combatant={this.props.combatant} encounter={this.props.encounter} />
 				</div>
 			);

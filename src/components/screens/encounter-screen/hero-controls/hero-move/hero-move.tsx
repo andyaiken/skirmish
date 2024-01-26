@@ -30,7 +30,6 @@ export class HeroMove extends Component<Props> {
 
 			return (
 				<div className='hero-move'>
-					{this.props.options.developer ? <button className='developer' onClick={() => this.props.addMovement(this.props.encounter, this.props.combatant, 10)}>Add Movement</button> : null}
 					<DirectionPanel
 						mode='full'
 						movement={this.props.combatant.combat.movement}
@@ -61,6 +60,7 @@ export class HeroMove extends Component<Props> {
 							/>
 							: null
 					}
+					{this.props.options.developer ? <button className='developer' onClick={() => this.props.addMovement(this.props.encounter, this.props.combatant, 10)}>Add Movement</button> : null}
 				</div>
 			);
 		} catch {

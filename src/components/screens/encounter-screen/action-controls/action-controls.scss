@@ -27,7 +27,7 @@
 		}
 
 		.action-details {
-			flex: 1 0 200px;
+			flex: 0 0 200px;
 			display: flex;
     		flex-direction: column;
     		gap: 5px;
@@ -36,46 +36,26 @@
 				border: 2px solid rgb(220, 220, 220);
 				border-radius: 5px;
 				background-color: rgb(255, 255, 255);
-				padding: 10px;
+				padding: 0 10px 10px 10px;
 
-				.action-parameter-top-line {
+				.action-parameter-controls {
 					display: flex;
+					flex-direction: row;
 					align-items: center;
-					gap: 10px;
+					gap: 5px;
 
-					.action-parameter-name {
-						flex: 1 1 0;
+					.square-indicator {
+						border: 1px solid rgb(220, 220, 220);
+						border-radius: 5px;
+						background-color: rgb(255, 255, 255);
+						padding: 5px;
+						display: inline-flex;
+						align-items: center;
+						gap: 3px;
 					}
 
-					.action-parameter-value {
-						flex: 1 1 0;
-						text-align: right;
-
-						.parameter-row {
-							display: flex;
-							align-items: center;
-							justify-content: flex-end;
-							gap: 20px;
-	
-							.square-indicator {
-								border: 1px solid rgb(220, 220, 220);
-								border-radius: 5px;
-								background-color: rgb(255, 255, 255);
-								padding: 5px;
-								display: inline-flex;
-								align-items: center;
-								gap: 3px;
-							}
-
-						}
-					}
-
-					.action-parameter-change {
-						flex: 0 0 auto;
-
-						.map-btn {
-							width: 40px;
-						}
+					.map-btn {
+						width: 40px;
 					}
 				}
 			}

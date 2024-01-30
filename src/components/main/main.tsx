@@ -1060,7 +1060,7 @@ export class Main extends Component<Props, State> {
 						game: this.state.game
 					}, () => {
 						this.saveGame();
-						setTimeout(perform, 1000);
+						setTimeout(perform, 800);
 					});
 				} else {
 					EncounterLogic.endTurn(encounter);
@@ -1336,6 +1336,22 @@ export class Main extends Component<Props, State> {
 		}
 	};
 
+	stun = (combatant: CombatantModel) => {
+		try {
+			const game = this.state.game as GameModel;
+
+			combatant.combat.stunned = !combatant.combat.stunned;
+
+			this.setState({
+				game: game
+			}, () => {
+				this.saveGame();
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
+	};
+
 	//#endregion
 
 	//#region Rendering
@@ -1437,6 +1453,7 @@ export class Main extends Component<Props, State> {
 						useCharge={this.useCharge}
 						levelUp={this.incrementMonsterLevel}
 						switchAllegiance={this.switchAllegiance}
+						stun={this.stun}
 						finishEncounter={this.finishEncounter}
 					/>
 				);

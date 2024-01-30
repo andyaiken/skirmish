@@ -23,7 +23,6 @@ import toast from 'react-hot-toast';
 
 import { ActionTargetType } from '../../../enums/action-target-type';
 import { CardType } from '../../../enums/card-type';
-import { CombatantState } from '../../../enums/combatant-state';
 import { CombatantType } from '../../../enums/combatant-type';
 import { EncounterState } from '../../../enums/encounter-state';
 import { OrientationType } from '../../../enums/orientation-type';
@@ -47,7 +46,6 @@ import { ActionControls } from './action-controls/action-controls';
 import { CharacterSheetModal } from '../../modals';
 import { EncounterControls } from './encounter-controls/encounter-controls';
 import { HeroControls } from './hero-controls/hero-controls';
-import { InactiveControls } from './inactive-controls/inactive-controls';
 import { MonsterControls } from './monster-controls/monster-controls';
 import { RoundControls } from './round-controls/round-controls';
 
@@ -84,6 +82,7 @@ interface Props {
 	useCharge: (type: StructureType, count: number) => void;
 	levelUp: (combatant: CombatantModel) => void;
 	switchAllegiance: (combatant: CombatantModel) => void;
+	stun: (combatant: CombatantModel) => void;
 	finishEncounter: (state: EncounterState) => void;
 }
 
@@ -498,9 +497,10 @@ export class EncounterScreen extends Component<Props, State> {
 				);
 			}
 			if (currentCombatant.faction === CombatantType.Monster) {
+				const label = currentCombatant.combat.stunned ? 'Skip Monster Turn' : 'Take Monster Turn';
 				actionBtn = (
 					<div className='action-container'>
-						<button className='primary action' disabled={this.state.thinking} onClick={() => this.runMonsterTurn()}>Take Monster Turn</button>
+						<button className='primary action' disabled={this.state.thinking} onClick={() => this.runMonsterTurn()}>{this.state.thinking ? 'Thinking' : label}</button>
 					</div>
 				);
 			}
@@ -606,51 +606,36 @@ export class EncounterScreen extends Component<Props, State> {
 
 		const currentCombatant = EncounterLogic.getActiveCombatants(this.props.encounter).find(c => c.combat.current) || null;
 		if (currentCombatant) {
-			switch (currentCombatant.faction) {
-				case CombatantType.Hero: {
-					if (!currentCombatant.combat.stunned) {
-						return (
-							<div className='encounter-bottom-panel'>
-								<ActionControls
-									combatant={currentCombatant}
-									encounter={this.props.encounter}
-									game={this.props.game}
-									developer={this.props.options.developer}
-									currentActionParameter={this.state.selectedActionParameter}
-									collapsed={!this.state.showBottomPanel}
-									toggleCollapsed={() => this.setState({ showBottomPanel: !this.state.showBottomPanel })}
-									drawActions={this.props.drawActions}
-									selectAction={this.selectAction}
-									deselectAction={this.props.deselectAction}
-									setActionParameter={this.setActionParameter}
-									setActionParameterValue={this.props.setActionParameterValue}
-									setOriginParameterValue={(param, sq) => {
-										param.value = [ sq ];
-										const combatant = this.props.encounter.combatants.find(c => c.combat.current) as CombatantModel;
-										const action = combatant.combat.selectedAction ? combatant.combat.selectedAction.action : null;
-										if (action) {
-											const targetParam = action.parameters.find(a => a.id === 'targets') as ActionTargetParameterModel;
-											ActionLogic.checkTargetParameter(targetParam, this.props.encounter, combatant, action, false);
-										}
-										this.props.setActionParameterValue(param, [ sq ]);
-									}}
-									runAction={this.runAction}
-								/>
-							</div>
-						);
-					}
-					break;
-				}
-				case CombatantType.Monster: {
-					if (this.state.showBottomPanel) {
-						return (
-							<div className='encounter-bottom-panel'>
-								<div className='bottom-message'>The current combatant is a <b>monster</b>.</div>
-							</div>
-						);
-					}
-					break;
-				}
+			if ((currentCombatant.faction === CombatantType.Hero) && !currentCombatant.combat.stunned) {
+				return (
+					<div className='encounter-bottom-panel'>
+						<ActionControls
+							combatant={currentCombatant}
+							encounter={this.props.encounter}
+							game={this.props.game}
+							developer={this.props.options.developer}
+							currentActionParameter={this.state.selectedActionParameter}
+							collapsed={!this.state.showBottomPanel}
+							toggleCollapsed={() => this.setState({ showBottomPanel: !this.state.showBottomPanel })}
+							drawActions={this.props.drawActions}
+							selectAction={this.selectAction}
+							deselectAction={this.props.deselectAction}
+							setActionParameter={this.setActionParameter}
+							setActionParameterValue={this.props.setActionParameterValue}
+							setOriginParameterValue={(param, sq) => {
+								param.value = [ sq ];
+								const combatant = this.props.encounter.combatants.find(c => c.combat.current) as CombatantModel;
+								const action = combatant.combat.selectedAction ? combatant.combat.selectedAction.action : null;
+								if (action) {
+									const targetParam = action.parameters.find(a => a.id === 'targets') as ActionTargetParameterModel;
+									ActionLogic.checkTargetParameter(targetParam, this.props.encounter, combatant, action, false);
+								}
+								this.props.setActionParameterValue(param, [ sq ]);
+							}}
+							runAction={this.runAction}
+						/>
+					</div>
+				);
 			}
 		}
 
@@ -735,6 +720,7 @@ export class EncounterScreen extends Component<Props, State> {
 		}
 
 		if (this.state.showRightPanel) {
+			/*
 			const unconscious = currentCombatant.combat.state === CombatantState.Unconscious;
 			const dead = currentCombatant.combat.state === CombatantState.Dead;
 			const stunned = currentCombatant.combat.stunned;
@@ -747,10 +733,14 @@ export class EncounterScreen extends Component<Props, State> {
 							options={this.props.options}
 							showToken={() => this.scrollToCombatant('current')}
 							showCharacterSheet={this.showDetailsCombatant}
+							levelUp={this.props.levelUp}
+							switchAllegiance={this.props.switchAllegiance}
+							stun={this.props.stun}
 						/>
 					</div>
 				);
 			}
+			*/
 
 			if (currentCombatant.faction === CombatantType.Monster) {
 				return (
@@ -763,7 +753,7 @@ export class EncounterScreen extends Component<Props, State> {
 							showCharacterSheet={this.showDetailsCombatant}
 							levelUp={this.props.levelUp}
 							switchAllegiance={this.props.switchAllegiance}
-							skipTurn={this.endTurn}
+							stun={this.props.stun}
 						/>
 					</div>
 				);
@@ -782,7 +772,9 @@ export class EncounterScreen extends Component<Props, State> {
 						inspire={this.props.inspire}
 						scan={this.props.scan}
 						hide={this.props.hide}
+						levelUp={this.props.levelUp}
 						switchAllegiance={this.props.switchAllegiance}
+						stun={this.props.stun}
 						drinkPotion={this.props.drinkPotion}
 					/>
 				</div>

@@ -25,7 +25,13 @@ export class HeroMove extends Component<Props> {
 		try {
 			const moveCosts: Record<string, number> = {};
 			[ 'n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw' ].forEach(dir => {
-				moveCosts[dir] = EncounterLogic.getMoveCost(this.props.encounter, this.props.combatant, this.props.combatant.combat.position, dir);
+				let cost = 0;
+				if (this.props.combatant.combat.stunned) {
+					cost = Number.MAX_VALUE;
+				} else {
+					cost = EncounterLogic.getMoveCost(this.props.encounter, this.props.combatant, this.props.combatant.combat.position, dir);
+				}
+				moveCosts[dir] = cost;
 			});
 
 			return (

@@ -85,45 +85,7 @@ export class Items extends Component<Props, State> {
 		const items = this.props.combatant.items.filter(item => this.state.view === item.location);
 		const usedSlots = Collections.sum(items, i => i.slots);
 
-		const cards = items.map(item => {
-			let unequip: JSX.Element | string = 'Carry';
-			if (this.props.game.encounter && (this.props.combatant.faction === CombatantType.Hero)) {
-				unequip = (
-					<div>Carry<br /><IconValue type={IconType.Movement} value={1} size={IconSize.Button} /></div>
-				);
-			}
-
-			let drop: JSX.Element | string = 'Drop';
-			if (this.props.game.encounter && (this.props.combatant.faction === CombatantType.Hero)) {
-				drop = (
-					<div>Drop<br /><IconValue type={IconType.Movement} value={0} size={IconSize.Button} /></div>
-				);
-			}
-
-			let options: JSX.Element | null = (
-				<div className='item-options'>
-					<button disabled={this.props.combatant.carried.length >= CombatantLogic.CARRY_CAPACITY} onClick={() => this.props.unequipItem(item)}>
-						{unequip}
-					</button>
-					<button onClick={() => this.props.dropItem(item)}>
-						{drop}
-					</button>
-				</div>
-			);
-			if (this.props.combatant.faction !== CombatantType.Hero) {
-				options = null;
-			}
-			if (!!this.props.game.encounter && !this.props.combatant.combat.current) {
-				options = null;
-			}
-
-			return (
-				<div key={item.id} className='item'>
-					<ItemCard item={item} />
-					{options}
-				</div>
-			);
-		});
+		const cards = items.map(item => this.getItemCard(item, 'equipped'));
 
 		const emptySlots = maxSlots - usedSlots;
 		for (let n = 0; n < emptySlots; ++n) {
@@ -182,45 +144,7 @@ export class Items extends Component<Props, State> {
 
 		const cards = this.props.combatant.carried
 			.sort((a, b) => a.name.localeCompare(b.name))
-			.map(item => {
-				let equip: JSX.Element | string = 'Equip';
-				if (this.props.game.encounter && (this.props.combatant.faction === CombatantType.Hero)) {
-					equip = (
-						<div>Equip<br /><IconValue type={IconType.Movement} value={1} size={IconSize.Button} /></div>
-					);
-				}
-
-				let drop: JSX.Element | string = 'Drop';
-				if (this.props.game.encounter && (this.props.combatant.faction === CombatantType.Hero)) {
-					drop = (
-						<div>Drop<br /><IconValue type={IconType.Movement} value={0} size={IconSize.Button} /></div>
-					);
-				}
-
-				let options: JSX.Element | null = (
-					<div className='item-options'>
-						<button disabled={!CombatantLogic.canEquip(this.props.combatant, item)} onClick={() => this.props.equipItem(item)}>
-							{equip}
-						</button>
-						<button onClick={() => this.props.dropItem(item)}>
-							{drop}
-						</button>
-					</div>
-				);
-				if (this.props.combatant.faction !== CombatantType.Hero) {
-					options = null;
-				}
-				if (!!this.props.game.encounter && !this.props.combatant.combat.current) {
-					options = null;
-				}
-
-				return (
-					<div key={item.id} className='item'>
-						<ItemCard item={item} />
-						{options}
-					</div>
-				);
-			});
+			.map(item => this.getItemCard(item, 'carried'));
 
 		return (
 			<CardList cards={cards} />
@@ -242,27 +166,7 @@ export class Items extends Component<Props, State> {
 
 		const cards = Collections.distinct(this.props.game.items, i => i.name)
 			.sort((a, b) => a.name.localeCompare(b.name))
-			.map(item => {
-				const count = this.props.game.items.filter(i => i.name === item.name).length;
-
-				const options = (
-					<div className='item-options'>
-						<button disabled={!CombatantLogic.canEquip(this.props.combatant, item)} onClick={() => this.props.equipItem(item)}>
-							Equip
-						</button>
-						<button disabled={this.props.combatant.carried.length >= CombatantLogic.CARRY_CAPACITY} onClick={() => this.props.pickUpItem(item)}>
-							Pick Up
-						</button>
-					</div>
-				);
-
-				return (
-					<div key={item.id} className='item'>
-						<ItemCard item={item} count={count} />
-						{options}
-					</div>
-				);
-			});
+			.map(item => this.getItemCard(item, 'party', this.props.game.items.filter(i => i.name === item.name).length));
 
 		return (
 			<CardList cards={cards} />
@@ -290,26 +194,118 @@ export class Items extends Component<Props, State> {
 			return null;
 		}
 
-		const cards = items
-			.map(item => {
-				const options = (
-					<div className='item-options'>
-						<button disabled={this.props.combatant.carried.length >= CombatantLogic.CARRY_CAPACITY} onClick={() => this.props.pickUpItem(item)}>
-							<div>Pick Up<br /><IconValue type={IconType.Movement} value={1} size={IconSize.Button} /></div>
-						</button>
-					</div>
-				);
-
-				return (
-					<div key={item.id} className='item'>
-						<ItemCard item={item} />
-						{options}
-					</div>
-				);
-			});
+		const cards = items.map(item => this.getItemCard(item, 'nearby'));
 
 		return (
 			<CardList cards={cards} />
+		);
+	};
+
+	getItemCard = (item: ItemModel, section: 'equipped' | 'carried' | 'party' | 'nearby', count = 1) => {
+		let options: JSX.Element | null = null;
+		if ((this.props.combatant.type === CombatantType.Hero) && (this.props.combatant.faction === CombatantType.Hero)) {
+			if (this.props.game.encounter && !this.props.combatant.combat.current) {
+				// It's an encounter, and this is not the current combatant
+				// Can't change equipment
+			} else if (this.props.game.encounter && this.props.combatant.combat.stunned) {
+				// It's an encounter, and this combatant is stunned
+				// Can't change equipment
+			} else {
+				let equip = null;
+				if ((section === 'carried') || (section === 'party')) {
+					let equipLabel: JSX.Element | string = 'Equip';
+					if (this.props.game.encounter) {
+						equipLabel = (
+							<div>
+								Equip
+								<br />
+								<IconValue type={IconType.Movement} value={1} size={IconSize.Button} />
+							</div>
+						);
+					}
+					equip = (
+						<button disabled={!CombatantLogic.canEquip(this.props.combatant, item)} onClick={() => this.props.equipItem(item)}>
+							{equipLabel}
+						</button>
+					);
+				}
+
+				let unequip = null;
+				if (section === 'equipped') {
+					let unequipLabel: JSX.Element | string = 'Carry';
+					if (this.props.game.encounter) {
+						unequipLabel = (
+							<div>
+								Carry
+								<br />
+								<IconValue type={IconType.Movement} value={1} size={IconSize.Button} />
+							</div>
+						);
+					}
+					unequip = (
+						<button disabled={this.props.combatant.carried.length >= CombatantLogic.CARRY_CAPACITY} onClick={() => this.props.unequipItem(item)}>
+							{unequipLabel}
+						</button>
+					);
+				}
+
+				let pickUp = null;
+				if ((section === 'party') || (section === 'nearby')) {
+					let pickUpLabel: JSX.Element | string = 'Pick Up';
+					if (this.props.game.encounter) {
+						pickUpLabel = (
+							<div>
+								Pick Up
+								<br />
+								<IconValue type={IconType.Movement} value={1} size={IconSize.Button} />
+							</div>
+						);
+					}
+					pickUp = (
+						<button disabled={this.props.combatant.carried.length >= CombatantLogic.CARRY_CAPACITY} onClick={() => this.props.equipItem(item)}>
+							{pickUpLabel}
+						</button>
+					);
+				}
+
+				let drop = null;
+				if ((section === 'equipped') || (section === 'carried')) {
+					let dropLabel: JSX.Element | string = 'Drop';
+					if (this.props.game.encounter) {
+						dropLabel = (
+							<div>
+								Drop
+								<br />
+								<IconValue type={IconType.Movement} value={0} size={IconSize.Button} />
+							</div>
+						);
+					}
+					drop = (
+						<button onClick={() => this.props.dropItem(item)}>
+							{dropLabel}
+						</button>
+					);
+				}
+
+				options = (
+					<div className='item-options'>
+						{equip}
+						{unequip}
+						{pickUp}
+						{drop}
+					</div>
+				);
+			}
+		} else {
+			// Not a hero
+			// Can't change equipment
+		}
+
+		return (
+			<div key={item.id} className='item'>
+				<ItemCard item={item} count={count} />
+				{options}
+			</div>
 		);
 	};
 

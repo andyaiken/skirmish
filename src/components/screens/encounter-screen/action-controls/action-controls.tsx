@@ -47,8 +47,10 @@ export class ActionControls extends Component<Props> {
 		switch (parameter.id) {
 			case 'weapon':
 				return parameter.candidates.length > 1;
-			case 'targets':
-				return !!parameter.value;
+			case 'targets': {
+				const targetParam = parameter as ActionTargetParameterModel;
+				return !!targetParam.targets && !!targetParam.value;
+			}
 		}
 
 		return true;

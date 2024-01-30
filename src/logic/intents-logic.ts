@@ -22,6 +22,10 @@ import { Random } from '../utils/random';
 
 export class IntentsLogic {
 	static getIntents = (encounter: EncounterModel, combatant: CombatantModel) => {
+		if (combatant.combat.stunned) {
+			return null;
+		}
+
 		const paths = PathLogic.findPaths(encounter, combatant);
 		const edges = EncounterMapLogic.getMapEdges(encounter.mapSquares);
 

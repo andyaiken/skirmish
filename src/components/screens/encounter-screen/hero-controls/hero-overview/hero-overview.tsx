@@ -16,7 +16,9 @@ interface Props {
 	inspire: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	scan: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	hide: (encounter: EncounterModel, combatant: CombatantModel) => void;
+	levelUp: (combatant: CombatantModel) => void;
 	switchAllegiance: (combatant: CombatantModel) => void;
+	stun: (combatant: CombatantModel) => void;
 }
 
 export class HeroOverview extends Component<Props> {
@@ -26,18 +28,41 @@ export class HeroOverview extends Component<Props> {
 				<div className='hero-overview'>
 					<CombatStatsPanel combatant={this.props.combatant} encounter={this.props.encounter} />
 					<div className='quick-actions'>
-						<button disabled={this.props.combatant.combat.movement < 4} onClick={() => this.props.inspire(this.props.encounter, this.props.combatant)}>
+						<button
+							disabled={this.props.combatant.combat.stunned || (this.props.combatant.combat.movement < 4)}
+							onClick={() => this.props.inspire(this.props.encounter, this.props.combatant)}
+						>
 							Inspire<br /><IconValue value={4} type={IconType.Movement} size={IconSize.Button} />
 						</button>
-						<button disabled={this.props.combatant.combat.movement < 4} onClick={() => this.props.scan(this.props.encounter, this.props.combatant)}>
+						<button
+							disabled={this.props.combatant.combat.stunned || (this.props.combatant.combat.movement < 4)}
+							onClick={() => this.props.scan(this.props.encounter, this.props.combatant)}
+						>
 							Scan<br /><IconValue value={4} type={IconType.Movement} size={IconSize.Button} />
 						</button>
-						<button disabled={this.props.combatant.combat.movement < 4} onClick={() => this.props.hide(this.props.encounter, this.props.combatant)}>
+						<button
+							disabled={this.props.combatant.combat.stunned || (this.props.combatant.combat.movement < 4)}
+							onClick={() => this.props.hide(this.props.encounter, this.props.combatant)}
+						>
 							Hide<br /><IconValue value={4} type={IconType.Movement} size={IconSize.Button} />
 						</button>
 					</div>
 					<CombatantNotices combatant={this.props.combatant} />
-					{this.props.options.developer ? <button className='developer' onClick={() => this.props.switchAllegiance(this.props.combatant)}>Switch Allegiance</button> : null}
+					{
+						this.props.options.developer ?
+							<button className='developer' onClick={() => this.props.levelUp(this.props.combatant)}>Level Up</button>
+							: null
+					}
+					{
+						this.props.options.developer ?
+							<button className='developer' onClick={() => this.props.switchAllegiance(this.props.combatant)}>Switch Allegiance</button>
+							: null
+					}
+					{
+						this.props.options.developer ?
+							<button className='developer' onClick={() => this.props.stun(this.props.combatant)}>Stun / Unstun</button>
+							: null
+					}
 					{
 						this.props.options.showTips ?
 							<Expander

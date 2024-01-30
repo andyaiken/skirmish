@@ -25,7 +25,9 @@ interface Props {
 	inspire: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	scan: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	hide: (encounter: EncounterModel, combatant: CombatantModel) => void;
+	levelUp: (combatant: CombatantModel) => void;
 	switchAllegiance: (combatant: CombatantModel) => void;
+	stun: (combatant: CombatantModel) => void;
 	drinkPotion: (encounter: EncounterModel, owner: CombatantModel, drinker: CombatantModel, potion: ItemModel) => void;
 }
 
@@ -69,7 +71,9 @@ export class HeroControls extends Component<Props, State> {
 							inspire={this.props.inspire}
 							scan={this.props.scan}
 							hide={this.props.hide}
+							levelUp={this.props.levelUp}
 							switchAllegiance={this.props.switchAllegiance}
+							stun={this.props.stun}
 						/>
 					);
 					break;
@@ -116,6 +120,7 @@ export class HeroControls extends Component<Props, State> {
 										<ul>
 											<li>You can move your hero around the map with the <IconArrowsMove size={15} /> tab.</li>
 											<li>You can choose your action - you only get one per turn! Your action cards are shown below the map.</li>
+											<li>If you can&apos;t see your hero&apos;s token on the map, press their icon and the map will scroll them into view.</li>
 										</ul>
 										<p>When you&apos;re finished, select <b>End My Turn</b> above.</p>
 									</div>

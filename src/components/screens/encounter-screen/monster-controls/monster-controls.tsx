@@ -20,7 +20,7 @@ interface Props {
 	showCharacterSheet: (combatant: CombatantModel) => void;
 	levelUp: (combatant: CombatantModel) => void;
 	switchAllegiance: (combatant: CombatantModel) => void;
-	skipTurn: (combatant: CombatantModel) => void;
+	stun: (combatant: CombatantModel) => void;
 }
 
 interface State {
@@ -65,6 +65,9 @@ export class MonsterControls extends Component<Props, State> {
 						onTokenClick={this.props.showToken}
 						onDetails={this.props.showCharacterSheet}
 					/>
+					<Text type={TextType.Information}>
+						<p>{this.props.combatant.name} is a <b>monster</b>.</p>
+					</Text>
 					{
 						this.props.options.showTips ?
 							<Expander
@@ -73,7 +76,6 @@ export class MonsterControls extends Component<Props, State> {
 								}
 								content={
 									<div>
-										<p>{this.props.combatant.name} is a monster.</p>
 										<p>You can&apos;t control a monster directly; press the <b>Take Monster Turn</b> button and it will take its turn.</p>
 									</div>
 								}
@@ -88,12 +90,12 @@ export class MonsterControls extends Component<Props, State> {
 					}
 					{
 						this.props.options.developer ?
-							<button className='developer' disabled={this.state.thinking} onClick={() => this.props.switchAllegiance(this.props.combatant)}>Switch Allegiance</button>
+							<button className='developer' onClick={() => this.props.switchAllegiance(this.props.combatant)}>Switch Allegiance</button>
 							: null
 					}
 					{
 						this.props.options.developer ?
-							<button className='developer' onClick={() => this.props.skipTurn(this.props.combatant)}>Skip Turn</button>
+							<button className='developer' onClick={() => this.props.stun(this.props.combatant)}>Stun / Unstun</button>
 							: null
 					}
 					<CombatantNotices combatant={this.props.combatant} />

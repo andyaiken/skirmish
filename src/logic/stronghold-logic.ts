@@ -73,20 +73,11 @@ export class StrongholdLogic {
 	static canCharge = (structure: StructureModel) => {
 		switch (structure.type) {
 			case StructureType.Barracks:
+			case StructureType.Warehouse:
 				return false;
 		}
 
 		return true;
-	};
-
-	static getHeroLimit = (game: GameModel) => {
-		let count = 0;
-
-		game.stronghold
-			.filter(s => s.type === StructureType.Barracks)
-			.forEach(s => count += s.level * 5);
-
-		return count;
 	};
 
 	static getStructureCharges = (game: GameModel, type: StructureType) => {

@@ -78,6 +78,7 @@ export class Factory {
 		};
 
 		StrongholdLogic.addStructure(game.stronghold, StructureData.barracks());
+		StrongholdLogic.addStructure(game.stronghold, StructureData.warehouse());
 
 		return game;
 	};

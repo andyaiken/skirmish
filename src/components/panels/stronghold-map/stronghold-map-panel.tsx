@@ -32,7 +32,7 @@ export class StrongholdMapPanel extends Component<Props> {
 		const width = (Random.randomDecimal(rng) * 40) + 50;
 		const height = (Random.randomDecimal(rng) * 40) + 50;
 		const degrees = (Random.randomDecimal(rng) * 360);
-		const color = Random.randomColor(80, 120, rng);
+		const color = StrongholdLogic.canCharge(structure) ? Random.randomColor(80, 120, rng) : { r: 50, g: 50, b: 50 };
 
 		let points: { x: number, y: number }[] = [];
 		switch (Random.randomNumber(4, rng)) {

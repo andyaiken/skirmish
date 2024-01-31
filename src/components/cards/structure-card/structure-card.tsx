@@ -55,17 +55,25 @@ export class StructureCard extends Component<Props, State> {
 
 	getStructureDetails = () => {
 		switch (this.props.structure.type) {
+			case StructureType.Barracks:
+				return (
+					<Text>
+						<p>This structure provides a place for heroes to live.</p>
+						<p>You can&apos;t upgrade this structure.</p>
+					</Text>
+				);
+			case StructureType.Warehouse:
+				return (
+					<Text>
+						<p>This structure provides a place to store unused equipment.</p>
+						<p>You can&apos;t upgrade this structure.</p>
+					</Text>
+				);
 			case StructureType.Academy:
 				return (
 					<Text>
 						<p>This structure allows you to add bonus XP to your heroes.</p>
 						<p>You gain {this.props.structure.level} XP when the structure is charged.</p>
-					</Text>
-				);
-			case StructureType.Barracks:
-				return (
-					<Text>
-						<p>This structure provides living space for up to {this.props.structure.level * 5} heroes.</p>
 					</Text>
 				);
 			case StructureType.Forge:

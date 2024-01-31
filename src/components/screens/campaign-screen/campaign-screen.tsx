@@ -87,6 +87,7 @@ export class CampaignScreen extends Component<Props> {
 							game={this.props.game}
 							options={this.props.options}
 							orientation={this.props.orientation}
+							setPage={this.props.setPage}
 							buyStructure={this.props.buyStructure}
 							sellStructure={this.props.sellStructure}
 							chargeStructure={this.props.chargeStructure}

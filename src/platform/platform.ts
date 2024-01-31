@@ -2,11 +2,17 @@ import localforage from 'localforage';
 
 import { StructureData } from '../data/structure-data';
 
+import { BoonType } from '../enums/boon-type';
+import { StructureType } from '../enums/structure-type';
+
+import { BoonGenerator } from '../generators/boon-generator';
+
 import { StrongholdLogic } from '../logic/stronghold-logic';
 
 import type { GameModel } from '../models/game';
 import type { OptionsModel } from '../models/options';
 import type { PackModel } from '../models/pack';
+import type { StructureModel } from '../models/structure';
 
 import { Utils } from '../utils/utils';
 
@@ -73,6 +79,15 @@ export class Platform {
 	};
 
 	private updateGame = (game: GameModel) => {
+		game.map.regions.forEach(r => {
+			if (r.boon.type === BoonType.Structure) {
+				const s = r.boon.data as StructureModel;
+				if (!StrongholdLogic.canCharge(s)) {
+					r.boon = BoonGenerator.generateBoon([]);
+				}
+			}
+		});
+
 		game.heroes.forEach(h => {
 			if (h.faction === undefined) {
 				h.faction = h.type;
@@ -81,7 +96,15 @@ export class Platform {
 
 		if (!game.stronghold) {
 			game.stronghold = [];
+		}
+
+		if (game.stronghold.filter(s => s.type === StructureType.Barracks).length !== 1) {
+			game.stronghold = game.stronghold.filter(s => s.type !== StructureType.Barracks);
 			StrongholdLogic.addStructure(game.stronghold, StructureData.barracks());
+		}
+		if (game.stronghold.filter(s => s.type === StructureType.Warehouse).length !== 1) {
+			game.stronghold = game.stronghold.filter(s => s.type !== StructureType.Warehouse);
+			StrongholdLogic.addStructure(game.stronghold, StructureData.warehouse());
 		}
 
 		if (game.encounter) {

@@ -172,6 +172,26 @@ button {
 		color: rgb(160, 0, 0);
 		background-color: rgb(255, 240, 240);
 	}
+
+	&.link {
+		border: initial;
+		background: initial;
+		margin: initial;
+		text-transform: initial;
+		letter-spacing: initial;
+		width: initial;
+		padding: initial;
+		min-height: initial;
+		font-size: initial;
+		display: inline-flex;
+	}
+}
+
+a,
+button.link {
+	color: rgb(60, 170, 255);
+	text-decoration: underline;
+	font-weight: 600;
 }
 
 input[type="range"] {

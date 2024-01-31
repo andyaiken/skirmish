@@ -44,6 +44,12 @@
 * Gnome, Thief should be able to disable traps
 * Trapper should be able to set traps
 
+## Scrolls
+* Single-use actions
+* Created by a background (Scribe)
+* Anyone can use if carried
+* Can be found as treasure
+
 ## Lighting
 * General light level
 * Sources of light
@@ -122,7 +128,6 @@
 | XXX           | Add 1 rank in any physical skill to a hero                        |         |
 | XXX           | Add 1 rank in any mental skill to a hero                          |         |
 
-* Warehouse
 * Armory
 * Sanctuary / Sacristy / Reliquary
 * Scriptorium

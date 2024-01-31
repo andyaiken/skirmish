@@ -7,23 +7,34 @@ import type { StructureModel } from '../models/structure';
 import { Collections } from '../utils/collections';
 
 export class StructureData {
-	static academy = (): StructureModel => ({
-		id: 'structure-academy',
-		type: StructureType.Academy,
-		name: 'Academy',
-		packID: '',
-		description: 'The military academy is a place for heroes to become the best they can be.',
-		position: { x: 0, y: 0 },
-		level: 1,
-		charges: 0
-	});
-
 	static barracks = (): StructureModel => ({
 		id: 'structure-barracks',
 		type: StructureType.Barracks,
 		name: 'Barracks',
 		packID: '',
 		description: 'A place for heroes to live.',
+		position: { x: 0, y: 0 },
+		level: 0,
+		charges: 0
+	});
+
+	static warehouse = (): StructureModel => ({
+		id: 'structure-warehouse',
+		type: StructureType.Warehouse,
+		name: 'Warehouse',
+		packID: '',
+		description: 'A place to store unused equipment.',
+		position: { x: 0, y: 0 },
+		level: 0,
+		charges: 0
+	});
+
+	static academy = (): StructureModel => ({
+		id: 'structure-academy',
+		type: StructureType.Academy,
+		name: 'Academy',
+		packID: '',
+		description: 'The military academy is a place for heroes to become the best they can be.',
 		position: { x: 0, y: 0 },
 		level: 1,
 		charges: 0
@@ -141,8 +152,9 @@ export class StructureData {
 
 	static getList = (): StructureModel[] => {
 		const list = [
-			StructureData.academy(),
 			StructureData.barracks(),
+			StructureData.warehouse(),
+			StructureData.academy(),
 			StructureData.forge(),
 			StructureData.recruitment(),
 			StructureData.intelligencer(),

@@ -1,6 +1,7 @@
 import { BoonType } from '../enums/boon-type';
 
 import { GameLogic } from '../logic/game-logic';
+import { StrongholdLogic } from '../logic/stronghold-logic';
 
 import { BoonModel } from '../models/boon';
 
@@ -49,7 +50,7 @@ export class BoonGenerator {
 				data = Random.dice(5) * 5;
 				break;
 			case BoonType.Structure:
-				data = Collections.draw(GameLogic.getStructureDeck(packIDs));
+				data = Collections.draw(GameLogic.getStructureDeck(packIDs).filter(s => !StrongholdLogic.canCharge(s)));
 				break;
 		}
 

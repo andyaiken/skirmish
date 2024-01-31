@@ -262,7 +262,7 @@ export class Items extends Component<Props, State> {
 						);
 					}
 					pickUp = (
-						<button disabled={this.props.combatant.carried.length >= CombatantLogic.CARRY_CAPACITY} onClick={() => this.props.equipItem(item)}>
+						<button disabled={this.props.combatant.carried.length >= CombatantLogic.CARRY_CAPACITY} onClick={() => this.props.pickUpItem(item)}>
 							{pickUpLabel}
 						</button>
 					);

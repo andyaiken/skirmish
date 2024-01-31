@@ -3,6 +3,7 @@ import { Component } from 'react';
 
 import { BoonType } from '../../../../enums/boon-type';
 import { OrientationType } from '../../../../enums/orientation-type';
+import { PageType } from '../../../../enums/page-type';
 import { StructureType } from '../../../../enums/structure-type';
 
 import { GameLogic } from '../../../../logic/game-logic';
@@ -26,6 +27,7 @@ interface Props {
 	game: GameModel;
 	options: OptionsModel;
 	orientation: OrientationType;
+	setPage: (page: PageType) => void;
 	buyStructure: (structure: StructureModel, cost: number) => void;
 	sellStructure: (structure: StructureModel) => void;
 	chargeStructure: (structure: StructureModel) => void;
@@ -93,24 +95,28 @@ export class StrongholdPage extends Component<Props, State> {
 		const heroXP = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Academy);
 		const hero = heroXP;
 
+		if (redraws + encounters + hero === 0) {
+			return null;
+		}
+
 		return (
-			<Box label='Stronghold Benefits'>
-				<StatValue label='Max Heroes' value={StrongholdLogic.getHeroLimit(this.props.game)} />
-				{redraws > 0 ? <hr /> : null}
-				{heroRedraws > 0 ? <StatValue label='Hero Card Redraws' value={heroRedraws} /> : null}
-				{itemRedraws > 0 ? <StatValue label='Item Card Redraws' value={itemRedraws} /> : null}
-				{featureRedraws > 0 ? <StatValue label='Feature Card Redraws' value={featureRedraws} /> : null}
-				{actionRedraws > 0 ? <StatValue label='Action Card Redraws' value={actionRedraws} /> : null}
-				{magicRedraws > 0 ? <StatValue label='Magic Item Card Redraws' value={magicRedraws} /> : null}
-				{structureRedraws > 0 ? <StatValue label='Structure Card Redraws' value={structureRedraws} /> : null}
-				{encounters > 0 ? <hr /> : null}
-				{benefitMods > 0 ? <StatValue label='Encounter Benefits' value={benefitMods} /> : null}
-				{detrimentMods > 0 ? <StatValue label='Encounter Detriments' value={detrimentMods} /> : null}
-				{additionalActions > 0 ? <StatValue label='Additional Actions' value={additionalActions} /> : null}
-				{additionalHeroes > 0 ? <StatValue label='Additional Heroes' value={additionalHeroes} /> : null}
-				{hero > 0 ? <hr /> : null}
-				{heroXP > 0 ? <StatValue label='Additional XP' value={heroXP} /> : null}
-			</Box>
+			<div className='sidebar-section'>
+				<Box label='Stronghold Benefits'>
+					{heroRedraws > 0 ? <StatValue label='Hero Card Redraws' value={heroRedraws} /> : null}
+					{itemRedraws > 0 ? <StatValue label='Item Card Redraws' value={itemRedraws} /> : null}
+					{featureRedraws > 0 ? <StatValue label='Feature Card Redraws' value={featureRedraws} /> : null}
+					{actionRedraws > 0 ? <StatValue label='Action Card Redraws' value={actionRedraws} /> : null}
+					{magicRedraws > 0 ? <StatValue label='Magic Item Card Redraws' value={magicRedraws} /> : null}
+					{structureRedraws > 0 ? <StatValue label='Structure Card Redraws' value={structureRedraws} /> : null}
+					{(redraws > 0) && (encounters + hero > 0) ? <hr /> : null}
+					{benefitMods > 0 ? <StatValue label='Encounter Benefits' value={benefitMods} /> : null}
+					{detrimentMods > 0 ? <StatValue label='Encounter Detriments' value={detrimentMods} /> : null}
+					{additionalActions > 0 ? <StatValue label='Additional Actions' value={additionalActions} /> : null}
+					{additionalHeroes > 0 ? <StatValue label='Additional Heroes' value={additionalHeroes} /> : null}
+					{(hero > 0) && (redraws + encounters > 0) ? <hr /> : null}
+					{heroXP > 0 ? <StatValue label='Additional XP' value={heroXP} /> : null}
+				</Box>
+			</div>
 		);
 	};
 
@@ -118,33 +124,10 @@ export class StrongholdPage extends Component<Props, State> {
 		if (this.state.selectedStructure) {
 			const upgradeCost = StrongholdLogic.getUpgradeCost(this.state.selectedStructure);
 
+			let upgrade = null;
 			let charge = null;
 			if (StrongholdLogic.canCharge(this.state.selectedStructure)) {
-				if (this.state.selectedStructure.charges > 0) {
-					const bolts = [];
-					for (let n = 0; n < this.state.selectedStructure.level; ++n) {
-						bolts.push(n >= this.state.selectedStructure.charges ? <IconHexagon key={n} size={50} /> : <IconHexagonFilled key={n} size={50} />);
-					}
-
-					charge = (
-						<StatValue
-							orientation='vertical'
-							label='Charges Remaining'
-							value={
-								<div className='bolts'>
-									{bolts}
-								</div>
-							}
-						/>
-					);
-				}
-			}
-
-			return (
-				<div key={this.state.selectedStructure.id} className='sidebar'>
-					<div className='sidebar-section'>
-						<CardList cards={[ <StructureCard key='selected' structure={this.state.selectedStructure} /> ]} />
-					</div>
+				upgrade = (
 					<div className='sidebar-section'>
 						<div className='upgrade-section'>
 							<StatValue orientation='vertical' label='Level' value={this.state.selectedStructure.level} />
@@ -162,13 +145,62 @@ export class StrongholdPage extends Component<Props, State> {
 							<IconValue type={IconType.Money} value={100} size={IconSize.Button} />
 						</button>
 					</div>
-					{
-						charge !== null ?
-							<div className='sidebar-section'>
-								{charge}
-							</div>
-							: null
+				);
+
+				if (this.state.selectedStructure.charges > 0) {
+					const bolts = [];
+					for (let n = 0; n < this.state.selectedStructure.level; ++n) {
+						bolts.push(n >= this.state.selectedStructure.charges ? <IconHexagon key={n} size={50} /> : <IconHexagonFilled key={n} size={50} />);
 					}
+
+					charge = (
+						<div className='sidebar-section'>
+							<StatValue
+								orientation='vertical'
+								label='Charges Remaining'
+								value={
+									<div className='bolts'>
+										{bolts}
+									</div>
+								}
+							/>
+						</div>
+					);
+				}
+			} else {
+				switch (this.state.selectedStructure.type) {
+					case StructureType.Barracks:
+						upgrade = (
+							<div className='sidebar-section'>
+								<Text type={TextType.Information}>
+									<p>
+										See your heroes <button className='link' onClick={() => this.props.setPage(PageType.Team)}>here</button>.
+									</p>
+								</Text>
+							</div>
+						);
+						break;
+					case StructureType.Warehouse:
+						upgrade = (
+							<div className='sidebar-section'>
+								<Text type={TextType.Information}>
+									<p>
+										See your items <button className='link' onClick={() => this.props.setPage(PageType.Items)}>here</button>.
+									</p>
+								</Text>
+							</div>
+						);
+						break;
+				}
+			}
+
+			return (
+				<div key={this.state.selectedStructure.id} className='sidebar'>
+					<div className='sidebar-section'>
+						<CardList cards={[ <StructureCard key='selected' structure={this.state.selectedStructure} /> ]} />
+					</div>
+					{upgrade}
+					{charge}
 				</div>
 			);
 		}
@@ -213,7 +245,6 @@ export class StrongholdPage extends Component<Props, State> {
 									<div>
 										<p>The different structures have different effects:</p>
 										<ul>
-											<li>The Barracks allows you recruit more heroes.</li>
 											<li>Some structures allow you to redraw cards.</li>
 											<li>Some structures provide advantages in encounters.</li>
 										</ul>
@@ -225,9 +256,7 @@ export class StrongholdPage extends Component<Props, State> {
 							: null
 					}
 				</div>
-				<div className='sidebar-section'>
-					{this.getStrongholdBenefits()}
-				</div>
+				{this.getStrongholdBenefits()}
 				{
 					(boons !== null) || (addSection !== null) ?
 						<div className='sidebar-section'>

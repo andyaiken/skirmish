@@ -61,6 +61,17 @@ export class EncounterStartModal extends Component<Props, State> {
 		});
 	};
 
+	selectAllHeroes = () => {
+		let selected = [];
+		selected.push(...this.props.game.heroes);
+		selected = Collections.sort(selected, n => n.name);
+
+		this.setState({
+			viewMode: 'heroes',
+			selectedHeroes: selected
+		});
+	};
+
 	startEncounter = () => {
 		this.props.startEncounter(this.props.region, this.state.selectedHeroes, this.state.benefits, this.state.detriments);
 	};
@@ -200,7 +211,17 @@ export class EncounterStartModal extends Component<Props, State> {
 				{
 					(this.state.viewMode === 'heroes') ?
 						<Text type={TextType.Information}>
-							<p>Select <b>up to 5 heroes</b> from the list on the left to take part in this encounter.</p>
+							<p>
+								Select <b>up to 5 heroes</b> from the list on the left to take part in this encounter
+								{
+									(this.props.game.heroes.length <= 5) ?
+										<span>
+											&nbsp;(or <button className='link' onClick={this.selectAllHeroes}>add all heroes</button>)
+										</span>
+										: null
+								}
+								.
+							</p>
 						</Text>
 						: null
 				}

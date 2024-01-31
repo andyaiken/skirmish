@@ -43,7 +43,7 @@ export class TreasureRowPanel extends Component<Props> {
 						</div>
 					);
 				}
-			} else {
+			} else if (this.props.loot.items.length > 1) {
 				name = `${this.props.loot.items.length} items`;
 			}
 			if (this.props.loot.money > 0) {

@@ -40,7 +40,7 @@ export class BuyStructureModal extends Component<Props, State> {
 		const structures: StructureModel[] = [];
 
 		while (structures.length < 3) {
-			const deck = GameLogic.getStructureDeck(this.props.options.packIDs);
+			const deck = GameLogic.getStructureDeck(this.props.options.packIDs).filter(s => StrongholdLogic.canCharge(s));
 			structures.push(Collections.draw(deck));
 		}
 
@@ -77,7 +77,7 @@ export class BuyStructureModal extends Component<Props, State> {
 						{
 							(redraws > 0) || this.props.options.developer ?
 								<button className={this.props.options.developer ? 'developer' : ''} onClick={() => this.redraw()}>
-									Redraw Species Cards
+									Redraw Structure Cards
 									<br />
 									<IconValue type={IconType.Redraw} value={redraws} size={IconSize.Button} />
 								</button>

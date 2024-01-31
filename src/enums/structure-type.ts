@@ -1,6 +1,7 @@
 export enum StructureType {
-	Academy = 'academy',
 	Barracks = 'barracks',
+	Warehouse = 'warehouse',
+	Academy = 'academy',
 	Forge = 'forge',
 	Hall = 'hall',
 	Intelligencer = 'intelligencer',

@@ -90,8 +90,6 @@
   * monster - Demon
   * monster - Swarm of imps
   * role - Necromancer should be split into necromancer (undeath) and lifestealer (misc creepy)
-* Fae
-  * role - Arcane archer / venator / bowmage / hexbow
 * Faith
   * Clerics should be able to summon / resurrect dead heroes
 

@@ -1,7 +1,7 @@
 import { Component, createRef } from 'react';
 import {
 	IconArrowBackUpDouble,
-	IconCircleCheck,
+	IconCircleCheckFilled,
 	IconConfetti,
 	IconDots,
 	IconHelpCircle,
@@ -490,7 +490,7 @@ export class EncounterScreen extends Component<Props, State> {
 						<StatValue
 							orientation='vertical'
 							label='Action'
-							value={actionTaken ? <IconCircleCheck className='action-taken' size={39} /> : <IconDots size={39} />}
+							value={actionTaken ? <IconCircleCheckFilled className='action-taken' size={39} /> : <IconDots size={39} />}
 						/>
 						<button className={actionTaken ? 'primary action' : 'action'} onClick={() => this.endTurn()}>End My Turn</button>
 					</div>

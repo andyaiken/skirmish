@@ -32,7 +32,7 @@ export class CombatStatsPanel extends Component<Props> {
 		}
 		wounds.reverse();
 
-		const woundsPerRow = (wounds.length === 4) ? 2 : 3;
+		const woundsPerRow = (wounds.length === 5) || (wounds.length === 6) ? 3 : 4;
 		const woundsInRows: JSX.Element[] = [];
 		while (wounds.length > woundsPerRow) {
 			woundsInRows.push(<div key={woundsInRows.length} className='wounds'>{wounds.slice(0, woundsPerRow)}</div>);

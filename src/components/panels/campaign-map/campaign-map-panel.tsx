@@ -97,7 +97,7 @@ export class CampaignMapPanel extends Component<Props> {
 				case 'edge':
 				case 'firefox':
 					dx = 0.24;
-					dy = 0.03;
+					dy = 0.04;
 					break;
 				case 'safari':
 					dx = -0.005;

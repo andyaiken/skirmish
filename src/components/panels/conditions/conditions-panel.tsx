@@ -1,5 +1,5 @@
+import { IconCircleMinus, IconCirclePlus } from '@tabler/icons-react';
 import { Component } from 'react';
-import { IconNavigationFilled } from '@tabler/icons-react';
 
 import { TraitType } from '../../../enums/trait-type';
 
@@ -26,11 +26,9 @@ export class ConditionsPanel extends Component<Props> {
 		return Collections.distinct(conditions, c => ConditionLogic.getConditionDescription(c))
 			.map(c => {
 				const set = this.props.combatant.combat.conditions.filter(con => ConditionLogic.getConditionDescription(con) === ConditionLogic.getConditionDescription(c));
-				const color = ConditionLogic.getConditionIsBeneficial(c) ? 'darkgreen' : 'darkred';
-				const rotate = ConditionLogic.getConditionIsBeneficial(c) ? '0deg': '180deg';
 				return (
 					<div key={c.id} className='condition-row'>
-						<IconNavigationFilled size={15} style={{ color: color, rotate: rotate }}/>
+						{ConditionLogic.getConditionIsBeneficial(c) ? <IconCirclePlus size={15} style={{ color: 'darkgreen' }} /> : <IconCircleMinus size={15} style={{ color: 'darkred' }} />}
 						<div className='details'>
 							<StatValue
 								orientation='compact'
@@ -46,11 +44,9 @@ export class ConditionsPanel extends Component<Props> {
 	getAuras = () => {
 		return EncounterLogic.getAuraConditions(this.props.encounter, this.props.combatant)
 			.map(c => {
-				const color = ConditionLogic.getConditionIsBeneficial(c) ? 'darkgreen' : 'darkred';
-				const rotate = ConditionLogic.getConditionIsBeneficial(c) ? '0deg': '180deg';
 				return (
 					<div key={c.id} className='condition-row'>
-						<IconNavigationFilled size={15} style={{ color: color, rotate: rotate }}/>
+						{ConditionLogic.getConditionIsBeneficial(c) ? <IconCirclePlus size={15} style={{ color: 'darkgreen' }} /> : <IconCircleMinus size={15} style={{ color: 'darkred' }} />}
 						<div className='details'>
 							<StatValue
 								orientation='compact'

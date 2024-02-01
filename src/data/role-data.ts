@@ -1414,6 +1414,193 @@ export class RoleData {
 		]
 	});
 
+	static hexbow = (): RoleModel => ({
+		id: 'role-hexbow',
+		name: 'Hexbow',
+		packID: PackData.fae().id,
+		description: 'One who melds deadly aim with raw magical power.',
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('hexbow-start-1', TraitType.Speed, 1),
+			FeatureLogic.createSkillFeature('hexbow-start-2', SkillType.Weapon, 2),
+			FeatureLogic.createProficiencyFeature('hexbow-start-3', ItemProficiencyType.RangedWeapons),
+			FeatureLogic.createProficiencyFeature('hexbow-start-4', ItemProficiencyType.LightArmor)
+		],
+		features: [
+			FeatureLogic.createTraitFeature('hexbow-feature-1', TraitType.Speed, 1),
+			FeatureLogic.createSkillFeature('hexbow-feature-2', SkillType.Weapon, 2),
+			FeatureLogic.createDamageCategoryBonusFeature('hexbow-feature-3', DamageCategoryType.Energy, 1)
+		],
+		actions: [
+			{
+				id: 'hexbow-action-1',
+				name: 'Fire Shot',
+				prerequisites: [
+					ActionPrerequisites.rangedWeapon()
+				],
+				parameters: [
+					ActionWeaponParameters.ranged(),
+					ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: true,
+						skill: SkillType.Weapon,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealWeaponDamage(),
+							ActionEffects.dealDamage(DamageType.Fire, 2),
+							ActionEffects.addCondition(ConditionLogic.createAutoDamageCondition(TraitType.Endurance, 5, DamageType.Fire))
+						]
+					})
+				]
+			},
+			{
+				id: 'hexbow-action-2',
+				name: 'Charged Shot',
+				prerequisites: [
+					ActionPrerequisites.rangedWeapon()
+				],
+				parameters: [
+					ActionWeaponParameters.ranged(),
+					ActionOriginParameters.weapon(),
+					ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 3)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: true,
+						skill: SkillType.Weapon,
+						trait: TraitType.Endurance,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealWeaponDamage(),
+							ActionEffects.dealDamage(DamageType.Electricity, 2),
+							ActionEffects.stun()
+						]
+					})
+				]
+			},
+			{
+				id: 'hexbow-action-3',
+				name: 'Freezing Shot',
+				prerequisites: [
+					ActionPrerequisites.rangedWeapon()
+				],
+				parameters: [
+					ActionWeaponParameters.ranged(),
+					ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: true,
+						skill: SkillType.Weapon,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealWeaponDamage(),
+							ActionEffects.dealDamage(DamageType.Cold, 2),
+							ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Endurance, 5, TraitType.Speed))
+						]
+					})
+				]
+			},
+			{
+				id: 'hexbow-action-4',
+				name: 'Web Shot',
+				prerequisites: [
+					ActionPrerequisites.rangedWeapon()
+				],
+				parameters: [
+					ActionWeaponParameters.ranged(),
+					ActionOriginParameters.weapon(),
+					ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 3)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: true,
+						skill: SkillType.Weapon,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Endurance, 5)),
+							ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Endurance, 5, TraitType.Speed))
+						]
+					})
+				]
+			},
+			{
+				id: 'hexbow-action-5',
+				name: 'Storm Shot',
+				prerequisites: [],
+				parameters: [
+					ActionWeaponParameters.ranged(),
+					ActionOriginParameters.weapon(),
+					ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 3)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: true,
+						skill: SkillType.Weapon,
+						trait: TraitType.Endurance,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealWeaponDamage(),
+							ActionEffects.dealDamage(DamageType.Electricity, 1),
+							ActionEffects.forceMovement(MovementType.Push, 5),
+							ActionEffects.knockDown()
+						]
+					})
+				]
+			},
+			{
+				id: 'hexbow-action-6',
+				name: 'Ringing Shot',
+				prerequisites: [
+					ActionPrerequisites.rangedWeapon()
+				],
+				parameters: [
+					ActionWeaponParameters.ranged(),
+					ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: true,
+						skill: SkillType.Weapon,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealWeaponDamage(),
+							ActionEffects.dealDamage(DamageType.Sonic, 2),
+							ActionEffects.stun()
+						]
+					})
+				]
+			},
+			{
+				id: 'hexbow-action-7',
+				name: 'Lasso Shot',
+				prerequisites: [
+					ActionPrerequisites.rangedWeapon()
+				],
+				parameters: [
+					ActionWeaponParameters.ranged(),
+					ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: true,
+						skill: SkillType.Weapon,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.forceMovement(MovementType.BesideTarget, 1)
+						]
+					})
+				]
+			}
+		]
+	});
+
 	static luckweaver = (): RoleModel => ({
 		id: 'role-luckweaver',
 		name: 'Luckweaver',
@@ -2537,171 +2724,6 @@ export class RoleData {
 						hit: [
 							ActionEffects.dealWeaponDamage(),
 							ActionEffects.dealDamage(DamageType.Electricity, 1)
-						]
-					})
-				]
-			}
-		]
-	});
-
-	static hexbow = (): RoleModel => ({
-		id: 'role-hexbow',
-		name: 'Hexbow',
-		packID: PackData.fae().id,
-		description: 'One who melds deadly aim with magical power.',
-		startingFeatures: [
-			FeatureLogic.createTraitFeature('hexbow-start-1', TraitType.Speed, 1),
-			FeatureLogic.createSkillFeature('hexbow-start-2', SkillType.Weapon, 2),
-			FeatureLogic.createProficiencyFeature('hexbow-start-3', ItemProficiencyType.RangedWeapons),
-			FeatureLogic.createProficiencyFeature('hexbow-start-4', ItemProficiencyType.LightArmor)
-		],
-		features: [
-			FeatureLogic.createTraitFeature('hexbow-feature-1', TraitType.Speed, 1),
-			FeatureLogic.createSkillFeature('hexbow-feature-2', SkillType.Weapon, 2),
-			FeatureLogic.createDamageCategoryBonusFeature('hexbow-feature-3', DamageCategoryType.Energy, 1)
-		],
-		actions: [
-			{
-				id: 'hexbow-action-1',
-				name: 'Fire Shot',
-				prerequisites: [
-					ActionPrerequisites.rangedWeapon()
-				],
-				parameters: [
-					ActionWeaponParameters.ranged(),
-					ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
-				],
-				effects: [
-					ActionEffects.attack({
-						weapon: true,
-						skill: SkillType.Weapon,
-						trait: TraitType.Speed,
-						skillBonus: 0,
-						hit: [
-							ActionEffects.dealWeaponDamage(),
-							ActionEffects.dealDamage(DamageType.Fire, 2),
-							ActionEffects.addCondition(ConditionLogic.createAutoDamageCondition(TraitType.Endurance, 5, DamageType.Fire))
-						]
-					})
-				]
-			},
-			{
-				id: 'hexbow-action-2',
-				name: 'Charged Shot',
-				prerequisites: [
-					ActionPrerequisites.rangedWeapon()
-				],
-				parameters: [
-					ActionWeaponParameters.ranged(),
-					ActionOriginParameters.weapon(),
-					ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 3)
-				],
-				effects: [
-					ActionEffects.attack({
-						weapon: true,
-						skill: SkillType.Weapon,
-						trait: TraitType.Endurance,
-						skillBonus: 0,
-						hit: [
-							ActionEffects.dealWeaponDamage(),
-							ActionEffects.dealDamage(DamageType.Electricity, 2),
-							ActionEffects.stun()
-						]
-					})
-				]
-			},
-			{
-				id: 'hexbow-action-3',
-				name: 'Freezing Shot',
-				prerequisites: [
-					ActionPrerequisites.rangedWeapon()
-				],
-				parameters: [
-					ActionWeaponParameters.ranged(),
-					ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
-				],
-				effects: [
-					ActionEffects.attack({
-						weapon: true,
-						skill: SkillType.Weapon,
-						trait: TraitType.Speed,
-						skillBonus: 0,
-						hit: [
-							ActionEffects.dealWeaponDamage(),
-							ActionEffects.dealDamage(DamageType.Cold, 2),
-							ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Endurance, 5, TraitType.Speed))
-						]
-					})
-				]
-			},
-			{
-				id: 'hexbow-action-4',
-				name: 'Web Shot',
-				prerequisites: [
-					ActionPrerequisites.rangedWeapon()
-				],
-				parameters: [
-					ActionWeaponParameters.ranged(),
-					ActionOriginParameters.weapon(),
-					ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 3)
-				],
-				effects: [
-					ActionEffects.attack({
-						weapon: true,
-						skill: SkillType.Weapon,
-						trait: TraitType.Speed,
-						skillBonus: 0,
-						hit: [
-							ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Endurance, 5)),
-							ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Endurance, 5, TraitType.Speed))
-						]
-					})
-				]
-			},
-			{
-				id: 'hexbow-action-5',
-				name: 'Storm Shot',
-				prerequisites: [],
-				parameters: [
-					ActionWeaponParameters.ranged(),
-					ActionOriginParameters.weapon(),
-					ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 3)
-				],
-				effects: [
-					ActionEffects.attack({
-						weapon: true,
-						skill: SkillType.Weapon,
-						trait: TraitType.Endurance,
-						skillBonus: 0,
-						hit: [
-							ActionEffects.dealWeaponDamage(),
-							ActionEffects.dealDamage(DamageType.Electricity, 1),
-							ActionEffects.forceMovement(MovementType.Push, 5),
-							ActionEffects.knockDown()
-						]
-					})
-				]
-			},
-			{
-				id: 'hexbow-action-6',
-				name: 'Ringing Shot',
-				prerequisites: [
-					ActionPrerequisites.rangedWeapon()
-				],
-				parameters: [
-					ActionWeaponParameters.ranged(),
-					ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
-				],
-				effects: [
-					ActionEffects.attack({
-						weapon: true,
-						skill: SkillType.Weapon,
-						trait: TraitType.Speed,
-						skillBonus: 0,
-						hit: [
-							ActionEffects.dealWeaponDamage(),
-							ActionEffects.dealDamage(DamageType.Sonic, 2),
-							ActionEffects.stun()
 						]
 					})
 				]

@@ -6,12 +6,12 @@ import {
 	IconDots,
 	IconHelpCircle,
 	IconHelpCircleFilled,
-	IconLayoutBottombarCollapse,
-	IconLayoutBottombarExpand,
-	IconLayoutSidebarLeftCollapse,
-	IconLayoutSidebarLeftExpand,
-	IconLayoutSidebarRightCollapse,
-	IconLayoutSidebarRightExpand,
+	IconLayoutBottombarCollapseFilled,
+	IconLayoutBottombarExpandFilled,
+	IconLayoutSidebarLeftCollapseFilled,
+	IconLayoutSidebarLeftExpandFilled,
+	IconLayoutSidebarRightCollapseFilled,
+	IconLayoutSidebarRightExpandFilled,
 	IconListDetails,
 	IconNotes,
 	IconRotate2,
@@ -132,10 +132,10 @@ export class EncounterScreen extends Component<Props, State> {
 		EncounterLogLogic.handleLogMessage = (messages: LogMessageModel[]) => {
 			toast.custom(t => {
 				setTimeout(() => {
-					toast.dismiss(t.id);
+					toast.remove(t.id);
 				}, 5 * 1000);
 				return (
-					<div key={t.id} className='skirmish-notification' onClick={e => { e.stopPropagation(); toast.dismiss(t.id); }}>
+					<div key={t.id} className='skirmish-notification' onClick={e => { e.stopPropagation(); toast.remove(t.id); }}>
 						{messages.map((m, n) => <div key={n}>{EncounterLogLogic.getLogMessage(this.props.encounter, m)}</div>)}
 					</div>
 				);
@@ -145,6 +145,7 @@ export class EncounterScreen extends Component<Props, State> {
 
 	componentWillUnmount = () => {
 		EncounterLogLogic.handleLogMessage = null;
+		toast.remove();
 	};
 
 	mapRef = createRef<EncounterMapPanel>();
@@ -546,13 +547,13 @@ export class EncounterScreen extends Component<Props, State> {
 				<div className='encounter-toolbar'>
 					<div className='icon-section'>
 						<button className='icon-btn' title='Left Panel' onClick={() => this.toggleLeftPanel()}>
-							{this.state.showLeftPanel ? <IconLayoutSidebarLeftCollapse /> : <IconLayoutSidebarLeftExpand />}
+							{this.state.showLeftPanel ? <IconLayoutSidebarLeftCollapseFilled /> : <IconLayoutSidebarLeftExpandFilled />}
 						</button>
 						<button className='icon-btn' title='Bottom Panel' onClick={() => this.toggleBottomPanel()}>
-							{this.state.showBottomPanel ? <IconLayoutBottombarCollapse /> : <IconLayoutBottombarExpand />}
+							{this.state.showBottomPanel ? <IconLayoutBottombarCollapseFilled /> : <IconLayoutBottombarExpandFilled />}
 						</button>
 						<button className='icon-btn' title='Right Panal' onClick={() => this.toggleRightPanel()}>
-							{this.state.showRightPanel ? <IconLayoutSidebarRightCollapse /> : <IconLayoutSidebarRightExpand />}
+							{this.state.showRightPanel ? <IconLayoutSidebarRightCollapseFilled /> : <IconLayoutSidebarRightExpandFilled />}
 						</button>
 					</div>
 					<div className='icon-section'>

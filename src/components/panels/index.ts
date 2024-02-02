@@ -3,6 +3,7 @@ import { CombatStatsPanel } from './combat-stats/combat-stats-panel';
 import { CombatantNotices } from './combatant-notices/combatant-notices';
 import { CombatantRowPanel } from './combatant-row/combatant-row-panel';
 import { ConditionsPanel } from './conditions/conditions-panel';
+import { DirectionIndicatorPanel } from './direction-indicator/direction-indicator-panel';
 import { DirectionPanel } from './direction/direction-panel';
 import { EncounterLogPanel } from './encounter-log/encounter-log-panel';
 import { EncounterMapPanel } from './encounter-map/encounter-map-panel';
@@ -19,6 +20,7 @@ export {
 	CombatantRowPanel,
 	ConditionsPanel,
 	DirectionPanel,
+	DirectionIndicatorPanel,
 	EncounterLogPanel,
 	EncounterMapPanel,
 	InitiativeListPanel,

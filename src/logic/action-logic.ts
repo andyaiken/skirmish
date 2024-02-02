@@ -1572,6 +1572,11 @@ export class ActionLogic {
 			}
 		}
 
+		let countAndType = `${count} ${type}`;
+		if (target.targets && (target.targets.count === Number.MAX_VALUE) && (target.targets.type === ActionTargetType.Combatants)) {
+			countAndType = 'everyone';
+		}
+
 		let str = '';
 		switch (target.range.type) {
 			case ActionRangeType.Self:
@@ -1581,13 +1586,13 @@ export class ActionLogic {
 				str = `${count} adjacent ${type}`;
 				break;
 			case ActionRangeType.Burst:
-				str = `${count} ${type} within ${target.range.radius} squares`;
+				str = `${countAndType} within ${target.range.radius} squares`;
 				break;
 			case ActionRangeType.Weapon:
 				if (target.range.radius > 0) {
-					str = `${count} ${type} within weapon range +${target.range.radius}`;
+					str = `${countAndType} within weapon range +${target.range.radius}`;
 				} else {
-					str = `${count} ${type} within weapon range`;
+					str = `${countAndType} within weapon range`;
 				}
 				break;
 		}
@@ -1630,6 +1635,65 @@ export class ActionLogic {
 		});
 
 		return range;
+	};
+
+	static isParameterSet = (parameter: ActionParameterModel) => {
+		let parameterSet = true;
+
+		if (parameter.value) {
+			switch (parameter.id) {
+				case 'weapon': {
+					const weaponParam = parameter as ActionWeaponParameterModel;
+					parameterSet = !!weaponParam.value;
+					break;
+				}
+				case 'origin': {
+					const originParam = parameter as ActionOriginParameterModel;
+					if (originParam.value) {
+						const list = originParam.value as { x: number, y: number }[];
+						parameterSet = list.length > 0;
+					} else {
+						parameterSet = false;
+					}
+					break;
+				}
+				case 'targets': {
+					const targetParam = parameter as ActionTargetParameterModel;
+					if (targetParam.targets) {
+						switch (targetParam.targets.type) {
+							case ActionTargetType.Combatants:
+							case ActionTargetType.Enemies:
+							case ActionTargetType.Allies: {
+								const list = targetParam.value as string[];
+								if (!list || (list.length === 0)) {
+									parameterSet = false;
+								}
+								break;
+							}
+							case ActionTargetType.Squares: {
+								const list = targetParam.value as { x: number, y: number }[];
+								if (!list || (list.length === 0)) {
+									parameterSet = false;
+								}
+								break;
+							}
+							case ActionTargetType.Walls: {
+								const list = targetParam.value as { x: number, y: number }[];
+								if (!list || (list.length === 0)) {
+									parameterSet = false;
+								}
+								break;
+							}
+						}
+					}
+					break;
+				}
+			}
+		} else {
+			parameterSet = false;
+		}
+
+		return parameterSet;
 	};
 
 	static checkWeaponParameter = (parameter: ActionWeaponParameterModel, combatant: CombatantModel) => {

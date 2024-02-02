@@ -168,6 +168,13 @@ export class EncounterMapLogic {
 		return adj;
 	};
 
+	static getCenter = (squares: { x: number, y: number }[]) => {
+		return {
+			x: Collections.mean(squares, s => s.x),
+			y: Collections.mean(squares, s => s.y)
+		};
+	};
+
 	static getDistanceAny = (aSquares: { x: number, y: number }[], bSquares: { x: number, y: number }[]) => {
 		const distances = aSquares.flatMap(a => bSquares.map(b => EncounterMapLogic.getDistance(a, b)));
 		return Math.min(...distances);

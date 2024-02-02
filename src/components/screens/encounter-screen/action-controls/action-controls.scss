@@ -31,37 +31,7 @@
 			display: flex;
     		flex-direction: column;
     		gap: 5px;
-			max-width: 350px;
-
-			.action-parameter {
-				border: 2px solid rgb(220, 220, 220);
-				border-radius: 5px;
-				background-color: rgb(255, 255, 255);
-				padding: 0 10px 10px 10px;
-
-				.action-parameter-controls {
-					display: flex;
-					flex-direction: row;
-					align-items: center;
-					justify-content: flex-start;
-					flex-wrap: wrap;
-					gap: 5px;
-
-					.square-indicator {
-						border: 1px solid rgb(220, 220, 220);
-						border-radius: 5px;
-						background-color: rgb(255, 255, 255);
-						padding: 5px;
-						display: inline-flex;
-						align-items: center;
-						gap: 3px;
-					}
-
-					.map-btn {
-						width: 40px;
-					}
-				}
-			}
+			max-width: 370px;
 
 			.button-row {
 				display: flex;

@@ -1,0 +1,38 @@
+.action-parameter {
+	border: 2px solid rgb(220, 220, 220);
+	border-radius: 5px;
+	background-color: rgb(255, 255, 255);
+	padding: 0 10px 10px 10px;
+
+	&.not-set {
+		border-color: rgb(160, 0, 0);
+		color: rgb(160, 0, 0);
+		background-color: rgb(255, 240, 240);
+	}
+
+	.action-parameter-controls {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: flex-start;
+		flex-wrap: wrap;
+		gap: 8px;
+
+		&.secondary {
+			flex-direction: column;
+
+			.direction-panel {
+				margin-top: 10px;
+			}
+		}
+
+		.icon-btn {
+			width: 110px;
+			height: 40px;
+			flex-direction: row;
+			justify-content: flex-start;
+			gap: 5px;
+			padding: 0 5px;
+		}
+	}
+}

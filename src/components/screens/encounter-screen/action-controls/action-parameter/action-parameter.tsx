@@ -1,4 +1,4 @@
-import { IconArrowsMove, IconViewfinder } from '@tabler/icons-react';
+import { IconArrowsMove, IconDotsCircleHorizontal, IconViewfinder } from '@tabler/icons-react';
 import { Component } from 'react';
 
 import { ActionTargetType } from '../../../../../enums/action-target-type';
@@ -24,25 +24,39 @@ interface Props {
 	combatant: CombatantModel;
 	isSelectedOnMap: boolean;
 	selectOnMap: (parameter: ActionParameterModel) => void;
-	setActionParameterValue: (parameter: ActionParameterModel, value: unknown) => void;
-	setOriginParameterValue: (parameter: ActionParameterModel, square: { x: number, y: number }) => void;
+	setWeaponParameterValue: (parameter: ActionWeaponParameterModel, wesponID: string) => void;
+	setOriginParameterValue: (parameter: ActionOriginParameterModel, square: { x: number, y: number }) => void;
 }
 
 interface State {
-	showMoveControl: boolean;
+	showOriginMoveControl: boolean;
+	showTargetSelectControl: boolean;
 }
 
 export class ActionParameter extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
-			showMoveControl: false
+			showOriginMoveControl: false,
+			showTargetSelectControl: false
 		};
 	}
 
-	toggleMoveControls = () => {
+	toggleOriginMoveControl = () => {
 		this.setState({
-			showMoveControl: !this.state.showMoveControl
+			showOriginMoveControl: !this.state.showOriginMoveControl,
+			showTargetSelectControl: false
+		}, () => {
+			if (this.props.isSelectedOnMap) {
+				this.props.selectOnMap(this.props.parameter);
+			}
+		});
+	};
+
+	toggleTargetSelectControl = () => {
+		this.setState({
+			showOriginMoveControl: false,
+			showTargetSelectControl: !this.state.showTargetSelectControl
 		}, () => {
 			if (this.props.isSelectedOnMap) {
 				this.props.selectOnMap(this.props.parameter);
@@ -52,7 +66,8 @@ export class ActionParameter extends Component<Props, State> {
 
 	toggleSelectedOnMap = () => {
 		this.setState({
-			showMoveControl: false
+			showOriginMoveControl: false,
+			showTargetSelectControl: false
 		}, () => {
 			this.props.selectOnMap(this.props.parameter);
 		});
@@ -148,10 +163,10 @@ export class ActionParameter extends Component<Props, State> {
 						);
 						controls.push(
 							<button
-								key='move'
-								className={`icon-btn ${this.state.showMoveControl ? 'checked' : ''}`}
+								key='origin-move'
+								className={`icon-btn ${this.state.showOriginMoveControl ? 'checked' : ''}`}
 								title='Move Origin Square'
-								onClick={this.toggleMoveControls}
+								onClick={this.toggleOriginMoveControl}
 							>
 								<IconArrowsMove />
 								Move
@@ -177,7 +192,7 @@ export class ActionParameter extends Component<Props, State> {
 					// There are multiple possible squares
 					controls.push(
 						<button
-							key='change'
+							key='origin-select'
 							className={`icon-btn ${this.props.isSelectedOnMap ? 'checked' : ''}`}
 							title='Select Origin Square'
 							onClick={this.toggleSelectedOnMap}
@@ -213,7 +228,8 @@ export class ActionParameter extends Component<Props, State> {
 									);
 								}
 							} else {
-								// Targets a specific number of candidates
+								// Targets (up to) a specific number of candidates
+								// TODO: If showing target select control, allow user to click to deselect
 								controls.push(
 									...list
 										.map(id => EncounterLogic.getCombatant(this.props.encounter, id) as CombatantModel)
@@ -229,11 +245,32 @@ export class ActionParameter extends Component<Props, State> {
 								}
 								if (targetParam.candidates.length > targetParam.targets.count) {
 									// There are more possible targets than selected targets
+									if (this.state.showTargetSelectControl) {
+										// TODO: Allow user to click to add this to selection
+										const candidates = targetParam.candidates as string[];
+										controls.push(
+											...candidates
+												.filter(id => !list.includes(id))
+												.map(id => EncounterLogic.getCombatant(this.props.encounter, id) as CombatantModel)
+												.map(candidate => <Tag key={candidate.id}>{candidate.name}</Tag>)
+										);
+									}
 									controls.push(
 										<button
-											key='change'
+											key='combatant-all'
+											className={`icon-btn ${this.state.showTargetSelectControl ? 'checked' : ''}`}
+											title='Show all targets'
+											onClick={this.toggleTargetSelectControl}
+										>
+											<IconDotsCircleHorizontal />
+											See All
+										</button>
+									);
+									controls.push(
+										<button
+											key='combatant-select'
 											className={`icon-btn ${this.props.isSelectedOnMap ? 'checked' : ''}`}
-											title={`Select ${targetParam.targets.type.toLowerCase()}`}
+											title='Select targets'
 											onClick={this.toggleSelectedOnMap}
 										>
 											<IconViewfinder />
@@ -270,7 +307,7 @@ export class ActionParameter extends Component<Props, State> {
 									// There are more possible targets than selected targets
 									controls.push(
 										<button
-											key='change'
+											key='square-select'
 											className={`icon-btn ${this.props.isSelectedOnMap ? 'checked' : ''}`}
 											title='Select Squares'
 											onClick={() => this.props.selectOnMap(targetParam)}
@@ -309,7 +346,7 @@ export class ActionParameter extends Component<Props, State> {
 									// There are more possible targets than selected targets
 									controls.push(
 										<button
-											key='change'
+											key='wall-select'
 											className={`icon-btn ${this.props.isSelectedOnMap ? 'checked' : ''}`}
 											title='Select Walls'
 											onClick={() => this.props.selectOnMap(targetParam)}
@@ -348,7 +385,7 @@ export class ActionParameter extends Component<Props, State> {
 									.map(item => ({ id: item.id, display: item.name }))
 							}
 							selectedID={weaponParam.value as string}
-							onSelect={id => this.props.setActionParameterValue(this.props.parameter, id)}
+							onSelect={id => this.props.setWeaponParameterValue(weaponParam, id)}
 						/>
 					);
 				}
@@ -356,54 +393,48 @@ export class ActionParameter extends Component<Props, State> {
 			}
 			case 'origin': {
 				const originParam = this.props.parameter as ActionOriginParameterModel;
-				if (originParam.candidates.length > 1) {
-					if (this.props.isSelectedOnMap) {
-						controls.push(
-							<Text key='origin-select' type={TextType.Information}>
-								<p>Select a square on the map, then press the <b>Select</b> button again to confirm your selection.</p>
-							</Text>
-						);
-					}
+				if (this.props.isSelectedOnMap) {
+					controls.push(
+						<Text key='origin-select' type={TextType.Information}>
+							<p>Select a square on the map, then press the <b>Select</b> button again to confirm your selection.</p>
+						</Text>
+					);
 				}
-				if (this.state.showMoveControl) {
+				if (this.state.showOriginMoveControl) {
 					controls.push(this.getMoveControl(originParam));
 				}
 				break;
 			}
 			case 'targets': {
 				const targetParam = this.props.parameter as ActionTargetParameterModel;
-				if (targetParam.targets) {
-					if (targetParam.targets.count !== Number.MAX_VALUE) {
-						if (targetParam.candidates.length > targetParam.targets.count) {
-							if (this.props.isSelectedOnMap) {
-								switch (targetParam.targets.type) {
-									case ActionTargetType.Combatants:
-									case ActionTargetType.Enemies:
-									case ActionTargetType.Allies: {
-										controls.push(
-											<Text key='target-select-combatant' type={TextType.Information}>
-												<p>Select targets on the map, then press the <b>Select</b> button again to confirm your selection.</p>
-											</Text>
-										);
-										break;
-									}
-									case ActionTargetType.Squares: {
-										controls.push(
-											<Text key='target-select-square' type={TextType.Information}>
-												<p>Select squares on the map, then press the <b>Select</b> button again to confirm your selection.</p>
-											</Text>
-										);
-										break;
-									}
-									case ActionTargetType.Walls: {
-										controls.push(
-											<Text key='target-select-wall' type={TextType.Information}>
-												<p>Select walls on the map, then press the <b>Select</b> button again to confirm your selection.</p>
-											</Text>
-										);
-										break;
-									}
-								}
+				if (this.props.isSelectedOnMap) {
+					if (targetParam.targets) {
+						switch (targetParam.targets.type) {
+							case ActionTargetType.Combatants:
+							case ActionTargetType.Enemies:
+							case ActionTargetType.Allies: {
+								controls.push(
+									<Text key='target-select-combatant' type={TextType.Information}>
+										<p>Select targets on the map, then press the <b>Select</b> button again to confirm your selection.</p>
+									</Text>
+								);
+								break;
+							}
+							case ActionTargetType.Squares: {
+								controls.push(
+									<Text key='target-select-square' type={TextType.Information}>
+										<p>Select squares on the map, then press the <b>Select</b> button again to confirm your selection.</p>
+									</Text>
+								);
+								break;
+							}
+							case ActionTargetType.Walls: {
+								controls.push(
+									<Text key='target-select-wall' type={TextType.Information}>
+										<p>Select walls on the map, then press the <b>Select</b> button again to confirm your selection.</p>
+									</Text>
+								);
+								break;
 							}
 						}
 					}

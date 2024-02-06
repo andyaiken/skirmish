@@ -2,6 +2,7 @@ export class Format {
 	static capitalize = (text: string) => {
 		return text
 			.split(' ')
+			.filter(token => token.length > 0)
 			.map(token => {
 				if (token.length === 0) {
 					return '';

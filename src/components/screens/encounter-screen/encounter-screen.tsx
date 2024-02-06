@@ -622,7 +622,9 @@ export class EncounterScreen extends Component<Props, State> {
 							selectAction={this.selectAction}
 							deselectAction={this.props.deselectAction}
 							setActionParameter={this.setActionParameter}
-							setActionParameterValue={this.props.setActionParameterValue}
+							setWeaponParameterValue={(param, weaponID) => {
+								this.props.setActionParameterValue(param, weaponID);
+							}}
 							setOriginParameterValue={(param, sq) => {
 								param.value = [ sq ];
 								const combatant = this.props.encounter.combatants.find(c => c.combat.current) as CombatantModel;

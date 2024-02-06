@@ -7,7 +7,7 @@ import { ActionLogic, ActionPrerequisites } from '../../../../logic/action-logic
 import { CombatantLogic } from '../../../../logic/combatant-logic';
 import { StrongholdLogic } from '../../../../logic/stronghold-logic';
 
-import type { ActionModel, ActionParameterModel, ActionTargetParameterModel } from '../../../../models/action';
+import type { ActionModel, ActionOriginParameterModel, ActionParameterModel, ActionTargetParameterModel, ActionWeaponParameterModel } from '../../../../models/action';
 import type { CombatantModel } from '../../../../models/combatant';
 import type { EncounterModel } from '../../../../models/encounter';
 import type { GameModel } from '../../../../models/game';
@@ -30,8 +30,8 @@ interface Props {
 	selectAction: (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => void;
 	deselectAction: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	setActionParameter: (parameter: ActionParameterModel) => void;
-	setActionParameterValue: (parameter: ActionParameterModel, value: unknown) => void;
-	setOriginParameterValue: (parameter: ActionParameterModel, square: { x: number, y: number }) => void;
+	setWeaponParameterValue: (parameter: ActionWeaponParameterModel, weaponID: string) => void;
+	setOriginParameterValue: (parameter: ActionOriginParameterModel, square: { x: number, y: number }) => void;
 	runAction: (encounter: EncounterModel, combatant: CombatantModel) => void;
 }
 
@@ -145,7 +145,7 @@ export class ActionControls extends Component<Props> {
 						combatant={this.props.combatant}
 						isSelectedOnMap={this.props.currentActionParameter === parameter}
 						selectOnMap={this.props.setActionParameter}
-						setActionParameterValue={this.props.setActionParameterValue}
+						setWeaponParameterValue={this.props.setWeaponParameterValue}
 						setOriginParameterValue={this.props.setOriginParameterValue}
 					/>
 				);

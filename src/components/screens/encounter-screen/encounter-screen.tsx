@@ -40,7 +40,7 @@ import type { ItemModel } from '../../../models/item';
 import type { OptionsModel } from '../../../models/options';
 
 import { CardList, Dialog, IconSize, IconType, IconValue, PlayingCard, StatValue, Tabs, Text, TextType } from '../../controls';
-import { CombatantRowPanel, EncounterLogPanel, EncounterMapPanel, InitiativeListPanel, TreasureRowPanel } from '../../panels';
+import { CombatantRowPanel, EncounterLogPanel, EncounterMapPanel, InitiativeListPanel, LogoPanel, TreasureRowPanel } from '../../panels';
 import { ItemCard, PlaceholderCard } from '../../cards';
 import { ActionControls } from './action-controls/action-controls';
 import { CharacterSheetModal } from '../../modals';
@@ -435,6 +435,18 @@ export class EncounterScreen extends Component<Props, State> {
 		});
 	};
 
+	deselectAction = (encounter: EncounterModel, combatant: CombatantModel) => {
+		this.setState({
+			selectedActionParameter: null,
+			selectableCombatantIDs: [],
+			selectableLootIDs: [],
+			selectableSquares: [],
+			selectedSquares: []
+		}, () => {
+			this.props.deselectAction(encounter, combatant);
+		});
+	};
+
 	endTurn = () => {
 		this.setState({
 			selectedActionParameter: null,
@@ -468,7 +480,11 @@ export class EncounterScreen extends Component<Props, State> {
 		}
 
 		if (state !== EncounterState.Active) {
-			return null;
+			return (
+				<div className='encounter-top-panel'>
+					<LogoPanel size={36} />
+				</div>
+			);
 		}
 
 		const currentCombatant = EncounterLogic.getActiveCombatants(this.props.encounter).find(c => c.combat.current) || null;
@@ -620,7 +636,7 @@ export class EncounterScreen extends Component<Props, State> {
 							toggleCollapsed={() => this.setState({ showBottomPanel: !this.state.showBottomPanel })}
 							drawActions={this.props.drawActions}
 							selectAction={this.selectAction}
-							deselectAction={this.props.deselectAction}
+							deselectAction={this.deselectAction}
 							setActionParameter={this.setActionParameter}
 							setWeaponParameterValue={(param, weaponID) => {
 								this.props.setActionParameterValue(param, weaponID);
@@ -634,6 +650,9 @@ export class EncounterScreen extends Component<Props, State> {
 									ActionLogic.checkTargetParameter(targetParam, this.props.encounter, combatant, action, false);
 								}
 								this.props.setActionParameterValue(param, [ sq ]);
+							}}
+							setTargetParameterValue={(param, targetIDs) => {
+								this.props.setActionParameterValue(param, targetIDs);
 							}}
 							runAction={this.runAction}
 						/>

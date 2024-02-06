@@ -25,17 +25,16 @@ export class ConditionsPanel extends Component<Props> {
 		const conditions = this.props.combatant.combat.conditions.filter(c => c.trait === trait);
 		return Collections.distinct(conditions, c => ConditionLogic.getConditionDescription(c))
 			.map(c => {
+				const beneficial = ConditionLogic.getConditionIsBeneficial(c);
 				const set = this.props.combatant.combat.conditions.filter(con => ConditionLogic.getConditionDescription(con) === ConditionLogic.getConditionDescription(c));
 				return (
-					<div key={c.id} className='condition-row'>
-						{ConditionLogic.getConditionIsBeneficial(c) ? <IconCirclePlus size={15} style={{ color: 'darkgreen' }} /> : <IconCircleMinus size={15} style={{ color: 'darkred' }} />}
-						<div className='details'>
-							<StatValue
-								orientation='compact'
-								label={ConditionLogic.getConditionDescription(c)}
-								value={Collections.sum(set, c => c.rank)}
-							/>
-						</div>
+					<div key={c.id} className={beneficial ? 'condition-row beneficial' : 'condition-row detrimental'}>
+						{beneficial ? <IconCirclePlus size={18} /> : <IconCircleMinus size={18} />}
+						<StatValue
+							orientation='compact'
+							label={ConditionLogic.getConditionDescription(c)}
+							value={Collections.sum(set, c => c.rank)}
+						/>
 					</div>
 				);
 			});
@@ -44,16 +43,15 @@ export class ConditionsPanel extends Component<Props> {
 	getAuras = () => {
 		return EncounterLogic.getAuraConditions(this.props.encounter, this.props.combatant)
 			.map(c => {
+				const beneficial = ConditionLogic.getConditionIsBeneficial(c);
 				return (
-					<div key={c.id} className='condition-row'>
-						{ConditionLogic.getConditionIsBeneficial(c) ? <IconCirclePlus size={15} style={{ color: 'darkgreen' }} /> : <IconCircleMinus size={15} style={{ color: 'darkred' }} />}
-						<div className='details'>
-							<StatValue
-								orientation='compact'
-								label={ConditionLogic.getConditionDescription(c)}
-								value={c.rank}
-							/>
-						</div>
+					<div key={c.id} className={beneficial ? 'condition-row beneficial' : 'condition-row detrimental'}>
+						{beneficial ? <IconCirclePlus size={18} /> : <IconCircleMinus size={18} />}
+						<StatValue
+							orientation='compact'
+							label={ConditionLogic.getConditionDescription(c)}
+							value={c.rank}
+						/>
 					</div>
 				);
 			});

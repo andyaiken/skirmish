@@ -1,6 +1,6 @@
 .action-parameter {
 	border: 2px solid rgb(220, 220, 220);
-	border-radius: 5px;
+	border-radius: 10px;
 	background-color: rgb(255, 255, 255);
 	padding: 0 10px 10px 10px;
 
@@ -8,6 +8,39 @@
 		border-color: rgb(160, 0, 0);
 		color: rgb(160, 0, 0);
 		background-color: rgb(255, 240, 240);
+	}
+
+	.top-line {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 5px;
+
+		.minorheading {
+			flex: 0 0 auto;
+		}
+
+		.action-parameter-actions {
+			padding: 10px 0;
+			flex: 1 1 0;
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+			justify-content: flex-end;
+			gap: 5px;
+
+			.icon-btn {
+				width: 100px;
+				height: 25px;
+				min-height: unset;
+				border: 1px solid rgb(60, 170, 255);
+				border-radius: 5px;
+				flex-direction: row;
+				gap: 5px;
+				font-size: 12px;
+				letter-spacing: 2px;
+			}
+		}
 	}
 
 	.action-parameter-controls {
@@ -26,12 +59,25 @@
 			}
 		}
 
-		.icon-btn {
-			width: 112px;
-			height: 40px;
+		.combatant-candidate {
+			display: flex;
 			flex-direction: row;
-			gap: 5px;
-			padding: 0 5px;
+			align-items: center;
+			gap: 3px;
+			font-size: 13px;
+
+			&.selected,
+			&.not-selected {
+				cursor: pointer;
+			}
+
+			&.selected {
+				color: rgb(0, 100, 0);
+			}
+
+			&.not-selected {
+				color: rgb(140, 0, 0);
+			}
 		}
 	}
 }

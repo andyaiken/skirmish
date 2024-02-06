@@ -5,8 +5,18 @@
 		align-items: center;
 		gap: 5px;
 
-		.details {
+		&.beneficial .tabler-icon {
+			color: rgb(0, 100, 0);
+		}
+
+		&.detrimental .tabler-icon {
+			color: rgb(140, 0, 0);
+		}
+
+		.stat-value {
 			flex: 1 1 0;
+			border: none;
+			padding: 0;
 		}
 	}
 }

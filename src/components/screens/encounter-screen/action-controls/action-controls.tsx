@@ -32,6 +32,7 @@ interface Props {
 	setActionParameter: (parameter: ActionParameterModel) => void;
 	setWeaponParameterValue: (parameter: ActionWeaponParameterModel, weaponID: string) => void;
 	setOriginParameterValue: (parameter: ActionOriginParameterModel, square: { x: number, y: number }) => void;
+	setTargetParameterValue: (parameter: ActionTargetParameterModel, targetIDs: string[]) => void;
 	runAction: (encounter: EncounterModel, combatant: CombatantModel) => void;
 }
 
@@ -147,6 +148,7 @@ export class ActionControls extends Component<Props> {
 						selectOnMap={this.props.setActionParameter}
 						setWeaponParameterValue={this.props.setWeaponParameterValue}
 						setOriginParameterValue={this.props.setOriginParameterValue}
+						setTargetParameterValue={this.props.setTargetParameterValue}
 					/>
 				);
 			}
@@ -171,13 +173,12 @@ export class ActionControls extends Component<Props> {
 					<div className='button-row'>
 						<button
 							className='primary'
-							disabled={!prerequisitesMet || !allParametersSet || (this.props.currentActionParameter !== null)}
+							disabled={!prerequisitesMet || !allParametersSet}
 							onClick={() => this.props.runAction(this.props.encounter, this.props.combatant)}
 						>
 							Go
 						</button>
 						<button
-							disabled={this.props.currentActionParameter !== null}
 							onClick={() => this.props.deselectAction(this.props.encounter, this.props.combatant)}
 						>
 							Cancel

@@ -642,17 +642,25 @@ export class EncounterScreen extends Component<Props, State> {
 								this.props.setActionParameterValue(param, weaponID);
 							}}
 							setOriginParameterValue={(param, sq) => {
-								param.value = [ sq ];
-								const combatant = this.props.encounter.combatants.find(c => c.combat.current) as CombatantModel;
-								const action = combatant.combat.selectedAction ? combatant.combat.selectedAction.action : null;
-								if (action) {
-									const targetParam = action.parameters.find(a => a.id === 'targets') as ActionTargetParameterModel;
-									ActionLogic.checkTargetParameter(targetParam, this.props.encounter, combatant, action, false);
-								}
-								this.props.setActionParameterValue(param, [ sq ]);
+								this.setState({
+									selectedSquares: [ sq ]
+								}, () => {
+									param.value = [ sq ];
+									const combatant = this.props.encounter.combatants.find(c => c.combat.current) as CombatantModel;
+									const action = combatant.combat.selectedAction ? combatant.combat.selectedAction.action : null;
+									if (action) {
+										const targetParam = action.parameters.find(a => a.id === 'targets') as ActionTargetParameterModel;
+										ActionLogic.checkTargetParameter(targetParam, this.props.encounter, combatant, action, false);
+									}
+									this.props.setActionParameterValue(param, [ sq ]);
+								});
 							}}
 							setTargetParameterValue={(param, targetIDs) => {
-								this.props.setActionParameterValue(param, targetIDs);
+								this.setState({
+									selectedCombatantIDs: targetIDs
+								}, () => {
+									this.props.setActionParameterValue(param, targetIDs);
+								});
 							}}
 							runAction={this.runAction}
 						/>

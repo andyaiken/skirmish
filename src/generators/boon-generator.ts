@@ -12,9 +12,9 @@ import { Utils } from '../utils/utils';
 import { MagicItemGenerator } from './magic-item-generator';
 
 export class BoonGenerator {
-	static generateBoon = (packIDs: string[]): BoonModel => {
+	static generateBoon = (packIDs: string[], rng: () => number): BoonModel => {
 		let type = BoonType.ExtraHero;
-		switch (Random.randomNumber(7)) {
+		switch (Random.randomNumber(7, rng)) {
 			case 0:
 				type = BoonType.ExtraHero;
 				break;
@@ -41,16 +41,16 @@ export class BoonGenerator {
 		let data = null;
 		switch (type) {
 			case BoonType.MagicItem:
-				data = MagicItemGenerator.generateRandomMagicItem(packIDs);
+				data = MagicItemGenerator.generateRandomMagicItem(packIDs, rng);
 				break;
 			case BoonType.ExtraXP:
-				data = Random.dice(5);
+				data = Random.dice(5, rng);
 				break;
 			case BoonType.Money:
-				data = Random.dice(5) * 5;
+				data = Random.dice(5, rng) * 5;
 				break;
 			case BoonType.Structure:
-				data = Collections.draw(GameLogic.getStructureDeck(packIDs).filter(s => !StrongholdLogic.canCharge(s)));
+				data = Collections.draw(GameLogic.getStructureDeck(packIDs).filter(s => !StrongholdLogic.canCharge(s)), rng);
 				break;
 		}
 

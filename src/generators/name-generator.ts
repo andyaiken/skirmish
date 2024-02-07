@@ -1,10 +1,11 @@
 import { Collections } from '../utils/collections';
+import { Format } from '../utils/format';
 import { Random } from '../utils/random';
 
 export class NameGenerator {
-	static generateName = () => {
+	static generateName = (rng: () => number) => {
 		let count = 1;
-		switch (Random.randomNumber(20)) {
+		switch (Random.randomNumber(20, rng)) {
 			case 16:
 			case 17:
 			case 18:
@@ -15,13 +16,13 @@ export class NameGenerator {
 
 		const names = [];
 		while (names.length < count) {
-			names.push(NameGenerator.capitalise(NameGenerator.generateWord()));
+			names.push(Format.capitalize(NameGenerator.generateWord(rng)));
 		}
 
 		return names.join(' ');
 	};
 
-	static generateWord = () => {
+	static generateWord = (rng: () => number) => {
 		const starts = [
 			'ac',
 			'ad',
@@ -352,29 +353,17 @@ export class NameGenerator {
 			'\''
 		];
 
-		switch (Random.randomNumber(6)) {
+		switch (Random.randomNumber(6, rng)) {
 			case 0:
 			case 1:
 			case 2:
 			case 3:
 			case 4:
-				return `${Collections.draw(starts)}${Collections.draw(ends)}`;
+				return `${Collections.draw(starts, rng)}${Collections.draw(ends, rng)}`;
 			case 5:
-				return `${Collections.draw(starts)}${Collections.draw(separators)}${Collections.draw(ends)}`;
+				return `${Collections.draw(starts, rng)}${Collections.draw(separators, rng)}${Collections.draw(ends, rng)}`;
 		}
 
 		return '';
-	};
-
-	static capitalise = (str: string) => {
-		return str
-			.split(' ')
-			.filter(val => val.length > 0)
-			.map(val => {
-				const first = val[0].toUpperCase();
-				const rest = val.length > 1 ? val.substring(1) : '';
-				return first + rest;
-			})
-			.join(' ');
 	};
 }

@@ -4,5 +4,6 @@ export enum QuirkType {
 	Undead = 'Undead',
 	Mindless = 'Mindless',
 	Swarm = 'Swarm',
-	Amorphous = 'Amorphous'
+	Amorphous = 'Amorphous',
+	Boss = 'Boss'
 }

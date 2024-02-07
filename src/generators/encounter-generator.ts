@@ -5,6 +5,7 @@ import { QuirkType } from '../enums/quirk-type';
 
 import { EncounterMapGenerator } from './encounter-map-generator';
 import { MagicItemGenerator } from './magic-item-generator';
+import { NameGenerator } from './name-generator';
 
 import { CampaignMapLogic } from '../logic/campaign-map-logic';
 import { CombatantLogic } from '../logic/combatant-logic';
@@ -34,10 +35,13 @@ export class EncounterGenerator {
 			log: []
 		};
 
+		let hasBoss = false;
+
 		const monsters: CombatantModel[] = [];
 		const addMonster = (speciesID: string, roleID: string, backgroundID: string) => {
 			const isDrone = Random.dice(2, rng) > 10;
-			const count = isDrone ? 3 : 1;
+			const isBoss = !isDrone && !hasBoss && (Random.dice(2, rng) > 10);
+			const count = isDrone ? 4 : 1;
 			for (let n = 0; n < count; ++n) {
 				const monster = Factory.createCombatant(CombatantType.Monster);
 				if (isDrone) {
@@ -46,6 +50,10 @@ export class EncounterGenerator {
 				CombatantLogic.applyCombatantCards(monster, speciesID, roleID, backgroundID);
 				CombatantLogic.makeFeatureChoices(monster);
 				CombatantLogic.addItems(monster, packIDs);
+				if (isBoss) {
+					monster.quirks.push(QuirkType.Boss);
+					hasBoss = true;
+				}
 				monsters.push(monster);
 			}
 		};
@@ -104,18 +112,35 @@ export class EncounterGenerator {
 			}
 		}
 
-		const checkedIDs: string[] = [];
-		monsters.forEach(monster => {
-			if (!checkedIDs.includes(monster.id)) {
-				const duplicates = monsters.filter(m => m.name === monster.name);
-				if (duplicates.length > 1) {
-					let n = 1;
-					duplicates.forEach(m => {
-						m.name = `${m.name} ${n}`;
-						n += 1;
-					});
+		monsters
+			.filter(monster => monster.quirks.includes(QuirkType.Boss))
+			.forEach(monster => {
+				// Give this monster a name
+				monster.name = NameGenerator.generateName(rng);
+
+				// Add 5 levels
+				for (let n = 0; n <= 5; ++n) {
+					const featureDeck = CombatantLogic.getFeatureDeck(monster).filter(f => f.type !== FeatureType.Proficiency);
+					CombatantLogic.incrementCombatantLevel(monster, Collections.draw(featureDeck), packIDs);
+					CombatantLogic.makeFeatureChoices(monster);
 				}
-				checkedIDs.push(...duplicates.map(m => m.id));
+
+				// Give it a magic item
+				if (monster.items.length > 0) {
+					const item = Collections.draw(monster.items, rng);
+					monster.items = monster.items.filter(i => i.id !== item.id);
+
+					const magicItem = MagicItemGenerator.convertToMagicItem(item, rng);
+					monster.items.push(magicItem);
+				}
+			});
+
+		monsters.forEach(monster => {
+			const duplicates = monsters.filter(m => m.name === monster.name);
+			if (duplicates.length > 1) {
+				duplicates.forEach((m, n) => {
+					m.name = `${m.name} ${n + 1}`;
+				});
 			}
 		});
 
@@ -128,7 +153,7 @@ export class EncounterGenerator {
 		if (Random.randomNumber(5, rng) === 0) {
 			const lp = Factory.createLootPile();
 			if (Random.randomNumber(3, rng) === 0) {
-				lp.items.push(MagicItemGenerator.generateRandomMagicItem(packIDs));
+				lp.items.push(MagicItemGenerator.generateRandomMagicItem(packIDs, rng));
 			} else {
 				const potions = GameLogic.getPotionDeck(packIDs);
 				const item = Collections.draw(potions);

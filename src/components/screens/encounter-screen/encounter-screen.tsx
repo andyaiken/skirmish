@@ -221,10 +221,17 @@ export class EncounterScreen extends Component<Props, State> {
 					this.props.setActionParameterValue(parameter, ids);
 				});
 			}
-		} else {
+		} else if (!combatant.combat.current) {
 			this.setState({
 				selectedActionParameter: parameter,
 				selectedCombatantIDs: [ combatant.id ],
+				selectedLootIDs: [],
+				selectedSquares: []
+			});
+		} else {
+			this.setState({
+				selectedActionParameter: parameter,
+				selectedCombatantIDs: [],
 				selectedLootIDs: [],
 				selectedSquares: []
 			});

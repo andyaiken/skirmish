@@ -3,13 +3,7 @@ export class Format {
 		return text
 			.split(' ')
 			.filter(token => token.length > 0)
-			.map(token => {
-				if (token.length === 0) {
-					return '';
-				}
-
-				return `${token[0].toUpperCase()}${token.substring(1)}`;
-			})
+			.map(token => `${token[0].toUpperCase()}${token.substring(1)}`)
 			.join(' ');
 	};
 

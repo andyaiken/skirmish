@@ -50,7 +50,7 @@ export class EnchantItemModal extends Component<Props, State> {
 		const items: ItemModel[] = [];
 
 		while (items.length < 3) {
-			items.push(MagicItemGenerator.generateMagicItem(baseItem, this.props.options.packIDs));
+			items.push(MagicItemGenerator.generateMagicItem(baseItem, this.props.options.packIDs, Math.random));
 		}
 
 		return Collections.sort(items, n => n.name);

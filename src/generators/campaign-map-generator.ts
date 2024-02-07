@@ -59,10 +59,10 @@ export class CampaignMapGenerator {
 
 			map.regions.push({
 				id: Utils.guid(),
-				name: NameGenerator.generateName(),
+				name: NameGenerator.generateName(Math.random),
 				color: `rgb(${color.r}, ${color.g}, ${color.b})`,
 				encounters: [],
-				boon: BoonGenerator.generateBoon(packIDs),
+				boon: BoonGenerator.generateBoon(packIDs, Math.random),
 				demographics: {
 					size: 0,
 					population: 0,
@@ -77,10 +77,10 @@ export class CampaignMapGenerator {
 			square.regionID = region.id;
 		});
 
-		do {
+		while (map.squares.filter(sq => sq.regionID === '').length !== 0) {
 			// Pick a region
 			map.regions.forEach(region => {
-				// Find all adjacent squares
+				// Find all adjacent unclaimed squares
 				const candidates: CampaignMapSquareModel[] = [];
 				map.squares
 					.filter(sq => sq.regionID === region.id)
@@ -96,7 +96,7 @@ export class CampaignMapGenerator {
 					square.regionID = region.id;
 				}
 			});
-		} while (map.squares.filter(sq => sq.regionID === '').length !== 0);
+		}
 
 		map.regions.forEach(region => {
 			const size = CampaignMapLogic.getSquares(map, region).length;

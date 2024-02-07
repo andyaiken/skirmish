@@ -83,7 +83,7 @@ export class Platform {
 			if (r.boon.type === BoonType.Structure) {
 				const s = r.boon.data as StructureModel;
 				if (!StrongholdLogic.canCharge(s)) {
-					r.boon = BoonGenerator.generateBoon([]);
+					r.boon = BoonGenerator.generateBoon([], Math.random);
 				}
 			}
 		});

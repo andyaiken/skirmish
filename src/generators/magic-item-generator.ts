@@ -18,40 +18,40 @@ import { GameLogic } from '../logic/game-logic';
 import { NameGenerator } from './name-generator';
 
 export class MagicItemGenerator {
-	static generateMagicItem = (baseItem: ItemModel, packIDs: string[]) => {
-		const item = MagicItemGenerator.convertToMagicItem(baseItem);
-		return MagicItemGenerator.addMagicItemFeature(item, packIDs);
+	static generateMagicItem = (baseItem: ItemModel, packIDs: string[], rng: () => number) => {
+		const item = MagicItemGenerator.convertToMagicItem(baseItem, rng);
+		return MagicItemGenerator.addMagicItemFeature(item, packIDs, rng);
 	};
 
-	static generateRandomMagicItem = (packIDs: string[]) => {
-		const baseItem = Collections.draw(GameLogic.getItemDeck(packIDs));
-		const item = MagicItemGenerator.convertToMagicItem(baseItem);
-		return MagicItemGenerator.addMagicItemFeature(item, packIDs);
+	static generateRandomMagicItem = (packIDs: string[], rng: () => number) => {
+		const baseItem = Collections.draw(GameLogic.getItemDeck(packIDs), rng);
+		const item = MagicItemGenerator.convertToMagicItem(baseItem, rng);
+		return MagicItemGenerator.addMagicItemFeature(item, packIDs, rng);
 	};
 
-	static convertToMagicItem = (baseItem: ItemModel) => {
+	static convertToMagicItem = (baseItem: ItemModel, rng: () => number) => {
 		if (baseItem.magic) {
 			return baseItem;
 		}
 
 		const item = JSON.parse(JSON.stringify(baseItem)) as ItemModel;
 		item.id = Utils.guid();
-		item.name = NameGenerator.generateName();
+		item.name = NameGenerator.generateName(rng);
 		item.description = `Magical ${baseItem.name.toLowerCase()}`;
 		item.baseItem = baseItem.name;
 		item.magic = true;
 		return item;
 	};
 
-	static addMagicItemFeature = (item: ItemModel, packIDs: string[]) => {
+	static addMagicItemFeature = (item: ItemModel, packIDs: string[], rng: () => number) => {
 		const options: ItemModel[] = [];
 
 		if (item.weapon) {
 			// Increase damage rank
 			const copyW1 = JSON.parse(JSON.stringify(item)) as ItemModel;
 			const wpn1 = copyW1.weapon as WeaponModel;
-			const dmg = Collections.draw(wpn1.damage);
-			dmg.rank += Random.randomBonus();
+			const dmg = Collections.draw(wpn1.damage, rng);
+			dmg.rank += Random.randomBonus(rng);
 			options.push(copyW1);
 
 			// Increase range
@@ -60,7 +60,7 @@ export class MagicItemGenerator {
 			if (wpn2.range <= 1) {
 				wpn2.range += 1;
 			} else {
-				wpn2.range += Math.floor(wpn2.range * Random.randomBonus() / 10);
+				wpn2.range += Math.floor(wpn2.range * Random.randomBonus(rng) / 10);
 			}
 			options.push(copyW2);
 
@@ -68,14 +68,14 @@ export class MagicItemGenerator {
 			const copyW3 = JSON.parse(JSON.stringify(item)) as ItemModel;
 			const wpn3 = copyW3.weapon as WeaponModel;
 			wpn3.damage.push({
-				type: GameLogic.getRandomDamageType(Random.randomBoolean() ? DamageCategoryType.Energy : DamageCategoryType.Corruption),
-				rank: Random.randomBonus()
+				type: GameLogic.getRandomDamageType(Random.randomBoolean(rng) ? DamageCategoryType.Energy : DamageCategoryType.Corruption),
+				rank: Random.randomBonus(rng)
 			});
 			options.push(copyW3);
 
 			// Increase Weapon skill
 			const copyW4 = JSON.parse(JSON.stringify(item)) as ItemModel;
-			copyW4.features.push(FeatureLogic.createSkillFeature(Utils.guid(), SkillType.Weapon, Random.randomBonus()));
+			copyW4.features.push(FeatureLogic.createSkillFeature(Utils.guid(), SkillType.Weapon, Random.randomBonus(rng)));
 			options.push(copyW4);
 
 			// Negate unreliability
@@ -93,7 +93,7 @@ export class MagicItemGenerator {
 			const arm1 = copyA1.armor as ArmorModel;
 			const f1 = arm1.features.find(f => f.type === FeatureType.DamageCategoryResist);
 			if (f1) {
-				f1.rank += Random.randomBonus();
+				f1.rank += Random.randomBonus(rng);
 				options.push(copyA1);
 			}
 
@@ -104,7 +104,7 @@ export class MagicItemGenerator {
 			if (f2) {
 				const f2Copy = JSON.parse(JSON.stringify(f2)) as FeatureModel;
 				f2Copy.id = Utils.guid();
-				f2Copy.damageCategory = Random.randomBoolean() ? DamageCategoryType.Energy : DamageCategoryType.Corruption;
+				f2Copy.damageCategory = Random.randomBoolean(rng) ? DamageCategoryType.Energy : DamageCategoryType.Corruption;
 				arm2.features.push(f2Copy);
 				options.push(copyA2);
 			}
@@ -131,17 +131,17 @@ export class MagicItemGenerator {
 		if (item.proficiency === ItemProficiencyType.Implements) {
 			// Increase Spellcasting skill
 			const copyI1 = JSON.parse(JSON.stringify(item)) as ItemModel;
-			copyI1.features.push(FeatureLogic.createSkillFeature(Utils.guid(), SkillType.Spellcasting, Random.randomBonus()));
+			copyI1.features.push(FeatureLogic.createSkillFeature(Utils.guid(), SkillType.Spellcasting, Random.randomBonus(rng)));
 			options.push(copyI1);
 
 			// Increase Energy damage
 			const copyI2 = JSON.parse(JSON.stringify(item)) as ItemModel;
-			copyI2.features.push(FeatureLogic.createDamageCategoryBonusFeature(Utils.guid(), DamageCategoryType.Energy, Random.randomBonus()));
+			copyI2.features.push(FeatureLogic.createDamageCategoryBonusFeature(Utils.guid(), DamageCategoryType.Energy, Random.randomBonus(rng)));
 			options.push(copyI2);
 
 			// Increase Corruption damage
 			const copyI3 = JSON.parse(JSON.stringify(item)) as ItemModel;
-			copyI3.features.push(FeatureLogic.createDamageCategoryBonusFeature(Utils.guid(), DamageCategoryType.Corruption, Random.randomBonus()));
+			copyI3.features.push(FeatureLogic.createDamageCategoryBonusFeature(Utils.guid(), DamageCategoryType.Corruption, Random.randomBonus(rng)));
 			options.push(copyI3);
 		}
 
@@ -155,36 +155,36 @@ export class MagicItemGenerator {
 		if (item.location === ItemLocationType.Head) {
 			// Increase a mental skill
 			const copyH1 = JSON.parse(JSON.stringify(item)) as ItemModel;
-			copyH1.features.push(FeatureLogic.createSkillFeature(Utils.guid(), GameLogic.getRandomSkill(SkillCategoryType.Mental), Random.randomBonus()));
+			copyH1.features.push(FeatureLogic.createSkillFeature(Utils.guid(), GameLogic.getRandomSkill(SkillCategoryType.Mental), Random.randomBonus(rng)));
 			options.push(copyH1);
 
 			// Increase all physical or mental skills
 			const copyH2 = JSON.parse(JSON.stringify(item)) as ItemModel;
-			copyH2.features.push(FeatureLogic.createSkillCategoryFeature(Utils.guid(), Random.randomBoolean() ? SkillCategoryType.Physical : SkillCategoryType.Mental, Random.randomBonus()));
+			copyH2.features.push(FeatureLogic.createSkillCategoryFeature(Utils.guid(), Random.randomBoolean(rng) ? SkillCategoryType.Physical : SkillCategoryType.Mental, Random.randomBonus(rng)));
 			options.push(copyH2);
 
 			// Increase Resolve
 			const copyH3 = JSON.parse(JSON.stringify(item)) as ItemModel;
-			copyH3.features.push(FeatureLogic.createTraitFeature(Utils.guid(), TraitType.Resolve, Random.randomBonus()));
+			copyH3.features.push(FeatureLogic.createTraitFeature(Utils.guid(), TraitType.Resolve, Random.randomBonus(rng)));
 			options.push(copyH3);
 		}
 
 		if (item.location === ItemLocationType.Feet) {
 			// Increase Speed
 			const copy = JSON.parse(JSON.stringify(item)) as ItemModel;
-			copy.features.push(FeatureLogic.createTraitFeature(Utils.guid(), TraitType.Speed, Random.randomBonus()));
+			copy.features.push(FeatureLogic.createTraitFeature(Utils.guid(), TraitType.Speed, Random.randomBonus(rng)));
 			options.push(copy);
 		}
 
 		if (item.location === ItemLocationType.Neck) {
 			// Increase Endurance
 			const copyN1 = JSON.parse(JSON.stringify(item)) as ItemModel;
-			copyN1.features.push(FeatureLogic.createTraitFeature(Utils.guid(), TraitType.Speed, Random.randomBonus()));
+			copyN1.features.push(FeatureLogic.createTraitFeature(Utils.guid(), TraitType.Speed, Random.randomBonus(rng)));
 			options.push(copyN1);
 
 			// Increase Resolve
 			const copyN2 = JSON.parse(JSON.stringify(item)) as ItemModel;
-			copyN2.features.push(FeatureLogic.createTraitFeature(Utils.guid(), TraitType.Resolve, Random.randomBonus()));
+			copyN2.features.push(FeatureLogic.createTraitFeature(Utils.guid(), TraitType.Resolve, Random.randomBonus(rng)));
 			options.push(copyN2);
 		}
 
@@ -204,6 +204,6 @@ export class MagicItemGenerator {
 			return item;
 		}
 
-		return Collections.draw(options);
+		return Collections.draw(options, rng);
 	};
 }

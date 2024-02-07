@@ -67,9 +67,9 @@ export class SetupScreen extends Component<Props, State> {
 		const heroes: CombatantModel[] = [];
 		const needed = 5 - this.props.game.heroes.length;
 		while (heroes.length < needed) {
-			const color = Random.randomColor(20, 180);
 			const hero = Factory.createCombatant(CombatantType.Hero);
-			hero.name = NameGenerator.generateName();
+			hero.name = NameGenerator.generateName(Math.random);
+			const color = Random.randomColor(20, 180);
 			hero.color = `rgb(${color.r}, ${color.g}, ${color.b})`;
 
 			const speciesID = Collections.draw(speciesDeck);

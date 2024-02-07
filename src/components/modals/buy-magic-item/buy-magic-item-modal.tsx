@@ -44,7 +44,7 @@ export class BuyMagicItemModal extends Component<Props, State> {
 
 		let fails = 0;
 		while ((items.length < 3) && (fails < 1000)) {
-			const item = MagicItemGenerator.generateRandomMagicItem(this.props.options.packIDs);
+			const item = MagicItemGenerator.generateRandomMagicItem(this.props.options.packIDs, Math.random);
 
 			let ok = true;
 

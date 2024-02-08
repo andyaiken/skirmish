@@ -727,7 +727,7 @@ export class Main extends Component<Props, State> {
 			if (this.state.game) {
 				const game = this.state.game;
 
-				game.map = CampaignMapGenerator.generateCampaignMap(this.state.options.packIDs);
+				game.map = CampaignMapGenerator.generateCampaignMap(this.state.options.packIDs, Math.random);
 
 				this.setState({
 					game: game

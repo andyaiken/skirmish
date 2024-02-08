@@ -72,7 +72,7 @@ export class Factory {
 			items: [],
 			boons: [],
 			money: 0,
-			map: CampaignMapGenerator.generateCampaignMap(packIDs),
+			map: CampaignMapGenerator.generateCampaignMap(packIDs, Math.random),
 			stronghold: [],
 			encounter: null
 		};

@@ -1,6 +1,7 @@
 import { CombatantType } from '../enums/combatant-type';
 import { EncounterMapSquareType } from '../enums/encounter-map-square-type';
 import { FeatureType } from '../enums/feature-type';
+import { ItemProficiencyType } from '../enums/item-proficiency-type';
 import { QuirkType } from '../enums/quirk-type';
 
 import { EncounterMapGenerator } from './encounter-map-generator';
@@ -15,6 +16,7 @@ import { GameLogic } from '../logic/game-logic';
 
 import type { EncounterModel, LootPileModel } from '../models/encounter';
 import type { CombatantModel } from '../models/combatant';
+import type { ItemModel } from '../models/item';
 import type { RegionModel } from '../models/region';
 
 import { Collections } from '../utils/collections';
@@ -126,11 +128,16 @@ export class EncounterGenerator {
 				}
 
 				// Give it a magic item
+				let item: ItemModel | null = null;
 				if (monster.items.length > 0) {
-					const item = Collections.draw(monster.items, rng);
-					monster.items = monster.items.filter(i => i.id !== item.id);
-
-					const magicItem = MagicItemGenerator.convertToMagicItem(item, rng);
+					item = Collections.draw(monster.items, rng);
+					monster.items = monster.items.filter(i => i.id !== (item as ItemModel).id);
+				} else {
+					const items = GameLogic.getItemDeck(packIDs).filter(i => i.proficiency === ItemProficiencyType.None);
+					item = Collections.draw(items, rng);
+				}
+				if (item) {
+					const magicItem = MagicItemGenerator.generateMagicItem(item, packIDs, rng);
 					monster.items.push(magicItem);
 				}
 			});

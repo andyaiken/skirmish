@@ -217,6 +217,7 @@ export class CombatantRowPanel extends Component<Props> {
 
 	render = () => {
 		try {
+			const faction = this.props.combatant.quirks.includes(QuirkType.Boss) ? 'boss' : this.props.combatant.faction.toLowerCase();
 			const clickable = this.props.onClick !== null ? 'clickable' : '';
 			const current = (this.props.mode === 'initiative') && this.props.combatant.combat.current ? 'current' : '';
 			const dimmed = (this.props.mode === 'initiative')
@@ -225,7 +226,7 @@ export class CombatantRowPanel extends Component<Props> {
 					|| (this.props.combatant.combat.state === CombatantState.Unconscious)
 					|| (this.props.combatant.combat.state === CombatantState.Dead)
 				) ? 'dimmed' : '';
-			const className = `combatant-row-panel ${this.props.mode} ${this.props.combatant.faction.toLowerCase()} ${clickable} ${current} ${dimmed}`;
+			const className = `combatant-row-panel ${this.props.mode} ${faction} ${clickable} ${current} ${dimmed}`;
 
 			let infoBelow: JSX.Element | null = null;
 			let infoRight: JSX.Element | null = null;

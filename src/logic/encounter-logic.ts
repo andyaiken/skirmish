@@ -907,8 +907,6 @@ export class EncounterLogic {
 			return;
 		}
 
-		const items = ([] as ItemModel[]).concat(combatant.items).concat(combatant.carried);
-
 		let money = 0;
 		if (combatant.faction === CombatantType.Monster) {
 			if (Random.randomBoolean()) {
@@ -916,16 +914,18 @@ export class EncounterLogic {
 			}
 		}
 
-		if ((items.length > 0) || (money > 0)) {
-			const loot = Factory.createLootPile();
-			loot.items.push(...items);
-			loot.money = money;
-
-			combatant.items = [];
-			combatant.carried = [];
-
+		if ((combatant.items.length > 0) || (combatant.carried.length > 0) || (money > 0)) {
 			const empty = EncounterLogic.getCombatantSquares(encounter, combatant).filter(sq => EncounterLogic.getSquareIsEmpty(encounter as EncounterModel, sq));
 			if (empty.length > 0) {
+				const loot = Factory.createLootPile();
+
+				loot.items.push(...combatant.items);
+				loot.items.push(...combatant.carried);
+				loot.money = money;
+
+				combatant.items = [];
+				combatant.carried = [];
+
 				const sq = Collections.draw(empty);
 				loot.position.x = sq.x;
 				loot.position.y = sq.y;

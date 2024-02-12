@@ -3,6 +3,7 @@ import { EncounterMapSquareType } from '../enums/encounter-map-square-type';
 import { FeatureType } from '../enums/feature-type';
 import { ItemProficiencyType } from '../enums/item-proficiency-type';
 import { QuirkType } from '../enums/quirk-type';
+import { TraitType } from '../enums/trait-type';
 
 import { EncounterMapGenerator } from './encounter-map-generator';
 import { MagicItemGenerator } from './magic-item-generator';
@@ -12,6 +13,7 @@ import { CampaignMapLogic } from '../logic/campaign-map-logic';
 import { CombatantLogic } from '../logic/combatant-logic';
 import { EncounterLogic } from '../logic/encounter-logic';
 import { Factory } from '../logic/factory';
+import { FeatureLogic } from '../logic/feature-logic';
 import { GameLogic } from '../logic/game-logic';
 
 import type { EncounterModel, LootPileModel } from '../models/encounter';
@@ -106,7 +108,7 @@ export class EncounterGenerator {
 					if (monsters.length > 0) {
 						const monster = Collections.draw(monsters, rng);
 						const featureDeck = CombatantLogic.getFeatureDeck(monster).filter(f => f.type !== FeatureType.Proficiency);
-						CombatantLogic.incrementCombatantLevel(monster, Collections.draw(featureDeck), packIDs);
+						CombatantLogic.incrementCombatantLevel(monster, Collections.draw(featureDeck, rng), packIDs);
 						CombatantLogic.makeFeatureChoices(monster);
 					}
 					break;
@@ -120,10 +122,15 @@ export class EncounterGenerator {
 				// Give this monster a name
 				monster.name = NameGenerator.generateName(rng);
 
+				// Boost traits
+				monster.features.push(FeatureLogic.createTraitFeature('boss-1', TraitType.Endurance, 2));
+				monster.features.push(FeatureLogic.createTraitFeature('boss-2', TraitType.Resolve, 2));
+				monster.features.push(FeatureLogic.createTraitFeature('boss-3', TraitType.Speed, 2));
+
 				// Add 5 levels
 				for (let n = 0; n <= 5; ++n) {
 					const featureDeck = CombatantLogic.getFeatureDeck(monster).filter(f => f.type !== FeatureType.Proficiency);
-					CombatantLogic.incrementCombatantLevel(monster, Collections.draw(featureDeck), packIDs);
+					CombatantLogic.incrementCombatantLevel(monster, Collections.draw(featureDeck, rng), packIDs);
 					CombatantLogic.makeFeatureChoices(monster);
 				}
 
@@ -163,7 +170,7 @@ export class EncounterGenerator {
 				lp.items.push(MagicItemGenerator.generateRandomMagicItem(packIDs, rng));
 			} else {
 				const potions = GameLogic.getPotionDeck(packIDs);
-				const item = Collections.draw(potions);
+				const item = Collections.draw(potions, rng);
 				item.id = Utils.guid();
 				lp.items.push(item);
 			}

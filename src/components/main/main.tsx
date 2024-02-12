@@ -1210,6 +1210,12 @@ export class Main extends Component<Props, State> {
 						game.items.push(...lp.items);
 						game.money += lp.money;
 					});
+					encounter.combatants
+						.filter(c => (c.type === CombatantType.Monster) && (c.faction === CombatantType.Monster))
+						.forEach(c => {
+							game.items.push(...c.items);
+							game.items.push(...c.carried);
+						});
 					// Increment XP for surviving heroes
 					encounter.combatants
 						.filter(c => (c.type === CombatantType.Hero) && (c.faction === CombatantType.Hero))

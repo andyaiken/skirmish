@@ -40,6 +40,11 @@
 		background-color: rgb(230, 230, 230);
 	}
 
+	&.boss {
+		border-color: rgb(160, 0, 0);
+		background-color: rgb(255, 240, 240);
+	}
+
 	.encounter-map-mini-token {
 		flex: 0 0 auto;
 	}
@@ -88,11 +93,6 @@
 
 	&.clickable {
 		cursor: pointer;
-
-		&:hover {
-			background-image: none;
-			background-color: rgb(200, 230, 255);
-		}
 	}
 
 	&.current {

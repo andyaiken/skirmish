@@ -1114,7 +1114,7 @@ export class ActionEffects {
 							EncounterLogLogic.text('to move')
 						]);
 						target.combat.movement = Random.dice(EncounterLogic.getTraitRank(encounter, target, TraitType.Speed));
-						const paths = PathLogic.findPaths(encounter, target);
+						const paths = PathLogic.findPaths(encounter, target, true);
 						const intents = IntentsLogic.getMovementIntents(encounter, target, paths);
 						if (intents.length > 0) {
 							target.combat.intents = Collections.draw(intents);

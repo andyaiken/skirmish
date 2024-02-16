@@ -5,7 +5,7 @@ import type { EncounterModel } from '../models/encounter';
 import type { PathModel } from '../models/path';
 
 export class PathLogic {
-	static findPaths = (encounter: EncounterModel, combatant: CombatantModel) => {
+	static findPaths = (encounter: EncounterModel, combatant: CombatantModel, limitByMovementCost: boolean) => {
 		const paths: PathModel[] = [
 			{
 				x: combatant.combat.position.x,
@@ -17,14 +17,15 @@ export class PathLogic {
 		];
 
 		while (paths.filter(p => p.working).length > 0) {
-			PathLogic.findSteps(encounter, combatant, paths);
+			PathLogic.findSteps(encounter, combatant, paths, limitByMovementCost);
 		}
 
-		return paths.filter(path => path.cost <= combatant.combat.movement);
+		return limitByMovementCost ? paths.filter(path => path.cost <= combatant.combat.movement) : paths;
 	};
 
-	static findSteps = (encounter: EncounterModel, combatant: CombatantModel, paths: PathModel[]) => {
-		const workingSet = paths.filter(path => path.working).filter(path => path.cost <= combatant.combat.movement);
+	static findSteps = (encounter: EncounterModel, combatant: CombatantModel, paths: PathModel[], limitByMovementCost: boolean) => {
+		const set = paths.filter(path => path.working);
+		const workingSet = limitByMovementCost ? set.filter(path => path.cost <= combatant.combat.movement) : set;
 		paths.forEach(path => path.working = false);
 
 		workingSet.forEach(path => {
@@ -72,7 +73,9 @@ export class PathLogic {
 							working: true
 						};
 						newPath.steps.push(dir);
-						if (newPath.cost <= combatant.combat.movement) {
+						if (limitByMovementCost && (newPath.cost > combatant.combat.movement)) {
+							// Too expensive
+						} else {
 							paths.push(newPath);
 						}
 					}

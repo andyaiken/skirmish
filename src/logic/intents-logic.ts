@@ -26,7 +26,7 @@ export class IntentsLogic {
 			return null;
 		}
 
-		const paths = PathLogic.findPaths(encounter, combatant);
+		const paths = PathLogic.findPaths(encounter, combatant, true);
 		const edges = EncounterMapLogic.getMapEdges(encounter.mapSquares);
 
 		const options: IntentsModel[] = [];
@@ -303,7 +303,7 @@ export class IntentsLogic {
 		const maxWounds = Math.max(EncounterLogic.getTraitRank(encounter, combatant, TraitType.Resolve) - 1, 1);
 		if ((combatant.combat.damage > 0) && (combatant.combat.wounds >= maxWounds)) {
 			// Find the path that will take me furthest from any enemy
-			const path = Collections.max(movePaths, p => {
+			const pathToSafety = Collections.max(movePaths, p => {
 				const distances = encounter.combatants
 					.filter(c => c.faction !== combatant.faction)
 					.filter(c => combatant.combat.senses >= c.combat.hidden)
@@ -314,33 +314,48 @@ export class IntentsLogic {
 					});
 				return Math.min(...distances);
 			});
-			if (path) {
+			if (pathToSafety) {
 				intents.push({
 					description: 'Move Away',
 					intents: [
-						...path.steps.map(step => IntentsData.move(step))
+						...pathToSafety.steps.map(step => IntentsData.move(step))
 					],
 					weight: 0
 				});
 			}
 		} else {
 			// Find the path that will take me closest to an enemy
-			const path = Collections.min(movePaths, p => {
-				const distances = encounter.combatants
-					.filter(c => c.faction !== combatant.faction)
-					.filter(c => combatant.combat.senses >= c.combat.hidden)
-					.filter(c => (c.combat.state !== CombatantState.Unconscious) && (c.combat.state !== CombatantState.Dead))
-					.map(c => {
-						const squares = EncounterLogic.getCombatantSquares(encounter, c);
-						return EncounterMapLogic.getDistanceAny(squares, [ p ]);
-					});
-				return Math.min(...distances);
-			});
-			if (path) {
+			const allPaths = PathLogic.findPaths(encounter, combatant, false);
+
+			// For each enemy, find a path adjacent to them
+			const pathsToEnemies = encounter.combatants
+				.filter(c => c.faction !== combatant.faction)
+				.map(c => {
+					// Find all the squares we could move to, to be adjacent to this combatant
+					const targetSquares = EncounterLogic.getCombatantSquares(encounter, c);
+					const targetAdjacentSquares = EncounterMapLogic.getAdjacentSquares(encounter.mapSquares, targetSquares);
+					const candidatePaths = encounter.mapSquares
+						.filter(square => {
+							const squares = EncounterLogic.getCombatantSquares(encounter, combatant, square);
+							const canMoveHere = squares.every(sq => EncounterLogic.getSquareIsEmpty(encounter, sq, [ combatant ]));
+							const wouldBeAdjacent = squares.some(sq => targetAdjacentSquares.find(s => (s.x === sq.x) && (s.y === sq.y)));
+							return canMoveHere && wouldBeAdjacent;
+						})
+						.map(sq => allPaths.find(p => (p.x === sq.x) && (p.y === sq.y)))
+						.filter(p => p !== undefined) as PathModel[];
+
+					// Select the cheapest of these
+					return Collections.min(candidatePaths, p => p.cost);
+				})
+				.filter(p => p !== null) as PathModel[];
+
+			// Find the cheapest of these paths
+			const pathToEnemy = Collections.min(pathsToEnemies, p => p.cost);
+			if (pathToEnemy) {
 				intents.push({
 					description: 'Move',
 					intents: [
-						...path.steps.map(step => IntentsData.move(step))
+						...pathToEnemy.steps.map(step => IntentsData.move(step))
 					],
 					weight: 0
 				});

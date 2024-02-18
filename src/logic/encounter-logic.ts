@@ -122,19 +122,12 @@ export class EncounterLogic {
 		});
 	};
 
-	static endTurn = (encounter: EncounterModel) => {
-		encounter.combatants.filter(c => c.combat.current).forEach(c => {
-			EncounterLogic.endOfTurn(encounter, c);
-		});
-
-		const active = EncounterLogic.getActiveCombatants(encounter);
-		if (active.length > 0) {
-			EncounterLogic.startOfTurn(encounter, active[0]);
-		}
-	};
-
 	static startOfTurn = (encounter: EncounterModel, combatant: CombatantModel) => {
-		encounter.combatants.forEach(c => c.combat.current = false);
+		EncounterLogLogic.log(encounter, [
+			EncounterLogLogic.text('Starting turn for '),
+			EncounterLogLogic.combatant(combatant)
+		]);
+
 		combatant.combat.current = true;
 
 		combatant.combat.hidden = 0;
@@ -263,28 +256,35 @@ export class EncounterLogic {
 		}
 
 		if ((combatant.combat.state === CombatantState.Unconscious) || (combatant.combat.state === CombatantState.Dead)) {
-			EncounterLogic.endOfTurn(encounter, combatant);
-
-			const active = EncounterLogic.getActiveCombatants(encounter);
-			if (active.length > 0) {
-				EncounterLogic.startOfTurn(encounter, active[0]);
-			}
+			EncounterLogic.endTurn(encounter);
 		}
 	};
 
-	static endOfTurn = (encounter: EncounterModel, combatant: CombatantModel) => {
-		encounter.combatants.forEach(c => {
-			c.combat.current = false;
-			c.combat.senses = 0;
-			c.combat.movement = 0;
-			c.combat.trail = [];
-			c.combat.actions = [];
-			c.combat.selectedAction = null;
-			c.combat.intents = null;
-		});
+	static endTurn = (encounter: EncounterModel) => {
+		encounter.combatants
+			.filter(combatant => combatant.combat.current)
+			.forEach(combatant => {
+				EncounterLogLogic.log(encounter, [
+					EncounterLogLogic.text('Ending turn for '),
+					EncounterLogLogic.combatant(combatant)
+				]);
 
-		combatant.combat.stunned = false;
-		combatant.combat.initiative = Number.MIN_VALUE;
+				combatant.combat.current = false;
+				combatant.combat.senses = 0;
+				combatant.combat.movement = 0;
+				combatant.combat.trail = [];
+				combatant.combat.actions = [];
+				combatant.combat.selectedAction = null;
+				combatant.combat.intents = null;
+				combatant.combat.stunned = false;
+				combatant.combat.initiative = Number.MIN_VALUE;
+			});
+
+		const active = EncounterLogic.getActiveCombatants(encounter);
+		const current = active.length > 0 ? active[0] : null;
+		if (current) {
+			EncounterLogic.startOfTurn(encounter, current);
+		}
 	};
 
 	static drawActions = (encounter: EncounterModel, combatant: CombatantModel) => {
@@ -577,67 +577,70 @@ export class EncounterLogic {
 		EncounterLogic.takeDamage(encounter, target, result + bonus, type);
 	};
 
-	static takeDamage = (encounter: EncounterModel, target: CombatantModel, value: number, type: DamageType) => {
+	static takeDamage = (encounter: EncounterModel, combatant: CombatantModel, value: number, type: DamageType) => {
 		EncounterLogLogic.log(encounter, [
-			EncounterLogLogic.combatant(target),
+			EncounterLogLogic.combatant(combatant),
 			EncounterLogLogic.text(`suffers damage (${type}, ${value} pts)`)
 		]);
 
-		if (target.quirks.includes(QuirkType.Swarm) || target.quirks.includes(QuirkType.Amorphous)) {
+		if (combatant.quirks.includes(QuirkType.Swarm) || combatant.quirks.includes(QuirkType.Amorphous)) {
 			if (GameLogic.getDamageCategory(type) === DamageCategoryType.Physical) {
 				EncounterLogLogic.log(encounter, [
-					EncounterLogLogic.combatant(target),
+					EncounterLogLogic.combatant(combatant),
 					EncounterLogLogic.text('takes half physical damage')
 				]);
 				value = Math.floor(value / 2);
 			}
 		}
 
-		const resistance = EncounterLogic.getDamageResistance(encounter, target, type);
+		const resistance = EncounterLogic.getDamageResistance(encounter, combatant, type);
 		if (resistance > 0) {
 			EncounterLogLogic.log(encounter, [
-				EncounterLogLogic.combatant(target),
+				EncounterLogLogic.combatant(combatant),
 				EncounterLogLogic.text(`has damage resistance (${type}, ${resistance} pts)`)
 			]);
 			value -= resistance;
 		}
 
 		if (value > 0) {
-			if (target.quirks.includes(QuirkType.Drone)) {
+			if (combatant.quirks.includes(QuirkType.Drone)) {
 				// Drones die if they take any damage
-				EncounterLogic.kill(encounter, target);
+				EncounterLogic.kill(encounter, combatant);
+				if (combatant.combat.current) {
+					EncounterLogic.endTurn(encounter);
+				}
 			} else {
-				target.combat.damage += value;
+				combatant.combat.damage += value;
 				EncounterLogLogic.log(encounter, [
-					EncounterLogLogic.combatant(target),
-					EncounterLogLogic.text(`takes damage (${value} pts) and is now at ${target.combat.damage}`)
+					EncounterLogLogic.combatant(combatant),
+					EncounterLogLogic.text(`takes damage (${value} pts) and is now at ${combatant.combat.damage}`)
 				]);
 
-				const rank = EncounterLogic.getTraitRank(encounter, target, TraitType.Endurance);
+				const rank = EncounterLogic.getTraitRank(encounter, combatant, TraitType.Endurance);
 				const result = Random.dice(rank);
 				EncounterLogLogic.log(encounter, [
-					EncounterLogLogic.combatant(target),
+					EncounterLogLogic.combatant(combatant),
 					EncounterLogLogic.text('rolls'),
 					EncounterLogLogic.rank('Endurance', rank),
 					EncounterLogLogic.text('and gets'),
 					EncounterLogLogic.result(result)
 				]);
-				if (result < target.combat.damage) {
-					EncounterLogic.wound(encounter, target, 1);
+				if (result < combatant.combat.damage) {
+					EncounterLogic.wound(encounter, combatant, 1);
 				}
 			}
 		} else {
 			EncounterLogLogic.log(encounter, [
-				EncounterLogLogic.combatant(target),
+				EncounterLogLogic.combatant(combatant),
 				EncounterLogLogic.text('takes no damage')
 			]);
 		}
 
-		EncounterLogic.checkActionParameters(encounter, target);
+		EncounterLogic.checkActionParameters(encounter, combatant);
 	};
 
 	static wound = (encounter: EncounterModel, combatant: CombatantModel, value: number) => {
-		if (combatant.combat.state === CombatantState.Dead){
+		if (combatant.combat.state === CombatantState.Dead) {
 			return;
 		}
 
@@ -651,6 +654,9 @@ export class EncounterLogic {
 		if (combatant.quirks.includes(QuirkType.Drone)) {
 			// Drones die if they take any damage
 			EncounterLogic.kill(encounter, combatant);
+			if (combatant.combat.current) {
+				EncounterLogic.endTurn(encounter);
+			}
 		} else {
 			const resolve = EncounterLogic.getTraitRank(encounter, combatant, TraitType.Resolve);
 			if (combatant.combat.wounds === resolve) {
@@ -659,6 +665,9 @@ export class EncounterLogic {
 			}
 			if (combatant.combat.wounds > resolve) {
 				EncounterLogic.kill(encounter, combatant);
+				if (combatant.combat.current) {
+					EncounterLogic.endTurn(encounter);
+				}
 			}
 		}
 

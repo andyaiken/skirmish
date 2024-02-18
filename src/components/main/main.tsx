@@ -826,8 +826,8 @@ export class Main extends Component<Props, State> {
 			const encounter = game.encounter as EncounterModel;
 			EncounterLogic.rollInitiative(encounter);
 
-			const acting = EncounterLogic.getActiveCombatants(encounter);
-			const current = acting.length > 0 ? acting[0] : null;
+			const active = EncounterLogic.getActiveCombatants(encounter);
+			const current = active.length > 0 ? active[0] : null;
 			if (current) {
 				EncounterLogic.startOfTurn(encounter, current);
 			}
@@ -1053,7 +1053,7 @@ export class Main extends Component<Props, State> {
 		try {
 			const perform = () => {
 				combatant.combat.intents = IntentsLogic.getIntents(encounter, combatant);
-				if (combatant.combat.intents) {
+				if (combatant.combat.intents && (combatant.combat.intents.intents.length > 0)) {
 					IntentsLogic.performIntents(encounter, combatant);
 
 					this.setState({
@@ -1358,6 +1358,24 @@ export class Main extends Component<Props, State> {
 		}
 	};
 
+	kill = (combatant: CombatantModel) => {
+		try {
+			const game = this.state.game as GameModel;
+			const encounter = game.encounter as EncounterModel;
+
+			EncounterLogic.kill(encounter, combatant);
+			EncounterLogic.endTurn(encounter);
+
+			this.setState({
+				game: game
+			}, () => {
+				this.saveGame();
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
+	};
+
 	//#endregion
 
 	//#region Rendering
@@ -1460,6 +1478,7 @@ export class Main extends Component<Props, State> {
 						levelUp={this.incrementMonsterLevel}
 						switchAllegiance={this.switchAllegiance}
 						stun={this.stun}
+						kill={this.kill}
 						finishEncounter={this.finishEncounter}
 					/>
 				);

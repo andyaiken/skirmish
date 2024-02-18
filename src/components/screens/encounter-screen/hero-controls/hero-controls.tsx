@@ -28,6 +28,7 @@ interface Props {
 	levelUp: (combatant: CombatantModel) => void;
 	switchAllegiance: (combatant: CombatantModel) => void;
 	stun: (combatant: CombatantModel) => void;
+	kill: (combatant: CombatantModel) => void;
 	drinkPotion: (encounter: EncounterModel, owner: CombatantModel, drinker: CombatantModel, potion: ItemModel) => void;
 }
 
@@ -74,6 +75,7 @@ export class HeroControls extends Component<Props, State> {
 							levelUp={this.props.levelUp}
 							switchAllegiance={this.props.switchAllegiance}
 							stun={this.props.stun}
+							kill={this.props.kill}
 						/>
 					);
 					break;

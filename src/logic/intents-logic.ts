@@ -367,7 +367,6 @@ export class IntentsLogic {
 
 	static performIntents = (encounter: EncounterModel, combatant: CombatantModel): void => {
 		if ((combatant.combat.intents === null) || (combatant.combat.intents.intents.length === 0)) {
-			EncounterLogic.endTurn(encounter);
 			return;
 		}
 

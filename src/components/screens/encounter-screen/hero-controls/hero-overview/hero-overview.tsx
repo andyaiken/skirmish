@@ -19,6 +19,7 @@ interface Props {
 	levelUp: (combatant: CombatantModel) => void;
 	switchAllegiance: (combatant: CombatantModel) => void;
 	stun: (combatant: CombatantModel) => void;
+	kill: (combatant: CombatantModel) => void;
 }
 
 export class HeroOverview extends Component<Props> {
@@ -61,6 +62,11 @@ export class HeroOverview extends Component<Props> {
 					{
 						this.props.options.developer ?
 							<button className='developer' onClick={() => this.props.stun(this.props.combatant)}>Stun / Unstun</button>
+							: null
+					}
+					{
+						this.props.options.developer ?
+							<button className='developer' onClick={() => this.props.kill(this.props.combatant)}>Kill</button>
 							: null
 					}
 					{

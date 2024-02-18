@@ -83,6 +83,7 @@ interface Props {
 	levelUp: (combatant: CombatantModel) => void;
 	switchAllegiance: (combatant: CombatantModel) => void;
 	stun: (combatant: CombatantModel) => void;
+	kill: (combatant: CombatantModel) => void;
 	finishEncounter: (state: EncounterState) => void;
 }
 
@@ -498,7 +499,14 @@ export class EncounterScreen extends Component<Props, State> {
 
 		let actionBtn = (
 			<div className='action-container'>
-				<button className='primary action' onClick={() => this.props.rollInitiative()}>Roll Initiative</button>
+				<button
+					key='init-btn'
+					className='primary action'
+					onClick={() => this.props.rollInitiative()}
+					onDoubleClick={e => e.stopPropagation()}
+				>
+					Roll Initiative
+				</button>
 			</div>
 		);
 		if (currentCombatant) {
@@ -516,7 +524,14 @@ export class EncounterScreen extends Component<Props, State> {
 							label='Action'
 							value={actionTaken ? <IconCircleCheckFilled className='action-taken' size={39} /> : <IconDots size={39} />}
 						/>
-						<button className={actionTaken ? 'primary action' : 'action'} onClick={() => this.endTurn()}>End My Turn</button>
+						<button
+							key='hero-btn'
+							className={actionTaken ? 'primary action' : 'action'}
+							onClick={() => this.endTurn()}
+							onDoubleClick={e => e.stopPropagation()}
+						>
+							End My Turn
+						</button>
 					</div>
 				);
 			}
@@ -524,7 +539,15 @@ export class EncounterScreen extends Component<Props, State> {
 				const label = currentCombatant.combat.stunned ? 'Skip Monster Turn' : 'Take Monster Turn';
 				actionBtn = (
 					<div className='action-container'>
-						<button className='primary action' disabled={this.state.thinking} onClick={() => this.runMonsterTurn()}>{this.state.thinking ? 'Thinking' : label}</button>
+						<button
+							key='monster-btn'
+							className='primary action'
+							disabled={this.state.thinking}
+							onClick={() => this.runMonsterTurn()}
+							onDoubleClick={e => e.stopPropagation()}
+						>
+							{this.state.thinking ? 'Thinking' : label}
+						</button>
 					</div>
 				);
 			}
@@ -791,6 +814,7 @@ export class EncounterScreen extends Component<Props, State> {
 							levelUp={this.props.levelUp}
 							switchAllegiance={this.props.switchAllegiance}
 							stun={this.props.stun}
+							kill={this.props.kill}
 						/>
 					</div>
 				);
@@ -812,6 +836,7 @@ export class EncounterScreen extends Component<Props, State> {
 						levelUp={this.props.levelUp}
 						switchAllegiance={this.props.switchAllegiance}
 						stun={this.props.stun}
+						kill={this.props.kill}
 						drinkPotion={this.props.drinkPotion}
 					/>
 				</div>

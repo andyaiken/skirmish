@@ -56,7 +56,7 @@ export class BackstageScreen extends Component<Props, State> {
 							<LogoPanel text='Skirmish - Backstage' size={36} />
 						</div>
 						<div className='buttons'>
-							<button className='icon-btn developer checked' title='Backstage' onClick={this.props.toggleBackstage}><IconCodeCircle2 /></button>
+							<button className='icon-btn checked' title='Backstage' onClick={this.props.toggleBackstage}><IconCodeCircle2 /></button>
 						</div>
 					</div>
 					<Tabs options={options} selectedID={this.state.view} onSelect={id => this.setState({ view: id })} />

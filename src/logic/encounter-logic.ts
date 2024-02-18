@@ -22,13 +22,13 @@ import type { ItemModel } from '../models/item';
 
 import { Collections } from '../utils/collections';
 import { Random } from '../utils/random';
+import { Sound } from '../utils/sound';
 
 import { CombatantLogic } from './combatant-logic';
 import { ConditionLogic } from './condition-logic';
 import { EncounterLogLogic } from './encounter-log-logic';
 import { EncounterMapLogic } from './encounter-map-logic';
 import { Factory } from './factory';
-import { Sound } from '../utils/sound';
 
 export class EncounterLogic {
 	static getCombatantSquares = (encounter: EncounterModel, combatant: CombatantModel, position: { x: number, y: number } | null = null) => {

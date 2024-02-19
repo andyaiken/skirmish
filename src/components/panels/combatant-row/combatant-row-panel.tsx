@@ -1,5 +1,5 @@
 import { Component, MouseEvent } from 'react';
-import { IconCheck, IconHeartFilled, IconHeartOff, IconId, IconX } from '@tabler/icons-react';
+import { IconCheck, IconCircleArrowDown, IconCircleArrowUp, IconHeartFilled, IconHeartOff, IconId, IconX } from '@tabler/icons-react';
 
 import { CombatantState } from '../../../enums/combatant-state';
 import { QuirkType } from '../../../enums/quirk-type';
@@ -11,6 +11,7 @@ import { GameLogic } from '../../../logic/game-logic';
 
 import type { CombatantModel } from '../../../models/combatant';
 import type { EncounterModel } from '../../../models/encounter';
+import type { OptionsModel } from '../../../models/options';
 
 import { Collections } from '../../../utils/collections';
 
@@ -23,10 +24,12 @@ interface Props {
 	mode: 'list' | 'initiative' | 'detailed' | 'header' | 'column';
 	combatant: CombatantModel;
 	encounter: EncounterModel | null;
+	options: OptionsModel;
 	onClick: ((combatant: CombatantModel) => void) | null;
 	onTokenClick: ((combatant: CombatantModel) => void) | null;
 	onSelect: ((combatant: CombatantModel) => void) | null;
 	onDetails: ((combatant: CombatantModel) => void) | null;
+	onNudgeInitiative: ((combatant: CombatantModel, delta: number) => void) | null;
 	onCancel: ((combatant: CombatantModel) => void) | null;
 }
 
@@ -38,6 +41,7 @@ export class CombatantRowPanel extends Component<Props> {
 		onTokenClick: null,
 		onSelect: null,
 		onDetails: null,
+		onNudgeInitiative: null,
 		onCancel: null
 	};
 
@@ -59,6 +63,13 @@ export class CombatantRowPanel extends Component<Props> {
 		e.stopPropagation();
 		if (this.props.onDetails) {
 			this.props.onDetails(this.props.combatant);
+		}
+	};
+
+	onNudgeInitiative = (e: MouseEvent, delta: number) => {
+		e.stopPropagation();
+		if (this.props.onNudgeInitiative) {
+			this.props.onNudgeInitiative(this.props.combatant, delta);
 		}
 	};
 
@@ -91,6 +102,8 @@ export class CombatantRowPanel extends Component<Props> {
 				);
 			});
 
+		const showButtons = this.props.options.developer && !this.props.combatant.combat.current && (this.props.combatant.combat.initiative !== Number.MIN_VALUE);
+
 		return (
 			<div className='info below'>
 				<div className='tags'>
@@ -100,6 +113,16 @@ export class CombatantRowPanel extends Component<Props> {
 				{this.getWounds()}
 				{this.props.combatant.combat.conditions.length > 0 ? <hr /> : null}
 				{conditions}
+				{showButtons ? <hr /> : null}
+				{
+					showButtons ?
+						<div className='button-row developer'>
+							<button className='icon-btn' onClick={e => this.onNudgeInitiative(e, -1)}><IconCircleArrowDown /></button>
+							<StatValue label='Init' value={this.props.combatant.combat.initiative} />
+							<button className='icon-btn' onClick={e => this.onNudgeInitiative(e, 1)}><IconCircleArrowUp /></button>
+						</div>
+						: null
+				}
 			</div>
 		);
 	};

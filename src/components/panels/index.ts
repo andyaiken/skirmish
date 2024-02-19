@@ -2,6 +2,7 @@ import { CampaignMapPanel } from './campaign-map/campaign-map-panel';
 import { CombatStatsPanel } from './combat-stats/combat-stats-panel';
 import { CombatantNotices } from './combatant-notices/combatant-notices';
 import { CombatantRowPanel } from './combatant-row/combatant-row-panel';
+import { CombatantStatePanel } from './combatant-state/combatant-state-panel';
 import { ConditionsPanel } from './conditions/conditions-panel';
 import { DirectionIndicatorPanel } from './direction-indicator/direction-indicator-panel';
 import { DirectionPanel } from './direction/direction-panel';
@@ -18,6 +19,7 @@ export {
 	CombatStatsPanel,
 	CombatantNotices,
 	CombatantRowPanel,
+	CombatantStatePanel,
 	ConditionsPanel,
 	DirectionPanel,
 	DirectionIndicatorPanel,

@@ -95,6 +95,10 @@ export class EncounterLogic {
 			c.combat.initiative = Random.dice(speed);
 		});
 
+		EncounterLogic.sortInitiative(encounter);
+	};
+
+	static sortInitiative = (encounter: EncounterModel) => {
 		encounter.combatants.sort((a, b) => {
 			// Sort by Inititive
 			let result: number = b.combat.initiative - a.combat.initiative;
@@ -247,43 +251,42 @@ export class EncounterLogic {
 
 		// This might have affected our Resolve, so check whether this is a problem
 		const resolve = EncounterLogic.getTraitRank(encounter, combatant, TraitType.Resolve);
-		if ((combatant.combat.wounds === resolve) && ((combatant.combat.state === CombatantState.Standing) || (combatant.combat.state === CombatantState.Unconscious))) {
-			combatant.combat.state = CombatantState.Unconscious;
-			EncounterLogLogic.logState(encounter, combatant);
+		if (combatant.combat.wounds === resolve) {
+			if ((combatant.combat.state === CombatantState.Standing) || (combatant.combat.state === CombatantState.Prone)) {
+				combatant.combat.state = CombatantState.Unconscious;
+				EncounterLogLogic.logState(encounter, combatant);
+			}
 		}
-		if ((combatant.combat.wounds > resolve) && (combatant.combat.state !== CombatantState.Dead)) {
-			EncounterLogic.kill(encounter, combatant);
-		}
-
-		if ((combatant.combat.state === CombatantState.Unconscious) || (combatant.combat.state === CombatantState.Dead)) {
-			EncounterLogic.endTurn(encounter);
+		if (combatant.combat.wounds > resolve) {
+			if ((combatant.combat.state === CombatantState.Standing) || (combatant.combat.state === CombatantState.Prone) || (combatant.combat.state === CombatantState.Unconscious)) {
+				EncounterLogic.kill(encounter, combatant);
+			}
 		}
 	};
 
 	static endTurn = (encounter: EncounterModel) => {
-		encounter.combatants
-			.filter(combatant => combatant.combat.current)
-			.forEach(combatant => {
-				EncounterLogLogic.log(encounter, [
-					EncounterLogLogic.text('Ending turn for '),
-					EncounterLogLogic.combatant(combatant)
-				]);
+		const current = encounter.combatants.filter(combatant => combatant.combat.current);
+		current.forEach(combatant => {
+			EncounterLogLogic.log(encounter, [
+				EncounterLogLogic.text('Ending turn for '),
+				EncounterLogLogic.combatant(combatant)
+			]);
 
-				combatant.combat.current = false;
-				combatant.combat.senses = 0;
-				combatant.combat.movement = 0;
-				combatant.combat.trail = [];
-				combatant.combat.actions = [];
-				combatant.combat.selectedAction = null;
-				combatant.combat.intents = null;
-				combatant.combat.stunned = false;
-				combatant.combat.initiative = Number.MIN_VALUE;
-			});
+			combatant.combat.current = false;
+			combatant.combat.senses = 0;
+			combatant.combat.movement = 0;
+			combatant.combat.trail = [];
+			combatant.combat.actions = [];
+			combatant.combat.selectedAction = null;
+			combatant.combat.intents = null;
+			combatant.combat.stunned = false;
+			combatant.combat.initiative = Number.MIN_VALUE;
+		});
 
 		const active = EncounterLogic.getActiveCombatants(encounter);
-		const current = active.length > 0 ? active[0] : null;
-		if (current) {
-			EncounterLogic.startOfTurn(encounter, current);
+		const nextCombatant = active.length > 0 ? active[0] : null;
+		if (nextCombatant) {
+			EncounterLogic.startOfTurn(encounter, nextCombatant);
 		}
 	};
 
@@ -606,9 +609,6 @@ export class EncounterLogic {
 			if (combatant.quirks.includes(QuirkType.Drone)) {
 				// Drones die if they take any damage
 				EncounterLogic.kill(encounter, combatant);
-				if (combatant.combat.current) {
-					EncounterLogic.endTurn(encounter);
-				}
 			} else {
 				combatant.combat.damage += value;
 				EncounterLogLogic.log(encounter, [
@@ -654,19 +654,17 @@ export class EncounterLogic {
 		if (combatant.quirks.includes(QuirkType.Drone)) {
 			// Drones die if they take any damage
 			EncounterLogic.kill(encounter, combatant);
-			if (combatant.combat.current) {
-				EncounterLogic.endTurn(encounter);
-			}
 		} else {
 			const resolve = EncounterLogic.getTraitRank(encounter, combatant, TraitType.Resolve);
 			if (combatant.combat.wounds === resolve) {
-				combatant.combat.state = CombatantState.Unconscious;
-				EncounterLogLogic.logState(encounter, combatant);
+				if ((combatant.combat.state === CombatantState.Standing) || (combatant.combat.state === CombatantState.Prone)) {
+					combatant.combat.state = CombatantState.Unconscious;
+					EncounterLogLogic.logState(encounter, combatant);
+				}
 			}
 			if (combatant.combat.wounds > resolve) {
-				EncounterLogic.kill(encounter, combatant);
-				if (combatant.combat.current) {
-					EncounterLogic.endTurn(encounter);
+				if ((combatant.combat.state === CombatantState.Standing) || (combatant.combat.state === CombatantState.Prone) || (combatant.combat.state === CombatantState.Unconscious)) {
+					EncounterLogic.kill(encounter, combatant);
 				}
 			}
 		}
@@ -681,9 +679,31 @@ export class EncounterLogic {
 
 		combatant.combat.state = CombatantState.Dead;
 		combatant.combat.conditions = [];
+		combatant.combat.senses = 0;
+		combatant.combat.movement = 0;
+		combatant.combat.actions = [];
+		combatant.combat.selectedAction = null;
+		combatant.combat.intents = null;
+		combatant.combat.stunned = false;
+
 		EncounterLogLogic.logState(encounter, combatant);
 		EncounterLogic.dropAllItems(encounter, combatant);
 		Sound.play(Sound.dong);
+	};
+
+	static knockout = (encounter: EncounterModel, combatant: CombatantModel) => {
+		if (combatant.combat.state === CombatantState.Unconscious){
+			return;
+		}
+
+		combatant.combat.state = CombatantState.Unconscious;
+		combatant.combat.senses = 0;
+		combatant.combat.movement = 0;
+		combatant.combat.actions = [];
+		combatant.combat.selectedAction = null;
+		combatant.combat.intents = null;
+
+		EncounterLogLogic.logState(encounter, combatant);
 	};
 
 	static goProne = (encounter: EncounterModel, combatant: CombatantModel) => {

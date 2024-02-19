@@ -21,6 +21,7 @@ interface Props {
 	levelUp: (combatant: CombatantModel) => void;
 	switchAllegiance: (combatant: CombatantModel) => void;
 	stun: (combatant: CombatantModel) => void;
+	knockout: (combatant: CombatantModel) => void;
 	kill: (combatant: CombatantModel) => void;
 }
 
@@ -63,6 +64,7 @@ export class MonsterControls extends Component<Props, State> {
 						mode='header'
 						combatant={this.props.combatant}
 						encounter={this.props.encounter}
+						options={this.props.options}
 						onTokenClick={this.props.showToken}
 						onDetails={this.props.showCharacterSheet}
 					/>
@@ -84,6 +86,7 @@ export class MonsterControls extends Component<Props, State> {
 							: null
 					}
 					<CombatStatsPanel combatant={this.props.combatant} encounter={this.props.encounter} />
+					<CombatantNotices combatant={this.props.combatant} />
 					{
 						this.props.options.developer ?
 							<button className='developer' onClick={() => this.props.levelUp(this.props.combatant)}>Level Up</button>
@@ -101,10 +104,14 @@ export class MonsterControls extends Component<Props, State> {
 					}
 					{
 						this.props.options.developer ?
+							<button className='developer' onClick={() => this.props.knockout(this.props.combatant)}>Knockout</button>
+							: null
+					}
+					{
+						this.props.options.developer ?
 							<button className='developer' onClick={() => this.props.kill(this.props.combatant)}>Kill</button>
 							: null
 					}
-					<CombatantNotices combatant={this.props.combatant} />
 					{action}
 				</div>
 			);

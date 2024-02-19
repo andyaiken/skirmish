@@ -4,6 +4,7 @@ import { EncounterLogic } from '../../../logic/encounter-logic';
 
 import type { CombatantModel } from '../../../models/combatant';
 import type { EncounterModel } from '../../../models/encounter';
+import type { OptionsModel } from '../../../models/options';
 
 import { Text, TextType } from '../../controls';
 import { CombatantRowPanel } from '../../panels';
@@ -12,8 +13,10 @@ import './initiative-list-panel.scss';
 
 interface Props {
 	encounter: EncounterModel;
+	options: OptionsModel;
 	selectedIDs: string[];
 	onSelect: (combatant: CombatantModel) => void;
+	nudgeInitiative: (combatant: CombatantModel, delta: number) => void;
 }
 
 export class InitiativeListPanel extends Component<Props> {
@@ -28,6 +31,7 @@ export class InitiativeListPanel extends Component<Props> {
 							mode='initiative'
 							combatant={combatant}
 							encounter={this.props.encounter}
+							options={this.props.options}
 							onClick={this.props.onSelect}
 							onTokenClick={this.props.onSelect}
 						/>
@@ -43,8 +47,10 @@ export class InitiativeListPanel extends Component<Props> {
 							mode='initiative'
 							combatant={combatant}
 							encounter={this.props.encounter}
+							options={this.props.options}
 							onClick={this.props.onSelect}
 							onTokenClick={this.props.onSelect}
+							onNudgeInitiative={this.props.nudgeInitiative}
 						/>
 					);
 				});
@@ -57,6 +63,7 @@ export class InitiativeListPanel extends Component<Props> {
 							mode='initiative'
 							combatant={combatant}
 							encounter={this.props.encounter}
+							options={this.props.options}
 							onClick={this.props.onSelect}
 							onTokenClick={this.props.onSelect}
 						/>
@@ -71,6 +78,7 @@ export class InitiativeListPanel extends Component<Props> {
 							mode='initiative'
 							combatant={combatant}
 							encounter={this.props.encounter}
+							options={this.props.options}
 							onClick={this.props.onSelect}
 							onTokenClick={this.props.onSelect}
 						/>

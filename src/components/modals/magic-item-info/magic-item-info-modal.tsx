@@ -8,6 +8,7 @@ import { CombatantLogic } from '../../../logic/combatant-logic';
 import type { CombatantModel } from '../../../models/combatant';
 import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
+import type { OptionsModel } from '../../../models/options';
 
 import { Collections } from '../../../utils/collections';
 
@@ -20,6 +21,7 @@ import './magic-item-info-modal.scss';
 interface Props {
 	item: ItemModel;
 	game: GameModel;
+	options: OptionsModel;
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
 	dropItem: (item: ItemModel, hero: CombatantModel) => void;
 	sellItem: (item: ItemModel) => void;
@@ -125,11 +127,11 @@ export class MagicItemInfoModal extends Component<Props, State> {
 					const equippable = this.getIsEquippable(hero, this.props.item);
 					if (equippable) {
 						canEquip.push(
-							<CombatantRowPanel key={hero.id} combatant={hero} onClick={combatant => this.props.equipItem(this.props.item, combatant)} />
+							<CombatantRowPanel key={hero.id} combatant={hero} options={this.props.options} onClick={combatant => this.props.equipItem(this.props.item, combatant)} />
 						);
 					} else {
 						canReplace.push(
-							<CombatantRowPanel key={hero.id} combatant={hero} onClick={combatant => this.setComparison(combatant)} />
+							<CombatantRowPanel key={hero.id} combatant={hero} options={this.props.options} onClick={combatant => this.setComparison(combatant)} />
 						);
 					}
 				});

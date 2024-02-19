@@ -1,0 +1,48 @@
+.combatant-state-panel {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin: 5px 0;
+
+	.state-box {
+		flex: 0 0 50px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 3px;
+		padding: 3px;
+		border-radius: 5px;
+
+		.state-text {
+			font-size: 10px;
+			text-align: center;
+		}
+
+		&.selected {
+			background-color: rgb(60, 170, 255);
+			color: rgb(255, 255, 255);
+		}
+	}
+
+	.state-arrows {
+		flex: 0 0 auto;
+	}
+
+	.state-stunned {
+		position: absolute;
+		left: 25px;
+		right: 25px;
+		text-align: center;
+		border: 2px solid rgb(60, 170, 255);
+		border-radius: 5px;
+		background-color: rgb(200, 230, 255);
+		text-transform: uppercase;
+		font-size: 18px;
+		letter-spacing: 3px;
+		font-weight: 600;
+		padding: 5px 0;
+		filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.4));
+		transform: rotate(-5deg);
+	}
+}

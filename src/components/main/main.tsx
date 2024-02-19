@@ -1358,13 +1358,47 @@ export class Main extends Component<Props, State> {
 		}
 	};
 
+	knockout = (combatant: CombatantModel) => {
+		try {
+			const game = this.state.game as GameModel;
+			const encounter = game.encounter as EncounterModel;
+
+			EncounterLogic.knockout(encounter, combatant);
+
+			this.setState({
+				game: game
+			}, () => {
+				this.saveGame();
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
+	};
+
 	kill = (combatant: CombatantModel) => {
 		try {
 			const game = this.state.game as GameModel;
 			const encounter = game.encounter as EncounterModel;
 
 			EncounterLogic.kill(encounter, combatant);
-			EncounterLogic.endTurn(encounter);
+
+			this.setState({
+				game: game
+			}, () => {
+				this.saveGame();
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
+	};
+
+	nudgeInitiative = (combatant: CombatantModel, delta: number) => {
+		try {
+			const game = this.state.game as GameModel;
+			const encounter = game.encounter as EncounterModel;
+
+			combatant.combat.initiative += delta;
+			EncounterLogic.sortInitiative(encounter);
 
 			this.setState({
 				game: game
@@ -1457,7 +1491,7 @@ export class Main extends Component<Props, State> {
 						rollInitiative={this.rollInitiative}
 						regenerateEncounterMap={this.regenerateEncounterMap}
 						addCombatantToEncounter={this.addCombatantToEncounter}
-						endTurn={this.endTurn}
+						endTurn={encounter => this.endTurn(encounter)}
 						move={this.move}
 						addMovement={this.addMovement}
 						inspire={this.inspire}
@@ -1478,7 +1512,9 @@ export class Main extends Component<Props, State> {
 						levelUp={this.incrementMonsterLevel}
 						switchAllegiance={this.switchAllegiance}
 						stun={this.stun}
+						knockout={this.knockout}
 						kill={this.kill}
+						nudgeInitiative={this.nudgeInitiative}
 						finishEncounter={this.finishEncounter}
 					/>
 				);

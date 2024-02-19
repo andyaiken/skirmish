@@ -58,6 +58,17 @@
 			.tags {
 				margin: 5px 0;
 			}
+
+			.button-row {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				gap: 5px;
+
+				button {
+					max-height: 40px;
+				}
+			}
 		}
 
 		&.right {

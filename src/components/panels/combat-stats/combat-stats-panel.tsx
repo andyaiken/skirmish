@@ -10,6 +10,7 @@ import type { CombatantModel } from '../../../models/combatant';
 import type { EncounterModel } from '../../../models/encounter';
 
 import { Box, StatValue } from '../../controls';
+import { CombatantStatePanel } from '../combatant-state/combatant-state-panel';
 import { ConditionsPanel } from '../conditions/conditions-panel';
 
 import './combat-stats-panel.scss';
@@ -57,6 +58,8 @@ export class CombatStatsPanel extends Component<Props> {
 			return (
 				<div className='combat-stats-panel'>
 					<Box label='Stats'>
+						<CombatantStatePanel combatant={this.props.combatant} />
+						<hr />
 						<div className='combat-stats-row'>
 							<StatValue orientation='vertical' label='Senses' value={this.props.combatant.combat.senses} />
 							<StatValue orientation='vertical' label='Hidden' value={this.props.combatant.combat.hidden} />

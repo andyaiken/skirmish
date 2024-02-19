@@ -22,7 +22,7 @@ export class FinishPage extends Component<Props> {
 			return (
 				<div className='finish-page'>
 					<div className='finish-page-content'>
-						<CombatantRowPanel combatant={this.props.hero} />
+						<CombatantRowPanel combatant={this.props.hero} options={this.props.options} />
 						{
 							this.props.options.showTips ?
 								<Expander

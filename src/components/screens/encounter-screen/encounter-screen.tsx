@@ -23,6 +23,7 @@ import toast from 'react-hot-toast';
 
 import { ActionTargetType } from '../../../enums/action-target-type';
 import { CardType } from '../../../enums/card-type';
+import { CombatantState } from '../../../enums/combatant-state';
 import { CombatantType } from '../../../enums/combatant-type';
 import { EncounterState } from '../../../enums/encounter-state';
 import { OrientationType } from '../../../enums/orientation-type';
@@ -83,7 +84,9 @@ interface Props {
 	levelUp: (combatant: CombatantModel) => void;
 	switchAllegiance: (combatant: CombatantModel) => void;
 	stun: (combatant: CombatantModel) => void;
+	knockout: (combatant: CombatantModel) => void;
 	kill: (combatant: CombatantModel) => void;
+	nudgeInitiative: (combatant: CombatantModel, delta: number) => void;
 	finishEncounter: (state: EncounterState) => void;
 }
 
@@ -466,7 +469,7 @@ export class EncounterScreen extends Component<Props, State> {
 	};
 
 	runMonsterTurn = () => {
-		const currentCombatant = EncounterLogic.getActiveCombatants(this.props.encounter).find(c => c.combat.current) || null;
+		const currentCombatant = this.props.encounter.combatants.find(c => c.combat.current) || null;
 
 		if (currentCombatant && (currentCombatant.faction === CombatantType.Monster)) {
 			this.setState({
@@ -495,8 +498,6 @@ export class EncounterScreen extends Component<Props, State> {
 			);
 		}
 
-		const currentCombatant = EncounterLogic.getActiveCombatants(this.props.encounter).find(c => c.combat.current) || null;
-
 		let actionBtn = (
 			<div className='action-container'>
 				<button
@@ -509,34 +510,52 @@ export class EncounterScreen extends Component<Props, State> {
 				</button>
 			</div>
 		);
+
+		const currentCombatant = this.props.encounter.combatants.find(c => c.combat.current) || null;
 		if (currentCombatant) {
+			const canAct = !currentCombatant.combat.stunned && (currentCombatant.combat.state !== CombatantState.Unconscious) && (currentCombatant.combat.state !== CombatantState.Dead);
 			if (currentCombatant.faction === CombatantType.Hero) {
-				const actionTaken = currentCombatant.combat.selectedAction && currentCombatant.combat.selectedAction.used;
-				actionBtn = (
-					<div className='action-container'>
-						<StatValue
-							orientation='vertical'
-							label='Movement'
-							value={<IconValue value={currentCombatant.combat.movement} type={IconType.Movement} size={IconSize.Large} />}
-						/>
-						<StatValue
-							orientation='vertical'
-							label='Action'
-							value={actionTaken ? <IconCircleCheckFilled className='action-taken' size={39} /> : <IconDots size={39} />}
-						/>
-						<button
-							key='hero-btn'
-							className={actionTaken ? 'primary action' : 'action'}
-							onClick={() => this.endTurn()}
-							onDoubleClick={e => e.stopPropagation()}
-						>
-							End My Turn
-						</button>
-					</div>
-				);
+				if (canAct) {
+					const actionTaken = currentCombatant.combat.selectedAction && currentCombatant.combat.selectedAction.used;
+					actionBtn = (
+						<div className='action-container'>
+							<StatValue
+								orientation='vertical'
+								label='Movement'
+								value={<IconValue value={currentCombatant.combat.movement} type={IconType.Movement} size={IconSize.Large} />}
+							/>
+							<StatValue
+								orientation='vertical'
+								label='Action'
+								value={actionTaken ? <IconCircleCheckFilled className='action-taken' size={39} /> : <IconDots size={39} />}
+							/>
+							<button
+								key='hero-btn'
+								className={actionTaken ? 'primary action' : 'action'}
+								onClick={() => this.endTurn()}
+								onDoubleClick={e => e.stopPropagation()}
+							>
+								End My Turn
+							</button>
+						</div>
+					);
+				} else {
+					actionBtn = (
+						<div className='action-container'>
+							<button
+								key='hero-btn'
+								className='primary action'
+								onClick={() => this.endTurn()}
+								onDoubleClick={e => e.stopPropagation()}
+							>
+								Skip My Turn
+							</button>
+						</div>
+					);
+				}
 			}
 			if (currentCombatant.faction === CombatantType.Monster) {
-				const label = currentCombatant.combat.stunned ? 'Skip Monster Turn' : 'Take Monster Turn';
+				const label = canAct ? 'Take Monster Turn' : 'Skip Monster Turn';
 				actionBtn = (
 					<div className='action-container'>
 						<button
@@ -562,6 +581,7 @@ export class EncounterScreen extends Component<Props, State> {
 							mode='detailed'
 							combatant={combatant}
 							encounter={this.props.encounter}
+							options={this.props.options}
 							onTokenClick={() => this.scrollToCombatant('selected')}
 							onDetails={this.showDetailsCombatant}
 							onCancel={this.clearSelection}
@@ -651,9 +671,9 @@ export class EncounterScreen extends Component<Props, State> {
 			return null;
 		}
 
-		const currentCombatant = EncounterLogic.getActiveCombatants(this.props.encounter).find(c => c.combat.current) || null;
+		const currentCombatant = this.props.encounter.combatants.find(c => c.combat.current) || null;
 		if (currentCombatant) {
-			if ((currentCombatant.faction === CombatantType.Hero) && !currentCombatant.combat.stunned) {
+			if ((currentCombatant.faction === CombatantType.Hero) && !currentCombatant.combat.stunned && (currentCombatant.combat.actions.length > 0)) {
 				return (
 					<div className='encounter-bottom-panel'>
 						<ActionControls
@@ -710,8 +730,10 @@ export class EncounterScreen extends Component<Props, State> {
 					content = (
 						<InitiativeListPanel
 							encounter={this.props.encounter}
+							options={this.props.options}
 							selectedIDs={this.state.selectedCombatantIDs}
 							onSelect={this.selectCombatant}
+							nudgeInitiative={this.props.nudgeInitiative}
 						/>
 					);
 					break;
@@ -764,7 +786,7 @@ export class EncounterScreen extends Component<Props, State> {
 			);
 		}
 
-		const currentCombatant = EncounterLogic.getActiveCombatants(this.props.encounter).find(c => c.combat.current) || null;
+		const currentCombatant = this.props.encounter.combatants.find(c => c.combat.current) || null;
 		if (currentCombatant === null) {
 			return (
 				<div className='encounter-right-column'>
@@ -780,28 +802,6 @@ export class EncounterScreen extends Component<Props, State> {
 		}
 
 		if (this.state.showRightPanel) {
-			/*
-			const unconscious = currentCombatant.combat.state === CombatantState.Unconscious;
-			const dead = currentCombatant.combat.state === CombatantState.Dead;
-			const stunned = currentCombatant.combat.stunned;
-			if (unconscious || dead || stunned) {
-				return (
-					<div className='encounter-right-column'>
-						<InactiveControls
-							combatant={currentCombatant}
-							encounter={this.props.encounter}
-							options={this.props.options}
-							showToken={() => this.scrollToCombatant('current')}
-							showCharacterSheet={this.showDetailsCombatant}
-							levelUp={this.props.levelUp}
-							switchAllegiance={this.props.switchAllegiance}
-							stun={this.props.stun}
-						/>
-					</div>
-				);
-			}
-			*/
-
 			if (currentCombatant.faction === CombatantType.Monster) {
 				return (
 					<div className='encounter-right-column'>
@@ -814,6 +814,7 @@ export class EncounterScreen extends Component<Props, State> {
 							levelUp={this.props.levelUp}
 							switchAllegiance={this.props.switchAllegiance}
 							stun={this.props.stun}
+							knockout={this.props.knockout}
 							kill={this.props.kill}
 						/>
 					</div>
@@ -836,6 +837,7 @@ export class EncounterScreen extends Component<Props, State> {
 						levelUp={this.props.levelUp}
 						switchAllegiance={this.props.switchAllegiance}
 						stun={this.props.stun}
+						knockout={this.props.knockout}
 						kill={this.props.kill}
 						drinkPotion={this.props.drinkPotion}
 					/>
@@ -849,6 +851,7 @@ export class EncounterScreen extends Component<Props, State> {
 					mode='column'
 					combatant={currentCombatant}
 					encounter={this.props.encounter}
+					options={this.props.options}
 					onTokenClick={() => this.scrollToCombatant('current')}
 					onDetails={this.showDetailsCombatant}
 				/>

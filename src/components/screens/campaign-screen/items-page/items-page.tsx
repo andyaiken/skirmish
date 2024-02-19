@@ -245,6 +245,7 @@ export class ItemsPage extends Component<Props, State> {
 						<MagicItemInfoModal
 							item={this.state.selectedMagicItem}
 							game={this.props.game}
+							options={this.props.options}
 							equipItem={this.equipItem}
 							dropItem={this.props.dropItem}
 							sellItem={this.sellMagicItem}

@@ -28,6 +28,7 @@ interface Props {
 	levelUp: (combatant: CombatantModel) => void;
 	switchAllegiance: (combatant: CombatantModel) => void;
 	stun: (combatant: CombatantModel) => void;
+	knockout: (combatant: CombatantModel) => void;
 	kill: (combatant: CombatantModel) => void;
 	drinkPotion: (encounter: EncounterModel, owner: CombatantModel, drinker: CombatantModel, potion: ItemModel) => void;
 }
@@ -75,6 +76,7 @@ export class HeroControls extends Component<Props, State> {
 							levelUp={this.props.levelUp}
 							switchAllegiance={this.props.switchAllegiance}
 							stun={this.props.stun}
+							knockout={this.props.knockout}
 							kill={this.props.kill}
 						/>
 					);
@@ -107,6 +109,7 @@ export class HeroControls extends Component<Props, State> {
 						mode='header'
 						combatant={this.props.combatant}
 						encounter={this.props.encounter}
+						options={this.props.options}
 						onTokenClick={this.props.showToken}
 						onDetails={this.props.showCharacterSheet}
 					/>

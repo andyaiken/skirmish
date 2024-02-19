@@ -144,7 +144,7 @@ export class SetupScreen extends Component<Props, State> {
 
 	render = () => {
 		try {
-			const heroes = this.props.game.heroes.map(h => <CombatantRowPanel key={h.id} combatant={h} onDetails={this.selectHero} />);
+			const heroes = this.props.game.heroes.map(h => <CombatantRowPanel key={h.id} combatant={h} options={this.props.options} onDetails={this.selectHero} />);
 			if (heroes.length < 5) {
 				heroes.push(
 					<div key='add' className='empty-panel'>

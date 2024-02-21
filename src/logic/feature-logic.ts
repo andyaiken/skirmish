@@ -7,11 +7,13 @@ import { SkillCategoryType } from '../enums/skill-category-type';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
 
+import type { CombatantModel } from '../models/combatant';
 import type { FeatureModel } from '../models/feature';
 
 import { Random } from '../utils/random';
 import { Utils } from '../utils/utils';
 
+import { CombatantLogic } from './combatant-logic';
 import { ConditionLogic } from './condition-logic';
 import { Factory } from './factory';
 import { GameLogic } from './game-logic';
@@ -234,10 +236,22 @@ export class FeatureLogic {
 		}
 	};
 
-	static getFeatureInformation = (feature: FeatureModel) => {
+	static getFeatureInformation = (feature: FeatureModel, combatant: CombatantModel | null = null) => {
 		switch (feature.type) {
 			case FeatureType.Trait:
+				if (combatant && (feature.trait !== TraitType.Any)) {
+					const rank = CombatantLogic.getTraitRank(combatant, [], feature.trait);
+					return `${FeatureLogic.getFeatureText(feature)} ${rank} => ${rank + feature.rank}`;
+				} else {
+					return `${FeatureLogic.getFeatureText(feature)} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
+				}
 			case FeatureType.Skill:
+				if (combatant && (feature.skill !== SkillType.Any)) {
+					const rank = CombatantLogic.getSkillRank(combatant, [], feature.skill);
+					return `${FeatureLogic.getFeatureText(feature)} ${rank} => ${rank + feature.rank}`;
+				} else {
+					return `${FeatureLogic.getFeatureText(feature)} ${feature.rank > 0 ? '+' : ''}${feature.rank}`;
+				}
 			case FeatureType.SkillCategory:
 			case FeatureType.DamageBonus:
 			case FeatureType.DamageCategoryBonus:

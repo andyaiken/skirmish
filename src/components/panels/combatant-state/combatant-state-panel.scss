@@ -1,9 +1,12 @@
 .combatant-state-panel {
 	position: relative;
+	background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(220, 220, 220);
+    border-radius: 5px;
+    padding: 3px;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	margin: 5px 0;
 
 	.state-box {
 		flex: 0 0 50px;
@@ -12,7 +15,7 @@
 		align-items: center;
 		gap: 3px;
 		padding: 3px;
-		border-radius: 5px;
+		border-radius: 3px;
 
 		.state-text {
 			font-size: 10px;
@@ -20,8 +23,7 @@
 		}
 
 		&.selected {
-			background-color: rgb(60, 170, 255);
-			color: rgb(255, 255, 255);
+			background-color: rgb(200, 230, 255);
 		}
 	}
 

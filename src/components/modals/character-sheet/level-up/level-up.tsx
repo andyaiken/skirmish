@@ -39,11 +39,11 @@ export class LevelUp extends Component<Props, State> {
 		};
 	}
 
-	setSelectedFeature = (feature: FeatureModel) => {
+	setSelectedFeature = (feature: FeatureModel | null) => {
 		this.setState({
 			selectedFeature: feature
 		}, () => {
-			if (!FeatureLogic.hasChoice(this.state.selectedFeature as FeatureModel)) {
+			if (feature && !FeatureLogic.hasChoice(feature)) {
 				// We can just select this
 				this.setState({
 					selectedFeature: null
@@ -61,13 +61,16 @@ export class LevelUp extends Component<Props, State> {
 				content = (
 					<div className='feature-detail-selection'>
 						<div className='selected-feature'>
-							<FeatureCard feature={this.state.selectedFeature}
+							<FeatureCard
+								key={this.state.selectedFeature.id}
+								feature={this.state.selectedFeature}
+								combatant={this.props.combatant}
 								footer={CombatantLogic.getFeatureSource(this.props.combatant, this.state.selectedFeature.id) || 'Feature'}
 								footerType={CombatantLogic.getFeatureSourceType(this.props.combatant, this.state.selectedFeature.id)}
 							/>
 						</div>
 						<div className='level-up-additional'>
-							<ChoicePanel feature={this.state.selectedFeature} hero={this.props.combatant} onChange={this.setSelectedFeature} />
+							<ChoicePanel feature={this.state.selectedFeature} hero={this.props.combatant} onSelect={this.setSelectedFeature} />
 						</div>
 					</div>
 				);
@@ -77,6 +80,7 @@ export class LevelUp extends Component<Props, State> {
 						<FeatureCard
 							key={feature.id}
 							feature={feature}
+							combatant={this.props.combatant}
 							footer={CombatantLogic.getFeatureSource(this.props.combatant, feature.id) || 'Feature'}
 							footerType={CombatantLogic.getFeatureSourceType(this.props.combatant, feature.id)}
 							onClick={this.setSelectedFeature}

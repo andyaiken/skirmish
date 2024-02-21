@@ -22,7 +22,7 @@ import { Random } from '../utils/random';
 
 export class IntentsLogic {
 	static getIntents = (encounter: EncounterModel, combatant: CombatantModel) => {
-		if (combatant.combat.stunned) {
+		if (combatant.combat.stunned || (combatant.combat.state === CombatantState.Unconscious) || (combatant.combat.state === CombatantState.Dead)) {
 			return null;
 		}
 

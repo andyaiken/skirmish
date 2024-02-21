@@ -1051,30 +1051,46 @@ export class Main extends Component<Props, State> {
 
 	runMonsterTurn = (encounter: EncounterModel, combatant: CombatantModel, onFinished: () => void) => {
 		try {
-			const perform = () => {
-				combatant.combat.intents = IntentsLogic.getIntents(encounter, combatant);
-				if (combatant.combat.intents && (combatant.combat.intents.intents.length > 0)) {
-					IntentsLogic.performIntents(encounter, combatant);
+			if (combatant.combat.stunned || (combatant.combat.state === CombatantState.Unconscious) || (combatant.combat.state === CombatantState.Dead)) {
+				// Can't act
 
-					this.setState({
-						game: this.state.game
-					}, () => {
-						this.saveGame();
-						setTimeout(perform, 800);
-					});
-				} else {
-					EncounterLogic.endTurn(encounter);
+				EncounterLogic.endTurn(encounter);
 
-					this.setState({
-						game: this.state.game
-					}, () => {
-						this.saveGame();
-						onFinished();
-					});
-				}
-			};
+				this.setState({
+					game: this.state.game
+				}, () => {
+					this.saveGame();
+					onFinished();
+				});
+			} else {
+				// Can act as normal
 
-			setTimeout(perform, 1000);
+				const perform = () => {
+					combatant.combat.intents = IntentsLogic.getIntents(encounter, combatant);
+					if (combatant.combat.intents && (combatant.combat.intents.intents.length > 0)) {
+						IntentsLogic.performIntents(encounter, combatant);
+
+						this.setState({
+							game: this.state.game
+						}, () => {
+							this.saveGame();
+							setTimeout(perform, 800);
+						});
+					} else {
+						EncounterLogic.endTurn(encounter);
+
+						this.setState({
+							game: this.state.game
+						}, () => {
+							this.saveGame();
+							onFinished();
+						});
+					}
+				};
+
+				setTimeout(perform, 1000);
+			}
+
 		} catch (ex) {
 			this.logException(ex);
 		}

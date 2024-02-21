@@ -4,6 +4,7 @@ import { CardType } from '../../../enums/card-type';
 
 import { FeatureLogic } from '../../../logic/feature-logic';
 
+import type { CombatantModel } from '../../../models/combatant';
 import type { FeatureModel } from '../../../models/feature';
 
 import { PlaceholderCard } from '../placeholder-card/placeholder-card';
@@ -13,6 +14,7 @@ import './feature-card.scss';
 
 interface Props {
 	feature: FeatureModel;
+	combatant: CombatantModel | null;
 	footer: string;
 	footerType: CardType;
 	disabled: boolean;
@@ -21,6 +23,7 @@ interface Props {
 
 export class FeatureCard extends Component<Props> {
 	static defaultProps = {
+		combatant: null,
 		disabled: false,
 		onClick: null
 	};
@@ -38,7 +41,10 @@ export class FeatureCard extends Component<Props> {
 			<PlayingCard
 				type={CardType.Feature}
 				front={(
-					<PlaceholderCard text={FeatureLogic.getFeatureTitle(this.props.feature)} subtext={FeatureLogic.getFeatureInformation(this.props.feature)} />
+					<PlaceholderCard
+						text={FeatureLogic.getFeatureTitle(this.props.feature)}
+						subtext={FeatureLogic.getFeatureInformation(this.props.feature, this.props.combatant)}
+					/>
 				)}
 				footerText={this.props.footer || 'Feature'}
 				footerType={this.props.footerType}

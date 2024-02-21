@@ -36,19 +36,19 @@ export class HeroMove extends Component<Props> {
 
 			return (
 				<div className='hero-move'>
-					<DirectionPanel
-						mode='full'
-						movement={this.props.combatant.combat.movement}
-						costs={moveCosts}
-						onMove={(dir, cost) => this.props.move(this.props.encounter, this.props.combatant, dir, cost)}
-					/>
 					{
-						this.props.combatant.combat.movement === 0 ?
+						this.props.combatant.combat.movement > 0 ?
+							<DirectionPanel
+								mode='full'
+								movement={this.props.combatant.combat.movement}
+								costs={moveCosts}
+								onMove={(dir, cost) => this.props.move(this.props.encounter, this.props.combatant, dir, cost)}
+							/>
+							:
 							<Text type={TextType.Information}>
-								<p>You have used all your movement for this turn.</p>
+								<p>You have no more movement remaining this turn.</p>
 								{!this.props.combatant.combat.selectedAction || !this.props.combatant.combat.selectedAction.used ? <p>You can still take your action.</p> : null }
 							</Text>
-							: null
 					}
 					{
 						this.props.options.showTips ?

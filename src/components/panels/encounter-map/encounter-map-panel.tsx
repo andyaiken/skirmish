@@ -1,9 +1,11 @@
 import { Component, createRef } from 'react';
 
 import { CombatantState } from '../../../enums/combatant-state';
+import { CombatantType } from '../../../enums/combatant-type';
 
 import { ActionLogic } from '../../../logic/action-logic';
 import { CombatantLogic } from '../../../logic/combatant-logic';
+import { ConditionLogic } from '../../../logic/condition-logic';
 import { EncounterLogic } from '../../../logic/encounter-logic';
 import { EncounterMapLogic } from '../../../logic/encounter-map-logic';
 
@@ -178,7 +180,16 @@ export class EncounterMapPanel extends Component<Props> {
 			});
 
 			const auras = combatants.map(combatant => {
-				if (CombatantLogic.getAuras(combatant).length > 0) {
+				const aurasToShow = CombatantLogic.getAuras(combatant)
+					.filter(a => {
+						if (combatant.faction === CombatantType.Monster) {
+							// Only show if it affects heroes
+							return !ConditionLogic.getConditionIsBeneficial(a);
+						}
+
+						return true;
+					});
+				if (aurasToShow.length > 0) {
 					return (
 						<AuraToken
 							key={combatant.id}

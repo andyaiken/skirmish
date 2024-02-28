@@ -214,10 +214,11 @@ export class CombatantRowPanel extends Component<Props> {
 		const rows = [];
 		let hearts = [];
 		for (let n = 0; n < resolve; ++n) {
-			hearts.push(n < this.props.combatant.combat.wounds ? <IconHeartOff key={n} size={12} /> : <IconHeartFilled key={n} size={12} />);
+			const wounded = n > resolve - this.props.combatant.combat.wounds - 1;
+			hearts.push(wounded ? <IconHeartOff key={n} size={12} /> : <IconHeartFilled key={n} size={12} />);
 			if ((hearts.length >= 5) && (this.props.mode !== 'detailed')) {
 				rows.push(
-					<div key={rows.length}>{hearts}</div>
+					<div key={rows.length} className='hearts-row'>{hearts}</div>
 				);
 				hearts = [];
 			}

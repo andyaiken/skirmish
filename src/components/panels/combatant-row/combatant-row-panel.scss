@@ -83,8 +83,7 @@
 		.hearts {
 			display: flex;
 			flex-direction: column;
-			align-items: flex-end;
-			justify-content: flex-end;
+			align-items: flex-start;
 			color: rgb(150, 0, 24);
 
 			.hearts-row {

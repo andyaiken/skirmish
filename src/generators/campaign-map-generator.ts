@@ -3,6 +3,7 @@ import { CampaignMapLogic } from '../logic/campaign-map-logic';
 import type { CampaignMapModel, CampaignMapSquareModel } from '../models/campaign-map';
 
 import { Collections } from '../utils/collections';
+import { Color } from '../utils/color';
 import { Random } from '../utils/random';
 import { Utils } from '../utils/utils';
 
@@ -60,7 +61,7 @@ export class CampaignMapGenerator {
 			map.regions.push({
 				id: Utils.guid(),
 				name: NameGenerator.generateName(Math.random),
-				color: `rgb(${color.r}, ${color.g}, ${color.b})`,
+				color: Color.toString(color),
 				encounters: [],
 				boon: BoonGenerator.generateBoon(packIDs, Math.random),
 				demographics: {

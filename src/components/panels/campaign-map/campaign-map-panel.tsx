@@ -32,7 +32,7 @@ export class CampaignMapPanel extends Component<Props> {
 
 	getHex = (square: CampaignMapSquareModel) => {
 		let backgroundColor = 'rgb(255, 255, 255)';
-		let borderColor = 'rgb(240, 240, 240)';
+		let borderColor = 'var(--control)';
 
 		const region = this.props.map.regions.find(r => r.id === square.regionID) || null;
 		if (region) {

@@ -63,7 +63,7 @@
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
-			border: 2px solid rgb(220, 220, 220);
+			border: 2px solid var(--border);
 			border-radius: 10px;
 			background-color: white;
 
@@ -96,7 +96,7 @@
 			}
 
 			.action-taken {
-				color: rgb(0, 100, 0);
+				color: var(--good);
 			}
 		}
 	}
@@ -116,7 +116,7 @@
 
 			.tab-content {
 				flex: 1 1 0;
-				border: 2px solid rgb(220, 220, 220);
+				border: 2px solid var(--border);
 				border-top: none;
 				border-radius: 0 0 10px 10px;
 				background-color: rgb(255, 255, 255);

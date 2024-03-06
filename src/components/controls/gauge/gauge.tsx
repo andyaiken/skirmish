@@ -23,7 +23,7 @@ export const Gauge = (props: Props) => {
 					cy={width / 2}
 					r={40}
 					fill='none'
-					stroke='rgb(220, 220, 220)'
+					stroke='var(--border)'
 					strokeWidth={5}
 					strokeDasharray={`${strokeLength}, ${circumference}`}
 					strokeLinecap='round'
@@ -33,7 +33,7 @@ export const Gauge = (props: Props) => {
 					cy={width / 2}
 					r={40}
 					fill='none'
-					stroke='rgb(60, 170, 255)'
+					stroke='var(--primary)'
 					strokeWidth={6}
 					strokeDasharray={`${strokeLength}, ${circumference}`}
 					strokeDashoffset={strokeLength * (1 - Math.min(props.progress, 1))}

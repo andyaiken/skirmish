@@ -12,7 +12,7 @@
 	.landing-top-bar {
 		flex: 0 0 auto;
 		background-color: rgb(230, 230, 230);
-		border-bottom: 2px solid rgb(220, 220, 220);
+		border-bottom: 2px solid var(--border);
 		text-align: center;
 		padding: 30px 0;
 	}
@@ -25,7 +25,7 @@
 
 		.skirmish-text {
 			width: 500px;
-			border: 2px solid rgb(220, 220, 220);
+			border: 2px solid var(--border);
 			border-radius: 10px;
 			padding: 0 15px;
 			background-color: rgb(255, 255, 255);

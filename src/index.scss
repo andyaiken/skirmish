@@ -23,6 +23,21 @@
 	font-style: italic;
 }
 
+:root {
+	--border: rgb(220, 220, 220);
+	--control: rgb(240, 240, 240);
+	--text: rgb(75, 75, 75);
+
+	--primary: rgb(60, 170, 255);
+	--primary-light: rgb(200, 230, 255);
+
+	--blood: rgb(150, 0, 24);
+
+	--good: rgb(0, 100, 0);
+	--bad: rgb(160, 0, 0);
+	--bad-light: rgb(255, 240, 240);
+}
+
 html,
 body,
 #root {
@@ -35,7 +50,7 @@ body {
 	font-family: 'PT Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 	font-size: 15px;
 	letter-spacing: 0.5px;
-	color: rgb(75, 75, 75);
+	color: var(--text);
 	-webkit-font-smoothing: subpixel-antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	transition: all 0s;
@@ -104,16 +119,16 @@ dl {
 }
 
 code {
-	border: 1px solid rgb(220, 220, 220);
+	border: 1px solid var(--border);
 	border-radius: 3px;
-	background-color: rgb(240, 240, 240);
+	background-color: var(--control);
 	padding: 0 3px 2px 3px;
 	font-family: unset;
 }
 
 hr {
 	border: none;
-	border-top: 2px solid rgb(220, 220, 220);
+	border-top: 2px solid var(--border);
 	height: 0;
 	margin: 25px 0;
 }
@@ -126,10 +141,10 @@ button {
 	font-size: 15px;
 	text-transform: uppercase;
 	letter-spacing: 2.5px;
-	color: rgb(220, 220, 220);
+	color: var(--border);
 	font-weight: 600;
 	width: 100%;
-	border: 2px solid rgb(220, 220, 220);
+	border: 2px solid var(--border);
 	border-radius: 5px;
 	background-color: rgb(255, 255, 255);
 	display: flex;
@@ -152,13 +167,13 @@ button {
 	}
 
 	&.checked {
-		border: 2px solid rgb(60, 170, 255);
-		background-color: rgb(200, 230, 255);
+		border: 2px solid var(--primary);
+		background-color: var(--primary-light);
 	}
 
 	&:not(:disabled) {
-		border-color: rgb(60, 170, 255);
-		color: rgb(75, 75, 75);
+		border-color: var(--primary);
+		color: var(--text);
 		cursor: pointer;
 
 		&.primary {
@@ -168,9 +183,9 @@ button {
 	}
 
 	&.danger:not(:disabled) {
-		border-color: rgb(160, 0, 0);
-		color: rgb(160, 0, 0);
-		background-color: rgb(255, 240, 240);
+		border-color: var(--bad);
+		color: var(--bad);
+		background-color: var(--bad-light);
 	}
 
 	&.link {
@@ -189,7 +204,7 @@ button {
 
 a,
 button.link {
-	color: rgb(60, 170, 255);
+	color: var(--primary);
 	text-decoration: underline;
 	font-weight: 600;
 }
@@ -206,13 +221,13 @@ input[type="range"] {
 
 	&::-webkit-slider-runnable-track {
 		height: 20px;
-		background: rgb(240, 240, 240);
+		background: var(--control);
 		border-radius: 5px;
 	}
 
 	&::-moz-range-track {
 		height: 20px;
-		background: rgb(240, 240, 240);
+		background: var(--control);
 		border-radius: 5px;
 	}
 
@@ -222,8 +237,8 @@ input[type="range"] {
 		width: 20px;
 		background-color: rgb(255, 255, 255);
 		border-radius: 5px;
-		border: 2px solid rgb(60, 170, 255);
-		box-shadow: -407px 0 0 400px rgb(60, 170, 255);
+		border: 2px solid var(--primary);
+		box-shadow: -407px 0 0 400px var(--primary);
 	}
 
 	&::-moz-range-thumb {
@@ -231,8 +246,8 @@ input[type="range"] {
 		width: 20px;
 		background-color: rgb(255, 255, 255);
 		border-radius: 5px;
-		border: 2px solid rgb(60, 170, 255);
-		box-shadow: -407px 0 0 400px rgb(60, 170, 255);
+		border: 2px solid var(--primary);
+		box-shadow: -407px 0 0 400px var(--primary);
 	}
 }
 
@@ -257,7 +272,7 @@ textarea {
 }
 
 .developer {
-	background-image: repeating-linear-gradient(-45deg, rgba(255, 0, 0, 0.1), rgba(255, 0, 0, 0.1) 5px, rgba(255, 255, 255, 0.1) 5px, rgba(255, 255, 255, 0.1) 10px);
+	background-image: repeating-linear-gradient(-45deg, rgba(255, 0, 0, 0.2), rgba(255, 0, 0, 0.2) 5px, rgba(255, 255, 255, 0) 5px, rgba(255, 255, 255, 0) 10px);
 }
 
 .render-error {
@@ -267,6 +282,6 @@ textarea {
 p .tabler-icon,
 li .tabler-icon {
 	margin-bottom: -2px;
-    border: 0.5px solid rgb(220, 220, 220);
-    background-color: rgb(240, 240, 240);
+    border: 0.5px solid var(--border);
+    background-color: var(--control);
 }

@@ -30,12 +30,12 @@
 		cursor: pointer;
 
 		&:hover {
-			background-color: rgb(60, 170, 255);
+			background-color: var(--primary);
 		}
 	}
 
 	&.selected {
-		outline: 3px solid rgb(60, 170, 255);
+		outline: 3px solid var(--primary);
 	}
 
 	&:not(.selectable) {

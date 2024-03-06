@@ -4,6 +4,7 @@ import { StrongholdLogic } from '../../../logic/stronghold-logic';
 
 import type { StructureModel } from '../../../models/structure';
 
+import { Color } from '../../../utils/color';
 import { Random } from '../../../utils/random';
 
 import './stronghold-map-panel.scss';
@@ -119,7 +120,7 @@ export class StrongholdMapPanel extends Component<Props> {
 							.join(' ')
 					}
 					style={{
-						fill: `rgb(${color.r}, ${color.g}, ${color.b})`,
+						fill: Color.toString(color),
 						rotate: `${degrees}deg`
 					}}
 					onClick={e => this.onClick(e, structure)}

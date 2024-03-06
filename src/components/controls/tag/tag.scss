@@ -1,10 +1,10 @@
 .tag {
 	display: inline-block;
 	margin: 1px;
-	border: 1px solid rgb(220, 220, 220);
+	border: 1px solid var(--border);
 	border-radius: 3px;
 	padding: 2px 4px;
 	background-color: rgb(255, 255, 255);
 	font-size: 11px;
-	color: rgb(75, 75, 75);
+	color: var(--text);
 }

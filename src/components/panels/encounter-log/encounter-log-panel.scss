@@ -25,13 +25,13 @@
 		}
 
 		.encounter-log-part-rank {
-			border: 2px solid rgb(220, 220, 220);
+			border: 2px solid var(--border);
 			border-radius: 5px;
 			padding: 0 5px 1px 5px;
 		}
 
 		.encounter-log-part-result {
-			background-color: rgb(220, 220, 220);
+			background-color: var(--border);
 			border-radius: 5px;
 			padding: 0 5px 1px 5px;
 			font-size: 16px;

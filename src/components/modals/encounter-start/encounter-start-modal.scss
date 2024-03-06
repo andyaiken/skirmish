@@ -7,7 +7,7 @@
 
 	.header {
 		flex: 0 0 auto;
-		border-bottom: 2px solid rgb(220, 220, 220);
+		border-bottom: 2px solid var(--border);
 		margin-bottom: 10px;
 	}
 
@@ -44,7 +44,7 @@
 				align-items: center;
 				justify-content: center;
 				height: 75px;
-				border: 1px solid rgb(220, 220, 220);
+				border: 1px solid var(--border);
 				border-radius: 10px;
 				padding: 0 15px;
 				color: rgb(100, 100, 100);
@@ -54,7 +54,7 @@
 		.divider {
 			flex: 0 0 2px;
 			margin: 0 20px 0 10px;
-			border: 1px solid rgb(220, 220, 220);
+			border: 1px solid var(--border);
 		}
 	}
 

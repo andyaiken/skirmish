@@ -3,7 +3,7 @@
 	align-items: center;
 	gap: 10px;
 	width: 100%;
-	border: 2px solid rgb(220, 220, 220);
+	border: 2px solid var(--border);
 	border-radius: 10px;
 	padding: 5px 10px;
 	overflow: hidden;
@@ -41,8 +41,8 @@
 	}
 
 	&.boss {
-		border-color: rgb(160, 0, 0);
-		background-color: rgb(255, 240, 240);
+		border-color: var(--bad);
+		background-color: var(--bad-light);
 	}
 
 	.encounter-map-mini-token {
@@ -84,7 +84,7 @@
 			display: flex;
 			flex-direction: column;
 			align-items: flex-start;
-			color: rgb(150, 0, 24);
+			color: var(--blood);
 
 			.hearts-row {
 				margin-bottom: -4px;
@@ -106,9 +106,9 @@
 	}
 
 	&.current {
-		border-color: rgb(60, 170, 255);
+		border-color: var(--primary);
 		background-image: none;
-		background-color: rgb(200, 230, 255);
+		background-color: var(--primary-light);
 		cursor: default;
 		pointer-events: none;
 	}

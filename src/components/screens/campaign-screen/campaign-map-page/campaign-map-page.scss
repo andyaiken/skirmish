@@ -35,7 +35,7 @@
 
 	.map-content {
 		flex: 1 1 0;
-		border: 2px solid rgb(60, 170, 255);
+		border: 2px solid var(--primary);
 		border-radius: 10px;
 		background-color: rgb(130, 200, 250);
 		display: flex;
@@ -46,7 +46,7 @@
 
 	.sidebar {
 		flex: 0 0 300px;
-		border: 2px solid rgb(220, 220, 220);
+		border: 2px solid var(--border);
 		border-radius: 10px;
 		padding: 20px;
 		background-color: white;

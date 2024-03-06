@@ -23,7 +23,7 @@
 			flex: 0 0 2px;
 			align-self: center;
 			height: 150px;
-			background-color: rgb(220, 220, 220);
+			background-color: var(--border);
 		}
 
 		.action-details {
@@ -41,7 +41,7 @@
 	}
 
 	.banner {
-		background-color: rgb(220, 220, 220);
+		background-color: var(--border);
 		color: rgb(100, 100, 100);
 		font-size: 12px;
 		height: 20px;

@@ -18,6 +18,7 @@ import type { ItemModel } from '../../../models/item';
 import type { OptionsModel } from '../../../models/options';
 
 import { Collections } from '../../../utils/collections';
+import { Color } from '../../../utils/color';
 import { Random } from '../../../utils/random';
 
 import { CharacterSheetModal, HeroBuilderModal } from '../../modals';
@@ -70,7 +71,7 @@ export class SetupScreen extends Component<Props, State> {
 			const hero = Factory.createCombatant(CombatantType.Hero);
 			hero.name = NameGenerator.generateName(Math.random);
 			const color = Random.randomColor(20, 180);
-			hero.color = `rgb(${color.r}, ${color.g}, ${color.b})`;
+			hero.color = Color.toString(color);
 
 			const speciesID = Collections.draw(speciesDeck);
 			speciesDeck = speciesDeck.filter(s => s !== speciesID);

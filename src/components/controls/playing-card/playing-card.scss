@@ -31,7 +31,7 @@
 			right: 0;
 			top: 0;
 			bottom: 0;
-			border: 1px solid rgb(220, 220, 220);
+			border: 1px solid var(--border);
 			border-radius: 15px;
 			display: flex;
 			flex-direction: column;
@@ -47,7 +47,7 @@
 			.card-footer {
 				flex: 0 0 auto;
 				border-radius: 0 0 13px 13px;
-				background-color: rgb(240, 240, 240);
+				background-color: var(--control);
 				display: flex;
 				align-items: center;
 

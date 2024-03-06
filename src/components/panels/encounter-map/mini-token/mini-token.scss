@@ -42,12 +42,12 @@
 		cursor: pointer;
 
 		&:hover {
-			background-color: rgb(60, 170, 255);
+			background-color: var(--primary);
 		}
 	}
 
 	&.selected {
-		outline: 3px solid rgb(60, 170, 255);
+		outline: 3px solid var(--primary);
 	}
 
 	&:not(.selectable) {
@@ -85,7 +85,7 @@
 		z-index: 100;
 
 		.health-bar-gauge {
-			background-color: rgb(150, 0, 24);
+			background-color: var(--blood);
 			height: 100%;
 		}
 	}
@@ -96,9 +96,9 @@
 		left: 5%;
 		right: 5%;
 		bottom: 5%;
-		border: 1px solid rgb(60, 170, 255);
+		border: 1px solid var(--primary);
 		border-radius: 50%;
-		background: rgb(60, 170, 255);
+		background: var(--primary);
 		pointer-events: none;
 		transform: scale(0.8);
 

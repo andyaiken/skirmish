@@ -4,18 +4,18 @@
 	background-image: linear-gradient(135deg, rgb(140, 110, 100), rgb(50, 50, 50));
 
 	&.selectable {
-		border-color: rgb(60, 170, 255);
-		background-color: rgb(200, 230, 255);
+		border-color: var(--primary);
+		background-color: var(--primary-light);
 		cursor: pointer;
 
 		&:hover {
-			outline: 3px solid rgb(60, 170, 255);
+			outline: 3px solid var(--primary);
 			z-index: 100;
 		}
 	}
 
 	&.selected {
-		background-color: rgb(60, 170, 255);
+		background-color: var(--primary);
 		z-index: 100;
 	}
 }

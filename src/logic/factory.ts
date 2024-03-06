@@ -21,6 +21,7 @@ import type { FeatureModel } from '../models/feature';
 import type { GameModel } from '../models/game';
 import type { LootPileModel } from '../models/encounter';
 
+import { Color } from '../utils/color';
 import { Utils } from '../utils/utils';
 
 export class Factory {
@@ -36,7 +37,7 @@ export class Factory {
 			size: 1,
 			level: 1,
 			xp: 0,
-			color: 'rgb(15, 15, 15)',
+			color: Color.toString({ r: 15, g: 15, b: 15 }),
 			quirks: [],
 			features: [],
 			items: [],

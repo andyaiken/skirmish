@@ -30,9 +30,9 @@
 
 	&.information {
 		margin: 10px 0;
-		border: 2px solid rgb(60, 170, 255);
+		border: 2px solid var(--primary);
 		border-radius: 10px;
-		background-color: rgb(200, 230, 255);
+		background-color: var(--primary-light);
 		padding: 0 10px;
 	}
 

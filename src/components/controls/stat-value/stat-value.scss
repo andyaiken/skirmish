@@ -22,7 +22,7 @@
 
 	&.compact {
 		margin: 2px 0;
-		border: 0 solid rgb(220, 220, 220);
+		border: 0 solid var(--border);
 		border-left-width: 3px;
 		padding: 2px 5px;
 		font-size: 12px;

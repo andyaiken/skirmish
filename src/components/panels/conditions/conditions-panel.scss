@@ -6,11 +6,11 @@
 		gap: 5px;
 
 		&.beneficial .tabler-icon {
-			color: rgb(0, 100, 0);
+			color: var(--good);
 		}
 
 		&.detrimental .tabler-icon {
-			color: rgb(140, 0, 0);
+			color: var(--bad);
 		}
 
 		.stat-value {

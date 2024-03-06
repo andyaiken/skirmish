@@ -1,13 +1,13 @@
 .action-parameter {
-	border: 2px solid rgb(220, 220, 220);
+	border: 2px solid var(--border);
 	border-radius: 10px;
 	background-color: rgb(255, 255, 255);
 	padding: 0 10px 10px 10px;
 
 	&.not-set {
-		border-color: rgb(160, 0, 0);
-		color: rgb(160, 0, 0);
-		background-color: rgb(255, 240, 240);
+		border-color: var(--bad);
+		color: var(--bad);
+		background-color: var(--bad-light);
 	}
 
 	.top-line {
@@ -33,7 +33,7 @@
 				width: 100px;
 				height: 25px;
 				min-height: unset;
-				border: 1px solid rgb(60, 170, 255);
+				border: 1px solid var(--primary);
 				border-radius: 5px;
 				flex-direction: row;
 				gap: 5px;
@@ -72,11 +72,11 @@
 			}
 
 			&.selected {
-				color: rgb(0, 100, 0);
+				color: var(--good);
 			}
 
 			&.not-selected {
-				color: rgb(140, 0, 0);
+				color: var(--bad);
 			}
 		}
 	}

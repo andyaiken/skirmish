@@ -621,86 +621,6 @@ export class HeroSpeciesData {
 		]
 	});
 
-	static shadowborn = (): SpeciesModel => ({
-		id: 'species-shadowborn',
-		name: 'Shadowborn',
-		packID: '',
-		description: 'A humanoid with demonic heritage.',
-		type: CombatantType.Hero,
-		size: 1,
-		quirks: [],
-		startingFeatures: [
-			FeatureLogic.createTraitFeature('shadowborn-start-1', TraitType.Resolve, 1),
-			FeatureLogic.createSkillFeature('shadowborn-start-2', SkillType.Brawl, 2),
-			FeatureLogic.createSkillFeature('shadowborn-start-3', SkillType.Presence, 2),
-			FeatureLogic.createSkillFeature('shadowborn-start-4', SkillType.Stealth, 2)
-		],
-		features: [
-			FeatureLogic.createTraitFeature('shadowborn-feature-1', TraitType.Resolve, 1),
-			FeatureLogic.createSkillFeature('shadowborn-feature-2', SkillType.Brawl, 2),
-			FeatureLogic.createSkillFeature('shadowborn-feature-3', SkillType.Presence, 2),
-			FeatureLogic.createSkillFeature('shadowborn-feature-4', SkillType.Stealth, 2),
-			FeatureLogic.createDamageCategoryResistFeature('shadowborn-feature-5', DamageCategoryType.Corruption, 1),
-			FeatureLogic.createAuraDamageFeature('shadowborn-feature-6', ConditionType.AutoDamage, DamageType.Decay, 1)
-		],
-		actions: [
-			{
-				id: 'shadowborn-action-1',
-				name: 'Transference',
-				prerequisites: [
-					ActionPrerequisites.condition(TraitType.Any)
-				],
-				parameters: [
-					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
-				],
-				effects: [
-					ActionEffects.transferCondition()
-				]
-			},
-			{
-				id: 'shadowborn-action-2',
-				name: 'Drain Energy',
-				prerequisites: [],
-				parameters: [
-					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
-				],
-				effects: [
-					ActionEffects.attack({
-						weapon: false,
-						skill: SkillType.Presence,
-						trait: TraitType.Resolve,
-						skillBonus: 0,
-						hit: [
-							ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Resolve, 5)),
-							ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 2, TraitType.All)),
-							ActionEffects.addCondition(ConditionLogic.createSkillPenaltyCondition(TraitType.Resolve, 2, SkillType.All))
-						]
-					})
-				]
-			},
-			{
-				id: 'shadowborn-action-3',
-				name: 'Intimidate',
-				prerequisites: [],
-				parameters: [
-					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
-				],
-				effects: [
-					ActionEffects.attack({
-						weapon: false,
-						skill: SkillType.Presence,
-						trait: TraitType.Resolve,
-						skillBonus: 0,
-						hit: [
-							ActionEffects.forceMovement(MovementType.Push, 1),
-							ActionEffects.stun()
-						]
-					})
-				]
-			}
-		]
-	});
-
 	static werewolf = (): SpeciesModel => ({
 		id: 'species-werewolf',
 		name: 'Werewolf',
@@ -790,7 +710,6 @@ export class HeroSpeciesData {
 			HeroSpeciesData.minotaur(),
 			HeroSpeciesData.pixie(),
 			HeroSpeciesData.reptilian(),
-			HeroSpeciesData.shadowborn(),
 			HeroSpeciesData.werewolf()
 		];
 

@@ -1,5 +1,5 @@
+import { Component, ReactNode } from 'react';
 import { IconSquare, IconSquareFilled } from '@tabler/icons-react';
-import { Component } from 'react';
 
 import { CombatantType } from '../../../../enums/combatant-type';
 import { ItemLocationType } from '../../../../enums/item-location-type';
@@ -202,7 +202,7 @@ export class Items extends Component<Props, State> {
 	};
 
 	getItemCard = (item: ItemModel, section: 'equipped' | 'carried' | 'party' | 'nearby', count = 1) => {
-		let options: JSX.Element | null = null;
+		let options: ReactNode | null = null;
 		if ((this.props.combatant.type === CombatantType.Hero) && (this.props.combatant.faction === CombatantType.Hero)) {
 			if (this.props.game.encounter && !this.props.combatant.combat.current) {
 				// It's an encounter, and this is not the current combatant
@@ -213,7 +213,7 @@ export class Items extends Component<Props, State> {
 			} else {
 				let equip = null;
 				if ((section === 'carried') || (section === 'party')) {
-					let equipLabel: JSX.Element | string = 'Equip';
+					let equipLabel: ReactNode | string = 'Equip';
 					if (this.props.game.encounter) {
 						equipLabel = (
 							<div>
@@ -232,7 +232,7 @@ export class Items extends Component<Props, State> {
 
 				let unequip = null;
 				if (section === 'equipped') {
-					let unequipLabel: JSX.Element | string = 'Carry';
+					let unequipLabel: ReactNode | string = 'Carry';
 					if (this.props.game.encounter) {
 						unequipLabel = (
 							<div>
@@ -251,7 +251,7 @@ export class Items extends Component<Props, State> {
 
 				let pickUp = null;
 				if ((section === 'party') || (section === 'nearby')) {
-					let pickUpLabel: JSX.Element | string = 'Pick Up';
+					let pickUpLabel: ReactNode | string = 'Pick Up';
 					if (this.props.game.encounter) {
 						pickUpLabel = (
 							<div>
@@ -270,7 +270,7 @@ export class Items extends Component<Props, State> {
 
 				let drop = null;
 				if ((section === 'equipped') || (section === 'carried')) {
-					let dropLabel: JSX.Element | string = 'Drop';
+					let dropLabel: ReactNode | string = 'Drop';
 					if (this.props.game.encounter) {
 						dropLabel = (
 							<div>

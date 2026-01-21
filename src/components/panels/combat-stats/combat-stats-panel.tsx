@@ -1,5 +1,5 @@
+import { Component, ReactNode } from 'react';
 import { IconHeartFilled, IconHeartOff } from '@tabler/icons-react';
-import { Component } from 'react';
 import { QuirkType } from '../../../enums/quirk-type';
 
 import { TraitType } from '../../../enums/trait-type';
@@ -26,7 +26,7 @@ export class CombatStatsPanel extends Component<Props> {
 			return null;
 		}
 
-		let wounds: JSX.Element[] = [];
+		let wounds: ReactNode[] = [];
 		const resolveRank = EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Resolve);
 		for (let n = 0; n < resolveRank; ++n) {
 			wounds.push(n < this.props.combatant.combat.wounds ? <IconHeartOff key={n} size={25} /> : <IconHeartFilled key={n} className='heartbeat' size={25} />);
@@ -34,7 +34,7 @@ export class CombatStatsPanel extends Component<Props> {
 		wounds.reverse();
 
 		const woundsPerRow = (wounds.length === 5) || (wounds.length === 6) ? 3 : 4;
-		const woundsInRows: JSX.Element[] = [];
+		const woundsInRows: ReactNode[] = [];
 		while (wounds.length > woundsPerRow) {
 			woundsInRows.push(<div key={woundsInRows.length} className='wounds'>{wounds.slice(0, woundsPerRow)}</div>);
 			wounds = wounds.slice(woundsPerRow);

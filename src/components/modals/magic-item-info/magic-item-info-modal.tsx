@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component, ReactNode } from 'react';
 
 import { ItemLocationType } from '../../../enums/item-location-type';
 import { ItemProficiencyType } from '../../../enums/item-proficiency-type';
@@ -118,8 +118,8 @@ export class MagicItemInfoModal extends Component<Props, State> {
 
 	render = () => {
 		try {
-			const canEquip: JSX.Element[] = [];
-			const canReplace: JSX.Element[] = [];
+			const canEquip: ReactNode[] = [];
+			const canReplace: ReactNode[] = [];
 
 			this.props.game.heroes
 				.filter(hero => (this.props.item.proficiency === ItemProficiencyType.None) || CombatantLogic.getProficiencies(hero).includes(this.props.item.proficiency))

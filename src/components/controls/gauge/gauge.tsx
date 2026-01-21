@@ -1,8 +1,10 @@
+import { ReactNode } from 'react';
+
 import './gauge.scss';
 
 interface Props {
 	progress: number;
-	content: string | JSX.Element | null;
+	content: ReactNode;
 }
 
 export const Gauge = (props: Props) => {

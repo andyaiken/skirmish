@@ -1,4 +1,4 @@
-import { Component, MouseEvent } from 'react';
+import { Component, MouseEvent, ReactNode } from 'react';
 import { IconX } from '@tabler/icons-react';
 
 import { CardType } from '../../../enums/card-type';
@@ -44,7 +44,7 @@ export class PackCard extends Component<Props> {
 	};
 
 	render = () => {
-		const buttons: JSX.Element[] = [];
+		const buttons: ReactNode[] = [];
 		if (this.props.onRemove) {
 			buttons.push(
 				<button key='retire' className='icon-btn' title='Remove' onClick={this.onRemove}><IconX /></button>

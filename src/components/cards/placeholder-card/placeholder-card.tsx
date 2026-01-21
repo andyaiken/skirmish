@@ -1,11 +1,11 @@
-import { Component } from 'react';
+import { Component, ReactNode } from 'react';
 
 import './placeholder-card.scss';
 
 interface Props {
 	text: string | null;
 	subtext: string | null;
-	content: JSX.Element | null;
+	content: ReactNode | null;
 }
 
 export class PlaceholderCard extends Component<Props> {

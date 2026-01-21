@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component, ReactNode } from 'react';
 import { Toaster } from 'react-hot-toast';
 
 import { BoonType } from '../../enums/boon-type';
@@ -77,7 +77,7 @@ interface State {
 	options: OptionsModel;
 	showHelp: string | null;
 	showPacks: boolean;
-	dialog: JSX.Element | null;
+	dialog: ReactNode | null;
 	exceptions: string[];
 }
 

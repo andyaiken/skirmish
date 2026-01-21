@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component, ReactNode } from 'react';
 
 import { CardType } from '../../../../enums/card-type';
 
@@ -67,7 +67,7 @@ export class DecksTab extends Component<Props, State> {
 
 	render = () => {
 		try {
-			const cards: JSX.Element[] = [];
+			const cards: ReactNode[] = [];
 
 			switch (this.state.tab) {
 				case 'heroes':

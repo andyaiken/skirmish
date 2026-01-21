@@ -1,10 +1,10 @@
-import { Component } from 'react';
+import { Component, ReactNode } from 'react';
 
 import './badge.scss';
 
 interface Props {
 	value: number | string | null;
-	children: JSX.Element;
+	children: ReactNode;
 }
 
 export class Badge extends Component<Props> {

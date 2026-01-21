@@ -1,9 +1,9 @@
-import { Component } from 'react';
+import { Component, ReactNode } from 'react';
 
 import './tabs.scss';
 
 interface Props {
-	options: { id: string; display?: JSX.Element | string }[];
+	options: { id: string; display?: ReactNode | string }[];
 	selectedID: string;
 	onSelect: (id: string) => void;
 }

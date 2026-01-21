@@ -1,10 +1,10 @@
-import { MouseEvent, useEffect, useRef, useState } from 'react';
+import { MouseEvent, ReactNode, useEffect, useRef, useState } from 'react';
 
 import './expander.scss';
 
 interface Props {
-	header: string | JSX.Element;
-	content: string | JSX.Element;
+	header: ReactNode;
+	content: ReactNode;
 }
 
 export const Expander = (props: Props) => {

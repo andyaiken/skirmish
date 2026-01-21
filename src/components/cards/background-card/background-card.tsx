@@ -1,4 +1,4 @@
-import { Component, MouseEvent } from 'react';
+import { Component, MouseEvent, ReactNode } from 'react';
 import { IconRefresh } from '@tabler/icons-react';
 
 import { CardType } from '../../../enums/card-type';
@@ -87,7 +87,7 @@ export class BackgroundCard extends Component<Props, State> {
 			);
 		}
 
-		const buttons: JSX.Element[] = [];
+		const buttons: ReactNode[] = [];
 		buttons.push(
 			<button key='flip' className='icon-btn' title='Flip' onClick={this.onFlip}><IconRefresh /></button>
 		);

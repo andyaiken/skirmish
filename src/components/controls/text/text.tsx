@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component, ReactNode } from 'react';
 import { IconInfoCircle } from '@tabler/icons-react';
 
 import './text.scss';
@@ -18,7 +18,7 @@ export enum TextType {
 
 interface Props {
 	type: TextType;
-	children: (JSX.Element | number | string | null)[] | JSX.Element | number | string | null;
+	children: ReactNode;
 }
 
 export class Text extends Component<Props> {

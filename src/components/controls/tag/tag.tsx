@@ -1,7 +1,9 @@
+import { ReactNode } from 'react';
+
 import './tag.scss';
 
 interface Props {
-	children: (JSX.Element | number | string | null)[] | JSX.Element | number | string | null;
+	children: ReactNode;
 }
 
 export const Tag = (props: Props) => {

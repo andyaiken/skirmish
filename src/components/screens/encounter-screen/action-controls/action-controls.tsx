@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component, ReactNode } from 'react';
 
 import { CardType } from '../../../../enums/card-type';
 import { StructureType } from '../../../../enums/structure-type';
@@ -51,8 +51,8 @@ export class ActionControls extends Component<Props> {
 	};
 
 	getNotSelected = () => {
-		const actionCards: JSX.Element[] = [];
-		const baseCards: JSX.Element[] = [];
+		const actionCards: ReactNode[] = [];
+		const baseCards: ReactNode[] = [];
 
 		this.props.combatant.combat.actions
 			.filter(a => CombatantLogic.getActionSourceType(this.props.combatant, a.id) !== CardType.Base)
@@ -118,7 +118,7 @@ export class ActionControls extends Component<Props> {
 
 	getInProgress = (action: ActionModel) => {
 		let prerequisitesMet = true;
-		const prerequisites: JSX.Element[] = [];
+		const prerequisites: ReactNode[] = [];
 		action.prerequisites.forEach((prerequisite, n) => {
 			if (!ActionPrerequisites.isSatisfied(prerequisite, this.props.combatant)) {
 				prerequisitesMet = false;
@@ -129,7 +129,7 @@ export class ActionControls extends Component<Props> {
 		});
 
 		let allParametersSet = true;
-		const parameters: JSX.Element[] = [];
+		const parameters: ReactNode[] = [];
 		action.parameters.forEach((parameter, n) => {
 			if (!allParametersSet) {
 				// A previous parameter isn't finished yet

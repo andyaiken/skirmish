@@ -1,11 +1,11 @@
-import { Component } from 'react';
+import { Component, ReactNode } from 'react';
 
 import './stat-value.scss';
 
 interface Props {
 	orientation: 'horizontal' | 'vertical' | 'compact';
-	label: JSX.Element | number | string;
-	value: (JSX.Element | number | string)[] | JSX.Element | number | string;
+	label: ReactNode;
+	value: ReactNode;
 }
 
 export class StatValue extends Component<Props> {

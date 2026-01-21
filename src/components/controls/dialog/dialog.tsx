@@ -1,10 +1,10 @@
-import { Component } from 'react';
+import { Component, ReactNode } from 'react';
 import { IconX } from '@tabler/icons-react';
 
 import './dialog.scss';
 
 interface Props {
-	content: JSX.Element;
+	content: ReactNode;
 	level: number;
 	onClose: (() => void) | null;
 }

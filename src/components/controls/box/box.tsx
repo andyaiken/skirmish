@@ -1,8 +1,10 @@
+import { ReactNode } from 'react';
+
 import './box.scss';
 
 interface Props {
 	label: string;
-	children: JSX.Element | null | (JSX.Element | null)[];
+	children: ReactNode;
 }
 
 export const Box = (props: Props) => {

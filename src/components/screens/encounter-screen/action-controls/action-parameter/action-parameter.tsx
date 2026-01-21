@@ -1,5 +1,5 @@
+import { Component, ReactNode } from 'react';
 import { IconArrowsMove, IconCircleMinus, IconCirclePlus, IconDotsCircleHorizontal, IconViewfinder } from '@tabler/icons-react';
-import { Component } from 'react';
 
 import { ActionTargetType } from '../../../../../enums/action-target-type';
 
@@ -73,7 +73,7 @@ export class ActionParameter extends Component<Props, State> {
 	};
 
 	getActionButtons = () => {
-		const controls: JSX.Element[] = [];
+		const controls: ReactNode[] = [];
 
 		switch (this.props.parameter.id) {
 			case 'origin': {
@@ -203,7 +203,7 @@ export class ActionParameter extends Component<Props, State> {
 	};
 
 	getControls = () => {
-		const controls: JSX.Element[] = [];
+		const controls: ReactNode[] = [];
 
 		switch (this.props.parameter.id) {
 			case 'weapon': {
@@ -387,7 +387,7 @@ export class ActionParameter extends Component<Props, State> {
 	};
 
 	getSecondaryControls = () => {
-		const controls: JSX.Element[] = [];
+		const controls: ReactNode[] = [];
 
 		switch (this.props.parameter.id) {
 			case 'weapon': {

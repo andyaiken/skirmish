@@ -1,9 +1,9 @@
-import { Component } from 'react';
+import { Component, ReactNode } from 'react';
 
 import './selector.scss';
 
 interface Props {
-	options: { id: string; display?: JSX.Element | string }[];
+	options: { id: string; display?: ReactNode | string }[];
 	columnCount: number;
 	selectedID: string;
 	onSelect: (id: string) => void;

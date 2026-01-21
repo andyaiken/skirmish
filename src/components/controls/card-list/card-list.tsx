@@ -1,9 +1,9 @@
-import { Component } from 'react';
+import { Component, ReactNode } from 'react';
 
 import './card-list.scss';
 
 interface Props {
-	cards: (JSX.Element | null)[];
+	cards: ReactNode[];
 }
 
 export class CardList extends Component<Props> {

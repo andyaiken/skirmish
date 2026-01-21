@@ -1,4 +1,4 @@
-import { Component, MouseEvent } from 'react';
+import { Component, MouseEvent, ReactNode } from 'react';
 
 import { CardType } from '../../../enums/card-type';
 import { Random } from '../../../utils/random';
@@ -8,10 +8,10 @@ import './playing-card.scss';
 interface Props {
 	stack: boolean;
 	type: CardType;
-	front: JSX.Element;
-	back: JSX.Element | null;
+	front: ReactNode;
+	back: ReactNode | null;
 	footerText: string;
-	footerContent: JSX.Element[];
+	footerContent: ReactNode[];
 	footerType: CardType | null;
 	flipped: boolean;
 	disabled: boolean;

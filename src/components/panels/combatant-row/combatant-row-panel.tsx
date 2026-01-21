@@ -1,4 +1,4 @@
-import { Component, MouseEvent } from 'react';
+import { Component, MouseEvent, ReactNode } from 'react';
 import { IconCheck, IconCircleArrowDown, IconCircleArrowUp, IconHeartFilled, IconHeartOff, IconId, IconX } from '@tabler/icons-react';
 
 import { CombatantState } from '../../../enums/combatant-state';
@@ -252,9 +252,9 @@ export class CombatantRowPanel extends Component<Props> {
 				) ? 'dimmed' : '';
 			const className = `combatant-row-panel ${this.props.mode} ${faction} ${clickable} ${current} ${dimmed}`;
 
-			let infoBelow: JSX.Element | null = null;
-			let infoRight: JSX.Element | null = null;
-			let infoEnd: JSX.Element | null = null;
+			let infoBelow: ReactNode | null = null;
+			let infoRight: ReactNode | null = null;
+			let infoEnd: ReactNode | null = null;
 			switch (this.props.mode) {
 				case 'list':
 					infoRight = this.getListInfo();

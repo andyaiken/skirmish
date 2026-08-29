@@ -80,6 +80,14 @@ export class StrongholdLogic {
 		return true;
 	};
 
+	static canRecharge = (structure: StructureModel) => {
+		return StrongholdLogic.canCharge(structure) && (structure.charges === 0);
+	};
+
+	static rechargeStructure = (structure: StructureModel) => {
+		structure.charges = structure.level;
+	};
+
 	static getStructureCharges = (game: GameModel, type: StructureType) => {
 		return Collections.sum(game.stronghold.filter(s => s.type === type), s => s.charges);
 	};

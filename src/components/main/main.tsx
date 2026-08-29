@@ -390,7 +390,7 @@ export class Main extends Component<Props, State> {
 			const money = 100;
 			game.money = Math.max(0, game.money - money);
 
-			structure.charges += structure.level;
+			StrongholdLogic.rechargeStructure(structure);
 
 			this.setState({
 				game: game

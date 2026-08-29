@@ -127,6 +127,8 @@ export class StrongholdPage extends Component<Props, State> {
 			let upgrade = null;
 			let charge = null;
 			if (StrongholdLogic.canCharge(this.state.selectedStructure)) {
+				const canRecharge = StrongholdLogic.canRecharge(this.state.selectedStructure);
+
 				upgrade = (
 					<div className='sidebar-section'>
 						<div className='upgrade-section'>
@@ -140,7 +142,7 @@ export class StrongholdPage extends Component<Props, State> {
 							<div>Demolish structure</div>
 							<IconValue type={IconType.Money} value={25} size={IconSize.Button} />
 						</button>
-						<button disabled={this.props.game.money < 100} onClick={() => this.props.chargeStructure(this.state.selectedStructure as StructureModel)}>
+						<button disabled={(this.props.game.money < 100) || !canRecharge} onClick={() => this.props.chargeStructure(this.state.selectedStructure as StructureModel)}>
 							<div>Recharge structure</div>
 							<IconValue type={IconType.Money} value={100} size={IconSize.Button} />
 						</button>

@@ -24,7 +24,7 @@ interface Props {
 	hero: CombatantModel;
 	game: GameModel;
 	options: OptionsModel;
-	useCharge: (type: StructureType, count: number) => void;
+	spendCharge: (type: StructureType, count: number) => void;
 	finished: (hero: CombatantModel) => void;
 }
 
@@ -96,7 +96,7 @@ export class HeroBuilderModal extends Component<Props, State> {
 						game={this.props.game}
 						options={this.props.options}
 						select={this.selectCards}
-						useCharge={this.props.useCharge}
+						spendCharge={this.props.spendCharge}
 					/>
 				);
 			} else if (CombatantLogic.getProficiencies(this.state.hero).length !== this.state.hero.items.length) {
@@ -107,7 +107,7 @@ export class HeroBuilderModal extends Component<Props, State> {
 						game={this.props.game}
 						options={this.props.options}
 						addItems={this.addItems}
-						useCharge={this.props.useCharge}
+						spendCharge={this.props.spendCharge}
 					/>
 				);
 			} else if (this.state.hero.level === 1) {

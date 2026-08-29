@@ -12,7 +12,7 @@ export class Utils {
 	};
 
 	static debounce = (func: () => void, delay = 500) => {
-		let timeout: NodeJS.Timeout;
+		let timeout: ReturnType<typeof setTimeout>;
 		return () => {
 			clearTimeout(timeout);
 			timeout = setTimeout(func, delay);

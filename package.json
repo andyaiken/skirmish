@@ -1,155 +1,40 @@
 {
 	"name": "skirmish",
 	"version": "1.150.0",
+	"type": "module",
 	"repository": "https://github.com/andyaiken/skirmish.git",
 	"homepage": "https://andyaiken.github.io/skirmish/",
 	"dependencies": {
-		"@tabler/icons-react": "^3.36.1",
+		"@tabler/icons-react": "^3.46.0",
 		"localforage": "^1.10.0",
-		"react": "^19.2.3",
-		"react-dom": "^19.2.3",
+		"react": "^19.2.8",
+		"react-dom": "^19.2.8",
 		"react-hot-toast": "^2.6.0",
 		"react-markdown": "^10.1.0",
 		"react-responsive": "^10.0.1"
 	},
 	"devDependencies": {
-		"@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-		"@types/react": "^19.2.9",
-		"@types/react-dom": "^19.2.3",
-		"@typescript-eslint/eslint-plugin": "^5.61.0",
-		"@typescript-eslint/parser": "^5.61.0",
-		"eslint": "^8.57.0",
-		"eslint-config-react-app": "^7.0.1",
+		"@stylistic/eslint-plugin": "^5.10.0",
+		"@types/react": "^19.2.18",
+		"@types/react-dom": "^19.2.5",
+		"@vitejs/plugin-react": "^6.1.1",
+		"eslint": "^9.39.5",
+		"eslint-plugin-react": "^7.37.5",
+		"eslint-plugin-react-hooks": "^7.1.1",
 		"gh-pages": "^6.3.0",
-		"react-scripts": "^5.0.1",
-		"sass": "^1.97.2",
-		"typescript": "^4.9.5"
+		"globals": "^17.11.0",
+		"sass": "^1.103.1",
+		"typescript": "^6.0.3",
+		"typescript-eslint": "^8.68.0",
+		"vite": "^8.2.2"
 	},
 	"scripts": {
 		"update": "npx npm-check-updates --interactive --format group",
-		"start": "react-scripts start --display-error-details",
-		"lint": "npx eslint src --ext .ts,.tsx",
-		"predeploy": "react-scripts build",
+		"start": "vite",
+		"build": "tsc --noEmit && vite build",
+		"preview": "vite preview",
+		"lint": "eslint src vite.config.ts",
+		"predeploy": "npm run build",
 		"deploy": "gh-pages -d build"
-	},
-	"eslintConfig": {
-		"extends": [
-			"eslint:recommended",
-			"plugin:react/recommended",
-			"plugin:@typescript-eslint/recommended",
-			"react-app"
-		],
-		"parser": "@typescript-eslint/parser",
-		"parserOptions": {
-			"project": "./tsconfig.json"
-		},
-		"plugins": [
-			"react",
-			"@typescript-eslint"
-		],
-		"root": true,
-		"rules": {
-			"semi": [
-				"error",
-				"always"
-			],
-			"comma-dangle": [
-				"error",
-				"never"
-			],
-			"quotes": [
-				"error",
-				"single"
-			],
-			"@typescript-eslint/quotes": [
-				"error",
-				"single"
-			],
-			"object-curly-spacing": [
-				"error",
-				"always"
-			],
-			"@typescript-eslint/object-curly-spacing": [
-				"error",
-				"always"
-			],
-			"indent": [
-				"error",
-				"tab",
-				{
-					"SwitchCase": 1
-				}
-			],
-			"no-tabs": [
-				"error",
-				{
-					"allowIndentationTabs": true
-				}
-			],
-			"@typescript-eslint/non-nullable-type-assertion-style": "off",
-			"arrow-parens": [
-				"error",
-				"as-needed"
-			],
-			"no-trailing-spaces": [
-				"error"
-			],
-			"array-bracket-spacing": [
-				"error",
-				"always"
-			],
-			"array-element-newline": [
-				"error",
-				"consistent"
-			],
-			"array-bracket-newline": [
-				"error",
-				"consistent"
-			],
-			"jsx-quotes": [
-				"error",
-				"prefer-single"
-			],
-			"sort-imports": [
-				"warn",
-				{
-					"allowSeparatedGroups": true,
-					"memberSyntaxSortOrder": [
-						"all",
-						"multiple",
-						"single",
-						"none"
-					]
-				}
-			],
-			"no-warning-comments": "warn",
-			"no-debugger": "warn",
-			"no-console": [
-				"warn",
-				{
-					"allow": [
-						"warn",
-						"error"
-					]
-				}
-			],
-			"max-len": [
-				"warn",
-				{
-					"code": 200
-				}
-			],
-			"react/react-in-jsx-scope": "off",
-			"@typescript-eslint/no-unsafe-call": "off",
-			"@typescript-eslint/no-unsafe-member-access": "off",
-			"@typescript-eslint/no-unsafe-member-argument": "off",
-			"@typescript-eslint/no-unsafe-return": "off"
-		}
-	},
-	"browserslist": [
-		">0.2%",
-		"not dead",
-		"not ie <= 11",
-		"not op_mini all"
-	]
+	}
 }

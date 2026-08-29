@@ -62,7 +62,7 @@ interface Props {
 	rotateMap: (encounter: EncounterModel, dir: 'l' | 'r') => void;
 	rollInitiative: () => void;
 	regenerateEncounterMap: () => void;
-	addCombatantToEncounter: (encounter: EncounterModel, combatant: CombatantModel, useCharge: StructureType | null) => void;
+	addCombatantToEncounter: (encounter: EncounterModel, combatant: CombatantModel, spendCharge: StructureType | null) => void;
 	endTurn: (encounter: EncounterModel) => void;
 	move: (encounter: EncounterModel, combatant: CombatantModel, dir: string, cost: number) => void;
 	addMovement: (encounter: EncounterModel, combatant: CombatantModel, value: number) => void;
@@ -70,7 +70,7 @@ interface Props {
 	scan: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	hide: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	drinkPotion: (encounter: EncounterModel, owner: CombatantModel, drinker: CombatantModel, potion: ItemModel) => void;
-	drawActions: (encounter: EncounterModel, combatant: CombatantModel, useCharge: StructureType | null) => void;
+	drawActions: (encounter: EncounterModel, combatant: CombatantModel, spendCharge: StructureType | null) => void;
 	selectAction: (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => void;
 	deselectAction: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	setActionParameterValue: (parameter: ActionParameterModel, value: unknown) => void;
@@ -80,7 +80,7 @@ interface Props {
 	unequipItem: (item: ItemModel, combatant: CombatantModel) => void;
 	pickUpItem: (item: ItemModel, hero: CombatantModel) => void;
 	dropItem: (item: ItemModel, combatant: CombatantModel) => void;
-	useCharge: (type: StructureType, count: number) => void;
+	spendCharge: (type: StructureType, count: number) => void;
 	levelUp: (combatant: CombatantModel) => void;
 	switchAllegiance: (combatant: CombatantModel) => void;
 	stun: (combatant: CombatantModel) => void;
@@ -874,7 +874,7 @@ export class EncounterScreen extends Component<Props, State> {
 							dropItem={this.props.dropItem}
 							levelUp={() => null}
 							retireHero={() => null}
-							useCharge={this.props.useCharge}
+							spendCharge={this.props.spendCharge}
 						/>
 					}
 					onClose={() => this.clearDetails()}

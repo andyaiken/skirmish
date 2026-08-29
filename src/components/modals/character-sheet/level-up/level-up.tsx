@@ -22,9 +22,9 @@ interface Props {
 	developer: boolean;
 	level: number;
 	features: FeatureModel[];
-	useCharge: (type: StructureType, count: number) => void;
+	spendCharge: (type: StructureType, count: number) => void;
 	levelUp: (feature: FeatureModel) => void;
-	redrawFeatures: (useCharge: boolean) => void;
+	redrawFeatures: (spendCharge: boolean) => void;
 }
 
 interface State {

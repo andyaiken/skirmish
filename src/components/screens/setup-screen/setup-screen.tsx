@@ -108,7 +108,7 @@ export class SetupScreen extends Component<Props, State> {
 							hero={this.state.hero}
 							game={this.props.game}
 							options={this.props.options}
-							useCharge={() => null}
+							spendCharge={() => null}
 							finished={hero => {
 								this.setState({
 									hero: null
@@ -135,7 +135,7 @@ export class SetupScreen extends Component<Props, State> {
 						dropItem={this.props.dropItem}
 						levelUp={() => null}
 						retireHero={() => null}
-						useCharge={() => null}
+						spendCharge={() => null}
 					/>
 				}
 				onClose={() => this.selectHero(null)}

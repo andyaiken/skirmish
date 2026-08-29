@@ -117,73 +117,69 @@ export class MagicItemInfoModal extends Component<Props, State> {
 	};
 
 	render = () => {
-		try {
-			const canEquip: ReactNode[] = [];
-			const canReplace: ReactNode[] = [];
+		const canEquip: ReactNode[] = [];
+		const canReplace: ReactNode[] = [];
 
-			this.props.game.heroes
-				.filter(hero => (this.props.item.proficiency === ItemProficiencyType.None) || CombatantLogic.getProficiencies(hero).includes(this.props.item.proficiency))
-				.forEach(hero => {
-					const equippable = this.getIsEquippable(hero, this.props.item);
-					if (equippable) {
-						canEquip.push(
-							<CombatantRowPanel key={hero.id} combatant={hero} options={this.props.options} onClick={combatant => this.props.equipItem(this.props.item, combatant)} />
-						);
-					} else {
-						canReplace.push(
-							<CombatantRowPanel key={hero.id} combatant={hero} options={this.props.options} onClick={combatant => this.setComparison(combatant)} />
-						);
-					}
-				});
+		this.props.game.heroes
+			.filter(hero => (this.props.item.proficiency === ItemProficiencyType.None) || CombatantLogic.getProficiencies(hero).includes(this.props.item.proficiency))
+			.forEach(hero => {
+				const equippable = this.getIsEquippable(hero, this.props.item);
+				if (equippable) {
+					canEquip.push(
+						<CombatantRowPanel key={hero.id} combatant={hero} options={this.props.options} onClick={combatant => this.props.equipItem(this.props.item, combatant)} />
+					);
+				} else {
+					canReplace.push(
+						<CombatantRowPanel key={hero.id} combatant={hero} options={this.props.options} onClick={combatant => this.setComparison(combatant)} />
+					);
+				}
+			});
 
-			let content = null;
-			if (canEquip.length + canReplace.length === 0) {
-				content = (
-					<div className='hero-list'>
-						<Text type={TextType.Empty}>Usable by none of your current heroes.</Text>
-					</div>
-				);
-			} else {
-				content = (
-					<div className='hero-list'>
-						{
-							canEquip.length > 0 ?
-								<Text type={TextType.Information}>
-									<p>These heroes can equip this item. Click on one of them to equip it.</p>
-								</Text>
-								: null
-						}
-						{canEquip}
-						{
-							canReplace.length > 0 ?
-								<Text type={TextType.Information}>
-									<p>These heroes can equip this item, but already have an item in this location. Click on one of them to compare items.</p>
-								</Text>
-								: null
-						}
-						{canReplace}
-					</div>
-				);
-			}
-
-			return (
-				<div className='magic-item-info-modal'>
-					<Text type={TextType.Heading}>Magic Item</Text>
-					<hr />
-					<div className='magic-item-info-content'>
-						<div className='card'>
-							<ItemCard item={this.props.item} />
-							<button onClick={() => this.props.sellItem(this.props.item)}>
-								Sell<br /><IconValue type={IconType.Money} value={50} size={IconSize.Button} />
-							</button>
-						</div>
-						{content}
-					</div>
-					{this.getDialog()}
+		let content = null;
+		if (canEquip.length + canReplace.length === 0) {
+			content = (
+				<div className='hero-list'>
+					<Text type={TextType.Empty}>Usable by none of your current heroes.</Text>
 				</div>
 			);
-		} catch {
-			return <div className='magic-item-modal render-error' />;
+		} else {
+			content = (
+				<div className='hero-list'>
+					{
+						canEquip.length > 0 ?
+							<Text type={TextType.Information}>
+								<p>These heroes can equip this item. Click on one of them to equip it.</p>
+							</Text>
+							: null
+					}
+					{canEquip}
+					{
+						canReplace.length > 0 ?
+							<Text type={TextType.Information}>
+								<p>These heroes can equip this item, but already have an item in this location. Click on one of them to compare items.</p>
+							</Text>
+							: null
+					}
+					{canReplace}
+				</div>
+			);
 		}
+
+		return (
+			<div className='magic-item-info-modal'>
+				<Text type={TextType.Heading}>Magic Item</Text>
+				<hr />
+				<div className='magic-item-info-content'>
+					<div className='card'>
+						<ItemCard item={this.props.item} />
+						<button onClick={() => this.props.sellItem(this.props.item)}>
+							Sell<br /><IconValue type={IconType.Money} value={50} size={IconSize.Button} />
+						</button>
+					</div>
+					{content}
+				</div>
+				{this.getDialog()}
+			</div>
+		);
 	};
 }

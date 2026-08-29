@@ -67,95 +67,91 @@ export class EnchantItemModal extends Component<Props, State> {
 	};
 
 	render = () => {
-		try {
-			let dialog = null;
-			if (this.state.selectedItem) {
-				const cards = this.state.magicItems.map(item => (
-					<div key={item.id}>
-						<ItemCard item={item} onClick={item => this.props.enchantItem(this.state.selectedItem as ItemModel, item)} />
-					</div>
-				));
+		let dialog = null;
+		if (this.state.selectedItem) {
+			const cards = this.state.magicItems.map(item => (
+				<div key={item.id}>
+					<ItemCard item={item} onClick={item => this.props.enchantItem(this.state.selectedItem as ItemModel, item)} />
+				</div>
+			));
 
-				const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.WizardTower);
+			const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.WizardTower);
 
-				dialog = (
-					<Dialog
-						content={
-							<div className='enchant-item-modal'>
-								<Text type={TextType.Heading}>Choose an Enchantment</Text>
-								<hr />
-								<Text type={TextType.Information}>
-									<p>Here are three ways in which this item can be enchanted. Choose one of them.</p>
-								</Text>
-								<div className='card-selection-row'>
-									<CardList cards={cards} />
-									{
-										(redraws > 0) || this.props.options.developer ?
-											<button className={this.props.options.developer ? 'developer' : ''} onClick={() => this.redraw()}>
-												Redraw Magic Item Cards
-												<br />
-												<IconValue type={IconType.Redraw} value={redraws} size={IconSize.Button} />
-											</button>
-											: null
-									}
-								</div>
+			dialog = (
+				<Dialog
+					content={
+						<div className='enchant-item-modal'>
+							<Text type={TextType.Heading}>Choose an Enchantment</Text>
+							<hr />
+							<Text type={TextType.Information}>
+								<p>Here are three ways in which this item can be enchanted. Choose one of them.</p>
+							</Text>
+							<div className='card-selection-row'>
+								<CardList cards={cards} />
+								{
+									(redraws > 0) || this.props.options.developer ?
+										<button className={this.props.options.developer ? 'developer' : ''} onClick={() => this.redraw()}>
+											Redraw Magic Item Cards
+											<br />
+											<IconValue type={IconType.Redraw} value={redraws} size={IconSize.Button} />
+										</button>
+										: null
+								}
 							</div>
-						}
-						level={2}
-					/>
-				);
-			}
-
-			const heroes = this.props.game.heroes.map(h => {
-				const items = ([] as ItemModel[]).concat(h.items).concat(h.carried).filter(i => !i.potion);
-				if (items.length > 0) {
-					const cards = items.map(item => (
-						<div key={item.id}>
-							<ItemCard item={item} onClick={this.selectItem} />
 						</div>
-					));
+					}
+					level={2}
+				/>
+			);
+		}
 
-					return (
-						<div key={h.id} className='card-selection-row'>
-							<Text type={TextType.SubHeading}>{h.name}</Text>
-							<CardList cards={cards} />
-						</div>
-					);
-				}
-
-				return null;
-			});
-
-			let other = null;
-			if (this.props.game.items.length > 0) {
-				const cards = this.props.game.items.filter(i => !i.potion).map(item => (
+		const heroes = this.props.game.heroes.map(h => {
+			const items = ([] as ItemModel[]).concat(h.items).concat(h.carried).filter(i => !i.potion);
+			if (items.length > 0) {
+				const cards = items.map(item => (
 					<div key={item.id}>
 						<ItemCard item={item} onClick={this.selectItem} />
 					</div>
 				));
 
-				other = (
-					<div className='card-selection-row'>
-						<Text type={TextType.SubHeading}>Other Items</Text>
+				return (
+					<div key={h.id} className='card-selection-row'>
+						<Text type={TextType.SubHeading}>{h.name}</Text>
 						<CardList cards={cards} />
 					</div>
 				);
 			}
 
-			return (
-				<div className='enchant-item-modal'>
-					<Text type={TextType.Heading}>Choose an Item</Text>
-					<hr />
-					<Text type={TextType.Information}>
-						<p>Select one of the following items to be enchanted.</p>
-					</Text>
-					{heroes}
-					{other}
-					{dialog}
+			return null;
+		});
+
+		let other = null;
+		if (this.props.game.items.length > 0) {
+			const cards = this.props.game.items.filter(i => !i.potion).map(item => (
+				<div key={item.id}>
+					<ItemCard item={item} onClick={this.selectItem} />
+				</div>
+			));
+
+			other = (
+				<div className='card-selection-row'>
+					<Text type={TextType.SubHeading}>Other Items</Text>
+					<CardList cards={cards} />
 				</div>
 			);
-		} catch {
-			return <div className='enchant-item-modal render-error' />;
 		}
+
+		return (
+			<div className='enchant-item-modal'>
+				<Text type={TextType.Heading}>Choose an Item</Text>
+				<hr />
+				<Text type={TextType.Information}>
+					<p>Select one of the following items to be enchanted.</p>
+				</Text>
+				{heroes}
+				{other}
+				{dialog}
+			</div>
+		);
 	};
 }

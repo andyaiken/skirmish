@@ -5,6 +5,7 @@ import { Box } from './box/box';
 import { CardList } from './card-list/card-list';
 import { ConfirmButton } from './confirm-button/confirm-button';
 import { Dialog } from './dialog/dialog';
+import { ErrorBoundary } from './error-boundary/error-boundary';
 import { Expander } from './expander/expander';
 import { Gauge } from './gauge/gauge';
 import { PlayingCard } from './playing-card/playing-card';
@@ -15,6 +16,7 @@ import { Tabs } from './tabs/tabs';
 import { Tag } from './tag/tag';
 
 export {
+	ErrorBoundary,
 	Expander,
 	Badge,
 	Box,

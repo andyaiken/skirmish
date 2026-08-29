@@ -923,56 +923,16 @@ export class EncounterScreen extends Component<Props, State> {
 	};
 
 	render = () => {
-		try {
-			const top = this.getTopControls();
-			const bottom = this.getBottomControls();
-			const left = this.getLeftControls();
-			const right = this.getRightControls();
+		const top = this.getTopControls();
+		const bottom = this.getBottomControls();
+		const left = this.getLeftControls();
+		const right = this.getRightControls();
 
-			if (this.props.orientation === OrientationType.Portrait) {
-				return (
-					<div className={`encounter-screen ${this.props.orientation}`}>
-						{top}
-						<div className='encounter-main-panel'>
-							<div className='encounter-central-column'>
-								<div className='encounter-center-panel'>
-									<EncounterMapPanel
-										ref={this.mapRef}
-										encounter={this.props.encounter}
-										squareSize={this.state.mapSquareSize}
-										selectableCombatantIDs={this.state.selectableCombatantIDs}
-										selectableLootIDs={this.state.selectableLootIDs}
-										selectableSquares={this.state.selectableSquares}
-										selectedCombatantIDs={this.state.selectedCombatantIDs}
-										selectedLootIDs={this.state.selectedLootIDs}
-										selectedSquares={this.state.selectedSquares}
-										onClickCombatant={this.selectCombatant}
-										onClickLoot={this.selectLoot}
-										onClickSquare={this.selectSquare}
-										onClickOff={this.clearSelection}
-									/>
-								</div>
-								{bottom}
-							</div>
-							{
-								this.state.showLeftPanel || this.state.showRightPanel ?
-									<div className='encounter-side-columns'>
-										{left}
-										{right}
-									</div>
-									: null
-							}
-						</div>
-						{this.getDialog()}
-					</div>
-				);
-			}
-
+		if (this.props.orientation === OrientationType.Portrait) {
 			return (
 				<div className={`encounter-screen ${this.props.orientation}`}>
 					{top}
 					<div className='encounter-main-panel'>
-						{left}
 						<div className='encounter-central-column'>
 							<div className='encounter-center-panel'>
 								<EncounterMapPanel
@@ -993,13 +953,49 @@ export class EncounterScreen extends Component<Props, State> {
 							</div>
 							{bottom}
 						</div>
-						{right}
+						{
+							this.state.showLeftPanel || this.state.showRightPanel ?
+								<div className='encounter-side-columns'>
+									{left}
+									{right}
+								</div>
+								: null
+						}
 					</div>
 					{this.getDialog()}
 				</div>
 			);
-		} catch {
-			return <div className='encounter-screen render-error' />;
 		}
+
+		return (
+			<div className={`encounter-screen ${this.props.orientation}`}>
+				{top}
+				<div className='encounter-main-panel'>
+					{left}
+					<div className='encounter-central-column'>
+						<div className='encounter-center-panel'>
+							<EncounterMapPanel
+								ref={this.mapRef}
+								encounter={this.props.encounter}
+								squareSize={this.state.mapSquareSize}
+								selectableCombatantIDs={this.state.selectableCombatantIDs}
+								selectableLootIDs={this.state.selectableLootIDs}
+								selectableSquares={this.state.selectableSquares}
+								selectedCombatantIDs={this.state.selectedCombatantIDs}
+								selectedLootIDs={this.state.selectedLootIDs}
+								selectedSquares={this.state.selectedSquares}
+								onClickCombatant={this.selectCombatant}
+								onClickLoot={this.selectLoot}
+								onClickSquare={this.selectSquare}
+								onClickOff={this.clearSelection}
+							/>
+						</div>
+						{bottom}
+					</div>
+					{right}
+				</div>
+				{this.getDialog()}
+			</div>
+		);
 	};
 }

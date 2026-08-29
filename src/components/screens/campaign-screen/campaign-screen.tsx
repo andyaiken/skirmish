@@ -66,144 +66,140 @@ interface Props {
 
 export class CampaignScreen extends Component<Props> {
 	render = () => {
-		try {
-			let content = null;
-			switch (this.props.page) {
-				case PageType.Island:
-					content = (
-						<CampaignMapPage
-							game={this.props.game}
-							options={this.props.options}
-							orientation={this.props.orientation}
-							startEncounter={this.props.startEncounter}
-							regenerateCampaignMap={this.props.regenerateCampaignMap}
-							conquer={this.props.conquer}
-						/>
-					);
-					break;
-				case PageType.Stronghold:
-					content = (
-						<StrongholdPage
-							game={this.props.game}
-							options={this.props.options}
-							orientation={this.props.orientation}
-							setPage={this.props.setPage}
-							buyStructure={this.props.buyStructure}
-							sellStructure={this.props.sellStructure}
-							chargeStructure={this.props.chargeStructure}
-							upgradeStructure={this.props.upgradeStructure}
-							spendCharge={this.props.spendCharge}
-							redeemBoon={this.props.redeemBoon}
-						/>
-					);
-					break;
-				case PageType.Team:
-					content = (
-						<HeroesPage
-							game={this.props.game}
-							options={this.props.options}
-							orientation={this.props.orientation}
-							addHero={this.props.addHero}
-							addXP={this.props.addXP}
-							equipItem={this.props.equipItem}
-							unequipItem={this.props.unequipItem}
-							pickUpItem={this.props.pickUpItem}
-							dropItem={this.props.dropItem}
-							levelUp={this.props.levelUp}
-							retireHero={this.props.retireHero}
-							redeemBoon={this.props.redeemBoon}
-							spendCharge={this.props.spendCharge}
-						/>
-					);
-					break;
-				case PageType.Items:
-					content = (
-						<ItemsPage
-							game={this.props.game}
-							options={this.props.options}
-							orientation={this.props.orientation}
-							buyItem={this.props.buyItem}
-							sellItem={this.props.sellItem}
-							equipItem={this.props.equipItem}
-							dropItem={this.props.dropItem}
-							redeemBoon={this.props.redeemBoon}
-							spendCharge={this.props.spendCharge}
-							addMoney={this.props.addMoney}
-						/>
-					);
-					break;
-			}
+		let content = null;
+		switch (this.props.page) {
+			case PageType.Island:
+				content = (
+					<CampaignMapPage
+						game={this.props.game}
+						options={this.props.options}
+						orientation={this.props.orientation}
+						startEncounter={this.props.startEncounter}
+						regenerateCampaignMap={this.props.regenerateCampaignMap}
+						conquer={this.props.conquer}
+					/>
+				);
+				break;
+			case PageType.Stronghold:
+				content = (
+					<StrongholdPage
+						game={this.props.game}
+						options={this.props.options}
+						orientation={this.props.orientation}
+						setPage={this.props.setPage}
+						buyStructure={this.props.buyStructure}
+						sellStructure={this.props.sellStructure}
+						chargeStructure={this.props.chargeStructure}
+						upgradeStructure={this.props.upgradeStructure}
+						spendCharge={this.props.spendCharge}
+						redeemBoon={this.props.redeemBoon}
+					/>
+				);
+				break;
+			case PageType.Team:
+				content = (
+					<HeroesPage
+						game={this.props.game}
+						options={this.props.options}
+						orientation={this.props.orientation}
+						addHero={this.props.addHero}
+						addXP={this.props.addXP}
+						equipItem={this.props.equipItem}
+						unequipItem={this.props.unequipItem}
+						pickUpItem={this.props.pickUpItem}
+						dropItem={this.props.dropItem}
+						levelUp={this.props.levelUp}
+						retireHero={this.props.retireHero}
+						redeemBoon={this.props.redeemBoon}
+						spendCharge={this.props.spendCharge}
+					/>
+				);
+				break;
+			case PageType.Items:
+				content = (
+					<ItemsPage
+						game={this.props.game}
+						options={this.props.options}
+						orientation={this.props.orientation}
+						buyItem={this.props.buyItem}
+						sellItem={this.props.sellItem}
+						equipItem={this.props.equipItem}
+						dropItem={this.props.dropItem}
+						redeemBoon={this.props.redeemBoon}
+						spendCharge={this.props.spendCharge}
+						addMoney={this.props.addMoney}
+					/>
+				);
+				break;
+		}
 
-			const options = [
-				{
-					id: PageType.Island,
-					display: (
-						<div className='page-btn'>
-							The Island
-						</div>
-					)
-				},
-				{
-					id: PageType.Stronghold,
-					display: (
-						<div className='page-btn'>
-							<div>Your Stronghold</div>
-							{this.props.game.boons.some(b => GameLogic.getBoonIsStrongholdType(b)) ? <div>⭑</div> : null}
-						</div>
-					)
-				},
-				{
-					id: PageType.Team,
-					display: (
-						<div className='page-btn'>
-							<div>Your Team</div>
-							{this.props.game.boons.some(b => GameLogic.getBoonIsHeroType(b)) || this.props.game.heroes.some(h => h.xp >= h.level) ? <div>⭑</div> : null}
-						</div>
-					)
-				},
-				{
-					id: PageType.Items,
-					display: (
-						<div className='page-btn'>
-							<div>Your Equipment</div>
-							{this.props.game.boons.some(b => GameLogic.getBoonIsItemType(b)) ? <div>⭑</div> : null}
-						</div>
-					)
-				}
-			];
-
-			const availablePacks = PackLogic.getPacks().filter(p => !this.props.options.packIDs.includes(p.id)).length;
-
-			return (
-				<div className={`campaign-screen ${this.props.orientation}`}>
-					<div className='campaign-top-bar'>
-						<div className='branding'>
-							<LogoPanel size={36} />
-						</div>
-						<div className='money'>
-							<IconValue type={IconType.Money} value={Format.toText(this.props.game.money)} size={IconSize.Large} />
-							{this.props.options.developer ? <button className='developer icon-btn' onClick={() => this.props.addMoney()}><IconCirclePlus /></button> : null}
-						</div>
-						<div className='buttons'>
-							<Badge value={availablePacks}>
-								<button className='icon-btn' title='Packs' onClick={() => this.props.showPacks()}>
-									<IconCards />
-								</button>
-							</Badge>
-							<button className='icon-btn' title='Help' onClick={() => this.props.showHelp(this.props.page)}>
-								{this.props.options.developer && this.props.hasExceptions ? <IconHelpCircleFilled /> : <IconHelpCircle />}
-							</button>
-							{this.props.options.developer ? <button className='icon-btn developer' title='Backstage' onClick={this.props.toggleBackstage}><IconCodeCircle2 /></button> : null}
-						</div>
+		const options = [
+			{
+				id: PageType.Island,
+				display: (
+					<div className='page-btn'>
+						The Island
 					</div>
-					<Selector options={options} selectedID={this.props.page} onSelect={id => this.props.setPage(id as PageType)} />
-					<div className='campaign-content'>
-						{content}
+				)
+			},
+			{
+				id: PageType.Stronghold,
+				display: (
+					<div className='page-btn'>
+						<div>Your Stronghold</div>
+						{this.props.game.boons.some(b => GameLogic.getBoonIsStrongholdType(b)) ? <div>⭑</div> : null}
+					</div>
+				)
+			},
+			{
+				id: PageType.Team,
+				display: (
+					<div className='page-btn'>
+						<div>Your Team</div>
+						{this.props.game.boons.some(b => GameLogic.getBoonIsHeroType(b)) || this.props.game.heroes.some(h => h.xp >= h.level) ? <div>⭑</div> : null}
+					</div>
+				)
+			},
+			{
+				id: PageType.Items,
+				display: (
+					<div className='page-btn'>
+						<div>Your Equipment</div>
+						{this.props.game.boons.some(b => GameLogic.getBoonIsItemType(b)) ? <div>⭑</div> : null}
+					</div>
+				)
+			}
+		];
+
+		const availablePacks = PackLogic.getPacks().filter(p => !this.props.options.packIDs.includes(p.id)).length;
+
+		return (
+			<div className={`campaign-screen ${this.props.orientation}`}>
+				<div className='campaign-top-bar'>
+					<div className='branding'>
+						<LogoPanel size={36} />
+					</div>
+					<div className='money'>
+						<IconValue type={IconType.Money} value={Format.toText(this.props.game.money)} size={IconSize.Large} />
+						{this.props.options.developer ? <button className='developer icon-btn' onClick={() => this.props.addMoney()}><IconCirclePlus /></button> : null}
+					</div>
+					<div className='buttons'>
+						<Badge value={availablePacks}>
+							<button className='icon-btn' title='Packs' onClick={() => this.props.showPacks()}>
+								<IconCards />
+							</button>
+						</Badge>
+						<button className='icon-btn' title='Help' onClick={() => this.props.showHelp(this.props.page)}>
+							{this.props.options.developer && this.props.hasExceptions ? <IconHelpCircleFilled /> : <IconHelpCircle />}
+						</button>
+						{this.props.options.developer ? <button className='icon-btn developer' title='Backstage' onClick={this.props.toggleBackstage}><IconCodeCircle2 /></button> : null}
 					</div>
 				</div>
-			);
-		} catch {
-			return <div className='campaign-screen render-error' />;
-		}
+				<Selector options={options} selectedID={this.props.page} onSelect={id => this.props.setPage(id as PageType)} />
+				<div className='campaign-content'>
+					{content}
+				</div>
+			</div>
+		);
 	};
 }

@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 
 import { Platform } from './platform/platform';
 
+import { ErrorBoundary } from './components/controls';
 import { Layout } from './components/layout/layout';
 
 import './index.scss';
@@ -16,7 +17,9 @@ platform
 			const root = createRoot(container);
 			root.render(
 				<StrictMode>
-					<Layout game={data.game} options={data.options} platform={platform} />
+					<ErrorBoundary className='layout'>
+						<Layout game={data.game} options={data.options} platform={platform} />
+					</ErrorBoundary>
 				</StrictMode>
 			);
 		}

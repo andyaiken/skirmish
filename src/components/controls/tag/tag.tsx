@@ -7,13 +7,9 @@ interface Props {
 }
 
 export const Tag = (props: Props) => {
-	try {
-		return (
-			<div className='tag'>
-				{props.children}
-			</div>
-		);
-	} catch {
-		return <div className='tag render-error' />;
-	}
+	return (
+		<div className='tag'>
+			{props.children}
+		</div>
+	);
 };

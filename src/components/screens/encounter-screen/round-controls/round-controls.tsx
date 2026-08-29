@@ -47,88 +47,84 @@ export class RoundControls extends Component<Props> {
 	};
 
 	render = () => {
-		try {
-			const heroesActive = this.props.encounter.combatants
-				.filter(c => c.faction === CombatantType.Hero)
-				.filter(c => (c.combat.state === CombatantState.Standing) || (c.combat.state === CombatantState.Prone)).length;
-			const heroesUnconscious = this.props.encounter.combatants
-				.filter(c => c.faction === CombatantType.Hero)
-				.filter(c => c.combat.state === CombatantState.Unconscious).length;
-			const heroesDead = this.props.encounter.combatants
-				.filter(c => c.faction === CombatantType.Hero)
-				.filter(c => c.combat.state === CombatantState.Dead).length;
-			const monstersActive = this.props.encounter.combatants
-				.filter(c => c.faction === CombatantType.Monster)
-				.filter(c => (c.combat.state === CombatantState.Standing) || (c.combat.state === CombatantState.Prone)).length;
-			const monstersUnconscious = this.props.encounter.combatants
-				.filter(c => c.faction === CombatantType.Monster)
-				.filter(c => c.combat.state === CombatantState.Unconscious).length;
-			const monstersDead = this.props.encounter.combatants
-				.filter(c => c.faction === CombatantType.Monster)
-				.filter(c => c.combat.state === CombatantState.Dead).length;
+		const heroesActive = this.props.encounter.combatants
+			.filter(c => c.faction === CombatantType.Hero)
+			.filter(c => (c.combat.state === CombatantState.Standing) || (c.combat.state === CombatantState.Prone)).length;
+		const heroesUnconscious = this.props.encounter.combatants
+			.filter(c => c.faction === CombatantType.Hero)
+			.filter(c => c.combat.state === CombatantState.Unconscious).length;
+		const heroesDead = this.props.encounter.combatants
+			.filter(c => c.faction === CombatantType.Hero)
+			.filter(c => c.combat.state === CombatantState.Dead).length;
+		const monstersActive = this.props.encounter.combatants
+			.filter(c => c.faction === CombatantType.Monster)
+			.filter(c => (c.combat.state === CombatantState.Standing) || (c.combat.state === CombatantState.Prone)).length;
+		const monstersUnconscious = this.props.encounter.combatants
+			.filter(c => c.faction === CombatantType.Monster)
+			.filter(c => c.combat.state === CombatantState.Unconscious).length;
+		const monstersDead = this.props.encounter.combatants
+			.filter(c => c.faction === CombatantType.Monster)
+			.filter(c => c.combat.state === CombatantState.Dead).length;
 
-			const stats = (
-				<div className='encounter-stats'>
-					<Box label='Heroes'>
-						<StatValue orientation='vertical' label='Active' value={heroesActive} />
-						<hr />
-						<StatValue orientation='vertical' label='Unconscious' value={heroesUnconscious} />
-						<hr />
-						<StatValue orientation='vertical' label='Dead' value={heroesDead} />
-					</Box>
-					<Box label='Monsters'>
-						<StatValue orientation='vertical' label='Active' value={monstersActive} />
-						<hr />
-						<StatValue orientation='vertical' label='Unconscious' value={monstersUnconscious} />
-						<hr />
-						<StatValue orientation='vertical' label='Dead' value={monstersDead} />
-					</Box>
-				</div>
-			);
+		const stats = (
+			<div className='encounter-stats'>
+				<Box label='Heroes'>
+					<StatValue orientation='vertical' label='Active' value={heroesActive} />
+					<hr />
+					<StatValue orientation='vertical' label='Unconscious' value={heroesUnconscious} />
+					<hr />
+					<StatValue orientation='vertical' label='Dead' value={heroesDead} />
+				</Box>
+				<Box label='Monsters'>
+					<StatValue orientation='vertical' label='Active' value={monstersActive} />
+					<hr />
+					<StatValue orientation='vertical' label='Unconscious' value={monstersUnconscious} />
+					<hr />
+					<StatValue orientation='vertical' label='Dead' value={monstersDead} />
+				</Box>
+			</div>
+		);
 
-			let benefit = null;
-			if ((this.props.encounter.round > 0) && (this.props.game.heroes.length > 0)) {
-				const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.WarRoom);
-				if ((redraws > 0) || this.props.options.developer) {
-					benefit = (
-						<div className='benefits'>
-							<StrongholdBenefitCard
-								label='Add a Hero'
-								available={redraws}
-								developer={this.props.options.developer}
-								onUse={this.addHero}
-							/>
-						</div>
-					);
-				}
+		let benefit = null;
+		if ((this.props.encounter.round > 0) && (this.props.game.heroes.length > 0)) {
+			const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.WarRoom);
+			if ((redraws > 0) || this.props.options.developer) {
+				benefit = (
+					<div className='benefits'>
+						<StrongholdBenefitCard
+							label='Add a Hero'
+							available={redraws}
+							developer={this.props.options.developer}
+							onUse={this.addHero}
+						/>
+					</div>
+				);
 			}
-
-			return (
-				<div className='round-controls'>
-					<Text type={TextType.Heading}>Round {this.props.encounter.round + 1}</Text>
-					{stats}
-					{
-						this.props.options.showTips ?
-							<Expander
-								header={
-									<Text type={TextType.Tip}>At the start of each turn, each combatant rolls initiative.</Text>
-								}
-								content={
-									<div>
-										<p>This determines the order they will act in for this round - higher goes first.</p>
-										<p>Initiative is calculated using a combatant&apos;s <b>Reactions</b> skill rank.</p>
-									</div>
-								}
-							/>
-							: null
-					}
-					{benefit}
-					{this.props.options.developer ? <button className='developer' onClick={this.props.regenerateEncounterMap}>Regenerate Map</button> : null}
-					{this.props.options.developer ? <button className='developer' onClick={this.addMonster}>Add a Monster</button> : null}
-				</div>
-			);
-		} catch {
-			return <div className='round-controls render-error' />;
 		}
+
+		return (
+			<div className='round-controls'>
+				<Text type={TextType.Heading}>Round {this.props.encounter.round + 1}</Text>
+				{stats}
+				{
+					this.props.options.showTips ?
+						<Expander
+							header={
+								<Text type={TextType.Tip}>At the start of each turn, each combatant rolls initiative.</Text>
+							}
+							content={
+								<div>
+									<p>This determines the order they will act in for this round - higher goes first.</p>
+									<p>Initiative is calculated using a combatant&apos;s <b>Reactions</b> skill rank.</p>
+								</div>
+							}
+						/>
+						: null
+				}
+				{benefit}
+				{this.props.options.developer ? <button className='developer' onClick={this.props.regenerateEncounterMap}>Regenerate Map</button> : null}
+				{this.props.options.developer ? <button className='developer' onClick={this.addMonster}>Add a Monster</button> : null}
+			</div>
+		);
 	};
 }

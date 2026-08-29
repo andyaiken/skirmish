@@ -144,66 +144,62 @@ export class PacksModal extends Component<Props, State> {
 	};
 
 	render = () => {
-		try {
-			const core = (
+		const core = (
+			<PackCard
+				key='core'
+				pack={{
+					id: '',
+					name: 'Skirmish',
+					description: 'The core cards for the game, available to all.'
+				}}
+				onClick={p => this.setState({ selectedPack: p })}
+			/>
+		);
+
+		const ownedPacks = PackLogic.getPacks().filter(pack => (pack.id === '') || this.props.options.packIDs.includes(pack.id));
+		const notOwnedPacks = PackLogic.getPacks().filter(pack => (pack.id !== '') && !this.props.options.packIDs.includes(pack.id));
+
+		const owned = ownedPacks.map(pack => {
+			return (
 				<PackCard
-					key='core'
-					pack={{
-						id: '',
-						name: 'Skirmish',
-						description: 'The core cards for the game, available to all.'
-					}}
+					key={pack.id}
+					pack={pack}
+					onClick={p => this.setState({ selectedPack: p })}
+					onRemove={this.props.options.developer ? p => this.props.removePack(p) : null}
+				/>
+			);
+		});
+		const notOwned = notOwnedPacks.map(pack => {
+			return (
+				<PackCard
+					key={pack.id}
+					pack={pack}
 					onClick={p => this.setState({ selectedPack: p })}
 				/>
 			);
+		});
 
-			const ownedPacks = PackLogic.getPacks().filter(pack => (pack.id === '') || this.props.options.packIDs.includes(pack.id));
-			const notOwnedPacks = PackLogic.getPacks().filter(pack => (pack.id !== '') && !this.props.options.packIDs.includes(pack.id));
-
-			const owned = ownedPacks.map(pack => {
-				return (
-					<PackCard
-						key={pack.id}
-						pack={pack}
-						onClick={p => this.setState({ selectedPack: p })}
-						onRemove={this.props.options.developer ? p => this.props.removePack(p) : null}
-					/>
-				);
-			});
-			const notOwned = notOwnedPacks.map(pack => {
-				return (
-					<PackCard
-						key={pack.id}
-						pack={pack}
-						onClick={p => this.setState({ selectedPack: p })}
-					/>
-				);
-			});
-
-			return (
-				<div className='packs-modal'>
-					<Text type={TextType.Heading}>Card Packs</Text>
-					<hr />
-					<Text type={TextType.SubHeading}>Core Game</Text>
-					<CardList cards={[ core ]} />
-					<hr />
-					{notOwned.length > 0 ? <Text type={TextType.SubHeading}>Available Packs</Text> : null}
-					{
-						notOwned.length > 1 ?
-							<button className='primary' onClick={() => this.props.addPacks(notOwnedPacks)}>
-								Get All Packs ({Format.toCurrency(this.props.getPrice(notOwnedPacks), '$')})
-							</button>
-							: null
-					}
-					{notOwned.length > 0 ? <CardList cards={notOwned} /> : null}
-					{notOwned.length > 0 ? <hr /> : null}
-					<Text type={TextType.SubHeading}>My Packs</Text>
-					<CardList cards={owned} />
-					{this.getDialog()}
-				</div>
-			);
-		} catch {
-			return <div className='packs-modal render-error' />;
-		}
+		return (
+			<div className='packs-modal'>
+				<Text type={TextType.Heading}>Card Packs</Text>
+				<hr />
+				<Text type={TextType.SubHeading}>Core Game</Text>
+				<CardList cards={[ core ]} />
+				<hr />
+				{notOwned.length > 0 ? <Text type={TextType.SubHeading}>Available Packs</Text> : null}
+				{
+					notOwned.length > 1 ?
+						<button className='primary' onClick={() => this.props.addPacks(notOwnedPacks)}>
+							Get All Packs ({Format.toCurrency(this.props.getPrice(notOwnedPacks), '$')})
+						</button>
+						: null
+				}
+				{notOwned.length > 0 ? <CardList cards={notOwned} /> : null}
+				{notOwned.length > 0 ? <hr /> : null}
+				<Text type={TextType.SubHeading}>My Packs</Text>
+				<CardList cards={owned} />
+				{this.getDialog()}
+			</div>
+		);
 	};
 }

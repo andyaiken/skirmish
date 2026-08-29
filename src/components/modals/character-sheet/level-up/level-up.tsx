@@ -55,63 +55,59 @@ export class LevelUp extends Component<Props, State> {
 	};
 
 	render = () => {
-		try {
-			let content = null;
-			if (this.state.selectedFeature) {
-				content = (
-					<div className='feature-detail-selection'>
-						<div className='selected-feature'>
-							<FeatureCard
-								key={this.state.selectedFeature.id}
-								feature={this.state.selectedFeature}
-								combatant={this.props.combatant}
-								footer={CombatantLogic.getFeatureSource(this.props.combatant, this.state.selectedFeature.id) || 'Feature'}
-								footerType={CombatantLogic.getFeatureSourceType(this.props.combatant, this.state.selectedFeature.id)}
-							/>
-						</div>
-						<div className='level-up-additional'>
-							<ChoicePanel feature={this.state.selectedFeature} hero={this.props.combatant} onSelect={this.setSelectedFeature} />
-						</div>
-					</div>
-				);
-			} else {
-				const featureCards = this.props.features.map(feature => {
-					return (
+		let content = null;
+		if (this.state.selectedFeature) {
+			content = (
+				<div className='feature-detail-selection'>
+					<div className='selected-feature'>
 						<FeatureCard
-							key={feature.id}
-							feature={feature}
+							key={this.state.selectedFeature.id}
+							feature={this.state.selectedFeature}
 							combatant={this.props.combatant}
-							footer={CombatantLogic.getFeatureSource(this.props.combatant, feature.id) || 'Feature'}
-							footerType={CombatantLogic.getFeatureSourceType(this.props.combatant, feature.id)}
-							onClick={this.setSelectedFeature}
+							footer={CombatantLogic.getFeatureSource(this.props.combatant, this.state.selectedFeature.id) || 'Feature'}
+							footerType={CombatantLogic.getFeatureSourceType(this.props.combatant, this.state.selectedFeature.id)}
 						/>
-					);
-				});
-
-				content = (
-					<CardList cards={featureCards} />
-				);
-			}
-
-			const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.TrainingGround);
-
-			return (
-				<div className='level-up'>
-					<Text type={TextType.SubHeading}>Choose a feature for level {this.props.level}</Text>
-					{content}
-					{
-						(redraws > 0) || this.props.developer ?
-							<button className={this.props.developer ? 'developer' : ''} onClick={() => this.props.redrawFeatures(!this.props.developer)}>
-								Redraw Feature Cards
-								<br />
-								<IconValue type={IconType.Redraw} value={redraws} size={IconSize.Button} />
-							</button>
-							: null
-					}
+					</div>
+					<div className='level-up-additional'>
+						<ChoicePanel feature={this.state.selectedFeature} hero={this.props.combatant} onSelect={this.setSelectedFeature} />
+					</div>
 				</div>
 			);
-		} catch {
-			return <div className='level-up render-error' />;
+		} else {
+			const featureCards = this.props.features.map(feature => {
+				return (
+					<FeatureCard
+						key={feature.id}
+						feature={feature}
+						combatant={this.props.combatant}
+						footer={CombatantLogic.getFeatureSource(this.props.combatant, feature.id) || 'Feature'}
+						footerType={CombatantLogic.getFeatureSourceType(this.props.combatant, feature.id)}
+						onClick={this.setSelectedFeature}
+					/>
+				);
+			});
+
+			content = (
+				<CardList cards={featureCards} />
+			);
 		}
+
+		const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.TrainingGround);
+
+		return (
+			<div className='level-up'>
+				<Text type={TextType.SubHeading}>Choose a feature for level {this.props.level}</Text>
+				{content}
+				{
+					(redraws > 0) || this.props.developer ?
+						<button className={this.props.developer ? 'developer' : ''} onClick={() => this.props.redrawFeatures(!this.props.developer)}>
+							Redraw Feature Cards
+							<br />
+							<IconValue type={IconType.Redraw} value={redraws} size={IconSize.Button} />
+						</button>
+						: null
+				}
+			</div>
+		);
 	};
 }

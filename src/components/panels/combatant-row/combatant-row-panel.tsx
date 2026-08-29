@@ -240,94 +240,90 @@ export class CombatantRowPanel extends Component<Props> {
 	};
 
 	render = () => {
-		try {
-			const faction = this.props.combatant.quirks.includes(QuirkType.Boss) ? 'boss' : this.props.combatant.faction.toLowerCase();
-			const clickable = this.props.onClick !== null ? 'clickable' : '';
-			const current = (this.props.mode === 'initiative') && this.props.combatant.combat.current ? 'current' : '';
-			const dimmed = (this.props.mode === 'initiative')
-				&& (
-					(!!this.props.encounter && this.props.encounter.combatants.some(c => c.combat.current) && (this.props.combatant.combat.initiative === Number.MIN_VALUE))
-					|| (this.props.combatant.combat.state === CombatantState.Unconscious)
-					|| (this.props.combatant.combat.state === CombatantState.Dead)
-				) ? 'dimmed' : '';
-			const className = `combatant-row-panel ${this.props.mode} ${faction} ${clickable} ${current} ${dimmed}`;
+		const faction = this.props.combatant.quirks.includes(QuirkType.Boss) ? 'boss' : this.props.combatant.faction.toLowerCase();
+		const clickable = this.props.onClick !== null ? 'clickable' : '';
+		const current = (this.props.mode === 'initiative') && this.props.combatant.combat.current ? 'current' : '';
+		const dimmed = (this.props.mode === 'initiative')
+			&& (
+				(!!this.props.encounter && this.props.encounter.combatants.some(c => c.combat.current) && (this.props.combatant.combat.initiative === Number.MIN_VALUE))
+				|| (this.props.combatant.combat.state === CombatantState.Unconscious)
+				|| (this.props.combatant.combat.state === CombatantState.Dead)
+			) ? 'dimmed' : '';
+		const className = `combatant-row-panel ${this.props.mode} ${faction} ${clickable} ${current} ${dimmed}`;
 
-			let infoBelow: ReactNode | null = null;
-			let infoRight: ReactNode | null = null;
-			let infoEnd: ReactNode | null = null;
-			switch (this.props.mode) {
-				case 'list':
-					infoRight = this.getListInfo();
-					break;
-				case 'initiative':
-					infoBelow = this.getInitiativeInfo();
-					break;
-				case 'detailed':
-					infoBelow = this.getDetailedInfoBelow();
-					infoEnd = this.getDetailedInfoEnd();
-					break;
-				case 'header':
-					infoBelow = this.getHeaderInfoBelow();
-					break;
-			}
-
-			let selectBtn = null;
-			if (this.props.onSelect) {
-				selectBtn = (
-					<button className='icon-btn' onClick={e => this.onSelect(e)}>
-						<IconCheck />
-					</button>
-				);
-			}
-
-			let detailsBtn = null;
-			if (this.props.onDetails) {
-				detailsBtn = (
-					<button className='icon-btn' onClick={e => this.onDetails(e)}>
-						<IconId />
-					</button>
-				);
-			}
-
-			let cancelBtn = null;
-			if (this.props.onCancel) {
-				cancelBtn = (
-					<button className='icon-btn' onClick={e => this.onCancel(e)}>
-						<IconX />
-					</button>
-				);
-			}
-
-			return (
-				<div className={className} onClick={e => this.onClick(e)}>
-					<MiniToken
-						combatant={this.props.combatant}
-						encounter={null}
-						squareSize={40}
-						mapDimensions={{ left: 0, top: 0 }}
-						selectable={true}
-						selected={false}
-						onClick={c => this.props.onTokenClick ? this.props.onTokenClick(c) : null}
-					/>
-					<div className='name'>
-						<Text type={TextType.MinorHeading}>{this.props.combatant.name}</Text>
-						{infoBelow}
-					</div>
-					{infoRight}
-					{infoEnd}
-					{
-						selectBtn || detailsBtn || cancelBtn ?
-							<div className='buttons'>
-								{selectBtn}
-								{detailsBtn}
-								{cancelBtn}
-							</div>
-							: null
-					}
-				</div>
-			);
-		} catch {
-			return <div className='combatant-row-panel render-error' />;
+		let infoBelow: ReactNode | null = null;
+		let infoRight: ReactNode | null = null;
+		let infoEnd: ReactNode | null = null;
+		switch (this.props.mode) {
+			case 'list':
+				infoRight = this.getListInfo();
+				break;
+			case 'initiative':
+				infoBelow = this.getInitiativeInfo();
+				break;
+			case 'detailed':
+				infoBelow = this.getDetailedInfoBelow();
+				infoEnd = this.getDetailedInfoEnd();
+				break;
+			case 'header':
+				infoBelow = this.getHeaderInfoBelow();
+				break;
 		}
+
+		let selectBtn = null;
+		if (this.props.onSelect) {
+			selectBtn = (
+				<button className='icon-btn' onClick={e => this.onSelect(e)}>
+					<IconCheck />
+				</button>
+			);
+		}
+
+		let detailsBtn = null;
+		if (this.props.onDetails) {
+			detailsBtn = (
+				<button className='icon-btn' onClick={e => this.onDetails(e)}>
+					<IconId />
+				</button>
+			);
+		}
+
+		let cancelBtn = null;
+		if (this.props.onCancel) {
+			cancelBtn = (
+				<button className='icon-btn' onClick={e => this.onCancel(e)}>
+					<IconX />
+				</button>
+			);
+		}
+
+		return (
+			<div className={className} onClick={e => this.onClick(e)}>
+				<MiniToken
+					combatant={this.props.combatant}
+					encounter={null}
+					squareSize={40}
+					mapDimensions={{ left: 0, top: 0 }}
+					selectable={true}
+					selected={false}
+					onClick={c => this.props.onTokenClick ? this.props.onTokenClick(c) : null}
+				/>
+				<div className='name'>
+					<Text type={TextType.MinorHeading}>{this.props.combatant.name}</Text>
+					{infoBelow}
+				</div>
+				{infoRight}
+				{infoEnd}
+				{
+					selectBtn || detailsBtn || cancelBtn ?
+						<div className='buttons'>
+							{selectBtn}
+							{detailsBtn}
+							{cancelBtn}
+						</div>
+						: null
+				}
+			</div>
+		);
 	};
 }

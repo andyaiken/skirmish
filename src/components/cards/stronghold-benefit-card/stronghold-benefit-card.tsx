@@ -43,65 +43,61 @@ export class StrongholdBenefitCard extends Component<Props> {
 	};
 
 	render = () => {
-		try {
-			let content = null;
+		let content = null;
 
-			if (this.props.onRedraw) {
-				content = (
-					<IconValue
-						type={IconType.Redraw}
-						value={this.props.available}
-						size={IconSize.Large}
-					/>
-				);
-			}
-
-			if (this.props.onUse) {
-				content = (
-					<StatValue
-						orientation='vertical'
-						label='Uses'
-						value={this.props.available}
-					/>
-				);
-			}
-
-			if (this.props.onChange) {
-				content = (
-					<div className='spin'>
-						<StatValue orientation='vertical' label='Available' value={this.props.developer ? this.props.available : this.props.available - this.props.used} />
-						<div className='spin-buttons'>
-							<button className='icon-btn' disabled={this.props.used === 0} onClick={() => this.onNudge(-1)}>
-								<IconCircleMinus />
-							</button>
-							<StatValue orientation='vertical' label='Used' value={this.props.used} />
-							<button className='icon-btn' disabled={(this.props.used === this.props.available) && !this.props.developer} onClick={() => this.onNudge(1)}>
-								<IconCirclePlus />
-							</button>
-						</div>
-					</div>
-				);
-			}
-
-			return (
-				<PlayingCard
-					type={CardType.Structure}
-					front={
-						<PlaceholderCard
-							content={
-								<div className={this.props.developer ? 'stronghold-benefit-card developer' : 'stronghold-benefit-card'}>
-									<Text type={TextType.SubHeading}>{this.props.label}</Text>
-									{content}
-								</div>
-							}
-						/>
-					}
-					footerText='Stronghold Benefit'
-					onClick={this.onClick}
+		if (this.props.onRedraw) {
+			content = (
+				<IconValue
+					type={IconType.Redraw}
+					value={this.props.available}
+					size={IconSize.Large}
 				/>
 			);
-		} catch {
-			return <div className='stronghold-benefit-card render-error' />;
 		}
+
+		if (this.props.onUse) {
+			content = (
+				<StatValue
+					orientation='vertical'
+					label='Uses'
+					value={this.props.available}
+				/>
+			);
+		}
+
+		if (this.props.onChange) {
+			content = (
+				<div className='spin'>
+					<StatValue orientation='vertical' label='Available' value={this.props.developer ? this.props.available : this.props.available - this.props.used} />
+					<div className='spin-buttons'>
+						<button className='icon-btn' disabled={this.props.used === 0} onClick={() => this.onNudge(-1)}>
+							<IconCircleMinus />
+						</button>
+						<StatValue orientation='vertical' label='Used' value={this.props.used} />
+						<button className='icon-btn' disabled={(this.props.used === this.props.available) && !this.props.developer} onClick={() => this.onNudge(1)}>
+							<IconCirclePlus />
+						</button>
+					</div>
+				</div>
+			);
+		}
+
+		return (
+			<PlayingCard
+				type={CardType.Structure}
+				front={
+					<PlaceholderCard
+						content={
+							<div className={this.props.developer ? 'stronghold-benefit-card developer' : 'stronghold-benefit-card'}>
+								<Text type={TextType.SubHeading}>{this.props.label}</Text>
+								{content}
+							</div>
+						}
+					/>
+				}
+				footerText='Stronghold Benefit'
+				onClick={this.onClick}
+			/>
+		);
 	};
 }

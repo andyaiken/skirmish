@@ -86,82 +86,78 @@ export class EquipmentPage extends Component<Props, State> {
 	};
 
 	render = () => {
-		try {
-			const role = GameLogic.getRole(this.props.hero.roleID);
-			if (!role) {
-				return null;
+		const role = GameLogic.getRole(this.props.hero.roleID);
+		if (!role) {
+			return null;
+		}
+
+		const overviewCards = this.state.slots.map((slot, n) => {
+			if (slot.selected) {
+				return (
+					<ItemCard key={n} item={slot.selected} />
+				);
 			}
+			return (
+				<PlayingCard
+					key={n}
+					type={CardType.Item}
+					disabled={true}
+					front={<PlaceholderCard text={slot.proficiency} subtext={`Choose one of the three ${slot.proficiency} cards below`} />}
+				/>
+			);
+		});
 
-			const overviewCards = this.state.slots.map((slot, n) => {
-				if (slot.selected) {
-					return (
-						<ItemCard key={n} item={slot.selected} />
-					);
-				}
-				return (
-					<PlayingCard
-						key={n}
-						type={CardType.Item}
-						disabled={true}
-						front={<PlaceholderCard text={slot.proficiency} subtext={`Choose one of the three ${slot.proficiency} cards below`} />}
-					/>
-				);
-			});
+		const slots = this.state.slots.filter(slot => !slot.selected).map((slot, n) => {
+			const cards = slot.candidates.map(item => <ItemCard key={item.id} item={item} onClick={this.selectItem} />);
 
-			const slots = this.state.slots.filter(slot => !slot.selected).map((slot, n) => {
-				const cards = slot.candidates.map(item => <ItemCard key={item.id} item={item} onClick={this.selectItem} />);
-
-				const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Quartermaster);
-
-				return (
-					<div key={n} className='card-selection-row'>
-						<CardList cards={cards} />
-						{
-							(redraws > 0) || this.props.options.developer ?
-								<button className={this.props.options.developer ? 'developer' : ''} onClick={() => this.redraw(slot.proficiency)}>
-									Redraw Item Cards
-									<br />
-									<IconValue type={IconType.Redraw} value={redraws} size={IconSize.Button} />
-								</button>
-								: null
-						}
-					</div>
-				);
-			});
-
-			const canSelect = this.state.slots.every(s => s.selected !== null);
+			const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Quartermaster);
 
 			return (
-				<div className='equipment-page'>
-					<div className='equipment-page-content'>
-						<div className='card-selection-row'>
-							<CardList cards={overviewCards} />
-						</div>
-						{
-							this.props.options.showTips ?
-								<Expander
-									header={
-										<Text type={TextType.Tip}>Your hero can choose starting equipment.</Text>
-									}
-									content={
-										<div>
-											<p>Your hero&apos;s starting features include <b>Proficiencies</b> for weapons, armor, or magical implements.</p>
-											<p>For each proficiency, you can choose an item for your hero to use.</p>
-										</div>
-									}
-								/>
-								: null
-						}
-						{canSelect ? null : <hr />}
-						{slots}
-					</div>
-					<button className='action primary' disabled={!canSelect} onClick={() => this.addItems()}>
-						Next
-					</button>
+				<div key={n} className='card-selection-row'>
+					<CardList cards={cards} />
+					{
+						(redraws > 0) || this.props.options.developer ?
+							<button className={this.props.options.developer ? 'developer' : ''} onClick={() => this.redraw(slot.proficiency)}>
+								Redraw Item Cards
+								<br />
+								<IconValue type={IconType.Redraw} value={redraws} size={IconSize.Button} />
+							</button>
+							: null
+					}
 				</div>
 			);
-		} catch {
-			return <div className='equipment-page render-error' />;
-		}
+		});
+
+		const canSelect = this.state.slots.every(s => s.selected !== null);
+
+		return (
+			<div className='equipment-page'>
+				<div className='equipment-page-content'>
+					<div className='card-selection-row'>
+						<CardList cards={overviewCards} />
+					</div>
+					{
+						this.props.options.showTips ?
+							<Expander
+								header={
+									<Text type={TextType.Tip}>Your hero can choose starting equipment.</Text>
+								}
+								content={
+									<div>
+										<p>Your hero&apos;s starting features include <b>Proficiencies</b> for weapons, armor, or magical implements.</p>
+										<p>For each proficiency, you can choose an item for your hero to use.</p>
+									</div>
+								}
+							/>
+							: null
+					}
+					{canSelect ? null : <hr />}
+					{slots}
+				</div>
+				<button className='action primary' disabled={!canSelect} onClick={() => this.addItems()}>
+					Next
+				</button>
+			</div>
+		);
 	};
 }

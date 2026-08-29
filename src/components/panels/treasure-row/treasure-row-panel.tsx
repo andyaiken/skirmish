@@ -30,48 +30,44 @@ export class TreasureRowPanel extends Component<Props> {
 	};
 
 	render = () => {
-		try {
-			let name = '';
-			if (this.props.loot.items.length === 1) {
-				const item = this.props.loot.items[0];
-				name = item.magic ? item.description : item.name;
-			} else if (this.props.loot.items.length > 1) {
-				name = `${this.props.loot.items.length} items`;
-			}
-			if (this.props.loot.money > 0) {
-				if (name === '') {
-					name = 'Money';
-				} else {
-					name += '; money';
-				}
-			}
-
-			return (
-				<div className='treasure-row-panel'>
-					<div className='token-container'>
-						<LootToken
-							loot={this.props.loot}
-							encounter={null}
-							squareSize={40}
-							mapDimensions={{ left: 0, top: 0 }}
-							selectable={true}
-							selected={false}
-							onClick={() => null}
-						/>
-					</div>
-					<div className='name'>
-						<Text type={TextType.MinorHeading}>{name}</Text>
-					</div>
-					<button className='icon-btn' onClick={e => this.onDetails(e)}>
-						<IconList />
-					</button>
-					<button className='icon-btn' onClick={e => this.onCancel(e)}>
-						<IconX />
-					</button>
-				</div>
-			);
-		} catch {
-			return <div className='treasure-row-panel render-error' />;
+		let name = '';
+		if (this.props.loot.items.length === 1) {
+			const item = this.props.loot.items[0];
+			name = item.magic ? item.description : item.name;
+		} else if (this.props.loot.items.length > 1) {
+			name = `${this.props.loot.items.length} items`;
 		}
+		if (this.props.loot.money > 0) {
+			if (name === '') {
+				name = 'Money';
+			} else {
+				name += '; money';
+			}
+		}
+
+		return (
+			<div className='treasure-row-panel'>
+				<div className='token-container'>
+					<LootToken
+						loot={this.props.loot}
+						encounter={null}
+						squareSize={40}
+						mapDimensions={{ left: 0, top: 0 }}
+						selectable={true}
+						selected={false}
+						onClick={() => null}
+					/>
+				</div>
+				<div className='name'>
+					<Text type={TextType.MinorHeading}>{name}</Text>
+				</div>
+				<button className='icon-btn' onClick={e => this.onDetails(e)}>
+					<IconList />
+				</button>
+				<button className='icon-btn' onClick={e => this.onCancel(e)}>
+					<IconX />
+				</button>
+			</div>
+		);
 	};
 }

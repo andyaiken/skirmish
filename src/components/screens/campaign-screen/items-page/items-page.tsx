@@ -276,120 +276,116 @@ export class ItemsPage extends Component<Props, State> {
 	};
 
 	render = () => {
-		try {
-			let magicItemSection = null;
-			const magicItems = Collections.sort(this.props.game.items.filter(i => i.magic), n => n.name);
-			if (magicItems.length > 0) {
-				const cards = magicItems.map(item => (
-					<div key={item.id}>
-						<ItemCard item={item} onClick={i => this.setState({ selectedMagicItem: i })} />
-					</div>
-				));
-				magicItemSection = (
-					<div>
-						<CardList cards={cards} />
-					</div>
-				);
-			}
-
-			let potionSection = null;
-			const potions = Collections.sort(this.props.game.items.filter(i => !i.magic && i.potion), n => n.name);
-			if (potions.length > 0) {
-				const cards = Collections.distinct(potions, i => i.name).map(item => {
-					const count = potions.filter(i => i.name === item.name).length;
-
-					let footer = (
-						<button onClick={() => this.props.sellItem(item, true)}>
-							Sell<br /><IconValue type={IconType.Money} value={10} size={IconSize.Button} />
-						</button>
-					);
-
-					if (count > 1) {
-						footer = (
-							<div>
-								<button onClick={() => this.props.sellItem(item, false)}>
-									Sell One<br /><IconValue type={IconType.Money} value={10} size={IconSize.Button} />
-								</button>
-								<button onClick={() => this.props.sellItem(item, true)}>
-									Sell All ({count})<br /><IconValue type={IconType.Money} value={10 * count} size={IconSize.Button} />
-								</button>
-							</div>
-						);
-					}
-
-					return (
-						<div key={item.id}>
-							<ItemCard item={item} count={count} />
-							{footer}
-						</div>
-					);
-				});
-				potionSection = (
-					<div>
-						<CardList cards={cards} />
-					</div>
-				);
-			}
-
-			let mundaneItemSection = null;
-			const mundaneItems = Collections.sort(this.props.game.items.filter(i => !i.magic && !i.potion), n => n.name);
-			if (mundaneItems.length > 0) {
-				const cards = Collections.distinct(mundaneItems, i => i.name).map(item => {
-					const count = mundaneItems.filter(i => i.name === item.name).length;
-
-					let footer = (
-						<button onClick={() => this.props.sellItem(item, true)}>Sell</button>
-					);
-
-					if (count > 1) {
-						footer = (
-							<div>
-								<button onClick={() => this.props.sellItem(item, false)}>Sell One</button>
-								<button onClick={() => this.props.sellItem(item, true)}>Sell All ({count})</button>
-							</div>
-						);
-					}
-
-					return (
-						<div key={item.id}>
-							<ItemCard item={item} count={count} />
-							{footer}
-						</div>
-					);
-				});
-				mundaneItemSection = (
-					<div>
-						<CardList cards={cards} />
-					</div>
-				);
-			}
-
-			let empty = null;
-			if (this.props.game.items.length === 0) {
-				empty = (
-					<Text type={TextType.Empty}>
-						You have no unequipped items.
-					</Text>
-				);
-			}
-
-			return (
-				<div className={`items-page ${this.props.orientation}`}>
-					<div className='items-content'>
-						{magicItemSection ? <Text type={TextType.SubHeading}>Magic Items</Text> : null}
-						{magicItemSection}
-						{potionSection ? <Text type={TextType.SubHeading}>Potions</Text> : null}
-						{potionSection}
-						{mundaneItemSection ? <Text type={TextType.SubHeading}>Non-Magic Items</Text> : null}
-						{mundaneItemSection}
-						{empty}
-					</div>
-					{this.getSidebar()}
-					{this.getDialog()}
+		let magicItemSection = null;
+		const magicItems = Collections.sort(this.props.game.items.filter(i => i.magic), n => n.name);
+		if (magicItems.length > 0) {
+			const cards = magicItems.map(item => (
+				<div key={item.id}>
+					<ItemCard item={item} onClick={i => this.setState({ selectedMagicItem: i })} />
+				</div>
+			));
+			magicItemSection = (
+				<div>
+					<CardList cards={cards} />
 				</div>
 			);
-		} catch {
-			return <div className='items-page render-error' />;
 		}
+
+		let potionSection = null;
+		const potions = Collections.sort(this.props.game.items.filter(i => !i.magic && i.potion), n => n.name);
+		if (potions.length > 0) {
+			const cards = Collections.distinct(potions, i => i.name).map(item => {
+				const count = potions.filter(i => i.name === item.name).length;
+
+				let footer = (
+					<button onClick={() => this.props.sellItem(item, true)}>
+						Sell<br /><IconValue type={IconType.Money} value={10} size={IconSize.Button} />
+					</button>
+				);
+
+				if (count > 1) {
+					footer = (
+						<div>
+							<button onClick={() => this.props.sellItem(item, false)}>
+								Sell One<br /><IconValue type={IconType.Money} value={10} size={IconSize.Button} />
+							</button>
+							<button onClick={() => this.props.sellItem(item, true)}>
+								Sell All ({count})<br /><IconValue type={IconType.Money} value={10 * count} size={IconSize.Button} />
+							</button>
+						</div>
+					);
+				}
+
+				return (
+					<div key={item.id}>
+						<ItemCard item={item} count={count} />
+						{footer}
+					</div>
+				);
+			});
+			potionSection = (
+				<div>
+					<CardList cards={cards} />
+				</div>
+			);
+		}
+
+		let mundaneItemSection = null;
+		const mundaneItems = Collections.sort(this.props.game.items.filter(i => !i.magic && !i.potion), n => n.name);
+		if (mundaneItems.length > 0) {
+			const cards = Collections.distinct(mundaneItems, i => i.name).map(item => {
+				const count = mundaneItems.filter(i => i.name === item.name).length;
+
+				let footer = (
+					<button onClick={() => this.props.sellItem(item, true)}>Sell</button>
+				);
+
+				if (count > 1) {
+					footer = (
+						<div>
+							<button onClick={() => this.props.sellItem(item, false)}>Sell One</button>
+							<button onClick={() => this.props.sellItem(item, true)}>Sell All ({count})</button>
+						</div>
+					);
+				}
+
+				return (
+					<div key={item.id}>
+						<ItemCard item={item} count={count} />
+						{footer}
+					</div>
+				);
+			});
+			mundaneItemSection = (
+				<div>
+					<CardList cards={cards} />
+				</div>
+			);
+		}
+
+		let empty = null;
+		if (this.props.game.items.length === 0) {
+			empty = (
+				<Text type={TextType.Empty}>
+					You have no unequipped items.
+				</Text>
+			);
+		}
+
+		return (
+			<div className={`items-page ${this.props.orientation}`}>
+				<div className='items-content'>
+					{magicItemSection ? <Text type={TextType.SubHeading}>Magic Items</Text> : null}
+					{magicItemSection}
+					{potionSection ? <Text type={TextType.SubHeading}>Potions</Text> : null}
+					{potionSection}
+					{mundaneItemSection ? <Text type={TextType.SubHeading}>Non-Magic Items</Text> : null}
+					{mundaneItemSection}
+					{empty}
+				</div>
+				{this.getSidebar()}
+				{this.getDialog()}
+			</div>
+		);
 	};
 }

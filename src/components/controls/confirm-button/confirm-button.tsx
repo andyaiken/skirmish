@@ -31,19 +31,15 @@ export const ConfirmButton = (props: Props) => {
 		);
 	}
 
-	try {
-		return (
-			<div className='confirm-query'>
-				<Text>
-					<b><span className='query-label'>{props.label}</span> - are you sure?</b>
-				</Text>
-				<div className='button-row'>
-					<button onClick={onConfirm}>OK</button>
-					<button onClick={onCancel}>Cancel</button>
-				</div>
+	return (
+		<div className='confirm-query'>
+			<Text>
+				<b><span className='query-label'>{props.label}</span> - are you sure?</b>
+			</Text>
+			<div className='button-row'>
+				<button onClick={onConfirm}>OK</button>
+				<button onClick={onCancel}>Cancel</button>
 			</div>
-		);
-	} catch {
-		return <div className='confirm-query render-error' />;
-	}
+		</div>
+	);
 };

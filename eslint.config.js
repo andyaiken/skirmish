@@ -30,12 +30,6 @@ export default tseslint.config(
 		rules: {
 			...reactHooks.configs.recommended.rules,
 
-			// This codebase deliberately wraps each component's render in a
-			// try/catch with a 'render-error' fallback (~80 files); that convention
-			// predates this rule and replacing it with error boundaries is a
-			// separate design decision.
-			'react-hooks/error-boundaries': 'off',
-
 			// Matches the previous eslint-config-react-app behaviour: unused
 			// arguments are allowed, as they are often required by a signature.
 			'@typescript-eslint/no-unused-vars': [ 'warn', { args: 'none', ignoreRestSiblings: true } ],

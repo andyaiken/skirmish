@@ -45,7 +45,7 @@ import { Sound } from '../../utils/sound';
 import { Utils } from '../../utils/utils';
 
 import { BackstageScreen, CampaignScreen, EncounterScreen, LandingScreen, SetupScreen } from '../screens';
-import { Dialog, PlayingCard, Text, TextType } from '../controls';
+import { Dialog, ErrorBoundary, PlayingCard, Text, TextType } from '../controls';
 import { HelpModal, PacksModal } from '../modals';
 import { PlaceholderCard } from '../cards';
 
@@ -1546,66 +1546,64 @@ export class Main extends Component<Props, State> {
 	};
 
 	render = () => {
-		try {
-			let dialog = null;
-			if (this.state.showHelp !== null) {
-				dialog = (
-					<Dialog
-						content={
-							<HelpModal
-								game={this.state.game}
-								exceptions={this.state.exceptions}
-								rules={rules[this.state.showHelp]}
-								options={this.state.options}
-								endCampaign={this.endCampaign}
-								setDeveloperMode={this.setDeveloperMode}
-								setShowTips={this.setShowTips}
-								setSoundEffectsVolume={this.setSoundEffectsVolume}
-								setRenderer={this.setRenderer}
-							/>
-						}
-						onClose={() => this.setState({ showHelp: null })}
-					/>
-				);
-			}
-			if (this.state.showPacks) {
-				dialog = (
-					<Dialog
-						content={
-							<PacksModal
-								options={this.state.options}
-								getPrice={this.getPackPrice}
-								addPacks={this.addPacks}
-								removePack={this.removePack}
-							/>
-						}
-						onClose={() => this.setState({ showPacks: false })}
-					/>
-				);
-			}
-			if (this.state.dialog) {
-				dialog = (
-					<Dialog
-						content={this.state.dialog}
-					/>
-				);
-			}
-
-			return (
-				<div className='skirmish'>
-					<Toaster
-						position='bottom-right'
-						toastOptions={{
-							duration: 5 * 1000
-						}}
-					/>
-					{this.getContent()}
-					{dialog}
-				</div>
+		let dialog = null;
+		if (this.state.showHelp !== null) {
+			dialog = (
+				<Dialog
+					content={
+						<HelpModal
+							game={this.state.game}
+							exceptions={this.state.exceptions}
+							rules={rules[this.state.showHelp]}
+							options={this.state.options}
+							endCampaign={this.endCampaign}
+							setDeveloperMode={this.setDeveloperMode}
+							setShowTips={this.setShowTips}
+							setSoundEffectsVolume={this.setSoundEffectsVolume}
+							setRenderer={this.setRenderer}
+						/>
+					}
+					onClose={() => this.setState({ showHelp: null })}
+				/>
 			);
-		} catch {
-			return <div className='skirmish render-error' />;
 		}
+		if (this.state.showPacks) {
+			dialog = (
+				<Dialog
+					content={
+						<PacksModal
+							options={this.state.options}
+							getPrice={this.getPackPrice}
+							addPacks={this.addPacks}
+							removePack={this.removePack}
+						/>
+					}
+					onClose={() => this.setState({ showPacks: false })}
+				/>
+			);
+		}
+		if (this.state.dialog) {
+			dialog = (
+				<Dialog
+					content={this.state.dialog}
+				/>
+			);
+		}
+
+		return (
+			<div className='skirmish'>
+				<Toaster
+					position='bottom-right'
+					toastOptions={{
+						duration: 5 * 1000
+					}}
+				/>
+				<ErrorBoundary className='skirmish' onError={this.logException}>
+					{this.getContent()}
+				</ErrorBoundary>
+				{dialog}
+			</div>
+		);
 	};
 
 	//#endregion

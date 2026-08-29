@@ -32,70 +32,66 @@ export class DamagePage extends Component<Props> {
 	};
 
 	render = () => {
-		try {
-			const categories = [
-				{
-					category: DamageCategoryType.Physical,
-					types: [
-						DamageType.Edged,
-						DamageType.Impact,
-						DamageType.Piercing
-					]
-				},
-				{
-					category: DamageCategoryType.Energy,
-					types: [
-						DamageType.Cold,
-						DamageType.Electricity,
-						DamageType.Fire,
-						DamageType.Light,
-						DamageType.Sonic
-					]
-				},
-				{
-					category: DamageCategoryType.Corruption,
-					types: [
-						DamageType.Acid,
-						DamageType.Decay,
-						DamageType.Poison,
-						DamageType.Psychic
-					]
-				}
-			];
-			const actions = GameLogic.getAllActions(PackData.getList().map(p => p.id));
+		const categories = [
+			{
+				category: DamageCategoryType.Physical,
+				types: [
+					DamageType.Edged,
+					DamageType.Impact,
+					DamageType.Piercing
+				]
+			},
+			{
+				category: DamageCategoryType.Energy,
+				types: [
+					DamageType.Cold,
+					DamageType.Electricity,
+					DamageType.Fire,
+					DamageType.Light,
+					DamageType.Sonic
+				]
+			},
+			{
+				category: DamageCategoryType.Corruption,
+				types: [
+					DamageType.Acid,
+					DamageType.Decay,
+					DamageType.Poison,
+					DamageType.Psychic
+				]
+			}
+		];
+		const actions = GameLogic.getAllActions(PackData.getList().map(p => p.id));
 
-			return (
-				<div className='damage-page'>
-					{categories.map(c => {
-						return (
-							<div key={c.category} className='damage-category'>
-								<Text type={TextType.SubHeading}>{c.category}</Text>
-								<div>
-									{c.types.map(type => {
-										return (
-											<div key={type} className='damage-type'>
-												<Text type={TextType.MinorHeading}>
-													{type}
-												</Text>
-												<div className='damage-actions'>
-													{
-														actions
-															.filter(a => this.checkDamage(type, a.effects))
-															.sort((a, b) => a.name.localeCompare(b.name))
-															.map(a => <Text key={a.id} type={TextType.Small}>{a.name}</Text>)
-													}
-												</div>
+		return (
+			<div className='damage-page'>
+				{categories.map(c => {
+					return (
+						<div key={c.category} className='damage-category'>
+							<Text type={TextType.SubHeading}>{c.category}</Text>
+							<div>
+								{c.types.map(type => {
+									return (
+										<div key={type} className='damage-type'>
+											<Text type={TextType.MinorHeading}>
+												{type}
+											</Text>
+											<div className='damage-actions'>
+												{
+													actions
+														.filter(a => this.checkDamage(type, a.effects))
+														.sort((a, b) => a.name.localeCompare(b.name))
+														.map(a => <Text key={a.id} type={TextType.Small}>{a.name}</Text>)
+												}
 											</div>
-										);
-									})}
-								</div>
+										</div>
+									);
+								})}
 							</div>
-						);
-					})}
-				</div>
-			);
-		} catch {
-			return <div className='damage-page render-error' />;
-		}
+						</div>
+					);
+				})}
+			</div>
+		);
 	};
 }

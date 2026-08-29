@@ -14,25 +14,21 @@ export class Tabs extends Component<Props> {
 	};
 
 	render = () => {
-		try {
-			const options = this.props.options.map(option => {
-				const className = option.id === this.props.selectedID ? 'option selected' : 'option';
-				return (
-					<div key={option.id} className={className} onClick={() => this.props.onSelect(option.id)}>
-						{ option.display ?? option.id }
-					</div>
-				);
-			});
-
+		const options = this.props.options.map(option => {
+			const className = option.id === this.props.selectedID ? 'option selected' : 'option';
 			return (
-				<div className='tabs'>
-					<div className='spacer' />
-					{ options }
-					<div className='spacer' />
+				<div key={option.id} className={className} onClick={() => this.props.onSelect(option.id)}>
+					{ option.display ?? option.id }
 				</div>
 			);
-		} catch {
-			return <div className='tabs render-error' />;
-		}
+		});
+
+		return (
+			<div className='tabs'>
+				<div className='spacer' />
+				{ options }
+				<div className='spacer' />
+			</div>
+		);
 	};
 }

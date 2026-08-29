@@ -63,36 +63,32 @@ export class BuyPotionModal extends Component<Props, State> {
 	};
 
 	render = () => {
-		try {
-			const cards = this.state.potions.map(item => (
-				<ItemCard key={item.id} item={item} onClick={this.props.buyItem} />
-			));
+		const cards = this.state.potions.map(item => (
+			<ItemCard key={item.id} item={item} onClick={this.props.buyItem} />
+		));
 
-			const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.WizardTower);
+		const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.WizardTower);
 
-			return (
-				<div className='buy-potion-modal'>
-					<Text type={TextType.Heading}>Choose a Potion</Text>
-					<hr />
-					<Text type={TextType.Information}>
-						<p>Three potion cards have been drawn for you. Choose one card to buy that potion.</p>
-					</Text>
-					<div className='card-selection-row'>
-						<CardList cards={cards} />
-						{
-							(redraws > 0) || this.props.options.developer ?
-								<button className={this.props.options.developer ? 'developer' : ''} onClick={() => this.redraw()}>
-									Redraw Potion Cards
-									<br />
-									<IconValue type={IconType.Redraw} value={redraws} size={IconSize.Button} />
-								</button>
-								: null
-						}
-					</div>
+		return (
+			<div className='buy-potion-modal'>
+				<Text type={TextType.Heading}>Choose a Potion</Text>
+				<hr />
+				<Text type={TextType.Information}>
+					<p>Three potion cards have been drawn for you. Choose one card to buy that potion.</p>
+				</Text>
+				<div className='card-selection-row'>
+					<CardList cards={cards} />
+					{
+						(redraws > 0) || this.props.options.developer ?
+							<button className={this.props.options.developer ? 'developer' : ''} onClick={() => this.redraw()}>
+								Redraw Potion Cards
+								<br />
+								<IconValue type={IconType.Redraw} value={redraws} size={IconSize.Button} />
+							</button>
+							: null
+					}
 				</div>
-			);
-		} catch {
-			return <div className='buy-potion-modal render-error' />;
-		}
+			</div>
+		);
 	};
 }

@@ -14,50 +14,46 @@ export class StatValue extends Component<Props> {
 	};
 
 	render = () => {
-		try {
-			const label = (
-				<div className='stat-value-label'>
-					{this.props.label}
+		const label = (
+			<div className='stat-value-label'>
+				{this.props.label}
+			</div>
+		);
+
+		let value = null;
+		if (Array.isArray(this.props.value)) {
+			value = (
+				<div className='stat-value-list'>
+					{this.props.value.map((v, n) => (<div key={n} className='stat-value-value'>{v}</div>))}
 				</div>
 			);
-
-			let value = null;
-			if (Array.isArray(this.props.value)) {
-				value = (
-					<div className='stat-value-list'>
-						{this.props.value.map((v, n) => (<div key={n} className='stat-value-value'>{v}</div>))}
-					</div>
-				);
-			} else {
-				value = (
-					<div className='stat-value-value'>
-						{this.props.value}
-					</div>
-				);
-			}
-
-			if (this.props.orientation === 'vertical') {
-				return (
-					<div className='stat-value vertical'>
-						{value}
-						{label}
-					</div>
-				);
-			}
-
-			let className = `stat-value ${this.props.orientation}`;
-			if (!this.props.value) {
-				className += ' zero';
-			}
-
-			return (
-				<div className={className}>
-					{label}
-					{value}
+		} else {
+			value = (
+				<div className='stat-value-value'>
+					{this.props.value}
 				</div>
 			);
-		} catch {
-			return <div className='stat-value render-error' />;
 		}
+
+		if (this.props.orientation === 'vertical') {
+			return (
+				<div className='stat-value vertical'>
+					{value}
+					{label}
+				</div>
+			);
+		}
+
+		let className = `stat-value ${this.props.orientation}`;
+		if (!this.props.value) {
+			className += ' zero';
+		}
+
+		return (
+			<div className={className}>
+				{label}
+				{value}
+			</div>
+		);
 	};
 }

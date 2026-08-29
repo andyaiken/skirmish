@@ -143,41 +143,37 @@ export class Stats extends Component<Props> {
 	};
 
 	render = () => {
-		try {
-			let combatColumn = null;
-			if (this.props.encounter) {
-				combatColumn = (
-					<div className='row combat'>
-						<div className='column'>
-							<hr />
-							<CombatStatsPanel combatant={this.props.combatant} encounter={this.props.encounter} />
-						</div>
+		let combatColumn = null;
+		if (this.props.encounter) {
+			combatColumn = (
+				<div className='row combat'>
+					<div className='column'>
+						<hr />
+						<CombatStatsPanel combatant={this.props.combatant} encounter={this.props.encounter} />
 					</div>
-				);
-			}
-
-			return (
-				<div className='stats'>
-					<div className='row'>
-						<div className='column'>
-							{this.getTraitsSection()}
-							{this.getSkillsSection()}
-						</div>
-						<div className='column'>
-							<DamagePanel label='Damage Bonuses' getValue={this.getDamageBonusValue} />
-							<DamagePanel label='Damage Resistances' getValue={this.getDamageResistanceValue} />
-						</div>
-						<div className='column'>
-							{(this.props.combatant.type === CombatantType.Hero) && (this.props.combatant.faction === CombatantType.Hero) ? this.getXPSection() : null}
-							{this.getProficienciesSection()}
-							{this.getAurasSection()}
-						</div>
-					</div>
-					{combatColumn}
 				</div>
 			);
-		} catch {
-			return <div className='stats render-error' />;
 		}
+
+		return (
+			<div className='stats'>
+				<div className='row'>
+					<div className='column'>
+						{this.getTraitsSection()}
+						{this.getSkillsSection()}
+					</div>
+					<div className='column'>
+						<DamagePanel label='Damage Bonuses' getValue={this.getDamageBonusValue} />
+						<DamagePanel label='Damage Resistances' getValue={this.getDamageResistanceValue} />
+					</div>
+					<div className='column'>
+						{(this.props.combatant.type === CombatantType.Hero) && (this.props.combatant.faction === CombatantType.Hero) ? this.getXPSection() : null}
+						{this.getProficienciesSection()}
+						{this.getAurasSection()}
+					</div>
+				</div>
+				{combatColumn}
+			</div>
+		);
 	};
 }

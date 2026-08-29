@@ -132,30 +132,26 @@ export class StrongholdMapPanel extends Component<Props> {
 	};
 
 	render = () => {
-		try {
-			let structures = this.props.stronghold;
-			if ((this.props.mode === 'structure') && (this.props.selectedStructure !== null)) {
-				const structureID = this.props.selectedStructure.id;
-				structures = structures.filter(s => s.id === structureID);
-			}
-
-			// Get dimensions, adding a 1-square border
-			const dims = StrongholdLogic.getDimensions(structures);
-			dims.left -= 1;
-			dims.top -= 1;
-			dims.right += 1;
-			dims.bottom += 1;
-
-			const width = 1 + (dims.right - dims.left);
-			const height = 1 + (dims.bottom - dims.top);
-
-			return (
-				<svg className='stronghold-map' viewBox={`${dims.left} ${dims.top} ${width} ${height}`} onClick={e => this.onClick(e, null)}>
-					{structures.map(this.getStructure)}
-				</svg>
-			);
-		} catch {
-			return <div className='stronghold-map render-error' />;
+		let structures = this.props.stronghold;
+		if ((this.props.mode === 'structure') && (this.props.selectedStructure !== null)) {
+			const structureID = this.props.selectedStructure.id;
+			structures = structures.filter(s => s.id === structureID);
 		}
+
+		// Get dimensions, adding a 1-square border
+		const dims = StrongholdLogic.getDimensions(structures);
+		dims.left -= 1;
+		dims.top -= 1;
+		dims.right += 1;
+		dims.bottom += 1;
+
+		const width = 1 + (dims.right - dims.left);
+		const height = 1 + (dims.bottom - dims.top);
+
+		return (
+			<svg className='stronghold-map' viewBox={`${dims.left} ${dims.top} ${width} ${height}`} onClick={e => this.onClick(e, null)}>
+				{structures.map(this.getStructure)}
+			</svg>
+		);
 	};
 }

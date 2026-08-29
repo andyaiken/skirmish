@@ -13,33 +13,29 @@ interface Props {
 
 export class CombatantStatePanel extends Component<Props> {
 	render = () => {
-		try {
-			return (
-				<div className='combatant-state-panel'>
-					<div className={this.props.combatant.combat.state === CombatantState.Standing ? 'state-box selected' : 'state-box'}>
-						<IconUser />
-						<div className='state-text'>Standing</div>
-					</div>
-					<IconArrowsRightLeft className='state-arrows' size={10} />
-					<div className={this.props.combatant.combat.state === CombatantState.Prone ? 'state-box selected' : 'state-box'}>
-						<IconUserDown />
-						<div className='state-text'>Prone</div>
-					</div>
-					<IconArrowsRightLeft className='state-arrows' size={10} />
-					<div className={this.props.combatant.combat.state === CombatantState.Unconscious ? 'state-box selected' : 'state-box'}>
-						<IconMoonStars />
-						<div className='state-text'>Unc.</div>
-					</div>
-					<IconArrowsRightLeft className='state-arrows' size={10} />
-					<div className={this.props.combatant.combat.state === CombatantState.Dead ? 'state-box selected' : 'state-box'}>
-						<IconX />
-						<div className='state-text'>Dead</div>
-					</div>
-					{this.props.combatant.combat.stunned ? <div className='state-stunned'>Stunned</div> : null}
+		return (
+			<div className='combatant-state-panel'>
+				<div className={this.props.combatant.combat.state === CombatantState.Standing ? 'state-box selected' : 'state-box'}>
+					<IconUser />
+					<div className='state-text'>Standing</div>
 				</div>
-			);
-		} catch {
-			return <div className='combatant-state-panel render-error' />;
-		}
+				<IconArrowsRightLeft className='state-arrows' size={10} />
+				<div className={this.props.combatant.combat.state === CombatantState.Prone ? 'state-box selected' : 'state-box'}>
+					<IconUserDown />
+					<div className='state-text'>Prone</div>
+				</div>
+				<IconArrowsRightLeft className='state-arrows' size={10} />
+				<div className={this.props.combatant.combat.state === CombatantState.Unconscious ? 'state-box selected' : 'state-box'}>
+					<IconMoonStars />
+					<div className='state-text'>Unc.</div>
+				</div>
+				<IconArrowsRightLeft className='state-arrows' size={10} />
+				<div className={this.props.combatant.combat.state === CombatantState.Dead ? 'state-box selected' : 'state-box'}>
+					<IconX />
+					<div className='state-text'>Dead</div>
+				</div>
+				{this.props.combatant.combat.stunned ? <div className='state-stunned'>Stunned</div> : null}
+			</div>
+		);
 	};
 }

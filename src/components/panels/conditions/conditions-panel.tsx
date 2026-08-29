@@ -58,37 +58,33 @@ export class ConditionsPanel extends Component<Props> {
 	};
 
 	render = () => {
-		try {
-			const endurance = this.getConditions(TraitType.Endurance);
-			const resolve = this.getConditions(TraitType.Resolve);
-			const speed = this.getConditions(TraitType.Speed);
-			const auras = this.getAuras();
+		const endurance = this.getConditions(TraitType.Endurance);
+		const resolve = this.getConditions(TraitType.Resolve);
+		const speed = this.getConditions(TraitType.Speed);
+		const auras = this.getAuras();
 
-			let conditions = null;
-			if (endurance.length + resolve.length + speed.length + auras.length > 0) {
-				conditions = (
-					<Box label='Conditions'>
-						<div>
-							{endurance.length > 0 ? <Text type={TextType.MinorHeading}>Endurance Conditions</Text> : null}
-							{endurance}
-							{resolve.length > 0 ? <Text type={TextType.MinorHeading}>Resolve Conditions</Text> : null}
-							{resolve}
-							{speed.length > 0 ? <Text type={TextType.MinorHeading}>Speed Conditions</Text> : null}
-							{speed}
-							{auras.length > 0 ? <Text type={TextType.MinorHeading}>Conditions from Auras</Text> : null}
-							{auras}
-						</div>
-					</Box>
-				);
-			}
-
-			return (
-				<div className='conditions-panel'>
-					{conditions}
-				</div>
+		let conditions = null;
+		if (endurance.length + resolve.length + speed.length + auras.length > 0) {
+			conditions = (
+				<Box label='Conditions'>
+					<div>
+						{endurance.length > 0 ? <Text type={TextType.MinorHeading}>Endurance Conditions</Text> : null}
+						{endurance}
+						{resolve.length > 0 ? <Text type={TextType.MinorHeading}>Resolve Conditions</Text> : null}
+						{resolve}
+						{speed.length > 0 ? <Text type={TextType.MinorHeading}>Speed Conditions</Text> : null}
+						{speed}
+						{auras.length > 0 ? <Text type={TextType.MinorHeading}>Conditions from Auras</Text> : null}
+						{auras}
+					</div>
+				</Box>
 			);
-		} catch {
-			return <div className='conditions-panel render-error' />;
 		}
+
+		return (
+			<div className='conditions-panel'>
+				{conditions}
+			</div>
+		);
 	};
 }

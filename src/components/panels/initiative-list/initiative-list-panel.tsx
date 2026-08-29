@@ -21,89 +21,85 @@ interface Props {
 
 export class InitiativeListPanel extends Component<Props> {
 	render = () => {
-		try {
-			const currentEntries = EncounterLogic.getActiveCombatants(this.props.encounter)
-				.filter(c => c.combat.current)
-				.map(combatant => {
-					return (
-						<CombatantRowPanel
-							key={combatant.id}
-							mode='initiative'
-							combatant={combatant}
-							encounter={this.props.encounter}
-							options={this.props.options}
-							onClick={this.props.onSelect}
-							onTokenClick={this.props.onSelect}
-						/>
-					);
-				});
+		const currentEntries = EncounterLogic.getActiveCombatants(this.props.encounter)
+			.filter(c => c.combat.current)
+			.map(combatant => {
+				return (
+					<CombatantRowPanel
+						key={combatant.id}
+						mode='initiative'
+						combatant={combatant}
+						encounter={this.props.encounter}
+						options={this.props.options}
+						onClick={this.props.onSelect}
+						onTokenClick={this.props.onSelect}
+					/>
+				);
+			});
 
-			const activeEntries = EncounterLogic.getActiveCombatants(this.props.encounter)
-				.filter(c => !c.combat.current)
-				.map(combatant => {
-					return (
-						<CombatantRowPanel
-							key={combatant.id}
-							mode='initiative'
-							combatant={combatant}
-							encounter={this.props.encounter}
-							options={this.props.options}
-							onClick={this.props.onSelect}
-							onTokenClick={this.props.onSelect}
-							onNudgeInitiative={this.props.nudgeInitiative}
-						/>
-					);
-				});
+		const activeEntries = EncounterLogic.getActiveCombatants(this.props.encounter)
+			.filter(c => !c.combat.current)
+			.map(combatant => {
+				return (
+					<CombatantRowPanel
+						key={combatant.id}
+						mode='initiative'
+						combatant={combatant}
+						encounter={this.props.encounter}
+						options={this.props.options}
+						onClick={this.props.onSelect}
+						onTokenClick={this.props.onSelect}
+						onNudgeInitiative={this.props.nudgeInitiative}
+					/>
+				);
+			});
 
-			const actedEntries = EncounterLogic.getActedCombatants(this.props.encounter)
-				.map(combatant => {
-					return (
-						<CombatantRowPanel
-							key={combatant.id}
-							mode='initiative'
-							combatant={combatant}
-							encounter={this.props.encounter}
-							options={this.props.options}
-							onClick={this.props.onSelect}
-							onTokenClick={this.props.onSelect}
-						/>
-					);
-				});
+		const actedEntries = EncounterLogic.getActedCombatants(this.props.encounter)
+			.map(combatant => {
+				return (
+					<CombatantRowPanel
+						key={combatant.id}
+						mode='initiative'
+						combatant={combatant}
+						encounter={this.props.encounter}
+						options={this.props.options}
+						onClick={this.props.onSelect}
+						onTokenClick={this.props.onSelect}
+					/>
+				);
+			});
 
-			const deadEntries = EncounterLogic.getDeadCombatants(this.props.encounter)
-				.map(combatant => {
-					return (
-						<CombatantRowPanel
-							key={combatant.id}
-							mode='initiative'
-							combatant={combatant}
-							encounter={this.props.encounter}
-							options={this.props.options}
-							onClick={this.props.onSelect}
-							onTokenClick={this.props.onSelect}
-						/>
-					);
-				});
+		const deadEntries = EncounterLogic.getDeadCombatants(this.props.encounter)
+			.map(combatant => {
+				return (
+					<CombatantRowPanel
+						key={combatant.id}
+						mode='initiative'
+						combatant={combatant}
+						encounter={this.props.encounter}
+						options={this.props.options}
+						onClick={this.props.onSelect}
+						onTokenClick={this.props.onSelect}
+					/>
+				);
+			});
 
-			let actedHeading = 'Acted';
-			if (currentEntries.length === 0) {
-				actedHeading = 'Combatants';
-			}
-
-			return (
-				<div className='initiative-list-panel'>
-					{currentEntries.length > 0 ? <Text type={TextType.SubHeading}>Current Combatant</Text> : null}
-					{currentEntries}
-					{activeEntries.length > 0 ? <Text type={TextType.SubHeading}>Waiting</Text> : null}
-					{activeEntries}
-					{actedEntries.length > 0 ? <Text type={TextType.SubHeading}>{actedHeading}</Text> : null}
-					{actedEntries}
-					{deadEntries.length > 0 ? <Text type={TextType.SubHeading}>Dead</Text> : null}
-					{deadEntries}
-				</div>
-			);
-		} catch {
-			return <div className='initiative-list-panel render-error' />;
+		let actedHeading = 'Acted';
+		if (currentEntries.length === 0) {
+			actedHeading = 'Combatants';
 		}
+
+		return (
+			<div className='initiative-list-panel'>
+				{currentEntries.length > 0 ? <Text type={TextType.SubHeading}>Current Combatant</Text> : null}
+				{currentEntries}
+				{activeEntries.length > 0 ? <Text type={TextType.SubHeading}>Waiting</Text> : null}
+				{activeEntries}
+				{actedEntries.length > 0 ? <Text type={TextType.SubHeading}>{actedHeading}</Text> : null}
+				{actedEntries}
+				{deadEntries.length > 0 ? <Text type={TextType.SubHeading}>Dead</Text> : null}
+				{deadEntries}
+			</div>
+		);
 	};
 }

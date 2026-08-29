@@ -87,56 +87,52 @@ export class HeroBuilderModal extends Component<Props, State> {
 	};
 
 	render = () => {
-		try {
-			let content = null;
-			if ((this.state.hero.speciesID === '') && (this.state.hero.roleID === '') && (this.state.hero.backgroundID === '')) {
-				// Initial card selection
-				content = (
-					<CardPage
-						game={this.props.game}
-						options={this.props.options}
-						select={this.selectCards}
-						spendCharge={this.props.spendCharge}
-					/>
-				);
-			} else if (CombatantLogic.getProficiencies(this.state.hero).length !== this.state.hero.items.length) {
-				// Choose initial equipment
-				content = (
-					<EquipmentPage
-						hero={this.state.hero}
-						game={this.props.game}
-						options={this.props.options}
-						addItems={this.addItems}
-						spendCharge={this.props.spendCharge}
-					/>
-				);
-			} else if (this.state.hero.level === 1) {
-				// Finalise character creation
-				content = (
-					<FinishPage
-						hero={this.state.hero}
-						options={this.props.options}
-						rename={this.rename}
-						recolor={this.recolor}
-						finished={this.finished}
-					/>
-				);
-			}
-
-			return (
-				<div className='hero-builder-modal'>
-					<div className='header'>
-						<Text type={TextType.Heading}>
-							Recruit a Hero
-						</Text>
-					</div>
-					<div className='content'>
-						{content}
-					</div>
-				</div>
+		let content = null;
+		if ((this.state.hero.speciesID === '') && (this.state.hero.roleID === '') && (this.state.hero.backgroundID === '')) {
+			// Initial card selection
+			content = (
+				<CardPage
+					game={this.props.game}
+					options={this.props.options}
+					select={this.selectCards}
+					spendCharge={this.props.spendCharge}
+				/>
 			);
-		} catch {
-			return <div className='hero-builder-modal render-error' />;
+		} else if (CombatantLogic.getProficiencies(this.state.hero).length !== this.state.hero.items.length) {
+			// Choose initial equipment
+			content = (
+				<EquipmentPage
+					hero={this.state.hero}
+					game={this.props.game}
+					options={this.props.options}
+					addItems={this.addItems}
+					spendCharge={this.props.spendCharge}
+				/>
+			);
+		} else if (this.state.hero.level === 1) {
+			// Finalise character creation
+			content = (
+				<FinishPage
+					hero={this.state.hero}
+					options={this.props.options}
+					rename={this.rename}
+					recolor={this.recolor}
+					finished={this.finished}
+				/>
+			);
 		}
+
+		return (
+			<div className='hero-builder-modal'>
+				<div className='header'>
+					<Text type={TextType.Heading}>
+						Recruit a Hero
+					</Text>
+				</div>
+				<div className='content'>
+					{content}
+				</div>
+			</div>
+		);
 	};
 }

@@ -131,31 +131,27 @@ export class CampaignMapPanel extends Component<Props> {
 	};
 
 	render = () => {
-		try {
-			let mapSquares = this.props.map.squares;
-			if ((this.props.mode === 'region') && (this.props.selectedRegion !== null)) {
-				const regionID = this.props.selectedRegion.id;
-				mapSquares = mapSquares.filter(square => square.regionID === regionID);
-			}
-
-			// Get dimensions, adding a 1-square border
-			const dims = CampaignMapLogic.getDimensions(mapSquares);
-			dims.left -= 1;
-			dims.top -= 1;
-			dims.right += 1;
-			dims.bottom += 1;
-
-			const width = 1 + (dims.right - dims.left);
-			const height = 1 + (dims.bottom - dims.top);
-
-			return (
-				<svg className='campaign-map' viewBox={`${dims.left} ${dims.top} ${width} ${height}`} onClick={e => this.onClick(e, null)}>
-					{mapSquares.map(this.getHex)}
-					{this.props.mode === 'map' ? this.props.map.regions.map(this.getLabel) : null}
-				</svg>
-			);
-		} catch {
-			return <div className='campaign-map render-error' />;
+		let mapSquares = this.props.map.squares;
+		if ((this.props.mode === 'region') && (this.props.selectedRegion !== null)) {
+			const regionID = this.props.selectedRegion.id;
+			mapSquares = mapSquares.filter(square => square.regionID === regionID);
 		}
+
+		// Get dimensions, adding a 1-square border
+		const dims = CampaignMapLogic.getDimensions(mapSquares);
+		dims.left -= 1;
+		dims.top -= 1;
+		dims.right += 1;
+		dims.bottom += 1;
+
+		const width = 1 + (dims.right - dims.left);
+		const height = 1 + (dims.bottom - dims.top);
+
+		return (
+			<svg className='campaign-map' viewBox={`${dims.left} ${dims.top} ${width} ${height}`} onClick={e => this.onClick(e, null)}>
+				{mapSquares.map(this.getHex)}
+				{this.props.mode === 'map' ? this.props.map.regions.map(this.getLabel) : null}
+			</svg>
+		);
 	};
 }

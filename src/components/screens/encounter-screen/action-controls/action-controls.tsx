@@ -224,42 +224,38 @@ export class ActionControls extends Component<Props> {
 	};
 
 	render = () => {
-		try {
-			let banner = null;
-			let content = null;
-			if (this.props.combatant.combat.selectedAction) {
-				if (this.props.combatant.combat.selectedAction.used) {
-					content = this.getUsed(this.props.combatant.combat.selectedAction.action);
-				} else {
-					content = this.getInProgress(this.props.combatant.combat.selectedAction.action);
-				}
+		let banner = null;
+		let content = null;
+		if (this.props.combatant.combat.selectedAction) {
+			if (this.props.combatant.combat.selectedAction.used) {
+				content = this.getUsed(this.props.combatant.combat.selectedAction.action);
 			} else {
-				if (!this.props.collapsed) {
-					banner = (
-						<div className='banner'>
-							Scroll left and right to see all the action cards in your hand.
-						</div>
-					);
-				}
-				content = this.getNotSelected();
+				content = this.getInProgress(this.props.combatant.combat.selectedAction.action);
 			}
-
-			return (
-				<div
-					key={this.props.combatant.id}
-					className={`action-controls ${this.props.collapsed ? 'collapsed' : 'expanded'}`}
-					onClick={() => {
-						if (this.props.collapsed) {
-							this.props.toggleCollapsed();
-						}
-					}}
-				>
-					{banner}
-					{content}
-				</div>
-			);
-		} catch {
-			return <div className='action-controls render-error' />;
+		} else {
+			if (!this.props.collapsed) {
+				banner = (
+					<div className='banner'>
+						Scroll left and right to see all the action cards in your hand.
+					</div>
+				);
+			}
+			content = this.getNotSelected();
 		}
+
+		return (
+			<div
+				key={this.props.combatant.id}
+				className={`action-controls ${this.props.collapsed ? 'collapsed' : 'expanded'}`}
+				onClick={() => {
+					if (this.props.collapsed) {
+						this.props.toggleCollapsed();
+					}
+				}}
+			>
+				{banner}
+				{content}
+			</div>
+		);
 	};
 }

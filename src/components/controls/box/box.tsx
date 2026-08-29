@@ -8,18 +8,14 @@ interface Props {
 }
 
 export const Box = (props: Props) => {
-	try {
-		return (
-			<div className='box'>
-				<div className='box-content'>
-					{props.children}
-				</div>
-				<div className='box-label'>
-					{props.label}
-				</div>
+	return (
+		<div className='box'>
+			<div className='box-content'>
+				{props.children}
 			</div>
-		);
-	} catch {
-		return <div className='box render-error' />;
-	}
+			<div className='box-label'>
+				{props.label}
+			</div>
+		</div>
+	);
 };

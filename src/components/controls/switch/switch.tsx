@@ -15,14 +15,10 @@ export const Switch = (props: Props) => {
 		props.onChange(!props.checked);
 	};
 
-	try {
-		return (
-			<div className='switch' onClick={onClick}>
-				<div className='switch-label'>{props.label}</div>
-				{props.checked ? <IconCircleCheckFilled className='switch-icon checked' /> : <IconCircle className='switch-icon' />}
-			</div>
-		);
-	} catch {
-		return <div className='switch render-error' />;
-	}
+	return (
+		<div className='switch' onClick={onClick}>
+			<div className='switch-label'>{props.label}</div>
+			{props.checked ? <IconCircleCheckFilled className='switch-icon checked' /> : <IconCircle className='switch-icon' />}
+		</div>
+	);
 };

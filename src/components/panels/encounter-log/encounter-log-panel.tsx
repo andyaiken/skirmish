@@ -65,16 +65,12 @@ export class EncounterLogPanel extends Component<Props> {
 	};
 
 	render = () => {
-		try {
-			return (
-				<div className='encounter-log-panel'>
-					<Text type={TextType.SubHeading}>Encounter Log</Text>
-					{this.props.encounter.log.map(this.getMessage)}
-					{this.props.encounter.log.length === 0 ? <Text type={TextType.Dimmed}>Nothing to show yet</Text> : null}
-				</div>
-			);
-		} catch {
-			return <div className='encounter-log-panel render-error' />;
-		}
+		return (
+			<div className='encounter-log-panel'>
+				<Text type={TextType.SubHeading}>Encounter Log</Text>
+				{this.props.encounter.log.map(this.getMessage)}
+				{this.props.encounter.log.length === 0 ? <Text type={TextType.Dimmed}>Nothing to show yet</Text> : null}
+			</div>
+		);
 	};
 }

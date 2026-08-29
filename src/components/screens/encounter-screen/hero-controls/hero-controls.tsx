@@ -52,99 +52,95 @@ export class HeroControls extends Component<Props, State> {
 	};
 
 	render = () => {
-		try {
-			const options = [
-				{ id: 'stats', display: <IconUser /> },
-				{ id: 'move', display: <IconArrowsMove /> }
-			];
+		const options = [
+			{ id: 'stats', display: <IconUser /> },
+			{ id: 'move', display: <IconArrowsMove /> }
+		];
 
-			if (this.props.combatant.carried.some(i => i.potion)) {
-				options.splice(2, 0, { id: 'potion', display: <IconFlask2 /> });
-			}
+		if (this.props.combatant.carried.some(i => i.potion)) {
+			options.splice(2, 0, { id: 'potion', display: <IconFlask2 /> });
+		}
 
-			let content = null;
-			switch (this.state.tab) {
-				case 'stats':
-					content = (
-						<HeroOverview
-							combatant={this.props.combatant}
-							encounter={this.props.encounter}
-							options={this.props.options}
-							inspire={this.props.inspire}
-							scan={this.props.scan}
-							hide={this.props.hide}
-							levelUp={this.props.levelUp}
-							switchAllegiance={this.props.switchAllegiance}
-							stun={this.props.stun}
-							knockout={this.props.knockout}
-							kill={this.props.kill}
-						/>
-					);
-					break;
-				case 'move':
-					content = (
-						<HeroMove
-							combatant={this.props.combatant}
-							encounter={this.props.encounter}
-							options={this.props.options}
-							move={this.props.move}
-							addMovement={this.props.addMovement}
-						/>
-					);
-					break;
-				case 'potion':
-					content = (
-						<HeroPotions
-							combatant={this.props.combatant}
-							encounter={this.props.encounter}
-							drinkPotion={this.props.drinkPotion}
-						/>
-					);
-					break;
-			}
-
-			return (
-				<div className='hero-controls' key={this.props.combatant.id}>
-					<CombatantRowPanel
-						mode='header'
+		let content = null;
+		switch (this.state.tab) {
+			case 'stats':
+				content = (
+					<HeroOverview
 						combatant={this.props.combatant}
 						encounter={this.props.encounter}
 						options={this.props.options}
-						onTokenClick={this.props.showToken}
-						onDetails={this.props.showCharacterSheet}
+						inspire={this.props.inspire}
+						scan={this.props.scan}
+						hide={this.props.hide}
+						levelUp={this.props.levelUp}
+						switchAllegiance={this.props.switchAllegiance}
+						stun={this.props.stun}
+						knockout={this.props.knockout}
+						kill={this.props.kill}
 					/>
-					{
-						this.props.options.showTips ?
-							<Expander
-								header={
-									<Text type={TextType.Tip}>It is {this.props.combatant.name}&apos;s turn; explore the tabs below to see what they can do.</Text>
-								}
-								content={
-									<div>
-										<p>The most important things to know are:</p>
-										<ul>
-											<li>You can move your hero around the map with the <IconArrowsMove size={15} /> tab.</li>
-											<li>You can choose your action - you only get one per turn! Your action cards are shown below the map.</li>
-											<li>If you can&apos;t see your hero&apos;s token on the map, press their icon and the map will scroll them into view.</li>
-										</ul>
-										<p>When you&apos;re finished, select <b>End My Turn</b> above.</p>
-									</div>
-								}
-							/>
-							: null
-					}
-					<Tabs
-						options={options}
-						selectedID={this.state.tab}
-						onSelect={this.setTab}
+				);
+				break;
+			case 'move':
+				content = (
+					<HeroMove
+						combatant={this.props.combatant}
+						encounter={this.props.encounter}
+						options={this.props.options}
+						move={this.props.move}
+						addMovement={this.props.addMovement}
 					/>
-					<div className='tab-content'>
-						{content}
-					</div>
-				</div>
-			);
-		}  catch {
-			return <div className='hero-controls render-error' />;
+				);
+				break;
+			case 'potion':
+				content = (
+					<HeroPotions
+						combatant={this.props.combatant}
+						encounter={this.props.encounter}
+						drinkPotion={this.props.drinkPotion}
+					/>
+				);
+				break;
 		}
+
+		return (
+			<div className='hero-controls' key={this.props.combatant.id}>
+				<CombatantRowPanel
+					mode='header'
+					combatant={this.props.combatant}
+					encounter={this.props.encounter}
+					options={this.props.options}
+					onTokenClick={this.props.showToken}
+					onDetails={this.props.showCharacterSheet}
+				/>
+				{
+					this.props.options.showTips ?
+						<Expander
+							header={
+								<Text type={TextType.Tip}>It is {this.props.combatant.name}&apos;s turn; explore the tabs below to see what they can do.</Text>
+							}
+							content={
+								<div>
+									<p>The most important things to know are:</p>
+									<ul>
+										<li>You can move your hero around the map with the <IconArrowsMove size={15} /> tab.</li>
+										<li>You can choose your action - you only get one per turn! Your action cards are shown below the map.</li>
+										<li>If you can&apos;t see your hero&apos;s token on the map, press their icon and the map will scroll them into view.</li>
+									</ul>
+									<p>When you&apos;re finished, select <b>End My Turn</b> above.</p>
+								</div>
+							}
+						/>
+						: null
+				}
+				<Tabs
+					options={options}
+					selectedID={this.state.tab}
+					onSelect={this.setTab}
+				/>
+				<div className='tab-content'>
+					{content}
+				</div>
+			</div>
+		);
 	};
 }

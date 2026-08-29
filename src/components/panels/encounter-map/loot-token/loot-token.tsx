@@ -40,30 +40,26 @@ export class LootToken extends Component<Props, State> {
 	};
 
 	render = () => {
-		try {
-			const onMap = this.props.encounter ? 'on-map' : '';
-			const selected = this.props.selected ? 'selected' : '';
-			const selectable = this.props.selectable ? 'selectable' : '';
-			const className = `encounter-map-loot-token ${onMap} ${selected} ${selectable}`;
+		const onMap = this.props.encounter ? 'on-map' : '';
+		const selected = this.props.selected ? 'selected' : '';
+		const selectable = this.props.selectable ? 'selectable' : '';
+		const className = `encounter-map-loot-token ${onMap} ${selected} ${selectable}`;
 
-			return (
-				<div
-					className={className}
-					style={{
-						width: `${this.props.squareSize}px`,
-						left: this.props.encounter ? `${((this.props.loot.position.x - this.props.mapDimensions.left) * this.props.squareSize)}px` : '0',
-						top: this.props.encounter ? `${((this.props.loot.position.y - this.props.mapDimensions.top) * this.props.squareSize)}px` : '0'
-					}}
-					title='Treasure'
-					onClick={e => this.onClick(e)}
-					onMouseEnter={() => this.setMouseOver(true)}
-					onMouseLeave={() => this.setMouseOver(false)}
-				>
-					<div className='loot-token-face' />
-				</div>
-			);
-		} catch {
-			return <div className='encounter-map-loot-token render-error' />;
-		}
+		return (
+			<div
+				className={className}
+				style={{
+					width: `${this.props.squareSize}px`,
+					left: this.props.encounter ? `${((this.props.loot.position.x - this.props.mapDimensions.left) * this.props.squareSize)}px` : '0',
+					top: this.props.encounter ? `${((this.props.loot.position.y - this.props.mapDimensions.top) * this.props.squareSize)}px` : '0'
+				}}
+				title='Treasure'
+				onClick={e => this.onClick(e)}
+				onMouseEnter={() => this.setMouseOver(true)}
+				onMouseLeave={() => this.setMouseOver(false)}
+			>
+				<div className='loot-token-face' />
+			</div>
+		);
 	};
 }

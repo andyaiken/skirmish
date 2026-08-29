@@ -20,25 +20,21 @@ export class Wall extends Component<Props> {
 	};
 
 	render = () => {
-		try {
-			const selectable = this.props.selectable ? 'selectable' : '';
-			const selected = this.props.selected ? 'selected' : '';
-			const className = `encounter-map-wall ${selectable} ${selected}`;
+		const selectable = this.props.selectable ? 'selectable' : '';
+		const selected = this.props.selected ? 'selected' : '';
+		const className = `encounter-map-wall ${selectable} ${selected}`;
 
-			return (
-				<div
-					key={`square ${this.props.wall.x} ${this.props.wall.y}`}
-					className={className}
-					style={{
-						width: `${this.props.squareSize}px`,
-						left: `${((this.props.wall.x - this.props.mapDimensions.left) * this.props.squareSize)}px`,
-						top: `${((this.props.wall.y - this.props.mapDimensions.top) * this.props.squareSize)}px`
-					}}
-					onClick={e => this.onClick(e)}
-				/>
-			);
-		} catch {
-			return <div className='encounter-map-wall render-error' />;
-		}
+		return (
+			<div
+				key={`square ${this.props.wall.x} ${this.props.wall.y}`}
+				className={className}
+				style={{
+					width: `${this.props.squareSize}px`,
+					left: `${((this.props.wall.x - this.props.mapDimensions.left) * this.props.squareSize)}px`,
+					top: `${((this.props.wall.y - this.props.mapDimensions.top) * this.props.squareSize)}px`
+				}}
+				onClick={e => this.onClick(e)}
+			/>
+		);
 	};
 }

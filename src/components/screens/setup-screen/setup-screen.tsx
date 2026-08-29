@@ -144,84 +144,80 @@ export class SetupScreen extends Component<Props, State> {
 	};
 
 	render = () => {
-		try {
-			const heroes = this.props.game.heroes.map(h => <CombatantRowPanel key={h.id} combatant={h} options={this.props.options} onDetails={this.selectHero} />);
-			if (heroes.length < 5) {
-				heroes.push(
-					<div key='add' className='empty-panel'>
-						<button className='primary' onClick={this.createHero}>Recruit a Hero</button>
-					</div>
-				);
-			}
-			while (heroes.length < 5) {
-				heroes.push(
-					<div key={heroes.length} className='empty-panel' />
-				);
-			}
-
-			let packsBtn = null;
-			const availablePacks = PackLogic.getPacks().filter(p => !this.props.options.packIDs.includes(p.id)).length;
-			if (availablePacks > 0) {
-				packsBtn = (
-					<button className='packs-btn' onClick={() => this.props.showPacks()}>
-						{`${availablePacks} card pack${availablePacks === 1 ? '' : 's'} available`}
-						<IconCards />
-					</button>
-				);
-			}
-
-			return (
-				<div className={`setup-screen ${this.props.orientation}`}>
-					<div className='setup-top-bar'>
-						<LogoPanel size={100} />
-					</div>
-					<div className='setup-content'>
-						<div className='left-panel'>
-							{heroes}
-						</div>
-						<div className='right-panel'>
-							{
-								this.props.game.heroes.length >= 5 ?
-									<PlayingCard
-										type={CardType.Role}
-										stack={true}
-										front={
-											<PlaceholderCard
-												text='Begin the Campaign'
-												content={<LogoPanel text={null} size={170} />}
-											/>
-										}
-										onClick={this.props.beginCampaign}
-									/>
-									:
-									<Text type={TextType.Information}>
-										<p><b>Recruit your team.</b> These five heroes will begin the task of conquering the island.</p>
-									</Text>
-							}
-							{
-								this.props.options.showTips ?
-									<Expander
-										header={
-											<Text type={TextType.Tip}>When you see a box like this, you can tap it to show more information.</Text>
-										}
-										content={
-											<div>
-												<p>We&apos;ll use these boxes to explain how to play the game.</p>
-												<p>You can tap it again to close it.</p>
-											</div>
-										}
-									/>
-									: null
-							}
-							{this.props.options.developer && (this.props.game.heroes.length < 5) ? <button className='developer' onClick={this.createHeroes}>Randomize</button> : null}
-							{packsBtn}
-						</div>
-					</div>
-					{this.getDialog()}
+		const heroes = this.props.game.heroes.map(h => <CombatantRowPanel key={h.id} combatant={h} options={this.props.options} onDetails={this.selectHero} />);
+		if (heroes.length < 5) {
+			heroes.push(
+				<div key='add' className='empty-panel'>
+					<button className='primary' onClick={this.createHero}>Recruit a Hero</button>
 				</div>
 			);
-		} catch {
-			return <div className='setup-screen render-error' />;
 		}
+		while (heroes.length < 5) {
+			heroes.push(
+				<div key={heroes.length} className='empty-panel' />
+			);
+		}
+
+		let packsBtn = null;
+		const availablePacks = PackLogic.getPacks().filter(p => !this.props.options.packIDs.includes(p.id)).length;
+		if (availablePacks > 0) {
+			packsBtn = (
+				<button className='packs-btn' onClick={() => this.props.showPacks()}>
+					{`${availablePacks} card pack${availablePacks === 1 ? '' : 's'} available`}
+					<IconCards />
+				</button>
+			);
+		}
+
+		return (
+			<div className={`setup-screen ${this.props.orientation}`}>
+				<div className='setup-top-bar'>
+					<LogoPanel size={100} />
+				</div>
+				<div className='setup-content'>
+					<div className='left-panel'>
+						{heroes}
+					</div>
+					<div className='right-panel'>
+						{
+							this.props.game.heroes.length >= 5 ?
+								<PlayingCard
+									type={CardType.Role}
+									stack={true}
+									front={
+										<PlaceholderCard
+											text='Begin the Campaign'
+											content={<LogoPanel text={null} size={170} />}
+										/>
+									}
+									onClick={this.props.beginCampaign}
+								/>
+								:
+								<Text type={TextType.Information}>
+									<p><b>Recruit your team.</b> These five heroes will begin the task of conquering the island.</p>
+								</Text>
+						}
+						{
+							this.props.options.showTips ?
+								<Expander
+									header={
+										<Text type={TextType.Tip}>When you see a box like this, you can tap it to show more information.</Text>
+									}
+									content={
+										<div>
+											<p>We&apos;ll use these boxes to explain how to play the game.</p>
+											<p>You can tap it again to close it.</p>
+										</div>
+									}
+								/>
+								: null
+						}
+						{this.props.options.developer && (this.props.game.heroes.length < 5) ? <button className='developer' onClick={this.createHeroes}>Randomize</button> : null}
+						{packsBtn}
+					</div>
+				</div>
+				{this.getDialog()}
+			</div>
+		);
 	};
 }

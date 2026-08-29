@@ -68,92 +68,88 @@ export class MiniToken extends Component<Props, State> {
 	};
 
 	render = () => {
-		try {
-			const onMap = this.props.encounter ? 'on-map' : '';
-			const current = this.props.combatant.combat.current ? 'current' : '';
-			const selectable = this.props.selectable ? 'selectable' : '';
-			const selected = this.props.selected ? 'selected' : '';
-			const hidden = !!this.props.encounter && (this.props.combatant.combat.hidden > 0) ? 'hidden' : '';
-			const mouseOver = this.state.mouseOver ? 'mouse-over' : '';
-			const className = `encounter-map-mini-token ${onMap} ${current} ${selectable} ${selected} ${hidden} ${mouseOver}`;
+		const onMap = this.props.encounter ? 'on-map' : '';
+		const current = this.props.combatant.combat.current ? 'current' : '';
+		const selectable = this.props.selectable ? 'selectable' : '';
+		const selected = this.props.selected ? 'selected' : '';
+		const hidden = !!this.props.encounter && (this.props.combatant.combat.hidden > 0) ? 'hidden' : '';
+		const mouseOver = this.state.mouseOver ? 'mouse-over' : '';
+		const className = `encounter-map-mini-token ${onMap} ${current} ${selectable} ${selected} ${hidden} ${mouseOver}`;
 
-			let prone = null;
-			if (this.props.encounter && (this.props.combatant.combat.state === CombatantState.Prone)) {
-				const size = this.props.combatant.size * this.props.squareSize / 3;
-				const iconSize = this.props.combatant.size * this.props.squareSize / 4;
-				prone = (
-					<div className='icon-prone' style={{ width: `${size}px`, height: `${size}px` }}>
-						<IconArrowBigDownFilled size={iconSize} />
-					</div>
-				);
-			}
-
-			let stunned = null;
-			if (this.props.encounter && this.props.combatant.combat.stunned) {
-				const size = this.props.combatant.size * this.props.squareSize / 3;
-				const iconSize = this.props.combatant.size * this.props.squareSize / 4;
-				stunned = (
-					<div className='icon-stunned' style={{ width: `${size}px`, height: `${size}px` }}>
-						<IconStarFilled size={iconSize} />
-					</div>
-				);
-			}
-
-			let healthBar = null;
-			if (this.props.encounter && (this.props.combatant.combat.wounds > 0)) {
-				const resolve = EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Resolve);
-				const barWidth = 1 - (this.props.combatant.combat.wounds / resolve);
-				healthBar = (
-					<div className='health-bar' style={{ height: `${this.props.squareSize / 5}px` }}>
-						<div className='health-bar-gauge' style={{ width: `${100 * barWidth}%` }} />
-					</div>
-				);
-			}
-
-			let colorDark = this.props.combatant.color;
-			let colorLight = this.props.combatant.color;
-			const color = Color.parse(this.props.combatant.color);
-			if (color) {
-				colorDark = Color.toString(Color.darken(color));
-				colorLight = Color.toString(Color.lighten(color));
-			}
-
-			const size = this.props.encounter ? this.props.squareSize * this.props.combatant.size : this.props.squareSize;
-
-			return (
-				<div
-					ref={this.tokenRef}
-					className={className}
-					style={{
-						width: `${size}px`,
-						height: `${size}px`,
-						fontSize: `${size * 0.35}px`,
-						left: this.props.encounter ? `${((this.props.combatant.combat.position.x - this.props.mapDimensions.left) * this.props.squareSize)}px` : '0',
-						top: this.props.encounter ? `${((this.props.combatant.combat.position.y - this.props.mapDimensions.top) * this.props.squareSize)}px` : '0',
-						backgroundImage: `linear-gradient(135deg, ${this.props.combatant.color}, ${colorDark})`
-					}}
-					onClick={e => this.onClick(e)}
-					onMouseEnter={() => this.setMouseOver(true)}
-					onMouseLeave={() => this.setMouseOver(false)}
-				>
-					<div
-						className={this.props.combatant.combat.current ? 'mini-token-face current' : 'mini-token-face'}
-						style={{
-							backgroundImage: `linear-gradient(135deg, ${colorLight}, ${this.props.combatant.color})`
-						}}
-					>
-						{this.getMonogram()}
-					</div>
-					{prone}
-					{stunned}
-					{healthBar}
-					{!!this.props.encounter && this.props.combatant.combat.current ? <div className='pulse pulse-one' /> : null}
-					{!!this.props.encounter && this.props.combatant.combat.current ? <div className='pulse pulse-two' /> : null}
-					{!!this.props.encounter && this.props.combatant.combat.current ? <div className='pulse pulse-three' /> : null}
+		let prone = null;
+		if (this.props.encounter && (this.props.combatant.combat.state === CombatantState.Prone)) {
+			const size = this.props.combatant.size * this.props.squareSize / 3;
+			const iconSize = this.props.combatant.size * this.props.squareSize / 4;
+			prone = (
+				<div className='icon-prone' style={{ width: `${size}px`, height: `${size}px` }}>
+					<IconArrowBigDownFilled size={iconSize} />
 				</div>
 			);
-		} catch {
-			return <div className='encounter-map-mini-token render-error' />;
 		}
+
+		let stunned = null;
+		if (this.props.encounter && this.props.combatant.combat.stunned) {
+			const size = this.props.combatant.size * this.props.squareSize / 3;
+			const iconSize = this.props.combatant.size * this.props.squareSize / 4;
+			stunned = (
+				<div className='icon-stunned' style={{ width: `${size}px`, height: `${size}px` }}>
+					<IconStarFilled size={iconSize} />
+				</div>
+			);
+		}
+
+		let healthBar = null;
+		if (this.props.encounter && (this.props.combatant.combat.wounds > 0)) {
+			const resolve = EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Resolve);
+			const barWidth = 1 - (this.props.combatant.combat.wounds / resolve);
+			healthBar = (
+				<div className='health-bar' style={{ height: `${this.props.squareSize / 5}px` }}>
+					<div className='health-bar-gauge' style={{ width: `${100 * barWidth}%` }} />
+				</div>
+			);
+		}
+
+		let colorDark = this.props.combatant.color;
+		let colorLight = this.props.combatant.color;
+		const color = Color.parse(this.props.combatant.color);
+		if (color) {
+			colorDark = Color.toString(Color.darken(color));
+			colorLight = Color.toString(Color.lighten(color));
+		}
+
+		const size = this.props.encounter ? this.props.squareSize * this.props.combatant.size : this.props.squareSize;
+
+		return (
+			<div
+				ref={this.tokenRef}
+				className={className}
+				style={{
+					width: `${size}px`,
+					height: `${size}px`,
+					fontSize: `${size * 0.35}px`,
+					left: this.props.encounter ? `${((this.props.combatant.combat.position.x - this.props.mapDimensions.left) * this.props.squareSize)}px` : '0',
+					top: this.props.encounter ? `${((this.props.combatant.combat.position.y - this.props.mapDimensions.top) * this.props.squareSize)}px` : '0',
+					backgroundImage: `linear-gradient(135deg, ${this.props.combatant.color}, ${colorDark})`
+				}}
+				onClick={e => this.onClick(e)}
+				onMouseEnter={() => this.setMouseOver(true)}
+				onMouseLeave={() => this.setMouseOver(false)}
+			>
+				<div
+					className={this.props.combatant.combat.current ? 'mini-token-face current' : 'mini-token-face'}
+					style={{
+						backgroundImage: `linear-gradient(135deg, ${colorLight}, ${this.props.combatant.color})`
+					}}
+				>
+					{this.getMonogram()}
+				</div>
+				{prone}
+				{stunned}
+				{healthBar}
+				{!!this.props.encounter && this.props.combatant.combat.current ? <div className='pulse pulse-one' /> : null}
+				{!!this.props.encounter && this.props.combatant.combat.current ? <div className='pulse pulse-two' /> : null}
+				{!!this.props.encounter && this.props.combatant.combat.current ? <div className='pulse pulse-three' /> : null}
+			</div>
+		);
 	};
 }

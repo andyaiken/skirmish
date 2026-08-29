@@ -176,23 +176,19 @@ export class CampaignMapPage extends Component<Props, State> {
 	};
 
 	render = () => {
-		try {
-			return (
-				<div className={`campaign-map-page ${this.props.orientation}`}>
-					<div className='map-content' onClick={() => this.setState({ selectedRegion: null })}>
-						<CampaignMapPanel
-							map={this.props.game.map}
-							options={this.props.options}
-							selectedRegion={this.state.selectedRegion}
-							onSelectRegion={region => this.setState({ selectedRegion: region })}
-						/>
-					</div>
-					{this.getSidebar()}
-					{this.getDialog()}
+		return (
+			<div className={`campaign-map-page ${this.props.orientation}`}>
+				<div className='map-content' onClick={() => this.setState({ selectedRegion: null })}>
+					<CampaignMapPanel
+						map={this.props.game.map}
+						options={this.props.options}
+						selectedRegion={this.state.selectedRegion}
+						onSelectRegion={region => this.setState({ selectedRegion: region })}
+					/>
 				</div>
-			);
-		} catch {
-			return <div className='campaign-map-page render-error' />;
-		}
+				{this.getSidebar()}
+				{this.getDialog()}
+			</div>
+		);
 	};
 }

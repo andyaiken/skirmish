@@ -15,39 +15,35 @@ export class LogoPanel extends Component<Props> {
 	};
 
 	render = () => {
-		try {
-			return (
-				<div
-					className='logo-panel'
+		return (
+			<div
+				className='logo-panel'
+				style={{
+					gap: `${this.props.size / 3}px`
+				}}
+			>
+				<img
+					className='logo-image'
+					alt='Skirmish'
+					src={logo}
 					style={{
-						gap: `${this.props.size / 3}px`
+						height: `${this.props.size}px`
 					}}
-				>
-					<img
-						className='logo-image'
-						alt='Skirmish'
-						src={logo}
-						style={{
-							height: `${this.props.size}px`
-						}}
-					/>
-					{
-						this.props.text ?
-							<div
-								className='logo-text'
-								style={{
-									fontSize: `${this.props.size}px`,
-									letterSpacing: `${this.props.size / 6}px`
-								}}
-							>
-								{this.props.text}
-							</div>
-							: null
-					}
-				</div>
-			);
-		} catch {
-			return <div className='logo-panel render-error' />;
-		}
+				/>
+				{
+					this.props.text ?
+						<div
+							className='logo-text'
+							style={{
+								fontSize: `${this.props.size}px`,
+								letterSpacing: `${this.props.size / 6}px`
+							}}
+						>
+							{this.props.text}
+						</div>
+						: null
+				}
+			</div>
+		);
 	};
 }

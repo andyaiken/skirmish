@@ -13,21 +13,17 @@ export class Badge extends Component<Props> {
 	};
 
 	render = () => {
-		try {
-			if (!this.props.value) {
-				return this.props.children;
-			}
-
-			return (
-				<div className='badge'>
-					{this.props.children}
-					<div className='badge-value'>
-						{this.props.value}
-					</div>
-				</div>
-			);
-		} catch {
-			return <div className='badge render-error' />;
+		if (!this.props.value) {
+			return this.props.children;
 		}
+
+		return (
+			<div className='badge'>
+				{this.props.children}
+				<div className='badge-value'>
+					{this.props.value}
+				</div>
+			</div>
+		);
 	};
 }

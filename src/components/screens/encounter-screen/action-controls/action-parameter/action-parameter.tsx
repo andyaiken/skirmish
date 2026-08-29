@@ -543,38 +543,34 @@ export class ActionParameter extends Component<Props, State> {
 	};
 
 	render = () => {
-		try {
-			let title = '';
-			switch (this.props.parameter.id) {
-				case 'weapon':
-					title = 'Weapon';
-					break;
-				case 'origin':
-					title = 'Origin';
-					break;
-				case 'targets':
-					title = 'Target(s)';
-					break;
-			}
-
-			const actions = this.getActionButtons();
-			const controls = this.getControls();
-			const secondaryControls = this.getSecondaryControls();
-
-			return (
-				<div key={this.props.parameter.id} className={ActionLogic.isParameterSet(this.props.parameter) ? 'action-parameter' : 'action-parameter not-set'}>
-					<div className='top-line'>
-						<Text type={TextType.MinorHeading}>
-							{title}
-						</Text>
-						{actions.length > 0 ? <div className='action-parameter-actions'>{actions}</div> : null}
-					</div>
-					{controls.length > 0 ? <div className='action-parameter-controls'>{controls}</div> : null}
-					{secondaryControls.length > 0 ? <div className='action-parameter-controls secondary'>{secondaryControls}</div> : null}
-				</div>
-			);
-		} catch {
-			return <div className='action-parameter render-error' />;
+		let title = '';
+		switch (this.props.parameter.id) {
+			case 'weapon':
+				title = 'Weapon';
+				break;
+			case 'origin':
+				title = 'Origin';
+				break;
+			case 'targets':
+				title = 'Target(s)';
+				break;
 		}
+
+		const actions = this.getActionButtons();
+		const controls = this.getControls();
+		const secondaryControls = this.getSecondaryControls();
+
+		return (
+			<div key={this.props.parameter.id} className={ActionLogic.isParameterSet(this.props.parameter) ? 'action-parameter' : 'action-parameter not-set'}>
+				<div className='top-line'>
+					<Text type={TextType.MinorHeading}>
+						{title}
+					</Text>
+					{actions.length > 0 ? <div className='action-parameter-actions'>{actions}</div> : null}
+				</div>
+				{controls.length > 0 ? <div className='action-parameter-controls'>{controls}</div> : null}
+				{secondaryControls.length > 0 ? <div className='action-parameter-controls secondary'>{secondaryControls}</div> : null}
+			</div>
+		);
 	};
 }

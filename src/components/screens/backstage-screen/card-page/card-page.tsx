@@ -184,131 +184,127 @@ export class CardPage extends Component<Props, State> {
 	};
 
 	render = () => {
-		try {
-			const types = [
-				'hero species',
-				'monster species',
-				'roles',
-				'backgrounds',
-				'structures',
-				'potions',
-				'items'
-			];
+		const types = [
+			'hero species',
+			'monster species',
+			'roles',
+			'backgrounds',
+			'structures',
+			'potions',
+			'items'
+		];
 
-			const packIDs = [ '' ].concat(PackData.getList().map(p => p.id));
+		const packIDs = [ '' ].concat(PackData.getList().map(p => p.id));
 
-			const rows = types.map(type => {
-				return (
-					<div key={type}>
-						<Text type={TextType.SubHeading}>{type} ({this.getCardCount(type)})</Text>
-						<div className='row'>
-							{
-								packIDs.map(id => {
-									return (
-										<div key={id} className='cell'>
-											{this.getCards(type, id)}
-										</div>
-									);
-								})
-							}
-						</div>
-					</div>
-				);
-			});
-
-			let dialog = null;
-			if (this.state.selected) {
-				const source = this.state.selected.name;
-				const type = this.state.selected.type;
-
-				const startingCards = this.state.selected.starting.map(f => {
-					const strength = GameLogic.getFeatureStrength(f);
-					return (
-						<Badge key={f.id} value={strength}>
-							<FeatureCard
-								feature={f}
-								footer={source}
-								footerType={type}
-							/>
-						</Badge>
-					);
-				});
-				const featureCards = this.state.selected.features.map(f => {
-					const strength = GameLogic.getFeatureStrength(f);
-					return (
-						<Badge key={f.id} value={strength}>
-							<FeatureCard
-								feature={f}
-								footer={source}
-								footerType={type}
-							/>
-						</Badge>
-					);
-				});
-				const actionCards = this.state.selected.actions.map(a => {
-					const strength = GameLogic.getActionStrength(a);
-					return (
-						<Badge key={a.id} value={strength}>
-							<ActionCard
-								action={a}
-								developer={true}
-								footer={source}
-								footerType={type}
-							/>
-						</Badge>
-					);
-				});
-				const content = (
-					<div>
-						<Text type={TextType.Heading}>{this.state.selected.name}</Text>
-						<hr />
-						<Text>
-							<p style={{ textAlign: 'center' }}>{this.state.selected.description}</p>
-						</Text>
-						{startingCards.length > 0 ? <hr /> : null}
-						{startingCards.length > 0 ? <Text type={TextType.SubHeading}>Starting Cards</Text> : null}
-						{startingCards.length > 0 ? <CardList cards={startingCards} /> : null}
-						{featureCards.length > 0 ? <hr /> : null}
-						{featureCards.length > 0 ? <Text type={TextType.SubHeading}>Feature Cards</Text> : null}
-						{featureCards.length > 0 ? <CardList cards={featureCards} /> : null}
-						{actionCards.length > 0 ? <hr /> : null}
-						{actionCards.length > 0 ? <Text type={TextType.SubHeading}>Action Cards</Text> : null}
-						{actionCards.length > 0 ? <CardList cards={actionCards} /> : null}
-					</div>
-				);
-				dialog = (
-					<Dialog
-						content={content}
-						onClose={this.clearActions}
-					/>
-				);
-			}
-
+		const rows = types.map(type => {
 			return (
-				<div className='card-page'>
-					<div className='card-grid-header'>
-						<div className='row'>
-							{
-								packIDs.map(id => {
-									const pack = GameLogic.getPack(id);
-									const name = pack ? pack.name : 'Skirmish';
-									return (
-										<div key={id} className='cell column-heading'>
-											{name}
-										</div>
-									);
-								})
-							}
-						</div>
+				<div key={type}>
+					<Text type={TextType.SubHeading}>{type} ({this.getCardCount(type)})</Text>
+					<div className='row'>
+						{
+							packIDs.map(id => {
+								return (
+									<div key={id} className='cell'>
+										{this.getCards(type, id)}
+									</div>
+								);
+							})
+						}
 					</div>
-					<div className='card-grid-content'>
-						{rows}
-					</div>
-					{dialog}
 				</div>
 			);
-		} catch {
-			return <div className='card-page render-error' />;
+		});
+
+		let dialog = null;
+		if (this.state.selected) {
+			const source = this.state.selected.name;
+			const type = this.state.selected.type;
+
+			const startingCards = this.state.selected.starting.map(f => {
+				const strength = GameLogic.getFeatureStrength(f);
+				return (
+					<Badge key={f.id} value={strength}>
+						<FeatureCard
+							feature={f}
+							footer={source}
+							footerType={type}
+						/>
+					</Badge>
+				);
+			});
+			const featureCards = this.state.selected.features.map(f => {
+				const strength = GameLogic.getFeatureStrength(f);
+				return (
+					<Badge key={f.id} value={strength}>
+						<FeatureCard
+							feature={f}
+							footer={source}
+							footerType={type}
+						/>
+					</Badge>
+				);
+			});
+			const actionCards = this.state.selected.actions.map(a => {
+				const strength = GameLogic.getActionStrength(a);
+				return (
+					<Badge key={a.id} value={strength}>
+						<ActionCard
+							action={a}
+							developer={true}
+							footer={source}
+							footerType={type}
+						/>
+					</Badge>
+				);
+			});
+			const content = (
+				<div>
+					<Text type={TextType.Heading}>{this.state.selected.name}</Text>
+					<hr />
+					<Text>
+						<p style={{ textAlign: 'center' }}>{this.state.selected.description}</p>
+					</Text>
+					{startingCards.length > 0 ? <hr /> : null}
+					{startingCards.length > 0 ? <Text type={TextType.SubHeading}>Starting Cards</Text> : null}
+					{startingCards.length > 0 ? <CardList cards={startingCards} /> : null}
+					{featureCards.length > 0 ? <hr /> : null}
+					{featureCards.length > 0 ? <Text type={TextType.SubHeading}>Feature Cards</Text> : null}
+					{featureCards.length > 0 ? <CardList cards={featureCards} /> : null}
+					{actionCards.length > 0 ? <hr /> : null}
+					{actionCards.length > 0 ? <Text type={TextType.SubHeading}>Action Cards</Text> : null}
+					{actionCards.length > 0 ? <CardList cards={actionCards} /> : null}
+				</div>
+			);
+			dialog = (
+				<Dialog
+					content={content}
+					onClose={this.clearActions}
+				/>
+			);
 		}
+
+		return (
+			<div className='card-page'>
+				<div className='card-grid-header'>
+					<div className='row'>
+						{
+							packIDs.map(id => {
+								const pack = GameLogic.getPack(id);
+								const name = pack ? pack.name : 'Skirmish';
+								return (
+									<div key={id} className='cell column-heading'>
+										{name}
+									</div>
+								);
+							})
+						}
+					</div>
+				</div>
+				<div className='card-grid-content'>
+					{rows}
+				</div>
+				{dialog}
+			</div>
+		);
 	};
 }

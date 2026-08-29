@@ -58,36 +58,32 @@ export class BuyStructureModal extends Component<Props, State> {
 	};
 
 	render = () => {
-		try {
-			const cards = this.state.structures.map(s => (
-				<StructureCard key={s.id} structure={s} onClick={this.props.buyStructure} />
-			));
+		const cards = this.state.structures.map(s => (
+			<StructureCard key={s.id} structure={s} onClick={this.props.buyStructure} />
+		));
 
-			const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Forge);
+		const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Forge);
 
-			return (
-				<div className='buy-structure-modal'>
-					<Text type={TextType.Heading}>Choose a Structure</Text>
-					<hr />
-					<Text type={TextType.Information}>
-						<p>Three structure cards have been drawn for you. Choose one card to add it to your stronghold.</p>
-					</Text>
-					<div className='card-selection-row'>
-						<CardList cards={cards} />
-						{
-							(redraws > 0) || this.props.options.developer ?
-								<button className={this.props.options.developer ? 'developer' : ''} onClick={() => this.redraw()}>
-									Redraw Structure Cards
-									<br />
-									<IconValue type={IconType.Redraw} value={redraws} size={IconSize.Button} />
-								</button>
-								: null
-						}
-					</div>
+		return (
+			<div className='buy-structure-modal'>
+				<Text type={TextType.Heading}>Choose a Structure</Text>
+				<hr />
+				<Text type={TextType.Information}>
+					<p>Three structure cards have been drawn for you. Choose one card to add it to your stronghold.</p>
+				</Text>
+				<div className='card-selection-row'>
+					<CardList cards={cards} />
+					{
+						(redraws > 0) || this.props.options.developer ?
+							<button className={this.props.options.developer ? 'developer' : ''} onClick={() => this.redraw()}>
+								Redraw Structure Cards
+								<br />
+								<IconValue type={IconType.Redraw} value={redraws} size={IconSize.Button} />
+							</button>
+							: null
+					}
 				</div>
-			);
-		} catch {
-			return <div className='buy-structure-modal render-error' />;
-		}
+			</div>
+		);
 	};
 }

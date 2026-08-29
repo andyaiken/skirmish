@@ -57,31 +57,27 @@ export class EffectPage extends Component<Props, State> {
 	};
 
 	render = () => {
-		try {
-			const selected = this.list.find(item => item.effectID === this.state.selectedEffectID);
+		const selected = this.list.find(item => item.effectID === this.state.selectedEffectID);
 
-			return (
-				<div className='effect-page'>
-					<div className='effect-type-column'>
-						{this.list.map(item => {
-							return (
-								<button
-									key={item.effectID}
-									className={selected?.effectID === item.effectID ? 'selected' : ''}
-									onClick={() => this.setState({ selectedEffectID: item.effectID })}
-								>
-									<StatValue label={item.effectID} value={Collections.sum(item.effects, e => e.count)} />
-								</button>
-							);
-						})}
-					</div>
-					<div className='effect-list-column'>
-						{selected?.effects.map((effect, n) => <StatValue key={n} label={effect.desc} value={effect.count} />)}
-					</div>
+		return (
+			<div className='effect-page'>
+				<div className='effect-type-column'>
+					{this.list.map(item => {
+						return (
+							<button
+								key={item.effectID}
+								className={selected?.effectID === item.effectID ? 'selected' : ''}
+								onClick={() => this.setState({ selectedEffectID: item.effectID })}
+							>
+								<StatValue label={item.effectID} value={Collections.sum(item.effects, e => e.count)} />
+							</button>
+						);
+					})}
 				</div>
-			);
-		} catch {
-			return <div className='effect-page render-error' />;
-		}
+				<div className='effect-list-column'>
+					{selected?.effects.map((effect, n) => <StatValue key={n} label={effect.desc} value={effect.count} />)}
+				</div>
+			</div>
+		);
 	};
 }

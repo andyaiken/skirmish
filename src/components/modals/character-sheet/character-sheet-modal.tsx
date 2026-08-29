@@ -105,127 +105,123 @@ export class CharacterSheetModal extends Component<Props, State> {
 	};
 
 	render = () => {
-		try {
-			let options = [
-				{ id: 'stats', display: 'Statistics' },
-				{ id: 'items', display: 'Equipment' },
-				{ id: 'features', display: 'Features' },
-				{ id: 'actions', display: 'Actions' }
-			];
+		let options = [
+			{ id: 'stats', display: 'Statistics' },
+			{ id: 'items', display: 'Equipment' },
+			{ id: 'features', display: 'Features' },
+			{ id: 'actions', display: 'Actions' }
+		];
 
-			if (this.props.combatant.quirks.includes(QuirkType.Beast)) {
-				options = options.filter(o => o.id !== 'items');
+		if (this.props.combatant.quirks.includes(QuirkType.Beast)) {
+			options = options.filter(o => o.id !== 'items');
+		}
+
+		if ((this.props.game.encounter === null) && (this.props.combatant.xp >= this.props.combatant.level)) {
+			options.unshift({ id: 'levelup', display: 'Level Up' });
+		}
+
+		let content = null;
+		switch (this.state.view) {
+			case 'levelup':
+				content = (
+					<LevelUp
+						combatant={this.props.combatant}
+						game={this.props.game}
+						developer={this.props.developer}
+						level={this.props.combatant.level + 1}
+						features={this.state.features}
+						spendCharge={this.props.spendCharge}
+						levelUp={this.levelUp}
+						redrawFeatures={spendCharge => {
+							this.setState({
+								features: this.drawFeatures(this.props.combatant)
+							}, () => {
+								if (spendCharge) {
+									this.props.spendCharge(StructureType.TrainingGround, 1);
+								}
+							});
+						}}
+					/>
+				);
+				break;
+			case 'stats':
+				content = (
+					<Stats
+						combatant={this.props.combatant}
+						encounter={this.props.game.encounter}
+						developer={this.props.developer}
+					/>
+				);
+				break;
+			case 'items':
+				content = (
+					<Items
+						combatant={this.props.combatant}
+						game={this.props.game}
+						equipItem={this.equipItem}
+						unequipItem={this.unequipItem}
+						pickUpItem={this.pickUpItem}
+						dropItem={this.dropItem}
+					/>
+				);
+				break;
+			case 'features': {
+				const cards = CombatantLogic.getFeatureDeck(this.props.combatant).map(f => (
+					<FeatureCard
+						key={f.id}
+						feature={f}
+						footer={CombatantLogic.getFeatureSource(this.props.combatant, f.id)}
+						footerType={CombatantLogic.getFeatureSourceType(this.props.combatant, f.id)}
+					/>
+				));
+				content = (
+					<CardList cards={cards} />
+				);
+				break;
 			}
-
-			if ((this.props.game.encounter === null) && (this.props.combatant.xp >= this.props.combatant.level)) {
-				options.unshift({ id: 'levelup', display: 'Level Up' });
+			case 'actions':{
+				const cards = CombatantLogic.getActionDeck(this.props.combatant).map(a => (
+					<ActionCard
+						key={a.id}
+						action={a}
+						footer={CombatantLogic.getActionSource(this.props.combatant, a.id)}
+						footerType={CombatantLogic.getActionSourceType(this.props.combatant, a.id)}
+					/>
+				));
+				content = (
+					<CardList cards={cards} />
+				);
+				break;
 			}
+		}
 
-			let content = null;
-			switch (this.state.view) {
-				case 'levelup':
-					content = (
-						<LevelUp
-							combatant={this.props.combatant}
-							game={this.props.game}
-							developer={this.props.developer}
-							level={this.props.combatant.level + 1}
-							features={this.state.features}
-							spendCharge={this.props.spendCharge}
-							levelUp={this.levelUp}
-							redrawFeatures={spendCharge => {
-								this.setState({
-									features: this.drawFeatures(this.props.combatant)
-								}, () => {
-									if (spendCharge) {
-										this.props.spendCharge(StructureType.TrainingGround, 1);
-									}
-								});
-							}}
-						/>
-					);
-					break;
-				case 'stats':
-					content = (
-						<Stats
-							combatant={this.props.combatant}
-							encounter={this.props.game.encounter}
-							developer={this.props.developer}
-						/>
-					);
-					break;
-				case 'items':
-					content = (
-						<Items
-							combatant={this.props.combatant}
-							game={this.props.game}
-							equipItem={this.equipItem}
-							unequipItem={this.unequipItem}
-							pickUpItem={this.pickUpItem}
-							dropItem={this.dropItem}
-						/>
-					);
-					break;
-				case 'features': {
-					const cards = CombatantLogic.getFeatureDeck(this.props.combatant).map(f => (
-						<FeatureCard
-							key={f.id}
-							feature={f}
-							footer={CombatantLogic.getFeatureSource(this.props.combatant, f.id)}
-							footerType={CombatantLogic.getFeatureSourceType(this.props.combatant, f.id)}
-						/>
-					));
-					content = (
-						<CardList cards={cards} />
-					);
-					break;
-				}
-				case 'actions':{
-					const cards = CombatantLogic.getActionDeck(this.props.combatant).map(a => (
-						<ActionCard
-							key={a.id}
-							action={a}
-							footer={CombatantLogic.getActionSource(this.props.combatant, a.id)}
-							footerType={CombatantLogic.getActionSourceType(this.props.combatant, a.id)}
-						/>
-					));
-					content = (
-						<CardList cards={cards} />
-					);
-					break;
-				}
-			}
+		const species = GameLogic.getSpecies(this.props.combatant.speciesID);
+		const role = GameLogic.getRole(this.props.combatant.roleID);
+		const background = GameLogic.getBackground(this.props.combatant.backgroundID);
 
-			const species = GameLogic.getSpecies(this.props.combatant.speciesID);
-			const role = GameLogic.getRole(this.props.combatant.roleID);
-			const background = GameLogic.getBackground(this.props.combatant.backgroundID);
-
-			return (
-				<div className='character-sheet-modal'>
-					<div className='main-section'>
-						<div className='header'>
-							<Text type={TextType.Heading}>{this.props.combatant.name || 'unnamed hero'}</Text>
-							<div className='tags'>
-								{species ? <Tag>{species.name}</Tag> : null}
-								{role ? <Tag>{role.name}</Tag> : null}
-								{background ? <Tag>{background.name}</Tag> : null}
-								<Tag>Level {this.props.combatant.level}</Tag>
-								{this.props.combatant.quirks.map((q, n) => (<Tag key={n}>{q}</Tag>))}
-							</div>
-						</div>
-						<Tabs
-							options={options}
-							selectedID={this.state.view}
-							onSelect={id => this.setState({ view: id })}
-						/>
-						<div className='content'>
-							{content}
+		return (
+			<div className='character-sheet-modal'>
+				<div className='main-section'>
+					<div className='header'>
+						<Text type={TextType.Heading}>{this.props.combatant.name || 'unnamed hero'}</Text>
+						<div className='tags'>
+							{species ? <Tag>{species.name}</Tag> : null}
+							{role ? <Tag>{role.name}</Tag> : null}
+							{background ? <Tag>{background.name}</Tag> : null}
+							<Tag>Level {this.props.combatant.level}</Tag>
+							{this.props.combatant.quirks.map((q, n) => (<Tag key={n}>{q}</Tag>))}
 						</div>
 					</div>
+					<Tabs
+						options={options}
+						selectedID={this.state.view}
+						onSelect={id => this.setState({ view: id })}
+					/>
+					<div className='content'>
+						{content}
+					</div>
 				</div>
-			);
-		} catch {
-			return <div className='character-sheet-modal render-error' />;
-		}
+			</div>
+		);
 	};
 }

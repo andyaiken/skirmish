@@ -36,77 +36,73 @@ export class HelpModal extends Component<Props, State> {
 	}
 
 	render = () => {
-		try {
-			const tabs = [
-				{ id: 'rules', display: 'Game Rules' },
-				{ id: 'decks', display: 'Your Cards' },
-				{ id: 'options', display: 'Options' },
-				{ id: 'about', display: 'About' }
-			];
+		const tabs = [
+			{ id: 'rules', display: 'Game Rules' },
+			{ id: 'decks', display: 'Your Cards' },
+			{ id: 'options', display: 'Options' },
+			{ id: 'about', display: 'About' }
+		];
 
-			if (this.props.exceptions.length > 0) {
-				tabs.push({ id: 'exceptions', display: 'Exceptions' });
-			}
-
-			let content = null;
-			switch (this.state.selectedTab) {
-				case 'rules':
-					content = (
-						<div className='content'>
-							<RulesTab rules={this.props.rules} />
-						</div>
-					);
-					break;
-				case 'decks':
-					content = (
-						<div className='content'>
-							<DecksTab options={this.props.options} />
-						</div>
-					);
-					break;
-				case 'options':
-					content = (
-						<div className='content'>
-							<OptionsTab
-								game={this.props.game}
-								options={this.props.options}
-								endCampaign={this.props.endCampaign}
-								setDeveloperMode={this.props.setDeveloperMode}
-								setShowTips={this.props.setShowTips}
-								setSoundEffectsVolume={this.props.setSoundEffectsVolume}
-								setRenderer={this.props.setRenderer}
-							/>
-						</div>
-					);
-					break;
-				case 'about':
-					content = (
-						<div className='content'>
-							<AboutTab
-								game={this.props.game}
-								options={this.props.options}
-							/>
-						</div>
-					);
-					break;
-				case 'exceptions':
-					content = (
-						<div className='content'>
-							{this.props.exceptions.map((ex, n) => <Text key={n}>{ex}</Text>)}
-						</div>
-					);
-					break;
-			}
-
-			return (
-				<div className='help-modal'>
-					<Text type={TextType.Heading}>Help</Text>
-					<Tabs options={tabs} selectedID={this.state.selectedTab} onSelect={id => this.setState({ selectedTab: id })} />
-					{content}
-				</div>
-			);
-		} catch {
-			return <div className='help-modal render-error' />;
+		if (this.props.exceptions.length > 0) {
+			tabs.push({ id: 'exceptions', display: 'Exceptions' });
 		}
+
+		let content = null;
+		switch (this.state.selectedTab) {
+			case 'rules':
+				content = (
+					<div className='content'>
+						<RulesTab rules={this.props.rules} />
+					</div>
+				);
+				break;
+			case 'decks':
+				content = (
+					<div className='content'>
+						<DecksTab options={this.props.options} />
+					</div>
+				);
+				break;
+			case 'options':
+				content = (
+					<div className='content'>
+						<OptionsTab
+							game={this.props.game}
+							options={this.props.options}
+							endCampaign={this.props.endCampaign}
+							setDeveloperMode={this.props.setDeveloperMode}
+							setShowTips={this.props.setShowTips}
+							setSoundEffectsVolume={this.props.setSoundEffectsVolume}
+							setRenderer={this.props.setRenderer}
+						/>
+					</div>
+				);
+				break;
+			case 'about':
+				content = (
+					<div className='content'>
+						<AboutTab
+							game={this.props.game}
+							options={this.props.options}
+						/>
+					</div>
+				);
+				break;
+			case 'exceptions':
+				content = (
+					<div className='content'>
+						{this.props.exceptions.map((ex, n) => <Text key={n}>{ex}</Text>)}
+					</div>
+				);
+				break;
+		}
+
+		return (
+			<div className='help-modal'>
+				<Text type={TextType.Heading}>Help</Text>
+				<Tabs options={tabs} selectedID={this.state.selectedTab} onSelect={id => this.setState({ selectedTab: id })} />
+				{content}
+			</div>
+		);
 	};
 }

@@ -46,57 +46,53 @@ export class BuyEquipmentModal extends Component<Props, State> {
 	};
 
 	render = () => {
-		try {
-			const cards = this.getItems()
-				.map(item => (
-					<ItemCard key={item.id} item={item} onClick={this.props.buyItem} />
-				));
+		const cards = this.getItems()
+			.map(item => (
+				<ItemCard key={item.id} item={item} onClick={this.props.buyItem} />
+			));
 
-			return (
-				<div className='buy-equipment-modal'>
-					<Text type={TextType.Heading}>Buy Equipment</Text>
+		return (
+			<div className='buy-equipment-modal'>
+				<Text type={TextType.Heading}>Buy Equipment</Text>
+				<hr />
+				<div className='card-selection-row'>
+					<Text type={TextType.SubHeading}>Filter by proficiency</Text>
+					<Selector
+						options={[
+							{ id: ItemProficiencyType.Any, display: 'Any proficiency' },
+							{ id: ItemProficiencyType.None, display: 'No proficiency' },
+							{ id: ItemProficiencyType.MilitaryWeapons },
+							{ id: ItemProficiencyType.LargeWeapons },
+							{ id: ItemProficiencyType.PairedWeapons },
+							{ id: ItemProficiencyType.RangedWeapons },
+							{ id: ItemProficiencyType.PowderWeapons },
+							{ id: ItemProficiencyType.Implements },
+							{ id: ItemProficiencyType.LightArmor },
+							{ id: ItemProficiencyType.HeavyArmor },
+							{ id: ItemProficiencyType.Shields }
+						]}
+						columnCount={4}
+						selectedID={this.state.proficiency}
+						onSelect={prof => this.setState({ proficiency: prof as ItemProficiencyType })}
+					/>
+					<Text type={TextType.SubHeading}>Filter by location</Text>
+					<Selector
+						options={[
+							{ id: ItemLocationType.Any, display: 'Any location' },
+							{ id: ItemLocationType.Head },
+							{ id: ItemLocationType.Neck },
+							{ id: ItemLocationType.Body },
+							{ id: ItemLocationType.Feet },
+							{ id: ItemLocationType.Hand },
+							{ id: ItemLocationType.Ring }
+						]}
+						selectedID={this.state.location}
+						onSelect={loc => this.setState({ location: loc as ItemLocationType })}
+					/>
 					<hr />
-					<div className='card-selection-row'>
-						<Text type={TextType.SubHeading}>Filter by proficiency</Text>
-						<Selector
-							options={[
-								{ id: ItemProficiencyType.Any, display: 'Any proficiency' },
-								{ id: ItemProficiencyType.None, display: 'No proficiency' },
-								{ id: ItemProficiencyType.MilitaryWeapons },
-								{ id: ItemProficiencyType.LargeWeapons },
-								{ id: ItemProficiencyType.PairedWeapons },
-								{ id: ItemProficiencyType.RangedWeapons },
-								{ id: ItemProficiencyType.PowderWeapons },
-								{ id: ItemProficiencyType.Implements },
-								{ id: ItemProficiencyType.LightArmor },
-								{ id: ItemProficiencyType.HeavyArmor },
-								{ id: ItemProficiencyType.Shields }
-							]}
-							columnCount={4}
-							selectedID={this.state.proficiency}
-							onSelect={prof => this.setState({ proficiency: prof as ItemProficiencyType })}
-						/>
-						<Text type={TextType.SubHeading}>Filter by location</Text>
-						<Selector
-							options={[
-								{ id: ItemLocationType.Any, display: 'Any location' },
-								{ id: ItemLocationType.Head },
-								{ id: ItemLocationType.Neck },
-								{ id: ItemLocationType.Body },
-								{ id: ItemLocationType.Feet },
-								{ id: ItemLocationType.Hand },
-								{ id: ItemLocationType.Ring }
-							]}
-							selectedID={this.state.location}
-							onSelect={loc => this.setState({ location: loc as ItemLocationType })}
-						/>
-						<hr />
-						<CardList cards={cards} />
-					</div>
+					<CardList cards={cards} />
 				</div>
-			);
-		} catch {
-			return <div className='buy-equipment-modal render-error' />;
-		}
+			</div>
+		);
 	};
 }

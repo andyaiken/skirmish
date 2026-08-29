@@ -44,79 +44,75 @@ export class MonsterControls extends Component<Props, State> {
 	};
 
 	render = () => {
-		try {
-			let action = null;
-			if (this.props.combatant.combat.selectedAction) {
-				action = (
-					<div className='selected-action-card'>
-						<ActionCard
-							action={this.props.combatant.combat.selectedAction.action}
-							footer={CombatantLogic.getActionSource(this.props.combatant, this.props.combatant.combat.selectedAction.action.id)}
-							footerType={CombatantLogic.getActionSourceType(this.props.combatant, this.props.combatant.combat.selectedAction.action.id)}
-						/>
-					</div>
-				);
-			}
-
-			return (
-				<div className='monster-controls' key={this.props.combatant.id}>
-					<CombatantRowPanel
-						mode='header'
-						combatant={this.props.combatant}
-						encounter={this.props.encounter}
-						options={this.props.options}
-						onTokenClick={this.props.showToken}
-						onDetails={this.props.showCharacterSheet}
+		let action = null;
+		if (this.props.combatant.combat.selectedAction) {
+			action = (
+				<div className='selected-action-card'>
+					<ActionCard
+						action={this.props.combatant.combat.selectedAction.action}
+						footer={CombatantLogic.getActionSource(this.props.combatant, this.props.combatant.combat.selectedAction.action.id)}
+						footerType={CombatantLogic.getActionSourceType(this.props.combatant, this.props.combatant.combat.selectedAction.action.id)}
 					/>
-					<Text type={TextType.Information}>
-						<p>{this.props.combatant.name} is a <b>monster</b>.</p>
-					</Text>
-					{
-						this.props.options.showTips ?
-							<Expander
-								header={
-									<Text type={TextType.Tip}>It is {this.props.combatant.name}&apos;s turn.</Text>
-								}
-								content={
-									<div>
-										<p>You can&apos;t control a monster directly; press the <b>Take Monster Turn</b> button and it will take its turn.</p>
-									</div>
-								}
-							/>
-							: null
-					}
-					<CombatStatsPanel combatant={this.props.combatant} encounter={this.props.encounter} />
-					<CombatantNotices combatant={this.props.combatant} />
-					{
-						this.props.options.developer ?
-							<button className='developer' onClick={() => this.props.levelUp(this.props.combatant)}>Level Up</button>
-							: null
-					}
-					{
-						this.props.options.developer ?
-							<button className='developer' onClick={() => this.props.switchAllegiance(this.props.combatant)}>Switch Allegiance</button>
-							: null
-					}
-					{
-						this.props.options.developer ?
-							<button className='developer' onClick={() => this.props.stun(this.props.combatant)}>Stun / Unstun</button>
-							: null
-					}
-					{
-						this.props.options.developer ?
-							<button className='developer' onClick={() => this.props.knockout(this.props.combatant)}>Knockout</button>
-							: null
-					}
-					{
-						this.props.options.developer ?
-							<button className='developer' onClick={() => this.props.kill(this.props.combatant)}>Kill</button>
-							: null
-					}
-					{action}
 				</div>
 			);
-		}  catch {
-			return <div className='monster-controls render-error' />;
 		}
+
+		return (
+			<div className='monster-controls' key={this.props.combatant.id}>
+				<CombatantRowPanel
+					mode='header'
+					combatant={this.props.combatant}
+					encounter={this.props.encounter}
+					options={this.props.options}
+					onTokenClick={this.props.showToken}
+					onDetails={this.props.showCharacterSheet}
+				/>
+				<Text type={TextType.Information}>
+					<p>{this.props.combatant.name} is a <b>monster</b>.</p>
+				</Text>
+				{
+					this.props.options.showTips ?
+						<Expander
+							header={
+								<Text type={TextType.Tip}>It is {this.props.combatant.name}&apos;s turn.</Text>
+							}
+							content={
+								<div>
+									<p>You can&apos;t control a monster directly; press the <b>Take Monster Turn</b> button and it will take its turn.</p>
+								</div>
+							}
+						/>
+						: null
+				}
+				<CombatStatsPanel combatant={this.props.combatant} encounter={this.props.encounter} />
+				<CombatantNotices combatant={this.props.combatant} />
+				{
+					this.props.options.developer ?
+						<button className='developer' onClick={() => this.props.levelUp(this.props.combatant)}>Level Up</button>
+						: null
+				}
+				{
+					this.props.options.developer ?
+						<button className='developer' onClick={() => this.props.switchAllegiance(this.props.combatant)}>Switch Allegiance</button>
+						: null
+				}
+				{
+					this.props.options.developer ?
+						<button className='developer' onClick={() => this.props.stun(this.props.combatant)}>Stun / Unstun</button>
+						: null
+				}
+				{
+					this.props.options.developer ?
+						<button className='developer' onClick={() => this.props.knockout(this.props.combatant)}>Knockout</button>
+						: null
+				}
+				{
+					this.props.options.developer ?
+						<button className='developer' onClick={() => this.props.kill(this.props.combatant)}>Kill</button>
+						: null
+				}
+				{action}
+			</div>
+		);
 	};
 }

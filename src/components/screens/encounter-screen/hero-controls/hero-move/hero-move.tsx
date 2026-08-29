@@ -22,55 +22,51 @@ interface Props {
 
 export class HeroMove extends Component<Props> {
 	render = () => {
-		try {
-			const moveCosts: Record<string, number> = {};
-			[ 'n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw' ].forEach(dir => {
-				let cost = 0;
-				if (this.props.combatant.combat.stunned) {
-					cost = Number.MAX_VALUE;
-				} else {
-					cost = EncounterLogic.getMoveCost(this.props.encounter, this.props.combatant, this.props.combatant.combat.position, dir);
-				}
-				moveCosts[dir] = cost;
-			});
+		const moveCosts: Record<string, number> = {};
+		[ 'n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw' ].forEach(dir => {
+			let cost = 0;
+			if (this.props.combatant.combat.stunned) {
+				cost = Number.MAX_VALUE;
+			} else {
+				cost = EncounterLogic.getMoveCost(this.props.encounter, this.props.combatant, this.props.combatant.combat.position, dir);
+			}
+			moveCosts[dir] = cost;
+		});
 
-			return (
-				<div className='hero-move'>
-					{
-						this.props.combatant.combat.movement > 0 ?
-							<DirectionPanel
-								mode='full'
-								movement={this.props.combatant.combat.movement}
-								costs={moveCosts}
-								onMove={(dir, cost) => this.props.move(this.props.encounter, this.props.combatant, dir, cost)}
-							/>
-							:
-							<Text type={TextType.Information}>
-								<p>You have no more movement remaining this turn.</p>
-								{!this.props.combatant.combat.selectedAction || !this.props.combatant.combat.selectedAction.used ? <p>You can still take your action.</p> : null }
-							</Text>
-					}
-					{
-						this.props.options.showTips ?
-							<Expander
-								header={
-									<Text type={TextType.Tip}>Movement Points</Text>
-								}
-								content={
-									<div>
-										<p>Your hero only has a certain number of movement points <IconArrowBigRightLinesFilled size={15} /> to use each round.</p>
-										<p>These points are calculated using their <b>Speed</b> trait rank.</p>
-										<p>You can use them to move your hero around the map, but they&apos;re also useful for picking up items, hiding, or drinking potions.</p>
-									</div>
-								}
-							/>
-							: null
-					}
-					{this.props.options.developer ? <button className='developer' onClick={() => this.props.addMovement(this.props.encounter, this.props.combatant, 10)}>Add Movement</button> : null}
-				</div>
-			);
-		} catch {
-			return <div className='hero-move render-error' />;
-		}
+		return (
+			<div className='hero-move'>
+				{
+					this.props.combatant.combat.movement > 0 ?
+						<DirectionPanel
+							mode='full'
+							movement={this.props.combatant.combat.movement}
+							costs={moveCosts}
+							onMove={(dir, cost) => this.props.move(this.props.encounter, this.props.combatant, dir, cost)}
+						/>
+						:
+						<Text type={TextType.Information}>
+							<p>You have no more movement remaining this turn.</p>
+							{!this.props.combatant.combat.selectedAction || !this.props.combatant.combat.selectedAction.used ? <p>You can still take your action.</p> : null }
+						</Text>
+				}
+				{
+					this.props.options.showTips ?
+						<Expander
+							header={
+								<Text type={TextType.Tip}>Movement Points</Text>
+							}
+							content={
+								<div>
+									<p>Your hero only has a certain number of movement points <IconArrowBigRightLinesFilled size={15} /> to use each round.</p>
+									<p>These points are calculated using their <b>Speed</b> trait rank.</p>
+									<p>You can use them to move your hero around the map, but they&apos;re also useful for picking up items, hiding, or drinking potions.</p>
+								</div>
+							}
+						/>
+						: null
+				}
+				{this.props.options.developer ? <button className='developer' onClick={() => this.props.addMovement(this.props.encounter, this.props.combatant, 10)}>Add Movement</button> : null}
+			</div>
+		);
 	};
 }

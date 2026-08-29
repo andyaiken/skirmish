@@ -27,28 +27,24 @@ export class Text extends Component<Props> {
 	};
 
 	render = () => {
-		try {
-			let icon = null;
-			switch (this.props.type) {
-				case TextType.Tip:
-					icon = (
-						<div className='skirmish-text-icon'>
-							<IconInfoCircle />
-						</div>
-					);
-					break;
-			}
-
-			return (
-				<div className={`skirmish-text ${this.props.type}`}>
-					{icon}
-					<div className={`skirmish-text-content ${this.props.type}`}>
-						{this.props.children}
+		let icon = null;
+		switch (this.props.type) {
+			case TextType.Tip:
+				icon = (
+					<div className='skirmish-text-icon'>
+						<IconInfoCircle />
 					</div>
-				</div>
-			);
-		} catch {
-			return <div className='skirmish-text render-error' />;
+				);
+				break;
 		}
+
+		return (
+			<div className={`skirmish-text ${this.props.type}`}>
+				{icon}
+				<div className={`skirmish-text-content ${this.props.type}`}>
+					{this.props.children}
+				</div>
+			</div>
+		);
 	};
 }

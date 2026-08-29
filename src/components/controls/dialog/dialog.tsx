@@ -1,6 +1,8 @@
 import { Component, ReactNode } from 'react';
 import { IconX } from '@tabler/icons-react';
 
+import { ErrorBoundary } from '../error-boundary/error-boundary';
+
 import './dialog.scss';
 
 interface Props {
@@ -28,40 +30,32 @@ export class Dialog extends Component<Props> {
 	};
 
 	getDialog = () => {
-		try {
-			let closeBtn = null;
-			if (this.props.onClose) {
-				closeBtn = (
-					<button className='icon-btn close-btn' onClick={this.closeClick}>
-						<IconX />
-					</button>
-				);
-			}
-
-			return (
-				<div className={`dialog level-${this.props.level}`} onClick={this.dialogClick}>
-					{closeBtn}
-					<div className='dialog-content'>
-						{this.props.content}
-					</div>
-				</div>
+		let closeBtn = null;
+		if (this.props.onClose) {
+			closeBtn = (
+				<button className='icon-btn close-btn' onClick={this.closeClick}>
+					<IconX />
+				</button>
 			);
-		} catch {
-			return <div className='dialog render-error' />;
 		}
+
+		return (
+			<div className={`dialog level-${this.props.level}`} onClick={this.dialogClick}>
+				{closeBtn}
+				<div className='dialog-content'>
+					<ErrorBoundary className='dialog-content'>
+						{this.props.content}
+					</ErrorBoundary>
+				</div>
+			</div>
+		);
 	};
 
 	render = () => {
-		try {
-			return (
-				<div className='dialog-backdrop' onClick={this.closeClick}>
-					{this.getDialog()}
-				</div>
-			);
-		} catch {
-			return (
-				<div className='dialog-backdrop render-error' />
-			);
-		}
+		return (
+			<div className='dialog-backdrop' onClick={this.closeClick}>
+				{this.getDialog()}
+			</div>
+		);
 	};
 }

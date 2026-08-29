@@ -290,22 +290,18 @@ export class StrongholdPage extends Component<Props, State> {
 	};
 
 	render = () => {
-		try {
-			return (
-				<div className={`stronghold-page ${this.props.orientation}`}>
-					<div className='map-content' onClick={() => this.setState({ selectedStructure: null })}>
-						<StrongholdMapPanel
-							stronghold={this.props.game.stronghold}
-							selectedStructure={this.state.selectedStructure}
-							onSelectStructure={structure => this.setState({ selectedStructure: structure })}
-						/>
-					</div>
-					{this.getSidebar()}
-					{this.getDialog()}
+		return (
+			<div className={`stronghold-page ${this.props.orientation}`}>
+				<div className='map-content' onClick={() => this.setState({ selectedStructure: null })}>
+					<StrongholdMapPanel
+						stronghold={this.props.game.stronghold}
+						selectedStructure={this.state.selectedStructure}
+						onSelectStructure={structure => this.setState({ selectedStructure: structure })}
+					/>
 				</div>
-			);
-		} catch {
-			return <div className='stronghold-page render-error' />;
-		}
+				{this.getSidebar()}
+				{this.getDialog()}
+			</div>
+		);
 	};
 }

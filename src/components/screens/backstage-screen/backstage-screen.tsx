@@ -29,44 +29,40 @@ export class BackstageScreen extends Component<Props, State> {
 	}
 
 	render = () => {
-		try {
-			const options = [
-				{ id: 'cards', display: 'Cards' },
-				{ id: 'damage', display: 'Damage' },
-				{ id: 'effects', display: 'Effects' }
-			];
+		const options = [
+			{ id: 'cards', display: 'Cards' },
+			{ id: 'damage', display: 'Damage' },
+			{ id: 'effects', display: 'Effects' }
+		];
 
-			let content = null;
-			switch (this.state.view) {
-				case 'cards':
-					content = <CardPage options={this.props.options} />;
-					break;
-				case 'damage':
-					content = <DamagePage options={this.props.options} />;
-					break;
-				case 'effects':
-					content = <EffectPage options={this.props.options} />;
-					break;
-			}
+		let content = null;
+		switch (this.state.view) {
+			case 'cards':
+				content = <CardPage options={this.props.options} />;
+				break;
+			case 'damage':
+				content = <DamagePage options={this.props.options} />;
+				break;
+			case 'effects':
+				content = <EffectPage options={this.props.options} />;
+				break;
+		}
 
-			return (
-				<div className='backstage-screen'>
-					<div className='backstage-top-bar'>
-						<div className='branding'>
-							<LogoPanel text='Skirmish - Backstage' size={36} />
-						</div>
-						<div className='buttons'>
-							<button className='icon-btn checked' title='Backstage' onClick={this.props.toggleBackstage}><IconCodeCircle2 /></button>
-						</div>
+		return (
+			<div className='backstage-screen'>
+				<div className='backstage-top-bar'>
+					<div className='branding'>
+						<LogoPanel text='Skirmish - Backstage' size={36} />
 					</div>
-					<Tabs options={options} selectedID={this.state.view} onSelect={id => this.setState({ view: id })} />
-					<div className='backstage-content'>
-						{content}
+					<div className='buttons'>
+						<button className='icon-btn checked' title='Backstage' onClick={this.props.toggleBackstage}><IconCodeCircle2 /></button>
 					</div>
 				</div>
-			);
-		} catch {
-			return <div className='backstage-screen render-error' />;
-		}
+				<Tabs options={options} selectedID={this.state.view} onSelect={id => this.setState({ view: id })} />
+				<div className='backstage-content'>
+					{content}
+				</div>
+			</div>
+		);
 	};
 }

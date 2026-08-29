@@ -310,36 +310,32 @@ export class Items extends Component<Props, State> {
 	};
 
 	render = () => {
-		try {
-			let label = this.state.view.toString();
-			switch (this.state.view) {
-				case ItemLocationType.Hand:
-				case ItemLocationType.Ring:
-					label += 's (2 slots)';
-					break;
-			}
-
-			const carried = this.getCarriedItemSection();
-			const party = this.getPartyItemSection();
-			const nearby = this.getNearbyItemSection();
-
-			return (
-				<div className='items'>
-					<Text type={TextType.SubHeading}>Equipped Items - {label}</Text>
-					{this.getLocationSection()}
-					{carried !== null ? <hr /> : null}
-					{carried !== null ? <Text type={TextType.SubHeading}>Carried Items ({this.props.combatant.carried.length} of {CombatantLogic.CARRY_CAPACITY})</Text> : null}
-					{carried}
-					{party !== null ? <hr /> : null}
-					{party !== null ? <Text type={TextType.SubHeading}>Party Items</Text> : null}
-					{party}
-					{nearby !== null ? <hr /> : null}
-					{nearby !== null ? <Text type={TextType.SubHeading}>Nearby Items</Text> : null}
-					{nearby}
-				</div>
-			);
-		} catch {
-			return <div className='items render-error' />;
+		let label = this.state.view.toString();
+		switch (this.state.view) {
+			case ItemLocationType.Hand:
+			case ItemLocationType.Ring:
+				label += 's (2 slots)';
+				break;
 		}
+
+		const carried = this.getCarriedItemSection();
+		const party = this.getPartyItemSection();
+		const nearby = this.getNearbyItemSection();
+
+		return (
+			<div className='items'>
+				<Text type={TextType.SubHeading}>Equipped Items - {label}</Text>
+				{this.getLocationSection()}
+				{carried !== null ? <hr /> : null}
+				{carried !== null ? <Text type={TextType.SubHeading}>Carried Items ({this.props.combatant.carried.length} of {CombatantLogic.CARRY_CAPACITY})</Text> : null}
+				{carried}
+				{party !== null ? <hr /> : null}
+				{party !== null ? <Text type={TextType.SubHeading}>Party Items</Text> : null}
+				{party}
+				{nearby !== null ? <hr /> : null}
+				{nearby !== null ? <Text type={TextType.SubHeading}>Nearby Items</Text> : null}
+				{nearby}
+			</div>
+		);
 	};
 }

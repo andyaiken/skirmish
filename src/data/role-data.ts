@@ -559,7 +559,7 @@ export class RoleData {
 					ActionTargetParameters.self()
 				],
 				effects: [
-					ActionEffects.addCondition(ConditionLogic.createDamageResistanceCondition(TraitType.Endurance, 5, DamageType.All))
+					ActionEffects.addCondition(ConditionLogic.createDamageCategoryResistanceCondition(TraitType.Endurance, 5, DamageCategoryType.Physical))
 				]
 			},
 			{

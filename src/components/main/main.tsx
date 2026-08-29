@@ -1062,6 +1062,8 @@ export class Main extends Component<Props, State> {
 
 	runMonsterTurn = (encounter: EncounterModel, combatant: CombatantModel, onFinished: () => void) => {
 		try {
+			this.cancelMonsterTurn();
+
 			if (combatant.combat.stunned || (combatant.combat.state === CombatantState.Unconscious) || (combatant.combat.state === CombatantState.Dead)) {
 				// Can't act
 

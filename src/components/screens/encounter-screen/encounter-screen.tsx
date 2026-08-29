@@ -132,7 +132,16 @@ export class EncounterScreen extends Component<Props, State> {
 		};
 	}
 
+	// Monsters take their turns by themselves. This holds the combatant whose
+	// turn is currently being played out: a turn produces a state update for each
+	// intent it performs, and without this each of those updates would start the
+	// same turn over again. It is an instance field rather than state because it
+	// has to be set synchronously, before the next update can arrive.
+	autoTurnCombatantID: string | null = null;
+
 	componentDidMount = () => {
+		this.checkMonsterTurn();
+
 		EncounterLogLogic.handleLogMessage = (messages: LogMessageModel[]) => {
 			toast.custom(t => {
 				setTimeout(() => {
@@ -147,9 +156,46 @@ export class EncounterScreen extends Component<Props, State> {
 		};
 	};
 
+	componentDidUpdate = () => {
+		this.checkMonsterTurn();
+	};
+
 	componentWillUnmount = () => {
 		EncounterLogLogic.handleLogMessage = null;
 		toast.remove();
+	};
+
+	checkMonsterTurn = () => {
+		if (this.state.thinking) {
+			return;
+		}
+
+		// In developer mode the turns are taken by hand instead, so that the AI can be watched a step at a time
+		if (this.props.options.developer) {
+			return;
+		}
+
+		if (this.state.manualEncounterState !== EncounterState.Active) {
+			return;
+		}
+		if (EncounterLogic.getEncounterState(this.props.encounter) !== EncounterState.Active) {
+			return;
+		}
+
+		const currentCombatant = this.props.encounter.combatants.find(c => c.combat.current) || null;
+		if (!currentCombatant || (currentCombatant.faction !== CombatantType.Monster)) {
+			// It's a hero's turn, so the next monster to come round should act
+			this.autoTurnCombatantID = null;
+			return;
+		}
+
+		if (this.autoTurnCombatantID === currentCombatant.id) {
+			// Already taking this one's turn
+			return;
+		}
+
+		this.autoTurnCombatantID = currentCombatant.id;
+		this.runMonsterTurn();
 	};
 
 	mapRef = createRef<EncounterMapPanel>();
@@ -558,15 +604,22 @@ export class EncounterScreen extends Component<Props, State> {
 				const label = canAct ? 'Take Monster Turn' : 'Skip Monster Turn';
 				actionBtn = (
 					<div className='action-container'>
-						<button
-							key='monster-btn'
-							className='primary action'
-							disabled={this.state.thinking}
-							onClick={() => this.runMonsterTurn()}
-							onDoubleClick={e => e.stopPropagation()}
-						>
-							{this.state.thinking ? 'Thinking' : label}
-						</button>
+						{
+							this.props.options.developer ?
+								<button
+									key='monster-btn'
+									className='primary action'
+									disabled={this.state.thinking}
+									onClick={() => this.runMonsterTurn()}
+									onDoubleClick={e => e.stopPropagation()}
+								>
+									{this.state.thinking ? 'Thinking' : label}
+								</button>
+								:
+								<button key='monster-btn' className='primary action' disabled={true}>
+									Thinking
+								</button>
+						}
 					</div>
 				);
 			}

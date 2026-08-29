@@ -11,6 +11,7 @@ import './stronghold-map-panel.scss';
 
 interface Props {
 	stronghold: StructureModel[];
+	people: number;
 	mode: 'map' | 'structure';
 	selectedStructure: StructureModel | null;
 	onSelectStructure: (structure: StructureModel | null) => void;
@@ -18,6 +19,7 @@ interface Props {
 
 export class StrongholdMapPanel extends Component<Props> {
 	public static defaultProps = {
+		people: 0,
 		mode: 'map',
 		onSelectStructure: () => null
 	};
@@ -131,6 +133,70 @@ export class StrongholdMapPanel extends Component<Props> {
 		);
 	};
 
+	// Ambient decoration: a handful of people wandering between the buildings.
+	// Each one follows a closed circuit of structures, animated by the browser
+	// via a CSS motion path so that the map itself never has to re-render.
+	// These are drawn before the structures, so that people pass behind them.
+	getPeople = (structures: StructureModel[]) => {
+		if ((this.props.mode !== 'map') || (structures.length < 2)) {
+			return [];
+		}
+
+		// Seeded from the structures present, so the routes stay stable between
+		// renders but are reshuffled when the stronghold is built up or changed.
+		const rng = Random.getSeededRNG(structures.map(s => s.id).join('-'));
+
+		const centre = (structure: StructureModel) => {
+			return {
+				x: structure.position.x + 0.5,
+				y: structure.position.y + 0.5
+			};
+		};
+
+		return Array.from({ length: this.props.people }, (_, n) => {
+			// Walk a circuit of three or four structures, picked at random. Stops
+			// are never repeated, so that no leg of the route has zero length.
+			const stops = Math.min(structures.length, Random.randomNumber(2, rng) + 3);
+			const remaining = [ ...structures ];
+			const route: { x: number, y: number }[] = [];
+			for (let i = 0; i !== stops; ++i) {
+				const [ structure ] = remaining.splice(Random.randomNumber(remaining.length, rng), 1);
+				route.push(centre(structure));
+			}
+
+			// Total distance of the closed circuit, so everyone moves at a
+			// similar speed however far apart their stops happen to be
+			let distance = 0;
+			route.forEach((pt, i) => {
+				const next = route[(i + 1) % route.length];
+				distance += Math.sqrt(Math.pow(next.x - pt.x, 2) + Math.pow(next.y - pt.y, 2));
+			});
+
+			// Seconds spent crossing one square, so that everyone walks at the same
+			// pace however long their own circuit happens to be
+			const secondsPerSquare = 2.5;
+
+			const path = `M${route.map(pt => `${pt.x},${pt.y}`).join(' L')} Z`;
+			const duration = Math.max(distance * secondsPerSquare, 1);
+			// A negative delay drops each person part-way around their circuit, so
+			// that they are spread out rather than all setting off together
+			const offset = Random.randomDecimal(rng) * duration;
+
+			return (
+				<circle
+					key={n}
+					className='person'
+					r={0.045}
+					style={{
+						offsetPath: `path('${path}')`,
+						animationDuration: `${duration.toFixed(2)}s`,
+						animationDelay: `-${offset.toFixed(2)}s`
+					}}
+				/>
+			);
+		});
+	};
+
 	render = () => {
 		let structures = this.props.stronghold;
 		if ((this.props.mode === 'structure') && (this.props.selectedStructure !== null)) {
@@ -150,6 +216,7 @@ export class StrongholdMapPanel extends Component<Props> {
 
 		return (
 			<svg className='stronghold-map' viewBox={`${dims.left} ${dims.top} ${width} ${height}`} onClick={e => this.onClick(e, null)}>
+				{this.getPeople(structures)}
 				{structures.map(this.getStructure)}
 			</svg>
 		);

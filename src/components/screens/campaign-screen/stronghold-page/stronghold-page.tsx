@@ -297,6 +297,7 @@ export class StrongholdPage extends Component<Props, State> {
 				<div className='map-content' onClick={() => this.setState({ selectedStructure: null })}>
 					<StrongholdMapPanel
 						stronghold={this.props.game.stronghold}
+						people={this.props.game.heroes.length + this.props.game.heroSlots}
 						selectedStructure={this.state.selectedStructure}
 						onSelectStructure={structure => this.setState({ selectedStructure: structure })}
 					/>

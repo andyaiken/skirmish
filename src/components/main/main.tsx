@@ -1049,6 +1049,17 @@ export class Main extends Component<Props, State> {
 		}
 	};
 
+	// A monster's turn is played out over a series of timeouts; keep hold of the
+	// pending one so that it can be cancelled if the encounter ends first.
+	monsterTurnTimeout: ReturnType<typeof setTimeout> | null = null;
+
+	cancelMonsterTurn = () => {
+		if (this.monsterTurnTimeout !== null) {
+			clearTimeout(this.monsterTurnTimeout);
+			this.monsterTurnTimeout = null;
+		}
+	};
+
 	runMonsterTurn = (encounter: EncounterModel, combatant: CombatantModel, onFinished: () => void) => {
 		try {
 			if (combatant.combat.stunned || (combatant.combat.state === CombatantState.Unconscious) || (combatant.combat.state === CombatantState.Dead)) {
@@ -1066,6 +1077,14 @@ export class Main extends Component<Props, State> {
 				// Can act as normal
 
 				const perform = () => {
+					this.monsterTurnTimeout = null;
+
+					// The encounter may have finished while this step was queued
+					if (this.state.game?.encounter !== encounter) {
+						onFinished();
+						return;
+					}
+
 					combatant.combat.intents = IntentsLogic.getIntents(encounter, combatant);
 					if (combatant.combat.intents && (combatant.combat.intents.intents.length > 0)) {
 						IntentsLogic.performIntents(encounter, combatant);
@@ -1074,7 +1093,7 @@ export class Main extends Component<Props, State> {
 							game: this.state.game
 						}, () => {
 							this.saveGame();
-							setTimeout(perform, 800);
+							this.monsterTurnTimeout = setTimeout(perform, 800);
 						});
 					} else {
 						EncounterLogic.endTurn(encounter);
@@ -1088,7 +1107,7 @@ export class Main extends Component<Props, State> {
 					}
 				};
 
-				setTimeout(perform, 1000);
+				this.monsterTurnTimeout = setTimeout(perform, 1000);
 			}
 
 		} catch (ex) {
@@ -1203,6 +1222,8 @@ export class Main extends Component<Props, State> {
 
 	finishEncounter = (state: EncounterState) => {
 		try {
+			this.cancelMonsterTurn();
+
 			const game = this.state.game;
 			if (!game) {
 				return;

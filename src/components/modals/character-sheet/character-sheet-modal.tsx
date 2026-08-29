@@ -35,7 +35,7 @@ interface Props {
 	dropItem: (item: ItemModel, combatant: CombatantModel) => void;
 	levelUp: (feature: FeatureModel, combatant: CombatantModel) => void;
 	retireHero: (combatant: CombatantModel) => void;
-	useCharge: (type: StructureType, count: number) => void;
+	spendCharge: (type: StructureType, count: number) => void;
 }
 
 interface State {
@@ -131,14 +131,14 @@ export class CharacterSheetModal extends Component<Props, State> {
 							developer={this.props.developer}
 							level={this.props.combatant.level + 1}
 							features={this.state.features}
-							useCharge={this.props.useCharge}
+							spendCharge={this.props.spendCharge}
 							levelUp={this.levelUp}
-							redrawFeatures={useCharge => {
+							redrawFeatures={spendCharge => {
 								this.setState({
 									features: this.drawFeatures(this.props.combatant)
 								}, () => {
-									if (useCharge) {
-										this.props.useCharge(StructureType.TrainingGround, 1);
+									if (spendCharge) {
+										this.props.spendCharge(StructureType.TrainingGround, 1);
 									}
 								});
 							}}

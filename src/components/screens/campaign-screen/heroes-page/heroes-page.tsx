@@ -27,7 +27,7 @@ interface Props {
 	options: OptionsModel;
 	orientation: OrientationType;
 	addHero: (hero: CombatantModel) => void;
-	addXP: (hero: CombatantModel, useCharge: StructureType | null) => void;
+	addXP: (hero: CombatantModel, spendCharge: StructureType | null) => void;
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
 	unequipItem: (item: ItemModel, hero: CombatantModel) => void;
 	pickUpItem: (item: ItemModel, hero: CombatantModel) => void;
@@ -35,7 +35,7 @@ interface Props {
 	levelUp: (feature: FeatureModel, hero: CombatantModel) => void;
 	retireHero: (combatant: CombatantModel) => void;
 	redeemBoon: (boon: BoonModel, hero: CombatantModel | null, item: ItemModel | null, newItem: ItemModel | null, cost: number) => void;
-	useCharge: (type: StructureType, count: number) => void;
+	spendCharge: (type: StructureType, count: number) => void;
 }
 
 interface State {
@@ -229,7 +229,7 @@ export class HeroesPage extends Component<Props, State> {
 								hero={this.state.selectedHero}
 								game={this.props.game}
 								options={this.props.options}
-								useCharge={this.props.useCharge}
+								spendCharge={this.props.spendCharge}
 								finished={hero => {
 									const h = this.state.selectedHero as CombatantModel;
 									this.setState({
@@ -257,7 +257,7 @@ export class HeroesPage extends Component<Props, State> {
 								dropItem={this.props.dropItem}
 								levelUp={this.props.levelUp}
 								retireHero={this.retireHero}
-								useCharge={this.props.useCharge}
+								spendCharge={this.props.spendCharge}
 							/>
 						)}
 						onClose={this.state.selectedHero.xp >= this.state.selectedHero.level ? null : () => {

@@ -26,7 +26,7 @@ interface Props {
 	currentActionParameter: ActionParameterModel | null;
 	collapsed: boolean;
 	toggleCollapsed: () => void;
-	drawActions: (encounter: EncounterModel, combatant: CombatantModel, useCharge: StructureType | null) => void;
+	drawActions: (encounter: EncounterModel, combatant: CombatantModel, spendCharge: StructureType | null) => void;
 	selectAction: (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel) => void;
 	deselectAction: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	setActionParameter: (parameter: ActionParameterModel) => void;

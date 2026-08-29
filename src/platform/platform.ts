@@ -26,7 +26,7 @@ export class Platform {
 	logException: (msg: unknown) => void;
 
 	constructor() {
-		this.worker = new Worker(new URL('./worker.ts', import.meta.url));
+		this.worker = new Worker(new URL('./worker.ts', import.meta.url), { type: 'module' });
 		this.worker.onmessage = message => {
 			this.logException(message);
 		};

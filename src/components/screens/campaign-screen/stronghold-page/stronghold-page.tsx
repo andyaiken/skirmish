@@ -32,7 +32,7 @@ interface Props {
 	sellStructure: (structure: StructureModel) => void;
 	chargeStructure: (structure: StructureModel) => void;
 	upgradeStructure: (structure: StructureModel) => void;
-	useCharge: (type: StructureType, count: number) => void;
+	spendCharge: (type: StructureType, count: number) => void;
 	redeemBoon: (boon: BoonModel, hero: CombatantModel | null, item: ItemModel | null, newItem: ItemModel | null, cost: number) => void;
 }
 
@@ -279,7 +279,7 @@ export class StrongholdPage extends Component<Props, State> {
 							game={this.props.game}
 							options={this.props.options}
 							buyStructure={this.buyStructure}
-							useCharge={this.props.useCharge}
+							spendCharge={this.props.spendCharge}
 						/>
 					)}
 				/>

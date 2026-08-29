@@ -84,7 +84,7 @@ export class StrongholdLogic {
 		return Collections.sum(game.stronghold.filter(s => s.type === type), s => s.charges);
 	};
 
-	static useCharge = (game: GameModel, type: StructureType, count: number) => {
+	static spendCharge = (game: GameModel, type: StructureType, count: number) => {
 		for (let n = 0; n < count; ++n) {
 			const structures = game.stronghold
 				.filter(s => s.type === type)

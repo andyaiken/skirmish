@@ -421,11 +421,11 @@ export class Main extends Component<Props, State> {
 		}
 	};
 
-	useCharge = (type: StructureType, count: number) => {
+	spendCharge = (type: StructureType, count: number) => {
 		try {
 			const game = this.state.game as GameModel;
 
-			StrongholdLogic.useCharge(game, type, count);
+			StrongholdLogic.spendCharge(game, type, count);
 
 			this.setState({
 				game: game
@@ -471,14 +471,14 @@ export class Main extends Component<Props, State> {
 		}
 	};
 
-	addXP = (hero: CombatantModel, useCharge: StructureType | null) => {
+	addXP = (hero: CombatantModel, spendCharge: StructureType | null) => {
 		try {
 			const game = this.state.game as GameModel;
 
 			hero.xp += 1;
 
-			if (useCharge) {
-				StrongholdLogic.useCharge(game, useCharge, 1);
+			if (spendCharge) {
+				StrongholdLogic.spendCharge(game, spendCharge, 1);
 			}
 
 			this.setState({
@@ -697,7 +697,7 @@ export class Main extends Component<Props, State> {
 					hero.combat.conditions.push(ConditionLogic.createRandomBeneficialCondition() as ConditionModel);
 				}
 				if (!this.state.options.developer) {
-					StrongholdLogic.useCharge(game, StructureType.Temple, benefits);
+					StrongholdLogic.spendCharge(game, StructureType.Temple, benefits);
 				}
 
 				for (let n = 0; n < detriments; ++n) {
@@ -705,7 +705,7 @@ export class Main extends Component<Props, State> {
 					hero.combat.conditions.push(ConditionLogic.createRandomDetrimentalCondition() as ConditionModel);
 				}
 				if (!this.state.options.developer) {
-					StrongholdLogic.useCharge(game, StructureType.Intelligencer, detriments);
+					StrongholdLogic.spendCharge(game, StructureType.Intelligencer, detriments);
 				}
 
 				EncounterMapLogic.visibilityCache.reset();
@@ -865,7 +865,7 @@ export class Main extends Component<Props, State> {
 		}
 	};
 
-	addCombatantToEncounter = (encounter: EncounterModel, combatant: CombatantModel, useCharge: StructureType | null) => {
+	addCombatantToEncounter = (encounter: EncounterModel, combatant: CombatantModel, spendCharge: StructureType | null) => {
 		try {
 			const game = this.state.game as GameModel;
 
@@ -877,8 +877,8 @@ export class Main extends Component<Props, State> {
 			encounter.combatants.push(combatant);
 			EncounterGenerator.placeCombatants(encounter, Math.random);
 
-			if (useCharge) {
-				StrongholdLogic.useCharge(game, useCharge, 1);
+			if (spendCharge) {
+				StrongholdLogic.spendCharge(game, spendCharge, 1);
 			}
 
 			this.setState({
@@ -975,12 +975,12 @@ export class Main extends Component<Props, State> {
 		}
 	};
 
-	drawActions = (encounter: EncounterModel, combatant: CombatantModel, useCharge: StructureType | null) => {
+	drawActions = (encounter: EncounterModel, combatant: CombatantModel, spendCharge: StructureType | null) => {
 		try {
 			EncounterLogic.drawActions(encounter, combatant);
 
-			if (useCharge) {
-				StrongholdLogic.useCharge(this.state.game as GameModel, useCharge, 1);
+			if (spendCharge) {
+				StrongholdLogic.spendCharge(this.state.game as GameModel, spendCharge, 1);
 			}
 
 			this.setState({
@@ -1476,7 +1476,7 @@ export class Main extends Component<Props, State> {
 						sellStructure={this.sellStructure}
 						chargeStructure={this.chargeStructure}
 						upgradeStructure={this.upgradeStructure}
-						useCharge={this.useCharge}
+						spendCharge={this.spendCharge}
 						addHero={this.addHero}
 						addXP={this.addXP}
 						equipItem={this.equipItem}
@@ -1524,7 +1524,7 @@ export class Main extends Component<Props, State> {
 						unequipItem={this.unequipItem}
 						pickUpItem={this.pickUpItem}
 						dropItem={this.dropItem}
-						useCharge={this.useCharge}
+						spendCharge={this.spendCharge}
 						levelUp={this.incrementMonsterLevel}
 						switchAllegiance={this.switchAllegiance}
 						stun={this.stun}

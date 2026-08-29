@@ -30,7 +30,7 @@ interface Props {
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
 	dropItem: (item: ItemModel, hero: CombatantModel) => void;
 	redeemBoon: (boon: BoonModel, combatant: CombatantModel | null, item: ItemModel | null, newItem: ItemModel | null, cost: number) => void;
-	useCharge: (type: StructureType, count: number) => void;
+	spendCharge: (type: StructureType, count: number) => void;
 	addMoney: () => void;
 }
 
@@ -201,7 +201,7 @@ export class ItemsPage extends Component<Props, State> {
 							game={this.props.game}
 							options={this.props.options}
 							buyItem={this.buyItem}
-							useCharge={this.props.useCharge}
+							spendCharge={this.props.spendCharge}
 						/>
 					)}
 				/>
@@ -216,7 +216,7 @@ export class ItemsPage extends Component<Props, State> {
 							game={this.props.game}
 							options={this.props.options}
 							buyItem={this.buyItem}
-							useCharge={this.props.useCharge}
+							spendCharge={this.props.spendCharge}
 						/>
 					)}
 				/>
@@ -264,7 +264,7 @@ export class ItemsPage extends Component<Props, State> {
 							game={this.props.game}
 							options={this.props.options}
 							enchantItem={this.enchantItem}
-							useCharge={this.props.useCharge}
+							spendCharge={this.props.spendCharge}
 						/>
 					)}
 					onClose={() => this.showEnchant(false)}

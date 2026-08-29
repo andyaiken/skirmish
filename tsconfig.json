@@ -12,14 +12,18 @@
 		"allowSyntheticDefaultImports": true,
 		"strict": true,
 		"forceConsistentCasingInFileNames": true,
-		"module": "ES2022",
-		"moduleResolution": "node",
+		"module": "ESNext",
+		"moduleResolution": "bundler",
 		"resolveJsonModule": true,
 		"isolatedModules": true,
 		"noEmit": true,
-		"jsx": "react-jsx"
+		"jsx": "react-jsx",
+		"types": [
+			"vite/client"
+		]
 	},
 	"include": [
-		"src"
+		"src",
+		"vite.config.ts"
 	]
 }

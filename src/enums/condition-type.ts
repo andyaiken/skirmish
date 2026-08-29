@@ -26,5 +26,5 @@ export enum ConditionType {
 	DamageCategoryVulnerability = 'Damage Category Vulnerability',
 
 	MovementBonus = 'Movement Bonus',
-	MovementPenalty = 'Movement Penalty',
+	MovementPenalty = 'Movement Penalty'
 }

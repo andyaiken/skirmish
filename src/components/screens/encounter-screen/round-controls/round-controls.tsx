@@ -26,7 +26,7 @@ interface Props {
 	game: GameModel;
 	options: OptionsModel;
 	regenerateEncounterMap: () => void;
-	addCombatantToEncounter: (encounter: EncounterModel, combatant: CombatantModel, useCharge: StructureType | null) => void;
+	addCombatantToEncounter: (encounter: EncounterModel, combatant: CombatantModel, spendCharge: StructureType | null) => void;
 }
 
 export class RoundControls extends Component<Props> {

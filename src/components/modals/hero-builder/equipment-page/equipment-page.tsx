@@ -26,7 +26,7 @@ interface Props {
 	game: GameModel;
 	options: OptionsModel;
 	addItems: (items: ItemModel[]) => void;
-	useCharge: (type: StructureType, count: number) => void;
+	spendCharge: (type: StructureType, count: number) => void;
 }
 
 interface State {
@@ -74,7 +74,7 @@ export class EquipmentPage extends Component<Props, State> {
 				slots: this.state.slots
 			}, () => {
 				if (!this.props.options.developer) {
-					this.props.useCharge(StructureType.Quartermaster, 1);
+					this.props.spendCharge(StructureType.Quartermaster, 1);
 				}
 			});
 		}

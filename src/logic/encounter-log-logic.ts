@@ -90,6 +90,6 @@ export class EncounterLogLogic {
 	};
 
 	static logMessages: LogMessageModel[] = [];
-	static logTimeout: NodeJS.Timeout | null = null;
+	static logTimeout: ReturnType<typeof setTimeout> | null = null;
 	static handleLogMessage: ((messages: LogMessageModel[]) => void) | null = null;
 }

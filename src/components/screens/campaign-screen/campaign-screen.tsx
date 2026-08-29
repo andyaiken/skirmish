@@ -46,9 +46,9 @@ interface Props {
 	sellStructure: (structure: StructureModel) => void;
 	chargeStructure: (structure: StructureModel) => void;
 	upgradeStructure: (structure: StructureModel) => void;
-	useCharge: (type: StructureType, count: number) => void;
+	spendCharge: (type: StructureType, count: number) => void;
 	addHero: (hero: CombatantModel) => void;
-	addXP: (hero: CombatantModel, useCharge: StructureType | null) => void;
+	addXP: (hero: CombatantModel, spendCharge: StructureType | null) => void;
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
 	unequipItem: (item: ItemModel, hero: CombatantModel) => void;
 	pickUpItem: (item: ItemModel, hero: CombatantModel) => void;
@@ -92,7 +92,7 @@ export class CampaignScreen extends Component<Props> {
 							sellStructure={this.props.sellStructure}
 							chargeStructure={this.props.chargeStructure}
 							upgradeStructure={this.props.upgradeStructure}
-							useCharge={this.props.useCharge}
+							spendCharge={this.props.spendCharge}
 							redeemBoon={this.props.redeemBoon}
 						/>
 					);
@@ -112,7 +112,7 @@ export class CampaignScreen extends Component<Props> {
 							levelUp={this.props.levelUp}
 							retireHero={this.props.retireHero}
 							redeemBoon={this.props.redeemBoon}
-							useCharge={this.props.useCharge}
+							spendCharge={this.props.spendCharge}
 						/>
 					);
 					break;
@@ -127,7 +127,7 @@ export class CampaignScreen extends Component<Props> {
 							equipItem={this.props.equipItem}
 							dropItem={this.props.dropItem}
 							redeemBoon={this.props.redeemBoon}
-							useCharge={this.props.useCharge}
+							spendCharge={this.props.spendCharge}
 							addMoney={this.props.addMoney}
 						/>
 					);

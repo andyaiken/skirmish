@@ -24,7 +24,7 @@ interface Props {
 	game: GameModel;
 	options: OptionsModel;
 	select: (speciesID: string, roleID: string, backgroundID: string) => void;
-	useCharge: (type: StructureType, count: number) => void;
+	spendCharge: (type: StructureType, count: number) => void;
 }
 
 interface State {
@@ -84,7 +84,7 @@ export class CardPage extends Component<Props, State> {
 					speciesIDs: Collections.shuffle(GameLogic.getHeroSpeciesDeck(this.props.options.packIDs).map(s => s.id)).splice(0, 3)
 				}, () => {
 					if (!this.props.options.developer) {
-						this.props.useCharge(StructureType.Hall, 1);
+						this.props.spendCharge(StructureType.Hall, 1);
 					}
 				});
 				break;
@@ -93,7 +93,7 @@ export class CardPage extends Component<Props, State> {
 					roleIDs: Collections.shuffle(GameLogic.getRoleDeck(this.props.options.packIDs).map(r => r.id)).splice(0, 3)
 				}, () => {
 					if (!this.props.options.developer) {
-						this.props.useCharge(StructureType.Hall, 1);
+						this.props.spendCharge(StructureType.Hall, 1);
 					}
 				});
 				break;
@@ -102,7 +102,7 @@ export class CardPage extends Component<Props, State> {
 					backgroundIDs: Collections.shuffle(GameLogic.getBackgroundDeck(this.props.options.packIDs).map(b => b.id)).splice(0, 3)
 				}, () => {
 					if (!this.props.options.developer) {
-						this.props.useCharge(StructureType.Hall, 1);
+						this.props.spendCharge(StructureType.Hall, 1);
 					}
 				});
 				break;

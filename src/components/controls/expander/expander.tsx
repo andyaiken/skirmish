@@ -13,6 +13,19 @@ export const Expander = (props: Props) => {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const contentRef = useRef<HTMLDivElement>(null);
 
+	const onMutation = () => {
+		const content = contentRef.current;
+		if (!content) {
+			return;
+		}
+
+		content
+			.animate(
+				{ maxHeight: `${content.scrollHeight}px`, opacity: 1 },
+				{ duration: 200, easing: 'ease-in', fill: 'forwards' }
+			);
+	};
+
 	useEffect(() => {
 		if (!containerRef.current) {
 			return;
@@ -28,19 +41,6 @@ export const Expander = (props: Props) => {
 			observer.disconnect();
 		};
 	}, []);
-
-	const onMutation = () => {
-		const content = contentRef.current;
-		if (!content) {
-			return;
-		}
-
-		content
-			.animate(
-				{ maxHeight: `${content.scrollHeight}px`, opacity: 1 },
-				{ duration: 200, easing: 'ease-in', fill: 'forwards' }
-			);
-	};
 
 	const openExpander = () => {
 		setOpened(true);

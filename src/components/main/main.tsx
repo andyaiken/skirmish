@@ -328,6 +328,10 @@ export class Main extends Component<Props, State> {
 
 	endCampaign = () => {
 		try {
+			// Switch screen in the same batch as the state change; if we did it afterwards,
+			// the campaign screen would be rendered once with no game to show
+			this.props.setScreen(ScreenType.Landing);
+
 			this.setState({
 				game: null,
 				showHelp: null,
@@ -335,7 +339,6 @@ export class Main extends Component<Props, State> {
 				dialog: null
 			}, () => {
 				this.saveGame();
-				this.props.setScreen(ScreenType.Landing);
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -1334,12 +1337,15 @@ export class Main extends Component<Props, State> {
 			game.heroes.forEach(h => CombatantLogic.resetCombatant(h));
 			EncounterMapLogic.visibilityCache.reset();
 
+			// Switch screen in the same batch as the state change; if we did it afterwards,
+			// the encounter screen would be rendered once with no encounter to show
+			this.props.setScreen(ScreenType.Campaign);
+
 			this.setState({
 				game: game,
 				dialog: dialogContent
 			}, () => {
 				this.saveGame();
-				this.props.setScreen(ScreenType.Campaign);
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -1518,9 +1524,14 @@ export class Main extends Component<Props, State> {
 					/>
 				);
 			case ScreenType.Encounter:
+				if (!this.state.game?.encounter) {
+					// The encounter has finished; we're about to move to the campaign screen
+					return null;
+				}
+
 				return (
 					<EncounterScreen
-						encounter={this.state.game?.encounter as EncounterModel}
+						encounter={this.state.game.encounter}
 						game={this.state.game as GameModel}
 						options={this.state.options}
 						orientation={this.props.orientation}

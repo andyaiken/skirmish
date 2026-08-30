@@ -291,13 +291,20 @@ export class StrongholdPage extends Component<Props, State> {
 		return null;
 	};
 
+	getPeople = () => {
+		return [
+			...Array.from({ length: this.props.game.heroSlots }, (_, n) => ({ id: `townsfolk-${n}`, color: null })),
+			...this.props.game.heroes.map(h => ({ id: h.id, color: h.color }))
+		];
+	};
+
 	render = () => {
 		return (
 			<div className={`stronghold-page ${this.props.orientation}`}>
 				<div className='map-content' onClick={() => this.setState({ selectedStructure: null })}>
 					<StrongholdMapPanel
 						stronghold={this.props.game.stronghold}
-						people={this.props.game.heroes.length + this.props.game.heroSlots}
+						people={this.getPeople()}
 						selectedStructure={this.state.selectedStructure}
 						onSelectStructure={structure => this.setState({ selectedStructure: structure })}
 					/>

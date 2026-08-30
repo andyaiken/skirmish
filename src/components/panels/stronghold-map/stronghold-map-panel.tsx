@@ -11,7 +11,9 @@ import './stronghold-map-panel.scss';
 
 interface Props {
 	stronghold: StructureModel[];
-	people: number;
+	// One entry for each person wandering the map; a person with a colour of
+	// their own is a hero, and everyone else is drawn in the default grey
+	people: { id: string, color: string | null }[];
 	mode: 'map' | 'structure';
 	selectedStructure: StructureModel | null;
 	onSelectStructure: (structure: StructureModel | null) => void;
@@ -19,7 +21,7 @@ interface Props {
 
 export class StrongholdMapPanel extends Component<Props> {
 	public static defaultProps = {
-		people: 0,
+		people: [],
 		mode: 'map',
 		onSelectStructure: () => null
 	};
@@ -133,9 +135,10 @@ export class StrongholdMapPanel extends Component<Props> {
 		);
 	};
 
-	// Ambient decoration: a handful of people wandering between the buildings.
-	// Each one follows a closed circuit of structures, animated by the browser
-	// via a CSS motion path so that the map itself never has to re-render.
+	// Ambient decoration: a handful of people wandering between the buildings,
+	// one for each hero plus a group of townsfolk. Each one follows a closed
+	// circuit of structures, animated by the browser via a CSS motion path so
+	// that the map itself never has to re-render.
 	// These are drawn before the structures, so that people pass behind them.
 	getPeople = (structures: StructureModel[]) => {
 		if ((this.props.mode !== 'map') || (structures.length < 2)) {
@@ -153,7 +156,7 @@ export class StrongholdMapPanel extends Component<Props> {
 			};
 		};
 
-		return Array.from({ length: this.props.people }, (_, n) => {
+		return this.props.people.map(person => {
 			// Walk a circuit of three or four structures, picked at random. Stops
 			// are never repeated, so that no leg of the route has zero length.
 			const stops = Math.min(structures.length, Random.randomNumber(2, rng) + 3);
@@ -184,13 +187,14 @@ export class StrongholdMapPanel extends Component<Props> {
 
 			return (
 				<circle
-					key={n}
-					className='person'
+					key={person.id}
+					className={person.color ? 'person hero' : 'person'}
 					r={0.045}
 					style={{
 						offsetPath: `path('${path}')`,
 						animationDuration: `${duration.toFixed(2)}s`,
-						animationDelay: `-${offset.toFixed(2)}s`
+						animationDelay: `-${offset.toFixed(2)}s`,
+						fill: person.color ?? undefined
 					}}
 				/>
 			);

@@ -10,6 +10,13 @@
 		animation-name: stronghold-person;
 		animation-timing-function: linear;
 		animation-iteration-count: infinite;
+
+		// A hero, walking in their own colour rather than the townsfolk grey
+		&.hero {
+			opacity: 0.9;
+			stroke: rgb(50, 50, 50);
+			stroke-width: 0.008;
+		}
 	}
 
 	.structure {

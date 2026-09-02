@@ -194,11 +194,13 @@ export class MagicItemGenerator {
 		copyFeature.features.push(FeatureLogic.createRandomFeature());
 		options.push(copyFeature);
 
-		// A random action
-		const copyAction = JSON.parse(JSON.stringify(item)) as ItemModel;
-		copyAction.id = Utils.guid();
-		copyAction.actions.push(GameLogic.getRandomAction(item, packIDs));
-		options.push(copyAction);
+		if (item.actions.length === 0) {
+			// A random action
+			const copyAction = JSON.parse(JSON.stringify(item)) as ItemModel;
+			copyAction.id = Utils.guid();
+			copyAction.actions.push(GameLogic.getRandomAction(item, packIDs));
+			options.push(copyAction);
+		}
 
 		if (options.length === 0) {
 			return item;

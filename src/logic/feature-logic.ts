@@ -316,13 +316,15 @@ export class FeatureLogic {
 		return false;
 	};
 
+	static featuresAreEquivalent = (a: FeatureModel, b: FeatureModel) => {
+		return (FeatureLogic.getFeatureTitle(a) === FeatureLogic.getFeatureTitle(b)) && (FeatureLogic.getFeatureText(a) === FeatureLogic.getFeatureText(b));
+	};
+
 	static collateFeatures = (features: FeatureModel[]) => {
 		const collated: FeatureModel[] = [];
 
 		features.forEach(feature => {
-			const existing = collated.find(f => {
-				return (FeatureLogic.getFeatureTitle(f) === FeatureLogic.getFeatureTitle(feature)) && (FeatureLogic.getFeatureText(f) === FeatureLogic.getFeatureText(feature));
-			});
+			const existing = collated.find(f => FeatureLogic.featuresAreEquivalent(f, feature));
 			if (existing) {
 				existing.rank += feature.rank;
 			} else {

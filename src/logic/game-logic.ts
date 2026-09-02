@@ -131,7 +131,11 @@ export class GameLogic {
 	};
 
 	static getRandomDamageType = (category: DamageCategoryType = DamageCategoryType.Any) => {
-		const options = [];
+		return Collections.draw(GameLogic.getDamageTypes(category));
+	};
+
+	static getDamageTypes = (category: DamageCategoryType = DamageCategoryType.Any) => {
+		const options: DamageType[] = [];
 
 		switch (category) {
 			case DamageCategoryType.Any:
@@ -168,7 +172,7 @@ export class GameLogic {
 				break;
 		}
 
-		return Collections.draw(options);
+		return options;
 	};
 
 	static getRandomDamageCategoryType = () => {

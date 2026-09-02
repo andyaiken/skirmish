@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { PureComponent } from 'react';
 
 import './wall.scss';
 
@@ -11,7 +11,10 @@ interface Props {
 	onClick: (square: { x: number, y: number }) => void;
 }
 
-export class Wall extends Component<Props> {
+// There is one of these for every square of the map - several hundred of
+// them - so it only redraws when something about its own square changes,
+// rather than every time anything on the map does
+export class Wall extends PureComponent<Props> {
 	onClick = (e: React.MouseEvent) => {
 		if (this.props.selectable) {
 			e.stopPropagation();

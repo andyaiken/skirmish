@@ -31,6 +31,12 @@
 			right: 0;
 			top: 0;
 			bottom: 0;
+
+			// The two faces are stacked on top of each other with the back one
+			// turned around, so each has to be hidden while it faces away from
+			// us; without this they show through each other, mirrored
+			backface-visibility: hidden;
+
 			border: 1px solid var(--border);
 			border-radius: 15px;
 			display: flex;

@@ -3,6 +3,23 @@
 	height: 100%;
 	position: absolute;
 
+	.people-layer,
+	.structure-layer {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+	}
+
+	.people-layer {
+		pointer-events: none;
+
+		// Put the people on a compositing layer of their own. They animate
+		// constantly, and without this their layer is shared with the
+		// structures, whose drop shadows would then be re-rendered on every
+		// frame of the walk.
+		will-change: transform;
+	}
+
 	.person {
 		fill: var(--text);
 		opacity: 0.55;

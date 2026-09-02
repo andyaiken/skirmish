@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { PureComponent } from 'react';
 
 import type { EncounterMapSquareModel } from '../../../../models/encounter';
 
@@ -10,7 +10,10 @@ interface Props {
 	mapDimensions: { left: number, top: number };
 }
 
-export class Fog extends Component<Props> {
+// There is one of these for every square the current combatant can't see, so
+// it only redraws when something about its own square changes, rather than
+// every time anything on the map does
+export class Fog extends PureComponent<Props> {
 	render = () => {
 		return (
 			<div

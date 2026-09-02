@@ -20,6 +20,9 @@
 
 	&.on-map {
 		position: absolute;
+		left: 0;
+		top: 0;
+		transition: transform ease-in-out 0.2s;
 
 		.mini-token-face {
 			position: relative;
@@ -87,6 +90,9 @@
 		.health-bar-gauge {
 			background-color: var(--blood);
 			height: 100%;
+			// The gauge is the one place where a width really is worth
+			// animating, so it asks for that itself
+			transition: width ease-in-out 0.2s;
 		}
 	}
 

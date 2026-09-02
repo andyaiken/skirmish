@@ -59,26 +59,50 @@ body {
 * {
 	box-sizing: border-box;
 	user-select: none;
-	backface-visibility: hidden;
+
+	// Only properties which can be redrawn on their own are transitioned here.
+	// Transitioning a size or a position would put every element in the app - a
+	// battle map is several hundred of them - through layout on every frame of
+	// the transition, which is slow and drains a tablet's battery. Anything
+	// which needs to move should transition its transform instead.
 	transition:
-		width ease-in-out 0.2s,
-		height ease-in-out 0.2s,
-		max-width ease-in-out 0.2s,
-		max-height ease-in-out 0.2s,
-		top ease-in-out 0.2s,
-		bottom ease-in-out 0.2s,
-		left ease-in-out 0.2s,
-		right ease-in-out 0.2s,
 		color ease-in-out 0.2s,
 		background-color ease-in-out 0.2s,
 		background-image ease-in-out 0.2s,
 		border ease-in-out 0.2s,
 		outline ease-in-out 0.2s,
-		margin ease-in-out 0.2s,
-		padding ease-in-out 0.2s,
 		opacity ease-in-out 0.2s,
 		fill ease-in-out 0.2s,
 		stroke ease-in-out 0.2s;
+}
+
+// Decoration which moves for its own sake, rather than to show the player
+// something. It never stops, which keeps the device awake and costs battery, so
+// it's turned off for anyone who has asked for less motion or set the option.
+@mixin decoration-off {
+	.stronghold-map .person,
+	.combat-stats-panel .heartbeat {
+		animation: none;
+	}
+
+	// The pulses sit on top of the token, so they have to go altogether; left
+	// in place without their animation they would hide it
+	.encounter-map-mini-token .pulse {
+		display: none;
+	}
+}
+
+// Both of these are scoped to the app's root element, so that they beat the
+// components' own rules on specificity rather than on the order the stylesheets
+// happen to be bundled in
+@media (prefers-reduced-motion: reduce) {
+	.skirmish {
+		@include decoration-off;
+	}
+}
+
+.skirmish.reduce-motion {
+	@include decoration-off;
 }
 
 h1 {

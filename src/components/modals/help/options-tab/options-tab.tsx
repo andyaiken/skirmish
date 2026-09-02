@@ -15,6 +15,7 @@ interface Props {
 	endCampaign: () => void;
 	setDeveloperMode: (value: boolean) => void;
 	setShowTips: (value: boolean) => void;
+	setReduceMotion: (value: boolean) => void;
 	setSoundEffectsVolume: (value: number) => void;
 	setRenderer: (value: string) => void;
 }
@@ -43,6 +44,7 @@ export class OptionsTab extends Component<Props> {
 				<hr />
 				{local ? <Switch label='Developer Mode' checked={this.props.options.developer} onChange={this.props.setDeveloperMode} /> : null}
 				<Switch label='Show Tips' checked={this.props.options.showTips} onChange={this.props.setShowTips} />
+				<Switch label='Reduce Motion' checked={this.props.options.reduceMotion} onChange={this.props.setReduceMotion} />
 				<hr />
 				<Text type={TextType.SubHeading}>Platform</Text>
 				<Selector

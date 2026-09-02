@@ -186,6 +186,17 @@ export class Main extends Component<Props, State> {
 		});
 	};
 
+	setReduceMotion = (value: boolean) => {
+		const options = this.state.options;
+		options.reduceMotion = value;
+
+		this.setState({
+			options: options
+		}, () => {
+			this.saveOptions();
+		});
+	};
+
 	setSoundEffectsVolume = (value: number) => {
 		const options = this.state.options;
 		options.soundEffectsVolume = value;
@@ -1094,10 +1105,14 @@ export class Main extends Component<Props, State> {
 					if (combatant.combat.intents && (combatant.combat.intents.intents.length > 0)) {
 						IntentsLogic.performIntents(encounter, combatant);
 
+						// Not saved here: the turn is saved when it ends, a step
+						// later. Saving each step would write the whole game to
+						// storage every 800ms for as long as the monsters are
+						// acting, and losing a part-played turn costs nothing -
+						// the monster simply takes it again from the beginning.
 						this.setState({
 							game: this.state.game
 						}, () => {
-							this.saveGame();
 							this.monsterTurnTimeout = setTimeout(perform, 800);
 						});
 					} else {
@@ -1593,6 +1608,7 @@ export class Main extends Component<Props, State> {
 							endCampaign={this.endCampaign}
 							setDeveloperMode={this.setDeveloperMode}
 							setShowTips={this.setShowTips}
+							setReduceMotion={this.setReduceMotion}
 							setSoundEffectsVolume={this.setSoundEffectsVolume}
 							setRenderer={this.setRenderer}
 						/>
@@ -1625,7 +1641,7 @@ export class Main extends Component<Props, State> {
 		}
 
 		return (
-			<div className='skirmish'>
+			<div className={this.state.options.reduceMotion ? 'skirmish reduce-motion' : 'skirmish'}>
 				<Toaster
 					position='bottom-right'
 					toastOptions={{

@@ -119,6 +119,9 @@ export class MiniToken extends Component<Props, State> {
 
 		const size = this.props.encounter ? this.props.squareSize * this.props.combatant.size : this.props.squareSize;
 
+		const x = (this.props.combatant.combat.position.x - this.props.mapDimensions.left) * this.props.squareSize;
+		const y = (this.props.combatant.combat.position.y - this.props.mapDimensions.top) * this.props.squareSize;
+
 		return (
 			<div
 				ref={this.tokenRef}
@@ -127,8 +130,9 @@ export class MiniToken extends Component<Props, State> {
 					width: `${size}px`,
 					height: `${size}px`,
 					fontSize: `${size * 0.35}px`,
-					left: this.props.encounter ? `${((this.props.combatant.combat.position.x - this.props.mapDimensions.left) * this.props.squareSize)}px` : '0',
-					top: this.props.encounter ? `${((this.props.combatant.combat.position.y - this.props.mapDimensions.top) * this.props.squareSize)}px` : '0',
+					// Positioned with a transform, so that moving around the map
+					// doesn't put the whole map through layout on every frame
+					transform: this.props.encounter ? `translate(${x}px, ${y}px)` : undefined,
 					backgroundImage: `linear-gradient(135deg, ${this.props.combatant.color}, ${colorDark})`
 				}}
 				onClick={e => this.onClick(e)}

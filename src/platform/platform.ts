@@ -63,6 +63,7 @@ export class Platform {
 									version: '',
 									developer: false,
 									showTips: true,
+									reduceMotion: false,
 									soundEffectsVolume: 0.5,
 									packIDs: [],
 									renderer: ''
@@ -139,6 +140,10 @@ export class Platform {
 
 		if (options.packIDs === undefined) {
 			options.packIDs = [];
+		}
+
+		if (options.reduceMotion === undefined) {
+			options.reduceMotion = false;
 		}
 	};
 

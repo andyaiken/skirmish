@@ -19,6 +19,7 @@ interface Props {
 	endCampaign: () => void;
 	setDeveloperMode: (value: boolean) => void;
 	setShowTips: (value: boolean) => void;
+	setReduceMotion: (value: boolean) => void;
 	setSoundEffectsVolume: (value: number) => void;
 	setRenderer: (value: string) => void;
 }
@@ -72,6 +73,7 @@ export class HelpModal extends Component<Props, State> {
 							endCampaign={this.props.endCampaign}
 							setDeveloperMode={this.props.setDeveloperMode}
 							setShowTips={this.props.setShowTips}
+							setReduceMotion={this.props.setReduceMotion}
 							setSoundEffectsVolume={this.props.setSoundEffectsVolume}
 							setRenderer={this.props.setRenderer}
 						/>

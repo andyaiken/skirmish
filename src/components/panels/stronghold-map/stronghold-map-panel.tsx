@@ -190,12 +190,21 @@ export class StrongholdMapPanel extends Component<Props> {
 
 		const width = 1 + (dims.right - dims.left);
 		const height = 1 + (dims.bottom - dims.top);
+		const viewBox = `${dims.left} ${dims.top} ${width} ${height}`;
+
+		// The people are drawn on a layer of their own, beneath the structures,
+		// so that they still pass behind the buildings but redrawing them as
+		// they walk can't drag the structures - and their drop shadows - into
+		// being redrawn too
+		const people = this.getPeople(structures);
 
 		return (
-			<svg className='stronghold-map' viewBox={`${dims.left} ${dims.top} ${width} ${height}`} onClick={e => this.onClick(e, null)}>
-				{this.getPeople(structures)}
-				{structures.map(this.getStructure)}
-			</svg>
+			<div className='stronghold-map'>
+				{people.length > 0 ? <svg className='people-layer' viewBox={viewBox}>{people}</svg> : null}
+				<svg className='structure-layer' viewBox={viewBox} onClick={e => this.onClick(e, null)}>
+					{structures.map(this.getStructure)}
+				</svg>
+			</div>
 		);
 	};
 }

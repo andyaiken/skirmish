@@ -9,7 +9,7 @@ import { ConditionLogic } from '../../../logic/condition-logic';
 import { EncounterLogic } from '../../../logic/encounter-logic';
 import { EncounterMapLogic } from '../../../logic/encounter-map-logic';
 
-import type { EncounterModel, LootPileModel } from '../../../models/encounter';
+import type { EncounterMapEdgeModel, EncounterModel, LootPileModel } from '../../../models/encounter';
 import type { ActionOriginParameterModel } from '../../../models/action';
 import type { CombatantModel } from '../../../models/combatant';
 
@@ -45,6 +45,55 @@ export class EncounterMapPanel extends Component<Props> {
 
 	currentCombatantRef = createRef<MiniToken>();
 	selectedCombatantRef = createRef<MiniToken>();
+
+	// The walls, the dimensions and the edges of the map are all worked out
+	// afresh on every render, though they only ever change when the map itself
+	// does. Working them out again costs time, and handing every one of the
+	// several hundred tiles a newly built object means none of them can tell
+	// that nothing has changed, so all of them redraw whenever anything does.
+	// They're cached here against a signature of the map, and so keep both their
+	// value and their identity until a square is added, removed or changed.
+	mapSignature: string | null = null;
+	cachedWalls: { x: number, y: number }[] = [];
+	cachedDimensions = { left: 0, top: 0, right: 0, bottom: 0 };
+	cachedEdges: EncounterMapEdgeModel = { horizontal: [], vertical: [] };
+
+	getMap = () => {
+		const mapSquares = this.props.encounter.mapSquares;
+		const signature = mapSquares.map(sq => `${sq.x} ${sq.y} ${sq.type}`).join('|');
+
+		if (signature !== this.mapSignature) {
+			this.mapSignature = signature;
+
+			this.cachedWalls = Collections
+				.distinct(EncounterMapLogic.getAdjacentWalls(mapSquares, mapSquares), sq => `${sq.x} ${sq.y}`)
+				.sort((a, b) => (a.y - b.y) || (a.x - b.x));
+
+			// Get dimensions, adding a 1-square border
+			const dims = EncounterMapLogic.getDimensions(mapSquares);
+			dims.left -= 1;
+			dims.top -= 1;
+			dims.right += 1;
+			dims.bottom += 1;
+
+			// Only take the new dimensions if they're actually different. Most
+			// changes to the map - a square changing its type, say - leave the
+			// bounds alone, and swapping in an equal object would be enough on
+			// its own to redraw every tile on the map.
+			const current = this.cachedDimensions;
+			if ((dims.left !== current.left) || (dims.top !== current.top) || (dims.right !== current.right) || (dims.bottom !== current.bottom)) {
+				this.cachedDimensions = dims;
+			}
+
+			this.cachedEdges = EncounterMapLogic.getMapEdges(mapSquares);
+		}
+
+		return {
+			walls: this.cachedWalls,
+			dims: this.cachedDimensions,
+			edges: this.cachedEdges
+		};
+	};
 
 	scrollToCombatant = (combatant: 'current' | 'selected') => {
 		if (combatant === 'selected') {
@@ -106,12 +155,7 @@ export class EncounterMapPanel extends Component<Props> {
 	};
 
 	render = () => {
-		// Get dimensions, adding a 1-square border
-		const dims = EncounterMapLogic.getDimensions(this.props.encounter.mapSquares);
-		dims.left -= 1;
-		dims.top -= 1;
-		dims.right += 1;
-		dims.bottom += 1;
+		const { walls: wallSquares, dims, edges } = this.getMap();
 
 		let combatants = this.props.encounter.combatants.filter(combatant => combatant.combat.state !== CombatantState.Dead);
 		const current = combatants.find(c => c.combat.current);
@@ -119,14 +163,7 @@ export class EncounterMapPanel extends Component<Props> {
 			combatants = combatants.filter(c => (c === current) || (c.faction === current.faction) || (current.combat.senses >= c.combat.hidden));
 		}
 
-		const walls = Collections.distinct(EncounterMapLogic.getAdjacentWalls(this.props.encounter.mapSquares, this.props.encounter.mapSquares), sq => `${sq.x} ${sq.y}`)
-			.sort((a, b) => {
-				let result: number = a.y - b.y;
-				if (result === 0) {
-					result = a.x - b.x;
-				}
-				return result;
-			})
+		const walls = wallSquares
 			.map(wall => {
 				return (
 					<Wall
@@ -154,6 +191,7 @@ export class EncounterMapPanel extends Component<Props> {
 					<Floor
 						key={`square ${sq.x} ${sq.y}`}
 						square={sq}
+						type={sq.type}
 						squareSize={this.props.squareSize}
 						mapDimensions={dims}
 						selectable={!!this.props.selectableSquares.find(s => (s.x === sq.x) && (s.y === sq.y))}
@@ -240,7 +278,6 @@ export class EncounterMapPanel extends Component<Props> {
 
 		const currentCombatant = this.props.encounter.combatants.find(c => c.combat.current);
 		const currentCombatantSquares = currentCombatant ? EncounterLogic.getCombatantSquares(this.props.encounter, currentCombatant) : [];
-		const edges = EncounterMapLogic.getMapEdges(this.props.encounter.mapSquares);
 		const fog = Collections.distinct(this.props.encounter.mapSquares, sq => `${sq.x} ${sq.y}`)
 			.filter(sq => {
 				if (currentCombatant) {

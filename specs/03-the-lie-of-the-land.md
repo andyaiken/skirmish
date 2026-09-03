@@ -189,8 +189,8 @@ lion/tiger/panther).
 ### Items
 
 **Snare Kit** (`ItemProficiencyType.None`), **Climbing Boots** (`ItemLocationType.Feet`). The Feet
-slot currently contains exactly one item, so any hero who acquires a Feet magic item gets a variant
-of Boots. See Spec 05.
+slot was filled out to 5 items by *Tools of the Trade*, so Climbing Boots is now a thematic addition
+rather than a gap-filler.
 
 ---
 

@@ -92,8 +92,9 @@ That prerequisite pair is barely used in the current data and this is the cleane
 ### Beast-handler (background)
 
 Fights alongside something on a chain. `ActionEffects.summon(SummonType.Beast)` is implemented and
-has very few users. If Spec 01's Menagerie top-up also uses summoning, differentiate: the
-Beastmaster summons and buffs, the Beast-handler summons and throws it at people.
+has very few users — but see the deferred Beastmaster in the README, and the Druid's *Animal
+Companion*, which already owns plain beast-summoning. Differentiate on what happens after the
+summon: the Beast-handler throws it at people.
 
 Target 3–4.
 

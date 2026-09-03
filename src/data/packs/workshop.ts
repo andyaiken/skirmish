@@ -14,11 +14,11 @@ import { SkillType } from '../../enums/skill-type';
 import { StructureType } from '../../enums/structure-type';
 import { TraitType } from '../../enums/trait-type';
 
-export const technology = (): PackModel => ({
-	id: 'pack-06',
+export const workshop = (): PackModel => ({
+	id: 'pack-workshop',
 	name: 'The Workshop',
 	description: 'The cards in this pack showcase marvels of engineering and ingenuity.',
-	heroSpecies: [
+	species: [
 		{
 			id: 'species-construct',
 			name: 'Construct',
@@ -75,9 +75,7 @@ export const technology = (): PackModel => ({
 				}
 			],
 			deathActions: []
-		}
-	],
-	monsterSpecies: [
+		},
 		{
 			id: 'species-automaton',
 			name: 'Automaton',

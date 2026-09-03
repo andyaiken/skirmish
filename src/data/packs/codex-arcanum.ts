@@ -16,12 +16,11 @@ import { SkillType } from '../../enums/skill-type';
 import { StructureType } from '../../enums/structure-type';
 import { TraitType } from '../../enums/trait-type';
 
-export const arcana = (): PackModel => ({
-	id: 'pack-01',
+export const codexArcanum = (): PackModel => ({
+	id: 'pack-codex-arcanum',
 	name: 'Codex Arcanum',
 	description: 'Discover new ways to channel magic with the cards in this pack.',
-	heroSpecies: [],
-	monsterSpecies: [
+	species: [
 		{
 			id: 'species-animated-object',
 			name: 'Animated Object',
@@ -103,7 +102,7 @@ export const arcana = (): PackModel => ({
 		{
 			id: 'species-arcane-aberration',
 			name: 'Arcane Aberration',
-			description: 'A spell that went wrong, and did not stop going wrong.',
+			description: 'A spell that went wrong, and kept going.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [

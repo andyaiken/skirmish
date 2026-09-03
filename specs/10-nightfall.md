@@ -29,7 +29,7 @@ monster, and it means nothing beyond a damage type name.
 
 ```ts
 static dark = (): PackModel => ({
-    id: 'pack-20',
+    id: 'pack-nightfall',
     name: 'Nightfall',
     description: 'Half of what is on this map can see you. You can see rather less of it.'
 });

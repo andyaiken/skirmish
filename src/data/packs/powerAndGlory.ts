@@ -13,11 +13,11 @@ import { SkillType } from '../../enums/skill-type';
 import { StructureType } from '../../enums/structure-type';
 import { TraitType } from '../../enums/trait-type';
 
-export const faith = (): PackModel => ({
-	id: 'pack-07',
+export const powerAndGlory = (): PackModel => ({
+	id: 'pack-power-and-glory',
 	name: 'Power and Glory',
 	description: 'These cards bring the majesty of the divine to your game.',
-	heroSpecies: [
+	species: [
 		{
 			id: 'species-deva',
 			name: 'Deva',
@@ -77,31 +77,29 @@ export const faith = (): PackModel => ({
 				}
 			],
 			deathActions: []
-		}
-	],
-	monsterSpecies: [
+		},
 		{
-			id: 'species-the-fallen',
-			name: 'The Fallen',
+			id: 'species-apostate',
+			name: 'Apostate',
 			description: 'A deva that kept its radiance and lost everything else.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [],
 			startingFeatures: [
-				FeatureLogic.createTraitFeature('the-fallen-start-1', TraitType.Resolve, 1),
-				FeatureLogic.createSkillFeature('the-fallen-start-2', SkillType.Presence, 2),
-				FeatureLogic.createDamageBonusFeature('the-fallen-start-3', DamageType.Light, 2),
-				FeatureLogic.createDamageBonusFeature('the-fallen-start-4', DamageType.Decay, 2)
+				FeatureLogic.createTraitFeature('apostate-start-1', TraitType.Resolve, 1),
+				FeatureLogic.createSkillFeature('apostate-start-2', SkillType.Presence, 2),
+				FeatureLogic.createDamageBonusFeature('apostate-start-3', DamageType.Light, 2),
+				FeatureLogic.createDamageBonusFeature('apostate-start-4', DamageType.Decay, 2)
 			],
 			features: [
-				FeatureLogic.createTraitFeature('the-fallen-feature-1', TraitType.Resolve, 1),
-				FeatureLogic.createSkillFeature('the-fallen-feature-2', SkillType.Presence, 2),
-				FeatureLogic.createDamageResistFeature('the-fallen-feature-3', DamageType.Light, 3),
-				FeatureLogic.createAuraDamageFeature('the-fallen-feature-4', ConditionType.AutoDamage, DamageType.Decay, 1)
+				FeatureLogic.createTraitFeature('apostate-feature-1', TraitType.Resolve, 1),
+				FeatureLogic.createSkillFeature('apostate-feature-2', SkillType.Presence, 2),
+				FeatureLogic.createDamageResistFeature('apostate-feature-3', DamageType.Light, 3),
+				FeatureLogic.createAuraDamageFeature('apostate-feature-4', ConditionType.AutoDamage, DamageType.Decay, 1)
 			],
 			actions: [
 				{
-					id: 'the-fallen-action-1',
+					id: 'apostate-action-1',
 					name: 'Withering Radiance',
 					prerequisites: [],
 					parameters: [
@@ -121,7 +119,7 @@ export const faith = (): PackModel => ({
 					]
 				},
 				{
-					id: 'the-fallen-action-2',
+					id: 'apostate-action-2',
 					name: 'Judgement',
 					prerequisites: [],
 					parameters: [
@@ -141,19 +139,27 @@ export const faith = (): PackModel => ({
 					]
 				},
 				{
-					id: 'the-fallen-action-3',
+					id: 'apostate-action-3',
 					name: 'Unmake The Blessing',
 					prerequisites: [],
 					parameters: [
 						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 5)
 					],
 					effects: [
-						ActionEffects.removeCondition(TraitType.Any),
-						ActionEffects.addCondition(ConditionLogic.createDamageVulnerabilityCondition(TraitType.Resolve, 4, DamageType.Decay))
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Presence,
+							trait: TraitType.Resolve,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.removeCondition(TraitType.Any),
+								ActionEffects.addCondition(ConditionLogic.createDamageVulnerabilityCondition(TraitType.Resolve, 4, DamageType.Decay))
+							]
+						})
 					]
 				},
 				{
-					id: 'the-fallen-action-4',
+					id: 'apostate-action-4',
 					name: 'Fall With Me',
 					prerequisites: [],
 					parameters: [

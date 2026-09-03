@@ -1,19 +1,21 @@
 import { ActionEffects, ActionPrerequisites, ActionTargetParameters } from '../../logic/action-logic';
 import { ActionTargetType } from '../../enums/action-target-type';
 import { CombatantType } from '../../enums/combatant-type';
+import { ConditionLogic } from '../../logic/condition-logic';
 import { DamageCategoryType } from '../../enums/damage-category-type';
 import { DamageType } from '../../enums/damage-type';
 import { FeatureLogic } from '../../logic/feature-logic';
 import { MovementType } from '../../enums/movement-type';
 import { PackModel } from '../../models/pack';
+import { QuirkType } from '../../enums/quirk-type';
 import { SkillType } from '../../enums/skill-type';
 import { TraitType } from '../../enums/trait-type';
 
 export const coldBlood = (): PackModel => ({
-	id: 'pack-10',
+	id: 'pack-cold-blood',
 	name: 'Cold Blood',
 	description: 'Sinister cold-blooded creatures stalk this pack.',
-	heroSpecies: [
+	species: [
 		{
 			id: 'species-reptilian',
 			name: 'Reptilian',
@@ -88,9 +90,71 @@ export const coldBlood = (): PackModel => ({
 				}
 			],
 			deathActions: []
-		}
-	],
-	monsterSpecies: [
+		},
+		{
+			id: 'species-basilisk',
+			name: 'Basilisk',
+			description: 'A many-legged reptile with a petrifying gaze.',
+			type: CombatantType.Monster,
+			size: 1,
+			quirks: [
+				QuirkType.Beast
+			],
+			startingFeatures: [
+				FeatureLogic.createSkillFeature('basilisk-start-1', SkillType.Brawl, 2),
+				FeatureLogic.createSkillFeature('basilisk-start-2', SkillType.Presence, 2),
+				FeatureLogic.createDamageBonusFeature('basilisk-start-3', DamageType.Poison, 1)
+			],
+			features: [
+				FeatureLogic.createSkillFeature('basilisk-feature-1', SkillType.Brawl, 2),
+				FeatureLogic.createSkillFeature('basilisk-feature-2', SkillType.Presence, 2),
+				FeatureLogic.createDamageBonusFeature('basilisk-feature-3', DamageType.Poison, 1),
+				FeatureLogic.createDamageResistFeature('basilisk-feature-4', DamageType.Poison, 2)
+			],
+			actions: [
+				{
+					id: 'basilisk-action-1',
+					name: 'Petrifying Gaze',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 6)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Presence,
+							trait: TraitType.Resolve,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Resolve, 5)),
+								ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 4, TraitType.Speed))
+							]
+						})
+					]
+				},
+				{
+					id: 'basilisk-action-2',
+					name: 'Venomous Bite',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Piercing, 2),
+								ActionEffects.dealDamage(DamageType.Poison, 2)
+							]
+						})
+					]
+				}
+			],
+			deathActions: []
+		},
 		{
 			id: 'species-crocodilian',
 			name: 'Crocodilian',
@@ -145,6 +209,88 @@ export const coldBlood = (): PackModel => ({
 								ActionEffects.dealDamage(DamageType.Impact, 3),
 								ActionEffects.forceMovement(MovementType.Push, 1),
 								ActionEffects.knockDown()
+							]
+						})
+					]
+				}
+			],
+			deathActions: []
+		},
+		{
+			id: 'species-lindworm',
+			name: 'Lindworm',
+			description: 'A great wingless dragon that hunts from below.',
+			type: CombatantType.Monster,
+			size: 2,
+			quirks: [
+				QuirkType.Beast
+			],
+			startingFeatures: [
+				FeatureLogic.createTraitFeature('lindworm-start-1', TraitType.Endurance, 1),
+				FeatureLogic.createSkillFeature('lindworm-start-2', SkillType.Brawl, 2),
+				FeatureLogic.createDamageBonusFeature('lindworm-start-3', DamageType.Poison, 1)
+			],
+			features: [
+				FeatureLogic.createTraitFeature('lindworm-feature-1', TraitType.Endurance, 1),
+				FeatureLogic.createSkillFeature('lindworm-feature-2', SkillType.Brawl, 2),
+				FeatureLogic.createDamageResistFeature('lindworm-feature-3', DamageType.Poison, 2),
+				FeatureLogic.createDamageResistFeature('lindworm-feature-4', DamageType.Piercing, 1)
+			],
+			actions: [
+				{
+					id: 'lindworm-action-1',
+					name: 'Savage Bite',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Piercing, 4)
+							]
+						})
+					]
+				},
+				{
+					id: 'lindworm-action-2',
+					name: 'Tail Sweep',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, Number.MAX_VALUE)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Impact, 2),
+								ActionEffects.knockDown()
+							]
+						})
+					]
+				},
+				{
+					id: 'lindworm-action-3',
+					name: 'Spray Venom',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 2)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Poison, 3)
 							]
 						})
 					]

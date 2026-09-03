@@ -23,7 +23,7 @@ combat. A gladiator pack is the natural home for that.
 
 ```ts
 static arena = (): PackModel => ({
-    id: 'pack-14',
+    id: 'pack-blood-and-sand',
     name: 'Blood and Sand',
     description: 'Fighting to win is one thing. Fighting to be watched is another.'
 });

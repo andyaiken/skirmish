@@ -13,15 +13,14 @@ import { SkillCategoryType } from '../../enums/skill-category-type';
 import { SkillType } from '../../enums/skill-type';
 import { TraitType } from '../../enums/trait-type';
 
-export const potions = (): PackModel => ({
-	id: 'pack-08',
+export const magicInAGlass = (): PackModel => ({
+	id: 'pack-magic-in-a-glass',
 	name: 'Magic in a Glass',
 	description: 'These cards add magical potions to the game.',
-	heroSpecies: [],
-	monsterSpecies: [
+	species: [
 		{
-			id: 'species-mutagen',
-			name: 'Mutagen',
+			id: 'species-mutant',
+			name: 'Mutant',
 			description: 'Someone drank the wrong bottle, and this is what walked away.',
 			type: CombatantType.Monster,
 			size: 1,
@@ -29,20 +28,20 @@ export const potions = (): PackModel => ({
 				QuirkType.Amorphous
 			],
 			startingFeatures: [
-				FeatureLogic.createTraitFeature('mutagen-start-1', TraitType.Endurance, 1),
-				FeatureLogic.createSkillFeature('mutagen-start-2', SkillType.Brawl, 2),
-				FeatureLogic.createDamageResistFeature('mutagen-start-3', DamageType.Acid, 3),
-				FeatureLogic.createDamageResistFeature('mutagen-start-4', DamageType.Poison, 3)
+				FeatureLogic.createTraitFeature('mutant-start-1', TraitType.Endurance, 1),
+				FeatureLogic.createSkillFeature('mutant-start-2', SkillType.Brawl, 2),
+				FeatureLogic.createDamageResistFeature('mutant-start-3', DamageType.Acid, 3),
+				FeatureLogic.createDamageResistFeature('mutant-start-4', DamageType.Poison, 3)
 			],
 			features: [
-				FeatureLogic.createTraitFeature('mutagen-feature-1', TraitType.Endurance, 1),
-				FeatureLogic.createSkillFeature('mutagen-feature-2', SkillType.Brawl, 2),
-				FeatureLogic.createDamageBonusFeature('mutagen-feature-3', DamageType.Acid, 2),
-				FeatureLogic.createDamageCategoryResistFeature('mutagen-feature-4', DamageCategoryType.Corruption, 1)
+				FeatureLogic.createTraitFeature('mutant-feature-1', TraitType.Endurance, 1),
+				FeatureLogic.createSkillFeature('mutant-feature-2', SkillType.Brawl, 2),
+				FeatureLogic.createDamageBonusFeature('mutant-feature-3', DamageType.Acid, 2),
+				FeatureLogic.createDamageCategoryResistFeature('mutant-feature-4', DamageCategoryType.Corruption, 1)
 			],
 			actions: [
 				{
-					id: 'mutagen-action-1',
+					id: 'mutant-action-1',
 					name: 'Unstable Lash',
 					prerequisites: [],
 					parameters: [
@@ -63,7 +62,7 @@ export const potions = (): PackModel => ({
 					]
 				},
 				{
-					id: 'mutagen-action-2',
+					id: 'mutant-action-2',
 					name: 'Reagent Spray',
 					prerequisites: [],
 					parameters: [
@@ -83,7 +82,7 @@ export const potions = (): PackModel => ({
 					]
 				},
 				{
-					id: 'mutagen-action-3',
+					id: 'mutant-action-3',
 					name: 'Reconstitute',
 					prerequisites: [],
 					parameters: [

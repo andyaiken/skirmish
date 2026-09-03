@@ -1,14 +1,17 @@
-import { arcana } from '../data/packs/arcana';
-import { beasts } from '../data/packs/beasts';
+import { codexArcanum } from '../data/packs/codex-arcanum';
 import { coldBlood } from '../data/packs/cold-blood';
 import { core } from '../data/packs/core';
 import { elements } from '../data/packs/elements';
-import { fae } from '../data/packs/fae';
-import { faith } from '../data/packs/faith';
-import { potions } from '../data/packs/potions';
-import { skullduggery } from '../data/packs/skullduggery';
-import { technology } from '../data/packs/technology';
-import { undead } from '../data/packs/undead';
+import { faeRealm } from '../data/packs/fae-realm';
+import { guileAndCunning } from '../data/packs/guile-and-cunning';
+import { hellToPay } from '../data/packs/hell-to-pay';
+import { magicInAGlass } from '../data/packs/magic-in-a-glass';
+import { menagerie } from '../data/packs/menagerie';
+import { outOfTheGrave } from '../data/packs/out-of-the-grave';
+import { powerAndGlory } from '../data/packs/powerAndGlory';
+import { workshop } from '../data/packs/workshop';
+
+import { CombatantType } from '../enums/combatant-type';
 
 import { Collections } from '../utils/collections';
 
@@ -19,16 +22,17 @@ export class PackLogic {
 
 	static getExpansionPacks = () => {
 		const list = [
-			arcana(),
-			skullduggery(),
+			codexArcanum(),
+			coldBlood(),
 			elements(),
-			beasts(),
-			undead(),
-			technology(),
-			faith(),
-			potions(),
-			fae(),
-			coldBlood()
+			faeRealm(),
+			guileAndCunning(),
+			hellToPay(),
+			magicInAGlass(),
+			menagerie(),
+			outOfTheGrave(),
+			powerAndGlory(),
+			workshop()
 		];
 
 		return Collections.sort(list, n => n.name);
@@ -59,9 +63,11 @@ export class PackLogic {
 		);
 	};
 
-	static getHeroSpecies = (packID: string) => PackLogic.findPack(packID)?.heroSpecies || [];
+	static getSpecies = (packID: string) => PackLogic.findPack(packID)?.species || [];
 
-	static getMonsterSpecies = (packID: string) => PackLogic.findPack(packID)?.monsterSpecies || [];
+	static getHeroSpecies = (packID: string) => PackLogic.getSpecies(packID).filter(s => s.type === CombatantType.Hero);
+
+	static getMonsterSpecies = (packID: string) => PackLogic.getSpecies(packID).filter(s => s.type === CombatantType.Monster);
 
 	static getRoles = (packID: string) => PackLogic.findPack(packID)?.roles || [];
 
@@ -75,8 +81,7 @@ export class PackLogic {
 
 	static getPackCards = (packID: string) => {
 		return [
-			...PackLogic.getHeroSpecies(packID),
-			...PackLogic.getMonsterSpecies(packID),
+			...PackLogic.getSpecies(packID),
 			...PackLogic.getRoles(packID),
 			...PackLogic.getBackgrounds(packID),
 			...PackLogic.getItems(packID),

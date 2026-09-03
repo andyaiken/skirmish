@@ -27,7 +27,7 @@ is potions that help, this is chemistry that does not.
 
 ```ts
 static rot = (): PackModel => ({
-    id: 'pack-16',
+    id: 'pack-ill-humours',
     name: 'Ill Humours',
     description: 'Some things are cured. Others are merely passed on.'
 });

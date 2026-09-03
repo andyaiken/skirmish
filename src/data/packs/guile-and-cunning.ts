@@ -12,12 +12,11 @@ import { SkillType } from '../../enums/skill-type';
 import { StructureType } from '../../enums/structure-type';
 import { TraitType } from '../../enums/trait-type';
 
-export const skullduggery = (): PackModel => ({
-	id: 'pack-02',
+export const guileAndCunning = (): PackModel => ({
+	id: 'pack-guile-and-cunning',
 	name: 'Guile and Cunning',
 	description: 'A collection of cards for those who fight with skullduggery rather than valor.',
-	heroSpecies: [],
-	monsterSpecies: [
+	species: [
 		{
 			id: 'species-doppelganger',
 			name: 'Doppelganger',

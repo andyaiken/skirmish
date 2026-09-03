@@ -54,7 +54,7 @@ ever has a set-piece opponent. `tasks.md` wants a Dragon; the current system can
 
 Two each, sized to the existing monster cards (2–4 actions, 2–5 features).
 
-### ~~Codex Arcanum (`pack-01`)~~
+### ~~Codex Arcanum (`pack-codex-arcanum`)~~
 
 ~~**Animated Object**~~ — `Mindless`, `Amorphous`. A suit of armour or a statue moving on its own. High
 Physical resistance, Impact damage. Cheap to design because Mindless monsters skip role and
@@ -63,7 +63,7 @@ background (`CombatantLogic.applyCombatantCards` handles this).
 ~~**Arcane Aberration**~~ — Psychic damage, condition-heavy. Psychic is Psion-only today and has no
 monster at all.
 
-### ~~Guile and Cunning (`pack-02`)~~
+### ~~Guile and Cunning (`pack-guile-and-cunning`)~~
 
 ~~**Doppelganger**~~ — high Stealth, `ActionEffects.disarm()` and `steal()`, both implemented and barely
 used. The monster that takes your things.
@@ -71,7 +71,7 @@ used. The monster that takes your things.
 ~~**Cutthroat**~~ — a humanoid that draws role and background cards, unlike most monsters. Poison and
 Piercing.
 
-### ~~The Workshop (`pack-06`)~~
+### ~~The Workshop (`pack-workshop`)~~
 
 ~~**Automaton**~~ — `Drone`-flavoured but not literally Drone; Impact damage, Physical resistance,
 PowderWeapons proficiency so it can carry the Rifle and Carbine the pack adds.
@@ -83,14 +83,14 @@ special case in `startOfTurn` and a general trigger would tidy it.
 
 > ~~The hook was added: `SpeciesModel.deathActions`, resolved and run from `EncounterLogic.kill`.~~
 
-### ~~Power and Glory (`pack-07`)~~
+### ~~Power and Glory (`pack-power-and-glory`)~~
 
-~~**The Fallen**~~ — a Deva that went wrong. Light and Decay together, which no card combines.
+~~**Apostate**~~ — a Deva that went wrong. Light and Decay together, which no card combines.
 
 ~~**Inquisitor**~~ — Presence-based attacks, condition removal on allies. A monster that heals its side
 is something the roster lacks entirely.
 
-### ~~Magic in a Glass (`pack-08`)~~
+### ~~Magic in a Glass (`pack-magic-in-a-glass`)~~
 
 ~~**Mutagen**~~ — `Amorphous`, changes damage type between rounds. The changing part needs turn-start
 logic; the simpler version is a monster with several damage types on one attack.
@@ -101,7 +101,7 @@ logic; the simpler version is a monster with several damage types on one attack.
 
 ## Part B — Top-ups for the monster-light packs
 
-### Out of the Grave (`pack-05`)
+### Out of the Grave (`pack-out-of-the-grave`)
 
 **Ghoul** — `Undead`, paralysis via `MovementPenaltyCondition` at high rank.
 **Lich** — see Part C. This is the pack that most obviously wants a designed boss.
@@ -110,7 +110,7 @@ logic; the simpler version is a monster with several damage types on one attack.
 **Reliquary** (structure) — from `tasks.md` ("Sanctuary / Sacristy / Reliquary"). The pack has no
 structure.
 
-### The Fae Realm (`pack-09`)
+### The Fae Realm (`pack-fae-realm`)
 
 The pack has three roles, two species, one monster and no structure.
 
@@ -118,12 +118,12 @@ The pack has three roles, two species, one monster and no structure.
 **Púca** — shapechanger; different damage type each encounter, set at generation.
 **Gardens** (structure) — from `tasks.md` morale list.
 
-### Cold Blood (`pack-10`)
+### Cold Blood (`pack-cold-blood`)
 
 Covered in Spec 01, but the monsters belong here: **Basilisk** (petrifying gaze, adapting the
 Medusa's existing pattern) and **Lindworm** (size 2, Poison).
 
-### The Menagerie (`pack-04`)
+### The Menagerie (`pack-menagerie`)
 
 `tasks.md` asks for big cats and a dragon. The cats belong here: **Stalking Cat** if not already
 taken by Spec 03, or **Panther**, **Lion**. All `Beast`, high Speed and Stealth.
@@ -187,5 +187,5 @@ a match for five heroes. Give it to boss species rather than building a new mech
 - With no packs enabled, boss generation still works via the existing inflate-a-monster path.
 - A designed boss does not receive the generic +2 trait features or the five random levels.
 - A size-3 boss can move on the map types it is allowed to appear on.
-- ~~All new monster species appear in the `monsterSpecies` array of the pack that owns them.~~
+- ~~All new monster species appear in the `species` array of the pack that owns them.~~
 - ~~`npm run lint` and `tsc --noEmit` clean.~~

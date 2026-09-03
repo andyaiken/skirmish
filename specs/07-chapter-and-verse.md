@@ -26,7 +26,7 @@ Alternatives: **Ink and Vellum**, **The Written Word**.
 
 ```ts
 static scrolls = (): PackModel => ({
-    id: 'pack-17',
+    id: 'pack-chapter-and-verse',
     name: 'Chapter and Verse',
     description: 'Power that anyone can use, provided they can read and only need it once.'
 });
@@ -164,6 +164,6 @@ leaves the pack feeling thin.
 - Reading a scroll removes it from the hero's inventory.
 - A scroll with a target parameter prompts for a target and resolves against it.
 - Scrolls appear in loot piles only when the pack is enabled.
-- `PackLogic.getPackCardCount('pack-17')` includes the scrolls.
+- `PackLogic.getPackCardCount('pack-chapter-and-verse')` includes the scrolls.
 - A save from before this change loads without error.
 - `npm run lint` and `tsc --noEmit` clean.

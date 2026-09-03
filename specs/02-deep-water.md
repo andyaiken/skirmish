@@ -23,11 +23,10 @@ array on `PackModel` must be present even when empty.
 
 ```ts
 export const deepWater = (): PackModel => ({
-    id: 'pack-12',
+    id: 'pack-deep-water',
     name: 'Deep Water',
     description: 'The island has a coastline, and things live along it.',
-    heroSpecies: [],
-    monsterSpecies: [],
+    species: [],
     roles: [],
     backgrounds: [],
     items: [],

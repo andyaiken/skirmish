@@ -41,7 +41,7 @@ proficiency do both.
 
 ```ts
 static tools = (): PackModel => ({
-    id: 'pack-15',
+    id: 'pack-tools-of-the-trade',
     name: 'Tools of the Trade',
     description: 'The difference between a warrior and a corpse is often what they remembered to pack.'
 });
@@ -176,7 +176,7 @@ description; the card renders that separately.
 
 - Every new item appears in the `items` array of the pack that owns it.
 - The five existing Head items have distinct descriptions.
-- With the pack enabled, `GameLogic.getItemsForProficiency(ItemProficiencyType.Shields, ['pack-15'])`
+- With the pack enabled, `GameLogic.getItemsForProficiency(ItemProficiencyType.Shields, ['pack-tools-of-the-trade'])`
   returns more than two items.
 - Drawing a random magic item repeatedly produces varied Feet and Ring base items.
 - A weapon with `range: 2` can be used at two squares by a standard melee attack action.

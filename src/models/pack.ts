@@ -8,8 +8,7 @@ export interface PackModel {
 	id: string;
 	name: string;
 	description: string;
-	heroSpecies: SpeciesModel[];
-	monsterSpecies: SpeciesModel[];
+	species: SpeciesModel[];
 	roles: RoleModel[];
 	backgrounds: BackgroundModel[];
 	items: ItemModel[];

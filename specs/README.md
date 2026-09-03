@@ -9,7 +9,7 @@ an implementer on its own; where one depends on another it says so at the top.
 
 | #  | Spec                                                       | Type                  | Size   | Depends on           | Status        |
 | -- | ---------------------------------------------------------- | --------------------- | ------ | -------------------- | ------------- |
-| 01 | [Hero options](01-hero-options.md)                         | Content               | Medium | -                    |               |
+| 01 | [Hero options](01-hero-options.md)                         | Content               | Medium | -                    | *1-2 done, 3 partial* |
 | 02 | [Deep Water](02-deep-water.md)                             | Pack + systems        | Large  | -                    |               |
 | 03 | [The Lie of the Land](03-the-lie-of-the-land.md)           | Pack + systems        | Large  | —                    |               |
 | 04 | [Blood and Sand](04-blood-and-sand.md)                     | Pack + map type       | Medium | —                    |               |
@@ -21,9 +21,11 @@ an implementer on its own; where one depends on another it says so at the top.
 | 10 | [Nightfall](10-nightfall.md)                               | Pack + system         | Large  | —                    |               |
 | 11 | [Monsters and bosses](11-monsters-and-bosses.md)           | Content + system      | Medium | —                    | *Part A done* |
 
-Pack IDs are allocated `pack-11` through `pack-20` in spec order. If you build them out of order,
-reassign so the IDs stay contiguous — nothing depends on the numbers, but gaps in a persisted
-identifier are the kind of thing that becomes confusing later.
+Pack IDs are derived from the pack's own name, lowercased and hyphenated with any leading article
+dropped — `Hell to Pay` is `pack-hell-to-pay`, `The Elements` is `pack-elements`. The IDs each spec
+gives follow that rule, so they can be built in any order. If you rename a pack, rename its ID to
+match: the ID is persisted in `options.packIDs`, so the two drifting apart is the kind of thing that
+becomes confusing later.
 
 ---
 
@@ -64,8 +66,9 @@ There is also a test runner: `npm test` enforces these bands, and monster specie
 
 **Registration.** Every card lives inside a pack. A pack is one file under `src/data/packs/`
 exporting a factory that returns a `PackModel`, and a card exists only if it appears in one of that
-literal's arrays — `heroSpecies`, `monsterSpecies`, `roles`, `backgrounds`, `items`, `potions`,
-`structures`. A new pack must also be added to `PackLogic.getExpansionPacks()`; a pack file that is
+literal's arrays — `species`, `roles`, `backgrounds`, `items`, `potions`, `structures`. Hero and
+monster cards share the one `species` array; `PackLogic.getHeroSpecies` and `getMonsterSpecies`
+filter it on the card's own `type`. A new pack must also be added to `PackLogic.getExpansionPacks()`; a pack file that is
 written but not listed silently does not exist.
 
 **Pack gating.** Cards carry no `packID` — membership is which pack's array they sit in.

@@ -14,11 +14,11 @@ import { SkillType } from '../../enums/skill-type';
 import { SummonType } from '../../enums/summon-type';
 import { TraitType } from '../../enums/trait-type';
 
-export const fae = (): PackModel => ({
-	id: 'pack-09',
+export const faeRealm = (): PackModel => ({
+	id: 'pack-fae-realm',
 	name: 'The Fae Realm',
 	description: 'Bring the beguiling wonder of the fae into your game with this pack.',
-	heroSpecies: [
+	species: [
 		{
 			id: 'species-faun',
 			name: 'Faun',
@@ -127,9 +127,7 @@ export const fae = (): PackModel => ({
 				}
 			],
 			deathActions: []
-		}
-	],
-	monsterSpecies: [
+		},
 		{
 			id: 'species-banshee',
 			name: 'Banshee',

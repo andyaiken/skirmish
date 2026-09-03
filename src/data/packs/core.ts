@@ -20,7 +20,7 @@ export const core = (): PackModel => ({
 	id: 'core',
 	name: 'Skirmish',
 	description: 'The core cards for the game, available to all.',
-	heroSpecies: [
+	species: [
 		{
 			id: 'species-human',
 			name: 'Human',
@@ -211,9 +211,7 @@ export const core = (): PackModel => ({
 				}
 			],
 			deathActions: []
-		}
-	],
-	monsterSpecies: [
+		},
 		{
 			id: 'species-colossus',
 			name: 'Colossus',
@@ -1670,6 +1668,141 @@ export const core = (): PackModel => ({
 								ActionEffects.dealDamage(DamageType.Impact, 3)
 							]
 						})
+					]
+				}
+			]
+		},
+		{
+			id: 'role-skirmisher',
+			name: 'Skirmisher',
+			description: 'Skirmishers strike before the enemy is ready, and are gone before the reply lands.',
+			startingFeatures: [
+				FeatureLogic.createTraitFeature('skirmisher-start-1', TraitType.Speed, 1),
+				FeatureLogic.createSkillFeature('skirmisher-start-2', SkillType.Reactions, 2),
+				FeatureLogic.createSkillFeature('skirmisher-start-3', SkillType.Weapon, 2),
+				FeatureLogic.createProficiencyFeature('skirmisher-start-4', ItemProficiencyType.MilitaryWeapons),
+				FeatureLogic.createProficiencyFeature('skirmisher-start-5', ItemProficiencyType.LightArmor)
+			],
+			features: [
+				FeatureLogic.createTraitFeature('skirmisher-feature-1', TraitType.Speed, 1),
+				FeatureLogic.createSkillFeature('skirmisher-feature-2', SkillType.Reactions, 2),
+				FeatureLogic.createSkillFeature('skirmisher-feature-3', SkillType.Weapon, 2),
+				FeatureLogic.createDamageBonusFeature('skirmisher-feature-4', DamageType.Piercing, 1)
+			],
+			actions: [
+				{
+					id: 'skirmisher-action-1',
+					name: 'Opening Move',
+					prerequisites: [
+						ActionPrerequisites.meleeWeapon()
+					],
+					parameters: [
+						ActionWeaponParameters.melee(),
+						ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: true,
+							skill: SkillType.Weapon,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealWeaponDamage()
+							]
+						}),
+						ActionEffects.addMovement()
+					]
+				},
+				{
+					id: 'skirmisher-action-2',
+					name: 'Harrying Strike',
+					prerequisites: [
+						ActionPrerequisites.meleeWeapon()
+					],
+					parameters: [
+						ActionWeaponParameters.melee(),
+						ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: true,
+							skill: SkillType.Weapon,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealWeaponDamage(),
+								ActionEffects.forceMovement(MovementType.Push, 2)
+							]
+						})
+					]
+				},
+				{
+					id: 'skirmisher-action-3',
+					name: 'Reflexive Cut',
+					prerequisites: [
+						ActionPrerequisites.meleeWeapon()
+					],
+					parameters: [
+						ActionWeaponParameters.melee(),
+						ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: true,
+							skill: SkillType.Reactions,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealWeaponDamage(1)
+							]
+						})
+					]
+				},
+				{
+					id: 'skirmisher-action-4',
+					name: 'Fall Back',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.self()
+					],
+					effects: [
+						ActionEffects.addMovement(),
+						ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Speed, 4, TraitType.Speed))
+					]
+				},
+				{
+					id: 'skirmisher-action-5',
+					name: 'Seize the Initiative',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.self()
+					],
+					effects: [
+						ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Speed, 5, SkillType.Reactions)),
+						ActionEffects.takeAnotherAction(true)
+					]
+				},
+				{
+					id: 'skirmisher-action-6',
+					name: 'Running Skirmish',
+					prerequisites: [
+						ActionPrerequisites.meleeWeapon()
+					],
+					parameters: [
+						ActionWeaponParameters.melee(),
+						ActionTargetParameters.weapon(ActionTargetType.Enemies, 2, 0)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: true,
+							skill: SkillType.Weapon,
+							trait: TraitType.Speed,
+							skillBonus: -2,
+							hit: [
+								ActionEffects.dealWeaponDamage()
+							]
+						}),
+						ActionEffects.addMovement()
 					]
 				}
 			]

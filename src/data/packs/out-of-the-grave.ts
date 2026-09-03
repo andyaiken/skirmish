@@ -15,12 +15,11 @@ import { SkillType } from '../../enums/skill-type';
 import { SummonType } from '../../enums/summon-type';
 import { TraitType } from '../../enums/trait-type';
 
-export const undead = (): PackModel => ({
-	id: 'pack-05',
+export const outOfTheGrave = (): PackModel => ({
+	id: 'pack-out-of-the-grave',
 	name: 'Out of the Grave',
 	description: 'Add a touch of gothic horror to your game with this pack.',
-	heroSpecies: [],
-	monsterSpecies: [
+	species: [
 		{
 			id: 'species-skeleton',
 			name: 'Skeleton',

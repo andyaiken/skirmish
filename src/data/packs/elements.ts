@@ -15,11 +15,10 @@ import { SummonType } from '../../enums/summon-type';
 import { TraitType } from '../../enums/trait-type';
 
 export const elements = (): PackModel => ({
-	id: 'pack-03',
+	id: 'pack-elements',
 	name: 'The Elements',
 	description: 'Become the master of the four elements with this pack.',
-	heroSpecies: [],
-	monsterSpecies: [
+	species: [
 		{
 			id: 'species-elemental-air',
 			name: 'Air Elemental',

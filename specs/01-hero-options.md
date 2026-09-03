@@ -171,7 +171,7 @@ Note `Reflexive Cut` deliberately attacks with `SkillType.Reactions`. The Thief 
 
 ---
 
-## 2. New pack — **Hell to Pay** (`pack-11`)
+## 2. New pack — **Hell to Pay** (`pack-hell-to-pay`)
 
 Your `tasks.md` sketches an "Evil" pack: Shadowborn as a hero, a Demon, a swarm of imps, and a
 Necromancer split into necromancy proper and a "misc creepy" sibling. This is that pack. It needs no
@@ -186,11 +186,10 @@ be present even when empty.
 
 ```ts
 export const hell = (): PackModel => ({
-    id: 'pack-11',
+    id: 'pack-hell-to-pay',
     name: 'Hell to Pay',
     description: 'Power is available on generous terms. The repayment schedule is the problem.',
-    heroSpecies: [ /* 2a */ ],
-    monsterSpecies: [],
+    species: [ /* 2a */ ],
     roles: [ /* 2b, 2c */ ],
     backgrounds: [ /* 2d */ ],
     items: [],
@@ -201,10 +200,14 @@ export const hell = (): PackModel => ({
 
 ### 2a. Shadowborn type — hero species
 
-Shadowborn already exists as a **monster** species, in the `monsterSpecies` array of
+Shadowborn already exists as a **monster** species, in the `species` array of
 `src/data/packs/core.ts`. `tasks.md` proposes it as a hero.
 
 We should create a similar demonic-sounding hero species.
+
+~~**Built as `Cambion`.**~~ Structured as the Deva's mirror — the same 3 starting / 4 features /
+2 actions shape, with a Corruption damage bonus where the Deva has Corruption resistance, and Fire
+resistance for the infernal half. Scores 5. The monster Shadowborn is untouched.
 
 ### 2b. Warlock — role
 
@@ -308,6 +311,14 @@ own gain. Not written out here; build it to this shape:
 The self-heal-on-damage pattern is the identity — keep it on at least three of the five actions or
 it reads as a second Necromancer.
 
+~~**Built, with one correction.**~~ The warning above points at the right risk but the wrong card:
+the shipped Necromancer is *already* the life-drain role — 6 of its 7 actions are damage or wound
+transfer, and only `Raise the Dead` is necromancy. Siphon, Leech Vitality and Feast as tabled would
+have reproduced `Transfer Damage`, `Transfer Wounds` and `Grave Bolt` almost verbatim. The signature
+is instead a **paired steal**: `Sap Will` and `Drain Vigour` put a trait penalty on the target and
+the matching bonus on the caster via `toSelf`, which nothing else in the game does. Self-heal stays
+on three of the five actions. Scores 6.
+
 ### 2d. Cultist — background
 
 ```ts
@@ -366,26 +377,48 @@ the background band. The version above scores **4**. Worth knowing which levers 
 
 Fiend (size 2), Imp Swarm (`Swarm` quirk, `Drone`-adjacent), Hellhound (`Beast`, Fire).
 
+~~**All three built.**~~ Note the Imp Swarm carries `Swarm` only: `Drone` means *dies to any damage*
+and is pushed onto summoned creatures at runtime, so baking it into a species would make it
+evaporate on the first hit.
+
+### 2f. Tormentor — role (added, not in the original spec)
+
+The pack as specified was two Implement-and-Spellcasting Corruption casters. The Tormentor is the
+melee counterweight: Endurance and Brawl, Military weapons and Heavy armour, and a `MovementPenalty`
+aura. Its identity is that nobody leaves — `forceMovement(Pull)` to drag a target in, movement
+penalties to pin them, and `disarm`, which had only two users in the whole game. Scores 6.
+
+**`commandMove` does not work as a compulsion; `commandAction` does.** `commandMove` gives the target
+movement and then runs *its own* movement intents, so used on an enemy it helps them reposition —
+both existing users target allies, and that is why. `commandAction` is built differently: it passes
+an invert-targets flag, so on an enemy it turns them against their own side (the Naga's `Beguiling
+Gaze` already does this). For the Charmer sketch in section 3, compelling an enemy to **act** works;
+compelling one to **move** does not.
+
 ---
 
 ## 3. Top-ups for existing packs
 
 Ranked by how badly the pack needs them.
 
-### Cold Blood (`pack-10`) — currently 3 cards
+### Cold Blood (`pack-cold-blood`) — was 3 cards, now 5
 
 The thinnest pack in the game, with no role, no background, no structure, no item. It reads as
 unfinished. Add:
 
 - **Venomblade** (role) — Weapon + Stealth, Poison damage bonus, `AutoDamageCondition` on hit.
   Poison is under-used by heroes: no hero species deals it and only the Assassin builds on it.
-- **Charmer** (background) — Presence-based; `commandAction` and `commandMove` are already
-  implemented effects and nothing in the game uses them heavily. A snake-charmer background that
-  compels an enemy to move or act is a genuinely novel card built entirely from existing parts.
-- **Basilisk**, **Lindworm** (monsters). Medusa's petrifying-gaze pattern is already in the base
-  monster file and can be adapted.
+- **Charmer** (background) — Presence-based, built on `commandAction`, which inverts an enemy's
+  targeting so they attack their own side. Note `commandAction` already has eight users (the Naga's
+  `Beguiling Gaze` is the snake-charmer version of this card), so it is less novel than it looks —
+  and do not reach for `commandMove` on an enemy, which helps them instead. See section 2f.
+- ~~**Basilisk**, **Lindworm** (monsters). Medusa's petrifying-gaze pattern is already in the base
+  monster file and can be adapted.~~ **Both built.** The Basilisk adapts the gaze as a movement and
+  Speed penalty rather than Medusa's all-traits version; the Lindworm is the size 2 physical threat
+  the pack lacked. Cold Blood is now 5 cards, and enabling it adds 4 monsters rather than 2. The
+  Venomblade and Charmer above are still outstanding.
 
-### The Elements (`pack-03`) — no playable species
+### The Elements (`pack-elements`) — no playable species
 
 A pack described as "Become the master of the four elements" with no elemental species. The four
 elementals exist as monsters only. Add hero counterparts:
@@ -401,7 +434,7 @@ Each at 3 starting features / 3–4 features / 2–3 actions to land in the 5–
 Stoneborn overlaps the Geomancer; give it the durability angle rather than the terrain-control one if
 that reads as too close.
 
-### The Menagerie (`pack-04`) — no roles or backgrounds
+### The Menagerie (`pack-menagerie`) — no roles or backgrounds
 
 A beast pack with no way to play a beast-handler.
 
@@ -413,7 +446,7 @@ A beast pack with no way to play a beast-handler.
 
 Codex Arcanum, Guile and Cunning, The Workshop, Power and Glory and Magic in a Glass add zero
 monsters, so switching them on never changes what you fight. One or two each closes the gap:
-Animated Object (Arcanum), Doppelganger (Guile), Automaton (Workshop), the Fallen (Power and Glory).
+Animated Object (Arcanum), Doppelganger (Guile), Automaton (Workshop), Apostate (Power and Glory).
 
 ---
 
@@ -430,5 +463,5 @@ spec if you want it.
 2. Every new card scores inside its band (species 5–6, role 5–6, background 3–4).
 3. `hell()` is registered in `PackLogic.getExpansionPacks()`; the base Skirmisher is in `core()`.
 4. With no packs enabled, the new base Skirmisher appears in hero creation and nothing else does.
-5. With Hell to Pay enabled, `PackLogic.getPackCardCount('pack-11')` returns the expected total.
+5. With Hell to Pay enabled, `PackLogic.getPackCardCount('pack-hell-to-pay')` returns the expected total.
 6. `npm run lint` and `tsc --noEmit` clean.

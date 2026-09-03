@@ -33,7 +33,7 @@ decent joke about a pack built on the least-used damage type. Alternatives: **Di
 
 ```ts
 static sound = (): PackModel => ({
-    id: 'pack-18',
+    id: 'pack-sound-and-fury',
     name: 'Sound and Fury',
     description: 'Noise travels where a blade cannot.'
 });

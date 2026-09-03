@@ -29,7 +29,7 @@ Alternatives: **For Coin**, **The Price of Peace**.
 
 ```ts
 static coin = (): PackModel => ({
-    id: 'pack-19',
+    id: 'pack-coin-and-contract',
     name: 'Coin and Contract',
     description: 'Every region has a price. Blood is simply the most common currency.'
 });

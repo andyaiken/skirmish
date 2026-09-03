@@ -11,11 +11,11 @@ import { QuirkType } from '../../enums/quirk-type';
 import { SkillType } from '../../enums/skill-type';
 import { TraitType } from '../../enums/trait-type';
 
-export const beasts = (): PackModel => ({
-	id: 'pack-04',
+export const menagerie = (): PackModel => ({
+	id: 'pack-menagerie',
 	name: 'The Menagerie',
 	description: 'This beast-themed collection contains dangerous new species.',
-	heroSpecies: [
+	species: [
 		{
 			id: 'species-minotaur',
 			name: 'Minotaur',
@@ -192,9 +192,7 @@ export const beasts = (): PackModel => ({
 				}
 			],
 			deathActions: []
-		}
-	],
-	monsterSpecies: [
+		},
 		{
 			id: 'species-bear',
 			name: 'Bear',

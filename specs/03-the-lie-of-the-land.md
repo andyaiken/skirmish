@@ -25,7 +25,7 @@ pack about scouting and traps. Alternatives: **Rough Ground**, **Every Inch of G
 
 ```ts
 static land = (): PackModel => ({
-    id: 'pack-13',
+    id: 'pack-lie-of-the-land',
     name: 'The Lie of the Land',
     description: 'The ground itself is on somebody\'s side. Make sure it is yours.'
 });

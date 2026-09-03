@@ -1,10 +1,4 @@
-# Spec 10 — Nightfall
-
-**Type:** new pack + one system
-**Size:** large — the system is the work
-**Depends on:** nothing
-
----
+# Nightfall
 
 ## Why this pack
 

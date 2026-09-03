@@ -1,10 +1,4 @@
-# Spec 09 — Coin and Contract
-
-**Type:** new pack + campaign-layer changes
-**Size:** large
-**Depends on:** nothing, but shares plumbing with Spec 02's Shipyard
-
----
+# Coin and Contract
 
 ## Why this pack
 

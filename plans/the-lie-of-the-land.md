@@ -1,10 +1,4 @@
-# Spec 03 — The Lie of the Land
-
-**Type:** new pack + two systems
-**Size:** large — two independent halves
-**Depends on:** nothing
-
----
+# The Lie of the Land
 
 ## Why this pack
 
@@ -33,10 +27,20 @@ static land = (): PackModel => ({
 
 ---
 
-## Part A — Terrain drives the encounter map
+## ~~Part A — Terrain drives the encounter map~~ — **built**
 
-This half is worth doing **whether or not you build the pack**. It costs little and improves every
-existing game.
+`EncounterMapGenerator.terrainWeights` holds the table below and `drawMapType` does the weighted
+draw; `generateEncounterMap` takes the terrain as a second parameter, defaulting to `''`. Measured
+over 4,000 draws: Mountains gives cavern 57% / street 7%, Plains street 46% / cavern 8%, Forest ruin
+42% / cavern 34%, and an unrecognised terrain an even ~25% each.
+
+The terrain string is passed rather than the whole region, which is what the spec below asks for —
+the string is all the generator needs, and it keeps `RegionModel` out of the map generator. The Fens
+and Forest rows below were merged, since the spec gives them identical weights; what separates them
+is the water squares from Spec 02, which do not exist yet. Split them when they do.
+
+**Both follow-ons below are still open**: obstructed density by terrain, and terrain-appropriate
+monsters.
 
 ### Current behaviour
 
@@ -68,11 +72,14 @@ Weight rather than hard-assign, so a Mountains region can still surprise you wit
 settlement. Keep an unweighted fallback for any terrain string that is not in the table, so adding
 terrains later cannot crash generation.
 
-### Two follow-ons this unlocks
+### Two follow-ons this unlocks — *neither built*
 
-**Obstructed density by terrain.** The blob loop currently runs `while (Random.randomNumber(3, rng)
-!== 0)`. Making that probability terrain-dependent — dense in Jungle, sparse on Salt flats — is a
-one-line change with a large felt effect.
+**Obstructed density by terrain.** The blob loop runs `while (Random.randomNumber(3, rng) !== 0)`.
+Making that probability terrain-dependent — dense in Jungle, sparse on Salt flats — is a one-line
+change with a large felt effect. Blood and Sand moved the loop out of `generateEncounterMap` into
+`EncounterMapGenerator.addObstructedBlobs`, which the four maze-shaped generators call themselves and
+the arena does not; the density argument goes there, which means the terrain has to reach the
+generator rather than stopping at `drawMapType`.
 
 **Terrain-appropriate monsters.** `CampaignMapLogic.getMonsters(region, packIDs)`
 (`campaign-map-logic.ts:115`) selects the region's monster species. It could filter or weight by
@@ -203,9 +210,9 @@ rather than a gap-filler.
 
 ## Acceptance criteria
 
-- A Mountains region produces a cavern map noticeably more often than a street map; a Plains region
-  the reverse.
-- An unrecognised terrain string still generates a valid map.
+- ~~A Mountains region produces a cavern map noticeably more often than a street map; a Plains region
+  the reverse.~~ Covered by `encounter-map-generator.test.ts`.
+- ~~An unrecognised terrain string still generates a valid map.~~ Covered by the same test.
 - A trap triggers when a combatant enters its square, applies its effects, and becomes visible.
 - A trap with a hidden score above a combatant's senses is not rendered for that combatant.
 - A save created before this spec loads without error and has an empty `traps` array.

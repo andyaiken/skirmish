@@ -8,7 +8,7 @@
 
 ## Map Types
 * Building interior
-* Arena
+* ~~Arena~~ — built as a standard map type, see `blood-and-sand.md`
 
 # New Features
 

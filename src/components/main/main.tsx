@@ -861,7 +861,8 @@ export class Main extends Component<Props, State> {
 			const game = this.state.game as GameModel;
 			const encounter = game.encounter as EncounterModel;
 
-			encounter.mapSquares = EncounterMapGenerator.generateEncounterMap(Math.random);
+			const region = game.map.regions.find(r => r.id === encounter.regionID);
+			encounter.mapSquares = EncounterMapGenerator.generateEncounterMap(Math.random, region ? region.demographics.terrain : '');
 
 			encounter.combatants.forEach(c => c.combat.position = { x: Number.MIN_VALUE, y: Number.MIN_VALUE });
 			encounter.loot.forEach(lp => lp.position = { x: Number.MIN_VALUE, y: Number.MIN_VALUE });

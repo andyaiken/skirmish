@@ -1,16 +1,11 @@
-# Spec 04 — Blood and Sand
-
-**Type:** new pack + one map type
-**Size:** medium
-**Depends on:** nothing
-
----
+# Blood and Sand
 
 ## Why this pack
 
 `tasks.md` lists three separate wants that are all the same pack:
 
-- Map type: **Arena**
+- Map type: **Arena** — *built, and shipped as a base-game map type rather than pack content; see
+  Part A*
 - Role idea: **Gladiator** (large weapons, showmanship)
 - Role idea: **Ravager**
 - Structure idea: **Trophy Room**
@@ -31,32 +26,40 @@ static arena = (): PackModel => ({
 
 ---
 
-## Part A — The Arena map type
+## ~~Part A — The Arena map type~~ — **built**
 
-Every current map is a maze: dungeon corridors, ruins, caverns, streets. All four reward line-of-
-sight play and cover. An arena is the opposite — one open space with nowhere to hide — and it makes
-every existing card play differently without changing a single rule.
+`EncounterMapGenerator.generateArenaMap` builds a single open ellipse of roughly the requested area
+(`pi * radiusX * radiusY = size`), with the aspect ratio wandering between 1.0 and 1.5 either side of
+a circle and a coin toss deciding which axis is the long one. Measured over five seeds: 395–407
+squares, bounding boxes from 17x31 to 31x17, fully connected.
 
-Add `EncounterMapGenerator.generateArenaMap(size, rng)` and register it in the `mapTypes` array in
-`generateEncounterMap`.
+The obstructed-blob pass **moved out of `generateEncounterMap`** and into the four maze-shaped
+generators, which now call `EncounterMapGenerator.addObstructedBlobs` themselves. This was the second
+of the two options the earlier draft weighed — special-case the arena inside `generateEncounterMap`,
+or push the pass down into the generators that want it — and it is the one that leaves the door open
+for Spec 03's terrain-dependent density. Because the loop now runs at the same point in the RNG
+stream as before, seeded output for the four existing map types is unchanged.
 
-**Shape:** a single open floor, roughly circular or oval, sized to `size` squares. Scatter a small
-number of Obstructed squares as pillars or barriers — but far fewer than the blob loop produces, so
-the arena stays open. That means the arena should **skip or reduce** the obstructed-blob pass that
-follows the map draw:
+The arena calls `addPillars` instead: 1–4 pillars, each with a coin-toss chance of extending one
+square into a two-square barrier, drawn from squares with floor on all four sides so a pillar is
+never just a bump in the rim. That gives 2–5 obstructed squares against the cavern's ~20.
 
-```ts
-while (Random.randomNumber(3, rng) !== 0) {
-    // Add a blob of obstructed terrain
-}
-```
+**The arena is a standard map type and is deliberately never gated.** An earlier draft of this plan
+had it appear only when the pack was enabled; that is dropped. A map shape is not a card — it costs
+the player nothing to learn, it needs no pack to make sense of it, and every existing card already
+plays differently on it. Gating it would have meant `generateEncounterMap` taking `packIDs` purely to
+withhold terrain, which is plumbing in service of a restriction nobody wanted. It sits in the base
+rotation alongside dungeon, ruin, cavern and street.
 
-Either special-case the arena there, or move the blob pass into the individual generators that want
-it. The second is cleaner and helps Spec 03 as well.
+The rest of Blood and Sand still needs the pack. Part A is simply not part of it.
+
+`terrainWeights` gained an `arena` column, weighted like a smaller version of the street — 2 in open
+country, 1 elsewhere — since an arena is a built thing, and an open floor should stay a change of
+pace rather than a default.
 
 **Building Interior**, the other map type in `tasks.md`, is the same size of job — rectangular rooms
 off a corridor spine, more walls than the dungeon generator produces. Worth doing in the same pass
-while the generator file is open, though it belongs to no particular pack.
+while the generator file is open, though it belongs to no particular pack. **Not built.**
 
 ---
 
@@ -134,10 +137,10 @@ either way.
 
 ## Acceptance criteria
 
-- The arena map generates as a single connected open space with no more than a light scatter of
-  obstructed squares.
-- The arena is not subsequently filled by the obstructed-blob pass.
-- Arena maps only appear when the pack is enabled.
+- ~~The arena map generates as a single connected open space with no more than a light scatter of
+  obstructed squares.~~ **Met** — covered by `encounter-map-generator.test.ts`.
+- ~~The arena is not subsequently filled by the obstructed-blob pass.~~ **Met** — covered by the same
+  test file.
 - The Gladiator's Presence-based actions resolve correctly against enemy Resolve.
 - Every Ravager action is gated on a damage or wound prerequisite and is correctly unavailable at
   full health.

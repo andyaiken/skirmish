@@ -35,7 +35,7 @@ export class EncounterGenerator {
 			round: 0,
 			combatants: [ ...heroes ],
 			loot: [],
-			mapSquares: EncounterMapGenerator.generateEncounterMap(rng),
+			mapSquares: EncounterMapGenerator.generateEncounterMap(rng, region.demographics.terrain),
 			log: []
 		};
 

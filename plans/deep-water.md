@@ -1,10 +1,4 @@
-# Spec 02 — Deep Water
-
-**Type:** new pack + new systems
-**Size:** large — phase it
-**Depends on:** —
-
----
+# Deep Water
 
 ## Why this pack
 

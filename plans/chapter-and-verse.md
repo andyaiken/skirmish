@@ -1,10 +1,4 @@
-# Spec 07 — Chapter and Verse
-
-**Type:** new pack + one system
-**Size:** medium
-**Depends on:** nothing
-
----
+# Chapter and Verse
 
 ## Why this pack
 

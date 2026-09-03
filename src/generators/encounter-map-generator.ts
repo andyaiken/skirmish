@@ -8,24 +8,59 @@ import { Random } from '../utils/random';
 import { EncounterMapLogic } from '../logic/encounter-map-logic';
 
 export class EncounterMapGenerator {
-	static generateEncounterMap = (rng: () => number): EncounterMapSquareModel[] => {
+	static terrainWeights: { terrains: string[], dungeon: number, ruin: number, cavern: number, street: number, arena: number }[] = [
+		{
+			terrains: [ 'Canyons', 'Mountains', 'Plateaus', 'Volcanic' ],
+			dungeon: 2,
+			ruin: 3,
+			cavern: 8,
+			street: 1,
+			arena: 1
+		},
+		{
+			terrains: [ 'Fens', 'Forest', 'Jungle', 'Lakes', 'Marshland', 'Rainforest', 'Riverlands', 'Taiga', 'Wetlands' ],
+			dungeon: 2,
+			ruin: 5,
+			cavern: 4,
+			street: 1,
+			arena: 1
+		},
+		{
+			terrains: [ 'Badlands', 'Desert', 'Plains', 'Salt flats', 'Scrubland', 'Steppe', 'Valleys' ],
+			dungeon: 2,
+			ruin: 4,
+			cavern: 1,
+			street: 6,
+			arena: 2
+		}
+	];
+
+	static drawMapType = (terrain: string, rng: () => number): ((size: number, rng: () => number) => EncounterMapSquareModel[]) => {
+		const weights = EncounterMapGenerator.terrainWeights.find(tw => tw.terrains.includes(terrain));
+
+		const mapTypes: ((size: number, rng: () => number) => EncounterMapSquareModel[])[] = [];
+		const add = (fn: (size: number, rng: () => number) => EncounterMapSquareModel[], weight: number) => {
+			for (let n = 0; n < weight; ++n) {
+				mapTypes.push(fn);
+			}
+		};
+
+		add(EncounterMapGenerator.generateDungeonMap, weights ? weights.dungeon : 1);
+		add(EncounterMapGenerator.generateRuinMap, weights ? weights.ruin : 1);
+		add(EncounterMapGenerator.generateCavernMap, weights ? weights.cavern : 1);
+		add(EncounterMapGenerator.generateStreetMap, weights ? weights.street : 1);
+		add(EncounterMapGenerator.generateArenaMap, weights ? weights.arena : 1);
+
+		return Collections.draw(mapTypes, rng);
+	};
+
+	static generateEncounterMap = (rng: () => number, terrain = ''): EncounterMapSquareModel[] => {
 		EncounterMapLogic.visibilityCache.reset();
 
-		const mapTypes = [
-			EncounterMapGenerator.generateDungeonMap,
-			EncounterMapGenerator.generateRuinMap,
-			EncounterMapGenerator.generateCavernMap,
-			EncounterMapGenerator.generateStreetMap
-		];
-		const fn = Collections.draw(mapTypes, rng);
+		// Obstructed terrain is added by the individual generators rather than here, so that a map
+		// type can opt out of it - the arena is meant to stay open.
+		const fn = EncounterMapGenerator.drawMapType(terrain, rng);
 		const map = fn(400, rng);
-
-		while (Random.randomNumber(3, rng) !== 0) {
-			// Add a blob of obstructed terrain
-			const start = Collections.draw(map, rng);
-			const blob = EncounterMapLogic.getFloorBlob(map, start, rng);
-			blob.forEach(sq => sq.type = EncounterMapSquareType.Obstructed);
-		}
 
 		return EncounterMapGenerator.simplifyMap(map);
 	};
@@ -72,6 +107,8 @@ export class EncounterMapGenerator {
 				}
 			}
 		}
+
+		EncounterMapGenerator.addObstructedBlobs(map, rng);
 
 		return map;
 	};
@@ -136,6 +173,8 @@ export class EncounterMapGenerator {
 			}
 		}
 
+		EncounterMapGenerator.addObstructedBlobs(map, rng);
+
 		return map;
 	};
 
@@ -164,6 +203,8 @@ export class EncounterMapGenerator {
 				});
 			}
 		}
+
+		EncounterMapGenerator.addObstructedBlobs(map, rng);
 
 		return map;
 	};
@@ -270,7 +311,74 @@ export class EncounterMapGenerator {
 			}
 		}
 
+		EncounterMapGenerator.addObstructedBlobs(map, rng);
+
 		return map;
+	};
+
+	static generateArenaMap = (size: number, rng: () => number): EncounterMapSquareModel[] => {
+		const map: EncounterMapSquareModel[] = [];
+
+		const radius = Math.sqrt(size / Math.PI);
+		const aspect = 1 + (Random.randomDecimal(rng) / 2);
+		const wide = Random.randomBoolean(rng);
+		const radiusX = wide ? radius * aspect : radius / aspect;
+		const radiusY = wide ? radius / aspect : radius * aspect;
+
+		for (let x = Math.ceil(-radiusX); x <= Math.floor(radiusX); ++x) {
+			for (let y = Math.ceil(-radiusY); y <= Math.floor(radiusY); ++y) {
+				const dx = x / radiusX;
+				const dy = y / radiusY;
+				if (((dx * dx) + (dy * dy)) <= 1) {
+					const square: EncounterMapSquareModel = {
+						x: x,
+						y: y,
+						type: EncounterMapSquareType.Clear
+					};
+					map.push(square);
+				}
+			}
+		}
+
+		EncounterMapGenerator.addPillars(map, rng);
+
+		return map;
+	};
+
+	static addObstructedBlobs = (map: EncounterMapSquareModel[], rng: () => number) => {
+		while (Random.randomNumber(3, rng) !== 0) {
+			const start = Collections.draw(map, rng);
+			const blob = EncounterMapLogic.getFloorBlob(map, start, rng);
+			blob.forEach(sq => sq.type = EncounterMapSquareType.Obstructed);
+		}
+	};
+
+	static addPillars = (map: EncounterMapSquareModel[], rng: () => number) => {
+		const count = 1 + Random.randomNumber(4, rng);
+		const floor = new Set(map.map(sq => `${sq.x} ${sq.y}`));
+
+		for (let n = 0; n < count; ++n) {
+			const clear = map.filter(sq => sq.type === EncounterMapSquareType.Clear);
+			const inner = clear.filter(sq => [ [ 1, 0 ], [ -1, 0 ], [ 0, 1 ], [ 0, -1 ] ].every(([ dx, dy ]) => floor.has(`${sq.x + dx} ${sq.y + dy}`)));
+
+			const candidates = inner.length > 0 ? inner : clear;
+			if (candidates.length === 0) {
+				return;
+			}
+
+			const sq = Collections.draw(candidates, rng);
+			sq.type = EncounterMapSquareType.Obstructed;
+
+			if (Random.randomBoolean(rng)) {
+				const dir = Collections.draw([ 'n', 'e', 's', 'w' ], rng);
+				const x = sq.x + (dir === 'e' ? 1 : 0) - (dir === 'w' ? 1 : 0);
+				const y = sq.y + (dir === 's' ? 1 : 0) - (dir === 'n' ? 1 : 0);
+				const adj = map.find(s => (s.x === x) && (s.y === y));
+				if (adj) {
+					adj.type = EncounterMapSquareType.Obstructed;
+				}
+			}
+		}
 	};
 
 	static simplifyMap = (map: EncounterMapSquareModel[]) => {

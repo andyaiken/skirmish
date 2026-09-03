@@ -1,12 +1,4 @@
-# Spec 11 — Monsters and bosses
-
-**Type:** content top-ups across existing packs, plus one system
-**Size:** medium
-**Depends on:** nothing
-**Status:** *Part A built — ten monsters across the five hero-only packs, plus the
-`SpeciesModel.deathActions` hook that the Powder Keg needed. Parts B and C remain.*
-
----
+# Monsters and bosses
 
 ## Why
 

@@ -45,9 +45,9 @@ describe('card strength', () => {
 		});
 	});
 
-	// Spec 12 item 6: Luckweaver is the one role below the 5 to 6 band. If this
-	// ever fails it is because the role was rebalanced, and the band above can
-	// be tightened to 5 to 6.
+	// Luckweaver is the one role below the 5 to 6 band. If this ever fails it is
+	// because the role was rebalanced, and the band above can be tightened to
+	// 5 to 6.
 	it('has Luckweaver as the only role below 5', () => {
 		const below = roles().filter(r => GameLogic.getRoleStrength(r) < 5).map(r => r.name);
 		expect(below).toEqual([ 'Luckweaver' ]);

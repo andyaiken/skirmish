@@ -126,7 +126,8 @@ That is a genuine change to `StrongholdLogic.rechargeStructure` and the encounte
 `main.tsx` (`finishEncounter`), so treat it as optional. The cheap version — a normal structure
 granting an extra feature-card redraw — works with no engine change.
 
-Add `TrophyRoom = 'trophy room'` to `StructureType` plus the `StructureData` entry either way.
+Add `TrophyRoom = 'trophy room'` to `StructureType` plus the entry in the pack's `structures` array
+either way.
 
 ---
 

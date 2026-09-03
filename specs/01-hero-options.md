@@ -2,7 +2,7 @@
 
 **Type:** content (data only — no engine changes)
 **Size:** medium
-**Depends on:** Spec 00 for the Skirmisher role only. Everything else here is independent.
+**Depends on:** —
 
 ---
 
@@ -21,8 +21,10 @@ Score every new card before merging. A quick harness:
 
 ```ts
 import { GameLogic } from './src/logic/game-logic';
-import { RoleData } from './src/data/role-data';
-RoleData.getList().forEach(r => console.log(r.name, GameLogic.getRoleStrength(r)));
+import { PackLogic } from './src/logic/pack-logic';
+PackLogic.getAllPacks()
+	.flatMap(pack => PackLogic.getRoles(pack.id))
+	.forEach(r => console.log(r.name, GameLogic.getRoleStrength(r)));
 ```
 
 Run with `npx tsx`. The three cards written out in full below have been scored and land at
@@ -32,8 +34,10 @@ Skirmisher 6, Warlock 6, Cultist 4.
 
 - IDs are `role-<name>`, `species-<name>`, `background-<name>`
 - Feature IDs are `<name>-start-N` and `<name>-feature-N`; action IDs are `<name>-action-N`
-- Every card must be added to its file's `getList()` — it will silently not exist otherwise
-- Base cards use `packID: ''`; pack cards use `packID: PackData.<fn>().id`
+- Every card must sit in one of the arrays on a pack literal in `src/data/packs/` — a card that is
+  written but not placed in an array silently does not exist
+- Cards carry no `packID`; the pack that owns a card is the pack whose array it is in. Base cards go
+  in `core()`, pack cards in that pack's file
 - Descriptions are one sentence, present tense, no trailing full stop inside the card copy where the
   existing entries omit it (check neighbours — the file is consistent)
 
@@ -45,20 +49,19 @@ Skirmisher 6, Warlock 6, Cultist 4.
 ## 1. Skirmisher — new **base** role
 
 **Why base rather than a pack:** Reactions is the only one of the seven skills that no role builds
-on. Once Spec 00 lands, Reactions governs initiative and there should be a role that owns it. The
-game is called Skirmish; it should have a skirmisher.
+on, and Reactions governs initiative — `EncounterLogic.rollInitiative` rolls it directly — so there
+should be a role that owns it. The game is called Skirmish; it should have a skirmisher.
 
 **Identity:** acts first, hits, and is somewhere else by the time the reply lands. Its actions
 mostly end in `addMovement` or push the target away, so it is the answer to the +4 disengagement
 penalty in `getMoveCost`.
 
-Add to `src/data/role-data.ts` and register in `RoleData.getList()`.
+Add to the `roles` array in `src/data/packs/core.ts`.
 
 ```ts
-static skirmisher = (): RoleModel => ({
+{
     id: 'role-skirmisher',
     name: 'Skirmisher',
-    packID: '',
     description: 'Skirmishers strike before the enemy is ready, and are gone before the reply lands.',
     startingFeatures: [
         FeatureLogic.createTraitFeature('skirmisher-start-1', TraitType.Speed, 1),
@@ -160,11 +163,11 @@ static skirmisher = (): RoleModel => ({
             ]
         }
     ]
-});
+}
 ```
 
 Note `Reflexive Cut` deliberately attacks with `SkillType.Reactions`. The Thief already does this
-(`thief-action`, `background-data.ts:750`), so the pattern is proven.
+(`thief-action-1` in `src/data/packs/skullduggery.ts`), so the pattern is proven.
 
 ---
 
@@ -177,30 +180,31 @@ engine work at all, which makes it the cheapest large addition available.
 **Naming:** "Hell to Pay" matches the idiom register of *Cold Blood* and *Magic in a Glass*.
 Alternatives if you want something less flip: **A Deal in the Dark**, **The Pit**.
 
-Add to `src/data/pack-data.ts` and register in `PackData.getList()`:
+New file `src/data/packs/hell.ts`, modelled on the existing pack files, and registered in
+`PackLogic.getExpansionPacks()`. The cards below go into its arrays; every array on `PackModel` must
+be present even when empty.
 
 ```ts
-static hell = (): PackModel => ({
+export const hell = (): PackModel => ({
     id: 'pack-11',
     name: 'Hell to Pay',
-    description: 'Power is available on generous terms. The repayment schedule is the problem.'
+    description: 'Power is available on generous terms. The repayment schedule is the problem.',
+    heroSpecies: [ /* 2a */ ],
+    monsterSpecies: [],
+    roles: [ /* 2b, 2c */ ],
+    backgrounds: [ /* 2d */ ],
+    items: [],
+    potions: [],
+    structures: []
 });
 ```
 
-### 2a. Shadowborn — hero species
+### 2a. Shadowborn type — hero species
 
-Shadowborn already exists as a **monster** species (`monster-species-data.ts`). `tasks.md` proposes
-it as a hero. Two options:
+Shadowborn already exists as a **monster** species, in the `monsterSpecies` array of
+`src/data/packs/core.ts`. `tasks.md` proposes it as a hero.
 
-- **Promote:** move it to `hero-species-data.ts`, change `type` to `CombatantType.Hero`, set
-  `packID: PackData.hell().id`, and remove it from the monster list. Cleanest, but it removes a base
-  monster from every existing game, so the base monster deck drops from 9 to 8.
-- **Duplicate:** keep the monster and add a hero version with distinct IDs
-  (`species-shadowborn-hero`). Safer for existing saves.
-
-**Recommendation: duplicate.** The base monster deck is only nine cards and should not shrink, and
-the two versions can diverge — the hero one leans on the pact/corruption theme rather than raw
-demonic stats.
+We should create a similar demonic-sounding hero species.
 
 ### 2b. Warlock — role
 
@@ -208,10 +212,9 @@ Power bought with the caster's own health. `Strike the Bargain` is the signature
 on the caster and buys a Corruption damage bonus in exchange.
 
 ```ts
-static warlock = (): RoleModel => ({
+{
     id: 'role-warlock',
     name: 'Warlock',
-    packID: PackData.hell().id,
     description: 'Warlocks draw on a bargain they cannot break, and pay for every casting in their own blood.',
     startingFeatures: [
         FeatureLogic.createTraitFeature('warlock-start-1', TraitType.Resolve, 1),
@@ -283,7 +286,7 @@ static warlock = (): RoleModel => ({
             ]
         }
     ]
-});
+}
 ```
 
 ### 2c. Lifestealer — role
@@ -308,10 +311,9 @@ it reads as a second Necromancer.
 ### 2d. Cultist — background
 
 ```ts
-static cultist = (): BackgroundModel => ({
+{
     id: 'background-cultist',
     name: 'Cultist',
-    packID: PackData.hell().id,
     description: 'A devotee of something that should not be named, and certainly should not be worshipped.',
     startingFeatures: [
         FeatureLogic.createTraitFeature('cultist-start-1', TraitType.Resolve, 1),
@@ -354,7 +356,7 @@ static cultist = (): BackgroundModel => ({
             ]
         }
     ]
-});
+}
 ```
 
 An earlier draft used a `Number.MAX_VALUE` ally burst and `healWounds(1)` and scored **5**, one over
@@ -415,14 +417,7 @@ Animated Object (Arcanum), Doppelganger (Guile), Automaton (Workshop), the Falle
 
 ---
 
-## Free wins while you are in these files
-
-**Minotaur should be size 2.** Every hero species is currently size 1, including one explicitly
-described as a muscular bull-headed humanoid. `EncounterLogic.getCombatantSquares`,
-`getCombatantAuraSquares`, `getMoveCost` and the placement loop in `encounter-generator.ts:198`
-already handle multi-square combatants — the monsters use it. Setting `size: 2` on the Minotaur
-should work with no engine change, but test hero placement and the movement UI, since no *hero* has
-ever been larger than one square.
+## While you are in these files
 
 **Pixie should not be size 0.** Do not try it. `getCombatantSquares` computes
 `right = left + size - 1`, so size 0 yields an empty square list and the combatant occupies nothing.
@@ -431,9 +426,9 @@ spec if you want it.
 
 ## Acceptance criteria
 
-1. Every new card appears in its file's `getList()`.
+1. Every new card appears in the right array of the right pack literal.
 2. Every new card scores inside its band (species 5–6, role 5–6, background 3–4).
-3. Pack cards carry the correct `packID`; base cards carry `''`.
+3. `hell()` is registered in `PackLogic.getExpansionPacks()`; the base Skirmisher is in `core()`.
 4. With no packs enabled, the new base Skirmisher appears in hero creation and nothing else does.
 5. With Hell to Pay enabled, `PackLogic.getPackCardCount('pack-11')` returns the expected total.
 6. `npm run lint` and `tsc --noEmit` clean.

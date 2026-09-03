@@ -175,7 +175,8 @@ From `tasks.md`. Spend a charge to **choose the encounter map type** instead of 
 the structure that makes Part A legible to the player — without it, terrain-weighted maps are an
 invisible improvement.
 
-Add `Cartographer = 'cartographer'` to `StructureType`, a `StructureData.cartographer()` entry, and
+Add `Cartographer = 'cartographer'` to `StructureType`, a Cartographer entry in the owning pack's
+`structures` array, and
 read the charges in the encounter-start flow with `StrongholdLogic.getStructureCharges(game,
 StructureType.Cartographer)`, following the pattern in `stronghold-page`.
 

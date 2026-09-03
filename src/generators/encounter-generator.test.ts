@@ -19,9 +19,9 @@ const mapGenerators = {
 	street: EncounterMapGenerator.generateStreetMap
 };
 
-// Spec 12 item 3 makes the Minotaur a size 2 hero, which is the first time a
-// hero has occupied more than one square. Placement and movement are shared
-// with the size 2 and 3 monsters, but had never been exercised for a hero.
+// The Minotaur is a size 2 hero, the only case of a hero occupying more than
+// one square. Placement and movement are shared with the size 2 and 3 monsters,
+// but are otherwise never exercised for a hero.
 describe('placing a larger combatant', () => {
 	Object.entries(mapGenerators).forEach(([ name, generate ]) => {
 		it(`places a size 2 hero on a ${name} map`, () => {

@@ -187,5 +187,5 @@ a match for five heroes. Give it to boss species rather than building a new mech
 - With no packs enabled, boss generation still works via the existing inflate-a-monster path.
 - A designed boss does not receive the generic +2 trait features or the five random levels.
 - A size-3 boss can move on the map types it is allowed to appear on.
-- ~~All new monster species appear in `MonsterSpeciesData.getList()` with the correct `packID`.~~
+- ~~All new monster species appear in the `monsterSpecies` array of the pack that owns them.~~
 - ~~`npm run lint` and `tsc --noEmit` clean.~~

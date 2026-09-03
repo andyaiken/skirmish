@@ -56,9 +56,10 @@ and on `ItemModel`:
 scroll: ScrollModel | null;
 ```
 
-**Every existing item literal must gain `scroll: null`.** That is 53 entries in `item-data.ts`, 9 in
-`potion-data.ts`, plus anything constructed in `Factory` and `MagicItemGenerator`. TypeScript will
-find them all, but expect a large mechanical diff.
+**Every existing item literal must gain `scroll: null`.** That is 53 entries across the `items`
+arrays and 9 across the `potions` arrays in `src/data/packs/`, plus anything constructed in `Factory`
+and `MagicItemGenerator`. TypeScript will find them all, but expect a large mechanical diff spread
+over every pack file.
 
 Consider whether `potion` and `scroll` should collapse into a single `consumable` field with a
 discriminator. Cleaner, but it changes the save format and `Platform.updateGame` would need a
@@ -67,12 +68,14 @@ migration risk is not worth it.
 
 ### Data
 
-New file `src/data/scroll-data.ts`, modelled directly on `potion-data.ts`: a class of static
-factories returning `ItemModel`, plus `getList()`. Set `proficiency: ItemProficiencyType.None`,
+Scrolls are a new content type, so they need a `scrolls: ItemModel[]` array on `PackModel`, added to
+every pack literal — empty in most, populated in this pack and in `core()` if any scroll is base
+content. Model the entries directly on the `potions` arrays: `proficiency: ItemProficiencyType.None`,
 `location: ItemLocationType.None`, `slots: 1`, exactly as potions do.
 
-Add `GameLogic.getScrollDeck(packIDs)` alongside `getPotionDeck`, and add scrolls to
-`PackLogic.getPackCardCount`.
+Then add `PackLogic.getScrolls(packID)` alongside `getPotions`, include it in
+`PackLogic.getPackCards` so `getPackCardCount` picks it up, and add
+`GameLogic.getScrollDeck(packIDs)` alongside `getPotionDeck`.
 
 ### Use
 

@@ -4,7 +4,6 @@ export interface StructureModel {
 	id: string;
 	type: StructureType;
 	name: string;
-	packID?: string;
 	description: string;
 	position: {
 		x: number;

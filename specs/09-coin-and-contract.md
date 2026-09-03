@@ -95,9 +95,9 @@ The Monument is the interesting one because it is the first structure with a **p
 rather than charges. `StrongholdLogic.canCharge` already special-cases Barracks and Warehouse as
 uncharged structures, so the pattern exists.
 
-Each needs a `StructureType` member, a `StructureData` factory, and charge-reading wherever its
-effect applies — which for most of these is **not** `stronghold-page`, where all the existing ones
-live. Expect to touch the campaign map page and the buy-item modals.
+Each needs a `StructureType` member, an entry in the pack's `structures` array, and charge-reading
+wherever its effect applies — which for most of these is **not** `stronghold-page`, where all the
+existing ones live. Expect to touch the campaign map page and the buy-item modals.
 
 ---
 

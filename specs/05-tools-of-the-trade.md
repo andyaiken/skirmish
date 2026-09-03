@@ -102,8 +102,8 @@ obviously unfinished text in the data. Then add:
 ## Part B — Weapons the base set lacks
 
 These carry real proficiencies, so they **do** enter the hero-creation draw and change what a
-character can start with. Balance them against the existing entries in `item-data.ts` — most one-
-handed weapons are damage rank 3, two-handed are 4.
+character can start with. Balance them against the existing entries in the `items` arrays under
+`src/data/packs/` — most one-handed weapons are damage rank 3, two-handed are 4.
 
 | Item | Proficiency | Notes |
 | --- | --- | --- |
@@ -174,7 +174,7 @@ description; the card renders that separately.
 
 ## Acceptance criteria
 
-- Every new item appears in `ItemData.getList()`.
+- Every new item appears in the `items` array of the pack that owns it.
 - The five existing Head items have distinct descriptions.
 - With the pack enabled, `GameLogic.getItemsForProficiency(ItemProficiencyType.Shields, ['pack-15'])`
   returns more than two items.

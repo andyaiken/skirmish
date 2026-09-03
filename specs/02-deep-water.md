@@ -2,7 +2,7 @@
 
 **Type:** new pack + new systems
 **Size:** large — phase it
-**Depends on:** Spec 00 (the Corsair uses Reactions)
+**Depends on:** —
 
 ---
 
@@ -18,13 +18,21 @@ the work so each stage ships on its own.
 **Naming:** *Deep Water* keeps the idiom register of *Cold Blood* and *Magic in a Glass* while
 saying exactly what the pack is. Alternatives: **Salt and Tide**, **The Drowned Coast**.
 
-Add to `src/data/pack-data.ts`:
+New file `src/data/packs/deep-water.ts`, registered in `PackLogic.getExpansionPacks()`. Every
+array on `PackModel` must be present even when empty.
 
 ```ts
-static deepWater = (): PackModel => ({
+export const deepWater = (): PackModel => ({
     id: 'pack-12',
     name: 'Deep Water',
-    description: 'The island has a coastline, and things live along it.'
+    description: 'The island has a coastline, and things live along it.',
+    heroSpecies: [],
+    monsterSpecies: [],
+    roles: [],
+    backgrounds: [],
+    items: [],
+    potions: [],
+    structures: []
 });
 ```
 
@@ -138,10 +146,10 @@ Target 5–6 on `getSpeciesStrength`.
 
 ### Roles
 
-**Corsair** — paired weapons and Reactions. This is the pack's flagship and the second consumer of
-Spec 00 after the Skirmisher. Distinguish the two: the Skirmisher uses Reactions to act *early*, the
-Corsair uses it to act *repeatedly* — lean on `takeAnotherAction` and `forceMovement(Swap)` for
-boarding-action flavour.
+**Corsair** — paired weapons and Reactions. This is the pack's flagship and the second
+Reactions-based role after the Skirmisher. Distinguish the two: the Skirmisher uses Reactions to act
+*early*, the Corsair uses it to act *repeatedly* — lean on `takeAnotherAction` and
+`forceMovement(Swap)` for boarding-action flavour.
 
 | Slot | Content |
 | --- | --- |
@@ -197,7 +205,7 @@ region are coastal, the attack is legal. Spend a charge on the attack, not on th
 Shipyard = 'shipyard'
 ```
 
-in `StructureType`, plus the `StructureData.shipyard()` entry and the charge wiring in
+in `StructureType`, plus the Shipyard entry in the pack's `structures` array and the charge wiring in
 `stronghold-page`, which is where every other structure's benefit is read
 (`StrongholdLogic.getStructureCharges(game, StructureType.X)`).
 

@@ -135,8 +135,8 @@ Check first whether wounds already clear between encounters — look at `finishE
 and the obvious one is an extra feature-card redraw. If they do not, wound recovery is a real
 campaign-layer lever and nothing else provides it.
 
-Add `Sanatorium = 'sanatorium'` to `StructureType` plus the `StructureData` entry and charge
-plumbing.
+Add `Sanatorium = 'sanatorium'` to `StructureType` plus the entry in the pack's `structures` array
+and charge plumbing.
 
 ---
 

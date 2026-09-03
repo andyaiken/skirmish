@@ -29,20 +29,17 @@ identifier are the kind of thing that becomes confusing later.
 
 ## Suggested order
 
-1. **Spec 01**, the Skirmisher and the *Hell to Pay* pack.
-2. **Spec 05**, *Tools of the Trade*. Unglamorous and the highest systemic return in the set: the
-   item pool feeds the magic item generator, so every card added multiplies through the economy.
-3. **Spec 06** and **Spec 08**, *Ill Humours* and *Sound and Fury*, which between them rescue the
-   three near-dead damage types.
-4. **Spec 03 Part A**, terrain-driven map selection. Small, and improves every existing game.
-5. **Spec 04**, the arena map type. Every current map is a maze; one open map makes every existing
-   card play differently.
-6. **Spec 02**, *Deep Water*. The island premise with no water in it is the largest thematic gap.
-7. **Spec 07**, scrolls. The only mechanism that lets a hero act outside their fixed deck.
-8. **Spec 03 Part B**, traps.
-9. **Spec 09**, *Coin and Contract*. Changes the campaign layer rather than adding to it.
-10. **Spec 10**, *Nightfall*. The biggest system in the set. Ship it without cards first and play
-    three encounters before committing.
+* **Spec 01**, the Skirmisher and the *Hell to Pay* pack.
+* **Spec 05**, *Tools of the Trade*.
+* **Spec 06**, *Ill Humours*.
+* **Spec 08**, *Sound and Fury*.
+* **Spec 03 Part A**, terrain-driven map selection. Small, and improves every existing game.
+* **Spec 04**, the arena map type. Every current map is a maze; one open map makes every existing card play differently.
+* **Spec 02**, *Deep Water*. The island premise with no water in it is the largest thematic gap.
+* **Spec 07**, scrolls. The only mechanism that lets a hero act outside their fixed deck.
+* **Spec 03 Part B**, traps.
+* **Spec 09**, *Coin and Contract*. Changes the campaign layer rather than adding to it.
+* **Spec 10**, *Nightfall*. The biggest system in the set. Ship it without cards first and play three encounters before committing.
 
 ---
 
@@ -54,21 +51,29 @@ the lone 4), backgrounds 3–4. Score every new card before merging:
 
 ```ts
 import { GameLogic } from './src/logic/game-logic';
-import { RoleData } from './src/data/role-data';
-RoleData.getList().forEach(r => console.log(r.name, GameLogic.getRoleStrength(r)));
+import { PackLogic } from './src/logic/pack-logic';
+PackLogic.getAllPacks()
+	.flatMap(pack => PackLogic.getRoles(pack.id))
+	.forEach(r => console.log(r.name, GameLogic.getRoleStrength(r)));
 ```
 
 Run with `npx tsx`. The cards written out in full in Spec 01 have been scored this way.
 
-Since Spec 12 there is also a test runner: `npm test` enforces these bands, and monster species
+There is also a test runner: `npm test` enforces these bands, and monster species
 (4–6) alongside them, so a card outside band fails rather than merely being noticed.
 
-**Registration.** Every new card must be added to its file's `getList()`. There is no other
-registry — a card that is defined but not listed silently does not exist.
+**Registration.** Every card lives inside a pack. A pack is one file under `src/data/packs/`
+exporting a factory that returns a `PackModel`, and a card exists only if it appears in one of that
+literal's arrays — `heroSpecies`, `monsterSpecies`, `roles`, `backgrounds`, `items`, `potions`,
+`structures`. A new pack must also be added to `PackLogic.getExpansionPacks()`; a pack file that is
+written but not listed silently does not exist.
 
-**Pack gating.** `GameLogic.getXDeck(packIDs)` filters on `(packID === '') || packIDs.includes(packID)`.
-Base content uses `packID: ''`. Any new content type also needs adding to
-`PackLogic.getPackCardCount`.
+**Pack gating.** Cards carry no `packID` — membership is which pack's array they sit in.
+`PackLogic.getAvailablePacks(packIDs)` returns `core()` plus the selected packs, and each
+`GameLogic.getXDeck(packIDs)` flat-maps the matching array across those. Base content therefore goes
+in `core()`, which is always available. A new *kind* of content needs a new array on `PackModel`, a
+`PackLogic.getX` accessor, and an entry in `PackLogic.getPackCards` — `getPackCardCount` derives from
+that list.
 
 **Saves.** Games persist as JSON through localforage. New fields on `EncounterModel`, `GameModel` or
 `CombatantModel` must be patched defensively in `Platform.updateGame`, following the existing
@@ -85,6 +90,7 @@ how players learn what quirks and mechanics do; a rule that is not in them is in
   performance-sensitive code in the game, and no pack in this set needs them.
 - **Undo movement** and **drag-and-drop movement**, both UI work with no content implications.
 - **Action animations** and **sound effects**.
-- **Small species** as a size mechanic — see Spec 12 item 4 for why it is not simply `size: 0`.
+- **Small species** as a size mechanic — see the closing note in Spec 01 for why it is not simply
+  `size: 0`.
 - The **functional-component migration**, which is the largest item in `tasks.md`'s tech-debt list
   and unrelated to any of this.

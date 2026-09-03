@@ -9,6 +9,7 @@ import { magicInAGlass } from '../data/packs/magic-in-a-glass';
 import { menagerie } from '../data/packs/menagerie';
 import { outOfTheGrave } from '../data/packs/out-of-the-grave';
 import { powerAndGlory } from '../data/packs/power-and-glory';
+import { soundAndFury } from '../data/packs/sound-and-fury';
 import { workshop } from '../data/packs/workshop';
 
 import { CombatantType } from '../enums/combatant-type';
@@ -32,6 +33,7 @@ export class PackLogic {
 			menagerie(),
 			outOfTheGrave(),
 			powerAndGlory(),
+			soundAndFury(),
 			workshop()
 		];
 

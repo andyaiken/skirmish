@@ -1973,73 +1973,6 @@ export const core = (): PackModel => ({
 			]
 		},
 		{
-			id: 'background-bard',
-			name: 'Bard',
-			description: 'The charismatic bard inspires their allies to greatness.',
-			startingFeatures: [],
-			features: [
-				FeatureLogic.createSkillFeature('bard-feature-1', SkillType.Presence, 2),
-				FeatureLogic.createSkillCategoryFeature('bard-feature-2', SkillCategoryType.Mental, 1),
-				FeatureLogic.createProficiencyFeature('bard-feature-3', ItemProficiencyType.Any)
-			],
-			actions: [
-				{
-					id: 'bard-action-1',
-					name: 'Song of Health',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 10)
-					],
-					effects: [
-						ActionEffects.healDamage(3)
-					]
-				},
-				{
-					id: 'bard-action-2',
-					name: 'Anthem of Inspiration',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 10)
-					],
-					effects: [
-						ActionEffects.addCondition(ConditionLogic.createSkillCategoryBonusCondition(TraitType.Resolve, 3, SkillCategoryType.Physical))
-					]
-				},
-				{
-					id: 'bard-action-3',
-					name: 'Melody of Courage',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 10)
-					],
-					effects: [
-						ActionEffects.addCondition(ConditionLogic.createSkillCategoryBonusCondition(TraitType.Resolve, 3, SkillCategoryType.Mental))
-					]
-				},
-				{
-					id: 'bard-action-4',
-					name: 'Threnody of Lamentation',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 10)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Presence,
-							trait: TraitType.Resolve,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 2, TraitType.Endurance)),
-								ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 2, TraitType.Resolve)),
-								ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 2, TraitType.Speed))
-							]
-						})
-					]
-				}
-			]
-		},
-		{
 			id: 'background-commander',
 			name: 'Commander',
 			description: 'A commander uses tactical analysis to make the most of any situation.',
@@ -3690,8 +3623,8 @@ export const core = (): PackModel => ({
 			actions: []
 		},
 		{
-			id: 'item-signet-ring',
-			name: 'Signet Ring',
+			id: 'item-signet',
+			name: 'Signet',
 			description: 'Heavy gold, cut with a device meant to be pressed into wax.',
 			baseItem: '',
 			magic: false,

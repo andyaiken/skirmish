@@ -16,7 +16,7 @@ an implementer on its own; where one depends on another it says so at the top.
 | 05 | [Tools of the Trade](05-tools-of-the-trade.md)             | Base content (data)   | Medium | —                    | *Built, scoped down* |
 | 06 | [Ill Humours](06-ill-humours.md)                           | Pack (data)           | Medium | —                    |               |
 | 07 | [Chapter and Verse](07-chapter-and-verse.md)               | Pack + system         | Medium | —                    |               |
-| 08 | [Sound and Fury](08-sound-and-fury.md)                     | Pack (data)           | Small  | —                    |               |
+| 08 | [Sound and Fury](08-sound-and-fury.md)                     | Pack (data)           | Small  | —                    | *Built*       |
 | 09 | [Coin and Contract](09-coin-and-contract.md)               | Pack + campaign layer | Large  | —                    |               |
 | 10 | [Nightfall](10-nightfall.md)                               | Pack + system         | Large  | —                    |               |
 | 11 | [Monsters and bosses](11-monsters-and-bosses.md)           | Content + system      | Medium | —                    | *Part A done* |
@@ -34,7 +34,7 @@ becomes confusing later.
 * ~~**Spec 01**, the Skirmisher and the *Hell to Pay* pack.~~ Done; its pack top-ups are deferred.
 * ~~**Spec 05**, *Tools of the Trade*.~~ Done, as base content rather than a pack.
 * **Spec 06**, *Ill Humours*. ← next
-* **Spec 08**, *Sound and Fury*.
+* ~~**Spec 08**, *Sound and Fury*.~~ Done; the Skald shipped as the **Bard** role, the base game's Bard background moved in as the **Minstrel**, and the optional Discordant role was not built.
 * **Spec 03 Part A**, terrain-driven map selection. Small, and improves every existing game.
 * **Spec 04**, the arena map type. Every current map is a maze; one open map makes every existing card play differently.
 * **Spec 02**, *Deep Water*. The island premise with no water in it is the largest thematic gap.

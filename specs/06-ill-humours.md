@@ -1,8 +1,45 @@
 # Spec 06 — Ill Humours
 
-**Type:** new pack (data only, one optional condition)
+**Type:** new pack + systems
 **Size:** medium
 **Depends on:** nothing
+**Status:** *built — 8 cards, plus contagion and the Sanatorium*
+
+---
+
+## What was built
+
+| Card | Type | Strength | Band |
+| --- | --- | --- | --- |
+| Alchemist | role | 6 | 5–6 |
+| Plaguebearer | role | 6 | 5–6 |
+| Leech | background | 4 | 3–4 |
+| Ooze | monster | 5 | 4–6 |
+| Rot Grub Swarm | monster | 5 | 4–6 |
+| Blightspawn | monster | 5 | 4–6 |
+| Plague Doctor | monster | 5 | 4–6 |
+| Sanatorium | structure | — | — |
+
+Acid goes from 4 cards touching it to 6, with the **Alchemist as its first hero-facing source** — no
+role, background or hero species dealt Acid before this pack. Enabling it adds 4 monsters.
+
+**Two contagious carriers:** the Plaguebearer's *Miasma* and the Rot Grub Swarm's *Burrow*, both
+rank 3 — the low end, which spreads a hop or two and fades rather than saturating the map.
+
+### Corrections to the analysis below
+
+- **Acid was as thin as claimed.** 1 role (Artificer), 3 monsters (Scarab, Mutant, Homunculus), and
+  no hero species or background at all.
+- **`Amorphous` is not used by "only three monsters".** Eight use it — Animated Object, Arcane
+  Aberration, the Air, Fire and Water Elementals, Mutant, Wraith and Echo — so the Ooze taking it is
+  ordinary rather than novel.
+- **`transferCondition` is used by three cards** (Warlock, Shadowborn, Mystic), so "barely used" is
+  fair, and the Leech's *Draw Off the Humour* is a fourth.
+- **The Leech as tabled scores 5**, one over the background band: `healWounds(1)` alone scores 5, so
+  *Bleed the Patient* came out at 9 against the Cultist's most expensive action at 4. The trait
+  penalty that pays for it was dropped from rank 4 to rank 2 to bring the card to 4.
+- **The Blightspawn deals Acid rather than Decay**, so the pack meets its own acceptance criterion of
+  three Acid cards. Decay is well covered by the Plaguebearer and Rot Grub Swarm.
 
 ---
 
@@ -244,7 +281,8 @@ which would otherwise be a free action redraw.
 
 ## Acceptance criteria
 
-- The pack introduces at least three cards that deal Acid damage, at least one of them hero-facing.
+- ~~The pack introduces at least three cards that deal Acid damage, at least one of them
+  hero-facing.~~ Ooze, Blightspawn and the Alchemist; the Alchemist is hero-facing.
 - `AutoDamageCondition` from the Plaguebearer ticks at the start of the target's turn and decrements
   correctly.
 - `toSelf` self-damage on the Alchemist's *Volatile Mixture* applies to the caster, not the target.

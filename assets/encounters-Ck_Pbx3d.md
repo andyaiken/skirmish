@@ -25,7 +25,7 @@ When it's a hero's turn to act, you'll see the following information:
   * **Movement points** - Each round, you get a number of movement points which you can spend to move around the map.
   * **Senses** and **Hidden** - Enemies whose Hidden score beats your Senses score can't be seen, and so can't be attacked.
   * **Damage** and **Wounds** - When you're the target of a successful attack you'll take Damage. Damage can become Wounds, which are much more serious.
-  * **Conditions** - During the encounter you might have Conditions applied to you. A Condition might be beneficial or detrimental, and each one is associated with a particular Trait.
+  * **Conditions** - During the encounter you might have Conditions applied to you. A Condition might be beneficial or detrimental, and each one is associated with a particular Trait. Some are **contagious**, and can spread to anyone standing beside you.
 * The `Movement` tab:
   * This tab allows you to move your hero around the battlefield. If you're beside a pile of treasure, you'll also be able to pick up items here.
 * On the final tab you'll see an `End Your Turn` button; when you're finished with this hero's turn, press this to move on to the next combatant.
@@ -41,6 +41,8 @@ Monsters are similar to heroes in most ways, but you may see a few special keywo
 * **Drone** - A monster with this keyword is particularly easy to kill; they die as soon as they take any damage.
 * **Swarm** or **Amorphous** - A monster with either of these keywords takes half damage from physical damage types.
 * **Undead** - A monster with this keyword is hard to keep down; if they are unconscious at the start of their turn they have a chance to reanimate.
+
+Some monsters also have a final action that triggers when they are killed - a Powder Keg, for instance, detonates. Killing one of these at close range is not always the safest way to deal with it.
 
 When the monster has done everything they want to do, the game will move on to the next combatant.
 
@@ -58,7 +60,7 @@ When the monster has done everything they want to do, the game will move on to t
   * Set the combatant's Hidden score to 0
 * Each Condition applied to the combatant is checked:
   * If the Condition is beneficial, its rank is reduced by 1
-  * Otherwise, the combatant rolls their Trait vs the Conditon's rank:
+  * Otherwise, the combatant rolls their Trait vs the Condition's rank:
     * If the combatant rolls beats the Condition, its rank is reduced to 0
     * Otherwise, the Condition's rank is reduced by 1
 * Any Conditions with a rank of 0 are removed
@@ -66,6 +68,16 @@ When the monster has done everything they want to do, the game will move on to t
 ## During a turn
 
 If you're Stunned, you can't do anything for one round; otherwise, you can use your movement points and take an action.
+
+## At the end of a turn
+
+If the combatant has any **contagious** Conditions, each one may spread to the combatants standing beside them:
+
+* Each of those combatants rolls the Condition's Trait against the Condition's rank
+* Anyone who fails to beat it catches the Condition, at one rank lower than the original
+* Nobody catches a Condition they are already suffering from
+
+Contagion doesn't care whose side you're on: a diseased enemy will infect its own allies, and one of your heroes can carry something back into the middle of your line. Because every copy is a rank weaker than the one it spread from, an outbreak always burns itself out - but a strong one can work its way through a crowded battle first. Spreading out is the surest way to stop it.
 
 ---
 

@@ -91,8 +91,8 @@ export class EncounterLogic {
 		encounter.combatants.forEach(c => {
 			c.combat.initiative = Number.MIN_VALUE;
 
-			const speed = EncounterLogic.getTraitRank(encounter, c, TraitType.Speed);
-			c.combat.initiative = Random.dice(speed);
+			const reactions = EncounterLogic.getSkillRank(encounter, c, SkillType.Reactions);
+			c.combat.initiative = Random.dice(reactions);
 		});
 
 		EncounterLogic.sortInitiative(encounter);
@@ -321,21 +321,23 @@ export class EncounterLogic {
 	};
 
 	static checkActionParameters = (encounter: EncounterModel, combatant: CombatantModel, invertTargets = false) => {
-		combatant.combat.actions.forEach(action => {
-			action.parameters.forEach(parameter => {
-				switch (parameter.id) {
-					case 'weapon':
-						ActionLogic.checkWeaponParameter(parameter as ActionWeaponParameterModel, combatant);
-						break;
-					case 'origin':
-						ActionLogic.checkOriginParameter(parameter as ActionOriginParameterModel, encounter, combatant, action);
-						break;
-					case 'targets': {
-						ActionLogic.checkTargetParameter(parameter as ActionTargetParameterModel, encounter, combatant, action, invertTargets);
-						break;
-					}
+		combatant.combat.actions.forEach(action => EncounterLogic.checkParameters(encounter, combatant, action, invertTargets));
+	};
+
+	static checkParameters = (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel, invertTargets = false) => {
+		action.parameters.forEach(parameter => {
+			switch (parameter.id) {
+				case 'weapon':
+					ActionLogic.checkWeaponParameter(parameter as ActionWeaponParameterModel, combatant);
+					break;
+				case 'origin':
+					ActionLogic.checkOriginParameter(parameter as ActionOriginParameterModel, encounter, combatant, action);
+					break;
+				case 'targets': {
+					ActionLogic.checkTargetParameter(parameter as ActionTargetParameterModel, encounter, combatant, action, invertTargets);
+					break;
 				}
-			});
+			}
 		});
 	};
 
@@ -672,12 +674,40 @@ export class EncounterLogic {
 		EncounterLogic.checkActionParameters(encounter, combatant);
 	};
 
+	static runDeathActions = (encounter: EncounterModel, combatant: CombatantModel) => {
+		const species = GameLogic.getSpecies(combatant.speciesID);
+		if (!species) {
+			return;
+		}
+
+		species.deathActions.forEach(deathAction => {
+			// Copied because resolving the parameters writes candidates and
+			// values into the action.
+			const action = JSON.parse(JSON.stringify(deathAction)) as ActionModel;
+			EncounterLogic.checkParameters(encounter, combatant, action);
+
+			EncounterLogLogic.log(encounter, [
+				EncounterLogLogic.combatant(combatant),
+				EncounterLogLogic.text(`triggers ${action.name}`)
+			]);
+
+			action.effects.forEach(effect => ActionEffects.run(effect, encounter, combatant, action.parameters));
+		});
+	};
+
 	static kill = (encounter: EncounterModel, combatant: CombatantModel) => {
 		if (combatant.combat.state === CombatantState.Dead){
 			return;
 		}
 
+		// Set the state first, so that a death action which kills another
+		// combatant cannot loop back round into this one.
 		combatant.combat.state = CombatantState.Dead;
+
+		// Death actions run before the rest of the teardown, while the
+		// combatant's position and senses are still intact.
+		EncounterLogic.runDeathActions(encounter, combatant);
+
 		combatant.combat.conditions = [];
 		combatant.combat.senses = 0;
 		combatant.combat.movement = 0;

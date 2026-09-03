@@ -42,6 +42,8 @@ Monsters are similar to heroes in most ways, but you may see a few special keywo
 * **Swarm** or **Amorphous** - A monster with either of these keywords takes half damage from physical damage types.
 * **Undead** - A monster with this keyword is hard to keep down; if they are unconscious at the start of their turn they have a chance to reanimate.
 
+Some monsters also have a final action that triggers when they are killed - a Powder Keg, for instance, detonates. Killing one of these at close range is not always the safest way to deal with it.
+
 When the monster has done everything they want to do, the game will move on to the next combatant.
 
 ---

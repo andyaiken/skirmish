@@ -15,4 +15,5 @@ export interface SpeciesModel {
 	startingFeatures: FeatureModel[];
 	features: FeatureModel[];
 	actions: ActionModel[];
+	deathActions: ActionModel[];
 }

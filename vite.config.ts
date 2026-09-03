@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig({
@@ -15,5 +15,11 @@ export default defineConfig({
 	},
 	server: {
 		open: true
+	},
+	test: {
+		// The logic classes are static functions over plain data, so the default
+		// node environment is enough; nothing under test touches the DOM.
+		environment: 'node',
+		include: [ 'src/**/*.test.ts' ]
 	}
 });

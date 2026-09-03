@@ -101,7 +101,8 @@ export class MonsterSpeciesData {
 					})
 				]
 			}
-		]
+		],
+		deathActions: []
 	});
 
 	static gnoll = (): SpeciesModel => ({
@@ -200,7 +201,8 @@ export class MonsterSpeciesData {
 					})
 				]
 			}
-		]
+		],
+		deathActions: []
 	});
 
 	static goblin = (): SpeciesModel => ({
@@ -258,7 +260,8 @@ export class MonsterSpeciesData {
 					ActionEffects.takeAnotherAction()
 				]
 			}
-		]
+		],
+		deathActions: []
 	});
 
 	static medusa = (): SpeciesModel => ({
@@ -342,7 +345,8 @@ export class MonsterSpeciesData {
 					})
 				]
 			}
-		]
+		],
+		deathActions: []
 	});
 
 	static orc = (): SpeciesModel => ({
@@ -400,7 +404,8 @@ export class MonsterSpeciesData {
 					ActionEffects.takeAnotherAction()
 				]
 			}
-		]
+		],
+		deathActions: []
 	});
 
 	static ratfolk = (): SpeciesModel => ({
@@ -457,7 +462,8 @@ export class MonsterSpeciesData {
 					ActionEffects.takeAnotherAction()
 				]
 			}
-		]
+		],
+		deathActions: []
 	});
 
 	static scarab = (): SpeciesModel => ({
@@ -540,7 +546,8 @@ export class MonsterSpeciesData {
 					})
 				]
 			}
-		]
+		],
+		deathActions: []
 	});
 
 	static shadowborn = (): SpeciesModel => ({
@@ -620,7 +627,8 @@ export class MonsterSpeciesData {
 					})
 				]
 			}
-		]
+		],
+		deathActions: []
 	});
 
 	static troll = (): SpeciesModel => ({
@@ -679,7 +687,8 @@ export class MonsterSpeciesData {
 					ActionEffects.healWounds(1)
 				]
 			}
-		]
+		],
+		deathActions: []
 	});
 
 	// Elementals
@@ -701,7 +710,7 @@ export class MonsterSpeciesData {
 			FeatureLogic.createDamageResistFeature('elemental-air-start-4', DamageType.Cold, 5)
 		],
 		features: [
-			FeatureLogic.createTraitFeature('elemental-air-start-1', TraitType.Resolve, 1),
+			FeatureLogic.createTraitFeature('elemental-air-feature-1', TraitType.Resolve, 1),
 			FeatureLogic.createSkillFeature('elemental-air-feature-2', SkillType.Brawl, 2),
 			FeatureLogic.createDamageBonusFeature('elemental-air-feature-3', DamageType.Cold, 2),
 			FeatureLogic.createAuraDamageFeature('elemental-air-feature-4', ConditionType.AutoDamage, DamageType.Cold, 1)
@@ -748,7 +757,8 @@ export class MonsterSpeciesData {
 					})
 				]
 			}
-		]
+		],
+		deathActions: []
 	});
 
 	static earthElemental = (): SpeciesModel => ({
@@ -834,7 +844,8 @@ export class MonsterSpeciesData {
 					})
 				]
 			}
-		]
+		],
+		deathActions: []
 	});
 
 	static fireElemental = (): SpeciesModel => ({
@@ -920,7 +931,8 @@ export class MonsterSpeciesData {
 					})
 				]
 			}
-		]
+		],
+		deathActions: []
 	});
 
 	static waterElemental = (): SpeciesModel => ({
@@ -986,7 +998,8 @@ export class MonsterSpeciesData {
 					})
 				]
 			}
-		]
+		],
+		deathActions: []
 	});
 
 	// Beasts
@@ -1069,7 +1082,8 @@ export class MonsterSpeciesData {
 					})
 				]
 			}
-		]
+		],
+		deathActions: []
 	});
 
 	static giantSpider = (): SpeciesModel => ({
@@ -1143,7 +1157,8 @@ export class MonsterSpeciesData {
 					ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Endurance, 5))
 				]
 			}
-		]
+		],
+		deathActions: []
 	});
 
 	static ratSwarm = (): SpeciesModel => ({
@@ -1186,7 +1201,8 @@ export class MonsterSpeciesData {
 					})
 				]
 			}
-		]
+		],
+		deathActions: []
 	});
 
 	static vespineSwarm = (): SpeciesModel => ({
@@ -1242,7 +1258,8 @@ export class MonsterSpeciesData {
 					})
 				]
 			}
-		]
+		],
+		deathActions: []
 	});
 
 	static wolf = (): SpeciesModel => ({
@@ -1315,7 +1332,8 @@ export class MonsterSpeciesData {
 					ActionEffects.takeAnotherAction()
 				]
 			}
-		]
+		],
+		deathActions: []
 	});
 
 	// Undead
@@ -1393,7 +1411,8 @@ export class MonsterSpeciesData {
 					})
 				]
 			}
-		]
+		],
+		deathActions: []
 	});
 
 	static vampire = (): SpeciesModel => ({
@@ -1472,7 +1491,8 @@ export class MonsterSpeciesData {
 					})
 				]
 			}
-		]
+		],
+		deathActions: []
 	});
 
 	static wraith = (): SpeciesModel => ({
@@ -1538,7 +1558,8 @@ export class MonsterSpeciesData {
 					})
 				]
 			}
-		]
+		],
+		deathActions: []
 	});
 
 	static zombie = (): SpeciesModel => ({
@@ -1605,7 +1626,8 @@ export class MonsterSpeciesData {
 					})
 				]
 			}
-		]
+		],
+		deathActions: []
 	});
 
 	// Fae
@@ -1691,7 +1713,8 @@ export class MonsterSpeciesData {
 					})
 				]
 			}
-		]
+		],
+		deathActions: []
 	});
 
 	// Cold blood
@@ -1755,7 +1778,8 @@ export class MonsterSpeciesData {
 					})
 				]
 			}
-		]
+		],
+		deathActions: []
 	});
 
 	static naga = (): SpeciesModel => ({
@@ -1836,7 +1860,845 @@ export class MonsterSpeciesData {
 					})
 				]
 			}
+		],
+		deathActions: []
+	});
+
+	static animatedObject = (): SpeciesModel => ({
+		id: 'species-animated-object',
+		name: 'Animated Object',
+		packID: PackData.arcana().id,
+		description: 'A suit of armour, or a statue, moving with no-one inside it.',
+		type: CombatantType.Monster,
+		size: 1,
+		quirks: [
+			QuirkType.Mindless,
+			QuirkType.Amorphous
+		],
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('animated-object-start-1', TraitType.Endurance, 1),
+			FeatureLogic.createSkillFeature('animated-object-start-2', SkillType.Brawl, 2),
+			FeatureLogic.createDamageCategoryResistFeature('animated-object-start-3', DamageCategoryType.Physical, 1),
+			FeatureLogic.createDamageResistFeature('animated-object-start-4', DamageType.Psychic, 3)
+		],
+		features: [
+			FeatureLogic.createTraitFeature('animated-object-feature-1', TraitType.Endurance, 1),
+			FeatureLogic.createSkillFeature('animated-object-feature-2', SkillType.Brawl, 2),
+			FeatureLogic.createDamageBonusFeature('animated-object-feature-3', DamageType.Impact, 2),
+			FeatureLogic.createDamageCategoryResistFeature('animated-object-feature-4', DamageCategoryType.Physical, 1)
+		],
+		actions: [
+			{
+				id: 'animated-object-action-1',
+				name: 'Slam',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Brawl,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Impact, 4),
+							ActionEffects.forceMovement(MovementType.Push, 1)
+						]
+					})
+				]
+			},
+			{
+				id: 'animated-object-action-2',
+				name: 'Topple',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 2)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Brawl,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Impact, 2),
+							ActionEffects.knockDown()
+						]
+					})
+				]
+			},
+			{
+				id: 'animated-object-action-3',
+				name: 'Grind Onward',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.self()
+				],
+				effects: [
+					ActionEffects.addCondition(ConditionLogic.createDamageCategoryResistanceCondition(TraitType.Endurance, 4, DamageCategoryType.Physical)),
+					ActionEffects.addMovement()
+				]
+			}
+		],
+		deathActions: []
+	});
+
+	static arcaneAberration = (): SpeciesModel => ({
+		id: 'species-arcane-aberration',
+		name: 'Arcane Aberration',
+		packID: PackData.arcana().id,
+		description: 'A spell that went wrong, and did not stop going wrong.',
+		type: CombatantType.Monster,
+		size: 1,
+		quirks: [
+			QuirkType.Amorphous
+		],
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('arcane-aberration-start-1', TraitType.Resolve, 1),
+			FeatureLogic.createSkillFeature('arcane-aberration-start-2', SkillType.Spellcasting, 2),
+			FeatureLogic.createDamageBonusFeature('arcane-aberration-start-3', DamageType.Psychic, 2),
+			FeatureLogic.createDamageResistFeature('arcane-aberration-start-4', DamageType.Psychic, 3)
+		],
+		features: [
+			FeatureLogic.createTraitFeature('arcane-aberration-feature-1', TraitType.Resolve, 1),
+			FeatureLogic.createSkillFeature('arcane-aberration-feature-2', SkillType.Spellcasting, 2),
+			FeatureLogic.createDamageBonusFeature('arcane-aberration-feature-3', DamageType.Psychic, 2),
+			FeatureLogic.createAuraDamageFeature('arcane-aberration-feature-4', ConditionType.AutoDamage, DamageType.Psychic, 1)
+		],
+		actions: [
+			{
+				id: 'arcane-aberration-action-1',
+				name: 'Mind Flense',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 8)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Spellcasting,
+						trait: TraitType.Resolve,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Psychic, 4)
+						]
+					})
+				]
+			},
+			{
+				id: 'arcane-aberration-action-2',
+				name: 'Unravel',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 8)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Spellcasting,
+						trait: TraitType.Resolve,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Psychic, 2),
+							ActionEffects.addCondition(ConditionLogic.createSkillCategoryPenaltyCondition(TraitType.Resolve, 4, SkillCategoryType.Mental)),
+							ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 3, TraitType.Resolve))
+						]
+					})
+				]
+			},
+			{
+				id: 'arcane-aberration-action-3',
+				name: 'Sympathetic Wound',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Enemies, 2, 6)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Spellcasting,
+						trait: TraitType.Endurance,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Psychic, 1),
+							ActionEffects.addCondition(ConditionLogic.createDamageCategoryVulnerabilityCondition(TraitType.Resolve, 4, DamageCategoryType.Energy))
+						]
+					})
+				]
+			},
+			{
+				id: 'arcane-aberration-action-4',
+				name: 'Turn Inward',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 6)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Spellcasting,
+						trait: TraitType.Resolve,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.invertConditions(false)
+						]
+					})
+				]
+			}
+		],
+		deathActions: []
+	});
+
+	static doppelganger = (): SpeciesModel => ({
+		id: 'species-doppelganger',
+		name: 'Doppelganger',
+		packID: PackData.skullduggery().id,
+		description: 'It wears the face of someone you trust, and it wants what they have.',
+		type: CombatantType.Monster,
+		size: 1,
+		quirks: [],
+		startingFeatures: [
+			FeatureLogic.createSkillFeature('doppelganger-start-1', SkillType.Stealth, 3),
+			FeatureLogic.createSkillFeature('doppelganger-start-2', SkillType.Brawl, 2),
+			FeatureLogic.createTraitFeature('doppelganger-start-3', TraitType.Speed, 1),
+			FeatureLogic.createDamageResistFeature('doppelganger-start-4', DamageType.Psychic, 2)
+		],
+		features: [
+			FeatureLogic.createSkillFeature('doppelganger-feature-1', SkillType.Stealth, 2),
+			FeatureLogic.createSkillFeature('doppelganger-feature-2', SkillType.Presence, 2),
+			FeatureLogic.createTraitFeature('doppelganger-feature-3', TraitType.Speed, 1),
+			FeatureLogic.createDamageBonusFeature('doppelganger-feature-4', DamageType.Psychic, 2)
+		],
+		actions: [
+			{
+				id: 'doppelganger-action-1',
+				name: 'Wear Your Face',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.self()
+				],
+				effects: [
+					ActionEffects.hide(),
+					ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Speed, 4, SkillType.Stealth)),
+					ActionEffects.takeAnotherAction()
+				]
+			},
+			{
+				id: 'doppelganger-action-2',
+				name: 'Light Fingers',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Stealth,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.steal()
+						]
+					})
+				]
+			},
+			{
+				id: 'doppelganger-action-3',
+				name: 'Turn The Blade',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Brawl,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.disarm(),
+							ActionEffects.dealDamage(DamageType.Impact, 1)
+						]
+					})
+				]
+			}
+		],
+		deathActions: []
+	});
+
+	static cutthroat = (): SpeciesModel => ({
+		id: 'species-cutthroat',
+		name: 'Cutthroat',
+		packID: PackData.skullduggery().id,
+		description: 'A killer for hire, paid up front and in no hurry to be seen.',
+		type: CombatantType.Monster,
+		size: 1,
+		quirks: [],
+		startingFeatures: [
+			FeatureLogic.createSkillFeature('cutthroat-start-1', SkillType.Stealth, 2),
+			FeatureLogic.createSkillFeature('cutthroat-start-2', SkillType.Weapon, 2),
+			FeatureLogic.createDamageBonusFeature('cutthroat-start-3', DamageType.Poison, 2),
+			FeatureLogic.createTraitFeature('cutthroat-start-4', TraitType.Speed, 1)
+		],
+		features: [
+			FeatureLogic.createSkillFeature('cutthroat-feature-1', SkillType.Stealth, 2),
+			FeatureLogic.createSkillFeature('cutthroat-feature-2', SkillType.Weapon, 2),
+			FeatureLogic.createDamageBonusFeature('cutthroat-feature-3', DamageType.Piercing, 2),
+			FeatureLogic.createDamageResistFeature('cutthroat-feature-4', DamageType.Poison, 3)
+		],
+		actions: [
+			{
+				id: 'cutthroat-action-1',
+				name: 'Coated Blade',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Weapon,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Piercing, 2),
+							ActionEffects.dealDamage(DamageType.Poison, 2),
+							ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Endurance, 3, TraitType.Endurance))
+						]
+					})
+				]
+			},
+			{
+				id: 'cutthroat-action-2',
+				name: 'Into The Shadows',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.self()
+				],
+				effects: [
+					ActionEffects.hide(),
+					ActionEffects.addMovement()
+				]
+			},
+			{
+				id: 'cutthroat-action-3',
+				name: 'From Behind',
+				prerequisites: [
+					ActionPrerequisites.hidden()
+				],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Stealth,
+						trait: TraitType.Speed,
+						skillBonus: 2,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Piercing, 5),
+							ActionEffects.inflictWounds(1)
+						]
+					})
+				]
+			}
+		],
+		deathActions: []
+	});
+
+	static automaton = (): SpeciesModel => ({
+		id: 'species-automaton',
+		name: 'Automaton',
+		packID: PackData.technology().id,
+		description: 'Brass and clockwork, built to hold a gun and told who to point it at.',
+		type: CombatantType.Monster,
+		size: 1,
+		quirks: [],
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('automaton-start-1', TraitType.Endurance, 1),
+			FeatureLogic.createSkillFeature('automaton-start-2', SkillType.Weapon, 2),
+			FeatureLogic.createProficiencyFeature('automaton-start-3', ItemProficiencyType.PowderWeapons),
+			FeatureLogic.createDamageCategoryResistFeature('automaton-start-4', DamageCategoryType.Physical, 1)
+		],
+		features: [
+			FeatureLogic.createTraitFeature('automaton-feature-1', TraitType.Endurance, 1),
+			FeatureLogic.createSkillFeature('automaton-feature-2', SkillType.Weapon, 2),
+			FeatureLogic.createDamageBonusFeature('automaton-feature-3', DamageType.Impact, 2),
+			FeatureLogic.createDamageResistFeature('automaton-feature-4', DamageType.Poison, 5)
+		],
+		actions: [
+			{
+				id: 'automaton-action-1',
+				name: 'Piston Strike',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Brawl,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Impact, 3),
+							ActionEffects.forceMovement(MovementType.Push, 2)
+						]
+					})
+				]
+			},
+			{
+				id: 'automaton-action-2',
+				name: 'Recalibrate',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.self()
+				],
+				effects: [
+					ActionEffects.scan(),
+					ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Endurance, 4, SkillType.Weapon)),
+					ActionEffects.takeAnotherAction()
+				]
+			},
+			{
+				id: 'automaton-action-3',
+				name: 'Volley',
+				prerequisites: [
+					ActionPrerequisites.rangedWeapon()
+				],
+				parameters: [
+					ActionWeaponParameters.ranged(),
+					ActionTargetParameters.weapon(ActionTargetType.Enemies, 2, 0)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: true,
+						skill: SkillType.Weapon,
+						trait: TraitType.Speed,
+						skillBonus: -1,
+						hit: [
+							ActionEffects.dealWeaponDamage()
+						]
+					})
+				]
+			}
+		],
+		deathActions: []
+	});
+
+	static powderKeg = (): SpeciesModel => ({
+		id: 'species-powder-keg',
+		name: 'Powder Keg',
+		packID: PackData.technology().id,
+		description: 'A walking barrel with a lit fuse. It does not expect to survive the encounter.',
+		type: CombatantType.Monster,
+		size: 1,
+		quirks: [
+			QuirkType.Mindless
+		],
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('powder-keg-start-1', TraitType.Speed, 1),
+			FeatureLogic.createSkillFeature('powder-keg-start-2', SkillType.Brawl, 2),
+			FeatureLogic.createDamageResistFeature('powder-keg-start-3', DamageType.Fire, 5)
+		],
+		features: [
+			FeatureLogic.createTraitFeature('powder-keg-feature-1', TraitType.Speed, 1),
+			FeatureLogic.createSkillFeature('powder-keg-feature-2', SkillType.Brawl, 2),
+			FeatureLogic.createDamageBonusFeature('powder-keg-feature-3', DamageType.Fire, 2)
+		],
+		actions: [
+			{
+				id: 'powder-keg-action-1',
+				name: 'Rush',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 10)
+				],
+				effects: [
+					ActionEffects.forceMovement(MovementType.BesideTarget, 0),
+					ActionEffects.takeAnotherAction()
+				]
+			},
+			{
+				id: 'powder-keg-action-2',
+				name: 'Smoulder',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Enemies, Number.MAX_VALUE)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Brawl,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Fire, 2)
+						]
+					})
+				]
+			}
+		],
+		deathActions: [
+			{
+				id: 'powder-keg-death-1',
+				name: 'Detonate',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 2)
+				],
+				effects: [
+					ActionEffects.dealDamage(DamageType.Fire, 4),
+					ActionEffects.dealDamage(DamageType.Impact, 2),
+					ActionEffects.knockDown()
+				]
+			}
 		]
+	});
+
+	static theFallen = (): SpeciesModel => ({
+		id: 'species-the-fallen',
+		name: 'The Fallen',
+		packID: PackData.faith().id,
+		description: 'A deva that kept its radiance and lost everything else.',
+		type: CombatantType.Monster,
+		size: 1,
+		quirks: [],
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('the-fallen-start-1', TraitType.Resolve, 1),
+			FeatureLogic.createSkillFeature('the-fallen-start-2', SkillType.Presence, 2),
+			FeatureLogic.createDamageBonusFeature('the-fallen-start-3', DamageType.Light, 2),
+			FeatureLogic.createDamageBonusFeature('the-fallen-start-4', DamageType.Decay, 2)
+		],
+		features: [
+			FeatureLogic.createTraitFeature('the-fallen-feature-1', TraitType.Resolve, 1),
+			FeatureLogic.createSkillFeature('the-fallen-feature-2', SkillType.Presence, 2),
+			FeatureLogic.createDamageResistFeature('the-fallen-feature-3', DamageType.Light, 3),
+			FeatureLogic.createAuraDamageFeature('the-fallen-feature-4', ConditionType.AutoDamage, DamageType.Decay, 1)
+		],
+		actions: [
+			{
+				id: 'the-fallen-action-1',
+				name: 'Withering Radiance',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 8)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Presence,
+						trait: TraitType.Resolve,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Light, 3),
+							ActionEffects.dealDamage(DamageType.Decay, 3)
+						]
+					})
+				]
+			},
+			{
+				id: 'the-fallen-action-2',
+				name: 'Judgement',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Brawl,
+						trait: TraitType.Endurance,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Light, 2),
+							ActionEffects.inflictWounds(1)
+						]
+					})
+				]
+			},
+			{
+				id: 'the-fallen-action-3',
+				name: 'Unmake The Blessing',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 5)
+				],
+				effects: [
+					ActionEffects.removeCondition(TraitType.Any),
+					ActionEffects.addCondition(ConditionLogic.createDamageVulnerabilityCondition(TraitType.Resolve, 4, DamageType.Decay))
+				]
+			},
+			{
+				id: 'the-fallen-action-4',
+				name: 'Fall With Me',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 10)
+				],
+				effects: [
+					ActionEffects.forceMovement(MovementType.Pull, 3),
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Presence,
+						trait: TraitType.Resolve,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Decay, 2),
+							ActionEffects.knockDown()
+						]
+					})
+				]
+			}
+		],
+		deathActions: []
+	});
+
+	static inquisitor = (): SpeciesModel => ({
+		id: 'species-inquisitor',
+		name: 'Inquisitor',
+		packID: PackData.faith().id,
+		description: 'Sent to ask questions, and satisfied with only one answer.',
+		type: CombatantType.Monster,
+		size: 1,
+		quirks: [],
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('inquisitor-start-1', TraitType.Resolve, 1),
+			FeatureLogic.createSkillFeature('inquisitor-start-2', SkillType.Presence, 3),
+			FeatureLogic.createDamageBonusFeature('inquisitor-start-3', DamageType.Light, 2)
+		],
+		features: [
+			FeatureLogic.createTraitFeature('inquisitor-feature-1', TraitType.Resolve, 1),
+			FeatureLogic.createSkillFeature('inquisitor-feature-2', SkillType.Presence, 2),
+			FeatureLogic.createDamageBonusFeature('inquisitor-feature-3', DamageType.Light, 2),
+			FeatureLogic.createAuraTraitFeature('inquisitor-feature-4', ConditionType.TraitPenalty, TraitType.Resolve, 1)
+		],
+		actions: [
+			{
+				id: 'inquisitor-action-1',
+				name: 'Interrogate',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 6)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Presence,
+						trait: TraitType.Resolve,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Psychic, 2),
+							ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 4, TraitType.Resolve)),
+							ActionEffects.reveal()
+						]
+					})
+				]
+			},
+			{
+				id: 'inquisitor-action-2',
+				name: 'Absolution',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 5)
+				],
+				effects: [
+					ActionEffects.removeCondition(TraitType.Any),
+					ActionEffects.healDamage(3)
+				]
+			},
+			{
+				id: 'inquisitor-action-3',
+				name: 'Rally The Faithful',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Allies, 1, 5)
+				],
+				effects: [
+					ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Resolve, 3, TraitType.Resolve)),
+					ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Resolve, 2, DamageCategoryType.Physical)),
+					ActionEffects.commandAction()
+				]
+			},
+			{
+				id: 'inquisitor-action-4',
+				name: 'Cleansing Fire',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Enemies, 2, 8)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Presence,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Fire, 2),
+							ActionEffects.dealDamage(DamageType.Light, 2)
+						]
+					})
+				]
+			}
+		],
+		deathActions: []
+	});
+
+	static mutagen = (): SpeciesModel => ({
+		id: 'species-mutagen',
+		name: 'Mutagen',
+		packID: PackData.potions().id,
+		description: 'Someone drank the wrong bottle, and this is what walked away.',
+		type: CombatantType.Monster,
+		size: 1,
+		quirks: [
+			QuirkType.Amorphous
+		],
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('mutagen-start-1', TraitType.Endurance, 1),
+			FeatureLogic.createSkillFeature('mutagen-start-2', SkillType.Brawl, 2),
+			FeatureLogic.createDamageResistFeature('mutagen-start-3', DamageType.Acid, 3),
+			FeatureLogic.createDamageResistFeature('mutagen-start-4', DamageType.Poison, 3)
+		],
+		features: [
+			FeatureLogic.createTraitFeature('mutagen-feature-1', TraitType.Endurance, 1),
+			FeatureLogic.createSkillFeature('mutagen-feature-2', SkillType.Brawl, 2),
+			FeatureLogic.createDamageBonusFeature('mutagen-feature-3', DamageType.Acid, 2),
+			FeatureLogic.createDamageCategoryResistFeature('mutagen-feature-4', DamageCategoryType.Corruption, 1)
+		],
+		actions: [
+			{
+				id: 'mutagen-action-1',
+				name: 'Unstable Lash',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Brawl,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Acid, 2),
+							ActionEffects.dealDamage(DamageType.Poison, 2),
+							ActionEffects.dealDamage(DamageType.Any, 2)
+						]
+					})
+				]
+			},
+			{
+				id: 'mutagen-action-2',
+				name: 'Reagent Spray',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 3)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Brawl,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Acid, 2),
+							ActionEffects.addCondition(ConditionLogic.createDamageCategoryVulnerabilityCondition(TraitType.Endurance, 3, DamageCategoryType.Corruption))
+						]
+					})
+				]
+			},
+			{
+				id: 'mutagen-action-3',
+				name: 'Reconstitute',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.self()
+				],
+				effects: [
+					ActionEffects.healDamage(4),
+					ActionEffects.addCondition(ConditionLogic.createDamageResistanceCondition(TraitType.Endurance, 3, DamageType.Any))
+				]
+			}
+		],
+		deathActions: []
+	});
+
+	static homunculus = (): SpeciesModel => ({
+		id: 'species-homunculus',
+		name: 'Homunculus',
+		packID: PackData.potions().id,
+		description: 'Knee-high, quick, and never encountered alone.',
+		type: CombatantType.Monster,
+		size: 1,
+		quirks: [
+			QuirkType.Drone
+		],
+		startingFeatures: [
+			FeatureLogic.createTraitFeature('homunculus-start-1', TraitType.Speed, 2),
+			FeatureLogic.createSkillFeature('homunculus-start-2', SkillType.Brawl, 2)
+		],
+		features: [
+			FeatureLogic.createTraitFeature('homunculus-feature-1', TraitType.Speed, 1),
+			FeatureLogic.createSkillFeature('homunculus-feature-2', SkillType.Brawl, 2),
+			FeatureLogic.createDamageBonusFeature('homunculus-feature-3', DamageType.Acid, 2)
+		],
+		actions: [
+			{
+				id: 'homunculus-action-1',
+				name: 'Scurry',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.self()
+				],
+				effects: [
+					ActionEffects.addMovement(),
+					ActionEffects.takeAnotherAction()
+				]
+			},
+			{
+				id: 'homunculus-action-2',
+				name: 'Nip',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Brawl,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.dealDamage(DamageType.Piercing, 2),
+							ActionEffects.dealDamage(DamageType.Acid, 1)
+						]
+					})
+				]
+			},
+			{
+				id: 'homunculus-action-3',
+				name: 'Underfoot',
+				prerequisites: [],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+				],
+				effects: [
+					ActionEffects.attack({
+						weapon: false,
+						skill: SkillType.Stealth,
+						trait: TraitType.Speed,
+						skillBonus: 0,
+						hit: [
+							ActionEffects.knockDown(),
+							ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Speed, 3))
+						]
+					})
+				]
+			}
+		],
+		deathActions: []
 	});
 
 	static getList = (): SpeciesModel[] => {
@@ -1870,7 +2732,22 @@ export class MonsterSpeciesData {
 			MonsterSpeciesData.banshee(),
 			// Cold blood
 			MonsterSpeciesData.crocodilian(),
-			MonsterSpeciesData.naga()
+			MonsterSpeciesData.naga(),
+			// Arcana
+			MonsterSpeciesData.animatedObject(),
+			MonsterSpeciesData.arcaneAberration(),
+			// Skullduggery
+			MonsterSpeciesData.cutthroat(),
+			MonsterSpeciesData.doppelganger(),
+			// Technology
+			MonsterSpeciesData.automaton(),
+			MonsterSpeciesData.powderKeg(),
+			// Faith
+			MonsterSpeciesData.inquisitor(),
+			MonsterSpeciesData.theFallen(),
+			// Potions
+			MonsterSpeciesData.homunculus(),
+			MonsterSpeciesData.mutagen()
 		];
 
 		list.forEach(n => {

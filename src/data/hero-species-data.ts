@@ -60,7 +60,8 @@ export class HeroSpeciesData {
 					ActionEffects.takeAnotherAction(true)
 				]
 			}
-		]
+		],
+		deathActions: []
 	});
 
 	static construct = (): SpeciesModel => ({
@@ -79,7 +80,7 @@ export class HeroSpeciesData {
 		],
 		features: [
 			FeatureLogic.createTraitFeature('construct-feature-1', TraitType.Endurance, 1),
-			FeatureLogic.createSkillFeature('construct-start-2', SkillType.Brawl, 2),
+			FeatureLogic.createSkillFeature('construct-feature-2', SkillType.Brawl, 2),
 			FeatureLogic.createDamageResistFeature('construct-feature-3', DamageType.Poison, 2),
 			FeatureLogic.createDamageResistFeature('construct-feature-4', DamageType.Psychic, 2)
 		],
@@ -118,7 +119,8 @@ export class HeroSpeciesData {
 					ActionEffects.takeAnotherAction()
 				]
 			}
-		]
+		],
+		deathActions: []
 	});
 
 	static deva = (): SpeciesModel => ({
@@ -179,7 +181,8 @@ export class HeroSpeciesData {
 					})
 				]
 			}
-		]
+		],
+		deathActions: []
 	});
 
 	static dwarf = (): SpeciesModel => ({
@@ -229,7 +232,8 @@ export class HeroSpeciesData {
 					ActionEffects.takeAnotherAction()
 				]
 			}
-		]
+		],
+		deathActions: []
 	});
 
 	static elf = (): SpeciesModel => ({
@@ -276,7 +280,8 @@ export class HeroSpeciesData {
 					ActionEffects.takeAnotherAction()
 				]
 			}
-		]
+		],
+		deathActions: []
 	});
 
 	static faun = (): SpeciesModel => ({
@@ -342,7 +347,8 @@ export class HeroSpeciesData {
 					})
 				]
 			}
-		]
+		],
+		deathActions: []
 	});
 
 	static gnome = (): SpeciesModel => ({
@@ -395,7 +401,8 @@ export class HeroSpeciesData {
 					ActionEffects.takeAnotherAction()
 				]
 			}
-		]
+		],
+		deathActions: []
 	});
 
 	static minotaur = (): SpeciesModel => ({
@@ -404,7 +411,7 @@ export class HeroSpeciesData {
 		packID: PackData.beasts().id,
 		description: 'A muscular humanoid with the head of a bull.',
 		type: CombatantType.Hero,
-		size: 1,
+		size: 2,
 		quirks: [],
 		startingFeatures: [
 			FeatureLogic.createTraitFeature('minotaur-start-1', TraitType.Endurance, 1),
@@ -497,7 +504,8 @@ export class HeroSpeciesData {
 					})
 				]
 			}
-		]
+		],
+		deathActions: []
 	});
 
 	static pixie = (): SpeciesModel => ({
@@ -542,7 +550,8 @@ export class HeroSpeciesData {
 					ActionEffects.takeAnotherAction()
 				]
 			}
-		]
+		],
+		deathActions: []
 	});
 
 	static reptilian = (): SpeciesModel => ({
@@ -618,7 +627,8 @@ export class HeroSpeciesData {
 					})
 				]
 			}
-		]
+		],
+		deathActions: []
 	});
 
 	static werewolf = (): SpeciesModel => ({
@@ -695,7 +705,8 @@ export class HeroSpeciesData {
 					})
 				]
 			}
-		]
+		],
+		deathActions: []
 	});
 
 	static getList = (): SpeciesModel[] => {

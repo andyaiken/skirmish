@@ -26,7 +26,8 @@
 		"sass": "^1.103.1",
 		"typescript": "^6.0.3",
 		"typescript-eslint": "^8.69.0",
-		"vite": "^8.2.2"
+		"vite": "^8.2.2",
+		"vitest": "^4.1.11"
 	},
 	"scripts": {
 		"update": "npx npm-check-updates --interactive --format group",
@@ -34,6 +35,8 @@
 		"build": "tsc --noEmit && vite build",
 		"preview": "vite preview",
 		"lint": "eslint src vite.config.ts",
+		"test": "vitest run",
+		"test:watch": "vitest",
 		"predeploy": "npm run build",
 		"deploy": "gh-pages -d build"
 	}

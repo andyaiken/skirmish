@@ -102,6 +102,8 @@
 ## Ideas for Species
 * Small:
   * Pixie, Gnome, Goblin, Scarab
+  * Can't be size 0 - that'll mess with grid sizing - needs to be a quirk
+  * Probably just a display effect, rather than a mechanical effect
 * Quirks:
   * Insubstantial / phasing / ghostly
     * Takes half damage from physical damage
@@ -149,8 +151,6 @@
 
 # Tech Debt
 
-* Convert from CRA to Vite
-* Convert to functional components
+* Convert to functional components, using hooks
 * Convert to React Native / Electron
 * Port to ipadOS, macOS
-* Use hooks

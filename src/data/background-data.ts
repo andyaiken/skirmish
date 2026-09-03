@@ -789,9 +789,9 @@ export class BackgroundData {
 		description: 'A religious fanatic, empowered by the strength of their convictions.',
 		startingFeatures: [],
 		features: [
-			FeatureLogic.createSkillFeature('reaver-feature-1', SkillType.Brawl, 2),
-			FeatureLogic.createSkillFeature('reaver-feature-2', SkillType.Weapon, 2),
-			FeatureLogic.createDamageCategoryBonusFeature('reaver-feature-4', DamageCategoryType.Any, 1)
+			FeatureLogic.createSkillFeature('zealot-feature-1', SkillType.Brawl, 2),
+			FeatureLogic.createSkillFeature('zealot-feature-2', SkillType.Weapon, 2),
+			FeatureLogic.createDamageCategoryBonusFeature('zealot-feature-3', DamageCategoryType.Any, 1)
 		],
 		actions: [
 			{

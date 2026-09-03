@@ -8,14 +8,15 @@ import { Random } from '../utils/random';
 import { EncounterMapLogic } from '../logic/encounter-map-logic';
 
 export class EncounterMapGenerator {
-	static terrainWeights: { terrains: string[], dungeon: number, ruin: number, cavern: number, street: number, arena: number }[] = [
+	static terrainWeights: { terrains: string[], dungeon: number, ruin: number, cavern: number, street: number, arena: number, building: number }[] = [
 		{
 			terrains: [ 'Canyons', 'Mountains', 'Plateaus', 'Volcanic' ],
 			dungeon: 2,
 			ruin: 3,
 			cavern: 8,
 			street: 1,
-			arena: 1
+			arena: 1,
+			building: 1
 		},
 		{
 			terrains: [ 'Fens', 'Forest', 'Jungle', 'Lakes', 'Marshland', 'Rainforest', 'Riverlands', 'Taiga', 'Wetlands' ],
@@ -23,7 +24,8 @@ export class EncounterMapGenerator {
 			ruin: 5,
 			cavern: 4,
 			street: 1,
-			arena: 1
+			arena: 1,
+			building: 2
 		},
 		{
 			terrains: [ 'Badlands', 'Desert', 'Plains', 'Salt flats', 'Scrubland', 'Steppe', 'Valleys' ],
@@ -31,7 +33,8 @@ export class EncounterMapGenerator {
 			ruin: 4,
 			cavern: 1,
 			street: 6,
-			arena: 2
+			arena: 2,
+			building: 3
 		}
 	];
 
@@ -50,6 +53,7 @@ export class EncounterMapGenerator {
 		add(EncounterMapGenerator.generateCavernMap, weights ? weights.cavern : 1);
 		add(EncounterMapGenerator.generateStreetMap, weights ? weights.street : 1);
 		add(EncounterMapGenerator.generateArenaMap, weights ? weights.arena : 1);
+		add(EncounterMapGenerator.generateBuildingMap, weights ? weights.building : 1);
 
 		return Collections.draw(mapTypes, rng);
 	};
@@ -340,7 +344,7 @@ export class EncounterMapGenerator {
 			}
 		}
 
-		EncounterMapGenerator.addPillars(map, rng);
+		EncounterMapGenerator.addPillars(map, rng, 1 + Random.randomNumber(4, rng));
 
 		return map;
 	};
@@ -353,8 +357,7 @@ export class EncounterMapGenerator {
 		}
 	};
 
-	static addPillars = (map: EncounterMapSquareModel[], rng: () => number) => {
-		const count = 1 + Random.randomNumber(4, rng);
+	static addPillars = (map: EncounterMapSquareModel[], rng: () => number, count: number) => {
 		const floor = new Set(map.map(sq => `${sq.x} ${sq.y}`));
 
 		for (let n = 0; n < count; ++n) {
@@ -379,6 +382,118 @@ export class EncounterMapGenerator {
 				}
 			}
 		}
+	};
+
+	static generateBuildingMap = (size: number, rng: () => number): EncounterMapSquareModel[] => {
+		const map: EncounterMapSquareModel[] = [];
+		const floor = new Set<string>();
+
+		const carve = (x: number, y: number) => {
+			if (!floor.has(`${x} ${y}`)) {
+				floor.add(`${x} ${y}`);
+				map.push({
+					x: x,
+					y: y,
+					type: EncounterMapSquareType.Clear
+				});
+			}
+		};
+
+		// A size 2 combatant has to be able to stand in the smallest room.
+		const minRoom = 4;
+
+		const divide = (x: number, y: number, width: number, height: number) => {
+			const canSplitVertically = width >= ((2 * minRoom) + 1);
+			const canSplitHorizontally = height >= ((2 * minRoom) + 1);
+
+			const stop = !canSplitVertically && !canSplitHorizontally;
+
+			// Stopping early once a region is room-sized leaves a few large rooms rather than a grid of identical small ones.
+			const stopEarly = ((width * height) <= 80) && Random.randomBoolean(rng);
+
+			if (stop || stopEarly) {
+				for (let cx = x; cx < x + width; ++cx) {
+					for (let cy = y; cy < y + height; ++cy) {
+						carve(cx, cy);
+					}
+				}
+				return;
+			}
+
+			// Favour the longer axis, so rooms stay roughly rectangular
+			let vertical = canSplitVertically;
+			if (canSplitVertically && canSplitHorizontally) {
+				vertical = Random.randomDecimal(rng) < (width / (width + height));
+			}
+
+			// Averaging two draws pulls the wall towards the middle; a flat draw slices thin strips off the edge of the building just as often
+			const splitPoint = (extent: number) => {
+				const range = extent - (2 * minRoom);
+				return minRoom + Math.round((Random.randomNumber(range, rng) + Random.randomNumber(range, rng)) / 2);
+			};
+
+			if (vertical) {
+				const wall = x + splitPoint(width);
+
+				divide(x, y, wall - x, height);
+				divide(wall + 1, y, x + width - wall - 1, height);
+
+				EncounterMapGenerator.addDoorway(floor, carve, wall, y, height, true, rng);
+			} else {
+				const wall = y + splitPoint(height);
+
+				divide(x, y, width, wall - y);
+				divide(x, wall + 1, width, y + height - wall - 1);
+
+				EncounterMapGenerator.addDoorway(floor, carve, wall, x, width, false, rng);
+			}
+		};
+
+		// The footprint pays for its own walls, so it is larger than the square count asked for
+		const footprint = Math.sqrt(size * 1.2);
+		const aspect = 1 + (Random.randomDecimal(rng) / 2);
+		const wide = Random.randomBoolean(rng);
+
+		divide(
+			0,
+			0,
+			Math.round(wide ? footprint * aspect : footprint / aspect),
+			Math.round(wide ? footprint / aspect : footprint * aspect)
+		);
+
+		// Furniture. addPillars only picks squares with floor on all four sides, so it can never block a doorway.
+		EncounterMapGenerator.addPillars(map, rng, 3 + Random.randomNumber(5, rng));
+
+		return map;
+	};
+
+	// Cuts one square out of a dividing wall. The wall runs along `line` - a column if `vertical`, otherwise a row - and spans `span` squares from `start`.
+	static addDoorway = (floor: Set<string>, carve: (x: number, y: number) => void, line: number, start: number, span: number, vertical: boolean, rng: () => number) => {
+		const at = (along: number, across: number) => (vertical ? { x: across, y: along } : { x: along, y: across });
+
+		// Only somewhere with floor on both sides is a doorway; anywhere else opens into a wall
+		const candidates: number[] = [];
+		for (let along = start; along < start + span; ++along) {
+			const before = at(along, line - 1);
+			const after = at(along, line + 1);
+			if (floor.has(`${before.x} ${before.y}`) && floor.has(`${after.x} ${after.y}`)) {
+				candidates.push(along);
+			}
+		}
+
+		if (candidates.length > 0) {
+			const along = Collections.draw(candidates, rng);
+			const door = at(along, line);
+			carve(door.x, door.y);
+			return;
+		}
+
+		// Both halves put a wall of their own against this one all the way along it; force a way through rather than leave them unreachable
+		const along = start + Math.floor(span / 2);
+		[ line - 1, line, line + 1 ].forEach(across => {
+			const sq = at(along, across);
+			carve(sq.x, sq.y);
+		});
 	};
 
 	static simplifyMap = (map: EncounterMapSquareModel[]) => {

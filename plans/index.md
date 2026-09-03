@@ -7,7 +7,7 @@
   * Automatically select the best path to a selected square
 
 ## Map Types
-* Building interior
+* ~~Building interior~~ — built as a standard map type, see `blood-and-sand.md`
 * ~~Arena~~ — built as a standard map type, see `blood-and-sand.md`
 
 # New Features

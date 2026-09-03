@@ -57,9 +57,28 @@ The rest of Blood and Sand still needs the pack. Part A is simply not part of it
 country, 1 elsewhere — since an arena is a built thing, and an open floor should stay a change of
 pace rather than a default.
 
-**Building Interior**, the other map type in `tasks.md`, is the same size of job — rectangular rooms
-off a corridor spine, more walls than the dungeon generator produces. Worth doing in the same pass
-while the generator file is open, though it belongs to no particular pack. **Not built.**
+**Building Interior**, the other map type in `plans/index.md`, is **built** — also as a standard map
+type, and for the same reason. `EncounterMapGenerator.generateBuildingMap` carves a rectangular
+footprint into rooms by binary space partition rather than the corridor spine this plan first
+suggested: BSP is less code than the spine bookkeeping and gives the packed rectangular floor plan a
+building should have, where a spine tends to a sparse plus-shape with dead exterior. Rooms are at
+least 4 squares on a side, so a size 2 combatant can stand in the smallest of them, and
+`terrainWeights` gained a `building` column at 3 in open country, 2 in forest, 1 in the rocks.
+
+Two things were worth knowing before starting it, and both are recorded here because they will come
+up again for anyone touching this generator:
+
+- **`Obstructed` is not a wall.** It is difficult terrain — `+1` movement, no effect on line of
+  sight — so interior walls have to be gaps in the square list, not obstructed squares. Reaching for
+  `Obstructed` gives you a house you can see straight through.
+- **Connectivity is the real risk.** Every other generator is connected by construction; a
+  room-and-door layout is the first that can seal a room, and nothing in the codebase validates
+  reachability, so a sealed monster is an encounter that can never be finished. Doors are therefore
+  cut bottom-up — both halves of a region are carved and connected before the door joining them is
+  placed, so it can be aimed at squares already known to be floor, with a forced three-square carve
+  as a fallback. A 200-seed reachability test guards it.
+
+Measured over 200 seeds: mean 399 floor squares (368–426), every one fully connected.
 
 ---
 

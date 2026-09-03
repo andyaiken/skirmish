@@ -13,7 +13,8 @@ const mapTypeNames = new Map([
 	[ EncounterMapGenerator.generateRuinMap, 'ruin' ],
 	[ EncounterMapGenerator.generateCavernMap, 'cavern' ],
 	[ EncounterMapGenerator.generateStreetMap, 'street' ],
-	[ EncounterMapGenerator.generateArenaMap, 'arena' ]
+	[ EncounterMapGenerator.generateArenaMap, 'arena' ],
+	[ EncounterMapGenerator.generateBuildingMap, 'building' ]
 ]);
 
 // Draws map types for one terrain and counts how often each came up. Only the
@@ -21,7 +22,7 @@ const mapTypeNames = new Map([
 const drawCounts = (terrain: string, count = 2000) => {
 	const rng = Random.getSeededRNG(`map types for ${terrain}`);
 
-	const counts: Record<string, number> = { dungeon: 0, ruin: 0, cavern: 0, street: 0, arena: 0 };
+	const counts: Record<string, number> = { dungeon: 0, ruin: 0, cavern: 0, street: 0, arena: 0, building: 0 };
 	for (let n = 0; n < count; ++n) {
 		const name = mapTypeNames.get(EncounterMapGenerator.drawMapType(terrain, rng)) as string;
 		counts[name] += 1;
@@ -142,6 +143,72 @@ describe('the arena map', () => {
 
 		arenas.forEach(map => {
 			expect(map.length - clear(map).length).toBeLessThan(cavernObstructed);
+		});
+	});
+});
+
+describe('the building map', () => {
+	const buildings = [ 'one', 'two', 'three', 'four', 'five' ].map(seed => EncounterMapGenerator.generateBuildingMap(400, Random.getSeededRNG(seed)));
+
+	// Obstructed is difficult terrain rather than a wall - it costs an extra movement point and does
+	// not block line of sight - so both square types are walkable and both count as connected.
+	const isConnected = (map: EncounterMapSquareModel[]) => {
+		const walkable = new Set(map.map(sq => `${sq.x} ${sq.y}`));
+
+		const seen = new Set([ `${map[0].x} ${map[0].y}` ]);
+		const pending = [ map[0] ];
+		while (pending.length > 0) {
+			const sq = pending.pop() as EncounterMapSquareModel;
+			([ [ 1, 0 ], [ -1, 0 ], [ 0, 1 ], [ 0, -1 ] ]).forEach(([ dx, dy ]) => {
+				const key = `${sq.x + dx} ${sq.y + dy}`;
+				if (walkable.has(key) && !seen.has(key)) {
+					seen.add(key);
+					pending.push({ x: sq.x + dx, y: sq.y + dy, type: EncounterMapSquareType.Clear });
+				}
+			});
+		}
+
+		return seen.size === walkable.size;
+	};
+
+	it('generates roughly the requested number of squares', () => {
+		buildings.forEach(map => {
+			expect(map.length).toBeGreaterThan(350);
+			expect(map.length).toBeLessThan(450);
+		});
+	});
+
+	it('leaves every room reachable', () => {
+		// The one that matters. Every other generator is connected by construction, but a room whose
+		// doorway went missing would hold a monster no hero could reach, and the encounter could
+		// never be finished.
+		buildings.forEach(map => expect(isConnected(map)).toBe(true));
+	});
+
+	it('leaves every room reachable across many seeds', () => {
+		for (let n = 0; n < 200; ++n) {
+			const map = EncounterMapGenerator.generateBuildingMap(400, Random.getSeededRNG(`building ${n}`));
+			expect(isConnected(map), `seed ${n}`).toBe(true);
+		}
+	});
+
+	it('is divided by interior walls', () => {
+		// What separates a building from the arena: a good fraction of its bounding box is wall.
+		buildings.forEach(map => {
+			const width = Math.max(...map.map(sq => sq.x)) - Math.min(...map.map(sq => sq.x)) + 1;
+			const height = Math.max(...map.map(sq => sq.y)) - Math.min(...map.map(sq => sq.y)) + 1;
+
+			expect(map.length).toBeLessThan((width * height) * 0.9);
+		});
+	});
+
+	it('has room for a size 2 combatant', () => {
+		// Rooms are never narrower than the minimum, so a large monster always has somewhere to stand.
+		buildings.forEach(map => {
+			const squares = new Set(map.map(sq => `${sq.x} ${sq.y}`));
+			const blocks = map.filter(sq => [ [ 0, 1 ], [ 1, 0 ], [ 1, 1 ] ].every(([ dx, dy ]) => squares.has(`${sq.x + dx} ${sq.y + dy}`)));
+
+			expect(blocks.length).toBeGreaterThan(20);
 		});
 	});
 });

@@ -68,6 +68,7 @@ interface Props {
 	addMovement: (encounter: EncounterModel, combatant: CombatantModel, value: number) => void;
 	inspire: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	scan: (encounter: EncounterModel, combatant: CombatantModel) => void;
+	treatWounds: (encounter: EncounterModel, combatant: CombatantModel, spendCharge: StructureType | null) => void;
 	hide: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	drinkPotion: (encounter: EncounterModel, owner: CombatantModel, drinker: CombatantModel, potion: ItemModel) => void;
 	drawActions: (encounter: EncounterModel, combatant: CombatantModel, spendCharge: StructureType | null) => void;
@@ -879,6 +880,7 @@ export class EncounterScreen extends Component<Props, State> {
 					<HeroControls
 						combatant={currentCombatant}
 						encounter={this.props.encounter}
+						game={this.props.game}
 						options={this.props.options}
 						showToken={() => this.scrollToCombatant('current')}
 						showCharacterSheet={this.showDetailsCombatant}
@@ -886,6 +888,7 @@ export class EncounterScreen extends Component<Props, State> {
 						addMovement={this.props.addMovement}
 						inspire={this.props.inspire}
 						scan={this.props.scan}
+						treatWounds={this.props.treatWounds}
 						hide={this.props.hide}
 						levelUp={this.props.levelUp}
 						switchAllegiance={this.props.switchAllegiance}

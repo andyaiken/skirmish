@@ -117,7 +117,17 @@ export class ConditionLogic {
 		return condition;
 	};
 
+	static makeContagious = (condition: ConditionModel) => {
+		condition.contagious = true;
+		return condition;
+	};
+
 	static getConditionDescription = (condition: ConditionModel) => {
+		const description = ConditionLogic.getConditionTypeDescription(condition);
+		return condition.contagious ? `${description}, contagious` : description;
+	};
+
+	static getConditionTypeDescription = (condition: ConditionModel) => {
 		switch (condition.type) {
 			case ConditionType.AutoHeal:
 				return 'Automatic healing';

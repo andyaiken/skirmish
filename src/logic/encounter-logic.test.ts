@@ -2,11 +2,15 @@ import { beforeEach, describe, expect, it } from 'vitest';
 
 import { CombatantState } from '../enums/combatant-state';
 import { CombatantType } from '../enums/combatant-type';
+import { DamageType } from '../enums/damage-type';
 import { EncounterMapSquareType } from '../enums/encounter-map-square-type';
+import { TraitType } from '../enums/trait-type';
 
 import type { EncounterMapSquareModel, EncounterModel } from '../models/encounter';
 import type { CombatantModel } from '../models/combatant';
+import type { ConditionModel } from '../models/condition';
 
+import { ConditionLogic } from './condition-logic';
 import { EncounterLogic } from './encounter-logic';
 import { Factory } from './factory';
 import { PackLogic } from './pack-logic';
@@ -241,5 +245,197 @@ describe('EncounterLogic.kill', () => {
 			.filter(message => message.parts.some(part => part.data === 'triggers Detonate'))
 			.length;
 		expect(detonations).toBeLessThanOrEqual(2);
+	});
+});
+
+describe('EncounterLogic.spreadContagion', () => {
+	let encounter: EncounterModel;
+	let carrier: CombatantModel;
+
+	const infect = (combatant: CombatantModel, rank = 10) => {
+		const condition = ConditionLogic.makeContagious(
+			ConditionLogic.createAutoDamageCondition(TraitType.Endurance, rank, DamageType.Poison)
+		);
+		combatant.combat.conditions.push(condition);
+		return condition;
+	};
+
+	// For each adjacent combatant, spreadContagion rolls that target's resistance and
+	// then the condition's. Scripting the rng on that cycle fixes the outcome, so these
+	// tests do not depend on luck - Random.dice explodes, so no rank alone would settle it.
+	const scripted = (condition: ConditionModel, sample: CombatantModel, resisted: boolean) => {
+		const lows = Math.max(EncounterLogic.getTraitRank(encounter, sample, condition.trait), 1);
+		const cycle = lows + condition.rank;
+		let i = 0;
+		return () => {
+			const low = (i++ % cycle) < lows;
+			return (low === resisted) ? 0.85 : 0;
+		};
+	};
+
+	beforeEach(() => {
+		encounter = createEncounter();
+		carrier = addCombatant(encounter, CombatantType.Hero, 2, 2);
+	});
+
+	it('spreads a contagious condition to an adjacent combatant', () => {
+		const neighbour = addCombatant(encounter, CombatantType.Hero, 2, 3);
+		const condition = infect(carrier);
+
+		EncounterLogic.spreadContagion(encounter, carrier, scripted(condition, neighbour, false));
+
+		expect(neighbour.combat.conditions.length).toBe(1);
+	});
+
+	it('spreads to every adjacent combatant that fails to resist', () => {
+		const a = addCombatant(encounter, CombatantType.Hero, 2, 3);
+		const b = addCombatant(encounter, CombatantType.Hero, 2, 1);
+		const c = addCombatant(encounter, CombatantType.Hero, 1, 2);
+		const condition = infect(carrier);
+
+		EncounterLogic.spreadContagion(encounter, carrier, scripted(condition, a, false));
+
+		expect([ a, b, c ].every(x => x.combat.conditions.length === 1)).toBe(true);
+	});
+
+	it('does not infect a combatant who resists', () => {
+		const neighbour = addCombatant(encounter, CombatantType.Hero, 2, 3);
+		const condition = infect(carrier);
+
+		EncounterLogic.spreadContagion(encounter, carrier, scripted(condition, neighbour, true));
+
+		expect(neighbour.combat.conditions.length).toBe(0);
+	});
+
+	it('does not spread to a combatant who is not adjacent', () => {
+		const distant = addCombatant(encounter, CombatantType.Hero, 0, 0);
+		infect(carrier);
+
+		EncounterLogic.spreadContagion(encounter, carrier);
+
+		expect(distant.combat.conditions.length).toBe(0);
+	});
+
+	it('does not spread a condition that is not contagious', () => {
+		const neighbour = addCombatant(encounter, CombatantType.Hero, 2, 3);
+		carrier.combat.conditions.push(ConditionLogic.createAutoDamageCondition(TraitType.Endurance, 10, DamageType.Poison));
+
+		EncounterLogic.spreadContagion(encounter, carrier);
+
+		expect(neighbour.combat.conditions.length).toBe(0);
+	});
+
+	it('passes on a copy one rank weaker, so an outbreak burns out', () => {
+		const neighbour = addCombatant(encounter, CombatantType.Hero, 2, 3);
+		const condition = infect(carrier);
+
+		EncounterLogic.spreadContagion(encounter, carrier, scripted(condition, neighbour, false));
+
+		expect(neighbour.combat.conditions[0].rank).toBe(condition.rank - 1);
+		expect(condition.rank).toBe(10);
+	});
+
+	it('does not give a combatant a condition it already carries', () => {
+		const neighbour = addCombatant(encounter, CombatantType.Hero, 2, 3);
+		infect(carrier);
+		infect(neighbour);
+
+		EncounterLogic.spreadContagion(encounter, carrier);
+
+		expect(neighbour.combat.conditions.length).toBe(1);
+	});
+
+	it('does not spread to the dead', () => {
+		const corpse = addCombatant(encounter, CombatantType.Hero, 2, 3);
+		corpse.combat.state = CombatantState.Dead;
+		infect(carrier);
+
+		EncounterLogic.spreadContagion(encounter, carrier);
+
+		expect(corpse.combat.conditions.length).toBe(0);
+	});
+
+	it('does not spread a rank 1 condition, which would copy across at rank 0', () => {
+		const neighbour = addCombatant(encounter, CombatantType.Hero, 2, 3);
+		infect(carrier, 1);
+
+		EncounterLogic.spreadContagion(encounter, carrier);
+
+		expect(neighbour.combat.conditions.length).toBe(0);
+	});
+});
+
+describe('EncounterLogic.knockout', () => {
+	it('wounds the combatant to the threshold that makes them unconscious', () => {
+		const encounter = createEncounter();
+		const hero = addCombatant(encounter, CombatantType.Hero, 2, 2);
+
+		EncounterLogic.knockout(encounter, hero);
+
+		expect(hero.combat.state).toBe(CombatantState.Unconscious);
+		expect(hero.combat.wounds).toBe(EncounterLogic.getTraitRank(encounter, hero, TraitType.Resolve));
+	});
+});
+
+describe('EncounterLogic.treatWounds', () => {
+	let encounter: EncounterModel;
+	let hero: CombatantModel;
+
+	beforeEach(() => {
+		encounter = createEncounter();
+		hero = addCombatant(encounter, CombatantType.Hero, 2, 2);
+	});
+
+	it('clears every wound', () => {
+		hero.combat.wounds = 2;
+
+		EncounterLogic.treatWounds(encounter, hero);
+
+		expect(hero.combat.wounds).toBe(0);
+	});
+
+	it('brings an unconscious hero round', () => {
+		hero.combat.wounds = EncounterLogic.getTraitRank(encounter, hero, TraitType.Resolve);
+		hero.combat.state = CombatantState.Unconscious;
+
+		EncounterLogic.treatWounds(encounter, hero);
+
+		expect(hero.combat.state).toBe(CombatantState.Prone);
+	});
+
+	it('gives a revived hero the turn they were denied', () => {
+		hero.combat.wounds = EncounterLogic.getTraitRank(encounter, hero, TraitType.Resolve);
+		hero.combat.state = CombatantState.Unconscious;
+		// an unconscious combatant starts their turn with none of these
+		hero.combat.movement = 0;
+		hero.combat.actions = [];
+
+		EncounterLogic.treatWounds(encounter, hero);
+
+		expect(hero.combat.movement).toBeGreaterThan(0);
+		expect(hero.combat.actions.length).toBeGreaterThan(0);
+	});
+
+	it('revives a hero who is unconscious without wounds', () => {
+		// defensive: the revival check is wounds < resolve, so it must not depend on
+		// there being wounds to clear
+		hero.combat.state = CombatantState.Unconscious;
+		hero.combat.wounds = 0;
+
+		EncounterLogic.treatWounds(encounter, hero);
+
+		expect(hero.combat.state).toBe(CombatantState.Prone);
+		expect(hero.combat.actions.length).toBeGreaterThan(0);
+	});
+
+	it('does not hand a second turn to a hero who was already conscious', () => {
+		hero.combat.wounds = 1;
+		hero.combat.movement = 3;
+		hero.combat.actions = [];
+
+		EncounterLogic.treatWounds(encounter, hero);
+
+		expect(hero.combat.movement).toBe(3);
+		expect(hero.combat.actions.length).toBe(0);
 	});
 });

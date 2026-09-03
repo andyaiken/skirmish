@@ -1,20 +1,29 @@
 import { Component } from 'react';
 
+import { CombatantState } from '../../../../../enums/combatant-state';
+import { StructureType } from '../../../../../enums/structure-type';
+
+import { StrongholdLogic } from '../../../../../logic/stronghold-logic';
+
 import type { CombatantModel } from '../../../../../models/combatant';
 import type { EncounterModel } from '../../../../../models/encounter';
+import type { GameModel } from '../../../../../models/game';
 import type { OptionsModel } from '../../../../../models/options';
 
 import { CombatStatsPanel, CombatantNotices } from '../../../../panels';
 import { Expander, IconSize, IconType, IconValue, Text, TextType } from '../../../../controls';
+import { StrongholdBenefitCard } from '../../../../cards';
 
 import './hero-overview.scss';
 
 interface Props {
 	combatant: CombatantModel;
 	encounter: EncounterModel;
+	game: GameModel;
 	options: OptionsModel;
 	inspire: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	scan: (encounter: EncounterModel, combatant: CombatantModel) => void;
+	treatWounds: (encounter: EncounterModel, combatant: CombatantModel, spendCharge: StructureType | null) => void;
 	hide: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	levelUp: (combatant: CombatantModel) => void;
 	switchAllegiance: (combatant: CombatantModel) => void;
@@ -24,10 +33,34 @@ interface Props {
 }
 
 export class HeroOverview extends Component<Props> {
+	getTreatment = () => {
+		const unconscious = this.props.combatant.combat.state === CombatantState.Unconscious;
+		if ((this.props.combatant.combat.wounds === 0) && !unconscious) {
+			return null;
+		}
+
+		const treatments = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Sanatorium);
+		if ((treatments === 0) && !this.props.options.developer) {
+			return null;
+		}
+
+		return (
+			<div className='treatment'>
+				<StrongholdBenefitCard
+					label='Treat Wounds'
+					available={treatments}
+					developer={this.props.options.developer}
+					onUse={() => this.props.treatWounds(this.props.encounter, this.props.combatant, this.props.options.developer ? null : StructureType.Sanatorium)}
+				/>
+			</div>
+		);
+	};
+
 	render = () => {
 		return (
 			<div className='hero-overview'>
 				<CombatStatsPanel combatant={this.props.combatant} encounter={this.props.encounter} />
+				{this.getTreatment()}
 				<div className='quick-actions'>
 					<button
 						disabled={this.props.combatant.combat.stunned || (this.props.combatant.combat.movement < 4)}

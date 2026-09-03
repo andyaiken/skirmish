@@ -14,7 +14,7 @@ an implementer on its own; where one depends on another it says so at the top.
 | 03 | [The Lie of the Land](03-the-lie-of-the-land.md)           | Pack + systems        | Large  | —                    |               |
 | 04 | [Blood and Sand](04-blood-and-sand.md)                     | Pack + map type       | Medium | —                    |               |
 | 05 | [Tools of the Trade](05-tools-of-the-trade.md)             | Base content (data)   | Medium | —                    | *Built, scoped down* |
-| 06 | [Ill Humours](06-ill-humours.md)                           | Pack (data)           | Medium | —                    |               |
+| 06 | [Ill Humours](06-ill-humours.md)                           | Pack + systems        | Medium | —                    | *Systems done, cards next* |
 | 07 | [Chapter and Verse](07-chapter-and-verse.md)               | Pack + system         | Medium | —                    |               |
 | 08 | [Sound and Fury](08-sound-and-fury.md)                     | Pack (data)           | Small  | —                    | *Built*       |
 | 09 | [Coin and Contract](09-coin-and-contract.md)               | Pack + campaign layer | Large  | —                    |               |
@@ -85,6 +85,12 @@ decided by **proficiency**, not by `range` — `checkWeaponParameter` maps melee
 Large/Paired/Military and ranged to Ranged/Powder, so a paired weapon with a long `range` is a melee
 weapon with very long reach. The `Hand` and `Ring` locations hold two items each; everything else
 holds one.
+
+**Contagion.** Any condition can be made to spread by wrapping it in
+`ConditionLogic.makeContagious`. At the end of its bearer's turn, `EncounterLogic.spreadContagion`
+rolls it against every adjacent combatant; the copy passed on is one rank weaker, so outbreaks always
+burn out. Rank is the lever — rank 4 spreads and fades, rank 8 reaches everyone adjacent. The card
+scorer counts a contagious condition at double its rank. See Spec 06.
 
 **Saves.** Games persist as JSON through localforage. New fields on `EncounterModel`, `GameModel` or
 `CombatantModel` must be patched defensively in `Platform.updateGame`, following the existing

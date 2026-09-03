@@ -1,7 +1,16 @@
 import { describe, expect, it } from 'vitest';
 
+import { ActionEffects, ActionTargetParameters } from './action-logic';
+import { ActionTargetType } from '../enums/action-target-type';
+import { ConditionLogic } from './condition-logic';
+import { DamageType } from '../enums/damage-type';
 import { GameLogic } from './game-logic';
 import { PackLogic } from './pack-logic';
+import { StrongholdLogic } from './stronghold-logic';
+import { TraitType } from '../enums/trait-type';
+
+import type { ActionModel } from '../models/action';
+import type { ConditionModel } from '../models/condition';
 
 const packs = () => PackLogic.getAllPacks();
 const heroSpecies = () => packs().flatMap(pack => PackLogic.getHeroSpecies(pack.id));
@@ -61,6 +70,21 @@ const allCards = () => [
 	...backgrounds()
 ];
 
+describe('structures', () => {
+	// rechargeStructure sets charges = level, so a chargeable structure at level 0 can
+	// never hold a charge and its benefit is unreachable. Only the Barracks and the
+	// Warehouse are meant to be uncharged.
+	it('gives every chargeable structure a level of at least 1', () => {
+		packs().forEach(pack => {
+			PackLogic.getStructures(pack.id)
+				.filter(structure => StrongholdLogic.canCharge(structure))
+				.forEach(structure => {
+					expect(structure.level, structure.name).toBeGreaterThanOrEqual(1);
+				});
+		});
+	});
+});
+
 describe('card registration', () => {
 	it('gives every card a unique ID', () => {
 		const ids = allCards().map(c => c.id);
@@ -74,5 +98,43 @@ describe('card registration', () => {
 			...card.actions.map(a => a.id)
 		]);
 		expect(new Set(ids).size).toBe(ids.length);
+	});
+});
+
+describe('contagion and card strength', () => {
+	const action = (condition: ConditionModel): ActionModel => ({
+		id: 'test-action',
+		name: 'Test',
+		prerequisites: [],
+		parameters: [ ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5) ],
+		effects: [ ActionEffects.addCondition(condition) ]
+	});
+
+	it('scores a contagious condition above the same condition without it', () => {
+		const plain = GameLogic.getActionStrength(action(
+			ConditionLogic.createAutoDamageCondition(TraitType.Endurance, 4, DamageType.Decay)
+		));
+		const catching = GameLogic.getActionStrength(action(
+			ConditionLogic.makeContagious(ConditionLogic.createAutoDamageCondition(TraitType.Endurance, 4, DamageType.Decay))
+		));
+
+		expect(catching).toBeGreaterThan(plain);
+	});
+
+	it('keeps every contagious card inside its band', () => {
+		const contagious = (card: { actions: ActionModel[] }) => JSON.stringify(card.actions).includes('"contagious":true');
+
+		packs().forEach(pack => {
+			PackLogic.getRoles(pack.id).filter(contagious).forEach(role => {
+				const strength = GameLogic.getRoleStrength(role);
+				expect(strength, role.name).toBeGreaterThanOrEqual(4);
+				expect(strength, role.name).toBeLessThanOrEqual(6);
+			});
+			PackLogic.getMonsterSpecies(pack.id).filter(contagious).forEach(species => {
+				const strength = GameLogic.getSpeciesStrength(species);
+				expect(strength, species.name).toBeGreaterThanOrEqual(4);
+				expect(strength, species.name).toBeLessThanOrEqual(6);
+			});
+		});
 	});
 });

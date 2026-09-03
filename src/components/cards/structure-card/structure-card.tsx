@@ -97,6 +97,13 @@ export class StructureCard extends Component<Props, State> {
 						<p>You gain {this.props.structure.level} conditions(s) when the structure is charged.</p>
 					</Text>
 				);
+			case StructureType.Sanatorium:
+				return (
+					<Text>
+						<p>In an encounter, this structure allows a hero to have their wounds treated; an unconscious hero is brought round.</p>
+						<p>You gain {this.props.structure.level} treatment(s) when the structure is charged.</p>
+					</Text>
+				);
 			case StructureType.Observatory:
 				return (
 					<Text>

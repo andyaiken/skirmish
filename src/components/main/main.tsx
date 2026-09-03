@@ -989,6 +989,24 @@ export class Main extends Component<Props, State> {
 		}
 	};
 
+	treatWounds = (encounter: EncounterModel, combatant: CombatantModel, spendCharge: StructureType | null) => {
+		try {
+			EncounterLogic.treatWounds(encounter, combatant);
+
+			if (spendCharge) {
+				StrongholdLogic.spendCharge(this.state.game as GameModel, spendCharge, 1);
+			}
+
+			this.setState({
+				game: this.state.game
+			}, () => {
+				this.saveGame();
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
+	};
+
 	drawActions = (encounter: EncounterModel, combatant: CombatantModel, spendCharge: StructureType | null) => {
 		try {
 			EncounterLogic.drawActions(encounter, combatant);
@@ -1561,6 +1579,7 @@ export class Main extends Component<Props, State> {
 						addMovement={this.addMovement}
 						inspire={this.inspire}
 						scan={this.scan}
+						treatWounds={this.treatWounds}
 						hide={this.hide}
 						drinkPotion={this.drinkPotion}
 						drawActions={this.drawActions}

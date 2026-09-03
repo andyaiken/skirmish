@@ -446,8 +446,10 @@ export class GameLogic {
 				return 3 + (effect.data as number);
 			case 'wound':
 				return 5 * (effect.data as number);
-			case 'addcondition' :
-				return (effect.data as ConditionModel).rank;
+			case 'addcondition' : {
+				const condition = effect.data as ConditionModel;
+				return condition.contagious ? condition.rank * 2 : condition.rank;
+			}
 			case 'stun':
 				return 5;
 			case 'knockdown':

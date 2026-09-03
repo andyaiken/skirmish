@@ -613,7 +613,8 @@ export class ActionEffects {
 			}
 			case 'addcondition': {
 				const condition = effect.data as ConditionModel;
-				return `Add a condition (${ConditionLogic.getConditionDescription(condition)}, rank ${condition.rank})`;
+				const noun = condition.contagious ? 'a contagious condition' : 'a condition';
+				return `Add ${noun} (${ConditionLogic.getConditionTypeDescription(condition)}, rank ${condition.rank})`;
 			}
 			case 'removecondition': {
 				const trait = effect.data as TraitType;

@@ -45,9 +45,66 @@ What it does not capture is **contagion** — a condition that spreads to adjace
 start of a turn. If you want that, it is a new `ConditionType.Contagion` handled in
 `EncounterLogic.startOfTurn`, where conditions are already iterated and decremented.
 
-**Recommendation: build the pack without it first.** The composite version plays almost as well and
-costs nothing. Add contagion later if the pack feels flat, and be careful — a spreading condition on
-a 400-square map with up to ten combatants can run away, so cap it at one spread per turn per source.
+~~**Recommendation: build the pack without it first.**~~ **Contagion was built first**, ahead of the
+cards, and is now base-game behaviour that any card can use.
+
+**How it works.** `ConditionModel` gained a `contagious` flag rather than `ConditionType` gaining a
+member — so any existing condition can be made infectious by wrapping it:
+`ConditionLogic.makeContagious(ConditionLogic.createAutoDamageCondition(...))`. No new condition
+types, and it composes with every existing factory.
+
+`EncounterLogic.spreadContagion` runs from `endTurn`, not `startOfTurn` as suggested above: each
+contagious condition a combatant carries gets a roll against **every** adjacent combatant, who
+resists with the condition's own trait. It skips the dead and anyone already carrying the same
+condition. Adjacency uses `getDistanceAny` over `getCombatantSquares`, so size 2 and 3 combatants
+infect from any of their squares.
+
+**The cap is not needed.** The worry above was a runaway outbreak; the copy passed on is **one rank
+weaker than the original**, so a chain always terminates. Simulated at the worst case — ten
+combatants packed adjacent, 200 outbreaks per rank — every outbreak burned out, with the burn-out
+turn tracking the source rank almost exactly:
+
+| Source rank | Avg peak infected (of 10) | Median burn-out |
+| --- | --- | --- |
+| 4 | 7.1 | turn 4 |
+| 6 | 9.8 | turn 6 |
+| 8 | 10.0 | turn 8 |
+| 10 | 10.0 | turn 10 |
+
+So rank is the balance lever: **rank 4 spreads and fades, rank 8 infects the whole scrum.** Keep new
+contagious conditions at the low end.
+
+**Scoring.** `GameLogic.getActionEffectStrength` counts a contagious condition at **double** its
+rank, since it lands on more than one combatant. Without that, a spreading condition scored
+identically to a static one.
+
+**Five cards carry it.** Retrofitted to the Lifestealer's *Rot* and the Warlock's *Withering Hex*
+(both Decay, *Hell to Pay*), and to three cards that had the theme but no condition at all:
+
+| Card | Action | Condition added | Strength |
+| --- | --- | --- | --- |
+| Rat Swarm | *Bite* | contagious AutoDamage(Poison) r3 | 4 → 5 |
+| Zombie | *Grave Rot* | contagious AutoDamage(Decay) r3 | 5 → 5 |
+| Elementalist | *Ember* | existing r2 Fire made contagious | 5 → 5 |
+
+All still in band, and the Warlock and Lifestealer remain at 6. The Elementalist's *Ember* was chosen
+as the fire trial because it is the **lowest-scoring** fire effect in the game at strength 3 — and
+usefully it is rank 2, so it passes on a rank 1 copy that cannot spread again. One hop, no further.
+Note the Grenadier's *Molotov* is rank 1 and would have been inert, since a rank 1 condition is
+filtered out before it can copy across at rank 0.
+
+**Player-facing rules.** `src/assets/docs/encounters.md` gained an *At the end of a turn* section
+covering the spread rules, and the Conditions bullet in the overview now mentions contagion. It
+notes explicitly that contagion ignores factions — a diseased enemy infects its own allies, and a
+hero can carry something back into your own line.
+
+An audit of every other existing condition found no further candidates. The game has only ten
+`AutoDamage` conditions: five are Fire (burning is not disease, and giving five established cards
+the ability to spread is a large balance change — revisit only now that the strength metric accounts
+for contagion), one is the Assassin's blade toxin, and two are Sonic. Note also that the game's most
+disease-flavoured monsters — the Rat Swarm's *Bite*, the Zombie's *Grave Rot* — apply **no condition
+at all**, so they cannot be made contagious by flipping a flag; they need a condition first, which is
+this pack's business.
 
 ---
 
@@ -130,13 +187,58 @@ monster roster lacks.
 From `tasks.md` ("Hospital / Sanatorium"). Effect: spend a charge to **heal a wound on a hero
 between encounters**.
 
-Check first whether wounds already clear between encounters — look at `finishEncounter` in
-`main.tsx` and `CombatantLogic.resetCombatant`. If they do, this structure needs a different effect
-and the obvious one is an extra feature-card redraw. If they do not, wound recovery is a real
-campaign-layer lever and nothing else provides it.
+~~Effect: spend a charge to **heal a wound on a hero between encounters**.~~ **Both the effect above
+and the fallback below are dead ends, and it was built differently.** Checked as instructed:
 
-Add `Sanatorium = 'sanatorium'` to `StructureType` plus the entry in the pack's `structures` array
-and charge plumbing.
+- **Wounds already clear between encounters.** `CombatantLogic.resetCombatant` zeroes `damage`,
+  `wounds` *and* `conditions`, so the effect as specified would do nothing at all.
+- **The fallback is already a structure.** "An extra feature-card redraw" is the **Training Ground**.
+  The thirteen existing structures cover every redraw axis in the game — hero (Hall), item
+  (Quartermaster), feature (Training Ground), action (Observatory), magic item (Wizard Tower),
+  structure (Forge) — plus benefit and detriment mods, extra actions, extra heroes and XP.
+
+**Built as an encounter-time structure instead.** Wounds and unconsciousness only exist *during* an
+encounter, so that is where the charge is spent: on their own turn, the current hero may spend one to
+clear **all** their wounds. There is a precedent — the **Observatory** already spends charges inside
+a live encounter to redraw action cards, using the reusable `StrongholdBenefitCard`.
+
+**It is one structure, not two.** Unconsciousness *is* wounds: a combatant drops when
+`wounds === resolve`, and `EncounterLogic.healWounds` already contains the reverse —
+
+```ts
+if ((combatant.combat.wounds < resolve) && (combatant.combat.state === CombatantState.Unconscious)) {
+    combatant.combat.state = CombatantState.Prone;
+}
+```
+
+— so clearing wounds brings an unconscious hero round for free. A second structure that restored
+consciousness *without* healing would leave the hero at `wounds === resolve` and they would drop
+again on their next turn.
+
+**A revived hero needs the turn they were denied.** `startOfTurn` only rolls senses and movement and
+draws actions inside an `if (Standing || Prone)` gate, so an unconscious combatant begins their turn
+with nothing. Being healed mid-turn would otherwise leave them upright, with no movement and an empty
+hand. That block is now `EncounterLogic.startActiveTurn`, called from `startOfTurn` as before and
+again by `treatWounds` when a hero is brought round. This matches how **undead reanimation** already
+behaves: it flips the combatant to Prone *before* the gate, so it grants a full turn by ordering.
+Note undead come back at `wounds = resolve - 1`, one below the threshold, where a treated hero comes
+back at zero — stronger, but it costs a charge.
+
+### What was built
+
+| Piece | Where |
+| --- | --- |
+| `StructureType.Sanatorium` | `src/enums/structure-type.ts` |
+| The structure card | `structure-card.tsx` |
+| `startActiveTurn`, `treatWounds` | `EncounterLogic` |
+| `treatWounds` handler + charge spend | `main.tsx`, modelled on `drawActions` |
+| Prop chain | encounter-screen → hero-controls → hero-overview |
+| The benefit card | `hero-overview`, beside the wounds display; hidden when the hero has no wounds |
+| The pack | `src/data/packs/ill-humours.ts`, registered in `PackLogic.getExpansionPacks()` |
+
+Four tests cover it: wounds cleared, an unconscious hero brought round, a revived hero given movement
+and cards, and — the one worth having — an *already conscious* hero **not** handed a second turn,
+which would otherwise be a free action redraw.
 
 ---
 

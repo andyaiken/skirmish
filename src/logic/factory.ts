@@ -89,6 +89,7 @@ export class Factory {
 			type: type,
 			trait: trait,
 			rank: rank,
+			contagious: false,
 			details: {
 				trait: TraitType.None,
 				skill: SkillType.None,

@@ -23,6 +23,7 @@ import type { ItemModel } from '../models/item';
 import { Collections } from '../utils/collections';
 import { Random } from '../utils/random';
 import { Sound } from '../utils/sound';
+import { Utils } from '../utils/utils';
 
 import { CombatantLogic } from './combatant-logic';
 import { ConditionLogic } from './condition-logic';
@@ -205,27 +206,7 @@ export class EncounterLogic {
 			});
 
 		if ((combatant.combat.state === CombatantState.Standing) || (combatant.combat.state === CombatantState.Prone)) {
-			combatant.combat.senses = Random.dice(EncounterLogic.getSkillRank(encounter, combatant, SkillType.Perception));
-			combatant.combat.movement = Random.dice(EncounterLogic.getTraitRank(encounter, combatant, TraitType.Speed));
-
-			conditions
-				.filter(condition => condition.type === ConditionType.MovementBonus)
-				.forEach(condition => {
-					EncounterLogLogic.log(encounter, [
-						EncounterLogLogic.text(`Movement bonus condition (${condition.rank})`)
-					]);
-					combatant.combat.movement += Random.dice(condition.rank);
-				});
-			conditions
-				.filter(condition => condition.type === ConditionType.MovementPenalty)
-				.forEach(condition => {
-					EncounterLogLogic.log(encounter, [
-						EncounterLogLogic.text(`Movement penalty condition (${condition.rank})`)
-					]);
-					combatant.combat.movement = Math.max(0, combatant.combat.movement - condition.rank);
-				});
-
-			EncounterLogic.drawActions(encounter, combatant);
+			EncounterLogic.startActiveTurn(encounter, combatant);
 		}
 
 		// Decrement conditions
@@ -264,6 +245,88 @@ export class EncounterLogic {
 		}
 	};
 
+	static spreadContagion = (encounter: EncounterModel, combatant: CombatantModel, rng: () => number = Math.random) => {
+		const contagious = combatant.combat.conditions.filter(c => c.contagious && (c.rank > 1));
+		if (contagious.length === 0) {
+			return;
+		}
+
+		const squares = EncounterLogic.getCombatantSquares(encounter, combatant);
+		const neighbours = encounter.combatants
+			.filter(c => c.id !== combatant.id)
+			.filter(c => c.combat.state !== CombatantState.Dead)
+			.filter(c => EncounterMapLogic.getDistanceAny(squares, EncounterLogic.getCombatantSquares(encounter, c)) <= 1);
+
+		contagious.forEach(condition => {
+			const isSame = (c: ConditionModel) => (c.type === condition.type) && (JSON.stringify(c.details) === JSON.stringify(condition.details));
+
+			neighbours
+				.filter(target => !target.combat.conditions.some(isSame))
+				.forEach(target => {
+					const rank = EncounterLogic.getTraitRank(encounter, target, condition.trait);
+					if (Random.dice(rank, rng) >= Random.dice(condition.rank, rng)) {
+						EncounterLogLogic.log(encounter, [
+							EncounterLogLogic.combatant(target),
+							EncounterLogLogic.text('resists'),
+							EncounterLogLogic.rank(ConditionLogic.getConditionDescription(condition), condition.rank)
+						]);
+						return;
+					}
+
+					const copy = JSON.parse(JSON.stringify(condition)) as ConditionModel;
+					copy.id = Utils.guid();
+					copy.rank = condition.rank - 1;
+					target.combat.conditions.push(copy);
+
+					EncounterLogLogic.log(encounter, [
+						EncounterLogLogic.combatant(target),
+						EncounterLogLogic.text('catches'),
+						EncounterLogLogic.rank(ConditionLogic.getConditionDescription(copy), copy.rank),
+						EncounterLogLogic.text('from'),
+						EncounterLogLogic.combatant(combatant)
+					]);
+				});
+		});
+	};
+
+	static startActiveTurn = (encounter: EncounterModel, combatant: CombatantModel) => {
+		const conditions = ([] as ConditionModel[])
+			.concat(combatant.combat.conditions)
+			.concat(EncounterLogic.getAuraConditions(encounter, combatant));
+
+		combatant.combat.senses = Random.dice(EncounterLogic.getSkillRank(encounter, combatant, SkillType.Perception));
+		combatant.combat.movement = Random.dice(EncounterLogic.getTraitRank(encounter, combatant, TraitType.Speed));
+
+		conditions
+			.filter(condition => condition.type === ConditionType.MovementBonus)
+			.forEach(condition => {
+				EncounterLogLogic.log(encounter, [
+					EncounterLogLogic.text(`Movement bonus condition (${condition.rank})`)
+				]);
+				combatant.combat.movement += Random.dice(condition.rank);
+			});
+		conditions
+			.filter(condition => condition.type === ConditionType.MovementPenalty)
+			.forEach(condition => {
+				EncounterLogLogic.log(encounter, [
+					EncounterLogLogic.text(`Movement penalty condition (${condition.rank})`)
+				]);
+				combatant.combat.movement = Math.max(0, combatant.combat.movement - condition.rank);
+			});
+
+		EncounterLogic.drawActions(encounter, combatant);
+	};
+
+	static treatWounds = (encounter: EncounterModel, combatant: CombatantModel) => {
+		const wasUnconscious = combatant.combat.state === CombatantState.Unconscious;
+
+		EncounterLogic.healWounds(encounter, combatant, combatant.combat.wounds);
+
+		if (wasUnconscious && (combatant.combat.state !== CombatantState.Unconscious)) {
+			EncounterLogic.startActiveTurn(encounter, combatant);
+		}
+	};
+
 	static endTurn = (encounter: EncounterModel) => {
 		const current = encounter.combatants.filter(combatant => combatant.combat.current);
 		current.forEach(combatant => {
@@ -271,6 +334,8 @@ export class EncounterLogic {
 				EncounterLogLogic.text('Ending turn for '),
 				EncounterLogLogic.combatant(combatant)
 			]);
+
+			EncounterLogic.spreadContagion(encounter, combatant);
 
 			combatant.combat.current = false;
 			combatant.combat.senses = 0;
@@ -727,6 +792,7 @@ export class EncounterLogic {
 		}
 
 		combatant.combat.state = CombatantState.Unconscious;
+		combatant.combat.wounds = EncounterLogic.getTraitRank(encounter, combatant, TraitType.Resolve);
 		combatant.combat.senses = 0;
 		combatant.combat.movement = 0;
 		combatant.combat.actions = [];

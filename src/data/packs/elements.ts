@@ -368,7 +368,7 @@ export const elements = (): PackModel => ({
 							skillBonus: 0,
 							hit: [
 								ActionEffects.dealDamage(DamageType.Fire, 3),
-								ActionEffects.addCondition(ConditionLogic.createAutoDamageCondition(TraitType.Endurance, 2, DamageType.Fire))
+								ActionEffects.addCondition(ConditionLogic.makeContagious(ConditionLogic.createAutoDamageCondition(TraitType.Endurance, 2, DamageType.Fire)))
 							]
 						})
 					]

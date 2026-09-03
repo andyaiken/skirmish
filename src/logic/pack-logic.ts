@@ -5,6 +5,7 @@ import { elements } from '../data/packs/elements';
 import { faeRealm } from '../data/packs/fae-realm';
 import { guileAndCunning } from '../data/packs/guile-and-cunning';
 import { hellToPay } from '../data/packs/hell-to-pay';
+import { illHumours } from '../data/packs/ill-humours';
 import { magicInAGlass } from '../data/packs/magic-in-a-glass';
 import { menagerie } from '../data/packs/menagerie';
 import { outOfTheGrave } from '../data/packs/out-of-the-grave';
@@ -29,6 +30,7 @@ export class PackLogic {
 			faeRealm(),
 			guileAndCunning(),
 			hellToPay(),
+			illHumours(),
 			magicInAGlass(),
 			menagerie(),
 			outOfTheGrave(),

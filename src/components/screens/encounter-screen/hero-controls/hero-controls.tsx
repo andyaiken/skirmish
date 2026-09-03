@@ -1,8 +1,11 @@
 import { IconArrowsMove, IconFlask2, IconUser } from '@tabler/icons-react';
 import { Component } from 'react';
 
+import { StructureType } from '../../../../enums/structure-type';
+
 import type { CombatantModel } from '../../../../models/combatant';
 import type { EncounterModel } from '../../../../models/encounter';
+import type { GameModel } from '../../../../models/game';
 import type { ItemModel } from '../../../../models/item';
 import type { OptionsModel } from '../../../../models/options';
 
@@ -17,6 +20,7 @@ import './hero-controls.scss';
 interface Props {
 	combatant: CombatantModel;
 	encounter: EncounterModel;
+	game: GameModel;
 	options: OptionsModel;
 	showToken: (combatant: CombatantModel) => void;
 	showCharacterSheet: (combatant: CombatantModel) => void;
@@ -24,6 +28,7 @@ interface Props {
 	addMovement: (encounter: EncounterModel, combatant: CombatantModel, value: number) => void;
 	inspire: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	scan: (encounter: EncounterModel, combatant: CombatantModel) => void;
+	treatWounds: (encounter: EncounterModel, combatant: CombatantModel, spendCharge: StructureType | null) => void;
 	hide: (encounter: EncounterModel, combatant: CombatantModel) => void;
 	levelUp: (combatant: CombatantModel) => void;
 	switchAllegiance: (combatant: CombatantModel) => void;
@@ -68,9 +73,11 @@ export class HeroControls extends Component<Props, State> {
 					<HeroOverview
 						combatant={this.props.combatant}
 						encounter={this.props.encounter}
+						game={this.props.game}
 						options={this.props.options}
 						inspire={this.props.inspire}
 						scan={this.props.scan}
+						treatWounds={this.props.treatWounds}
 						hide={this.props.hide}
 						levelUp={this.props.levelUp}
 						switchAllegiance={this.props.switchAllegiance}

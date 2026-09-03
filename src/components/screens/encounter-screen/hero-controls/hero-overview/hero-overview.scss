@@ -1,6 +1,12 @@
 .hero-overview {
 	margin-top: 10px;
 
+	.treatment {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
 	.quick-actions {
 		display: flex;
 		gap: 5px;

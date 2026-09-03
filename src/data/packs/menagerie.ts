@@ -380,7 +380,8 @@ export const menagerie = (): PackModel => ({
 							skillBonus: 0,
 							hit: [
 								ActionEffects.dealDamage(DamageType.Piercing, 3),
-								ActionEffects.dealDamage(DamageType.Poison, 1)
+								ActionEffects.dealDamage(DamageType.Poison, 1),
+								ActionEffects.addCondition(ConditionLogic.makeContagious(ConditionLogic.createAutoDamageCondition(TraitType.Endurance, 3, DamageType.Poison)))
 							]
 						})
 					]

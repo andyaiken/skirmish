@@ -7,6 +7,7 @@ export enum StructureType {
 	Intelligencer = 'intelligencer',
 	Observatory = 'observatory',
 	Quartermaster = 'quartermaster',
+	Sanatorium = 'sanatorium',
 	Temple = 'temple',
 	ThievesGuild = 'thieves guild',
 	TrainingGround = 'training ground',

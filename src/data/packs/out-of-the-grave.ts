@@ -294,6 +294,7 @@ export const outOfTheGrave = (): PackModel => ({
 							skillBonus: 0,
 							hit: [
 								ActionEffects.dealDamage(DamageType.Decay, 3),
+								ActionEffects.addCondition(ConditionLogic.makeContagious(ConditionLogic.createAutoDamageCondition(TraitType.Endurance, 3, DamageType.Decay))),
 								ActionEffects.toSelf([
 									ActionEffects.healDamage(1)
 								])

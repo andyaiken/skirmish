@@ -392,7 +392,7 @@ export const hellToPay = (): PackModel => ({
 							trait: TraitType.Endurance,
 							skillBonus: 0,
 							hit: [
-								ActionEffects.addCondition(ConditionLogic.createAutoDamageCondition(TraitType.Endurance, 4, DamageType.Decay))
+								ActionEffects.addCondition(ConditionLogic.makeContagious(ConditionLogic.createAutoDamageCondition(TraitType.Endurance, 4, DamageType.Decay)))
 							]
 						})
 					]
@@ -623,7 +623,7 @@ export const hellToPay = (): PackModel => ({
 							skillBonus: 0,
 							hit: [
 								ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 4, TraitType.Endurance)),
-								ActionEffects.addCondition(ConditionLogic.createAutoDamageCondition(TraitType.Resolve, 3, DamageType.Decay))
+								ActionEffects.addCondition(ConditionLogic.makeContagious(ConditionLogic.createAutoDamageCondition(TraitType.Resolve, 3, DamageType.Decay)))
 							]
 						})
 					]

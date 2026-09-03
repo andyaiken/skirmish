@@ -10,6 +10,7 @@ export interface ConditionModel {
 	type: ConditionType;
 	trait: TraitType;
 	rank: number;
+	contagious: boolean;
 	details: {
 		trait: TraitType;
 		skill: SkillType;

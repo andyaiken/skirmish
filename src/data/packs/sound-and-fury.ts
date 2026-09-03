@@ -7,6 +7,7 @@ import { DamageType } from '../../enums/damage-type';
 import { FeatureLogic } from '../../logic/feature-logic';
 import { ItemLocationType } from '../../enums/item-location-type';
 import { ItemProficiencyType } from '../../enums/item-proficiency-type';
+import { MovementType } from '../../enums/movement-type';
 import { PackModel } from '../../models/pack';
 import { QuirkType } from '../../enums/quirk-type';
 import { SkillCategoryType } from '../../enums/skill-category-type';
@@ -134,6 +135,85 @@ export const soundAndFury = (): PackModel => ({
 							skillBonus: 0,
 							hit: [
 								ActionEffects.addCondition(ConditionLogic.createAutoDamageCondition(TraitType.Endurance, 4, DamageType.Sonic))
+							]
+						})
+					]
+				}
+			],
+			deathActions: []
+		},
+		{
+			id: 'species-siren',
+			name: 'Siren',
+			description: 'She is a long way off, and getting closer sounds like the only good idea you have ever had.',
+			type: CombatantType.Monster,
+			size: 1,
+			quirks: [],
+			startingFeatures: [
+				FeatureLogic.createTraitFeature('siren-start-1', TraitType.Resolve, 1),
+				FeatureLogic.createSkillFeature('siren-start-2', SkillType.Presence, 3),
+				FeatureLogic.createDamageBonusFeature('siren-start-3', DamageType.Sonic, 1)
+			],
+			features: [
+				FeatureLogic.createTraitFeature('siren-feature-1', TraitType.Resolve, 1),
+				FeatureLogic.createSkillFeature('siren-feature-2', SkillType.Presence, 2),
+				FeatureLogic.createDamageResistFeature('siren-feature-3', DamageType.Sonic, 3)
+			],
+			actions: [
+				{
+					id: 'siren-action-1',
+					name: 'Siren Song',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 10)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Presence,
+							trait: TraitType.Resolve,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.forceMovement(MovementType.Pull, 3)
+							]
+						})
+					]
+				},
+				{
+					id: 'siren-action-2',
+					name: 'Enthrall',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Presence,
+							trait: TraitType.Resolve,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.commandAction()
+							]
+						})
+					]
+				},
+				{
+					id: 'siren-action-3',
+					name: 'Dashed on the Rocks',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Presence,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Sonic, 3),
+								ActionEffects.knockDown()
 							]
 						})
 					]
@@ -320,7 +400,7 @@ export const soundAndFury = (): PackModel => ({
 		{
 			id: 'background-crier',
 			name: 'Crier',
-			description: 'Trained to be heard at the back of a crowd, and never taught to stop.',
+			description: 'Criers are trained to be heard at the back of a crowd.',
 			startingFeatures: [
 				FeatureLogic.createSkillFeature('crier-start-1', SkillType.Presence, 2),
 				FeatureLogic.createTraitFeature('crier-start-2', TraitType.Resolve, 1)

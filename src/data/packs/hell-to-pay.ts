@@ -22,7 +22,7 @@ export const hellToPay = (): PackModel => ({
 		{
 			id: 'species-cambion',
 			name: 'Cambion',
-			description: 'The child of a demonic bargain that somebody else made.',
+			description: 'The child of a demonic bargain.',
 			type: CombatantType.Hero,
 			size: 1,
 			quirks: [],

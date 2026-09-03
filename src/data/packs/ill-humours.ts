@@ -84,8 +84,8 @@ export const illHumours = (): PackModel => ({
 			deathActions: []
 		},
 		{
-			id: 'species-rot-grub-swarm',
-			name: 'Rot Grub Swarm',
+			id: 'species-grub-swarm',
+			name: 'Grub Swarm',
 			description: 'A seething mass of pale grubs that were feeding on something else until recently.',
 			type: CombatantType.Monster,
 			size: 2,
@@ -94,18 +94,18 @@ export const illHumours = (): PackModel => ({
 				QuirkType.Swarm
 			],
 			startingFeatures: [
-				FeatureLogic.createSkillFeature('rot-grub-start-1', SkillType.Brawl, 2),
-				FeatureLogic.createTraitFeature('rot-grub-start-2', TraitType.Endurance, 1),
-				FeatureLogic.createDamageBonusFeature('rot-grub-start-3', DamageType.Decay, 1)
+				FeatureLogic.createSkillFeature('grub-start-1', SkillType.Brawl, 2),
+				FeatureLogic.createTraitFeature('grub-start-2', TraitType.Endurance, 1),
+				FeatureLogic.createDamageBonusFeature('grub-start-3', DamageType.Decay, 1)
 			],
 			features: [
-				FeatureLogic.createSkillFeature('rot-grub-feature-1', SkillType.Brawl, 2),
-				FeatureLogic.createTraitFeature('rot-grub-feature-2', TraitType.Endurance, 1),
-				FeatureLogic.createDamageResistFeature('rot-grub-feature-3', DamageType.Decay, 2)
+				FeatureLogic.createSkillFeature('grub-feature-1', SkillType.Brawl, 2),
+				FeatureLogic.createTraitFeature('grub-feature-2', TraitType.Endurance, 1),
+				FeatureLogic.createDamageResistFeature('grub-feature-3', DamageType.Decay, 2)
 			],
 			actions: [
 				{
-					id: 'rot-grub-action-1',
+					id: 'grub-action-1',
 					name: 'Burrow',
 					prerequisites: [],
 					parameters: [

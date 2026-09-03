@@ -3,6 +3,7 @@ import { Component, ReactNode } from 'react';
 import { CardType } from '../../../../enums/card-type';
 
 import { GameLogic } from '../../../../logic/game-logic';
+import { PackLogic } from '../../../../logic/pack-logic';
 
 import type { ActionModel } from '../../../../models/action';
 import type { FeatureModel } from '../../../../models/feature';
@@ -56,8 +57,8 @@ export class DecksTab extends Component<Props, State> {
 		});
 	};
 
-	getBadge = (packID: string) => {
-		const pack = GameLogic.getPack(packID);
+	getBadge = (cardID: string) => {
+		const pack = PackLogic.findContainingPack(cardID);
 		if (pack) {
 			return pack.name;
 		}
@@ -73,7 +74,7 @@ export class DecksTab extends Component<Props, State> {
 				GameLogic.getHeroSpeciesDeck(this.props.options.packIDs)
 					.forEach(s => {
 						cards.push(
-							<Badge key={s.id} value={this.getBadge(s.packID)}>
+							<Badge key={s.id} value={this.getBadge(s.id)}>
 								<SpeciesCard species={s} onClick={s => this.setActions(s.name, s.description, CardType.Species, s.startingFeatures, s.features, s.actions)} />
 							</Badge>
 						);
@@ -83,7 +84,7 @@ export class DecksTab extends Component<Props, State> {
 				GameLogic.getMonsterSpeciesDeck(this.props.options.packIDs)
 					.forEach(s => {
 						cards.push(
-							<Badge key={s.id} value={this.getBadge(s.packID)}>
+							<Badge key={s.id} value={this.getBadge(s.id)}>
 								<SpeciesCard species={s} onClick={s => this.setActions(s.name, s.description, CardType.Species, s.startingFeatures, s.features, s.actions)} />
 							</Badge>
 						);
@@ -93,7 +94,7 @@ export class DecksTab extends Component<Props, State> {
 				GameLogic.getRoleDeck(this.props.options.packIDs)
 					.forEach(r => {
 						cards.push(
-							<Badge key={r.id} value={this.getBadge(r.packID)}>
+							<Badge key={r.id} value={this.getBadge(r.id)}>
 								<RoleCard role={r} onClick={r => this.setActions(r.name, r.description, CardType.Role, r.startingFeatures, r.features, r.actions)} />
 							</Badge>
 						);
@@ -103,7 +104,7 @@ export class DecksTab extends Component<Props, State> {
 				GameLogic.getBackgroundDeck(this.props.options.packIDs)
 					.forEach(b => {
 						cards.push(
-							<Badge key={b.id} value={this.getBadge(b.packID)}>
+							<Badge key={b.id} value={this.getBadge(b.id)}>
 								<BackgroundCard background={b} onClick={b => this.setActions(b.name, b.description, CardType.Background, b.startingFeatures, b.features, b.actions)} />
 							</Badge>
 						);
@@ -113,7 +114,7 @@ export class DecksTab extends Component<Props, State> {
 				GameLogic.getStructureDeck(this.props.options.packIDs)
 					.forEach(s => {
 						cards.push(
-							<Badge key={s.id} value={this.getBadge(s.packID)}>
+							<Badge key={s.id} value={this.getBadge(s.id)}>
 								<StructureCard structure={s} />
 							</Badge>
 						);
@@ -123,7 +124,7 @@ export class DecksTab extends Component<Props, State> {
 				GameLogic.getItemDeck(this.props.options.packIDs)
 					.forEach(i => {
 						cards.push(
-							<Badge key={i.id} value={this.getBadge(i.packID)}>
+							<Badge key={i.id} value={this.getBadge(i.id)}>
 								<ItemCard item={i} />
 							</Badge>
 						);
@@ -133,7 +134,7 @@ export class DecksTab extends Component<Props, State> {
 				GameLogic.getPotionDeck(this.props.options.packIDs)
 					.forEach(p => {
 						cards.push(
-							<Badge key={p.id} value={this.getBadge(p.packID)}>
+							<Badge key={p.id} value={this.getBadge(p.id)}>
 								<ItemCard item={p} />
 							</Badge>
 						);

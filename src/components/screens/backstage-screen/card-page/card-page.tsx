@@ -1,17 +1,9 @@
 import { Component } from 'react';
 
-import { BackgroundData } from '../../../../data/background-data';
-import { HeroSpeciesData } from '../../../../data/hero-species-data';
-import { ItemData } from '../../../../data/item-data';
-import { MonsterSpeciesData } from '../../../../data/monster-species-data';
-import { PackData } from '../../../../data/pack-data';
-import { PotionData } from '../../../../data/potion-data';
-import { RoleData } from '../../../../data/role-data';
-import { StructureData } from '../../../../data/structure-data';
-
 import { CardType } from '../../../../enums/card-type';
 
 import { GameLogic } from '../../../../logic/game-logic';
+import { PackLogic } from '../../../../logic/pack-logic';
 
 import type { ActionModel } from '../../../../models/action';
 import type { FeatureModel } from '../../../../models/feature';
@@ -96,10 +88,13 @@ export class CardPage extends Component<Props, State> {
 	};
 
 	getCards = (type: string, packID: string) => {
+		if (!PackLogic.findPack(packID)) {
+			return null;
+		}
+
 		switch (type) {
 			case 'hero species':
-				return HeroSpeciesData.getList()
-					.filter(s => s.packID === packID)
+				return PackLogic.getHeroSpecies(packID)
 					.map(s => {
 						const strength = GameLogic.getSpeciesStrength(s);
 						const className = this.getMarked(s, strength, 4, 6) ? 'card-btn danger' : 'card-btn';
@@ -110,8 +105,7 @@ export class CardPage extends Component<Props, State> {
 						);
 					});
 			case 'monster species':
-				return MonsterSpeciesData.getList()
-					.filter(s => s.packID === packID)
+				return PackLogic.getMonsterSpecies(packID)
 					.map(s => {
 						const strength = GameLogic.getSpeciesStrength(s);
 						const className = this.getMarked(s, strength, 4, 6) ? 'card-btn danger' : 'card-btn';
@@ -122,8 +116,7 @@ export class CardPage extends Component<Props, State> {
 						);
 					});
 			case 'roles':
-				return RoleData.getList()
-					.filter(r => r.packID === packID)
+				return PackLogic.getRoles(packID)
 					.map(r => {
 						const strength = GameLogic.getRoleStrength(r);
 						const className = this.getMarked(r, strength, 4, 6) ? 'card-btn danger' : 'card-btn';
@@ -134,8 +127,7 @@ export class CardPage extends Component<Props, State> {
 						);
 					});
 			case 'backgrounds':
-				return BackgroundData.getList()
-					.filter(b => b.packID === packID)
+				return PackLogic.getBackgrounds(packID)
 					.map(b => {
 						const strength = GameLogic.getBackgroundStrength(b);
 						const className = this.getMarked(b, strength, 3, 4) ? 'card-btn danger' : 'card-btn';
@@ -146,16 +138,13 @@ export class CardPage extends Component<Props, State> {
 						);
 					});
 			case 'structures':
-				return StructureData.getList()
-					.filter(s => s.packID === packID)
+				return PackLogic.getStructures(packID)
 					.map(s => <Text key={s.id} type={TextType.Small}>{s.name}</Text>);
 			case 'potions':
-				return PotionData.getList()
-					.filter(p => p.packID === packID)
+				return PackLogic.getPotions(packID)
 					.map(p => <Text key={p.id} type={TextType.Small}>{p.name}</Text>);
 			case 'items':
-				return ItemData.getList()
-					.filter(i => i.packID === packID)
+				return PackLogic.getItems(packID)
 					.map(i => <Text key={i.id} type={TextType.Small}>{i.name}</Text>);
 		}
 
@@ -163,21 +152,22 @@ export class CardPage extends Component<Props, State> {
 	};
 
 	getCardCount = (type: string) => {
+		const packs = PackLogic.getAllPacks();
 		switch (type) {
 			case 'hero species':
-				return HeroSpeciesData.getList().length;
+				return packs.flatMap(p => PackLogic.getHeroSpecies(p.id)).length;
 			case 'monster species':
-				return MonsterSpeciesData.getList().length;
+				return packs.flatMap(p => PackLogic.getMonsterSpecies(p.id)).length;
 			case 'roles':
-				return RoleData.getList().length;
+				return packs.flatMap(p => PackLogic.getRoles(p.id)).length;
 			case 'backgrounds':
-				return BackgroundData.getList().length;
+				return packs.flatMap(p => PackLogic.getBackgrounds(p.id)).length;
 			case 'structures':
-				return StructureData.getList().length;
+				return packs.flatMap(p => PackLogic.getStructures(p.id)).length;
 			case 'potions':
-				return PotionData.getList().length;
+				return packs.flatMap(p => PackLogic.getPotions(p.id)).length;
 			case 'items':
-				return ItemData.getList().length;
+				return packs.flatMap(p => PackLogic.getItems(p.id)).length;
 		}
 
 		return 0;
@@ -194,7 +184,7 @@ export class CardPage extends Component<Props, State> {
 			'items'
 		];
 
-		const packIDs = [ '' ].concat(PackData.getList().map(p => p.id));
+		const packIDs = PackLogic.getAllPacks().map(p => p.id);
 
 		const rows = types.map(type => {
 			return (
@@ -289,7 +279,7 @@ export class CardPage extends Component<Props, State> {
 					<div className='row'>
 						{
 							packIDs.map(id => {
-								const pack = GameLogic.getPack(id);
+								const pack = PackLogic.findPack(id);
 								const name = pack ? pack.name : 'Skirmish';
 								return (
 									<div key={id} className='cell column-heading'>

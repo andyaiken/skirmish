@@ -171,7 +171,7 @@ export class CampaignScreen extends Component<Props> {
 			}
 		];
 
-		const availablePacks = PackLogic.getPacks().filter(p => !this.props.options.packIDs.includes(p.id)).length;
+		const availablePacks = PackLogic.getExpansionPacks().filter(pack => !this.props.options.packIDs.includes(pack.id)).length;
 
 		return (
 			<div className={`campaign-screen ${this.props.orientation}`}>

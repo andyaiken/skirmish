@@ -1,13 +1,5 @@
 import { Component } from 'react';
 
-import { BackgroundData } from '../../../data/background-data';
-import { HeroSpeciesData } from '../../../data/hero-species-data';
-import { ItemData } from '../../../data/item-data';
-import { MonsterSpeciesData } from '../../../data/monster-species-data';
-import { PotionData } from '../../../data/potion-data';
-import { RoleData } from '../../../data/role-data';
-import { StructureData } from '../../../data/structure-data';
-
 import { PackLogic } from '../../../logic/pack-logic';
 
 import type { OptionsModel } from '../../../models/options';
@@ -62,43 +54,43 @@ export class PacksModal extends Component<Props, State> {
 			);
 		}
 
-		const heroes = HeroSpeciesData.getList().filter(s => s.packID === pack.id).map(s => {
+		const heroes = PackLogic.getHeroSpecies(pack.id).map(s => {
 			return (
 				<SpeciesCard key={s.id} species={s} />
 			);
 		});
 
-		const monsters = MonsterSpeciesData.getList().filter(s => s.packID === pack.id).map(s => {
+		const monsters = PackLogic.getMonsterSpecies(pack.id).map(s => {
 			return (
 				<SpeciesCard key={s.id} species={s} />
 			);
 		});
 
-		const roles = RoleData.getList().filter(r => r.packID === pack.id).map(r => {
+		const roles = PackLogic.getRoles(pack.id).map(r => {
 			return (
 				<RoleCard key={r.id} role={r} />
 			);
 		});
 
-		const backgrounds = BackgroundData.getList().filter(b => b.packID === pack.id).map(b => {
+		const backgrounds = PackLogic.getBackgrounds(pack.id).map(b => {
 			return (
 				<BackgroundCard key={b.id} background={b} />
 			);
 		});
 
-		const structures = StructureData.getList().filter(s => s.packID === pack.id).map(s => {
+		const structures = PackLogic.getStructures(pack.id).map(s => {
 			return (
 				<StructureCard key={s.id} structure={s} />
 			);
 		});
 
-		const items = ItemData.getList().filter(i => i.packID === pack.id).map(i => {
+		const items = PackLogic.getItems(pack.id).map(i => {
 			return (
 				<ItemCard key={i.id} item={i} />
 			);
 		});
 
-		const potions = PotionData.getList().filter(i => i.packID === pack.id).map(p => {
+		const potions = PackLogic.getPotions(pack.id).map(p => {
 			return (
 				<ItemCard key={p.id} item={p} />
 			);
@@ -147,17 +139,13 @@ export class PacksModal extends Component<Props, State> {
 		const core = (
 			<PackCard
 				key='core'
-				pack={{
-					id: '',
-					name: 'Skirmish',
-					description: 'The core cards for the game, available to all.'
-				}}
+				pack={PackLogic.getBaseGame()}
 				onClick={p => this.setState({ selectedPack: p })}
 			/>
 		);
 
-		const ownedPacks = PackLogic.getPacks().filter(pack => (pack.id === '') || this.props.options.packIDs.includes(pack.id));
-		const notOwnedPacks = PackLogic.getPacks().filter(pack => (pack.id !== '') && !this.props.options.packIDs.includes(pack.id));
+		const ownedPacks = PackLogic.getExpansionPacks().filter(pack => this.props.options.packIDs.includes(pack.id));
+		const notOwnedPacks = PackLogic.getExpansionPacks().filter(pack => !this.props.options.packIDs.includes(pack.id));
 
 		const owned = ownedPacks.map(pack => {
 			return (

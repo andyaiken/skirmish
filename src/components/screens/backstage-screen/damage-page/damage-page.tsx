@@ -1,11 +1,10 @@
 import { Component } from 'react';
 
-import { PackData } from '../../../../data/pack-data';
-
 import { DamageCategoryType } from '../../../../enums/damage-category-type';
 import { DamageType } from '../../../../enums/damage-type';
 
 import { GameLogic } from '../../../../logic/game-logic';
+import { PackLogic } from '../../../../logic/pack-logic';
 
 import type { ActionEffectModel } from '../../../../models/action';
 import type { OptionsModel } from '../../../../models/options';
@@ -61,7 +60,7 @@ export class DamagePage extends Component<Props> {
 				]
 			}
 		];
-		const actions = GameLogic.getAllActions(PackData.getList().map(p => p.id));
+		const actions = GameLogic.getAllActions(PackLogic.getAllPacks().map(p => p.id));
 
 		return (
 			<div className='damage-page'>

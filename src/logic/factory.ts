@@ -1,5 +1,3 @@
-import { StructureData } from '../data/structure-data';
-
 import { CombatantState } from '../enums/combatant-state';
 import { CombatantType } from '../enums/combatant-type';
 import { ConditionType } from '../enums/condition-type';
@@ -13,6 +11,7 @@ import { TraitType } from '../enums/trait-type';
 
 import { CampaignMapGenerator } from '../generators/campaign-map-generator';
 
+import { GameLogic } from './game-logic';
 import { StrongholdLogic } from './stronghold-logic';
 
 import type { CombatantModel } from '../models/combatant';
@@ -78,8 +77,8 @@ export class Factory {
 			encounter: null
 		};
 
-		StrongholdLogic.addStructure(game.stronghold, StructureData.barracks());
-		StrongholdLogic.addStructure(game.stronghold, StructureData.warehouse());
+		StrongholdLogic.addStructure(game.stronghold, GameLogic.getStructure('structure-barracks')!);
+		StrongholdLogic.addStructure(game.stronghold, GameLogic.getStructure('structure-warehouse')!);
 
 		return game;
 	};

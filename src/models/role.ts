@@ -4,7 +4,7 @@ import type { FeatureModel } from './feature';
 export interface RoleModel {
 	id: string;
 	name: string;
-	packID: string;
+	packID?: string;
 	description: string;
 	startingFeatures: FeatureModel[];
 	features: FeatureModel[];

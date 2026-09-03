@@ -1,7 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import { MonsterSpeciesData } from '../data/monster-species-data';
-
 import { CombatantState } from '../enums/combatant-state';
 import { CombatantType } from '../enums/combatant-type';
 import { EncounterMapSquareType } from '../enums/encounter-map-square-type';
@@ -11,6 +9,7 @@ import type { CombatantModel } from '../models/combatant';
 
 import { EncounterLogic } from './encounter-logic';
 import { Factory } from './factory';
+import { PackLogic } from './pack-logic';
 
 // A square open map, big enough for a combatant to move in every direction.
 const createEncounter = (width = 5, height = 5): EncounterModel => {
@@ -165,19 +164,18 @@ describe('EncounterLogic.getPossibleMoveSquares', () => {
 	});
 });
 
-// Spec 11 Part A: the Powder Keg explodes when killed, which needs a death
-// trigger. Species with no death actions must be unaffected.
 describe('EncounterLogic.kill', () => {
+	const monsters = PackLogic.getAllPacks().flatMap(pack => PackLogic.getMonsterSpecies(pack.id));
 	const createKeg = (encounter: EncounterModel, x: number, y: number) => {
 		const keg = addCombatant(encounter, CombatantType.Monster, x, y);
-		keg.speciesID = MonsterSpeciesData.powderKeg().id;
+		keg.speciesID = monsters.find(species => species.id === 'species-powder-keg')!.id;
 		return keg;
 	};
 
 	it('leaves bystanders alone when the species has no death actions', () => {
 		const encounter = createEncounter();
 		const monster = addCombatant(encounter, CombatantType.Monster, 2, 2);
-		monster.speciesID = MonsterSpeciesData.goblin().id;
+		monster.speciesID = monsters.find(species => species.id === 'species-goblin')!.id;
 		const hero = addCombatant(encounter, CombatantType.Hero, 2, 1);
 
 		EncounterLogic.kill(encounter, monster);

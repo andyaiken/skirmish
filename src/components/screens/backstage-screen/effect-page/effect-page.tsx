@@ -1,9 +1,8 @@
 import { Component } from 'react';
 
-import { PackData } from '../../../../data/pack-data';
-
 import { ActionEffects } from '../../../../logic/action-logic';
 import { GameLogic } from '../../../../logic/game-logic';
+import { PackLogic } from '../../../../logic/pack-logic';
 
 import type { ActionEffectModel } from '../../../../models/action';
 import type { OptionsModel } from '../../../../models/options';
@@ -26,7 +25,7 @@ export class EffectPage extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 
-		const actions = GameLogic.getAllActions(PackData.getList().map(p => p.id));
+		const actions = GameLogic.getAllActions(PackLogic.getAllPacks().map(p => p.id));
 		actions.forEach(a => this.addToList(a.effects));
 		this.list.forEach(item => item.effects.sort((a, b) => a.desc.localeCompare(b.desc)));
 		this.list.sort((a, b) => Collections.sum(b.effects, e => e.count) - Collections.sum(a.effects, e => e.count));

@@ -25,7 +25,7 @@ export interface PotionModel {
 export interface ItemModel {
 	id: string;
 	name: string;
-	packID: string;
+	packID?: string;
 	description: string;
 	baseItem: string;
 	magic: boolean;

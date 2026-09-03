@@ -1,12 +1,11 @@
 import localforage from 'localforage';
 
-import { StructureData } from '../data/structure-data';
-
 import { BoonType } from '../enums/boon-type';
 import { StructureType } from '../enums/structure-type';
 
 import { BoonGenerator } from '../generators/boon-generator';
 
+import { GameLogic } from '../logic/game-logic';
 import { StrongholdLogic } from '../logic/stronghold-logic';
 
 import type { GameModel } from '../models/game';
@@ -101,11 +100,11 @@ export class Platform {
 
 		if (game.stronghold.filter(s => s.type === StructureType.Barracks).length !== 1) {
 			game.stronghold = game.stronghold.filter(s => s.type !== StructureType.Barracks);
-			StrongholdLogic.addStructure(game.stronghold, StructureData.barracks());
+			StrongholdLogic.addStructure(game.stronghold, GameLogic.getStructure('structure-barracks')!);
 		}
 		if (game.stronghold.filter(s => s.type === StructureType.Warehouse).length !== 1) {
 			game.stronghold = game.stronghold.filter(s => s.type !== StructureType.Warehouse);
-			StrongholdLogic.addStructure(game.stronghold, StructureData.warehouse());
+			StrongholdLogic.addStructure(game.stronghold, GameLogic.getStructure('structure-warehouse')!);
 		}
 
 		if (game.encounter) {

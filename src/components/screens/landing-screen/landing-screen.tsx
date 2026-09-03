@@ -60,7 +60,7 @@ export class LandingScreen extends Component<Props> {
 		}
 
 		let packsBtn = null;
-		const availablePacks = PackLogic.getPacks().filter(p => !this.props.options.packIDs.includes(p.id)).length;
+		const availablePacks = PackLogic.getExpansionPacks().filter(p => !this.props.options.packIDs.includes(p.id)).length;
 		if (availablePacks > 0) {
 			packsBtn = (
 				<button className='packs-btn' onClick={() => this.props.showPacks()}>

@@ -1,12 +1,3 @@
-import { BackgroundData } from '../data/background-data';
-import { HeroSpeciesData } from '../data/hero-species-data';
-import { ItemData } from '../data/item-data';
-import { MonsterSpeciesData } from '../data/monster-species-data';
-import { PackData } from '../data/pack-data';
-import { PotionData } from '../data/potion-data';
-import { RoleData } from '../data/role-data';
-import { StructureData } from '../data/structure-data';
-
 import { ActionTargetType } from '../enums/action-target-type';
 import { BoonType } from '../enums/boon-type';
 import { DamageCategoryType } from '../enums/damage-category-type';
@@ -32,68 +23,63 @@ import { Collections } from '../utils/collections';
 import { Utils } from '../utils/utils';
 
 import { ActionLogic } from './action-logic';
+import { PackLogic } from './pack-logic';
 
 export class GameLogic {
 	static getHeroSpeciesDeck = (packIDs: string[]) => {
-		return HeroSpeciesData.getList().filter(s => (s.packID === '') || packIDs.includes(s.packID));
+		return PackLogic.getAvailablePacks(packIDs).flatMap(p => PackLogic.getHeroSpecies(p.id));
 	};
 
 	static getMonsterSpeciesDeck = (packIDs: string[]) => {
-		return MonsterSpeciesData.getList().filter(s => (s.packID === '') || packIDs.includes(s.packID));
+		return PackLogic.getAvailablePacks(packIDs).flatMap(p => PackLogic.getMonsterSpecies(p.id));
 	};
 
 	static getRoleDeck = (packIDs: string[]) => {
-		return RoleData.getList().filter(r => (r.packID === '') || packIDs.includes(r.packID));
+		return PackLogic.getAvailablePacks(packIDs).flatMap(p => PackLogic.getRoles(p.id));
 	};
 
 	static getBackgroundDeck = (packIDs: string[]) => {
-		return BackgroundData.getList().filter(b => (b.packID === '') || packIDs.includes(b.packID));
+		return PackLogic.getAvailablePacks(packIDs).flatMap(p => PackLogic.getBackgrounds(p.id));
 	};
 
 	static getItemDeck = (packIDs: string[]) => {
-		return ItemData.getList().filter(i => (i.packID === '') || packIDs.includes(i.packID));
+		return PackLogic.getAvailablePacks(packIDs).flatMap(p => PackLogic.getItems(p.id));
 	};
 
 	static getPotionDeck = (packIDs: string[]) => {
-		return PotionData.getList().filter(i => (i.packID === '') || packIDs.includes(i.packID));
+		return PackLogic.getAvailablePacks(packIDs).flatMap(p => PackLogic.getPotions(p.id));
 	};
 
 	static getStructureDeck = (packIDs: string[]) => {
-		return StructureData.getList().filter(s => (s.packID === '') || packIDs.includes(s.packID));
+		return PackLogic.getAvailablePacks(packIDs).flatMap(p => PackLogic.getStructures(p.id));
 	};
 
 	///////////////////////////////////////////////////////////////////////////
 
 	static getSpecies = (id: string) => {
-		const allSpecies = ([] as SpeciesModel[])
-			.concat(HeroSpeciesData.getList())
-			.concat(MonsterSpeciesData.getList());
+		const allSpecies = PackLogic.getAllPacks().flatMap(pack => [ ...PackLogic.getHeroSpecies(pack.id), ...PackLogic.getMonsterSpecies(pack.id) ]);
 
 		return allSpecies.find(s => s.id === id) || null;
 	};
 
 	static getRole = (id: string) => {
-		return RoleData.getList().find(r => r.id === id) || null;
+		return PackLogic.getAllPacks().flatMap(pack => PackLogic.getRoles(pack.id)).find(r => r.id === id) || null;
 	};
 
 	static getBackground = (id: string) => {
-		return BackgroundData.getList().find(b => b.id === id) || null;
+		return PackLogic.getAllPacks().flatMap(pack => PackLogic.getBackgrounds(pack.id)).find(b => b.id === id) || null;
 	};
 
 	static getItem = (id: string) => {
-		return ItemData.getList().find(i => i.id === id) || null;
+		return PackLogic.getAllPacks().flatMap(pack => PackLogic.getItems(pack.id)).find(i => i.id === id) || null;
 	};
 
 	static getPotion = (id: string) => {
-		return PotionData.getList().find(i => i.id === id) || null;
+		return PackLogic.getAllPacks().flatMap(pack => PackLogic.getPotions(pack.id)).find(i => i.id === id) || null;
 	};
 
 	static getStructure = (id: string) => {
-		return StructureData.getList().find(s => s.id === id) || null;
-	};
-
-	static getPack = (id: string) => {
-		return PackData.getList().find(p => p.id === id) || null;
+		return PackLogic.getAllPacks().flatMap(pack => PackLogic.getStructures(pack.id)).find(s => s.id === id) || null;
 	};
 
 	///////////////////////////////////////////////////////////////////////////

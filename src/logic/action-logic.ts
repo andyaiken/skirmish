@@ -1,5 +1,4 @@
 import { BaseData } from '../data/base-data';
-import { MonsterSpeciesData } from '../data/monster-species-data';
 
 import { ActionRangeType } from '../enums/action-range-type';
 import { ActionTargetType } from '../enums/action-target-type';
@@ -44,6 +43,7 @@ import { EncounterMapLogic } from './encounter-map-logic';
 import { Factory } from './factory';
 import { GameLogic } from './game-logic';
 import { IntentsLogic } from './intents-logic';
+import { PackLogic } from './pack-logic';
 import { PathLogic } from './path-logic';
 
 export class ActionPrerequisites {
@@ -1474,17 +1474,18 @@ export class ActionEffects {
 			case 'summon': {
 				const type = effect.data as SummonType;
 				const list = [];
+				const monsters = PackLogic.getAllPacks().flatMap(pack => PackLogic.getMonsterSpecies(pack.id));
 				switch (type) {
 					case SummonType.Undead: {
-						list.push(...MonsterSpeciesData.getList().filter(s => s.quirks.includes(QuirkType.Undead)).map(s => s.id));
+						list.push(...monsters.filter(s => s.quirks.includes(QuirkType.Undead)).map(s => s.id));
 						break;
 					}
 					case SummonType.Beast: {
-						list.push(...MonsterSpeciesData.getList().filter(s => s.quirks.includes(QuirkType.Beast)).map(s => s.id));
+						list.push(...monsters.filter(s => s.quirks.includes(QuirkType.Beast)).map(s => s.id));
 						break;
 					}
 					case SummonType.Elemental: {
-						list.push(...MonsterSpeciesData.getList().filter(s => s.name.toLowerCase().includes('elemental')).map(s => s.id));
+						list.push(...monsters.filter(s => s.name.toLowerCase().includes('elemental')).map(s => s.id));
 						break;
 					}
 				}

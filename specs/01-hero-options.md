@@ -401,24 +401,48 @@ compelling one to **move** does not.
 
 Ranked by how badly the pack needs them.
 
+**Status: no actionable work left here.** The five monsterless packs were closed by Spec 11 Part A;
+Cold Blood's two monsters are built. Everything else in this section is deferred, each with its
+reason recorded below — the Venomblade and Charmer for overlapping the Assassin and the Presence
+backgrounds, the Elements species for being four cards where the gap is cosmetic, and the
+Beastmaster and Houndmaster for overlapping the Druid. Three of the four are blocked on finding a
+distinct identity rather than on effort.
+
 ### Cold Blood (`pack-cold-blood`) — was 3 cards, now 5
 
 The thinnest pack in the game, with no role, no background, no structure, no item. It reads as
 unfinished. Add:
 
-- **Venomblade** (role) — Weapon + Stealth, Poison damage bonus, `AutoDamageCondition` on hit.
-  Poison is under-used by heroes: no hero species deals it and only the Assassin builds on it.
-- **Charmer** (background) — Presence-based, built on `commandAction`, which inverts an enemy's
-  targeting so they attack their own side. Note `commandAction` already has eight users (the Naga's
-  `Beguiling Gaze` is the snake-charmer version of this card), so it is less novel than it looks —
-  and do not reach for `commandMove` on an enemy, which helps them instead. See section 2f.
+- **Venomblade** (role) — **deferred; needs a distinct identity first.** As sketched — Weapon +
+  Stealth, Poison damage bonus, `AutoDamageCondition` on hit — this *is* the Assassin, whose
+  `Poison Strike` already does weapon damage plus Poison plus an `AutoDamageCondition` on a
+  Stealth-and-Weapon card with a Poison bonus. A first attempt traded Stealth for Endurance and cut
+  the burst damage; that still read as the same card, because both remain melee weapon users whose
+  strikes add poison. Separating them means changing what poison *does* on this card, not which
+  stats carry it. The most promising unclaimed ground: **no card in the game has a Poison aura**
+  (there are 14 damage auras — Decay, Fire, Cold, Light, Psychic, Edged — and no Poison), which
+  would make proximity the attack, with strikes that apply Endurance penalties and Poison
+  vulnerability rather than poison damage. The Assassin then kills with poison; the Venomblade
+  disables with it.
+- **Charmer** (background) — **deferred; the Presence lane is full.** Every action in a first
+  attempt was already owned: a `commandAction` charm is the Commander's `Direct the Attack`, an
+  enemy penalty is the Noble's `Dishearten` and the Mountebank's `Jinx`, and an ally buff is the
+  Bard's and the Noble's. Presence-plus-buff-plus-debuff is the most crowded lane in the background
+  list — Noble, Commander, Bard and Mountebank all sit in it. If this card is revived it needs a
+  mechanism none of them use. Free ground among backgrounds: **no background uses `weapondamage`,
+  `disarm`, `createTerrain` or `summon`** — backgrounds never touch weapons at all. Note also that
+  `commandMove` does not work on an enemy (see section 2f).
 - ~~**Basilisk**, **Lindworm** (monsters). Medusa's petrifying-gaze pattern is already in the base
   monster file and can be adapted.~~ **Both built.** The Basilisk adapts the gaze as a movement and
   Speed penalty rather than Medusa's all-traits version; the Lindworm is the size 2 physical threat
   the pack lacked. Cold Blood is now 5 cards, and enabling it adds 4 monsters rather than 2. The
-  Venomblade and Charmer above are still outstanding.
+  Venomblade and Charmer above remain outstanding.
 
-### The Elements (`pack-elements`) — no playable species
+### The Elements (`pack-elements`) — no playable species — **deferred**
+
+Four new species in one go is more than this gap warrants; the pack is playable today through the
+Elementalist and Sorcerer, and the missing piece is flavour rather than function. Deferred as a set
+— if it is revived, consider building one and playing it before committing to all four.
 
 A pack described as "Become the master of the four elements" with no elemental species. The four
 elementals exist as monsters only. Add hero counterparts:
@@ -434,7 +458,7 @@ Each at 3 starting features / 3–4 features / 2–3 actions to land in the 5–
 Stoneborn overlaps the Geomancer; give it the durability angle rather than the terrain-control one if
 that reads as too close.
 
-### The Menagerie (`pack-menagerie`) — no roles or backgrounds
+### The Menagerie (`pack-menagerie`) — no roles or backgrounds — **deferred**
 
 A beast pack with no way to play a beast-handler.
 
@@ -442,11 +466,22 @@ A beast pack with no way to play a beast-handler.
   very few users. Build the role around summoning and commanding.
 - **Houndmaster** (background) — `commandMove` on a summoned ally.
 
-### The five monsterless packs
+**Deferred: both encroach on the Druid.** The Druid (The Fae Realm) already owns this ground — its
+`Animal Companion` *is* `summon(SummonType.Beast)`, which is the whole basis of the Beastmaster, and
+a background commanding a summoned beast sits in the same lane. `summon` has only three users in the
+game precisely because it is a narrow mechanic, and the Druid holds the beast half of it. Reviving
+these means finding a beast-handler identity that is not summoning — or accepting the overlap
+deliberately.
+
+### ~~The five monsterless packs~~ — **already done**
 
 Codex Arcanum, Guile and Cunning, The Workshop, Power and Glory and Magic in a Glass add zero
 monsters, so switching them on never changes what you fight. One or two each closes the gap:
 Animated Object (Arcanum), Doppelganger (Guile), Automaton (Workshop), Apostate (Power and Glory).
+
+Spec 11 Part A closed this: all five now carry exactly two monsters — Animated Object and Arcane
+Aberration, Doppelganger and Cutthroat, Automaton and Powder Keg, Apostate and Inquisitor, Mutant
+and Homunculus. Nothing left to do here.
 
 ---
 

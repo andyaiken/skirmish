@@ -2817,6 +2817,78 @@ export const core = (): PackModel => ({
 			actions: []
 		},
 		{
+			id: 'item-hook-swords',
+			name: 'Hook Swords',
+			description: 'Curved blades with a crook at the tip, for catching what comes.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.PairedWeapons,
+			location: ItemLocationType.Hand,
+			slots: 2,
+			weapon: {
+				damage: [
+					{
+						type: DamageType.Edged,
+						rank: 2
+					}
+				],
+				range: 2,
+				unreliable: 0
+			},
+			armor: null,
+			potion: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-katars',
+			name: 'Katars',
+			description: 'Short blades that punch straight out from a crossbar grip.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.PairedWeapons,
+			location: ItemLocationType.Hand,
+			slots: 2,
+			weapon: {
+				damage: [
+					{
+						type: DamageType.Piercing,
+						rank: 3
+					}
+				],
+				range: 1,
+				unreliable: 1
+			},
+			armor: null,
+			potion: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-nunchaku',
+			name: 'Nunchaku',
+			description: 'Two hardwood batons joined by a short chain.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.PairedWeapons,
+			location: ItemLocationType.Hand,
+			slots: 2,
+			weapon: {
+				damage: [
+					{
+						type: DamageType.Impact,
+						rank: 3
+					}
+				],
+				range: 1,
+				unreliable: 1
+			},
+			armor: null,
+			potion: null,
+			features: [],
+			actions: []
+		},
+		{
 			id: 'item-longbow',
 			name: 'Longbow',
 			description: 'Longbows loose arrows with great accuracy.',
@@ -2882,6 +2954,78 @@ export const core = (): PackModel => ({
 				],
 				range: 10,
 				unreliable: 1
+			},
+			armor: null,
+			potion: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-sling',
+			name: 'Sling',
+			description: 'A leather cradle on two cords, and a pouch of river stones.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.RangedWeapons,
+			location: ItemLocationType.Hand,
+			slots: 1,
+			weapon: {
+				damage: [
+					{
+						type: DamageType.Impact,
+						rank: 2
+					}
+				],
+				range: 10,
+				unreliable: 0
+			},
+			armor: null,
+			potion: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-hand-crossbow',
+			name: 'Hand Crossbow',
+			description: 'Small enough to level with one hand, and to hide until then.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.RangedWeapons,
+			location: ItemLocationType.Hand,
+			slots: 1,
+			weapon: {
+				damage: [
+					{
+						type: DamageType.Piercing,
+						rank: 3
+					}
+				],
+				range: 8,
+				unreliable: 0
+			},
+			armor: null,
+			potion: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-chakram',
+			name: 'Chakram',
+			description: 'A flat steel ring, sharpened along its outer edge.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.RangedWeapons,
+			location: ItemLocationType.Hand,
+			slots: 1,
+			weapon: {
+				damage: [
+					{
+						type: DamageType.Edged,
+						rank: 2
+					}
+				],
+				range: 5,
+				unreliable: 0
 			},
 			armor: null,
 			potion: null,
@@ -3086,6 +3230,48 @@ export const core = (): PackModel => ({
 			actions: []
 		},
 		{
+			id: 'item-scale-armor',
+			name: 'Scale Armor',
+			description: 'Overlapping metal scales sewn onto a leather backing.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.HeavyArmor,
+			location: ItemLocationType.Body,
+			slots: 1,
+			weapon: null,
+			armor: {
+				features: [
+					FeatureLogic.createDamageCategoryResistFeature('scalearmor-1', DamageCategoryType.Physical, 4),
+					FeatureLogic.createSkillCategoryFeature('scalearmor-2', SkillCategoryType.Physical, -1),
+					FeatureLogic.createTraitFeature('scalearmor-3', TraitType.Speed, -2)
+				]
+			},
+			potion: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-splint-armor',
+			name: 'Splint Armor',
+			description: 'Long metal strips riveted over a padded coat.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.HeavyArmor,
+			location: ItemLocationType.Body,
+			slots: 1,
+			weapon: null,
+			armor: {
+				features: [
+					FeatureLogic.createDamageCategoryResistFeature('splintarmor-1', DamageCategoryType.Physical, 5),
+					FeatureLogic.createSkillCategoryFeature('splintarmor-2', SkillCategoryType.Physical, -3),
+					FeatureLogic.createTraitFeature('splintarmor-3', TraitType.Speed, -2)
+				]
+			},
+			potion: null,
+			features: [],
+			actions: []
+		},
+		{
 			id: 'item-shield',
 			name: 'Shield',
 			description: 'A small shield, often worn strapped to the arm.',
@@ -3118,6 +3304,25 @@ export const core = (): PackModel => ({
 				features: [
 					FeatureLogic.createDamageCategoryResistFeature('towershield-1', DamageCategoryType.Physical, 2),
 					FeatureLogic.createSkillCategoryFeature('towershield-2', SkillCategoryType.Physical, -1)
+				]
+			},
+			potion: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-buckler',
+			name: 'Buckler',
+			description: 'A small round shield gripped in the fist, for turning a thrust aside.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.Shields,
+			location: ItemLocationType.Hand,
+			slots: 1,
+			weapon: null,
+			armor: {
+				features: [
+					FeatureLogic.createDamageResistFeature('buckler-1', DamageType.Piercing, 2)
 				]
 			},
 			potion: null,
@@ -3188,6 +3393,51 @@ export const core = (): PackModel => ({
 			id: 'item-diadem',
 			name: 'Diadem',
 			description: 'A jewelled band said to mark the favour of something older than kings.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.Head,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-mask',
+			name: 'Mask',
+			description: 'Moulded leather with narrow eye slits and no mouth.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.Head,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-hood',
+			name: 'Hood',
+			description: 'Deep enough to keep a face in shadow.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.Head,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-coif',
+			name: 'Coif',
+			description: 'A hood of fine mail that buckles under the chin.',
 			baseItem: '',
 			magic: false,
 			proficiency: ItemProficiencyType.None,
@@ -3290,6 +3540,66 @@ export const core = (): PackModel => ({
 			actions: []
 		},
 		{
+			id: 'item-pendant',
+			name: 'Pendant',
+			description: 'A single stone on a long cord, worn under the shirt.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.Neck,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-charm',
+			name: 'Charm',
+			description: 'A knot of hair, wire and something small that once had a use.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.Neck,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-locket',
+			name: 'Locket',
+			description: 'A hinged case, closed on whatever the owner could not leave behind.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.Neck,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-scarf',
+			name: 'Scarf',
+			description: 'Long, dark, and wound twice around the throat.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.Neck,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			features: [],
+			actions: []
+		},
+		{
 			id: 'item-boots',
 			name: 'Boots',
 			description: 'Footwear.',
@@ -3305,9 +3615,129 @@ export const core = (): PackModel => ({
 			actions: []
 		},
 		{
+			id: 'item-sabatons',
+			name: 'Sabatons',
+			description: 'Articulated steel shoes, laced over the boot.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.Feet,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-sandals',
+			name: 'Sandals',
+			description: 'Leather soles and a great deal of open air.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.Feet,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-greaves',
+			name: 'Greaves',
+			description: 'Shaped plates that cover the shin and buckle at the calf.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.Feet,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-snowshoes',
+			name: 'Snowshoes',
+			description: 'Bent withies and hide lacing, twice the size of the foot.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.Feet,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			features: [],
+			actions: []
+		},
+		{
 			id: 'item-ring',
 			name: 'Ring',
 			description: 'Worn on the fingers.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.Ring,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-signet-ring',
+			name: 'Signet Ring',
+			description: 'Heavy gold, cut with a device meant to be pressed into wax.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.Ring,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-armband',
+			name: 'Armband',
+			description: 'A broad metal band, worn high on the arm where it will not slip.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.Ring,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-bracelet',
+			name: 'Bracelet',
+			description: 'Fine links that sit loose at the wrist and catch the light.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.Ring,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-bracer',
+			name: 'Bracer',
+			description: 'A stiffened leather guard, laced along the inside of the forearm.',
 			baseItem: '',
 			magic: false,
 			proficiency: ItemProficiencyType.None,

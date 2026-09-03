@@ -9,11 +9,11 @@ an implementer on its own; where one depends on another it says so at the top.
 
 | #  | Spec                                                       | Type                  | Size   | Depends on           | Status        |
 | -- | ---------------------------------------------------------- | --------------------- | ------ | -------------------- | ------------- |
-| 01 | [Hero options](01-hero-options.md)                         | Content               | Medium | -                    | *1-2 done, 3 partial* |
+| 01 | [Hero options](01-hero-options.md)                         | Content               | Medium | -                    | *1-2 done, 3 deferred* |
 | 02 | [Deep Water](02-deep-water.md)                             | Pack + systems        | Large  | -                    |               |
 | 03 | [The Lie of the Land](03-the-lie-of-the-land.md)           | Pack + systems        | Large  | —                    |               |
 | 04 | [Blood and Sand](04-blood-and-sand.md)                     | Pack + map type       | Medium | —                    |               |
-| 05 | [Tools of the Trade](05-tools-of-the-trade.md)             | Pack (data)           | Medium | —                    |               |
+| 05 | [Tools of the Trade](05-tools-of-the-trade.md)             | Base content (data)   | Medium | —                    | *Built, scoped down* |
 | 06 | [Ill Humours](06-ill-humours.md)                           | Pack (data)           | Medium | —                    |               |
 | 07 | [Chapter and Verse](07-chapter-and-verse.md)               | Pack + system         | Medium | —                    |               |
 | 08 | [Sound and Fury](08-sound-and-fury.md)                     | Pack (data)           | Small  | —                    |               |
@@ -31,9 +31,9 @@ becomes confusing later.
 
 ## Suggested order
 
-* **Spec 01**, the Skirmisher and the *Hell to Pay* pack.
-* **Spec 05**, *Tools of the Trade*.
-* **Spec 06**, *Ill Humours*.
+* ~~**Spec 01**, the Skirmisher and the *Hell to Pay* pack.~~ Done; its pack top-ups are deferred.
+* ~~**Spec 05**, *Tools of the Trade*.~~ Done, as base content rather than a pack.
+* **Spec 06**, *Ill Humours*. ← next
 * **Spec 08**, *Sound and Fury*.
 * **Spec 03 Part A**, terrain-driven map selection. Small, and improves every existing game.
 * **Spec 04**, the arena map type. Every current map is a maze; one open map makes every existing card play differently.
@@ -77,6 +77,14 @@ written but not listed silently does not exist.
 in `core()`, which is always available. A new *kind* of content needs a new array on `PackModel`, a
 `PackLogic.getX` accessor, and an entry in `PackLogic.getPackCards` — `getPackCardCount` derives from
 that list.
+
+**Items.** Only armour and shields carry features, in `armor.features`; no item uses the top-level
+`features` or `actions` arrays, and none should. Everything else in the item pool is a base for
+`MagicItemGenerator` to enchant, distinguished by name and description alone. Melee versus ranged is
+decided by **proficiency**, not by `range` — `checkWeaponParameter` maps melee to
+Large/Paired/Military and ranged to Ranged/Powder, so a paired weapon with a long `range` is a melee
+weapon with very long reach. The `Hand` and `Ring` locations hold two items each; everything else
+holds one.
 
 **Saves.** Games persist as JSON through localforage. New fields on `EncounterModel`, `GameModel` or
 `CombatantModel` must be patched defensively in `Platform.updateGame`, following the existing

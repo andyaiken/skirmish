@@ -8,7 +8,7 @@ import { hellToPay } from '../data/packs/hell-to-pay';
 import { magicInAGlass } from '../data/packs/magic-in-a-glass';
 import { menagerie } from '../data/packs/menagerie';
 import { outOfTheGrave } from '../data/packs/out-of-the-grave';
-import { powerAndGlory } from '../data/packs/powerAndGlory';
+import { powerAndGlory } from '../data/packs/power-and-glory';
 import { workshop } from '../data/packs/workshop';
 
 import { CombatantType } from '../enums/combatant-type';

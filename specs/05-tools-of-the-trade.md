@@ -1,8 +1,9 @@
 # Spec 05 — Tools of the Trade
 
-**Type:** new pack (data only)
+**Type:** base-game content (data only)
 **Size:** medium — high card count, low complexity
 **Depends on:** nothing
+**Status:** *built, scoped down — see "What was built" below*
 
 ---
 
@@ -36,24 +37,83 @@ hero creation**. They arrive only through loot and purchase. So new `None` items
 item pool and the loot tables but do not change starting equipment; new items with a real
 proficiency do both.
 
-**Naming:** *Tools of the Trade* keeps the idiom register. Alternatives: **Well Found**,
-**Trappings**, **The Arsenal**.
+**This shipped into `core()`, not as a pack.** Filling gaps in the base item pool is not a thing to
+sell separately: every hero draws from these slots, and a Feet slot with one item in it is a defect
+in the base game rather than missing premium content. There is no `pack-tools-of-the-trade`.
 
-```ts
-static tools = (): PackModel => ({
-    id: 'pack-tools-of-the-trade',
-    name: 'Tools of the Trade',
-    description: 'The difference between a warrior and a corpse is often what they remembered to pack.'
-});
-```
+## What was built
+
+Scoped to filling gaps plus a few thematic options, rather than the ~30 cards below.
+
+**Part A in full — 15 items, no features.** Feet 1 → 5, Ring 1 → 5, Head 5 → 8, Neck 4 → 8. This is
+the part that multiplies through the magic item economy: every magic Feet item used to be a variant
+of Boots and every Ring a variant of Ring.
+
+**Part B trimmed to 3, then extended by 3:** Sling, Hand Crossbow and Chakram — all
+`RangedWeapons`. The Whip was dropped (see the correction below) and the Bastard Sword and Bardiche
+were not built: Military and Large weapons already have 10 and 8 entries and are the least thin
+proficiencies in the game.
+
+Three **paired weapons** were then added, which the original spec did not call for. The existing
+three were identical but for damage type — Daggers, Sais and Tonfas are all rank 2, range 1,
+reliable — so rather than add a fourth damage type that does not exist, each new one opens an axis
+the category was not using:
+
+| Item | Stats | New axis |
+| --- | --- | --- |
+| **Hook Swords** | Edged 2, range 2 | the first paired weapon with reach |
+| **Katars** | Piercing 3, unreliable 1 | +1 rank bought with unreliability |
+| **Nunchaku** | Impact 3, unreliable 1 | the same trade on the impact line |
+
+That +1-rank-for-`unreliable: 1` trade is the game's existing rate: Crossbow is Piercing 4
+unreliable 1 against Longbow's Piercing 3 unreliable 0.
+
+**Part C trimmed to 2:** Scale Armor and Splint Armor, both `HeavyArmor`. Padded Armor and Studded
+Leather were not built — Light armor has 4 entries and was not a gap.
+
+**Part D dropped.** The Armourer is a background, not an item; nothing in the item pool needed it.
+
+**Ring-slot rework.** Part A's ring table produced five near-identical rings — Ring, Signet Ring,
+Seal, Band, Loop — which is filler rather than variety. Seal, Band and Loop were replaced with
+**Armband**, **Bracelet** and **Bracer**: things worn on the arm rather than four ways of saying
+"ring". Ring and Signet Ring were kept, the signet because it has an actual function. This works
+because the slot holds two items (see the correction below).
+
+Result: Shields 2 → 3, Heavy armor 2 → 4, Ranged weapons 3 → 6, Paired weapons 3 → 6. **Shields is
+now the thinnest weapon proficiency at 3** — Powder weapons is also 3, but deliberately so, since it
+is The Workshop's identity.
+
+One loose end: `ItemLocationType.Ring` is the string `'Ring'`, so the slot is labelled "Ring" in the
+UI even with an armband in it. Renaming it to something like `Trinket` would read better, but that
+string is persisted on every saved item, so it was left alone.
+
+### Corrections to the analysis below
+
+- **`range: 2` is not new.** Spear, Glaive, Pike and Halberd already have reach 2, which removed the
+  Whip's entire justification.
+- **`unreliable` is not powder-only.** Flail, Crossbow and Catapult use it too — six users, not
+  three.
+- **Negative-rank features are already proven.** Plate Armor carries `Speed, -2` and a `-2` skill
+  category feature, so the warning in Part C to verify them first is unnecessary.
+- **Melee versus ranged is decided by proficiency, not by `range`.** `checkWeaponParameter` maps
+  melee to Large/Paired/Military and ranged to Ranged/Powder. A `PairedWeapons` Chakram would have
+  been a *melee* weapon with 3 squares of reach — longer than any polearm — so it was built as
+  `RangedWeapons` instead.
+- **The Ring slot holds two items, not one.** `CombatantLogic.canEquip` gives `Ring` a `slotsTotal`
+  of 2, the same as `Hand`, so the note in Part A below is answered: a hero wears two.
+- **Non-armour items carry no features.** Not one of the 53 original items had a top-level feature
+  or action; only armour and shields have them, in `armor.features`. Part A's instruction to give
+  each new item "a small `FeatureLogic` feature" would have broken that, so it was not followed.
 
 ---
 
 ## Part A — Fill the empty slots
 
 All `ItemProficiencyType.None`. These exist to give the magic item generator something to work with,
-so what matters is that they are **distinct**, not that they are individually interesting. Each
-should carry a small `FeatureLogic` feature so the unenchanted version is not blank.
+so what matters is that they are **distinct**, not that they are individually interesting. ~~Each
+should carry a small `FeatureLogic` feature so the unenchanted version is not blank.~~ **Built
+without features** — see the corrections above. The feature columns in the tables below were not
+used; the descriptions carry the cards.
 
 ### Feet (currently 1)
 
@@ -66,21 +126,22 @@ should carry a small `FeatureLogic` feature so the unenchanted version is not bl
 
 ### Ring (currently 1)
 
-| Item | Feature |
-| --- | --- |
-| Signet Ring | Presence +1 |
-| Seal | Resolve +1 |
-| Band | Energy resistance +1 |
-| Loop | Spellcasting +1 |
+| Item | Feature | Built as |
+| --- | --- | --- |
+| Signet Ring | Presence +1 | Signet Ring |
+| Seal | Resolve +1 | **Armband** |
+| Band | Energy resistance +1 | **Bracelet** |
+| Loop | Spellcasting +1 | **Bracer** |
 
-Note `ItemLocationType.Ring` has no special multi-slot handling in the model — `slots: 1` like
+~~Note `ItemLocationType.Ring` has no special multi-slot handling in the model — `slots: 1` like
 everything else — so a hero wears one ring unless `canEquip` says otherwise. Check
-`CombatantLogic.canEquip` before assuming two.
+`CombatantLogic.canEquip` before assuming two.~~ **It is two:** `canEquip` gives `Ring` a
+`slotsTotal` of 2, like `Hand`.
 
 ### Head (currently 5, all identically described)
 
-Rewrite the five existing descriptions first — "Ornamental headware" five times is the single most
-obviously unfinished text in the data. Then add:
+~~Rewrite the five existing descriptions first — "Ornamental headware" five times is the single most
+obviously unfinished text in the data.~~ **Already done** — all five are distinct. Then add:
 
 | Item | Feature |
 | --- | --- |
@@ -174,10 +235,10 @@ description; the card renders that separately.
 
 ## Acceptance criteria
 
-- Every new item appears in the `items` array of the pack that owns it.
-- The five existing Head items have distinct descriptions.
-- With the pack enabled, `GameLogic.getItemsForProficiency(ItemProficiencyType.Shields, ['pack-tools-of-the-trade'])`
-  returns more than two items.
+- ~~Every new item appears in the `items` array of the pack that owns it.~~ All in `core()`.
+- ~~The five existing Head items have distinct descriptions.~~ Were already distinct.
+- ~~`GameLogic.getItemsForProficiency(ItemProficiencyType.Shields, [])` returns more than two
+  items.~~ Returns Shield, Tower shield, Buckler.
 - Drawing a random magic item repeatedly produces varied Feet and Ring base items.
 - A weapon with `range: 2` can be used at two squares by a standard melee attack action.
 - If any armour uses a negative-rank feature, it displays sensibly on the character sheet.

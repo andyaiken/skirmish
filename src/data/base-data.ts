@@ -100,6 +100,19 @@ export class BaseData {
 				effects: [
 					ActionEffects.stand()
 				]
+			},
+			{
+				id: 'base-5',
+				name: 'Dig',
+				prerequisites: [
+					ActionPrerequisites.wallAdjacent()
+				],
+				parameters: [
+					ActionTargetParameters.adjacent(ActionTargetType.Walls, 1)
+				],
+				effects: [
+					ActionEffects.destroyWalls()
+				]
 			}
 		];
 	};

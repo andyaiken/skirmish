@@ -1083,9 +1083,30 @@ export class EncounterLogic {
 	};
 
 	static findWalls = (encounter: EncounterModel, originSquares: { x: number, y: number }[], radius: number) => {
-		return EncounterMapLogic.getAdjacentWalls(encounter.mapSquares, encounter.mapSquares).filter(wall => {
-			const distance = EncounterMapLogic.getDistanceAny(originSquares, [ wall ]);
-			return (distance <= radius);
+		const squares = new Set(encounter.mapSquares.map(sq => `${sq.x} ${sq.y}`));
+
+		const isWall = (x: number, y: number) => {
+			if (squares.has(`${x} ${y}`)) {
+				return false;
+			}
+
+			return [ -1, 0, 1 ].some(dx => [ -1, 0, 1 ].some(dy => ((dx !== 0) || (dy !== 0)) && squares.has(`${x + dx} ${y + dy}`)));
+		};
+
+		const walls: { x: number, y: number }[] = [];
+		const found = new Set<string>();
+		originSquares.forEach(origin => {
+			for (let x = origin.x - radius; x <= origin.x + radius; ++x) {
+				for (let y = origin.y - radius; y <= origin.y + radius; ++y) {
+					const key = `${x} ${y}`;
+					if (!found.has(key) && (EncounterMapLogic.getDistance(origin, { x: x, y: y }) <= radius) && isWall(x, y)) {
+						found.add(key);
+						walls.push({ x: x, y: y });
+					}
+				}
+			}
 		});
+
+		return walls;
 	};
 }

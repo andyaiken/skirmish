@@ -1,12 +1,14 @@
 import { IntentsData } from '../data/intents-data';
 
 import { ActionTargetType } from '../enums/action-target-type';
+import { CardType } from '../enums/card-type';
 import { CombatantState } from '../enums/combatant-state';
 import { CombatantType } from '../enums/combatant-type';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
 
 import { ActionLogic, ActionPrerequisites } from './action-logic';
+import { CombatantLogic } from './combatant-logic';
 import { EncounterLogic } from './encounter-logic';
 import { EncounterMapLogic } from './encounter-map-logic';
 import { PathLogic } from './path-logic';
@@ -30,10 +32,11 @@ export class IntentsLogic {
 		const edges = EncounterMapLogic.getMapEdges(encounter.mapSquares);
 
 		const options: IntentsModel[] = [];
+		const lastResorts: IntentsModel[] = [];
 
 		if (!combatant.combat.selectedAction) {
 			combatant.combat.actions
-				.filter(a => a.prerequisites.every(p => ActionPrerequisites.isSatisfied(p, combatant)))
+				.filter(a => a.prerequisites.every(p => ActionPrerequisites.isSatisfied(p, combatant, encounter)))
 				.forEach(action => {
 					action.parameters.forEach(param => {
 						if (param.id === 'targets') {
@@ -56,9 +59,15 @@ export class IntentsLogic {
 									case ActionTargetType.Squares:
 										options.push(...IntentsLogic.getSquareTargetIntents(encounter, combatant, action, paths, edges));
 										break;
-									case ActionTargetType.Walls:
-										options.push(...IntentsLogic.getWallTargetIntents(encounter, combatant, action, paths));
+									case ActionTargetType.Walls: {
+										const wallIntents = IntentsLogic.getWallTargetIntents(encounter, combatant, action, paths);
+										if (CombatantLogic.getActionSourceType(combatant, action.id) === CardType.Base) {
+											lastResorts.push(...wallIntents);
+										} else {
+											options.push(...wallIntents);
+										}
 										break;
+									}
 								}
 							}
 						}
@@ -98,6 +107,10 @@ export class IntentsLogic {
 				intents: [ IntentsData.hide() ],
 				weight: stealth
 			});
+		}
+
+		if (options.length === 0) {
+			options.push(...lastResorts);
 		}
 
 		return Collections.max(options, o => Random.dice(o.weight));
@@ -218,36 +231,24 @@ export class IntentsLogic {
 	static getWallTargetIntents = (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel, paths: PathModel[]) => {
 		const range = ActionLogic.getActionRange(action, combatant);
 
+		// Limit this to paths we have enough movement for
+		const candidatePaths = paths.filter(p => p.cost <= combatant.combat.movement);
+
 		const intents: IntentsModel[] = [];
 
-		Collections.distinct(EncounterMapLogic.getAdjacentWalls(encounter.mapSquares, encounter.mapSquares), sq => `${sq.x} ${sq.y}`)
+		EncounterLogic.findWalls(encounter, candidatePaths, range)
 			.forEach(targetWall => {
-				const candidatePaths = encounter.mapSquares
-					.filter(sq => {
-						// Limit this to squares which would put us within range for this action
-						return EncounterMapLogic.getDistance(targetWall, sq) <= range;
-					})
-					.map(sq => {
-						// Find the cheapest path to this square
-						return paths.find(path => (sq.x === path.x) && (sq.y === path.y)) || null;
-					})
-					.filter(p => {
-						// Limit this to paths we have enough movement for
-						const cost = p ? p.cost : Number.MAX_VALUE;
-						return cost <= combatant.combat.movement;
+				// Find the cheapest path which would put us within range for this action
+				const path = Collections.min(candidatePaths.filter(p => EncounterMapLogic.getDistance(targetWall, p) <= range), p => p.cost);
+				if (path) {
+					intents.push({
+						description: action.name,
+						intents: [
+							...path.steps.map(step => IntentsData.move(step)),
+							IntentsData.action(action)
+						],
+						weight: 1
 					});
-				if (candidatePaths.length > 0) {
-					const path = Collections.min(candidatePaths, p => p?.cost || Number.MAX_VALUE);
-					if (path) {
-						intents.push({
-							description: action.name,
-							intents: [
-								...path.steps.map(step => IntentsData.move(step)),
-								IntentsData.action(action)
-							],
-							weight: 1
-						});
-					}
 				}
 			});
 
@@ -261,7 +262,7 @@ export class IntentsLogic {
 			combatant.combat.actions
 				.filter(action => ActionLogic.getActionType(action) === 'Attack')
 				.forEach(action => {
-					const prerequisitesMet = action.prerequisites.every(prerequisite => ActionPrerequisites.isSatisfied(prerequisite, combatant));
+					const prerequisitesMet = action.prerequisites.every(prerequisite => ActionPrerequisites.isSatisfied(prerequisite, combatant, encounter));
 					const parametersSet = action.parameters.every(param => {
 						switch (param.id) {
 							case 'origin':

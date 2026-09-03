@@ -143,7 +143,15 @@ export class ActionPrerequisites {
 		};
 	};
 
-	static isSatisfied = (prerequisite: ActionPrerequisiteModel, combatant: CombatantModel) => {
+	static wallAdjacent = (): ActionPrerequisiteModel => {
+		return {
+			id: 'walladjacent',
+			description: 'Requires you to be adjacent to a wall',
+			data: null
+		};
+	};
+
+	static isSatisfied = (prerequisite: ActionPrerequisiteModel, combatant: CombatantModel, encounter: EncounterModel | null = null) => {
 		switch (prerequisite.id) {
 			case 'item': {
 				const proficiencies = prerequisite.data as ItemProficiencyType[];
@@ -177,6 +185,14 @@ export class ActionPrerequisites {
 			}
 			case 'prone': {
 				return combatant.combat.state === CombatantState.Prone;
+			}
+			case 'walladjacent': {
+				if (encounter === null) {
+					return true;
+				}
+
+				const squares = EncounterLogic.getCombatantSquares(encounter, combatant);
+				return EncounterLogic.findWalls(encounter, squares, 1).length > 0;
 			}
 		}
 

@@ -58,7 +58,7 @@ export class ActionControls extends Component<Props> {
 			.filter(a => CombatantLogic.getActionSourceType(this.props.combatant, a.id) !== CardType.Base)
 			.sort((a, b) => a.name.localeCompare(b.name))
 			.forEach(a => {
-				const prerequisitesMet = a.prerequisites.every(p => ActionPrerequisites.isSatisfied(p, this.props.combatant));
+				const prerequisitesMet = a.prerequisites.every(p => ActionPrerequisites.isSatisfied(p, this.props.combatant, this.props.encounter));
 				actionCards.push(
 					<ActionCard
 						key={a.id}
@@ -76,7 +76,7 @@ export class ActionControls extends Component<Props> {
 		this.props.combatant.combat.actions
 			.filter(a => CombatantLogic.getActionSourceType(this.props.combatant, a.id) === CardType.Base)
 			.forEach(a => {
-				const prerequisitesMet = a.prerequisites.every(p => ActionPrerequisites.isSatisfied(p, this.props.combatant));
+				const prerequisitesMet = a.prerequisites.every(p => ActionPrerequisites.isSatisfied(p, this.props.combatant, this.props.encounter));
 				if (prerequisitesMet) {
 					baseCards.push(
 						<ActionCard
@@ -120,7 +120,7 @@ export class ActionControls extends Component<Props> {
 		let prerequisitesMet = true;
 		const prerequisites: ReactNode[] = [];
 		action.prerequisites.forEach((prerequisite, n) => {
-			if (!ActionPrerequisites.isSatisfied(prerequisite, this.props.combatant)) {
+			if (!ActionPrerequisites.isSatisfied(prerequisite, this.props.combatant, this.props.encounter)) {
 				prerequisitesMet = false;
 				prerequisites.push(
 					<div key={n} className='action-prerequisite'>{prerequisite.description}</div>

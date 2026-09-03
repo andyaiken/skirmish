@@ -47,7 +47,7 @@ export class ActionCard extends Component<Props> {
 		}
 
 		return this.props.action.prerequisites
-			.filter(p => !ActionPrerequisites.isSatisfied(p, this.props.combatant as CombatantModel))
+			.filter(p => !ActionPrerequisites.isSatisfied(p, this.props.combatant as CombatantModel, this.props.encounter))
 			.map((p, n) => <div key={n} className='prerequisite highlighted'>{p.description}</div>);
 	};
 

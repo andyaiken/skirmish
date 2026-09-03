@@ -14,7 +14,8 @@ const mapTypeNames = new Map([
 	[ EncounterMapGenerator.generateCavernMap, 'cavern' ],
 	[ EncounterMapGenerator.generateStreetMap, 'street' ],
 	[ EncounterMapGenerator.generateArenaMap, 'arena' ],
-	[ EncounterMapGenerator.generateBuildingMap, 'building' ]
+	[ EncounterMapGenerator.generateBuildingMap, 'building' ],
+	[ EncounterMapGenerator.generateWarrenMap, 'warren' ]
 ]);
 
 // Draws map types for one terrain and counts how often each came up. Only the
@@ -22,7 +23,7 @@ const mapTypeNames = new Map([
 const drawCounts = (terrain: string, count = 2000) => {
 	const rng = Random.getSeededRNG(`map types for ${terrain}`);
 
-	const counts: Record<string, number> = { dungeon: 0, ruin: 0, cavern: 0, street: 0, arena: 0, building: 0 };
+	const counts: Record<string, number> = { dungeon: 0, ruin: 0, cavern: 0, street: 0, arena: 0, building: 0, warren: 0 };
 	for (let n = 0; n < count; ++n) {
 		const name = mapTypeNames.get(EncounterMapGenerator.drawMapType(terrain, rng)) as string;
 		counts[name] += 1;
@@ -209,6 +210,69 @@ describe('the building map', () => {
 			const blocks = map.filter(sq => [ [ 0, 1 ], [ 1, 0 ], [ 1, 1 ] ].every(([ dx, dy ]) => squares.has(`${sq.x + dx} ${sq.y + dy}`)));
 
 			expect(blocks.length).toBeGreaterThan(20);
+		});
+	});
+});
+
+describe('the warren map', () => {
+	const warrens = [ 'one', 'two', 'three', 'four', 'five' ].map(seed => EncounterMapGenerator.generateWarrenMap(400, Random.getSeededRNG(seed)));
+
+	const neighbours = (walkable: Set<string>, sq: { x: number, y: number }) => {
+		return ([ [ 1, 0 ], [ -1, 0 ], [ 0, 1 ], [ 0, -1 ] ]).filter(([ dx, dy ]) => walkable.has(`${sq.x + dx} ${sq.y + dy}`)).length;
+	};
+
+	it('generates roughly the requested number of squares', () => {
+		warrens.forEach(map => {
+			expect(map.length).toBeGreaterThan(350);
+			expect(map.length).toBeLessThan(500);
+		});
+	});
+
+	it('is connected by construction', () => {
+		// Every chamber tunnels back to one already dug, so the warren is a spanning tree. This
+		// checks the property holds rather than trusting the argument.
+		for (let n = 0; n < 200; ++n) {
+			const map = EncounterMapGenerator.generateWarrenMap(400, Random.getSeededRNG(`warren ${n}`));
+			const walkable = new Set(map.map(sq => `${sq.x} ${sq.y}`));
+
+			const seen = new Set([ `${map[0].x} ${map[0].y}` ]);
+			const pending = [ map[0] ];
+			while (pending.length > 0) {
+				const sq = pending.pop() as EncounterMapSquareModel;
+				([ [ 1, 0 ], [ -1, 0 ], [ 0, 1 ], [ 0, -1 ] ]).forEach(([ dx, dy ]) => {
+					const key = `${sq.x + dx} ${sq.y + dy}`;
+					if (walkable.has(key) && !seen.has(key)) {
+						seen.add(key);
+						pending.push({ x: sq.x + dx, y: sq.y + dy, type: EncounterMapSquareType.Clear });
+					}
+				});
+			}
+
+			expect(seen.size, `seed ${n}`).toBe(walkable.size);
+		}
+	});
+
+	it('is mostly tunnel and chokepoint', () => {
+		// What makes it a warren rather than a cavern: a large share of squares have somewhere to go
+		// in two directions or fewer.
+		warrens.forEach(map => {
+			const walkable = new Set(map.map(sq => `${sq.x} ${sq.y}`));
+			const tight = map.filter(sq => neighbours(walkable, sq) <= 2).length;
+
+			expect(tight).toBeGreaterThan(map.length / 4);
+		});
+	});
+
+	it('is tighter than a cavern of the same size', () => {
+		const cavern = EncounterMapGenerator.generateCavernMap(400, Random.getSeededRNG('cavern'));
+		const cavernWalkable = new Set(cavern.map(sq => `${sq.x} ${sq.y}`));
+		const cavernTight = cavern.filter(sq => neighbours(cavernWalkable, sq) <= 2).length / cavern.length;
+
+		warrens.forEach(map => {
+			const walkable = new Set(map.map(sq => `${sq.x} ${sq.y}`));
+			const tight = map.filter(sq => neighbours(walkable, sq) <= 2).length / map.length;
+
+			expect(tight).toBeGreaterThan(cavernTight);
 		});
 	});
 });

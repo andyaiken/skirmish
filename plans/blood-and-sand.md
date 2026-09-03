@@ -57,8 +57,8 @@ The rest of Blood and Sand still needs the pack. Part A is simply not part of it
 country, 1 elsewhere — since an arena is a built thing, and an open floor should stay a change of
 pace rather than a default.
 
-**Building Interior**, the other map type in `plans/index.md`, is **built** — also as a standard map
-type, and for the same reason. `EncounterMapGenerator.generateBuildingMap` carves a rectangular
+**Building Interior**, the other map type on the original list, is **built** — also as a standard
+map type, and for the same reason. `EncounterMapGenerator.generateBuildingMap` carves a rectangular
 footprint into rooms by binary space partition rather than the corridor spine this plan first
 suggested: BSP is less code than the spine bookkeeping and gives the packed rectangular floor plan a
 building should have, where a spine tends to a sparse plus-shape with dead exterior. Rooms are at
@@ -79,6 +79,30 @@ up again for anyone touching this generator:
   as a fallback. A 200-seed reachability test guards it.
 
 Measured over 200 seeds: mean 399 floor squares (368–426), every one fully connected.
+
+### Warren — **built**, and not from any plan
+
+A third standard map type, which came out of calling the first (over-subdivided) building attempt a
+warren. `EncounterMapGenerator.generateWarrenMap` scatters chamber centres across a box, keeping them
+apart so the result does not collapse into one cavern, digs each chamber with the existing
+`EncounterMapLogic.getWallBlob`, and links each new chamber back to one already dug with a winding
+one-square tunnel. The separation relaxes once the box fills up, so a warren that has run out of room
+still reaches its size.
+
+It fills a real gap: the cavern was the only organic generator and it is one amorphous blob. The
+warren has the same dug-out feel but with structure — chokepoints, corners, and no long sight lines.
+Measured over 200 seeds, 39–42% of its squares have two orthogonal neighbours or fewer, against a
+much lower share for a cavern of the same size, and that ratio is what the tests assert.
+
+**Connecting each chamber to one already dug makes the warren a spanning tree, so it is connected by
+construction** — the door-sealing problem that the building needed care over cannot arise here. The
+tunnel walk closes the gap on one axis per step, picked at random, which is what makes it wind and
+also guarantees it arrives. A 200-seed reachability test guards it anyway.
+
+`terrainWeights` gained a `warren` column at 3 in the rocks and in forest, 1 in open country.
+
+Three of the seven map types are now standard additions that belong to no pack. If that keeps
+happening they would be better in a `plans/map-types.md` of their own than in Part A of a pack plan.
 
 ---
 

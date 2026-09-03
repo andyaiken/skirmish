@@ -8,7 +8,7 @@ import { Random } from '../utils/random';
 import { EncounterMapLogic } from '../logic/encounter-map-logic';
 
 export class EncounterMapGenerator {
-	static terrainWeights: { terrains: string[], dungeon: number, ruin: number, cavern: number, street: number, arena: number, building: number }[] = [
+	static terrainWeights: { terrains: string[], dungeon: number, ruin: number, cavern: number, street: number, arena: number, building: number, warren: number }[] = [
 		{
 			terrains: [ 'Canyons', 'Mountains', 'Plateaus', 'Volcanic' ],
 			dungeon: 2,
@@ -16,7 +16,8 @@ export class EncounterMapGenerator {
 			cavern: 8,
 			street: 1,
 			arena: 1,
-			building: 1
+			building: 1,
+			warren: 3
 		},
 		{
 			terrains: [ 'Fens', 'Forest', 'Jungle', 'Lakes', 'Marshland', 'Rainforest', 'Riverlands', 'Taiga', 'Wetlands' ],
@@ -25,7 +26,8 @@ export class EncounterMapGenerator {
 			cavern: 4,
 			street: 1,
 			arena: 1,
-			building: 2
+			building: 2,
+			warren: 3
 		},
 		{
 			terrains: [ 'Badlands', 'Desert', 'Plains', 'Salt flats', 'Scrubland', 'Steppe', 'Valleys' ],
@@ -34,7 +36,8 @@ export class EncounterMapGenerator {
 			cavern: 1,
 			street: 6,
 			arena: 2,
-			building: 3
+			building: 3,
+			warren: 1
 		}
 	];
 
@@ -54,6 +57,7 @@ export class EncounterMapGenerator {
 		add(EncounterMapGenerator.generateStreetMap, weights ? weights.street : 1);
 		add(EncounterMapGenerator.generateArenaMap, weights ? weights.arena : 1);
 		add(EncounterMapGenerator.generateBuildingMap, weights ? weights.building : 1);
+		add(EncounterMapGenerator.generateWarrenMap, weights ? weights.warren : 1);
 
 		return Collections.draw(mapTypes, rng);
 	};
@@ -494,6 +498,84 @@ export class EncounterMapGenerator {
 			const sq = at(along, across);
 			carve(sq.x, sq.y);
 		});
+	};
+
+	// Chambers dug out and linked by winding one-square tunnels. The cavern is one amorphous blob;
+	// this has the same organic feel but with structure - chokepoints, corners and no long sight
+	// lines.
+	//
+	// Each new chamber tunnels back to one already dug, so the warren is a spanning tree and is
+	// connected by construction. Unlike the building, there is nothing here that can seal a room.
+	static generateWarrenMap = (size: number, rng: () => number): EncounterMapSquareModel[] => {
+		const map: EncounterMapSquareModel[] = [];
+		const floor = new Set<string>();
+
+		const carve = (x: number, y: number) => {
+			if (!floor.has(`${x} ${y}`)) {
+				floor.add(`${x} ${y}`);
+				map.push({
+					x: x,
+					y: y,
+					type: EncounterMapSquareType.Clear
+				});
+			}
+		};
+
+		// Tunnels take up room too, so the box is wider than the square count asked for
+		const extent = Math.sqrt(size * 2);
+		const aspect = 1 + (Random.randomDecimal(rng) / 2);
+		const wide = Random.randomBoolean(rng);
+		const width = Math.round(wide ? extent * aspect : extent / aspect);
+		const height = Math.round(wide ? extent / aspect : extent * aspect);
+
+		const centres: { x: number, y: number }[] = [];
+
+		for (let attempt = 0; (attempt < 1000) && (map.length < size); ++attempt) {
+			// Keeping the chambers apart stops the warren collapsing into one cavern. The gap closes
+			// up once the box is full, so a warren that has run out of room still reaches its size.
+			const separation = attempt < 500 ? 6 : 3;
+
+			const centre = {
+				x: Random.randomNumber(width, rng),
+				y: Random.randomNumber(height, rng)
+			};
+
+			if (centres.some(c => (Math.abs(c.x - centre.x) < separation) && (Math.abs(c.y - centre.y) < separation))) {
+				continue;
+			}
+
+			EncounterMapLogic.getWallBlob(map, centre, rng).forEach(sq => carve(sq.x, sq.y));
+
+			if (centres.length > 0) {
+				EncounterMapGenerator.addTunnel(carve, centre, Collections.draw(centres, rng), rng);
+			}
+
+			centres.push(centre);
+		}
+
+		EncounterMapGenerator.addPillars(map, rng, 2 + Random.randomNumber(3, rng));
+
+		return map;
+	};
+
+	// A one-square tunnel between two chambers. Each step closes the gap on one axis or the other,
+	// picked at random - which makes the tunnel wind, and means it always arrives.
+	static addTunnel = (carve: (x: number, y: number) => void, from: { x: number, y: number }, to: { x: number, y: number }, rng: () => number) => {
+		let x = from.x;
+		let y = from.y;
+
+		while ((x !== to.x) || (y !== to.y)) {
+			const canMoveX = x !== to.x;
+			const canMoveY = y !== to.y;
+
+			if (canMoveX && (!canMoveY || Random.randomBoolean(rng))) {
+				x += to.x > x ? 1 : -1;
+			} else {
+				y += to.y > y ? 1 : -1;
+			}
+
+			carve(x, y);
+		}
 	};
 
 	static simplifyMap = (map: EncounterMapSquareModel[]) => {

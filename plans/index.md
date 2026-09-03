@@ -6,10 +6,6 @@
 * Drag and drop movement
   * Automatically select the best path to a selected square
 
-## Map Types
-* ~~Building interior~~ — built as a standard map type, see `blood-and-sand.md`
-* ~~Arena~~ — built as a standard map type, see `blood-and-sand.md`
-
 # New Features
 
 ## Water / Ice
@@ -84,15 +80,6 @@
 
 # Content Ideas
 
-## Ideas for Packs
-* Evil
-  * hero - Shadowborn
-  * monster - Demon
-  * monster - Swarm of imps
-  * role - Necromancer should be split into necromancer (undeath) and lifestealer (misc creepy)
-* Faith
-  * Clerics should be able to summon / resurrect dead heroes
-
 ## Ideas for Roles / Backgrounds
 * Gladiator 
   * Large weapons
@@ -139,7 +126,6 @@
 * Cartographer
 * Engineer
 * Laboratory
-* Hospital / Sanatorium
 * Morale buildings:
   * Museum
   * Library

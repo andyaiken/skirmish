@@ -11,8 +11,11 @@
 
 .dialog {
 	position: absolute;
-	width: 724px;
-	left: calc(50% - calc(724px / 2));
+	width: calc(100% - 30px);
+	min-width: 724px;
+	max-width: 1200px;
+	left: 50%;
+	transform: translateX(-50%);
 	border-radius: 15px;
 	background-color: rgb(255, 255, 255);
     display: flex;

@@ -1,6 +1,6 @@
 import { Component } from 'react';
 
-import { EncounterLogic } from '../../../logic/encounter-logic';
+import { EncounterLogic } from '../../../logic/encounter/encounter-logic';
 
 import type { CombatantModel } from '../../../models/combatant';
 import type { EncounterModel } from '../../../models/encounter';

@@ -3,7 +3,7 @@ import { Component } from 'react';
 import { CombatantState } from '../../../../../enums/combatant-state';
 import { StructureType } from '../../../../../enums/structure-type';
 
-import { StrongholdLogic } from '../../../../../logic/stronghold-logic';
+import { StrongholdLogic } from '../../../../../logic/stronghold/stronghold-logic';
 
 import type { CombatantModel } from '../../../../../models/combatant';
 import type { EncounterModel } from '../../../../../models/encounter';

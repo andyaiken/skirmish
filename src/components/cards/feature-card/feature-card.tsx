@@ -2,7 +2,7 @@ import { Component, MouseEvent } from 'react';
 
 import { CardType } from '../../../enums/card-type';
 
-import { FeatureLogic } from '../../../logic/feature-logic';
+import { FeatureLogic } from '../../../logic/feature/feature-logic';
 
 import type { CombatantModel } from '../../../models/combatant';
 import type { FeatureModel } from '../../../models/feature';

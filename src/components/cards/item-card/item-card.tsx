@@ -5,8 +5,8 @@ import { CardType } from '../../../enums/card-type';
 import { ItemLocationType } from '../../../enums/item-location-type';
 import { ItemProficiencyType } from '../../../enums/item-proficiency-type';
 
-import { ActionEffects, ActionLogic } from '../../../logic/action-logic';
-import { FeatureLogic } from '../../../logic/feature-logic';
+import { ActionEffects, ActionLogic } from '../../../logic/action/action-logic';
+import { FeatureLogic } from '../../../logic/feature/feature-logic';
 
 import type { ActionEffectModel } from '../../../models/action';
 import type { ItemModel } from '../../../models/item';

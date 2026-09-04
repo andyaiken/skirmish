@@ -2,15 +2,15 @@ import { Component } from 'react';
 
 import { StructureType } from '../../../enums/structure-type';
 
-import { CampaignMapLogic } from '../../../logic/campaign-map-logic';
-import { StrongholdLogic } from '../../../logic/stronghold-logic';
+import { CampaignMapLogic } from '../../../logic/campaign-map/campaign-map-logic';
+import { StrongholdLogic } from '../../../logic/stronghold/stronghold-logic';
 
 import type { CombatantModel } from '../../../models/combatant';
 import type { GameModel } from '../../../models/game';
 import type { OptionsModel } from '../../../models/options';
 import type { RegionModel } from '../../../models/region';
 
-import { Collections } from '../../../utils/collections';
+import { Collections } from '../../../utils/collections/collections';
 
 import { CardList, Tabs, Text, TextType } from '../../controls';
 import { HeroCard, SpeciesCard, StrongholdBenefitCard } from '../../cards';

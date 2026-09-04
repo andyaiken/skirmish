@@ -3,8 +3,8 @@ import { IconRefresh } from '@tabler/icons-react';
 
 import { CardType } from '../../../enums/card-type';
 
-import { ActionLogic } from '../../../logic/action-logic';
-import { FeatureLogic } from '../../../logic/feature-logic';
+import { ActionLogic } from '../../../logic/action/action-logic';
+import { FeatureLogic } from '../../../logic/feature/feature-logic';
 
 import type { RoleModel } from '../../../models/role';
 

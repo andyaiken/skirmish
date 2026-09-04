@@ -5,15 +5,15 @@ import { CombatantState } from '../../../enums/combatant-state';
 import { QuirkType } from '../../../enums/quirk-type';
 import { TraitType } from '../../../enums/trait-type';
 
-import { ConditionLogic } from '../../../logic/condition-logic';
-import { EncounterLogic } from '../../../logic/encounter-logic';
-import { GameLogic } from '../../../logic/game-logic';
+import { ConditionLogic } from '../../../logic/condition/condition-logic';
+import { EncounterLogic } from '../../../logic/encounter/encounter-logic';
+import { GameLogic } from '../../../logic/game/game-logic';
 
 import type { CombatantModel } from '../../../models/combatant';
 import type { EncounterModel } from '../../../models/encounter';
 import type { OptionsModel } from '../../../models/options';
 
-import { Collections } from '../../../utils/collections';
+import { Collections } from '../../../utils/collections/collections';
 
 import { StatValue, Tag, Text, TextType } from '../../controls';
 import { MiniToken } from '../encounter-map/mini-token/mini-token';

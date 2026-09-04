@@ -7,8 +7,8 @@ import { TraitType } from '../enums/trait-type';
 import type { ActionModel } from '../models/action';
 import type { FeatureModel } from '../models/feature';
 
-import { ActionEffects, ActionPrerequisites, ActionTargetParameters, ActionWeaponParameters } from '../logic/action-logic';
-import { FeatureLogic } from '../logic/feature-logic';
+import { ActionEffects, ActionPrerequisites, ActionTargetParameters, ActionWeaponParameters } from '../logic/action/action-logic';
+import { FeatureLogic } from '../logic/feature/feature-logic';
 
 export class BaseData {
 	static getBaseFeatures = (): FeatureModel[] => {

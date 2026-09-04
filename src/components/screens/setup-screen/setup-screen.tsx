@@ -5,21 +5,21 @@ import { CardType } from '../../../enums/card-type';
 import { CombatantType } from '../../../enums/combatant-type';
 import { OrientationType } from '../../../enums/orientation-type';
 
-import { NameGenerator } from '../../../generators/name-generator';
+import { NameGenerator } from '../../../generators/name/name-generator';
 
-import { CombatantLogic } from '../../../logic/combatant-logic';
-import { Factory } from '../../../logic/factory';
-import { GameLogic } from '../../../logic/game-logic';
-import { PackLogic } from '../../../logic/pack-logic';
+import { CombatantLogic } from '../../../logic/combatant/combatant-logic';
+import { Factory } from '../../../logic/factory/factory';
+import { GameLogic } from '../../../logic/game/game-logic';
+import { PackLogic } from '../../../logic/pack/pack-logic';
 
 import type { CombatantModel } from '../../../models/combatant';
 import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
 import type { OptionsModel } from '../../../models/options';
 
-import { Collections } from '../../../utils/collections';
-import { Color } from '../../../utils/color';
-import { Random } from '../../../utils/random';
+import { Collections } from '../../../utils/collections/collections';
+import { Color } from '../../../utils/color/color';
+import { Random } from '../../../utils/random/random';
 
 import { CharacterSheetModal, HeroBuilderModal } from '../../modals';
 import { CombatantRowPanel, LogoPanel } from '../../panels';

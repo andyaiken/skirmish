@@ -3,8 +3,8 @@ import { IconArrowsMove, IconCircleMinus, IconCirclePlus, IconDotsCircleHorizont
 
 import { ActionTargetType } from '../../../../../enums/action-target-type';
 
-import { ActionLogic } from '../../../../../logic/action-logic';
-import { EncounterLogic } from '../../../../../logic/encounter-logic';
+import { ActionLogic } from '../../../../../logic/action/action-logic';
+import { EncounterLogic } from '../../../../../logic/encounter/encounter-logic';
 
 import type { ActionOriginParameterModel, ActionParameterModel, ActionTargetParameterModel, ActionWeaponParameterModel } from '../../../../../models/action';
 import type { EncounterModel, TrapModel } from '../../../../../models/encounter';

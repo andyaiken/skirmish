@@ -3,17 +3,17 @@ import localforage from 'localforage';
 import { BoonType } from '../enums/boon-type';
 import { StructureType } from '../enums/structure-type';
 
-import { BoonGenerator } from '../generators/boon-generator';
+import { BoonGenerator } from '../generators/boon/boon-generator';
 
-import { GameLogic } from '../logic/game-logic';
-import { StrongholdLogic } from '../logic/stronghold-logic';
+import { GameLogic } from '../logic/game/game-logic';
+import { StrongholdLogic } from '../logic/stronghold/stronghold-logic';
 
 import type { GameModel } from '../models/game';
 import type { OptionsModel } from '../models/options';
 import type { PackModel } from '../models/pack';
 import type { StructureModel } from '../models/structure';
 
-import { Utils } from '../utils/utils';
+import { Utils } from '../utils/utils/utils';
 
 import pkg from '../../package.json';
 

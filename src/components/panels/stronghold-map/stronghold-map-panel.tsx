@@ -1,12 +1,12 @@
 import { Component } from 'react';
 
-import { StrongholdLogic } from '../../../logic/stronghold-logic';
-import { StrongholdMapLogic } from '../../../logic/stronghold-map-logic';
+import { StrongholdLogic } from '../../../logic/stronghold/stronghold-logic';
+import { StrongholdMapLogic } from '../../../logic/stronghold-map/stronghold-map-logic';
 
 import type { StructureModel } from '../../../models/structure';
 
-import { Color } from '../../../utils/color';
-import { Random } from '../../../utils/random';
+import { Color } from '../../../utils/color/color';
+import { Random } from '../../../utils/random/random';
 
 import './stronghold-map-panel.scss';
 

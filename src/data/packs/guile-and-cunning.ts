@@ -1,11 +1,11 @@
-import { ActionEffects, ActionPrerequisites, ActionTargetParameters, ActionWeaponParameters } from '../../logic/action-logic';
+import { ActionEffects, ActionPrerequisites, ActionTargetParameters, ActionWeaponParameters } from '../../logic/action/action-logic';
 import { ActionTargetType } from '../../enums/action-target-type';
 import { CombatantType } from '../../enums/combatant-type';
-import { ConditionLogic } from '../../logic/condition-logic';
+import { ConditionLogic } from '../../logic/condition/condition-logic';
 import { ConditionType } from '../../enums/condition-type';
 import { DamageCategoryType } from '../../enums/damage-category-type';
 import { DamageType } from '../../enums/damage-type';
-import { FeatureLogic } from '../../logic/feature-logic';
+import { FeatureLogic } from '../../logic/feature/feature-logic';
 import { ItemProficiencyType } from '../../enums/item-proficiency-type';
 import { PackModel } from '../../models/pack';
 import { SkillType } from '../../enums/skill-type';
@@ -479,7 +479,7 @@ export const guileAndCunning = (): PackModel => ({
 		{
 			id: 'background-trapper',
 			name: 'Trapper',
-			description: 'The trapper knows where to put a snare, and where somebody else has put one.',
+			description: 'The trapper knows where to put a snare.',
 			startingFeatures: [
 				FeatureLogic.createSkillFeature('trapper-start-1', SkillType.Perception, 2)
 			],

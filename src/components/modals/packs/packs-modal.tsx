@@ -1,11 +1,11 @@
 import { Component } from 'react';
 
-import { PackLogic } from '../../../logic/pack-logic';
+import { PackLogic } from '../../../logic/pack/pack-logic';
 
 import type { OptionsModel } from '../../../models/options';
 import type { PackModel } from '../../../models/pack';
 
-import { Format } from '../../../utils/format';
+import { Format } from '../../../utils/format/format';
 
 import { BackgroundCard, ItemCard, PackCard, RoleCard, SpeciesCard, StructureCard } from '../../cards';
 import { CardList, Dialog, Text, TextType } from '../../controls';

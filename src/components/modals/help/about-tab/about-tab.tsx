@@ -3,7 +3,7 @@ import { Component } from 'react';
 import type { GameModel } from '../../../../models/game';
 import type { OptionsModel } from '../../../../models/options';
 
-import { Format } from '../../../../utils/format';
+import { Format } from '../../../../utils/format/format';
 
 import { StatValue, Text } from '../../../controls';
 

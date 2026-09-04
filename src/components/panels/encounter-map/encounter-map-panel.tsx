@@ -3,17 +3,17 @@ import { Component, createRef } from 'react';
 import { CombatantState } from '../../../enums/combatant-state';
 import { CombatantType } from '../../../enums/combatant-type';
 
-import { ActionLogic } from '../../../logic/action-logic';
-import { CombatantLogic } from '../../../logic/combatant-logic';
-import { ConditionLogic } from '../../../logic/condition-logic';
-import { EncounterLogic } from '../../../logic/encounter-logic';
-import { EncounterMapLogic } from '../../../logic/encounter-map-logic';
+import { ActionLogic } from '../../../logic/action/action-logic';
+import { CombatantLogic } from '../../../logic/combatant/combatant-logic';
+import { ConditionLogic } from '../../../logic/condition/condition-logic';
+import { EncounterLogic } from '../../../logic/encounter/encounter-logic';
+import { EncounterMapLogic } from '../../../logic/encounter-map/encounter-map-logic';
 
 import type { EncounterMapEdgeModel, EncounterModel, LootPileModel, TrapModel } from '../../../models/encounter';
 import type { ActionOriginParameterModel } from '../../../models/action';
 import type { CombatantModel } from '../../../models/combatant';
 
-import { Collections } from '../../../utils/collections';
+import { Collections } from '../../../utils/collections/collections';
 
 import { AuraToken } from './aura-token/aura-token';
 import { Floor } from './floor/floor';

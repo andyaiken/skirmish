@@ -6,10 +6,10 @@ import { TrapType } from '../enums/trap-type';
 
 import type { TrapModel } from '../models/encounter';
 
-import { Utils } from '../utils/utils';
+import { Utils } from '../utils/utils/utils';
 
-import { ActionEffects } from '../logic/action-logic';
-import { ConditionLogic } from '../logic/condition-logic';
+import { ActionEffects } from '../logic/action/action-logic';
+import { ConditionLogic } from '../logic/condition/condition-logic';
 
 // A trap's payload is an ordinary list of action effects, so a trap can do anything a card can do
 // and needs no resolution code of its own

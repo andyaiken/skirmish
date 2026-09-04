@@ -4,12 +4,12 @@ import { IconArrowBigDownFilled, IconStarFilled } from '@tabler/icons-react';
 import { CombatantState } from '../../../../enums/combatant-state';
 import { TraitType } from '../../../../enums/trait-type';
 
-import { EncounterLogic } from '../../../../logic/encounter-logic';
+import { EncounterLogic } from '../../../../logic/encounter/encounter-logic';
 
 import type { CombatantModel } from '../../../../models/combatant';
 import type { EncounterModel } from '../../../../models/encounter';
 
-import { Color } from '../../../../utils/color';
+import { Color } from '../../../../utils/color/color';
 
 import './mini-token.scss';
 

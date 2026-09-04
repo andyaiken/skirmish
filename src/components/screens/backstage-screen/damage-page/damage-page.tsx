@@ -3,8 +3,8 @@ import { Component } from 'react';
 import { DamageCategoryType } from '../../../../enums/damage-category-type';
 import { DamageType } from '../../../../enums/damage-type';
 
-import { GameLogic } from '../../../../logic/game-logic';
-import { PackLogic } from '../../../../logic/pack-logic';
+import { GameLogic } from '../../../../logic/game/game-logic';
+import { PackLogic } from '../../../../logic/pack/pack-logic';
 
 import type { ActionEffectModel } from '../../../../models/action';
 import type { OptionsModel } from '../../../../models/options';

@@ -5,9 +5,9 @@ import { DamageType } from '../../../../enums/damage-type';
 import { SkillType } from '../../../../enums/skill-type';
 import { TraitType } from '../../../../enums/trait-type';
 
-import { CombatantLogic } from '../../../../logic/combatant-logic';
-import { ConditionLogic } from '../../../../logic/condition-logic';
-import { EncounterLogic } from '../../../../logic/encounter-logic';
+import { CombatantLogic } from '../../../../logic/combatant/combatant-logic';
+import { ConditionLogic } from '../../../../logic/condition/condition-logic';
+import { EncounterLogic } from '../../../../logic/encounter/encounter-logic';
 
 import type { CombatantModel } from '../../../../models/combatant';
 import type { EncounterModel } from '../../../../models/encounter';

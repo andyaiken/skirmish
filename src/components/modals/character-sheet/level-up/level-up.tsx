@@ -2,9 +2,9 @@ import { Component } from 'react';
 
 import { StructureType } from '../../../../enums/structure-type';
 
-import { CombatantLogic } from '../../../../logic/combatant-logic';
-import { FeatureLogic } from '../../../../logic/feature-logic';
-import { StrongholdLogic } from '../../../../logic/stronghold-logic';
+import { CombatantLogic } from '../../../../logic/combatant/combatant-logic';
+import { FeatureLogic } from '../../../../logic/feature/feature-logic';
+import { StrongholdLogic } from '../../../../logic/stronghold/stronghold-logic';
 
 import type { CombatantModel } from '../../../../models/combatant';
 import type { FeatureModel } from '../../../../models/feature';

@@ -4,8 +4,8 @@ import { IconRefresh } from '@tabler/icons-react';
 import { CardType } from '../../../../enums/card-type';
 import { StructureType } from '../../../../enums/structure-type';
 
-import { GameLogic } from '../../../../logic/game-logic';
-import { StrongholdLogic } from '../../../../logic/stronghold-logic';
+import { GameLogic } from '../../../../logic/game/game-logic';
+import { StrongholdLogic } from '../../../../logic/stronghold/stronghold-logic';
 
 import type { BackgroundModel } from '../../../../models/background';
 import type { GameModel } from '../../../../models/game';
@@ -13,7 +13,7 @@ import type { OptionsModel } from '../../../../models/options';
 import type { RoleModel } from '../../../../models/role';
 import type { SpeciesModel } from '../../../../models/species';
 
-import { Collections } from '../../../../utils/collections';
+import { Collections } from '../../../../utils/collections/collections';
 
 import { BackgroundCard, PlaceholderCard, RoleCard, SpeciesCard } from '../../../cards';
 import { CardList, Expander, IconSize, IconType, IconValue, PlayingCard, Text, TextType } from '../../../controls';

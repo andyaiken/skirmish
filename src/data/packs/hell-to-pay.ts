@@ -1,11 +1,11 @@
-import { ActionEffects, ActionPrerequisites, ActionTargetParameters, ActionWeaponParameters } from '../../logic/action-logic';
+import { ActionEffects, ActionPrerequisites, ActionTargetParameters, ActionWeaponParameters } from '../../logic/action/action-logic';
 import { ActionTargetType } from '../../enums/action-target-type';
 import { CombatantType } from '../../enums/combatant-type';
-import { ConditionLogic } from '../../logic/condition-logic';
+import { ConditionLogic } from '../../logic/condition/condition-logic';
 import { ConditionType } from '../../enums/condition-type';
 import { DamageCategoryType } from '../../enums/damage-category-type';
 import { DamageType } from '../../enums/damage-type';
-import { FeatureLogic } from '../../logic/feature-logic';
+import { FeatureLogic } from '../../logic/feature/feature-logic';
 import { ItemProficiencyType } from '../../enums/item-proficiency-type';
 import { MovementType } from '../../enums/movement-type';
 import { PackModel } from '../../models/pack';

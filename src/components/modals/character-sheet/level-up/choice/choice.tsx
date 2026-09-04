@@ -8,7 +8,7 @@ import { SkillCategoryType } from '../../../../../enums/skill-category-type';
 import { SkillType } from '../../../../../enums/skill-type';
 import { TraitType } from '../../../../../enums/trait-type';
 
-import { CombatantLogic } from '../../../../../logic/combatant-logic';
+import { CombatantLogic } from '../../../../../logic/combatant/combatant-logic';
 
 import type { CombatantModel } from '../../../../../models/combatant';
 import type { FeatureModel } from '../../../../../models/feature';

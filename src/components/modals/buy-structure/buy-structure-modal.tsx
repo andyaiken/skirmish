@@ -2,14 +2,14 @@ import { Component } from 'react';
 
 import { StructureType } from '../../../enums/structure-type';
 
-import { GameLogic } from '../../../logic/game-logic';
-import { StrongholdLogic } from '../../../logic/stronghold-logic';
+import { GameLogic } from '../../../logic/game/game-logic';
+import { StrongholdLogic } from '../../../logic/stronghold/stronghold-logic';
 
 import type { GameModel } from '../../../models/game';
 import type { OptionsModel } from '../../../models/options';
 import type { StructureModel } from '../../../models/structure';
 
-import { Collections } from '../../../utils/collections';
+import { Collections } from '../../../utils/collections/collections';
 
 import { CardList, IconSize, IconType, IconValue, Text, TextType } from '../../controls';
 import { StructureCard } from '../../cards';

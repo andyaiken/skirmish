@@ -2,8 +2,8 @@ import { Component, MouseEvent } from 'react';
 
 import { CardType } from '../../../enums/card-type';
 
-import { ActionEffects, ActionLogic, ActionPrerequisites } from '../../../logic/action-logic';
-import { GameLogic } from '../../../logic/game-logic';
+import { ActionEffects, ActionLogic, ActionPrerequisites } from '../../../logic/action/action-logic';
+import { GameLogic } from '../../../logic/game/game-logic';
 
 import type { ActionEffectModel, ActionModel, ActionTargetParameterModel } from '../../../models/action';
 import type { CombatantModel } from '../../../models/combatant';

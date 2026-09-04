@@ -4,15 +4,15 @@ import { OrientationType } from '../../../../enums/orientation-type';
 
 import { StructureType } from '../../../../enums/structure-type';
 
-import { CampaignMapLogic } from '../../../../logic/campaign-map-logic';
-import { StrongholdLogic } from '../../../../logic/stronghold-logic';
+import { CampaignMapLogic } from '../../../../logic/campaign-map/campaign-map-logic';
+import { StrongholdLogic } from '../../../../logic/stronghold/stronghold-logic';
 
 import type { CombatantModel } from '../../../../models/combatant';
 import type { GameModel } from '../../../../models/game';
 import type { OptionsModel } from '../../../../models/options';
 import type { RegionModel } from '../../../../models/region';
 
-import { Collections } from '../../../../utils/collections';
+import { Collections } from '../../../../utils/collections/collections';
 
 import { BoonCard, RegionCard } from '../../../cards';
 import { CardList, Dialog, Expander, Gauge, IconSize, IconType, IconValue, StatValue, Text, TextType } from '../../../controls';

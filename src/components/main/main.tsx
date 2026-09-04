@@ -11,19 +11,19 @@ import { PageType } from '../../enums/page-type';
 import { ScreenType } from '../../enums/screen-type';
 import { StructureType } from '../../enums/structure-type';
 
-import { CampaignMapGenerator } from '../../generators/campaign-map-generator';
-import { EncounterGenerator } from '../../generators/encounter-generator';
-import { EncounterMapGenerator } from '../../generators/encounter-map-generator';
+import { CampaignMapGenerator } from '../../generators/campaign-map/campaign-map-generator';
+import { EncounterGenerator } from '../../generators/encounter/encounter-generator';
+import { EncounterMapGenerator } from '../../generators/encounter-map/encounter-map-generator';
 
-import { CampaignMapLogic } from '../../logic/campaign-map-logic';
-import { CombatantLogic } from '../../logic/combatant-logic';
-import { ConditionLogic } from '../../logic/condition-logic';
-import { EncounterLogic } from '../../logic/encounter-logic';
-import { EncounterMapLogic } from '../../logic/encounter-map-logic';
-import { Factory } from '../../logic/factory';
-import { GameLogic } from '../../logic/game-logic';
-import { IntentsLogic } from '../../logic/intents-logic';
-import { StrongholdLogic } from '../../logic/stronghold-logic';
+import { CampaignMapLogic } from '../../logic/campaign-map/campaign-map-logic';
+import { CombatantLogic } from '../../logic/combatant/combatant-logic';
+import { ConditionLogic } from '../../logic/condition/condition-logic';
+import { EncounterLogic } from '../../logic/encounter/encounter-logic';
+import { EncounterMapLogic } from '../../logic/encounter-map/encounter-map-logic';
+import { Factory } from '../../logic/factory/factory';
+import { GameLogic } from '../../logic/game/game-logic';
+import { IntentsLogic } from '../../logic/intents/intents-logic';
+import { StrongholdLogic } from '../../logic/stronghold/stronghold-logic';
 
 import type { ActionModel, ActionParameterModel } from '../../models/action';
 import type { BoonModel } from '../../models/boon';
@@ -40,9 +40,9 @@ import type { StructureModel } from '../../models/structure';
 
 import type { Platform } from '../../platform/platform';
 
-import { Collections } from '../../utils/collections';
-import { Sound } from '../../utils/sound';
-import { Utils } from '../../utils/utils';
+import { Collections } from '../../utils/collections/collections';
+import { Sound } from '../../utils/sound/sound';
+import { Utils } from '../../utils/utils/utils';
 
 import { BackstageScreen, CampaignScreen, EncounterScreen, LandingScreen, SetupScreen } from '../screens';
 import { Dialog, ErrorBoundary, PlayingCard, Text, TextType } from '../controls';

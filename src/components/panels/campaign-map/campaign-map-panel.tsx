@@ -1,13 +1,13 @@
 import { Component } from 'react';
 
-import { CampaignMapLogic } from '../../../logic/campaign-map-logic';
+import { CampaignMapLogic } from '../../../logic/campaign-map/campaign-map-logic';
 
 import type { CampaignMapModel, CampaignMapSquareModel } from '../../../models/campaign-map';
 import type { OptionsModel } from '../../../models/options';
 import type { RegionModel } from '../../../models/region';
 
-import { Color } from '../../../utils/color';
-import { Random } from '../../../utils/random';
+import { Color } from '../../../utils/color/color';
+import { Random } from '../../../utils/random/random';
 
 import './campaign-map-panel.scss';
 

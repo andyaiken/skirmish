@@ -2,16 +2,16 @@ import { Component } from 'react';
 
 import { StructureType } from '../../../enums/structure-type';
 
-import { NameGenerator } from '../../../generators/name-generator';
+import { NameGenerator } from '../../../generators/name/name-generator';
 
-import { CombatantLogic } from '../../../logic/combatant-logic';
+import { CombatantLogic } from '../../../logic/combatant/combatant-logic';
 
 import type { CombatantModel } from '../../../models/combatant';
 import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
 import type { OptionsModel } from '../../../models/options';
 
-import { Random } from '../../../utils/random';
+import { Random } from '../../../utils/random/random';
 
 import { Text, TextType } from '../../controls';
 import { CardPage } from './card-page/card-page';

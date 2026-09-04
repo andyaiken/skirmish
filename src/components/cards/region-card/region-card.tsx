@@ -3,7 +3,7 @@ import { IconRefresh } from '@tabler/icons-react';
 
 import { CardType } from '../../../enums/card-type';
 
-import { CampaignMapLogic } from '../../../logic/campaign-map-logic';
+import { CampaignMapLogic } from '../../../logic/campaign-map/campaign-map-logic';
 
 import type { CampaignMapModel } from '../../../models/campaign-map';
 import type { OptionsModel } from '../../../models/options';

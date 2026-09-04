@@ -3,7 +3,7 @@ import { Component } from 'react';
 import type { GameModel } from '../../../../models/game';
 import type { OptionsModel } from '../../../../models/options';
 
-import { Sound } from '../../../../utils/sound';
+import { Sound } from '../../../../utils/sound/sound';
 
 import { ConfirmButton, Selector, StatValue, Switch, Text, TextType } from '../../../controls';
 

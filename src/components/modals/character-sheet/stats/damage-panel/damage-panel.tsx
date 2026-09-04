@@ -4,7 +4,7 @@ import { DamageType } from '../../../../../enums/damage-type';
 
 import { Box, StatValue, Text, TextType } from '../../../../controls';
 
-import { Collections } from '../../../../../utils/collections';
+import { Collections } from '../../../../../utils/collections/collections';
 
 import './damage-panel.scss';
 

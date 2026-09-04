@@ -7,8 +7,8 @@ import type { BackgroundModel } from '../../../models/background';
 
 import { PlayingCard, Text, TextType } from '../../controls';
 
-import { ActionLogic } from '../../../logic/action-logic';
-import { FeatureLogic } from '../../../logic/feature-logic';
+import { ActionLogic } from '../../../logic/action/action-logic';
+import { FeatureLogic } from '../../../logic/feature/feature-logic';
 
 import { ListItemPanel } from '../../panels';
 import { PlaceholderCard } from '../placeholder-card/placeholder-card';

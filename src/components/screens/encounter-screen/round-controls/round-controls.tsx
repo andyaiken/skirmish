@@ -4,17 +4,17 @@ import { CombatantState } from '../../../../enums/combatant-state';
 import { CombatantType } from '../../../../enums/combatant-type';
 import { StructureType } from '../../../../enums/structure-type';
 
-import { CombatantLogic } from '../../../../logic/combatant-logic';
-import { Factory } from '../../../../logic/factory';
-import { GameLogic } from '../../../../logic/game-logic';
-import { StrongholdLogic } from '../../../../logic/stronghold-logic';
+import { CombatantLogic } from '../../../../logic/combatant/combatant-logic';
+import { Factory } from '../../../../logic/factory/factory';
+import { GameLogic } from '../../../../logic/game/game-logic';
+import { StrongholdLogic } from '../../../../logic/stronghold/stronghold-logic';
 
 import type { CombatantModel } from '../../../../models/combatant';
 import type { EncounterModel } from '../../../../models/encounter';
 import type { GameModel } from '../../../../models/game';
 import type { OptionsModel } from '../../../../models/options';
 
-import { Collections } from '../../../../utils/collections';
+import { Collections } from '../../../../utils/collections/collections';
 
 import { Box, Expander, StatValue, Text, TextType } from '../../../controls';
 import { StrongholdBenefitCard } from '../../../cards';

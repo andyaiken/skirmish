@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import { IconArrowUp } from '@tabler/icons-react';
 
-import { EncounterMapLogic } from '../../../logic/encounter-map-logic';
+import { EncounterMapLogic } from '../../../logic/encounter-map/encounter-map-logic';
 
 import './direction-indicator-panel.scss';
 

@@ -4,14 +4,14 @@ import { IconSquare, IconSquareFilled } from '@tabler/icons-react';
 import { CombatantType } from '../../../../enums/combatant-type';
 import { ItemLocationType } from '../../../../enums/item-location-type';
 
-import { CombatantLogic } from '../../../../logic/combatant-logic';
-import { EncounterMapLogic } from '../../../../logic/encounter-map-logic';
+import { CombatantLogic } from '../../../../logic/combatant/combatant-logic';
+import { EncounterMapLogic } from '../../../../logic/encounter-map/encounter-map-logic';
 
 import type { CombatantModel } from '../../../../models/combatant';
 import type { GameModel } from '../../../../models/game';
 import type { ItemModel } from '../../../../models/item';
 
-import { Collections } from '../../../../utils/collections';
+import { Collections } from '../../../../utils/collections/collections';
 
 import { CardList, IconSize, IconType, IconValue, PlayingCard, Selector, StatValue, Text, TextType } from '../../../controls';
 import { ItemCard, PlaceholderCard } from '../../../cards';

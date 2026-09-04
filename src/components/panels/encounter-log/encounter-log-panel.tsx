@@ -2,7 +2,7 @@ import { Component } from 'react';
 
 import { LogPartType } from '../../../enums/log-part-type';
 
-import { EncounterLogic } from '../../../logic/encounter-logic';
+import { EncounterLogic } from '../../../logic/encounter/encounter-logic';
 
 import type { EncounterModel, LogMessageModel, LogPartModel } from '../../../models/encounter';
 

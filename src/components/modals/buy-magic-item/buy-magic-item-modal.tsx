@@ -3,16 +3,16 @@ import { Component } from 'react';
 import { ItemProficiencyType } from '../../../enums/item-proficiency-type';
 import { StructureType } from '../../../enums/structure-type';
 
-import { MagicItemGenerator } from '../../../generators/magic-item-generator';
+import { MagicItemGenerator } from '../../../generators/magic-item/magic-item-generator';
 
-import { CombatantLogic } from '../../../logic/combatant-logic';
-import { StrongholdLogic } from '../../../logic/stronghold-logic';
+import { CombatantLogic } from '../../../logic/combatant/combatant-logic';
+import { StrongholdLogic } from '../../../logic/stronghold/stronghold-logic';
 
 import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
 import type { OptionsModel } from '../../../models/options';
 
-import { Collections } from '../../../utils/collections';
+import { Collections } from '../../../utils/collections/collections';
 
 import { CardList, IconSize, IconType, IconValue, Text, TextType } from '../../controls';
 import { ItemCard } from '../../cards';

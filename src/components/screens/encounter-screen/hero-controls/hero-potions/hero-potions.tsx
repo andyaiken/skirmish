@@ -2,14 +2,14 @@ import { Component } from 'react';
 
 import { CombatantState } from '../../../../../enums/combatant-state';
 
-import { EncounterLogic } from '../../../../../logic/encounter-logic';
-import { EncounterMapLogic } from '../../../../../logic/encounter-map-logic';
+import { EncounterLogic } from '../../../../../logic/encounter/encounter-logic';
+import { EncounterMapLogic } from '../../../../../logic/encounter-map/encounter-map-logic';
 
 import type { CombatantModel } from '../../../../../models/combatant';
 import type { EncounterModel } from '../../../../../models/encounter';
 import type { ItemModel } from '../../../../../models/item';
 
-import { Collections } from '../../../../../utils/collections';
+import { Collections } from '../../../../../utils/collections/collections';
 
 import { IconSize, IconType, IconValue, Text, TextType } from '../../../../controls';
 import { ItemCard } from '../../../../cards';

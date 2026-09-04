@@ -3,13 +3,13 @@ import { Component } from 'react';
 import { ItemLocationType } from '../../../enums/item-location-type';
 import { ItemProficiencyType } from '../../../enums/item-proficiency-type';
 
-import { GameLogic } from '../../../logic/game-logic';
+import { GameLogic } from '../../../logic/game/game-logic';
 
 import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
 import type { OptionsModel } from '../../../models/options';
 
-import { Collections } from '../../../utils/collections';
+import { Collections } from '../../../utils/collections/collections';
 
 import { CardList, Selector, Text, TextType } from '../../controls';
 import { ItemCard } from '../../cards';

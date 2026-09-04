@@ -6,8 +6,8 @@ import { OrientationType } from '../../../../enums/orientation-type';
 import { PageType } from '../../../../enums/page-type';
 import { StructureType } from '../../../../enums/structure-type';
 
-import { GameLogic } from '../../../../logic/game-logic';
-import { StrongholdLogic } from '../../../../logic/stronghold-logic';
+import { GameLogic } from '../../../../logic/game/game-logic';
+import { StrongholdLogic } from '../../../../logic/stronghold/stronghold-logic';
 
 import type { BoonModel } from '../../../../models/boon';
 import type { CombatantModel } from '../../../../models/combatant';

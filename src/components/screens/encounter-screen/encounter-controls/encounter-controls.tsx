@@ -2,7 +2,7 @@ import { Component } from 'react';
 
 import { EncounterState } from '../../../../enums/encounter-state';
 
-import { EncounterLogic } from '../../../../logic/encounter-logic';
+import { EncounterLogic } from '../../../../logic/encounter/encounter-logic';
 
 import type { EncounterModel } from '../../../../models/encounter';
 import type { GameModel } from '../../../../models/game';

@@ -3,7 +3,7 @@ import { IconX } from '@tabler/icons-react';
 
 import { CardType } from '../../../enums/card-type';
 
-import { PackLogic } from '../../../logic/pack-logic';
+import { PackLogic } from '../../../logic/pack/pack-logic';
 
 import type { PackModel } from '../../../models/pack';
 

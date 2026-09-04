@@ -2,7 +2,7 @@ import { Component, MouseEvent, ReactNode } from 'react';
 
 import { CardType } from '../../../enums/card-type';
 import { ErrorBoundary } from '../error-boundary/error-boundary';
-import { Random } from '../../../utils/random';
+import { Random } from '../../../utils/random/random';
 
 import './playing-card.scss';
 

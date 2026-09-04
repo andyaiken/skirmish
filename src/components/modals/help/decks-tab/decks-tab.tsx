@@ -2,8 +2,8 @@ import { Component, ReactNode } from 'react';
 
 import { CardType } from '../../../../enums/card-type';
 
-import { GameLogic } from '../../../../logic/game-logic';
-import { PackLogic } from '../../../../logic/pack-logic';
+import { GameLogic } from '../../../../logic/game/game-logic';
+import { PackLogic } from '../../../../logic/pack/pack-logic';
 
 import type { ActionModel } from '../../../../models/action';
 import type { FeatureModel } from '../../../../models/feature';

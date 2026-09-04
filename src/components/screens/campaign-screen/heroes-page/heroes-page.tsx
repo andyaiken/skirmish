@@ -5,9 +5,9 @@ import { CombatantType } from '../../../../enums/combatant-type';
 import { OrientationType } from '../../../../enums/orientation-type';
 import { StructureType } from '../../../../enums/structure-type';
 
-import { Factory } from '../../../../logic/factory';
-import { GameLogic } from '../../../../logic/game-logic';
-import { StrongholdLogic } from '../../../../logic/stronghold-logic';
+import { Factory } from '../../../../logic/factory/factory';
+import { GameLogic } from '../../../../logic/game/game-logic';
+import { StrongholdLogic } from '../../../../logic/stronghold/stronghold-logic';
 
 import type { BoonModel } from '../../../../models/boon';
 import type { CombatantModel } from '../../../../models/combatant';

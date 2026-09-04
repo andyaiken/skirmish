@@ -66,7 +66,6 @@
   * Lion / tiger / panther etc
   * Dragon
   * Kruthik / Ankheg
-* Ooze
 
 ## Ideas for Structures
 

@@ -3,14 +3,14 @@ import { Component, ReactNode } from 'react';
 import { ItemLocationType } from '../../../enums/item-location-type';
 import { ItemProficiencyType } from '../../../enums/item-proficiency-type';
 
-import { CombatantLogic } from '../../../logic/combatant-logic';
+import { CombatantLogic } from '../../../logic/combatant/combatant-logic';
 
 import type { CombatantModel } from '../../../models/combatant';
 import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
 import type { OptionsModel } from '../../../models/options';
 
-import { Collections } from '../../../utils/collections';
+import { Collections } from '../../../utils/collections/collections';
 
 import { Dialog, IconSize, IconType, IconValue, PlayingCard, Text, TextType } from '../../controls';
 import { ItemCard, PlaceholderCard } from '../../cards';

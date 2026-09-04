@@ -5,8 +5,8 @@ import { OrientationType } from '../../../enums/orientation-type';
 import { PageType } from '../../../enums/page-type';
 import { StructureType } from '../../../enums/structure-type';
 
-import { GameLogic } from '../../../logic/game-logic';
-import { PackLogic } from '../../../logic/pack-logic';
+import { GameLogic } from '../../../logic/game/game-logic';
+import { PackLogic } from '../../../logic/pack/pack-logic';
 
 import type { BoonModel } from '../../../models/boon';
 import type { CombatantModel } from '../../../models/combatant';
@@ -19,7 +19,7 @@ import type { StructureModel } from '../../../models/structure';
 
 import type { Platform } from '../../../platform/platform';
 
-import { Format } from '../../../utils/format';
+import { Format } from '../../../utils/format/format';
 
 import { Badge, IconSize, IconType, IconValue, Selector } from '../../controls';
 

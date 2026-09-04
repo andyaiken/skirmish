@@ -3,13 +3,13 @@ import { Component } from 'react';
 
 import { TraitType } from '../../../enums/trait-type';
 
-import { ConditionLogic } from '../../../logic/condition-logic';
-import { EncounterLogic } from '../../../logic/encounter-logic';
+import { ConditionLogic } from '../../../logic/condition/condition-logic';
+import { EncounterLogic } from '../../../logic/encounter/encounter-logic';
 
 import type { CombatantModel } from '../../../models/combatant';
 import type { EncounterModel } from '../../../models/encounter';
 
-import { Collections } from '../../../utils/collections';
+import { Collections } from '../../../utils/collections/collections';
 
 import { Box, StatValue, Text, TextType } from '../../controls';
 

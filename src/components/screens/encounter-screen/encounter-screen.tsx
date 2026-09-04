@@ -29,9 +29,9 @@ import { EncounterState } from '../../../enums/encounter-state';
 import { OrientationType } from '../../../enums/orientation-type';
 import { StructureType } from '../../../enums/structure-type';
 
-import { ActionLogic } from '../../../logic/action-logic';
-import { EncounterLogLogic } from '../../../logic/encounter-log-logic';
-import { EncounterLogic } from '../../../logic/encounter-logic';
+import { ActionLogic } from '../../../logic/action/action-logic';
+import { EncounterLogLogic } from '../../../logic/encounter-log/encounter-log-logic';
+import { EncounterLogic } from '../../../logic/encounter/encounter-logic';
 
 import type { ActionModel, ActionOriginParameterModel, ActionParameterModel, ActionTargetParameterModel } from '../../../models/action';
 import type { EncounterModel, LogMessageModel, LootPileModel, TrapModel } from '../../../models/encounter';

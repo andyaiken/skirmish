@@ -4,7 +4,7 @@ import { Component } from 'react';
 import { CardType } from '../../../enums/card-type';
 import { OrientationType } from '../../../enums/orientation-type';
 
-import { PackLogic } from '../../../logic/pack-logic';
+import { PackLogic } from '../../../logic/pack/pack-logic';
 
 import type { GameModel } from '../../../models/game';
 import type { OptionsModel } from '../../../models/options';

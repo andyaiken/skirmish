@@ -3,9 +3,9 @@ import { Component, ReactNode } from 'react';
 import { CardType } from '../../../../enums/card-type';
 import { StructureType } from '../../../../enums/structure-type';
 
-import { ActionLogic, ActionPrerequisites } from '../../../../logic/action-logic';
-import { CombatantLogic } from '../../../../logic/combatant-logic';
-import { StrongholdLogic } from '../../../../logic/stronghold-logic';
+import { ActionLogic, ActionPrerequisites } from '../../../../logic/action/action-logic';
+import { CombatantLogic } from '../../../../logic/combatant/combatant-logic';
+import { StrongholdLogic } from '../../../../logic/stronghold/stronghold-logic';
 
 import type { ActionModel, ActionOriginParameterModel, ActionParameterModel, ActionTargetParameterModel, ActionWeaponParameterModel } from '../../../../models/action';
 import type { CombatantModel } from '../../../../models/combatant';

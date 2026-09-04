@@ -4,8 +4,8 @@ import { IconId, IconRefresh, IconX } from '@tabler/icons-react';
 import { CardType } from '../../../enums/card-type';
 import { TraitType } from '../../../enums/trait-type';
 
-import { CombatantLogic } from '../../../logic/combatant-logic';
-import { GameLogic } from '../../../logic/game-logic';
+import { CombatantLogic } from '../../../logic/combatant/combatant-logic';
+import { GameLogic } from '../../../logic/game/game-logic';
 
 import type { CombatantModel } from '../../../models/combatant';
 

@@ -1,13 +1,13 @@
 import { Component } from 'react';
 
-import { ActionEffects } from '../../../../logic/action-logic';
-import { GameLogic } from '../../../../logic/game-logic';
-import { PackLogic } from '../../../../logic/pack-logic';
+import { ActionEffects } from '../../../../logic/action/action-logic';
+import { GameLogic } from '../../../../logic/game/game-logic';
+import { PackLogic } from '../../../../logic/pack/pack-logic';
 
 import type { ActionEffectModel } from '../../../../models/action';
 import type { OptionsModel } from '../../../../models/options';
 
-import { Collections } from '../../../../utils/collections';
+import { Collections } from '../../../../utils/collections/collections';
 
 import { StatValue } from '../../../controls';
 

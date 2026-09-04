@@ -20,7 +20,7 @@ interface Props {
 
 interface State {
 	tab: string;
-	selected: { name: string, description: string, type: CardType, starting: FeatureModel[], features: FeatureModel[], actions: ActionModel[] } | null;
+	selected: { name: string, description: string, type: CardType, starting: FeatureModel[], features: FeatureModel[], actions: ActionModel[], deathActions: ActionModel[] } | null;
 }
 
 export class DecksTab extends Component<Props, State> {
@@ -38,7 +38,7 @@ export class DecksTab extends Component<Props, State> {
 		});
 	};
 
-	setActions = (name: string, description: string, type: CardType, starting: FeatureModel[], features: FeatureModel[], actions: ActionModel[]) => {
+	setActions = (name: string, description: string, type: CardType, starting: FeatureModel[], features: FeatureModel[], actions: ActionModel[], deathActions: ActionModel[]) => {
 		this.setState({
 			selected: {
 				name: name,
@@ -46,7 +46,8 @@ export class DecksTab extends Component<Props, State> {
 				type: type,
 				starting: starting,
 				features: features,
-				actions: actions
+				actions: actions,
+				deathActions: deathActions
 			}
 		});
 	};
@@ -75,7 +76,7 @@ export class DecksTab extends Component<Props, State> {
 					.forEach(s => {
 						cards.push(
 							<Badge key={s.id} value={this.getBadge(s.id)}>
-								<SpeciesCard species={s} onClick={s => this.setActions(s.name, s.description, CardType.Species, s.startingFeatures, s.features, s.actions)} />
+								<SpeciesCard species={s} onClick={s => this.setActions(s.name, s.description, CardType.Species, s.startingFeatures, s.features, s.actions, s.deathActions)} />
 							</Badge>
 						);
 					});
@@ -85,7 +86,7 @@ export class DecksTab extends Component<Props, State> {
 					.forEach(s => {
 						cards.push(
 							<Badge key={s.id} value={this.getBadge(s.id)}>
-								<SpeciesCard species={s} onClick={s => this.setActions(s.name, s.description, CardType.Species, s.startingFeatures, s.features, s.actions)} />
+								<SpeciesCard species={s} onClick={s => this.setActions(s.name, s.description, CardType.Species, s.startingFeatures, s.features, s.actions, s.deathActions)} />
 							</Badge>
 						);
 					});
@@ -95,7 +96,7 @@ export class DecksTab extends Component<Props, State> {
 					.forEach(r => {
 						cards.push(
 							<Badge key={r.id} value={this.getBadge(r.id)}>
-								<RoleCard role={r} onClick={r => this.setActions(r.name, r.description, CardType.Role, r.startingFeatures, r.features, r.actions)} />
+								<RoleCard role={r} onClick={r => this.setActions(r.name, r.description, CardType.Role, r.startingFeatures, r.features, r.actions, [])} />
 							</Badge>
 						);
 					});
@@ -105,7 +106,7 @@ export class DecksTab extends Component<Props, State> {
 					.forEach(b => {
 						cards.push(
 							<Badge key={b.id} value={this.getBadge(b.id)}>
-								<BackgroundCard background={b} onClick={b => this.setActions(b.name, b.description, CardType.Background, b.startingFeatures, b.features, b.actions)} />
+								<BackgroundCard background={b} onClick={b => this.setActions(b.name, b.description, CardType.Background, b.startingFeatures, b.features, b.actions, [])} />
 							</Badge>
 						);
 					});
@@ -180,6 +181,17 @@ export class DecksTab extends Component<Props, State> {
 					</Badge>
 				);
 			});
+			const deathActionCards = this.state.selected.deathActions.map(a => {
+				return (
+					<Badge key={a.id} value=''>
+						<ActionCard
+							action={a}
+							footer={source}
+							footerType={type}
+						/>
+					</Badge>
+				);
+			});
 			const content = (
 				<div>
 					<Text type={TextType.Heading}>{this.state.selected.name}</Text>
@@ -196,6 +208,9 @@ export class DecksTab extends Component<Props, State> {
 					{actionCards.length > 0 ? <hr /> : null}
 					{actionCards.length > 0 ? <Text type={TextType.SubHeading}>Action Cards</Text> : null}
 					{actionCards.length > 0 ? <CardList cards={actionCards} /> : null}
+					{deathActionCards.length > 0 ? <hr /> : null}
+					{deathActionCards.length > 0 ? <Text type={TextType.SubHeading}>Death Action Cards</Text> : null}
+					{deathActionCards.length > 0 ? <CardList cards={deathActionCards} /> : null}
 				</div>
 			);
 			dialog = (

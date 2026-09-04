@@ -303,7 +303,28 @@ export const outOfTheGrave = (): PackModel => ({
 					]
 				}
 			],
-			deathActions: []
+			deathActions: [
+				{
+					id: 'zombie-action-3',
+					name: 'Rot Burst',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Combatants, Number.MAX_VALUE)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Decay, 3),
+								ActionEffects.addCondition(ConditionLogic.makeContagious(ConditionLogic.createAutoDamageCondition(TraitType.Endurance, 3, DamageType.Decay)))
+							]
+						})
+					]
+				}
+			]
 		}
 	],
 	roles: [

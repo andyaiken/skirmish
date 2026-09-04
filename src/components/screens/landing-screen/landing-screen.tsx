@@ -1,5 +1,5 @@
+import { IconCards, IconHelpCircle } from '@tabler/icons-react';
 import { Component } from 'react';
-import { IconCards } from '@tabler/icons-react';
 
 import { CardType } from '../../../enums/card-type';
 import { OrientationType } from '../../../enums/orientation-type';
@@ -22,6 +22,7 @@ interface Props {
 	startCampaign: () => void;
 	continueCampaign: () => void;
 	showPacks: () => void;
+	showHelp: (file: string) => void;
 }
 
 export class LandingScreen extends Component<Props> {
@@ -98,6 +99,10 @@ export class LandingScreen extends Component<Props> {
 					<div className='action-buttons'>
 						{mainBtn}
 						{packsBtn}
+						<button className='help-btn' title='Help' onClick={() => this.props.showHelp('landing')}>
+							<IconHelpCircle />
+							Help
+						</button>
 					</div>
 				</div>
 				<div className='landing-footer'>

@@ -17,11 +17,9 @@ import { TraitType } from '../../enums/trait-type';
 export const deepWater = (): PackModel => ({
 	id: 'pack-deep-water',
 	name: 'Deep Water',
-	description: 'Water on the map, and the things that make use of it.',
+	description: 'There are uncountable things that live in the depths.',
 	species: [
 		{
-			// The Aquatic quirk carries the Merrow's cold resistance, so there's no resistance
-			// feature here to duplicate it
 			id: 'species-merrow',
 			name: 'Merrow',
 			description: 'A heavy-shouldered thing of the deep water, all teeth and patience.',
@@ -106,7 +104,7 @@ export const deepWater = (): PackModel => ({
 		{
 			id: 'species-selkie',
 			name: 'Selkie',
-			description: 'A creature of two shapes, and never quite committed to either.',
+			description: 'A coastal creature of two shapes.',
 			type: CombatantType.Hero,
 			size: 1,
 			quirks: [
@@ -132,7 +130,8 @@ export const deepWater = (): PackModel => ({
 					],
 					effects: [
 						ActionEffects.addCondition(ConditionLogic.createMovementBonusCondition(TraitType.Speed, 4)),
-						ActionEffects.hide()
+						ActionEffects.hide(),
+						ActionEffects.takeAnotherAction()
 					]
 				},
 				{
@@ -153,7 +152,7 @@ export const deepWater = (): PackModel => ({
 		{
 			id: 'species-kelpie',
 			name: 'Kelpie',
-			description: 'It waits at the water\'s edge in the shape of a horse, and is patient about it.',
+			description: 'It waits at the water\'s edge in the shape of a horse.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [
@@ -235,7 +234,7 @@ export const deepWater = (): PackModel => ({
 		{
 			id: 'species-draugr',
 			name: 'Draugr',
-			description: 'Drowned, and disinclined to stay that way.',
+			description: 'Drowned, but disinclined to stay dead.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [
@@ -399,8 +398,6 @@ export const deepWater = (): PackModel => ({
 	],
 	roles: [
 		{
-			// The Skirmisher uses Reactions to act early; the Corsair uses them to act repeatedly,
-			// and to end up somewhere the enemy would rather it wasn't
 			id: 'role-corsair',
 			name: 'Corsair',
 			description: 'A boarder, who fights best in the moment after everyone else has lost track of the plan.',
@@ -539,8 +536,6 @@ export const deepWater = (): PackModel => ({
 			]
 		},
 		{
-			// Lay water down with Flood, then freeze it - the pack's terrain rules are the point of
-			// this card, and both halves of the combination are on it
 			id: 'role-tidecaller',
 			name: 'Tidecaller',
 			description: 'Water goes where it is told, and then it is told to stop being water.',
@@ -649,68 +644,7 @@ export const deepWater = (): PackModel => ({
 			]
 		}
 	],
-	backgrounds: [
-		{
-			id: 'background-smuggler',
-			name: 'Smuggler',
-			description: 'Someone who has always got room for one more thing, and somewhere to put it.',
-			startingFeatures: [
-				FeatureLogic.createSkillFeature('smuggler-start-1', SkillType.Stealth, 2)
-			],
-			features: [
-				FeatureLogic.createSkillFeature('smuggler-feature-1', SkillType.Stealth, 2)
-			],
-			actions: [
-				{
-					id: 'smuggler-action-1',
-					name: 'Light Fingers',
-					prerequisites: [
-						ActionPrerequisites.carryingCapacity()
-					],
-					parameters: [
-						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Stealth,
-							trait: TraitType.Speed,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.steal()
-							]
-						})
-					]
-				},
-				{
-					id: 'smuggler-action-2',
-					name: 'False Bottom',
-					prerequisites: [
-						ActionPrerequisites.carryingCapacity()
-					],
-					parameters: [
-						ActionTargetParameters.self()
-					],
-					effects: [
-						ActionEffects.hide(),
-						ActionEffects.takeAnotherAction()
-					]
-				},
-				{
-					id: 'smuggler-action-3',
-					name: 'Know the Back Ways',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.self()
-					],
-					effects: [
-						ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Speed, 4, SkillType.Stealth)),
-						ActionEffects.addMovement()
-					]
-				}
-			]
-		}
-	],
+	backgrounds: [],
 	items: [],
 	potions: [],
 	structures: [

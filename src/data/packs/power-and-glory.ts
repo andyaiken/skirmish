@@ -81,7 +81,7 @@ export const powerAndGlory = (): PackModel => ({
 		{
 			id: 'species-apostate',
 			name: 'Apostate',
-			description: 'A deva that kept its radiance and lost everything else.',
+			description: 'A fallen deva that lost everything that made it holy.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [],

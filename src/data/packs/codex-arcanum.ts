@@ -24,7 +24,7 @@ export const codexArcanum = (): PackModel => ({
 		{
 			id: 'species-animated-object',
 			name: 'Animated Object',
-			description: 'A suit of armour, or a statue, moving with no-one inside it.',
+			description: 'A walking statue, or a suit of armour with no-one inside it.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [
@@ -102,7 +102,7 @@ export const codexArcanum = (): PackModel => ({
 		{
 			id: 'species-arcane-aberration',
 			name: 'Arcane Aberration',
-			description: 'A spell that went wrong, and kept going.',
+			description: 'A spell that went wrong and never stopped.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [

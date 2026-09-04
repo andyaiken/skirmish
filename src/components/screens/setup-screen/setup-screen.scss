@@ -52,7 +52,9 @@
 			justify-content: center;
 			gap: 30px;
 
-			.packs-btn {
+			.randomize-btn,
+			.packs-btn,
+			.help-btn {
 				width: 200px;
 				display: flex;
 				flex-direction: row;

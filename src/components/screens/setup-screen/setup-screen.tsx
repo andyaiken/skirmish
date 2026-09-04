@@ -1,5 +1,5 @@
+import { IconCards, IconHelpCircle } from '@tabler/icons-react';
 import { Component } from 'react';
-import { IconCards } from '@tabler/icons-react';
 
 import { CardType } from '../../../enums/card-type';
 import { CombatantType } from '../../../enums/combatant-type';
@@ -39,6 +39,7 @@ interface Props {
 	pickUpItem: (item: ItemModel, hero: CombatantModel) => void;
 	dropItem: (item: ItemModel, hero: CombatantModel) => void;
 	showPacks: () => void;
+	showHelp: (file: string) => void;
 	beginCampaign: () => void;
 }
 
@@ -212,8 +213,14 @@ export class SetupScreen extends Component<Props, State> {
 								/>
 								: null
 						}
-						{this.props.options.developer && (this.props.game.heroes.length < 5) ? <button className='developer' onClick={this.createHeroes}>Randomize</button> : null}
-						{packsBtn}
+						<div>
+							{this.props.options.developer && (this.props.game.heroes.length < 5) ? <button className='developer randomize-btn' onClick={this.createHeroes}>Randomize</button> : null}
+							{packsBtn}
+							<button className='help-btn' title='Help' onClick={() => this.props.showHelp('setup')}>
+								<IconHelpCircle />
+								Help
+							</button>
+						</div>
 					</div>
 				</div>
 				{this.getDialog()}

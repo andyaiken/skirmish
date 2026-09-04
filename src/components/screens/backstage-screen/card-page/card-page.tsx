@@ -19,7 +19,7 @@ interface Props {
 }
 
 interface State {
-	selected: { name: string, description: string, type: CardType, starting: FeatureModel[], features: FeatureModel[], actions: ActionModel[] } | null;
+	selected: { name: string, description: string, type: CardType, starting: FeatureModel[], features: FeatureModel[], actions: ActionModel[], deathActions: ActionModel[] } | null;
 }
 
 export class CardPage extends Component<Props, State> {
@@ -30,7 +30,7 @@ export class CardPage extends Component<Props, State> {
 		};
 	}
 
-	setActions = (name: string, description: string, type: CardType, starting: FeatureModel[], features: FeatureModel[], actions: ActionModel[]) => {
+	setActions = (name: string, description: string, type: CardType, starting: FeatureModel[], features: FeatureModel[], actions: ActionModel[], deathActions: ActionModel[]) => {
 		this.setState({
 			selected: {
 				name: name,
@@ -38,7 +38,8 @@ export class CardPage extends Component<Props, State> {
 				type: type,
 				starting: starting,
 				features: features,
-				actions: actions
+				actions: actions,
+				deathActions: deathActions
 			}
 		});
 	};
@@ -99,7 +100,11 @@ export class CardPage extends Component<Props, State> {
 						const strength = GameLogic.getSpeciesStrength(s);
 						const className = this.getMarked(s, strength, 4, 6) ? 'card-btn danger' : 'card-btn';
 						return (
-							<button key={s.id} className={className} onClick={() => this.setActions(s.name, s.description, CardType.Species, s.startingFeatures, s.features, s.actions)}>
+							<button
+								key={s.id}
+								className={className}
+								onClick={() => this.setActions(s.name, s.description, CardType.Species, s.startingFeatures, s.features, s.actions, s.deathActions)}
+							>
 								<StatValue label={s.name} value={strength} />
 							</button>
 						);
@@ -110,7 +115,11 @@ export class CardPage extends Component<Props, State> {
 						const strength = GameLogic.getSpeciesStrength(s);
 						const className = this.getMarked(s, strength, 4, 6) ? 'card-btn danger' : 'card-btn';
 						return (
-							<button key={s.id} className={className} onClick={() => this.setActions(s.name, s.description, CardType.Species, s.startingFeatures, s.features, s.actions)}>
+							<button
+								key={s.id}
+								className={className}
+								onClick={() => this.setActions(s.name, s.description, CardType.Species, s.startingFeatures, s.features, s.actions, s.deathActions)}
+							>
 								<StatValue label={s.name} value={strength} />
 							</button>
 						);
@@ -121,7 +130,7 @@ export class CardPage extends Component<Props, State> {
 						const strength = GameLogic.getRoleStrength(r);
 						const className = this.getMarked(r, strength, 4, 6) ? 'card-btn danger' : 'card-btn';
 						return (
-							<button key={r.id} className={className} onClick={() => this.setActions(r.name, r.description, CardType.Species, r.startingFeatures, r.features, r.actions)}>
+							<button key={r.id} className={className} onClick={() => this.setActions(r.name, r.description, CardType.Species, r.startingFeatures, r.features, r.actions, [])}>
 								<StatValue label={r.name} value={strength} />
 							</button>
 						);
@@ -132,7 +141,7 @@ export class CardPage extends Component<Props, State> {
 						const strength = GameLogic.getBackgroundStrength(b);
 						const className = this.getMarked(b, strength, 3, 4) ? 'card-btn danger' : 'card-btn';
 						return (
-							<button key={b.id} className={className} onClick={() => this.setActions(b.name, b.description, CardType.Species, b.startingFeatures, b.features, b.actions)}>
+							<button key={b.id} className={className} onClick={() => this.setActions(b.name, b.description, CardType.Species, b.startingFeatures, b.features, b.actions, [])}>
 								<StatValue label={b.name} value={strength} />
 							</button>
 						);
@@ -247,6 +256,19 @@ export class CardPage extends Component<Props, State> {
 					</Badge>
 				);
 			});
+			const deathActionCards = this.state.selected.deathActions.map(a => {
+				const strength = GameLogic.getActionStrength(a);
+				return (
+					<Badge key={a.id} value={strength}>
+						<ActionCard
+							action={a}
+							developer={true}
+							footer={source}
+							footerType={type}
+						/>
+					</Badge>
+				);
+			});
 			const content = (
 				<div>
 					<Text type={TextType.Heading}>{this.state.selected.name}</Text>
@@ -263,6 +285,9 @@ export class CardPage extends Component<Props, State> {
 					{actionCards.length > 0 ? <hr /> : null}
 					{actionCards.length > 0 ? <Text type={TextType.SubHeading}>Action Cards</Text> : null}
 					{actionCards.length > 0 ? <CardList cards={actionCards} /> : null}
+					{deathActionCards.length > 0 ? <hr /> : null}
+					{deathActionCards.length > 0 ? <Text type={TextType.SubHeading}>Death Action Cards</Text> : null}
+					{deathActionCards.length > 0 ? <CardList cards={deathActionCards} /> : null}
 				</div>
 			);
 			dialog = (

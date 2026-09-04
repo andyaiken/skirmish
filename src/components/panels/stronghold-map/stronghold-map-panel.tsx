@@ -143,7 +143,7 @@ export class StrongholdMapPanel extends Component<Props> {
 
 		const streets = StrongholdMapLogic.getStreets(structures);
 
-		const secondsPerSquare = 3;
+		const secondsPerSquare = 5;
 
 		const seed = structures.map(s => s.id).join('-');
 

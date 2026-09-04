@@ -4,7 +4,7 @@
 static scrolls = (): PackModel => ({
     id: 'pack-ink-and-vellum',
     name: 'Ink and Vellum',
-    description: 'Power that anyone can use - provided they can read and only need it once.'
+    description: 'Scrolls are a power that anyone can use - once.'
 });
 ```
 
@@ -12,9 +12,8 @@ static scrolls = (): PackModel => ({
 
 ### Model
 
-Potions are `ItemModel` with a `potion: PotionModel | null` field holding
-`effects: ActionEffectModel[]`. Scrolls are the same idea one level up: an `ActionModel` rather than
-a bare effect list, because a scroll needs targeting.
+Potions are `ItemModel` with a `potion: PotionModel | null` field holding `effects: ActionEffectModel[]`.
+Scrolls are the same idea one level up: an `ActionModel` rather than a bare effect list, because a scroll needs targeting.
 
 `src/models/item.ts`:
 
@@ -64,10 +63,10 @@ Then add `PackLogic.getScrolls(packID)` alongside `getPotions`, include it in
   parameters, so the UI must let the player select targets for a scroll the same way it does for a
   selected action.
 
-**The UI is the real work here.** Potions are used from the movement tab with no targeting. Scrolls
+**The UI is the real work here.** Potions are used from the potions tab with no targeting. Scrolls
 need the action-parameter flow in
 `components/screens/encounter-screen/action-controls/action-parameter/`. The simplest route is to
-treat reading a scroll as *selecting an action that is not in your deck* — push the scroll's action
+treat reading a scroll as *selecting an action that is not in your deck* — add the current hero's scrolls to the end of the action list, and when selected push the scroll's action
 into the current combatant's `combat.selectedAction` and let the existing machinery handle it, then
 consume the scroll when the action runs.
 
@@ -104,8 +103,6 @@ is access, not novelty — a warrior getting one casting of something a spellcas
 | Scroll of Binding | On hit, `MovementPenaltyCondition` at high rank |
 | Scroll of Summoning | `ActionEffects.summon(SummonType.Elemental)` |
 | Scroll of Recall | `ActionEffects.moveToTargetSquare()` |
-
-Nine is the same count as the potion pack, which is a reasonable size.
 
 ### Scribe (background)
 

@@ -27,31 +27,31 @@ import { PackLogic } from './pack-logic';
 
 export class GameLogic {
 	static getHeroSpeciesDeck = (packIDs: string[]) => {
-		return PackLogic.getAvailablePacks(packIDs).flatMap(p => PackLogic.getHeroSpecies(p.id));
+		return Collections.sort(PackLogic.getAvailablePacks(packIDs).flatMap(p => PackLogic.getHeroSpecies(p.id)), x => x.name);
 	};
 
 	static getMonsterSpeciesDeck = (packIDs: string[]) => {
-		return PackLogic.getAvailablePacks(packIDs).flatMap(p => PackLogic.getMonsterSpecies(p.id));
+		return Collections.sort(PackLogic.getAvailablePacks(packIDs).flatMap(p => PackLogic.getMonsterSpecies(p.id)), x => x.name);
 	};
 
 	static getRoleDeck = (packIDs: string[]) => {
-		return PackLogic.getAvailablePacks(packIDs).flatMap(p => PackLogic.getRoles(p.id));
+		return Collections.sort(PackLogic.getAvailablePacks(packIDs).flatMap(p => PackLogic.getRoles(p.id)), x => x.name);
 	};
 
 	static getBackgroundDeck = (packIDs: string[]) => {
-		return PackLogic.getAvailablePacks(packIDs).flatMap(p => PackLogic.getBackgrounds(p.id));
+		return Collections.sort(PackLogic.getAvailablePacks(packIDs).flatMap(p => PackLogic.getBackgrounds(p.id)), x => x.name);
 	};
 
 	static getItemDeck = (packIDs: string[]) => {
-		return PackLogic.getAvailablePacks(packIDs).flatMap(p => PackLogic.getItems(p.id));
+		return Collections.sort(PackLogic.getAvailablePacks(packIDs).flatMap(p => PackLogic.getItems(p.id)), x => x.name);
 	};
 
 	static getPotionDeck = (packIDs: string[]) => {
-		return PackLogic.getAvailablePacks(packIDs).flatMap(p => PackLogic.getPotions(p.id));
+		return Collections.sort(PackLogic.getAvailablePacks(packIDs).flatMap(p => PackLogic.getPotions(p.id)), x => x.name);
 	};
 
 	static getStructureDeck = (packIDs: string[]) => {
-		return PackLogic.getAvailablePacks(packIDs).flatMap(p => PackLogic.getStructures(p.id));
+		return Collections.sort(PackLogic.getAvailablePacks(packIDs).flatMap(p => PackLogic.getStructures(p.id)), x => x.name);
 	};
 
 	///////////////////////////////////////////////////////////////////////////
@@ -328,6 +328,7 @@ export class GameLogic {
 		value += Collections.sum(species.startingFeatures, feature => GameLogic.getFeatureStrength(feature)) + species.startingFeatures.length;
 		value += Collections.mean(species.features, feature => GameLogic.getFeatureStrength(feature)) + species.features.length;
 		value += Collections.mean(species.actions, action => GameLogic.getActionStrength(action)) + species.actions.length;
+		value += Collections.mean(species.deathActions, action => GameLogic.getActionStrength(action)) + species.deathActions.length;
 
 		return Math.round(value / 5);
 	};

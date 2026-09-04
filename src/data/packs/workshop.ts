@@ -79,7 +79,7 @@ export const workshop = (): PackModel => ({
 		{
 			id: 'species-automaton',
 			name: 'Automaton',
-			description: 'Brass and clockwork, built to hold a gun and told who to point it at.',
+			description: 'Brass and clockwork, built to hold a gun.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [],
@@ -157,7 +157,7 @@ export const workshop = (): PackModel => ({
 		{
 			id: 'species-powder-keg',
 			name: 'Powder Keg',
-			description: 'A walking barrel with a lit fuse. It does not expect to survive the encounter.',
+			description: 'A walking barrel with a lit fuse.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [
@@ -215,9 +215,17 @@ export const workshop = (): PackModel => ({
 						ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 2)
 					],
 					effects: [
-						ActionEffects.dealDamage(DamageType.Fire, 4),
-						ActionEffects.dealDamage(DamageType.Impact, 2),
-						ActionEffects.knockDown()
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Fire, 4),
+								ActionEffects.dealDamage(DamageType.Impact, 2),
+								ActionEffects.knockDown()
+							]
+						})
 					]
 				}
 			]

@@ -226,7 +226,7 @@ export const hellToPay = (): PackModel => ({
 		{
 			id: 'species-imp-swarm',
 			name: 'Imp Swarm',
-			description: 'Individually negligible, and never encountered individually.',
+			description: 'Individually negligible, but never encountered individually.',
 			type: CombatantType.Monster,
 			size: 2,
 			quirks: [
@@ -557,7 +557,7 @@ export const hellToPay = (): PackModel => ({
 		{
 			id: 'role-warlock',
 			name: 'Warlock',
-			description: 'Warlocks draw on a bargain they cannot break, and pay for every casting in their own blood.',
+			description: 'Warlocks, having made a bargain they cannot break, pay for every casting in their own blood.',
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('warlock-start-1', TraitType.Resolve, 1),
 				FeatureLogic.createSkillFeature('warlock-start-2', SkillType.Spellcasting, 2),

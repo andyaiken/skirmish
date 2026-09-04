@@ -26,7 +26,7 @@ export class StrongholdMapLogic {
 
 	// How far from the middle of the street a person's own lane can be. Half a
 	// square, less the clearance above, is the most that would be safe.
-	static laneWidth = 0.12;
+	static laneWidth = 0.15;
 
 	// How tightly people turn corners
 	static cornerRadius = 0.25;

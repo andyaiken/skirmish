@@ -20,7 +20,7 @@ export const guileAndCunning = (): PackModel => ({
 		{
 			id: 'species-doppelganger',
 			name: 'Doppelganger',
-			description: 'It wears the face of someone you trust, and it wants what they have.',
+			description: 'It wears the face of someone you trust.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [],
@@ -95,7 +95,7 @@ export const guileAndCunning = (): PackModel => ({
 		{
 			id: 'species-cutthroat',
 			name: 'Cutthroat',
-			description: 'A killer for hire, paid up front and in no hurry to be seen.',
+			description: 'A killer for hire, paid up front.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [],

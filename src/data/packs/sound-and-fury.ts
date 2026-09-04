@@ -5,7 +5,6 @@ import { ConditionLogic } from '../../logic/condition-logic';
 import { DamageCategoryType } from '../../enums/damage-category-type';
 import { DamageType } from '../../enums/damage-type';
 import { FeatureLogic } from '../../logic/feature-logic';
-import { ItemLocationType } from '../../enums/item-location-type';
 import { ItemProficiencyType } from '../../enums/item-proficiency-type';
 import { MovementType } from '../../enums/movement-type';
 import { PackModel } from '../../models/pack';
@@ -145,7 +144,7 @@ export const soundAndFury = (): PackModel => ({
 		{
 			id: 'species-siren',
 			name: 'Siren',
-			description: 'She is a long way off, and getting closer sounds like the only good idea you have ever had.',
+			description: 'Getting closer sounds like the only good idea you have ever had.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [],
@@ -455,23 +454,7 @@ export const soundAndFury = (): PackModel => ({
 			]
 		}
 	],
-	items: [
-		{
-			id: 'item-horn',
-			name: 'Horn',
-			description: 'A curved brass mouth, dented from use and audible a long way off.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.Implements,
-			location: ItemLocationType.Hand,
-			slots: 1,
-			weapon: null,
-			armor: null,
-			potion: null,
-			features: [],
-			actions: []
-		}
-	],
+	items: [],
 	potions: [],
 	structures: []
 });

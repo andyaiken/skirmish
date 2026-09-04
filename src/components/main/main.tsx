@@ -54,6 +54,8 @@ import './main.scss';
 import encounters from '../../assets/docs/encounters.md';
 import island from '../../assets/docs/island.md';
 import items from '../../assets/docs/items.md';
+import landing from '../../assets/docs/landing.md';
+import setup from '../../assets/docs/setup.md';
 import stronghold from '../../assets/docs/stronghold.md';
 import team from '../../assets/docs/team.md';
 
@@ -110,6 +112,12 @@ export class Main extends Component<Props, State> {
 		});
 		fetch(items).then(response => response.text()).then(text => {
 			rules['items'] = text;
+		});
+		fetch(landing).then(response => response.text()).then(text => {
+			rules['landing'] = text;
+		});
+		fetch(setup).then(response => response.text()).then(text => {
+			rules['setup'] = text;
 		});
 		fetch(stronghold).then(response => response.text()).then(text => {
 			rules['stronghold'] = text;
@@ -1561,6 +1569,7 @@ export class Main extends Component<Props, State> {
 						startCampaign={this.startCampaign}
 						continueCampaign={this.continueCampaign}
 						showPacks={this.showPacks}
+						showHelp={this.showHelp}
 					/>
 				);
 			case ScreenType.Setup:
@@ -1576,6 +1585,7 @@ export class Main extends Component<Props, State> {
 						pickUpItem={this.pickUpItem}
 						dropItem={this.dropItem}
 						showPacks={this.showPacks}
+						showHelp={this.showHelp}
 						beginCampaign={this.beginCampaign}
 					/>
 				);

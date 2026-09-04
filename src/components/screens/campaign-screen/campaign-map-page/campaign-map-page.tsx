@@ -75,6 +75,7 @@ export class CampaignMapPage extends Component<Props, State> {
 			return (
 				<div key={this.state.selectedRegion.id} className='sidebar'>
 					<div className='sidebar-section'>
+						{this.props.options.developer ? <button className='developer' onClick={() => this.conquer(this.state.selectedRegion as RegionModel)}>Conquer</button> : null}
 						{
 							canAttack ?
 								null :
@@ -82,7 +83,7 @@ export class CampaignMapPage extends Component<Props, State> {
 									<p><b>You can&apos;t attack {this.state.selectedRegion.name}</b> because it&apos;s not adjacent to your land.</p>
 									{
 										coastal ?
-											<p>It does have a coastline, so a <b>Shipyard</b> with a charge would let you reach it by sea.</p>
+											<p>It does have a coastline, so a <b>Shipyard</b> would let you reach it by sea.</p>
 											: null
 									}
 								</Text>
@@ -101,34 +102,41 @@ export class CampaignMapPage extends Component<Props, State> {
 								</Text>
 								: null
 						}
-						{canAttack && heroesExist ? <button className='primary' onClick={() => this.setState({ showHeroSelection: true })}>Start an encounter</button> : null}
 						{
-							canAttack ?
-								<button disabled={!canPurchase} onClick={() => this.purchase(this.state.selectedRegion as RegionModel)}>
-									<div>Buy this region</div>
-									<IconValue type={IconType.Money} value={price} size={IconSize.Button} />
-								</button>
+							canAttack && heroesExist ?
+								<>
+									<Text>
+										If you take control of <b>{this.state.selectedRegion.name}</b> (by winning <b>{encounters}</b>) you can recruit a new hero, and you will receive a reward.
+									</Text>
+									<button className='primary' onClick={() => this.setState({ showHeroSelection: true })}>Start an encounter</button>
+								</>
 								: null
 						}
-						{this.props.options.developer ? <button className='developer' onClick={() => this.conquer(this.state.selectedRegion as RegionModel)}>Conquer</button> : null}
-						<Text>
-							If you take control of <b>{this.state.selectedRegion.name}</b> (by winning <b>{encounters}</b>) you can recruit a new hero, and you will receive a reward.
-						</Text>
-						<Text>
-							<p>
-								You can also buy <b>{this.state.selectedRegion.name}</b> outright, which earns you the same reward without a fight.
-							</p>
-							<p>
-								The price depends on how much of the region is left to conquer and on how many people live there; your most persuasive hero talks it down.
-							</p>
-							{
-								guildhall ?
-									<p>
-										Your <b>Guildhall</b> has taken a quarter off the price shown. Buying the region will use one of its charges.
-									</p>
-									: null
-							}
-						</Text>
+						{
+							canAttack ?
+								<>
+									<Text>
+										<p>
+											You can also buy <b>{this.state.selectedRegion.name}</b> outright, which earns you the same reward without a fight.
+										</p>
+										<p>
+											The price depends on how much of the region is left to conquer and on how many people live there; your most persuasive hero talks it down.
+										</p>
+										{
+											guildhall ?
+												<p>
+													Your <b>Guildhall</b> has taken a quarter off the price shown. Buying the region will use one of its charges.
+												</p>
+												: null
+										}
+									</Text>
+									<button disabled={!canPurchase} onClick={() => this.purchase(this.state.selectedRegion as RegionModel)}>
+										<div>Buy this region</div>
+										<IconValue type={IconType.Money} value={price} size={IconSize.Button} />
+									</button>
+								</>
+								: null
+						}
 					</div>
 					<div className='sidebar-section'>
 						<CardList cards={[ <RegionCard key='region' map={this.props.game.map} region={this.state.selectedRegion} options={this.props.options} /> ]} />

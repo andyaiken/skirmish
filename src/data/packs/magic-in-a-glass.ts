@@ -99,7 +99,7 @@ export const magicInAGlass = (): PackModel => ({
 		{
 			id: 'species-homunculus',
 			name: 'Homunculus',
-			description: 'Knee-high, quick, and never encountered alone.',
+			description: 'Knee-high, quick, and seldom encountered alone.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [

@@ -17,7 +17,7 @@ import { TraitType } from '../../enums/trait-type';
 export const illHumours = (): PackModel => ({
 	id: 'pack-ill-humours',
 	name: 'Ill Humours',
-	description: 'Some things are cured. Others are merely passed on.',
+	description: 'Curing and infecting are two sides of the same coin.',
 	species: [
 		{
 			id: 'species-ooze',
@@ -86,7 +86,7 @@ export const illHumours = (): PackModel => ({
 		{
 			id: 'species-grub-swarm',
 			name: 'Grub Swarm',
-			description: 'A seething mass of pale grubs that were feeding on something else until recently.',
+			description: 'A seething mass of pale grubs.',
 			type: CombatantType.Monster,
 			size: 2,
 			quirks: [
@@ -178,7 +178,9 @@ export const illHumours = (): PackModel => ({
 							trait: TraitType.Endurance,
 							skillBonus: 0,
 							hit: [
-								ActionEffects.addCondition(ConditionLogic.createDamageCategoryVulnerabilityCondition(TraitType.Endurance, 4, DamageCategoryType.Corruption))
+								ActionEffects.addCondition(
+									ConditionLogic.makeContagious(ConditionLogic.createDamageCategoryVulnerabilityCondition(TraitType.Endurance, 4, DamageCategoryType.Corruption))
+								)
 							]
 						})
 					]
@@ -189,7 +191,7 @@ export const illHumours = (): PackModel => ({
 		{
 			id: 'species-plague-doctor',
 			name: 'Plague Doctor',
-			description: 'The beaked mask keeps the bad air out, and keeps the face behind it hidden.',
+			description: 'The beaked mask keeps the bad air out.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [],
@@ -263,7 +265,7 @@ export const illHumours = (): PackModel => ({
 		{
 			id: 'role-alchemist',
 			name: 'Alchemist',
-			description: 'Alchemists throw the things that other people are careful to carry.',
+			description: 'Alchemists throw the things that other people refuse to even carry.',
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('alchemist-start-1', TraitType.Resolve, 1),
 				FeatureLogic.createSkillFeature('alchemist-start-2', SkillType.Spellcasting, 2),
@@ -383,7 +385,7 @@ export const illHumours = (): PackModel => ({
 		{
 			id: 'role-plaguebearer',
 			name: 'Plaguebearer',
-			description: 'Plaguebearers do not kill anybody quickly, and do not need to.',
+			description: 'Plaguebearers rarely kill anyone quickly.',
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('plaguebearer-start-1', TraitType.Endurance, 1),
 				FeatureLogic.createSkillFeature('plaguebearer-start-2', SkillType.Spellcasting, 2),

@@ -117,7 +117,7 @@ export class ActionPrerequisites {
 		return {
 			id: 'condition',
 			description: trait === TraitType.Any ? 'Requires you to have a condition': `Requires you to have a ${trait} condition`,
-			data: null
+			data: trait
 		};
 	};
 
@@ -954,9 +954,11 @@ export class ActionEffects {
 					const targetIDs = targetParameter.value as string[];
 					targetIDs.forEach(id => {
 						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
-						const t = trait === TraitType.Any ? Collections.draw([ TraitType.Endurance, TraitType.Resolve, TraitType.Speed ]) : trait;
+						// Any means any: this used to draw one of the three traits at random and
+						// then look only at that one, so a card promising to remove a condition
+						// removed nothing about two times in three
 						const conditions = target.combat.conditions
-							.filter(condition => condition.trait === t)
+							.filter(condition => (trait === TraitType.Any) || (condition.trait === trait))
 							.filter(condition => ConditionLogic.getConditionIsBeneficial(condition) === (combatant.faction !== target.faction));
 						if (conditions.length !== 0) {
 							const maxRank = Math.max(...conditions.map(c => c.rank));

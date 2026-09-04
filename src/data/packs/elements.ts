@@ -1,4 +1,4 @@
-import { ActionEffects, ActionOriginParameters, ActionPrerequisites, ActionTargetParameters } from '../../logic/action/action-logic';
+import { ActionEffects, ActionOriginParameters, ActionPrerequisites, ActionTargetParameters, ActionWeaponParameters } from '../../logic/action/action-logic';
 import { ActionTargetType } from '../../enums/action-target-type';
 import { CombatantType } from '../../enums/combatant-type';
 import { ConditionLogic } from '../../logic/condition/condition-logic';
@@ -322,6 +322,119 @@ export const elements = (): PackModel => ({
 		}
 	],
 	roles: [
+		{
+			id: 'role-stormcaller',
+			name: 'Stormcaller',
+			description: 'Weather, brought indoors and pointed at someone.',
+			startingFeatures: [
+				FeatureLogic.createTraitFeature('stormcaller-start-1', TraitType.Endurance, 1),
+				FeatureLogic.createSkillFeature('stormcaller-start-2', SkillType.Spellcasting, 2),
+				FeatureLogic.createProficiencyFeature('stormcaller-start-3', ItemProficiencyType.LargeWeapons),
+				FeatureLogic.createProficiencyFeature('stormcaller-start-4', ItemProficiencyType.LightArmor)
+			],
+			features: [
+				FeatureLogic.createTraitFeature('stormcaller-feature-1', TraitType.Endurance, 1),
+				FeatureLogic.createSkillFeature('stormcaller-feature-2', SkillType.Spellcasting, 2),
+				FeatureLogic.createDamageBonusFeature('stormcaller-feature-3', DamageType.Impact, 1),
+				FeatureLogic.createDamageBonusFeature('stormcaller-feature-4', DamageType.Electricity, 1)
+			],
+			actions: [
+				{
+					id: 'stormcaller-action-1',
+					name: 'Downburst',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 1)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Spellcasting,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Impact, 3),
+								ActionEffects.knockDown()
+							]
+						})
+					]
+				},
+				{
+					id: 'stormcaller-action-2',
+					name: 'Lightning Strike',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 6)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Spellcasting,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Electricity, 5)
+							]
+						})
+					]
+				},
+				{
+					id: 'stormcaller-action-3',
+					name: 'Forked Bolt',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 3, 5)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Spellcasting,
+							trait: TraitType.Speed,
+							skillBonus: -1,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Electricity, 2)
+							]
+						})
+					]
+				},
+				{
+					id: 'stormcaller-action-4',
+					name: 'Storm Hammer',
+					prerequisites: [
+						ActionPrerequisites.meleeWeapon()
+					],
+					parameters: [
+						ActionWeaponParameters.melee(),
+						ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: true,
+							skill: SkillType.Weapon,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealWeaponDamage(),
+								ActionEffects.dealDamage(DamageType.Impact, 2),
+								ActionEffects.forceMovement(MovementType.Push, 2)
+							]
+						})
+					]
+				},
+				{
+					id: 'stormcaller-action-5',
+					name: 'Gathering Front',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.self()
+					],
+					effects: [
+						ActionEffects.addCondition(ConditionLogic.createDamageBonusCondition(TraitType.Endurance, 4, DamageType.Impact)),
+						ActionEffects.addCondition(ConditionLogic.createDamageBonusCondition(TraitType.Endurance, 4, DamageType.Electricity))
+					]
+				}
+			]
+		},
 		{
 			id: 'role-elementalist',
 			name: 'Elementalist',

@@ -19,7 +19,11 @@ export class TrapData {
 			TrapType.Spike,
 			TrapType.Fire,
 			TrapType.PoisonGas,
-			TrapType.AcidDart
+			TrapType.AcidDart,
+			TrapType.Snare,
+			TrapType.Frost,
+			TrapType.Shock,
+			TrapType.Alarm
 		];
 	};
 
@@ -33,6 +37,14 @@ export class TrapData {
 				return 'Gas Vent';
 			case TrapType.AcidDart:
 				return 'Dart Trap';
+			case TrapType.Snare:
+				return 'Snare';
+			case TrapType.Frost:
+				return 'Frost Glyph';
+			case TrapType.Shock:
+				return 'Shock Plate';
+			case TrapType.Alarm:
+				return 'Alarm Ward';
 		}
 	};
 
@@ -46,6 +58,14 @@ export class TrapData {
 				return 'A hairline crack in the floor, breathing something sour.';
 			case TrapType.AcidDart:
 				return 'A row of holes at ankle height, and something waiting behind them.';
+			case TrapType.Snare:
+				return 'A noose of braided wire, lying slack under a scatter of leaves.';
+			case TrapType.Frost:
+				return 'A sigil cut into the flagstones, rimed white at its edges.';
+			case TrapType.Shock:
+				return 'Two brass strips set a hand\'s width apart, humming to each other.';
+			case TrapType.Alarm:
+				return 'A thread across the doorway, and a bell somewhere out of sight.';
 		}
 	};
 
@@ -69,6 +89,28 @@ export class TrapData {
 				return [
 					ActionEffects.dealDamage(DamageType.Acid, 4),
 					ActionEffects.addCondition(ConditionLogic.createDamageCategoryVulnerabilityCondition(TraitType.Endurance, 4, DamageCategoryType.Corruption))
+				];
+			// The snare deals no damage at all; it is the trap you set to stop someone leaving
+			case TrapType.Snare:
+				return [
+					ActionEffects.knockDown(),
+					ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Speed, 5))
+				];
+			case TrapType.Frost:
+				return [
+					ActionEffects.dealDamage(DamageType.Cold, 4),
+					ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Speed, 4, TraitType.Speed))
+				];
+			case TrapType.Shock:
+				return [
+					ActionEffects.dealDamage(DamageType.Electricity, 4),
+					ActionEffects.stun()
+				];
+			// The alarm is worth almost nothing as damage; what it costs you is your hiding place
+			case TrapType.Alarm:
+				return [
+					ActionEffects.dealDamage(DamageType.Sonic, 1),
+					ActionEffects.reveal()
 				];
 		}
 	};

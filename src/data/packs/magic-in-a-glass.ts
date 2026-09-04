@@ -298,6 +298,32 @@ export const magicInAGlass = (): PackModel => ({
 					effects: [
 						ActionEffects.createPotion('potion-quickness')
 					]
+				},
+				{
+					id: 'apothecary-action-10',
+					name: 'Create Antidote',
+					prerequisites: [
+						ActionPrerequisites.carryingCapacity()
+					],
+					parameters: [
+						ActionTargetParameters.self()
+					],
+					effects: [
+						ActionEffects.createPotion('potion-antidote')
+					]
+				},
+				{
+					id: 'apothecary-action-11',
+					name: 'Create Draught of Swiftness',
+					prerequisites: [
+						ActionPrerequisites.carryingCapacity()
+					],
+					parameters: [
+						ActionTargetParameters.self()
+					],
+					effects: [
+						ActionEffects.createPotion('potion-swiftness')
+					]
 				}
 			]
 		}
@@ -435,7 +461,7 @@ export const magicInAGlass = (): PackModel => ({
 		{
 			id: 'potion-strength',
 			name: 'Brew of Strength',
-			description: 'A glass vial filled with a vaprous brown liquid.',
+			description: 'A glass vial filled with a vaporous brown liquid.',
 			baseItem: '',
 			magic: false,
 			proficiency: ItemProficiencyType.None,
@@ -486,6 +512,53 @@ export const magicInAGlass = (): PackModel => ({
 			potion: {
 				effects: [
 					ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Resolve, 5, TraitType.Speed))
+				]
+			},
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'potion-antidote',
+			name: 'Antidote',
+			description: 'A glass vial filled with a cloudy grey liquid.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.None,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: {
+				// One removeCondition takes the worst condition off you; an antidote should clear
+				// what ails you, so it names each trait in turn
+				effects: [
+					ActionEffects.removeCondition(TraitType.Endurance),
+					ActionEffects.removeCondition(TraitType.Resolve),
+					ActionEffects.removeCondition(TraitType.Speed)
+				]
+			},
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'potion-swiftness',
+			name: 'Draught of Swiftness',
+			description: 'A glass vial filled with a restless silver liquid.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.None,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: {
+				// Brew of Quickness raises the Speed trait; this one buys distance on the turn you
+				// drink it, which is what you want when you are caught out of position
+				effects: [
+					ActionEffects.addCondition(ConditionLogic.createMovementBonusCondition(TraitType.Resolve, 5)),
+					ActionEffects.addMovement()
 				]
 			},
 			scroll: null,

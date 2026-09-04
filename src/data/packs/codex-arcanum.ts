@@ -22,6 +22,84 @@ export const codexArcanum = (): PackModel => ({
 	description: 'Discover new ways to channel magic with the cards in this pack.',
 	species: [
 		{
+			id: 'species-wyrdling',
+			name: 'Wyrdling',
+			description: 'A creature born in the middle of someone else\'s spell.',
+			type: CombatantType.Hero,
+			size: 1,
+			quirks: [],
+			startingFeatures: [
+				FeatureLogic.createTraitFeature('wyrdling-start-1', TraitType.Resolve, 1),
+				FeatureLogic.createSkillFeature('wyrdling-start-2', SkillType.Spellcasting, 2),
+				FeatureLogic.createDamageCategoryResistFeature('wyrdling-start-3', DamageCategoryType.Energy, 1)
+			],
+			features: [
+				FeatureLogic.createTraitFeature('wyrdling-feature-1', TraitType.Resolve, 1),
+				FeatureLogic.createSkillFeature('wyrdling-feature-2', SkillType.Spellcasting, 2),
+				FeatureLogic.createDamageCategoryResistFeature('wyrdling-feature-3', DamageCategoryType.Energy, 1),
+				// Magic is easier to work near a wyrdling; no other card in the game has an aura
+				// that moves a skill
+				FeatureLogic.createAuraSkillFeature('wyrdling-feature-4', ConditionType.SkillBonus, SkillType.Spellcasting, 2)
+			],
+			actions: [
+				{
+					// Every other caster in the game is gated on holding an implement, and so can be
+					// disarmed out of the fight; a wyrdling carries the spell rather than the focus
+					id: 'wyrdling-action-1',
+					name: 'Raw Magic',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Spellcasting,
+							trait: TraitType.Resolve,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Psychic, 3)
+							]
+						})
+					]
+				},
+				{
+					// The reward for holding nothing at all
+					id: 'wyrdling-action-2',
+					name: 'Bare Channel',
+					prerequisites: [
+						ActionPrerequisites.emptyHand()
+					],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Spellcasting,
+							trait: TraitType.Resolve,
+							skillBonus: 1,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Psychic, 5)
+							]
+						})
+					]
+				},
+				{
+					id: 'wyrdling-action-3',
+					name: 'Thin the Veil',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Allies, 1, 5)
+					],
+					effects: [
+						ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Resolve, 4, SkillType.Spellcasting))
+					]
+				}
+			],
+			deathActions: []
+		},
+		{
 			id: 'species-animated-object',
 			name: 'Animated Object',
 			description: 'A walking statue, or a suit of armour with no-one inside it.',
@@ -403,7 +481,7 @@ export const codexArcanum = (): PackModel => ({
 				},
 				{
 					id: 'geomancer-action-5',
-					name: 'Earthbind',
+					name: 'Quagmire',
 					prerequisites: [
 						ActionPrerequisites.implement()
 					],
@@ -425,7 +503,7 @@ export const codexArcanum = (): PackModel => ({
 				},
 				{
 					id: 'geomancer-action-6',
-					name: 'Rockblast',
+					name: 'Hurl Stone',
 					prerequisites: [
 						ActionPrerequisites.implement()
 					],
@@ -513,7 +591,7 @@ export const codexArcanum = (): PackModel => ({
 				},
 				{
 					id: 'psion-action-4',
-					name: 'Dishearten',
+					name: 'Enervate',
 					prerequisites: [],
 					parameters: [
 						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 8)

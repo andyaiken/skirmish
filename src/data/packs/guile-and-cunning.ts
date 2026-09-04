@@ -495,7 +495,43 @@ export const guileAndCunning = (): PackModel => ({
 						ActionTargetParameters.adjacent(ActionTargetType.Squares, 1)
 					],
 					effects: [
+						ActionEffects.placeTrap(TrapType.Snare),
+						ActionEffects.takeAnotherAction()
+					]
+				},
+				{
+					id: 'trapper-action-5',
+					name: 'Dig a Pit',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Squares, 1)
+					],
+					effects: [
 						ActionEffects.placeTrap(TrapType.Spike),
+						ActionEffects.takeAnotherAction()
+					]
+				},
+				{
+					id: 'trapper-action-6',
+					name: 'Set Alarm',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Squares, 1)
+					],
+					effects: [
+						ActionEffects.placeTrap(TrapType.Alarm),
+						ActionEffects.takeAnotherAction()
+					]
+				},
+				{
+					id: 'trapper-action-7',
+					name: 'Rig a Dart Trap',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Squares, 1)
+					],
+					effects: [
+						ActionEffects.placeTrap(TrapType.AcidDart),
 						ActionEffects.takeAnotherAction()
 					]
 				},

@@ -473,7 +473,7 @@ export class CombatantLogic {
 			.filter(c => (c.details.skillCategory === GameLogic.getSkillCategory(skill)) || (c.details.skillCategory === SkillCategoryType.All))
 			.forEach(c => value += c.rank);
 		conditions.filter(c => c.type === ConditionType.SkillPenalty)
-			.filter(c => (c.details.skill === skill) || (c.details.trait === TraitType.All))
+			.filter(c => (c.details.skill === skill) || (c.details.skill === SkillType.All))
 			.forEach(c => value -= c.rank);
 		conditions.filter(c => c.type === ConditionType.SkillCategoryPenalty)
 			.filter(c => (c.details.skillCategory === GameLogic.getSkillCategory(skill)) || (c.details.skillCategory === SkillCategoryType.All))

@@ -532,6 +532,27 @@ export const deepWater = (): PackModel => ({
 							]
 						})
 					]
+				},
+				{
+					id: 'corsair-action-6',
+					name: 'Harpoon',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Reactions,
+							trait: TraitType.Speed,
+							skillBonus: -1,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Piercing, 3),
+								ActionEffects.forceMovement(MovementType.Pull, 3),
+								ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Speed, 4))
+							]
+						})
+					]
 				}
 			]
 		},

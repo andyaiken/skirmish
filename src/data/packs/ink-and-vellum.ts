@@ -6,12 +6,14 @@ import { DamageType } from '../../enums/damage-type';
 import { FeatureLogic } from '../../logic/feature/feature-logic';
 import { ItemLocationType } from '../../enums/item-location-type';
 import { ItemProficiencyType } from '../../enums/item-proficiency-type';
+import { MovementType } from '../../enums/movement-type';
 import { PackModel } from '../../models/pack';
 import { SkillCategoryType } from '../../enums/skill-category-type';
 import { SkillType } from '../../enums/skill-type';
 import { StructureType } from '../../enums/structure-type';
 import { SummonType } from '../../enums/summon-type';
 import { TraitType } from '../../enums/trait-type';
+import { TrapType } from '../../enums/trap-type';
 
 export const inkAndVellum = (): PackModel => ({
 	id: 'pack-ink-and-vellum',
@@ -416,6 +418,129 @@ export const inkAndVellum = (): PackModel => ({
 					],
 					effects: [
 						ActionEffects.addCondition(ConditionLogic.createDamageCategoryResistanceCondition(TraitType.Resolve, 5, DamageCategoryType.Any))
+					]
+				}
+			},
+			features: [],
+			actions: []
+		},
+		{
+			id: 'scroll-frost',
+			name: 'Scroll of Frost',
+			description: 'A stiff sheet of vellum that never quite thaws.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.None,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			scroll: {
+				action: {
+					id: 'scroll-action-frost',
+					name: 'Scroll of Frost',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 2)
+					],
+					effects: [
+						ActionEffects.dealDamage(DamageType.Cold, 3),
+						ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 4, TraitType.Speed))
+					]
+				}
+			},
+			features: [],
+			actions: []
+		},
+		{
+			id: 'scroll-thunder',
+			name: 'Scroll of Thunder',
+			description: 'A sheet of vellum that rattles in a still room.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.None,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			scroll: {
+				action: {
+					id: 'scroll-action-thunder',
+					name: 'Scroll of Thunder',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 2)
+					],
+					effects: [
+						ActionEffects.dealDamage(DamageType.Sonic, 3),
+						ActionEffects.forceMovement(MovementType.Push, 3),
+						ActionEffects.knockDown()
+					]
+				}
+			},
+			features: [],
+			actions: []
+		},
+		{
+			id: 'scroll-compulsion',
+			name: 'Scroll of Compulsion',
+			description: 'A page written in the second person, in a hand you half recognise.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.None,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			scroll: {
+				action: {
+					id: 'scroll-action-compulsion',
+					name: 'Scroll of Compulsion',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Spellcasting,
+							trait: TraitType.Resolve,
+							skillBonus: 3,
+							hit: [
+								ActionEffects.commandMove()
+							]
+						})
+					]
+				}
+			},
+			features: [],
+			actions: []
+		},
+		{
+			id: 'scroll-snares',
+			name: 'Scroll of Snares',
+			description: 'A page of knotwork that is unpleasant to follow with the eye.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.None,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			scroll: {
+				action: {
+					id: 'scroll-action-snares',
+					name: 'Scroll of Snares',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Squares, 3, 4)
+					],
+					effects: [
+						ActionEffects.placeTrap(TrapType.Snare)
 					]
 				}
 			},

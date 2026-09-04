@@ -552,6 +552,7 @@ export const illHumours = (): PackModel => ({
 	],
 	items: [],
 	potions: [],
+	scrolls: [],
 	structures: [
 		{
 			id: 'structure-sanatorium',

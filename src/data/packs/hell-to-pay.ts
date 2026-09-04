@@ -727,5 +727,6 @@ export const hellToPay = (): PackModel => ({
 	],
 	items: [],
 	potions: [],
+	scrolls: [],
 	structures: []
 });

@@ -34,14 +34,14 @@ import { EncounterLogLogic } from '../../../logic/encounter-log-logic';
 import { EncounterLogic } from '../../../logic/encounter-logic';
 
 import type { ActionModel, ActionOriginParameterModel, ActionParameterModel, ActionTargetParameterModel } from '../../../models/action';
-import type { EncounterModel, LogMessageModel, LootPileModel } from '../../../models/encounter';
+import type { EncounterModel, LogMessageModel, LootPileModel, TrapModel } from '../../../models/encounter';
 import type { CombatantModel } from '../../../models/combatant';
 import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
 import type { OptionsModel } from '../../../models/options';
 
 import { CardList, Dialog, IconSize, IconType, IconValue, PlayingCard, StatValue, Tabs, Text, TextType } from '../../controls';
-import { CombatantRowPanel, EncounterLogPanel, EncounterMapPanel, InitiativeListPanel, LogoPanel, TreasureRowPanel } from '../../panels';
+import { CombatantRowPanel, EncounterLogPanel, EncounterMapPanel, InitiativeListPanel, LogoPanel, TrapRowPanel, TreasureRowPanel } from '../../panels';
 import { ItemCard, PlaceholderCard } from '../../cards';
 import { ActionControls } from './action-controls/action-controls';
 import { CharacterSheetModal } from '../../modals';
@@ -100,9 +100,11 @@ interface State {
 	selectedActionParameter: ActionParameterModel | null;
 	selectableCombatantIDs: string[];
 	selectableLootIDs: string[];
+	selectableTrapIDs: string[];
 	selectableSquares: { x: number, y: number }[];
 	selectedCombatantIDs: string[];
 	selectedLootIDs: string[];
+	selectedTrapIDs: string[];
 	selectedSquares: { x: number, y: number }[];
 	manualEncounterState: EncounterState;
 	detailsCombatant: CombatantModel | null;
@@ -122,9 +124,11 @@ export class EncounterScreen extends Component<Props, State> {
 			selectedActionParameter: null,
 			selectableCombatantIDs: [],
 			selectableLootIDs: [],
+			selectableTrapIDs: [],
 			selectableSquares: [],
 			selectedCombatantIDs: [],
 			selectedLootIDs: [],
+			selectedTrapIDs: [],
 			selectedSquares: [],
 			manualEncounterState: EncounterState.Active,
 			detailsCombatant: null,
@@ -267,6 +271,7 @@ export class EncounterScreen extends Component<Props, State> {
 					selectedActionParameter: parameter,
 					selectedCombatantIDs: ids,
 					selectedLootIDs: [],
+					selectedTrapIDs: [],
 					selectedSquares: []
 				}, () => {
 					this.props.setActionParameterValue(parameter, ids);
@@ -277,6 +282,7 @@ export class EncounterScreen extends Component<Props, State> {
 				selectedActionParameter: parameter,
 				selectedCombatantIDs: [ combatant.id ],
 				selectedLootIDs: [],
+				selectedTrapIDs: [],
 				selectedSquares: []
 			});
 		} else {
@@ -284,6 +290,7 @@ export class EncounterScreen extends Component<Props, State> {
 				selectedActionParameter: parameter,
 				selectedCombatantIDs: [],
 				selectedLootIDs: [],
+				selectedTrapIDs: [],
 				selectedSquares: []
 			});
 		}
@@ -293,6 +300,54 @@ export class EncounterScreen extends Component<Props, State> {
 		this.setState({
 			selectedCombatantIDs: [],
 			selectedLootIDs: [ loot.id ],
+			selectedTrapIDs: [],
+			selectedSquares: []
+		});
+	};
+
+	selectTrap = (trap: TrapModel) => {
+		const parameter = this.state.selectedActionParameter;
+		if (parameter) {
+			let usesTrapIDs = false;
+			let count = Number.MAX_VALUE;
+			if (parameter.id === 'targets') {
+				const targetParam = parameter as ActionTargetParameterModel;
+				if (targetParam.targets && (targetParam.targets.type === ActionTargetType.Traps)) {
+					usesTrapIDs = true;
+					count = targetParam.targets.count;
+				}
+			}
+
+			if (usesTrapIDs) {
+				let ids = this.state.selectedTrapIDs;
+				if (ids.includes(trap.id)) {
+					ids = ids.filter(id => id !== trap.id);
+				} else if (count === 1) {
+					ids = [ trap.id ];
+				} else if (ids.length < count) {
+					ids.push(trap.id);
+				}
+
+				parameter.value = ids;
+
+				this.setState({
+					selectedActionParameter: parameter,
+					selectedCombatantIDs: [],
+					selectedLootIDs: [],
+					selectedTrapIDs: ids,
+					selectedSquares: []
+				}, () => {
+					this.props.setActionParameterValue(parameter, ids);
+				});
+
+				return;
+			}
+		}
+
+		this.setState({
+			selectedCombatantIDs: [],
+			selectedLootIDs: [],
+			selectedTrapIDs: [ trap.id ],
 			selectedSquares: []
 		});
 	};
@@ -346,6 +401,7 @@ export class EncounterScreen extends Component<Props, State> {
 					selectedActionParameter: parameter,
 					selectedCombatantIDs: [],
 					selectedLootIDs: [],
+					selectedTrapIDs: [],
 					selectedSquares: squares
 				}, () => {
 					this.props.setActionParameterValue(parameter, squares);
@@ -356,6 +412,7 @@ export class EncounterScreen extends Component<Props, State> {
 				selectedActionParameter: parameter,
 				selectedCombatantIDs: [],
 				selectedLootIDs: [],
+				selectedTrapIDs: [],
 				selectedSquares: [ square ]
 			});
 		}
@@ -367,12 +424,14 @@ export class EncounterScreen extends Component<Props, State> {
 				selectedActionParameter: null,
 				selectableCombatantIDs: [],
 				selectableLootIDs: [],
+				selectableTrapIDs: [],
 				selectableSquares: []
 			});
 		} else {
 			this.setState({
 				selectedCombatantIDs: [],
 				selectedLootIDs: [],
+				selectedTrapIDs: [],
 				selectedSquares: []
 			});
 		}
@@ -418,6 +477,7 @@ export class EncounterScreen extends Component<Props, State> {
 		this.setState({
 			selectedCombatantIDs: [],
 			selectedLootIDs: [],
+			selectedTrapIDs: [],
 			selectedSquares: []
 		}, () => {
 			this.props.selectAction(encounter, combatant, action);
@@ -430,12 +490,15 @@ export class EncounterScreen extends Component<Props, State> {
 				selectedActionParameter: null,
 				selectableCombatantIDs: [],
 				selectableLootIDs: [],
+				selectableTrapIDs: [],
 				selectableSquares: []
 			});
 		} else {
 			let selectableCombatantIDs: string[] = [];
+			let selectableTrapIDs: string[] = [];
 			let selectableSquares: { x: number, y: number }[] = [];
 			let selectedCombatantIDs: string[] = [];
+			let selectedTrapIDs: string[] = [];
 			let selectedSquares: { x: number, y: number }[] = [];
 
 			switch (parameter.id) {
@@ -463,6 +526,10 @@ export class EncounterScreen extends Component<Props, State> {
 								selectableSquares = targetParam.candidates as { x: number, y: number }[] ?? [];
 								selectedSquares = targetParam.value as { x: number, y: number }[] ?? [];
 								break;
+							case ActionTargetType.Traps:
+								selectableTrapIDs = targetParam.candidates as string[];
+								selectedTrapIDs = targetParam.value as string[];
+								break;
 						}
 					}
 					break;
@@ -473,9 +540,11 @@ export class EncounterScreen extends Component<Props, State> {
 				selectedActionParameter: parameter,
 				selectableCombatantIDs: selectableCombatantIDs,
 				selectableLootIDs: [],
+				selectableTrapIDs: selectableTrapIDs,
 				selectableSquares: selectableSquares,
 				selectedCombatantIDs: selectedCombatantIDs,
 				selectedLootIDs: [],
+				selectedTrapIDs: selectedTrapIDs,
 				selectedSquares: selectedSquares
 			});
 		}
@@ -486,6 +555,7 @@ export class EncounterScreen extends Component<Props, State> {
 			selectedActionParameter: null,
 			selectableCombatantIDs: [],
 			selectableLootIDs: [],
+			selectableTrapIDs: [],
 			selectableSquares: [],
 			selectedSquares: []
 		}, () => {
@@ -498,6 +568,7 @@ export class EncounterScreen extends Component<Props, State> {
 			selectedActionParameter: null,
 			selectableCombatantIDs: [],
 			selectableLootIDs: [],
+			selectableTrapIDs: [],
 			selectableSquares: [],
 			selectedSquares: []
 		}, () => {
@@ -654,6 +725,21 @@ export class EncounterScreen extends Component<Props, State> {
 						<TreasureRowPanel
 							loot={loot}
 							onDetails={this.showDetailsLoot}
+							onCancel={this.clearSelection}
+						/>
+						{actionBtn}
+					</div>
+				);
+			}
+		}
+
+		if (this.state.selectedTrapIDs.length === 1) {
+			const trap = EncounterLogic.getTrap(this.props.encounter, this.state.selectedTrapIDs[0]);
+			if (trap) {
+				return (
+					<div className='encounter-top-panel'>
+						<TrapRowPanel
+							trap={trap}
 							onCancel={this.clearSelection}
 						/>
 						{actionBtn}
@@ -997,12 +1083,15 @@ export class EncounterScreen extends Component<Props, State> {
 									squareSize={this.state.mapSquareSize}
 									selectableCombatantIDs={this.state.selectableCombatantIDs}
 									selectableLootIDs={this.state.selectableLootIDs}
+									selectableTrapIDs={this.state.selectableTrapIDs}
 									selectableSquares={this.state.selectableSquares}
 									selectedCombatantIDs={this.state.selectedCombatantIDs}
 									selectedLootIDs={this.state.selectedLootIDs}
+									selectedTrapIDs={this.state.selectedTrapIDs}
 									selectedSquares={this.state.selectedSquares}
 									onClickCombatant={this.selectCombatant}
 									onClickLoot={this.selectLoot}
+									onClickTrap={this.selectTrap}
 									onClickSquare={this.selectSquare}
 									onClickOff={this.clearSelection}
 								/>
@@ -1036,12 +1125,15 @@ export class EncounterScreen extends Component<Props, State> {
 								squareSize={this.state.mapSquareSize}
 								selectableCombatantIDs={this.state.selectableCombatantIDs}
 								selectableLootIDs={this.state.selectableLootIDs}
+								selectableTrapIDs={this.state.selectableTrapIDs}
 								selectableSquares={this.state.selectableSquares}
 								selectedCombatantIDs={this.state.selectedCombatantIDs}
 								selectedLootIDs={this.state.selectedLootIDs}
+								selectedTrapIDs={this.state.selectedTrapIDs}
 								selectedSquares={this.state.selectedSquares}
 								onClickCombatant={this.selectCombatant}
 								onClickLoot={this.selectLoot}
+								onClickTrap={this.selectTrap}
 								onClickSquare={this.selectSquare}
 								onClickOff={this.clearSelection}
 							/>

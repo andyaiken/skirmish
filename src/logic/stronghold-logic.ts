@@ -93,8 +93,17 @@ export class StrongholdLogic {
 	static basePrices = {
 		mundane: 2,
 		potion: 20,
+		scroll: 30,
 		magic: 100,
 		structure: 50
+	};
+
+	// What the shops pay for something you no longer want
+	static salePrices = {
+		mundane: 1,
+		potion: 10,
+		scroll: 15,
+		magic: 50
 	};
 
 	// A Bazaar is permanent rather than charged - the traders know you, and go on knowing you - so
@@ -117,8 +126,25 @@ export class StrongholdLogic {
 		if (item.potion) {
 			return StrongholdLogic.getPrice(game, 'potion');
 		}
+		if (item.scroll) {
+			return StrongholdLogic.getPrice(game, 'scroll');
+		}
 
 		return StrongholdLogic.getPrice(game, 'mundane');
+	};
+
+	static getSalePrice = (item: ItemModel) => {
+		if (item.magic) {
+			return StrongholdLogic.salePrices.magic;
+		}
+		if (item.potion) {
+			return StrongholdLogic.salePrices.potion;
+		}
+		if (item.scroll) {
+			return StrongholdLogic.salePrices.scroll;
+		}
+
+		return StrongholdLogic.salePrices.mundane;
 	};
 
 	// Barracks and Warehouse come with the campaign and aren't benefits, so they're never offered

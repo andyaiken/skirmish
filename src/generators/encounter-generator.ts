@@ -1,3 +1,5 @@
+import { TrapData } from '../data/trap-data';
+
 import { CombatantType } from '../enums/combatant-type';
 import { EncounterMapSquareType } from '../enums/encounter-map-square-type';
 import { FeatureType } from '../enums/feature-type';
@@ -12,6 +14,7 @@ import { NameGenerator } from './name-generator';
 import { CampaignMapLogic } from '../logic/campaign-map-logic';
 import { CombatantLogic } from '../logic/combatant-logic';
 import { EncounterLogic } from '../logic/encounter-logic';
+import { EncounterMapLogic } from '../logic/encounter-map-logic';
 import { Factory } from '../logic/factory';
 import { FeatureLogic } from '../logic/feature-logic';
 import { GameLogic } from '../logic/game-logic';
@@ -35,6 +38,7 @@ export class EncounterGenerator {
 			round: 0,
 			combatants: [ ...heroes ],
 			loot: [],
+			traps: [],
 			mapSquares: EncounterMapGenerator.generateEncounterMap(rng, region.demographics.terrain),
 			log: []
 		};
@@ -163,17 +167,46 @@ export class EncounterGenerator {
 
 		EncounterGenerator.placeCombatants(encounter, rng);
 
+		// Traps are base-game map furniture rather than pack content, so every encounter can have
+		// them. They go on clear ground, well away from where anyone starts, so that nobody walks
+		// into one before they have had a turn to look around
+		const trapCount = Random.randomNumber(4, rng);
+		if (trapCount > 0) {
+			const occupied = encounter.combatants.flatMap(c => EncounterLogic.getCombatantSquares(encounter, c));
+			const candidates = encounter.mapSquares
+				.filter(sq => sq.type === EncounterMapSquareType.Clear)
+				.filter(sq => occupied.every(o => EncounterMapLogic.getDistance(o, sq) > 3));
+
+			for (let n = 0; n < trapCount; ++n) {
+				if (candidates.length === 0) {
+					break;
+				}
+
+				const square = Collections.draw(candidates, rng);
+				candidates.splice(candidates.indexOf(square), 1);
+
+				// Nobody in the party laid these, so they belong to whatever lives here
+				const trap = TrapData.createTrap(Collections.draw(TrapData.getTrapTypes(), rng), CombatantType.Monster);
+				trap.position = { x: square.x, y: square.y };
+				trap.hidden = Random.randomNumber(8, rng);
+				encounter.traps.push(trap);
+			}
+		}
+
 		const loot: LootPileModel[] = [];
 		if (Random.randomNumber(5, rng) === 0) {
 			const lp = Factory.createLootPile();
 			if (Random.randomNumber(3, rng) === 0) {
 				lp.items.push(MagicItemGenerator.generateRandomMagicItem(packIDs, rng));
 			} else {
-				// The potion deck is empty unless a pack that has potions is switched on - the core
-				// game has none - so fall back to a magic item rather than drawing from nothing
-				const potions = GameLogic.getPotionDeck(packIDs);
-				if (potions.length > 0) {
-					const item = Collections.draw(potions, rng);
+				// The potion and scroll decks are empty unless a pack that has them is switched on -
+				// the core game has neither - so fall back to a magic item rather than drawing from nothing
+				const consumables = [
+					...GameLogic.getPotionDeck(packIDs),
+					...GameLogic.getScrollDeck(packIDs)
+				];
+				if (consumables.length > 0) {
+					const item = Collections.draw(consumables, rng);
 					item.id = Utils.guid();
 					lp.items.push(item);
 				} else {

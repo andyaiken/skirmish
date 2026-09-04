@@ -208,6 +208,17 @@ export const core = (): PackModel => ({
 						ActionEffects.hide(),
 						ActionEffects.takeAnotherAction()
 					]
+				},
+				{
+					id: 'gnome-action-3',
+					name: 'Disarm Trap',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Traps, 1)
+					],
+					effects: [
+						ActionEffects.disarmTrap()
+					]
 				}
 			],
 			deathActions: []
@@ -1530,6 +1541,17 @@ export const core = (): PackModel => ({
 					]
 				},
 				{
+					id: 'ranger-action-7',
+					name: 'Disarm Trap',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Traps, 1)
+					],
+					effects: [
+						ActionEffects.disarmTrap()
+					]
+				},
+				{
 					id: 'ranger-action-6',
 					name: 'Called Shot',
 					prerequisites: [
@@ -2266,6 +2288,7 @@ export const core = (): PackModel => ({
 			},
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -2290,6 +2313,7 @@ export const core = (): PackModel => ({
 			},
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -2314,6 +2338,7 @@ export const core = (): PackModel => ({
 			},
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -2338,6 +2363,7 @@ export const core = (): PackModel => ({
 			},
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -2362,6 +2388,7 @@ export const core = (): PackModel => ({
 			},
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -2386,6 +2413,7 @@ export const core = (): PackModel => ({
 			},
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -2410,6 +2438,7 @@ export const core = (): PackModel => ({
 			},
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -2434,6 +2463,7 @@ export const core = (): PackModel => ({
 			},
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -2458,6 +2488,7 @@ export const core = (): PackModel => ({
 			},
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -2482,6 +2513,7 @@ export const core = (): PackModel => ({
 			},
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -2506,6 +2538,7 @@ export const core = (): PackModel => ({
 			},
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -2530,6 +2563,7 @@ export const core = (): PackModel => ({
 			},
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -2554,6 +2588,7 @@ export const core = (): PackModel => ({
 			},
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -2578,6 +2613,7 @@ export const core = (): PackModel => ({
 			},
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -2602,6 +2638,7 @@ export const core = (): PackModel => ({
 			},
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -2626,6 +2663,7 @@ export const core = (): PackModel => ({
 			},
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -2650,6 +2688,7 @@ export const core = (): PackModel => ({
 			},
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -2674,6 +2713,7 @@ export const core = (): PackModel => ({
 			},
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -2698,6 +2738,7 @@ export const core = (): PackModel => ({
 			},
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -2722,6 +2763,7 @@ export const core = (): PackModel => ({
 			},
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -2746,6 +2788,7 @@ export const core = (): PackModel => ({
 			},
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -2770,6 +2813,7 @@ export const core = (): PackModel => ({
 			},
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -2794,6 +2838,7 @@ export const core = (): PackModel => ({
 			},
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -2818,6 +2863,7 @@ export const core = (): PackModel => ({
 			},
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -2842,6 +2888,7 @@ export const core = (): PackModel => ({
 			},
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -2866,6 +2913,7 @@ export const core = (): PackModel => ({
 			},
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -2890,6 +2938,7 @@ export const core = (): PackModel => ({
 			},
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -2914,6 +2963,7 @@ export const core = (): PackModel => ({
 			},
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -2938,6 +2988,7 @@ export const core = (): PackModel => ({
 			},
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -2962,6 +3013,7 @@ export const core = (): PackModel => ({
 			},
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -2977,6 +3029,7 @@ export const core = (): PackModel => ({
 			weapon: null,
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -2992,6 +3045,7 @@ export const core = (): PackModel => ({
 			weapon: null,
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3007,6 +3061,7 @@ export const core = (): PackModel => ({
 			weapon: null,
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3022,6 +3077,7 @@ export const core = (): PackModel => ({
 			weapon: null,
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3037,6 +3093,7 @@ export const core = (): PackModel => ({
 			weapon: null,
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3056,6 +3113,7 @@ export const core = (): PackModel => ({
 				]
 			},
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3076,6 +3134,7 @@ export const core = (): PackModel => ({
 				]
 			},
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3097,6 +3156,7 @@ export const core = (): PackModel => ({
 				]
 			},
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3117,6 +3177,7 @@ export const core = (): PackModel => ({
 				]
 			},
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3138,6 +3199,7 @@ export const core = (): PackModel => ({
 				]
 			},
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3159,6 +3221,7 @@ export const core = (): PackModel => ({
 				]
 			},
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3180,6 +3243,7 @@ export const core = (): PackModel => ({
 				]
 			},
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3201,6 +3265,7 @@ export const core = (): PackModel => ({
 				]
 			},
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3220,6 +3285,7 @@ export const core = (): PackModel => ({
 				]
 			},
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3240,6 +3306,7 @@ export const core = (): PackModel => ({
 				]
 			},
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3259,6 +3326,7 @@ export const core = (): PackModel => ({
 				]
 			},
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3274,6 +3342,7 @@ export const core = (): PackModel => ({
 			weapon: null,
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3289,6 +3358,7 @@ export const core = (): PackModel => ({
 			weapon: null,
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3304,6 +3374,7 @@ export const core = (): PackModel => ({
 			weapon: null,
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3319,6 +3390,7 @@ export const core = (): PackModel => ({
 			weapon: null,
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3334,6 +3406,7 @@ export const core = (): PackModel => ({
 			weapon: null,
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3349,6 +3422,7 @@ export const core = (): PackModel => ({
 			weapon: null,
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3364,6 +3438,7 @@ export const core = (): PackModel => ({
 			weapon: null,
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3379,6 +3454,7 @@ export const core = (): PackModel => ({
 			weapon: null,
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3394,6 +3470,7 @@ export const core = (): PackModel => ({
 			weapon: null,
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3409,6 +3486,7 @@ export const core = (): PackModel => ({
 			weapon: null,
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3424,6 +3502,7 @@ export const core = (): PackModel => ({
 			weapon: null,
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3439,6 +3518,7 @@ export const core = (): PackModel => ({
 			weapon: null,
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3454,6 +3534,7 @@ export const core = (): PackModel => ({
 			weapon: null,
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3469,6 +3550,7 @@ export const core = (): PackModel => ({
 			weapon: null,
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3484,6 +3566,7 @@ export const core = (): PackModel => ({
 			weapon: null,
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3499,6 +3582,7 @@ export const core = (): PackModel => ({
 			weapon: null,
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3514,6 +3598,7 @@ export const core = (): PackModel => ({
 			weapon: null,
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3529,6 +3614,7 @@ export const core = (): PackModel => ({
 			weapon: null,
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3544,6 +3630,7 @@ export const core = (): PackModel => ({
 			weapon: null,
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3559,6 +3646,7 @@ export const core = (): PackModel => ({
 			weapon: null,
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3574,6 +3662,7 @@ export const core = (): PackModel => ({
 			weapon: null,
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3589,6 +3678,7 @@ export const core = (): PackModel => ({
 			weapon: null,
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3604,6 +3694,7 @@ export const core = (): PackModel => ({
 			weapon: null,
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3619,6 +3710,7 @@ export const core = (): PackModel => ({
 			weapon: null,
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3634,6 +3726,7 @@ export const core = (): PackModel => ({
 			weapon: null,
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3649,6 +3742,7 @@ export const core = (): PackModel => ({
 			weapon: null,
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3664,6 +3758,7 @@ export const core = (): PackModel => ({
 			weapon: null,
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -3679,11 +3774,13 @@ export const core = (): PackModel => ({
 			weapon: null,
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		}
 	],
 	potions: [],
+	scrolls: [],
 	structures: [
 		{
 			id: 'structure-barracks',

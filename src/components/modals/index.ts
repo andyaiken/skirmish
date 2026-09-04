@@ -1,6 +1,7 @@
 import { BuyEquipmentModal } from './buy-equipment/buy-equipment-modal';
 import { BuyMagicItemModal } from './buy-magic-item/buy-magic-item-modal';
 import { BuyPotionModal } from './buy-potion/buy-potion-modal';
+import { BuyScrollModal } from './buy-scroll/buy-scroll-modal';
 import { CharacterSheetModal } from './character-sheet/character-sheet-modal';
 import { EnchantItemModal } from './enchant-item/enchant-item-modal';
 import { EncounterStartModal } from './encounter-start/encounter-start-modal';
@@ -13,6 +14,7 @@ export {
 	BuyEquipmentModal,
 	BuyMagicItemModal,
 	BuyPotionModal,
+	BuyScrollModal,
 	CharacterSheetModal,
 	EnchantItemModal,
 	EncounterStartModal,

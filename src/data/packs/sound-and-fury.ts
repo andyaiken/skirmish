@@ -456,5 +456,6 @@ export const soundAndFury = (): PackModel => ({
 	],
 	items: [],
 	potions: [],
+	scrolls: [],
 	structures: []
 });

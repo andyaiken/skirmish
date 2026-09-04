@@ -4,6 +4,9 @@ import type { CombatantModel } from '../models/combatant';
 import type { EncounterModel } from '../models/encounter';
 import type { PathModel } from '../models/path';
 
+// These are the routes a combatant is moved along automatically - a monster's turn, or a hero who
+// has been commanded to move - so they route around any live trap the combatant knows about. A
+// player moving a hero by hand is free to walk into one with their eyes open.
 export class PathLogic {
 	static findPaths = (encounter: EncounterModel, combatant: CombatantModel, limitByMovementCost: boolean) => {
 		const paths: PathModel[] = [
@@ -65,6 +68,12 @@ export class PathLogic {
 				const discovered = paths.find(p => (p.x === pos.x) && (p.y === pos.y));
 				if (!discovered) {
 					if (cost !== Number.MAX_VALUE) {
+						// Leaving a trapped square undiscovered keeps it out of every route, not
+						// just the ones that end on it
+						if (EncounterLogic.hasKnownTrap(encounter, combatant, EncounterLogic.getCombatantSquares(encounter, combatant, pos))) {
+							return;
+						}
+
 						const newPath = {
 							x: pos.x,
 							y: pos.y,

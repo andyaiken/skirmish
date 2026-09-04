@@ -499,6 +499,7 @@ export const powerAndGlory = (): PackModel => ({
 	],
 	items: [],
 	potions: [],
+	scrolls: [],
 	structures: [
 		{
 			id: 'structure-temple',

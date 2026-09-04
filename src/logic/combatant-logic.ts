@@ -236,6 +236,24 @@ export class CombatantLogic {
 		return list;
 	};
 
+	// A carried scroll is a one-shot action card. The item's ID doubles as the action's ID, so that
+	// two copies of the same scroll are told apart and so a selected action can find its own scroll
+	static getScrollActions = (combatant: CombatantModel) => {
+		return combatant.carried.flatMap(i => {
+			if (!i.scroll) {
+				return [];
+			}
+
+			const action = JSON.parse(JSON.stringify(i.scroll.action)) as ActionModel;
+			action.id = i.id;
+			return [ action ];
+		});
+	};
+
+	static getScrollForAction = (combatant: CombatantModel, cardID: string) => {
+		return combatant.carried.find(i => !!i.scroll && (i.id === cardID)) || null;
+	};
+
 	static getFeatureSource = (combatant: CombatantModel, cardID: string) => {
 		if (BaseData.getBaseFeatures().find(f => f.id === cardID)) {
 			return 'Standard';
@@ -342,6 +360,11 @@ export class CombatantLogic {
 			return itemName;
 		}
 
+		const scroll = CombatantLogic.getScrollForAction(combatant, cardID);
+		if (scroll) {
+			return scroll.name;
+		}
+
 		return '';
 	};
 
@@ -373,6 +396,10 @@ export class CombatantLogic {
 		});
 		if (isItem) {
 			return CardType.Item;
+		}
+
+		if (CombatantLogic.getScrollForAction(combatant, cardID)) {
+			return CardType.Scroll;
 		}
 
 		return CardType.Default;

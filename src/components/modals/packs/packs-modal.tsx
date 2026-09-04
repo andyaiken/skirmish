@@ -96,6 +96,12 @@ export class PacksModal extends Component<Props, State> {
 			);
 		});
 
+		const scrolls = PackLogic.getScrolls(pack.id).map(sc => {
+			return (
+				<ItemCard key={sc.id} item={sc} />
+			);
+		});
+
 		return (
 			<Dialog
 				content={
@@ -127,6 +133,9 @@ export class PacksModal extends Component<Props, State> {
 						{potions.length > 0 ? <hr /> : null}
 						{potions.length > 0 ? <Text type={TextType.MinorHeading}>Potion Cards</Text> : null}
 						{potions.length > 0 ? <CardList cards={potions} /> : null}
+						{scrolls.length > 0 ? <hr /> : null}
+						{scrolls.length > 0 ? <Text type={TextType.MinorHeading}>Scroll Cards</Text> : null}
+						{scrolls.length > 0 ? <CardList cards={scrolls} /> : null}
 					</div>
 				}
 				level={2}

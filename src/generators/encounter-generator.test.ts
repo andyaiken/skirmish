@@ -4,6 +4,7 @@ import { CombatantType } from '../enums/combatant-type';
 import { EncounterMapSquareType } from '../enums/encounter-map-square-type';
 
 import { EncounterLogic } from '../logic/encounter-logic';
+import { EncounterMapLogic } from '../logic/encounter-map-logic';
 import { Factory } from '../logic/factory';
 
 import type { EncounterModel } from '../models/encounter';
@@ -35,6 +36,7 @@ describe('placing a larger combatant', () => {
 				round: 0,
 				combatants: [],
 				loot: [],
+				traps: [],
 				mapSquares: generate(400, rng),
 				log: []
 			};
@@ -69,6 +71,7 @@ describe('placing a larger combatant', () => {
 			round: 0,
 			combatants: [],
 			loot: [],
+			traps: [],
 			mapSquares: EncounterMapGenerator.generateCavernMap(400, rng),
 			log: []
 		};
@@ -119,6 +122,31 @@ describe('EncounterGenerator.createEncounter', () => {
 
 	it('builds an encounter with the Deep Water cards switched on', () => {
 		seeds.forEach(seed => expect(() => build(seed, [ 'pack-deep-water' ])).not.toThrow());
+	});
+
+	// Traps are base-game map furniture, so no pack has to be switched on for them to appear
+	it('lays traps on some encounters whatever packs are switched on', () => {
+		expect(Collections.sum(seeds, seed => build(seed, []).traps.length)).toBeGreaterThan(0);
+	});
+
+	it('lays traps on clear ground, well away from where anyone starts', () => {
+		seeds.forEach(seed => {
+			const encounter = build(seed, []);
+			const occupied = encounter.combatants.flatMap(c => EncounterLogic.getCombatantSquares(encounter, c));
+
+			encounter.traps.forEach(trap => {
+				const square = encounter.mapSquares.find(sq => (sq.x === trap.position.x) && (sq.y === trap.position.y));
+				expect(square?.type).toBe(EncounterMapSquareType.Clear);
+				occupied.forEach(sq => expect(EncounterMapLogic.getDistance(sq, trap.position)).toBeGreaterThan(3));
+			});
+		});
+	});
+
+	it('never lays two traps on the same square', () => {
+		seeds.forEach(seed => {
+			const traps = build(seed, []).traps;
+			expect(Collections.distinct(traps, t => `${t.position.x} ${t.position.y}`)).toHaveLength(traps.length);
+		});
 	});
 
 	it('puts water on the map whether or not any pack is switched on', () => {

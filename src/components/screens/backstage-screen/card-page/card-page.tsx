@@ -152,6 +152,9 @@ export class CardPage extends Component<Props, State> {
 			case 'potions':
 				return PackLogic.getPotions(packID)
 					.map(p => <Text key={p.id} type={TextType.Small}>{p.name}</Text>);
+			case 'scrolls':
+				return PackLogic.getScrolls(packID)
+					.map(sc => <Text key={sc.id} type={TextType.Small}>{sc.name}</Text>);
 			case 'items':
 				return PackLogic.getItems(packID)
 					.map(i => <Text key={i.id} type={TextType.Small}>{i.name}</Text>);
@@ -175,6 +178,8 @@ export class CardPage extends Component<Props, State> {
 				return packs.flatMap(p => PackLogic.getStructures(p.id)).length;
 			case 'potions':
 				return packs.flatMap(p => PackLogic.getPotions(p.id)).length;
+			case 'scrolls':
+				return packs.flatMap(p => PackLogic.getScrolls(p.id)).length;
 			case 'items':
 				return packs.flatMap(p => PackLogic.getItems(p.id)).length;
 		}
@@ -190,6 +195,7 @@ export class CardPage extends Component<Props, State> {
 			'backgrounds',
 			'structures',
 			'potions',
+			'scrolls',
 			'items'
 		];
 

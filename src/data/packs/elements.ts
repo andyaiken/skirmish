@@ -526,5 +526,6 @@ export const elements = (): PackModel => ({
 	backgrounds: [],
 	items: [],
 	potions: [],
+	scrolls: [],
 	structures: []
 });

@@ -469,5 +469,6 @@ export const outOfTheGrave = (): PackModel => ({
 	backgrounds: [],
 	items: [],
 	potions: [],
+	scrolls: [],
 	structures: []
 });

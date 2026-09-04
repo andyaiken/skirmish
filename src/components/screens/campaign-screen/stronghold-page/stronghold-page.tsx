@@ -98,7 +98,8 @@ export class StrongholdPage extends Component<Props, State> {
 		const seaVoyages = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Shipyard);
 		const regionDiscounts = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Guildhall);
 		const recharges = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Tavern);
-		const campaign = seaVoyages + regionDiscounts + recharges;
+		const scrolls = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Scriptorium);
+		const campaign = seaVoyages + regionDiscounts + recharges + scrolls;
 
 		// The permanent structures have no charges to report, so they're listed as standing effects
 		const shopDiscount = this.props.game.stronghold.some(s => s.type === StructureType.Bazaar);
@@ -129,6 +130,7 @@ export class StrongholdPage extends Component<Props, State> {
 					{seaVoyages > 0 ? <StatValue label='Sea Voyages' value={seaVoyages} /> : null}
 					{regionDiscounts > 0 ? <StatValue label='Region Discounts' value={regionDiscounts} /> : null}
 					{recharges > 0 ? <StatValue label='Free Recharges' value={recharges} /> : null}
+					{scrolls > 0 ? <StatValue label='Free Scrolls' value={scrolls} /> : null}
 					{(permanent > 0) && (redraws + encounters + hero + campaign > 0) ? <hr /> : null}
 					{shopDiscount ? <StatValue label='Shop Prices' value='-25%' /> : null}
 					{regionIncome ? <StatValue label='Region Income' value='Yes' /> : null}

@@ -1,0 +1,44 @@
+.encounter-map-trap-token {
+	aspect-ratio: 1 / 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	.trap-token-face {
+		width: 60%;
+		height: 60%;
+		// A diamond, so a trap doesn't read as a combatant or a pile of treasure
+		transform: rotate(45deg);
+		border: 2px solid rgb(140, 30, 30);
+		background-image: linear-gradient(135deg, rgb(220, 90, 80), rgb(180, 50, 45));
+		box-shadow: 1px 1px 2px 0 rgba(0, 0, 0, 0.4);
+	}
+
+	&.sprung .trap-token-face {
+		border-color: rgb(120, 120, 120);
+		background-image: none;
+		background-color: rgb(190, 190, 190);
+		box-shadow: none;
+	}
+
+	&.on-map {
+		position: absolute;
+	}
+
+	&.selectable:not(.selected) {
+		cursor: pointer;
+
+		.trap-token-face:hover {
+			background: var(--primary);
+		}
+	}
+
+	&.selected .trap-token-face {
+		outline: 3px solid var(--primary);
+	}
+
+	&:not(.selectable) {
+		opacity: 0.4;
+		pointer-events: none;
+	}
+}

@@ -8,6 +8,7 @@ import { faeRealm } from '../data/packs/fae-realm';
 import { guileAndCunning } from '../data/packs/guile-and-cunning';
 import { hellToPay } from '../data/packs/hell-to-pay';
 import { illHumours } from '../data/packs/ill-humours';
+import { inkAndVellum } from '../data/packs/ink-and-vellum';
 import { magicInAGlass } from '../data/packs/magic-in-a-glass';
 import { menagerie } from '../data/packs/menagerie';
 import { outOfTheGrave } from '../data/packs/out-of-the-grave';
@@ -35,6 +36,7 @@ export class PackLogic {
 			guileAndCunning(),
 			hellToPay(),
 			illHumours(),
+			inkAndVellum(),
 			magicInAGlass(),
 			menagerie(),
 			outOfTheGrave(),
@@ -84,6 +86,8 @@ export class PackLogic {
 
 	static getPotions = (packID: string) => PackLogic.findPack(packID)?.potions || [];
 
+	static getScrolls = (packID: string) => PackLogic.findPack(packID)?.scrolls || [];
+
 	static getStructures = (packID: string) => PackLogic.findPack(packID)?.structures || [];
 
 	static getPackCards = (packID: string) => {
@@ -93,6 +97,7 @@ export class PackLogic {
 			...PackLogic.getBackgrounds(packID),
 			...PackLogic.getItems(packID),
 			...PackLogic.getPotions(packID),
+			...PackLogic.getScrolls(packID),
 			...PackLogic.getStructures(packID)
 		];
 	};

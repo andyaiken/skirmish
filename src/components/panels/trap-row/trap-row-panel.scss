@@ -1,0 +1,31 @@
+.trap-row-panel {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+	width: 100%;
+	min-height: 75px;
+	border: 2px solid rgb(220, 150, 140);
+	border-radius: 10px;
+	background-color: rgb(255, 245, 243);
+	padding: 0 10px;
+	overflow: hidden;
+
+	.token-container {
+		position: relative;
+		width: 40px;
+		height: 40px;
+	}
+
+	.name {
+		flex: 1 1 auto;
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+
+	.icon-btn {
+		flex: 0 0 40px;
+		width: 40px;
+	}
+}

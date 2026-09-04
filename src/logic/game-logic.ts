@@ -50,6 +50,10 @@ export class GameLogic {
 		return Collections.sort(PackLogic.getAvailablePacks(packIDs).flatMap(p => PackLogic.getPotions(p.id)), x => x.name);
 	};
 
+	static getScrollDeck = (packIDs: string[]) => {
+		return Collections.sort(PackLogic.getAvailablePacks(packIDs).flatMap(p => PackLogic.getScrolls(p.id)), x => x.name);
+	};
+
 	static getStructureDeck = (packIDs: string[]) => {
 		return Collections.sort(PackLogic.getAvailablePacks(packIDs).flatMap(p => PackLogic.getStructures(p.id)), x => x.name);
 	};
@@ -76,6 +80,10 @@ export class GameLogic {
 
 	static getPotion = (id: string) => {
 		return PackLogic.getAllPacks().flatMap(pack => PackLogic.getPotions(pack.id)).find(i => i.id === id) || null;
+	};
+
+	static getScroll = (id: string) => {
+		return PackLogic.getAllPacks().flatMap(pack => PackLogic.getScrolls(pack.id)).find(i => i.id === id) || null;
 	};
 
 	static getStructure = (id: string) => {
@@ -460,6 +468,8 @@ export class GameLogic {
 				return 10;
 			case 'createPotion':
 				return 7;
+			case 'createScroll':
+				return 8;
 			case 'commandAction':
 				return 5;
 			case 'healdamage':
@@ -468,6 +478,12 @@ export class GameLogic {
 				return 5 * (effect.data as number);
 			case 'summon':
 				return 5;
+			case 'disarmTrap':
+				return 4;
+			case 'springTrap':
+				return 5;
+			case 'placeTrap':
+				return 6;
 			case 'takeAnotherAction':
 				return 0;
 		}

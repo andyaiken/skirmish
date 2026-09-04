@@ -104,6 +104,13 @@ export class StructureCard extends Component<Props, State> {
 						<p>You gain {this.props.structure.level} treatment(s) when the structure is charged.</p>
 					</Text>
 				);
+			case StructureType.Scriptorium:
+				return (
+					<Text>
+						<p>Between encounters, this structure allows you to add a scroll to your equipment.</p>
+						<p>You gain {this.props.structure.level} scroll(s) when the structure is charged.</p>
+					</Text>
+				);
 			case StructureType.Observatory:
 				return (
 					<Text>

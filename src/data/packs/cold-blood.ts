@@ -383,5 +383,6 @@ export const coldBlood = (): PackModel => ({
 	backgrounds: [],
 	items: [],
 	potions: [],
+	scrolls: [],
 	structures: []
 });

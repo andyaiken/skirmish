@@ -7,8 +7,9 @@ import { ActionLogic } from '../../../../../logic/action-logic';
 import { EncounterLogic } from '../../../../../logic/encounter-logic';
 
 import type { ActionOriginParameterModel, ActionParameterModel, ActionTargetParameterModel, ActionWeaponParameterModel } from '../../../../../models/action';
+import type { EncounterModel, TrapModel } from '../../../../../models/encounter';
+
 import type { CombatantModel } from '../../../../../models/combatant';
-import type { EncounterModel } from '../../../../../models/encounter';
 import type { ItemModel } from '../../../../../models/item';
 
 import { DirectionIndicatorPanel, DirectionPanel } from '../../../../panels';
@@ -162,6 +163,39 @@ export class ActionParameter extends Component<Props, State> {
 											className={`icon-btn ${this.props.isSelectedOnMap ? 'checked' : ''}`}
 											title='Select Squares'
 											onClick={() => this.props.selectOnMap(targetParam)}
+										>
+											<IconViewfinder size={15} />
+											Select
+										</button>
+									);
+								}
+							}
+							break;
+						}
+						case ActionTargetType.Traps: {
+							if (targetParam.targets.count === Number.MAX_VALUE) {
+								// Targets all possible candidates
+							} else {
+								// Targets a specific number of candidates
+								if (targetParam.candidates.length > targetParam.targets.count) {
+									// There are more possible targets than selected targets
+									controls.push(
+										<button
+											key='trap-all'
+											className={`icon-btn ${this.state.showTargetSelectControl ? 'checked' : ''}`}
+											title='List all targets'
+											onClick={this.toggleTargetSelectControl}
+										>
+											<IconDotsCircleHorizontal size={15} />
+											List
+										</button>
+									);
+									controls.push(
+										<button
+											key='trap-select'
+											className={`icon-btn ${this.props.isSelectedOnMap ? 'checked' : ''}`}
+											title='Select Traps'
+											onClick={this.toggleSelectedOnMap}
 										>
 											<IconViewfinder size={15} />
 											Select
@@ -352,6 +386,54 @@ export class ActionParameter extends Component<Props, State> {
 							}
 							break;
 						}
+						case ActionTargetType.Traps: {
+							const list = targetParam.value as string[];
+							const asTag = (trap: TrapModel, selected: boolean) => {
+								if (this.state.showTargetSelectControl) {
+									return (
+										<Tag key={trap.id}>
+											<div
+												className={`combatant-candidate ${selected ? 'selected' : 'not-selected'}`}
+												onClick={() => selected ? this.removeCombatant(targetParam, trap.id) : this.addCombatant(targetParam, trap.id)}
+											>
+												{trap.name}
+												{selected ? <IconCircleMinus size={15} /> : <IconCirclePlus size={15} />}
+											</div>
+										</Tag>
+									);
+								}
+
+								return (
+									<Tag key={trap.id}>
+										<div className='combatant-candidate'>
+											{trap.name}
+										</div>
+									</Tag>
+								);
+							};
+
+							controls.push(
+								...list
+									.map(id => EncounterLogic.getTrap(this.props.encounter, id) as TrapModel)
+									.map(trap => asTag(trap, true))
+							);
+							if (list.length === 0) {
+								controls.push(
+									<Tag key='target-traps-none'>
+										{targetParam.candidates.length === 0 ? 'No traps within range' : 'No traps selected'}
+									</Tag>
+								);
+							}
+							if (this.state.showTargetSelectControl) {
+								controls.push(
+									...(targetParam.candidates as string[])
+										.filter(id => !list.includes(id))
+										.map(id => EncounterLogic.getTrap(this.props.encounter, id) as TrapModel)
+										.map(trap => asTag(trap, false))
+								);
+							}
+							break;
+						}
 						case ActionTargetType.Walls: {
 							const list = targetParam.value as { x: number, y: number }[];
 							if (targetParam.targets.count === Number.MAX_VALUE) {
@@ -450,6 +532,14 @@ export class ActionParameter extends Component<Props, State> {
 								controls.push(
 									<Text key='target-select-wall' type={TextType.Information}>
 										<p>Select your target wall(s) on the map.</p>
+									</Text>
+								);
+								break;
+							}
+							case ActionTargetType.Traps: {
+								controls.push(
+									<Text key='target-select-trap' type={TextType.Information}>
+										<p>Select your target trap(s) on the map.</p>
 									</Text>
 								);
 								break;

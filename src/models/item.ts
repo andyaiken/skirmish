@@ -22,6 +22,10 @@ export interface PotionModel {
 	effects: ActionEffectModel[];
 }
 
+export interface ScrollModel {
+	action: ActionModel;
+}
+
 export interface ItemModel {
 	id: string;
 	name: string;
@@ -34,6 +38,7 @@ export interface ItemModel {
 	weapon: WeaponModel | null;
 	armor: ArmorModel | null;
 	potion: PotionModel | null;
+	scroll: ScrollModel | null;
 	features: FeatureModel[];
 	actions: ActionModel[];
 }

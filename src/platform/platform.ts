@@ -123,6 +123,10 @@ export class Platform {
 			if (game.encounter.log === undefined) {
 				game.encounter.log = [];
 			}
+
+			if (game.encounter.traps === undefined) {
+				game.encounter.traps = [];
+			}
 		}
 
 		game.map.regions

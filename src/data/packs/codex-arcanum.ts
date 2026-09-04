@@ -747,6 +747,7 @@ export const codexArcanum = (): PackModel => ({
 	],
 	items: [],
 	potions: [],
+	scrolls: [],
 	structures: [
 		{
 			id: 'structure-observatory',

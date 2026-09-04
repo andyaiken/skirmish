@@ -56,7 +56,7 @@ interface Props {
 	levelUp: (feature: FeatureModel, hero: CombatantModel) => void;
 	retireHero: (combatant: CombatantModel) => void;
 	redeemBoon: (boon: BoonModel, hero: CombatantModel | null, item: ItemModel | null, newItem: ItemModel | null, cost: number) => void;
-	buyItem: (item: ItemModel) => void;
+	buyItem: (item: ItemModel, free?: boolean) => void;
 	sellItem: (item: ItemModel, all: boolean) => void;
 	addMoney: () => void;
 	startEncounter: (region: RegionModel, heroes: CombatantModel[], benefits: number, detriments: number) => void;

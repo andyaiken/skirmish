@@ -17,7 +17,7 @@ import { Collections } from '../../../../utils/collections';
 import { Utils } from '../../../../utils/utils';
 
 import { BoonCard, ItemCard } from '../../../cards';
-import { BuyEquipmentModal, BuyMagicItemModal, BuyPotionModal, EnchantItemModal, MagicItemInfoModal } from '../../../modals';
+import { BuyEquipmentModal, BuyMagicItemModal, BuyPotionModal, BuyScrollModal, EnchantItemModal, MagicItemInfoModal } from '../../../modals';
 import { CardList, Dialog, IconSize, IconType, IconValue, Text, TextType } from '../../../controls';
 
 import './items-page.scss';
@@ -26,7 +26,7 @@ interface Props {
 	game: GameModel;
 	options: OptionsModel;
 	orientation: OrientationType;
-	buyItem: (item: ItemModel) => void;
+	buyItem: (item: ItemModel, free?: boolean) => void;
 	sellItem: (item: ItemModel, all: boolean) => void;
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
 	dropItem: (item: ItemModel, hero: CombatantModel) => void;
@@ -36,7 +36,7 @@ interface Props {
 }
 
 interface State {
-	showMarket: 'magical' | 'potion' | 'mundane' | null;
+	showMarket: 'magical' | 'potion' | 'scroll' | 'scriptorium' | 'mundane' | null;
 	showEnchant: boolean;
 	selectedMagicItem: ItemModel | null;
 	selectedBoon: BoonModel | null;
@@ -72,7 +72,7 @@ export class ItemsPage extends Component<Props, State> {
 		}
 	};
 
-	showMarket = (market: 'magical' | 'potion' | 'mundane' | null) => {
+	showMarket = (market: 'magical' | 'potion' | 'scroll' | 'scriptorium' | 'mundane' | null) => {
 		this.setState({
 			showMarket: market
 		});
@@ -86,10 +86,17 @@ export class ItemsPage extends Component<Props, State> {
 	};
 
 	buyItem = (item: ItemModel) => {
+		// A Scriptorium hands over a scroll rather than selling you one
+		const free = this.state.showMarket === 'scriptorium';
+
 		this.setState({
 			showMarket: null
 		}, () => {
-			this.props.buyItem(item);
+			if (free) {
+				this.props.spendCharge(StructureType.Scriptorium, 1);
+			}
+
+			this.props.buyItem(item, free);
 		});
 	};
 
@@ -129,6 +136,51 @@ export class ItemsPage extends Component<Props, State> {
 		});
 	};
 
+	// Potions and scrolls are both one-shot stackable items, so they get the same section layout
+	getConsumableSection = (items: ItemModel[]) => {
+		const sorted = Collections.sort(items, n => n.name);
+		if (sorted.length === 0) {
+			return null;
+		}
+
+		const cards = Collections.distinct(sorted, i => i.name).map(item => {
+			const count = sorted.filter(i => i.name === item.name).length;
+			const price = StrongholdLogic.getSalePrice(item);
+
+			let footer = (
+				<button onClick={() => this.props.sellItem(item, true)}>
+					Sell<br /><IconValue type={IconType.Money} value={price} size={IconSize.Button} />
+				</button>
+			);
+
+			if (count > 1) {
+				footer = (
+					<div>
+						<button onClick={() => this.props.sellItem(item, false)}>
+							Sell One<br /><IconValue type={IconType.Money} value={price} size={IconSize.Button} />
+						</button>
+						<button onClick={() => this.props.sellItem(item, true)}>
+							Sell All ({count})<br /><IconValue type={IconType.Money} value={price * count} size={IconSize.Button} />
+						</button>
+					</div>
+				);
+			}
+
+			return (
+				<div key={item.id}>
+					<ItemCard item={item} count={count} />
+					{footer}
+				</div>
+			);
+		});
+
+		return (
+			<div>
+				<CardList cards={cards} />
+			</div>
+		);
+	};
+
 	getSidebar = () => {
 		let boons = null;
 		if (this.props.game.boons.filter(boon => GameLogic.getBoonIsItemType(boon)).length > 0) {
@@ -145,6 +197,7 @@ export class ItemsPage extends Component<Props, State> {
 
 		const mundanePrice = StrongholdLogic.getPrice(this.props.game, 'mundane');
 		const potionPrice = StrongholdLogic.getPrice(this.props.game, 'potion');
+		const scrollPrice = StrongholdLogic.getPrice(this.props.game, 'scroll');
 		const magicPrice = StrongholdLogic.getPrice(this.props.game, 'magic');
 
 		const buySection = [];
@@ -164,11 +217,31 @@ export class ItemsPage extends Component<Props, State> {
 				</button>
 			);
 		}
+		if (GameLogic.getScrollDeck(this.props.options.packIDs).length > 0) {
+			buySection.push(
+				<button key='scroll' disabled={this.props.game.money < scrollPrice} onClick={() => this.showMarket('scroll')}>
+					<div>Buy a scroll</div>
+					<IconValue type={IconType.Money} value={scrollPrice} size={IconSize.Button} />
+				</button>
+			);
+		}
 		if (GameLogic.getItemDeck(this.props.options.packIDs).length > 0) {
 			buySection.push(
 				<button key='magical' disabled={this.props.game.money < magicPrice} onClick={() => this.showMarket('magical')}>
 					<div>Buy a magic item</div>
 					<IconValue type={IconType.Money} value={magicPrice} size={IconSize.Button} />
+				</button>
+			);
+		}
+
+		// A Scriptorium hands out scrolls between encounters, so it belongs beside the shops
+		const scriptoriumCharges = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Scriptorium);
+		let scriptorium = null;
+		if ((scriptoriumCharges > 0) && (GameLogic.getScrollDeck(this.props.options.packIDs).length > 0)) {
+			scriptorium = (
+				<button onClick={() => this.showMarket('scriptorium')}>
+					<div>Draw a scroll from the Scriptorium</div>
+					<IconValue type={IconType.Redraw} value={scriptoriumCharges} size={IconSize.Button} />
 				</button>
 			);
 		}
@@ -192,6 +265,7 @@ export class ItemsPage extends Component<Props, State> {
 						<div>Enchant an item</div>
 						<IconValue type={IconType.Money} value={100} size={IconSize.Button} />
 					</button>
+					{scriptorium}
 				</div>
 			</div>
 		);
@@ -220,6 +294,22 @@ export class ItemsPage extends Component<Props, State> {
 						<BuyPotionModal
 							game={this.props.game}
 							options={this.props.options}
+							buyItem={this.buyItem}
+							spendCharge={this.props.spendCharge}
+						/>
+					)}
+				/>
+			);
+		}
+
+		if ((this.state.showMarket === 'scroll') || (this.state.showMarket === 'scriptorium')) {
+			return (
+				<Dialog
+					content={(
+						<BuyScrollModal
+							game={this.props.game}
+							options={this.props.options}
+							free={this.state.showMarket === 'scriptorium'}
 							buyItem={this.buyItem}
 							spendCharge={this.props.spendCharge}
 						/>
@@ -296,47 +386,11 @@ export class ItemsPage extends Component<Props, State> {
 			);
 		}
 
-		let potionSection = null;
-		const potions = Collections.sort(this.props.game.items.filter(i => !i.magic && i.potion), n => n.name);
-		if (potions.length > 0) {
-			const cards = Collections.distinct(potions, i => i.name).map(item => {
-				const count = potions.filter(i => i.name === item.name).length;
-
-				let footer = (
-					<button onClick={() => this.props.sellItem(item, true)}>
-						Sell<br /><IconValue type={IconType.Money} value={10} size={IconSize.Button} />
-					</button>
-				);
-
-				if (count > 1) {
-					footer = (
-						<div>
-							<button onClick={() => this.props.sellItem(item, false)}>
-								Sell One<br /><IconValue type={IconType.Money} value={10} size={IconSize.Button} />
-							</button>
-							<button onClick={() => this.props.sellItem(item, true)}>
-								Sell All ({count})<br /><IconValue type={IconType.Money} value={10 * count} size={IconSize.Button} />
-							</button>
-						</div>
-					);
-				}
-
-				return (
-					<div key={item.id}>
-						<ItemCard item={item} count={count} />
-						{footer}
-					</div>
-				);
-			});
-			potionSection = (
-				<div>
-					<CardList cards={cards} />
-				</div>
-			);
-		}
+		const potionSection = this.getConsumableSection(this.props.game.items.filter(i => !i.magic && i.potion));
+		const scrollSection = this.getConsumableSection(this.props.game.items.filter(i => !i.magic && i.scroll));
 
 		let mundaneItemSection = null;
-		const mundaneItems = Collections.sort(this.props.game.items.filter(i => !i.magic && !i.potion), n => n.name);
+		const mundaneItems = Collections.sort(this.props.game.items.filter(i => !i.magic && !i.potion && !i.scroll), n => n.name);
 		if (mundaneItems.length > 0) {
 			const cards = Collections.distinct(mundaneItems, i => i.name).map(item => {
 				const count = mundaneItems.filter(i => i.name === item.name).length;
@@ -384,6 +438,8 @@ export class ItemsPage extends Component<Props, State> {
 					{magicItemSection}
 					{potionSection ? <Text type={TextType.SubHeading}>Potions</Text> : null}
 					{potionSection}
+					{scrollSection ? <Text type={TextType.SubHeading}>Scrolls</Text> : null}
+					{scrollSection}
 					{mundaneItemSection ? <Text type={TextType.SubHeading}>Non-Magic Items</Text> : null}
 					{mundaneItemSection}
 					{empty}

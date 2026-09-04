@@ -320,6 +320,7 @@ export const magicInAGlass = (): PackModel => ({
 					ActionEffects.addCondition(ConditionLogic.createSkillCategoryBonusCondition(TraitType.Resolve, 8, SkillCategoryType.Physical))
 				]
 			},
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -339,6 +340,7 @@ export const magicInAGlass = (): PackModel => ({
 					ActionEffects.addCondition(ConditionLogic.createSkillCategoryBonusCondition(TraitType.Resolve, 8, SkillCategoryType.Mental))
 				]
 			},
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -358,6 +360,7 @@ export const magicInAGlass = (): PackModel => ({
 					ActionEffects.healWounds(1)
 				]
 			},
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -381,6 +384,7 @@ export const magicInAGlass = (): PackModel => ({
 					ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Resolve, 2, TraitType.Speed))
 				]
 			},
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -402,6 +406,7 @@ export const magicInAGlass = (): PackModel => ({
 					ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Resolve, 5, DamageCategoryType.Corruption))
 				]
 			},
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -423,6 +428,7 @@ export const magicInAGlass = (): PackModel => ({
 					ActionEffects.addCondition(ConditionLogic.createDamageCategoryResistanceCondition(TraitType.Resolve, 5, DamageCategoryType.Corruption))
 				]
 			},
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -442,6 +448,7 @@ export const magicInAGlass = (): PackModel => ({
 					ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Resolve, 5, TraitType.Endurance))
 				]
 			},
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -461,6 +468,7 @@ export const magicInAGlass = (): PackModel => ({
 					ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Resolve, 5, TraitType.Resolve))
 				]
 			},
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -480,9 +488,11 @@ export const magicInAGlass = (): PackModel => ({
 					ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Resolve, 5, TraitType.Speed))
 				]
 			},
+			scroll: null,
 			features: [],
 			actions: []
 		}
 	],
+	scrolls: [],
 	structures: []
 });

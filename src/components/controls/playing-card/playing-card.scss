@@ -138,6 +138,10 @@
 			background: linear-gradient(135deg, rgb(255, 255, 255), rgb(255, 255, 240));
 		}
 
+		&.scroll {
+			background: linear-gradient(135deg, rgb(255, 255, 255), rgb(252, 248, 238));
+		}
+
 		.card-footer {
 			background-color: rgb(230, 230, 230);
 	
@@ -175,6 +179,10 @@
 
 			&.potion {
 				background-color: rgb(240, 240, 210);
+			}
+
+			&.scroll {
+				background-color: rgb(235, 225, 200);
 			}
 		}
 	}

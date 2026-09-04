@@ -13,5 +13,6 @@ export interface PackModel {
 	backgrounds: BackgroundModel[];
 	items: ItemModel[];
 	potions: ItemModel[];
+	scrolls: ItemModel[];
 	structures: StructureModel[];
 }

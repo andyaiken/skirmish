@@ -12,6 +12,7 @@ import { InitiativeListPanel } from './initiative-list/initiative-list-panel';
 import { ListItemPanel } from './list-item/list-item-panel';
 import { LogoPanel } from './logo/logo-panel';
 import { StrongholdMapPanel } from './stronghold-map/stronghold-map-panel';
+import { TrapRowPanel } from './trap-row/trap-row-panel';
 import { TreasureRowPanel } from './treasure-row/treasure-row-panel';
 
 export {
@@ -29,5 +30,6 @@ export {
 	ListItemPanel,
 	LogoPanel,
 	StrongholdMapPanel,
+	TrapRowPanel,
 	TreasureRowPanel
 };

@@ -1,20 +1,32 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { TrapData } from '../data/trap-data';
+
+import { CardType } from '../enums/card-type';
 import { CombatantState } from '../enums/combatant-state';
 import { CombatantType } from '../enums/combatant-type';
 import { DamageType } from '../enums/damage-type';
 import { EncounterMapSquareType } from '../enums/encounter-map-square-type';
 import { QuirkType } from '../enums/quirk-type';
+import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
+import { TrapType } from '../enums/trap-type';
 
-import type { EncounterMapSquareModel, EncounterModel } from '../models/encounter';
+import type { EncounterMapSquareModel, EncounterModel, TrapModel } from '../models/encounter';
+import type { ActionModel } from '../models/action';
+import type { BackgroundModel } from '../models/background';
 import type { CombatantModel } from '../models/combatant';
 import type { ConditionModel } from '../models/condition';
+import type { ItemModel } from '../models/item';
 
+import { CombatantLogic } from './combatant-logic';
 import { ConditionLogic } from './condition-logic';
 import { EncounterLogic } from './encounter-logic';
 import { Factory } from './factory';
+import { FeatureLogic } from './feature-logic';
+import { GameLogic } from './game-logic';
 import { PackLogic } from './pack-logic';
+import { PathLogic } from './path-logic';
 
 // A square open map, big enough for a combatant to move in every direction.
 const createEncounter = (width = 5, height = 5): EncounterModel => {
@@ -30,6 +42,7 @@ const createEncounter = (width = 5, height = 5): EncounterModel => {
 		round: 0,
 		combatants: [],
 		loot: [],
+		traps: [],
 		mapSquares: mapSquares,
 		log: []
 	};
@@ -246,6 +259,243 @@ describe('EncounterLogic.kill', () => {
 			.filter(message => message.parts.some(part => part.data === 'triggers Detonate'))
 			.length;
 		expect(detonations).toBeLessThanOrEqual(2);
+	});
+});
+
+describe('traps', () => {
+	let encounter: EncounterModel;
+	let hero: CombatantModel;
+	let trap: TrapModel;
+
+	// Damage can turn into a wound, resetting the damage counter, so measure both
+	const harm = (combatant: CombatantModel) => combatant.combat.damage + combatant.combat.wounds;
+
+	const addTrap = (type: TrapType, x: number, y: number, hidden = 0) => {
+		const t = TrapData.createTrap(type, CombatantType.Monster);
+		t.position = { x: x, y: y };
+		t.hidden = hidden;
+		encounter.traps.push(t);
+		return t;
+	};
+
+	beforeEach(() => {
+		encounter = createEncounter();
+		hero = addCombatant(encounter, CombatantType.Hero, 2, 2);
+		hero.combat.movement = 10;
+		trap = addTrap(TrapType.Fire, 2, 3);
+	});
+
+	it('go off when someone moves onto them', () => {
+		EncounterLogic.move(encounter, hero, 's', 1);
+
+		expect(harm(hero)).toBeGreaterThan(0);
+		expect(trap.armed).toBe(false);
+	});
+
+	// A sprung trap stays on the map as wreckage, so walking back over it must be harmless
+	it('do not go off a second time', () => {
+		EncounterLogic.move(encounter, hero, 's', 1);
+		const harmed = harm(hero);
+
+		EncounterLogic.move(encounter, hero, 'n', 1);
+		EncounterLogic.move(encounter, hero, 's', 1);
+
+		expect(harm(hero)).toBe(harmed);
+	});
+
+	it('leave the squares around them alone', () => {
+		EncounterLogic.move(encounter, hero, 'e', 1);
+
+		expect(harm(hero)).toBe(0);
+		expect(trap.armed).toBe(true);
+	});
+
+	it('come into plain sight once they have been set off', () => {
+		trap.hidden = 6;
+
+		EncounterLogic.move(encounter, hero, 's', 1);
+
+		expect(trap.hidden).toBe(0);
+	});
+
+	it('are visible to the other side only when senses beat their hidden score', () => {
+		trap.hidden = 4;
+
+		hero.combat.senses = 3;
+		expect(EncounterLogic.getVisibleTraps(encounter, hero)).toHaveLength(0);
+
+		hero.combat.senses = 4;
+		expect(EncounterLogic.getVisibleTraps(encounter, hero)).toHaveLength(1);
+	});
+
+	it('are found by findTraps within the given radius', () => {
+		addTrap(TrapType.Spike, 4, 4);
+
+		expect(EncounterLogic.findTraps(encounter, [ { x: 2, y: 2 } ], 1)).toHaveLength(1);
+		expect(EncounterLogic.findTraps(encounter, [ { x: 2, y: 2 } ], 3)).toHaveLength(2);
+	});
+
+	// A hero with no Perception to speak of rolls half a die, which can never reach 8
+	it('survive a failed disarm attempt, but not in hiding', () => {
+		trap.hidden = 6;
+
+		EncounterLogic.disarmTrap(encounter, hero, trap);
+
+		expect(encounter.traps).toHaveLength(1);
+		expect(trap.hidden).toBe(0);
+	});
+
+	it('are removed by a successful disarm attempt', () => {
+		hero.features.push(FeatureLogic.createSkillFeature('test-perception', SkillType.Perception, 3));
+		const random = vi.spyOn(Math, 'random').mockReturnValue(0.85);
+
+		try {
+			EncounterLogic.disarmTrap(encounter, hero, trap);
+		} finally {
+			random.mockRestore();
+		}
+
+		expect(encounter.traps).toHaveLength(0);
+	});
+
+	// However well a snare is concealed, the side that laid it always knows where it is
+	it('are always visible to the faction that set them', () => {
+		hero.features.push(FeatureLogic.createSkillFeature('test-stealth', SkillType.Stealth, 5));
+		hero.combat.senses = 0;
+		const monster = addCombatant(encounter, CombatantType.Monster, 0, 0);
+		monster.combat.senses = 0;
+
+		const placed = EncounterLogic.placeTrap(encounter, hero, TrapType.Spike, { x: 3, y: 2 });
+		placed.hidden = 8;
+
+		expect(EncounterLogic.getVisibleTraps(encounter, hero)).toContain(placed);
+		expect(EncounterLogic.getVisibleTraps(encounter, monster)).not.toContain(placed);
+	});
+
+	// Automatic movement - a monster's turn, or a commanded hero - routes around a trap you know
+	// about, and only around the ones you know about
+	it('are avoided by automatic pathing when the mover can see them', () => {
+		const monster = addCombatant(encounter, CombatantType.Monster, 2, 2);
+		monster.combat.movement = 10;
+		const known = addTrap(TrapType.Spike, 1, 1);
+		known.setBy = CombatantType.Monster;
+
+		const paths = PathLogic.findPaths(encounter, monster, true);
+		expect(paths.some(p => (p.x === known.position.x) && (p.y === known.position.y))).toBe(false);
+	});
+
+	it('are walked over by automatic pathing when the mover cannot see them', () => {
+		const monster = addCombatant(encounter, CombatantType.Monster, 2, 2);
+		monster.combat.movement = 10;
+		monster.combat.senses = 0;
+		const unknown = addTrap(TrapType.Spike, 1, 1, 8);
+		unknown.setBy = CombatantType.Hero;
+
+		const paths = PathLogic.findPaths(encounter, monster, true);
+		expect(paths.some(p => (p.x === unknown.position.x) && (p.y === unknown.position.y))).toBe(true);
+	});
+
+	it('no longer block automatic pathing once they have been sprung', () => {
+		const monster = addCombatant(encounter, CombatantType.Monster, 2, 2);
+		monster.combat.movement = 10;
+		const sprung = addTrap(TrapType.Spike, 1, 1);
+		sprung.armed = false;
+
+		const paths = PathLogic.findPaths(encounter, monster, true);
+		expect(paths.some(p => (p.x === sprung.position.x) && (p.y === sprung.position.y))).toBe(true);
+	});
+
+	it('can be set by a combatant, and go off when someone walks into them', () => {
+		const placed = EncounterLogic.placeTrap(encounter, hero, TrapType.Spike, { x: 3, y: 2 });
+		expect(encounter.traps).toHaveLength(2);
+
+		const victim = addCombatant(encounter, CombatantType.Monster, 4, 2);
+		victim.combat.movement = 10;
+		EncounterLogic.move(encounter, victim, 'w', 1);
+
+		expect(placed.armed).toBe(false);
+		expect(harm(victim)).toBeGreaterThan(0);
+	});
+});
+
+describe('scrolls in an encounter', () => {
+	let encounter: EncounterModel;
+	let hero: CombatantModel;
+	let scroll: ItemModel;
+
+	beforeEach(() => {
+		encounter = createEncounter();
+		hero = addCombatant(encounter, CombatantType.Hero, 2, 2);
+
+		scroll = JSON.parse(JSON.stringify(GameLogic.getScroll('scroll-warding'))) as ItemModel;
+		scroll.id = 'carried-scroll';
+		hero.carried.push(scroll);
+	});
+
+	it('put a card into the hand alongside the drawn actions', () => {
+		EncounterLogic.drawActions(encounter, hero);
+		expect(hero.combat.actions.map(a => a.id)).toContain(scroll.id);
+	});
+
+	// Two copies of the same scroll are separate cards, so their actions can't share an ID
+	it('give each copy of a scroll its own card', () => {
+		const second = JSON.parse(JSON.stringify(scroll)) as ItemModel;
+		second.id = 'carried-scroll-2';
+		hero.carried.push(second);
+
+		EncounterLogic.drawActions(encounter, hero);
+		expect(hero.combat.actions.filter(a => (a.id === scroll.id) || (a.id === second.id))).toHaveLength(2);
+	});
+
+	it('are named as the source of their own action', () => {
+		EncounterLogic.drawActions(encounter, hero);
+		expect(CombatantLogic.getActionSource(hero, scroll.id)).toBe(scroll.name);
+		expect(CombatantLogic.getActionSourceType(hero, scroll.id)).toBe(CardType.Scroll);
+	});
+
+	it('are spent when the action is run', () => {
+		EncounterLogic.drawActions(encounter, hero);
+		const action = hero.combat.actions.find(a => a.id === scroll.id) as ActionModel;
+
+		EncounterLogic.selectAction(encounter, hero, action);
+		EncounterLogic.runAction(encounter, hero);
+
+		expect(hero.carried.map(i => i.id)).not.toContain(scroll.id);
+		expect(hero.combat.actions.map(a => a.id)).not.toContain(scroll.id);
+	});
+
+	it('do not come back when the hand is redrawn', () => {
+		EncounterLogic.drawActions(encounter, hero);
+		const action = hero.combat.actions.find(a => a.id === scroll.id) as ActionModel;
+
+		EncounterLogic.selectAction(encounter, hero, action);
+		EncounterLogic.runAction(encounter, hero);
+		EncounterLogic.drawActions(encounter, hero);
+
+		expect(hero.combat.actions.map(a => a.id)).not.toContain(scroll.id);
+	});
+
+	// The Scribe's whole contribution is the createScroll effect, so it has to put a usable copy
+	// into the carried items
+	it('can be created by an action effect', () => {
+		const scribe = GameLogic.getBackground('background-scribe') as BackgroundModel;
+		const action = scribe.actions.find(a => a.name.includes('Warding')) as ActionModel;
+
+		EncounterLogic.drawActions(encounter, hero);
+		hero.combat.actions.push(action);
+		EncounterLogic.selectAction(encounter, hero, action);
+		EncounterLogic.runAction(encounter, hero);
+
+		const created = hero.carried.filter(i => i.name === 'Scroll of Warding');
+		expect(created).toHaveLength(2);
+		expect(created[0].id).not.toBe(created[1].id);
+	});
+
+	it('leave the hand when the scroll is dropped', () => {
+		EncounterLogic.drawActions(encounter, hero);
+		EncounterLogic.dropItem(encounter, hero, scroll);
+
+		expect(hero.combat.actions.map(a => a.id)).not.toContain(scroll.id);
 	});
 });
 

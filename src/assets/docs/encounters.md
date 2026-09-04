@@ -24,6 +24,8 @@ You may also see blue squares of Water, and pale blue squares of Ice. Water is d
 
 Ice is not difficult terrain - you cross it as easily as open ground. What makes it worth creating is that it's no longer water: it neither conducts nor shelters anyone from fire.
 
+Some maps have traps on them, shown as red diamonds. A trap has a Hidden score, and you only see it if the combatant whose turn it is has a Senses score to match - so a trap one hero walks straight past may be plainly visible to the next. The side that laid a trap always knows where it is, however well hidden it is from everyone else. Moving onto a trap's square sets it off; a sprung trap turns grey and is harmless from then on. Some heroes have a `Disarm Trap` action, which rolls Perception and removes the trap on a result of 8 or higher; a failed attempt at least leaves the thing in plain sight. Monsters won't walk onto a trap they can see, so a trap you've spotted - or one you've set yourself - is also a piece of ground they will go around.
+
 On each combatant's turn, you'll see that the map hides the squares that aren't visible from that combatant's point of view.
 
 ## Hero Controls
@@ -115,6 +117,8 @@ For these options, you'll have to open your character sheet by tapping the icon 
 ---
 
 # Using An Action
+
+If you're carrying any scrolls, each one is in your hand as an extra action card, on top of the three you drew. Reading a scroll is your action for the turn, and the scroll is used up whether or not it does what you hoped.
 
 When you've selected the action card you want to use, you might have to specify some extra information before you can use it - for example, which weapon you want to use, which enemy you want to hit, which ally you want to heal, or which map square you want to target. Once you've done that, press the `Run this Action` button.
 

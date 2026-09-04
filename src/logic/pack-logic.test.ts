@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
+import type { ScrollModel } from '../models/item';
+
 import { GameLogic } from './game-logic';
 import { PackLogic } from './pack-logic';
 
@@ -43,6 +45,8 @@ describe('the decks drawn from available packs', () => {
 		roles: GameLogic.getRoleDeck(packIDs).length,
 		backgrounds: GameLogic.getBackgroundDeck(packIDs).length,
 		items: GameLogic.getItemDeck(packIDs).length,
+		potions: GameLogic.getPotionDeck(packIDs).length,
+		scrolls: GameLogic.getScrollDeck(packIDs).length,
 		structures: GameLogic.getStructureDeck(packIDs).length
 	});
 
@@ -55,5 +59,27 @@ describe('action IDs across every pack', () => {
 	it('are unique, so a list of actions can safely be keyed by ID', () => {
 		const ids = GameLogic.getAllActions(allPackIDs()).map(a => a.id);
 		expect([ ...new Set(ids) ]).toHaveLength(ids.length);
+	});
+
+	// A scroll puts its action into a hand alongside the ones drawn from the deck, so its ID has
+	// to be distinct from those too
+	it('do not collide with the actions carried by scrolls', () => {
+		const ids = [
+			...GameLogic.getAllActions(allPackIDs()).map(a => a.id),
+			...GameLogic.getScrollDeck(allPackIDs()).map(sc => (sc.scroll as ScrollModel).action.id)
+		];
+		expect([ ...new Set(ids) ]).toHaveLength(ids.length);
+	});
+});
+
+describe('every scroll', () => {
+	it('has an action to run', () => {
+		GameLogic.getScrollDeck(allPackIDs()).forEach(sc => expect(sc.scroll).not.toBeNull());
+	});
+
+	// Scrolls are named by the effect they invoke, and both the item card and the action card in
+	// hand show that name, so the two must agree
+	it('shares its name with its action', () => {
+		GameLogic.getScrollDeck(allPackIDs()).forEach(sc => expect((sc.scroll as ScrollModel).action.name).toBe(sc.name));
 	});
 });

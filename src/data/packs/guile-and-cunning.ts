@@ -11,6 +11,7 @@ import { PackModel } from '../../models/pack';
 import { SkillType } from '../../enums/skill-type';
 import { StructureType } from '../../enums/structure-type';
 import { TraitType } from '../../enums/trait-type';
+import { TrapType } from '../../enums/trap-type';
 
 export const guileAndCunning = (): PackModel => ({
 	id: 'pack-guile-and-cunning',
@@ -461,12 +462,83 @@ export const guileAndCunning = (): PackModel => ({
 						ActionEffects.hide(),
 						ActionEffects.takeAnotherAction()
 					]
+				},
+				{
+					id: 'thief-action-4',
+					name: 'Disarm Trap',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Traps, 1)
+					],
+					effects: [
+						ActionEffects.disarmTrap()
+					]
+				}
+			]
+		},
+		{
+			id: 'background-trapper',
+			name: 'Trapper',
+			description: 'The trapper knows where to put a snare, and where somebody else has put one.',
+			startingFeatures: [
+				FeatureLogic.createSkillFeature('trapper-start-1', SkillType.Perception, 2)
+			],
+			features: [
+				FeatureLogic.createSkillFeature('trapper-feature-1', SkillType.Perception, 2)
+			],
+			actions: [
+				{
+					id: 'trapper-action-1',
+					name: 'Set Snare',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Squares, 1)
+					],
+					effects: [
+						ActionEffects.placeTrap(TrapType.Spike),
+						ActionEffects.takeAnotherAction()
+					]
+				},
+				{
+					id: 'trapper-action-2',
+					name: 'Spring the Trap',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Traps, 1, 5)
+					],
+					effects: [
+						ActionEffects.springTrap()
+					]
+				},
+				{
+					id: 'trapper-action-3',
+					name: 'Disarm Trap',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Traps, 1)
+					],
+					effects: [
+						ActionEffects.disarmTrap()
+					]
+				},
+				{
+					id: 'trapper-action-4',
+					name: 'Concealed Position',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.self()
+					],
+					effects: [
+						ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Resolve, 4, SkillType.Stealth)),
+						ActionEffects.hide()
+					]
 				}
 			]
 		}
 	],
 	items: [],
 	potions: [],
+	scrolls: [],
 	structures: [
 		{
 			id: 'structure-intelligencer',

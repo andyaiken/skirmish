@@ -521,5 +521,6 @@ export const menagerie = (): PackModel => ({
 	backgrounds: [],
 	items: [],
 	potions: [],
+	scrolls: [],
 	structures: []
 });

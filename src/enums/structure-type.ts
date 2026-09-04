@@ -12,6 +12,7 @@ export enum StructureType {
 	Observatory = 'observatory',
 	Quartermaster = 'quartermaster',
 	Sanatorium = 'sanatorium',
+	Scriptorium = 'scriptorium',
 	Shipyard = 'shipyard',
 	Tavern = 'tavern',
 	Temple = 'temple',

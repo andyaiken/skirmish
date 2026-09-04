@@ -551,9 +551,9 @@ export class Main extends Component<Props, State> {
 			game.heroSlots += 1;
 			game.heroes = game.heroes.filter(h => h.id !== hero.id);
 
-			// Add magic items and potions
-			hero.items.filter(i => i.magic || i.potion).forEach(i => game.items.push(i));
-			hero.carried.filter(i => i.magic || i.potion).forEach(i => game.items.push(i));
+			// Add magic items, potions and scrolls
+			hero.items.filter(i => i.magic || i.potion || i.scroll).forEach(i => game.items.push(i));
+			hero.carried.filter(i => i.magic || i.potion || i.scroll).forEach(i => game.items.push(i));
 
 			this.setState({
 				game: game
@@ -629,13 +629,15 @@ export class Main extends Component<Props, State> {
 
 	//#region Items
 
-	buyItem = (item: ItemModel) => {
+	buyItem = (item: ItemModel, free = false) => {
 		try {
 			const game = this.state.game as GameModel;
 
 			game.items.push(item);
 
-			game.money = Math.max(0, game.money - StrongholdLogic.getItemPrice(game, item));
+			if (!free) {
+				game.money = Math.max(0, game.money - StrongholdLogic.getItemPrice(game, item));
+			}
 
 			this.setState({
 				game: game
@@ -652,14 +654,7 @@ export class Main extends Component<Props, State> {
 			const sell = (item: ItemModel) => {
 				game.items = game.items.filter(i => i !== item);
 
-				let money = 1;
-				if (item.potion) {
-					money = 10;
-				}
-				if (item.magic) {
-					money = 50;
-				}
-				game.money += money;
+				game.money += StrongholdLogic.getSalePrice(item);
 			};
 
 			const game = this.state.game as GameModel;

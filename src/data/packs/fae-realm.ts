@@ -540,5 +540,6 @@ export const faeRealm = (): PackModel => ({
 	backgrounds: [],
 	items: [],
 	potions: [],
+	scrolls: [],
 	structures: []
 });

@@ -567,6 +567,7 @@ export const workshop = (): PackModel => ({
 			},
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -591,6 +592,7 @@ export const workshop = (): PackModel => ({
 			},
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		},
@@ -615,11 +617,13 @@ export const workshop = (): PackModel => ({
 			},
 			armor: null,
 			potion: null,
+			scroll: null,
 			features: [],
 			actions: []
 		}
 	],
 	potions: [],
+	scrolls: [],
 	structures: [
 		{
 			id: 'structure-forge',

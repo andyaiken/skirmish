@@ -647,6 +647,7 @@ export const deepWater = (): PackModel => ({
 	backgrounds: [],
 	items: [],
 	potions: [],
+	scrolls: [],
 	structures: [
 		{
 			id: 'structure-shipyard',

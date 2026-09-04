@@ -1,4 +1,5 @@
 import { BaseData } from '../data/base-data';
+import { TrapData } from '../data/trap-data';
 
 import { ActionRangeType } from '../enums/action-range-type';
 import { ActionTargetType } from '../enums/action-target-type';
@@ -14,6 +15,7 @@ import { QuirkType } from '../enums/quirk-type';
 import { SkillType } from '../enums/skill-type';
 import { SummonType } from '../enums/summon-type';
 import { TraitType } from '../enums/trait-type';
+import { TrapType } from '../enums/trap-type';
 
 import { EncounterGenerator } from '../generators/encounter-generator';
 
@@ -555,6 +557,38 @@ export class ActionEffects {
 		};
 	};
 
+	static createScroll = (scrollID: string): ActionEffectModel => {
+		return {
+			id: 'createScroll',
+			data: scrollID,
+			children: []
+		};
+	};
+
+	static disarmTrap = (): ActionEffectModel => {
+		return {
+			id: 'disarmTrap',
+			data: null,
+			children: []
+		};
+	};
+
+	static springTrap = (): ActionEffectModel => {
+		return {
+			id: 'springTrap',
+			data: null,
+			children: []
+		};
+	};
+
+	static placeTrap = (type: TrapType): ActionEffectModel => {
+		return {
+			id: 'placeTrap',
+			data: type,
+			children: []
+		};
+	};
+
 	static summon = (type: SummonType): ActionEffectModel => {
 		return {
 			id: 'summon',
@@ -691,6 +725,21 @@ export class ActionEffects {
 				const potionID = effect.data as string;
 				const potion = GameLogic.getPotion(potionID) as ItemModel;
 				return `Create a ${potion.name}`;
+			}
+			case 'createScroll': {
+				const scrollID = effect.data as string;
+				const scroll = GameLogic.getScroll(scrollID) as ItemModel;
+				return `Create a ${scroll.name}`;
+			}
+			case 'disarmTrap': {
+				return 'Disarm a trap';
+			}
+			case 'springTrap': {
+				return 'Set off a trap';
+			}
+			case 'placeTrap': {
+				const type = effect.data as TrapType;
+				return `Set ${TrapData.getName(type)}`;
 			}
 			case 'summon': {
 				const type = effect.data as SummonType;
@@ -1472,6 +1521,79 @@ export class ActionEffects {
 				}
 				break;
 			}
+			case 'createScroll': {
+				const scrollID = effect.data as string;
+				const targetParameter = parameters.find(p => p.id === 'targets');
+				if (targetParameter) {
+					const targetIDs = targetParameter.value as string[];
+					targetIDs.forEach(id => {
+						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
+						const scroll = GameLogic.getScroll(scrollID) as ItemModel;
+						const copy = JSON.parse(JSON.stringify(scroll)) as ItemModel;
+						copy.id = Utils.guid();
+						target.carried.push(copy);
+					});
+				}
+				break;
+			}
+			case 'disarmTrap': {
+				const targetParameter = parameters.find(p => p.id === 'targets');
+				if (targetParameter) {
+					const targetIDs = targetParameter.value as string[];
+					targetIDs.forEach(id => {
+						const trap = EncounterLogic.getTrap(encounter, id);
+						if (trap) {
+							EncounterLogic.disarmTrap(encounter, combatant, trap);
+						}
+					});
+				}
+				break;
+			}
+			case 'springTrap': {
+				const targetParameter = parameters.find(p => p.id === 'targets');
+				if (targetParameter) {
+					const targetIDs = targetParameter.value as string[];
+					targetIDs.forEach(id => {
+						const trap = EncounterLogic.getTrap(encounter, id);
+						if (trap) {
+							if (trap.armed) {
+								// Whoever is standing on it takes the consequences; if nobody is, it just goes off
+								const victim = encounter.combatants
+									.filter(c => c.combat.state !== CombatantState.Dead)
+									.find(c => EncounterLogic.getCombatantSquares(encounter, c).some(sq => (sq.x === trap.position.x) && (sq.y === trap.position.y)));
+								EncounterLogic.springTrap(encounter, trap, victim ?? null);
+							} else {
+								EncounterLogLogic.log(encounter, [
+									EncounterLogLogic.combatant(combatant),
+									EncounterLogLogic.text(`cannot set off ${trap.name}: it has already been sprung`)
+								]);
+							}
+						}
+					});
+				}
+				break;
+			}
+			case 'placeTrap': {
+				const type = effect.data as TrapType;
+				const targetParameter = parameters.find(p => p.id === 'targets');
+				if (targetParameter) {
+					const squares = targetParameter.value as { x: number, y: number }[];
+					squares.forEach(square => {
+						// The nearest square is the one you're standing on, so this is the common
+						// case rather than a corner one - say why nothing happened
+						const trapped = encounter.traps.some(t => (t.position.x === square.x) && (t.position.y === square.y));
+						if (trapped || !EncounterLogic.getSquareIsEmpty(encounter, square)) {
+							EncounterLogLogic.log(encounter, [
+								EncounterLogLogic.combatant(combatant),
+								EncounterLogLogic.text(trapped ? 'cannot set a trap on a square that already has one' : 'cannot set a trap on an occupied square')
+							]);
+						} else {
+							EncounterLogic.placeTrap(encounter, combatant, type, square);
+						}
+					});
+				}
+				break;
+			}
 			case 'summon': {
 				const type = effect.data as SummonType;
 				const list = [];
@@ -1586,6 +1708,9 @@ export class ActionLogic {
 					break;
 				case ActionTargetType.Walls:
 					type = plural ? 'walls' : 'wall';
+					break;
+				case ActionTargetType.Traps:
+					type = plural ? 'traps' : 'trap';
 					break;
 			}
 		}
@@ -1866,6 +1991,18 @@ export class ActionLogic {
 									const distanceB = EncounterMapLogic.getDistance(b, combatant.combat.position);
 									return distanceA - distanceB;
 								})
+						);
+						break;
+					case ActionTargetType.Traps:
+						candidates.push(
+							...EncounterLogic.findTraps(encounter, originSquares, radius)
+								.filter(trap => EncounterLogic.canSeeTrap(combatant, trap))
+								.sort((a, b) => {
+									const distanceA = EncounterMapLogic.getDistance(a.position, combatant.combat.position);
+									const distanceB = EncounterMapLogic.getDistance(b.position, combatant.combat.position);
+									return distanceA - distanceB;
+								})
+								.map(trap => trap.id)
 						);
 						break;
 					case ActionTargetType.Walls:

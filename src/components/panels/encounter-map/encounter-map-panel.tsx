@@ -9,7 +9,7 @@ import { ConditionLogic } from '../../../logic/condition-logic';
 import { EncounterLogic } from '../../../logic/encounter-logic';
 import { EncounterMapLogic } from '../../../logic/encounter-map-logic';
 
-import type { EncounterMapEdgeModel, EncounterModel, LootPileModel } from '../../../models/encounter';
+import type { EncounterMapEdgeModel, EncounterModel, LootPileModel, TrapModel } from '../../../models/encounter';
 import type { ActionOriginParameterModel } from '../../../models/action';
 import type { CombatantModel } from '../../../models/combatant';
 
@@ -22,6 +22,7 @@ import { LootToken } from './loot-token/loot-token';
 import { MiniToken } from './mini-token/mini-token';
 import { Overlay } from './overlay/overlay';
 import { TrailToken } from './trail-token/trail-token';
+import { TrapToken } from './trap-token/trap-token';
 import { Wall } from './wall/wall';
 
 import './encounter-map-panel.scss';
@@ -31,12 +32,15 @@ interface Props {
 	squareSize: number;
 	selectableCombatantIDs: string[];
 	selectableLootIDs: string[];
+	selectableTrapIDs: string[];
 	selectableSquares: { x: number, y: number }[];
 	selectedCombatantIDs: string[];
 	selectedLootIDs: string[];
+	selectedTrapIDs: string[];
 	selectedSquares: { x: number, y: number }[];
 	onClickCombatant: (combatant: CombatantModel) => void;
 	onClickLoot: (loot: LootPileModel) => void;
+	onClickTrap: (trap: TrapModel) => void;
 	onClickSquare: (square: { x: number, y: number }) => void;
 	onClickOff: () => void;
 }
@@ -216,6 +220,23 @@ export class EncounterMapPanel extends Component<Props> {
 			);
 		});
 
+		// A trap is on the map only for someone whose senses beat it; anyone else walks over ground
+		// that looks like any other
+		const traps = EncounterLogic.getVisibleTraps(this.props.encounter, current ?? null).map(trap => {
+			return (
+				<TrapToken
+					key={trap.id}
+					trap={trap}
+					encounter={this.props.encounter}
+					squareSize={this.props.squareSize}
+					mapDimensions={dims}
+					selectable={(this.props.selectableTrapIDs.length === 0) || this.props.selectableTrapIDs.includes(trap.id)}
+					selected={this.props.selectedTrapIDs.includes(trap.id)}
+					onClick={this.props.onClickTrap}
+				/>
+			);
+		});
+
 		const auras = combatants.map(combatant => {
 			const aurasToShow = CombatantLogic.getAuras(combatant)
 				.filter(a => {
@@ -335,6 +356,7 @@ export class EncounterMapPanel extends Component<Props> {
 					{trails}
 					{walls}
 					{loot}
+					{traps}
 					{minis}
 					{fog}
 					{overlays}

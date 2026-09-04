@@ -3,5 +3,6 @@ export enum ActionTargetType {
 	Enemies = 'Enemies',
 	Allies = 'Allies',
 	Squares = 'Squares',
-	Walls = 'Walls'
+	Walls = 'Walls',
+	Traps = 'Traps'
 }

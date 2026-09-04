@@ -360,6 +360,7 @@ export const coinAndContract = (): PackModel => ({
 	],
 	items: [],
 	potions: [],
+	scrolls: [],
 	structures: [
 		{
 			id: 'structure-bazaar',

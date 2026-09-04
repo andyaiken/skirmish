@@ -8,6 +8,7 @@ import { ItemProficiencyType } from '../../../enums/item-proficiency-type';
 import { ActionEffects, ActionLogic } from '../../../logic/action-logic';
 import { FeatureLogic } from '../../../logic/feature-logic';
 
+import type { ActionEffectModel } from '../../../models/action';
 import type { ItemModel } from '../../../models/item';
 
 import { ListItemPanel } from '../../panels';
@@ -60,6 +61,27 @@ export class ItemCard extends Component<Props, State> {
 		}
 	};
 
+	// A scroll's action can nest its effects - what an attack does on a hit, say - so the card back
+	// shows them the way an action card does
+	getEffects = (effects: ActionEffectModel[]): ReactNode[] => {
+		return effects.flatMap((e, n) => [
+			<ListItemPanel key={n} item={ActionEffects.getDescription(e, null, null)} />,
+			e.children.length > 0 ? <div key={`${n} children`} className='indent'>{this.getEffects(e.children)}</div> : null
+		]);
+	};
+
+	getCardType = () => {
+		if (this.props.item.potion) {
+			return CardType.Potion;
+		}
+
+		if (this.props.item.scroll) {
+			return CardType.Scroll;
+		}
+
+		return CardType.Item;
+	};
+
 	render = () => {
 		let location = this.props.item.location.toString();
 		if (this.props.item.slots > 1) {
@@ -105,6 +127,17 @@ export class ItemCard extends Component<Props, State> {
 			);
 		}
 
+		let scroll = null;
+		if (this.props.item.scroll) {
+			scroll = (
+				<div>
+					<Text type={TextType.MinorHeading}>Scroll</Text>
+					{this.props.item.scroll.action.parameters.map((p, n) => <ListItemPanel key={n} item={ActionLogic.getParameterDescription(p)} />)}
+					{this.getEffects(this.props.item.scroll.action.effects)}
+				</div>
+			);
+		}
+
 		let features = null;
 		const collatedFeatures = FeatureLogic.collateFeatures(this.props.item.features);
 		if (collatedFeatures.length > 0) {
@@ -127,7 +160,7 @@ export class ItemCard extends Component<Props, State> {
 		}
 
 		let empty = null;
-		if (!weapon && !armor && !potion && !features && !actions) {
+		if (!weapon && !armor && !potion && !scroll && !features && !actions) {
 			empty = (
 				<div>
 					<Text type={TextType.Small}>This item has no additional statistics.</Text>
@@ -142,7 +175,7 @@ export class ItemCard extends Component<Props, State> {
 
 		return (
 			<PlayingCard
-				type={this.props.item.potion ? CardType.Potion : CardType.Item}
+				type={this.getCardType()}
 				front={(
 					<PlaceholderCard
 						text={this.props.count === 1 ? this.props.item.name : `${this.props.item.name} (x${this.props.count})`}
@@ -162,12 +195,13 @@ export class ItemCard extends Component<Props, State> {
 						{weapon}
 						{armor}
 						{potion}
+						{scroll}
 						{features}
 						{actions}
 						{empty}
 					</div>
 				)}
-				footerText={this.props.item.potion ? 'Potion' : 'Item'}
+				footerText={this.getCardType().toString()}
 				footerContent={buttons}
 				flipped={this.state.flipped}
 				disabled={this.props.disabled}

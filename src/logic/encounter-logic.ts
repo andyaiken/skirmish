@@ -1,4 +1,5 @@
 import { BaseData } from '../data/base-data';
+import { TrapData } from '../data/trap-data';
 
 import { CombatantState } from '../enums/combatant-state';
 import { CombatantType } from '../enums/combatant-type';
@@ -10,12 +11,13 @@ import { EncounterState } from '../enums/encounter-state';
 import { QuirkType } from '../enums/quirk-type';
 import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
+import { TrapType } from '../enums/trap-type';
 
 import { ActionEffects, ActionLogic, ActionTargetParameters } from './action-logic';
 import { GameLogic } from './game-logic';
 
 import type { ActionModel, ActionOriginParameterModel, ActionTargetParameterModel, ActionWeaponParameterModel } from '../models/action';
-import type { EncounterMapSquareModel, EncounterModel, LootPileModel } from '../models/encounter';
+import type { EncounterMapSquareModel, EncounterModel, LootPileModel, TrapModel } from '../models/encounter';
 import type { CombatantModel } from '../models/combatant';
 import type { ConditionModel } from '../models/condition';
 import type { ItemModel } from '../models/item';
@@ -360,11 +362,14 @@ export class EncounterLogic {
 		switch (combatant.faction) {
 			case CombatantType.Hero:
 				combatant.combat.actions = Collections.shuffle(deck).splice(0, 3);
+				// Scrolls aren't part of the deck - they're always in hand, and a redraw doesn't lose them
+				combatant.combat.actions.push(...CombatantLogic.getScrollActions(combatant));
 				combatant.combat.actions.push(...BaseData.getBaseActions());
 				combatant.combat.selectedAction = null;
 				break;
 			case CombatantType.Monster:
 				combatant.combat.actions = deck;
+				combatant.combat.actions.push(...CombatantLogic.getScrollActions(combatant));
 				combatant.combat.actions.push(...BaseData.getBaseActions());
 				EncounterLogic.checkActionParameters(encounter, combatant);
 				combatant.combat.selectedAction = null;
@@ -410,10 +415,25 @@ export class EncounterLogic {
 		if (combatant.combat.selectedAction !== null) {
 			const action = combatant.combat.selectedAction.action;
 			combatant.combat.selectedAction.used = true;
-			EncounterLogLogic.log(encounter, [
-				EncounterLogLogic.combatant(combatant),
-				EncounterLogLogic.text(`selects ${action.name}`)
-			]);
+
+			// A scroll is spent by reading it, whatever the action goes on to do
+			const scroll = CombatantLogic.getScrollForAction(combatant, action.id);
+			if (scroll) {
+				EncounterLogLogic.log(encounter, [
+					EncounterLogLogic.combatant(combatant),
+					EncounterLogLogic.text(`reads ${scroll.name}`)
+				]);
+
+				combatant.items = combatant.items.filter(i => i.id !== scroll.id);
+				combatant.carried = combatant.carried.filter(i => i.id !== scroll.id);
+				combatant.combat.actions = combatant.combat.actions.filter(a => a.id !== action.id);
+			} else {
+				EncounterLogLogic.log(encounter, [
+					EncounterLogLogic.combatant(combatant),
+					EncounterLogLogic.text(`selects ${action.name}`)
+				]);
+			}
+
 			action.effects.forEach(effect => ActionEffects.run(effect, encounter, combatant, action.parameters));
 		}
 	};
@@ -562,7 +582,120 @@ export class EncounterLogic {
 				break;
 		}
 
+		EncounterLogic.triggerTraps(encounter, combatant);
+
 		EncounterLogic.checkActionParameters(encounter, combatant);
+	};
+
+	// The side that laid a trap always knows where it is; for everyone else it's the same
+	// senses-against-hidden comparison that decides whether one combatant can see another
+	static canSeeTrap = (combatant: CombatantModel, trap: TrapModel) => {
+		if (trap.setBy === combatant.faction) {
+			return true;
+		}
+
+		return combatant.combat.senses >= trap.hidden;
+	};
+
+	static getVisibleTraps = (encounter: EncounterModel, combatant: CombatantModel | null) => {
+		if (!combatant) {
+			return [];
+		}
+
+		return encounter.traps.filter(trap => EncounterLogic.canSeeTrap(combatant, trap));
+	};
+
+	static getTrap = (encounter: EncounterModel, id: string): TrapModel | null => {
+		return encounter.traps.find(t => t.id === id) ?? null;
+	};
+
+	static findTraps = (encounter: EncounterModel, originSquares: { x: number, y: number }[], radius: number) => {
+		return encounter.traps.filter(trap => EncounterMapLogic.getDistanceAny(originSquares, [ trap.position ]) <= radius);
+	};
+
+	// Whether any of these squares holds a live trap that this combatant knows about
+	static hasKnownTrap = (encounter: EncounterModel, combatant: CombatantModel, squares: { x: number, y: number }[]) => {
+		return encounter.traps
+			.filter(trap => trap.armed)
+			.filter(trap => EncounterLogic.canSeeTrap(combatant, trap))
+			.some(trap => squares.some(sq => (sq.x === trap.position.x) && (sq.y === trap.position.y)));
+	};
+
+	static triggerTraps = (encounter: EncounterModel, combatant: CombatantModel) => {
+		const squares = EncounterLogic.getCombatantSquares(encounter, combatant);
+		encounter.traps
+			.filter(trap => trap.armed)
+			.filter(trap => squares.some(sq => (sq.x === trap.position.x) && (sq.y === trap.position.y)))
+			.forEach(trap => EncounterLogic.springTrap(encounter, trap, combatant));
+	};
+
+	// Springing a trap leaves it in place, sprung and in plain sight, rather than removing it - the
+	// wreckage is a useful thing for the players to be able to see
+	static springTrap = (encounter: EncounterModel, trap: TrapModel, victim: CombatantModel | null) => {
+		if (!trap.armed) {
+			return;
+		}
+
+		trap.armed = false;
+		trap.hidden = 0;
+
+		if (!victim) {
+			EncounterLogLogic.log(encounter, [
+				EncounterLogLogic.text(`${trap.name} is sprung`)
+			]);
+			return;
+		}
+
+		EncounterLogLogic.log(encounter, [
+			EncounterLogLogic.combatant(victim),
+			EncounterLogLogic.text(`sets off ${trap.name}`)
+		]);
+
+		trap.effects.forEach(effect => {
+			const param = ActionTargetParameters.self();
+			param.value = [ victim.id ];
+			ActionEffects.run(effect, encounter, victim, [ param ]);
+		});
+	};
+
+	static disarmTrap = (encounter: EncounterModel, combatant: CombatantModel, trap: TrapModel) => {
+		const rank = EncounterLogic.getSkillRank(encounter, combatant, SkillType.Perception);
+		const result = Random.dice(rank);
+
+		EncounterLogLogic.log(encounter, [
+			EncounterLogLogic.text('Disarm:'),
+			EncounterLogLogic.combatant(combatant),
+			EncounterLogLogic.text('rolls'),
+			EncounterLogLogic.rank('Perception', rank),
+			EncounterLogLogic.text('and gets'),
+			EncounterLogLogic.result(result)
+		]);
+
+		if (result >= 8) {
+			encounter.traps = encounter.traps.filter(t => t.id !== trap.id);
+			EncounterLogLogic.log(encounter, [
+				EncounterLogLogic.combatant(combatant),
+				EncounterLogLogic.text(`has removed ${trap.name}`)
+			]);
+		} else {
+			// A failed attempt at least shows everyone where the thing is
+			trap.hidden = 0;
+		}
+	};
+
+	static placeTrap = (encounter: EncounterModel, combatant: CombatantModel, type: TrapType, square: { x: number, y: number }) => {
+		const trap = TrapData.createTrap(type, combatant.faction);
+		trap.position = { x: square.x, y: square.y };
+		trap.hidden = Random.dice(EncounterLogic.getSkillRank(encounter, combatant, SkillType.Stealth));
+
+		encounter.traps.push(trap);
+
+		EncounterLogLogic.log(encounter, [
+			EncounterLogLogic.combatant(combatant),
+			EncounterLogLogic.text(`sets ${trap.name}`)
+		]);
+
+		return trap;
 	};
 
 	static drinkPotion = (encounter: EncounterModel, owner: CombatantModel, drinker: CombatantModel, potion: ItemModel) => {
@@ -1068,6 +1201,11 @@ export class EncounterLogic {
 
 		combatant.carried.push(item);
 
+		// A scroll is a card in hand, so one picked up mid-turn is usable straight away
+		if (item.scroll) {
+			combatant.combat.actions.push(...CombatantLogic.getScrollActions(combatant).filter(a => a.id === item.id));
+		}
+
 		EncounterLogic.checkActionParameters(encounter, combatant);
 
 		EncounterLogLogic.log(encounter, [
@@ -1084,6 +1222,12 @@ export class EncounterLogic {
 
 		combatant.items = combatant.items.filter(i => i.id !== item.id);
 		combatant.carried = combatant.carried.filter(i => i.id !== item.id);
+
+		// A dropped scroll takes its card out of the hand with it
+		combatant.combat.actions = combatant.combat.actions.filter(a => a.id !== item.id);
+		if (combatant.combat.selectedAction && !combatant.combat.selectedAction.used && (combatant.combat.selectedAction.action.id === item.id)) {
+			combatant.combat.selectedAction = null;
+		}
 
 		// See if we're beside any loot piles
 		const adj = EncounterMapLogic.getAdjacentSquares(encounter.mapSquares, [ combatant.combat.position ]);

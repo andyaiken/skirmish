@@ -141,6 +141,16 @@ export class DecksTab extends Component<Props, State> {
 						);
 					});
 				break;
+			case 'scrolls':
+				GameLogic.getScrollDeck(this.props.options.packIDs)
+					.forEach(sc => {
+						cards.push(
+							<Badge key={sc.id} value={this.getBadge(sc.id)}>
+								<ItemCard item={sc} />
+							</Badge>
+						);
+					});
+				break;
 		}
 
 		let dialog = null;
@@ -232,7 +242,8 @@ export class DecksTab extends Component<Props, State> {
 						{ id: 'backgrounds', display: 'Backgrounds' },
 						{ id: 'structures', display: 'Structures' },
 						{ id: 'items', display: 'Items' },
-						{ id: 'potions', display: 'Potions' }
+						{ id: 'potions', display: 'Potions' },
+						{ id: 'scrolls', display: 'Scrolls' }
 					]}
 					selectedID={this.state.tab}
 					onSelect={this.setTab}

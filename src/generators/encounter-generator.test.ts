@@ -1,12 +1,15 @@
 import { describe, expect, it } from 'vitest';
 
 import { CombatantType } from '../enums/combatant-type';
+import { EncounterMapSquareType } from '../enums/encounter-map-square-type';
 
 import { EncounterLogic } from '../logic/encounter-logic';
 import { Factory } from '../logic/factory';
 
 import type { EncounterModel } from '../models/encounter';
+import type { RegionModel } from '../models/region';
 
+import { Collections } from '../utils/collections';
 import { Random } from '../utils/random';
 
 import { EncounterGenerator } from './encounter-generator';
@@ -82,5 +85,49 @@ describe('placing a larger combatant', () => {
 
 		const occupied = encounter.combatants.flatMap(c => EncounterLogic.getCombatantSquares(encounter, c)).map(sq => `${sq.x},${sq.y}`);
 		expect(new Set(occupied).size).toBe(occupied.length);
+	});
+});
+
+const createRegion = (seed: string): RegionModel => ({
+	id: seed,
+	name: seed,
+	color: '',
+	encounters: [ seed ],
+	boon: null as unknown as RegionModel['boon'],
+	demographics: { size: 3, population: 5, terrain: 'Plains' }
+});
+
+describe('EncounterGenerator.createEncounter', () => {
+	// The seed drives everything, including whether the encounter drops a loot pile and what goes
+	// into it, so a spread of seeds is the only way to reach every branch.
+	const seeds = Array.from({ length: 40 }, (_, n) => `encounter ${n}`);
+
+	const build = (seed: string, packIDs: string[]) =>
+		EncounterGenerator.createEncounter(createRegion(seed), [ Factory.createCombatant(CombatantType.Hero) ], packIDs);
+
+	it('builds an encounter for a game with no packs switched on', () => {
+		// The core game has no potions of its own, so a loot pile that rolls a potion has an empty
+		// deck to draw from; that used to throw rather than fall back to something else
+		seeds.forEach(seed => expect(() => build(seed, [])).not.toThrow());
+	});
+
+	it('never leaves a loot pile with nothing in it', () => {
+		seeds.forEach(seed => {
+			build(seed, []).loot.forEach(lp => expect(lp.items.length + lp.money).toBeGreaterThan(0));
+		});
+	});
+
+	it('builds an encounter with the Deep Water cards switched on', () => {
+		seeds.forEach(seed => expect(() => build(seed, [ 'pack-deep-water' ])).not.toThrow());
+	});
+
+	it('puts water on the map whether or not any pack is switched on', () => {
+		// Water is base-game terrain now, so the pack list must make no difference to it. Blob
+		// counts are random, so this compares totals across a spread of seeds rather than one map.
+		const water = (packIDs: string[]) => Collections.sum(seeds.slice(0, 8), seed =>
+			build(seed, packIDs).mapSquares.filter(sq => sq.type === EncounterMapSquareType.Water).length);
+
+		expect(water([])).toBeGreaterThan(0);
+		expect(water([ 'pack-deep-water' ])).toBe(water([]));
 	});
 });

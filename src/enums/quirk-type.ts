@@ -5,5 +5,6 @@ export enum QuirkType {
 	Mindless = 'Mindless',
 	Swarm = 'Swarm',
 	Amorphous = 'Amorphous',
+	Aquatic = 'Aquatic',
 	Boss = 'Boss'
 }

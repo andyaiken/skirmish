@@ -50,7 +50,7 @@ export class BoonGenerator {
 				data = Random.dice(5, rng) * 5;
 				break;
 			case BoonType.Structure:
-				data = Collections.draw(GameLogic.getStructureDeck(packIDs).filter(s => !StrongholdLogic.canCharge(s)), rng);
+				data = Collections.draw(GameLogic.getStructureDeck(packIDs).filter(s => StrongholdLogic.canBuild(s)), rng);
 				break;
 		}
 

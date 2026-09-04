@@ -364,7 +364,7 @@ export class Main extends Component<Props, State> {
 		try {
 			const game = this.state.game as GameModel;
 
-			StrongholdLogic.addStructure(game.stronghold, structure);
+			StrongholdLogic.addStructure(game, structure);
 
 			if (cost > 0) {
 				game.money = Math.max(0, game.money - cost);
@@ -397,12 +397,16 @@ export class Main extends Component<Props, State> {
 		}
 	};
 
-	chargeStructure = (structure: StructureModel) => {
+	chargeStructure = (structure: StructureModel, useTavern: boolean) => {
 		try {
 			const game = this.state.game as GameModel;
 
-			const money = 100;
-			game.money = Math.max(0, game.money - money);
+			if (useTavern) {
+				// The Tavern does the work instead of the money
+				StrongholdLogic.spendCharge(game, StructureType.Tavern, 1);
+			} else {
+				game.money = Math.max(0, game.money - 100);
+			}
 
 			StrongholdLogic.rechargeStructure(structure);
 
@@ -597,7 +601,7 @@ export class Main extends Component<Props, State> {
 					break;
 				}
 				case BoonType.Structure:
-					StrongholdLogic.addStructure(game.stronghold, boon.data as StructureModel);
+					StrongholdLogic.addStructure(game, boon.data as StructureModel);
 					break;
 			}
 
@@ -623,14 +627,7 @@ export class Main extends Component<Props, State> {
 
 			game.items.push(item);
 
-			let money = 2;
-			if (item.potion) {
-				money = 20;
-			}
-			if (item.magic) {
-				money = 100;
-			}
-			game.money = Math.max(0, game.money - money);
+			game.money = Math.max(0, game.money - StrongholdLogic.getItemPrice(game, item));
 
 			this.setState({
 				game: game
@@ -702,6 +699,12 @@ export class Main extends Component<Props, State> {
 			if (this.state.game) {
 				const game = this.state.game;
 
+				// A region that doesn't border your land was reached by sea, which costs a Shipyard
+				// charge per attack - conquering it outright may take several voyages
+				if (!CampaignMapLogic.isAdjacentToTerritory(game.map, region) && !this.state.options.developer) {
+					StrongholdLogic.spendCharge(game, StructureType.Shipyard, 1);
+				}
+
 				heroes.forEach(h => CombatantLogic.resetCombatant(h));
 				game.heroes = game.heroes.filter(h => !heroes.includes(h));
 				game.encounter = EncounterGenerator.createEncounter(region, heroes, this.state.options.packIDs);
@@ -759,6 +762,7 @@ export class Main extends Component<Props, State> {
 			if (this.state.game) {
 				const game = this.state.game;
 
+				game.money += StrongholdLogic.getConquestIncome(game, region);
 				CampaignMapLogic.conquerRegion(game.map, region);
 				game.heroes.forEach(h => h.xp += region.encounters.length);
 				game.heroSlots += 1;
@@ -766,6 +770,68 @@ export class Main extends Component<Props, State> {
 
 				this.setState({
 					game: game
+				}, () => {
+					this.saveGame();
+				});
+			}
+		} catch (ex) {
+			this.logException(ex);
+		}
+	};
+
+	getVictoryDialog = () => {
+		return (
+			<div>
+				<Text type={TextType.Heading}>Victory</Text>
+				<Text type={TextType.SubHeading}>You control the island!</Text>
+				<Text>
+					<p><b>Congratulations!</b> There are no more regions to conquer.</p>
+					<p>You can now choose to take your heroes to a new island, or you can start a fresh new campaign.</p>
+				</Text>
+				<div className='card-options'>
+					<PlayingCard front={<PlaceholderCard text='New Island' />} onClick={() => this.nextIsland()} />
+					<PlayingCard front={<PlaceholderCard text='Fresh Start' />} onClick={() => this.endCampaign()} />
+				</div>
+			</div>
+		);
+	};
+
+	purchaseRegion = (region: RegionModel) => {
+		try {
+			if (this.state.game) {
+				const game = this.state.game;
+
+				// Price the region before conquering it, while it's still on the map, and note what a
+				// Counting House would make of it
+				game.money = Math.max(0, game.money - CampaignMapLogic.getPurchasePrice(game, region));
+				const income = StrongholdLogic.getConquestIncome(game, region);
+
+				if (!this.state.options.developer) {
+					// As with an attack, getting to a region across the water costs a Shipyard charge
+					if (!CampaignMapLogic.isAdjacentToTerritory(game.map, region)) {
+						StrongholdLogic.spendCharge(game, StructureType.Shipyard, 1);
+					}
+
+					// The guilds don't broker a sale for nothing; the discount is already in the price
+					StrongholdLogic.spendCharge(game, StructureType.Guildhall, 1);
+				}
+
+				CampaignMapLogic.conquerRegion(game.map, region);
+
+				// The boon and the hero slot are awarded exactly as for a conquest, but no XP -
+				// nobody fought for this one
+				let dialogContent = null;
+				if (CampaignMapLogic.isConquered(game.map)) {
+					dialogContent = this.getVictoryDialog();
+				} else {
+					game.heroSlots += 1;
+					game.boons.push(region.boon);
+					game.money += income;
+				}
+
+				this.setState({
+					game: game,
+					dialog: dialogContent
 				}, () => {
 					this.saveGame();
 				});
@@ -1306,29 +1372,20 @@ export class Main extends Component<Props, State> {
 					// Remove the first encounter for this region
 					region.encounters.splice(0, 1);
 					if (region.encounters.length === 0) {
+						// Read the income while the region is still on the map
+						const income = StrongholdLogic.getConquestIncome(game, region);
 						// Conquer the region
 						CampaignMapLogic.conquerRegion(game.map, region);
-						if (game.map.squares.every(sq => sq.regionID === '')) {
+						if (CampaignMapLogic.isConquered(game.map)) {
 							// Show message
-							dialogContent = (
-								<div>
-									<Text type={TextType.Heading}>Victory</Text>
-									<Text type={TextType.SubHeading}>You control the island!</Text>
-									<Text>
-										<p><b>Congratulations!</b> There are no more regions to conquer.</p>
-										<p>You can now choose to take your heroes to a new island, or you can start a fresh new campaign.</p>
-									</Text>
-									<div className='card-options'>
-										<PlayingCard front={<PlaceholderCard text='New Island' />} onClick={() => this.nextIsland()} />
-										<PlayingCard front={<PlaceholderCard text='Fresh Start' />} onClick={() => this.endCampaign()} />
-									</div>
-								</div>
-							);
+							dialogContent = this.getVictoryDialog();
 						} else {
 							// Add a new hero slot
 							game.heroSlots += 1;
 							// Add the region's boon
 							game.boons.push(region.boon);
+							// A Counting House starts collecting from the region
+							game.money += income;
 						}
 					}
 					// Clear the current encounter
@@ -1555,6 +1612,7 @@ export class Main extends Component<Props, State> {
 						startEncounter={this.startEncounter}
 						regenerateCampaignMap={this.regenerateCampaignMap}
 						conquer={this.conquer}
+						purchaseRegion={this.purchaseRegion}
 					/>
 				);
 			case ScreenType.Encounter:

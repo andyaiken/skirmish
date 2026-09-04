@@ -4,6 +4,7 @@ import { CombatantState } from '../enums/combatant-state';
 import { CombatantType } from '../enums/combatant-type';
 import { DamageType } from '../enums/damage-type';
 import { EncounterMapSquareType } from '../enums/encounter-map-square-type';
+import { QuirkType } from '../enums/quirk-type';
 import { TraitType } from '../enums/trait-type';
 
 import type { EncounterMapSquareModel, EncounterModel } from '../models/encounter';
@@ -437,5 +438,212 @@ describe('EncounterLogic.treatWounds', () => {
 
 		expect(hero.combat.movement).toBe(3);
 		expect(hero.combat.actions.length).toBe(0);
+	});
+});
+
+describe('EncounterLogic.getMoveCost in water and ice', () => {
+	let encounter: EncounterModel;
+	let hero: CombatantModel;
+
+	beforeEach(() => {
+		encounter = createEncounter();
+		hero = addCombatant(encounter, CombatantType.Hero, 2, 2);
+	});
+
+	it('costs 2 to wade into a water square', () => {
+		setSquareType(encounter, 2, 1, EncounterMapSquareType.Water);
+		expect(EncounterLogic.getMoveCost(encounter, hero, hero.combat.position, 'n')).toBe(2);
+	});
+
+	it('costs an Aquatic combatant nothing extra', () => {
+		setSquareType(encounter, 2, 1, EncounterMapSquareType.Water);
+		hero.quirks.push(QuirkType.Aquatic);
+		expect(EncounterLogic.getMoveCost(encounter, hero, hero.combat.position, 'n')).toBe(1);
+	});
+
+	it('costs 1 to cross ice - it is not difficult terrain', () => {
+		setSquareType(encounter, 2, 1, EncounterMapSquareType.Ice);
+		expect(EncounterLogic.getMoveCost(encounter, hero, hero.combat.position, 'n')).toBe(1);
+	});
+});
+
+describe('EncounterLogic.getDamageResistance in water', () => {
+	let encounter: EncounterModel;
+	let hero: CombatantModel;
+
+	beforeEach(() => {
+		encounter = createEncounter();
+		hero = addCombatant(encounter, CombatantType.Hero, 2, 2);
+	});
+
+	it('shelters a combatant standing in water from fire', () => {
+		setSquareType(encounter, 2, 2, EncounterMapSquareType.Water);
+		expect(EncounterLogic.getDamageResistance(encounter, hero, DamageType.Fire)).toBe(3);
+	});
+
+	it('gives nothing on dry ground', () => {
+		expect(EncounterLogic.getDamageResistance(encounter, hero, DamageType.Fire)).toBe(0);
+	});
+
+	it('gives nothing against other damage types', () => {
+		setSquareType(encounter, 2, 2, EncounterMapSquareType.Water);
+		expect(EncounterLogic.getDamageResistance(encounter, hero, DamageType.Cold)).toBe(0);
+	});
+
+	it('does not shelter an Aquatic combatant, who is in the water rather than behind it', () => {
+		setSquareType(encounter, 2, 2, EncounterMapSquareType.Water);
+		hero.quirks.push(QuirkType.Aquatic);
+		expect(EncounterLogic.getDamageResistance(encounter, hero, DamageType.Fire)).toBe(0);
+	});
+
+	it('gives an Aquatic combatant cold resistance, in or out of the water', () => {
+		hero.quirks.push(QuirkType.Aquatic);
+		expect(EncounterLogic.getDamageResistance(encounter, hero, DamageType.Cold)).toBe(3);
+	});
+});
+
+// takeDamage either adds to the damage total or converts it into a wound, depending on an
+// Endurance roll, so "was hurt at all" is the only stable assertion
+const isHurt = (combatant: CombatantModel) => (combatant.combat.damage > 0) || (combatant.combat.wounds > 0);
+
+describe('EncounterLogic.conductDamage', () => {
+	let encounter: EncounterModel;
+	let target: CombatantModel;
+
+	beforeEach(() => {
+		encounter = createEncounter();
+		setSquareType(encounter, 2, 2, EncounterMapSquareType.Water);
+		target = addCombatant(encounter, CombatantType.Monster, 2, 2);
+	});
+
+	it('carries poison to a combatant in adjacent water', () => {
+		setSquareType(encounter, 2, 1, EncounterMapSquareType.Water);
+		const bystander = addCombatant(encounter, CombatantType.Hero, 2, 1);
+		EncounterLogic.takeDamage(encounter, target, 5, DamageType.Poison);
+		expect(isHurt(bystander)).toBe(true);
+	});
+
+	it('carries acid and electricity too', () => {
+		setSquareType(encounter, 2, 1, EncounterMapSquareType.Water);
+		setSquareType(encounter, 3, 2, EncounterMapSquareType.Water);
+		const a = addCombatant(encounter, CombatantType.Hero, 2, 1);
+		const b = addCombatant(encounter, CombatantType.Hero, 3, 2);
+		EncounterLogic.takeDamage(encounter, target, 5, DamageType.Acid);
+		expect(isHurt(a)).toBe(true);
+		EncounterLogic.takeDamage(encounter, target, 5, DamageType.Electricity);
+		expect(isHurt(b)).toBe(true);
+	});
+
+	it('spares a combatant standing on adjacent dry ground', () => {
+		const bystander = addCombatant(encounter, CombatantType.Hero, 2, 1);
+		EncounterLogic.takeDamage(encounter, target, 5, DamageType.Poison);
+		expect(isHurt(bystander)).toBe(false);
+	});
+
+	it('spares a combatant in water that does not touch the target', () => {
+		setSquareType(encounter, 2, 0, EncounterMapSquareType.Water);
+		const bystander = addCombatant(encounter, CombatantType.Hero, 2, 0);
+		EncounterLogic.takeDamage(encounter, target, 5, DamageType.Poison);
+		expect(isHurt(bystander)).toBe(false);
+	});
+
+	it('does not chain onward from the combatants it reaches', () => {
+		// A pool running north: the target at (2,2), one bystander next to them, and a second
+		// bystander next to the first but two squares from the target
+		setSquareType(encounter, 2, 1, EncounterMapSquareType.Water);
+		setSquareType(encounter, 2, 0, EncounterMapSquareType.Water);
+		const near = addCombatant(encounter, CombatantType.Hero, 2, 1);
+		const far = addCombatant(encounter, CombatantType.Hero, 2, 0);
+
+		EncounterLogic.takeDamage(encounter, target, 5, DamageType.Poison);
+
+		expect(isHurt(near)).toBe(true);
+		expect(isHurt(far)).toBe(false);
+	});
+
+	it('does not conduct damage types that water does not carry', () => {
+		setSquareType(encounter, 2, 1, EncounterMapSquareType.Water);
+		const bystander = addCombatant(encounter, CombatantType.Hero, 2, 1);
+		EncounterLogic.takeDamage(encounter, target, 5, DamageType.Edged);
+		expect(isHurt(bystander)).toBe(false);
+	});
+
+	it('does not conduct from a target standing on dry ground', () => {
+		setSquareType(encounter, 2, 2, EncounterMapSquareType.Clear);
+		setSquareType(encounter, 2, 1, EncounterMapSquareType.Water);
+		const bystander = addCombatant(encounter, CombatantType.Hero, 2, 1);
+		EncounterLogic.takeDamage(encounter, target, 5, DamageType.Poison);
+		expect(isHurt(bystander)).toBe(false);
+	});
+});
+
+describe('EncounterLogic water phase changes', () => {
+	let encounter: EncounterModel;
+	let target: CombatantModel;
+
+	const typeAt = (x: number, y: number) =>
+		(encounter.mapSquares.find(sq => (sq.x === x) && (sq.y === y)) as EncounterMapSquareModel).type;
+
+	beforeEach(() => {
+		encounter = createEncounter();
+		target = addCombatant(encounter, CombatantType.Monster, 2, 2);
+	});
+
+	it('freezes the water under and around a target hit with cold', () => {
+		setSquareType(encounter, 2, 2, EncounterMapSquareType.Water);
+		setSquareType(encounter, 2, 1, EncounterMapSquareType.Water);
+
+		EncounterLogic.takeDamage(encounter, target, 5, DamageType.Cold);
+
+		expect(typeAt(2, 2)).toBe(EncounterMapSquareType.Ice);
+		expect(typeAt(2, 1)).toBe(EncounterMapSquareType.Ice);
+	});
+
+	it('leaves water beyond the target untouched', () => {
+		setSquareType(encounter, 2, 2, EncounterMapSquareType.Water);
+		setSquareType(encounter, 2, 0, EncounterMapSquareType.Water);
+
+		EncounterLogic.takeDamage(encounter, target, 5, DamageType.Cold);
+
+		expect(typeAt(2, 0)).toBe(EncounterMapSquareType.Water);
+	});
+
+	it('leaves clear and obstructed ground alone', () => {
+		setSquareType(encounter, 2, 2, EncounterMapSquareType.Water);
+		setSquareType(encounter, 3, 3, EncounterMapSquareType.Obstructed);
+
+		EncounterLogic.takeDamage(encounter, target, 5, DamageType.Cold);
+
+		expect(typeAt(2, 1)).toBe(EncounterMapSquareType.Clear);
+		expect(typeAt(3, 3)).toBe(EncounterMapSquareType.Obstructed);
+	});
+
+	it('thaws the ice under and around a target hit with fire', () => {
+		setSquareType(encounter, 2, 2, EncounterMapSquareType.Ice);
+		setSquareType(encounter, 2, 1, EncounterMapSquareType.Ice);
+
+		EncounterLogic.takeDamage(encounter, target, 5, DamageType.Fire);
+
+		expect(typeAt(2, 2)).toBe(EncounterMapSquareType.Water);
+		expect(typeAt(2, 1)).toBe(EncounterMapSquareType.Water);
+	});
+
+	it('does nothing when the target is not standing on water or ice', () => {
+		setSquareType(encounter, 2, 1, EncounterMapSquareType.Water);
+
+		EncounterLogic.takeDamage(encounter, target, 5, DamageType.Cold);
+
+		expect(typeAt(2, 1)).toBe(EncounterMapSquareType.Water);
+	});
+
+	it('freezes even when the target resists the damage entirely', () => {
+		// Terrain reacts to the cold being dealt, not to how much of it landed
+		setSquareType(encounter, 2, 2, EncounterMapSquareType.Water);
+		target.quirks.push(QuirkType.Aquatic);
+
+		EncounterLogic.takeDamage(encounter, target, 1, DamageType.Cold);
+
+		expect(typeAt(2, 2)).toBe(EncounterMapSquareType.Ice);
+		expect(isHurt(target)).toBe(false);
 	});
 });

@@ -77,8 +77,8 @@ export class Factory {
 			encounter: null
 		};
 
-		StrongholdLogic.addStructure(game.stronghold, GameLogic.getStructure('structure-barracks')!);
-		StrongholdLogic.addStructure(game.stronghold, GameLogic.getStructure('structure-warehouse')!);
+		StrongholdLogic.addStructure(game, GameLogic.getStructure('structure-barracks')!);
+		StrongholdLogic.addStructure(game, GameLogic.getStructure('structure-warehouse')!);
 
 		return game;
 	};

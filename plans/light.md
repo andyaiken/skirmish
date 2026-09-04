@@ -1,4 +1,4 @@
-# Nightfall
+# Light
 
 ## Why this pack
 
@@ -147,9 +147,9 @@ Stealth in darkness; `hide` with a bonus, movement without penalty in the dark. 
 
 ### Monsters
 
-**Grue** (`Darkvision`, `Mindless`, only dangerous in darkness), **Shade** (`Amorphous`,
-`Darkvision`, Decay), **Will-o'-the-Wisp** (a light source that lures — deals Light damage, drops
-loot when killed).
+**Grue** (`Darkvision`, `Mindless`, only dangerous in darkness)
+**Shade** (`Amorphous`, `Darkvision`, Decay)
+**Will-o'-the-Wisp** (a light source that lures — deals Light damage, drops loot when killed).
 
 ### Items
 
@@ -158,26 +158,3 @@ which is the whole design.
 
 **Shuttered Lamp** — light that can be turned off. Needs an equip/unequip-style toggle, so more work
 than the Lantern; skip it in version one.
-
----
-
-## Scope warning
-
-This is the largest system in the spec set. Even Option 1 touches turn resolution, encounter
-generation, save migration and rendering, and it changes how every existing card plays by making
-`senses` matter.
-
-**Ship the system alone first**, with light level rolled only when the pack is on and a single
-Lantern item. Play three encounters. If darkness is merely annoying rather than tense, the cards
-will not rescue it and you will have learned that cheaply.
-
-## Acceptance criteria
-
-- With the pack disabled, `lightLevel` is full and senses behave exactly as before.
-- With the pack enabled, a combatant in darkness rolls a lower effective senses score.
-- A combatant with `Darkvision` takes no penalty.
-- A combatant within a light source's radius takes no penalty.
-- A hidden enemy that was visible in light is not visible in darkness at the same hidden score.
-- The darkness overlay renders correctly in both light and dark UI themes.
-- A save from before this change loads without error.
-- `npm run lint` and `tsc --noEmit` clean.

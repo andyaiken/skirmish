@@ -173,7 +173,7 @@ export class PacksModal extends Component<Props, State> {
 				<hr />
 				<Text type={TextType.SubHeading}>Core Game</Text>
 				<CardList cards={[ core ]} />
-				<hr />
+				{notOwned.length > 0 ? <hr /> : null}
 				{notOwned.length > 0 ? <Text type={TextType.SubHeading}>Available Packs</Text> : null}
 				{
 					notOwned.length > 1 ?
@@ -183,9 +183,9 @@ export class PacksModal extends Component<Props, State> {
 						: null
 				}
 				{notOwned.length > 0 ? <CardList cards={notOwned} /> : null}
-				{notOwned.length > 0 ? <hr /> : null}
-				<Text type={TextType.SubHeading}>My Packs</Text>
-				<CardList cards={owned} />
+				{owned.length > 0 ? <hr /> : null}
+				{owned.length > 0 ? <Text type={TextType.SubHeading}>My Packs</Text> : null}
+				{owned.length > 0 ? <CardList cards={owned} /> : null}
 				{this.getDialog()}
 			</div>
 		);

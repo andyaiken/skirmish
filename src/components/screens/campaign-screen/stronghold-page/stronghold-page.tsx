@@ -30,7 +30,7 @@ interface Props {
 	setPage: (page: PageType) => void;
 	buyStructure: (structure: StructureModel, cost: number) => void;
 	sellStructure: (structure: StructureModel) => void;
-	chargeStructure: (structure: StructureModel) => void;
+	chargeStructure: (structure: StructureModel, useTavern: boolean) => void;
 	upgradeStructure: (structure: StructureModel) => void;
 	spendCharge: (type: StructureType, count: number) => void;
 	redeemBoon: (boon: BoonModel, hero: CombatantModel | null, item: ItemModel | null, newItem: ItemModel | null, cost: number) => void;
@@ -60,7 +60,7 @@ export class StrongholdPage extends Component<Props, State> {
 	};
 
 	buyStructure = (structure: StructureModel) => {
-		const cost = this.state.addingStructure === 'free' ? 0 : 50;
+		const cost = this.state.addingStructure === 'free' ? 0 : StrongholdLogic.getPrice(this.props.game, 'structure');
 		this.setState({
 			addingStructure: ''
 		}, () => {
@@ -95,7 +95,17 @@ export class StrongholdPage extends Component<Props, State> {
 		const heroXP = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Academy);
 		const hero = heroXP;
 
-		if (redraws + encounters + hero === 0) {
+		const seaVoyages = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Shipyard);
+		const regionDiscounts = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Guildhall);
+		const recharges = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Tavern);
+		const campaign = seaVoyages + regionDiscounts + recharges;
+
+		// The permanent structures have no charges to report, so they're listed as standing effects
+		const shopDiscount = this.props.game.stronghold.some(s => s.type === StructureType.Bazaar);
+		const regionIncome = this.props.game.stronghold.some(s => s.type === StructureType.CountingHouse);
+		const permanent = (shopDiscount ? 1 : 0) + (regionIncome ? 1 : 0);
+
+		if (redraws + encounters + hero + campaign + permanent === 0) {
 			return null;
 		}
 
@@ -115,6 +125,13 @@ export class StrongholdPage extends Component<Props, State> {
 					{additionalHeroes > 0 ? <StatValue label='Additional Heroes' value={additionalHeroes} /> : null}
 					{(hero > 0) && (redraws + encounters > 0) ? <hr /> : null}
 					{heroXP > 0 ? <StatValue label='Additional XP' value={heroXP} /> : null}
+					{(campaign > 0) && (redraws + encounters + hero > 0) ? <hr /> : null}
+					{seaVoyages > 0 ? <StatValue label='Sea Voyages' value={seaVoyages} /> : null}
+					{regionDiscounts > 0 ? <StatValue label='Region Discounts' value={regionDiscounts} /> : null}
+					{recharges > 0 ? <StatValue label='Free Recharges' value={recharges} /> : null}
+					{(permanent > 0) && (redraws + encounters + hero + campaign > 0) ? <hr /> : null}
+					{shopDiscount ? <StatValue label='Shop Prices' value='-25%' /> : null}
+					{regionIncome ? <StatValue label='Region Income' value='Yes' /> : null}
 				</Box>
 			</div>
 		);
@@ -123,6 +140,9 @@ export class StrongholdPage extends Component<Props, State> {
 	getSidebar = () => {
 		if (this.state.selectedStructure) {
 			const upgradeCost = StrongholdLogic.getUpgradeCost(this.state.selectedStructure);
+			// A Tavern recharges another structure without money changing hands. It can't recharge
+			// itself: recharging needs a spare charge, and a Tavern that needs recharging has none.
+			const tavernCharges = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Tavern);
 
 			let upgrade = null;
 			let charge = null;
@@ -142,10 +162,18 @@ export class StrongholdPage extends Component<Props, State> {
 							<div>Demolish structure</div>
 							<IconValue type={IconType.Money} value={25} size={IconSize.Button} />
 						</button>
-						<button disabled={(this.props.game.money < 100) || !canRecharge} onClick={() => this.props.chargeStructure(this.state.selectedStructure as StructureModel)}>
+						<button disabled={(this.props.game.money < 100) || !canRecharge} onClick={() => this.props.chargeStructure(this.state.selectedStructure as StructureModel, false)}>
 							<div>Recharge structure</div>
 							<IconValue type={IconType.Money} value={100} size={IconSize.Button} />
 						</button>
+						{
+							tavernCharges > 0 ?
+								<button disabled={!canRecharge} onClick={() => this.props.chargeStructure(this.state.selectedStructure as StructureModel, true)}>
+									<div>Recharge from the Tavern</div>
+									<StatValue label='Charges' value={tavernCharges} />
+								</button>
+								: null
+						}
 					</div>
 				);
 
@@ -220,12 +248,14 @@ export class StrongholdPage extends Component<Props, State> {
 			);
 		}
 
+		const structurePrice = StrongholdLogic.getPrice(this.props.game, 'structure');
+
 		let addSection = null;
 		if (GameLogic.getStructureDeck(this.props.options.packIDs).length > 0) {
 			addSection = (
-				<button disabled={this.props.game.money < 50} onClick={() => this.setState({ addingStructure: 'paid' })}>
+				<button disabled={this.props.game.money < structurePrice} onClick={() => this.setState({ addingStructure: 'paid' })}>
 					<div>Build a Structure</div>
-					<IconValue type={IconType.Money} value={50} size={IconSize.Button} />
+					<IconValue type={IconType.Money} value={structurePrice} size={IconSize.Button} />
 				</button>
 			);
 		}

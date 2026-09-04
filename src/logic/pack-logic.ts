@@ -1,6 +1,8 @@
 import { codexArcanum } from '../data/packs/codex-arcanum';
+import { coinAndContract } from '../data/packs/coin-and-contract';
 import { coldBlood } from '../data/packs/cold-blood';
 import { core } from '../data/packs/core';
+import { deepWater } from '../data/packs/deep-water';
 import { elements } from '../data/packs/elements';
 import { faeRealm } from '../data/packs/fae-realm';
 import { guileAndCunning } from '../data/packs/guile-and-cunning';
@@ -25,7 +27,9 @@ export class PackLogic {
 	static getExpansionPacks = () => {
 		const list = [
 			codexArcanum(),
+			coinAndContract(),
 			coldBlood(),
+			deepWater(),
 			elements(),
 			faeRealm(),
 			guileAndCunning(),
@@ -49,11 +53,10 @@ export class PackLogic {
 		];
 	};
 
+	// The core game is always available, so naming its ID as well must not add it twice - that
+	// would double the weight of every core card in every deck that draws from these packs
 	static getAvailablePacks = (packIDs: string[]) => {
-		return [
-			core(),
-			...PackLogic.findPacks(packIDs)
-		];
+		return Collections.distinct([ core(), ...PackLogic.findPacks(packIDs) ], p => p.id);
 	};
 
 	static findPack = (packID: string) => {

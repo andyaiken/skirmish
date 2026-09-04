@@ -1,6 +1,8 @@
 import { StructureType } from '../enums/structure-type';
 
 import type { GameModel } from '../models/game';
+import type { ItemModel } from '../models/item';
+import type { RegionModel } from '../models/region';
 import type { StructureModel } from '../models/structure';
 
 import { Collections } from '../utils/collections';
@@ -25,14 +27,31 @@ export class StrongholdLogic {
 		return dims;
 	};
 
-	static addStructure = (stronghold: StructureModel[], structure: StructureModel) => {
+	static addStructure = (game: GameModel, structure: StructureModel) => {
 		const copy = JSON.parse(JSON.stringify(structure)) as StructureModel;
 		copy.id = Utils.guid();
-		copy.position = StrongholdLogic.getEmptyPosition(stronghold);
+		copy.position = StrongholdLogic.getEmptyPosition(game.stronghold);
 		if (StrongholdLogic.canCharge(copy)) {
 			copy.charges = copy.level;
 		}
-		stronghold.push(copy);
+		game.stronghold.push(copy);
+
+		// A Monument is a standing advertisement for the company, so raising one brings someone in.
+		// It's uncharged, which means it has no demolish button - the slot can't be banked and the
+		// structure then sold back.
+		if (copy.type === StructureType.Monument) {
+			game.heroSlots += 1;
+		}
+	};
+
+	// A Counting House is permanent too: every region you take starts paying its dues, and a
+	// well-populated region pays more. This is the money economy's first source other than loot.
+	static getConquestIncome = (game: GameModel, region: RegionModel) => {
+		if (!game.stronghold.some(s => s.type === StructureType.CountingHouse)) {
+			return 0;
+		}
+
+		return region.demographics.population * 10;
 	};
 
 	static getEmptyPosition = (stronghold: StructureModel[]) => {
@@ -70,9 +89,58 @@ export class StrongholdLogic {
 		return structure.level * 50;
 	};
 
+	// What the shops charge before the stronghold gets involved
+	static basePrices = {
+		mundane: 2,
+		potion: 20,
+		magic: 100,
+		structure: 50
+	};
+
+	// A Bazaar is permanent rather than charged - the traders know you, and go on knowing you - so
+	// it reads as a standing discount rather than something spent one purchase at a time. Having
+	// two of them is no better than having one.
+	static getPrice = (game: GameModel, kind: keyof typeof StrongholdLogic.basePrices) => {
+		const price = StrongholdLogic.basePrices[kind];
+
+		if (!game.stronghold.some(s => s.type === StructureType.Bazaar)) {
+			return price;
+		}
+
+		return Math.max(1, Math.floor(price * 0.75));
+	};
+
+	static getItemPrice = (game: GameModel, item: ItemModel) => {
+		if (item.magic) {
+			return StrongholdLogic.getPrice(game, 'magic');
+		}
+		if (item.potion) {
+			return StrongholdLogic.getPrice(game, 'potion');
+		}
+
+		return StrongholdLogic.getPrice(game, 'mundane');
+	};
+
+	// Barracks and Warehouse come with the campaign and aren't benefits, so they're never offered
+	// for sale or as a reward. Everything else is. This used to be inferred from canCharge, which
+	// worked only while those two were the only uncharged structures.
+	static canBuild = (structure: StructureModel) => {
+		switch (structure.type) {
+			case StructureType.Barracks:
+			case StructureType.Warehouse:
+				return false;
+		}
+
+		return true;
+	};
+
+	// An uncharged structure's benefit is permanent - it never needs recharging, and the stronghold
+	// page offers no demolish button for one, so its benefit can't be banked and then sold back
 	static canCharge = (structure: StructureModel) => {
 		switch (structure.type) {
 			case StructureType.Barracks:
+			case StructureType.CountingHouse:
+			case StructureType.Monument:
 			case StructureType.Warehouse:
 				return false;
 		}

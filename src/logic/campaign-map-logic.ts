@@ -1,6 +1,12 @@
+import { SkillType } from '../enums/skill-type';
+import { StructureType } from '../enums/structure-type';
+
+import { CombatantLogic } from './combatant-logic';
 import { GameLogic } from './game-logic';
+import { StrongholdLogic } from './stronghold-logic';
 
 import type { CampaignMapModel, CampaignMapSquareModel } from '../models/campaign-map';
+import type { GameModel } from '../models/game';
 import type { RegionModel } from '../models/region';
 
 import { Collections } from '../utils/collections';
@@ -93,9 +99,76 @@ export class CampaignMapLogic {
 		});
 	};
 
-	static canAttackRegion = (map: CampaignMapModel, region: RegionModel) => {
+	static isAdjacentToTerritory = (map: CampaignMapModel, region: RegionModel) => {
 		const squares = CampaignMapLogic.getSquares(map, region);
 		return squares.some(sq => CampaignMapLogic.getAdjacentSquares(map, sq.x, sq.y).some(a => a.regionID === ''));
+	};
+
+	// The island is a hex grid, so a square in open water has fewer than six neighbours on the map.
+	// Nothing is stored for this - it's derived, so it costs nothing in the save file.
+	static isCoastal = (map: CampaignMapModel, region: RegionModel) => {
+		const squares = CampaignMapLogic.getSquares(map, region);
+		return squares.some(sq => CampaignMapLogic.getAdjacentSquares(map, sq.x, sq.y).length < 6);
+	};
+
+	// Your own land reaches the sea. The campaign starts you in a coastal region and you only ever
+	// gain ground, so in practice this holds from the first turn - but the rule is stated in full
+	// so it stays correct if the map generator ever changes.
+	static hasCoastalTerritory = (map: CampaignMapModel) => {
+		return map.squares
+			.filter(sq => sq.regionID === '')
+			.some(sq => CampaignMapLogic.getAdjacentSquares(map, sq.x, sq.y).length < 6);
+	};
+
+	static canReachRegionBySea = (game: GameModel, region: RegionModel) => {
+		if (StrongholdLogic.getStructureCharges(game, StructureType.Shipyard) === 0) {
+			return false;
+		}
+
+		return CampaignMapLogic.hasCoastalTerritory(game.map) && CampaignMapLogic.isCoastal(game.map, region);
+	};
+
+	static canAttackRegion = (game: GameModel, region: RegionModel) => {
+		return CampaignMapLogic.isAdjacentToTerritory(game.map, region) || CampaignMapLogic.canReachRegionBySea(game, region);
+	};
+
+	// Buying a region should cost more than clearing it is worth, so that it reads as a release
+	// valve for a region you can't beat rather than a way to skip the game. A structure costs 50
+	// and a magic item 100; an encounter yields perhaps 50 in loot, so a base of 50 per remaining
+	// encounter keeps even a one-encounter region above a single encounter's takings.
+	static purchaseBasePrice = 50;
+
+	static getPurchasePrice = (game: GameModel, region: RegionModel) => {
+		let price = CampaignMapLogic.purchaseBasePrice
+			* region.encounters.length
+			* (1 + (region.demographics.population / 10));
+
+		// The party's best negotiator knocks 5% off per rank of Presence, down to half price.
+		// There's no encounter in progress, so there are no conditions to apply.
+		const negotiator = Collections.max(game.heroes, h => CombatantLogic.getSkillRank(h, [], SkillType.Presence));
+		const presence = negotiator ? CombatantLogic.getSkillRank(negotiator, [], SkillType.Presence) : 0;
+		price *= 1 - (Math.min(presence * 5, 50) / 100);
+
+		// Then the guilds take a quarter off whatever's left. Applying it to the remainder rather
+		// than adding percentages means a Guildhall is always worth the same proportion, even to a
+		// party that can already talk a region down to half price.
+		if (StrongholdLogic.getStructureCharges(game, StructureType.Guildhall) > 0) {
+			price *= 0.75;
+		}
+
+		// Round to the nearest 5 so the discounts don't produce awkward prices
+		return Math.round(price / 5) * 5;
+	};
+
+	static canPurchaseRegion = (game: GameModel, region: RegionModel) => {
+		// Same reachability requirement as attacking - you can't buy land you can't get to, by land
+		// or by sea - but no requirement to have any heroes, since buying is also how a wiped-out
+		// party recovers.
+		if (!CampaignMapLogic.canAttackRegion(game, region)) {
+			return false;
+		}
+
+		return game.money >= CampaignMapLogic.getPurchasePrice(game, region);
 	};
 
 	static conquerRegion = (map: CampaignMapModel, region: RegionModel) => {

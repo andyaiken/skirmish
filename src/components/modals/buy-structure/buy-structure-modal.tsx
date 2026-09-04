@@ -40,7 +40,7 @@ export class BuyStructureModal extends Component<Props, State> {
 		const structures: StructureModel[] = [];
 
 		while (structures.length < 3) {
-			const deck = GameLogic.getStructureDeck(this.props.options.packIDs).filter(s => StrongholdLogic.canCharge(s));
+			const deck = GameLogic.getStructureDeck(this.props.options.packIDs).filter(s => StrongholdLogic.canBuild(s));
 			structures.push(Collections.draw(deck));
 		}
 

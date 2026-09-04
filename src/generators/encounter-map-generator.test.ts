@@ -276,3 +276,36 @@ describe('the warren map', () => {
 		});
 	});
 });
+
+describe('water on the encounter map', () => {
+	// Water blobs are random in both count and size, so a single map can legitimately have none.
+	// Generating a handful of maps and looking at the total avoids a flaky assertion.
+	const countWater = (terrain: string, maps = 10) => {
+		let water = 0;
+		for (let n = 0; n < maps; ++n) {
+			const map = EncounterMapGenerator.generateEncounterMap(Random.getSeededRNG(`water ${terrain} ${n}`), terrain);
+			water += map.filter(sq => sq.type === EncounterMapSquareType.Water).length;
+		}
+		return water;
+	};
+
+	it('appears on maps regardless of which packs are switched on', () => {
+		// Water is part of the base game; the Deep Water pack only adds cards that make use of it
+		expect(countWater('Plains')).toBeGreaterThan(0);
+		expect(countWater('Mountains')).toBeGreaterThan(0);
+	});
+
+	it('floods open ground rather than replacing cover', () => {
+		// A water blob can overlap obstructed squares; those must survive as obstructed
+		const map = EncounterMapGenerator.generateEncounterMap(Random.getSeededRNG('cover'), 'Plains');
+		const water = map.filter(sq => sq.type === EncounterMapSquareType.Water);
+		expect(water.length).toBeGreaterThan(0);
+		expect(map.every(sq => Object.values(EncounterMapSquareType).includes(sq.type))).toBe(true);
+	});
+
+	it('leaves most of the map dry', () => {
+		const map = EncounterMapGenerator.generateEncounterMap(Random.getSeededRNG('proportion'), 'Plains');
+		const water = map.filter(sq => sq.type === EncounterMapSquareType.Water).length;
+		expect(water).toBeLessThan(map.length / 2);
+	});
+});

@@ -169,10 +169,16 @@ export class EncounterGenerator {
 			if (Random.randomNumber(3, rng) === 0) {
 				lp.items.push(MagicItemGenerator.generateRandomMagicItem(packIDs, rng));
 			} else {
+				// The potion deck is empty unless a pack that has potions is switched on - the core
+				// game has none - so fall back to a magic item rather than drawing from nothing
 				const potions = GameLogic.getPotionDeck(packIDs);
-				const item = Collections.draw(potions, rng);
-				item.id = Utils.guid();
-				lp.items.push(item);
+				if (potions.length > 0) {
+					const item = Collections.draw(potions, rng);
+					item.id = Utils.guid();
+					lp.items.push(item);
+				} else {
+					lp.items.push(MagicItemGenerator.generateRandomMagicItem(packIDs, rng));
+				}
 			}
 
 			const square = Collections.draw(encounter.mapSquares.filter(c => c.type === EncounterMapSquareType.Clear), rng);

@@ -8,13 +8,6 @@
 
 # New Features
 
-## Water / Ice
-* Squares of water / ice would be difficult terrain
-* Standing in water gives resistance to fire damage
-* Dealing poison / acid / electricity damage to a target in water deals the same damage to any combatant in adjacent water
-* Dealing cold damage to a target on a water square turns all adjacent water squares into ice
-* Dealing fire damage to a target on an ice square turns all adjacent ice squares into water
-
 ## Doors
 * Present on the map - 1x2 squares, horizontally or vertically
 * When closed, counts as a wall: blocks LOS and can be broken down
@@ -26,30 +19,6 @@
 * Make doors lockable
   * Thieves can pick locks
 * Destroyed when used to lock / unlock
-
-## Traps
-* Types of trap:
-  * Spike traps (piercing dmg)
-  * Fire traps (fire dmg)
-  * Poison gas traps (poison dmg)
-  * Acid dart traps (acid dmg)
-  * Traps on chests
-* Traps might be present on the map initially
-* Traps should have a set Hidden score
-* When set off, a trap should become visible (Hidden = 0)
-* Gnome, Thief should be able to disable traps
-* Trapper should be able to set traps
-
-## Scrolls
-* Single-use actions
-* Created by a background (Scribe)
-* Anyone can use if carried
-* Can be found as treasure
-
-## Lighting
-* General light level
-* Sources of light
-* Species with darkvision
 
 ## Blur Aura
 * Mountebank, Ninja, Sensei, and Pixie should have a blur aura
@@ -80,12 +49,6 @@
 
 # Content Ideas
 
-## Ideas for Roles / Backgrounds
-* Gladiator 
-  * Large weapons
-  * Showmanship
-* Ravager
-
 ## Ideas for Species
 * Small:
   * Pixie, Gnome, Goblin, Scarab
@@ -96,8 +59,6 @@
     * Takes half damage from physical damage
     * Move through / see through walls
     * No movement penalty for obstructed terrain
-  * Aquatic
-    * No movement penalty for water terrain
 * Kobold
 * Ogre
 * Demon
@@ -111,14 +72,13 @@
 
 | Structure     | Effect                                                            | Pack    |
 |---------------|-------------------------------------------------------------------|---------|
-| Shipyard      | Allows you to attack a non-adjacent coastal region                |         |
 | XXX           | Add 1 rank in any physical skill to a hero                        |         |
 | XXX           | Add 1 rank in any mental skill to a hero                          |         |
+| Trophy Room   | Add charge when a boss is defeated; use charges for ???           |         |
 
 * Armory
 * Sanctuary / Sacristy / Reliquary
 * Scriptorium
-* Trophy Room
 * Guildhall
 * Sanctum
 * Archive / Vault

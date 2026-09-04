@@ -1,32 +1,12 @@
-# Chapter and Verse
-
-## Why this pack
-
-`tasks.md` specifies scrolls:
-
-> Single-use actions. Created by a background (Scribe). Anyone can use if carried. Can be found as
-> treasure.
-
-Nothing exists. It is the only consumable design in the file with no implementation, and it is
-cheaper to build than it looks because **potions are already exactly this shape** — a single-use
-item that runs stored effects on the drinker.
-
-It also fills a real gap in what a hero can do. Right now a character's action deck is fixed by
-species, role and background at creation. Scrolls are the only mechanism that would let a character
-do something outside their deck, which makes loot meaningfully interesting for the first time.
-
-**Naming:** *Chapter and Verse* is an idiom about precise citation, which is what a scroll is.
-Alternatives: **Ink and Vellum**, **The Written Word**.
+# Ink and Vellum
 
 ```ts
 static scrolls = (): PackModel => ({
-    id: 'pack-chapter-and-verse',
-    name: 'Chapter and Verse',
-    description: 'Power that anyone can use, provided they can read and only need it once.'
+    id: 'pack-ink-and-vellum',
+    name: 'Ink and Vellum',
+    description: 'Power that anyone can use - provided they can read and only need it once.'
 });
 ```
-
----
 
 ## The system
 
@@ -148,16 +128,3 @@ From `tasks.md`. Spend a charge to draw a scroll between encounters. Add `Script
 Also from `tasks.md` ("Archive / Vault"). Spend a charge to **redraw the three cards offered at
 level-up a second time** — a stronger Training Ground. Only worth adding if the Scriptorium alone
 leaves the pack feeling thin.
-
----
-
-## Acceptance criteria
-
-- `ItemModel` has a `scroll` field and every existing item literal compiles.
-- A scroll in a hero's carried items can be read during an encounter, spending 2 movement points.
-- Reading a scroll removes it from the hero's inventory.
-- A scroll with a target parameter prompts for a target and resolves against it.
-- Scrolls appear in loot piles only when the pack is enabled.
-- `PackLogic.getPackCardCount('pack-chapter-and-verse')` includes the scrolls.
-- A save from before this change loads without error.
-- `npm run lint` and `tsc --noEmit` clean.

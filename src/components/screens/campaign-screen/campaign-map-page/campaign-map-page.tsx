@@ -2,7 +2,10 @@ import { Component } from 'react';
 
 import { OrientationType } from '../../../../enums/orientation-type';
 
+import { StructureType } from '../../../../enums/structure-type';
+
 import { CampaignMapLogic } from '../../../../logic/campaign-map-logic';
+import { StrongholdLogic } from '../../../../logic/stronghold-logic';
 
 import type { CombatantModel } from '../../../../models/combatant';
 import type { GameModel } from '../../../../models/game';
@@ -12,7 +15,7 @@ import type { RegionModel } from '../../../../models/region';
 import { Collections } from '../../../../utils/collections';
 
 import { BoonCard, RegionCard } from '../../../cards';
-import { CardList, Dialog, Expander, Gauge, StatValue, Text, TextType } from '../../../controls';
+import { CardList, Dialog, Expander, Gauge, IconSize, IconType, IconValue, StatValue, Text, TextType } from '../../../controls';
 import { CampaignMapPanel } from '../../../panels';
 import { EncounterStartModal } from '../../../modals';
 
@@ -25,6 +28,7 @@ interface Props {
 	startEncounter: (region: RegionModel, heroes: CombatantModel[], benefits: number, detriments: number) => void;
 	regenerateCampaignMap: () => void;
 	conquer: (region: RegionModel) => void;
+	purchaseRegion: (region: RegionModel) => void;
 }
 
 interface State {
@@ -49,9 +53,23 @@ export class CampaignMapPage extends Component<Props, State> {
 		});
 	};
 
+	purchase = (region: RegionModel) => {
+		this.setState({
+			selectedRegion: null
+		}, () => {
+			this.props.purchaseRegion(region);
+		});
+	};
+
 	getSidebar = () => {
 		if (this.state.selectedRegion) {
-			const canAttack = CampaignMapLogic.canAttackRegion(this.props.game.map, this.state.selectedRegion);
+			const adjacent = CampaignMapLogic.isAdjacentToTerritory(this.props.game.map, this.state.selectedRegion);
+			const bySea = !adjacent && CampaignMapLogic.canReachRegionBySea(this.props.game, this.state.selectedRegion);
+			const coastal = CampaignMapLogic.isCoastal(this.props.game.map, this.state.selectedRegion);
+			const canAttack = adjacent || bySea;
+			const canPurchase = CampaignMapLogic.canPurchaseRegion(this.props.game, this.state.selectedRegion);
+			const price = CampaignMapLogic.getPurchasePrice(this.props.game, this.state.selectedRegion);
+			const guildhall = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Guildhall) > 0;
 			const heroesExist = this.props.game.heroes.length > 0;
 			const encounters = this.state.selectedRegion.encounters.length > 1 ? `${this.state.selectedRegion.encounters.length} encounters` : '1 encounter';
 			return (
@@ -62,6 +80,11 @@ export class CampaignMapPage extends Component<Props, State> {
 								null :
 								<Text type={TextType.Information}>
 									<p><b>You can&apos;t attack {this.state.selectedRegion.name}</b> because it&apos;s not adjacent to your land.</p>
+									{
+										coastal ?
+											<p>It does have a coastline, so a <b>Shipyard</b> with a charge would let you reach it by sea.</p>
+											: null
+									}
 								</Text>
 						}
 						{
@@ -71,10 +94,40 @@ export class CampaignMapPage extends Component<Props, State> {
 									<p><b>You can&apos;t attack {this.state.selectedRegion.name}</b> because you don&apos;t have any heroes.</p>
 								</Text>
 						}
+						{
+							bySea ?
+								<Text type={TextType.Information}>
+									<p><b>{this.state.selectedRegion.name} lies across the water.</b> Reaching it will use a <b>Shipyard</b> charge, whether you attack it or buy it.</p>
+								</Text>
+								: null
+						}
 						{canAttack && heroesExist ? <button className='primary' onClick={() => this.setState({ showHeroSelection: true })}>Start an encounter</button> : null}
+						{
+							canAttack ?
+								<button disabled={!canPurchase} onClick={() => this.purchase(this.state.selectedRegion as RegionModel)}>
+									<div>Buy this region</div>
+									<IconValue type={IconType.Money} value={price} size={IconSize.Button} />
+								</button>
+								: null
+						}
 						{this.props.options.developer ? <button className='developer' onClick={() => this.conquer(this.state.selectedRegion as RegionModel)}>Conquer</button> : null}
 						<Text>
 							If you take control of <b>{this.state.selectedRegion.name}</b> (by winning <b>{encounters}</b>) you can recruit a new hero, and you will receive a reward.
+						</Text>
+						<Text>
+							<p>
+								You can also buy <b>{this.state.selectedRegion.name}</b> outright, which earns you the same reward without a fight.
+							</p>
+							<p>
+								The price depends on how much of the region is left to conquer and on how many people live there; your most persuasive hero talks it down.
+							</p>
+							{
+								guildhall ?
+									<p>
+										Your <b>Guildhall</b> has taken a quarter off the price shown. Buying the region will use one of its charges.
+									</p>
+									: null
+							}
 						</Text>
 					</div>
 					<div className='sidebar-section'>
@@ -114,6 +167,7 @@ export class CampaignMapPage extends Component<Props, State> {
 										<p>Each region has a certain number of encounters that must be won in order to conquer that region.</p>
 										<p>Conquering a region will allow you to recruit a new hero, and will also provide an additional reward - often money or a magical item.</p>
 										<p>You can only attack regions that border the land you already control (in white).</p>
+										<p>If a region is proving too tough to fight through, you can buy it instead - though it will cost you a great deal more than fighting for it would.</p>
 									</div>
 								}
 							/>

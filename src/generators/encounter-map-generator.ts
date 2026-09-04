@@ -66,9 +66,12 @@ export class EncounterMapGenerator {
 		EncounterMapLogic.visibilityCache.reset();
 
 		// Obstructed terrain is added by the individual generators rather than here, so that a map
-		// type can opt out of it - the arena is meant to stay open.
+		// type can opt out of it - the arena is meant to stay open. Water is added here instead,
+		// after whichever generator ran, so that every map type gets it.
 		const fn = EncounterMapGenerator.drawMapType(terrain, rng);
 		const map = fn(400, rng);
+
+		EncounterMapGenerator.addWaterBlobs(map, rng);
 
 		return EncounterMapGenerator.simplifyMap(map);
 	};
@@ -358,6 +361,18 @@ export class EncounterMapGenerator {
 			const start = Collections.draw(map, rng);
 			const blob = EncounterMapLogic.getFloorBlob(map, start, rng);
 			blob.forEach(sq => sq.type = EncounterMapSquareType.Obstructed);
+		}
+	};
+
+	static addWaterBlobs = (map: EncounterMapSquareModel[], rng: () => number) => {
+		while (Random.randomNumber(3, rng) !== 0) {
+			const start = Collections.draw(map, rng);
+			const blob = EncounterMapLogic.getFloorBlob(map, start, rng);
+			// Only open ground floods - painting water over obstructed squares would quietly
+			// remove cover, and a blob can easily overlap some
+			blob
+				.filter(sq => sq.type === EncounterMapSquareType.Clear)
+				.forEach(sq => sq.type = EncounterMapSquareType.Water);
 		}
 	};
 

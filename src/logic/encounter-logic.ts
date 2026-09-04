@@ -471,8 +471,15 @@ export class EncounterLogic {
 
 		let cost = 1;
 
-		// Obstructed: +1
-		if (destinationMapSquares.some(ms => ms.type === EncounterMapSquareType.Obstructed)) {
+		// Obstructed: +1. Water is difficult terrain in the same way, but an Aquatic creature is at
+		// home in it. Ice is not difficult - its interest is that it converts, not that it slows you.
+		const difficult = destinationMapSquares.some(ms => {
+			if (ms.type === EncounterMapSquareType.Obstructed) {
+				return true;
+			}
+			return (ms.type === EncounterMapSquareType.Water) && !combatant.quirks.includes(QuirkType.Aquatic);
+		});
+		if (difficult) {
 			cost += 1;
 		}
 
@@ -647,7 +654,21 @@ export class EncounterLogic {
 		EncounterLogic.takeDamage(encounter, target, result + bonus, type);
 	};
 
-	static takeDamage = (encounter: EncounterModel, combatant: CombatantModel, value: number, type: DamageType) => {
+	// Water conducts these, and nothing else does
+	static conductedDamageTypes = [ DamageType.Acid, DamageType.Electricity, DamageType.Poison ];
+
+	// In the same band as a strong species resistance feature
+	static waterFireResistance = 3;
+
+	// `spread` is false when this call is itself the result of water conducting damage. Conduction
+	// hits combatants who are by definition standing in water, so left unguarded it would conduct
+	// again from each of them and chain across the map; it resolves as a single pass from the
+	// original target instead.
+	static takeDamage = (encounter: EncounterModel, combatant: CombatantModel, value: number, type: DamageType, spread = true) => {
+		// What the target was hit with, before its own resistances - conduction passes on the same
+		// damage, and each combatant it reaches applies their own resistances to it
+		const incoming = value;
+
 		EncounterLogLogic.log(encounter, [
 			EncounterLogLogic.combatant(combatant),
 			EncounterLogLogic.text(`suffers damage (${type}, ${value} pts)`)
@@ -703,7 +724,74 @@ export class EncounterLogic {
 			]);
 		}
 
+		if (spread) {
+			// Terrain reacts to the damage being dealt, not to how much of it landed, so this runs
+			// even when the target resisted the lot
+			EncounterLogic.applyTerrainEffects(encounter, combatant, incoming, type);
+		}
+
 		EncounterLogic.checkActionParameters(encounter, combatant);
+	};
+
+	// Water conducts, freezes and thaws. All of it radiates from the square the target is standing
+	// on, and all of it fires at most once per point of damage dealt.
+	static applyTerrainEffects = (encounter: EncounterModel, target: CombatantModel, value: number, type: DamageType) => {
+		if (EncounterLogic.isStandingIn(encounter, target, EncounterMapSquareType.Water)) {
+			if (EncounterLogic.conductedDamageTypes.includes(type)) {
+				EncounterLogic.conductDamage(encounter, target, value, type);
+			}
+
+			if (type === DamageType.Cold) {
+				EncounterLogic.changeSurroundings(encounter, target, EncounterMapSquareType.Water, EncounterMapSquareType.Ice);
+			}
+		}
+
+		if (EncounterLogic.isStandingIn(encounter, target, EncounterMapSquareType.Ice) && (type === DamageType.Fire)) {
+			EncounterLogic.changeSurroundings(encounter, target, EncounterMapSquareType.Ice, EncounterMapSquareType.Water);
+		}
+	};
+
+	static conductDamage = (encounter: EncounterModel, target: CombatantModel, value: number, type: DamageType) => {
+		const squares = EncounterLogic.getCombatantSquares(encounter, target);
+		const water = EncounterMapLogic.getAdjacentSquares(encounter.mapSquares, squares)
+			.filter(ms => ms.type === EncounterMapSquareType.Water);
+
+		// Resolve the list of victims before dealing any damage, so that combatants killed by the
+		// conduction can't change who else it reaches
+		const victims = encounter.combatants
+			.filter(c => c.id !== target.id)
+			.filter(c => c.combat.state !== CombatantState.Dead)
+			.filter(c => {
+				const cs = EncounterLogic.getCombatantSquares(encounter, c);
+				return water.some(ms => cs.some(sq => (sq.x === ms.x) && (sq.y === ms.y)));
+			});
+
+		victims.forEach(victim => {
+			EncounterLogLogic.log(encounter, [
+				EncounterLogLogic.text(`The water carries the ${type.toLowerCase()} to`),
+				EncounterLogLogic.combatant(victim)
+			]);
+			EncounterLogic.takeDamage(encounter, victim, value, type, false);
+		});
+	};
+
+	// The target's own squares change too, not only those around them - water left liquid under the
+	// combatant who was just frozen solid reads as a bug rather than a rule
+	static changeSurroundings = (encounter: EncounterModel, target: CombatantModel, from: EncounterMapSquareType, to: EncounterMapSquareType) => {
+		const squares = EncounterLogic.getCombatantSquares(encounter, target);
+		const own = encounter.mapSquares.filter(ms => squares.some(sq => (sq.x === ms.x) && (sq.y === ms.y)));
+		const adjacent = EncounterMapLogic.getAdjacentSquares(encounter.mapSquares, squares);
+
+		const changed = [ ...own, ...adjacent ].filter(ms => ms.type === from);
+		if (changed.length === 0) {
+			return;
+		}
+
+		changed.forEach(ms => ms.type = to);
+		EncounterLogLogic.log(encounter, [
+			EncounterLogLogic.text(`${from} turns to ${to} around`),
+			EncounterLogLogic.combatant(target)
+		]);
 	};
 
 	static wound = (encounter: EncounterModel, combatant: CombatantModel, value: number) => {
@@ -1158,7 +1246,26 @@ export class EncounterLogic {
 		const conditions = ([] as ConditionModel[])
 			.concat(combatant.combat.conditions)
 			.concat(EncounterLogic.getAuraConditions(encounter, combatant));
-		return CombatantLogic.getDamageResistance(combatant, conditions, damage);
+		let value = CombatantLogic.getDamageResistance(combatant, conditions, damage);
+
+		// Standing in water is shelter from fire. An Aquatic creature is in the water rather than
+		// sheltering behind it, and gets nothing - otherwise Aquatic would be strictly better.
+		const shelters = (damage === DamageType.Fire)
+			&& !combatant.quirks.includes(QuirkType.Aquatic)
+			&& EncounterLogic.isStandingIn(encounter, combatant, EncounterMapSquareType.Water);
+		if (shelters) {
+			value += EncounterLogic.waterFireResistance;
+		}
+
+		return value;
+	};
+
+	// Whether any square the combatant occupies is of the given type
+	static isStandingIn = (encounter: EncounterModel, combatant: CombatantModel, type: EncounterMapSquareType) => {
+		const squares = EncounterLogic.getCombatantSquares(encounter, combatant);
+		return encounter.mapSquares
+			.filter(ms => ms.type === type)
+			.some(ms => squares.some(sq => (sq.x === ms.x) && (sq.y === ms.y)));
 	};
 
 	///////////////////////////////////////////////////////////////////////////

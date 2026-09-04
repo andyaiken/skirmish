@@ -102,6 +102,7 @@ export class RegionCard extends Component<Props, State> {
 						<StatValue label='Population' value={`${this.props.region.demographics.population},000`} />
 						<StatValue label='Area' value={`${this.props.region.demographics.size} sq mi`} />
 						<StatValue label='Terrain' value={this.props.region.demographics.terrain} />
+						<StatValue label='Coastline' value={CampaignMapLogic.isCoastal(this.props.map, this.props.region) ? 'Yes' : 'No'} />
 						<hr />
 						<StatValue label='Denizens' value={monsters} />
 					</div>

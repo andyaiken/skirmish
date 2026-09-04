@@ -12,6 +12,16 @@
 		background-image: linear-gradient(135deg, rgb(230, 230, 230), rgb(210, 210, 210));
 	}
 
+	// Water is difficult terrain like obstructed ground, so it's shaded to a similar depth; ice is
+	// the pale version of it, so that a stretch of water freezing over reads at a glance
+	&.water {
+		background-image: linear-gradient(135deg, rgb(186, 216, 240), rgb(148, 192, 226));
+	}
+
+	&.ice {
+		background-image: linear-gradient(135deg, rgb(234, 246, 253), rgb(203, 228, 245));
+	}
+
 	&.selectable {
 		border-color: var(--primary);
 		background-color: var(--primary-light);

@@ -82,7 +82,7 @@ export class Platform {
 		game.map.regions.forEach(r => {
 			if (r.boon.type === BoonType.Structure) {
 				const s = r.boon.data as StructureModel;
-				if (!StrongholdLogic.canCharge(s)) {
+				if (!StrongholdLogic.canBuild(s)) {
 					r.boon = BoonGenerator.generateBoon([], Math.random);
 				}
 			}
@@ -100,11 +100,11 @@ export class Platform {
 
 		if (game.stronghold.filter(s => s.type === StructureType.Barracks).length !== 1) {
 			game.stronghold = game.stronghold.filter(s => s.type !== StructureType.Barracks);
-			StrongholdLogic.addStructure(game.stronghold, GameLogic.getStructure('structure-barracks')!);
+			StrongholdLogic.addStructure(game, GameLogic.getStructure('structure-barracks')!);
 		}
 		if (game.stronghold.filter(s => s.type === StructureType.Warehouse).length !== 1) {
 			game.stronghold = game.stronghold.filter(s => s.type !== StructureType.Warehouse);
-			StrongholdLogic.addStructure(game.stronghold, GameLogic.getStructure('structure-warehouse')!);
+			StrongholdLogic.addStructure(game, GameLogic.getStructure('structure-warehouse')!);
 		}
 
 		if (game.encounter) {

@@ -30,6 +30,9 @@ import { Factory } from './factory';
 import { GameLogic } from './game-logic';
 
 export class CombatantLogic {
+	// In the same band as a strong species resistance feature, of which the packs have several
+	static aquaticColdResistance = 3;
+
 	static CARRY_CAPACITY = 3;
 
 	static applyCombatantCards = (combatant: CombatantModel, speciesID: string, roleID: string, backgroundID: string) => {
@@ -509,6 +512,11 @@ export class CombatantLogic {
 		conditions.filter(c => c.type === ConditionType.DamageCategoryVulnerability)
 			.filter(c => (c.details.damageCategory === GameLogic.getDamageCategory(damage)) || (c.details.damageCategory === DamageCategoryType.All))
 			.forEach(c => value -= c.rank);
+
+		// Aquatic creatures live in cold water, so the cold doesn't trouble them
+		if ((damage === DamageType.Cold) && combatant.quirks.includes(QuirkType.Aquatic)) {
+			value += CombatantLogic.aquaticColdResistance;
+		}
 
 		// No minimum value
 		return value;

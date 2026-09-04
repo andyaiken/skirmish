@@ -1,4 +1,6 @@
 export enum EncounterMapSquareType {
 	Clear = 'Clear',
-	Obstructed = 'Obstructed'
+	Obstructed = 'Obstructed',
+	Water = 'Water',
+	Ice = 'Ice'
 }

@@ -5,6 +5,7 @@ import { OrientationType } from '../../../../enums/orientation-type';
 import { StructureType } from '../../../../enums/structure-type';
 
 import { GameLogic } from '../../../../logic/game-logic';
+import { StrongholdLogic } from '../../../../logic/stronghold-logic';
 
 import type { BoonModel } from '../../../../models/boon';
 import type { CombatantModel } from '../../../../models/combatant';
@@ -142,28 +143,32 @@ export class ItemsPage extends Component<Props, State> {
 			);
 		}
 
+		const mundanePrice = StrongholdLogic.getPrice(this.props.game, 'mundane');
+		const potionPrice = StrongholdLogic.getPrice(this.props.game, 'potion');
+		const magicPrice = StrongholdLogic.getPrice(this.props.game, 'magic');
+
 		const buySection = [];
 		if (GameLogic.getItemDeck(this.props.options.packIDs).length > 0) {
 			buySection.push(
-				<button key='mundane' disabled={this.props.game.money < 2} onClick={() => this.showMarket('mundane')}>
+				<button key='mundane' disabled={this.props.game.money < mundanePrice} onClick={() => this.showMarket('mundane')}>
 					<div>Buy equipment</div>
-					<IconValue type={IconType.Money} value={2} size={IconSize.Button} />
+					<IconValue type={IconType.Money} value={mundanePrice} size={IconSize.Button} />
 				</button>
 			);
 		}
 		if (GameLogic.getPotionDeck(this.props.options.packIDs).length > 0) {
 			buySection.push(
-				<button key='potion' disabled={this.props.game.money < 20} onClick={() => this.showMarket('potion')}>
+				<button key='potion' disabled={this.props.game.money < potionPrice} onClick={() => this.showMarket('potion')}>
 					<div>Buy a potion</div>
-					<IconValue type={IconType.Money} value={20} size={IconSize.Button} />
+					<IconValue type={IconType.Money} value={potionPrice} size={IconSize.Button} />
 				</button>
 			);
 		}
 		if (GameLogic.getItemDeck(this.props.options.packIDs).length > 0) {
 			buySection.push(
-				<button key='magical' disabled={this.props.game.money < 100} onClick={() => this.showMarket('magical')}>
+				<button key='magical' disabled={this.props.game.money < magicPrice} onClick={() => this.showMarket('magical')}>
 					<div>Buy a magic item</div>
-					<IconValue type={IconType.Money} value={100} size={IconSize.Button} />
+					<IconValue type={IconType.Money} value={magicPrice} size={IconSize.Button} />
 				</button>
 			);
 		}

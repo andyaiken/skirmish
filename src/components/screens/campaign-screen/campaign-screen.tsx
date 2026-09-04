@@ -44,7 +44,7 @@ interface Props {
 	toggleBackstage: () => void;
 	buyStructure: (structure: StructureModel, cost: number) => void;
 	sellStructure: (structure: StructureModel) => void;
-	chargeStructure: (structure: StructureModel) => void;
+	chargeStructure: (structure: StructureModel, useTavern: boolean) => void;
 	upgradeStructure: (structure: StructureModel) => void;
 	spendCharge: (type: StructureType, count: number) => void;
 	addHero: (hero: CombatantModel) => void;
@@ -62,6 +62,7 @@ interface Props {
 	startEncounter: (region: RegionModel, heroes: CombatantModel[], benefits: number, detriments: number) => void;
 	regenerateCampaignMap: () => void;
 	conquer: (region: RegionModel) => void;
+	purchaseRegion: (region: RegionModel) => void;
 }
 
 export class CampaignScreen extends Component<Props> {
@@ -77,6 +78,7 @@ export class CampaignScreen extends Component<Props> {
 						startEncounter={this.props.startEncounter}
 						regenerateCampaignMap={this.props.regenerateCampaignMap}
 						conquer={this.props.conquer}
+						purchaseRegion={this.props.purchaseRegion}
 					/>
 				);
 				break;

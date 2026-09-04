@@ -15,6 +15,15 @@ The map has a number of tokens on it; heroes are in their own colors, monsters a
 
 You'll notice that most floor squares are white, but some are gray - these squares are Obstructed, making them more difficult to move into.
 
+You may also see blue squares of Water, and pale blue squares of Ice. Water is difficult to move into, just like Obstructed ground, but it does more than slow you down:
+
+* Standing in water shelters you from Fire damage.
+* Acid, Electricity and Poison damage dealt to someone standing in water is carried through it, and everyone standing in the water around them suffers the same damage.
+* Cold damage dealt to someone standing in water freezes the water around them into Ice.
+* Fire damage dealt to someone standing on ice melts the ice around them back into Water.
+
+Ice is not difficult terrain - you cross it as easily as open ground. What makes it worth creating is that it's no longer water: it neither conducts nor shelters anyone from fire.
+
 On each combatant's turn, you'll see that the map hides the squares that aren't visible from that combatant's point of view.
 
 ## Hero Controls
@@ -39,6 +48,7 @@ When it's a monster's turn to act, you'll see much less information, because the
 Monsters are similar to heroes in most ways, but you may see a few special keywords:
 * **Beast** or **Mindless** - A monster with either of these keywords doesn't have a role or a background.
 * **Drone** - A monster with this keyword is particularly easy to kill; they die as soon as they take any damage.
+* **Aquatic** - A combatant with this keyword is at home in water: they move through it without penalty and resist Cold damage. They get no shelter from fire by standing in water, though - they're in the water, not behind it.
 * **Swarm** or **Amorphous** - A monster with either of these keywords takes half damage from physical damage types.
 * **Undead** - A monster with this keyword is hard to keep down; if they are unconscious at the start of their turn they have a chance to reanimate.
 
@@ -85,7 +95,7 @@ Contagion doesn't care whose side you're on: a diseased enemy will infect its ow
 
 You can move into any adjacent empty square, including diagonally, for 1 movement point.
 
-* If the square you are moving into is Obstructed, add 1 movement point
+* If the square you are moving into is Obstructed or Water, add 1 movement point
 * If the square you are moving out of is adjacent to an opponent, add 4 movement points
 * If you are Prone or Hidden, double the movement point cost
 

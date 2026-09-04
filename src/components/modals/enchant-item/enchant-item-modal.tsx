@@ -106,7 +106,7 @@ export class EnchantItemModal extends Component<Props, State> {
 		}
 
 		const heroes = this.props.game.heroes.map(h => {
-			const items = ([] as ItemModel[]).concat(h.items).concat(h.carried).filter(i => !i.potion);
+			const items = ([] as ItemModel[]).concat(h.items).concat(h.carried).filter(i => !i.potion && !i.scroll);
 			if (items.length > 0) {
 				const cards = items.map(item => (
 					<div key={item.id}>
@@ -127,7 +127,7 @@ export class EnchantItemModal extends Component<Props, State> {
 
 		let other = null;
 		if (this.props.game.items.length > 0) {
-			const cards = this.props.game.items.filter(i => !i.potion).map(item => (
+			const cards = this.props.game.items.filter(i => !i.potion && !i.scroll).map(item => (
 				<div key={item.id}>
 					<ItemCard item={item} onClick={this.selectItem} />
 				</div>

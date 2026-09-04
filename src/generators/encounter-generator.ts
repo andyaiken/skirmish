@@ -214,7 +214,12 @@ export class EncounterGenerator {
 				}
 			}
 
-			const square = Collections.draw(encounter.mapSquares.filter(c => c.type === EncounterMapSquareType.Clear), rng);
+			// A loot pile makes its square impassable, so dropping one on a trap would seal the trap
+			// in where nothing could ever set it off
+			const free = encounter.mapSquares
+				.filter(c => c.type === EncounterMapSquareType.Clear)
+				.filter(c => !encounter.traps.some(t => (t.position.x === c.x) && (t.position.y === c.y)));
+			const square = Collections.draw(free, rng);
 			lp.position.x = square.x;
 			lp.position.y = square.y;
 

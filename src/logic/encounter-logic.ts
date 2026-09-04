@@ -597,12 +597,17 @@ export class EncounterLogic {
 		return combatant.combat.senses >= trap.hidden;
 	};
 
-	static getVisibleTraps = (encounter: EncounterModel, combatant: CombatantModel | null) => {
-		if (!combatant) {
-			return [];
-		}
+	// The map is drawn for the player, so it must not reveal what the monsters know. Every trap on
+	// a generated map is monster-set, and monsters always see their own, so resolving visibility
+	// against whoever happens to be acting would put all of them on screen every monster turn
+	static getTrapsVisibleToPlayer = (encounter: EncounterModel, current: CombatantModel | null) => {
+		return encounter.traps.filter(trap => {
+			if (trap.setBy === CombatantType.Hero) {
+				return true;
+			}
 
-		return encounter.traps.filter(trap => EncounterLogic.canSeeTrap(combatant, trap));
+			return !!current && (current.faction === CombatantType.Hero) && EncounterLogic.canSeeTrap(current, trap);
+		});
 	};
 
 	static getTrap = (encounter: EncounterModel, id: string): TrapModel | null => {
@@ -698,6 +703,16 @@ export class EncounterLogic {
 		return trap;
 	};
 
+	// Moving a combatant without spending movement points - a teleport, or being pushed or pulled.
+	// However you arrive on a square, you arrive on it, so the trap check is the one `move` makes
+	static stepTo = (encounter: EncounterModel, combatant: CombatantModel, square: { x: number, y: number }) => {
+		combatant.combat.trail.push({ x: combatant.combat.position.x, y: combatant.combat.position.y });
+		combatant.combat.position.x = square.x;
+		combatant.combat.position.y = square.y;
+
+		EncounterLogic.triggerTraps(encounter, combatant);
+	};
+
 	static drinkPotion = (encounter: EncounterModel, owner: CombatantModel, drinker: CombatantModel, potion: ItemModel) => {
 		if (!potion.potion) {
 			return;
@@ -770,7 +785,10 @@ export class EncounterLogic {
 			EncounterLogLogic.text('and gets'),
 			EncounterLogLogic.result(result)
 		]);
-		const bonus = EncounterLogic.getDamageBonus(encounter, combatant, type);
+		// A damage bonus is what a combatant adds to what they dish out, so it must never add to
+		// what they suffer. Self-inflicted damage - a trap going off underfoot, or a card that
+		// burns its own caster - gets no bonus.
+		const bonus = (combatant.id === target.id) ? 0 : EncounterLogic.getDamageBonus(encounter, combatant, type);
 		if (bonus > 0) {
 			EncounterLogLogic.log(encounter, [
 				EncounterLogLogic.combatant(combatant),

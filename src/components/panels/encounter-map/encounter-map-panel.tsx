@@ -220,9 +220,9 @@ export class EncounterMapPanel extends Component<Props> {
 			);
 		});
 
-		// A trap is on the map only for someone whose senses beat it; anyone else walks over ground
-		// that looks like any other
-		const traps = EncounterLogic.getVisibleTraps(this.props.encounter, current ?? null).map(trap => {
+		// A trap is on the map only for a hero whose senses beat it, plus any the heroes set
+		// themselves; to anyone else it is ground that looks like any other
+		const traps = EncounterLogic.getTrapsVisibleToPlayer(this.props.encounter, current ?? null).map((trap: TrapModel) => {
 			return (
 				<TrapToken
 					key={trap.id}

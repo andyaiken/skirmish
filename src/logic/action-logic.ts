@@ -1220,9 +1220,11 @@ export class ActionEffects {
 									});
 									if (squares.length > 0) {
 										const square = Collections.draw(squares);
-										target.combat.trail.push({ x: target.combat.position.x, y: target.combat.position.y });
-										target.combat.position.x = square.x;
-										target.combat.position.y = square.y;
+										EncounterLogic.stepTo(encounter, target, square);
+										if (target.combat.state === CombatantState.Dead) {
+											// A trap along the way has finished them; they slide no further
+											break;
+										}
 									}
 								}
 								EncounterLogLogic.log(encounter, [
@@ -1248,9 +1250,11 @@ export class ActionEffects {
 									});
 									if (squares.length > 0) {
 										const square = Collections.draw(squares);
-										target.combat.trail.push({ x: target.combat.position.x, y: target.combat.position.y });
-										target.combat.position.x = square.x;
-										target.combat.position.y = square.y;
+										EncounterLogic.stepTo(encounter, target, square);
+										if (target.combat.state === CombatantState.Dead) {
+											// A trap along the way has finished them; they slide no further
+											break;
+										}
 									}
 								}
 								EncounterLogLogic.log(encounter, [
@@ -1266,6 +1270,10 @@ export class ActionEffects {
 								combatant.combat.position.y = target.combat.position.y;
 								target.combat.position.x = currentX;
 								target.combat.position.y = currentY;
+								// Both have landed before either trap goes off, so neither is caught
+								// out by the other's arrival
+								EncounterLogic.triggerTraps(encounter, combatant);
+								EncounterLogic.triggerTraps(encounter, target);
 								EncounterLogLogic.log(encounter, [
 									EncounterLogLogic.combatant(combatant),
 									EncounterLogLogic.text('and'),
@@ -1283,9 +1291,11 @@ export class ActionEffects {
 									});
 									if (squares.length > 0) {
 										const square = Collections.draw(squares);
-										combatant.combat.trail.push({ x: combatant.combat.position.x, y: combatant.combat.position.y });
-										combatant.combat.position.x = square.x;
-										combatant.combat.position.y = square.y;
+										EncounterLogic.stepTo(encounter, combatant, square);
+										if (combatant.combat.state === CombatantState.Dead) {
+											// A trap along the way has finished them; they slide no further
+											break;
+										}
 									}
 								}
 								EncounterLogLogic.log(encounter, [
@@ -1363,9 +1373,7 @@ export class ActionEffects {
 					});
 					if (candidates.length > 0) {
 						const square = Collections.draw(candidates);
-						combatant.combat.trail.push({ x: combatant.combat.position.x, y: combatant.combat.position.y });
-						combatant.combat.position.x = square.x;
-						combatant.combat.position.y = square.y;
+						EncounterLogic.stepTo(encounter, combatant, square);
 					} else {
 						EncounterLogLogic.log(encounter, [
 							EncounterLogLogic.combatant(combatant),
@@ -1822,6 +1830,13 @@ export class ActionLogic {
 							}
 							case ActionTargetType.Walls: {
 								const list = targetParam.value as { x: number, y: number }[];
+								if (!list || (list.length === 0)) {
+									parameterSet = false;
+								}
+								break;
+							}
+							case ActionTargetType.Traps: {
+								const list = targetParam.value as string[];
 								if (!list || (list.length === 0)) {
 									parameterSet = false;
 								}

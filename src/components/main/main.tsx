@@ -597,7 +597,7 @@ export class Main extends Component<Props, State> {
 						});
 						h.carried.forEach((i, n) => {
 							if (i.id === original.id) {
-								h.items[n] = upgrade;
+								h.carried[n] = upgrade;
 							}
 						});
 					});

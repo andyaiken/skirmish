@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { TrapData } from '../data/trap-data';
 
+import { ActionTargetType } from '../enums/action-target-type';
 import { CardType } from '../enums/card-type';
 import { CombatantState } from '../enums/combatant-state';
 import { CombatantType } from '../enums/combatant-type';
@@ -12,13 +13,15 @@ import { SkillType } from '../enums/skill-type';
 import { TraitType } from '../enums/trait-type';
 import { TrapType } from '../enums/trap-type';
 
+import type { ActionModel, ActionTargetParameterModel } from '../models/action';
 import type { EncounterMapSquareModel, EncounterModel, TrapModel } from '../models/encounter';
-import type { ActionModel } from '../models/action';
+
 import type { BackgroundModel } from '../models/background';
 import type { CombatantModel } from '../models/combatant';
 import type { ConditionModel } from '../models/condition';
 import type { ItemModel } from '../models/item';
 
+import { ActionEffects, ActionLogic, ActionTargetParameters } from './action-logic';
 import { CombatantLogic } from './combatant-logic';
 import { ConditionLogic } from './condition-logic';
 import { EncounterLogic } from './encounter-logic';
@@ -187,6 +190,9 @@ describe('EncounterLogic.kill', () => {
 	const createKeg = (encounter: EncounterModel, x: number, y: number) => {
 		const keg = addCombatant(encounter, CombatantType.Monster, x, y);
 		keg.speciesID = monsters.find(species => species.id === 'species-powder-keg')!.id;
+		// Naming the species doesn't apply its cards, so give the keg the Brawl its species grants.
+		// Detonate attacks with Brawl, and at rank 0 against a defender's rank 1 it can barely land.
+		keg.features.push(FeatureLogic.createSkillFeature(`${keg.id} brawl`, SkillType.Brawl, 2));
 		return keg;
 	};
 
@@ -207,13 +213,28 @@ describe('EncounterLogic.kill', () => {
 	// the damage counter - so measure both.
 	const harm = (combatant: CombatantModel) => combatant.combat.damage + combatant.combat.wounds;
 
+	// Detonate is an attack: it rolls to hit before it rolls damage, and both combatants roll at
+	// rank 0, so with real dice the blast missed about half the time and every assertion below
+	// that someone was harmed failed at random. Pinning Math.random makes the rolls tie, which
+	// the attacker wins. It has to be pinned around the blast rather than for the whole test,
+	// because Utils.guid() draws from Math.random too - pin it any earlier and every combatant is
+	// handed the same ID, which drops them all from the target list.
+	const detonate = (encounter: EncounterModel, keg: CombatantModel) => {
+		const random = vi.spyOn(Math, 'random').mockReturnValue(0.85);
+		try {
+			EncounterLogic.kill(encounter, keg);
+		} finally {
+			random.mockRestore();
+		}
+	};
+
 	it('runs the death action against everyone in range', () => {
 		const encounter = createEncounter(9, 9);
 		const keg = createKeg(encounter, 4, 4);
 		const near = addCombatant(encounter, CombatantType.Hero, 4, 3);
 		const far = addCombatant(encounter, CombatantType.Hero, 0, 0);
 
-		EncounterLogic.kill(encounter, keg);
+		detonate(encounter, keg);
 
 		// Detonate is a radius 2 burst, so (4,3) is caught and (0,0) is not.
 		expect(harm(near)).toBeGreaterThan(0);
@@ -225,7 +246,7 @@ describe('EncounterLogic.kill', () => {
 		const keg = createKeg(encounter, 2, 2);
 		const ally = addCombatant(encounter, CombatantType.Monster, 2, 1);
 
-		EncounterLogic.kill(encounter, keg);
+		detonate(encounter, keg);
 
 		expect(harm(ally)).toBeGreaterThan(0);
 	});
@@ -235,9 +256,9 @@ describe('EncounterLogic.kill', () => {
 		const keg = createKeg(encounter, 2, 2);
 		const hero = addCombatant(encounter, CombatantType.Hero, 2, 1);
 
-		EncounterLogic.kill(encounter, keg);
+		detonate(encounter, keg);
 		const before = harm(hero);
-		EncounterLogic.kill(encounter, keg);
+		detonate(encounter, keg);
 
 		expect(harm(hero)).toBe(before);
 	});
@@ -250,7 +271,7 @@ describe('EncounterLogic.kill', () => {
 		// The second keg is caught in the first blast and, if that kills it,
 		// detonates in turn. Reaching the assertions at all proves the chain
 		// terminates rather than looping back into the first keg.
-		EncounterLogic.kill(encounter, first);
+		detonate(encounter, first);
 
 		expect(first.combat.state).toBe(CombatantState.Dead);
 		expect(harm(second)).toBeGreaterThan(0);
@@ -322,10 +343,10 @@ describe('traps', () => {
 		trap.hidden = 4;
 
 		hero.combat.senses = 3;
-		expect(EncounterLogic.getVisibleTraps(encounter, hero)).toHaveLength(0);
+		expect(EncounterLogic.canSeeTrap(hero, trap)).toBe(false);
 
 		hero.combat.senses = 4;
-		expect(EncounterLogic.getVisibleTraps(encounter, hero)).toHaveLength(1);
+		expect(EncounterLogic.canSeeTrap(hero, trap)).toBe(true);
 	});
 
 	it('are found by findTraps within the given radius', () => {
@@ -335,11 +356,17 @@ describe('traps', () => {
 		expect(EncounterLogic.findTraps(encounter, [ { x: 2, y: 2 } ], 3)).toHaveLength(2);
 	});
 
-	// A hero with no Perception to speak of rolls half a die, which can never reach 8
+	// A rank 0 roll is half of one die, but that die explodes on a 10 and so can still reach 8 now
+	// and again - pin it low enough that this attempt is definitely a failure
 	it('survive a failed disarm attempt, but not in hiding', () => {
 		trap.hidden = 6;
 
-		EncounterLogic.disarmTrap(encounter, hero, trap);
+		const random = vi.spyOn(Math, 'random').mockReturnValue(0.15);
+		try {
+			EncounterLogic.disarmTrap(encounter, hero, trap);
+		} finally {
+			random.mockRestore();
+		}
 
 		expect(encounter.traps).toHaveLength(1);
 		expect(trap.hidden).toBe(0);
@@ -368,8 +395,22 @@ describe('traps', () => {
 		const placed = EncounterLogic.placeTrap(encounter, hero, TrapType.Spike, { x: 3, y: 2 });
 		placed.hidden = 8;
 
-		expect(EncounterLogic.getVisibleTraps(encounter, hero)).toContain(placed);
-		expect(EncounterLogic.getVisibleTraps(encounter, monster)).not.toContain(placed);
+		expect(EncounterLogic.canSeeTrap(hero, placed)).toBe(true);
+		expect(EncounterLogic.canSeeTrap(monster, placed)).toBe(false);
+	});
+
+	// The map is the player's view, so a monster's turn must not put the monsters' own traps on it
+	it('are not revealed to the player by the turn of a monster that knows about them', () => {
+		trap.hidden = 8;
+		const monster = addCombatant(encounter, CombatantType.Monster, 0, 0);
+		const snare = EncounterLogic.placeTrap(encounter, hero, TrapType.Spike, { x: 3, y: 2 });
+
+		// The monster can see the monster-set trap, but the player is not shown it
+		expect(EncounterLogic.canSeeTrap(monster, trap)).toBe(true);
+		expect(EncounterLogic.getTrapsVisibleToPlayer(encounter, monster)).toEqual([ snare ]);
+
+		hero.combat.senses = 8;
+		expect(EncounterLogic.getTrapsVisibleToPlayer(encounter, hero)).toEqual([ trap, snare ]);
 	});
 
 	// Automatic movement - a monster's turn, or a commanded hero - routes around a trap you know
@@ -403,6 +444,54 @@ describe('traps', () => {
 
 		const paths = PathLogic.findPaths(encounter, monster, true);
 		expect(paths.some(p => (p.x === sprung.position.x) && (p.y === sprung.position.y))).toBe(true);
+	});
+
+	// However you arrive on a square you arrive on it, so a teleport springs a trap the same way a
+	// step does - otherwise the Scroll of Recall would be a way to ignore them
+	it('go off when someone is moved onto them without walking', () => {
+		const param = ActionTargetParameters.burst(ActionTargetType.Squares, 1, 10);
+		param.value = [ trap.position ];
+
+		ActionEffects.run(ActionEffects.moveToTargetSquare(), encounter, hero, [ param ]);
+
+		expect(hero.combat.position).toEqual(trap.position);
+		expect(trap.armed).toBe(false);
+		expect(harm(hero)).toBeGreaterThan(0);
+	});
+
+	// The bonus is what a combatant adds to what they dish out; a trap is not their attack
+	it('do not scale with the damage bonus of whoever sets them off', () => {
+		const specialist = addCombatant(encounter, CombatantType.Hero, 0, 0);
+		specialist.combat.movement = 10;
+		specialist.features.push(FeatureLogic.createDamageBonusFeature('test-fire', DamageType.Fire, 5));
+		addTrap(TrapType.Fire, 0, 1);
+
+		const random = vi.spyOn(Math, 'random').mockReturnValue(0.85);
+		try {
+			EncounterLogic.move(encounter, hero, 's', 1);
+			EncounterLogic.move(encounter, specialist, 's', 1);
+		} finally {
+			random.mockRestore();
+		}
+
+		expect(harm(specialist)).toBe(harm(hero));
+	});
+
+	// An action that can never do anything must not be allowed to burn the turn's action
+	it('leave a disarm action unrunnable when there are none in range', () => {
+		const trapper = GameLogic.getBackground('background-trapper') as BackgroundModel;
+		const action = JSON.parse(JSON.stringify(trapper.actions.find(a => a.name === 'Disarm Trap'))) as ActionModel;
+
+		// The only trap is two squares away, and this one reaches an adjacent square
+		EncounterLogic.checkParameters(encounter, hero, action);
+		const param = action.parameters.find(p => p.id === 'targets') as ActionTargetParameterModel;
+		expect(param.candidates).toHaveLength(1);
+		expect(ActionLogic.isParameterSet(param)).toBe(true);
+
+		encounter.traps = [];
+		EncounterLogic.checkParameters(encounter, hero, action);
+		expect(param.candidates).toHaveLength(0);
+		expect(ActionLogic.isParameterSet(param)).toBe(false);
 	});
 
 	it('can be set by a combatant, and go off when someone walks into them', () => {

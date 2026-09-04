@@ -149,6 +149,16 @@ describe('EncounterGenerator.createEncounter', () => {
 		});
 	});
 
+	// A loot pile makes its square impassable, so one dropped on a trap would seal that trap in
+	it('never drops a loot pile onto a trap', () => {
+		seeds.forEach(seed => {
+			const encounter = build(seed, []);
+			encounter.loot.forEach(lp => {
+				expect(encounter.traps.some(t => (t.position.x === lp.position.x) && (t.position.y === lp.position.y))).toBe(false);
+			});
+		});
+	});
+
 	it('puts water on the map whether or not any pack is switched on', () => {
 		// Water is base-game terrain now, so the pack list must make no difference to it. Blob
 		// counts are random, so this compares totals across a spread of seeds rather than one map.

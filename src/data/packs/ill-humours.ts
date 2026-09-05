@@ -3,6 +3,7 @@ import { ActionTargetType } from '../../enums/action-target-type';
 import { CombatantType } from '../../enums/combatant-type';
 import { ConditionLogic } from '../../logic/condition/condition-logic';
 import { ConditionType } from '../../enums/condition-type';
+import { ContagionType } from '../../enums/contagion-type';
 import { DamageCategoryType } from '../../enums/damage-category-type';
 import { DamageType } from '../../enums/damage-type';
 import { FeatureLogic } from '../../logic/feature/feature-logic';
@@ -81,7 +82,28 @@ export const illHumours = (): PackModel => ({
 					]
 				}
 			],
-			deathActions: []
+			deathActions: [
+				{
+					id: 'ooze-death-1',
+					name: 'Split',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Combatants, Number.MAX_VALUE)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Acid, 4),
+								ActionEffects.addCondition(ConditionLogic.createDamageCategoryVulnerabilityCondition(TraitType.Endurance, 3, DamageCategoryType.Corruption))
+							]
+						})
+					]
+				}
+			]
 		},
 		{
 			id: 'species-grub-swarm',
@@ -179,14 +201,38 @@ export const illHumours = (): PackModel => ({
 							skillBonus: 0,
 							hit: [
 								ActionEffects.addCondition(
-									ConditionLogic.makeContagious(ConditionLogic.createDamageCategoryVulnerabilityCondition(TraitType.Endurance, 4, DamageCategoryType.Corruption))
+									ConditionLogic.makeContagious(
+										ConditionLogic.createDamageCategoryVulnerabilityCondition(TraitType.Endurance, 4, DamageCategoryType.Corruption),
+										ContagionType.Allies
+									)
 								)
 							]
 						})
 					]
 				}
 			],
-			deathActions: []
+			deathActions: [
+				{
+					id: 'blightspawn-death-1',
+					name: 'Burst',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Combatants, Number.MAX_VALUE)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Decay, 2),
+								ActionEffects.addCondition(ConditionLogic.makeContagious(ConditionLogic.createAutoDamageCondition(TraitType.Endurance, 3, DamageType.Poison)))
+							]
+						})
+					]
+				}
+			]
 		},
 		{
 			id: 'species-plague-doctor',
@@ -220,7 +266,11 @@ export const illHumours = (): PackModel => ({
 							trait: TraitType.Endurance,
 							skillBonus: 0,
 							hit: [
-								ActionEffects.dealDamage(DamageType.Poison, 2)
+								ActionEffects.dealDamage(DamageType.Poison, 2),
+								// Engineered to stay in the ward it was meant for
+								ActionEffects.addCondition(ConditionLogic.makeContagious(
+									ConditionLogic.createAutoDamageCondition(TraitType.Endurance, 3, DamageType.Poison), ContagionType.Allies
+								))
 							]
 						})
 					]
@@ -491,13 +541,65 @@ export const illHumours = (): PackModel => ({
 						ActionTargetParameters.self()
 					],
 					effects: [
-						ActionEffects.addCondition(ConditionLogic.createDamageCategoryResistanceCondition(TraitType.Endurance, 5, DamageCategoryType.Corruption))
+						ActionEffects.addCondition(ConditionLogic.createDamageCategoryResistanceCondition(TraitType.Endurance, 5, DamageCategoryType.Corruption)),
+						// You take the sickness into yourself; the resistance above is what lets you
+						// live with it, and it only ever passes to the people standing against you
+						ActionEffects.addCondition(ConditionLogic.makeContagious(
+							ConditionLogic.createAutoDamageCondition(TraitType.Endurance, 4, DamageType.Decay), ContagionType.Enemies
+						))
 					]
 				}
 			]
 		}
 	],
 	backgrounds: [
+		{
+			id: 'background-physician',
+			name: 'Physician',
+			description: 'For many groups, a physician is the difference between life and death.',
+			startingFeatures: [],
+			features: [
+				FeatureLogic.createAuraFeature('physician-feature-1', ConditionType.AutoHeal, 1)
+			],
+			actions: [
+				{
+					id: 'physician-action-1',
+					name: 'Remove Affliction',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 5)
+					],
+					effects: [
+						ActionEffects.removeCondition(TraitType.Any)
+					]
+				},
+				{
+					id: 'physician-action-2',
+					name: 'First Aid',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Allies, 1)
+					],
+					effects: [
+						ActionEffects.healDamage(5),
+						ActionEffects.healWounds(2)
+					]
+				},
+				{
+					id: 'physician-action-3',
+					name: 'Heal Thyself',
+					prerequisites: [
+						ActionPrerequisites.wound()
+					],
+					parameters: [
+						ActionTargetParameters.self()
+					],
+					effects: [
+						ActionEffects.healWounds(2)
+					]
+				}
+			]
+		},
 		{
 			id: 'background-leech',
 			name: 'Leech',

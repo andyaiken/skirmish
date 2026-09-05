@@ -12,6 +12,7 @@ import { PackModel } from '../../models/pack';
 import { QuirkType } from '../../enums/quirk-type';
 import { SkillType } from '../../enums/skill-type';
 import { SummonType } from '../../enums/summon-type';
+import { TargetStateType } from '../../enums/target-state-type';
 import { TraitType } from '../../enums/trait-type';
 
 export const elements = (): PackModel => ({
@@ -416,7 +417,11 @@ export const elements = (): PackModel => ({
 							hit: [
 								ActionEffects.dealWeaponDamage(),
 								ActionEffects.dealDamage(DamageType.Impact, 2),
-								ActionEffects.forceMovement(MovementType.Push, 2)
+								ActionEffects.forceMovement(MovementType.Push, 2),
+								// Downburst puts them on the ground; this is what the ground is for
+								ActionEffects.ifTarget(TargetStateType.Prone, [
+									ActionEffects.dealDamage(DamageType.Impact, 4)
+								])
 							]
 						})
 					]

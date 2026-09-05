@@ -173,7 +173,9 @@ export const soundAndFury = (): PackModel => ({
 							trait: TraitType.Resolve,
 							skillBonus: 0,
 							hit: [
-								ActionEffects.forceMovement(MovementType.Pull, 3)
+								ActionEffects.forceMovement(MovementType.Pull, 3),
+								// You walk towards the singing, and everything else waits
+								ActionEffects.delay(4)
 							]
 						})
 					]
@@ -302,7 +304,10 @@ export const soundAndFury = (): PackModel => ({
 					],
 					effects: [
 						ActionEffects.stand(),
-						ActionEffects.addCondition(ConditionLogic.createMovementBonusCondition(TraitType.Resolve, 4))
+						ActionEffects.addCondition(ConditionLogic.createMovementBonusCondition(TraitType.Resolve, 4)),
+						// Hastening yourself does nothing - you are already taking your turn - so
+						// this only reads on the allies the cry reaches
+						ActionEffects.hasten(3)
 					]
 				},
 				{

@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { ActionEffects, ActionTargetParameters } from '../action/action-logic';
 import { ActionTargetType } from '../../enums/action-target-type';
 import { ConditionLogic } from '../condition/condition-logic';
+import { ContagionType } from '../../enums/contagion-type';
 import { DamageType } from '../../enums/damage-type';
 import { GameLogic } from '../game/game-logic';
 import { PackLogic } from '../pack/pack-logic';
@@ -122,7 +123,18 @@ describe('contagion and card strength', () => {
 	});
 
 	it('keeps every contagious card inside its band', () => {
-		const contagious = (card: { actions: ActionModel[] }) => JSON.stringify(card.actions).includes('"contagious":true');
+		const contagious = (card: { actions: ActionModel[], deathActions?: ActionModel[] }) => {
+			const json = JSON.stringify([ ...card.actions, ...(card.deathActions ?? []) ]);
+			return [ ContagionType.All, ContagionType.Allies, ContagionType.Enemies ]
+				.some(type => json.includes(`"contagion":"${type}"`));
+		};
+
+		// The filter above is only worth anything if it actually matches cards
+		const matched = packs().flatMap(pack => [
+			...PackLogic.getRoles(pack.id).filter(contagious),
+			...PackLogic.getMonsterSpecies(pack.id).filter(contagious)
+		]);
+		expect(matched.length).toBeGreaterThan(0);
 
 		packs().forEach(pack => {
 			PackLogic.getRoles(pack.id).filter(contagious).forEach(role => {

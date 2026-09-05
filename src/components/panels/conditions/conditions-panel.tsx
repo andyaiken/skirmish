@@ -1,6 +1,7 @@
 import { IconCircleMinus, IconCirclePlus, IconVirus } from '@tabler/icons-react';
 import { Component } from 'react';
 
+import { ContagionType } from '../../../enums/contagion-type';
 import { TraitType } from '../../../enums/trait-type';
 
 import { ConditionLogic } from '../../../logic/condition/condition-logic';
@@ -28,12 +29,12 @@ export class ConditionsPanel extends Component<Props> {
 				const beneficial = ConditionLogic.getConditionIsBeneficial(c);
 				const set = this.props.combatant.combat.conditions.filter(con => ConditionLogic.getConditionDescription(con) === ConditionLogic.getConditionDescription(c));
 				const className = [ 'condition-row', beneficial ? 'beneficial' : 'detrimental' ];
-				if (c.contagious) {
+				if (c.contagion !== ContagionType.None) {
 					className.push('contagious');
 				}
 				return (
-					<div key={c.id} className={className.join(' ')} title={c.contagious ? 'This condition can spread to combatants beside you' : undefined}>
-						{c.contagious ? <IconVirus size={18} /> : beneficial ? <IconCirclePlus size={18} /> : <IconCircleMinus size={18} />}
+					<div key={c.id} className={className.join(' ')} title={ConditionLogic.getContagionDescription(c)}>
+						{c.contagion !== ContagionType.None ? <IconVirus size={18} /> : beneficial ? <IconCirclePlus size={18} /> : <IconCircleMinus size={18} />}
 						<StatValue
 							orientation='compact'
 							label={ConditionLogic.getConditionDescription(c)}

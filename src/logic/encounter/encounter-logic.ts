@@ -4,6 +4,7 @@ import { TrapData } from '../../data/trap-data';
 import { CombatantState } from '../../enums/combatant-state';
 import { CombatantType } from '../../enums/combatant-type';
 import { ConditionType } from '../../enums/condition-type';
+import { ContagionType } from '../../enums/contagion-type';
 import { DamageCategoryType } from '../../enums/damage-category-type';
 import { DamageType } from '../../enums/damage-type';
 import { EncounterMapSquareType } from '../../enums/encounter-map-square-type';
@@ -248,7 +249,7 @@ export class EncounterLogic {
 	};
 
 	static spreadContagion = (encounter: EncounterModel, combatant: CombatantModel, rng: () => number = Math.random) => {
-		const contagious = combatant.combat.conditions.filter(c => c.contagious && (c.rank > 1));
+		const contagious = combatant.combat.conditions.filter(c => (c.contagion !== ContagionType.None) && (c.rank > 1));
 		if (contagious.length === 0) {
 			return;
 		}
@@ -260,16 +261,34 @@ export class EncounterLogic {
 			.filter(c => EncounterMapLogic.getDistanceAny(squares, EncounterLogic.getCombatantSquares(encounter, c)) <= 1);
 
 		contagious.forEach(condition => {
+			const beneficial = ConditionLogic.getConditionIsBeneficial(condition);
 			const isSame = (c: ConditionModel) => (c.type === condition.type) && (JSON.stringify(c.details) === JSON.stringify(condition.details));
 
 			neighbours
+				// Read relative to whoever is carrying it now, not to whoever first applied it
+				.filter(target => {
+					switch (condition.contagion) {
+						case ContagionType.Allies:
+							return target.faction === combatant.faction;
+						case ContagionType.Enemies:
+							return target.faction !== combatant.faction;
+						default:
+							return true;
+					}
+				})
 				.filter(target => !target.combat.conditions.some(isSame))
 				.forEach(target => {
 					const rank = EncounterLogic.getTraitRank(encounter, target, condition.trait);
-					if (Random.dice(rank, rng) >= Random.dice(condition.rank, rng)) {
+					const beatsIt = Random.dice(rank, rng) >= Random.dice(condition.rank, rng);
+
+					// One roll, read both ways round: your Trait is what shrugs off an affliction,
+					// and it is also what lets you take up a blessing. Without the inversion a
+					// strong-willed ally would be the one least able to share in a benefit
+					const takesIt = beneficial ? beatsIt : !beatsIt;
+					if (!takesIt) {
 						EncounterLogLogic.log(encounter, [
 							EncounterLogLogic.combatant(target),
-							EncounterLogLogic.text('resists'),
+							EncounterLogLogic.text(beneficial ? 'does not take up' : 'resists'),
 							EncounterLogLogic.rank(ConditionLogic.getConditionDescription(condition), condition.rank)
 						]);
 						return;
@@ -282,7 +301,7 @@ export class EncounterLogic {
 
 					EncounterLogLogic.log(encounter, [
 						EncounterLogLogic.combatant(target),
-						EncounterLogLogic.text('catches'),
+						EncounterLogLogic.text(beneficial ? 'shares in' : 'catches'),
 						EncounterLogLogic.rank(ConditionLogic.getConditionDescription(copy), copy.rank),
 						EncounterLogLogic.text('from'),
 						EncounterLogLogic.combatant(combatant)

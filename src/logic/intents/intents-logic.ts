@@ -151,7 +151,8 @@ export class IntentsLogic {
 								...path.steps.map(step => IntentsData.move(step)),
 								IntentsData.action(action)
 							],
-							weight: ActionLogic.getActionType(action) === 'Attack' ? 4 : 2
+							weight: (ActionLogic.getActionType(action) === 'Attack' ? 4 : 2)
+								+ ActionLogic.getTargetStateBonus(action, target)
 						});
 					}
 				}

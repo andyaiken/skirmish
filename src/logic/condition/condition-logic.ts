@@ -1,4 +1,5 @@
 import { ConditionType } from '../../enums/condition-type';
+import { ContagionType } from '../../enums/contagion-type';
 import { DamageCategoryType } from '../../enums/damage-category-type';
 import { DamageType } from '../../enums/damage-type';
 import { SkillCategoryType } from '../../enums/skill-category-type';
@@ -117,14 +118,37 @@ export class ConditionLogic {
 		return condition;
 	};
 
-	static makeContagious = (condition: ConditionModel) => {
-		condition.contagious = true;
+	// Defaults to spreading to anyone standing beside the carrier, which is what every contagious
+	// card did before conditions could name who catches them
+	static makeContagious = (condition: ConditionModel, contagion: ContagionType = ContagionType.All) => {
+		condition.contagion = contagion;
 		return condition;
+	};
+
+	// The tooltip on a condition's icon, or undefined when it cannot spread at all
+	static getContagionDescription = (condition: ConditionModel) => {
+		switch (condition.contagion) {
+			case ContagionType.All:
+				return 'This condition can spread to combatants beside you';
+			case ContagionType.Allies:
+				return 'This condition can spread to allies beside you';
+			case ContagionType.Enemies:
+				return 'This condition can spread to enemies beside you';
+		}
+		return undefined;
 	};
 
 	static getConditionDescription = (condition: ConditionModel) => {
 		const description = ConditionLogic.getConditionTypeDescription(condition);
-		return condition.contagious ? `${description}, contagious` : description;
+		switch (condition.contagion) {
+			case ContagionType.All:
+				return `${description}, contagious`;
+			case ContagionType.Allies:
+				return `${description}, contagious to allies`;
+			case ContagionType.Enemies:
+				return `${description}, contagious to enemies`;
+		}
+		return description;
 	};
 
 	static getConditionTypeDescription = (condition: ConditionModel) => {

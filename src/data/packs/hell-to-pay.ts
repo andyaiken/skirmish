@@ -194,7 +194,9 @@ export const hellToPay = (): PackModel => ({
 							skillBonus: 0,
 							hit: [
 								ActionEffects.dealDamage(DamageType.Piercing, 3),
-								ActionEffects.dealDamage(DamageType.Fire, 1)
+								ActionEffects.dealDamage(DamageType.Fire, 1),
+								// Fire does not stay where you put it
+								ActionEffects.addCondition(ConditionLogic.makeContagious(ConditionLogic.createAutoDamageCondition(TraitType.Endurance, 3, DamageType.Fire)))
 							]
 						})
 					]
@@ -282,7 +284,28 @@ export const hellToPay = (): PackModel => ({
 					]
 				}
 			],
-			deathActions: []
+			deathActions: [
+				{
+					id: 'imp-swarm-death-1',
+					name: 'Scatter',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 2)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Fire, 2),
+								ActionEffects.forceMovement(MovementType.Push, 2)
+							]
+						})
+					]
+				}
+			]
 		}
 	],
 	roles: [

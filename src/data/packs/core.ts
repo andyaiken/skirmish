@@ -1753,7 +1753,9 @@ export const core = (): PackModel => ({
 							skillBonus: 0,
 							hit: [
 								ActionEffects.dealWeaponDamage(),
-								ActionEffects.forceMovement(MovementType.Push, 2)
+								ActionEffects.forceMovement(MovementType.Push, 2),
+								// What harrying is actually for
+								ActionEffects.delay(3)
 							]
 						})
 					]
@@ -2110,53 +2112,6 @@ export const core = (): PackModel => ({
 								ActionEffects.stun()
 							]
 						})
-					]
-				}
-			]
-		},
-		{
-			id: 'background-physician',
-			name: 'Physician',
-			description: 'For many groups, a physician is the difference between life and death.',
-			startingFeatures: [],
-			features: [
-				FeatureLogic.createAuraFeature('physician-feature-1', ConditionType.AutoHeal, 1)
-			],
-			actions: [
-				{
-					id: 'physician-action-1',
-					name: 'Remove Affliction',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 5)
-					],
-					effects: [
-						ActionEffects.removeCondition(TraitType.Any)
-					]
-				},
-				{
-					id: 'physician-action-2',
-					name: 'First Aid',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.adjacent(ActionTargetType.Allies, 1)
-					],
-					effects: [
-						ActionEffects.healDamage(5),
-						ActionEffects.healWounds(2)
-					]
-				},
-				{
-					id: 'physician-action-3',
-					name: 'Heal Thyself',
-					prerequisites: [
-						ActionPrerequisites.wound()
-					],
-					parameters: [
-						ActionTargetParameters.self()
-					],
-					effects: [
-						ActionEffects.healWounds(2)
 					]
 				}
 			]
@@ -3670,22 +3625,6 @@ export const core = (): PackModel => ({
 			id: 'item-greaves',
 			name: 'Greaves',
 			description: 'Shaped plates that cover the shin and buckle at the calf.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.None,
-			location: ItemLocationType.Feet,
-			slots: 1,
-			weapon: null,
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-snowshoes',
-			name: 'Snowshoes',
-			description: 'Bent withies and hide lacing, twice the size of the foot.',
 			baseItem: '',
 			magic: false,
 			proficiency: ItemProficiencyType.None,

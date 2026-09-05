@@ -3,6 +3,7 @@ import { ActionTargetType } from '../../enums/action-target-type';
 import { CombatantType } from '../../enums/combatant-type';
 import { ConditionLogic } from '../../logic/condition/condition-logic';
 import { ConditionType } from '../../enums/condition-type';
+import { ContagionType } from '../../enums/contagion-type';
 import { DamageCategoryType } from '../../enums/damage-category-type';
 import { DamageType } from '../../enums/damage-type';
 import { FeatureLogic } from '../../logic/feature/feature-logic';
@@ -54,6 +55,20 @@ export const powerAndGlory = (): PackModel => ({
 								ActionEffects.stun()
 							]
 						})
+					]
+				},
+				{
+					id: 'deva-action-3',
+					name: 'State of Grace',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Allies, 1, 5)
+					],
+					effects: [
+						ActionEffects.addCondition(ConditionLogic.makeContagious(
+							ConditionLogic.createDamageCategoryResistanceCondition(TraitType.Resolve, 4, DamageCategoryType.Corruption),
+							ContagionType.Allies
+						))
 					]
 				},
 				{
@@ -330,7 +345,9 @@ export const powerAndGlory = (): PackModel => ({
 						ActionTargetParameters.burst(ActionTargetType.Allies, 1, 5)
 					],
 					effects: [
-						ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Resolve, 3, TraitType.Endurance)),
+						ActionEffects.addCondition(ConditionLogic.makeContagious(
+							ConditionLogic.createTraitBonusCondition(TraitType.Resolve, 3, TraitType.Endurance), ContagionType.Allies
+						)),
 						ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Resolve, 3, TraitType.Resolve)),
 						ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Resolve, 3, TraitType.Speed))
 					]
@@ -489,9 +506,16 @@ export const powerAndGlory = (): PackModel => ({
 					],
 					effects: [
 						ActionEffects.invertConditions(false),
-						ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Endurance, 2, TraitType.Endurance)),
-						ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Endurance, 2, TraitType.Resolve)),
-						ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Endurance, 2, TraitType.Resolve))
+						// Zeal is catching, and it only ever catches among the faithful
+						ActionEffects.addCondition(ConditionLogic.makeContagious(
+							ConditionLogic.createTraitBonusCondition(TraitType.Endurance, 2, TraitType.Endurance), ContagionType.Allies
+						)),
+						ActionEffects.addCondition(ConditionLogic.makeContagious(
+							ConditionLogic.createTraitBonusCondition(TraitType.Endurance, 2, TraitType.Resolve), ContagionType.Allies
+						)),
+						ActionEffects.addCondition(ConditionLogic.makeContagious(
+							ConditionLogic.createTraitBonusCondition(TraitType.Endurance, 2, TraitType.Speed), ContagionType.Allies
+						))
 					]
 				}
 			]

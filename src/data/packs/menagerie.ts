@@ -9,6 +9,7 @@ import { MovementType } from '../../enums/movement-type';
 import { PackModel } from '../../models/pack';
 import { QuirkType } from '../../enums/quirk-type';
 import { SkillType } from '../../enums/skill-type';
+import { TargetStateType } from '../../enums/target-state-type';
 import { TraitType } from '../../enums/trait-type';
 
 export const menagerie = (): PackModel => ({
@@ -476,7 +477,11 @@ export const menagerie = (): PackModel => ({
 							trait: TraitType.Speed,
 							skillBonus: 0,
 							hit: [
-								ActionEffects.dealDamage(DamageType.Piercing, 3)
+								ActionEffects.dealDamage(DamageType.Piercing, 3),
+								// A wolf finishes what the pack has already put on the ground
+								ActionEffects.ifTarget(TargetStateType.Prone, [
+									ActionEffects.dealDamage(DamageType.Piercing, 3)
+								])
 							]
 						})
 					]

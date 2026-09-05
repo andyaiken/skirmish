@@ -209,7 +209,28 @@ export const faeRealm = (): PackModel => ({
 					]
 				}
 			],
-			deathActions: []
+			deathActions: [
+				{
+					id: 'banshee-death-1',
+					name: 'Final Wail',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 3)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Presence,
+							trait: TraitType.Resolve,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Sonic, 3),
+								ActionEffects.stun()
+							]
+						})
+					]
+				}
+			]
 		}
 	],
 	roles: [

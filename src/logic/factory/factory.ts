@@ -1,6 +1,7 @@
 import { CombatantState } from '../../enums/combatant-state';
 import { CombatantType } from '../../enums/combatant-type';
 import { ConditionType } from '../../enums/condition-type';
+import { ContagionType } from '../../enums/contagion-type';
 import { DamageCategoryType } from '../../enums/damage-category-type';
 import { DamageType } from '../../enums/damage-type';
 import { FeatureType } from '../../enums/feature-type';
@@ -89,7 +90,7 @@ export class Factory {
 			type: type,
 			trait: trait,
 			rank: rank,
-			contagious: false,
+			contagion: ContagionType.None,
 			details: {
 				trait: TraitType.None,
 				skill: SkillType.None,

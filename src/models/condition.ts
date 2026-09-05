@@ -1,4 +1,5 @@
 import type { ConditionType } from '../enums/condition-type';
+import type { ContagionType } from '../enums/contagion-type';
 import type { DamageCategoryType } from '../enums/damage-category-type';
 import type { DamageType } from '../enums/damage-type';
 import type { SkillCategoryType } from '../enums/skill-category-type';
@@ -10,7 +11,7 @@ export interface ConditionModel {
 	type: ConditionType;
 	trait: TraitType;
 	rank: number;
-	contagious: boolean;
+	contagion: ContagionType;
 	details: {
 		trait: TraitType;
 		skill: SkillType;

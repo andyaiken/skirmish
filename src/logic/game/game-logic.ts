@@ -1,5 +1,6 @@
 import { ActionTargetType } from '../../enums/action-target-type';
 import { BoonType } from '../../enums/boon-type';
+import { ContagionType } from '../../enums/contagion-type';
 import { DamageCategoryType } from '../../enums/damage-category-type';
 import { DamageType } from '../../enums/damage-type';
 import { FeatureType } from '../../enums/feature-type';
@@ -449,6 +450,9 @@ export class GameLogic {
 				return Collections.sum(effect.children, e => GameLogic.getActionEffectStrength(e)) / 2;
 			case 'toSelf':
 				return Collections.sum(effect.children, e => GameLogic.getActionEffectStrength(e));
+			// Halved for the same reason an attack's children are: these only land some of the time
+			case 'ifTarget':
+				return Collections.sum(effect.children, e => GameLogic.getActionEffectStrength(e)) / 2;
 			case 'damage':
 				return (effect.data as { type: DamageType, rank: number }).rank;
 			case 'weapondamage':
@@ -457,10 +461,13 @@ export class GameLogic {
 				return 5 * (effect.data as number);
 			case 'addcondition' : {
 				const condition = effect.data as ConditionModel;
-				return condition.contagious ? condition.rank * 2 : condition.rank;
+				return condition.contagion !== ContagionType.None ? condition.rank * 2 : condition.rank;
 			}
 			case 'stun':
 				return 5;
+			case 'delay':
+			case 'hasten':
+				return effect.data as number;
 			case 'knockdown':
 				return 2;
 			case 'disarm':

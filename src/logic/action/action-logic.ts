@@ -5,6 +5,7 @@ import { ActionRangeType } from '../../enums/action-range-type';
 import { ActionTargetType } from '../../enums/action-target-type';
 import { CombatantState } from '../../enums/combatant-state';
 import { CombatantType } from '../../enums/combatant-type';
+import { ContagionType } from '../../enums/contagion-type';
 import { DamageType } from '../../enums/damage-type';
 import { EncounterMapSquareType } from '../../enums/encounter-map-square-type';
 import { FeatureType } from '../../enums/feature-type';
@@ -14,6 +15,7 @@ import { MovementType } from '../../enums/movement-type';
 import { QuirkType } from '../../enums/quirk-type';
 import { SkillType } from '../../enums/skill-type';
 import { SummonType } from '../../enums/summon-type';
+import { TargetStateType } from '../../enums/target-state-type';
 import { TraitType } from '../../enums/trait-type';
 import { TrapType } from '../../enums/trap-type';
 
@@ -330,6 +332,17 @@ export class ActionEffects {
 		};
 	};
 
+	// The conditional counterpart to toSelf: run these effects, but only against the targets that are
+	// in the given state. An action carrying one is never dead - it simply does more when it lands on
+	// someone who is already down
+	static ifTarget = (state: TargetStateType, effects: ActionEffectModel[]): ActionEffectModel => {
+		return {
+			id: 'ifTarget',
+			data: { state: state, effects: effects },
+			children: effects
+		};
+	};
+
 	static dealWeaponDamage = (rankModifier = 0): ActionEffectModel => {
 		return {
 			id: 'weapondamage',
@@ -390,6 +403,25 @@ export class ActionEffects {
 		return {
 			id: 'addMovement',
 			data: null,
+			children: []
+		};
+	};
+
+	// Turn order is derived live from initiative: endTurn parks the finished combatant at MIN_VALUE
+	// and getActiveCombatants takes whoever is left with the highest score, so moving a number here
+	// and re-sorting is all it takes to change who acts next
+	static delay = (rank: number): ActionEffectModel => {
+		return {
+			id: 'delay',
+			data: rank,
+			children: []
+		};
+	};
+
+	static hasten = (rank: number): ActionEffectModel => {
+		return {
+			id: 'hasten',
+			data: rank,
 			children: []
 		};
 	};
@@ -625,6 +657,10 @@ export class ActionEffects {
 			case 'toSelf': {
 				return 'To self';
 			}
+			case 'ifTarget': {
+				const data = effect.data as { state: TargetStateType, effects: ActionEffectModel[] };
+				return `If the target is ${data.state}`;
+			}
 			case 'weapondamage': {
 				const rankModifier = effect.data as number;
 				return rankModifier === 0 ? 'Deal weapon damage' : `Deal weapon damage ${rankModifier > 0 ? '+' : ''}${rankModifier}`;
@@ -647,7 +683,7 @@ export class ActionEffects {
 			}
 			case 'addcondition': {
 				const condition = effect.data as ConditionModel;
-				const noun = condition.contagious ? 'a contagious condition' : 'a condition';
+				const noun = condition.contagion !== ContagionType.None ? 'a contagious condition' : 'a condition';
 				return `Add ${noun} (${ConditionLogic.getConditionTypeDescription(condition)}, rank ${condition.rank})`;
 			}
 			case 'removecondition': {
@@ -656,6 +692,14 @@ export class ActionEffects {
 			}
 			case 'addMovement': {
 				return 'Add movement points';
+			}
+			case 'delay': {
+				const rank = effect.data as number;
+				return `Delay the target's turn (rank ${rank})`;
+			}
+			case 'hasten': {
+				const rank = effect.data as number;
+				return `Bring the target's turn forward (rank ${rank})`;
 			}
 			case 'knockdown': {
 				return 'Knock down';
@@ -748,6 +792,21 @@ export class ActionEffects {
 		}
 
 		return '';
+	};
+
+	static targetIsInState = (target: CombatantModel, state: TargetStateType) => {
+		switch (state) {
+			case TargetStateType.Prone:
+				return target.combat.state === CombatantState.Prone;
+			case TargetStateType.Stunned:
+				return target.combat.stunned;
+			case TargetStateType.Damaged:
+				return target.combat.damage > 0;
+			case TargetStateType.Wounded:
+				return target.combat.wounds > 0;
+			case TargetStateType.Afflicted:
+				return target.combat.conditions.length > 0;
+		}
 	};
 
 	static run = (effect: ActionEffectModel, encounter: EncounterModel, combatant: CombatantModel, parameters: ActionParameterModel[]) => {
@@ -847,6 +906,26 @@ export class ActionEffects {
 				effects.forEach(effect => {
 					ActionEffects.run(effect, encounter, combatant, copy);
 				});
+				break;
+			}
+			case 'ifTarget': {
+				const data = effect.data as { state: TargetStateType, effects: ActionEffectModel[] };
+				const targetParameter = parameters.find(p => p.id === 'targets');
+				if (targetParameter) {
+					const targetIDs = targetParameter.value as string[];
+					const matching = targetIDs.filter(id => {
+						const target = EncounterLogic.getCombatant(encounter, id);
+						return !!target && ActionEffects.targetIsInState(target, data.state);
+					});
+					if (matching.length > 0) {
+						let copy = JSON.parse(JSON.stringify(parameters)) as ActionParameterModel[];
+						copy = copy.filter(p => p.id !== 'targets');
+						copy.push({ id: 'targets', candidates: [], value: matching });
+						data.effects.forEach(child => {
+							ActionEffects.run(child, encounter, combatant, copy);
+						});
+					}
+				}
 				break;
 			}
 			case 'weapondamage': {
@@ -991,6 +1070,44 @@ export class ActionEffects {
 							EncounterLogLogic.text('additional movement')
 						]);
 					});
+				}
+				break;
+			}
+			case 'delay':
+			case 'hasten': {
+				const rank = effect.data as number;
+				const targetParameter = parameters.find(p => p.id === 'targets');
+				if (targetParameter) {
+					const targetIDs = targetParameter.value as string[];
+					let reordered = false;
+					targetIDs.forEach(id => {
+						const target = EncounterLogic.getCombatant(encounter, id) as CombatantModel;
+
+						// Anyone who has already taken their turn is parked at MIN_VALUE and is out
+						// of the queue - putting a real number back would hand them a second turn
+						if (target.combat.initiative === Number.MIN_VALUE) {
+							EncounterLogLogic.log(encounter, [
+								EncounterLogLogic.combatant(target),
+								EncounterLogLogic.text('has already acted this round')
+							]);
+							return;
+						}
+
+						const result = Random.dice(rank);
+						const shift = effect.id === 'delay' ? -result : result;
+						target.combat.initiative = Math.max(0, target.combat.initiative + shift);
+						reordered = true;
+
+						EncounterLogLogic.log(encounter, [
+							EncounterLogLogic.combatant(target),
+							EncounterLogLogic.text(effect.id === 'delay' ? 'is pushed back to initiative' : 'is brought forward to initiative'),
+							EncounterLogLogic.result(target.combat.initiative)
+						]);
+					});
+
+					if (reordered) {
+						EncounterLogic.sortInitiative(encounter);
+					}
 				}
 				break;
 			}
@@ -1655,6 +1772,48 @@ export class ActionEffects {
 export class ActionLogic {
 	static getActionType = (action: ActionModel) => {
 		return action.effects.some(e => e.id === 'attack') ? 'Attack' : 'Utility';
+	};
+
+	// How much better this action is against this particular target. The AI weighs an action once per
+	// candidate target, so this is where a conditional effect earns its keep - without it, knocking
+	// someone down is pure tempo denial, because nothing ever chooses to hit the one on the ground
+	static getTargetStateBonus = (action: ActionModel, target: CombatantModel) => {
+		const conditionals: ActionEffectModel[] = [];
+		const collect = (effects: ActionEffectModel[]) => {
+			effects.forEach(effect => {
+				if (effect.id === 'ifTarget') {
+					conditionals.push(effect);
+				}
+				// An attack carries its hit effects as children, so this finds the nested ones too
+				collect(effect.children);
+			});
+		};
+		collect(action.effects);
+
+		let bonus = conditionals
+			.filter(effect => {
+				const data = effect.data as { state: TargetStateType, effects: ActionEffectModel[] };
+				return ActionEffects.targetIsInState(target, data.state);
+			})
+			.length * 2;
+
+		// Moving someone's turn is only worth anything while they still have one to move; a target
+		// parked at MIN_VALUE has already acted, and delaying them achieves precisely nothing
+		const movesTurn: ActionEffectModel[] = [];
+		const collectTempo = (effects: ActionEffectModel[]) => {
+			effects.forEach(effect => {
+				if ((effect.id === 'delay') || (effect.id === 'hasten')) {
+					movesTurn.push(effect);
+				}
+				collectTempo(effect.children);
+			});
+		};
+		collectTempo(action.effects);
+		if ((movesTurn.length > 0) && (target.combat.initiative !== Number.MIN_VALUE)) {
+			bonus += movesTurn.length * 2;
+		}
+
+		return bonus;
 	};
 
 	static getActionSpeed = (action: ActionModel) => {

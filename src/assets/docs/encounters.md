@@ -36,7 +36,7 @@ When it's a hero's turn to act, you'll see the following information:
   * **Movement points** - Each round, you get a number of movement points which you can spend to move around the map.
   * **Senses** and **Hidden** - Enemies whose Hidden score beats your Senses score can't be seen, and so can't be attacked.
   * **Damage** and **Wounds** - When you're the target of a successful attack you'll take Damage. Damage can become Wounds, which are much more serious.
-  * **Conditions** - During the encounter you might have Conditions applied to you. A Condition might be beneficial or detrimental, and each one is associated with a particular Trait. Some are **contagious**, and can spread to anyone standing beside you.
+  * **Conditions** - During the encounter you might have Conditions applied to you. A Condition might be beneficial or detrimental, and each one is associated with a particular Trait. Some are **contagious**, and can spread to those standing beside you.
 * The `Movement` tab:
   * This tab allows you to move your hero around the battlefield. If you're beside a pile of treasure, you'll also be able to pick up items here.
 * On the final tab you'll see an `End Your Turn` button; when you're finished with this hero's turn, press this to move on to the next combatant.
@@ -85,11 +85,16 @@ If you're Stunned, you can't do anything for one round; otherwise, you can use y
 
 If the combatant has any **contagious** Conditions, each one may spread to the combatants standing beside them:
 
-* Each of those combatants rolls the Condition's Trait against the Condition's rank
-* Anyone who fails to beat it catches the Condition, at one rank lower than the original
+* Each Condition names who can catch it - anyone at all, only allies, or only enemies
+* Each combatant it can reach rolls the Condition's Trait against the Condition's rank
+* For a detrimental Condition, anyone who fails to beat it catches it
+* For a beneficial one the roll reads the other way round: those who beat it share in it, and the rest are simply not touched
+* Either way the copy is one rank lower than the original
 * Nobody catches a Condition they are already suffering from
 
-Contagion doesn't care whose side you're on: a diseased enemy will infect its own allies, and one of your heroes can carry something back into the middle of your line. Because every copy is a rank weaker than the one it spread from, an outbreak always burns itself out - but a strong one can work its way through a crowded battle first. Spreading out is the surest way to stop it.
+Who counts as an ally is judged from whoever is carrying the Condition, not from whoever first applied it - so a hero who catches a plague becomes a danger to the heroes beside them.
+
+Most contagion doesn't care whose side you're on: a diseased enemy will infect its own allies, and one of your heroes can carry something back into the middle of your line. Because every copy is a rank weaker than the one it spread from, an outbreak always burns itself out - but a strong one can work its way through a crowded battle first. Spreading out is the surest way to stop it.
 
 ---
 

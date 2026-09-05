@@ -10,6 +10,7 @@ import { ItemProficiencyType } from '../../enums/item-proficiency-type';
 import { PackModel } from '../../models/pack';
 import { SkillType } from '../../enums/skill-type';
 import { StructureType } from '../../enums/structure-type';
+import { TargetStateType } from '../../enums/target-state-type';
 import { TraitType } from '../../enums/trait-type';
 import { TrapType } from '../../enums/trap-type';
 
@@ -245,7 +246,11 @@ export const guileAndCunning = (): PackModel => ({
 							skillBonus: 0,
 							hit: [
 								ActionEffects.dealWeaponDamage(2),
-								ActionEffects.dealDamage(DamageType.Poison, 2)
+								ActionEffects.dealDamage(DamageType.Poison, 2),
+								// The whole point of the trade
+								ActionEffects.ifTarget(TargetStateType.Wounded, [
+									ActionEffects.dealWeaponDamage(3)
+								])
 							]
 						})
 					]

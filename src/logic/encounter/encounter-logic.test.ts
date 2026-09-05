@@ -6,6 +6,8 @@ import { ActionTargetType } from '../../enums/action-target-type';
 import { CardType } from '../../enums/card-type';
 import { CombatantState } from '../../enums/combatant-state';
 import { CombatantType } from '../../enums/combatant-type';
+import { ContagionType } from '../../enums/contagion-type';
+import { DamageCategoryType } from '../../enums/damage-category-type';
 import { DamageType } from '../../enums/damage-type';
 import { EncounterMapSquareType } from '../../enums/encounter-map-square-type';
 import { QuirkType } from '../../enums/quirk-type';
@@ -654,6 +656,100 @@ describe('EncounterLogic.spreadContagion', () => {
 		EncounterLogic.spreadContagion(encounter, carrier);
 
 		expect(distant.combat.conditions.length).toBe(0);
+	});
+
+	// Contagion is read relative to whoever is carrying the condition now, not to whoever first
+	// applied it - a hero carrying a plague spreads it to the heroes standing beside them
+	it('spreads an Allies contagion only to the carrier\'s own side', () => {
+		const ally = addCombatant(encounter, CombatantType.Hero, 2, 3);
+		const enemy = addCombatant(encounter, CombatantType.Monster, 2, 1);
+		const condition = ConditionLogic.makeContagious(
+			ConditionLogic.createAutoDamageCondition(TraitType.Endurance, 10, DamageType.Poison),
+			ContagionType.Allies
+		);
+		carrier.combat.conditions.push(condition);
+
+		EncounterLogic.spreadContagion(encounter, carrier, scripted(condition, ally, false));
+
+		expect(ally.combat.conditions).toHaveLength(1);
+		expect(enemy.combat.conditions).toHaveLength(0);
+	});
+
+	it('spreads an Enemies contagion only to the other side', () => {
+		const ally = addCombatant(encounter, CombatantType.Hero, 2, 3);
+		const enemy = addCombatant(encounter, CombatantType.Monster, 2, 1);
+		const condition = ConditionLogic.makeContagious(
+			ConditionLogic.createAutoDamageCondition(TraitType.Endurance, 10, DamageType.Poison),
+			ContagionType.Enemies
+		);
+		carrier.combat.conditions.push(condition);
+
+		EncounterLogic.spreadContagion(encounter, carrier, scripted(condition, enemy, false));
+
+		expect(enemy.combat.conditions).toHaveLength(1);
+		expect(ally.combat.conditions).toHaveLength(0);
+	});
+
+	it('still reaches both sides when the contagion names neither', () => {
+		const ally = addCombatant(encounter, CombatantType.Hero, 2, 3);
+		const enemy = addCombatant(encounter, CombatantType.Monster, 2, 1);
+		const condition = infect(carrier);
+
+		EncounterLogic.spreadContagion(encounter, carrier, scripted(condition, ally, false));
+
+		expect(ally.combat.conditions).toHaveLength(1);
+		expect(enemy.combat.conditions).toHaveLength(1);
+	});
+
+	// The scripted rng fixes whether the target's Trait roll beats the condition's rank. For an
+	// affliction that means shrugging it off; for a blessing it has to mean the opposite, or the
+	// stoutest ally would be the one least able to share in it
+	const bless = (combatant: CombatantModel, rank = 10) => {
+		const condition = ConditionLogic.makeContagious(
+			ConditionLogic.createDamageCategoryResistanceCondition(TraitType.Endurance, rank, DamageCategoryType.Corruption),
+			ContagionType.Allies
+		);
+		combatant.combat.conditions.push(condition);
+		return condition;
+	};
+
+	it('gives a blessing to the ally whose Trait roll beats it', () => {
+		const ally = addCombatant(encounter, CombatantType.Hero, 2, 3);
+		const condition = bless(carrier);
+
+		EncounterLogic.spreadContagion(encounter, carrier, scripted(condition, ally, true));
+
+		expect(ally.combat.conditions).toHaveLength(1);
+	});
+
+	it('withholds a blessing from the ally whose Trait roll does not', () => {
+		const ally = addCombatant(encounter, CombatantType.Hero, 2, 3);
+		const condition = bless(carrier);
+
+		EncounterLogic.spreadContagion(encounter, carrier, scripted(condition, ally, false));
+
+		expect(ally.combat.conditions).toHaveLength(0);
+	});
+
+	it('reads the very same roll the opposite way for a blessing and an affliction', () => {
+		const blessed = addCombatant(encounter, CombatantType.Hero, 2, 3);
+		const boon = bless(carrier);
+		EncounterLogic.spreadContagion(encounter, carrier, scripted(boon, blessed, true));
+
+		const other = createEncounter();
+		const plagued = addCombatant(other, CombatantType.Hero, 2, 2);
+		const neighbour = addCombatant(other, CombatantType.Hero, 2, 3);
+		const bane = ConditionLogic.makeContagious(
+			ConditionLogic.createAutoDamageCondition(TraitType.Endurance, 10, DamageType.Poison)
+		);
+		plagued.combat.conditions.push(bane);
+		const rank = Math.max(EncounterLogic.getTraitRank(other, neighbour, bane.trait), 1);
+		const cycle = rank + bane.rank;
+		let i = 0;
+		EncounterLogic.spreadContagion(other, plagued, () => ((i++ % cycle) < rank) ? 0.85 : 0);
+
+		// Same roll: the blessing lands, the plague is shrugged off
+		expect([ blessed.combat.conditions.length, neighbour.combat.conditions.length ]).toEqual([ 1, 0 ]);
 	});
 
 	it('does not spread a condition that is not contagious', () => {

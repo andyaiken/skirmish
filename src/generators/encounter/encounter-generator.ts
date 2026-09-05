@@ -206,7 +206,9 @@ export class EncounterGenerator {
 					...GameLogic.getScrollDeck(packIDs)
 				];
 				if (consumables.length > 0) {
-					const item = Collections.draw(consumables, rng);
+					// The deck hands back the pack's own card, which is shared - copy it before
+					// giving it an instance ID, or the catalogue entry is what gets renamed
+					const item = JSON.parse(JSON.stringify(Collections.draw(consumables, rng))) as ItemModel;
 					item.id = Utils.guid();
 					lp.items.push(item);
 				} else {

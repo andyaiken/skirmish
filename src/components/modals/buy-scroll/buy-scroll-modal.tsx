@@ -48,8 +48,10 @@ export class BuyScrollModal extends Component<Props, State> {
 		const deck = GameLogic.getScrollDeck(this.props.options.packIDs);
 		const count = Math.min(3, Collections.distinct(deck, i => i.name).length);
 		while (items.length < count) {
-			const item = Collections.draw(GameLogic.getScrollDeck(this.props.options.packIDs));
-			if (!items.map(i => i.name).includes(item.name)) {
+			const drawn = Collections.draw(GameLogic.getScrollDeck(this.props.options.packIDs));
+			if (!items.map(i => i.name).includes(drawn.name)) {
+				// The deck hands back the pack's own card, which is shared
+				const item = JSON.parse(JSON.stringify(drawn)) as ItemModel;
 				item.id = Utils.guid();
 				items.push(item);
 			}

@@ -1,10 +1,16 @@
 import { describe, expect, it } from 'vitest';
 
+import type { RegionModel } from '../../models/region';
 import type { ScrollModel } from '../../models/item';
 
+import { CombatantType } from '../../enums/combatant-type';
 import { SummonType } from '../../enums/summon-type';
 
+import { EncounterGenerator } from '../../generators/encounter/encounter-generator';
+
 import { ActionEffects } from '../action/action-logic';
+import { CombatantLogic } from '../combatant/combatant-logic';
+import { Factory } from '../factory/factory';
 import { GameLogic } from '../game/game-logic';
 import { PackLogic } from '../pack/pack-logic';
 
@@ -101,5 +107,45 @@ describe('every summon type', () => {
 		const json = JSON.stringify(GameLogic.getAllActions(allPackIDs()));
 		const unused = Object.values(SummonType).filter(type => !json.includes(`"${type}"`));
 		expect(unused).toEqual([]);
+	});
+});
+
+// The pack data is now built once and shared, rather than rebuilt on every lookup. That is only safe
+// while nothing mutates a card it drew: everything that wants to change one clones it first. These
+// guard that, because a mutation here would silently corrupt the card for the rest of the session
+describe('the shared pack data', () => {
+	it('hands out the same card objects rather than rebuilding them', () => {
+		expect(PackLogic.findPack('core')).toBe(PackLogic.findPack('core'));
+	});
+
+	it('hands out a fresh array, so sorting a deck cannot reorder the cache', () => {
+		const packs = PackLogic.getAllPacks();
+		expect(PackLogic.getAllPacks()).not.toBe(packs);
+		packs.reverse();
+		expect(PackLogic.getAllPacks().map(p => p.id)).not.toEqual(packs.map(p => p.id));
+	});
+
+	it('survives a spread of encounters being generated from it, unchanged', () => {
+		const before = JSON.stringify(PackLogic.getAllPacks());
+
+		Array.from({ length: 20 }, (_, n) => `pack cache ${n}`).forEach(seed => {
+			const region = {
+				id: seed,
+				name: seed,
+				color: '',
+				encounters: [ seed ],
+				boon: null,
+				demographics: { size: 3, population: 5, terrain: 'Plains' }
+			} as unknown as RegionModel;
+
+			const hero = Factory.createCombatant(CombatantType.Hero);
+			CombatantLogic.applyCombatantCards(hero, 'species-human', 'role-barbarian', 'background-noble');
+			CombatantLogic.makeFeatureChoices(hero);
+			CombatantLogic.addItems(hero, allPackIDs());
+
+			EncounterGenerator.createEncounter(region, [ hero ], allPackIDs());
+		});
+
+		expect(JSON.stringify(PackLogic.getAllPacks())).toEqual(before);
 	});
 });

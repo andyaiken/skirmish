@@ -20,6 +20,11 @@ export default defineConfig({
 		// The logic classes are static functions over plain data, so the default
 		// node environment is enough; nothing under test touches the DOM.
 		environment: 'node',
-		include: [ 'src/**/*.test.ts' ]
+		include: [ 'src/**/*.test.ts' ],
+		// The encounter and map generators build a whole encounter per assertion. That is fast now
+		// that the pack data is built once rather than per lookup, but they are still the slowest
+		// tests here and they run in parallel with everything else, so the default 5s was tight
+		// enough to fail intermittently on a loaded machine rather than on anything being wrong.
+		testTimeout: 15000
 	}
 });

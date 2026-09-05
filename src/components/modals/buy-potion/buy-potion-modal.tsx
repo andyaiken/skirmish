@@ -42,8 +42,10 @@ export class BuyPotionModal extends Component<Props, State> {
 
 		while (items.length < 3) {
 			const potions = GameLogic.getPotionDeck(this.props.options.packIDs);
-			const item = Collections.draw(potions);
-			if (!items.map(i => i.name).includes(item.name)) {
+			const drawn = Collections.draw(potions);
+			if (!items.map(i => i.name).includes(drawn.name)) {
+				// The deck hands back the pack's own card, which is shared
+				const item = JSON.parse(JSON.stringify(drawn)) as ItemModel;
 				item.id = Utils.guid();
 				items.push(item);
 			}

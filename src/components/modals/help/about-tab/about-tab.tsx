@@ -18,7 +18,7 @@ export class AboutTab extends Component<Props> {
 	render = () => {
 		return (
 			<div className='about-tab'>
-				<Text>Skirmish designed by <a href='mailto:andy.aiken@live.co.uk'>Andy Aiken</a>; © Andy Aiken 2024</Text>
+				<Text>Skirmish designed by <a href='mailto:andy.aiken@live.co.uk'>Andy Aiken</a>; © Andy Aiken 2026</Text>
 				<hr />
 				<StatValue label='Version' value={this.props.options.version} />
 				<hr />

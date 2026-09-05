@@ -1,5 +1,6 @@
 export enum SummonType {
 	Undead = 'undead',
 	Beast = 'beast',
-	Elemental = 'elemental'
+	Elemental = 'elemental',
+	Plant = 'plant'
 }

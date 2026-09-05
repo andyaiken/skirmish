@@ -1,14 +1,17 @@
-import { ActionEffects, ActionPrerequisites, ActionTargetParameters } from '../../logic/action/action-logic';
+import { ActionEffects, ActionPrerequisites, ActionTargetParameters, ActionWeaponParameters } from '../../logic/action/action-logic';
 import { ActionTargetType } from '../../enums/action-target-type';
 import { CombatantType } from '../../enums/combatant-type';
 import { ConditionLogic } from '../../logic/condition/condition-logic';
+import { ConditionType } from '../../enums/condition-type';
 import { DamageCategoryType } from '../../enums/damage-category-type';
 import { DamageType } from '../../enums/damage-type';
 import { FeatureLogic } from '../../logic/feature/feature-logic';
+import { ItemProficiencyType } from '../../enums/item-proficiency-type';
 import { MovementType } from '../../enums/movement-type';
 import { PackModel } from '../../models/pack';
 import { QuirkType } from '../../enums/quirk-type';
 import { SkillType } from '../../enums/skill-type';
+import { SummonType } from '../../enums/summon-type';
 import { TargetStateType } from '../../enums/target-state-type';
 import { TraitType } from '../../enums/trait-type';
 
@@ -605,7 +608,93 @@ export const menagerie = (): PackModel => ({
 			deathActions: []
 		}
 	],
-	roles: [],
+	roles: [
+		{
+			id: 'role-beastcaller',
+			name: 'Beastcaller',
+			description: 'One who fights alongside the animals rather than against them.',
+			startingFeatures: [
+				FeatureLogic.createTraitFeature('beastcaller-start-1', TraitType.Resolve, 1),
+				FeatureLogic.createSkillFeature('beastcaller-start-2', SkillType.Presence, 2),
+				FeatureLogic.createProficiencyFeature('beastcaller-start-3', ItemProficiencyType.MilitaryWeapons)
+			],
+			features: [
+				FeatureLogic.createTraitFeature('beastcaller-feature-1', TraitType.Resolve, 1),
+				FeatureLogic.createSkillFeature('beastcaller-feature-2', SkillType.Presence, 2),
+				FeatureLogic.createDamageBonusFeature('beastcaller-feature-3', DamageType.Piercing, 1),
+				// The pack-tactics half of the role, and the reason to keep a summoned beast beside
+				// you rather than sending it off on its own
+				FeatureLogic.createAuraSkillFeature('beastcaller-feature-4', ConditionType.SkillBonus, SkillType.Brawl, 1)
+			],
+			actions: [
+				{
+					id: 'beastcaller-action-1',
+					name: 'Animal Companion',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.self()
+					],
+					effects: [
+						ActionEffects.summon(SummonType.Beast)
+					]
+				},
+				{
+					id: 'beastcaller-action-2',
+					name: 'Pack Tactics',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 5)
+					],
+					effects: [
+						ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Resolve, 3, SkillType.Brawl))
+					]
+				},
+				{
+					id: 'beastcaller-action-3',
+					name: 'Drive the Herd',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 5)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Presence,
+							trait: TraitType.Resolve,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.forceMovement(MovementType.Push, 2),
+								ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 2, TraitType.Speed))
+							]
+						})
+					]
+				},
+				{
+					id: 'beastcaller-action-4',
+					name: 'Bring It Down',
+					prerequisites: [
+						ActionPrerequisites.meleeWeapon()
+					],
+					parameters: [
+						ActionWeaponParameters.melee(),
+						ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: true,
+							skill: SkillType.Weapon,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealWeaponDamage(),
+								ActionEffects.knockDown()
+							]
+						})
+					]
+				}
+			]
+		}
+	],
 	backgrounds: [],
 	items: [],
 	potions: [],

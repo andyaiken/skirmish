@@ -94,10 +94,9 @@ export const elements = (): PackModel => ({
 			size: 1,
 			quirks: [],
 			startingFeatures: [
-				FeatureLogic.createTraitFeature('elemental-earth-start-1', TraitType.Endurance, 2),
+				FeatureLogic.createTraitFeature('elemental-earth-start-1', TraitType.Endurance, 1),
 				FeatureLogic.createSkillFeature('elemental-earth-start-2', SkillType.Brawl, 2),
 				FeatureLogic.createDamageBonusFeature('elemental-earth-start-3', DamageType.Impact, 2),
-				FeatureLogic.createTraitFeature('elemental-earth-start-4', TraitType.Speed, -1),
 				FeatureLogic.createDamageResistFeature('elemental-earth-start-5', DamageType.Impact, 5)
 			],
 			features: [

@@ -1,5 +1,6 @@
 import { ActionRangeType } from '../enums/action-range-type';
 import { ActionTargetType } from '../enums/action-target-type';
+import { EncounterMapSquareType } from '../enums/encounter-map-square-type';
 
 export interface ActionPrerequisiteModel {
 	id: string;
@@ -41,4 +42,15 @@ export interface ActionModel {
 	prerequisites: ActionPrerequisiteModel[];
 	parameters: ActionParameterModel[];
 	effects: ActionEffectModel[];
+}
+
+export interface CreateTerrainOptions {
+	radius?: number;
+	from?: EncounterMapSquareType;
+}
+
+export interface CreateTerrainData {
+	type: EncounterMapSquareType;
+	radius: number | null;
+	from: EncounterMapSquareType | null;
 }

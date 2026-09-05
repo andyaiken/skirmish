@@ -28,7 +28,9 @@ import type {
 	ActionParameterModel,
 	ActionPrerequisiteModel,
 	ActionTargetParameterModel,
-	ActionWeaponParameterModel
+	ActionWeaponParameterModel,
+	CreateTerrainData,
+	CreateTerrainOptions
 } from '../../models/action';
 import type { EncounterMapSquareModel, EncounterModel } from '../../models/encounter';
 import type { ItemModel, WeaponModel } from '../../models/item';
@@ -549,12 +551,30 @@ export class ActionEffects {
 		};
 	};
 
-	static createTerrain = (type: EncounterMapSquareType): ActionEffectModel => {
+	// Without options the terrain spreads as a random blob, which is what the Geomancer and the
+	// Tidecaller have always done. A radius paints a predictable disc instead; a 'from' type means
+	// only squares that are already that type convert, which is how you undo someone else's ground
+	// rather than laying down your own.
+	static createTerrain = (type: EncounterMapSquareType, options: CreateTerrainOptions = {}): ActionEffectModel => {
 		return {
 			id: 'createTerrain',
-			data: type,
+			data: {
+				type: type,
+				radius: options.radius ?? null,
+				from: options.from ?? null
+			} as CreateTerrainData,
 			children: []
 		};
+	};
+
+	// createTerrain used to store the square type on its own, and a game saved before the options
+	// were added still holds that form
+	static getCreateTerrainData = (data: unknown): CreateTerrainData => {
+		if (typeof data === 'string') {
+			return { type: data as EncounterMapSquareType, radius: null, from: null };
+		}
+
+		return data as CreateTerrainData;
 	};
 
 	static addSquares = (): ActionEffectModel => {
@@ -627,6 +647,26 @@ export class ActionEffects {
 			data: type,
 			children: []
 		};
+	};
+
+	// Which monsters a summon of this type can draw. Undead, Beast and Plant filter on a quirk;
+	// Elemental still matches on the name, which works only because the four elementals happen to be
+	// called that - a quirk would be better, and is the reason Plant was given one.
+	static getSummonCandidates = (type: SummonType) => {
+		const monsters = PackLogic.getAllPacks().flatMap(pack => PackLogic.getMonsterSpecies(pack.id));
+
+		switch (type) {
+			case SummonType.Undead:
+				return monsters.filter(s => s.quirks.includes(QuirkType.Undead)).map(s => s.id);
+			case SummonType.Beast:
+				return monsters.filter(s => s.quirks.includes(QuirkType.Beast)).map(s => s.id);
+			case SummonType.Elemental:
+				return monsters.filter(s => s.name.toLowerCase().includes('elemental')).map(s => s.id);
+			case SummonType.Plant:
+				return monsters.filter(s => s.quirks.includes(QuirkType.Plant)).map(s => s.id);
+		}
+
+		return [];
 	};
 
 	static getDescription = (effect: ActionEffectModel, combatant: CombatantModel | null, encounter: EncounterModel | null): string => {
@@ -753,8 +793,12 @@ export class ActionEffects {
 				return 'Steal';
 			}
 			case 'createTerrain': {
-				const type = effect.data as EncounterMapSquareType;
-				return `Create ${type.toLowerCase()} terrain`;
+				const data = ActionEffects.getCreateTerrainData(effect.data);
+				const area = data.radius === null ? '' : ` within ${data.radius} ${data.radius === 1 ? 'square' : 'squares'}`;
+				if (data.from !== null) {
+					return `Turn ${data.from.toLowerCase()} terrain${area} to ${data.type.toLowerCase()}`;
+				}
+				return `Create ${data.type.toLowerCase()} terrain${area}`;
 			}
 			case 'addSquares': {
 				return 'Create map squares';
@@ -1559,18 +1603,24 @@ export class ActionEffects {
 				break;
 			}
 			case 'createTerrain': {
-				const type = effect.data as EncounterMapSquareType;
+				const data = ActionEffects.getCreateTerrainData(effect.data);
 				const targetParameter = parameters.find(p => p.id === 'targets');
 				if (targetParameter) {
 					const squares = targetParameter.value as { x: number, y: number }[];
-					squares.forEach(square => {
-						const blob = EncounterMapLogic.getFloorBlob(encounter.mapSquares, square);
-						blob.forEach(sq => sq.type = type);
-					});
-					EncounterLogLogic.log(encounter, [
-						EncounterLogLogic.combatant(combatant),
-						EncounterLogLogic.text(`has created an area of ${type.toLowerCase()} terrain`)
-					]);
+					const patch = squares.flatMap(square => data.radius === null
+						? EncounterMapLogic.getFloorBlob(encounter.mapSquares, square)
+						: EncounterLogic.findSquares(encounter, [ square ], data.radius));
+
+					// A 'from' type can leave nothing to convert, and saying the ground changed when
+					// it did not reads as a bug in the log
+					const changed = patch.filter(sq => (data.from === null) || (sq.type === data.from));
+					if (changed.length > 0) {
+						changed.forEach(sq => sq.type = data.type);
+						EncounterLogLogic.log(encounter, [
+							EncounterLogLogic.combatant(combatant),
+							EncounterLogLogic.text(`has created an area of ${data.type.toLowerCase()} terrain`)
+						]);
+					}
 				}
 				break;
 			}
@@ -1723,22 +1773,7 @@ export class ActionEffects {
 			}
 			case 'summon': {
 				const type = effect.data as SummonType;
-				const list = [];
-				const monsters = PackLogic.getAllPacks().flatMap(pack => PackLogic.getMonsterSpecies(pack.id));
-				switch (type) {
-					case SummonType.Undead: {
-						list.push(...monsters.filter(s => s.quirks.includes(QuirkType.Undead)).map(s => s.id));
-						break;
-					}
-					case SummonType.Beast: {
-						list.push(...monsters.filter(s => s.quirks.includes(QuirkType.Beast)).map(s => s.id));
-						break;
-					}
-					case SummonType.Elemental: {
-						list.push(...monsters.filter(s => s.name.toLowerCase().includes('elemental')).map(s => s.id));
-						break;
-					}
-				}
+				const list = ActionEffects.getSummonCandidates(type);
 				if (list.length > 0) {
 					const speciesID = Collections.draw(list);
 					const monster = Factory.createCombatant(CombatantType.Monster);

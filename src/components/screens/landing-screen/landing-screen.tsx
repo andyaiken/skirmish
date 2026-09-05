@@ -107,7 +107,7 @@ export class LandingScreen extends Component<Props> {
 				</div>
 				<div className='landing-footer'>
 					<Tag>Version {this.props.options.version}</Tag>
-					<Tag>© Andy Aiken 2024</Tag>
+					<Tag>© Andy Aiken 2026</Tag>
 				</div>
 			</div>
 		);

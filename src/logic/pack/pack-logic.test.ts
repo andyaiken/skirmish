@@ -2,6 +2,9 @@ import { describe, expect, it } from 'vitest';
 
 import type { ScrollModel } from '../../models/item';
 
+import { SummonType } from '../../enums/summon-type';
+
+import { ActionEffects } from '../action/action-logic';
 import { GameLogic } from '../game/game-logic';
 import { PackLogic } from '../pack/pack-logic';
 
@@ -81,5 +84,22 @@ describe('every scroll', () => {
 	// hand show that name, so the two must agree
 	it('shares its name with its action', () => {
 		GameLogic.getScrollDeck(allPackIDs()).forEach(sc => expect((sc.scroll as ScrollModel).action.name).toBe(sc.name));
+	});
+});
+
+// A summon type with no monsters behind it is an action that silently does nothing. The Druid's
+// Animal Companion was the only card summoning Beasts, so moving the Druid into Overgrowth and
+// dropping that action emptied the type until the Beastcaller took it over - which is exactly the
+// kind of break nothing else would have caught
+describe('every summon type', () => {
+	it('has at least one monster species it can draw', () => {
+		const empty = Object.values(SummonType).filter(type => ActionEffects.getSummonCandidates(type).length === 0);
+		expect(empty).toEqual([]);
+	});
+
+	it('is used by at least one card, so no type is dead weight', () => {
+		const json = JSON.stringify(GameLogic.getAllActions(allPackIDs()));
+		const unused = Object.values(SummonType).filter(type => !json.includes(`"${type}"`));
+		expect(unused).toEqual([]);
 	});
 });

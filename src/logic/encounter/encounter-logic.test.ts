@@ -896,6 +896,23 @@ describe('EncounterLogic.getMoveCost in water and ice', () => {
 		expect(EncounterLogic.getMoveCost(encounter, hero, hero.combat.position, 'n')).toBe(1);
 	});
 
+	// Aquatic buys its way out of water only; Sure-footed buys its way out of the ground entirely,
+	// which is what a creature that lives on top of a frozen lake is actually claiming
+	it('costs a Sure-footed combatant nothing extra in water', () => {
+		setSquareType(encounter, 2, 1, EncounterMapSquareType.Water);
+		hero.quirks.push(QuirkType.SureFooted);
+		expect(EncounterLogic.getMoveCost(encounter, hero, hero.combat.position, 'n')).toBe(1);
+	});
+
+	it('costs a Sure-footed combatant nothing extra in obstructed terrain, which Aquatic does not help with', () => {
+		setSquareType(encounter, 2, 1, EncounterMapSquareType.Obstructed);
+		hero.quirks.push(QuirkType.Aquatic);
+		expect(EncounterLogic.getMoveCost(encounter, hero, hero.combat.position, 'n')).toBe(2);
+
+		hero.quirks.push(QuirkType.SureFooted);
+		expect(EncounterLogic.getMoveCost(encounter, hero, hero.combat.position, 'n')).toBe(1);
+	});
+
 	it('costs 1 to cross ice - it is not difficult terrain', () => {
 		setSquareType(encounter, 2, 1, EncounterMapSquareType.Ice);
 		expect(EncounterLogic.getMoveCost(encounter, hero, hero.combat.position, 'n')).toBe(1);

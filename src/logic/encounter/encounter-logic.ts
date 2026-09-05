@@ -513,7 +513,9 @@ export class EncounterLogic {
 
 		// Obstructed: +1. Water is difficult terrain in the same way, but an Aquatic creature is at
 		// home in it. Ice is not difficult - its interest is that it converts, not that it slows you.
-		const difficult = destinationMapSquares.some(ms => {
+		// A Sure-footed creature is troubled by none of it: where Aquatic is at home in one kind of
+		// ground, this one simply does not care what it is walking on.
+		const difficult = !combatant.quirks.includes(QuirkType.SureFooted) && destinationMapSquares.some(ms => {
 			if (ms.type === EncounterMapSquareType.Obstructed) {
 				return true;
 			}

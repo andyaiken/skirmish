@@ -12,7 +12,6 @@ import { PackModel } from '../../models/pack';
 import { QuirkType } from '../../enums/quirk-type';
 import { SkillCategoryType } from '../../enums/skill-category-type';
 import { SkillType } from '../../enums/skill-type';
-import { SummonType } from '../../enums/summon-type';
 import { TraitType } from '../../enums/trait-type';
 
 export const faeRealm = (): PackModel => ({
@@ -235,75 +234,6 @@ export const faeRealm = (): PackModel => ({
 		}
 	],
 	roles: [
-		{
-			id: 'role-druid',
-			name: 'Druid',
-			description: 'A wielder of the magic of the natural world.',
-			startingFeatures: [
-				FeatureLogic.createTraitFeature('druid-start-1', TraitType.Resolve, 1),
-				FeatureLogic.createSkillFeature('druid-start-2', SkillType.Spellcasting, 2)
-			],
-			features: [
-				FeatureLogic.createTraitFeature('druid-feature-1', TraitType.Resolve, 1),
-				FeatureLogic.createSkillFeature('druid-feature-2', SkillType.Spellcasting, 2)
-			],
-			actions: [
-				{
-					id: 'druid-action-1',
-					name: 'Animal Companion',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.self()
-					],
-					effects: [
-						ActionEffects.summon(SummonType.Beast)
-					]
-				},
-				{
-					id: 'druid-action-2',
-					name: 'Stone to Dust',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Walls, 1, 10)
-					],
-					effects: [
-						ActionEffects.addSquares()
-					]
-				},
-				{
-					id: 'druid-action-3',
-					name: 'Sunlight',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 5)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Spellcasting,
-							trait: TraitType.Endurance,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Light, 2),
-								ActionEffects.stun()
-							]
-						})
-					]
-				},
-				{
-					id: 'druid-action-4',
-					name: 'Nature\'s Balm',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 5)
-					],
-					effects: [
-						ActionEffects.healDamage(1),
-						ActionEffects.removeCondition(TraitType.Any)
-					]
-				}
-			]
-		},
 		{
 			id: 'role-hexbow',
 			name: 'Hexbow',

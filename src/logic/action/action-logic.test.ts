@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import { ActionTargetType } from '../../enums/action-target-type';
 import { CombatantState } from '../../enums/combatant-state';
 import { CombatantType } from '../../enums/combatant-type';
 import { DamageType } from '../../enums/damage-type';
@@ -314,5 +315,78 @@ describe('ActionEffects.delay and hasten', () => {
 
 		expect(ActionLogic.getTargetStateBonus(harrying!, pending))
 			.toBeGreaterThan(ActionLogic.getTargetStateBonus(harrying!, acted));
+	});
+});
+
+describe('ActionEffects.createTerrain', () => {
+	const createEncounter = (width = 5, height = 5) => {
+		const mapSquares = [];
+		for (let x = 0; x < width; ++x) {
+			for (let y = 0; y < height; ++y) {
+				mapSquares.push({ x: x, y: y, type: EncounterMapSquareType.Clear });
+			}
+		}
+
+		return {
+			regionID: '', round: 1, combatants: [], loot: [], traps: [], log: [],
+			mapSquares: mapSquares
+		} as EncounterModel;
+	};
+
+	const apply = (encounter: EncounterModel, effect: ReturnType<typeof ActionEffects.createTerrain>, x = 2, y = 2) => {
+		const param = ActionTargetParameters.burst(ActionTargetType.Squares, 1, 10);
+		param.value = [ { x: x, y: y } ];
+		ActionEffects.run(effect, encounter, Factory.createCombatant(CombatantType.Monster), [ param ]);
+	};
+
+	const countOf = (encounter: EncounterModel, type: EncounterMapSquareType) => {
+		return encounter.mapSquares.filter(sq => sq.type === type).length;
+	};
+
+	it('paints a blob when given no options, as the Geomancer has always done', () => {
+		const encounter = createEncounter(9, 9);
+		apply(encounter, ActionEffects.createTerrain(EncounterMapSquareType.Obstructed));
+		expect(countOf(encounter, EncounterMapSquareType.Obstructed)).toBeGreaterThanOrEqual(5);
+	});
+
+	it('paints exactly the squares inside a radius when given one', () => {
+		const encounter = createEncounter();
+		apply(encounter, ActionEffects.createTerrain(EncounterMapSquareType.Ice, { radius: 1 }));
+		expect(countOf(encounter, EncounterMapSquareType.Ice)).toBe(9);
+	});
+
+	it('leaves everything outside the radius alone', () => {
+		const encounter = createEncounter();
+		apply(encounter, ActionEffects.createTerrain(EncounterMapSquareType.Ice, { radius: 1 }));
+		const corner = encounter.mapSquares.find(sq => (sq.x === 0) && (sq.y === 0));
+		expect(corner?.type).toBe(EncounterMapSquareType.Clear);
+	});
+
+	it('converts only the squares already of the type it names', () => {
+		const encounter = createEncounter();
+		encounter.mapSquares.filter(sq => sq.x === 2).forEach(sq => sq.type = EncounterMapSquareType.Ice);
+		apply(encounter, ActionEffects.createTerrain(EncounterMapSquareType.Water, { radius: 1, from: EncounterMapSquareType.Ice }));
+
+		expect(countOf(encounter, EncounterMapSquareType.Water)).toBe(3);
+		expect(countOf(encounter, EncounterMapSquareType.Ice)).toBe(2);
+	});
+
+	it('changes nothing, and logs nothing, when there is none of that type to convert', () => {
+		const encounter = createEncounter();
+		apply(encounter, ActionEffects.createTerrain(EncounterMapSquareType.Water, { radius: 1, from: EncounterMapSquareType.Ice }));
+		expect(countOf(encounter, EncounterMapSquareType.Clear)).toBe(25);
+		expect(encounter.log).toEqual([]);
+	});
+
+	it('still reads the shape it used to store', () => {
+		const encounter = createEncounter(9, 9);
+		const legacy = { id: 'createTerrain', data: EncounterMapSquareType.Water, children: [] };
+		apply(encounter, legacy);
+		expect(countOf(encounter, EncounterMapSquareType.Water)).toBeGreaterThanOrEqual(5);
+	});
+
+	it('describes what it will convert, not just what it creates', () => {
+		const thaw = ActionEffects.createTerrain(EncounterMapSquareType.Water, { radius: 1, from: EncounterMapSquareType.Ice });
+		expect(ActionEffects.getDescription(thaw, null, null)).toBe('Turn ice terrain within 1 square to water');
 	});
 });

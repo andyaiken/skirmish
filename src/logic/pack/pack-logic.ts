@@ -7,9 +7,11 @@ import { faeRealm } from '../../data/packs/fae-realm';
 import { hellToPay } from '../../data/packs/hell-to-pay';
 import { illHumours } from '../../data/packs/ill-humours';
 import { inkAndVellum } from '../../data/packs/ink-and-vellum';
+import { longDarkWinter } from '../../data/packs/long-dark-winter';
 import { magicInAGlass } from '../../data/packs/magic-in-a-glass';
 import { menagerie } from '../../data/packs/menagerie';
 import { outOfTheGrave } from '../../data/packs/out-of-the-grave';
+import { overgrowth } from '../../data/packs/overgrowth';
 import { powerAndGlory } from '../../data/packs/power-and-glory';
 import { skullduggery } from '../../data/packs/skullduggery';
 import { soundAndFury } from '../../data/packs/sound-and-fury';
@@ -35,9 +37,11 @@ export class PackLogic {
 			hellToPay(),
 			illHumours(),
 			inkAndVellum(),
+			longDarkWinter(),
 			magicInAGlass(),
 			menagerie(),
 			outOfTheGrave(),
+			overgrowth(),
 			powerAndGlory(),
 			skullduggery(),
 			soundAndFury(),

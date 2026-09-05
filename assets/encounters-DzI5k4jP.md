@@ -24,6 +24,8 @@ You may also see blue squares of Water, and pale blue squares of Ice. Water is d
 
 Ice is not difficult terrain - you cross it as easily as open ground. What makes it worth creating is that it's no longer water: it neither conducts nor shelters anyone from fire.
 
+Terrain isn't fixed. Some abilities shape the ground directly - growing a thicket of Obstructed briars, freezing an area into Ice, or melting someone else's ice back into Water. Where an ability converts one kind of ground into another, it only touches the ground it names: thawing ice leaves the dry land around it alone.
+
 Some maps have traps on them, shown as red diamonds. A trap has a Hidden score, and you only see it if the combatant whose turn it is has a Senses score to match - so a trap one hero walks straight past may be plainly visible to the next. The side that laid a trap always knows where it is, however well hidden it is from everyone else. Moving onto a trap's square sets it off; a sprung trap turns grey and is harmless from then on. Some heroes have a `Disarm Trap` action, which rolls Perception and removes the trap on a result of 8 or higher; a failed attempt at least leaves the thing in plain sight. Monsters won't walk onto a trap they can see, so a trap you've spotted - or one you've set yourself - is also a piece of ground they will go around.
 
 On each combatant's turn, you'll see that the map hides the squares that aren't visible from that combatant's point of view.
@@ -49,8 +51,10 @@ When it's a monster's turn to act, you'll see much less information, because the
 
 Monsters are similar to heroes in most ways, but you may see a few special keywords:
 * **Beast** or **Mindless** - A monster with either of these keywords doesn't have a role or a background.
+* **Plant** - A monster with this keyword is a growing thing rather than an animal. Some abilities summon plants specifically, and some plants summon more of themselves.
 * **Drone** - A monster with this keyword is particularly easy to kill; they die as soon as they take any damage.
 * **Aquatic** - A combatant with this keyword is at home in water: they move through it without penalty and resist Cold damage. They get no shelter from fire by standing in water, though - they're in the water, not behind it.
+* **Sure-footed** - A combatant with this keyword doesn't care what they're walking on: neither Obstructed ground nor Water costs them anything extra. Where Aquatic makes one kind of ground easy, this makes all of it easy.
 * **Swarm** or **Amorphous** - A monster with either of these keywords takes half damage from physical damage types.
 * **Undead** - A monster with this keyword is hard to keep down; if they are unconscious at the start of their turn they have a chance to reanimate.
 
@@ -102,7 +106,7 @@ Most contagion doesn't care whose side you're on: a diseased enemy will infect i
 
 You can move into any adjacent empty square, including diagonally, for 1 movement point.
 
-* If the square you are moving into is Obstructed or Water, add 1 movement point
+* If the square you are moving into is Obstructed or Water, add 1 movement point - unless you are Sure-footed, or the square is Water and you are Aquatic
 * If the square you are moving out of is adjacent to an opponent, add 4 movement points
 * If you are Prone or Hidden, double the movement point cost
 

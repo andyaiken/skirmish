@@ -200,7 +200,7 @@ export const powerAndGlory = (): PackModel => ({
 		{
 			id: 'species-inquisitor',
 			name: 'Inquisitor',
-			description: 'Sent to ask questions, and satisfied with only one answer.',
+			description: 'Has come a long way to hear one particular answer.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [],
@@ -290,7 +290,7 @@ export const powerAndGlory = (): PackModel => ({
 		{
 			id: 'role-cleric',
 			name: 'Cleric',
-			description: 'Clerics devote their lives to the gods, and receive power in return.',
+			description: 'Priests who draw on what the gods lend; lending is not giving.',
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('cleric-start-1', TraitType.Resolve, 1),
 				FeatureLogic.createSkillFeature('cleric-start-2', SkillType.Presence, 2)
@@ -513,9 +513,7 @@ export const powerAndGlory = (): PackModel => ({
 						ActionEffects.addCondition(ConditionLogic.makeContagious(
 							ConditionLogic.createTraitBonusCondition(TraitType.Endurance, 2, TraitType.Resolve), ContagionType.Allies
 						)),
-						ActionEffects.addCondition(ConditionLogic.makeContagious(
-							ConditionLogic.createTraitBonusCondition(TraitType.Endurance, 2, TraitType.Speed), ContagionType.Allies
-						))
+						ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Endurance, 2, TraitType.Speed))
 					]
 				}
 			]

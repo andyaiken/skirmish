@@ -27,6 +27,20 @@ import { ActionLogic } from '../action/action-logic';
 import { PackLogic } from '../pack/pack-logic';
 
 export class GameLogic {
+	// The bands a card has to score inside. These are read by the backstage card page, which marks a
+	// card red when it falls outside its band, and by the balance tests, which fail on the same
+	// numbers. They used to be written out in both places and had already drifted apart once - hero
+	// species were tested at 5-6 and marked at 4-6, so a species scoring 4 failed the suite while
+	// showing green in the view.
+	static strengthBands = {
+		heroSpecies: { min: 5, max: 6 },
+		monsterSpecies: { min: 4, max: 6 },
+		role: { min: 5, max: 6 },
+		background: { min: 3, max: 4 },
+		// Applies to each action on a card individually, not to the card
+		action: { min: 1, max: 12 }
+	};
+
 	static getHeroSpeciesDeck = (packIDs: string[]) => {
 		return Collections.sort(PackLogic.getAvailablePacks(packIDs).flatMap(p => PackLogic.getHeroSpecies(p.id)), x => x.name);
 	};

@@ -167,8 +167,8 @@ describe('the buildable structure deck', () => {
 	const buildable = (packIDs: string[]) =>
 		GameLogic.getStructureDeck(packIDs).filter(s => StrongholdLogic.canBuild(s)).map(s => s.type);
 
-	it('offers every Coin and Contract structure', () => {
-		const deck = buildable([ 'pack-coin-and-contract' ]);
+	it('offers every The Going Rate structure', () => {
+		const deck = buildable([ 'pack-the-going-rate' ]);
 		[ StructureType.Bazaar, StructureType.CountingHouse, StructureType.Guildhall, StructureType.Monument, StructureType.Tavern ]
 			.forEach(type => expect(deck, type).toContain(type));
 	});
@@ -183,7 +183,7 @@ describe('the buildable structure deck', () => {
 describe('drawing structures for sale', () => {
 	it('can offer every buildable structure, including the permanent ones', () => {
 		// Mirrors what the buy-structure modal does, to prove nothing in the deck is unreachable
-		const deck = GameLogic.getStructureDeck([ 'pack-deep-water', 'pack-coin-and-contract' ])
+		const deck = GameLogic.getStructureDeck([ 'pack-deep-water', 'pack-the-going-rate' ])
 			.filter(s => StrongholdLogic.canBuild(s));
 
 		const drawn = new Set<string>();

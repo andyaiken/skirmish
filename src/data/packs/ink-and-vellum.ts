@@ -343,7 +343,7 @@ export const inkAndVellum = (): PackModel => ({
 		{
 			id: 'scroll-recall',
 			name: 'Scroll of Recall',
-			description: 'A scroll that names a place, and expects you to be standing in it.',
+			description: 'It names one place, in the confident expectation that you are standing in it.',
 			baseItem: '',
 			magic: false,
 			proficiency: ItemProficiencyType.None,

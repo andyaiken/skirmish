@@ -13,6 +13,7 @@ import { QuirkType } from '../../enums/quirk-type';
 import { SkillCategoryType } from '../../enums/skill-category-type';
 import { SkillType } from '../../enums/skill-type';
 import { SummonType } from '../../enums/summon-type';
+import { TargetStateType } from '../../enums/target-state-type';
 import { TraitType } from '../../enums/trait-type';
 
 export const outOfTheGrave = (): PackModel => ({
@@ -20,6 +21,92 @@ export const outOfTheGrave = (): PackModel => ({
 	name: 'Out of the Grave',
 	description: 'Add a touch of gothic horror to your game with this pack.',
 	species: [
+		{
+			id: 'species-ghoul',
+			name: 'Ghoul',
+			description: 'It ate the dead until the dead stopped being enough.',
+			type: CombatantType.Monster,
+			size: 1,
+			quirks: [
+				QuirkType.Undead
+			],
+			startingFeatures: [
+				FeatureLogic.createTraitFeature('ghoul-start-1', TraitType.Speed, 1),
+				FeatureLogic.createSkillFeature('ghoul-start-2', SkillType.Brawl, 2),
+				FeatureLogic.createDamageCategoryResistFeature('ghoul-start-3', DamageCategoryType.Corruption, 1)
+			],
+			features: [
+				FeatureLogic.createTraitFeature('ghoul-feature-1', TraitType.Speed, 1),
+				FeatureLogic.createSkillFeature('ghoul-feature-2', SkillType.Brawl, 2),
+				FeatureLogic.createDamageBonusFeature('ghoul-feature-3', DamageType.Decay, 1)
+			],
+			actions: [
+				{
+					// The paralysis is the card: a high-rank movement penalty leaves you where the
+					// ghoul left you, which is where it comes back to
+					id: 'ghoul-action-1',
+					name: 'Paralysing Claws',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Piercing, 2),
+								ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Endurance, 8))
+							]
+						})
+					]
+				},
+				{
+					id: 'ghoul-action-2',
+					name: 'Fall Upon',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Decay, 3),
+								ActionEffects.ifTarget(TargetStateType.Prone, [
+									ActionEffects.dealDamage(DamageType.Decay, 3)
+								])
+							]
+						})
+					]
+				},
+				{
+					id: 'ghoul-action-3',
+					name: 'Carrion Stink',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 1)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Endurance, 4, TraitType.Speed))
+							]
+						})
+					]
+				}
+			],
+			deathActions: []
+		},
 		{
 			id: 'species-skeleton',
 			name: 'Skeleton',

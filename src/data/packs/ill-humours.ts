@@ -23,7 +23,7 @@ export const illHumours = (): PackModel => ({
 		{
 			id: 'species-ooze',
 			name: 'Ooze',
-			description: 'It has no shape of its own, and takes the shape of whatever it is dissolving.',
+			description: 'It takes the shape of whatever it is currently dissolving.',
 			type: CombatantType.Monster,
 			size: 2,
 			quirks: [
@@ -152,7 +152,7 @@ export const illHumours = (): PackModel => ({
 		{
 			id: 'species-blightspawn',
 			name: 'Blightspawn',
-			description: 'Something that was grown rather than born, and grown wrong.',
+			description: 'Grown in a vat by someone who stopped checking on it.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [],
@@ -545,7 +545,7 @@ export const illHumours = (): PackModel => ({
 						// You take the sickness into yourself; the resistance above is what lets you
 						// live with it, and it only ever passes to the people standing against you
 						ActionEffects.addCondition(ConditionLogic.makeContagious(
-							ConditionLogic.createAutoDamageCondition(TraitType.Endurance, 4, DamageType.Decay), ContagionType.Enemies
+							ConditionLogic.createAutoDamageCondition(TraitType.Endurance, 3, DamageType.Decay), ContagionType.Enemies
 						))
 					]
 				}

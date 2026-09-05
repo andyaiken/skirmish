@@ -1,4 +1,4 @@
-# Root and Branch
+# Overgrowth
 
 ## Why this pack
 
@@ -20,13 +20,14 @@ This pack also has somewhere to stand mechanically. Three systems are built, wor
   obvious second thing contagion is for, after plague.
 - **Summoning.** See below — this pack empties `SummonType.Beast` and should not fill it back in.
 
-**Naming:** *Root and Branch* — an idiom for thoroughness, and it fits the two-noun pattern of
-*Coin and Contract*, *Sound and Fury*, *Ink and Vellum*.
+**Naming:** *Overgrowth* — one word, and it carries the sense of something that has got away from
+whoever planted it. It also keeps the pack list out of the "X and Y" shape, which was up to six
+names before Guile and Cunning became Skullduggery and Coin and Contract became The Going Rate.
 
 ```ts
-export const rootAndBranch = (): PackModel => ({
-    id: 'pack-root-and-branch',
-    name: 'Root and Branch',
+export const overgrowth = (): PackModel => ({
+    id: 'pack-overgrowth',
+    name: 'Overgrowth',
     description: 'None of it is in a hurry, and none of it is on your side.'
 });
 ```

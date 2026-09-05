@@ -14,10 +14,10 @@ import { TargetStateType } from '../../enums/target-state-type';
 import { TraitType } from '../../enums/trait-type';
 import { TrapType } from '../../enums/trap-type';
 
-export const guileAndCunning = (): PackModel => ({
-	id: 'pack-guile-and-cunning',
-	name: 'Guile and Cunning',
-	description: 'A collection of cards for those who fight with skullduggery rather than valor.',
+export const skullduggery = (): PackModel => ({
+	id: 'pack-skullduggery',
+	name: 'Skullduggery',
+	description: 'A collection of cards for those who fight with guile rather than valor.',
 	species: [
 		{
 			id: 'species-doppelganger',

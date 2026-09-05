@@ -1,11 +1,9 @@
 import { codexArcanum } from '../../data/packs/codex-arcanum';
-import { coinAndContract } from '../../data/packs/coin-and-contract';
 import { coldBlood } from '../../data/packs/cold-blood';
 import { core } from '../../data/packs/core';
 import { deepWater } from '../../data/packs/deep-water';
 import { elements } from '../../data/packs/elements';
 import { faeRealm } from '../../data/packs/fae-realm';
-import { guileAndCunning } from '../../data/packs/guile-and-cunning';
 import { hellToPay } from '../../data/packs/hell-to-pay';
 import { illHumours } from '../../data/packs/ill-humours';
 import { inkAndVellum } from '../../data/packs/ink-and-vellum';
@@ -13,7 +11,9 @@ import { magicInAGlass } from '../../data/packs/magic-in-a-glass';
 import { menagerie } from '../../data/packs/menagerie';
 import { outOfTheGrave } from '../../data/packs/out-of-the-grave';
 import { powerAndGlory } from '../../data/packs/power-and-glory';
+import { skullduggery } from '../../data/packs/skullduggery';
 import { soundAndFury } from '../../data/packs/sound-and-fury';
+import { theGoingRate } from '../../data/packs/the-going-rate';
 import { workshop } from '../../data/packs/workshop';
 
 import { CombatantType } from '../../enums/combatant-type';
@@ -28,12 +28,10 @@ export class PackLogic {
 	static getExpansionPacks = () => {
 		const list = [
 			codexArcanum(),
-			coinAndContract(),
 			coldBlood(),
 			deepWater(),
 			elements(),
 			faeRealm(),
-			guileAndCunning(),
 			hellToPay(),
 			illHumours(),
 			inkAndVellum(),
@@ -41,7 +39,9 @@ export class PackLogic {
 			menagerie(),
 			outOfTheGrave(),
 			powerAndGlory(),
+			skullduggery(),
 			soundAndFury(),
+			theGoingRate(),
 			workshop()
 		];
 

@@ -234,7 +234,7 @@ export const deepWater = (): PackModel => ({
 		{
 			id: 'species-draugr',
 			name: 'Draugr',
-			description: 'Drowned, but disinclined to stay dead.',
+			description: 'A drowned thing that walked back out, still wearing the weight that took it under.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [

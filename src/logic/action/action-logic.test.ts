@@ -278,11 +278,15 @@ describe('ActionEffects.delay and hasten', () => {
 		expect(combatants[1].combat.initiative).toBeGreaterThan(10);
 	});
 
+	// Both start level on purpose. Random.dice never returns less than 1, so any delay at all puts
+	// the target strictly behind - whereas starting them one apart ties whenever the roll comes up
+	// 1, and sortInitiative's last tie-break is the name, which these two share
 	it('re-sorts the turn order so the change actually takes effect', () => {
-		const { encounter, combatants } = encounterWith(20, 19);
-		const [ leader, follower ] = combatants;
-		apply(encounter, follower, leader, ActionEffects.delay(10));
-		expect(EncounterLogic.getActiveCombatants(encounter)[0].id).toBe(follower.id);
+		const { encounter, combatants } = encounterWith(20, 20);
+		const [ delayed, other ] = combatants;
+		apply(encounter, other, delayed, ActionEffects.delay(10));
+		expect(delayed.combat.initiative).toBeLessThan(other.combat.initiative);
+		expect(EncounterLogic.getActiveCombatants(encounter)[0].id).toBe(other.id);
 	});
 
 	it('leaves a combatant who has already acted parked, rather than granting a second turn', () => {

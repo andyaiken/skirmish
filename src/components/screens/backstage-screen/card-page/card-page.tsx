@@ -50,12 +50,13 @@ export class CardPage extends Component<Props, State> {
 		});
 	};
 
-	getMarked = (card: { name: string, features: FeatureModel[], actions: ActionModel[] }, strength: number,  min: number, max: number) => {
-		if ((strength < min) || (strength > max)) {
+	getMarked = (card: { name: string, features: FeatureModel[], actions: ActionModel[] }, strength: number, band: { min: number, max: number }) => {
+		if ((strength < band.min) || (strength > band.max)) {
 			return true;
 		}
 
-		if (card.actions.some(a => (GameLogic.getActionStrength(a) < 1) || (GameLogic.getActionStrength(a) > 12))) {
+		const actionBand = GameLogic.strengthBands.action;
+		if (card.actions.some(a => (GameLogic.getActionStrength(a) < actionBand.min) || (GameLogic.getActionStrength(a) > actionBand.max))) {
 			return true;
 		}
 
@@ -98,7 +99,7 @@ export class CardPage extends Component<Props, State> {
 				return PackLogic.getHeroSpecies(packID)
 					.map(s => {
 						const strength = GameLogic.getSpeciesStrength(s);
-						const className = this.getMarked(s, strength, 4, 6) ? 'card-btn danger' : 'card-btn';
+						const className = this.getMarked(s, strength, GameLogic.strengthBands.heroSpecies) ? 'card-btn danger' : 'card-btn';
 						return (
 							<button
 								key={s.id}
@@ -113,7 +114,7 @@ export class CardPage extends Component<Props, State> {
 				return PackLogic.getMonsterSpecies(packID)
 					.map(s => {
 						const strength = GameLogic.getSpeciesStrength(s);
-						const className = this.getMarked(s, strength, 4, 6) ? 'card-btn danger' : 'card-btn';
+						const className = this.getMarked(s, strength, GameLogic.strengthBands.monsterSpecies) ? 'card-btn danger' : 'card-btn';
 						return (
 							<button
 								key={s.id}
@@ -128,7 +129,7 @@ export class CardPage extends Component<Props, State> {
 				return PackLogic.getRoles(packID)
 					.map(r => {
 						const strength = GameLogic.getRoleStrength(r);
-						const className = this.getMarked(r, strength, 4, 6) ? 'card-btn danger' : 'card-btn';
+						const className = this.getMarked(r, strength, GameLogic.strengthBands.role) ? 'card-btn danger' : 'card-btn';
 						return (
 							<button key={r.id} className={className} onClick={() => this.setActions(r.name, r.description, CardType.Species, r.startingFeatures, r.features, r.actions, [])}>
 								<StatValue label={r.name} value={strength} />
@@ -139,7 +140,7 @@ export class CardPage extends Component<Props, State> {
 				return PackLogic.getBackgrounds(packID)
 					.map(b => {
 						const strength = GameLogic.getBackgroundStrength(b);
-						const className = this.getMarked(b, strength, 3, 4) ? 'card-btn danger' : 'card-btn';
+						const className = this.getMarked(b, strength, GameLogic.strengthBands.background) ? 'card-btn danger' : 'card-btn';
 						return (
 							<button key={b.id} className={className} onClick={() => this.setActions(b.name, b.description, CardType.Species, b.startingFeatures, b.features, b.actions, [])}>
 								<StatValue label={b.name} value={strength} />

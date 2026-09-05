@@ -277,7 +277,7 @@ export const menagerie = (): PackModel => ({
 		{
 			id: 'species-giant-spider',
 			name: 'Giant Spider',
-			description: 'Venomous insects with eight legs.',
+			description: 'Venomous arachnids with eight legs.',
 			type: CombatantType.Monster,
 			size: 2,
 			quirks: [
@@ -342,6 +342,89 @@ export const menagerie = (): PackModel => ({
 					effects: [
 						ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Endurance, 3, TraitType.Speed)),
 						ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Endurance, 5))
+					]
+				}
+			],
+			deathActions: []
+		},
+		{
+			id: 'species-panther',
+			name: 'Panther',
+			description: 'You find the tracks afterwards, in a circle, all around where you slept.',
+			type: CombatantType.Monster,
+			size: 1,
+			quirks: [
+				QuirkType.Beast
+			],
+			startingFeatures: [
+				FeatureLogic.createTraitFeature('panther-start-1', TraitType.Speed, 2),
+				FeatureLogic.createSkillFeature('panther-start-2', SkillType.Brawl, 2),
+				FeatureLogic.createSkillFeature('panther-start-3', SkillType.Stealth, 3)
+			],
+			features: [
+				FeatureLogic.createTraitFeature('panther-feature-1', TraitType.Speed, 1),
+				FeatureLogic.createSkillFeature('panther-feature-2', SkillType.Brawl, 2),
+				FeatureLogic.createSkillFeature('panther-feature-3', SkillType.Stealth, 2),
+				FeatureLogic.createDamageBonusFeature('panther-feature-4', DamageType.Edged, 1)
+			],
+			actions: [
+				{
+					// The Bear is the big one and the Wolf is the pack; this one gets one enormous
+					// hit out of cover and is ordinary once you can see it
+					id: 'panther-action-1',
+					name: 'Out of Cover',
+					prerequisites: [
+						ActionPrerequisites.hidden()
+					],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Speed,
+							skillBonus: 2,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Edged, 5),
+								ActionEffects.knockDown()
+							]
+						})
+					]
+				},
+				{
+					id: 'panther-action-2',
+					name: 'Rake',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Edged, 3),
+								ActionEffects.ifTarget(TargetStateType.Prone, [
+									ActionEffects.dealDamage(DamageType.Edged, 2)
+								])
+							]
+						})
+					]
+				},
+				{
+					id: 'panther-action-3',
+					name: 'Back Into Cover',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.self()
+					],
+					effects: [
+						ActionEffects.hide(),
+						ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Speed, 4, SkillType.Stealth)),
+						ActionEffects.addMovement()
 					]
 				}
 			],

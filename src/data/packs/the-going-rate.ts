@@ -10,9 +10,9 @@ import { SkillType } from '../../enums/skill-type';
 import { StructureType } from '../../enums/structure-type';
 import { TraitType } from '../../enums/trait-type';
 
-export const coinAndContract = (): PackModel => ({
-	id: 'pack-coin-and-contract',
-	name: 'Coin and Contract',
+export const theGoingRate = (): PackModel => ({
+	id: 'pack-the-going-rate',
+	name: 'The Going Rate',
 	description: 'Everyone has a price.',
 	species: [
 		// Brigands and Mercenary Captains carry no monstrous quirks, so the encounter generator
@@ -107,7 +107,7 @@ export const coinAndContract = (): PackModel => ({
 		{
 			id: 'species-mercenary-captain',
 			name: 'Mercenary Captain',
-			description: 'Runs a company, and has opinions about how yours is run.',
+			description: 'Their company has a banner, a paymaster, and a list of work it will not take.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [],
@@ -185,7 +185,7 @@ export const coinAndContract = (): PackModel => ({
 			// trouble, and it wants to be paid in loot
 			id: 'role-sellsword',
 			name: 'Sellsword',
-			description: 'Fights for money, and is candid about it.',
+			description: 'Asks what the work pays before asking what it is.',
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('sellsword-start-1', TraitType.Endurance, 1),
 				FeatureLogic.createSkillFeature('sellsword-start-2', SkillType.Weapon, 2),
@@ -304,7 +304,7 @@ export const coinAndContract = (): PackModel => ({
 		{
 			id: 'background-negotiator',
 			name: 'Negotiator',
-			description: 'Would much rather this were settled with words, and usually gets their way.',
+			description: 'Comes to a battle carrying terms rather than a weapon.',
 			startingFeatures: [
 				FeatureLogic.createSkillFeature('negotiator-start-1', SkillType.Presence, 2)
 			],
@@ -366,7 +366,7 @@ export const coinAndContract = (): PackModel => ({
 			id: 'structure-bazaar',
 			type: StructureType.Bazaar,
 			name: 'Bazaar',
-			description: 'Traders who know you, and will meet you somewhere near your price.',
+			description: 'Every stall here remembers what you paid last season.',
 			position: { x: 0, y: 0 },
 			level: 1,
 			charges: 0
@@ -384,7 +384,7 @@ export const coinAndContract = (): PackModel => ({
 			id: 'structure-guildhall',
 			type: StructureType.Guildhall,
 			name: 'Guildhall',
-			description: 'The guilds have connections everywhere, and a price for using them.',
+			description: 'The guilds keep a ledger of favours owed in every port on the coast.',
 			position: { x: 0, y: 0 },
 			level: 1,
 			charges: 0

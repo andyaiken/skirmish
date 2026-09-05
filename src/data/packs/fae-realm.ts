@@ -2,6 +2,7 @@ import { ActionEffects, ActionOriginParameters, ActionPrerequisites, ActionTarge
 import { ActionTargetType } from '../../enums/action-target-type';
 import { CombatantType } from '../../enums/combatant-type';
 import { ConditionLogic } from '../../logic/condition/condition-logic';
+import { ContagionType } from '../../enums/contagion-type';
 import { DamageCategoryType } from '../../enums/damage-category-type';
 import { DamageType } from '../../enums/damage-type';
 import { FeatureLogic } from '../../logic/feature/feature-logic';
@@ -493,7 +494,8 @@ export const faeRealm = (): PackModel => ({
 			name: 'Luckweaver',
 			description: 'One who can manipulate the laws of chance.',
 			startingFeatures: [
-				FeatureLogic.createSkillFeature('luckweaver-start-1', SkillType.Spellcasting, 2)
+				FeatureLogic.createTraitFeature('luckweaver-start-1', TraitType.Resolve, 1),
+				FeatureLogic.createSkillFeature('luckweaver-start-2', SkillType.Spellcasting, 2)
 			],
 			features: [
 				FeatureLogic.createSkillFeature('luckweaver-feature-1', SkillType.Spellcasting, 2),
@@ -553,6 +555,37 @@ export const faeRealm = (): PackModel => ({
 					effects: [
 						ActionEffects.forceMovement(MovementType.Random, 20),
 						ActionEffects.stun()
+					]
+				},
+				{
+					// Both of these spread to the carrier's own side, so both are Allies: put ill
+					// fortune on an enemy and it works through their line, put good fortune on an
+					// ally and it works through yours
+					id: 'luckweaver-action-5',
+					name: 'Ill Fortune',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 8)
+					],
+					effects: [
+						ActionEffects.addCondition(ConditionLogic.makeContagious(
+							ConditionLogic.createSkillPenaltyCondition(TraitType.Resolve, 4, SkillType.All),
+							ContagionType.Allies
+						))
+					]
+				},
+				{
+					id: 'luckweaver-action-6',
+					name: 'Good Fortune',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Allies, 1, 8)
+					],
+					effects: [
+						ActionEffects.addCondition(ConditionLogic.makeContagious(
+							ConditionLogic.createSkillBonusCondition(TraitType.Resolve, 4, SkillType.All),
+							ContagionType.Allies
+						))
 					]
 				}
 			]

@@ -145,14 +145,6 @@ export class PacksModal extends Component<Props, State> {
 	};
 
 	render = () => {
-		const core = (
-			<PackCard
-				key='core'
-				pack={PackLogic.getBaseGame()}
-				onClick={p => this.setState({ selectedPack: p })}
-			/>
-		);
-
 		const ownedPacks = PackLogic.getExpansionPacks().filter(pack => this.props.options.packIDs.includes(pack.id));
 		const notOwnedPacks = PackLogic.getExpansionPacks().filter(pack => !this.props.options.packIDs.includes(pack.id));
 
@@ -179,9 +171,6 @@ export class PacksModal extends Component<Props, State> {
 		return (
 			<div className='packs-modal'>
 				<Text type={TextType.Heading}>Card Packs</Text>
-				<hr />
-				<Text type={TextType.SubHeading}>Core Game</Text>
-				<CardList cards={[ core ]} />
 				{notOwned.length > 0 ? <hr /> : null}
 				{notOwned.length > 0 ? <Text type={TextType.SubHeading}>Available Packs</Text> : null}
 				{

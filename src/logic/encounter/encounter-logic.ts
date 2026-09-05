@@ -122,8 +122,9 @@ export class EncounterLogic {
 			}
 
 			if (result === 0) {
-				// Sort alphabetically
-				result = (a.name < b.name) ? -1 : +1;
+				// Sort alphabetically. Two combatants with the same name have to compare equal, or
+				// the comparator disagrees with itself and the resulting order is up to the engine
+				result = a.name.localeCompare(b.name);
 			}
 
 			return result;

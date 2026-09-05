@@ -1,11 +1,5 @@
 # Light
 
-## Why this pack
-
-`tasks.md` asks for lighting:
-
-> General light level. Sources of light. Species with darkvision.
-
 It is the most invasive unbuilt feature in that file, and the one with the largest payoff, because
 the game already has everything it needs to support it. Visibility is fully implemented:
 `EncounterMapLogic.visibilityCache`, per-combatant `senses` and `hidden` scores rolled fresh each
@@ -18,18 +12,6 @@ see is walls.
 It also gives **Light** damage something to be about. Light is currently five role references and one
 monster, and it means nothing beyond a damage type name.
 
-**Naming:** *Nightfall* is plain and does the job. Alternatives: **The Long Dark**, **Sunless**,
-**What the Dark Hides**.
-
-```ts
-static dark = (): PackModel => ({
-    id: 'pack-nightfall',
-    name: 'Nightfall',
-    description: 'Half of what is on this map can see you. You can see rather less of it.'
-});
-```
-
----
 
 ## The system
 
@@ -100,61 +82,15 @@ existing docs are how players learn what quirks mean, and darkvision is worthles
 
 ---
 
-## Cards
-
 ### Darkvision quirk
 
 `src/enums/quirk-type.ts` gains `Darkvision = 'Darkvision'`. Grant it to:
 
-- **Gnome** (base) — described as "a short creature who often prefers to be unseen," already carries
-  Stealth and Reactions
+- **Gnome** (base) — described as "a short creature who often prefers to be unseen," already carries Stealth and Reactions
 - **Dwarf** (base) — conventional and correct
-- The new species below
 
-Granting it to two base species means the pack changes how existing characters play, which is the
-right kind of reach for a systems pack.
-
-### Umbral (species)
-
-`Darkvision`, Stealth-focused, Light vulnerability. The vulnerability is the interesting half —
-`DamageVulnerabilityCondition` exists but no species carries a permanent weakness, and
-`FeatureLogic.createDamageResistFeature` with a negative rank may or may not work. **Check that
-before designing around it**; if negative ranks misbehave, express the weakness as a starting
-condition instead, or drop it.
-
-Target 5–6.
-
-### Lampbearer (role)
-
-The counter-design: a role built around **carrying the light**, which makes you visible to everything
-on the map. Light damage, area illumination, and the tension that its own light betrays it.
-
-| Slot | Content |
-| --- | --- |
-| Starting | Resolve +1, Spellcasting +2, Presence +2, Implements |
-| Features | Resolve +1, Spellcasting +2, Light +1, Energy resistance +1 |
-| Action | *Kindle* — self or ally: become a light source for a number of rounds |
-| Action | *Flare* — burst, `dealDamage(Light, 3)` and `ActionEffects.reveal()` on all enemies in it |
-| Action | *Sear* — single-target Light damage, higher rank |
-| Action | *Beacon* — raise the encounter's light level for a round |
-| Action | *Snuff* — the inverse: lower it, or extinguish an enemy light source |
-
-Target 5–6.
-
-### Nightwalker (background)
-
-Stealth in darkness; `hide` with a bonus, movement without penalty in the dark. Target 3–4.
-
-### Monsters
-
-**Grue** (`Darkvision`, `Mindless`, only dangerous in darkness)
-**Shade** (`Amorphous`, `Darkvision`, Decay)
-**Will-o'-the-Wisp** (a light source that lures — deals Light damage, drops loot when killed).
+Granting it to two base species means the pack changes how existing characters play, which is the right kind of reach for a systems pack.
 
 ### Items
 
-**Lantern** — `ItemLocationType.Hand`, `ItemProficiencyType.None`. Emits light; occupies a hand,
-which is the whole design.
-
-**Shuttered Lamp** — light that can be turned off. Needs an equip/unequip-style toggle, so more work
-than the Lantern; skip it in version one.
+**Lantern** — `ItemLocationType.Hand`, `ItemProficiencyType.None`. Emits light; occupies a hand, which is the whole design.

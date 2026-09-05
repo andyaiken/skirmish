@@ -82,7 +82,7 @@ export const hellToPay = (): PackModel => ({
 		{
 			id: 'species-fiend',
 			name: 'Fiend',
-			description: 'A greater devil, and entirely aware of its rank.',
+			description: 'A greater devil, which expects to be addressed by its full title.',
 			type: CombatantType.Monster,
 			size: 2,
 			quirks: [],
@@ -228,7 +228,7 @@ export const hellToPay = (): PackModel => ({
 		{
 			id: 'species-imp-swarm',
 			name: 'Imp Swarm',
-			description: 'Individually negligible, but never encountered individually.',
+			description: 'Nobody has ever reported meeting a single imp.',
 			type: CombatantType.Monster,
 			size: 2,
 			quirks: [
@@ -312,7 +312,7 @@ export const hellToPay = (): PackModel => ({
 		{
 			id: 'role-lifestealer',
 			name: 'Lifestealer',
-			description: 'Lifestealers take what other people have, and wear it for as long as it lasts.',
+			description: 'Wears other people\'s health until it wears through.',
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('lifestealer-start-1', TraitType.Resolve, 1),
 				FeatureLogic.createSkillFeature('lifestealer-start-2', SkillType.Spellcasting, 2),
@@ -450,7 +450,7 @@ export const hellToPay = (): PackModel => ({
 		{
 			id: 'role-tormentor',
 			name: 'Tormentor',
-			description: 'Tormentors drag their debtors close, and make sure that nobody leaves early.',
+			description: 'Collects in person, at arm\'s length, over a long afternoon.',
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('tormentor-start-1', TraitType.Endurance, 1),
 				FeatureLogic.createSkillFeature('tormentor-start-2', SkillType.Brawl, 2),

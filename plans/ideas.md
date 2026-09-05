@@ -1,5 +1,9 @@
 # Improvements / Enhancements
 
+## Stringhold View
+* Structures should show what they are, and their charge state
+* People should sometimes say things
+
 ## Encounters
 * Undo movement
   * Can't undo movement if you've done anything (taken an action, hidden, etc)
@@ -60,10 +64,8 @@
     * Move through / see through walls
     * No movement penalty for obstructed terrain
 * Kobold
-* Ogre
 * Demon
 * Beasts:
-  * Lion / tiger / panther etc
   * Dragon
   * Kruthik / Ankheg
 
@@ -77,11 +79,8 @@
 
 * Armory
 * Sanctuary / Sacristy / Reliquary
-* Scriptorium
-* Guildhall
 * Sanctum
 * Archive / Vault
-* Bazaar / Marketplace
 * Cartographer
 * Engineer
 * Laboratory
@@ -89,10 +88,8 @@
   * Museum
   * Library
   * Gallery
-  * Tavern
   * Theatre
   * Gardens
-  * Monument
 
 # Tech Debt
 

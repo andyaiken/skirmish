@@ -107,14 +107,22 @@ damage — backgrounds sit in a 3–4 band and most are already at 4. Target 3�
 
 ### Monsters
 
-**Frost Giant** — size 2 or 3, Impact and Cold. *Giant* currently appears only in Giant Spider and
-Giant Crab and *ogre* appears nowhere, so this is also the game's first actual giant.
+**Frost Giant** — size 3, Impact and Cold. Not the game's first giant: the **Colossus** is size 3
+with *Hurl Object*, *Sweep* and *Thwack*, and the **Troll** is size 2 and regenerates. Between them
+they own throwing, sweeping, flattening and growing back, so a Frost Giant that is merely large has
+nothing to add.
+
+What it can own is the pack's own thesis. Make it the **tempo giant**: its blows carry `delay`, so
+being hit by something that cold puts you late. Colossus hurls, Troll regrows, this one costs you
+your turn. That is a silhouette neither of them has, and it is the argument for cold-as-tempo made
+in a monster rather than a role.
 
 **Rimewight** — `Undead`, Cold, and an aura that slows. Undead is six species and none of them is
 cold; a frozen corpse is the obvious one.
 
 **Ice Sheet** — `Mindless`, `Amorphous`, cannot move, but freezes the ground around it. The
-counterpart to the Strangler in *Root and Branch*: a monster that is really a piece of terrain.
+counterpart to the Strangler in *Overgrowth*: a monster that is really a piece of terrain. Keep
+the ground-freezing here rather than on the Frost Giant, so the two do not blur.
 
 **Wendigo** — the pack's designed centrepiece. Fast, Stealth-heavy, and it hunts the wounded — a
 natural home for `ifTarget(TargetStateType.Wounded)`, which so far only the Assassin uses.

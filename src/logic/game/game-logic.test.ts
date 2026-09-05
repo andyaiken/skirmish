@@ -23,44 +23,40 @@ const backgrounds = () => packs().flatMap(pack => PackLogic.getBackgrounds(pack.
 // rather than exact values so that adding a card in band does not break them,
 // but a card well outside the band does.
 describe('card strength', () => {
-	it('scores every hero species in the 5 to 6 band', () => {
-		heroSpecies().forEach(species => {
-			const strength = GameLogic.getSpeciesStrength(species);
-			expect(strength, species.name).toBeGreaterThanOrEqual(5);
-			expect(strength, species.name).toBeLessThanOrEqual(6);
+	const inBand = (name: string, strength: number, band: { min: number, max: number }) => {
+		expect(strength, name).toBeGreaterThanOrEqual(band.min);
+		expect(strength, name).toBeLessThanOrEqual(band.max);
+	};
+
+	// The tests below read the bands rather than repeating them, which keeps them honest against the
+	// backstage card page - but it also means widening a band would quietly make them pass. This
+	// pins the numbers, so moving one is a deliberate edit to a test that names it.
+	it('uses the bands the cards were balanced against', () => {
+		expect(GameLogic.strengthBands).toEqual({
+			heroSpecies: { min: 5, max: 6 },
+			monsterSpecies: { min: 4, max: 6 },
+			role: { min: 5, max: 6 },
+			background: { min: 3, max: 4 },
+			action: { min: 1, max: 12 }
 		});
 	});
 
-	it('scores every monster species in the 4 to 6 band', () => {
-		monsterSpecies().forEach(species => {
-			const strength = GameLogic.getSpeciesStrength(species);
-			expect(strength, species.name).toBeGreaterThanOrEqual(4);
-			expect(strength, species.name).toBeLessThanOrEqual(6);
-		});
+	it('scores every hero species in band', () => {
+		heroSpecies().forEach(s => inBand(s.name, GameLogic.getSpeciesStrength(s), GameLogic.strengthBands.heroSpecies));
 	});
 
-	it('scores every role in the 4 to 6 band', () => {
-		roles().forEach(role => {
-			const strength = GameLogic.getRoleStrength(role);
-			expect(strength, role.name).toBeGreaterThanOrEqual(4);
-			expect(strength, role.name).toBeLessThanOrEqual(6);
-		});
+	it('scores every monster species in band', () => {
+		monsterSpecies().forEach(s => inBand(s.name, GameLogic.getSpeciesStrength(s), GameLogic.strengthBands.monsterSpecies));
 	});
 
-	it('scores every background in the 3 to 4 band', () => {
-		backgrounds().forEach(background => {
-			const strength = GameLogic.getBackgroundStrength(background);
-			expect(strength, background.name).toBeGreaterThanOrEqual(3);
-			expect(strength, background.name).toBeLessThanOrEqual(4);
-		});
+	// The role band was tightened from 4-6 once the Luckweaver was brought up; it was the only role
+	// below 5, and the band had been left loose to accommodate it
+	it('scores every role in band', () => {
+		roles().forEach(r => inBand(r.name, GameLogic.getRoleStrength(r), GameLogic.strengthBands.role));
 	});
 
-	// Luckweaver is the one role below the 5 to 6 band. If this ever fails it is
-	// because the role was rebalanced, and the band above can be tightened to
-	// 5 to 6.
-	it('has Luckweaver as the only role below 5', () => {
-		const below = roles().filter(r => GameLogic.getRoleStrength(r) < 5).map(r => r.name);
-		expect(below).toEqual([ 'Luckweaver' ]);
+	it('scores every background in band', () => {
+		backgrounds().forEach(b => inBand(b.name, GameLogic.getBackgroundStrength(b), GameLogic.strengthBands.background));
 	});
 });
 
@@ -120,6 +116,33 @@ describe('contagion and card strength', () => {
 		));
 
 		expect(catching).toBeGreaterThan(plain);
+	});
+
+	// The backstage card page marks a card red when any single action scores outside 1-12
+	// (card-page.tsx, getMarked). The card-level bands above cannot catch this: they average a
+	// card's actions, so one spiking action hides inside four ordinary ones
+	it('keeps every action inside the band the backstage view enforces', () => {
+		const offenders: string[] = [];
+		const check = (owner: string, actions: ActionModel[]) => {
+			actions.forEach(action => {
+				const strength = GameLogic.getActionStrength(action);
+				const band = GameLogic.strengthBands.action;
+				if ((strength < band.min) || (strength > band.max)) {
+					offenders.push(`${owner} - ${action.name} (${strength})`);
+				}
+			});
+		};
+
+		packs().forEach(pack => {
+			[ ...PackLogic.getHeroSpecies(pack.id), ...PackLogic.getMonsterSpecies(pack.id) ].forEach(species => {
+				check(species.name, species.actions);
+				check(species.name, species.deathActions);
+			});
+			PackLogic.getRoles(pack.id).forEach(role => check(role.name, role.actions));
+			PackLogic.getBackgrounds(pack.id).forEach(background => check(background.name, background.actions));
+		});
+
+		expect(offenders).toEqual([]);
 	});
 
 	it('keeps every contagious card inside its band', () => {

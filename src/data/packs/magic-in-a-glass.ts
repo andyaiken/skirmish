@@ -21,7 +21,7 @@ export const magicInAGlass = (): PackModel => ({
 		{
 			id: 'species-mutant',
 			name: 'Mutant',
-			description: 'Someone drank the wrong bottle, and this is what walked away.',
+			description: 'This is what walked away from the wrong bottle.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [

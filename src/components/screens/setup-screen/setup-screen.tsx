@@ -1,25 +1,19 @@
-import { IconCards, IconHelpCircle } from '@tabler/icons-react';
+import { IconCards, IconDice5, IconHelpCircle } from '@tabler/icons-react';
 import { Component } from 'react';
 
 import { CardType } from '../../../enums/card-type';
 import { CombatantType } from '../../../enums/combatant-type';
 import { OrientationType } from '../../../enums/orientation-type';
 
-import { NameGenerator } from '../../../generators/name/name-generator';
+import { HeroGenerator } from '../../../generators/hero/hero-generator';
 
-import { CombatantLogic } from '../../../logic/combatant/combatant-logic';
 import { Factory } from '../../../logic/factory/factory';
-import { GameLogic } from '../../../logic/game/game-logic';
 import { PackLogic } from '../../../logic/pack/pack-logic';
 
 import type { CombatantModel } from '../../../models/combatant';
 import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
 import type { OptionsModel } from '../../../models/options';
-
-import { Collections } from '../../../utils/collections/collections';
-import { Color } from '../../../utils/color/color';
-import { Random } from '../../../utils/random/random';
 
 import { CharacterSheetModal, HeroBuilderModal } from '../../modals';
 import { CombatantRowPanel, LogoPanel } from '../../panels';
@@ -33,7 +27,6 @@ interface Props {
 	options: OptionsModel;
 	orientation: OrientationType;
 	addHero: (hero: CombatantModel) => void;
-	addHeroes: (heroes: CombatantModel[]) => void;
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
 	unequipItem: (item: ItemModel, hero: CombatantModel) => void;
 	pickUpItem: (item: ItemModel, hero: CombatantModel) => void;
@@ -61,33 +54,8 @@ export class SetupScreen extends Component<Props, State> {
 		});
 	};
 
-	createHeroes = () => {
-		let speciesDeck = GameLogic.getHeroSpeciesDeck(this.props.options.packIDs).map(s => s.id);
-		let roleDeck = GameLogic.getRoleDeck(this.props.options.packIDs).map(r => r.id);
-		let backgroundDeck = GameLogic.getBackgroundDeck(this.props.options.packIDs).map(b => b.id);
-
-		const heroes: CombatantModel[] = [];
-		const needed = 5 - this.props.game.heroes.length;
-		while (heroes.length < needed) {
-			const hero = Factory.createCombatant(CombatantType.Hero);
-			hero.name = NameGenerator.generateName(Math.random);
-			const color = Random.randomColor(20, 180);
-			hero.color = Color.toString(color);
-
-			const speciesID = Collections.draw(speciesDeck);
-			speciesDeck = speciesDeck.filter(s => s !== speciesID);
-			const roleID = Collections.draw(roleDeck);
-			roleDeck = roleDeck.filter(r => r !== roleID);
-			const backgroundID = Collections.draw(backgroundDeck);
-			backgroundDeck = backgroundDeck.filter(b => b !== backgroundID);
-
-			CombatantLogic.applyCombatantCards(hero, speciesID, roleID, backgroundID);
-			CombatantLogic.addItems(hero, this.props.options.packIDs);
-
-			heroes.push(hero);
-		}
-
-		this.props.addHeroes(heroes);
+	createRandomHero = () => {
+		this.props.addHero(HeroGenerator.generateHero(this.props.options.packIDs, this.props.game.heroes, Math.random));
 	};
 
 	selectHero = (hero: CombatantModel | null) => {
@@ -150,12 +118,13 @@ export class SetupScreen extends Component<Props, State> {
 			heroes.push(
 				<div key='add' className='empty-panel'>
 					<button className='primary' onClick={this.createHero}>Recruit a Hero</button>
+					<button className='random-btn' onClick={this.createRandomHero}><IconDice5 /></button>
 				</div>
 			);
 		}
 		while (heroes.length < 5) {
 			heroes.push(
-				<div key={heroes.length} className='empty-panel' />
+				<div key={heroes.length} className='empty-panel'>Hero {heroes.length + 1}</div>
 			);
 		}
 
@@ -196,6 +165,7 @@ export class SetupScreen extends Component<Props, State> {
 								:
 								<Text type={TextType.Information}>
 									<p><b>Recruit your team.</b> These five heroes will begin the task of conquering the island.</p>
+									<p>You can click the <IconDice5 /> button to generate a random hero.</p>
 								</Text>
 						}
 						{
@@ -214,7 +184,6 @@ export class SetupScreen extends Component<Props, State> {
 								: null
 						}
 						<div>
-							{this.props.options.developer && (this.props.game.heroes.length < 5) ? <button className='developer randomize-btn' onClick={this.createHeroes}>Randomize</button> : null}
 							{packsBtn}
 							<button className='help-btn' title='Help' onClick={() => this.props.showHelp('setup')}>
 								<IconHelpCircle />

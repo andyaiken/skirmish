@@ -481,22 +481,6 @@ export class Main extends Component<Props, State> {
 		}
 	};
 
-	addHeroes = (heroes: CombatantModel[]) => {
-		try {
-			const game = this.state.game as GameModel;
-			heroes.forEach(hero => {
-				GameLogic.addHeroToGame(game, hero);
-			});
-			this.setState({
-				game: game
-			}, () => {
-				this.saveGame();
-			});
-		} catch (ex) {
-			this.logException(ex);
-		}
-	};
-
 	addXP = (hero: CombatantModel, spendCharge: StructureType | null) => {
 		try {
 			const game = this.state.game as GameModel;
@@ -1574,7 +1558,6 @@ export class Main extends Component<Props, State> {
 						options={this.state.options}
 						orientation={this.props.orientation}
 						addHero={this.addHero}
-						addHeroes={this.addHeroes}
 						equipItem={this.equipItem}
 						unequipItem={this.unequipItem}
 						pickUpItem={this.pickUpItem}

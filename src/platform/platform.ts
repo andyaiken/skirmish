@@ -43,39 +43,35 @@ export class Platform {
 		};
 	}
 
-	logIn = () => {
-		return new Promise<{ game: GameModel | null, options: OptionsModel }>(resolve => {
-			localforage
-				.getItem<GameModel>('skirmish-game')
-				.then(game => {
-					if (game) {
-						this.updateGame(game);
-					}
+	logIn = async (): Promise<{ game: GameModel | null, options: OptionsModel }> => {
+		const game = await localforage.getItem<GameModel>('skirmish-game');
+		if (game) {
+			this.updateGame(game);
+		}
 
-					localforage
-						.getItem<OptionsModel>('skirmish-options')
-						.then(options => {
-							if (options) {
-								this.updateOptions(options);
-							} else {
-								options = {
-									version: '',
-									developer: false,
-									showTips: true,
-									reduceMotion: false,
-									soundEffectsVolume: 0.5,
-									packIDs: [],
-									renderer: ''
-								};
-							}
+		let options = await localforage.getItem<OptionsModel>('skirmish-options');
+		if (options) {
+			this.updateOptions(options);
+		} else {
+			options = this.getDefaultOptions();
+		}
 
-							options.version = pkg.version;
-							options.renderer = this.getRenderer();
+		options.version = pkg.version;
+		options.renderer = this.getRenderer();
 
-							resolve({ game: game, options: options });
-						});
-				});
-		});
+		return { game: game, options: options };
+	};
+
+	getDefaultOptions = (): OptionsModel => {
+		return {
+			version: pkg.version,
+			developer: false,
+			showTips: true,
+			reduceMotion: false,
+			soundEffectsVolume: 0.5,
+			packIDs: [],
+			renderer: this.getRenderer()
+		};
 	};
 
 	private updateGame = (game: GameModel) => {

@@ -293,6 +293,12 @@ textarea {
 	padding: 10px;
 	color: rgb(255, 255, 255);
 	font-size: 12px;
+
+	.notification-actions {
+		display: flex;
+		gap: 15px;
+		margin-top: 8px;
+	}
 }
 
 .developer {

@@ -45,8 +45,25 @@ body,
 	overflow: hidden;
 }
 
+#root {
+	// The webview runs edge to edge (viewport-fit=cover above), so the whole app is
+	// inset once here rather than in every screen that reaches a corner.
+	padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
 body {
 	margin: 0;
+	// Matches .skirmish, so the strips outside the safe area carry the board colour
+	// rather than showing bare white around it.
+	background-color: var(--control);
+	// Cards and the map are driven by taps and drags. Left alone, the webview adds
+	// a selection callout on long press and a zoom on double tap, both of which
+	// land on gestures the game already uses.
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	user-select: none;
+	touch-action: manipulation;
+	overscroll-behavior: none;
 	font-family: 'PT Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 	font-size: 15px;
 	letter-spacing: 0.5px;

@@ -1,3 +1,10 @@
 .rules-tab {
 	display: block;
 }
+
+// Selection is off across the app so long-press does not raise a callout mid-drag;
+// the rules are prose, though, and worth being able to copy out of.
+.rules-tab {
+	-webkit-user-select: text;
+	user-select: text;
+}

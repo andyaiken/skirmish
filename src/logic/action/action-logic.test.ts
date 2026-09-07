@@ -73,7 +73,7 @@ describe('every prerequisite on every card in every pack', () => {
 describe('ActionEffects.removeCondition', () => {
 	const encounterWith = (...conditions: ConditionModel[]) => {
 		const encounter = {
-			regionID: '', round: 0, combatants: [], loot: [], traps: [], log: [],
+			regionID: '', packIDs: [], round: 0, combatants: [], loot: [], traps: [], log: [],
 			mapSquares: [ { x: 0, y: 0, type: EncounterMapSquareType.Clear } ]
 		} as EncounterModel;
 		const combatant = Factory.createCombatant(CombatantType.Hero);
@@ -122,7 +122,7 @@ describe('ActionEffects.removeCondition', () => {
 describe('ActionEffects.ifTarget', () => {
 	const encounterWithTarget = () => {
 		const encounter = {
-			regionID: '', round: 0, combatants: [], loot: [], traps: [], log: [],
+			regionID: '', packIDs: [], round: 0, combatants: [], loot: [], traps: [], log: [],
 			mapSquares: [ { x: 0, y: 0, type: EncounterMapSquareType.Clear } ]
 		} as EncounterModel;
 		const attacker = Factory.createCombatant(CombatantType.Hero);
@@ -249,7 +249,7 @@ describe('ActionLogic.getTargetStateBonus', () => {
 describe('ActionEffects.delay and hasten', () => {
 	const encounterWith = (...initiatives: number[]) => {
 		const encounter = {
-			regionID: '', round: 1, combatants: [], loot: [], traps: [], log: [],
+			regionID: '', packIDs: [], round: 1, combatants: [], loot: [], traps: [], log: [],
 			mapSquares: [ { x: 0, y: 0, type: EncounterMapSquareType.Clear } ]
 		} as EncounterModel;
 		const combatants = initiatives.map(i => {
@@ -328,7 +328,7 @@ describe('ActionEffects.createTerrain', () => {
 		}
 
 		return {
-			regionID: '', round: 1, combatants: [], loot: [], traps: [], log: [],
+			regionID: '', packIDs: [], round: 1, combatants: [], loot: [], traps: [], log: [],
 			mapSquares: mapSquares
 		} as EncounterModel;
 	};

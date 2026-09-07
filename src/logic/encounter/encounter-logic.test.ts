@@ -44,6 +44,7 @@ const createEncounter = (width = 5, height = 5): EncounterModel => {
 
 	return {
 		regionID: '',
+		packIDs: [],
 		round: 0,
 		combatants: [],
 		loot: [],

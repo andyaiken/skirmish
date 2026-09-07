@@ -45,6 +45,10 @@ export interface LogMessageModel {
 
 export interface EncounterModel {
 	regionID: string;
+	// The packs the encounter was generated from. A summon during the fight draws from these, so it
+	// cannot produce a monster from a pack the player does not own - and the pool stays fixed for
+	// the duration of the fight even if a pack is bought part-way through a campaign.
+	packIDs: string[];
 	round: number;
 	combatants: CombatantModel[];
 	loot: LootPileModel[];

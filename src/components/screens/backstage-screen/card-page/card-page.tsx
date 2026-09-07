@@ -8,9 +8,10 @@ import { PackLogic } from '../../../../logic/pack/pack-logic';
 import type { ActionModel } from '../../../../models/action';
 import type { FeatureModel } from '../../../../models/feature';
 import type { OptionsModel } from '../../../../models/options';
+import type { PackModel } from '../../../../models/pack';
 
 import { ActionCard, FeatureCard } from '../../../cards';
-import { Badge, CardList, Dialog, StatValue, Text, TextType } from '../../../controls';
+import { Badge, CardList, Dialog, StatValue, Tag, Text, TextType } from '../../../controls';
 
 import './card-page.scss';
 
@@ -89,14 +90,10 @@ export class CardPage extends Component<Props, State> {
 		return false;
 	};
 
-	getCards = (type: string, packID: string) => {
-		if (!PackLogic.findPack(packID)) {
-			return null;
-		}
-
+	getCards = (type: string, pack: PackModel) => {
 		switch (type) {
 			case 'hero species':
-				return PackLogic.getHeroSpecies(packID)
+				return PackLogic.getHeroSpecies(pack.id)
 					.map(s => {
 						const strength = GameLogic.getSpeciesStrength(s);
 						const className = this.getMarked(s, strength, GameLogic.strengthBands.heroSpecies) ? 'card-btn danger' : 'card-btn';
@@ -107,11 +104,12 @@ export class CardPage extends Component<Props, State> {
 								onClick={() => this.setActions(s.name, s.description, CardType.Species, s.startingFeatures, s.features, s.actions, s.deathActions)}
 							>
 								<StatValue label={s.name} value={strength} />
+								<div className='card-description'>{s.description}</div>
 							</button>
 						);
 					});
 			case 'monster species':
-				return PackLogic.getMonsterSpecies(packID)
+				return PackLogic.getMonsterSpecies(pack.id)
 					.map(s => {
 						const strength = GameLogic.getSpeciesStrength(s);
 						const className = this.getMarked(s, strength, GameLogic.strengthBands.monsterSpecies) ? 'card-btn danger' : 'card-btn';
@@ -122,42 +120,53 @@ export class CardPage extends Component<Props, State> {
 								onClick={() => this.setActions(s.name, s.description, CardType.Species, s.startingFeatures, s.features, s.actions, s.deathActions)}
 							>
 								<StatValue label={s.name} value={strength} />
+								<div className='card-description'>{s.description}</div>
 							</button>
 						);
 					});
 			case 'roles':
-				return PackLogic.getRoles(packID)
+				return PackLogic.getRoles(pack.id)
 					.map(r => {
 						const strength = GameLogic.getRoleStrength(r);
 						const className = this.getMarked(r, strength, GameLogic.strengthBands.role) ? 'card-btn danger' : 'card-btn';
 						return (
-							<button key={r.id} className={className} onClick={() => this.setActions(r.name, r.description, CardType.Species, r.startingFeatures, r.features, r.actions, [])}>
+							<button
+								key={r.id}
+								className={className}
+								onClick={() => this.setActions(r.name, r.description, CardType.Species, r.startingFeatures, r.features, r.actions, [])}
+							>
 								<StatValue label={r.name} value={strength} />
+								<div className='card-description'>{r.description}</div>
 							</button>
 						);
 					});
 			case 'backgrounds':
-				return PackLogic.getBackgrounds(packID)
+				return PackLogic.getBackgrounds(pack.id)
 					.map(b => {
 						const strength = GameLogic.getBackgroundStrength(b);
 						const className = this.getMarked(b, strength, GameLogic.strengthBands.background) ? 'card-btn danger' : 'card-btn';
 						return (
-							<button key={b.id} className={className} onClick={() => this.setActions(b.name, b.description, CardType.Species, b.startingFeatures, b.features, b.actions, [])}>
+							<button
+								key={b.id}
+								className={className}
+								onClick={() => this.setActions(b.name, b.description, CardType.Species, b.startingFeatures, b.features, b.actions, [])}
+							>
 								<StatValue label={b.name} value={strength} />
+								<div className='card-description'>{b.description}</div>
 							</button>
 						);
 					});
 			case 'structures':
-				return PackLogic.getStructures(packID)
+				return PackLogic.getStructures(pack.id)
 					.map(s => <Text key={s.id} type={TextType.Small}>{s.name}</Text>);
 			case 'potions':
-				return PackLogic.getPotions(packID)
+				return PackLogic.getPotions(pack.id)
 					.map(p => <Text key={p.id} type={TextType.Small}>{p.name}</Text>);
 			case 'scrolls':
-				return PackLogic.getScrolls(packID)
+				return PackLogic.getScrolls(pack.id)
 					.map(sc => <Text key={sc.id} type={TextType.Small}>{sc.name}</Text>);
 			case 'items':
-				return PackLogic.getItems(packID)
+				return PackLogic.getItems(pack.id)
 					.map(i => <Text key={i.id} type={TextType.Small}>{i.name}</Text>);
 		}
 
@@ -200,7 +209,7 @@ export class CardPage extends Component<Props, State> {
 			'items'
 		];
 
-		const packIDs = PackLogic.getAllPacks().map(p => p.id);
+		const packs = PackLogic.getAllPacks();
 
 		const rows = types.map(type => {
 			return (
@@ -208,10 +217,10 @@ export class CardPage extends Component<Props, State> {
 					<Text type={TextType.SubHeading}>{type} ({this.getCardCount(type)})</Text>
 					<div className='row'>
 						{
-							packIDs.map(id => {
+							packs.map(p => {
 								return (
-									<div key={id} className='cell'>
-										{this.getCards(type, id)}
+									<div key={p.id} className='cell'>
+										{this.getCards(type, p)}
 									</div>
 								);
 							})
@@ -310,15 +319,12 @@ export class CardPage extends Component<Props, State> {
 				<div className='card-grid-header'>
 					<div className='row'>
 						{
-							packIDs.map(id => {
-								const pack = PackLogic.findPack(id);
-								const name = pack ? pack.name : 'Skirmish';
-								return (
-									<div key={id} className='cell column-heading'>
-										{name}
-									</div>
-								);
-							})
+							packs.map(p => (
+								<div key={p.id} className='cell column-heading'>
+									<div className='pack-name'>{p.name || 'Skirmish'}</div>
+									<Tag>Cards: {PackLogic.getPackCardCount(p.id)}</Tag>
+								</div>
+							))
 						}
 					</div>
 				</div>

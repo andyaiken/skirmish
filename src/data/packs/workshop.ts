@@ -20,63 +20,6 @@ export const workshop = (): PackModel => ({
 	description: 'The cards in this pack showcase marvels of engineering and ingenuity.',
 	species: [
 		{
-			id: 'species-construct',
-			name: 'Construct',
-			description: 'A living automaton.',
-			type: CombatantType.Hero,
-			size: 1,
-			quirks: [],
-			startingFeatures: [
-				FeatureLogic.createTraitFeature('construct-start-1', TraitType.Endurance, 1),
-				FeatureLogic.createSkillFeature('construct-start-2', SkillType.Brawl, 2),
-				FeatureLogic.createDamageResistFeature('construct-start-3', DamageType.Poison, 2),
-				FeatureLogic.createDamageResistFeature('construct-start-4', DamageType.Psychic, 2)
-			],
-			features: [
-				FeatureLogic.createTraitFeature('construct-feature-1', TraitType.Endurance, 1),
-				FeatureLogic.createSkillFeature('construct-feature-2', SkillType.Brawl, 2),
-				FeatureLogic.createDamageResistFeature('construct-feature-3', DamageType.Poison, 2),
-				FeatureLogic.createDamageResistFeature('construct-feature-4', DamageType.Psychic, 2)
-			],
-			actions: [
-				{
-					id: 'construct-action-1',
-					name: 'Knockdown',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Brawl,
-							trait: TraitType.Endurance,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Impact, 2),
-								ActionEffects.knockDown()
-							]
-						})
-					]
-				},
-				{
-					id: 'construct-action-2',
-					name: 'Repair',
-					prerequisites: [
-						ActionPrerequisites.damage()
-					],
-					parameters: [
-						ActionTargetParameters.self()
-					],
-					effects: [
-						ActionEffects.healDamage(1),
-						ActionEffects.takeAnotherAction()
-					]
-				}
-			],
-			deathActions: []
-		},
-		{
 			id: 'species-automaton',
 			name: 'Automaton',
 			description: 'Brass and clockwork, built to hold a gun.',
@@ -149,6 +92,63 @@ export const workshop = (): PackModel => ({
 								ActionEffects.dealWeaponDamage()
 							]
 						})
+					]
+				}
+			],
+			deathActions: []
+		},
+		{
+			id: 'species-construct',
+			name: 'Construct',
+			description: 'A living automaton.',
+			type: CombatantType.Hero,
+			size: 1,
+			quirks: [],
+			startingFeatures: [
+				FeatureLogic.createTraitFeature('construct-start-1', TraitType.Endurance, 1),
+				FeatureLogic.createSkillFeature('construct-start-2', SkillType.Brawl, 2),
+				FeatureLogic.createDamageResistFeature('construct-start-3', DamageType.Poison, 2),
+				FeatureLogic.createDamageResistFeature('construct-start-4', DamageType.Psychic, 2)
+			],
+			features: [
+				FeatureLogic.createTraitFeature('construct-feature-1', TraitType.Endurance, 1),
+				FeatureLogic.createSkillFeature('construct-feature-2', SkillType.Brawl, 2),
+				FeatureLogic.createDamageResistFeature('construct-feature-3', DamageType.Poison, 2),
+				FeatureLogic.createDamageResistFeature('construct-feature-4', DamageType.Psychic, 2)
+			],
+			actions: [
+				{
+					id: 'construct-action-1',
+					name: 'Knockdown',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Impact, 2),
+								ActionEffects.knockDown()
+							]
+						})
+					]
+				},
+				{
+					id: 'construct-action-2',
+					name: 'Repair',
+					prerequisites: [
+						ActionPrerequisites.damage()
+					],
+					parameters: [
+						ActionTargetParameters.self()
+					],
+					effects: [
+						ActionEffects.healDamage(1),
+						ActionEffects.takeAnotherAction()
 					]
 				}
 			],
@@ -232,6 +232,126 @@ export const workshop = (): PackModel => ({
 		}
 	],
 	roles: [
+		{
+			id: 'role-alchemist',
+			name: 'Alchemist',
+			description: 'Alchemists throw the things that other people refuse to even carry.',
+			startingFeatures: [
+				FeatureLogic.createTraitFeature('alchemist-start-1', TraitType.Resolve, 1),
+				FeatureLogic.createSkillFeature('alchemist-start-2', SkillType.Spellcasting, 2),
+				FeatureLogic.createProficiencyFeature('alchemist-start-3', ItemProficiencyType.Implements),
+				FeatureLogic.createDamageBonusFeature('alchemist-start-4', DamageType.Acid, 1)
+			],
+			features: [
+				FeatureLogic.createTraitFeature('alchemist-feature-1', TraitType.Resolve, 1),
+				FeatureLogic.createSkillFeature('alchemist-feature-2', SkillType.Spellcasting, 2),
+				FeatureLogic.createDamageBonusFeature('alchemist-feature-3', DamageType.Acid, 1),
+				FeatureLogic.createDamageBonusFeature('alchemist-feature-4', DamageType.Fire, 1)
+			],
+			actions: [
+				{
+					id: 'alchemist-action-1',
+					name: 'Acid Flask',
+					prerequisites: [
+						ActionPrerequisites.implement()
+					],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 3)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Spellcasting,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Acid, 3)
+							]
+						})
+					]
+				},
+				{
+					id: 'alchemist-action-2',
+					name: 'Volatile Mixture',
+					prerequisites: [
+						ActionPrerequisites.implement()
+					],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 4)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Spellcasting,
+							trait: TraitType.Speed,
+							skillBonus: -2,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Fire, 4)
+							]
+						}),
+						ActionEffects.toSelf([
+							ActionEffects.dealDamage(DamageType.Fire, 2)
+						])
+					]
+				},
+				{
+					id: 'alchemist-action-3',
+					name: 'Solvent',
+					prerequisites: [
+						ActionPrerequisites.implement()
+					],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Spellcasting,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Acid, 2),
+								ActionEffects.addCondition(ConditionLogic.createDamageCategoryVulnerabilityCondition(TraitType.Endurance, 5, DamageCategoryType.Physical))
+							]
+						})
+					]
+				},
+				{
+					id: 'alchemist-action-4',
+					name: 'Smoke',
+					prerequisites: [
+						ActionPrerequisites.implement()
+					],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 3)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Spellcasting,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.addCondition(ConditionLogic.createSkillPenaltyCondition(TraitType.Endurance, 4, SkillType.Perception))
+							]
+						})
+					]
+				},
+				{
+					id: 'alchemist-action-5',
+					name: 'Restorative',
+					prerequisites: [
+						ActionPrerequisites.implement()
+					],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Allies, 1, 5)
+					],
+					effects: [
+						ActionEffects.healDamage(4)
+					]
+				}
+			]
+		},
 		{
 			id: 'role-artificer',
 			name: 'Artificer',
@@ -547,31 +667,6 @@ export const workshop = (): PackModel => ({
 	],
 	items: [
 		{
-			id: 'item-rifle',
-			name: 'Rifle',
-			description: 'A large gun that requires two hands to use.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.PowderWeapons,
-			location: ItemLocationType.Hand,
-			slots: 2,
-			weapon: {
-				damage: [
-					{
-						type: DamageType.Piercing,
-						rank: 8
-					}
-				],
-				range: 20,
-				unreliable: 2
-			},
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
 			id: 'item-carbine',
 			name: 'Carbine',
 			description: 'Smaller than a rifle, larger than a pistol.',
@@ -613,6 +708,31 @@ export const workshop = (): PackModel => ({
 					}
 				],
 				range: 10,
+				unreliable: 2
+			},
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-rifle',
+			name: 'Rifle',
+			description: 'A large gun that requires two hands to use.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.PowderWeapons,
+			location: ItemLocationType.Hand,
+			slots: 2,
+			weapon: {
+				damage: [
+					{
+						type: DamageType.Piercing,
+						rank: 8
+					}
+				],
+				range: 20,
 				unreliable: 2
 			},
 			armor: null,

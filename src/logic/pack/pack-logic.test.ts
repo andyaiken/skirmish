@@ -40,8 +40,8 @@ describe('PackLogic.getAvailablePacks', () => {
 	});
 
 	it('does not double a pack named twice', () => {
-		const ids = PackLogic.getAvailablePacks([ 'pack-deep-water', 'pack-deep-water' ]).map(p => p.id);
-		expect(ids.filter(id => id === 'pack-deep-water')).toHaveLength(1);
+		const ids = PackLogic.getAvailablePacks([ 'pack-elemental-storm', 'pack-elemental-storm' ]).map(p => p.id);
+		expect(ids.filter(id => id === 'pack-elemental-storm')).toHaveLength(1);
 	});
 });
 
@@ -99,8 +99,23 @@ describe('every scroll', () => {
 // kind of break nothing else would have caught
 describe('every summon type', () => {
 	it('has at least one monster species it can draw', () => {
-		const empty = Object.values(SummonType).filter(type => ActionEffects.getSummonCandidates(type).length === 0);
+		const empty = Object.values(SummonType).filter(type => ActionEffects.getSummonCandidates(type, allPackIDs()).length === 0);
 		expect(empty).toEqual([]);
+	});
+
+	// Summoning draws from the packs the player owns, so it is not enough for a type to have
+	// monsters somewhere: the pack holding the card that summons them has to supply them too, or
+	// buying that pack gets you an action that does nothing
+	it('is satisfied by the pack that summons it, without needing any other pack', () => {
+		const unsatisfied = PackLogic.getAllPacks()
+			.flatMap(pack => {
+				const json = JSON.stringify(GameLogic.getAllActions([ pack.id ]));
+				return Object.values(SummonType)
+					.filter(type => json.includes(`"${type}"`))
+					.filter(type => ActionEffects.getSummonCandidates(type, [ pack.id ]).length === 0)
+					.map(type => `${pack.name} summons ${type}`);
+			});
+		expect(unsatisfied).toEqual([]);
 	});
 
 	it('is used by at least one card, so no type is dead weight', () => {

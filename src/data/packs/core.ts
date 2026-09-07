@@ -23,44 +23,82 @@ export const core = (): PackModel => ({
 	description: 'The core cards for the game, available to all.',
 	species: [
 		{
-			id: 'species-human',
-			name: 'Human',
-			description: 'Whatever the work is, somebody here has already learned it.',
-			type: CombatantType.Hero,
-			size: 1,
+			id: 'species-colossus',
+			name: 'Colossus',
+			description: 'It has to duck to come through the gate.',
+			type: CombatantType.Monster,
+			size: 3,
 			quirks: [],
 			startingFeatures: [
-				FeatureLogic.createTraitFeature('human-start-1', TraitType.Endurance, 1),
-				FeatureLogic.createTraitFeature('human-start-2', TraitType.Resolve, 1),
-				FeatureLogic.createTraitFeature('human-start-3', TraitType.Speed, 1)
+				FeatureLogic.createTraitFeature('colossus-start-1', TraitType.Endurance, 2),
+				FeatureLogic.createSkillFeature('colossus-start-2', SkillType.Brawl, 2)
 			],
 			features: [
-				FeatureLogic.createTraitFeature('human-feature-1', TraitType.Any, 1),
-				FeatureLogic.createSkillFeature('human-feature-2', SkillType.Any, 2)
+				FeatureLogic.createTraitFeature('colossus-feature-1', TraitType.Endurance, 1),
+				FeatureLogic.createTraitFeature('colossus-feature-2', TraitType.Resolve, 1),
+				FeatureLogic.createSkillFeature('colossus-feature-3', SkillType.Brawl, 2),
+				FeatureLogic.createDamageResistFeature('colossus-feature-4', DamageType.All, 1)
 			],
 			actions: [
 				{
-					id: 'human-action-1',
-					name: 'Resilient',
-					prerequisites: [
-						ActionPrerequisites.condition(TraitType.Any)
-					],
+					id: 'colossus-action-1',
+					name: 'Hurl Object',
+					prerequisites: [],
 					parameters: [
-						ActionTargetParameters.self()
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 10)
 					],
 					effects: [
-						ActionEffects.removeCondition(TraitType.Any)
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Impact, 3),
+								ActionEffects.knockDown()
+							]
+						})
 					]
 				},
 				{
-					id: 'human-action-2',
-					name: 'Resourceful',
+					id: 'colossus-action-2',
+					name: 'Sweep',
 					prerequisites: [],
 					parameters: [
-						ActionTargetParameters.self()
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, Number.MAX_VALUE)
 					],
 					effects: [
-						ActionEffects.takeAnotherAction(true)
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Impact, 2),
+								ActionEffects.knockDown()
+							]
+						})
+					]
+				},
+				{
+					id: 'colossus-action-3',
+					name: 'Thwack',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Resolve,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Impact, 4),
+								ActionEffects.forceMovement(MovementType.Push, 2),
+								ActionEffects.knockDown()
+							]
+						})
 					]
 				}
 			],
@@ -156,151 +194,6 @@ export const core = (): PackModel => ({
 					effects: [
 						ActionEffects.scan(),
 						ActionEffects.takeAnotherAction()
-					]
-				}
-			],
-			deathActions: []
-		},
-		{
-			id: 'species-gnome',
-			name: 'Gnome',
-			description: 'Waist-high, quiet enough to be somewhere else already.',
-			type: CombatantType.Hero,
-			size: 1,
-			quirks: [],
-			startingFeatures: [
-				FeatureLogic.createTraitFeature('gnome-start-1', TraitType.Speed, 1),
-				FeatureLogic.createSkillFeature('gnome-start-2', SkillType.Reactions, 2),
-				FeatureLogic.createSkillFeature('gnome-start-3', SkillType.Stealth, 2)
-			],
-			features: [
-				FeatureLogic.createTraitFeature('gnome-feature-1', TraitType.Speed, 1),
-				FeatureLogic.createSkillFeature('gnome-feature-2', SkillType.Reactions, 2),
-				FeatureLogic.createSkillFeature('gnome-feature-3', SkillType.Stealth, 2)
-			],
-			actions: [
-				{
-					id: 'gnome-action-1',
-					name: 'Trip',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Brawl,
-							trait: TraitType.Endurance,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.knockDown()
-							]
-						})
-					]
-				},
-				{
-					id: 'gnome-action-2',
-					name: 'Fade Away',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.self()
-					],
-					effects: [
-						ActionEffects.hide(),
-						ActionEffects.takeAnotherAction()
-					]
-				},
-				{
-					id: 'gnome-action-3',
-					name: 'Disarm Trap',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.adjacent(ActionTargetType.Traps, 1)
-					],
-					effects: [
-						ActionEffects.disarmTrap()
-					]
-				}
-			],
-			deathActions: []
-		},
-		{
-			id: 'species-colossus',
-			name: 'Colossus',
-			description: 'It has to duck to come through the gate.',
-			type: CombatantType.Monster,
-			size: 3,
-			quirks: [],
-			startingFeatures: [
-				FeatureLogic.createTraitFeature('colossus-start-1', TraitType.Endurance, 2),
-				FeatureLogic.createSkillFeature('colossus-start-2', SkillType.Brawl, 2)
-			],
-			features: [
-				FeatureLogic.createTraitFeature('colossus-feature-1', TraitType.Endurance, 1),
-				FeatureLogic.createTraitFeature('colossus-feature-2', TraitType.Resolve, 1),
-				FeatureLogic.createSkillFeature('colossus-feature-3', SkillType.Brawl, 2),
-				FeatureLogic.createDamageResistFeature('colossus-feature-4', DamageType.All, 1)
-			],
-			actions: [
-				{
-					id: 'colossus-action-1',
-					name: 'Hurl Object',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 10)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Brawl,
-							trait: TraitType.Speed,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Impact, 3),
-								ActionEffects.knockDown()
-							]
-						})
-					]
-				},
-				{
-					id: 'colossus-action-2',
-					name: 'Sweep',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.adjacent(ActionTargetType.Enemies, Number.MAX_VALUE)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Brawl,
-							trait: TraitType.Speed,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Impact, 2),
-								ActionEffects.knockDown()
-							]
-						})
-					]
-				},
-				{
-					id: 'colossus-action-3',
-					name: 'Thwack',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Brawl,
-							trait: TraitType.Resolve,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Impact, 4),
-								ActionEffects.forceMovement(MovementType.Push, 2),
-								ActionEffects.knockDown()
-							]
-						})
 					]
 				}
 			],
@@ -405,6 +298,69 @@ export const core = (): PackModel => ({
 			deathActions: []
 		},
 		{
+			id: 'species-gnome',
+			name: 'Gnome',
+			description: 'Waist-high, quiet enough to be somewhere else already.',
+			type: CombatantType.Hero,
+			size: 1,
+			quirks: [],
+			startingFeatures: [
+				FeatureLogic.createTraitFeature('gnome-start-1', TraitType.Speed, 1),
+				FeatureLogic.createSkillFeature('gnome-start-2', SkillType.Reactions, 2),
+				FeatureLogic.createSkillFeature('gnome-start-3', SkillType.Stealth, 2)
+			],
+			features: [
+				FeatureLogic.createTraitFeature('gnome-feature-1', TraitType.Speed, 1),
+				FeatureLogic.createSkillFeature('gnome-feature-2', SkillType.Reactions, 2),
+				FeatureLogic.createSkillFeature('gnome-feature-3', SkillType.Stealth, 2)
+			],
+			actions: [
+				{
+					id: 'gnome-action-1',
+					name: 'Trip',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.knockDown()
+							]
+						})
+					]
+				},
+				{
+					id: 'gnome-action-2',
+					name: 'Fade Away',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.self()
+					],
+					effects: [
+						ActionEffects.hide(),
+						ActionEffects.takeAnotherAction()
+					]
+				},
+				{
+					id: 'gnome-action-3',
+					name: 'Disarm Trap',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Traps, 1)
+					],
+					effects: [
+						ActionEffects.disarmTrap()
+					]
+				}
+			],
+			deathActions: []
+		},
+		{
 			id: 'species-goblin',
 			name: 'Goblin',
 			description: 'Never stands still long enough to be worth aiming at.',
@@ -456,6 +412,50 @@ export const core = (): PackModel => ({
 					effects: [
 						ActionEffects.forceMovement(MovementType.Random, 1),
 						ActionEffects.takeAnotherAction()
+					]
+				}
+			],
+			deathActions: []
+		},
+		{
+			id: 'species-human',
+			name: 'Human',
+			description: 'Whatever the work is, somebody here has already learned it.',
+			type: CombatantType.Hero,
+			size: 1,
+			quirks: [],
+			startingFeatures: [
+				FeatureLogic.createTraitFeature('human-start-1', TraitType.Endurance, 1),
+				FeatureLogic.createTraitFeature('human-start-2', TraitType.Resolve, 1),
+				FeatureLogic.createTraitFeature('human-start-3', TraitType.Speed, 1)
+			],
+			features: [
+				FeatureLogic.createTraitFeature('human-feature-1', TraitType.Any, 1),
+				FeatureLogic.createSkillFeature('human-feature-2', SkillType.Any, 2)
+			],
+			actions: [
+				{
+					id: 'human-action-1',
+					name: 'Resilient',
+					prerequisites: [
+						ActionPrerequisites.condition(TraitType.Any)
+					],
+					parameters: [
+						ActionTargetParameters.self()
+					],
+					effects: [
+						ActionEffects.removeCondition(TraitType.Any)
+					]
+				},
+				{
+					id: 'human-action-2',
+					name: 'Resourceful',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.self()
+					],
+					effects: [
+						ActionEffects.takeAnotherAction(true)
 					]
 				}
 			],
@@ -1125,6 +1125,114 @@ export const core = (): PackModel => ({
 					effects: [
 						ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Resolve, 6, DamageCategoryType.Physical)),
 						ActionEffects.addCondition(ConditionLogic.createDamageCategoryResistanceCondition(TraitType.Resolve, 6, DamageCategoryType.Physical))
+					]
+				}
+			]
+		},
+		{
+			id: 'role-bard',
+			name: 'Bard',
+			description: 'Bards carry the song into the line, where it is not always a comfort.',
+			startingFeatures: [
+				FeatureLogic.createTraitFeature('bard-start-1', TraitType.Resolve, 1),
+				FeatureLogic.createSkillFeature('bard-start-2', SkillType.Presence, 2),
+				FeatureLogic.createSkillFeature('bard-start-3', SkillType.Spellcasting, 2),
+				FeatureLogic.createProficiencyFeature('bard-start-4', ItemProficiencyType.Implements)
+			],
+			features: [
+				FeatureLogic.createTraitFeature('bard-feature-1', TraitType.Resolve, 1),
+				FeatureLogic.createSkillFeature('bard-feature-2', SkillType.Presence, 2),
+				FeatureLogic.createDamageBonusFeature('bard-feature-3', DamageType.Sonic, 1),
+				FeatureLogic.createDamageCategoryResistFeature('bard-feature-4', DamageCategoryType.Energy, 1)
+			],
+			actions: [
+				{
+					id: 'bard-action-1',
+					name: 'Battle Hymn',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 3)
+					],
+					effects: [
+						ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Resolve, 4, DamageCategoryType.Physical))
+					]
+				},
+				{
+					id: 'bard-action-2',
+					name: 'Shattering Note',
+					prerequisites: [
+						ActionPrerequisites.implement()
+					],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Presence,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Sonic, 3)
+							]
+						})
+					]
+				},
+				{
+					id: 'bard-action-3',
+					name: 'Dirge',
+					prerequisites: [
+						ActionPrerequisites.implement()
+					],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Presence,
+							trait: TraitType.Resolve,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 4, TraitType.Resolve)),
+								ActionEffects.addCondition(ConditionLogic.createAutoDamageCondition(TraitType.Resolve, 3, DamageType.Sonic))
+							]
+						})
+					]
+				},
+				{
+					id: 'bard-action-4',
+					name: 'Rallying Cry',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 3)
+					],
+					effects: [
+						ActionEffects.stand(),
+						ActionEffects.addCondition(ConditionLogic.createMovementBonusCondition(TraitType.Resolve, 3)),
+						// Hastening yourself does nothing - you are already taking your turn - so
+						// this only reads on the allies the cry reaches
+						ActionEffects.hasten(2)
+					]
+				},
+				{
+					id: 'bard-action-5',
+					name: 'Deafening Shout',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 2)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Presence,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.stun(),
+								ActionEffects.reveal()
+							]
+						})
 					]
 				}
 			]
@@ -2191,6 +2299,73 @@ export const core = (): PackModel => ({
 			]
 		},
 		{
+			id: 'background-minstrel',
+			name: 'Minstrel',
+			description: 'The charismatic minstrel inspires their allies to greatness.',
+			startingFeatures: [],
+			features: [
+				FeatureLogic.createSkillFeature('minstrel-feature-1', SkillType.Presence, 2),
+				FeatureLogic.createSkillCategoryFeature('minstrel-feature-2', SkillCategoryType.Mental, 1),
+				FeatureLogic.createProficiencyFeature('minstrel-feature-3', ItemProficiencyType.Any)
+			],
+			actions: [
+				{
+					id: 'minstrel-action-1',
+					name: 'Song of Health',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 10)
+					],
+					effects: [
+						ActionEffects.healDamage(3)
+					]
+				},
+				{
+					id: 'minstrel-action-2',
+					name: 'Anthem of Inspiration',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 10)
+					],
+					effects: [
+						ActionEffects.addCondition(ConditionLogic.createSkillCategoryBonusCondition(TraitType.Resolve, 3, SkillCategoryType.Physical))
+					]
+				},
+				{
+					id: 'minstrel-action-3',
+					name: 'Melody of Courage',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 10)
+					],
+					effects: [
+						ActionEffects.addCondition(ConditionLogic.createSkillCategoryBonusCondition(TraitType.Resolve, 3, SkillCategoryType.Mental))
+					]
+				},
+				{
+					id: 'minstrel-action-4',
+					name: 'Threnody of Lamentation',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 10)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Presence,
+							trait: TraitType.Resolve,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 2, TraitType.Endurance)),
+								ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 2, TraitType.Resolve)),
+								ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 2, TraitType.Speed))
+							]
+						})
+					]
+				}
+			]
+		},
+		{
 			id: 'background-noble',
 			name: 'Noble',
 			description: 'Has never had to raise their voice to be obeyed.',
@@ -2404,24 +2579,15 @@ export const core = (): PackModel => ({
 	],
 	items: [
 		{
-			id: 'item-sword',
-			name: 'Sword',
-			description: 'Three feet long and sharp on both sides.',
+			id: 'item-amulet',
+			name: 'Amulet',
+			description: 'A worked disc on a cord, warm against the breastbone.',
 			baseItem: '',
 			magic: false,
-			proficiency: ItemProficiencyType.MilitaryWeapons,
-			location: ItemLocationType.Hand,
+			proficiency: ItemProficiencyType.Implements,
+			location: ItemLocationType.Neck,
 			slots: 1,
-			weapon: {
-				damage: [
-					{
-						type: DamageType.Edged,
-						rank: 3
-					}
-				],
-				range: 1,
-				unreliable: 0
-			},
+			weapon: null,
 			armor: null,
 			potion: null,
 			scroll: null,
@@ -2429,24 +2595,15 @@ export const core = (): PackModel => ({
 			actions: []
 		},
 		{
-			id: 'item-katana',
-			name: 'Katana',
-			description: 'An elegant single-edged blade with a slight curve.',
+			id: 'item-armband',
+			name: 'Armband',
+			description: 'A broad metal band, worn high on the arm where it will not slip.',
 			baseItem: '',
 			magic: false,
-			proficiency: ItemProficiencyType.MilitaryWeapons,
-			location: ItemLocationType.Hand,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.Ring,
 			slots: 1,
-			weapon: {
-				damage: [
-					{
-						type: DamageType.Edged,
-						rank: 3
-					}
-				],
-				range: 1,
-				unreliable: 0
-			},
+			weapon: null,
 			armor: null,
 			potion: null,
 			scroll: null,
@@ -2454,224 +2611,15 @@ export const core = (): PackModel => ({
 			actions: []
 		},
 		{
-			id: 'item-scimitar',
-			name: 'Scimitar',
-			description: 'The curve does the work on the draw.',
+			id: 'item-bandolier',
+			name: 'Bandolier',
+			description: 'Loops and pouches, worn across the chest.',
 			baseItem: '',
 			magic: false,
-			proficiency: ItemProficiencyType.MilitaryWeapons,
-			location: ItemLocationType.Hand,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.Body,
 			slots: 1,
-			weapon: {
-				damage: [
-					{
-						type: DamageType.Edged,
-						rank: 3
-					}
-				],
-				range: 1,
-				unreliable: 0
-			},
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-handaxe',
-			name: 'Handaxe',
-			description: 'A chopping blade at the end of a wooden haft.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.MilitaryWeapons,
-			location: ItemLocationType.Hand,
-			slots: 1,
-			weapon: {
-				damage: [
-					{
-						type: DamageType.Edged,
-						rank: 3
-					}
-				],
-				range: 1,
-				unreliable: 0
-			},
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-khopesh',
-			name: 'Khopesh',
-			description: 'The hook at the tip is for dragging a shield aside.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.MilitaryWeapons,
-			location: ItemLocationType.Hand,
-			slots: 1,
-			weapon: {
-				damage: [
-					{
-						type: DamageType.Edged,
-						rank: 3
-					}
-				],
-				range: 1,
-				unreliable: 0
-			},
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-mace',
-			name: 'Mace',
-			description: 'A weighted head on a short shaft, for going through armour.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.MilitaryWeapons,
-			location: ItemLocationType.Hand,
-			slots: 1,
-			weapon: {
-				damage: [
-					{
-						type: DamageType.Impact,
-						rank: 3
-					}
-				],
-				range: 1,
-				unreliable: 0
-			},
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-flail',
-			name: 'Flail',
-			description: 'A length of metal chain at the end of a wooden haft.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.MilitaryWeapons,
-			location: ItemLocationType.Hand,
-			slots: 1,
-			weapon: {
-				damage: [
-					{
-						type: DamageType.Impact,
-						rank: 4
-					}
-				],
-				range: 1,
-				unreliable: 1
-			},
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-spear',
-			name: 'Spear',
-			description: 'A long haft, topped with a sharp metal point.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.MilitaryWeapons,
-			location: ItemLocationType.Hand,
-			slots: 1,
-			weapon: {
-				damage: [
-					{
-						type: DamageType.Piercing,
-						rank: 2
-					}
-				],
-				range: 2,
-				unreliable: 0
-			},
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-mattock',
-			name: 'Mattock',
-			description: 'Half pick, half hammer, sized for one hand.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.MilitaryWeapons,
-			location: ItemLocationType.Hand,
-			slots: 1,
-			weapon: {
-				damage: [
-					{
-						type: DamageType.Piercing,
-						rank: 3
-					}
-				],
-				range: 1,
-				unreliable: 0
-			},
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-rapier',
-			name: 'Rapier',
-			description: 'A sword with a thin, pointed blade.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.MilitaryWeapons,
-			location: ItemLocationType.Hand,
-			slots: 1,
-			weapon: {
-				damage: [
-					{
-						type: DamageType.Piercing,
-						rank: 3
-					}
-				],
-				range: 1,
-				unreliable: 0
-			},
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-greatsword',
-			name: 'Greatsword',
-			description: 'Four feet of blade that needs both hands on the grip.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.LargeWeapons,
-			location: ItemLocationType.Hand,
-			slots: 2,
-			weapon: {
-				damage: [
-					{
-						type: DamageType.Edged,
-						rank: 5
-					}
-				],
-				range: 1,
-				unreliable: 0
-			},
+			weapon: null,
 			armor: null,
 			potion: null,
 			scroll: null,
@@ -2704,897 +2652,6 @@ export const core = (): PackModel => ({
 			actions: []
 		},
 		{
-			id: 'item-glaive',
-			name: 'Glaive',
-			description: 'A sword blade mounted at the end of a long haft.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.LargeWeapons,
-			location: ItemLocationType.Hand,
-			slots: 2,
-			weapon: {
-				damage: [
-					{
-						type: DamageType.Edged,
-						rank: 4
-					}
-				],
-				range: 2,
-				unreliable: 0
-			},
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-warhammer',
-			name: 'Warhammer',
-			description: 'Blunt on one face, spiked on the other.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.LargeWeapons,
-			location: ItemLocationType.Hand,
-			slots: 2,
-			weapon: {
-				damage: [
-					{
-						type: DamageType.Impact,
-						rank: 5
-					}
-				],
-				range: 1,
-				unreliable: 0
-			},
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-quarterstaff',
-			name: 'Quarterstaff',
-			description: 'A sturdy wooden stick, as tall as a person.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.LargeWeapons,
-			location: ItemLocationType.Hand,
-			slots: 2,
-			weapon: {
-				damage: [
-					{
-						type: DamageType.Impact,
-						rank: 5
-					}
-				],
-				range: 1,
-				unreliable: 0
-			},
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-pike',
-			name: 'Pike',
-			description: 'A spear point mounted at the end of a long haft.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.LargeWeapons,
-			location: ItemLocationType.Hand,
-			slots: 2,
-			weapon: {
-				damage: [
-					{
-						type: DamageType.Piercing,
-						rank: 4
-					}
-				],
-				range: 2,
-				unreliable: 0
-			},
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-halberd',
-			name: 'Halberd',
-			description: 'An axe blade mounted at the end of a long haft.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.LargeWeapons,
-			location: ItemLocationType.Hand,
-			slots: 2,
-			weapon: {
-				damage: [
-					{
-						type: DamageType.Edged,
-						rank: 4
-					}
-				],
-				range: 2,
-				unreliable: 0
-			},
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-trident',
-			name: 'Trident',
-			description: 'Three barbed prongs, spaced to catch a blade between them.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.LargeWeapons,
-			location: ItemLocationType.Hand,
-			slots: 2,
-			weapon: {
-				damage: [
-					{
-						type: DamageType.Piercing,
-						rank: 5
-					}
-				],
-				range: 1,
-				unreliable: 0
-			},
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-dagger',
-			name: 'Daggers',
-			description: 'Short blades that go wherever a hand goes.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.PairedWeapons,
-			location: ItemLocationType.Hand,
-			slots: 2,
-			weapon: {
-				damage: [
-					{
-						type: DamageType.Edged,
-						rank: 2
-					}
-				],
-				range: 1,
-				unreliable: 0
-			},
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-sai',
-			name: 'Sais',
-			description: 'Pointed daggers with sharp side-prongs.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.PairedWeapons,
-			location: ItemLocationType.Hand,
-			slots: 2,
-			weapon: {
-				damage: [
-					{
-						type: DamageType.Piercing,
-						rank: 2
-					}
-				],
-				range: 1,
-				unreliable: 0
-			},
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-tonfas',
-			name: 'Tonfas',
-			description: 'Wooden batons with a perpendicular handle.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.PairedWeapons,
-			location: ItemLocationType.Hand,
-			slots: 2,
-			weapon: {
-				damage: [
-					{
-						type: DamageType.Impact,
-						rank: 2
-					}
-				],
-				range: 1,
-				unreliable: 0
-			},
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-hook-swords',
-			name: 'Hook Swords',
-			description: 'Curved blades with a crook at the tip, for catching what comes.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.PairedWeapons,
-			location: ItemLocationType.Hand,
-			slots: 2,
-			weapon: {
-				damage: [
-					{
-						type: DamageType.Edged,
-						rank: 2
-					}
-				],
-				range: 2,
-				unreliable: 0
-			},
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-katars',
-			name: 'Katars',
-			description: 'Short blades that punch straight out from a crossbar grip.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.PairedWeapons,
-			location: ItemLocationType.Hand,
-			slots: 2,
-			weapon: {
-				damage: [
-					{
-						type: DamageType.Piercing,
-						rank: 3
-					}
-				],
-				range: 1,
-				unreliable: 1
-			},
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-nunchaku',
-			name: 'Nunchaku',
-			description: 'Two hardwood batons joined by a short chain.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.PairedWeapons,
-			location: ItemLocationType.Hand,
-			slots: 2,
-			weapon: {
-				damage: [
-					{
-						type: DamageType.Impact,
-						rank: 3
-					}
-				],
-				range: 1,
-				unreliable: 1
-			},
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-longbow',
-			name: 'Longbow',
-			description: 'Taller than the archer, drawn to the ear.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.RangedWeapons,
-			location: ItemLocationType.Hand,
-			slots: 2,
-			weapon: {
-				damage: [
-					{
-						type: DamageType.Piercing,
-						rank: 3
-					}
-				],
-				range: 15,
-				unreliable: 0
-			},
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-crossbow',
-			name: 'Crossbow',
-			description: 'Slow to wind; it does not care how strong you are.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.RangedWeapons,
-			location: ItemLocationType.Hand,
-			slots: 2,
-			weapon: {
-				damage: [
-					{
-						type: DamageType.Piercing,
-						rank: 4
-					}
-				],
-				range: 20,
-				unreliable: 1
-			},
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-catapult',
-			name: 'Catapult',
-			description: 'A frame, a cord, and a basket of river rock.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.RangedWeapons,
-			location: ItemLocationType.Hand,
-			slots: 2,
-			weapon: {
-				damage: [
-					{
-						type: DamageType.Impact,
-						rank: 3
-					}
-				],
-				range: 10,
-				unreliable: 1
-			},
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-sling',
-			name: 'Sling',
-			description: 'A leather cradle on two cords, and a pouch of river stones.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.RangedWeapons,
-			location: ItemLocationType.Hand,
-			slots: 1,
-			weapon: {
-				damage: [
-					{
-						type: DamageType.Impact,
-						rank: 2
-					}
-				],
-				range: 10,
-				unreliable: 0
-			},
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-hand-crossbow',
-			name: 'Hand Crossbow',
-			description: 'Small enough to keep up a sleeve until the moment it is levelled.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.RangedWeapons,
-			location: ItemLocationType.Hand,
-			slots: 1,
-			weapon: {
-				damage: [
-					{
-						type: DamageType.Piercing,
-						rank: 3
-					}
-				],
-				range: 8,
-				unreliable: 0
-			},
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-chakram',
-			name: 'Chakram',
-			description: 'A flat steel ring, sharpened along its outer edge.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.RangedWeapons,
-			location: ItemLocationType.Hand,
-			slots: 1,
-			weapon: {
-				damage: [
-					{
-						type: DamageType.Edged,
-						rank: 2
-					}
-				],
-				range: 5,
-				unreliable: 0
-			},
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-orb',
-			name: 'Orb',
-			description: 'Glass, cold, heavier than it looks.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.Implements,
-			location: ItemLocationType.Hand,
-			slots: 1,
-			weapon: null,
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-wand',
-			name: 'Wand',
-			description: 'A finger of black wood, worn pale at one end.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.Implements,
-			location: ItemLocationType.Hand,
-			slots: 1,
-			weapon: null,
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-tome',
-			name: 'Tome',
-			description: 'A spellbook too heavy to hold open one-handed for long.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.Implements,
-			location: ItemLocationType.Hand,
-			slots: 2,
-			weapon: null,
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-amulet',
-			name: 'Amulet',
-			description: 'A worked disc on a cord, warm against the breastbone.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.Implements,
-			location: ItemLocationType.Neck,
-			slots: 1,
-			weapon: null,
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-staff',
-			name: 'Staff',
-			description: 'Shoulder-height, with the grain worn smooth where the hand goes.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.Implements,
-			location: ItemLocationType.Hand,
-			slots: 2,
-			weapon: null,
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-leather-armor',
-			name: 'Leather Armor',
-			description: 'Boiled hide, moulded to the chest while it was still soft.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.LightArmor,
-			location: ItemLocationType.Body,
-			slots: 1,
-			weapon: null,
-			armor: {
-				features: [
-					FeatureLogic.createDamageCategoryResistFeature('leatherarmour-1', DamageCategoryType.Physical, 1)
-				]
-			},
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-hide-armor',
-			name: 'Hide Armor',
-			description: 'Cut from something large, with the hair left on.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.LightArmor,
-			location: ItemLocationType.Body,
-			slots: 1,
-			weapon: null,
-			armor: {
-				features: [
-					FeatureLogic.createDamageCategoryResistFeature('hidearmour-1', DamageCategoryType.Physical, 2),
-					FeatureLogic.createSkillCategoryFeature('hidearmour-2', SkillCategoryType.Physical, -1)
-				]
-			},
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-brigandine-armor',
-			name: 'Brigandine Armor',
-			description: 'Small plates riveted between two layers of canvas.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.LightArmor,
-			location: ItemLocationType.Body,
-			slots: 1,
-			weapon: null,
-			armor: {
-				features: [
-					FeatureLogic.createDamageCategoryResistFeature('brigandinearmour-1', DamageCategoryType.Physical, 3),
-					FeatureLogic.createSkillCategoryFeature('brigandinearmour-2', SkillCategoryType.Physical, -1),
-					FeatureLogic.createTraitFeature('brigandinearmour-3', TraitType.Speed, -1)
-				]
-			},
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-breastplate',
-			name: 'Breastplate',
-			description: 'One shaped piece front and back, buckled at the sides.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.LightArmor,
-			location: ItemLocationType.Body,
-			slots: 1,
-			weapon: null,
-			armor: {
-				features: [
-					FeatureLogic.createDamageCategoryResistFeature('brigandinearmour-1', DamageCategoryType.Physical, 3),
-					FeatureLogic.createSkillCategoryFeature('brigandinearmour-2', SkillCategoryType.Physical, -2)
-				]
-			},
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-chain-armor',
-			name: 'Chain Armor',
-			description: 'Thousands of riveted rings, hanging from the shoulders.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.HeavyArmor,
-			location: ItemLocationType.Body,
-			slots: 1,
-			weapon: null,
-			armor: {
-				features: [
-					FeatureLogic.createDamageCategoryResistFeature('chainarmour-1', DamageCategoryType.Physical, 4),
-					FeatureLogic.createSkillCategoryFeature('chainarmour-2', SkillCategoryType.Physical, -2),
-					FeatureLogic.createTraitFeature('chainarmour-3', TraitType.Speed, -1)
-				]
-			},
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-plate-armor',
-			name: 'Plate Armor',
-			description: 'Jointed steel, fitted to one body and no other.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.HeavyArmor,
-			location: ItemLocationType.Body,
-			slots: 1,
-			weapon: null,
-			armor: {
-				features: [
-					FeatureLogic.createDamageCategoryResistFeature('platearmor-1', DamageCategoryType.Physical, 5),
-					FeatureLogic.createSkillCategoryFeature('platearmor-2', SkillCategoryType.Physical, -2),
-					FeatureLogic.createTraitFeature('platearmor-3', TraitType.Speed, -2)
-				]
-			},
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-scale-armor',
-			name: 'Scale Armor',
-			description: 'Overlapping metal scales sewn onto a leather backing.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.HeavyArmor,
-			location: ItemLocationType.Body,
-			slots: 1,
-			weapon: null,
-			armor: {
-				features: [
-					FeatureLogic.createDamageCategoryResistFeature('scalearmor-1', DamageCategoryType.Physical, 4),
-					FeatureLogic.createSkillCategoryFeature('scalearmor-2', SkillCategoryType.Physical, -1),
-					FeatureLogic.createTraitFeature('scalearmor-3', TraitType.Speed, -2)
-				]
-			},
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-splint-armor',
-			name: 'Splint Armor',
-			description: 'Long metal strips riveted over a padded coat.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.HeavyArmor,
-			location: ItemLocationType.Body,
-			slots: 1,
-			weapon: null,
-			armor: {
-				features: [
-					FeatureLogic.createDamageCategoryResistFeature('splintarmor-1', DamageCategoryType.Physical, 5),
-					FeatureLogic.createSkillCategoryFeature('splintarmor-2', SkillCategoryType.Physical, -3),
-					FeatureLogic.createTraitFeature('splintarmor-3', TraitType.Speed, -2)
-				]
-			},
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-shield',
-			name: 'Shield',
-			description: 'Boards and hide, strapped along the forearm.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.Shields,
-			location: ItemLocationType.Hand,
-			slots: 1,
-			weapon: null,
-			armor: {
-				features: [
-					FeatureLogic.createDamageCategoryResistFeature('shield-1', DamageCategoryType.Physical, 1)
-				]
-			},
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-tower-shield',
-			name: 'Tower shield',
-			description: 'Tall enough to kneel behind.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.Shields,
-			location: ItemLocationType.Hand,
-			slots: 1,
-			weapon: null,
-			armor: {
-				features: [
-					FeatureLogic.createDamageCategoryResistFeature('towershield-1', DamageCategoryType.Physical, 2),
-					FeatureLogic.createSkillCategoryFeature('towershield-2', SkillCategoryType.Physical, -1)
-				]
-			},
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-buckler',
-			name: 'Buckler',
-			description: 'A small round shield gripped in the fist, for turning a thrust aside.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.Shields,
-			location: ItemLocationType.Hand,
-			slots: 1,
-			weapon: null,
-			armor: {
-				features: [
-					FeatureLogic.createDamageResistFeature('buckler-1', DamageType.Piercing, 2)
-				]
-			},
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-helm',
-			name: 'Helm',
-			description: 'A close-fitting steel cap with a nose guard.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.None,
-			location: ItemLocationType.Head,
-			slots: 1,
-			weapon: null,
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-circlet',
-			name: 'Circlet',
-			description: 'A thin band of worked metal, worn across the brow.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.None,
-			location: ItemLocationType.Head,
-			slots: 1,
-			weapon: null,
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-crown',
-			name: 'Crown',
-			description: 'Heavy, gold, and not subtle.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.None,
-			location: ItemLocationType.Head,
-			slots: 1,
-			weapon: null,
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-tiara',
-			name: 'Tiara',
-			description: 'A delicate arc of silver and small stones.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.None,
-			location: ItemLocationType.Head,
-			slots: 1,
-			weapon: null,
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-diadem',
-			name: 'Diadem',
-			description: 'A jewelled band said to mark the favour of something older than kings.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.None,
-			location: ItemLocationType.Head,
-			slots: 1,
-			weapon: null,
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-mask',
-			name: 'Mask',
-			description: 'Moulded leather with narrow eye slits and no mouth.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.None,
-			location: ItemLocationType.Head,
-			slots: 1,
-			weapon: null,
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-hood',
-			name: 'Hood',
-			description: 'Deep enough to keep a face in shadow.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.None,
-			location: ItemLocationType.Head,
-			slots: 1,
-			weapon: null,
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-coif',
-			name: 'Coif',
-			description: 'A hood of fine mail that buckles under the chin.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.None,
-			location: ItemLocationType.Head,
-			slots: 1,
-			weapon: null,
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
 			id: 'item-belt',
 			name: 'Belt',
 			description: 'Thick leather, punched with more holes than it started with.',
@@ -3611,150 +2668,6 @@ export const core = (): PackModel => ({
 			actions: []
 		},
 		{
-			id: 'item-sash',
-			name: 'Sash',
-			description: 'A length of dyed cloth, wound and knotted at the hip.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.None,
-			location: ItemLocationType.Body,
-			slots: 1,
-			weapon: null,
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-bandolier',
-			name: 'Bandolier',
-			description: 'Loops and pouches, worn across the chest.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.None,
-			location: ItemLocationType.Body,
-			slots: 1,
-			weapon: null,
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-cloak',
-			name: 'Cloak',
-			description: 'Heavy wool, pinned at the shoulder, long enough to sleep under.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.None,
-			location: ItemLocationType.Neck,
-			slots: 1,
-			weapon: null,
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-torc',
-			name: 'Torc',
-			description: 'A stiff band of twisted gold, worn open at the throat.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.None,
-			location: ItemLocationType.Neck,
-			slots: 1,
-			weapon: null,
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-necklace',
-			name: 'Necklace',
-			description: 'Small links, carrying whatever the wearer thought worth hanging on them.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.None,
-			location: ItemLocationType.Neck,
-			slots: 1,
-			weapon: null,
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-pendant',
-			name: 'Pendant',
-			description: 'A single stone on a long cord, worn under the shirt.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.None,
-			location: ItemLocationType.Neck,
-			slots: 1,
-			weapon: null,
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-charm',
-			name: 'Charm',
-			description: 'A knot of hair, wire and something small that once had a use.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.None,
-			location: ItemLocationType.Neck,
-			slots: 1,
-			weapon: null,
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-locket',
-			name: 'Locket',
-			description: 'A hinged case, closed on whatever the owner could not leave behind.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.None,
-			location: ItemLocationType.Neck,
-			slots: 1,
-			weapon: null,
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-scarf',
-			name: 'Scarf',
-			description: 'Long, dark, and wound twice around the throat.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.None,
-			location: ItemLocationType.Neck,
-			slots: 1,
-			weapon: null,
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
 			id: 'item-boots',
 			name: 'Boots',
 			description: 'Worn leather, resoled more than once.',
@@ -3762,102 +2675,6 @@ export const core = (): PackModel => ({
 			magic: false,
 			proficiency: ItemProficiencyType.None,
 			location: ItemLocationType.Feet,
-			slots: 1,
-			weapon: null,
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-sabatons',
-			name: 'Sabatons',
-			description: 'Articulated steel shoes, laced over the boot.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.None,
-			location: ItemLocationType.Feet,
-			slots: 1,
-			weapon: null,
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-sandals',
-			name: 'Sandals',
-			description: 'Leather soles and a great deal of open air.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.None,
-			location: ItemLocationType.Feet,
-			slots: 1,
-			weapon: null,
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-greaves',
-			name: 'Greaves',
-			description: 'Shaped plates that cover the shin and buckle at the calf.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.None,
-			location: ItemLocationType.Feet,
-			slots: 1,
-			weapon: null,
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-ring',
-			name: 'Ring',
-			description: 'A plain band, worn thin on the inside.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.None,
-			location: ItemLocationType.Ring,
-			slots: 1,
-			weapon: null,
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-signet',
-			name: 'Signet',
-			description: 'Heavy gold, cut with a device meant to be pressed into wax.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.None,
-			location: ItemLocationType.Ring,
-			slots: 1,
-			weapon: null,
-			armor: null,
-			potion: null,
-			scroll: null,
-			features: [],
-			actions: []
-		},
-		{
-			id: 'item-armband',
-			name: 'Armband',
-			description: 'A broad metal band, worn high on the arm where it will not slip.',
-			baseItem: '',
-			magic: false,
-			proficiency: ItemProficiencyType.None,
-			location: ItemLocationType.Ring,
 			slots: 1,
 			weapon: null,
 			armor: null,
@@ -3897,29 +2714,1369 @@ export const core = (): PackModel => ({
 			scroll: null,
 			features: [],
 			actions: []
+		},
+		{
+			id: 'item-breastplate',
+			name: 'Breastplate',
+			description: 'One shaped piece front and back, buckled at the sides.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.LightArmor,
+			location: ItemLocationType.Body,
+			slots: 1,
+			weapon: null,
+			armor: {
+				features: [
+					FeatureLogic.createDamageCategoryResistFeature('brigandinearmour-1', DamageCategoryType.Physical, 3),
+					FeatureLogic.createSkillCategoryFeature('brigandinearmour-2', SkillCategoryType.Physical, -2)
+				]
+			},
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-brigandine-armor',
+			name: 'Brigandine Armor',
+			description: 'Small plates riveted between two layers of canvas.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.LightArmor,
+			location: ItemLocationType.Body,
+			slots: 1,
+			weapon: null,
+			armor: {
+				features: [
+					FeatureLogic.createDamageCategoryResistFeature('brigandinearmour-1', DamageCategoryType.Physical, 3),
+					FeatureLogic.createSkillCategoryFeature('brigandinearmour-2', SkillCategoryType.Physical, -1),
+					FeatureLogic.createTraitFeature('brigandinearmour-3', TraitType.Speed, -1)
+				]
+			},
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-buckler',
+			name: 'Buckler',
+			description: 'A small round shield gripped in the fist, for turning a thrust aside.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.Shields,
+			location: ItemLocationType.Hand,
+			slots: 1,
+			weapon: null,
+			armor: {
+				features: [
+					FeatureLogic.createDamageResistFeature('buckler-1', DamageType.Piercing, 2)
+				]
+			},
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-catapult',
+			name: 'Catapult',
+			description: 'A frame, a cord, and a basket of river rock.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.RangedWeapons,
+			location: ItemLocationType.Hand,
+			slots: 2,
+			weapon: {
+				damage: [
+					{
+						type: DamageType.Impact,
+						rank: 3
+					}
+				],
+				range: 10,
+				unreliable: 1
+			},
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-chain-armor',
+			name: 'Chain Armor',
+			description: 'Thousands of riveted rings, hanging from the shoulders.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.HeavyArmor,
+			location: ItemLocationType.Body,
+			slots: 1,
+			weapon: null,
+			armor: {
+				features: [
+					FeatureLogic.createDamageCategoryResistFeature('chainarmour-1', DamageCategoryType.Physical, 4),
+					FeatureLogic.createSkillCategoryFeature('chainarmour-2', SkillCategoryType.Physical, -2),
+					FeatureLogic.createTraitFeature('chainarmour-3', TraitType.Speed, -1)
+				]
+			},
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-chakram',
+			name: 'Chakram',
+			description: 'A flat steel ring, sharpened along its outer edge.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.RangedWeapons,
+			location: ItemLocationType.Hand,
+			slots: 1,
+			weapon: {
+				damage: [
+					{
+						type: DamageType.Edged,
+						rank: 2
+					}
+				],
+				range: 5,
+				unreliable: 0
+			},
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-charm',
+			name: 'Charm',
+			description: 'A knot of hair, wire and something small that once had a use.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.Neck,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-circlet',
+			name: 'Circlet',
+			description: 'A thin band of worked metal, worn across the brow.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.Head,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-cloak',
+			name: 'Cloak',
+			description: 'Heavy wool, pinned at the shoulder, long enough to sleep under.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.Neck,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-coif',
+			name: 'Coif',
+			description: 'A hood of fine mail that buckles under the chin.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.Head,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-crossbow',
+			name: 'Crossbow',
+			description: 'Slow to wind; it does not care how strong you are.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.RangedWeapons,
+			location: ItemLocationType.Hand,
+			slots: 2,
+			weapon: {
+				damage: [
+					{
+						type: DamageType.Piercing,
+						rank: 4
+					}
+				],
+				range: 20,
+				unreliable: 1
+			},
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-crown',
+			name: 'Crown',
+			description: 'Heavy, gold, and not subtle.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.Head,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-dagger',
+			name: 'Daggers',
+			description: 'Short blades that go wherever a hand goes.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.PairedWeapons,
+			location: ItemLocationType.Hand,
+			slots: 2,
+			weapon: {
+				damage: [
+					{
+						type: DamageType.Edged,
+						rank: 2
+					}
+				],
+				range: 1,
+				unreliable: 0
+			},
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-diadem',
+			name: 'Diadem',
+			description: 'A jewelled band said to mark the favour of something older than kings.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.Head,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-flail',
+			name: 'Flail',
+			description: 'A length of metal chain at the end of a wooden haft.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.MilitaryWeapons,
+			location: ItemLocationType.Hand,
+			slots: 1,
+			weapon: {
+				damage: [
+					{
+						type: DamageType.Impact,
+						rank: 4
+					}
+				],
+				range: 1,
+				unreliable: 1
+			},
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-glaive',
+			name: 'Glaive',
+			description: 'A sword blade mounted at the end of a long haft.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.LargeWeapons,
+			location: ItemLocationType.Hand,
+			slots: 2,
+			weapon: {
+				damage: [
+					{
+						type: DamageType.Edged,
+						rank: 4
+					}
+				],
+				range: 2,
+				unreliable: 0
+			},
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-greatsword',
+			name: 'Greatsword',
+			description: 'Four feet of blade that needs both hands on the grip.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.LargeWeapons,
+			location: ItemLocationType.Hand,
+			slots: 2,
+			weapon: {
+				damage: [
+					{
+						type: DamageType.Edged,
+						rank: 5
+					}
+				],
+				range: 1,
+				unreliable: 0
+			},
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-greaves',
+			name: 'Greaves',
+			description: 'Shaped plates that cover the shin and buckle at the calf.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.Feet,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-halberd',
+			name: 'Halberd',
+			description: 'An axe blade mounted at the end of a long haft.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.LargeWeapons,
+			location: ItemLocationType.Hand,
+			slots: 2,
+			weapon: {
+				damage: [
+					{
+						type: DamageType.Edged,
+						rank: 4
+					}
+				],
+				range: 2,
+				unreliable: 0
+			},
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-hand-crossbow',
+			name: 'Hand Crossbow',
+			description: 'Small enough to keep up a sleeve until the moment it is levelled.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.RangedWeapons,
+			location: ItemLocationType.Hand,
+			slots: 1,
+			weapon: {
+				damage: [
+					{
+						type: DamageType.Piercing,
+						rank: 3
+					}
+				],
+				range: 8,
+				unreliable: 0
+			},
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-handaxe',
+			name: 'Handaxe',
+			description: 'A chopping blade at the end of a wooden haft.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.MilitaryWeapons,
+			location: ItemLocationType.Hand,
+			slots: 1,
+			weapon: {
+				damage: [
+					{
+						type: DamageType.Edged,
+						rank: 3
+					}
+				],
+				range: 1,
+				unreliable: 0
+			},
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-helm',
+			name: 'Helm',
+			description: 'A close-fitting steel cap with a nose guard.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.Head,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-hide-armor',
+			name: 'Hide Armor',
+			description: 'Cut from something large, with the hair left on.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.LightArmor,
+			location: ItemLocationType.Body,
+			slots: 1,
+			weapon: null,
+			armor: {
+				features: [
+					FeatureLogic.createDamageCategoryResistFeature('hidearmour-1', DamageCategoryType.Physical, 2),
+					FeatureLogic.createSkillCategoryFeature('hidearmour-2', SkillCategoryType.Physical, -1)
+				]
+			},
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-hood',
+			name: 'Hood',
+			description: 'Deep enough to keep a face in shadow.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.Head,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-hook-swords',
+			name: 'Hook Swords',
+			description: 'Curved blades with a crook at the tip, for catching what comes.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.PairedWeapons,
+			location: ItemLocationType.Hand,
+			slots: 2,
+			weapon: {
+				damage: [
+					{
+						type: DamageType.Edged,
+						rank: 2
+					}
+				],
+				range: 2,
+				unreliable: 0
+			},
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-katana',
+			name: 'Katana',
+			description: 'An elegant single-edged blade with a slight curve.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.MilitaryWeapons,
+			location: ItemLocationType.Hand,
+			slots: 1,
+			weapon: {
+				damage: [
+					{
+						type: DamageType.Edged,
+						rank: 3
+					}
+				],
+				range: 1,
+				unreliable: 0
+			},
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-katars',
+			name: 'Katars',
+			description: 'Short blades that punch straight out from a crossbar grip.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.PairedWeapons,
+			location: ItemLocationType.Hand,
+			slots: 2,
+			weapon: {
+				damage: [
+					{
+						type: DamageType.Piercing,
+						rank: 3
+					}
+				],
+				range: 1,
+				unreliable: 1
+			},
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-khopesh',
+			name: 'Khopesh',
+			description: 'The hook at the tip is for dragging a shield aside.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.MilitaryWeapons,
+			location: ItemLocationType.Hand,
+			slots: 1,
+			weapon: {
+				damage: [
+					{
+						type: DamageType.Edged,
+						rank: 3
+					}
+				],
+				range: 1,
+				unreliable: 0
+			},
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-leather-armor',
+			name: 'Leather Armor',
+			description: 'Boiled hide, moulded to the chest while it was still soft.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.LightArmor,
+			location: ItemLocationType.Body,
+			slots: 1,
+			weapon: null,
+			armor: {
+				features: [
+					FeatureLogic.createDamageCategoryResistFeature('leatherarmour-1', DamageCategoryType.Physical, 1)
+				]
+			},
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-locket',
+			name: 'Locket',
+			description: 'A hinged case, closed on whatever the owner could not leave behind.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.Neck,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-longbow',
+			name: 'Longbow',
+			description: 'Taller than the archer, drawn to the ear.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.RangedWeapons,
+			location: ItemLocationType.Hand,
+			slots: 2,
+			weapon: {
+				damage: [
+					{
+						type: DamageType.Piercing,
+						rank: 3
+					}
+				],
+				range: 15,
+				unreliable: 0
+			},
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-mace',
+			name: 'Mace',
+			description: 'A weighted head on a short shaft, for going through armour.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.MilitaryWeapons,
+			location: ItemLocationType.Hand,
+			slots: 1,
+			weapon: {
+				damage: [
+					{
+						type: DamageType.Impact,
+						rank: 3
+					}
+				],
+				range: 1,
+				unreliable: 0
+			},
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-mask',
+			name: 'Mask',
+			description: 'Moulded leather with narrow eye slits and no mouth.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.Head,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-mattock',
+			name: 'Mattock',
+			description: 'Half pick, half hammer, sized for one hand.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.MilitaryWeapons,
+			location: ItemLocationType.Hand,
+			slots: 1,
+			weapon: {
+				damage: [
+					{
+						type: DamageType.Piercing,
+						rank: 3
+					}
+				],
+				range: 1,
+				unreliable: 0
+			},
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-necklace',
+			name: 'Necklace',
+			description: 'Small links, carrying whatever the wearer thought worth hanging on them.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.Neck,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-nunchaku',
+			name: 'Nunchaku',
+			description: 'Two hardwood batons joined by a short chain.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.PairedWeapons,
+			location: ItemLocationType.Hand,
+			slots: 2,
+			weapon: {
+				damage: [
+					{
+						type: DamageType.Impact,
+						rank: 3
+					}
+				],
+				range: 1,
+				unreliable: 1
+			},
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-orb',
+			name: 'Orb',
+			description: 'Glass, cold, heavier than it looks.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.Implements,
+			location: ItemLocationType.Hand,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-pendant',
+			name: 'Pendant',
+			description: 'A single stone on a long cord, worn under the shirt.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.Neck,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-pike',
+			name: 'Pike',
+			description: 'A spear point mounted at the end of a long haft.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.LargeWeapons,
+			location: ItemLocationType.Hand,
+			slots: 2,
+			weapon: {
+				damage: [
+					{
+						type: DamageType.Piercing,
+						rank: 4
+					}
+				],
+				range: 2,
+				unreliable: 0
+			},
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-plate-armor',
+			name: 'Plate Armor',
+			description: 'Jointed steel, fitted to one body and no other.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.HeavyArmor,
+			location: ItemLocationType.Body,
+			slots: 1,
+			weapon: null,
+			armor: {
+				features: [
+					FeatureLogic.createDamageCategoryResistFeature('platearmor-1', DamageCategoryType.Physical, 5),
+					FeatureLogic.createSkillCategoryFeature('platearmor-2', SkillCategoryType.Physical, -2),
+					FeatureLogic.createTraitFeature('platearmor-3', TraitType.Speed, -2)
+				]
+			},
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-quarterstaff',
+			name: 'Quarterstaff',
+			description: 'A sturdy wooden stick, as tall as a person.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.LargeWeapons,
+			location: ItemLocationType.Hand,
+			slots: 2,
+			weapon: {
+				damage: [
+					{
+						type: DamageType.Impact,
+						rank: 5
+					}
+				],
+				range: 1,
+				unreliable: 0
+			},
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-rapier',
+			name: 'Rapier',
+			description: 'A sword with a thin, pointed blade.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.MilitaryWeapons,
+			location: ItemLocationType.Hand,
+			slots: 1,
+			weapon: {
+				damage: [
+					{
+						type: DamageType.Piercing,
+						rank: 3
+					}
+				],
+				range: 1,
+				unreliable: 0
+			},
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-ring',
+			name: 'Ring',
+			description: 'A plain band, worn thin on the inside.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.Ring,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-sabatons',
+			name: 'Sabatons',
+			description: 'Articulated steel shoes, laced over the boot.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.Feet,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-sai',
+			name: 'Sais',
+			description: 'Pointed daggers with sharp side-prongs.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.PairedWeapons,
+			location: ItemLocationType.Hand,
+			slots: 2,
+			weapon: {
+				damage: [
+					{
+						type: DamageType.Piercing,
+						rank: 2
+					}
+				],
+				range: 1,
+				unreliable: 0
+			},
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-sandals',
+			name: 'Sandals',
+			description: 'Leather soles and a great deal of open air.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.Feet,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-sash',
+			name: 'Sash',
+			description: 'A length of dyed cloth, wound and knotted at the hip.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.Body,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-scale-armor',
+			name: 'Scale Armor',
+			description: 'Overlapping metal scales sewn onto a leather backing.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.HeavyArmor,
+			location: ItemLocationType.Body,
+			slots: 1,
+			weapon: null,
+			armor: {
+				features: [
+					FeatureLogic.createDamageCategoryResistFeature('scalearmor-1', DamageCategoryType.Physical, 4),
+					FeatureLogic.createSkillCategoryFeature('scalearmor-2', SkillCategoryType.Physical, -1),
+					FeatureLogic.createTraitFeature('scalearmor-3', TraitType.Speed, -2)
+				]
+			},
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-scarf',
+			name: 'Scarf',
+			description: 'Long, dark, and wound twice around the throat.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.Neck,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-scimitar',
+			name: 'Scimitar',
+			description: 'The curve does the work on the draw.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.MilitaryWeapons,
+			location: ItemLocationType.Hand,
+			slots: 1,
+			weapon: {
+				damage: [
+					{
+						type: DamageType.Edged,
+						rank: 3
+					}
+				],
+				range: 1,
+				unreliable: 0
+			},
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-shield',
+			name: 'Shield',
+			description: 'Boards and hide, strapped along the forearm.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.Shields,
+			location: ItemLocationType.Hand,
+			slots: 1,
+			weapon: null,
+			armor: {
+				features: [
+					FeatureLogic.createDamageCategoryResistFeature('shield-1', DamageCategoryType.Physical, 1)
+				]
+			},
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-signet',
+			name: 'Signet',
+			description: 'Heavy gold, cut with a device meant to be pressed into wax.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.Ring,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-sling',
+			name: 'Sling',
+			description: 'A leather cradle on two cords, and a pouch of river stones.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.RangedWeapons,
+			location: ItemLocationType.Hand,
+			slots: 1,
+			weapon: {
+				damage: [
+					{
+						type: DamageType.Impact,
+						rank: 2
+					}
+				],
+				range: 10,
+				unreliable: 0
+			},
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-spear',
+			name: 'Spear',
+			description: 'A long haft, topped with a sharp metal point.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.MilitaryWeapons,
+			location: ItemLocationType.Hand,
+			slots: 1,
+			weapon: {
+				damage: [
+					{
+						type: DamageType.Piercing,
+						rank: 2
+					}
+				],
+				range: 2,
+				unreliable: 0
+			},
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-splint-armor',
+			name: 'Splint Armor',
+			description: 'Long metal strips riveted over a padded coat.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.HeavyArmor,
+			location: ItemLocationType.Body,
+			slots: 1,
+			weapon: null,
+			armor: {
+				features: [
+					FeatureLogic.createDamageCategoryResistFeature('splintarmor-1', DamageCategoryType.Physical, 5),
+					FeatureLogic.createSkillCategoryFeature('splintarmor-2', SkillCategoryType.Physical, -3),
+					FeatureLogic.createTraitFeature('splintarmor-3', TraitType.Speed, -2)
+				]
+			},
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-staff',
+			name: 'Staff',
+			description: 'Shoulder-height, with the grain worn smooth where the hand goes.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.Implements,
+			location: ItemLocationType.Hand,
+			slots: 2,
+			weapon: null,
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-sword',
+			name: 'Sword',
+			description: 'Three feet long and sharp on both sides.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.MilitaryWeapons,
+			location: ItemLocationType.Hand,
+			slots: 1,
+			weapon: {
+				damage: [
+					{
+						type: DamageType.Edged,
+						rank: 3
+					}
+				],
+				range: 1,
+				unreliable: 0
+			},
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-tiara',
+			name: 'Tiara',
+			description: 'A delicate arc of silver and small stones.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.Head,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-tome',
+			name: 'Tome',
+			description: 'A spellbook too heavy to hold open one-handed for long.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.Implements,
+			location: ItemLocationType.Hand,
+			slots: 2,
+			weapon: null,
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-tonfas',
+			name: 'Tonfas',
+			description: 'Wooden batons with a perpendicular handle.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.PairedWeapons,
+			location: ItemLocationType.Hand,
+			slots: 2,
+			weapon: {
+				damage: [
+					{
+						type: DamageType.Impact,
+						rank: 2
+					}
+				],
+				range: 1,
+				unreliable: 0
+			},
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-torc',
+			name: 'Torc',
+			description: 'A stiff band of twisted gold, worn open at the throat.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.None,
+			location: ItemLocationType.Neck,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-tower-shield',
+			name: 'Tower Shield',
+			description: 'Tall enough to kneel behind.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.Shields,
+			location: ItemLocationType.Hand,
+			slots: 1,
+			weapon: null,
+			armor: {
+				features: [
+					FeatureLogic.createDamageCategoryResistFeature('towershield-1', DamageCategoryType.Physical, 2),
+					FeatureLogic.createSkillCategoryFeature('towershield-2', SkillCategoryType.Physical, -1)
+				]
+			},
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-trident',
+			name: 'Trident',
+			description: 'Three barbed prongs, spaced to catch a blade between them.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.LargeWeapons,
+			location: ItemLocationType.Hand,
+			slots: 2,
+			weapon: {
+				damage: [
+					{
+						type: DamageType.Piercing,
+						rank: 5
+					}
+				],
+				range: 1,
+				unreliable: 0
+			},
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-wand',
+			name: 'Wand',
+			description: 'A finger of black wood, worn pale at one end.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.Implements,
+			location: ItemLocationType.Hand,
+			slots: 1,
+			weapon: null,
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
+		},
+		{
+			id: 'item-warhammer',
+			name: 'Warhammer',
+			description: 'Blunt on one face, spiked on the other.',
+			baseItem: '',
+			magic: false,
+			proficiency: ItemProficiencyType.LargeWeapons,
+			location: ItemLocationType.Hand,
+			slots: 2,
+			weapon: {
+				damage: [
+					{
+						type: DamageType.Impact,
+						rank: 5
+					}
+				],
+				range: 1,
+				unreliable: 0
+			},
+			armor: null,
+			potion: null,
+			scroll: null,
+			features: [],
+			actions: []
 		}
 	],
 	potions: [],
 	scrolls: [],
 	structures: [
-		{
-			id: 'structure-barracks',
-			type: StructureType.Barracks,
-			name: 'Barracks',
-			description: 'Forty bunks under a roof that mostly holds.',
-			position: { x: 0, y: 0 },
-			level: 0,
-			charges: 0
-		},
-		{
-			id: 'structure-warehouse',
-			type: StructureType.Warehouse,
-			name: 'Warehouse',
-			description: 'Everything the company owns and is not currently carrying.',
-			position: { x: 0, y: 0 },
-			level: 0,
-			charges: 0
-		},
 		{
 			id: 'structure-academy',
 			type: StructureType.Academy,
@@ -3930,12 +4087,12 @@ export const core = (): PackModel => ({
 			charges: 0
 		},
 		{
-			id: 'structure-recruitment',
-			type: StructureType.Hall,
-			name: 'Recruitment Hall',
-			description: 'Word goes out; the hall fills by the end of the week.',
+			id: 'structure-barracks',
+			type: StructureType.Barracks,
+			name: 'Barracks',
+			description: 'Forty bunks under a roof that mostly holds.',
 			position: { x: 0, y: 0 },
-			level: 1,
+			level: 0,
 			charges: 0
 		},
 		{
@@ -3943,6 +4100,15 @@ export const core = (): PackModel => ({
 			type: StructureType.Quartermaster,
 			name: 'Quartermaster',
 			description: 'Nothing leaves this room without going into the ledger first.',
+			position: { x: 0, y: 0 },
+			level: 1,
+			charges: 0
+		},
+		{
+			id: 'structure-recruitment',
+			type: StructureType.Hall,
+			name: 'Recruitment Hall',
+			description: 'Word goes out; the hall fills by the end of the week.',
 			position: { x: 0, y: 0 },
 			level: 1,
 			charges: 0
@@ -3963,6 +4129,15 @@ export const core = (): PackModel => ({
 			description: 'Maps weighted down at the corners, behind a door that stays shut.',
 			position: { x: 0, y: 0 },
 			level: 1,
+			charges: 0
+		},
+		{
+			id: 'structure-warehouse',
+			type: StructureType.Warehouse,
+			name: 'Warehouse',
+			description: 'Everything the company owns and is not currently carrying.',
+			position: { x: 0, y: 0 },
+			level: 0,
 			charges: 0
 		},
 		{

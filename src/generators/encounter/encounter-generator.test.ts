@@ -33,6 +33,7 @@ describe('placing a larger combatant', () => {
 
 			const encounter: EncounterModel = {
 				regionID: '',
+				packIDs: [],
 				round: 0,
 				combatants: [],
 				loot: [],
@@ -68,6 +69,7 @@ describe('placing a larger combatant', () => {
 
 		const encounter: EncounterModel = {
 			regionID: '',
+			packIDs: [],
 			round: 0,
 			combatants: [],
 			loot: [],
@@ -120,8 +122,8 @@ describe('EncounterGenerator.createEncounter', () => {
 		});
 	});
 
-	it('builds an encounter with the Deep Water cards switched on', () => {
-		seeds.forEach(seed => expect(() => build(seed, [ 'pack-deep-water' ])).not.toThrow());
+	it('builds an encounter with an expansion pack switched on', () => {
+		seeds.forEach(seed => expect(() => build(seed, [ 'pack-elemental-storm' ])).not.toThrow());
 	});
 
 	// Traps are base-game map furniture, so no pack has to be switched on for them to appear
@@ -166,6 +168,6 @@ describe('EncounterGenerator.createEncounter', () => {
 			build(seed, packIDs).mapSquares.filter(sq => sq.type === EncounterMapSquareType.Water).length);
 
 		expect(water([])).toBeGreaterThan(0);
-		expect(water([ 'pack-deep-water' ])).toBe(water([]));
+		expect(water([ 'pack-elemental-storm' ])).toBe(water([]));
 	});
 });

@@ -35,6 +35,7 @@ export class EncounterGenerator {
 
 		const encounter: EncounterModel = {
 			regionID: region.id,
+			packIDs: packIDs,
 			round: 0,
 			combatants: [ ...heroes ],
 			loot: [],

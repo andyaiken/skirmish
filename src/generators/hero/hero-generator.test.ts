@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { GameLogic } from '../../logic/game/game-logic';
+import { PackLogic } from '../../logic/pack/pack-logic';
 
 import type { CombatantModel } from '../../models/combatant';
 
@@ -60,9 +61,11 @@ describe('generating a random hero', () => {
 	});
 
 	// With enough packs open there is no reason to repeat a card, and repeating one
-	// would mean the "unused" filter is comparing against the wrong field.
+	// would mean the "unused" filter is comparing against the wrong field. Naming every
+	// pack rather than a chosen few keeps this from quietly testing a shallower deck each
+	// time packs are merged - an ID that no longer exists is dropped in silence.
 	it('avoids repeats while the decks are deep enough', () => {
-		const party = buildParty([ 'pack-fae-realm', 'pack-menagerie', 'pack-overgrowth' ], 'deep decks');
+		const party = buildParty(PackLogic.getAllPacks().map(p => p.id), 'deep decks');
 		const ids = party.map(h => h.speciesID);
 		expect(new Set(ids).size).toBe(PARTY_SIZE);
 	});

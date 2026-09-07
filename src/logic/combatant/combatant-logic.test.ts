@@ -25,7 +25,7 @@ const createEncounter = (): EncounterModel => {
 	}
 
 	return {
-		regionID: '', round: 0, combatants: [], loot: [], traps: [], mapSquares: mapSquares, log: []
+		regionID: '', packIDs: [], round: 0, combatants: [], loot: [], traps: [], mapSquares: mapSquares, log: []
 	};
 };
 

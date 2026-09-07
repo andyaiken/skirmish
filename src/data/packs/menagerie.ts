@@ -21,6 +21,387 @@ export const menagerie = (): PackModel => ({
 	description: 'This beast-themed collection contains dangerous new species.',
 	species: [
 		{
+			id: 'species-basilisk',
+			name: 'Basilisk',
+			description: 'A many-legged reptile with a petrifying gaze.',
+			type: CombatantType.Monster,
+			size: 1,
+			quirks: [
+				QuirkType.Beast
+			],
+			startingFeatures: [
+				FeatureLogic.createSkillFeature('basilisk-start-1', SkillType.Brawl, 2),
+				FeatureLogic.createSkillFeature('basilisk-start-2', SkillType.Presence, 2),
+				FeatureLogic.createDamageBonusFeature('basilisk-start-3', DamageType.Poison, 1)
+			],
+			features: [
+				FeatureLogic.createSkillFeature('basilisk-feature-1', SkillType.Brawl, 2),
+				FeatureLogic.createSkillFeature('basilisk-feature-2', SkillType.Presence, 2),
+				FeatureLogic.createDamageBonusFeature('basilisk-feature-3', DamageType.Poison, 1),
+				FeatureLogic.createDamageResistFeature('basilisk-feature-4', DamageType.Poison, 2)
+			],
+			actions: [
+				{
+					id: 'basilisk-action-1',
+					name: 'Petrifying Gaze',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 6)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Presence,
+							trait: TraitType.Resolve,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Resolve, 5)),
+								ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 4, TraitType.Speed))
+							]
+						})
+					]
+				},
+				{
+					id: 'basilisk-action-2',
+					name: 'Venomous Bite',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Piercing, 2),
+								ActionEffects.dealDamage(DamageType.Poison, 2)
+							]
+						})
+					]
+				}
+			],
+			deathActions: []
+		},
+		{
+			id: 'species-bear',
+			name: 'Bear',
+			description: 'A huge, powerful mammal.',
+			type: CombatantType.Monster,
+			size: 2,
+			quirks: [
+				QuirkType.Beast
+			],
+			startingFeatures: [
+				FeatureLogic.createTraitFeature('bear-start-1', TraitType.Endurance, 1),
+				FeatureLogic.createSkillFeature('bear-start-2', SkillType.Brawl, 2),
+				FeatureLogic.createDamageCategoryBonusFeature('bear-start-3', DamageCategoryType.Physical, 1)
+			],
+			features: [
+				FeatureLogic.createTraitFeature('bear-feature-1', TraitType.Endurance, 1),
+				FeatureLogic.createSkillFeature('bear-feature-2', SkillType.Brawl, 2),
+				FeatureLogic.createDamageCategoryBonusFeature('bear-feature-3', DamageCategoryType.Physical, 1)
+			],
+			actions: [
+				{
+					id: 'bear-action-1',
+					name: 'Bite',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Piercing, 3)
+							]
+						})
+					]
+				},
+				{
+					id: 'bear-action-2',
+					name: 'Swipe',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Edged, 4)
+							]
+						})
+					]
+				},
+				{
+					id: 'bear-action-3',
+					name: 'Hug',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Impact, 4)
+							]
+						})
+					]
+				}
+			],
+			deathActions: []
+		},
+		{
+			id: 'species-giant-crab',
+			name: 'Giant Crab',
+			description: 'A slab of shell with a temper and two enormous claws.',
+			type: CombatantType.Monster,
+			size: 2,
+			quirks: [
+				QuirkType.Beast,
+				QuirkType.Aquatic
+			],
+			startingFeatures: [
+				FeatureLogic.createTraitFeature('giant-crab-start-1', TraitType.Endurance, 1),
+				FeatureLogic.createSkillFeature('giant-crab-start-2', SkillType.Brawl, 2),
+				FeatureLogic.createDamageCategoryResistFeature('giant-crab-start-3', DamageCategoryType.Physical, 1)
+			],
+			features: [
+				FeatureLogic.createTraitFeature('giant-crab-feature-1', TraitType.Endurance, 1),
+				FeatureLogic.createSkillFeature('giant-crab-feature-2', SkillType.Brawl, 2),
+				FeatureLogic.createDamageCategoryResistFeature('giant-crab-feature-3', DamageCategoryType.Physical, 1)
+			],
+			actions: [
+				{
+					id: 'giant-crab-action-1',
+					name: 'Claw',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Edged, 3)
+							]
+						})
+					]
+				},
+				{
+					id: 'giant-crab-action-2',
+					name: 'Crush',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Impact, 4)
+							]
+						})
+					]
+				},
+				{
+					id: 'giant-crab-action-3',
+					name: 'Seize and Hold',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.disarm(),
+								ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Endurance, 3))
+							]
+						})
+					]
+				}
+			],
+			deathActions: []
+		},
+		{
+			id: 'species-giant-spider',
+			name: 'Giant Spider',
+			description: 'Venomous arachnids with eight legs.',
+			type: CombatantType.Monster,
+			size: 2,
+			quirks: [
+				QuirkType.Beast
+			],
+			startingFeatures: [
+				FeatureLogic.createSkillFeature('giant-spider-start-1', SkillType.Brawl, 2),
+				FeatureLogic.createDamageBonusFeature('giant-spider-start-2', DamageType.Poison, 2)
+			],
+			features: [
+				FeatureLogic.createSkillFeature('giant-spider-feature-1', SkillType.Brawl, 2),
+				FeatureLogic.createDamageBonusFeature('giant-spider-feature-2', DamageType.Poison, 2)
+			],
+			actions: [
+				{
+					id: 'giant-spider-action-1',
+					name: 'Bite',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Edged, 2),
+								ActionEffects.dealDamage(DamageType.Poison, 3)
+							]
+						})
+					]
+				},
+				{
+					id: 'giant-spider-action-2',
+					name: 'Web',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 5)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Endurance, 2, TraitType.Speed)),
+								ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Endurance, 5))
+							]
+						})
+					]
+				},
+				{
+					id: 'giant-spider-action-3',
+					name: 'Cocoon',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					],
+					effects: [
+						ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Endurance, 3, TraitType.Speed)),
+						ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Endurance, 5))
+					]
+				}
+			],
+			deathActions: []
+		},
+		{
+			id: 'species-lindworm',
+			name: 'Lindworm',
+			description: 'A great wingless dragon that hunts from below.',
+			type: CombatantType.Monster,
+			size: 2,
+			quirks: [
+				QuirkType.Beast
+			],
+			startingFeatures: [
+				FeatureLogic.createTraitFeature('lindworm-start-1', TraitType.Endurance, 1),
+				FeatureLogic.createSkillFeature('lindworm-start-2', SkillType.Brawl, 2),
+				FeatureLogic.createDamageBonusFeature('lindworm-start-3', DamageType.Poison, 1)
+			],
+			features: [
+				FeatureLogic.createTraitFeature('lindworm-feature-1', TraitType.Endurance, 1),
+				FeatureLogic.createSkillFeature('lindworm-feature-2', SkillType.Brawl, 2),
+				FeatureLogic.createDamageResistFeature('lindworm-feature-3', DamageType.Poison, 2),
+				FeatureLogic.createDamageResistFeature('lindworm-feature-4', DamageType.Piercing, 1)
+			],
+			actions: [
+				{
+					id: 'lindworm-action-1',
+					name: 'Savage Bite',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Piercing, 4)
+							]
+						})
+					]
+				},
+				{
+					id: 'lindworm-action-2',
+					name: 'Tail Sweep',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, Number.MAX_VALUE)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Impact, 2),
+								ActionEffects.knockDown()
+							]
+						})
+					]
+				},
+				{
+					id: 'lindworm-action-3',
+					name: 'Spray Venom',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 2)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Poison, 3)
+							]
+						})
+					]
+				}
+			],
+			deathActions: []
+		},
+		{
 			id: 'species-minotaur',
 			name: 'Minotaur',
 			description: 'A muscular humanoid with the head of a bull.',
@@ -122,41 +503,28 @@ export const menagerie = (): PackModel => ({
 			deathActions: []
 		},
 		{
-			id: 'species-werewolf',
-			name: 'Werewolf',
-			description: 'A creature cursed with a wolf form.',
-			type: CombatantType.Hero,
+			id: 'species-naga',
+			name: 'Naga',
+			description: 'A serpentine humanoid.',
+			type: CombatantType.Monster,
 			size: 1,
 			quirks: [],
 			startingFeatures: [
-				FeatureLogic.createTraitFeature('werewolf-start-1', TraitType.Resolve, 1),
-				FeatureLogic.createSkillFeature('werewolf-start-2', SkillType.Brawl, 2),
-				FeatureLogic.createSkillFeature('werewolf-start-3', SkillType.Perception, 2),
-				FeatureLogic.createSkillFeature('werewolf-start-4', SkillType.Stealth, 2)
+				FeatureLogic.createTraitFeature('naga-start-1', TraitType.Speed, 1),
+				FeatureLogic.createSkillFeature('naga-start-2', SkillType.Brawl, 2),
+				FeatureLogic.createSkillFeature('naga-start-3', SkillType.Presence, 2)
 			],
 			features: [
-				FeatureLogic.createTraitFeature('werewolf-feature-1', TraitType.Resolve, 1),
-				FeatureLogic.createSkillFeature('werewolf-feature-2', SkillType.Brawl, 2),
-				FeatureLogic.createSkillFeature('werewolf-feature-3', SkillType.Perception, 2),
-				FeatureLogic.createSkillFeature('werewolf-feature-4', SkillType.Stealth, 2)
+				FeatureLogic.createTraitFeature('naga-feature-1', TraitType.Speed, 1),
+				FeatureLogic.createSkillFeature('naga-feature-2', SkillType.Brawl, 2),
+				FeatureLogic.createSkillFeature('naga-feature-3', SkillType.Presence, 2),
+				FeatureLogic.createDamageBonusFeature('naga-feature-4', DamageType.Poison, 2),
+				FeatureLogic.createDamageResistFeature('naga-feature-5', DamageType.Poison, 2)
 			],
 			actions: [
 				{
-					id: 'werewolf-action-1',
-					name: 'Regeneration',
-					prerequisites: [
-						ActionPrerequisites.damage()
-					],
-					parameters: [
-						ActionTargetParameters.self()
-					],
-					effects: [
-						ActionEffects.addCondition(ConditionLogic.createAutoHealCondition(TraitType.Endurance, 2))
-					]
-				},
-				{
-					id: 'werewolf-action-2',
-					name: 'Bite',
+					id: 'naga-action-1',
+					name: 'Venomous Bite',
 					prerequisites: [],
 					parameters: [
 						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
@@ -168,96 +536,14 @@ export const menagerie = (): PackModel => ({
 							trait: TraitType.Speed,
 							skillBonus: 0,
 							hit: [
-								ActionEffects.dealDamage(DamageType.Piercing, 3)
+								ActionEffects.dealDamage(DamageType.Poison, 4)
 							]
 						})
 					]
 				},
 				{
-					id: 'werewolf-action-3',
-					name: 'Maul',
-					prerequisites: [
-						ActionPrerequisites.emptyHand()
-					],
-					parameters: [
-						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Brawl,
-							trait: TraitType.Speed,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Edged, 3)
-							]
-						})
-					]
-				}
-			],
-			deathActions: []
-		},
-		{
-			id: 'species-bear',
-			name: 'Bear',
-			description: 'A huge, powerful mammal.',
-			type: CombatantType.Monster,
-			size: 2,
-			quirks: [
-				QuirkType.Beast
-			],
-			startingFeatures: [
-				FeatureLogic.createTraitFeature('bear-start-1', TraitType.Endurance, 1),
-				FeatureLogic.createSkillFeature('bear-start-2', SkillType.Brawl, 2),
-				FeatureLogic.createDamageCategoryBonusFeature('bear-start-3', DamageCategoryType.Physical, 1)
-			],
-			features: [
-				FeatureLogic.createTraitFeature('bear-feature-1', TraitType.Endurance, 1),
-				FeatureLogic.createSkillFeature('bear-feature-2', SkillType.Brawl, 2),
-				FeatureLogic.createDamageCategoryBonusFeature('bear-feature-3', DamageCategoryType.Physical, 1)
-			],
-			actions: [
-				{
-					id: 'bear-action-1',
-					name: 'Bite',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Brawl,
-							trait: TraitType.Speed,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Piercing, 3)
-							]
-						})
-					]
-				},
-				{
-					id: 'bear-action-2',
-					name: 'Swipe',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Brawl,
-							trait: TraitType.Speed,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Edged, 4)
-							]
-						})
-					]
-				},
-				{
-					id: 'bear-action-3',
-					name: 'Hug',
+					id: 'naga-action-2',
+					name: 'Constrict',
 					prerequisites: [],
 					parameters: [
 						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
@@ -273,78 +559,24 @@ export const menagerie = (): PackModel => ({
 							]
 						})
 					]
-				}
-			],
-			deathActions: []
-		},
-		{
-			id: 'species-giant-spider',
-			name: 'Giant Spider',
-			description: 'Venomous arachnids with eight legs.',
-			type: CombatantType.Monster,
-			size: 2,
-			quirks: [
-				QuirkType.Beast
-			],
-			startingFeatures: [
-				FeatureLogic.createSkillFeature('giant-spider-start-1', SkillType.Brawl, 2),
-				FeatureLogic.createDamageBonusFeature('giant-spider-start-2', DamageType.Poison, 2)
-			],
-			features: [
-				FeatureLogic.createSkillFeature('giant-spider-feature-1', SkillType.Brawl, 2),
-				FeatureLogic.createDamageBonusFeature('giant-spider-feature-2', DamageType.Poison, 2)
-			],
-			actions: [
+				},
 				{
-					id: 'giant-spider-action-1',
-					name: 'Bite',
+					id: 'naga-action-3',
+					name: 'Beguiling Gaze',
 					prerequisites: [],
 					parameters: [
-						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 8)
 					],
 					effects: [
 						ActionEffects.attack({
 							weapon: false,
-							skill: SkillType.Brawl,
-							trait: TraitType.Endurance,
+							skill: SkillType.Presence,
+							trait: TraitType.Resolve,
 							skillBonus: 0,
 							hit: [
-								ActionEffects.dealDamage(DamageType.Edged, 2),
-								ActionEffects.dealDamage(DamageType.Poison, 3)
+								ActionEffects.commandAction()
 							]
 						})
-					]
-				},
-				{
-					id: 'giant-spider-action-2',
-					name: 'Web',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 5)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Brawl,
-							trait: TraitType.Endurance,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Endurance, 2, TraitType.Speed)),
-								ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Endurance, 5))
-							]
-						})
-					]
-				},
-				{
-					id: 'giant-spider-action-3',
-					name: 'Cocoon',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
-					],
-					effects: [
-						ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Endurance, 3, TraitType.Speed)),
-						ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Endurance, 5))
 					]
 				}
 			],
@@ -477,6 +709,67 @@ export const menagerie = (): PackModel => ({
 			deathActions: []
 		},
 		{
+			id: 'species-snapjaw',
+			name: 'Snapjaw',
+			description: 'Armoured, patient, and mostly underwater until it isn\'t.',
+			type: CombatantType.Monster,
+			size: 1,
+			quirks: [],
+			startingFeatures: [
+				FeatureLogic.createSkillFeature('snapjaw-start-1', SkillType.Brawl, 2),
+				FeatureLogic.createDamageCategoryResistFeature('snapjaw-start-2', DamageCategoryType.Physical, 2),
+				FeatureLogic.createDamageCategoryResistFeature('snapjaw-start-3', DamageCategoryType.Energy, 2)
+			],
+			features: [
+				FeatureLogic.createSkillFeature('snapjaw-feature-1', SkillType.Brawl, 2),
+				FeatureLogic.createDamageCategoryResistFeature('snapjaw-feature-2', DamageCategoryType.Physical, 2),
+				FeatureLogic.createDamageCategoryResistFeature('snapjaw-feature-3', DamageCategoryType.Energy, 2)
+			],
+			actions: [
+				{
+					id: 'snapjaw-action-1',
+					name: 'Death Roll',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Piercing, 3)
+							]
+						})
+					]
+				},
+				{
+					id: 'snapjaw-action-2',
+					name: 'Tail Swipe',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Combatants, Number.MAX_VALUE)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Impact, 3),
+								ActionEffects.forceMovement(MovementType.Push, 1),
+								ActionEffects.knockDown()
+							]
+						})
+					]
+				}
+			],
+			deathActions: []
+		},
+		{
 			id: 'species-vespine-swarm',
 			name: 'Vespine Swarm',
 			description: 'A swarm of fast-moving flying insects.',
@@ -524,6 +817,82 @@ export const menagerie = (): PackModel => ({
 							skillBonus: 0,
 							hit: [
 								ActionEffects.dealDamage(DamageType.Poison, 1)
+							]
+						})
+					]
+				}
+			],
+			deathActions: []
+		},
+		{
+			id: 'species-werewolf',
+			name: 'Werewolf',
+			description: 'A creature cursed with a wolf form.',
+			type: CombatantType.Hero,
+			size: 1,
+			quirks: [],
+			startingFeatures: [
+				FeatureLogic.createTraitFeature('werewolf-start-1', TraitType.Resolve, 1),
+				FeatureLogic.createSkillFeature('werewolf-start-2', SkillType.Brawl, 2),
+				FeatureLogic.createSkillFeature('werewolf-start-3', SkillType.Perception, 2),
+				FeatureLogic.createSkillFeature('werewolf-start-4', SkillType.Stealth, 2)
+			],
+			features: [
+				FeatureLogic.createTraitFeature('werewolf-feature-1', TraitType.Resolve, 1),
+				FeatureLogic.createSkillFeature('werewolf-feature-2', SkillType.Brawl, 2),
+				FeatureLogic.createSkillFeature('werewolf-feature-3', SkillType.Perception, 2),
+				FeatureLogic.createSkillFeature('werewolf-feature-4', SkillType.Stealth, 2)
+			],
+			actions: [
+				{
+					id: 'werewolf-action-1',
+					name: 'Regeneration',
+					prerequisites: [
+						ActionPrerequisites.damage()
+					],
+					parameters: [
+						ActionTargetParameters.self()
+					],
+					effects: [
+						ActionEffects.addCondition(ConditionLogic.createAutoHealCondition(TraitType.Endurance, 2))
+					]
+				},
+				{
+					id: 'werewolf-action-2',
+					name: 'Bite',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Piercing, 3)
+							]
+						})
+					]
+				},
+				{
+					id: 'werewolf-action-3',
+					name: 'Maul',
+					prerequisites: [
+						ActionPrerequisites.emptyHand()
+					],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Edged, 3)
 							]
 						})
 					]
@@ -602,6 +971,81 @@ export const menagerie = (): PackModel => ({
 					effects: [
 						ActionEffects.commandMove(),
 						ActionEffects.takeAnotherAction()
+					]
+				}
+			],
+			deathActions: []
+		},
+		{
+			id: 'species-wyrmkin',
+			name: 'Wyrmkin',
+			description: 'Dragon far enough back in the blood that only the scales and the fire are left.',
+			type: CombatantType.Hero,
+			size: 1,
+			quirks: [],
+			startingFeatures: [
+				FeatureLogic.createTraitFeature('wyrmkin-start-1', TraitType.Speed, 1),
+				FeatureLogic.createSkillFeature('wyrmkin-start-2', SkillType.Brawl, 2),
+				FeatureLogic.createSkillFeature('wyrmkin-start-3', SkillType.Presence, 2)
+			],
+			features: [
+				FeatureLogic.createTraitFeature('wyrmkin-feature-1', TraitType.Speed, 1),
+				FeatureLogic.createSkillFeature('wyrmkin-feature-2', SkillType.Brawl, 2),
+				FeatureLogic.createSkillFeature('wyrmkin-feature-3', SkillType.Presence, 2),
+				FeatureLogic.createDamageCategoryResistFeature('wyrmkin-feature-4', DamageCategoryType.Physical, 1),
+				FeatureLogic.createDamageResistFeature('wyrmkin-feature-5', DamageType.Psychic, 2)
+			],
+			actions: [
+				{
+					id: 'wyrmkin-action-1',
+					name: 'Breathe Fire',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 3)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Fire, 3)
+							]
+						})
+					]
+				},
+				{
+					id: 'wyrmkin-action-2',
+					name: 'Regeneration',
+					prerequisites: [
+						ActionPrerequisites.wound()
+					],
+					parameters: [
+						ActionTargetParameters.self()
+					],
+					effects: [
+						ActionEffects.healWounds(1)
+					]
+				},
+				{
+					id: 'wyrmkin-action-3',
+					name: 'Intimidating Presence',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 5)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Presence,
+							trait: TraitType.Resolve,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.forceMovement(MovementType.Push, 1),
+								ActionEffects.stun()
+							]
+						})
 					]
 				}
 			],

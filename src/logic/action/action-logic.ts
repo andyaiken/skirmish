@@ -649,11 +649,13 @@ export class ActionEffects {
 		};
 	};
 
-	// Which monsters a summon of this type can draw. Undead, Beast and Plant filter on a quirk;
-	// Elemental still matches on the name, which works only because the four elementals happen to be
-	// called that - a quirk would be better, and is the reason Plant was given one.
-	static getSummonCandidates = (type: SummonType) => {
-		const monsters = PackLogic.getAllPacks().flatMap(pack => PackLogic.getMonsterSpecies(pack.id));
+	// Which monsters a summon of this type can draw. Every type filters on a quirk; Elemental used
+	// to match on the species name, which held only while the four elementals were called that.
+	//
+	// This draws from the packs it is given, not from every pack there is: summoning used to be able
+	// to put a monster from an unowned pack onto the board.
+	static getSummonCandidates = (type: SummonType, packIDs: string[]) => {
+		const monsters = PackLogic.getAvailablePacks(packIDs).flatMap(pack => PackLogic.getMonsterSpecies(pack.id));
 
 		switch (type) {
 			case SummonType.Undead:
@@ -661,7 +663,7 @@ export class ActionEffects {
 			case SummonType.Beast:
 				return monsters.filter(s => s.quirks.includes(QuirkType.Beast)).map(s => s.id);
 			case SummonType.Elemental:
-				return monsters.filter(s => s.name.toLowerCase().includes('elemental')).map(s => s.id);
+				return monsters.filter(s => s.quirks.includes(QuirkType.Elemental)).map(s => s.id);
 			case SummonType.Plant:
 				return monsters.filter(s => s.quirks.includes(QuirkType.Plant)).map(s => s.id);
 		}
@@ -1773,7 +1775,7 @@ export class ActionEffects {
 			}
 			case 'summon': {
 				const type = effect.data as SummonType;
-				const list = ActionEffects.getSummonCandidates(type);
+				const list = ActionEffects.getSummonCandidates(type, encounter.packIDs);
 				if (list.length > 0) {
 					const speciesID = Collections.draw(list);
 					const monster = Factory.createCombatant(CombatantType.Monster);

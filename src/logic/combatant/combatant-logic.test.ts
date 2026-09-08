@@ -36,8 +36,6 @@ const addCombatant = (encounter: EncounterModel, x: number, y: number): Combatan
 	return combatant;
 };
 
-// The Wyrdling is the first card in the game to carry an aura that moves a skill rather than damage
-// or a trait. The helper and the plumbing both existed, but nothing had ever exercised them.
 describe('an aura that raises a skill', () => {
 	const spellcasting = (encounter: EncounterModel, combatant: CombatantModel) => {
 		return EncounterLogic.getSkillRank(encounter, combatant, SkillType.Spellcasting);
@@ -74,13 +72,6 @@ describe('an aura that raises a skill', () => {
 		wyrdling.features.push(FeatureLogic.createAuraSkillFeature('test-aura', ConditionType.SkillBonus, SkillType.Spellcasting, 2));
 
 		expect(EncounterLogic.getSkillRank(encounter, ally, SkillType.Stealth)).toBe(before);
-	});
-
-	it('is carried by the Wyrdling card itself', () => {
-		const auras = CombatantLogic.getFeatureDeck({ speciesID: 'species-wyrdling', roleID: '', backgroundID: '' } as CombatantModel)
-			.filter(f => f.skill === SkillType.Spellcasting)
-			.filter(f => f.aura === ConditionType.SkillBonus);
-		expect(auras).toHaveLength(1);
 	});
 });
 

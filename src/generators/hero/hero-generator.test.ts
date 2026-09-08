@@ -9,8 +9,9 @@ import { Random } from '../../utils/random/random';
 
 import { HeroGenerator } from './hero-generator';
 
-// A party is five heroes, and the base game alone holds four hero species, so the
-// fifth draw is the one that runs the species deck dry.
+// A party is five heroes. The base game used to hold four hero species, so the fifth draw ran the
+// deck dry and had to fall back on a species already taken; moving the Dragonkin into the core game
+// brought it up to five, so the deck is now exactly the size of a party.
 const PARTY_SIZE = 5;
 
 const buildParty = (packIDs: string[], seed: string) => {
@@ -27,7 +28,7 @@ describe('generating a random hero', () => {
 	// applyCombatantCards rather than raised, so the IDs landing on the hero are the
 	// only evidence that the right deck was drawn from.
 	it('gives every hero a species, a role and a background', () => {
-		[ [], [ 'pack-fae-realm', 'pack-menagerie' ] ].forEach(packIDs => {
+		[ [], [ 'pack-fae-green-realm', 'pack-menagerie' ] ].forEach(packIDs => {
 			buildParty(packIDs, `cards for ${packIDs.length} packs`).forEach(hero => {
 				expect(hero.speciesID).not.toBe('');
 				expect(hero.roleID).not.toBe('');
@@ -51,13 +52,37 @@ describe('generating a random hero', () => {
 		});
 	});
 
-	// The base game has fewer hero species than party slots, so the last hero has to
-	// reuse one. Falling back is correct; returning a hero with no species is not.
+	// The base game is the shallowest deck there is, so it is where the generator is most likely to
+	// run out of cards. Whether it has to reuse a species or not, every hero must come back with one:
+	// applyCombatantCards drops an unknown ID in silence, so an empty speciesID is the failure to
+	// watch for. This deliberately does not assert how deep the deck is - that changes as cards move
+	// between packs, and the guarantee here is about the generator, not the roster
 	it('completes a full party from the base game alone', () => {
 		const party = buildParty([], 'base game only');
 		expect(party).toHaveLength(PARTY_SIZE);
-		expect(GameLogic.getHeroSpeciesDeck([]).length).toBeLessThan(PARTY_SIZE);
+		expect(GameLogic.getHeroSpeciesDeck([]).length).toBeGreaterThan(0);
 		party.forEach(hero => expect(hero.speciesID).not.toBe(''));
+	});
+
+	// The fall-back itself, which the base game used to exercise on its own before the core roster
+	// grew to a full party's worth of species. Drawing from an empty list yields undefined, and
+	// applyCombatantCards skips an unknown ID in silence, so falling back to a used card matters
+	it('falls back to an already-used card rather than drawing from an empty deck', () => {
+		const deck = [ { id: 'a' }, { id: 'b' } ];
+		const rng = Random.getSeededRNG('exhausted deck');
+
+		const drawn = HeroGenerator.drawUnused(deck, [ 'a', 'b' ], rng);
+		expect(drawn).toBeDefined();
+		expect(deck.map(d => d.id)).toContain(drawn.id);
+	});
+
+	it('prefers a card that is not already in the party', () => {
+		const deck = [ { id: 'a' }, { id: 'b' } ];
+		const rng = Random.getSeededRNG('partly used deck');
+
+		Array.from({ length: 10 }).forEach(() => {
+			expect(HeroGenerator.drawUnused(deck, [ 'a' ], rng).id).toBe('b');
+		});
 	});
 
 	// With enough packs open there is no reason to repeat a card, and repeating one

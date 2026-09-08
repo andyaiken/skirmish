@@ -25,30 +25,29 @@ export const codexArcanum = (): PackModel => ({
 	description: 'Discover new ways to channel magic with the cards in this pack.',
 	species: [
 		{
-			id: 'species-animated-object',
-			name: 'Animated Object',
-			description: 'A walking statue, or a suit of armour with no-one inside it.',
+			id: 'species-golem',
+			name: 'Golem',
+			description: 'Stone and baked clay in the shape of a man, with nothing behind the eyes.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [
-				QuirkType.Mindless,
-				QuirkType.Amorphous
+				QuirkType.Mindless
 			],
 			startingFeatures: [
-				FeatureLogic.createTraitFeature('animated-object-start-1', TraitType.Endurance, 1),
-				FeatureLogic.createSkillFeature('animated-object-start-2', SkillType.Brawl, 2),
-				FeatureLogic.createDamageCategoryResistFeature('animated-object-start-3', DamageCategoryType.Physical, 1),
-				FeatureLogic.createDamageResistFeature('animated-object-start-4', DamageType.Psychic, 3)
+				FeatureLogic.createTraitFeature('golem-start-1', TraitType.Endurance, 1),
+				FeatureLogic.createSkillFeature('golem-start-2', SkillType.Brawl, 2),
+				FeatureLogic.createDamageCategoryResistFeature('golem-start-3', DamageCategoryType.Physical, 1),
+				FeatureLogic.createDamageResistFeature('golem-start-4', DamageType.Psychic, 3)
 			],
 			features: [
-				FeatureLogic.createTraitFeature('animated-object-feature-1', TraitType.Endurance, 1),
-				FeatureLogic.createSkillFeature('animated-object-feature-2', SkillType.Brawl, 2),
-				FeatureLogic.createDamageBonusFeature('animated-object-feature-3', DamageType.Impact, 2),
-				FeatureLogic.createDamageCategoryResistFeature('animated-object-feature-4', DamageCategoryType.Physical, 1)
+				FeatureLogic.createTraitFeature('golem-feature-1', TraitType.Endurance, 1),
+				FeatureLogic.createSkillFeature('golem-feature-2', SkillType.Brawl, 2),
+				FeatureLogic.createDamageBonusFeature('golem-feature-3', DamageType.Impact, 2),
+				FeatureLogic.createDamageCategoryResistFeature('golem-feature-4', DamageCategoryType.Physical, 1)
 			],
 			actions: [
 				{
-					id: 'animated-object-action-1',
+					id: 'golem-action-1',
 					name: 'Slam',
 					prerequisites: [],
 					parameters: [
@@ -68,7 +67,7 @@ export const codexArcanum = (): PackModel => ({
 					]
 				},
 				{
-					id: 'animated-object-action-2',
+					id: 'golem-action-2',
 					name: 'Topple',
 					prerequisites: [],
 					parameters: [
@@ -88,7 +87,7 @@ export const codexArcanum = (): PackModel => ({
 					]
 				},
 				{
-					id: 'animated-object-action-3',
+					id: 'golem-action-3',
 					name: 'Grind Onward',
 					prerequisites: [],
 					parameters: [
@@ -103,117 +102,14 @@ export const codexArcanum = (): PackModel => ({
 			deathActions: []
 		},
 		{
-			id: 'species-arcane-aberration',
-			name: 'Arcane Aberration',
-			description: 'A spell that went wrong and never stopped.',
-			type: CombatantType.Monster,
-			size: 1,
-			quirks: [
-				QuirkType.Amorphous
-			],
-			startingFeatures: [
-				FeatureLogic.createTraitFeature('arcane-aberration-start-1', TraitType.Resolve, 1),
-				FeatureLogic.createSkillFeature('arcane-aberration-start-2', SkillType.Spellcasting, 2),
-				FeatureLogic.createDamageBonusFeature('arcane-aberration-start-3', DamageType.Psychic, 2),
-				FeatureLogic.createDamageResistFeature('arcane-aberration-start-4', DamageType.Psychic, 3)
-			],
-			features: [
-				FeatureLogic.createTraitFeature('arcane-aberration-feature-1', TraitType.Resolve, 1),
-				FeatureLogic.createSkillFeature('arcane-aberration-feature-2', SkillType.Spellcasting, 2),
-				FeatureLogic.createDamageBonusFeature('arcane-aberration-feature-3', DamageType.Psychic, 2),
-				FeatureLogic.createAuraDamageFeature('arcane-aberration-feature-4', ConditionType.AutoDamage, DamageType.Psychic, 1)
-			],
-			actions: [
-				{
-					id: 'arcane-aberration-action-1',
-					name: 'Mind Flense',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 8)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Spellcasting,
-							trait: TraitType.Resolve,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Psychic, 4)
-							]
-						})
-					]
-				},
-				{
-					id: 'arcane-aberration-action-2',
-					name: 'Unravel',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 8)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Spellcasting,
-							trait: TraitType.Resolve,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Psychic, 2),
-								ActionEffects.addCondition(ConditionLogic.createSkillCategoryPenaltyCondition(TraitType.Resolve, 4, SkillCategoryType.Mental)),
-								ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 3, TraitType.Resolve))
-							]
-						})
-					]
-				},
-				{
-					id: 'arcane-aberration-action-3',
-					name: 'Sympathetic Wound',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Enemies, 2, 6)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Spellcasting,
-							trait: TraitType.Endurance,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Psychic, 1),
-								ActionEffects.addCondition(ConditionLogic.createDamageCategoryVulnerabilityCondition(TraitType.Resolve, 4, DamageCategoryType.Energy))
-							]
-						})
-					]
-				},
-				{
-					id: 'arcane-aberration-action-4',
-					name: 'Turn Inward',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 6)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Spellcasting,
-							trait: TraitType.Resolve,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.invertConditions(false)
-							]
-						})
-					]
-				}
-			],
-			deathActions: []
-		},
-		{
 			id: 'species-homunculus',
 			name: 'Homunculus',
 			description: 'Knee-high, quick, and seldom encountered alone.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [
-				QuirkType.Drone
+				QuirkType.Drone,
+				QuirkType.Small
 			],
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('homunculus-start-1', TraitType.Speed, 2),
@@ -222,7 +118,8 @@ export const codexArcanum = (): PackModel => ({
 			features: [
 				FeatureLogic.createTraitFeature('homunculus-feature-1', TraitType.Speed, 1),
 				FeatureLogic.createSkillFeature('homunculus-feature-2', SkillType.Brawl, 2),
-				FeatureLogic.createDamageBonusFeature('homunculus-feature-3', DamageType.Acid, 2)
+				FeatureLogic.createDamageBonusFeature('homunculus-feature-3', DamageType.Acid, 2),
+				FeatureLogic.createSkillFeature('homunculus-feature-4', SkillType.Stealth, 2)
 			],
 			actions: [
 				{
@@ -281,112 +178,33 @@ export const codexArcanum = (): PackModel => ({
 			deathActions: []
 		},
 		{
-			id: 'species-mutant',
-			name: 'Mutant',
-			description: 'This is what walked away from the wrong bottle.',
+			id: 'species-living-spell',
+			name: 'Living Spell',
+			description: 'A spell that went wrong and gained sentience.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [
 				QuirkType.Amorphous
 			],
 			startingFeatures: [
-				FeatureLogic.createTraitFeature('mutant-start-1', TraitType.Endurance, 1),
-				FeatureLogic.createSkillFeature('mutant-start-2', SkillType.Brawl, 2),
-				FeatureLogic.createDamageResistFeature('mutant-start-3', DamageType.Acid, 3),
-				FeatureLogic.createDamageResistFeature('mutant-start-4', DamageType.Poison, 3)
+				FeatureLogic.createTraitFeature('living-spell-start-1', TraitType.Resolve, 1),
+				FeatureLogic.createSkillFeature('living-spell-start-2', SkillType.Spellcasting, 2),
+				FeatureLogic.createDamageBonusFeature('living-spell-start-3', DamageType.Psychic, 2),
+				FeatureLogic.createDamageResistFeature('living-spell-start-4', DamageType.Psychic, 3)
 			],
 			features: [
-				FeatureLogic.createTraitFeature('mutant-feature-1', TraitType.Endurance, 1),
-				FeatureLogic.createSkillFeature('mutant-feature-2', SkillType.Brawl, 2),
-				FeatureLogic.createDamageBonusFeature('mutant-feature-3', DamageType.Acid, 2),
-				FeatureLogic.createDamageCategoryResistFeature('mutant-feature-4', DamageCategoryType.Corruption, 1)
+				FeatureLogic.createTraitFeature('living-spell-feature-1', TraitType.Resolve, 1),
+				FeatureLogic.createSkillFeature('living-spell-feature-2', SkillType.Spellcasting, 2),
+				FeatureLogic.createDamageBonusFeature('living-spell-feature-3', DamageType.Psychic, 2),
+				FeatureLogic.createAuraDamageFeature('living-spell-feature-4', ConditionType.AutoDamage, DamageType.Psychic, 1)
 			],
 			actions: [
 				{
-					id: 'mutant-action-1',
-					name: 'Unstable Lash',
+					id: 'living-spell-action-1',
+					name: 'Mind Flense',
 					prerequisites: [],
 					parameters: [
-						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Brawl,
-							trait: TraitType.Speed,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Acid, 2),
-								ActionEffects.dealDamage(DamageType.Poison, 2),
-								ActionEffects.dealDamage(DamageType.Any, 2)
-							]
-						})
-					]
-				},
-				{
-					id: 'mutant-action-2',
-					name: 'Reagent Spray',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 3)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Brawl,
-							trait: TraitType.Speed,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Acid, 2),
-								ActionEffects.addCondition(ConditionLogic.createDamageCategoryVulnerabilityCondition(TraitType.Endurance, 3, DamageCategoryType.Corruption))
-							]
-						})
-					]
-				},
-				{
-					id: 'mutant-action-3',
-					name: 'Reconstitute',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.self()
-					],
-					effects: [
-						ActionEffects.healDamage(4),
-						ActionEffects.addCondition(ConditionLogic.createDamageResistanceCondition(TraitType.Endurance, 3, DamageType.Any))
-					]
-				}
-			],
-			deathActions: []
-		},
-		{
-			id: 'species-wyrdling',
-			name: 'Wyrdling',
-			description: 'A creature born in the middle of someone else\'s spell.',
-			type: CombatantType.Hero,
-			size: 1,
-			quirks: [],
-			startingFeatures: [
-				FeatureLogic.createTraitFeature('wyrdling-start-1', TraitType.Resolve, 1),
-				FeatureLogic.createSkillFeature('wyrdling-start-2', SkillType.Spellcasting, 2),
-				FeatureLogic.createDamageCategoryResistFeature('wyrdling-start-3', DamageCategoryType.Energy, 1)
-			],
-			features: [
-				FeatureLogic.createTraitFeature('wyrdling-feature-1', TraitType.Resolve, 1),
-				FeatureLogic.createSkillFeature('wyrdling-feature-2', SkillType.Spellcasting, 2),
-				FeatureLogic.createDamageCategoryResistFeature('wyrdling-feature-3', DamageCategoryType.Energy, 1),
-				// Magic is easier to work near a wyrdling; no other card in the game has an aura
-				// that moves a skill
-				FeatureLogic.createAuraSkillFeature('wyrdling-feature-4', ConditionType.SkillBonus, SkillType.Spellcasting, 2)
-			],
-			actions: [
-				{
-					// Every other caster in the game is gated on holding an implement, and so can be
-					// disarmed out of the fight; a wyrdling carries the spell rather than the focus
-					id: 'wyrdling-action-1',
-					name: 'Raw Magic',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 8)
 					],
 					effects: [
 						ActionEffects.attack({
@@ -395,42 +213,69 @@ export const codexArcanum = (): PackModel => ({
 							trait: TraitType.Resolve,
 							skillBonus: 0,
 							hit: [
-								ActionEffects.dealDamage(DamageType.Psychic, 3)
+								ActionEffects.dealDamage(DamageType.Psychic, 4)
 							]
 						})
 					]
 				},
 				{
-					// The reward for holding nothing at all
-					id: 'wyrdling-action-2',
-					name: 'Bare Channel',
-					prerequisites: [
-						ActionPrerequisites.emptyHand()
-					],
+					id: 'living-spell-action-2',
+					name: 'Unravel',
+					prerequisites: [],
 					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 8)
 					],
 					effects: [
 						ActionEffects.attack({
 							weapon: false,
 							skill: SkillType.Spellcasting,
 							trait: TraitType.Resolve,
-							skillBonus: 1,
+							skillBonus: 0,
 							hit: [
-								ActionEffects.dealDamage(DamageType.Psychic, 5)
+								ActionEffects.dealDamage(DamageType.Psychic, 2),
+								ActionEffects.addCondition(ConditionLogic.createSkillCategoryPenaltyCondition(TraitType.Resolve, 4, SkillCategoryType.Mental)),
+								ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 3, TraitType.Resolve))
 							]
 						})
 					]
 				},
 				{
-					id: 'wyrdling-action-3',
-					name: 'Thin the Veil',
+					id: 'living-spell-action-3',
+					name: 'Sympathetic Wound',
 					prerequisites: [],
 					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Allies, 1, 5)
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 2, 6)
 					],
 					effects: [
-						ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Resolve, 4, SkillType.Spellcasting))
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Spellcasting,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Psychic, 1),
+								ActionEffects.addCondition(ConditionLogic.createDamageCategoryVulnerabilityCondition(TraitType.Resolve, 4, DamageCategoryType.Energy))
+							]
+						})
+					]
+				},
+				{
+					id: 'living-spell-action-4',
+					name: 'Turn Inward',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 6)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Spellcasting,
+							trait: TraitType.Resolve,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.invertConditions(false)
+							]
+						})
 					]
 				}
 			],
@@ -444,12 +289,12 @@ export const codexArcanum = (): PackModel => ({
 			description: 'Spellcasters who specialize in magic that confuses the senses.',
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('enchanter-start-1', TraitType.Resolve, 1),
-				FeatureLogic.createSkillFeature('enchanter-start-2', SkillType.Spellcasting, 2),
+				FeatureLogic.createSkillFeature('enchanter-start-2', SkillType.Spellcasting, 3),
 				FeatureLogic.createProficiencyFeature('enchanter-start-3', ItemProficiencyType.Implements)
 			],
 			features: [
 				FeatureLogic.createTraitFeature('enchanter-feature-1', TraitType.Resolve, 1),
-				FeatureLogic.createSkillFeature('enchanter-feature-2', SkillType.Spellcasting, 2),
+				FeatureLogic.createSkillFeature('enchanter-feature-2', SkillType.Spellcasting, 3),
 				FeatureLogic.createDamageBonusFeature('enchanter-feature-3', DamageType.Psychic, 2),
 				FeatureLogic.createDamageResistFeature('enchanter-feature-4', DamageType.Psychic, 2)
 			],
@@ -563,6 +408,20 @@ export const codexArcanum = (): PackModel => ({
 					effects: [
 						ActionEffects.hide()
 					]
+				},
+				{
+					id: 'enchanter-action-7',
+					name: 'Sympathetic Affliction',
+					prerequisites: [
+						ActionPrerequisites.condition(TraitType.Any)
+					],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+					],
+					effects: [
+						ActionEffects.transferCondition(),
+						ActionEffects.takeAnotherAction()
+					]
 				}
 			]
 		},
@@ -592,7 +451,8 @@ export const codexArcanum = (): PackModel => ({
 						ActionTargetParameters.burst(ActionTargetType.Squares, 1, 10)
 					],
 					effects: [
-						ActionEffects.createTerrain(EncounterMapSquareType.Obstructed)
+						ActionEffects.createTerrain(EncounterMapSquareType.Obstructed),
+						ActionEffects.takeAnotherAction()
 					]
 				},
 				{
@@ -605,7 +465,8 @@ export const codexArcanum = (): PackModel => ({
 						ActionTargetParameters.burst(ActionTargetType.Squares, 1, 10)
 					],
 					effects: [
-						ActionEffects.createTerrain(EncounterMapSquareType.Clear)
+						ActionEffects.createTerrain(EncounterMapSquareType.Clear),
+						ActionEffects.takeAnotherAction()
 					]
 				},
 				{
@@ -618,7 +479,8 @@ export const codexArcanum = (): PackModel => ({
 						ActionTargetParameters.burst(ActionTargetType.Squares, 1, 10)
 					],
 					effects: [
-						ActionEffects.removeSquares()
+						ActionEffects.removeSquares(),
+						ActionEffects.takeAnotherAction()
 					]
 				},
 				{
@@ -686,11 +548,11 @@ export const codexArcanum = (): PackModel => ({
 			description: 'A master of the power of the mind.',
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('psion-start-1', TraitType.Resolve, 1),
-				FeatureLogic.createSkillFeature('psion-start-2', SkillType.Presence, 2)
+				FeatureLogic.createSkillFeature('psion-start-2', SkillType.Presence, 3)
 			],
 			features: [
 				FeatureLogic.createTraitFeature('psion-feature-1', TraitType.Resolve, 1),
-				FeatureLogic.createSkillFeature('psion-feature-2', SkillType.Presence, 2),
+				FeatureLogic.createSkillFeature('psion-feature-2', SkillType.Presence, 3),
 				FeatureLogic.createDamageBonusFeature('psion-feature-3', DamageType.Psychic, 2),
 				FeatureLogic.createDamageResistFeature('psion-feature-4', DamageType.Psychic, 2)
 			],
@@ -1082,56 +944,6 @@ export const codexArcanum = (): PackModel => ({
 			]
 		},
 		{
-			id: 'background-mystic',
-			name: 'Mystic',
-			description: 'Mystics are the masters of the arcane arts.',
-			startingFeatures: [],
-			features: [
-				FeatureLogic.createSkillFeature('mystic-feature-1', SkillType.Spellcasting, 2),
-				FeatureLogic.createDamageCategoryBonusFeature('mystic-feature-2', DamageCategoryType.Energy, 1),
-				FeatureLogic.createDamageCategoryResistFeature('mystic-feature-3', DamageCategoryType.Energy, 1),
-				FeatureLogic.createDamageCategoryBonusFeature('mystic-feature-4', DamageCategoryType.Corruption, 1),
-				FeatureLogic.createDamageCategoryResistFeature('mystic-feature-5', DamageCategoryType.Corruption, 1)
-			],
-			actions: [
-				{
-					id: 'mystic-action-1',
-					name: 'Confusion',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
-					],
-					effects: [
-						ActionEffects.commandAction()
-					]
-				},
-				{
-					id: 'mystic-action-2',
-					name: 'Sympathetic Affliction',
-					prerequisites: [
-						ActionPrerequisites.condition(TraitType.Any)
-					],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
-					],
-					effects: [
-						ActionEffects.transferCondition()
-					]
-				},
-				{
-					id: 'mystic-action-3',
-					name: 'Eldritch Reversal',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Combatants, 1, 5)
-					],
-					effects: [
-						ActionEffects.invertConditions(false)
-					]
-				}
-			]
-		},
-		{
 			id: 'background-scribe',
 			name: 'Scribe',
 			description: 'The scribe copies out spells for other people to cast.',
@@ -1168,6 +980,19 @@ export const codexArcanum = (): PackModel => ({
 				},
 				{
 					id: 'scribe-action-3',
+					name: 'Scribe a Scroll of Compulsion',
+					prerequisites: [
+						ActionPrerequisites.carryingCapacity()
+					],
+					parameters: [
+						ActionTargetParameters.self()
+					],
+					effects: [
+						ActionEffects.createScroll('scroll-compulsion')
+					]
+				},
+				{
+					id: 'scribe-action-4',
 					name: 'Scribe a Scroll of Flame',
 					prerequisites: [
 						ActionPrerequisites.carryingCapacity()
@@ -1180,7 +1005,20 @@ export const codexArcanum = (): PackModel => ({
 					]
 				},
 				{
-					id: 'scribe-action-4',
+					id: 'scribe-action-5',
+					name: 'Scribe a Scroll of Frost',
+					prerequisites: [
+						ActionPrerequisites.carryingCapacity()
+					],
+					parameters: [
+						ActionTargetParameters.self()
+					],
+					effects: [
+						ActionEffects.createScroll('scroll-frost')
+					]
+				},
+				{
+					id: 'scribe-action-6',
 					name: 'Scribe a Scroll of Haste',
 					prerequisites: [
 						ActionPrerequisites.carryingCapacity()
@@ -1193,7 +1031,7 @@ export const codexArcanum = (): PackModel => ({
 					]
 				},
 				{
-					id: 'scribe-action-5',
+					id: 'scribe-action-7',
 					name: 'Scribe a Scroll of Mending',
 					prerequisites: [
 						ActionPrerequisites.carryingCapacity()
@@ -1206,7 +1044,7 @@ export const codexArcanum = (): PackModel => ({
 					]
 				},
 				{
-					id: 'scribe-action-6',
+					id: 'scribe-action-8',
 					name: 'Scribe a Scroll of Passage',
 					prerequisites: [
 						ActionPrerequisites.carryingCapacity()
@@ -1219,7 +1057,7 @@ export const codexArcanum = (): PackModel => ({
 					]
 				},
 				{
-					id: 'scribe-action-7',
+					id: 'scribe-action-9',
 					name: 'Scribe a Scroll of Recall',
 					prerequisites: [
 						ActionPrerequisites.carryingCapacity()
@@ -1232,7 +1070,20 @@ export const codexArcanum = (): PackModel => ({
 					]
 				},
 				{
-					id: 'scribe-action-8',
+					id: 'scribe-action-10',
+					name: 'Scribe a Scroll of Snares',
+					prerequisites: [
+						ActionPrerequisites.carryingCapacity()
+					],
+					parameters: [
+						ActionTargetParameters.self()
+					],
+					effects: [
+						ActionEffects.createScroll('scroll-snares')
+					]
+				},
+				{
+					id: 'scribe-action-11',
 					name: 'Scribe a Scroll of Summoning',
 					prerequisites: [
 						ActionPrerequisites.carryingCapacity()
@@ -1245,7 +1096,20 @@ export const codexArcanum = (): PackModel => ({
 					]
 				},
 				{
-					id: 'scribe-action-9',
+					id: 'scribe-action-12',
+					name: 'Scribe a Scroll of Thunder',
+					prerequisites: [
+						ActionPrerequisites.carryingCapacity()
+					],
+					parameters: [
+						ActionTargetParameters.self()
+					],
+					effects: [
+						ActionEffects.createScroll('scroll-thunder')
+					]
+				},
+				{
+					id: 'scribe-action-13',
 					name: 'Scribe a Scroll of Warding',
 					prerequisites: [
 						ActionPrerequisites.carryingCapacity()

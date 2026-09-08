@@ -18,9 +18,9 @@ import { SummonType } from '../../enums/summon-type';
 import { TargetStateType } from '../../enums/target-state-type';
 import { TraitType } from '../../enums/trait-type';
 
-export const faeRealm = (): PackModel => ({
-	id: 'pack-fae-realm',
-	name: 'The Fae Realm',
+export const faeGreenRealm = (): PackModel => ({
+	id: 'pack-fae-green-realm',
+	name: 'The Fae Green Realm',
 	description: 'Bring the beguiling wonder of the fae into your game with this pack.',
 	species: [
 		{
@@ -78,14 +78,36 @@ export const faeRealm = (): PackModel => ({
 							trait: TraitType.Resolve,
 							skillBonus: 0,
 							hit: [
-								ActionEffects.dealDamage(DamageType.Sonic, 3)
+								ActionEffects.dealDamage(DamageType.Sonic, 3),
+								ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 4, TraitType.Resolve)),
+								ActionEffects.reveal()
 							]
 						})
 					]
 				},
 				{
-					id: 'banshee-action-3',
-					name: 'Siren Call',
+					id: 'banshee-action-4',
+					name: 'Shriek',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 3)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Presence,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Sonic, 1),
+								ActionEffects.stun()
+							]
+						})
+					]
+				},
+				{
+					id: 'banshee-action-5',
+					name: 'Reverberate',
 					prerequisites: [],
 					parameters: [
 						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
@@ -94,11 +116,10 @@ export const faeRealm = (): PackModel => ({
 						ActionEffects.attack({
 							weapon: false,
 							skill: SkillType.Presence,
-							trait: TraitType.Resolve,
+							trait: TraitType.Endurance,
 							skillBonus: 0,
 							hit: [
-								ActionEffects.commandAction(),
-								ActionEffects.stun()
+								ActionEffects.dealDamage(DamageType.Sonic, 3)
 							]
 						})
 					]
@@ -130,21 +151,24 @@ export const faeRealm = (): PackModel => ({
 		{
 			id: 'species-bramblewight',
 			name: 'Bramblewight',
-			description: 'A knot of thorns in the rough shape of a man, and rooted where it stands.',
+			description: 'It does not come to you. It has other ways of closing the distance.',
 			type: CombatantType.Monster,
-			size: 2,
+			size: 1,
 			quirks: [
-				QuirkType.Plant
+				QuirkType.Plant,
+				QuirkType.Mindless
 			],
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('bramblewight-start-1', TraitType.Endurance, 1),
 				FeatureLogic.createSkillFeature('bramblewight-start-2', SkillType.Brawl, 2),
-				FeatureLogic.createDamageBonusFeature('bramblewight-start-3', DamageType.Piercing, 1)
+				FeatureLogic.createDamageBonusFeature('bramblewight-start-3', DamageType.Piercing, 2),
+				FeatureLogic.createDamageBonusFeature('bramblewight-start-4', DamageType.Impact, 2)
 			],
 			features: [
 				FeatureLogic.createTraitFeature('bramblewight-feature-1', TraitType.Endurance, 1),
 				FeatureLogic.createSkillFeature('bramblewight-feature-2', SkillType.Brawl, 2),
-				FeatureLogic.createAuraDamageFeature('bramblewight-feature-3', ConditionType.AutoDamage, DamageType.Piercing, 1)
+				FeatureLogic.createAuraDamageFeature('bramblewight-feature-3', ConditionType.AutoDamage, DamageType.Piercing, 1),
+				FeatureLogic.createDamageBonusFeature('bramblewight-feature-4', DamageType.Impact, 2)
 			],
 			actions: [
 				{
@@ -168,10 +192,10 @@ export const faeRealm = (): PackModel => ({
 				},
 				{
 					id: 'bramblewight-action-2',
-					name: 'Snare',
+					name: 'Coil',
 					prerequisites: [],
 					parameters: [
-						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 2)
 					],
 					effects: [
 						ActionEffects.attack({
@@ -180,14 +204,34 @@ export const faeRealm = (): PackModel => ({
 							trait: TraitType.Speed,
 							skillBonus: 0,
 							hit: [
-								ActionEffects.dealDamage(DamageType.Piercing, 2),
-								ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Speed, 3))
+								ActionEffects.dealDamage(DamageType.Impact, 3),
+								ActionEffects.forceMovement(MovementType.TowardsTarget, 2)
 							]
 						})
 					]
 				},
 				{
 					id: 'bramblewight-action-3',
+					name: 'Constrict',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Impact, 4),
+								ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Endurance, 4))
+							]
+						})
+					]
+				},
+				{
+					id: 'bramblewight-action-4',
 					name: 'Dig In',
 					prerequisites: [],
 					parameters: [
@@ -197,68 +241,6 @@ export const faeRealm = (): PackModel => ({
 						ActionEffects.toSelf([
 							ActionEffects.addCondition(ConditionLogic.createDamageCategoryResistanceCondition(TraitType.Endurance, 4, DamageCategoryType.Physical))
 						])
-					]
-				}
-			],
-			deathActions: []
-		},
-		{
-			id: 'species-echo',
-			name: 'Echo',
-			description: 'A sound that outlived the thing that made it.',
-			type: CombatantType.Monster,
-			size: 1,
-			quirks: [
-				QuirkType.Amorphous
-			],
-			startingFeatures: [
-				FeatureLogic.createTraitFeature('echo-start-1', TraitType.Resolve, 1),
-				FeatureLogic.createSkillFeature('echo-start-2', SkillType.Presence, 2),
-				FeatureLogic.createDamageBonusFeature('echo-start-3', DamageType.Sonic, 1)
-			],
-			features: [
-				FeatureLogic.createTraitFeature('echo-feature-1', TraitType.Resolve, 1),
-				FeatureLogic.createSkillFeature('echo-feature-2', SkillType.Presence, 2),
-				FeatureLogic.createDamageCategoryResistFeature('echo-feature-3', DamageCategoryType.Physical, 2),
-				FeatureLogic.createDamageResistFeature('echo-feature-4', DamageType.Sonic, 2)
-			],
-			actions: [
-				{
-					id: 'echo-action-1',
-					name: 'Reverberate',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Presence,
-							trait: TraitType.Endurance,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Sonic, 3)
-							]
-						})
-					]
-				},
-				{
-					id: 'echo-action-2',
-					name: 'Repeat the Wound',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Presence,
-							trait: TraitType.Endurance,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.addCondition(ConditionLogic.createAutoDamageCondition(TraitType.Endurance, 4, DamageType.Sonic))
-							]
-						})
 					]
 				}
 			],
@@ -330,95 +312,11 @@ export const faeRealm = (): PackModel => ({
 			deathActions: []
 		},
 		{
-			id: 'species-fungal-bloom',
-			name: 'Fungal Bloom',
-			description: 'A pale, swollen cap that does very little until it is broken open.',
-			type: CombatantType.Monster,
-			size: 1,
-			quirks: [
-				QuirkType.Plant,
-				QuirkType.Mindless
-			],
-			startingFeatures: [
-				FeatureLogic.createTraitFeature('fungalbloom-start-1', TraitType.Endurance, 1),
-				FeatureLogic.createDamageResistFeature('fungalbloom-start-2', DamageType.Decay, 2)
-			],
-			features: [
-				FeatureLogic.createTraitFeature('fungalbloom-feature-1', TraitType.Endurance, 1),
-				FeatureLogic.createDamageResistFeature('fungalbloom-feature-2', DamageType.Poison, 2)
-			],
-			actions: [
-				{
-					id: 'fungalbloom-action-1',
-					name: 'Puffball',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 2)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Brawl,
-							trait: TraitType.Endurance,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.addCondition(ConditionLogic.makeContagious(
-									ConditionLogic.createSkillCategoryPenaltyCondition(TraitType.Endurance, 2, SkillCategoryType.Physical),
-									ContagionType.All
-								))
-							]
-						})
-					]
-				},
-				{
-					id: 'fungalbloom-action-2',
-					name: 'Settle',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Brawl,
-							trait: TraitType.Endurance,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Decay, 2)
-							]
-						})
-					]
-				}
-			],
-			deathActions: [
-				{
-					id: 'fungalbloom-death-1',
-					name: 'Burst',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.adjacent(ActionTargetType.Combatants, Number.MAX_VALUE)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Brawl,
-							trait: TraitType.Endurance,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Decay, 2),
-								ActionEffects.addCondition(ConditionLogic.makeContagious(ConditionLogic.createAutoDamageCondition(TraitType.Endurance, 3, DamageType.Decay), ContagionType.All))
-							]
-						})
-					]
-				}
-			]
-		},
-		{
 			id: 'species-heartwood',
 			name: 'Heartwood',
 			description: 'The oldest thing in the wood, and the reason the rest of it is awake.',
 			type: CombatantType.Monster,
-			size: 3,
+			size: 2,
 			quirks: [
 				QuirkType.Plant
 			],
@@ -484,7 +382,9 @@ export const faeRealm = (): PackModel => ({
 			description: 'A tiny fairy-like creature.',
 			type: CombatantType.Hero,
 			size: 1,
-			quirks: [],
+			quirks: [
+				QuirkType.Small
+			],
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('pixie-start-1', TraitType.Speed, 1),
 				FeatureLogic.createSkillFeature('pixie-start-2', SkillType.Stealth, 2),
@@ -518,6 +418,26 @@ export const faeRealm = (): PackModel => ({
 						ActionEffects.moveToTargetSquare(),
 						ActionEffects.takeAnotherAction()
 					]
+				},
+				{
+					id: 'pixie-action-3',
+					name: 'Pinprick',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Stealth,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Piercing, 2),
+								ActionEffects.addCondition(ConditionLogic.createSkillPenaltyCondition(TraitType.Speed, 3, SkillType.Perception))
+							]
+						})
+					]
 				}
 			],
 			deathActions: []
@@ -534,11 +454,14 @@ export const faeRealm = (): PackModel => ({
 			],
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('rotcap-start-1', TraitType.Endurance, 1),
-				FeatureLogic.createDamageBonusFeature('rotcap-start-2', DamageType.Decay, 2)
+				FeatureLogic.createDamageBonusFeature('rotcap-start-2', DamageType.Decay, 2),
+				FeatureLogic.createDamageCategoryResistFeature('rotcap-start-3', DamageCategoryType.Corruption, 1)
 			],
 			features: [
 				FeatureLogic.createTraitFeature('rotcap-feature-1', TraitType.Endurance, 1),
-				FeatureLogic.createAuraDamageFeature('rotcap-feature-2', ConditionType.AutoDamage, DamageType.Decay, 1)
+				FeatureLogic.createAuraDamageFeature('rotcap-feature-2', ConditionType.AutoDamage, DamageType.Decay, 1),
+				FeatureLogic.createDamageCategoryResistFeature('rotcap-feature-3', DamageCategoryType.Corruption, 1),
+				FeatureLogic.createSkillFeature('rotcap-feature-4', SkillType.Brawl, 2)
 			],
 			actions: [
 				{
@@ -570,70 +493,72 @@ export const faeRealm = (): PackModel => ({
 							]
 						})
 					]
-				}
-			],
-			deathActions: []
-		},
-		{
-			id: 'species-screamer',
-			name: 'Screamer',
-			description: 'A thin, wide-mouthed thing that does its work with noise.',
-			type: CombatantType.Monster,
-			size: 1,
-			quirks: [],
-			startingFeatures: [
-				FeatureLogic.createTraitFeature('screamer-start-1', TraitType.Speed, 1),
-				FeatureLogic.createSkillFeature('screamer-start-2', SkillType.Presence, 2),
-				FeatureLogic.createDamageBonusFeature('screamer-start-3', DamageType.Sonic, 2)
-			],
-			features: [
-				FeatureLogic.createTraitFeature('screamer-feature-1', TraitType.Speed, 1),
-				FeatureLogic.createSkillFeature('screamer-feature-2', SkillType.Presence, 2),
-				FeatureLogic.createDamageResistFeature('screamer-feature-3', DamageType.Sonic, 3)
-			],
-			actions: [
+				},
 				{
-					id: 'screamer-action-1',
-					name: 'Shriek',
+					id: 'rotcap-action-3',
+					name: 'Bloom',
 					prerequisites: [],
 					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 3)
+						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 2)
 					],
 					effects: [
 						ActionEffects.attack({
 							weapon: false,
-							skill: SkillType.Presence,
+							skill: SkillType.Brawl,
 							trait: TraitType.Endurance,
 							skillBonus: 0,
 							hit: [
-								ActionEffects.dealDamage(DamageType.Sonic, 1),
-								ActionEffects.stun()
+								ActionEffects.dealDamage(DamageType.Decay, 2),
+								ActionEffects.addCondition(ConditionLogic.createDamageCategoryVulnerabilityCondition(TraitType.Endurance, 3, DamageCategoryType.Corruption))
 							]
 						})
 					]
 				},
 				{
-					id: 'screamer-action-2',
-					name: 'Wail',
+					id: 'rotcap-action-4',
+					name: 'Puffball',
 					prerequisites: [],
 					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 6)
+						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 2)
 					],
 					effects: [
 						ActionEffects.attack({
 							weapon: false,
-							skill: SkillType.Presence,
-							trait: TraitType.Resolve,
+							skill: SkillType.Brawl,
+							trait: TraitType.Endurance,
 							skillBonus: 0,
 							hit: [
-								ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 4, TraitType.Resolve)),
-								ActionEffects.reveal()
+								ActionEffects.addCondition(ConditionLogic.makeContagious(
+									ConditionLogic.createSkillCategoryPenaltyCondition(TraitType.Endurance, 2, SkillCategoryType.Physical),
+									ContagionType.All
+								))
 							]
 						})
 					]
 				}
 			],
-			deathActions: []
+			deathActions: [
+				{
+					id: 'rotcap-death-1',
+					name: 'Sporeburst',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Combatants, Number.MAX_VALUE)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Decay, 2),
+								ActionEffects.addCondition(ConditionLogic.makeContagious(ConditionLogic.createAutoDamageCondition(TraitType.Endurance, 3, DamageType.Decay), ContagionType.All))
+							]
+						})
+					]
+				}
+			]
 		},
 		{
 			id: 'species-siren',
@@ -709,71 +634,6 @@ export const faeRealm = (): PackModel => ({
 							hit: [
 								ActionEffects.dealDamage(DamageType.Sonic, 3),
 								ActionEffects.knockDown()
-							]
-						})
-					]
-				}
-			],
-			deathActions: []
-		},
-		{
-			id: 'species-strangler',
-			name: 'Strangler',
-			description: 'It does not come to you. It has other ways of closing the distance.',
-			type: CombatantType.Monster,
-			size: 1,
-			quirks: [
-				QuirkType.Plant,
-				QuirkType.Mindless
-			],
-			startingFeatures: [
-				// It stays put because Coil drags its prey into reach, not because anything stops it
-				// moving - no species in the game carries a stat penalty
-				FeatureLogic.createTraitFeature('strangler-start-1', TraitType.Endurance, 1),
-				FeatureLogic.createSkillFeature('strangler-start-2', SkillType.Brawl, 2)
-			],
-			features: [
-				FeatureLogic.createTraitFeature('strangler-feature-1', TraitType.Endurance, 1),
-				FeatureLogic.createSkillFeature('strangler-feature-2', SkillType.Brawl, 2),
-				FeatureLogic.createDamageBonusFeature('strangler-feature-3', DamageType.Impact, 1)
-			],
-			actions: [
-				{
-					id: 'strangler-action-1',
-					name: 'Coil',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 2)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Brawl,
-							trait: TraitType.Speed,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Impact, 3),
-								ActionEffects.forceMovement(MovementType.TowardsTarget, 2)
-							]
-						})
-					]
-				},
-				{
-					id: 'strangler-action-2',
-					name: 'Constrict',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Brawl,
-							trait: TraitType.Endurance,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Impact, 4),
-								ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Endurance, 4))
 							]
 						})
 					]
@@ -927,6 +787,18 @@ export const faeRealm = (): PackModel => ({
 					effects: [
 						ActionEffects.healDamage(1),
 						ActionEffects.removeCondition(TraitType.Any)
+					]
+				},
+				{
+					id: 'druid-action-5',
+					name: 'Wildshape',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.self()
+					],
+					effects: [
+						ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Resolve, 4, SkillType.Brawl)),
+						ActionEffects.addCondition(ConditionLogic.createMovementBonusCondition(TraitType.Resolve, 3))
 					]
 				}
 			]
@@ -1319,24 +1191,9 @@ export const faeRealm = (): PackModel => ({
 							ActionEffects.addCondition(ConditionLogic.createAutoHealCondition(TraitType.Endurance, 3))
 						])
 					]
-				}
-			]
-		}
-	],
-	backgrounds: [
-		{
-			id: 'background-sporeborn',
-			name: 'Sporeborn',
-			description: 'Something took root in them once, and it has been generous ever since.',
-			startingFeatures: [],
-			features: [
-				FeatureLogic.createTraitFeature('sporeborn-feature-1', TraitType.Endurance, 1),
-				FeatureLogic.createDamageResistFeature('sporeborn-feature-2', DamageType.Decay, 1),
-				FeatureLogic.createDamageResistFeature('sporeborn-feature-3', DamageType.Poison, 1)
-			],
-			actions: [
+				},
 				{
-					id: 'sporeborn-action-1',
+					id: 'thornwright-action-6',
 					name: 'Bloom',
 					prerequisites: [],
 					parameters: [
@@ -1349,7 +1206,7 @@ export const faeRealm = (): PackModel => ({
 					]
 				},
 				{
-					id: 'sporeborn-action-2',
+					id: 'thornwright-action-7',
 					name: 'Blight Spores',
 					prerequisites: [],
 					parameters: [
@@ -1360,7 +1217,7 @@ export const faeRealm = (): PackModel => ({
 					]
 				},
 				{
-					id: 'sporeborn-action-3',
+					id: 'thornwright-action-8',
 					name: 'Shed',
 					prerequisites: [
 						ActionPrerequisites.condition(TraitType.Any)
@@ -1374,6 +1231,8 @@ export const faeRealm = (): PackModel => ({
 				}
 			]
 		}
+	],
+	backgrounds: [
 	],
 	items: [],
 	potions: [],

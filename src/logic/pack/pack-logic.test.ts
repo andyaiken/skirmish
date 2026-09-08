@@ -4,6 +4,7 @@ import type { RegionModel } from '../../models/region';
 import type { ScrollModel } from '../../models/item';
 
 import { CombatantType } from '../../enums/combatant-type';
+import { QuirkType } from '../../enums/quirk-type';
 import { SummonType } from '../../enums/summon-type';
 
 import { EncounterGenerator } from '../../generators/encounter/encounter-generator';
@@ -78,6 +79,24 @@ describe('action IDs across every pack', () => {
 			...GameLogic.getScrollDeck(allPackIDs()).map(sc => (sc.scroll as ScrollModel).action.id)
 		];
 		expect([ ...new Set(ids) ]).toHaveLength(ids.length);
+	});
+});
+
+// The Small quirk is drawn rather than simulated: the map token is rendered at half scale and inset
+// so that it sits in the middle of the single square the combatant holds. A species covering more
+// than one square would have its token drawn smaller than the ground it actually occupies, and the
+// inset would put it somewhere that is not any of its squares
+describe('every species with the Small quirk', () => {
+	const small = () => PackLogic.getAllPacks()
+		.flatMap(pack => PackLogic.getSpecies(pack.id))
+		.filter(s => s.quirks.includes(QuirkType.Small));
+
+	it('is one square in size, which is what the half-scale token is drawn inside', () => {
+		expect(small().filter(s => s.size !== 1).map(s => `${s.name} is size ${s.size}`)).toEqual([]);
+	});
+
+	it('exists, so the quirk is not dead weight', () => {
+		expect(small().length).toBeGreaterThan(0);
 	});
 });
 

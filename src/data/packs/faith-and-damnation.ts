@@ -38,7 +38,8 @@ export const faithAndDamnation = (): PackModel => ({
 				FeatureLogic.createTraitFeature('apostate-feature-1', TraitType.Resolve, 1),
 				FeatureLogic.createSkillFeature('apostate-feature-2', SkillType.Presence, 2),
 				FeatureLogic.createDamageResistFeature('apostate-feature-3', DamageType.Light, 3),
-				FeatureLogic.createAuraDamageFeature('apostate-feature-4', ConditionType.AutoDamage, DamageType.Decay, 1)
+				FeatureLogic.createAuraDamageFeature('apostate-feature-4', ConditionType.AutoDamage, DamageType.Decay, 1),
+				FeatureLogic.createSkillFeature('apostate-feature-5', SkillType.Brawl, 2)
 			],
 			actions: [
 				{
@@ -134,12 +135,13 @@ export const faithAndDamnation = (): PackModel => ({
 			quirks: [],
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('cambion-start-1', TraitType.Resolve, 1),
-				FeatureLogic.createSkillFeature('cambion-start-2', SkillType.Presence, 2),
-				FeatureLogic.createDamageCategoryBonusFeature('cambion-start-3', DamageCategoryType.Corruption, 1)
+				FeatureLogic.createSkillFeature('cambion-start-2', SkillType.Presence, 3),
+				FeatureLogic.createDamageCategoryBonusFeature('cambion-start-3', DamageCategoryType.Corruption, 1),
+				FeatureLogic.createDamageBonusFeature('cambion-start-4', DamageType.Fire, 2)
 			],
 			features: [
 				FeatureLogic.createTraitFeature('cambion-feature-1', TraitType.Resolve, 1),
-				FeatureLogic.createSkillFeature('cambion-feature-2', SkillType.Presence, 2),
+				FeatureLogic.createSkillFeature('cambion-feature-2', SkillType.Presence, 3),
 				FeatureLogic.createDamageResistFeature('cambion-feature-3', DamageType.Fire, 1),
 				FeatureLogic.createDamageCategoryResistFeature('cambion-feature-4', DamageCategoryType.Corruption, 1)
 			],
@@ -178,6 +180,25 @@ export const faithAndDamnation = (): PackModel => ({
 							skillBonus: 0,
 							hit: [
 								ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 4, TraitType.Resolve))
+							]
+						})
+					]
+				},
+				{
+					id: 'cambion-action-3',
+					name: 'Honeyed Word',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Presence,
+							trait: TraitType.Resolve,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.commandMove()
 							]
 						})
 					]
@@ -269,13 +290,15 @@ export const faithAndDamnation = (): PackModel => ({
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('fiend-start-1', TraitType.Endurance, 1),
 				FeatureLogic.createSkillFeature('fiend-start-2', SkillType.Brawl, 2),
-				FeatureLogic.createDamageBonusFeature('fiend-start-3', DamageType.Fire, 2)
+				FeatureLogic.createDamageBonusFeature('fiend-start-3', DamageType.Fire, 3),
+				FeatureLogic.createSkillFeature('fiend-start-4', SkillType.Presence, 2)
 			],
 			features: [
 				FeatureLogic.createTraitFeature('fiend-feature-1', TraitType.Endurance, 1),
 				FeatureLogic.createSkillFeature('fiend-feature-2', SkillType.Brawl, 2),
 				FeatureLogic.createDamageResistFeature('fiend-feature-3', DamageType.Fire, 2),
-				FeatureLogic.createDamageCategoryResistFeature('fiend-feature-4', DamageCategoryType.Corruption, 1)
+				FeatureLogic.createDamageCategoryResistFeature('fiend-feature-4', DamageCategoryType.Corruption, 1),
+				FeatureLogic.createSkillFeature('fiend-feature-5', SkillType.Presence, 2)
 			],
 			actions: [
 				{
@@ -401,6 +424,25 @@ export const faithAndDamnation = (): PackModel => ({
 						}),
 						ActionEffects.addMovement()
 					]
+				},
+				{
+					id: 'hellhound-action-3',
+					name: 'Cinder Breath',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 3)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Fire, 3)
+							]
+						})
+					]
 				}
 			],
 			deathActions: []
@@ -415,11 +457,11 @@ export const faithAndDamnation = (): PackModel => ({
 				QuirkType.Swarm
 			],
 			startingFeatures: [
-				FeatureLogic.createSkillFeature('imp-swarm-start-1', SkillType.Brawl, 2),
+				FeatureLogic.createSkillFeature('imp-swarm-start-1', SkillType.Brawl, 3),
 				FeatureLogic.createTraitFeature('imp-swarm-start-2', TraitType.Speed, 1)
 			],
 			features: [
-				FeatureLogic.createSkillFeature('imp-swarm-feature-1', SkillType.Brawl, 2),
+				FeatureLogic.createSkillFeature('imp-swarm-feature-1', SkillType.Brawl, 3),
 				FeatureLogic.createTraitFeature('imp-swarm-feature-2', TraitType.Speed, 1),
 				FeatureLogic.createDamageBonusFeature('imp-swarm-feature-3', DamageType.Decay, 1)
 			],
@@ -462,6 +504,18 @@ export const faithAndDamnation = (): PackModel => ({
 							]
 						})
 					]
+				},
+				{
+					id: 'imp-swarm-action-3',
+					name: 'Boil Over',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+					],
+					effects: [
+						ActionEffects.forceMovement(MovementType.BesideTarget, 0),
+						ActionEffects.takeAnotherAction()
+					]
 				}
 			],
 			deathActions: [
@@ -486,94 +540,6 @@ export const faithAndDamnation = (): PackModel => ({
 					]
 				}
 			]
-		},
-		{
-			id: 'species-inquisitor',
-			name: 'Inquisitor',
-			description: 'Has come a long way to hear one particular answer.',
-			type: CombatantType.Monster,
-			size: 1,
-			quirks: [],
-			startingFeatures: [
-				FeatureLogic.createTraitFeature('inquisitor-start-1', TraitType.Resolve, 1),
-				FeatureLogic.createSkillFeature('inquisitor-start-2', SkillType.Presence, 3),
-				FeatureLogic.createDamageBonusFeature('inquisitor-start-3', DamageType.Light, 2)
-			],
-			features: [
-				FeatureLogic.createTraitFeature('inquisitor-feature-1', TraitType.Resolve, 1),
-				FeatureLogic.createSkillFeature('inquisitor-feature-2', SkillType.Presence, 2),
-				FeatureLogic.createDamageBonusFeature('inquisitor-feature-3', DamageType.Light, 2),
-				FeatureLogic.createAuraTraitFeature('inquisitor-feature-4', ConditionType.TraitPenalty, TraitType.Resolve, 1)
-			],
-			actions: [
-				{
-					id: 'inquisitor-action-1',
-					name: 'Interrogate',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 6)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Presence,
-							trait: TraitType.Resolve,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Psychic, 2),
-								ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 4, TraitType.Resolve)),
-								ActionEffects.reveal()
-							]
-						})
-					]
-				},
-				{
-					id: 'inquisitor-action-2',
-					name: 'Absolution',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 5)
-					],
-					effects: [
-						ActionEffects.removeCondition(TraitType.Any),
-						ActionEffects.healDamage(3)
-					]
-				},
-				{
-					id: 'inquisitor-action-3',
-					name: 'Rally The Faithful',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Allies, 1, 5)
-					],
-					effects: [
-						ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Resolve, 3, TraitType.Resolve)),
-						ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Resolve, 2, DamageCategoryType.Physical)),
-						ActionEffects.commandAction()
-					]
-				},
-				{
-					id: 'inquisitor-action-4',
-					name: 'Cleansing Fire',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Enemies, 2, 8)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Presence,
-							trait: TraitType.Speed,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Fire, 2),
-								ActionEffects.dealDamage(DamageType.Light, 2)
-							]
-						})
-					]
-				}
-			],
-			deathActions: []
 		}
 	],
 	roles: [
@@ -658,6 +624,178 @@ export const faithAndDamnation = (): PackModel => ({
 							hit: [
 								ActionEffects.dealDamage(DamageType.Light, 3),
 								ActionEffects.dealDamage(DamageType.Fire, 3)
+							]
+						})
+					]
+				}
+			]
+		},
+		{
+			id: 'role-inquisitor',
+			name: 'Inquisitor',
+			description: 'Has come a long way to hear one particular answer.',
+			startingFeatures: [
+				FeatureLogic.createTraitFeature('inquisitor-start-1', TraitType.Endurance, 1),
+				FeatureLogic.createSkillFeature('inquisitor-start-2', SkillType.Brawl, 2),
+				FeatureLogic.createSkillFeature('inquisitor-start-3', SkillType.Presence, 2),
+				FeatureLogic.createProficiencyFeature('inquisitor-start-4', ItemProficiencyType.MilitaryWeapons),
+				FeatureLogic.createProficiencyFeature('inquisitor-start-5', ItemProficiencyType.HeavyArmor)
+			],
+			features: [
+				FeatureLogic.createTraitFeature('inquisitor-feature-1', TraitType.Endurance, 1),
+				FeatureLogic.createSkillFeature('inquisitor-feature-2', SkillType.Brawl, 2),
+				FeatureLogic.createSkillFeature('inquisitor-feature-3', SkillType.Presence, 2),
+				FeatureLogic.createDamageCategoryBonusFeature('inquisitor-feature-4', DamageCategoryType.Corruption, 1),
+				FeatureLogic.createAuraFeature('inquisitor-feature-5', ConditionType.MovementPenalty, 1),
+				FeatureLogic.createSkillFeature('inquisitor-feature-6', SkillType.Weapon, 2)
+			],
+			actions: [
+				{
+					id: 'inquisitor-action-1',
+					name: 'Hooked Chain',
+					prerequisites: [
+						ActionPrerequisites.meleeWeapon()
+					],
+					parameters: [
+						ActionWeaponParameters.melee(),
+						ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: true,
+							skill: SkillType.Weapon,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealWeaponDamage(),
+								ActionEffects.forceMovement(MovementType.Pull, 2)
+							]
+						})
+					]
+				},
+				{
+					id: 'inquisitor-action-2',
+					name: 'Bind in Chains',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Presence,
+							trait: TraitType.Resolve,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Resolve, 5))
+							]
+						})
+					]
+				},
+				{
+					id: 'inquisitor-action-3',
+					name: 'Break Their Grip',
+					prerequisites: [
+						ActionPrerequisites.meleeWeapon()
+					],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.disarm()
+							]
+						})
+					]
+				},
+				{
+					id: 'inquisitor-action-4',
+					name: 'Make an Example',
+					prerequisites: [
+						ActionPrerequisites.meleeWeapon()
+					],
+					parameters: [
+						ActionWeaponParameters.melee(),
+						ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: true,
+							skill: SkillType.Weapon,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealWeaponDamage(),
+								ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 4, TraitType.Resolve))
+							]
+						})
+					]
+				},
+				{
+					id: 'inquisitor-action-5',
+					name: 'The Reckoning',
+					prerequisites: [
+						ActionPrerequisites.meleeWeapon(),
+						ActionPrerequisites.damage()
+					],
+					parameters: [
+						ActionWeaponParameters.melee(),
+						ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: true,
+							skill: SkillType.Weapon,
+							trait: TraitType.Endurance,
+							skillBonus: 2,
+							hit: [
+								ActionEffects.dealWeaponDamage(1)
+							]
+						})
+					]
+				},
+				{
+					id: 'inquisitor-action-6',
+					name: 'Interrogate',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 6)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Presence,
+							trait: TraitType.Resolve,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Psychic, 2),
+								ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 4, TraitType.Resolve)),
+								ActionEffects.reveal()
+							]
+						})
+					]
+				},
+				{
+					id: 'inquisitor-action-7',
+					name: 'Cleansing Fire',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 2, 8)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Presence,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Fire, 2),
+								ActionEffects.dealDamage(DamageType.Light, 2)
 							]
 						})
 					]
@@ -884,135 +1022,19 @@ export const faithAndDamnation = (): PackModel => ({
 						ActionEffects.healDamage(1),
 						ActionEffects.healWounds(1)
 					]
-				}
-			]
-		},
-		{
-			id: 'role-tormentor',
-			name: 'Tormentor',
-			description: 'Collects in person, at arm\'s length, over a long afternoon.',
-			startingFeatures: [
-				FeatureLogic.createTraitFeature('tormentor-start-1', TraitType.Endurance, 1),
-				FeatureLogic.createSkillFeature('tormentor-start-2', SkillType.Brawl, 2),
-				FeatureLogic.createSkillFeature('tormentor-start-3', SkillType.Presence, 2),
-				FeatureLogic.createProficiencyFeature('tormentor-start-4', ItemProficiencyType.MilitaryWeapons),
-				FeatureLogic.createProficiencyFeature('tormentor-start-5', ItemProficiencyType.HeavyArmor)
-			],
-			features: [
-				FeatureLogic.createTraitFeature('tormentor-feature-1', TraitType.Endurance, 1),
-				FeatureLogic.createSkillFeature('tormentor-feature-2', SkillType.Brawl, 2),
-				FeatureLogic.createSkillFeature('tormentor-feature-3', SkillType.Presence, 2),
-				FeatureLogic.createDamageCategoryBonusFeature('tormentor-feature-4', DamageCategoryType.Corruption, 1),
-				FeatureLogic.createAuraFeature('tormentor-feature-5', ConditionType.MovementPenalty, 1)
-			],
-			actions: [
-				{
-					id: 'tormentor-action-1',
-					name: 'Hooked Chain',
-					prerequisites: [
-						ActionPrerequisites.meleeWeapon()
-					],
-					parameters: [
-						ActionWeaponParameters.melee(),
-						ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: true,
-							skill: SkillType.Weapon,
-							trait: TraitType.Endurance,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealWeaponDamage(),
-								ActionEffects.forceMovement(MovementType.Pull, 2)
-							]
-						})
-					]
 				},
 				{
-					id: 'tormentor-action-2',
-					name: 'Bind in Chains',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Presence,
-							trait: TraitType.Resolve,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Resolve, 5))
-							]
-						})
-					]
-				},
-				{
-					id: 'tormentor-action-3',
-					name: 'Break Their Grip',
+					id: 'paladin-action-5',
+					name: 'Lay On Hands',
 					prerequisites: [
-						ActionPrerequisites.meleeWeapon()
-					],
-					parameters: [
-						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Brawl,
-							trait: TraitType.Speed,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.disarm()
-							]
-						})
-					]
-				},
-				{
-					id: 'tormentor-action-4',
-					name: 'Make an Example',
-					prerequisites: [
-						ActionPrerequisites.meleeWeapon()
-					],
-					parameters: [
-						ActionWeaponParameters.melee(),
-						ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: true,
-							skill: SkillType.Weapon,
-							trait: TraitType.Endurance,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealWeaponDamage(),
-								ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 4, TraitType.Resolve))
-							]
-						})
-					]
-				},
-				{
-					id: 'tormentor-action-5',
-					name: 'The Reckoning',
-					prerequisites: [
-						ActionPrerequisites.meleeWeapon(),
 						ActionPrerequisites.damage()
 					],
 					parameters: [
-						ActionWeaponParameters.melee(),
-						ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+						ActionTargetParameters.burst(ActionTargetType.Allies, 1, 3)
 					],
 					effects: [
-						ActionEffects.attack({
-							weapon: true,
-							skill: SkillType.Weapon,
-							trait: TraitType.Endurance,
-							skillBonus: 2,
-							hit: [
-								ActionEffects.dealWeaponDamage(1)
-							]
-						})
+						ActionEffects.healDamage(4),
+						ActionEffects.removeCondition(TraitType.Any)
 					]
 				}
 			]
@@ -1138,7 +1160,8 @@ export const faithAndDamnation = (): PackModel => ({
 			],
 			features: [
 				FeatureLogic.createTraitFeature('cultist-feature-1', TraitType.Resolve, 1),
-				FeatureLogic.createDamageCategoryResistFeature('cultist-feature-2', DamageCategoryType.Corruption, 1)
+				FeatureLogic.createDamageCategoryResistFeature('cultist-feature-2', DamageCategoryType.Corruption, 1),
+				FeatureLogic.createSkillFeature('cultist-feature-3', SkillType.Presence, 2)
 			],
 			actions: [
 				{

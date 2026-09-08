@@ -24,327 +24,6 @@ export const elementalStorm = (): PackModel => ({
 	description: 'Air, water, stone and cold - and the things that live where those things win.',
 	species: [
 		{
-			id: 'species-elemental-air',
-			name: 'Air Elemental',
-			description: 'Air elementals are as changeable as the weather, either calm or tempestuous.',
-			type: CombatantType.Monster,
-			size: 1,
-			quirks: [
-				QuirkType.Amorphous,
-				QuirkType.Elemental
-			],
-			startingFeatures: [
-				FeatureLogic.createTraitFeature('elemental-air-start-1', TraitType.Resolve, 1),
-				FeatureLogic.createSkillFeature('elemental-air-start-2', SkillType.Brawl, 2),
-				FeatureLogic.createDamageBonusFeature('elemental-air-start-3', DamageType.Cold, 2),
-				FeatureLogic.createDamageResistFeature('elemental-air-start-4', DamageType.Cold, 5)
-			],
-			features: [
-				FeatureLogic.createTraitFeature('elemental-air-feature-1', TraitType.Resolve, 1),
-				FeatureLogic.createSkillFeature('elemental-air-feature-2', SkillType.Brawl, 2),
-				FeatureLogic.createDamageBonusFeature('elemental-air-feature-3', DamageType.Cold, 2),
-				FeatureLogic.createAuraDamageFeature('elemental-air-feature-4', ConditionType.AutoDamage, DamageType.Cold, 1)
-			],
-			actions: [
-				{
-					id: 'elemental-air-action-1',
-					name: 'Thunderclap',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 3)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Brawl,
-							trait: TraitType.Endurance,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Sonic, 1),
-								ActionEffects.dealDamage(DamageType.Electricity, 1)
-							]
-						})
-					]
-				},
-				{
-					id: 'elemental-air-action-2',
-					name: 'Step Of The Tempest',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 5)
-					],
-					effects: [
-						ActionEffects.forceMovement(MovementType.BesideTarget, 0),
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Brawl,
-							trait: TraitType.Endurance,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Cold, 1),
-								ActionEffects.forceMovement(MovementType.Push, 1)
-							]
-						})
-					]
-				}
-			],
-			deathActions: []
-		},
-		{
-			id: 'species-elemental-earth',
-			name: 'Earth Elemental',
-			description: 'Earth elementals are slow but unstoppable.',
-			type: CombatantType.Monster,
-			size: 1,
-			quirks: [
-				QuirkType.Elemental
-			],
-			startingFeatures: [
-				FeatureLogic.createTraitFeature('elemental-earth-start-1', TraitType.Endurance, 1),
-				FeatureLogic.createSkillFeature('elemental-earth-start-2', SkillType.Brawl, 2),
-				FeatureLogic.createDamageBonusFeature('elemental-earth-start-3', DamageType.Impact, 2),
-				FeatureLogic.createDamageResistFeature('elemental-earth-start-5', DamageType.Impact, 5)
-			],
-			features: [
-				FeatureLogic.createTraitFeature('elemental-earth-feature-1', TraitType.Endurance, 1),
-				FeatureLogic.createSkillFeature('elemental-earth-feature-2', SkillType.Brawl, 2),
-				FeatureLogic.createDamageBonusFeature('elemental-earth-feature-3', DamageType.Impact, 2),
-				FeatureLogic.createAuraDamageFeature('elemental-earth-feature-4', ConditionType.AutoDamage, DamageType.Impact, 1)
-			],
-			actions: [
-				{
-					id: 'elemental-earth-action-1',
-					name: 'Earthbind',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 10)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Brawl,
-							trait: TraitType.Endurance,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Endurance, 5, TraitType.Speed)),
-								ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Endurance, 5))
-							]
-						})
-					]
-				},
-				{
-					id: 'elemental-earth-action-2',
-					name: 'Rockblast',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 10)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Brawl,
-							trait: TraitType.Speed,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Impact, 3),
-								ActionEffects.knockDown()
-							]
-						})
-					]
-				},
-				{
-					id: 'elemental-earth-action-3',
-					name: 'Earthquake',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.adjacent(ActionTargetType.Combatants, Number.MAX_VALUE)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Brawl,
-							trait: TraitType.Endurance,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Impact, 1),
-								ActionEffects.forceMovement(MovementType.Push, 1),
-								ActionEffects.knockDown()
-							]
-						})
-					]
-				}
-			],
-			deathActions: []
-		},
-		{
-			id: 'species-elemental-fire',
-			name: 'Fire Elemental',
-			description: 'Hot blooded and quick to anger, these humanoids are made of living fire.',
-			type: CombatantType.Monster,
-			size: 1,
-			quirks: [
-				QuirkType.Amorphous,
-				QuirkType.Elemental
-			],
-			startingFeatures: [
-				FeatureLogic.createTraitFeature('elemental-fire-start-1', TraitType.Speed, 1),
-				FeatureLogic.createSkillFeature('elemental-fire-start-2', SkillType.Brawl, 2),
-				FeatureLogic.createDamageBonusFeature('elemental-fire-start-3', DamageType.Fire, 2),
-				FeatureLogic.createDamageResistFeature('elemental-fire-start-4', DamageType.Fire, 5)
-			],
-			features: [
-				FeatureLogic.createTraitFeature('elemental-fire-feature-1', TraitType.Speed, 1),
-				FeatureLogic.createSkillFeature('elemental-fire-feature-2', SkillType.Brawl, 2),
-				FeatureLogic.createDamageBonusFeature('elemental-fire-feature-3', DamageType.Fire, 2),
-				FeatureLogic.createAuraDamageFeature('elemental-fire-feature-4', ConditionType.AutoDamage, DamageType.Fire, 1)
-			],
-			actions: [
-				{
-					id: 'elemental-fire-action-1',
-					name: 'Volcanic Flare',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Brawl,
-							trait: TraitType.Endurance,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Fire, 1),
-								ActionEffects.dealDamage(DamageType.Light, 1)
-							]
-						})
-					]
-				},
-				{
-					id: 'elemental-fire-action-2',
-					name: 'Hurl Fire',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Brawl,
-							trait: TraitType.Speed,
-							skillBonus: 2,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Fire, 2)
-							]
-						})
-					]
-				},
-				{
-					id: 'elemental-fire-action-3',
-					name: 'Immolation',
-					prerequisites: [
-						ActionPrerequisites.wound()
-					],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 2)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Brawl,
-							trait: TraitType.Endurance,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Fire, 3)
-							]
-						})
-					]
-				}
-			],
-			deathActions: []
-		},
-		{
-			id: 'species-frost-giant',
-			name: 'Frost Giant',
-			description: 'Being hit by something that cold is a thing you spend a while recovering from.',
-			type: CombatantType.Monster,
-			size: 3,
-			quirks: [],
-			startingFeatures: [
-				FeatureLogic.createTraitFeature('frostgiant-start-1', TraitType.Endurance, 2),
-				FeatureLogic.createSkillFeature('frostgiant-start-2', SkillType.Brawl, 2),
-				FeatureLogic.createDamageResistFeature('frostgiant-start-3', DamageType.Cold, 3)
-			],
-			features: [
-				FeatureLogic.createTraitFeature('frostgiant-feature-1', TraitType.Endurance, 1),
-				FeatureLogic.createSkillFeature('frostgiant-feature-2', SkillType.Brawl, 2),
-				FeatureLogic.createDamageBonusFeature('frostgiant-feature-3', DamageType.Impact, 1)
-			],
-			actions: [
-				{
-					id: 'frostgiant-action-1',
-					name: 'Hammerblow',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Brawl,
-							trait: TraitType.Speed,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Impact, 4),
-								// Colossus hurls, Troll regrows, this one costs you your turn
-								ActionEffects.delay(4)
-							]
-						})
-					]
-				},
-				{
-					id: 'frostgiant-action-2',
-					name: 'Killing Frost',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 3)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Brawl,
-							trait: TraitType.Endurance,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Cold, 2),
-								ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Endurance, 3))
-							]
-						})
-					]
-				},
-				{
-					id: 'frostgiant-action-3',
-					name: 'Backhand',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.adjacent(ActionTargetType.Enemies, Number.MAX_VALUE)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Brawl,
-							trait: TraitType.Speed,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Impact, 3),
-								ActionEffects.knockDown()
-							]
-						})
-					]
-				}
-			],
-			deathActions: []
-		},
-		{
 			id: 'species-frostkin',
 			name: 'Frostkin',
 			description: 'Cold-adapted, unhurried, and entirely untroubled by the ground.',
@@ -362,7 +41,8 @@ export const elementalStorm = (): PackModel => ({
 				FeatureLogic.createTraitFeature('frostkin-feature-1', TraitType.Endurance, 1),
 				FeatureLogic.createSkillFeature('frostkin-feature-2', SkillType.Perception, 2),
 				FeatureLogic.createDamageResistFeature('frostkin-feature-3', DamageType.Cold, 1),
-				FeatureLogic.createDamageBonusFeature('frostkin-feature-4', DamageType.Cold, 1)
+				FeatureLogic.createDamageBonusFeature('frostkin-feature-4', DamageType.Cold, 1),
+				FeatureLogic.createSkillFeature('frostkin-feature-5', SkillType.Brawl, 2)
 			],
 			actions: [
 				{
@@ -413,143 +93,6 @@ export const elementalStorm = (): PackModel => ({
 							skillBonus: 0,
 							hit: [
 								ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Endurance, 4, TraitType.Speed))
-							]
-						})
-					]
-				}
-			],
-			deathActions: []
-		},
-		{
-			id: 'species-ice-sheet',
-			name: 'Ice Sheet',
-			description: 'A monster only in the sense that it is alive. Mostly it is the floor.',
-			type: CombatantType.Monster,
-			size: 2,
-			quirks: [
-				QuirkType.Mindless,
-				QuirkType.Amorphous,
-				QuirkType.SureFooted
-			],
-			startingFeatures: [
-				FeatureLogic.createTraitFeature('icesheet-start-1', TraitType.Endurance, 2),
-				FeatureLogic.createDamageResistFeature('icesheet-start-2', DamageType.Cold, 4)
-			],
-			features: [
-				FeatureLogic.createTraitFeature('icesheet-feature-1', TraitType.Endurance, 1),
-				FeatureLogic.createDamageResistFeature('icesheet-feature-2', DamageType.Cold, 2),
-				FeatureLogic.createAuraDamageFeature('icesheet-feature-3', ConditionType.AutoDamage, DamageType.Cold, 1)
-			],
-			actions: [
-				{
-					id: 'icesheet-action-1',
-					name: 'Freeze Over',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Squares, 1, 3)
-					],
-					effects: [
-						ActionEffects.createTerrain(EncounterMapSquareType.Ice, { radius: 1 })
-					]
-				},
-				{
-					id: 'icesheet-action-2',
-					name: 'Engulf',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Brawl,
-							trait: TraitType.Endurance,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Cold, 3),
-								ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Endurance, 4))
-							]
-						})
-					]
-				}
-			],
-			deathActions: []
-		},
-		{
-			id: 'species-kelpie',
-			name: 'Kelpie',
-			description: 'It waits at the water\'s edge in the shape of a horse.',
-			type: CombatantType.Monster,
-			size: 1,
-			quirks: [
-				QuirkType.Beast,
-				QuirkType.Aquatic
-			],
-			startingFeatures: [
-				FeatureLogic.createTraitFeature('kelpie-start-1', TraitType.Speed, 1),
-				FeatureLogic.createSkillFeature('kelpie-start-2', SkillType.Brawl, 2),
-				FeatureLogic.createSkillFeature('kelpie-start-3', SkillType.Stealth, 2)
-			],
-			features: [
-				FeatureLogic.createTraitFeature('kelpie-feature-1', TraitType.Speed, 1),
-				FeatureLogic.createSkillFeature('kelpie-feature-2', SkillType.Brawl, 2),
-				FeatureLogic.createSkillFeature('kelpie-feature-3', SkillType.Stealth, 2)
-			],
-			actions: [
-				{
-					id: 'kelpie-action-1',
-					name: 'Trample',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Brawl,
-							trait: TraitType.Speed,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Impact, 3)
-							]
-						})
-					]
-				},
-				{
-					id: 'kelpie-action-2',
-					name: 'Lure to the Water',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Presence,
-							trait: TraitType.Resolve,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.commandMove()
-							]
-						})
-					]
-				},
-				{
-					id: 'kelpie-action-3',
-					name: 'Hold Under',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Brawl,
-							trait: TraitType.Endurance,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Impact, 2),
-								ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Endurance, 4))
 							]
 						})
 					]
@@ -635,6 +178,104 @@ export const elementalStorm = (): PackModel => ({
 							]
 						})
 					]
+				},
+				{
+					id: 'merrow-action-4',
+					name: 'Sleek Form',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.self()
+					],
+					effects: [
+						ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Speed, 4, TraitType.Speed)),
+						ActionEffects.takeAnotherAction()
+					]
+				}
+			],
+			deathActions: []
+		},
+		{
+			id: 'species-oread',
+			name: 'Oread',
+			description: 'Oreads - earth elementals - are slow but unstoppable.',
+			type: CombatantType.Monster,
+			size: 1,
+			quirks: [
+				QuirkType.Elemental
+			],
+			startingFeatures: [
+				FeatureLogic.createTraitFeature('oread-start-1', TraitType.Endurance, 1),
+				FeatureLogic.createSkillFeature('oread-start-2', SkillType.Brawl, 2),
+				FeatureLogic.createDamageBonusFeature('oread-start-3', DamageType.Impact, 2),
+				FeatureLogic.createDamageResistFeature('oread-start-4', DamageType.Impact, 5)
+			],
+			features: [
+				FeatureLogic.createTraitFeature('oread-feature-1', TraitType.Endurance, 1),
+				FeatureLogic.createSkillFeature('oread-feature-2', SkillType.Brawl, 2),
+				FeatureLogic.createDamageBonusFeature('oread-feature-3', DamageType.Impact, 2),
+				FeatureLogic.createAuraDamageFeature('oread-feature-4', ConditionType.AutoDamage, DamageType.Impact, 1)
+			],
+			actions: [
+				{
+					id: 'oread-action-1',
+					name: 'Earthbind',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 10)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Endurance, 5, TraitType.Speed)),
+								ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Endurance, 5))
+							]
+						})
+					]
+				},
+				{
+					id: 'oread-action-2',
+					name: 'Rockblast',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 10)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Impact, 3),
+								ActionEffects.knockDown()
+							]
+						})
+					]
+				},
+				{
+					id: 'oread-action-3',
+					name: 'Earthquake',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Combatants, Number.MAX_VALUE)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Impact, 1),
+								ActionEffects.forceMovement(MovementType.Push, 1),
+								ActionEffects.knockDown()
+							]
+						})
+					]
 				}
 			],
 			deathActions: []
@@ -657,7 +298,8 @@ export const elementalStorm = (): PackModel => ({
 				FeatureLogic.createTraitFeature('rimewight-feature-1', TraitType.Endurance, 1),
 				FeatureLogic.createDamageBonusFeature('rimewight-feature-2', DamageType.Cold, 1),
 				// The cold coming off it is what slows you, not the blow
-				FeatureLogic.createAuraTraitFeature('rimewight-feature-3', ConditionType.TraitPenalty, TraitType.Speed, 1)
+				FeatureLogic.createAuraTraitFeature('rimewight-feature-3', ConditionType.TraitPenalty, TraitType.Speed, 1),
+				FeatureLogic.createSkillFeature('rimewight-feature-4', SkillType.Brawl, 2)
 			],
 			actions: [
 				{
@@ -690,61 +332,197 @@ export const elementalStorm = (): PackModel => ({
 					effects: [
 						ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Endurance, 3))
 					]
+				},
+				{
+					id: 'rimewight-action-3',
+					name: 'Rime',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Squares, 1, 8)
+					],
+					effects: [
+						ActionEffects.createTerrain(EncounterMapSquareType.Ice, { radius: 1 })
+					]
 				}
 			],
 			deathActions: []
 		},
 		{
-			id: 'species-selkie',
-			name: 'Selkie',
-			description: 'A coastal creature of two shapes.',
-			type: CombatantType.Hero,
+			id: 'species-salamander',
+			name: 'Salamander',
+			description: 'Hot blooded and quick to anger, these fire elementals are made of living flame.',
+			type: CombatantType.Monster,
 			size: 1,
 			quirks: [
-				QuirkType.Aquatic
+				QuirkType.Amorphous,
+				QuirkType.Elemental
 			],
 			startingFeatures: [
-				FeatureLogic.createTraitFeature('selkie-start-1', TraitType.Speed, 1),
-				FeatureLogic.createSkillFeature('selkie-start-2', SkillType.Stealth, 2),
-				FeatureLogic.createSkillFeature('selkie-start-3', SkillType.Perception, 2)
+				FeatureLogic.createTraitFeature('salamander-start-1', TraitType.Speed, 1),
+				FeatureLogic.createSkillFeature('salamander-start-2', SkillType.Brawl, 2),
+				FeatureLogic.createDamageBonusFeature('salamander-start-3', DamageType.Fire, 2),
+				FeatureLogic.createDamageResistFeature('salamander-start-4', DamageType.Fire, 5)
 			],
 			features: [
-				FeatureLogic.createTraitFeature('selkie-feature-1', TraitType.Speed, 1),
-				FeatureLogic.createSkillFeature('selkie-feature-2', SkillType.Stealth, 2),
-				FeatureLogic.createSkillFeature('selkie-feature-3', SkillType.Perception, 2)
+				FeatureLogic.createTraitFeature('salamander-feature-1', TraitType.Speed, 1),
+				FeatureLogic.createSkillFeature('salamander-feature-2', SkillType.Brawl, 2),
+				FeatureLogic.createDamageBonusFeature('salamander-feature-3', DamageType.Fire, 2),
+				FeatureLogic.createAuraDamageFeature('salamander-feature-4', ConditionType.AutoDamage, DamageType.Fire, 1)
 			],
 			actions: [
 				{
-					id: 'selkie-action-1',
-					name: 'Slip the Skin',
+					id: 'salamander-action-1',
+					name: 'Volcanic Flare',
 					prerequisites: [],
 					parameters: [
-						ActionTargetParameters.self()
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
 					],
 					effects: [
-						ActionEffects.addCondition(ConditionLogic.createMovementBonusCondition(TraitType.Speed, 4)),
-						ActionEffects.hide(),
-						ActionEffects.takeAnotherAction()
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Fire, 1),
+								ActionEffects.dealDamage(DamageType.Light, 1)
+							]
+						})
 					]
 				},
 				{
-					id: 'selkie-action-2',
-					name: 'Sleek Form',
+					id: 'salamander-action-2',
+					name: 'Hurl Fire',
 					prerequisites: [],
 					parameters: [
-						ActionTargetParameters.self()
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
 					],
 					effects: [
-						ActionEffects.addCondition(ConditionLogic.createTraitBonusCondition(TraitType.Speed, 4, TraitType.Speed)),
-						ActionEffects.takeAnotherAction()
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Speed,
+							skillBonus: 2,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Fire, 2)
+							]
+						})
+					]
+				},
+				{
+					id: 'salamander-action-3',
+					name: 'Immolation',
+					prerequisites: [
+						ActionPrerequisites.wound()
+					],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 2)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Fire, 3)
+							]
+						})
 					]
 				}
 			],
 			deathActions: []
 		},
 		{
-			id: 'species-elemental-water',
-			name: 'Water Elemental',
+			id: 'species-sylph',
+			name: 'Sylph',
+			description: 'These air elementals are as changeable as the weather, either calm or tempestuous.',
+			type: CombatantType.Monster,
+			size: 1,
+			quirks: [
+				QuirkType.Amorphous,
+				QuirkType.Elemental
+			],
+			startingFeatures: [
+				FeatureLogic.createTraitFeature('sylph-start-1', TraitType.Resolve, 1),
+				FeatureLogic.createSkillFeature('sylph-start-2', SkillType.Brawl, 2),
+				FeatureLogic.createDamageBonusFeature('sylph-start-3', DamageType.Cold, 2),
+				FeatureLogic.createDamageResistFeature('sylph-start-4', DamageType.Cold, 5)
+			],
+			features: [
+				FeatureLogic.createTraitFeature('sylph-feature-1', TraitType.Resolve, 1),
+				FeatureLogic.createSkillFeature('sylph-feature-2', SkillType.Brawl, 2),
+				FeatureLogic.createDamageBonusFeature('sylph-feature-3', DamageType.Cold, 2),
+				FeatureLogic.createAuraDamageFeature('sylph-feature-4', ConditionType.AutoDamage, DamageType.Cold, 1)
+			],
+			actions: [
+				{
+					id: 'sylph-action-1',
+					name: 'Thunderclap',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 3)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Sonic, 1),
+								ActionEffects.dealDamage(DamageType.Electricity, 1)
+							]
+						})
+					]
+				},
+				{
+					id: 'sylph-action-2',
+					name: 'Step Of The Tempest',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Combatants, Number.MAX_VALUE, 5)
+					],
+					effects: [
+						ActionEffects.forceMovement(MovementType.BesideTarget, 0),
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Cold, 1),
+								ActionEffects.forceMovement(MovementType.Push, 1)
+							]
+						})
+					]
+				},
+				{
+					id: 'sylph-action-3',
+					name: 'Buffeting Gale',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 4)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.forceMovement(MovementType.Push, 2),
+								ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Resolve, 3))
+							]
+						})
+					]
+				}
+			],
+			deathActions: []
+		},
+		{
+			id: 'species-undine',
+			name: 'Undine',
 			description: 'Humanoids made of flowing, living water.',
 			type: CombatantType.Monster,
 			size: 1,
@@ -753,19 +531,21 @@ export const elementalStorm = (): PackModel => ({
 				QuirkType.Elemental
 			],
 			startingFeatures: [
-				FeatureLogic.createTraitFeature('elemental-water-start-1', TraitType.Speed, 1),
-				FeatureLogic.createSkillFeature('elemental-water-start-2', SkillType.Brawl, 2),
-				FeatureLogic.createDamageBonusFeature('elemental-water-start-3', DamageType.Impact, 2),
-				FeatureLogic.createDamageResistFeature('elemental-water-start-4', DamageType.Impact, 5)
+				FeatureLogic.createTraitFeature('undine-start-1', TraitType.Speed, 1),
+				FeatureLogic.createSkillFeature('undine-start-2', SkillType.Brawl, 2),
+				FeatureLogic.createSkillFeature('undine-start-3', SkillType.Presence, 2),
+				FeatureLogic.createDamageBonusFeature('undine-start-4', DamageType.Impact, 2),
+				FeatureLogic.createDamageResistFeature('undine-start-5', DamageType.Impact, 5)
 			],
 			features: [
-				FeatureLogic.createTraitFeature('elemental-water-feature-1', TraitType.Speed, 1),
-				FeatureLogic.createSkillFeature('elemental-water-feature-2', SkillType.Brawl, 2),
-				FeatureLogic.createDamageBonusFeature('elemental-water-feature-3', DamageType.Impact, 2)
+				FeatureLogic.createTraitFeature('undine-feature-1', TraitType.Speed, 1),
+				FeatureLogic.createSkillFeature('undine-feature-2', SkillType.Brawl, 2),
+				FeatureLogic.createSkillFeature('undine-feature-3', SkillType.Presence, 2),
+				FeatureLogic.createDamageBonusFeature('undine-feature-4', DamageType.Impact, 2)
 			],
 			actions: [
 				{
-					id: 'elemental-water-action-1',
+					id: 'undine-action-1',
 					name: 'Tsunami',
 					prerequisites: [],
 					parameters: [
@@ -786,7 +566,7 @@ export const elementalStorm = (): PackModel => ({
 					]
 				},
 				{
-					id: 'elemental-water-action-2',
+					id: 'undine-action-2',
 					name: 'Waterspout',
 					prerequisites: [],
 					parameters: [
@@ -804,6 +584,57 @@ export const elementalStorm = (): PackModel => ({
 							]
 						})
 					]
+				},
+				{
+					id: 'undine-action-3',
+					name: 'Flood',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Squares, 1, 8)
+					],
+					effects: [
+						ActionEffects.createTerrain(EncounterMapSquareType.Water, { radius: 1 })
+					]
+				},
+				{
+					id: 'undine-action-4',
+					name: 'Lure to the Water',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Presence,
+							trait: TraitType.Resolve,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.commandMove()
+							]
+						}),
+						ActionEffects.takeAnotherAction()
+					]
+				},
+				{
+					id: 'undine-action-5',
+					name: 'Hold Under',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Impact, 2),
+								ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Endurance, 4))
+							]
+						})
+					]
 				}
 			],
 			deathActions: []
@@ -811,19 +642,24 @@ export const elementalStorm = (): PackModel => ({
 		{
 			id: 'species-wendigo',
 			name: 'Wendigo',
-			description: 'It has been following the party for two days. It was waiting for one of them to bleed.',
+			description: 'It has been following the party for two days, waiting for one of them to bleed.',
 			type: CombatantType.Monster,
 			size: 2,
-			quirks: [],
+			quirks: [
+				QuirkType.SureFooted
+			],
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('wendigo-start-1', TraitType.Speed, 1),
-				FeatureLogic.createSkillFeature('wendigo-start-2', SkillType.Stealth, 2),
-				FeatureLogic.createSkillFeature('wendigo-start-3', SkillType.Perception, 2)
+				FeatureLogic.createSkillFeature('wendigo-start-2', SkillType.Stealth, 3),
+				FeatureLogic.createSkillFeature('wendigo-start-3', SkillType.Perception, 3),
+				FeatureLogic.createSkillFeature('wendigo-start-4', SkillType.Brawl, 2),
+				FeatureLogic.createDamageResistFeature('wendigo-start-5', DamageType.Cold, 3)
 			],
 			features: [
 				FeatureLogic.createTraitFeature('wendigo-feature-1', TraitType.Speed, 1),
-				FeatureLogic.createSkillFeature('wendigo-feature-2', SkillType.Stealth, 2),
-				FeatureLogic.createDamageBonusFeature('wendigo-feature-3', DamageType.Cold, 1)
+				FeatureLogic.createSkillFeature('wendigo-feature-2', SkillType.Stealth, 3),
+				FeatureLogic.createDamageBonusFeature('wendigo-feature-3', DamageType.Cold, 2),
+				FeatureLogic.createSkillFeature('wendigo-feature-4', SkillType.Brawl, 2)
 			],
 			actions: [
 				{
@@ -880,33 +716,9 @@ export const elementalStorm = (): PackModel => ({
 							]
 						})
 					]
-				}
-			],
-			deathActions: []
-		},
-		{
-			id: 'species-winter-wolf',
-			name: 'Winter Wolf',
-			description: 'They hunt in numbers, and they are not in a hurry either.',
-			type: CombatantType.Monster,
-			size: 1,
-			quirks: [
-				QuirkType.Beast,
-				QuirkType.SureFooted
-			],
-			startingFeatures: [
-				FeatureLogic.createTraitFeature('winterwolf-start-1', TraitType.Speed, 1),
-				FeatureLogic.createSkillFeature('winterwolf-start-2', SkillType.Brawl, 2),
-				FeatureLogic.createDamageResistFeature('winterwolf-start-3', DamageType.Cold, 2)
-			],
-			features: [
-				FeatureLogic.createTraitFeature('winterwolf-feature-1', TraitType.Speed, 1),
-				FeatureLogic.createSkillFeature('winterwolf-feature-2', SkillType.Brawl, 2),
-				FeatureLogic.createDamageBonusFeature('winterwolf-feature-3', DamageType.Cold, 1)
-			],
-			actions: [
+				},
 				{
-					id: 'winterwolf-action-1',
+					id: 'wendigo-action-4',
 					name: 'Freezing Bite',
 					prerequisites: [],
 					parameters: [
@@ -926,7 +738,7 @@ export const elementalStorm = (): PackModel => ({
 					]
 				},
 				{
-					id: 'winterwolf-action-2',
+					id: 'wendigo-action-5',
 					name: 'Hamstring',
 					prerequisites: [],
 					parameters: [
@@ -944,171 +756,114 @@ export const elementalStorm = (): PackModel => ({
 							]
 						})
 					]
+				},
+				{
+					id: 'wendigo-action-6',
+					name: 'Frost Howl',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 5)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Resolve,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Cold, 1),
+								ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 3, TraitType.Speed))
+							]
+						})
+					]
+				}
+			],
+			deathActions: []
+		},
+		{
+			id: 'species-yeti',
+			name: 'Yeti',
+			description: 'Being hit by something that cold is a thing you spend a while recovering from.',
+			type: CombatantType.Monster,
+			size: 2,
+			quirks: [],
+			startingFeatures: [
+				FeatureLogic.createTraitFeature('yeti-start-1', TraitType.Endurance, 2),
+				FeatureLogic.createSkillFeature('yeti-start-2', SkillType.Brawl, 2),
+				FeatureLogic.createDamageResistFeature('yeti-start-3', DamageType.Cold, 3)
+			],
+			features: [
+				FeatureLogic.createTraitFeature('yeti-feature-1', TraitType.Endurance, 1),
+				FeatureLogic.createSkillFeature('yeti-feature-2', SkillType.Brawl, 2),
+				FeatureLogic.createDamageBonusFeature('yeti-feature-3', DamageType.Impact, 1)
+			],
+			actions: [
+				{
+					id: 'yeti-action-1',
+					name: 'Avalanche',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Impact, 4),
+								// Colossus hurls, Troll regrows, this one costs you your turn
+								ActionEffects.delay(4)
+							]
+						})
+					]
+				},
+				{
+					id: 'yeti-action-2',
+					name: 'Killing Frost',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 3)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Cold, 2),
+								ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Endurance, 3))
+							]
+						})
+					]
+				},
+				{
+					id: 'yeti-action-3',
+					name: 'Backhand',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, Number.MAX_VALUE)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Impact, 3),
+								ActionEffects.knockDown()
+							]
+						})
+					]
 				}
 			],
 			deathActions: []
 		}
 	],
 	roles: [
-		{
-			id: 'role-corsair',
-			name: 'Corsair',
-			description: 'A boarder, who fights best in the moment after everyone else has lost track of the plan.',
-			startingFeatures: [
-				FeatureLogic.createTraitFeature('corsair-start-1', TraitType.Speed, 1),
-				FeatureLogic.createSkillFeature('corsair-start-2', SkillType.Reactions, 2),
-				FeatureLogic.createSkillFeature('corsair-start-3', SkillType.Weapon, 2),
-				FeatureLogic.createProficiencyFeature('corsair-start-4', ItemProficiencyType.PairedWeapons),
-				FeatureLogic.createProficiencyFeature('corsair-start-5', ItemProficiencyType.LightArmor)
-			],
-			features: [
-				FeatureLogic.createTraitFeature('corsair-feature-1', TraitType.Speed, 1),
-				FeatureLogic.createSkillFeature('corsair-feature-2', SkillType.Reactions, 2),
-				FeatureLogic.createSkillFeature('corsair-feature-3', SkillType.Weapon, 2),
-				FeatureLogic.createDamageBonusFeature('corsair-feature-4', DamageType.Edged, 1)
-			],
-			actions: [
-				{
-					id: 'corsair-action-1',
-					name: 'Boarding Action',
-					prerequisites: [
-						ActionPrerequisites.meleeWeapon()
-					],
-					parameters: [
-						ActionWeaponParameters.melee(),
-						ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: true,
-							skill: SkillType.Weapon,
-							trait: TraitType.Speed,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealWeaponDamage(),
-								ActionEffects.forceMovement(MovementType.Swap, 0)
-							]
-						})
-					]
-				},
-				{
-					id: 'corsair-action-2',
-					name: 'Cut and Thrust',
-					prerequisites: [
-						ActionPrerequisites.meleeWeapon()
-					],
-					parameters: [
-						ActionWeaponParameters.melee(),
-						ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: true,
-							skill: SkillType.Weapon,
-							trait: TraitType.Speed,
-							skillBonus: -1,
-							hit: [
-								ActionEffects.dealWeaponDamage()
-							]
-						}),
-						ActionEffects.attack({
-							weapon: true,
-							skill: SkillType.Reactions,
-							trait: TraitType.Speed,
-							skillBonus: -1,
-							hit: [
-								ActionEffects.dealWeaponDamage()
-							]
-						})
-					]
-				},
-				{
-					id: 'corsair-action-3',
-					name: 'Grapple',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 3)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Reactions,
-							trait: TraitType.Speed,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.forceMovement(MovementType.Pull, 2)
-							]
-						})
-					]
-				},
-				{
-					id: 'corsair-action-4',
-					name: 'Press the Advantage',
-					prerequisites: [
-						ActionPrerequisites.meleeWeapon()
-					],
-					parameters: [
-						ActionWeaponParameters.melee(),
-						ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: true,
-							skill: SkillType.Reactions,
-							trait: TraitType.Speed,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealWeaponDamage(),
-								ActionEffects.takeAnotherAction()
-							]
-						})
-					]
-				},
-				{
-					id: 'corsair-action-5',
-					name: 'Turn the Blade',
-					prerequisites: [
-						ActionPrerequisites.meleeWeapon()
-					],
-					parameters: [
-						ActionWeaponParameters.melee(),
-						ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: true,
-							skill: SkillType.Reactions,
-							trait: TraitType.Speed,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.disarm()
-							]
-						})
-					]
-				},
-				{
-					id: 'corsair-action-6',
-					name: 'Harpoon',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Reactions,
-							trait: TraitType.Speed,
-							skillBonus: -1,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Piercing, 3),
-								ActionEffects.forceMovement(MovementType.Pull, 3),
-								ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Speed, 4))
-							]
-						})
-					]
-				}
-			]
-		},
 		{
 			id: 'role-elementalist',
 			name: 'Elementalist',
@@ -1334,6 +1089,43 @@ export const elementalStorm = (): PackModel => ({
 						// water it was made from - which is difficult terrain again, and conducts
 						ActionEffects.createTerrain(EncounterMapSquareType.Water, { radius: 1, from: EncounterMapSquareType.Ice })
 					]
+				},
+				{
+					id: 'rimecaller-action-6',
+					name: 'Weather It',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.self()
+					],
+					effects: [
+						ActionEffects.toSelf([
+							ActionEffects.addCondition(ConditionLogic.createDamageCategoryResistanceCondition(TraitType.Endurance, 3, DamageCategoryType.Energy)),
+							ActionEffects.addCondition(ConditionLogic.createAutoHealCondition(TraitType.Endurance, 3))
+						])
+					]
+				},
+				{
+					id: 'rimecaller-action-7',
+					name: 'Keep Moving',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 3)
+					],
+					effects: [
+						ActionEffects.addCondition(ConditionLogic.createMovementBonusCondition(TraitType.Endurance, 3))
+					]
+				},
+				{
+					id: 'rimecaller-action-8',
+					name: 'Read the Weather',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.self()
+					],
+					effects: [
+						ActionEffects.scan(),
+						ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Endurance, 3, SkillType.Perception))
+					]
 				}
 			]
 		},
@@ -1424,6 +1216,42 @@ export const elementalStorm = (): PackModel => ({
 							]
 						})
 					]
+				},
+				{
+					id: 'sorcerer-action-4',
+					name: 'Scouring Wind',
+					prerequisites: [
+						ActionPrerequisites.implement()
+					],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 4)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Spellcasting,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Cold, 2),
+								ActionEffects.forceMovement(MovementType.Push, 2)
+							]
+						})
+					]
+				},
+				{
+					id: 'sorcerer-action-5',
+					name: 'Elemental Ward',
+					prerequisites: [
+						ActionPrerequisites.implement()
+					],
+					parameters: [
+						ActionTargetParameters.self()
+					],
+					effects: [
+						ActionEffects.addCondition(ConditionLogic.createDamageCategoryResistanceCondition(TraitType.Resolve, 4, DamageCategoryType.Energy)),
+						ActionEffects.takeAnotherAction()
+					]
 				}
 			]
 		},
@@ -1441,7 +1269,8 @@ export const elementalStorm = (): PackModel => ({
 				FeatureLogic.createTraitFeature('stormcaller-feature-1', TraitType.Endurance, 1),
 				FeatureLogic.createSkillFeature('stormcaller-feature-2', SkillType.Spellcasting, 2),
 				FeatureLogic.createDamageBonusFeature('stormcaller-feature-3', DamageType.Impact, 1),
-				FeatureLogic.createDamageBonusFeature('stormcaller-feature-4', DamageType.Electricity, 1)
+				FeatureLogic.createDamageBonusFeature('stormcaller-feature-4', DamageType.Electricity, 1),
+				FeatureLogic.createSkillFeature('stormcaller-feature-5', SkillType.Weapon, 2)
 			],
 			actions: [
 				{
@@ -1654,56 +1483,6 @@ export const elementalStorm = (): PackModel => ({
 		}
 	],
 	backgrounds: [
-		{
-			id: 'background-wintertouched',
-			name: 'Wintertouched',
-			description: 'They have been cold before, and for longer than this.',
-			startingFeatures: [],
-			features: [
-				FeatureLogic.createTraitFeature('wintertouched-feature-1', TraitType.Endurance, 1),
-				FeatureLogic.createDamageResistFeature('wintertouched-feature-2', DamageType.Cold, 2),
-				FeatureLogic.createSkillFeature('wintertouched-feature-3', SkillType.Perception, 2)
-			],
-			actions: [
-				{
-					id: 'wintertouched-action-1',
-					name: 'Weather It',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.self()
-					],
-					effects: [
-						ActionEffects.toSelf([
-							ActionEffects.addCondition(ConditionLogic.createDamageCategoryResistanceCondition(TraitType.Endurance, 3, DamageCategoryType.Energy)),
-							ActionEffects.addCondition(ConditionLogic.createAutoHealCondition(TraitType.Endurance, 3))
-						])
-					]
-				},
-				{
-					id: 'wintertouched-action-2',
-					name: 'Keep Moving',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 3)
-					],
-					effects: [
-						ActionEffects.addCondition(ConditionLogic.createMovementBonusCondition(TraitType.Endurance, 3))
-					]
-				},
-				{
-					id: 'wintertouched-action-3',
-					name: 'Read the Weather',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.self()
-					],
-					effects: [
-						ActionEffects.scan(),
-						ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Endurance, 3, SkillType.Perception))
-					]
-				}
-			]
-		}
 	],
 	items: [
 		{

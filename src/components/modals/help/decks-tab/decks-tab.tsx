@@ -5,11 +5,17 @@ import { CardType } from '../../../../enums/card-type';
 import { GameLogic } from '../../../../logic/game/game-logic';
 import { PackLogic } from '../../../../logic/pack/pack-logic';
 
-import type { ActionModel } from '../../../../models/action';
-import type { FeatureModel } from '../../../../models/feature';
 import type { OptionsModel } from '../../../../models/options';
 
-import { ActionCard, BackgroundCard, FeatureCard, ItemCard, RoleCard, SpeciesCard, StructureCard } from '../../../cards';
+import type { CardSelection } from '../../card-details/card-details-modal';
+
+// Imported from their own files rather than through the modals barrel: this component is reached
+// from that barrel by way of the help modal, so going back through it would close a cycle
+import { BackgroundModal } from '../../background/background-modal';
+import { RoleModal } from '../../role/role-modal';
+import { SpeciesModal } from '../../species/species-modal';
+
+import { BackgroundCard, ItemCard, RoleCard, SpeciesCard, StructureCard } from '../../../cards';
 import { Badge, CardList, Dialog, Selector, Text, TextType } from '../../../controls';
 
 import './decks-tab.scss';
@@ -20,7 +26,7 @@ interface Props {
 
 interface State {
 	tab: string;
-	selected: { name: string, description: string, type: CardType, starting: FeatureModel[], features: FeatureModel[], actions: ActionModel[], deathActions: ActionModel[] } | null;
+	selected: CardSelection | null;
 }
 
 export class DecksTab extends Component<Props, State> {
@@ -38,24 +44,27 @@ export class DecksTab extends Component<Props, State> {
 		});
 	};
 
-	setActions = (name: string, description: string, type: CardType, starting: FeatureModel[], features: FeatureModel[], actions: ActionModel[], deathActions: ActionModel[]) => {
+	setSelected = (selected: CardSelection) => {
 		this.setState({
-			selected: {
-				name: name,
-				description: description,
-				type: type,
-				starting: starting,
-				features: features,
-				actions: actions,
-				deathActions: deathActions
-			}
+			selected: selected
 		});
 	};
 
-	clearActions = () => {
+	clearSelected = () => {
 		this.setState({
 			selected: null
 		});
+	};
+
+	getSelectedModal = (selected: CardSelection) => {
+		switch (selected.type) {
+			case CardType.Species:
+				return <SpeciesModal species={selected.card} />;
+			case CardType.Role:
+				return <RoleModal role={selected.card} />;
+			case CardType.Background:
+				return <BackgroundModal background={selected.card} />;
+		}
 	};
 
 	getBadge = (cardID: string) => {
@@ -76,7 +85,7 @@ export class DecksTab extends Component<Props, State> {
 					.forEach(s => {
 						cards.push(
 							<Badge key={s.id} value={this.getBadge(s.id)}>
-								<SpeciesCard species={s} onClick={s => this.setActions(s.name, s.description, CardType.Species, s.startingFeatures, s.features, s.actions, s.deathActions)} />
+								<SpeciesCard species={s} onClick={s => this.setSelected({ type: CardType.Species, card: s })} />
 							</Badge>
 						);
 					});
@@ -86,7 +95,7 @@ export class DecksTab extends Component<Props, State> {
 					.forEach(s => {
 						cards.push(
 							<Badge key={s.id} value={this.getBadge(s.id)}>
-								<SpeciesCard species={s} onClick={s => this.setActions(s.name, s.description, CardType.Species, s.startingFeatures, s.features, s.actions, s.deathActions)} />
+								<SpeciesCard species={s} onClick={s => this.setSelected({ type: CardType.Species, card: s })} />
 							</Badge>
 						);
 					});
@@ -96,7 +105,7 @@ export class DecksTab extends Component<Props, State> {
 					.forEach(r => {
 						cards.push(
 							<Badge key={r.id} value={this.getBadge(r.id)}>
-								<RoleCard role={r} onClick={r => this.setActions(r.name, r.description, CardType.Role, r.startingFeatures, r.features, r.actions, [])} />
+								<RoleCard role={r} onClick={r => this.setSelected({ type: CardType.Role, card: r })} />
 							</Badge>
 						);
 					});
@@ -106,7 +115,7 @@ export class DecksTab extends Component<Props, State> {
 					.forEach(b => {
 						cards.push(
 							<Badge key={b.id} value={this.getBadge(b.id)}>
-								<BackgroundCard background={b} onClick={b => this.setActions(b.name, b.description, CardType.Background, b.startingFeatures, b.features, b.actions, [])} />
+								<BackgroundCard background={b} onClick={b => this.setSelected({ type: CardType.Background, card: b })} />
 							</Badge>
 						);
 					});
@@ -155,79 +164,11 @@ export class DecksTab extends Component<Props, State> {
 
 		let dialog = null;
 		if (this.state.selected) {
-			const source = this.state.selected.name;
-			const type = this.state.selected.type;
-
-			const startingCards = this.state.selected.starting.map(f => {
-				return (
-					<Badge key={f.id} value=''>
-						<FeatureCard
-							feature={f}
-							footer={source}
-							footerType={type}
-						/>
-					</Badge>
-				);
-			});
-			const featureCards = this.state.selected.features.map(f => {
-				return (
-					<Badge key={f.id} value=''>
-						<FeatureCard
-							feature={f}
-							footer={source}
-							footerType={type}
-						/>
-					</Badge>
-				);
-			});
-			const actionCards = this.state.selected.actions.map(a => {
-				return (
-					<Badge key={a.id} value=''>
-						<ActionCard
-							action={a}
-							footer={source}
-							footerType={type}
-						/>
-					</Badge>
-				);
-			});
-			const deathActionCards = this.state.selected.deathActions.map(a => {
-				return (
-					<Badge key={a.id} value=''>
-						<ActionCard
-							action={a}
-							footer={source}
-							footerType={type}
-						/>
-					</Badge>
-				);
-			});
-			const content = (
-				<div>
-					<Text type={TextType.Heading}>{this.state.selected.name}</Text>
-					<hr />
-					<Text>
-						<p style={{ textAlign: 'center' }}>{this.state.selected.description}</p>
-					</Text>
-					{startingCards.length > 0 ? <hr /> : null}
-					{startingCards.length > 0 ? <Text type={TextType.SubHeading}>Starting Cards</Text> : null}
-					{startingCards.length > 0 ? <CardList cards={startingCards} /> : null}
-					{featureCards.length > 0 ? <hr /> : null}
-					{featureCards.length > 0 ? <Text type={TextType.SubHeading}>Feature Cards</Text> : null}
-					{featureCards.length > 0 ? <CardList cards={featureCards} /> : null}
-					{actionCards.length > 0 ? <hr /> : null}
-					{actionCards.length > 0 ? <Text type={TextType.SubHeading}>Action Cards</Text> : null}
-					{actionCards.length > 0 ? <CardList cards={actionCards} /> : null}
-					{deathActionCards.length > 0 ? <hr /> : null}
-					{deathActionCards.length > 0 ? <Text type={TextType.SubHeading}>Death Action Cards</Text> : null}
-					{deathActionCards.length > 0 ? <CardList cards={deathActionCards} /> : null}
-				</div>
-			);
 			dialog = (
 				<Dialog
-					content={content}
+					content={this.getSelectedModal(this.state.selected)}
 					level={2}
-					onClose={this.clearActions}
+					onClose={this.clearSelected}
 				/>
 			);
 		}

@@ -14,9 +14,11 @@ import { NameGenerator } from '../name/name-generator';
 
 export class HeroGenerator {
 	// Prefer a card the party does not already hold, but fall back to the whole deck once
-	// they are all spoken for. Core alone runs out at the fifth hero - four hero species
-	// for a party of five - and drawing from an empty deck yields undefined, which
-	// applyCombatantCards skips silently rather than reporting.
+	// they are all spoken for. Drawing from an empty deck yields undefined, which
+	// applyCombatantCards skips silently rather than reporting, so the fall-back to an
+	// already-used card is what keeps a hero from coming back with no species at all.
+	// The core game used to run dry at the fifth hero; it now holds exactly a party's
+	// worth of hero species, so it is the shallower pack combinations that reach this.
 	static drawUnused = <T extends { id: string }>(deck: T[], used: string[], rng: () => number) => {
 		const unused = deck.filter(entry => !used.includes(entry.id));
 		return Collections.draw(unused.length > 0 ? unused : deck, rng);

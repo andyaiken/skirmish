@@ -2,10 +2,13 @@ import { describe, expect, it } from 'vitest';
 
 import { ActionEffects, ActionTargetParameters } from '../action/action-logic';
 import { ActionTargetType } from '../../enums/action-target-type';
+import { CardType } from '../../enums/card-type';
 import { ConditionLogic } from '../condition/condition-logic';
 import { ContagionType } from '../../enums/contagion-type';
 import { DamageType } from '../../enums/damage-type';
 import { GameLogic } from '../game/game-logic';
+
+import type { BalanceCardModel } from '../game/game-logic';
 import { PackLogic } from '../pack/pack-logic';
 import { StrongholdLogic } from '../stronghold/stronghold-logic';
 import { TraitType } from '../../enums/trait-type';
@@ -19,44 +22,47 @@ const monsterSpecies = () => packs().flatMap(pack => PackLogic.getMonsterSpecies
 const roles = () => packs().flatMap(pack => PackLogic.getRoles(pack.id));
 const backgrounds = () => packs().flatMap(pack => PackLogic.getBackgrounds(pack.id));
 
-// These are the balance gates described in specs/README.md. They are ranges
-// rather than exact values so that adding a card in band does not break them,
-// but a card well outside the band does.
-describe('card strength', () => {
-	const inBand = (name: string, strength: number, band: { min: number, max: number }) => {
-		expect(strength, name).toBeGreaterThanOrEqual(band.min);
-		expect(strength, name).toBeLessThanOrEqual(band.max);
-	};
+// The balance gates. Every one of these goes through GameLogic.getBalanceIssues, which is the same
+// call the backstage card page makes to decide whether to draw a card red - so a card cannot show
+// green in that view and fail here, or the other way round.
+//
+// The card-strength band is currently commented out in getBalanceIssues, so what these enforce is
+// the action-count minimums and the per-action band. Re-enabling it there turns it on here too,
+// with no change needed in this file
+describe('card balance', () => {
+	const issues = (cards: BalanceCardModel[], type: CardType) => cards.flatMap(card => GameLogic.getBalanceIssues(card, type));
 
-	// The tests below read the bands rather than repeating them, which keeps them honest against the
-	// backstage card page - but it also means widening a band would quietly make them pass. This
-	// pins the numbers, so moving one is a deliberate edit to a test that names it.
-	it('uses the bands the cards were balanced against', () => {
-		expect(GameLogic.strengthBands).toEqual({
-			heroSpecies: { min: 5, max: 6 },
-			monsterSpecies: { min: 4, max: 6 },
-			role: { min: 5, max: 6 },
-			background: { min: 3, max: 4 },
-			action: { min: 1, max: 12 }
+	// The tests read the minimums rather than repeating them, which keeps them honest against the
+	// view - but it also means lowering one would quietly make them pass. This pins the numbers, so
+	// moving one is a deliberate edit to a test that names it
+	it('uses the thresholds the cards were balanced against', () => {
+		expect(GameLogic.actionCountMinimums).toEqual({
+			species: 3,
+			role: 5,
+			background: 3
 		});
+
+		expect(GameLogic.strengthBands.action).toEqual({ min: 1, max: 12 });
 	});
 
-	it('scores every hero species in band', () => {
-		heroSpecies().forEach(s => inBand(s.name, GameLogic.getSpeciesStrength(s), GameLogic.strengthBands.heroSpecies));
+	it('gives every species enough actions, and keeps each one in band', () => {
+		expect(issues([ ...heroSpecies(), ...monsterSpecies() ], CardType.Species)).toEqual([]);
 	});
 
-	it('scores every monster species in band', () => {
-		monsterSpecies().forEach(s => inBand(s.name, GameLogic.getSpeciesStrength(s), GameLogic.strengthBands.monsterSpecies));
+	it('gives every role enough actions, and keeps each one in band', () => {
+		expect(issues(roles(), CardType.Role)).toEqual([]);
 	});
 
-	// The role band was tightened from 4-6 once the Luckweaver was brought up; it was the only role
-	// below 5, and the band had been left loose to accommodate it
-	it('scores every role in band', () => {
-		roles().forEach(r => inBand(r.name, GameLogic.getRoleStrength(r), GameLogic.strengthBands.role));
+	it('gives every background enough actions, and keeps each one in band', () => {
+		expect(issues(backgrounds(), CardType.Background)).toEqual([]);
 	});
 
-	it('scores every background in band', () => {
-		backgrounds().forEach(b => inBand(b.name, GameLogic.getBackgroundStrength(b), GameLogic.strengthBands.background));
+	// A species' death action is checked against the action band too, but it does not count towards
+	// the minimum - a card cannot rely on something that only happens once it is dead
+	it('holds death actions to the action band as well', () => {
+		const withDeathActions = [ ...heroSpecies(), ...monsterSpecies() ].filter(s => s.deathActions.length > 0);
+		expect(withDeathActions.length).toBeGreaterThan(0);
+		expect(issues(withDeathActions, CardType.Species)).toEqual([]);
 	});
 });
 
@@ -66,6 +72,14 @@ const allCards = () => [
 	...roles(),
 	...backgrounds()
 ];
+
+// Armour carries its features on `armor.features` rather than on the item itself, so anything
+// checking item features has to look in both places
+const allItems = () => packs().flatMap(pack => [
+	...PackLogic.getItems(pack.id),
+	...PackLogic.getPotions(pack.id),
+	...PackLogic.getScrolls(pack.id)
+]);
 
 describe('structures', () => {
 	// rechargeStructure sets charges = level, so a chargeable structure at level 0 can
@@ -88,13 +102,27 @@ describe('card registration', () => {
 		expect(new Set(ids).size).toBe(ids.length);
 	});
 
-	it('gives every feature and action a unique ID', () => {
-		const ids = allCards().flatMap(card => [
-			...card.startingFeatures.map(f => f.id),
-			...card.features.map(f => f.id),
-			...card.actions.map(a => a.id)
-		]);
+	it('gives every action a unique ID', () => {
+		const ids = allCards().flatMap(card => card.actions.map(a => a.id));
 		expect(new Set(ids).size).toBe(ids.length);
+	});
+
+	// A feature ID is the key its card is rendered with and the handle it is looked up by, so two
+	// features sharing one is a real defect. Items were outside this check until the Breastplate
+	// turned out to be carrying the Brigandine Armor's IDs, copied along with its stat block -
+	// harmless only because both are body armour and nobody can wear both at once
+	it('gives every feature a unique ID, items included', () => {
+		const owners = new Map<string, string[]>();
+		const note = (id: string, owner: string) => owners.set(id, [ ...(owners.get(id) ?? []), owner ]);
+
+		allCards().forEach(card => [ ...card.startingFeatures, ...card.features ].forEach(f => note(f.id, card.name)));
+		allItems().forEach(item => [ ...(item.armor ? item.armor.features : []), ...item.features ].forEach(f => note(f.id, item.name)));
+
+		// named rather than counted, so a failure says which cards are fighting over which ID
+		const shared = [ ...owners.entries() ]
+			.filter(([ , names ]) => names.length > 1)
+			.map(([ id, names ]) => `${id} is used by ${names.join(' and ')}`);
+		expect(shared).toEqual([]);
 	});
 });
 
@@ -118,9 +146,10 @@ describe('contagion and card strength', () => {
 		expect(catching).toBeGreaterThan(plain);
 	});
 
-	// The backstage card page marks a card red when any single action scores outside 1-12
-	// (card-page.tsx, getMarked). The card-level bands above cannot catch this: they average a
-	// card's actions, so one spiking action hides inside four ordinary ones
+	// GameLogic.getBalanceIssues marks a card when any single action scores outside 1-12, and the
+	// tests above go through it, so this is covered per card. It is kept because it says the thing
+	// plainly: the card-level bands average a card's actions, so one spiking action hides inside
+	// four ordinary ones, and this fails on the action rather than on the card holding it
 	it('keeps every action inside the band the backstage view enforces', () => {
 		const offenders: string[] = [];
 		const check = (owner: string, actions: ActionModel[]) => {
@@ -159,17 +188,11 @@ describe('contagion and card strength', () => {
 		]);
 		expect(matched.length).toBeGreaterThan(0);
 
-		packs().forEach(pack => {
-			PackLogic.getRoles(pack.id).filter(contagious).forEach(role => {
-				const strength = GameLogic.getRoleStrength(role);
-				expect(strength, role.name).toBeGreaterThanOrEqual(4);
-				expect(strength, role.name).toBeLessThanOrEqual(6);
-			});
-			PackLogic.getMonsterSpecies(pack.id).filter(contagious).forEach(species => {
-				const strength = GameLogic.getSpeciesStrength(species);
-				expect(strength, species.name).toBeGreaterThanOrEqual(4);
-				expect(strength, species.name).toBeLessThanOrEqual(6);
-			});
-		});
+		// Checked through getBalanceIssues rather than against numbers written out here, so this keeps
+		// following the bands as they move - the old literals were from a scale that no longer exists
+		expect(packs().flatMap(pack => PackLogic.getRoles(pack.id).filter(contagious))
+			.flatMap(role => GameLogic.getBalanceIssues(role, CardType.Role))).toEqual([]);
+		expect(packs().flatMap(pack => PackLogic.getMonsterSpecies(pack.id).filter(contagious))
+			.flatMap(species => GameLogic.getBalanceIssues(species, CardType.Species))).toEqual([]);
 	});
 });

@@ -105,6 +105,81 @@ export const core = (): PackModel => ({
 			deathActions: []
 		},
 		{
+			id: 'species-dragonkin',
+			name: 'Dragonkin',
+			description: 'Dragon far enough back in the blood that only the scales and the fire are left.',
+			type: CombatantType.Hero,
+			size: 1,
+			quirks: [],
+			startingFeatures: [
+				FeatureLogic.createTraitFeature('dragonkin-start-1', TraitType.Speed, 1),
+				FeatureLogic.createSkillFeature('dragonkin-start-2', SkillType.Brawl, 2),
+				FeatureLogic.createSkillFeature('dragonkin-start-3', SkillType.Presence, 2)
+			],
+			features: [
+				FeatureLogic.createTraitFeature('dragonkin-feature-1', TraitType.Speed, 1),
+				FeatureLogic.createSkillFeature('dragonkin-feature-2', SkillType.Brawl, 2),
+				FeatureLogic.createSkillFeature('dragonkin-feature-3', SkillType.Presence, 2),
+				FeatureLogic.createDamageCategoryResistFeature('dragonkin-feature-4', DamageCategoryType.Physical, 1),
+				FeatureLogic.createDamageResistFeature('dragonkin-feature-5', DamageType.Psychic, 2)
+			],
+			actions: [
+				{
+					id: 'dragonkin-action-1',
+					name: 'Breathe Fire',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 3)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Fire, 3)
+							]
+						})
+					]
+				},
+				{
+					id: 'dragonkin-action-2',
+					name: 'Regeneration',
+					prerequisites: [
+						ActionPrerequisites.wound()
+					],
+					parameters: [
+						ActionTargetParameters.self()
+					],
+					effects: [
+						ActionEffects.healWounds(1)
+					]
+				},
+				{
+					id: 'dragonkin-action-3',
+					name: 'Intimidating Presence',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 5)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Presence,
+							trait: TraitType.Resolve,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.forceMovement(MovementType.Push, 1),
+								ActionEffects.stun()
+							]
+						})
+					]
+				}
+			],
+			deathActions: []
+		},
+		{
 			id: 'species-dwarf',
 			name: 'Dwarf',
 			description: 'A short, sturdy creature, fond of drink and industry.',
@@ -148,6 +223,17 @@ export const core = (): PackModel => ({
 					effects: [
 						ActionEffects.removeCondition(TraitType.Resolve),
 						ActionEffects.takeAnotherAction()
+					]
+				},
+				{
+					id: 'dwarf-action-3',
+					name: 'Delve',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Walls, 1, 5)
+					],
+					effects: [
+						ActionEffects.addSquares()
 					]
 				}
 			],
@@ -195,6 +281,18 @@ export const core = (): PackModel => ({
 						ActionEffects.scan(),
 						ActionEffects.takeAnotherAction()
 					]
+				},
+				{
+					id: 'elf-action-3',
+					name: 'Fade Into The Green',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.self()
+					],
+					effects: [
+						ActionEffects.hide(),
+						ActionEffects.addMovement()
+					]
 				}
 			],
 			deathActions: []
@@ -214,7 +312,8 @@ export const core = (): PackModel => ({
 			features: [
 				FeatureLogic.createTraitFeature('gnoll-feature-1', TraitType.Endurance, 1),
 				FeatureLogic.createTraitFeature('gnoll-feature-2', TraitType.Speed, 1),
-				FeatureLogic.createSkillFeature('gnoll-feature-3', SkillType.Brawl, 2)
+				FeatureLogic.createSkillFeature('gnoll-feature-3', SkillType.Brawl, 2),
+				FeatureLogic.createSkillFeature('gnoll-feature-4', SkillType.Presence, 2)
 			],
 			actions: [
 				{
@@ -303,7 +402,9 @@ export const core = (): PackModel => ({
 			description: 'Waist-high, quiet enough to be somewhere else already.',
 			type: CombatantType.Hero,
 			size: 1,
-			quirks: [],
+			quirks: [
+				QuirkType.Small
+			],
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('gnome-start-1', TraitType.Speed, 1),
 				FeatureLogic.createSkillFeature('gnome-start-2', SkillType.Reactions, 2),
@@ -312,7 +413,8 @@ export const core = (): PackModel => ({
 			features: [
 				FeatureLogic.createTraitFeature('gnome-feature-1', TraitType.Speed, 1),
 				FeatureLogic.createSkillFeature('gnome-feature-2', SkillType.Reactions, 2),
-				FeatureLogic.createSkillFeature('gnome-feature-3', SkillType.Stealth, 2)
+				FeatureLogic.createSkillFeature('gnome-feature-3', SkillType.Stealth, 2),
+				FeatureLogic.createSkillFeature('gnome-feature-4', SkillType.Brawl, 2)
 			],
 			actions: [
 				{
@@ -375,7 +477,8 @@ export const core = (): PackModel => ({
 			features: [
 				FeatureLogic.createTraitFeature('goblin-feature-1', TraitType.Speed, 1),
 				FeatureLogic.createSkillFeature('goblin-feature-2', SkillType.Reactions, 2),
-				FeatureLogic.createSkillFeature('goblin-feature-3', SkillType.Stealth, 2)
+				FeatureLogic.createSkillFeature('goblin-feature-3', SkillType.Stealth, 2),
+				FeatureLogic.createSkillFeature('goblin-feature-4', SkillType.Weapon, 2)
 			],
 			actions: [
 				{
@@ -412,6 +515,27 @@ export const core = (): PackModel => ({
 					effects: [
 						ActionEffects.forceMovement(MovementType.Random, 1),
 						ActionEffects.takeAnotherAction()
+					]
+				},
+				{
+					id: 'goblin-action-3',
+					name: 'Filch',
+					prerequisites: [
+						ActionPrerequisites.emptyHand()
+					],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Stealth,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.steal()
+							]
+						})
 					]
 				}
 			],
@@ -456,6 +580,19 @@ export const core = (): PackModel => ({
 					],
 					effects: [
 						ActionEffects.takeAnotherAction(true)
+					]
+				},
+				{
+					id: 'human-action-3',
+					name: 'Second Wind',
+					prerequisites: [
+						ActionPrerequisites.damage()
+					],
+					parameters: [
+						ActionTargetParameters.self()
+					],
+					effects: [
+						ActionEffects.healDamage(4)
 					]
 				}
 			],
@@ -597,6 +734,28 @@ export const core = (): PackModel => ({
 						}),
 						ActionEffects.takeAnotherAction()
 					]
+				},
+				{
+					id: 'orc-action-3',
+					name: 'Cleave',
+					prerequisites: [
+						ActionPrerequisites.meleeWeapon()
+					],
+					parameters: [
+						ActionWeaponParameters.melee(),
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, Number.MAX_VALUE)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: true,
+							skill: SkillType.Weapon,
+							trait: TraitType.Speed,
+							skillBonus: -1,
+							hit: [
+								ActionEffects.dealWeaponDamage(-1)
+							]
+						})
+					]
 				}
 			],
 			deathActions: []
@@ -607,7 +766,9 @@ export const core = (): PackModel => ({
 			description: 'Rat-faced and quick, coming up through the drains in numbers.',
 			type: CombatantType.Monster,
 			size: 1,
-			quirks: [],
+			quirks: [
+				QuirkType.Small
+			],
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('ratfolk-start-1', TraitType.Speed, 1),
 				FeatureLogic.createSkillFeature('ratfolk-start-2', SkillType.Brawl, 2),
@@ -653,6 +814,26 @@ export const core = (): PackModel => ({
 						ActionEffects.addMovement(),
 						ActionEffects.takeAnotherAction()
 					]
+				},
+				{
+					id: 'ratfolk-action-3',
+					name: 'Underfoot',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Impact, 1),
+								ActionEffects.knockDown()
+							]
+						})
+					]
 				}
 			],
 			deathActions: []
@@ -664,16 +845,17 @@ export const core = (): PackModel => ({
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [
-				QuirkType.Beast
+				QuirkType.Beast,
+				QuirkType.Small
 			],
 			startingFeatures: [
-				FeatureLogic.createSkillFeature('scarab-start-1', SkillType.Brawl, 2),
-				FeatureLogic.createDamageBonusFeature('scarab-start-2', DamageType.Acid, 2),
+				FeatureLogic.createSkillFeature('scarab-start-1', SkillType.Brawl, 3),
+				FeatureLogic.createDamageBonusFeature('scarab-start-2', DamageType.Acid, 3),
 				FeatureLogic.createTraitFeature('scarab-start-3', TraitType.Endurance, 1)
 			],
 			features: [
-				FeatureLogic.createSkillFeature('scarab-feature-1', SkillType.Brawl, 2),
-				FeatureLogic.createDamageBonusFeature('scarab-feature-2', DamageType.Acid, 2),
+				FeatureLogic.createSkillFeature('scarab-feature-1', SkillType.Brawl, 3),
+				FeatureLogic.createDamageBonusFeature('scarab-feature-2', DamageType.Acid, 3),
 				FeatureLogic.createTraitFeature('scarab-feature-3', TraitType.Endurance, 1)
 			],
 			actions: [
@@ -872,6 +1054,25 @@ export const core = (): PackModel => ({
 					effects: [
 						ActionEffects.healWounds(1)
 					]
+				},
+				{
+					id: 'troll-action-3',
+					name: 'Rend',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Edged, 4)
+							]
+						})
+					]
 				}
 			],
 			deathActions: []
@@ -988,6 +1189,18 @@ export const core = (): PackModel => ({
 					],
 					effects: [
 						ActionEffects.forceMovement(MovementType.Random, 10),
+						ActionEffects.takeAnotherAction()
+					]
+				},
+				{
+					id: 'arcanist-action-7',
+					name: 'Arcane Reversal',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Combatants, 1, 5)
+					],
+					effects: [
+						ActionEffects.invertConditions(false),
 						ActionEffects.takeAnotherAction()
 					]
 				}
@@ -1351,7 +1564,8 @@ export const core = (): PackModel => ({
 								ActionEffects.dealDamage(DamageType.Impact, 3),
 								ActionEffects.forceMovement(MovementType.Push, 1)
 							]
-						})
+						}),
+						ActionEffects.takeAnotherAction()
 					]
 				},
 				{
@@ -1537,13 +1751,15 @@ export const core = (): PackModel => ({
 				FeatureLogic.createSkillFeature('gladiator-start-2', SkillType.Weapon, 2),
 				FeatureLogic.createSkillFeature('gladiator-start-3', SkillType.Presence, 2),
 				FeatureLogic.createProficiencyFeature('gladiator-start-4', ItemProficiencyType.MilitaryWeapons),
-				FeatureLogic.createProficiencyFeature('gladiator-start-5', ItemProficiencyType.Shields)
+				FeatureLogic.createProficiencyFeature('gladiator-start-5', ItemProficiencyType.Shields),
+				FeatureLogic.createSkillFeature('gladiator-start-6', SkillType.Brawl, 2)
 			],
 			features: [
 				FeatureLogic.createTraitFeature('gladiator-feature-1', TraitType.Endurance, 1),
 				FeatureLogic.createSkillFeature('gladiator-feature-2', SkillType.Weapon, 2),
 				FeatureLogic.createSkillFeature('gladiator-feature-3', SkillType.Presence, 2),
-				FeatureLogic.createDamageBonusFeature('gladiator-feature-4', DamageType.Edged, 1)
+				FeatureLogic.createDamageBonusFeature('gladiator-feature-4', DamageType.Edged, 1),
+				FeatureLogic.createSkillFeature('gladiator-feature-5', SkillType.Brawl, 2)
 			],
 			actions: [
 				{
@@ -1895,7 +2111,8 @@ export const core = (): PackModel => ({
 						ActionTargetParameters.self()
 					],
 					effects: [
-						ActionEffects.addMovement()
+						ActionEffects.addMovement(),
+						ActionEffects.takeAnotherAction()
 					]
 				},
 				{
@@ -1908,7 +2125,8 @@ export const core = (): PackModel => ({
 						ActionTargetParameters.self()
 					],
 					effects: [
-						ActionEffects.removeCondition(TraitType.Any)
+						ActionEffects.removeCondition(TraitType.Any),
+						ActionEffects.takeAnotherAction()
 					]
 				},
 				{
@@ -1927,7 +2145,8 @@ export const core = (): PackModel => ({
 							hit: [
 								ActionEffects.dealDamage(DamageType.Impact, 3)
 							]
-						})
+						}),
+						ActionEffects.takeAnotherAction()
 					]
 				}
 			]
@@ -2179,6 +2398,20 @@ export const core = (): PackModel => ({
 							]
 						})
 					]
+				},
+				{
+					id: 'valkyrie-action-5',
+					name: 'Carry Them Off',
+					prerequisites: [
+						ActionPrerequisites.damage()
+					],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Allies, 1, 5)
+					],
+					effects: [
+						ActionEffects.healWounds(1),
+						ActionEffects.forceMovement(MovementType.Pull, 3)
+					]
 				}
 			]
 		}
@@ -2314,7 +2547,7 @@ export const core = (): PackModel => ({
 					name: 'Song of Health',
 					prerequisites: [],
 					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 10)
+						ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 5)
 					],
 					effects: [
 						ActionEffects.healDamage(3)
@@ -2325,7 +2558,7 @@ export const core = (): PackModel => ({
 					name: 'Anthem of Inspiration',
 					prerequisites: [],
 					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 10)
+						ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 5)
 					],
 					effects: [
 						ActionEffects.addCondition(ConditionLogic.createSkillCategoryBonusCondition(TraitType.Resolve, 3, SkillCategoryType.Physical))
@@ -2336,7 +2569,7 @@ export const core = (): PackModel => ({
 					name: 'Melody of Courage',
 					prerequisites: [],
 					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 10)
+						ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 5)
 					],
 					effects: [
 						ActionEffects.addCondition(ConditionLogic.createSkillCategoryBonusCondition(TraitType.Resolve, 3, SkillCategoryType.Mental))
@@ -2347,7 +2580,7 @@ export const core = (): PackModel => ({
 					name: 'Threnody of Lamentation',
 					prerequisites: [],
 					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 10)
+						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 5)
 					],
 					effects: [
 						ActionEffects.attack({
@@ -2417,6 +2650,49 @@ export const core = (): PackModel => ({
 								ActionEffects.stun()
 							]
 						})
+					]
+				},
+				{
+					id: 'noble-action-4',
+					name: 'Parley',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Presence,
+							trait: TraitType.Resolve,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.commandMove()
+							]
+						})
+					]
+				},
+				{
+					id: 'noble-action-5',
+					name: 'Reassess',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Allies, 1, 5)
+					],
+					effects: [
+						ActionEffects.removeCondition(TraitType.Any),
+						ActionEffects.takeAnotherAction()
+					]
+				},
+				{
+					id: 'noble-action-6',
+					name: 'Read the Room',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.self()
+					],
+					effects: [
+						ActionEffects.scan(),
+						ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Resolve, 4, SkillType.Presence))
 					]
 				}
 			]
@@ -2727,8 +3003,8 @@ export const core = (): PackModel => ({
 			weapon: null,
 			armor: {
 				features: [
-					FeatureLogic.createDamageCategoryResistFeature('brigandinearmour-1', DamageCategoryType.Physical, 3),
-					FeatureLogic.createSkillCategoryFeature('brigandinearmour-2', SkillCategoryType.Physical, -2)
+					FeatureLogic.createDamageCategoryResistFeature('breastplate-1', DamageCategoryType.Physical, 3),
+					FeatureLogic.createSkillCategoryFeature('breastplate-2', SkillCategoryType.Physical, -2)
 				]
 			},
 			potion: null,

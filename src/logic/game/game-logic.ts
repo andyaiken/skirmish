@@ -1,5 +1,6 @@
 import { ActionTargetType } from '../../enums/action-target-type';
 import { BoonType } from '../../enums/boon-type';
+import { CardType } from '../../enums/card-type';
 import { ContagionType } from '../../enums/contagion-type';
 import { DamageCategoryType } from '../../enums/damage-category-type';
 import { DamageType } from '../../enums/damage-type';
@@ -10,15 +11,12 @@ import { SkillType } from '../../enums/skill-type';
 import { TraitType } from '../../enums/trait-type';
 
 import type { ActionEffectModel, ActionModel, ActionTargetParameterModel } from '../../models/action';
-import type { BackgroundModel } from '../../models/background';
 import type { BoonModel } from '../../models/boon';
 import type { CombatantModel } from '../../models/combatant';
 import type { ConditionModel } from '../../models/condition';
 import type { FeatureModel } from '../../models/feature';
 import type { GameModel } from '../../models/game';
 import type { ItemModel } from '../../models/item';
-import type { RoleModel } from '../../models/role';
-import type { SpeciesModel } from '../../models/species';
 
 import { Collections } from '../../utils/collections/collections';
 import { Utils } from '../../utils/utils/utils';
@@ -26,19 +24,34 @@ import { Utils } from '../../utils/utils/utils';
 import { ActionLogic } from '../action/action-logic';
 import { PackLogic } from '../pack/pack-logic';
 
+// Species, roles and backgrounds are all checked for balance the same way. Only a species has death
+// actions; features are here for the skill check sketched out in getBalanceIssues
+export interface BalanceCardModel {
+	name: string;
+	startingFeatures: FeatureModel[];
+	features: FeatureModel[];
+	actions: ActionModel[];
+	deathActions?: ActionModel[];
+}
+
 export class GameLogic {
 	// The bands a card has to score inside. These are read by the backstage card page, which marks a
 	// card red when it falls outside its band, and by the balance tests, which fail on the same
-	// numbers. They used to be written out in both places and had already drifted apart once - hero
-	// species were tested at 5-6 and marked at 4-6, so a species scoring 4 failed the suite while
-	// showing green in the view.
+	// numbers.
+	// Species and roles are held to the same band: a hero is the sum of both, and neither is meant to
+	// be the senior half. Backgrounds sit deliberately lower - a background is the smallest of the
+	// three contributions, so its ceiling is below theirs rather than merely its average
 	static strengthBands = {
-		heroSpecies: { min: 5, max: 6 },
-		monsterSpecies: { min: 4, max: 6 },
-		role: { min: 5, max: 6 },
-		background: { min: 3, max: 4 },
-		// Applies to each action on a card individually, not to the card
+		species: { min: 18, max: 27 },
+		role: { min: 18, max: 27 },
+		background: { min: 15, max: 20 },
 		action: { min: 1, max: 12 }
+	};
+
+	static actionCountMinimums = {
+		species: 3,
+		role: 5,
+		background: 3
 	};
 
 	static getHeroSpeciesDeck = (packIDs: string[]) => {
@@ -345,35 +358,87 @@ export class GameLogic {
 
 	///////////////////////////////////////////////////////////////////////////
 
-	static getSpeciesStrength = (species: SpeciesModel) => {
+	static getCardStrength = (species: BalanceCardModel) => {
 		let value = 0;
 
-		value += Collections.sum(species.startingFeatures, feature => GameLogic.getFeatureStrength(feature)) + species.startingFeatures.length;
-		value += Collections.mean(species.features, feature => GameLogic.getFeatureStrength(feature)) + species.features.length;
-		value += Collections.mean(species.actions, action => GameLogic.getActionStrength(action)) + species.actions.length;
-		value += Collections.mean(species.deathActions, action => GameLogic.getActionStrength(action)) + species.deathActions.length;
+		value += Collections.sum(species.startingFeatures, feature => GameLogic.getFeatureStrength(feature));
+		value += Collections.mean(species.features, feature => GameLogic.getFeatureStrength(feature));
+		value += Collections.mean(species.actions, action => GameLogic.getActionStrength(action)) * 2;
 
-		return Math.round(value / 5);
+		if (species.deathActions) {
+			// A death action fires once, when the card is already off the board, so it is not weighted
+			value += Collections.mean(species.deathActions, action => GameLogic.getActionStrength(action));
+		}
+
+		return Math.round(value);
 	};
 
-	static getRoleStrength = (role: RoleModel) => {
-		let value = 0;
+	// Why a card is out of balance: its own strength outside its band, or any of its actions outside
+	// the action band. The backstage card page draws a card red when this returns anything and the
+	// balance tests fail on the same call, so the view and the suite cannot drift apart
+	//
+	// The card-level bands cannot catch a single spiking action on their own, because getSpeciesStrength
+	// and friends average a card's actions - one action at 20 hides inside four ordinary ones
+	static getBalanceIssues = (card: BalanceCardModel, type: CardType) => {
+		const issues: string[] = [];
 
-		value += Collections.sum(role.startingFeatures, feature => GameLogic.getFeatureStrength(feature)) + role.startingFeatures.length;
-		value += Collections.mean(role.features, feature => GameLogic.getFeatureStrength(feature)) + role.features.length;
-		value += Collections.mean(role.actions, action => GameLogic.getActionStrength(action)) + role.actions.length;
+		let strengthBand = { min: 0, max: 0 };
+		let actionCountMin = 0;
+		switch (type) {
+			case CardType.Species:
+				strengthBand = GameLogic.strengthBands.species;
+				actionCountMin = GameLogic.actionCountMinimums.species;
+				break;
+			case CardType.Role:
+				strengthBand = GameLogic.strengthBands.role;
+				actionCountMin = GameLogic.actionCountMinimums.role;
+				break;
+			case CardType.Background:
+				strengthBand = GameLogic.strengthBands.background;
+				actionCountMin = GameLogic.actionCountMinimums.background;
+				break;
+		}
 
-		return Math.round(value / 5);
-	};
+		const strength = GameLogic.getCardStrength(card);
+		if ((strength < strengthBand.min) || (strength > strengthBand.max)) {
+			issues.push(`${card.name} scores ${strength}, outside ${strengthBand.min}-${strengthBand.max}`);
+		}
 
-	static getBackgroundStrength = (background: BackgroundModel) => {
-		let value = 0;
+		if (card.actions.length < actionCountMin) {
+			issues.push(`${card.name} has ${card.actions.length} actions, less than ${actionCountMin}`);
+		}
 
-		value += Collections.sum(background.startingFeatures, feature => GameLogic.getFeatureStrength(feature)) + background.startingFeatures.length;
-		value += Collections.mean(background.features, feature => GameLogic.getFeatureStrength(feature)) + background.features.length;
-		value += Collections.mean(background.actions, action => GameLogic.getActionStrength(action)) + background.actions.length;
+		const actionBand = GameLogic.strengthBands.action;
+		[ ...card.actions, ...(card.deathActions ?? []) ].forEach(action => {
+			const actionStrength = GameLogic.getActionStrength(action);
+			if ((actionStrength < actionBand.min) || (actionStrength > actionBand.max)) {
+				issues.push(`${card.name}: ${action.name} scores ${actionStrength}, outside ${actionBand.min}-${actionBand.max}`);
+			}
+		});
 
-		return Math.round(value / 5);
+		const usedSkills: SkillType[] = [];
+		card.actions.forEach(a => {
+			a.effects
+				.filter(e => e.id === 'attack')
+				.forEach(e => {
+					const attack = e.data as { skill: SkillType };
+					if (!usedSkills.includes(attack.skill)) {
+						usedSkills.push(attack.skill);
+					}
+				});
+		});
+		const bonusSkills: SkillType[] = [];
+		card.features.filter(f => f.type === FeatureType.Skill).forEach(f => {
+			if (!bonusSkills.includes(f.skill)) {
+				bonusSkills.push(f.skill);
+			}
+		});
+		const missingSkills: SkillType[] = usedSkills.filter(skill => !bonusSkills.includes(skill));
+		if (missingSkills.length > 0) {
+			issues.push(`${card.name} attacks with ${missingSkills.join(', ')}, which it has no feature bonus for`);
+		}
+
+		return issues;
 	};
 
 	static getFeatureStrength = (feature: FeatureModel) => {

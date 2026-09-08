@@ -1,7 +1,7 @@
 import { codexArcanum } from '../../data/packs/codex-arcanum';
 import { core } from '../../data/packs/core';
 import { elementalStorm } from '../../data/packs/elemental-storm';
-import { faeRealm } from '../../data/packs/fae-realm';
+import { faeGreenRealm } from '../../data/packs/fae-green-realm';
 import { faithAndDamnation } from '../../data/packs/faith-and-damnation';
 import { menagerie } from '../../data/packs/menagerie';
 import { outOfTheGrave } from '../../data/packs/out-of-the-grave';
@@ -44,7 +44,7 @@ export class PackLogic {
 		const list = [
 			codexArcanum(),
 			elementalStorm(),
-			faeRealm(),
+			faeGreenRealm(),
 			faithAndDamnation(),
 			menagerie(),
 			outOfTheGrave(),

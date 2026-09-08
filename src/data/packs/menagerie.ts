@@ -32,13 +32,15 @@ export const menagerie = (): PackModel => ({
 			startingFeatures: [
 				FeatureLogic.createSkillFeature('basilisk-start-1', SkillType.Brawl, 2),
 				FeatureLogic.createSkillFeature('basilisk-start-2', SkillType.Presence, 2),
-				FeatureLogic.createDamageBonusFeature('basilisk-start-3', DamageType.Poison, 1)
+				FeatureLogic.createDamageBonusFeature('basilisk-start-3', DamageType.Poison, 1),
+				FeatureLogic.createTraitFeature('basilisk-start-4', TraitType.Resolve, 1)
 			],
 			features: [
 				FeatureLogic.createSkillFeature('basilisk-feature-1', SkillType.Brawl, 2),
 				FeatureLogic.createSkillFeature('basilisk-feature-2', SkillType.Presence, 2),
 				FeatureLogic.createDamageBonusFeature('basilisk-feature-3', DamageType.Poison, 1),
-				FeatureLogic.createDamageResistFeature('basilisk-feature-4', DamageType.Poison, 2)
+				FeatureLogic.createDamageResistFeature('basilisk-feature-4', DamageType.Poison, 2),
+				FeatureLogic.createTraitFeature('basilisk-feature-5', TraitType.Resolve, 1)
 			],
 			actions: [
 				{
@@ -80,6 +82,27 @@ export const menagerie = (): PackModel => ({
 							]
 						})
 					]
+				},
+				{
+					id: 'basilisk-action-3',
+					name: 'Coiling Lunge',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 3)
+					],
+					effects: [
+						ActionEffects.forceMovement(MovementType.BesideTarget, 0),
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Piercing, 2),
+								ActionEffects.knockDown()
+							]
+						})
+					]
 				}
 			],
 			deathActions: []
@@ -95,12 +118,12 @@ export const menagerie = (): PackModel => ({
 			],
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('bear-start-1', TraitType.Endurance, 1),
-				FeatureLogic.createSkillFeature('bear-start-2', SkillType.Brawl, 2),
+				FeatureLogic.createSkillFeature('bear-start-2', SkillType.Brawl, 3),
 				FeatureLogic.createDamageCategoryBonusFeature('bear-start-3', DamageCategoryType.Physical, 1)
 			],
 			features: [
 				FeatureLogic.createTraitFeature('bear-feature-1', TraitType.Endurance, 1),
-				FeatureLogic.createSkillFeature('bear-feature-2', SkillType.Brawl, 2),
+				FeatureLogic.createSkillFeature('bear-feature-2', SkillType.Brawl, 3),
 				FeatureLogic.createDamageCategoryBonusFeature('bear-feature-3', DamageCategoryType.Physical, 1)
 			],
 			actions: [
@@ -256,12 +279,12 @@ export const menagerie = (): PackModel => ({
 				QuirkType.Beast
 			],
 			startingFeatures: [
-				FeatureLogic.createSkillFeature('giant-spider-start-1', SkillType.Brawl, 2),
-				FeatureLogic.createDamageBonusFeature('giant-spider-start-2', DamageType.Poison, 2)
+				FeatureLogic.createSkillFeature('giant-spider-start-1', SkillType.Brawl, 3),
+				FeatureLogic.createDamageBonusFeature('giant-spider-start-2', DamageType.Poison, 3)
 			],
 			features: [
-				FeatureLogic.createSkillFeature('giant-spider-feature-1', SkillType.Brawl, 2),
-				FeatureLogic.createDamageBonusFeature('giant-spider-feature-2', DamageType.Poison, 2)
+				FeatureLogic.createSkillFeature('giant-spider-feature-1', SkillType.Brawl, 3),
+				FeatureLogic.createDamageBonusFeature('giant-spider-feature-2', DamageType.Poison, 3)
 			],
 			actions: [
 				{
@@ -331,7 +354,7 @@ export const menagerie = (): PackModel => ({
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('lindworm-start-1', TraitType.Endurance, 1),
 				FeatureLogic.createSkillFeature('lindworm-start-2', SkillType.Brawl, 2),
-				FeatureLogic.createDamageBonusFeature('lindworm-start-3', DamageType.Poison, 1)
+				FeatureLogic.createDamageBonusFeature('lindworm-start-3', DamageType.Poison, 2)
 			],
 			features: [
 				FeatureLogic.createTraitFeature('lindworm-feature-1', TraitType.Endurance, 1),
@@ -511,13 +534,13 @@ export const menagerie = (): PackModel => ({
 			quirks: [],
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('naga-start-1', TraitType.Speed, 1),
-				FeatureLogic.createSkillFeature('naga-start-2', SkillType.Brawl, 2),
-				FeatureLogic.createSkillFeature('naga-start-3', SkillType.Presence, 2)
+				FeatureLogic.createSkillFeature('naga-start-2', SkillType.Brawl, 3),
+				FeatureLogic.createSkillFeature('naga-start-3', SkillType.Presence, 3)
 			],
 			features: [
 				FeatureLogic.createTraitFeature('naga-feature-1', TraitType.Speed, 1),
-				FeatureLogic.createSkillFeature('naga-feature-2', SkillType.Brawl, 2),
-				FeatureLogic.createSkillFeature('naga-feature-3', SkillType.Presence, 2),
+				FeatureLogic.createSkillFeature('naga-feature-2', SkillType.Brawl, 3),
+				FeatureLogic.createSkillFeature('naga-feature-3', SkillType.Presence, 3),
 				FeatureLogic.createDamageBonusFeature('naga-feature-4', DamageType.Poison, 2),
 				FeatureLogic.createDamageResistFeature('naga-feature-5', DamageType.Poison, 2)
 			],
@@ -704,6 +727,37 @@ export const menagerie = (): PackModel => ({
 							]
 						})
 					]
+				},
+				{
+					id: 'rat-swarm-action-2',
+					name: 'Boil Out Of The Drains',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 8)
+					],
+					effects: [
+						ActionEffects.forceMovement(MovementType.BesideTarget, 0),
+						ActionEffects.takeAnotherAction()
+					]
+				},
+				{
+					id: 'rat-swarm-action-3',
+					name: 'Underfoot',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, Number.MAX_VALUE)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Speed, 3))
+							]
+						})
+					]
 				}
 			],
 			deathActions: []
@@ -765,6 +819,18 @@ export const menagerie = (): PackModel => ({
 							]
 						})
 					]
+				},
+				{
+					id: 'snapjaw-action-3',
+					name: 'Lie In Wait',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.self()
+					],
+					effects: [
+						ActionEffects.hide(),
+						ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Endurance, 4, SkillType.Brawl))
+					]
 				}
 			],
 			deathActions: []
@@ -782,12 +848,12 @@ export const menagerie = (): PackModel => ({
 			startingFeatures: [
 				FeatureLogic.createSkillFeature('vespine-swarm-start-1', SkillType.Brawl, 2),
 				FeatureLogic.createTraitFeature('vespine-swarm-start-2', TraitType.Speed, 1),
-				FeatureLogic.createDamageBonusFeature('vespine-swarm-start-3', DamageType.Poison, 1)
+				FeatureLogic.createDamageBonusFeature('vespine-swarm-start-3', DamageType.Poison, 2)
 			],
 			features: [
 				FeatureLogic.createSkillFeature('vespine-swarm-feature-1', SkillType.Brawl, 2),
 				FeatureLogic.createTraitFeature('vespine-swarm-feature-2', TraitType.Speed, 1),
-				FeatureLogic.createDamageBonusFeature('vespine-swarm-feature-3', DamageType.Poison, 1)
+				FeatureLogic.createDamageBonusFeature('vespine-swarm-feature-3', DamageType.Poison, 2)
 			],
 			actions: [
 				{
@@ -817,6 +883,26 @@ export const menagerie = (): PackModel => ({
 							skillBonus: 0,
 							hit: [
 								ActionEffects.dealDamage(DamageType.Poison, 1)
+							]
+						})
+					]
+				},
+				{
+					id: 'vespine-swarm-action-3',
+					name: 'Boiling Nest',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 2)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Poison, 2),
+								ActionEffects.addCondition(ConditionLogic.createSkillPenaltyCondition(TraitType.Endurance, 3, SkillType.Perception))
 							]
 						})
 					]
@@ -911,11 +997,13 @@ export const menagerie = (): PackModel => ({
 			],
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('wolf-start-1', TraitType.Endurance, 1),
-				FeatureLogic.createSkillFeature('wolf-start-2', SkillType.Brawl, 2)
+				FeatureLogic.createSkillFeature('wolf-start-2', SkillType.Brawl, 2),
+				FeatureLogic.createDamageBonusFeature('wolf-start-3', DamageType.Piercing, 2)
 			],
 			features: [
 				FeatureLogic.createTraitFeature('wolf-feature-1', TraitType.Endurance, 1),
-				FeatureLogic.createSkillFeature('wolf-feature-2', SkillType.Brawl, 2)
+				FeatureLogic.createSkillFeature('wolf-feature-2', SkillType.Brawl, 2),
+				FeatureLogic.createDamageBonusFeature('wolf-feature-3', DamageType.Piercing, 2)
 			],
 			actions: [
 				{
@@ -975,81 +1063,6 @@ export const menagerie = (): PackModel => ({
 				}
 			],
 			deathActions: []
-		},
-		{
-			id: 'species-wyrmkin',
-			name: 'Wyrmkin',
-			description: 'Dragon far enough back in the blood that only the scales and the fire are left.',
-			type: CombatantType.Hero,
-			size: 1,
-			quirks: [],
-			startingFeatures: [
-				FeatureLogic.createTraitFeature('wyrmkin-start-1', TraitType.Speed, 1),
-				FeatureLogic.createSkillFeature('wyrmkin-start-2', SkillType.Brawl, 2),
-				FeatureLogic.createSkillFeature('wyrmkin-start-3', SkillType.Presence, 2)
-			],
-			features: [
-				FeatureLogic.createTraitFeature('wyrmkin-feature-1', TraitType.Speed, 1),
-				FeatureLogic.createSkillFeature('wyrmkin-feature-2', SkillType.Brawl, 2),
-				FeatureLogic.createSkillFeature('wyrmkin-feature-3', SkillType.Presence, 2),
-				FeatureLogic.createDamageCategoryResistFeature('wyrmkin-feature-4', DamageCategoryType.Physical, 1),
-				FeatureLogic.createDamageResistFeature('wyrmkin-feature-5', DamageType.Psychic, 2)
-			],
-			actions: [
-				{
-					id: 'wyrmkin-action-1',
-					name: 'Breathe Fire',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 3)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Brawl,
-							trait: TraitType.Speed,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Fire, 3)
-							]
-						})
-					]
-				},
-				{
-					id: 'wyrmkin-action-2',
-					name: 'Regeneration',
-					prerequisites: [
-						ActionPrerequisites.wound()
-					],
-					parameters: [
-						ActionTargetParameters.self()
-					],
-					effects: [
-						ActionEffects.healWounds(1)
-					]
-				},
-				{
-					id: 'wyrmkin-action-3',
-					name: 'Intimidating Presence',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 5)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Presence,
-							trait: TraitType.Resolve,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.forceMovement(MovementType.Push, 1),
-								ActionEffects.stun()
-							]
-						})
-					]
-				}
-			],
-			deathActions: []
 		}
 	],
 	roles: [
@@ -1068,7 +1081,8 @@ export const menagerie = (): PackModel => ({
 				FeatureLogic.createDamageBonusFeature('beastcaller-feature-3', DamageType.Piercing, 1),
 				// The pack-tactics half of the role, and the reason to keep a summoned beast beside
 				// you rather than sending it off on its own
-				FeatureLogic.createAuraSkillFeature('beastcaller-feature-4', ConditionType.SkillBonus, SkillType.Brawl, 1)
+				FeatureLogic.createAuraSkillFeature('beastcaller-feature-4', ConditionType.SkillBonus, SkillType.Brawl, 1),
+				FeatureLogic.createSkillFeature('beastcaller-feature-5', SkillType.Weapon, 2)
 			],
 			actions: [
 				{
@@ -1132,6 +1146,26 @@ export const menagerie = (): PackModel => ({
 							hit: [
 								ActionEffects.dealWeaponDamage(),
 								ActionEffects.knockDown()
+							]
+						})
+					]
+				},
+				{
+					id: 'beastcaller-action-5',
+					name: 'Call The Flock',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 4)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Presence,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Piercing, 2),
+								ActionEffects.addCondition(ConditionLogic.createSkillPenaltyCondition(TraitType.Resolve, 3, SkillType.Perception))
 							]
 						})
 					]

@@ -48,21 +48,34 @@
 			}
 
 			.card-btn {
-				display: block;
+				display: flex;
+				flex-direction: column;
+				align-items: stretch;
+				justify-content: flex-start;
+				gap: 5px;
 				background-color: rgb(245, 245, 245);
 				font-size: 13px;
 				text-transform: none;
 				letter-spacing: 0;
 				font-weight: 400;
 				margin: 2px 0;
-				padding: 0 5px;
-				flex-direction: row;
+				padding: 5px;
 				text-align: left;
-				min-height: 30px;
+				min-height: 150px;
+
+				.card-name {
+					font-size: 13px;
+					text-transform: uppercase;
+					letter-spacing: 2px;
+					font-weight: 600;
+				}
 
 				.card-description {
-					margin-bottom: 8px;
 					font-size: 10px;
+				}
+
+				.stat-value {
+					margin: 0;
 				}
 
 				&:hover {

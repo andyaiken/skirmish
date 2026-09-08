@@ -2,6 +2,7 @@ import { ActionEffects, ActionOriginParameters, ActionPrerequisites, ActionTarge
 import { ActionTargetType } from '../../enums/action-target-type';
 import { CombatantType } from '../../enums/combatant-type';
 import { ConditionLogic } from '../../logic/condition/condition-logic';
+import { ContagionType } from '../../enums/contagion-type';
 import { DamageCategoryType } from '../../enums/damage-category-type';
 import { DamageType } from '../../enums/damage-type';
 import { FeatureLogic } from '../../logic/feature/feature-logic';
@@ -36,7 +37,8 @@ export const workshop = (): PackModel => ({
 				FeatureLogic.createTraitFeature('automaton-feature-1', TraitType.Endurance, 1),
 				FeatureLogic.createSkillFeature('automaton-feature-2', SkillType.Weapon, 2),
 				FeatureLogic.createDamageBonusFeature('automaton-feature-3', DamageType.Impact, 2),
-				FeatureLogic.createDamageResistFeature('automaton-feature-4', DamageType.Poison, 5)
+				FeatureLogic.createDamageResistFeature('automaton-feature-4', DamageType.Poison, 5),
+				FeatureLogic.createSkillFeature('automaton-feature-5', SkillType.Brawl, 2)
 			],
 			actions: [
 				{
@@ -150,32 +152,175 @@ export const workshop = (): PackModel => ({
 						ActionEffects.healDamage(1),
 						ActionEffects.takeAnotherAction()
 					]
+				},
+				{
+					id: 'construct-action-3',
+					name: 'Piston Drive',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Impact, 3),
+								ActionEffects.forceMovement(MovementType.Push, 2)
+							]
+						})
+					]
 				}
 			],
 			deathActions: []
 		},
 		{
-			id: 'species-powder-keg',
-			name: 'Powder Keg',
-			description: 'A walking barrel with a lit fuse.',
+			id: 'species-mutant',
+			name: 'Mutant',
+			description: 'Grown in a vat by someone who stopped checking on it.',
+			type: CombatantType.Monster,
+			size: 1,
+			quirks: [
+				QuirkType.Amorphous
+			],
+			startingFeatures: [
+				FeatureLogic.createTraitFeature('mutant-start-1', TraitType.Endurance, 1),
+				FeatureLogic.createSkillFeature('mutant-start-2', SkillType.Brawl, 2),
+				FeatureLogic.createDamageCategoryResistFeature('mutant-start-3', DamageCategoryType.Corruption, 1)
+			],
+			features: [
+				FeatureLogic.createTraitFeature('mutant-feature-1', TraitType.Endurance, 1),
+				FeatureLogic.createSkillFeature('mutant-feature-2', SkillType.Brawl, 2),
+				FeatureLogic.createDamageBonusFeature('mutant-feature-3', DamageType.Acid, 2),
+				FeatureLogic.createDamageCategoryResistFeature('mutant-feature-4', DamageCategoryType.Corruption, 2),
+				FeatureLogic.createDamageCategoryBonusFeature('mutant-feature-5', DamageCategoryType.Corruption, 1)
+			],
+			actions: [
+				{
+					id: 'mutant-action-1',
+					name: 'Unstable Lash',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Acid, 2),
+								ActionEffects.dealDamage(DamageType.Poison, 2),
+								ActionEffects.dealDamage(DamageType.Any, 2)
+							]
+						})
+					]
+				},
+				{
+					id: 'mutant-action-2',
+					name: 'Reagent Spray',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 3)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Acid, 2),
+								ActionEffects.addCondition(ConditionLogic.createDamageCategoryVulnerabilityCondition(TraitType.Endurance, 3, DamageCategoryType.Corruption))
+							]
+						})
+					]
+				},
+				{
+					id: 'mutant-action-3',
+					name: 'Reconstitute',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.self()
+					],
+					effects: [
+						ActionEffects.healDamage(4),
+						ActionEffects.addCondition(ConditionLogic.createDamageResistanceCondition(TraitType.Endurance, 3, DamageType.Any))
+					]
+				},
+				{
+					id: 'mutant-action-4',
+					name: 'Spread the Blight',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 4)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.addCondition(
+									ConditionLogic.makeContagious(
+										ConditionLogic.createDamageCategoryVulnerabilityCondition(TraitType.Endurance, 4, DamageCategoryType.Corruption),
+										ContagionType.Allies
+									)
+								)
+							]
+						})
+					]
+				}
+			],
+			deathActions: [
+				{
+					id: 'mutant-death-1',
+					name: 'Burst',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Combatants, Number.MAX_VALUE)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Decay, 2),
+								ActionEffects.addCondition(ConditionLogic.makeContagious(ConditionLogic.createAutoDamageCondition(TraitType.Endurance, 3, DamageType.Poison)))
+							]
+						})
+					]
+				}
+			]
+		},
+		{
+			id: 'species-tinderjack',
+			name: 'Tinderjack',
+			description: 'Packed with powder and built to explode.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [
 				QuirkType.Mindless
 			],
 			startingFeatures: [
-				FeatureLogic.createTraitFeature('powder-keg-start-1', TraitType.Speed, 1),
-				FeatureLogic.createSkillFeature('powder-keg-start-2', SkillType.Brawl, 2),
-				FeatureLogic.createDamageResistFeature('powder-keg-start-3', DamageType.Fire, 5)
+				FeatureLogic.createTraitFeature('tinderjack-start-1', TraitType.Speed, 1),
+				FeatureLogic.createSkillFeature('tinderjack-start-2', SkillType.Brawl, 2),
+				FeatureLogic.createDamageResistFeature('tinderjack-start-3', DamageType.Fire, 5)
 			],
 			features: [
-				FeatureLogic.createTraitFeature('powder-keg-feature-1', TraitType.Speed, 1),
-				FeatureLogic.createSkillFeature('powder-keg-feature-2', SkillType.Brawl, 2),
-				FeatureLogic.createDamageBonusFeature('powder-keg-feature-3', DamageType.Fire, 2)
+				FeatureLogic.createTraitFeature('tinderjack-feature-1', TraitType.Speed, 1),
+				FeatureLogic.createSkillFeature('tinderjack-feature-2', SkillType.Brawl, 2),
+				FeatureLogic.createDamageBonusFeature('tinderjack-feature-3', DamageType.Fire, 2)
 			],
 			actions: [
 				{
-					id: 'powder-keg-action-1',
+					id: 'tinderjack-action-1',
 					name: 'Rush',
 					prerequisites: [],
 					parameters: [
@@ -187,7 +332,7 @@ export const workshop = (): PackModel => ({
 					]
 				},
 				{
-					id: 'powder-keg-action-2',
+					id: 'tinderjack-action-2',
 					name: 'Smoulder',
 					prerequisites: [],
 					parameters: [
@@ -204,11 +349,31 @@ export const workshop = (): PackModel => ({
 							]
 						})
 					]
+				},
+				{
+					id: 'tinderjack-action-3',
+					name: 'Shed Sparks',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 2)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Fire, 1),
+								ActionEffects.addCondition(ConditionLogic.createAutoDamageCondition(TraitType.Endurance, 2, DamageType.Fire))
+							]
+						})
+					]
 				}
 			],
 			deathActions: [
 				{
-					id: 'powder-keg-death-1',
+					id: 'tinderjack-death-1',
 					name: 'Detonate',
 					prerequisites: [],
 					parameters: [
@@ -465,12 +630,13 @@ export const workshop = (): PackModel => ({
 			description: 'A fighter who uses gunpowder weapons.',
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('gunslinger-start-1', TraitType.Speed, 1),
-				FeatureLogic.createSkillFeature('gunslinger-start-2', SkillType.Weapon, 2),
-				FeatureLogic.createProficiencyFeature('gunslinger-start-3', ItemProficiencyType.PowderWeapons)
+				FeatureLogic.createSkillFeature('gunslinger-start-2', SkillType.Weapon, 3),
+				FeatureLogic.createProficiencyFeature('gunslinger-start-3', ItemProficiencyType.PowderWeapons),
+				FeatureLogic.createDamageBonusFeature('gunslinger-start-4', DamageType.Piercing, 2)
 			],
 			features: [
 				FeatureLogic.createTraitFeature('gunslinger-feature-1', TraitType.Speed, 1),
-				FeatureLogic.createSkillFeature('gunslinger-feature-2', SkillType.Weapon, 2)
+				FeatureLogic.createSkillFeature('gunslinger-feature-2', SkillType.Weapon, 3)
 			],
 			actions: [
 				{
@@ -536,7 +702,8 @@ export const workshop = (): PackModel => ({
 							hit: [
 								ActionEffects.dealDamage(DamageType.Impact, 2)
 							]
-						})
+						}),
+						ActionEffects.takeAnotherAction()
 					]
 				},
 				{

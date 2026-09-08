@@ -7,6 +7,7 @@ import { DamageCategoryType } from '../../enums/damage-category-type';
 import { DamageType } from '../../enums/damage-type';
 import { FeatureLogic } from '../../logic/feature/feature-logic';
 import { ItemProficiencyType } from '../../enums/item-proficiency-type';
+import { MovementType } from '../../enums/movement-type';
 import { PackModel } from '../../models/pack';
 import { SkillType } from '../../enums/skill-type';
 import { StructureType } from '../../enums/structure-type';
@@ -20,113 +21,42 @@ export const skullduggery = (): PackModel => ({
 	description: 'A collection of cards for those who fight with guile rather than valor.',
 	species: [
 		{
-			id: 'species-brigand',
-			name: 'Brigand',
-			description: 'Someone who decided that other people\'s property was a career.',
-			type: CombatantType.Monster,
-			size: 1,
-			quirks: [],
-			startingFeatures: [
-				FeatureLogic.createTraitFeature('brigand-start-1', TraitType.Speed, 1),
-				FeatureLogic.createSkillFeature('brigand-start-2', SkillType.Weapon, 2),
-				FeatureLogic.createSkillFeature('brigand-start-3', SkillType.Stealth, 2)
-			],
-			features: [
-				FeatureLogic.createTraitFeature('brigand-feature-1', TraitType.Speed, 1),
-				FeatureLogic.createSkillFeature('brigand-feature-2', SkillType.Weapon, 2),
-				FeatureLogic.createSkillFeature('brigand-feature-3', SkillType.Stealth, 2)
-			],
-			actions: [
-				{
-					id: 'brigand-action-1',
-					name: 'Ambush',
-					prerequisites: [
-						ActionPrerequisites.meleeWeapon(),
-						ActionPrerequisites.hidden()
-					],
-					parameters: [
-						ActionWeaponParameters.melee(),
-						ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: true,
-							skill: SkillType.Weapon,
-							trait: TraitType.Speed,
-							skillBonus: 2,
-							hit: [
-								ActionEffects.dealWeaponDamage(1)
-							]
-						})
-					]
-				},
-				{
-					id: 'brigand-action-2',
-					name: 'Cut and Run',
-					prerequisites: [
-						ActionPrerequisites.meleeWeapon()
-					],
-					parameters: [
-						ActionWeaponParameters.melee(),
-						ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: true,
-							skill: SkillType.Weapon,
-							trait: TraitType.Speed,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealWeaponDamage()
-							]
-						}),
-						ActionEffects.addMovement()
-					]
-				},
-				{
-					id: 'brigand-action-3',
-					name: 'Rifle Their Pockets',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Stealth,
-							trait: TraitType.Speed,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.steal()
-							]
-						})
-					]
-				}
-			],
-			deathActions: []
-		},
-		{
-			id: 'species-changeling',
-			name: 'Changeling',
-			description: 'Left in a cradle in place of someone else, and never once corrected the mistake.',
+			id: 'species-doppelganger',
+			name: 'Doppelganger',
+			description: 'Left in a cradle in place of someone else.',
 			type: CombatantType.Hero,
 			size: 1,
 			quirks: [],
 			startingFeatures: [
-				FeatureLogic.createTraitFeature('changeling-start-1', TraitType.Speed, 1),
-				FeatureLogic.createSkillFeature('changeling-start-2', SkillType.Presence, 2),
-				FeatureLogic.createSkillFeature('changeling-start-3', SkillType.Stealth, 2)
+				FeatureLogic.createTraitFeature('doppelganger-start-1', TraitType.Speed, 1),
+				FeatureLogic.createSkillFeature('doppelganger-start-2', SkillType.Presence, 3),
+				FeatureLogic.createSkillFeature('doppelganger-start-3', SkillType.Stealth, 3),
+				FeatureLogic.createDamageResistFeature('doppelganger-start-4', DamageType.Psychic, 2)
 			],
 			features: [
-				FeatureLogic.createTraitFeature('changeling-feature-1', TraitType.Speed, 1),
-				FeatureLogic.createTraitFeature('changeling-feature-2', TraitType.Resolve, 1),
-				FeatureLogic.createSkillFeature('changeling-feature-3', SkillType.Presence, 2),
-				FeatureLogic.createSkillFeature('changeling-feature-4', SkillType.Stealth, 2),
-				FeatureLogic.createSkillFeature('changeling-feature-5', SkillType.Reactions, 2)
+				FeatureLogic.createTraitFeature('doppelganger-feature-1', TraitType.Speed, 1),
+				FeatureLogic.createTraitFeature('doppelganger-feature-2', TraitType.Resolve, 1),
+				FeatureLogic.createSkillFeature('doppelganger-feature-3', SkillType.Presence, 3),
+				FeatureLogic.createSkillFeature('doppelganger-feature-4', SkillType.Stealth, 3),
+				FeatureLogic.createSkillFeature('doppelganger-feature-5', SkillType.Reactions, 2),
+				FeatureLogic.createDamageBonusFeature('doppelganger-feature-6', DamageType.Psychic, 2)
 			],
 			actions: [
 				{
-					id: 'changeling-action-1',
+					id: 'doppelganger-action-1',
+					name: 'Wear Your Face',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.self()
+					],
+					effects: [
+						ActionEffects.hide(),
+						ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Speed, 4, SkillType.Stealth)),
+						ActionEffects.takeAnotherAction()
+					]
+				},
+				{
+					id: 'doppelganger-action-2',
 					name: 'Not the One You Want',
 					prerequisites: [],
 					parameters: [
@@ -145,20 +75,7 @@ export const skullduggery = (): PackModel => ({
 					]
 				},
 				{
-					id: 'changeling-action-2',
-					name: 'Second Face',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.self()
-					],
-					effects: [
-						// Becoming someone else sheds whatever was done to the last one
-						ActionEffects.removeCondition(TraitType.Any),
-						ActionEffects.hide()
-					]
-				},
-				{
-					id: 'changeling-action-3',
+					id: 'doppelganger-action-3',
 					name: 'Give It Back',
 					prerequisites: [
 						ActionPrerequisites.condition(TraitType.Any)
@@ -169,123 +86,9 @@ export const skullduggery = (): PackModel => ({
 					effects: [
 						ActionEffects.transferCondition()
 					]
-				}
-			],
-			deathActions: []
-		},
-		{
-			id: 'species-cutthroat',
-			name: 'Cutthroat',
-			description: 'A killer for hire, paid up front.',
-			type: CombatantType.Monster,
-			size: 1,
-			quirks: [],
-			startingFeatures: [
-				FeatureLogic.createSkillFeature('cutthroat-start-1', SkillType.Stealth, 2),
-				FeatureLogic.createSkillFeature('cutthroat-start-2', SkillType.Weapon, 2),
-				FeatureLogic.createDamageBonusFeature('cutthroat-start-3', DamageType.Poison, 2),
-				FeatureLogic.createTraitFeature('cutthroat-start-4', TraitType.Speed, 1)
-			],
-			features: [
-				FeatureLogic.createSkillFeature('cutthroat-feature-1', SkillType.Stealth, 2),
-				FeatureLogic.createSkillFeature('cutthroat-feature-2', SkillType.Weapon, 2),
-				FeatureLogic.createDamageBonusFeature('cutthroat-feature-3', DamageType.Piercing, 2),
-				FeatureLogic.createDamageResistFeature('cutthroat-feature-4', DamageType.Poison, 3)
-			],
-			actions: [
-				{
-					id: 'cutthroat-action-1',
-					name: 'Coated Blade',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Weapon,
-							trait: TraitType.Speed,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Piercing, 2),
-								ActionEffects.dealDamage(DamageType.Poison, 2),
-								ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Endurance, 3, TraitType.Endurance))
-							]
-						})
-					]
 				},
 				{
-					id: 'cutthroat-action-2',
-					name: 'Into The Shadows',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.self()
-					],
-					effects: [
-						ActionEffects.hide(),
-						ActionEffects.addMovement()
-					]
-				},
-				{
-					id: 'cutthroat-action-3',
-					name: 'From Behind',
-					prerequisites: [
-						ActionPrerequisites.hidden()
-					],
-					parameters: [
-						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Stealth,
-							trait: TraitType.Speed,
-							skillBonus: 2,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Piercing, 5),
-								ActionEffects.inflictWounds(1)
-							]
-						})
-					]
-				}
-			],
-			deathActions: []
-		},
-		{
-			id: 'species-doppelganger',
-			name: 'Doppelganger',
-			description: 'It wears the face of someone you trust.',
-			type: CombatantType.Monster,
-			size: 1,
-			quirks: [],
-			startingFeatures: [
-				FeatureLogic.createSkillFeature('doppelganger-start-1', SkillType.Stealth, 2),
-				FeatureLogic.createSkillFeature('doppelganger-start-2', SkillType.Brawl, 2),
-				FeatureLogic.createTraitFeature('doppelganger-start-3', TraitType.Speed, 1),
-				FeatureLogic.createDamageResistFeature('doppelganger-start-4', DamageType.Psychic, 2)
-			],
-			features: [
-				FeatureLogic.createSkillFeature('doppelganger-feature-1', SkillType.Stealth, 2),
-				FeatureLogic.createSkillFeature('doppelganger-feature-2', SkillType.Presence, 2),
-				FeatureLogic.createTraitFeature('doppelganger-feature-3', TraitType.Speed, 1),
-				FeatureLogic.createDamageBonusFeature('doppelganger-feature-4', DamageType.Psychic, 2)
-			],
-			actions: [
-				{
-					id: 'doppelganger-action-1',
-					name: 'Wear Your Face',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.self()
-					],
-					effects: [
-						ActionEffects.hide(),
-						ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Speed, 4, SkillType.Stealth)),
-						ActionEffects.takeAnotherAction()
-					]
-				},
-				{
-					id: 'doppelganger-action-2',
+					id: 'doppelganger-action-4',
 					name: 'Light Fingers',
 					prerequisites: [],
 					parameters: [
@@ -299,99 +102,6 @@ export const skullduggery = (): PackModel => ({
 							skillBonus: 0,
 							hit: [
 								ActionEffects.steal()
-							]
-						})
-					]
-				},
-				{
-					id: 'doppelganger-action-3',
-					name: 'Turn The Blade',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Brawl,
-							trait: TraitType.Speed,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.disarm(),
-								ActionEffects.dealDamage(DamageType.Impact, 1)
-							]
-						})
-					]
-				}
-			],
-			deathActions: []
-		},
-		{
-			id: 'species-mercenary-captain',
-			name: 'Mercenary Captain',
-			description: 'Their company has a banner, a paymaster, and a list of work it will not take.',
-			type: CombatantType.Monster,
-			size: 1,
-			quirks: [],
-			startingFeatures: [
-				FeatureLogic.createTraitFeature('mercenary-captain-start-1', TraitType.Resolve, 1),
-				FeatureLogic.createSkillFeature('mercenary-captain-start-2', SkillType.Weapon, 2),
-				FeatureLogic.createSkillFeature('mercenary-captain-start-3', SkillType.Presence, 2)
-			],
-			features: [
-				FeatureLogic.createTraitFeature('mercenary-captain-feature-1', TraitType.Resolve, 1),
-				FeatureLogic.createSkillFeature('mercenary-captain-feature-2', SkillType.Weapon, 2),
-				FeatureLogic.createSkillFeature('mercenary-captain-feature-3', SkillType.Presence, 2)
-			],
-			actions: [
-				{
-					id: 'mercenary-captain-action-1',
-					name: 'Veteran\'s Cut',
-					prerequisites: [
-						ActionPrerequisites.meleeWeapon()
-					],
-					parameters: [
-						ActionWeaponParameters.melee(),
-						ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: true,
-							skill: SkillType.Weapon,
-							trait: TraitType.Resolve,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealWeaponDamage(1)
-							]
-						})
-					]
-				},
-				{
-					id: 'mercenary-captain-action-2',
-					name: 'Form Up',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Allies, 3, 5)
-					],
-					effects: [
-						ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Resolve, 4, SkillType.Weapon))
-					]
-				},
-				{
-					id: 'mercenary-captain-action-3',
-					name: 'Break Their Nerve',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Enemies, 2, 4)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Presence,
-							trait: TraitType.Resolve,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.stun()
 							]
 						})
 					]
@@ -409,13 +119,16 @@ export const skullduggery = (): PackModel => ({
 				FeatureLogic.createTraitFeature('assassin-start-1', TraitType.Speed, 1),
 				FeatureLogic.createSkillFeature('assassin-start-2', SkillType.Stealth, 2),
 				FeatureLogic.createSkillFeature('assassin-start-3', SkillType.Weapon, 2),
-				FeatureLogic.createProficiencyFeature('assassin-start-4', ItemProficiencyType.PairedWeapons)
+				FeatureLogic.createProficiencyFeature('assassin-start-4', ItemProficiencyType.PairedWeapons),
+				FeatureLogic.createProficiencyFeature('assassin-start-5', ItemProficiencyType.LightArmor)
 			],
 			features: [
 				FeatureLogic.createTraitFeature('assassin-feature-1', TraitType.Speed, 1),
 				FeatureLogic.createSkillFeature('assassin-feature-2', SkillType.Stealth, 2),
 				FeatureLogic.createSkillFeature('assassin-feature-3', SkillType.Weapon, 2),
-				FeatureLogic.createDamageBonusFeature('assassin-feature-4', DamageType.Poison, 2)
+				FeatureLogic.createDamageBonusFeature('assassin-feature-4', DamageType.Poison, 2),
+				FeatureLogic.createDamageBonusFeature('assassin-feature-5', DamageType.Piercing, 2),
+				FeatureLogic.createDamageResistFeature('assassin-feature-6', DamageType.Poison, 3)
 			],
 			actions: [
 				{
@@ -444,7 +157,7 @@ export const skullduggery = (): PackModel => ({
 				},
 				{
 					id: 'assassin-action-2',
-					name: 'Vanish',
+					name: 'Into the Shadows',
 					prerequisites: [],
 					parameters: [
 						ActionTargetParameters.self()
@@ -478,6 +191,244 @@ export const skullduggery = (): PackModel => ({
 								ActionEffects.ifTarget(TargetStateType.Wounded, [
 									ActionEffects.dealWeaponDamage(3)
 								])
+							]
+						})
+					]
+				},
+				{
+					id: 'assassin-action-4',
+					name: 'Garrotte',
+					prerequisites: [
+						ActionPrerequisites.hidden()
+					],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Stealth,
+							trait: TraitType.Speed,
+							skillBonus: 2,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Impact, 3),
+								ActionEffects.stun()
+							]
+						})
+					]
+				},
+				{
+					id: 'assassin-action-5',
+					name: 'Coat The Blade',
+					prerequisites: [
+						ActionPrerequisites.meleeWeapon()
+					],
+					parameters: [
+						ActionTargetParameters.self()
+					],
+					effects: [
+						ActionEffects.addCondition(ConditionLogic.createDamageBonusCondition(TraitType.Speed, 4, DamageType.Poison)),
+						ActionEffects.takeAnotherAction()
+					]
+				},
+				{
+					id: 'assassin-action-6',
+					name: 'Cut and Run',
+					prerequisites: [
+						ActionPrerequisites.meleeWeapon()
+					],
+					parameters: [
+						ActionWeaponParameters.melee(),
+						ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: true,
+							skill: SkillType.Weapon,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealWeaponDamage()
+							]
+						}),
+						ActionEffects.addMovement()
+					]
+				},
+				{
+					id: 'assassin-action-7',
+					name: 'Rifle Their Pockets',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Stealth,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.steal()
+							]
+						})
+					]
+				}
+			]
+		},
+		{
+			id: 'role-corsair',
+			name: 'Corsair',
+			description: 'A swashbuckler, who fights best in the moment after everyone else has lost track of the plan.',
+			startingFeatures: [
+				FeatureLogic.createTraitFeature('corsair-start-1', TraitType.Speed, 1),
+				FeatureLogic.createSkillFeature('corsair-start-2', SkillType.Reactions, 2),
+				FeatureLogic.createSkillFeature('corsair-start-3', SkillType.Weapon, 2),
+				FeatureLogic.createProficiencyFeature('corsair-start-4', ItemProficiencyType.PairedWeapons),
+				FeatureLogic.createProficiencyFeature('corsair-start-5', ItemProficiencyType.LightArmor)
+			],
+			features: [
+				FeatureLogic.createTraitFeature('corsair-feature-1', TraitType.Speed, 1),
+				FeatureLogic.createSkillFeature('corsair-feature-2', SkillType.Reactions, 2),
+				FeatureLogic.createSkillFeature('corsair-feature-3', SkillType.Weapon, 2),
+				FeatureLogic.createDamageBonusFeature('corsair-feature-4', DamageType.Edged, 1)
+			],
+			actions: [
+				{
+					id: 'corsair-action-1',
+					name: 'Boarding Action',
+					prerequisites: [
+						ActionPrerequisites.meleeWeapon()
+					],
+					parameters: [
+						ActionWeaponParameters.melee(),
+						ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: true,
+							skill: SkillType.Weapon,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealWeaponDamage(),
+								ActionEffects.forceMovement(MovementType.Swap, 0)
+							]
+						})
+					]
+				},
+				{
+					id: 'corsair-action-2',
+					name: 'Cut and Thrust',
+					prerequisites: [
+						ActionPrerequisites.meleeWeapon()
+					],
+					parameters: [
+						ActionWeaponParameters.melee(),
+						ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: true,
+							skill: SkillType.Weapon,
+							trait: TraitType.Speed,
+							skillBonus: -1,
+							hit: [
+								ActionEffects.dealWeaponDamage()
+							]
+						}),
+						ActionEffects.attack({
+							weapon: true,
+							skill: SkillType.Reactions,
+							trait: TraitType.Speed,
+							skillBonus: -1,
+							hit: [
+								ActionEffects.dealWeaponDamage()
+							]
+						})
+					]
+				},
+				{
+					id: 'corsair-action-3',
+					name: 'Grapple',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 3)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Reactions,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.forceMovement(MovementType.Pull, 2)
+							]
+						}),
+						ActionEffects.takeAnotherAction()
+					]
+				},
+				{
+					id: 'corsair-action-4',
+					name: 'Press the Advantage',
+					prerequisites: [
+						ActionPrerequisites.meleeWeapon()
+					],
+					parameters: [
+						ActionWeaponParameters.melee(),
+						ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: true,
+							skill: SkillType.Reactions,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealWeaponDamage(),
+								ActionEffects.takeAnotherAction()
+							]
+						})
+					]
+				},
+				{
+					id: 'corsair-action-5',
+					name: 'Turn the Blade',
+					prerequisites: [
+						ActionPrerequisites.meleeWeapon()
+					],
+					parameters: [
+						ActionWeaponParameters.melee(),
+						ActionTargetParameters.weapon(ActionTargetType.Enemies, 1, 0)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: true,
+							skill: SkillType.Reactions,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.disarm()
+							]
+						})
+					]
+				},
+				{
+					id: 'corsair-action-6',
+					name: 'Harpoon',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Reactions,
+							trait: TraitType.Speed,
+							skillBonus: -1,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Piercing, 3),
+								ActionEffects.forceMovement(MovementType.Pull, 3),
+								ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Speed, 4))
 							]
 						})
 					]
@@ -588,6 +539,28 @@ export const skullduggery = (): PackModel => ({
 						ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Endurance, 2, SkillType.Brawl)),
 						ActionEffects.addCondition(ConditionLogic.createDamageCategoryBonusCondition(TraitType.Endurance, 2, DamageCategoryType.Physical))
 					]
+				},
+				{
+					id: 'ninja-action-5',
+					name: 'Smoke Bomb',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 3)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Stealth,
+							trait: TraitType.Endurance,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.addCondition(ConditionLogic.createSkillPenaltyCondition(TraitType.Endurance, 4, SkillType.Perception))
+							]
+						}),
+						ActionEffects.toSelf([
+							ActionEffects.hide()
+						])
+					]
 				}
 			]
 		},
@@ -609,7 +582,8 @@ export const skullduggery = (): PackModel => ({
 				FeatureLogic.createTraitFeature('sellsword-feature-1', TraitType.Endurance, 1),
 				FeatureLogic.createSkillFeature('sellsword-feature-2', SkillType.Weapon, 2),
 				FeatureLogic.createSkillFeature('sellsword-feature-3', SkillType.Presence, 2),
-				FeatureLogic.createDamageBonusFeature('sellsword-feature-4', DamageType.Edged, 1)
+				FeatureLogic.createDamageBonusFeature('sellsword-feature-4', DamageType.Edged, 1),
+				FeatureLogic.createTraitFeature('sellsword-feature-5', TraitType.Resolve, 1)
 			],
 			actions: [
 				{
@@ -708,6 +682,36 @@ export const skullduggery = (): PackModel => ({
 							]
 						})
 					]
+				},
+				{
+					id: 'sellsword-action-6',
+					name: 'Form Up',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Allies, 3, 5)
+					],
+					effects: [
+						ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Resolve, 4, SkillType.Weapon))
+					]
+				},
+				{
+					id: 'sellsword-action-7',
+					name: 'Break Their Nerve',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 2, 4)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Presence,
+							trait: TraitType.Resolve,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.stun()
+							]
+						})
+					]
 				}
 			]
 		}
@@ -717,7 +721,10 @@ export const skullduggery = (): PackModel => ({
 			id: 'background-mountebank',
 			name: 'Mountebank',
 			description: 'Tricksters and con artists, mountebanks make valuable allies and frustrating foes.',
-			startingFeatures: [],
+			startingFeatures: [
+				FeatureLogic.createSkillFeature('mountebank-start-1', SkillType.Presence, 2),
+				FeatureLogic.createSkillFeature('mountebank-start-2', SkillType.Stealth, 2)
+			],
 			features: [
 				FeatureLogic.createSkillFeature('mountebank-feature-1', SkillType.Presence, 2),
 				FeatureLogic.createAuraDamageCategoryFeature('mountebank-feature-2', ConditionType.DamageCategoryVulnerability, DamageCategoryType.Corruption, 1),
@@ -755,63 +762,8 @@ export const skullduggery = (): PackModel => ({
 						ActionTargetParameters.self()
 					],
 					effects: [
-						ActionEffects.invertConditions(true)
-					]
-				}
-			]
-		},
-		{
-			id: 'background-negotiator',
-			name: 'Negotiator',
-			description: 'Comes to a battle carrying terms rather than a weapon.',
-			startingFeatures: [
-				FeatureLogic.createSkillFeature('negotiator-start-1', SkillType.Presence, 2)
-			],
-			features: [
-				FeatureLogic.createSkillFeature('negotiator-feature-1', SkillType.Presence, 2),
-				FeatureLogic.createTraitFeature('negotiator-feature-2', TraitType.Resolve, 1)
-			],
-			actions: [
-				{
-					id: 'negotiator-action-1',
-					name: 'Parley',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 5)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Presence,
-							trait: TraitType.Resolve,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.commandMove()
-							]
-						})
-					]
-				},
-				{
-					id: 'negotiator-action-2',
-					name: 'Reassess',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Allies, 1, 5)
-					],
-					effects: [
-						ActionEffects.removeCondition(TraitType.Any)
-					]
-				},
-				{
-					id: 'negotiator-action-3',
-					name: 'Read the Room',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.self()
-					],
-					effects: [
-						ActionEffects.scan(),
-						ActionEffects.addCondition(ConditionLogic.createSkillBonusCondition(TraitType.Resolve, 4, SkillType.Presence))
+						ActionEffects.invertConditions(true),
+						ActionEffects.takeAnotherAction()
 					]
 				}
 			]
@@ -820,7 +772,10 @@ export const skullduggery = (): PackModel => ({
 			id: 'background-thief',
 			name: 'Thief',
 			description: 'Never put your trust in a thief, even when they\'re on your side.',
-			startingFeatures: [],
+			startingFeatures: [
+				FeatureLogic.createSkillFeature('thief-start-1', SkillType.Stealth, 2),
+				FeatureLogic.createSkillFeature('thief-start-2', SkillType.Reactions, 2)
+			],
 			features: [
 				FeatureLogic.createSkillFeature('thief-feature-1', SkillType.Reactions, 2),
 				FeatureLogic.createSkillFeature('thief-feature-2', SkillType.Stealth, 2),
@@ -941,6 +896,50 @@ export const skullduggery = (): PackModel => ({
 					effects: [
 						ActionEffects.placeTrap(TrapType.AcidDart),
 						ActionEffects.takeAnotherAction()
+					]
+				},
+				{
+					id: 'trapper-action-8',
+					name: 'Rig a Flame Jet',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Squares, 1)
+					],
+					effects: [
+						ActionEffects.placeTrap(TrapType.Fire)
+					]
+				},
+				{
+					id: 'trapper-action-9',
+					name: 'Open a Gas Vent',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Squares, 1)
+					],
+					effects: [
+						ActionEffects.placeTrap(TrapType.PoisonGas)
+					]
+				},
+				{
+					id: 'trapper-action-10',
+					name: 'Cut a Frost Glyph',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Squares, 1)
+					],
+					effects: [
+						ActionEffects.placeTrap(TrapType.Frost)
+					]
+				},
+				{
+					id: 'trapper-action-11',
+					name: 'Wire a Shock Plate',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Squares, 1)
+					],
+					effects: [
+						ActionEffects.placeTrap(TrapType.Shock)
 					]
 				},
 				{

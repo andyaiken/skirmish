@@ -24,91 +24,6 @@ export const outOfTheGrave = (): PackModel => ({
 	description: 'Add a touch of gothic horror to your game with this pack.',
 	species: [
 		{
-			id: 'species-blightspawn',
-			name: 'Blightspawn',
-			description: 'Grown in a vat by someone who stopped checking on it.',
-			type: CombatantType.Monster,
-			size: 1,
-			quirks: [],
-			startingFeatures: [
-				FeatureLogic.createTraitFeature('blightspawn-start-1', TraitType.Endurance, 1),
-				FeatureLogic.createSkillFeature('blightspawn-start-2', SkillType.Brawl, 2),
-				FeatureLogic.createDamageCategoryBonusFeature('blightspawn-start-3', DamageCategoryType.Corruption, 1)
-			],
-			features: [
-				FeatureLogic.createTraitFeature('blightspawn-feature-1', TraitType.Endurance, 1),
-				FeatureLogic.createSkillFeature('blightspawn-feature-2', SkillType.Brawl, 2),
-				FeatureLogic.createDamageCategoryResistFeature('blightspawn-feature-3', DamageCategoryType.Corruption, 2)
-			],
-			actions: [
-				{
-					id: 'blightspawn-action-1',
-					name: 'Blighted Claws',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Brawl,
-							trait: TraitType.Speed,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Acid, 3)
-							]
-						})
-					]
-				},
-				{
-					id: 'blightspawn-action-2',
-					name: 'Spread the Blight',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 4)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Brawl,
-							trait: TraitType.Endurance,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.addCondition(
-									ConditionLogic.makeContagious(
-										ConditionLogic.createDamageCategoryVulnerabilityCondition(TraitType.Endurance, 4, DamageCategoryType.Corruption),
-										ContagionType.Allies
-									)
-								)
-							]
-						})
-					]
-				}
-			],
-			deathActions: [
-				{
-					id: 'blightspawn-death-1',
-					name: 'Burst',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.adjacent(ActionTargetType.Combatants, Number.MAX_VALUE)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Brawl,
-							trait: TraitType.Endurance,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Decay, 2),
-								ActionEffects.addCondition(ConditionLogic.makeContagious(ConditionLogic.createAutoDamageCondition(TraitType.Endurance, 3, DamageType.Poison)))
-							]
-						})
-					]
-				}
-			]
-		},
-		{
 			id: 'species-draugr',
 			name: 'Draugr',
 			description: 'A drowned thing that walked back out, still wearing the weight that took it under.',
@@ -120,12 +35,12 @@ export const outOfTheGrave = (): PackModel => ({
 			],
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('draugr-start-1', TraitType.Endurance, 1),
-				FeatureLogic.createSkillFeature('draugr-start-2', SkillType.Brawl, 2),
-				FeatureLogic.createDamageResistFeature('draugr-start-3', DamageType.Decay, 2)
+				FeatureLogic.createSkillFeature('draugr-start-2', SkillType.Brawl, 3),
+				FeatureLogic.createDamageResistFeature('draugr-start-3', DamageType.Decay, 3)
 			],
 			features: [
 				FeatureLogic.createTraitFeature('draugr-feature-1', TraitType.Endurance, 1),
-				FeatureLogic.createSkillFeature('draugr-feature-2', SkillType.Brawl, 2),
+				FeatureLogic.createSkillFeature('draugr-feature-2', SkillType.Brawl, 3),
 				FeatureLogic.createDamageBonusFeature('draugr-feature-3', DamageType.Cold, 1)
 			],
 			actions: [
@@ -316,6 +231,37 @@ export const outOfTheGrave = (): PackModel => ({
 							]
 						})
 					]
+				},
+				{
+					id: 'grub-swarm-action-2',
+					name: 'Churn The Earth',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 2)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.addCondition(ConditionLogic.createMovementPenaltyCondition(TraitType.Endurance, 3))
+							]
+						})
+					]
+				},
+				{
+					id: 'grub-swarm-action-3',
+					name: 'Surface',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 8)
+					],
+					effects: [
+						ActionEffects.forceMovement(MovementType.BesideTarget, 0),
+						ActionEffects.takeAnotherAction()
+					]
 				}
 			],
 			deathActions: []
@@ -380,6 +326,26 @@ export const outOfTheGrave = (): PackModel => ({
 							]
 						})
 					]
+				},
+				{
+					id: 'ooze-action-3',
+					name: 'Flow Through',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					],
+					effects: [
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Brawl,
+							trait: TraitType.Speed,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Acid, 2),
+								ActionEffects.disarm()
+							]
+						})
+					]
 				}
 			],
 			deathActions: [
@@ -404,82 +370,6 @@ export const outOfTheGrave = (): PackModel => ({
 					]
 				}
 			]
-		},
-		{
-			id: 'species-plague-doctor',
-			name: 'Plague Doctor',
-			description: 'The beaked mask keeps the bad air out.',
-			type: CombatantType.Monster,
-			size: 1,
-			quirks: [],
-			startingFeatures: [
-				FeatureLogic.createTraitFeature('plague-doctor-start-1', TraitType.Resolve, 1),
-				FeatureLogic.createSkillFeature('plague-doctor-start-2', SkillType.Spellcasting, 2),
-				FeatureLogic.createDamageBonusFeature('plague-doctor-start-3', DamageType.Poison, 2)
-			],
-			features: [
-				FeatureLogic.createTraitFeature('plague-doctor-feature-1', TraitType.Resolve, 1),
-				FeatureLogic.createSkillFeature('plague-doctor-feature-2', SkillType.Spellcasting, 2),
-				FeatureLogic.createDamageCategoryResistFeature('plague-doctor-feature-3', DamageCategoryType.Corruption, 2)
-			],
-			actions: [
-				{
-					id: 'plague-doctor-action-1',
-					name: 'Bad Air',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Enemies, Number.MAX_VALUE, 2)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Spellcasting,
-							trait: TraitType.Endurance,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.dealDamage(DamageType.Poison, 2),
-								// Engineered to stay in the ward it was meant for
-								ActionEffects.addCondition(ConditionLogic.makeContagious(
-									ConditionLogic.createAutoDamageCondition(TraitType.Endurance, 3, DamageType.Poison), ContagionType.Allies
-								))
-							]
-						})
-					]
-				},
-				{
-					id: 'plague-doctor-action-2',
-					name: 'Prescribe',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Allies, 1, 5)
-					],
-					effects: [
-						ActionEffects.healDamage(3),
-						ActionEffects.addCondition(ConditionLogic.createDamageCategoryResistanceCondition(TraitType.Endurance, 4, DamageCategoryType.Corruption))
-					]
-				},
-				{
-					id: 'plague-doctor-action-3',
-					name: 'Bleed Them',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
-					],
-					effects: [
-						ActionEffects.attack({
-							weapon: false,
-							skill: SkillType.Spellcasting,
-							trait: TraitType.Endurance,
-							skillBonus: 0,
-							hit: [
-								ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Endurance, 4, TraitType.Endurance)),
-								ActionEffects.addCondition(ConditionLogic.createAutoDamageCondition(TraitType.Endurance, 3, DamageType.Decay))
-							]
-						})
-					]
-				}
-			],
-			deathActions: []
 		},
 		{
 			id: 'species-revenant',
@@ -769,6 +659,18 @@ export const outOfTheGrave = (): PackModel => ({
 							]
 						})
 					]
+				},
+				{
+					id: 'wraith-action-3',
+					name: 'Pass Through The Wall',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Squares, 1, 8)
+					],
+					effects: [
+						ActionEffects.moveToTargetSquare(),
+						ActionEffects.hide()
+					]
 				}
 			],
 			deathActions: []
@@ -835,6 +737,18 @@ export const outOfTheGrave = (): PackModel => ({
 								])
 							]
 						})
+					]
+				},
+				{
+					id: 'zombie-action-3',
+					name: 'Shamble Forward',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.self()
+					],
+					effects: [
+						ActionEffects.addMovement(),
+						ActionEffects.addCondition(ConditionLogic.createDamageCategoryResistanceCondition(TraitType.Endurance, 3, DamageCategoryType.Physical))
 					]
 				}
 			],
@@ -1122,61 +1036,11 @@ export const outOfTheGrave = (): PackModel => ({
 	],
 	backgrounds: [
 		{
-			id: 'background-leech',
-			name: 'Leech',
-			description: 'A physician of the old school, for whom most complaints call for the same remedy.',
-			startingFeatures: [
-				FeatureLogic.createTraitFeature('leech-start-1', TraitType.Endurance, 1),
-				FeatureLogic.createSkillCategoryFeature('leech-start-2', SkillCategoryType.Mental, 1)
-			],
-			features: [
-				FeatureLogic.createTraitFeature('leech-feature-1', TraitType.Endurance, 1),
-				FeatureLogic.createDamageCategoryResistFeature('leech-feature-2', DamageCategoryType.Corruption, 1)
-			],
-			actions: [
-				{
-					id: 'leech-action-1',
-					name: 'Bleed the Patient',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.adjacent(ActionTargetType.Allies, 1)
-					],
-					effects: [
-						ActionEffects.healWounds(1),
-						ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Endurance, 2, TraitType.Endurance))
-					]
-				},
-				{
-					id: 'leech-action-2',
-					name: 'Draw Off the Humour',
-					prerequisites: [
-						ActionPrerequisites.condition(TraitType.Any)
-					],
-					parameters: [
-						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
-					],
-					effects: [
-						ActionEffects.transferCondition()
-					]
-				},
-				{
-					id: 'leech-action-3',
-					name: 'Poultice',
-					prerequisites: [],
-					parameters: [
-						ActionTargetParameters.adjacent(ActionTargetType.Allies, 1)
-					],
-					effects: [
-						ActionEffects.healDamage(4)
-					]
-				}
-			]
-		},
-		{
 			id: 'background-physician',
 			name: 'Physician',
 			description: 'For many groups, a physician is the difference between life and death.',
-			startingFeatures: [],
+			startingFeatures: [
+			],
 			features: [
 				FeatureLogic.createAuraFeature('physician-feature-1', ConditionType.AutoHeal, 1)
 			],
@@ -1189,7 +1053,8 @@ export const outOfTheGrave = (): PackModel => ({
 						ActionTargetParameters.burst(ActionTargetType.Allies, Number.MAX_VALUE, 5)
 					],
 					effects: [
-						ActionEffects.removeCondition(TraitType.Any)
+						ActionEffects.removeCondition(TraitType.Any),
+						ActionEffects.takeAnotherAction()
 					]
 				},
 				{
@@ -1205,16 +1070,41 @@ export const outOfTheGrave = (): PackModel => ({
 					]
 				},
 				{
-					id: 'physician-action-3',
-					name: 'Heal Thyself',
-					prerequisites: [
-						ActionPrerequisites.wound()
-					],
+					id: 'physician-action-4',
+					name: 'Bleed the Patient',
+					prerequisites: [],
 					parameters: [
-						ActionTargetParameters.self()
+						ActionTargetParameters.adjacent(ActionTargetType.Allies, 1)
 					],
 					effects: [
-						ActionEffects.healWounds(2)
+						ActionEffects.healWounds(1),
+						ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Endurance, 2, TraitType.Endurance))
+					]
+				},
+				{
+					id: 'physician-action-5',
+					name: 'Draw Off the Humour',
+					prerequisites: [
+						ActionPrerequisites.condition(TraitType.Any)
+					],
+					parameters: [
+						ActionTargetParameters.adjacent(ActionTargetType.Enemies, 1)
+					],
+					effects: [
+						ActionEffects.transferCondition(),
+						ActionEffects.takeAnotherAction()
+					]
+				},
+				{
+					id: 'physician-action-6',
+					name: 'Prescribe',
+					prerequisites: [],
+					parameters: [
+						ActionTargetParameters.burst(ActionTargetType.Allies, 1, 5)
+					],
+					effects: [
+						ActionEffects.healDamage(3),
+						ActionEffects.addCondition(ConditionLogic.createDamageCategoryResistanceCondition(TraitType.Endurance, 4, DamageCategoryType.Corruption))
 					]
 				}
 			]

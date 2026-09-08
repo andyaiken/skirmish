@@ -2,6 +2,7 @@ import { Component, createRef } from 'react';
 import { IconArrowBigDownFilled, IconStarFilled } from '@tabler/icons-react';
 
 import { CombatantState } from '../../../../enums/combatant-state';
+import { QuirkType } from '../../../../enums/quirk-type';
 import { TraitType } from '../../../../enums/trait-type';
 
 import { EncounterLogic } from '../../../../logic/encounter/encounter-logic';
@@ -68,6 +69,13 @@ export class MiniToken extends Component<Props, State> {
 	};
 
 	render = () => {
+		// A Small combatant still holds a whole square - it moves, blocks and is targeted like anything
+		// else - so the quirk only changes what is drawn: a half-scale token, centred in the square it
+		// holds. Off the map there is no square to sit in and the token is an avatar in a list, so the
+		// scale applies on the map only
+		const scale = this.props.combatant.quirks.includes(QuirkType.Small) ? 0.5 : 1;
+		const size = this.props.encounter ? this.props.squareSize * this.props.combatant.size * scale : this.props.squareSize;
+
 		const onMap = this.props.encounter ? 'on-map' : '';
 		const current = this.props.combatant.combat.current ? 'current' : '';
 		const selectable = this.props.selectable ? 'selectable' : '';
@@ -78,10 +86,10 @@ export class MiniToken extends Component<Props, State> {
 
 		let prone = null;
 		if (this.props.encounter && (this.props.combatant.combat.state === CombatantState.Prone)) {
-			const size = this.props.combatant.size * this.props.squareSize / 3;
-			const iconSize = this.props.combatant.size * this.props.squareSize / 4;
+			const badgeSize = size / 3;
+			const iconSize = size / 4;
 			prone = (
-				<div className='icon-prone' style={{ width: `${size}px`, height: `${size}px` }}>
+				<div className='icon-prone' style={{ width: `${badgeSize}px`, height: `${badgeSize}px` }}>
 					<IconArrowBigDownFilled size={iconSize} />
 				</div>
 			);
@@ -89,10 +97,10 @@ export class MiniToken extends Component<Props, State> {
 
 		let stunned = null;
 		if (this.props.encounter && this.props.combatant.combat.stunned) {
-			const size = this.props.combatant.size * this.props.squareSize / 3;
-			const iconSize = this.props.combatant.size * this.props.squareSize / 4;
+			const badgeSize = size / 3;
+			const iconSize = size / 4;
 			stunned = (
-				<div className='icon-stunned' style={{ width: `${size}px`, height: `${size}px` }}>
+				<div className='icon-stunned' style={{ width: `${badgeSize}px`, height: `${badgeSize}px` }}>
 					<IconStarFilled size={iconSize} />
 				</div>
 			);
@@ -103,7 +111,7 @@ export class MiniToken extends Component<Props, State> {
 			const resolve = EncounterLogic.getTraitRank(this.props.encounter, this.props.combatant, TraitType.Resolve);
 			const barWidth = 1 - (this.props.combatant.combat.wounds / resolve);
 			healthBar = (
-				<div className='health-bar' style={{ height: `${this.props.squareSize / 5}px` }}>
+				<div className='health-bar' style={{ height: `${this.props.squareSize * scale / 5}px` }}>
 					<div className='health-bar-gauge' style={{ width: `${100 * barWidth}%` }} />
 				</div>
 			);
@@ -117,10 +125,10 @@ export class MiniToken extends Component<Props, State> {
 			colorLight = Color.toString(Color.lighten(color));
 		}
 
-		const size = this.props.encounter ? this.props.squareSize * this.props.combatant.size : this.props.squareSize;
+		const inset = this.props.squareSize * this.props.combatant.size * (1 - scale) / 2;
 
-		const x = (this.props.combatant.combat.position.x - this.props.mapDimensions.left) * this.props.squareSize;
-		const y = (this.props.combatant.combat.position.y - this.props.mapDimensions.top) * this.props.squareSize;
+		const x = ((this.props.combatant.combat.position.x - this.props.mapDimensions.left) * this.props.squareSize) + inset;
+		const y = ((this.props.combatant.combat.position.y - this.props.mapDimensions.top) * this.props.squareSize) + inset;
 
 		return (
 			<div

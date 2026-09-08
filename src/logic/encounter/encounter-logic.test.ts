@@ -190,13 +190,13 @@ describe('EncounterLogic.getPossibleMoveSquares', () => {
 
 describe('EncounterLogic.kill', () => {
 	const monsters = PackLogic.getAllPacks().flatMap(pack => PackLogic.getMonsterSpecies(pack.id));
-	const createKeg = (encounter: EncounterModel, x: number, y: number) => {
-		const keg = addCombatant(encounter, CombatantType.Monster, x, y);
-		keg.speciesID = monsters.find(species => species.id === 'species-powder-keg')!.id;
-		// Naming the species doesn't apply its cards, so give the keg the Brawl its species grants.
+	const createTinderjack = (encounter: EncounterModel, x: number, y: number) => {
+		const tinderjack = addCombatant(encounter, CombatantType.Monster, x, y);
+		tinderjack.speciesID = monsters.find(species => species.id === 'species-tinderjack')!.id;
+		// Naming the species doesn't apply its cards, so give the tinderjack the Brawl its species grants.
 		// Detonate attacks with Brawl, and at rank 0 against a defender's rank 1 it can barely land.
-		keg.features.push(FeatureLogic.createSkillFeature(`${keg.id} brawl`, SkillType.Brawl, 2));
-		return keg;
+		tinderjack.features.push(FeatureLogic.createSkillFeature(`${tinderjack.id} brawl`, SkillType.Brawl, 2));
+		return tinderjack;
 	};
 
 	it('leaves bystanders alone when the species has no death actions', () => {
@@ -222,10 +222,10 @@ describe('EncounterLogic.kill', () => {
 	// the attacker wins. It has to be pinned around the blast rather than for the whole test,
 	// because Utils.guid() draws from Math.random too - pin it any earlier and every combatant is
 	// handed the same ID, which drops them all from the target list.
-	const detonate = (encounter: EncounterModel, keg: CombatantModel) => {
+	const detonate = (encounter: EncounterModel, tinderjack: CombatantModel) => {
 		const random = vi.spyOn(Math, 'random').mockReturnValue(0.85);
 		try {
-			EncounterLogic.kill(encounter, keg);
+			EncounterLogic.kill(encounter, tinderjack);
 		} finally {
 			random.mockRestore();
 		}
@@ -233,11 +233,11 @@ describe('EncounterLogic.kill', () => {
 
 	it('runs the death action against everyone in range', () => {
 		const encounter = createEncounter(9, 9);
-		const keg = createKeg(encounter, 4, 4);
+		const tinderjack = createTinderjack(encounter, 4, 4);
 		const near = addCombatant(encounter, CombatantType.Hero, 4, 3);
 		const far = addCombatant(encounter, CombatantType.Hero, 0, 0);
 
-		detonate(encounter, keg);
+		detonate(encounter, tinderjack);
 
 		// Detonate is a radius 2 burst, so (4,3) is caught and (0,0) is not.
 		expect(harm(near)).toBeGreaterThan(0);
@@ -246,34 +246,34 @@ describe('EncounterLogic.kill', () => {
 
 	it('catches the dying combatant\'s own allies', () => {
 		const encounter = createEncounter();
-		const keg = createKeg(encounter, 2, 2);
+		const tinderjack = createTinderjack(encounter, 2, 2);
 		const ally = addCombatant(encounter, CombatantType.Monster, 2, 1);
 
-		detonate(encounter, keg);
+		detonate(encounter, tinderjack);
 
 		expect(harm(ally)).toBeGreaterThan(0);
 	});
 
 	it('does not run the death action twice', () => {
 		const encounter = createEncounter();
-		const keg = createKeg(encounter, 2, 2);
+		const tinderjack = createTinderjack(encounter, 2, 2);
 		const hero = addCombatant(encounter, CombatantType.Hero, 2, 1);
 
-		detonate(encounter, keg);
+		detonate(encounter, tinderjack);
 		const before = harm(hero);
-		detonate(encounter, keg);
+		detonate(encounter, tinderjack);
 
 		expect(harm(hero)).toBe(before);
 	});
 
-	it('chains through a second keg, detonating each at most once', () => {
+	it('chains through a second tinderjack, detonating each at most once', () => {
 		const encounter = createEncounter(9, 9);
-		const first = createKeg(encounter, 4, 4);
-		const second = createKeg(encounter, 4, 5);
+		const first = createTinderjack(encounter, 4, 4);
+		const second = createTinderjack(encounter, 4, 5);
 
-		// The second keg is caught in the first blast and, if that kills it,
+		// The second tinderjack is caught in the first blast and, if that kills it,
 		// detonates in turn. Reaching the assertions at all proves the chain
-		// terminates rather than looping back into the first keg.
+		// terminates rather than looping back into the first tinderjack.
 		detonate(encounter, first);
 
 		expect(first.combat.state).toBe(CombatantState.Dead);

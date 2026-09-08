@@ -19,7 +19,7 @@ import { TargetStateType } from '../../enums/target-state-type';
 import { TraitType } from '../../enums/trait-type';
 
 export const outOfTheGrave = (): PackModel => ({
-	id: 'pack-out-of-the-grave',
+	id: 'pack_out_of_the_grave',
 	name: 'Out of the Grave',
 	description: 'Add a touch of gothic horror to your game with this pack.',
 	species: [

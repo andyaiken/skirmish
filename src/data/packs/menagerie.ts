@@ -16,7 +16,7 @@ import { TargetStateType } from '../../enums/target-state-type';
 import { TraitType } from '../../enums/trait-type';
 
 export const menagerie = (): PackModel => ({
-	id: 'pack-menagerie',
+	id: 'pack_menagerie',
 	name: 'The Menagerie',
 	description: 'This beast-themed collection contains dangerous new species.',
 	species: [

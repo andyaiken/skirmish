@@ -4390,6 +4390,15 @@ export const core = (): PackModel => ({
 			charges: 0
 		},
 		{
+			id: 'structure-shipyard',
+			type: StructureType.Shipyard,
+			name: 'Shipyard',
+			description: 'Ships built here can carry your heroes to any coast on the island.',
+			position: { x: 0, y: 0 },
+			level: 1,
+			charges: 0
+		},
+		{
 			id: 'structure-training',
 			type: StructureType.TrainingGround,
 			name: 'Training Ground',

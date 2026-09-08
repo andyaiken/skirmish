@@ -20,9 +20,9 @@ import { TraitType } from '../../enums/trait-type';
 import { TrapType } from '../../enums/trap-type';
 
 export const codexArcanum = (): PackModel => ({
-	id: 'pack-codex-arcanum',
+	id: 'pack_codex_arcanum',
 	name: 'Codex Arcanum',
-	description: 'Discover new ways to channel magic with the cards in this pack.',
+	description: 'Discover new ways to channel and manipulate magic with the cards in this pack.',
 	species: [
 		{
 			id: 'species-golem',

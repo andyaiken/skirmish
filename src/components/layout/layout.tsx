@@ -25,9 +25,12 @@ export const Layout = (props: Props) => {
 	const [ screen, setScreen ] = useState(ScreenType.Landing);
 	const [ page, setPage ] = useState(PageType.Island);
 
+	// 740 rather than 768 on the short edge, because the iPad mini is 744pt there and was
+	// the one current iPad the old threshold shut out - in both orientations, since 744
+	// is its width in portrait and its height in landscape.
 	const isLandscapeWidth = useMediaQuery({ query: '(min-width: 1024px)' });
-	const isLandscapeHeight = useMediaQuery({ query: '(min-height: 768px)' });
-	const isPortraitWidth = useMediaQuery({ query: '(min-width: 768px)' });
+	const isLandscapeHeight = useMediaQuery({ query: '(min-height: 740px)' });
+	const isPortraitWidth = useMediaQuery({ query: '(min-width: 740px)' });
 	const isPortraitHeight = useMediaQuery({ query: '(min-height: 1024px)' });
 
 	if (isLandscapeWidth && isLandscapeHeight) {

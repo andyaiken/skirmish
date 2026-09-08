@@ -15,10 +15,16 @@ import type { StructureModel } from '../models/structure';
 
 import { Utils } from '../utils/utils/utils';
 
+import { UnavailableStore, priceForPack } from './store';
+import type { Store } from './store';
+
 import pkg from '../../package.json';
 
 export class Platform {
 	worker: Worker;
+	// Replaced with a real implementation once the store SDK is wired up; until then this
+	// reports no products, which the packs modal renders as 'not for sale here'.
+	store: Store = new UnavailableStore();
 
 	getGame: () => (GameModel | null);
 	getOptions: () => (OptionsModel | null);
@@ -170,19 +176,28 @@ export class Platform {
 		this.worker.postMessage({ type: 'options', payload: this.getOptions() });
 	});
 
-	getPackPrice = (packs: PackModel[], options: OptionsModel) => {
-		return 0;
-
-		/*
-		return Collections.sum(packs, pack => {
-			const cards = PackLogic.getPackCardCount(pack.id);
-			const cents = Math.max((cards - 1) * 50, 100);
-			return (cents - 1) / 100;
-		});
-		*/
+	// The store formats prices itself, in the player's own currency and at whichever tier
+	// Apple currently maps the product to, so this hands back its string or null when the
+	// pack is not on sale here.
+	getPackPrice = (pack: PackModel) => {
+		return priceForPack(this.store, pack);
 	};
 
-	getPacks = (packs: PackModel[], options: OptionsModel) => {
-		return Promise.resolve();
+	// Resolves with every pack the player owns afterwards. In a developer build the packs
+	// are simply granted, so the game stays playable without a store to buy from.
+	getPacks = (packs: PackModel[], options: OptionsModel): Promise<string[]> => {
+		const requested = packs.map(pack => pack.id);
+
+		if (options.developer) {
+			return Promise.resolve([ ...options.packIDs, ...requested ]);
+		}
+
+		return this.store.purchase(requested);
+	};
+
+	// App Review requires this to be reachable, and it is the only way a player who
+	// reinstalls gets their packs back - nothing about ownership is stored on our side.
+	restorePurchases = (): Promise<string[]> => {
+		return this.store.restore();
 	};
 }

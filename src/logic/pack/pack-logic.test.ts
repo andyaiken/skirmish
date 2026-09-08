@@ -37,12 +37,12 @@ describe('PackLogic.getAvailablePacks', () => {
 	});
 
 	it('ignores an ID it does not recognise', () => {
-		expect(PackLogic.getAvailablePacks([ 'pack-that-does-not-exist' ]).map(p => p.id)).toEqual([ 'core' ]);
+		expect(PackLogic.getAvailablePacks([ 'pack_that_does_not_exist' ]).map(p => p.id)).toEqual([ 'core' ]);
 	});
 
 	it('does not double a pack named twice', () => {
-		const ids = PackLogic.getAvailablePacks([ 'pack-elemental-storm', 'pack-elemental-storm' ]).map(p => p.id);
-		expect(ids.filter(id => id === 'pack-elemental-storm')).toHaveLength(1);
+		const ids = PackLogic.getAvailablePacks([ 'pack_elemental_storm', 'pack_elemental_storm' ]).map(p => p.id);
+		expect(ids.filter(id => id === 'pack_elemental_storm')).toHaveLength(1);
 	});
 });
 

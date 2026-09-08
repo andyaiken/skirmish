@@ -49,6 +49,11 @@
 	<array>
 		<string>armv7</string>
 	</array>
+	<!-- The board and island map need the whole screen; a Split View slice is far
+	     narrower than the layout supports. Ignored by newer iPadOS, so the size
+	     gate in layout.tsx still has to cope on its own. -->
+	<key>UIRequiresFullScreen</key>
+	<true/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

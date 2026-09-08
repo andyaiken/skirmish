@@ -5,8 +5,6 @@ import { PackLogic } from '../../../logic/pack/pack-logic';
 import type { OptionsModel } from '../../../models/options';
 import type { PackModel } from '../../../models/pack';
 
-import { Format } from '../../../utils/format/format';
-
 import { BackgroundCard, ItemCard, PackCard, RoleCard, SpeciesCard, StructureCard } from '../../cards';
 import { CardList, Dialog, Text, TextType } from '../../controls';
 
@@ -14,9 +12,10 @@ import './packs-modal.scss';
 
 interface Props {
 	options: OptionsModel;
-	getPrice: (packs: PackModel[]) => number;
+	getPrice: (pack: PackModel) => string | null;
 	addPacks: (packs: PackModel[]) => void;
 	removePack: (pack: PackModel) => void;
+	restorePurchases: () => void;
 }
 
 interface State {
@@ -39,17 +38,25 @@ export class PacksModal extends Component<Props, State> {
 		const pack = this.state.selectedPack;
 
 		let owned = null;
-		if ((pack.id === '') || this.props.options.packIDs.includes(pack.id)) {
-			owned = null;
-		} else {
+		if ((pack.id !== '') && !this.props.options.packIDs.includes(pack.id)) {
+			const price = this.props.getPrice(pack);
 			owned = (
 				<div>
 					<Text type={TextType.Information}>
 						<p>You <b>do not</b> own this card pack.</p>
 					</Text>
-					<button className='primary' onClick={() => this.props.addPacks([ pack ])}>
-						Get This Pack ({Format.toCurrency(this.props.getPrice([ pack ]), '$')})
-					</button>
+					{
+						price ?
+							<button className='primary' onClick={() => this.props.addPacks([ pack ])}>
+								Buy This Pack ({price})
+							</button>
+							:
+							// No price means the store has not offered this product - offline, or a
+							// build with no store. Saying so beats a button that cannot work.
+							<Text type={TextType.Information}>
+								<p>This pack is not available to buy at the moment.</p>
+							</Text>
+					}
 				</div>
 			);
 		}
@@ -173,17 +180,15 @@ export class PacksModal extends Component<Props, State> {
 				<Text type={TextType.Heading}>Card Packs</Text>
 				{notOwned.length > 0 ? <hr /> : null}
 				{notOwned.length > 0 ? <Text type={TextType.SubHeading}>Available Packs</Text> : null}
-				{
-					notOwned.length > 1 ?
-						<button className='primary' onClick={() => this.props.addPacks(notOwnedPacks)}>
-							Get All Packs ({Format.toCurrency(this.props.getPrice(notOwnedPacks), '$')})
-						</button>
-						: null
-				}
 				{notOwned.length > 0 ? <CardList cards={notOwned} /> : null}
 				{owned.length > 0 ? <hr /> : null}
 				{owned.length > 0 ? <Text type={TextType.SubHeading}>My Packs</Text> : null}
 				{owned.length > 0 ? <CardList cards={owned} /> : null}
+				<hr />
+				<button className='restore-btn' onClick={() => this.props.restorePurchases()}>Restore Purchases</button>
+				<Text type={TextType.Small}>
+					<p>Already bought some packs? Restore them here after reinstalling or on a new device.</p>
+				</Text>
 				{this.getDialog()}
 			</div>
 		);

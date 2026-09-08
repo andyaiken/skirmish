@@ -13,15 +13,14 @@ import { MovementType } from '../../enums/movement-type';
 import { PackModel } from '../../models/pack';
 import { QuirkType } from '../../enums/quirk-type';
 import { SkillType } from '../../enums/skill-type';
-import { StructureType } from '../../enums/structure-type';
 import { SummonType } from '../../enums/summon-type';
 import { TargetStateType } from '../../enums/target-state-type';
 import { TraitType } from '../../enums/trait-type';
 
 export const elementalStorm = (): PackModel => ({
-	id: 'pack-elemental-storm',
+	id: 'pack_elemental_storm',
 	name: 'The Elemental Storm',
-	description: 'Air, water, stone and cold - and the things that live where those things win.',
+	description: 'Air, water, earth, fire: almost impossible to master, but the rewards are great.',
 	species: [
 		{
 			id: 'species-frostkin',
@@ -1509,15 +1508,5 @@ export const elementalStorm = (): PackModel => ({
 	],
 	potions: [],
 	scrolls: [],
-	structures: [
-		{
-			id: 'structure-shipyard',
-			type: StructureType.Shipyard,
-			name: 'Shipyard',
-			description: 'Ships built here can carry your heroes to any coast on the island.',
-			position: { x: 0, y: 0 },
-			level: 1,
-			charges: 0
-		}
-	]
+	structures: []
 });

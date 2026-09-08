@@ -19,7 +19,7 @@ import { TargetStateType } from '../../enums/target-state-type';
 import { TraitType } from '../../enums/trait-type';
 
 export const faeGreenRealm = (): PackModel => ({
-	id: 'pack-fae-green-realm',
+	id: 'pack_fae_green_realm',
 	name: 'The Fae Green Realm',
 	description: 'Bring the beguiling wonder of the fae into your game with this pack.',
 	species: [

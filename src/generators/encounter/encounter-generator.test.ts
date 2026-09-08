@@ -123,7 +123,7 @@ describe('EncounterGenerator.createEncounter', () => {
 	});
 
 	it('builds an encounter with an expansion pack switched on', () => {
-		seeds.forEach(seed => expect(() => build(seed, [ 'pack-elemental-storm' ])).not.toThrow());
+		seeds.forEach(seed => expect(() => build(seed, [ 'pack_elemental_storm' ])).not.toThrow());
 	});
 
 	// Traps are base-game map furniture, so no pack has to be switched on for them to appear
@@ -168,6 +168,6 @@ describe('EncounterGenerator.createEncounter', () => {
 			build(seed, packIDs).mapSquares.filter(sq => sq.type === EncounterMapSquareType.Water).length);
 
 		expect(water([])).toBeGreaterThan(0);
-		expect(water([ 'pack-elemental-storm' ])).toBe(water([]));
+		expect(water([ 'pack_elemental_storm' ])).toBe(water([]));
 	});
 });

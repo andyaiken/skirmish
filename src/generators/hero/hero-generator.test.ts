@@ -28,7 +28,7 @@ describe('generating a random hero', () => {
 	// applyCombatantCards rather than raised, so the IDs landing on the hero are the
 	// only evidence that the right deck was drawn from.
 	it('gives every hero a species, a role and a background', () => {
-		[ [], [ 'pack-fae-green-realm', 'pack-menagerie' ] ].forEach(packIDs => {
+		[ [], [ 'pack_fae_green_realm', 'pack_menagerie' ] ].forEach(packIDs => {
 			buildParty(packIDs, `cards for ${packIDs.length} packs`).forEach(hero => {
 				expect(hero.speciesID).not.toBe('');
 				expect(hero.roleID).not.toBe('');

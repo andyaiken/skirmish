@@ -16,7 +16,7 @@ import { StructureType } from '../../enums/structure-type';
 import { TraitType } from '../../enums/trait-type';
 
 export const workshop = (): PackModel => ({
-	id: 'pack-workshop',
+	id: 'pack_workshop',
 	name: 'The Workshop',
 	description: 'The cards in this pack showcase marvels of engineering and ingenuity.',
 	species: [

@@ -1,5 +1,5 @@
 import { Component, ReactNode } from 'react';
-import { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 
 import { BoonType } from '../../enums/boon-type';
 import { CombatantState } from '../../enums/combatant-state';
@@ -229,27 +229,51 @@ export class Main extends Component<Props, State> {
 		});
 	};
 
-	getPackPrice = (packs: PackModel[]) => {
-		return this.props.platform.getPackPrice(packs, this.state.options);
+	getPackPrice = (pack: PackModel) => {
+		return this.props.platform.getPackPrice(pack);
+	};
+
+	// Both buying and restoring hand back the full set of packs the player owns, so the
+	// result replaces packIDs rather than being merged into it - a restore on a fresh
+	// install has to be able to fill an empty list, and a refund has to empty it again.
+	setOwnedPacks = (packIDs: string[]) => {
+		const options = this.state.options;
+		options.packIDs = Collections.distinct(packIDs, id => id).sort();
+
+		this.setState({
+			options: options
+		}, () => {
+			this.saveOptions();
+		});
 	};
 
 	addPacks = (packs: PackModel[]) => {
-		const options = this.state.options;
-
-		this.props.platform.getPacks(packs, this.state.options).then(() => {
-			packs.forEach(pack => {
-				if (!options.packIDs.includes(pack.id)) {
-					options.packIDs.push(pack.id);
-				}
+		this.props.platform
+			.getPacks(packs, this.state.options)
+			.then(this.setOwnedPacks)
+			.catch(ex => {
+				// A cancelled purchase arrives here too, so this reports rather than logs:
+				// the player pressed something and is owed an answer either way.
+				this.showPurchaseFailure(ex);
 			});
-			options.packIDs.sort();
+	};
 
-			this.setState({
-				options: options
-			}, () => {
-				this.saveOptions();
+	restorePurchases = () => {
+		this.props.platform
+			.restorePurchases()
+			.then(this.setOwnedPacks)
+			.catch(ex => {
+				this.showPurchaseFailure(ex);
 			});
-		});
+	};
+
+	showPurchaseFailure = (ex: unknown) => {
+		this.logException(ex);
+		toast.custom(t => (
+			<div key={t.id} className='skirmish-notification' onClick={() => toast.remove(t.id)}>
+				{ex instanceof Error ? ex.message : 'That did not work. Nothing has been charged.'}
+			</div>
+		));
 	};
 
 	removePack = (pack: PackModel) => {
@@ -1692,6 +1716,7 @@ export class Main extends Component<Props, State> {
 							getPrice={this.getPackPrice}
 							addPacks={this.addPacks}
 							removePack={this.removePack}
+							restorePurchases={this.restorePurchases}
 						/>
 					}
 					onClose={() => this.setState({ showPacks: false })}

@@ -17,9 +17,9 @@ import { StructureType } from '../../enums/structure-type';
 import { TraitType } from '../../enums/trait-type';
 
 export const faithAndDamnation = (): PackModel => ({
-	id: 'pack-faith-and-damnation',
+	id: 'pack_faith_and_damnation',
 	name: 'Faith and Damnation',
-	description: 'Power borrowed from something greater than you, on terms set by whoever is lending it.',
+	description: 'These cards bring you heroes with power given by a higher - or lower - power.',
 	species: [
 		{
 			id: 'species-apostate',

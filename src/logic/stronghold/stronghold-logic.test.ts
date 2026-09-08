@@ -168,7 +168,7 @@ describe('the buildable structure deck', () => {
 		GameLogic.getStructureDeck(packIDs).filter(s => StrongholdLogic.canBuild(s)).map(s => s.type);
 
 	it('offers every Skullduggery trade structure', () => {
-		const deck = buildable([ 'pack-skullduggery' ]);
+		const deck = buildable([ 'pack_skullduggery' ]);
 		[ StructureType.Bazaar, StructureType.CountingHouse, StructureType.Guildhall, StructureType.Monument, StructureType.Tavern ]
 			.forEach(type => expect(deck, type).toContain(type));
 	});
@@ -183,7 +183,7 @@ describe('the buildable structure deck', () => {
 describe('drawing structures for sale', () => {
 	it('can offer every buildable structure, including the permanent ones', () => {
 		// Mirrors what the buy-structure modal does, to prove nothing in the deck is unreachable
-		const deck = GameLogic.getStructureDeck([ 'pack-elemental-storm', 'pack-skullduggery' ])
+		const deck = GameLogic.getStructureDeck([ 'pack_elemental_storm', 'pack_skullduggery' ])
 			.filter(s => StrongholdLogic.canBuild(s));
 
 		const drawn = new Set<string>();

@@ -16,7 +16,7 @@ import { TraitType } from '../../enums/trait-type';
 import { TrapType } from '../../enums/trap-type';
 
 export const skullduggery = (): PackModel => ({
-	id: 'pack-skullduggery',
+	id: 'pack_skullduggery',
 	name: 'Skullduggery',
 	description: 'A collection of cards for those who fight with guile rather than valor.',
 	species: [

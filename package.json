@@ -13,7 +13,8 @@
 		"react-dom": "^19.2.8",
 		"react-hot-toast": "^2.6.0",
 		"react-markdown": "^10.1.0",
-		"react-responsive": "^10.0.1"
+		"react-responsive": "^10.0.1",
+		"skirmish-store": "file:plugins/skirmish-store"
 	},
 	"devDependencies": {
 		"@stylistic/eslint-plugin": "^5.10.0",

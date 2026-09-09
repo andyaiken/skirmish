@@ -23,6 +23,7 @@ import { EncounterMapLogic } from '../../logic/encounter-map/encounter-map-logic
 import { Factory } from '../../logic/factory/factory';
 import { GameLogic } from '../../logic/game/game-logic';
 import { IntentsLogic } from '../../logic/intents/intents-logic';
+import { PackLogic } from '../../logic/pack/pack-logic';
 import { StrongholdLogic } from '../../logic/stronghold/stronghold-logic';
 
 import type { ActionModel, ActionParameterModel } from '../../models/action';
@@ -99,11 +100,20 @@ export class Main extends Component<Props, State> {
 		this.props.platform.getGame = () => this.state.game;
 		this.props.platform.getOptions = () => this.state.options;
 		this.props.platform.logException = ex => this.logException(ex);
+		// Prices land after the first render, so this pulls the packs modal back through
+		// render once they are known.
+		this.props.platform.onStoreUpdated = () => this.forceUpdate();
+		// StoreKit can also hand us a purchase we never asked for - an Ask to Buy approved
+		// later, or a buy made on another device.
+		this.props.platform.onOwnershipChanged = packIDs => this.setOwnedPacks(packIDs);
 
 		Sound.volume = this.state.options.soundEffectsVolume;
 	}
 
 	componentDidMount = () => {
+		this.props.platform.loadStore(PackLogic.getExpansionPacks().map(p => p.id));
+		this.props.platform.syncOwnedPacks(this.state.options);
+
 		fetch(encounters).then(response => response.text()).then(text => {
 			rules['encounters'] = text;
 		});
@@ -251,27 +261,42 @@ export class Main extends Component<Props, State> {
 		this.props.platform
 			.getPacks(packs, this.state.options)
 			.then(this.setOwnedPacks)
-			.catch(ex => {
-				// A cancelled purchase arrives here too, so this reports rather than logs:
-				// the player pressed something and is owed an answer either way.
-				this.showPurchaseFailure(ex);
-			});
+			.catch(ex => this.handlePurchaseError(ex));
 	};
 
 	restorePurchases = () => {
 		this.props.platform
 			.restorePurchases()
 			.then(this.setOwnedPacks)
-			.catch(ex => {
-				this.showPurchaseFailure(ex);
-			});
+			.catch(ex => this.handlePurchaseError(ex));
 	};
 
-	showPurchaseFailure = (ex: unknown) => {
+	// The store rejects for three quite different reasons and only one of them is a fault.
+	handlePurchaseError = (ex: unknown) => {
+		const code = (ex as { code?: string }).code;
+
+		if (code === 'cancelled') {
+			// The player backed out of the payment sheet. They know what they did; saying
+			// anything here would be telling them off for changing their mind.
+			return;
+		}
+
+		if (code === 'pending') {
+			// Ask to Buy, or a payment method needing action elsewhere. Approval can take
+			// hours, and the transaction listener adds the pack whenever it arrives - so
+			// this has to read as 'waiting', not 'failed'.
+			this.showNotification('Waiting for approval. The pack will appear here once it is approved.');
+			return;
+		}
+
 		this.logException(ex);
+		this.showNotification(ex instanceof Error ? ex.message : 'That did not work. Nothing has been charged.');
+	};
+
+	showNotification = (message: string) => {
 		toast.custom(t => (
 			<div key={t.id} className='skirmish-notification' onClick={() => toast.remove(t.id)}>
-				{ex instanceof Error ? ex.message : 'That did not work. Nothing has been charged.'}
+				{message}
 			</div>
 		));
 	};

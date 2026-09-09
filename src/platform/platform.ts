@@ -1,3 +1,4 @@
+import { Capacitor } from '@capacitor/core';
 import localforage from 'localforage';
 
 import { BoonType } from '../enums/boon-type';
@@ -17,18 +18,23 @@ import { Utils } from '../utils/utils/utils';
 
 import { UnavailableStore, priceForPack } from './store';
 import type { Store } from './store';
+import { StoreKitStore } from './storekit-store';
 
 import pkg from '../../package.json';
 
 export class Platform {
 	worker: Worker;
-	// Replaced with a real implementation once the store SDK is wired up; until then this
-	// reports no products, which the packs modal renders as 'not for sale here'.
-	store: Store = new UnavailableStore();
+	// StoreKit on a device, and a stub everywhere else - the browser has no App Store, so
+	// prices are simply absent there rather than the app pretending otherwise.
+	store: Store;
 
 	getGame: () => (GameModel | null);
 	getOptions: () => (OptionsModel | null);
 	logException: (msg: unknown) => void;
+	// Prices arrive after the first render, and StoreKit can hand us a purchase we never
+	// asked for, so the app needs telling to look again.
+	onStoreUpdated: () => void;
+	onOwnershipChanged: (packIDs: string[]) => void;
 
 	constructor() {
 		this.worker = new Worker(new URL('./worker.ts', import.meta.url), { type: 'module' });
@@ -47,7 +53,61 @@ export class Platform {
 		this.logException = msg => {
 			console.error(msg);
 		};
+
+		this.onStoreUpdated = () => {
+			// Assigned by Main once it is mounted.
+		};
+
+		this.onOwnershipChanged = () => {
+			// Assigned by Main once it is mounted.
+		};
+
+		this.store = Capacitor.isNativePlatform() ?
+			new StoreKitStore(packIDs => this.onOwnershipChanged(packIDs), ex => this.logException(ex))
+			: new UnavailableStore();
 	}
+
+	// Called once the app is running, because prices are worth nothing before there is a
+	// packs modal to show them in.
+	loadStore = (packIDs: string[]) => {
+		if (this.store instanceof StoreKitStore) {
+			this.store.loadProducts(packIDs, () => this.onStoreUpdated());
+		}
+	};
+
+	// Asks the store, quietly, what the player actually owns. This is what notices a refund
+	// or a Family Sharing entitlement being withdrawn, and what fills an empty list after a
+	// reinstall without the player having to find Restore Purchases.
+	//
+	// Deliberately not restore(): that syncs with the App Store and can raise a sign-in
+	// prompt, which has no business appearing on a cold launch.
+	syncOwnedPacks = (options: OptionsModel) => {
+		if (options.developer) {
+			// A developer build grants packs locally, so taking the store's word for it here
+			// would strip them again on every launch.
+			return;
+		}
+
+		if (this.store instanceof StoreKitStore) {
+			this.store
+				.getOwned()
+				.then(packIDs => {
+					// An empty answer is ambiguous: it means 'you own nothing', which is equally
+					// what a refund and a signed-out App Store account look like. Acting on it
+					// would strip a paying player's packs the first time they launched while
+					// signed out, so an empty result is left alone and only a non-empty one is
+					// treated as the truth. Restore Purchases stays authoritative either way,
+					// because it signs in first.
+					if (packIDs.length > 0) {
+						this.onOwnershipChanged(packIDs);
+					}
+				})
+				.catch(() => {
+					// Almost always no network. The locally stored list is what the player had
+					// last time and is the right thing to keep, so this stays silent.
+				});
+		}
+	};
 
 	logIn = async (): Promise<{ game: GameModel | null, options: OptionsModel }> => {
 		const game = await localforage.getItem<GameModel>('skirmish-game');

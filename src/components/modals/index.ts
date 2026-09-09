@@ -10,6 +10,7 @@ import { EncounterStartModal } from './encounter-start/encounter-start-modal';
 import { HelpModal } from './help/help-modal';
 import { HeroBuilderModal } from './hero-builder/hero-builder-modal';
 import { MagicItemInfoModal } from './magic-item-info/magic-item-info-modal';
+import { PackModal } from './pack/pack-modal';
 import { PacksModal } from './packs/packs-modal';
 import { RoleModal } from './role/role-modal';
 import { SpeciesModal } from './species/species-modal';
@@ -27,6 +28,7 @@ export {
 	HelpModal,
 	HeroBuilderModal,
 	MagicItemInfoModal,
+	PackModal,
 	PacksModal,
 	RoleModal,
 	SpeciesModal

@@ -1,0 +1,14 @@
+{
+	"name": "skirmish-store",
+	"version": "1.0.0",
+	"description": "StoreKit purchases for Skirmish, as a local Capacitor plugin.",
+	"private": true,
+	"capacitor": {
+		"ios": {
+			"src": "ios"
+		}
+	},
+	"files": [
+		"ios/"
+	]
+}

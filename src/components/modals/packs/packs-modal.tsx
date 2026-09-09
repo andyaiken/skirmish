@@ -5,8 +5,10 @@ import { PackLogic } from '../../../logic/pack/pack-logic';
 import type { OptionsModel } from '../../../models/options';
 import type { PackModel } from '../../../models/pack';
 
-import { BackgroundCard, ItemCard, PackCard, RoleCard, SpeciesCard, StructureCard } from '../../cards';
 import { CardList, Dialog, Text, TextType } from '../../controls';
+import { PackCard } from '../../cards';
+
+import { PackModal } from '../pack/pack-modal';
 
 import './packs-modal.scss';
 
@@ -37,113 +39,15 @@ export class PacksModal extends Component<Props, State> {
 
 		const pack = this.state.selectedPack;
 
-		let owned = null;
-		if ((pack.id !== '') && !this.props.options.packIDs.includes(pack.id)) {
-			const price = this.props.getPrice(pack);
-			owned = (
-				<div>
-					<Text type={TextType.Information}>
-						<p>You <b>do not</b> own this card pack.</p>
-					</Text>
-					{
-						price ?
-							<button className='primary' onClick={() => this.props.addPacks([ pack ])}>
-								Buy This Pack ({price})
-							</button>
-							:
-							// No price means the store has not offered this product - offline, or a
-							// build with no store. Saying so beats a button that cannot work.
-							<Text type={TextType.Information}>
-								<p>This pack is not available to buy at the moment.</p>
-							</Text>
-					}
-				</div>
-			);
-		}
-
-		const heroes = PackLogic.getHeroSpecies(pack.id).map(s => {
-			return (
-				<SpeciesCard key={s.id} species={s} />
-			);
-		});
-
-		const monsters = PackLogic.getMonsterSpecies(pack.id).map(s => {
-			return (
-				<SpeciesCard key={s.id} species={s} />
-			);
-		});
-
-		const roles = PackLogic.getRoles(pack.id).map(r => {
-			return (
-				<RoleCard key={r.id} role={r} />
-			);
-		});
-
-		const backgrounds = PackLogic.getBackgrounds(pack.id).map(b => {
-			return (
-				<BackgroundCard key={b.id} background={b} />
-			);
-		});
-
-		const structures = PackLogic.getStructures(pack.id).map(s => {
-			return (
-				<StructureCard key={s.id} structure={s} />
-			);
-		});
-
-		const items = PackLogic.getItems(pack.id).map(i => {
-			return (
-				<ItemCard key={i.id} item={i} />
-			);
-		});
-
-		const potions = PackLogic.getPotions(pack.id).map(p => {
-			return (
-				<ItemCard key={p.id} item={p} />
-			);
-		});
-
-		const scrolls = PackLogic.getScrolls(pack.id).map(sc => {
-			return (
-				<ItemCard key={sc.id} item={sc} />
-			);
-		});
-
 		return (
 			<Dialog
 				content={
-					<div>
-						<Text type={TextType.Heading}>{this.state.selectedPack.name}</Text>
-						<hr />
-						<Text>
-							<p style={{ textAlign: 'center' }}>{this.state.selectedPack.description}</p>
-						</Text>
-						{owned}
-						{heroes.length > 0 ? <hr /> : null}
-						{heroes.length > 0 ? <Text type={TextType.MinorHeading}>Hero Species Cards</Text> : null}
-						{heroes.length > 0 ? <CardList cards={heroes} /> : null}
-						{monsters.length > 0 ? <hr /> : null}
-						{monsters.length > 0 ? <Text type={TextType.MinorHeading}>Monster Species Cards</Text> : null}
-						{monsters.length > 0 ? <CardList cards={monsters} /> : null}
-						{roles.length > 0 ? <hr /> : null}
-						{roles.length > 0 ? <Text type={TextType.MinorHeading}>Role Cards</Text> : null}
-						{roles.length > 0 ? <CardList cards={roles} /> : null}
-						{backgrounds.length > 0 ? <hr /> : null}
-						{backgrounds.length > 0 ? <Text type={TextType.MinorHeading}>Background Cards</Text> : null}
-						{backgrounds.length > 0 ? <CardList cards={backgrounds} /> : null}
-						{structures.length > 0 ? <hr /> : null}
-						{structures.length > 0 ? <Text type={TextType.MinorHeading}>Structure Cards</Text> : null}
-						{structures.length > 0 ? <CardList cards={structures} /> : null}
-						{items.length > 0 ? <hr /> : null}
-						{items.length > 0 ? <Text type={TextType.MinorHeading}>Item Cards</Text> : null}
-						{items.length > 0 ? <CardList cards={items} /> : null}
-						{potions.length > 0 ? <hr /> : null}
-						{potions.length > 0 ? <Text type={TextType.MinorHeading}>Potion Cards</Text> : null}
-						{potions.length > 0 ? <CardList cards={potions} /> : null}
-						{scrolls.length > 0 ? <hr /> : null}
-						{scrolls.length > 0 ? <Text type={TextType.MinorHeading}>Scroll Cards</Text> : null}
-						{scrolls.length > 0 ? <CardList cards={scrolls} /> : null}
-					</div>
+					<PackModal
+						pack={pack}
+						owned={this.props.options.packIDs.includes(pack.id)}
+						price={this.props.getPrice(pack)}
+						buyPack={p => this.props.addPacks([ p ])}
+					/>
 				}
 				level={2}
 				onClose={() => this.setState({ selectedPack: null })}

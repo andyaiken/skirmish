@@ -1,0 +1,140 @@
+{
+  "identifier": "374A94FB",
+  "nonRenewingSubscriptions": [],
+  "products": [
+    {
+      "displayPrice": "3.99",
+      "familyShareable": true,
+      "internalID": "72070F08",
+      "localizations": [
+        {
+          "description": "11 potions, 13 scrolls, 4 arcane roles",
+          "displayName": "Codex Arcanum",
+          "locale": "en_GB"
+        }
+      ],
+      "productID": "com.andyaiken.skirmish.pack_codex_arcanum",
+      "referenceName": "Codex Arcanum",
+      "type": "NonConsumable"
+    },
+    {
+      "displayPrice": "1.99",
+      "familyShareable": true,
+      "internalID": "50E467D5",
+      "localizations": [
+        {
+          "description": "2 hero species, 7 monsters, 5 storm roles",
+          "displayName": "The Elemental Storm",
+          "locale": "en_GB"
+        }
+      ],
+      "productID": "com.andyaiken.skirmish.pack_elemental_storm",
+      "referenceName": "The Elemental Storm",
+      "type": "NonConsumable"
+    },
+    {
+      "displayPrice": "1.99",
+      "familyShareable": true,
+      "internalID": "C58E477A",
+      "localizations": [
+        {
+          "description": "3 fae hero species, 5 monsters, 4 roles",
+          "displayName": "The Fae Green Realm",
+          "locale": "en_GB"
+        }
+      ],
+      "productID": "com.andyaiken.skirmish.pack_fae_green_realm",
+      "referenceName": "The Fae Green Realm",
+      "type": "NonConsumable"
+    },
+    {
+      "displayPrice": "1.99",
+      "familyShareable": true,
+      "internalID": "1000D07B",
+      "localizations": [
+        {
+          "description": "2 hero species, 4 fiends, 5 divine roles",
+          "displayName": "Faith and Damnation",
+          "locale": "en_GB"
+        }
+      ],
+      "productID": "com.andyaiken.skirmish.pack_faith_and_damnation",
+      "referenceName": "Faith and Damnation",
+      "type": "NonConsumable"
+    },
+    {
+      "displayPrice": "1.99",
+      "familyShareable": true,
+      "internalID": "4DB3F292",
+      "localizations": [
+        {
+          "description": "Minotaur, Werewolf and 11 wild beasts",
+          "displayName": "The Menagerie",
+          "locale": "en_GB"
+        }
+      ],
+      "productID": "com.andyaiken.skirmish.pack_menagerie",
+      "referenceName": "The Menagerie",
+      "type": "NonConsumable"
+    },
+    {
+      "displayPrice": "1.99",
+      "familyShareable": true,
+      "internalID": "E2030F6F",
+      "localizations": [
+        {
+          "description": "Play a Revenant; face 8 undead horrors",
+          "displayName": "Out of the Grave",
+          "locale": "en_GB"
+        }
+      ],
+      "productID": "com.andyaiken.skirmish.pack_out_of_the_grave",
+      "referenceName": "Out of the Grave",
+      "type": "NonConsumable"
+    },
+    {
+      "displayPrice": "1.99",
+      "familyShareable": true,
+      "internalID": "221C5F83",
+      "localizations": [
+        {
+          "description": "7 stronghold buildings, 4 roguish roles",
+          "displayName": "Skullduggery",
+          "locale": "en_GB"
+        }
+      ],
+      "productID": "com.andyaiken.skirmish.pack_skullduggery",
+      "referenceName": "Skullduggery",
+      "type": "NonConsumable"
+    },
+    {
+      "displayPrice": "1.99",
+      "familyShareable": true,
+      "internalID": "39B4BB5D",
+      "localizations": [
+        {
+          "description": "Alchemist, Artificer, Gunslinger, 3 foes",
+          "displayName": "The Workshop",
+          "locale": "en_GB"
+        }
+      ],
+      "productID": "com.andyaiken.skirmish.pack_workshop",
+      "referenceName": "The Workshop",
+      "type": "NonConsumable"
+    }
+  ],
+  "settings": {
+    "_compatibilityTimeRate": {
+      "rate": "oneRealHourEqualsOneStoreDay"
+    },
+    "_failTransactionsEnabled": false,
+    "_locale": "en_GB",
+    "_storefront": "GBR",
+    "_storeKitErrors": []
+  },
+  "subscriptionGroups": [],
+  "version": {
+    "major": 4,
+    "minor": 0
+  }
+}

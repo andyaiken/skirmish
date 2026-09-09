@@ -2,21 +2,27 @@ PODS:
   - Capacitor (8.5.1):
     - CapacitorCordova
   - CapacitorCordova (8.5.1)
+  - SkirmishStore (1.0.0):
+    - Capacitor
 
 DEPENDENCIES:
   - "Capacitor (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
+  - SkirmishStore (from `../../plugins/skirmish-store`)
 
 EXTERNAL SOURCES:
   Capacitor:
     :path: "../../node_modules/@capacitor/ios"
   CapacitorCordova:
     :path: "../../node_modules/@capacitor/ios"
+  SkirmishStore:
+    :path: "../../plugins/skirmish-store"
 
 SPEC CHECKSUMS:
   Capacitor: 8ca6676b3b1147b00f7f3a547ccf68defd658d55
   CapacitorCordova: eb79411a3a0ed517eeb4c6dcf5933ce4bcbb5c9e
+  SkirmishStore: 68e0f77cf7467d225fc1fe62d5dc4ce42a51325b
 
-PODFILE CHECKSUM: 29c74ae72416eab5d8ff6f4e824f3cda6b62c73e
+PODFILE CHECKSUM: f3b68514c8a019e39ad40f818818358faa1a1827
 
 COCOAPODS: 1.17.0

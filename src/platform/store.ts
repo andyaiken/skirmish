@@ -23,6 +23,10 @@ export interface Store {
 	// this call bought - a restore reports the whole entitlement.
 	purchase: (packIDs: string[]) => Promise<string[]>;
 	restore: () => Promise<string[]>;
+	// What the store already knows is owned, without contacting the App Store. Cheap and
+	// silent, so it can run at launch; restore() cannot, because it may ask the player to
+	// sign in.
+	getOwned: () => Promise<string[]>;
 }
 
 // Stands in until the store SDK is wired up. It reports no products, which leaves the
@@ -32,6 +36,7 @@ export class UnavailableStore implements Store {
 	getProducts = () => [] as StoreProductModel[];
 	purchase = () => Promise.reject(new Error('The store is not available in this build.'));
 	restore = () => Promise.reject(new Error('The store is not available in this build.'));
+	getOwned = () => Promise.reject(new Error('The store is not available in this build.'));
 }
 
 export const priceForPack = (store: Store, pack: PackModel) => {

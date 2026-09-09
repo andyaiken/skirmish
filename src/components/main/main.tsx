@@ -259,7 +259,7 @@ export class Main extends Component<Props, State> {
 
 	addPacks = (packs: PackModel[]) => {
 		this.props.platform
-			.getPacks(packs, this.state.options)
+			.getPacks(packs)
 			.then(this.setOwnedPacks)
 			.catch(ex => this.handlePurchaseError(ex));
 	};

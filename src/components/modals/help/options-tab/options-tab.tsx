@@ -20,7 +20,40 @@ interface Props {
 	setRenderer: (value: string) => void;
 }
 
-export class OptionsTab extends Component<Props> {
+interface State {
+	systemReducesMotion: boolean;
+}
+
+export class OptionsTab extends Component<Props, State> {
+	// The device's own Reduce Motion setting already switches the decoration off, through
+	// the prefers-reduced-motion rules in index.scss. While it is on, this toggle cannot
+	// change anything - it can only add reduction, never take it away - so it is hidden
+	// rather than left sitting there looking as though it does something.
+	motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+	constructor(props: Props) {
+		super(props);
+		this.state = {
+			systemReducesMotion: this.motionQuery.matches
+		};
+	}
+
+	// The setting can be changed while the game is running, and on iPad it is two taps away
+	// in Control Centre, so this listens rather than reading once.
+	componentDidMount = () => {
+		this.motionQuery.addEventListener('change', this.motionPreferenceChanged);
+	};
+
+	componentWillUnmount = () => {
+		this.motionQuery.removeEventListener('change', this.motionPreferenceChanged);
+	};
+
+	motionPreferenceChanged = (e: MediaQueryListEvent) => {
+		this.setState({
+			systemReducesMotion: e.matches
+		});
+	};
+
 	setSoundEffectsVolume = (value: number) => {
 		this.props.setSoundEffectsVolume(value);
 		Sound.play(Sound.dong);
@@ -44,7 +77,7 @@ export class OptionsTab extends Component<Props> {
 				<hr />
 				{local ? <Switch label='Developer Mode' checked={this.props.options.developer} onChange={this.props.setDeveloperMode} /> : null}
 				<Switch label='Show Tips' checked={this.props.options.showTips} onChange={this.props.setShowTips} />
-				<Switch label='Reduce Motion' checked={this.props.options.reduceMotion} onChange={this.props.setReduceMotion} />
+				{this.state.systemReducesMotion ? null : <Switch label='Reduce Motion' checked={this.props.options.reduceMotion} onChange={this.props.setReduceMotion} />}
 				<hr />
 				<Text type={TextType.SubHeading}>Platform</Text>
 				<Selector

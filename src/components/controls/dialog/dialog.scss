@@ -11,7 +11,7 @@
 
 .dialog {
 	position: absolute;
-	width: calc(100% - 30px);
+	width: calc(100% - 60px);
 	min-width: 724px;
 	max-width: 1200px;
 	left: 50%;
@@ -29,14 +29,14 @@
 	}
 
 	&.level-2 {
-		top: 0;
-		bottom: 0;
+		top: 5%;
+		bottom: 5%;
 		z-index: 3000;
 	}
 
 	&.level-3 {
-		top: 0;
-		bottom: 0;
+		top: 5%;
+		bottom: 5%;
 		z-index: 4000;
 	}
 

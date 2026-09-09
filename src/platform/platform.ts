@@ -16,7 +16,7 @@ import type { StructureModel } from '../models/structure';
 
 import { Utils } from '../utils/utils/utils';
 
-import { UnavailableStore, priceForPack } from './store';
+import { DeveloperStore, priceForPack } from './store';
 import type { Store } from './store';
 import { StoreKitStore } from './storekit-store';
 
@@ -62,9 +62,12 @@ export class Platform {
 			// Assigned by Main once it is mounted.
 		};
 
+		// StoreKit on a device; in a browser there is no App Store to ask, so Developer Mode
+		// hands packs over instead. The check is on the platform rather than the build, so a
+		// shipped app can never reach the developer path.
 		this.store = Capacitor.isNativePlatform() ?
 			new StoreKitStore(packIDs => this.onOwnershipChanged(packIDs), ex => this.logException(ex))
-			: new UnavailableStore();
+			: new DeveloperStore(() => this.getOptions());
 	}
 
 	// Called once the app is running, because prices are worth nothing before there is a
@@ -243,16 +246,9 @@ export class Platform {
 		return priceForPack(this.store, pack);
 	};
 
-	// Resolves with every pack the player owns afterwards. In a developer build the packs
-	// are simply granted, so the game stays playable without a store to buy from.
-	getPacks = (packs: PackModel[], options: OptionsModel): Promise<string[]> => {
-		const requested = packs.map(pack => pack.id);
-
-		if (options.developer) {
-			return Promise.resolve([ ...options.packIDs, ...requested ]);
-		}
-
-		return this.store.purchase(requested);
+	// Resolves with every pack the player owns afterwards, whichever store answered.
+	getPacks = (packs: PackModel[]): Promise<string[]> => {
+		return this.store.purchase(packs.map(pack => pack.id));
 	};
 
 	// App Review requires this to be reachable, and it is the only way a player who

@@ -1100,3 +1100,68 @@ describe('EncounterLogic water phase changes', () => {
 		expect(isHurt(target)).toBe(false);
 	});
 });
+
+describe('EncounterLogic.defeatStandingMonsters', () => {
+	let encounter: EncounterModel;
+
+	beforeEach(() => {
+		encounter = createEncounter();
+	});
+
+	it('drops loot for a monster that is still standing', () => {
+		const monster = addCombatant(encounter, CombatantType.Monster, 2, 2);
+		monster.combat.state = CombatantState.Standing;
+		// The money roll is a coin flip that lands on the low half - randomBoolean is
+		// floor(rng() * 2) === 0 - so this forces it to pay out.
+		vi.spyOn(Math, 'random').mockReturnValue(0.1);
+
+		EncounterLogic.defeatStandingMonsters(encounter);
+
+		expect(encounter.loot.length).toBe(1);
+		expect(encounter.loot[0].money).toBeGreaterThan(0);
+
+		vi.restoreAllMocks();
+	});
+
+	it('leaves the dead alone, because they have dropped already', () => {
+		const monster = addCombatant(encounter, CombatantType.Monster, 2, 2);
+		monster.combat.state = CombatantState.Dead;
+
+		EncounterLogic.defeatStandingMonsters(encounter);
+
+		expect(encounter.loot.length).toBe(0);
+	});
+
+	// Sparing a monster is not the same as killing it, and an ordinary victory does not
+	// pay out for one either.
+	it('leaves the unconscious alone', () => {
+		const monster = addCombatant(encounter, CombatantType.Monster, 2, 2);
+		monster.combat.state = CombatantState.Unconscious;
+
+		EncounterLogic.defeatStandingMonsters(encounter);
+
+		expect(encounter.loot.length).toBe(0);
+	});
+
+	it('ignores heroes', () => {
+		const hero = addCombatant(encounter, CombatantType.Hero, 2, 2);
+		hero.combat.state = CombatantState.Standing;
+
+		EncounterLogic.defeatStandingMonsters(encounter);
+
+		expect(encounter.loot.length).toBe(0);
+	});
+
+	// The whole point of the fix: an ordinary victory has nobody left standing, so this
+	// must find nothing and change nothing.
+	it('does nothing when the encounter was actually fought out', () => {
+		const dead = addCombatant(encounter, CombatantType.Monster, 1, 1);
+		dead.combat.state = CombatantState.Dead;
+		const out = addCombatant(encounter, CombatantType.Monster, 3, 3);
+		out.combat.state = CombatantState.Unconscious;
+
+		EncounterLogic.defeatStandingMonsters(encounter);
+
+		expect(encounter.loot.length).toBe(0);
+	});
+});

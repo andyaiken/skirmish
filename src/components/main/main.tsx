@@ -1383,6 +1383,11 @@ export class Main extends Component<Props, State> {
 			let dialogContent = null;
 			switch (state) {
 				case EncounterState.Victory: {
+					// Any monster still on its feet means the encounter was conceded rather than
+					// fought out, and it has not dropped anything. Doing it here keeps a manual
+					// win worth the same as a real one; in an ordinary victory every monster is
+					// already down, so this finds nobody.
+					EncounterLogic.defeatStandingMonsters(encounter);
 					// Get equipment and money from loot piles, add to game items
 					encounter.loot.forEach(lp => {
 						game.items.push(...lp.items);

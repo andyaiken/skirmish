@@ -1331,6 +1331,16 @@ export class EncounterLogic {
 		}
 	};
 
+	static defeatStandingMonsters = (encounter: EncounterModel) => {
+		encounter.combatants
+			.filter(c => c.faction === CombatantType.Monster)
+			.filter(c => (c.combat.state !== CombatantState.Dead) && (c.combat.state !== CombatantState.Unconscious))
+			.forEach(c => {
+				c.combat.state = CombatantState.Dead;
+				EncounterLogic.dropAllItems(encounter, c);
+			});
+	};
+
 	///////////////////////////////////////////////////////////////////////////
 
 	static getEncounterState = (encounter: EncounterModel): EncounterState => {

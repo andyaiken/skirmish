@@ -27,17 +27,22 @@
 			overflow: hidden;
 
 			&.column-heading {
-				text-align: center;
 				padding: 10px 5px;
+				display: flex;
+				flex-direction: column;
+				gap: 5px;
+				font-size: 13px;
 
 				.pack-name {
-					display: flex;
-					align-items: center;
-					justify-content: center;
-					height: 40px;
 					text-transform: uppercase;
 					font-weight: 600;
-					margin-bottom: 5px;
+					text-align: center;
+					height: 20px;
+				}
+
+				.pack-desc {
+					font-size: 10px;
+					height: 40px;
 				}
 			}
 

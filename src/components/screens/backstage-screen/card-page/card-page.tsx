@@ -218,7 +218,8 @@ export class CardPage extends Component<Props, State> {
 							packs.map(p => (
 								<div key={p.id} className='cell column-heading'>
 									<div className='pack-name'>{p.name || 'Skirmish'}</div>
-									<Tag>Cards: {PackLogic.getPackCardCount(p.id)}</Tag>
+									<StatValue label='Cards' value={PackLogic.getPackCardCount(p.id)} />
+									<div className='pack-desc'>{p.description}</div>
 								</div>
 							))
 						}

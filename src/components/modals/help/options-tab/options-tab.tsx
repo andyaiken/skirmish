@@ -78,18 +78,24 @@ export class OptionsTab extends Component<Props, State> {
 				{local ? <Switch label='Developer Mode' checked={this.props.options.developer} onChange={this.props.setDeveloperMode} /> : null}
 				<Switch label='Show Tips' checked={this.props.options.showTips} onChange={this.props.setShowTips} />
 				{this.state.systemReducesMotion ? null : <Switch label='Reduce Motion' checked={this.props.options.reduceMotion} onChange={this.props.setReduceMotion} />}
-				<hr />
-				<Text type={TextType.SubHeading}>Platform</Text>
-				<Selector
-					options={[
-						{ id: 'chrome', display: 'Chrome' },
-						{ id: 'edge', display: 'Edge' },
-						{ id: 'firefox', display: 'Firefox' },
-						{ id: 'safari', display: 'Safari' }
-					]}
-					selectedID={this.props.options.renderer}
-					onSelect={this.props.setRenderer}
-				/>
+				{
+					local ?
+						<>
+							<hr />
+							<Text type={TextType.SubHeading}>Platform</Text>
+							<Selector
+								options={[
+									{ id: 'chrome', display: 'Chrome' },
+									{ id: 'edge', display: 'Edge' },
+									{ id: 'firefox', display: 'Firefox' },
+									{ id: 'safari', display: 'Safari' }
+								]}
+								selectedID={this.props.options.renderer}
+								onSelect={this.props.setRenderer}
+							/>
+						</>
+						: null
+				}
 				<hr />
 				{this.props.game ? <ConfirmButton label='Abandon this campaign' onClick={() => this.props.endCampaign()} /> : null}
 			</div>

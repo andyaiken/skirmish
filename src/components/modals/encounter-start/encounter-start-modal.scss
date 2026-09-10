@@ -17,6 +17,12 @@
 		flex: 1 1 0;
 	}
 
+	// The options and their explanation sit above the tab's content and keep their own height,
+	// so the list below still takes what is left
+	.hero-mode {
+		flex: 0 0 auto;
+	}
+
 	.hero-page {
 		flex: 1 1 0;
 		display: flex;
@@ -29,11 +35,11 @@
 			-webkit-overflow-scrolling: touch;
 
 			&.candidates {
-				flex: 0 0 225px;
+				flex: 1 0 225px;
 			}
 
 			&.selected {
-				flex: 1 1 0;
+				flex: 0 0 450px;
 				display: flex;
 				flex-direction: column;
 				gap: 8px;
@@ -55,6 +61,20 @@
 			flex: 0 0 2px;
 			margin: 0 20px 0 10px;
 			border: 1px solid var(--border);
+		}
+
+		&.party {
+			justify-content: center;
+
+			.hero-list-column.selected {
+				flex: 0 1 460px;
+				padding: 0 10px;
+			}
+
+			&.all {
+				display: block;
+				overflow-y: auto;
+			}
 		}
 	}
 

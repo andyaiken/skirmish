@@ -75,6 +75,9 @@ export class CampaignMapPage extends Component<Props, State> {
 			return (
 				<div key={this.state.selectedRegion.id} className='sidebar'>
 					<div className='sidebar-section'>
+						<CardList cards={[ <RegionCard key='region' map={this.props.game.map} region={this.state.selectedRegion} options={this.props.options} /> ]} />
+					</div>
+					<div className='sidebar-section'>
 						{this.props.options.developer ? <button className='developer' onClick={() => this.conquer(this.state.selectedRegion as RegionModel)}>Conquer</button> : null}
 						{
 							canAttack ?
@@ -137,9 +140,6 @@ export class CampaignMapPage extends Component<Props, State> {
 								</>
 								: null
 						}
-					</div>
-					<div className='sidebar-section'>
-						<CardList cards={[ <RegionCard key='region' map={this.props.game.map} region={this.state.selectedRegion} options={this.props.options} /> ]} />
 					</div>
 					<div className='sidebar-section'>
 						<CardList cards={[ <BoonCard key='boon' boon={this.state.selectedRegion.boon} /> ]} />

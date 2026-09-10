@@ -12,7 +12,7 @@ import type { RegionModel } from '../../../models/region';
 
 import { Collections } from '../../../utils/collections/collections';
 
-import { CardList, Tabs, Text, TextType } from '../../controls';
+import { CardList, Selector, Tabs, Text, TextType } from '../../controls';
 import { HeroCard, SpeciesCard, StrongholdBenefitCard } from '../../cards';
 import { CombatantRowPanel } from '../../panels/combatant-row/combatant-row-panel';
 
@@ -27,21 +27,76 @@ interface Props {
 
 interface State {
 	viewMode: string;
+	heroMode: string;
 	selectedHeroes: CombatantModel[];
 	benefits: number;
 	detriments: number;
 }
 
 export class EncounterStartModal extends Component<Props, State> {
+	// The number of heroes an encounter starts with. A War Room can bring another in once the
+	// fighting is under way, but that happens in the encounter itself rather than here.
+	static partySize = 5;
+
+	// Level is what a hero's development amounts to - features are drawn at every level - so it
+	// is what 'best' means here, with XP separating heroes who are level-drawn.
+	static getBestHeroes = (heroes: CombatantModel[]) => {
+		return [ ...heroes ]
+			.sort((a, b) => (b.level - a.level) || (b.xp - a.xp))
+			.slice(0, EncounterStartModal.partySize);
+	};
+
+	static getParty = (mode: string, heroes: CombatantModel[]) => {
+		let party: CombatantModel[] = [];
+
+		switch (mode) {
+			case 'all':
+				party = [ ...heroes ];
+				break;
+			case 'best':
+				party = EncounterStartModal.getBestHeroes(heroes);
+				break;
+			case 'random':
+				// shuffle works in place, so the game's own hero list is copied before it goes in
+				party = Collections.shuffle([ ...heroes ]).slice(0, EncounterStartModal.partySize);
+				break;
+		}
+
+		return Collections.sort(party, n => n.name);
+	};
+
+	// Sending everyone is only an option while everyone fits; beyond that the choice is between
+	// the strongest five and five at random.
+	static getDefaultHeroMode = (heroes: CombatantModel[]) => {
+		return heroes.length <= EncounterStartModal.partySize ? 'all' : 'best';
+	};
+
 	constructor(props: Props) {
 		super(props);
+
+		const heroMode = EncounterStartModal.getDefaultHeroMode(props.game.heroes);
 		this.state = {
 			viewMode: 'heroes',
-			selectedHeroes: [],
+			heroMode: heroMode,
+			selectedHeroes: EncounterStartModal.getParty(heroMode, props.game.heroes),
 			benefits: 0,
 			detriments: 0
 		};
 	}
+
+	setHeroMode = (heroMode: string) => {
+		// Choosing by hand starts from whatever the previous option picked, so a party can be
+		// adjusted rather than built again from nothing
+		if (heroMode === 'choose') {
+			this.setState({ heroMode: heroMode });
+			return;
+		}
+
+		this.setState({
+			heroMode: heroMode,
+			selectedHeroes: EncounterStartModal.getParty(heroMode, this.props.game.heroes)
+		});
+	};
 
 	selectHero = (hero: CombatantModel) => {
 		let selected = this.state.selectedHeroes;
@@ -61,32 +116,71 @@ export class EncounterStartModal extends Component<Props, State> {
 		});
 	};
 
-	selectAllHeroes = () => {
-		let selected = [];
-		selected.push(...this.props.game.heroes);
-		selected = Collections.sort(selected, n => n.name);
-
-		this.setState({
-			viewMode: 'heroes',
-			selectedHeroes: selected
-		});
-	};
-
 	startEncounter = () => {
 		this.props.startEncounter(this.props.region, this.state.selectedHeroes, this.state.benefits, this.state.detriments);
 	};
 
+	getHeroModeDescription = () => {
+		switch (this.state.heroMode) {
+			case 'all':
+				return <p>Each of your heroes will take part in this encounter.</p>;
+			case 'best':
+				return <p>Your five highest-level heroes will take part in this encounter.</p>;
+			case 'random':
+				return <p>Five of your heroes, drawn at random, will take part in this encounter. Pick this option again to draw a different five.</p>;
+		}
+
+		return <p>Select <b>up to {EncounterStartModal.partySize} heroes</b> from the list on the left to take part in this encounter.</p>;
+	};
+
+	getHeroModeOptions = () => {
+		const options = [];
+
+		if (this.props.game.heroes.length <= EncounterStartModal.partySize) {
+			options.push({ id: 'all', display: 'All Heroes' });
+		} else {
+			options.push({ id: 'best', display: 'Send the Five Best Heroes' });
+			options.push({ id: 'random', display: 'Send Five Random Heroes' });
+		}
+
+		options.push({ id: 'choose', display: 'Choose Heroes' });
+
+		return options;
+	};
+
 	getHeroes = () => {
+		return this.state.heroMode === 'choose' ? this.getHeroChooser() : this.getParty();
+	};
+
+	getParty = () => {
+		if (this.state.selectedHeroes.length === 0) {
+			return (
+				<div className='hero-page party'>
+					<Text type={TextType.Empty}>
+						You have no heroes to send.
+					</Text>
+				</div>
+			);
+		}
+
+		return (
+			<div className='hero-page party all'>
+				<CardList cards={this.state.selectedHeroes.map(h => <HeroCard key={h.id} hero={h} />)} />
+			</div>
+		);
+	};
+
+	getHeroChooser = () => {
 		const candidates = this.props.game.heroes
 			.filter(h => !this.state.selectedHeroes.includes(h))
 			.map(h => {
 				return (
-					<HeroCard key={h.id} hero={h} onClick={this.state.selectedHeroes.length < 5 ? hero => this.selectHero(hero) : null} />
+					<HeroCard key={h.id} hero={h} onClick={this.state.selectedHeroes.length < EncounterStartModal.partySize ? hero => this.selectHero(hero) : null} />
 				);
 			});
 
 		const selected = this.state.selectedHeroes.map(h => <CombatantRowPanel key={h.id} mode='list' combatant={h} options={this.props.options} onCancel={hero => this.deselectHero(hero)} />);
-		while (selected.length < 5) {
+		while (selected.length < EncounterStartModal.partySize) {
 			selected.push(
 				<div key={selected.length} className='empty-hero-slot'>
 					[No hero selected]
@@ -201,7 +295,7 @@ export class EncounterStartModal extends Component<Props, State> {
 		return (
 			<div className='encounter-start-modal'>
 				<div className='header'>
-					<Text type={TextType.Heading}>Choose your Heroes</Text>
+					<Text type={TextType.Heading}>Start an Encounter</Text>
 				</div>
 				<Tabs
 					options={options}
@@ -210,19 +304,16 @@ export class EncounterStartModal extends Component<Props, State> {
 				/>
 				{
 					(this.state.viewMode === 'heroes') ?
-						<Text type={TextType.Information}>
-							<p>
-								Select <b>up to 5 heroes</b> from the list on the left to take part in this encounter
-								{
-									(this.props.game.heroes.length <= 5) ?
-										<span>
-											&nbsp;(or <button className='link' onClick={this.selectAllHeroes}>add all heroes</button>)
-										</span>
-										: null
-								}
-								.
-							</p>
-						</Text>
+						<div className='hero-mode'>
+							<Selector
+								options={this.getHeroModeOptions()}
+								selectedID={this.state.heroMode}
+								onSelect={this.setHeroMode}
+							/>
+							<Text type={TextType.Information}>
+								{this.getHeroModeDescription()}
+							</Text>
+						</div>
 						: null
 				}
 				{
@@ -242,7 +333,7 @@ export class EncounterStartModal extends Component<Props, State> {
 				{content}
 				<button
 					className='action primary'
-					disabled={(this.state.selectedHeroes.length < 1) || (this.state.selectedHeroes.length > 5)}
+					disabled={(this.state.selectedHeroes.length < 1) || (this.state.selectedHeroes.length > EncounterStartModal.partySize)}
 					onClick={this.startEncounter}
 				>
 					Start the Encounter

@@ -14,7 +14,7 @@ import type { OptionsModel } from '../../../models/options';
 
 import { Collections } from '../../../utils/collections/collections';
 
-import { CardList, IconSize, IconType, IconValue, Text, TextType } from '../../controls';
+import { CardChoice, CardList, IconSize, IconType, IconValue, Text, TextType } from '../../controls';
 import { ItemCard } from '../../cards';
 
 import './buy-magic-item-modal.scss';
@@ -93,7 +93,12 @@ export class BuyMagicItemModal extends Component<Props, State> {
 
 	render = () => {
 		const cards = this.state.magicItems.map(item => (
-			<ItemCard key={item.id} item={item} onClick={this.props.buyItem} />
+			<CardChoice
+				key={item.id}
+				card={<ItemCard item={item} />}
+				label='Buy this item'
+				onSelect={() => this.props.buyItem(item)}
+			/>
 		));
 
 		const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.WizardTower);

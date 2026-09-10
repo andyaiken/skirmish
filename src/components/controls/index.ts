@@ -2,6 +2,7 @@ import { IconSize, IconType, IconValue } from './icon-value/icon-value';
 import { Text, TextType } from './text/text';
 import { Badge } from './badge/badge';
 import { Box } from './box/box';
+import { CardChoice } from './card-choice/card-choice';
 import { CardList } from './card-list/card-list';
 import { ConfirmButton } from './confirm-button/confirm-button';
 import { Dialog } from './dialog/dialog';
@@ -20,6 +21,7 @@ export {
 	Expander,
 	Badge,
 	Box,
+	CardChoice,
 	CardList,
 	ConfirmButton,
 	Dialog,

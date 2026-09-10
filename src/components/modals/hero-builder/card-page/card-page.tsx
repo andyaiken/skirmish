@@ -16,7 +16,7 @@ import type { SpeciesModel } from '../../../../models/species';
 import { Collections } from '../../../../utils/collections/collections';
 
 import { BackgroundCard, PlaceholderCard, RoleCard, SpeciesCard } from '../../../cards';
-import { CardList, Expander, IconSize, IconType, IconValue, PlayingCard, Text, TextType } from '../../../controls';
+import { CardChoice, CardList, Expander, IconSize, IconType, IconValue, PlayingCard, Text, TextType } from '../../../controls';
 
 import './card-page.scss';
 
@@ -170,7 +170,12 @@ export class CardPage extends Component<Props, State> {
 		const cards = this.state.speciesIDs.map(id => {
 			const species = GameLogic.getSpecies(id) as SpeciesModel;
 			return (
-				<SpeciesCard key={species.id} species={species} onClick={this.selectSpecies} />
+				<CardChoice
+					key={species.id}
+					card={<SpeciesCard species={species} />}
+					label='Choose this species'
+					onSelect={() => this.selectSpecies(species)}
+				/>
 			);
 		});
 
@@ -200,7 +205,12 @@ export class CardPage extends Component<Props, State> {
 		const cards = this.state.roleIDs.map(id => {
 			const role = GameLogic.getRole(id) as RoleModel;
 			return (
-				<RoleCard key={role.id} role={role} onClick={this.selectRole} />
+				<CardChoice
+					key={role.id}
+					card={<RoleCard role={role} />}
+					label='Choose this role'
+					onSelect={() => this.selectRole(role)}
+				/>
 			);
 		});
 
@@ -230,7 +240,12 @@ export class CardPage extends Component<Props, State> {
 		const cards = this.state.backgroundIDs.map(id => {
 			const background = GameLogic.getBackground(id) as BackgroundModel;
 			return (
-				<BackgroundCard key={background.id} background={background} onClick={this.selectBackground} />
+				<CardChoice
+					key={background.id}
+					card={<BackgroundCard background={background} />}
+					label='Choose this background'
+					onSelect={() => this.selectBackground(background)}
+				/>
 			);
 		});
 

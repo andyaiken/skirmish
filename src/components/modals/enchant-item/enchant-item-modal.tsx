@@ -12,7 +12,7 @@ import type { OptionsModel } from '../../../models/options';
 
 import { Collections } from '../../../utils/collections/collections';
 
-import { CardList, Dialog, IconSize, IconType, IconValue, Text, TextType } from '../../controls';
+import { CardChoice, CardList, Dialog, IconSize, IconType, IconValue, Text, TextType } from '../../controls';
 import { ItemCard } from '../../cards';
 
 import './enchant-item-modal.scss';
@@ -71,7 +71,11 @@ export class EnchantItemModal extends Component<Props, State> {
 		if (this.state.selectedItem) {
 			const cards = this.state.magicItems.map(item => (
 				<div key={item.id}>
-					<ItemCard item={item} onClick={item => this.props.enchantItem(this.state.selectedItem as ItemModel, item)} />
+					<CardChoice
+						card={<ItemCard item={item} />}
+						label='Choose this enchantment'
+						onSelect={() => this.props.enchantItem(this.state.selectedItem as ItemModel, item)}
+					/>
 				</div>
 			));
 
@@ -80,7 +84,7 @@ export class EnchantItemModal extends Component<Props, State> {
 			dialog = (
 				<Dialog
 					content={
-						<div className='enchant-item-modal'>
+						<div className='enchant-item-modal enchantment-selection'>
 							<Text type={TextType.Heading}>Choose an Enchantment</Text>
 							<hr />
 							<Text type={TextType.Information}>

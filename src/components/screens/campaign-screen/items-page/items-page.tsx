@@ -195,6 +195,10 @@ export class ItemsPage extends Component<Props, State> {
 			);
 		}
 
+		// Everything that would bring another item home is barred while the stores are full;
+		// enchanting is not, since it replaces an item rather than adding one.
+		const storesFull = GameLogic.storesAreFull(this.props.game);
+
 		const mundanePrice = StrongholdLogic.getPrice(this.props.game, 'mundane');
 		const potionPrice = StrongholdLogic.getPrice(this.props.game, 'potion');
 		const scrollPrice = StrongholdLogic.getPrice(this.props.game, 'scroll');
@@ -203,7 +207,7 @@ export class ItemsPage extends Component<Props, State> {
 		const buySection = [];
 		if (GameLogic.getItemDeck(this.props.options.packIDs).length > 0) {
 			buySection.push(
-				<button key='mundane' disabled={this.props.game.money < mundanePrice} onClick={() => this.showMarket('mundane')}>
+				<button key='mundane' disabled={storesFull || (this.props.game.money < mundanePrice)} onClick={() => this.showMarket('mundane')}>
 					<div>Buy equipment</div>
 					<IconValue type={IconType.Money} value={mundanePrice} size={IconSize.Button} />
 				</button>
@@ -211,7 +215,7 @@ export class ItemsPage extends Component<Props, State> {
 		}
 		if (GameLogic.getPotionDeck(this.props.options.packIDs).length > 0) {
 			buySection.push(
-				<button key='potion' disabled={this.props.game.money < potionPrice} onClick={() => this.showMarket('potion')}>
+				<button key='potion' disabled={storesFull || (this.props.game.money < potionPrice)} onClick={() => this.showMarket('potion')}>
 					<div>Buy a potion</div>
 					<IconValue type={IconType.Money} value={potionPrice} size={IconSize.Button} />
 				</button>
@@ -219,7 +223,7 @@ export class ItemsPage extends Component<Props, State> {
 		}
 		if (GameLogic.getScrollDeck(this.props.options.packIDs).length > 0) {
 			buySection.push(
-				<button key='scroll' disabled={this.props.game.money < scrollPrice} onClick={() => this.showMarket('scroll')}>
+				<button key='scroll' disabled={storesFull || (this.props.game.money < scrollPrice)} onClick={() => this.showMarket('scroll')}>
 					<div>Buy a scroll</div>
 					<IconValue type={IconType.Money} value={scrollPrice} size={IconSize.Button} />
 				</button>
@@ -227,7 +231,7 @@ export class ItemsPage extends Component<Props, State> {
 		}
 		if (GameLogic.getItemDeck(this.props.options.packIDs).length > 0) {
 			buySection.push(
-				<button key='magical' disabled={this.props.game.money < magicPrice} onClick={() => this.showMarket('magical')}>
+				<button key='magical' disabled={storesFull || (this.props.game.money < magicPrice)} onClick={() => this.showMarket('magical')}>
 					<div>Buy a magic item</div>
 					<IconValue type={IconType.Money} value={magicPrice} size={IconSize.Button} />
 				</button>
@@ -239,7 +243,7 @@ export class ItemsPage extends Component<Props, State> {
 		let scriptorium = null;
 		if ((scriptoriumCharges > 0) && (GameLogic.getScrollDeck(this.props.options.packIDs).length > 0)) {
 			scriptorium = (
-				<button onClick={() => this.showMarket('scriptorium')}>
+				<button disabled={storesFull} onClick={() => this.showMarket('scriptorium')}>
 					<div>Draw a scroll from the Scriptorium</div>
 					<IconValue type={IconType.Redraw} value={scriptoriumCharges} size={IconSize.Button} />
 				</button>
@@ -260,6 +264,17 @@ export class ItemsPage extends Component<Props, State> {
 						: null
 				}
 				<div className='sidebar-section'>
+					{
+						storesFull ?
+							<Text type={TextType.Information}>
+								<p>
+									<b>Your stores are full.</b> You are holding {GameLogic.maxItems} items,
+									so you cannot buy or draw another, and you will leave loot behind when you
+									win an encounter. Sell something to make room.
+								</p>
+							</Text>
+							: null
+					}
 					{buySection}
 					<button disabled={this.props.game.money < 100} onClick={() => this.showEnchant(true)}>
 						<div>Enchant an item</div>

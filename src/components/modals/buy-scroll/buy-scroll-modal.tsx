@@ -12,7 +12,7 @@ import type { OptionsModel } from '../../../models/options';
 import { Collections } from '../../../utils/collections/collections';
 import { Utils } from '../../../utils/utils/utils';
 
-import { CardList, IconSize, IconType, IconValue, Text, TextType } from '../../controls';
+import { CardChoice, CardList, IconSize, IconType, IconValue, Text, TextType } from '../../controls';
 import { ItemCard } from '../../cards';
 
 import './buy-scroll-modal.scss';
@@ -72,7 +72,12 @@ export class BuyScrollModal extends Component<Props, State> {
 
 	render = () => {
 		const cards = this.state.scrolls.map(item => (
-			<ItemCard key={item.id} item={item} onClick={this.props.buyItem} />
+			<CardChoice
+				key={item.id}
+				card={<ItemCard item={item} />}
+				label='Buy this scroll'
+				onSelect={() => this.props.buyItem(item)}
+			/>
 		));
 
 		const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.WizardTower);

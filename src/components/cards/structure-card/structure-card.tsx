@@ -69,6 +69,28 @@ export class StructureCard extends Component<Props, State> {
 						<p>You can&apos;t upgrade this structure.</p>
 					</Text>
 				);
+			case StructureType.Bazaar:
+				return (
+					<Text>
+						<p>This structure takes a quarter off the price of everything you buy.</p>
+						<p>The discount stands on its own; a second Bazaar adds nothing.</p>
+						<p>You can&apos;t upgrade this structure.</p>
+					</Text>
+				);
+			case StructureType.CountingHouse:
+				return (
+					<Text>
+						<p>This structure collects dues from every region you take, according to how many people live there.</p>
+						<p>You can&apos;t upgrade this structure.</p>
+					</Text>
+				);
+			case StructureType.Monument:
+				return (
+					<Text>
+						<p>A monument is a standing advertisement for the company; raising this one brought in a recruit.</p>
+						<p>You can&apos;t upgrade this structure.</p>
+					</Text>
+				);
 			case StructureType.Academy:
 				return (
 					<Text>
@@ -88,6 +110,13 @@ export class StructureCard extends Component<Props, State> {
 					<Text>
 						<p>When recruiting a new hero, this structure allows you to redraw species, role, or background cards.</p>
 						<p>You gain {this.props.structure.level} redraw(s) when the structure is charged.</p>
+					</Text>
+				);
+			case StructureType.Guildhall:
+				return (
+					<Text>
+						<p>When buying a region, this structure takes a quarter off the price.</p>
+						<p>You gain {this.props.structure.level} discount(s) when the structure is charged.</p>
 					</Text>
 				);
 			case StructureType.Intelligencer:
@@ -123,6 +152,20 @@ export class StructureCard extends Component<Props, State> {
 					<Text>
 						<p>When recruiting a new hero, this structure allows you to redraw item cards.</p>
 						<p>You gain {this.props.structure.level} redraw(s) when the structure is charged.</p>
+					</Text>
+				);
+			case StructureType.Shipyard:
+				return (
+					<Text>
+						<p>This structure allows your heroes to attack a region on the coast, whether or not it borders your territory.</p>
+						<p>You gain {this.props.structure.level} sea voyage(s) when the structure is charged.</p>
+					</Text>
+				);
+			case StructureType.Tavern:
+				return (
+					<Text>
+						<p>This structure allows you to recharge another structure without paying for it.</p>
+						<p>You gain {this.props.structure.level} recharge(s) when the structure is charged.</p>
 					</Text>
 				);
 			case StructureType.Temple:

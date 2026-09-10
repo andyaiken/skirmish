@@ -14,7 +14,10 @@ import { StrongholdLogic } from '../stronghold/stronghold-logic';
 import { TraitType } from '../../enums/trait-type';
 
 import type { ActionModel } from '../../models/action';
+import type { CombatantModel } from '../../models/combatant';
 import type { ConditionModel } from '../../models/condition';
+import type { GameModel } from '../../models/game';
+import type { ItemModel } from '../../models/item';
 
 const packs = () => PackLogic.getAllPacks();
 const heroSpecies = () => packs().flatMap(pack => PackLogic.getHeroSpecies(pack.id));
@@ -194,5 +197,58 @@ describe('contagion and card strength', () => {
 			.flatMap(role => GameLogic.getBalanceIssues(role, CardType.Role))).toEqual([]);
 		expect(packs().flatMap(pack => PackLogic.getMonsterSpecies(pack.id).filter(contagious))
 			.flatMap(species => GameLogic.getBalanceIssues(species, CardType.Species))).toEqual([]);
+	});
+});
+
+// The caps that keep a save bounded. The numbers themselves are a design decision, so these
+// assert the behaviour around them rather than the values.
+const gameWith = (heroCount: number, itemCount: number): GameModel => ({
+	heroSlots: 99,
+	heroes: Array.from({ length: heroCount }, (_, n) => ({ id: `hero-${n}` }) as CombatantModel),
+	items: Array.from({ length: itemCount }, (_, n) => ({ id: `item-${n}` }) as ItemModel),
+	boons: [],
+	money: 0,
+	map: { squares: [], regions: [] },
+	stronghold: [],
+	encounter: null
+});
+
+const newItems = (count: number) => Array.from({ length: count }, (_, n) => ({ id: `new-${n}` }) as ItemModel);
+
+describe('GameLogic.canRecruitHero', () => {
+	it('allows recruiting below the cap, however many recruits are banked', () => {
+		expect(GameLogic.canRecruitHero(gameWith(GameLogic.maxHeroes - 1, 0))).toBe(true);
+	});
+
+	it('refuses at the cap', () => {
+		expect(GameLogic.canRecruitHero(gameWith(GameLogic.maxHeroes, 0))).toBe(false);
+	});
+});
+
+describe('GameLogic.addItemsToGame', () => {
+	it('takes everything when there is room', () => {
+		const game = gameWith(0, 0);
+		expect(GameLogic.addItemsToGame(game, newItems(3))).toEqual([]);
+		expect(game.items).toHaveLength(3);
+	});
+
+	it('fills to the cap and hands back the rest', () => {
+		const game = gameWith(0, GameLogic.maxItems - 2);
+		const leftBehind = GameLogic.addItemsToGame(game, newItems(5));
+		expect(game.items).toHaveLength(GameLogic.maxItems);
+		expect(leftBehind).toHaveLength(3);
+	});
+
+	it('takes nothing once full, and hands all of it back', () => {
+		const game = gameWith(0, GameLogic.maxItems);
+		expect(GameLogic.addItemsToGame(game, newItems(4))).toHaveLength(4);
+		expect(game.items).toHaveLength(GameLogic.maxItems);
+	});
+
+	// A save that is already over the cap must not be made worse by a later windfall.
+	it('never grows a save that is somehow already over the cap', () => {
+		const game = gameWith(0, GameLogic.maxItems + 10);
+		expect(GameLogic.addItemsToGame(game, newItems(4))).toHaveLength(4);
+		expect(game.items).toHaveLength(GameLogic.maxItems + 10);
 	});
 });

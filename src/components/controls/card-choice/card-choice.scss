@@ -1,0 +1,11 @@
+.card-choice {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
+	// The button belongs to the card above it, so it matches its width rather than the column's
+	button {
+		width: 200px;
+		margin: 10px 0 0 0;
+	}
+}

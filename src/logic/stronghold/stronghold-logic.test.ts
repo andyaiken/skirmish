@@ -49,15 +49,41 @@ const item = (kind: 'mundane' | 'potion' | 'magic') => ({
 
 describe('StrongholdLogic.canCharge', () => {
 	it('treats the permanent structures as uncharged', () => {
-		// An uncharged structure gets no demolish button on the stronghold page, which is what
-		// stops a Monument's hero slot being banked and the structure sold back
-		[ StructureType.Barracks, StructureType.Warehouse, StructureType.Monument, StructureType.CountingHouse ]
+		// The Bazaar belongs here: getPrice only asks whether one exists, so a charge on it was
+		// never spent and its level never mattered
+		[ StructureType.Barracks, StructureType.Warehouse, StructureType.Monument, StructureType.CountingHouse, StructureType.Bazaar ]
 			.forEach(type => expect(StrongholdLogic.canCharge(createStructure(type)), type).toBe(false));
 	});
 
 	it('leaves the rest chargeable', () => {
-		[ StructureType.Bazaar, StructureType.Guildhall, StructureType.Tavern, StructureType.Shipyard ]
+		[ StructureType.Guildhall, StructureType.Tavern, StructureType.Shipyard, StructureType.Academy ]
 			.forEach(type => expect(StrongholdLogic.canCharge(createStructure(type)), type).toBe(true));
+	});
+});
+
+describe('StrongholdLogic.canDemolish', () => {
+	it('refuses the structures whose benefit could be banked and sold back', () => {
+		// A Monument's recruit arrives when it is raised, so rebuilding it would mint hero slots;
+		// the other two are the campaign's own and cannot be bought in the first place
+		[ StructureType.Monument, StructureType.Barracks, StructureType.Warehouse ]
+			.forEach(type => expect(StrongholdLogic.canDemolish(createStructure(type)), type).toBe(false));
+	});
+
+	it('allows the permanent structures whose benefit stops with them', () => {
+		// These are uncharged, so demolishing them used to be impossible for the wrong reason
+		[ StructureType.Bazaar, StructureType.CountingHouse ]
+			.forEach(type => expect(StrongholdLogic.canDemolish(createStructure(type)), type).toBe(true));
+	});
+
+	it('allows the charged structures', () => {
+		[ StructureType.Guildhall, StructureType.Tavern, StructureType.Shipyard, StructureType.Academy ]
+			.forEach(type => expect(StrongholdLogic.canDemolish(createStructure(type)), type).toBe(true));
+	});
+
+	// The two questions were one function until a Bazaar needed to be permanent and demolishable
+	it('is not the same question as canCharge', () => {
+		expect(StrongholdLogic.canCharge(createStructure(StructureType.Bazaar))).toBe(false);
+		expect(StrongholdLogic.canDemolish(createStructure(StructureType.Bazaar))).toBe(true);
 	});
 });
 

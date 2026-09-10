@@ -2,7 +2,8 @@
 	display: block;
 
 	.card-selection-row {
+		// The whole deck, filtered - not a hand of three - so take the full width.
 		margin: 20px auto;
-		width: 650px;
+		width: 100%;
 	}
 }

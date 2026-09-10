@@ -36,6 +36,59 @@
 		}
 	}
 
+	// The panels sit above the buildings and take no clicks, so selecting a building still
+	// works when the pointer is over its label.
+	.structure-panel {
+		pointer-events: none;
+
+		.structure-panel-bg {
+			opacity: 0.3;
+			stroke: rgb(50, 50, 50);
+			stroke-width: 0.006;
+		}
+
+		.structure-panel-label,
+		.structure-panel-count {
+			fill: var(--text);
+			text-anchor: middle;
+			dominant-baseline: middle;
+			letter-spacing: normal;
+		}
+
+		.structure-panel-label {
+			fill: white;
+		}
+
+		.structure-panel-count {
+			opacity: 0.75;
+		}
+
+		.gauge-track {
+			fill: var(--control);
+			stroke: var(--border);
+			stroke-width: 0.006;
+		}
+
+		.gauge-fill {
+			fill: var(--primary);
+
+			&.full {
+				fill: var(--bad);
+			}
+		}
+
+		.pip {
+			fill: var(--control);
+			stroke: var(--border);
+			stroke-width: 0.006;
+
+			&.filled {
+				fill: var(--primary);
+				stroke: none;
+			}
+		}
+	}
+
 	.structure {
 		filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.4));
 		stroke: rgb(50, 50, 50);
@@ -43,10 +96,6 @@
 		transform-box: fill-box;
 		transform-origin: center;
 		cursor: pointer;
-
-		&.uncharged {
-			opacity: 0.2;
-		}
 	}
 }
 

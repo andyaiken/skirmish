@@ -148,6 +148,22 @@ export class StrongholdPage extends Component<Props, State> {
 
 			let upgrade = null;
 			let charge = null;
+
+			// Demolishing no longer follows from whether a structure charges - a Bazaar or Counting
+			// House is permanent but can still be torn down - so it stands on its own, below
+			// everything else as the destructive option
+			let demolish = null;
+			if (StrongholdLogic.canDemolish(this.state.selectedStructure)) {
+				demolish = (
+					<div className='sidebar-section'>
+						<button onClick={() => this.sellStructure(this.state.selectedStructure as StructureModel)}>
+							<div>Demolish structure</div>
+							<IconValue type={IconType.Money} value={25} size={IconSize.Button} />
+						</button>
+					</div>
+				);
+			}
+
 			if (StrongholdLogic.canCharge(this.state.selectedStructure)) {
 				const canRecharge = StrongholdLogic.canRecharge(this.state.selectedStructure);
 
@@ -160,10 +176,6 @@ export class StrongholdPage extends Component<Props, State> {
 								<IconValue type={IconType.Money} value={upgradeCost} size={IconSize.Button} />
 							</button>
 						</div>
-						<button onClick={() => this.sellStructure(this.state.selectedStructure as StructureModel)}>
-							<div>Demolish structure</div>
-							<IconValue type={IconType.Money} value={25} size={IconSize.Button} />
-						</button>
 						<button disabled={(this.props.game.money < 100) || !canRecharge} onClick={() => this.props.chargeStructure(this.state.selectedStructure as StructureModel, false)}>
 							<div>Recharge structure</div>
 							<IconValue type={IconType.Money} value={100} size={IconSize.Button} />
@@ -233,6 +245,7 @@ export class StrongholdPage extends Component<Props, State> {
 					</div>
 					{upgrade}
 					{charge}
+					{demolish}
 				</div>
 			);
 		}
@@ -337,6 +350,12 @@ export class StrongholdPage extends Component<Props, State> {
 					<StrongholdMapPanel
 						stronghold={this.props.game.stronghold}
 						people={this.getPeople()}
+						occupancy={{
+							// The two buildings that hold something rather than charging up; both
+							// are showing the limits that bound a save
+							[StructureType.Barracks]: { used: this.props.game.heroes.length, capacity: GameLogic.maxHeroes },
+							[StructureType.Warehouse]: { used: this.props.game.items.length, capacity: GameLogic.maxItems }
+						}}
 						selectedStructure={this.state.selectedStructure}
 						onSelectStructure={structure => this.setState({ selectedStructure: structure })}
 					/>

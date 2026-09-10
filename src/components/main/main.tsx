@@ -584,9 +584,12 @@ export class Main extends Component<Props, State> {
 			game.heroSlots += 1;
 			game.heroes = game.heroes.filter(h => h.id !== hero.id);
 
-			// Add magic items, potions and scrolls
-			hero.items.filter(i => i.magic || i.potion || i.scroll).forEach(i => game.items.push(i));
-			hero.carried.filter(i => i.magic || i.potion || i.scroll).forEach(i => game.items.push(i));
+			// Add magic items, potions and scrolls. The retire dialog only offers the button when
+			// there is room for all of these, so nothing is turned away here.
+			GameLogic.addItemsToGame(game, ([] as ItemModel[])
+				.concat(hero.items)
+				.concat(hero.carried)
+				.filter(i => i.magic || i.potion || i.scroll));
 
 			this.setState({
 				game: game
@@ -601,6 +604,13 @@ export class Main extends Component<Props, State> {
 	redeemBoon = (boon: BoonModel, hero: CombatantModel | null, item: ItemModel | null, newItem: ItemModel | null, cost: number) => {
 		try {
 			const game = this.state.game as GameModel;
+
+			// A magic item boon would bring something home, so it keeps until there is room
+			// for it - redeeming it into full stores would spend the boon for nothing.
+			if ((boon.type === BoonType.MagicItem) && GameLogic.storesAreFull(game)) {
+				return;
+			}
+
 			game.boons = game.boons.filter(b => b.id !== boon.id);
 
 			switch (boon.type) {
@@ -665,6 +675,12 @@ export class Main extends Component<Props, State> {
 	buyItem = (item: ItemModel, free = false) => {
 		try {
 			const game = this.state.game as GameModel;
+
+			// The shop buttons are disabled when the stores are full; this is the backstop, and
+			// it runs before any money changes hands.
+			if (GameLogic.storesAreFull(game)) {
+				return;
+			}
 
 			game.items.push(item);
 
@@ -797,10 +813,48 @@ export class Main extends Component<Props, State> {
 		try {
 			if (this.state.game) {
 				const game = this.state.game;
+				// Read before the encounters are consumed below, or every hero earns nothing.
+				const encounterCount = region.encounters.length;
 
+				// Fight through everything the region still holds, so conquering it from the map
+				// is worth what playing it would have been. Each encounter is built from the seed
+				// the real one would have used, which is why the seeds are taken one at a time
+				// exactly as winning them does.
+				while (region.encounters.length > 0) {
+					// The heroes are copied because the generator places combatants on its map, and
+					// positioning the real ones would leave them standing in a battle that never
+					// happened. Levels still scale the monsters, since the copies carry them.
+					const heroes = JSON.parse(JSON.stringify(game.heroes)) as CombatantModel[];
+					const encounter = EncounterGenerator.createEncounter(region, heroes, this.state.options.packIDs);
+
+					// Killing them is what rolls their money, so this has to happen before the
+					// piles are collected.
+					EncounterLogic.defeatStandingMonsters(encounter);
+
+					// The piles now hold what the map was generated with as well as what the
+					// monsters dropped. Whatever is still on a monster - a boss's magic item among
+					// it - comes across separately, exactly as an ordinary victory collects it.
+					const spoils: ItemModel[] = [];
+					encounter.loot.forEach(lp => {
+						spoils.push(...lp.items);
+						game.money += lp.money;
+					});
+					encounter.combatants
+						.filter(c => (c.type === CombatantType.Monster) && (c.faction === CombatantType.Monster))
+						.forEach(c => {
+							spoils.push(...c.items);
+							spoils.push(...c.carried);
+						});
+					// Held to the same limit as winning the encounter by hand
+					GameLogic.addItemsToGame(game, spoils);
+
+					region.encounters.splice(0, 1);
+				}
+
+				// Read while the region is still on the map, as the ordinary path does.
 				game.money += StrongholdLogic.getConquestIncome(game, region);
 				CampaignMapLogic.conquerRegion(game.map, region);
-				game.heroes.forEach(h => h.xp += region.encounters.length);
+				game.heroes.forEach(h => h.xp += encounterCount);
 				game.heroSlots += 1;
 				game.boons.push(region.boon);
 
@@ -1345,6 +1399,12 @@ export class Main extends Component<Props, State> {
 			if (game.encounter) {
 				EncounterLogic.dropItem(game.encounter, combatant, item);
 			} else {
+				// Between encounters the item goes to the stores, so it stays where it is when
+				// there is no room - better held by the hero than lost.
+				if (GameLogic.storesAreFull(game)) {
+					return;
+				}
+
 				combatant.items = combatant.items.filter(i => i.id !== item.id);
 				combatant.carried = combatant.carried.filter(i => i.id !== item.id);
 
@@ -1389,16 +1449,19 @@ export class Main extends Component<Props, State> {
 					// already down, so this finds nobody.
 					EncounterLogic.defeatStandingMonsters(encounter);
 					// Get equipment and money from loot piles, add to game items
+					const spoils: ItemModel[] = [];
 					encounter.loot.forEach(lp => {
-						game.items.push(...lp.items);
+						spoils.push(...lp.items);
 						game.money += lp.money;
 					});
 					encounter.combatants
 						.filter(c => (c.type === CombatantType.Monster) && (c.faction === CombatantType.Monster))
 						.forEach(c => {
-							game.items.push(...c.items);
-							game.items.push(...c.carried);
+							spoils.push(...c.items);
+							spoils.push(...c.carried);
 						});
+					// Coin always comes home; items only as far as there is room for them
+					const leftBehind = GameLogic.addItemsToGame(game, spoils);
 					// Increment XP for surviving heroes
 					encounter.combatants
 						.filter(c => (c.type === CombatantType.Hero) && (c.faction === CombatantType.Hero))
@@ -1428,6 +1491,19 @@ export class Main extends Component<Props, State> {
 							// A Counting House starts collecting from the region
 							game.money += income;
 						}
+					}
+					// Say so rather than letting the loot quietly go missing - but not over the end
+					// of the campaign, where the stores no longer matter
+					if ((leftBehind.length > 0) && (dialogContent === null)) {
+						dialogContent = (
+							<div>
+								<Text type={TextType.Heading}>Your Stores Are Full</Text>
+								<Text type={TextType.SubHeading}>
+									You left {leftBehind.length === 1 ? 'an item' : `${leftBehind.length} items`} behind in {region.name}.
+								</Text>
+								<Text>You can keep {GameLogic.maxItems} items. Sell something to make room for the next encounter.</Text>
+							</div>
+						);
 					}
 					// Clear the current encounter
 					game.encounter = null;

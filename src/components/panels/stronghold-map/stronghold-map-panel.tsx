@@ -3,6 +3,8 @@ import { Component } from 'react';
 import { StrongholdLogic } from '../../../logic/stronghold/stronghold-logic';
 import { StrongholdMapLogic } from '../../../logic/stronghold-map/stronghold-map-logic';
 
+import { StructureType } from '../../../enums/structure-type';
+
 import type { StructureModel } from '../../../models/structure';
 
 import { Color } from '../../../utils/color/color';
@@ -16,6 +18,9 @@ interface Props {
 	// their own is a hero, and everyone else is drawn in the default grey
 	people: { id: string, color: string | null }[];
 	mode: 'map' | 'structure';
+	// How full a structure is, for the ones that hold things rather than charging up. A type
+	// listed here gets a gauge; everything else falls back to its charges.
+	occupancy: Partial<Record<StructureType, { used: number, capacity: number }>>;
 	selectedStructure: StructureModel | null;
 	onSelectStructure: (structure: StructureModel | null) => void;
 }
@@ -24,8 +29,16 @@ export class StrongholdMapPanel extends Component<Props> {
 	public static defaultProps = {
 		people: [],
 		mode: 'map',
+		occupancy: {},
 		onSelectStructure: () => null
 	};
+
+	// Beyond this many charges a row of pips stops being countable at a glance, and the panel
+	// falls back to a written count. Structures have no level cap, so this has to hold.
+	static maxPips = 10;
+
+	// Every building occupies one square of the map, whatever its own footprint
+	static square = 1;
 
 	onClick = (e: React.MouseEvent, structure: StructureModel | null) => {
 		e.stopPropagation();
@@ -39,6 +52,32 @@ export class StrongholdMapPanel extends Component<Props> {
 		const height = (Random.randomDecimal(rng) * 40) + 50;
 		const degrees = (Random.randomDecimal(rng) * 360);
 		const color = StrongholdLogic.canCharge(structure) ? Random.randomColor(80, 120, rng) : { r: 50, g: 50, b: 50 };
+
+		if (structure === this.props.selectedStructure) {
+			color.r = 255;
+			color.g = 255;
+			color.b = 255;
+		}
+
+		// A monument is a landmark rather than a working building - there is nothing to do in it
+		// and nothing to report about it - so it is drawn as a disc, and getPanel gives it no
+		// plaque. The smaller of its two dimensions keeps the disc inside its own square.
+		if (structure.type === StructureType.Monument) {
+			return (
+				<g key={structure.id}>
+					<circle
+						className='structure'
+						cx={structure.position.x + 0.5}
+						cy={structure.position.y + 0.5}
+						r={Math.min(width, height) / 200}
+						style={{ fill: Color.toString(color) }}
+						onClick={e => this.onClick(e, structure)}
+					>
+						<title>{structure.name}</title>
+					</circle>
+				</g>
+			);
+		}
 
 		let points: { x: number, y: number }[] = [];
 		switch (Random.randomNumber(4, rng)) {
@@ -105,16 +144,10 @@ export class StrongholdMapPanel extends Component<Props> {
 		const offsetX = (100 - width) / 2;
 		const offsetY = (100 - height) / 2;
 
-		if (structure === this.props.selectedStructure) {
-			color.r = 255;
-			color.g = 255;
-			color.b = 255;
-		}
-
 		return (
 			<g key={structure.id}>
 				<polygon
-					className={StrongholdLogic.canCharge(structure) && (structure.charges === 0) ? 'structure uncharged' : 'structure'}
+					className='structure'
 					points={
 						points
 							.map(pt => {
@@ -132,6 +165,113 @@ export class StrongholdMapPanel extends Component<Props> {
 				>
 					<title>{structure.name}</title>
 				</polygon>
+			</g>
+		);
+	};
+
+	// A label and a readout, centred on the building. Everything is a proportion of the square a
+	// building occupies, so the panels stay consistent with each other and scale with the map.
+	getPanel = (structure: StructureModel) => {
+		const occupancy = this.props.occupancy[structure.type];
+		const charged = !occupancy && StrongholdLogic.canCharge(structure);
+		const pips = charged && (structure.level <= StrongholdMapPanel.maxPips);
+
+		// Nothing to report but a name, which the building's own tooltip already gives, so it
+		// goes without a plaque rather than carrying one that says nothing
+		if (!occupancy && !charged) {
+			return null;
+		}
+
+		const cx = structure.position.x + 0.5;
+		const cy = structure.position.y + 0.5;
+
+		// Sized from the square the building sits in rather than from the building itself, which
+		// varies - so every panel on the map comes out the same size
+		const panelWidth = StrongholdMapPanel.square * 0.84;
+		const panelHeight = StrongholdMapPanel.square * 0.32;
+		const panelTop = cy - (panelHeight / 2);
+
+		// A label row above a readout row, packed close - the plaque sits on top of the building,
+		// so any space it does not need is building the player cannot see
+		const labelY = panelTop + (panelHeight * 0.34);
+		const readoutY = panelTop + (panelHeight * 0.76);
+
+		// SVG cannot measure text, so the label is sized from the length of the name - capped so
+		// that a short name does not swell to fill the panel, and scaled by the panel either way
+		const fontSize = panelWidth * Math.min(0.16, 1 / (0.58 * Math.max(structure.name.length, 1)));
+
+		const readoutWidth = panelWidth * 0.76;
+
+		let readout = null;
+		if (occupancy) {
+			// A gauge, for the buildings that hold things
+			const ratio = occupancy.capacity > 0 ? Math.min(occupancy.used / occupancy.capacity, 1) : 0;
+			const gaugeHeight = panelHeight * 0.26;
+			const gaugeY = readoutY - (gaugeHeight / 2);
+			readout = (
+				<g>
+					<rect
+						className='gauge-track'
+						x={cx - (readoutWidth / 2)} y={gaugeY}
+						width={readoutWidth} height={gaugeHeight} rx={gaugeHeight / 2}
+					/>
+					{
+						ratio > 0 ?
+							<rect
+								className={ratio < 1 ? 'gauge-fill' : 'gauge-fill full'}
+								x={cx - (readoutWidth / 2)} y={gaugeY}
+								width={readoutWidth * ratio} height={gaugeHeight} rx={gaugeHeight / 2}
+							/>
+							: null
+					}
+				</g>
+			);
+		} else if (pips) {
+			// A pip per charge, filled for the ones still available. They keep a fixed size and
+			// spacing and sit centred, so that two charges read as two of something rather than
+			// being flung to either end of the panel; they only close up when a high-level
+			// structure has more of them than the row will take.
+			const maxRadius = panelHeight * 0.15;
+			const spread = maxRadius * 2.6;
+			const rowWidth = ((structure.level - 1) * spread) + (maxRadius * 2);
+			const scale = Math.min(readoutWidth / rowWidth, 1);
+
+			const radius = maxRadius * scale;
+			const gap = spread * scale;
+			const left = cx - (((structure.level - 1) * gap) / 2);
+			readout = (
+				<g>
+					{
+						Array.from({ length: structure.level }, (_, n) => (
+							<circle
+								key={n}
+								className={n < structure.charges ? 'pip filled' : 'pip'}
+								cx={left + (n * gap)} cy={readoutY} r={radius}
+							/>
+						))
+					}
+				</g>
+			);
+		} else if (charged) {
+			// Past a countable number of pips, say it in words instead
+			readout = (
+				<text className='structure-panel-count' x={cx} y={readoutY} fontSize={fontSize * 0.85}>
+					{structure.charges} / {structure.level}
+				</text>
+			);
+		}
+
+		return (
+			<g key={`${structure.id}-panel`} className='structure-panel'>
+				<rect
+					className='structure-panel-bg'
+					x={cx - (panelWidth / 2)} y={panelTop}
+					width={panelWidth} height={panelHeight} rx={panelHeight * 0.2}
+				/>
+				<text className='structure-panel-label' x={cx} y={labelY} fontSize={fontSize}>
+					{structure.name}
+				</text>
+				{readout}
 			</g>
 		);
 	};
@@ -203,6 +343,7 @@ export class StrongholdMapPanel extends Component<Props> {
 				{people.length > 0 ? <svg className='people-layer' viewBox={viewBox}>{people}</svg> : null}
 				<svg className='structure-layer' viewBox={viewBox} onClick={e => this.onClick(e, null)}>
 					{structures.map(this.getStructure)}
+					{structures.map(this.getPanel)}
 				</svg>
 			</div>
 		);

@@ -16,7 +16,7 @@ import type { OptionsModel } from '../../../../models/options';
 import { Collections } from '../../../../utils/collections/collections';
 import { Utils } from '../../../../utils/utils/utils';
 
-import { CardList, Expander, IconSize, IconType, IconValue, PlayingCard, Text, TextType } from '../../../controls';
+import { CardChoice, CardList, Expander, IconSize, IconType, IconValue, PlayingCard, Text, TextType } from '../../../controls';
 import { ItemCard, PlaceholderCard } from '../../../cards';
 
 import './equipment-page.scss';
@@ -108,7 +108,14 @@ export class EquipmentPage extends Component<Props, State> {
 		});
 
 		const slots = this.state.slots.filter(slot => !slot.selected).map((slot, n) => {
-			const cards = slot.candidates.map(item => <ItemCard key={item.id} item={item} onClick={this.selectItem} />);
+			const cards = slot.candidates.map(item => (
+				<CardChoice
+					key={item.id}
+					card={<ItemCard key={item.id} item={item} />}
+					label='Choose this item'
+					onSelect={() => this.selectItem(item)}
+				/>
+			));
 
 			const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Quartermaster);
 

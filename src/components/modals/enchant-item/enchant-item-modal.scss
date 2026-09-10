@@ -2,7 +2,14 @@
 	display: block;
 
 	.card-selection-row {
+		// Everything the party owns, so take whatever width the dialog offers.
 		margin: 20px auto;
+		width: 100%;
+	}
+
+	// This dialog nests inside the item chooser, so it has to say so itself.
+	&.enchantment-selection .card-selection-row {
+		// Three enchantments, held close enough together to be compared.
 		width: 650px;
 	}
 }

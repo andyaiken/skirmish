@@ -157,6 +157,9 @@ export class HeroesPage extends Component<Props, State> {
 
 		let slots = null;
 		if (this.props.game.heroSlots > 0) {
+			// Recruits go on accruing past the hero limit - they cost nothing to hold - so the
+			// card stays, and says why it cannot be taken up rather than quietly doing nothing.
+			const canRecruit = GameLogic.canRecruitHero(this.props.game);
 			slots = (
 				<CardList cards={[
 					<PlayingCard
@@ -165,11 +168,15 @@ export class HeroesPage extends Component<Props, State> {
 						front={
 							<PlaceholderCard
 								text='Recruits Available'
-								subtext='Click here to recruit a new hero.'
+								subtext={
+									canRecruit ?
+										'Click here to recruit a new hero.'
+										: `You can lead ${GameLogic.maxHeroes} heroes at once. Retire one to take up a recruit.`
+								}
 								content={<div className='slots-count'>{this.props.game.heroSlots}</div>}
 							/>
 						}
-						onClick={() => this.setState({ selectedHero: Factory.createCombatant(CombatantType.Hero) })}
+						onClick={canRecruit ? () => this.setState({ selectedHero: Factory.createCombatant(CombatantType.Hero) }) : null}
 					/>
 				]}/>
 			);
@@ -310,6 +317,13 @@ export class HeroesPage extends Component<Props, State> {
 		}
 
 		if (this.state.retiringHero) {
+			// Retiring promises the hero's potions and magic items back, so it has to wait for
+			// room to hold them rather than quietly dropping the difference.
+			const keepsakes = ([] as ItemModel[])
+				.concat(this.state.retiringHero.items)
+				.concat(this.state.retiringHero.carried)
+				.filter(i => i.magic || i.potion || i.scroll);
+			const roomToRetire = keepsakes.length <= GameLogic.getItemCapacity(this.props.game);
 			return (
 				<Dialog
 					content={(
@@ -327,17 +341,28 @@ export class HeroesPage extends Component<Props, State> {
 										</ul>
 										<p>This cannot be undone.</p>
 									</Text>
-									<ConfirmButton
-										label='Retire'
-										onClick={() => {
-											const h = this.state.retiringHero as CombatantModel;
-											this.setState({
-												retiringHero: null
-											}, () => {
-												this.props.retireHero(h);
-											});
-										}}
-									/>
+									{
+										roomToRetire ?
+											<ConfirmButton
+												label='Retire'
+												onClick={() => {
+													const h = this.state.retiringHero as CombatantModel;
+													this.setState({
+														retiringHero: null
+													}, () => {
+														this.props.retireHero(h);
+													});
+												}}
+											/>
+											: <Text type={TextType.Information}>
+												<p>
+													<b>Your stores are too full to retire this hero.</b> They are
+													holding {keepsakes.length} items you would keep, and you have
+													room for {GameLogic.getItemCapacity(this.props.game)}. Sell
+													something first.
+												</p>
+											</Text>
+									}
 								</div>
 							</div>
 						</div>

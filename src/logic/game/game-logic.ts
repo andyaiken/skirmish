@@ -35,6 +35,29 @@ export interface BalanceCardModel {
 }
 
 export class GameLogic {
+	// A campaign is saved whole, and Phase 09 syncs it through iCloud's key-value store, which
+	// stops accepting writes past 1MB and reports it only through a notification - so an
+	// uncapped save fails silently for the player who has invested most. Heroes and stored
+	// items are the two things that would otherwise grow without limit; capping both bounds a
+	// save at roughly 145kB. Recruits (heroSlots) are deliberately not capped, being a single
+	// integer, and equipped or carried gear is already bounded by the hero cap.
+	static maxHeroes = 10;
+	static maxItems = 100;
+
+	static canRecruitHero = (game: GameModel) => game.heroes.length < GameLogic.maxHeroes;
+
+	static getItemCapacity = (game: GameModel) => Math.max(GameLogic.maxItems - game.items.length, 0);
+
+	static storesAreFull = (game: GameModel) => GameLogic.getItemCapacity(game) === 0;
+
+	// Takes in what will fit and hands back what would not, so that every caller has to decide
+	// what to tell the player rather than losing items quietly.
+	static addItemsToGame = (game: GameModel, items: ItemModel[]) => {
+		const capacity = GameLogic.getItemCapacity(game);
+		game.items.push(...items.slice(0, capacity));
+		return items.slice(capacity);
+	};
+
 	// The bands a card has to score inside. These are read by the backstage card page, which marks a
 	// card red when it falls outside its band, and by the balance tests, which fail on the same
 	// numbers.

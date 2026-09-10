@@ -37,8 +37,8 @@ export class StrongholdLogic {
 		game.stronghold.push(copy);
 
 		// A Monument is a standing advertisement for the company, so raising one brings someone in.
-		// It's uncharged, which means it has no demolish button - the slot can't be banked and the
-		// structure then sold back.
+		// canDemolish refuses it, which is what stops the slot being banked and the structure then
+		// sold back.
 		if (copy.type === StructureType.Monument) {
 			game.heroSlots += 1;
 		}
@@ -160,12 +160,34 @@ export class StrongholdLogic {
 		return true;
 	};
 
-	// An uncharged structure's benefit is permanent - it never needs recharging, and the stronghold
-	// page offers no demolish button for one, so its benefit can't be banked and then sold back
+	// An uncharged structure's benefit is permanent: it never needs recharging, and its level does
+	// nothing, so the stronghold page offers it neither. A Bazaar belongs here - getPrice only
+	// asks whether one exists - and without it the Bazaar carried a charge that nothing ever spent
+	// and a level that changed nothing.
 	static canCharge = (structure: StructureModel) => {
 		switch (structure.type) {
 			case StructureType.Barracks:
+			case StructureType.Bazaar:
 			case StructureType.CountingHouse:
+			case StructureType.Monument:
+			case StructureType.Warehouse:
+				return false;
+		}
+
+		return true;
+	};
+
+	// Demolishing used to be inferred from canCharge, which conflated two different questions. What
+	// actually matters is whether tearing a structure down could bank its benefit:
+	//   - a Monument's recruit arrives when it is raised, so rebuilding would mint hero slots for
+	//     the 25 the demolition pays back
+	//   - the Barracks and Warehouse are the campaign's own, can't be bought, and are where the
+	//     party lives and stores its gear
+	// A Bazaar or Counting House gives up its benefit the moment it goes, so there is nothing to
+	// bank and no reason to keep one standing.
+	static canDemolish = (structure: StructureModel) => {
+		switch (structure.type) {
+			case StructureType.Barracks:
 			case StructureType.Monument:
 			case StructureType.Warehouse:
 				return false;

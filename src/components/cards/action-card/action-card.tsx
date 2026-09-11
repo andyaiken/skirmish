@@ -84,7 +84,10 @@ export class ActionCard extends Component<Props> {
 			);
 		};
 
-		return this.props.action.effects.map((e, n) => <div key={n}>{getEffectDescription(e)}</div>);
+		// A root-level 'take another action' is already shown by the Quick tag
+		return this.props.action.effects
+			.filter(e => e.id !== 'takeAnotherAction')
+			.map((e, n) => <div key={n}>{getEffectDescription(e)}</div>);
 	};
 
 	render = () => {

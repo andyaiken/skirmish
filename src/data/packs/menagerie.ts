@@ -608,7 +608,7 @@ export const menagerie = (): PackModel => ({
 		{
 			id: 'species-panther',
 			name: 'Panther',
-			description: 'You find the tracks afterwards, in a circle, all around where you slept.',
+			description: 'A large, stealthy cat that strikes from cover.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [
@@ -765,7 +765,7 @@ export const menagerie = (): PackModel => ({
 		{
 			id: 'species-snapjaw',
 			name: 'Snapjaw',
-			description: 'Armoured, patient, and mostly underwater until it isn\'t.',
+			description: 'A heavily armoured, crocodillian reptile that lies in wait for its prey.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [],

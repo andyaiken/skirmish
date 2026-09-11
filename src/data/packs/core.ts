@@ -25,7 +25,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'species-colossus',
 			name: 'Colossus',
-			description: 'It has to duck to come through the gate.',
+			description: 'A giant many times the height of a human, who crushes enemies with its sheer size and strength.',
 			type: CombatantType.Monster,
 			size: 3,
 			quirks: [],
@@ -107,7 +107,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'species-dragonkin',
 			name: 'Dragonkin',
-			description: 'Dragon far enough back in the blood that only the scales and the fire are left.',
+			description: 'A scaled humanoid with dragon ancestry, able to breathe fire.',
 			type: CombatantType.Hero,
 			size: 1,
 			quirks: [],
@@ -242,7 +242,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'species-elf',
 			name: 'Elf',
-			description: 'Grew up under trees old enough to have names.',
+			description: 'A graceful humanoid with keen senses, quick and quiet in the woods.',
 			type: CombatantType.Hero,
 			size: 1,
 			quirks: [],
@@ -300,7 +300,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'species-gnoll',
 			name: 'Gnoll',
-			description: 'You hear the hyena laugh well before you see the shoulders it sits on.',
+			description: 'A hyena-headed humanoid that attacks in a cackling, clawing frenzy.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [],
@@ -399,7 +399,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'species-gnome',
 			name: 'Gnome',
-			description: 'Waist-high, quiet enough to be somewhere else already.',
+			description: 'A small, nimble humanoid, good at staying out of sight and out of harm\'s way.',
 			type: CombatantType.Hero,
 			size: 1,
 			quirks: [
@@ -465,10 +465,10 @@ export const core = (): PackModel => ({
 		{
 			id: 'species-goblin',
 			name: 'Goblin',
-			description: 'Never stands still long enough to be worth aiming at.',
+			description: 'A wiry, quick humanoid that fights dirty, stabbing from behind and stealing what it can.',
 			type: CombatantType.Monster,
 			size: 1,
-			quirks: [],
+			quirks: [ QuirkType.Small ],
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('goblin-start-1', TraitType.Speed, 1),
 				FeatureLogic.createSkillFeature('goblin-start-2', SkillType.Reactions, 2),
@@ -544,7 +544,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'species-human',
 			name: 'Human',
-			description: 'Whatever the work is, somebody here has already learned it.',
+			description: 'Adaptable and resilient, humans can turn their hand to anything.',
 			type: CombatantType.Hero,
 			size: 1,
 			quirks: [],
@@ -601,7 +601,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'species-medusa',
 			name: 'Medusa',
-			description: 'Snake-haired; nobody in the room looks directly at it.',
+			description: 'A snake-haired humanoid whose gaze can turn creatures to stone.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [],
@@ -684,7 +684,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'species-orc',
 			name: 'Orc',
-			description: 'Bred for war by someone who has since lost control of them.',
+			description: 'A brutish, powerfully built humanoid that fights with savage fury.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [],
@@ -763,7 +763,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'species-ratfolk',
 			name: 'Ratfolk',
-			description: 'Rat-faced and quick, coming up through the drains in numbers.',
+			description: 'A small, quick humanoid with the features of a rat.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [
@@ -841,7 +841,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'species-scarab',
 			name: 'Scarab',
-			description: 'A beetle the size of a dog, whose bite leaves a hole in whatever it closes on.',
+			description: 'A dog-sized beetle with acidic mandibles and a stinging tail.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [
@@ -924,7 +924,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'species-shadowborn',
 			name: 'Shadowborn',
-			description: 'Demon blood a long way back, still showing in the horns and the eyes.',
+			description: 'A humanoid with demonic ancestry, able to sap the strength of those around it.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [],
@@ -1003,7 +1003,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'species-troll',
 			name: 'Troll',
-			description: 'Whatever you cut off the great grey brute is back by morning.',
+			description: 'A huge, grey-skinned brute that regenerates its wounds.',
 			type: CombatantType.Monster,
 			size: 2,
 			quirks: [
@@ -1082,7 +1082,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'role-arcanist',
 			name: 'Arcanist',
-			description: 'Knows a little of every school, specialising in none.',
+			description: 'A spellcaster who knows a little of every school of magic.',
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('arcanist-start-1', TraitType.Resolve, 1),
 				FeatureLogic.createSkillFeature('arcanist-start-2', SkillType.Spellcasting, 2),
@@ -1209,7 +1209,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'role-barbarian',
 			name: 'Barbarian',
-			description: 'Fights as though the return blow were somebody else\'s problem.',
+			description: 'A fierce warrior who fights with large weapons and reckless fury.',
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('barbarian-start-1', TraitType.Endurance, 1),
 				FeatureLogic.createSkillFeature('barbarian-start-2', SkillType.Weapon, 2),
@@ -1345,7 +1345,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'role-bard',
 			name: 'Bard',
-			description: 'Bards carry the song into the line, where it is not always a comfort.',
+			description: 'A performer whose songs inspire allies and dismay enemies.',
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('bard-start-1', TraitType.Resolve, 1),
 				FeatureLogic.createSkillFeature('bard-start-2', SkillType.Presence, 2),
@@ -1453,7 +1453,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'role-centurion',
 			name: 'Centurion',
-			description: 'Holds the line by standing in it.',
+			description: 'A disciplined soldier in heavy armour, fighting with weapon and shield.',
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('centurion-start-1', TraitType.Endurance, 1),
 				FeatureLogic.createSkillFeature('centurion-start-2', SkillType.Weapon, 2),
@@ -1595,7 +1595,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'role-dervish',
 			name: 'Dervish',
-			description: 'Never in the same square for two blows running.',
+			description: 'A fast-moving warrior who fights with a weapon in each hand.',
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('dervish-start-1', TraitType.Speed, 1),
 				FeatureLogic.createSkillFeature('dervish-start-2', SkillType.Weapon, 2),
@@ -1745,7 +1745,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'role-gladiator',
 			name: 'Gladiator',
-			description: 'Fought for a crowd long enough to know what one wants to see.',
+			description: 'An arena fighter who plays to the crowd.',
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('gladiator-start-1', TraitType.Endurance, 1),
 				FeatureLogic.createSkillFeature('gladiator-start-2', SkillType.Weapon, 2),
@@ -1876,7 +1876,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'role-ranger',
 			name: 'Ranger',
-			description: 'Prefers to settle matters at a hundred paces.',
+			description: 'An expert with ranged weapons.',
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('ranger-start-1', TraitType.Endurance, 1),
 				FeatureLogic.createSkillFeature('ranger-start-2', SkillType.Perception, 2),
@@ -2032,7 +2032,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'role-sensei',
 			name: 'Sensei',
-			description: 'Fights bare-handed, with forms drilled so long they stopped being practice.',
+			description: 'A martial artist who fights bare-handed.',
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('sensei-start-1', TraitType.Speed, 1),
 				FeatureLogic.createSkillFeature('sensei-start-2', SkillType.Brawl, 2)
@@ -2154,7 +2154,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'role-skirmisher',
 			name: 'Skirmisher',
-			description: 'The reply always lands where the skirmisher was standing.',
+			description: 'A lightly armoured fighter who strikes and keeps moving.',
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('skirmisher-start-1', TraitType.Speed, 1),
 				FeatureLogic.createSkillFeature('skirmisher-start-2', SkillType.Reactions, 2),
@@ -2291,7 +2291,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'role-valkyrie',
 			name: 'Valkyrie',
-			description: 'Comes down the line in full plate, choosing who is worth carrying off the field.',
+			description: 'A warrior in heavy armour who fights with a large weapon and carries the wounded to safety.',
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('valkyrie-start-1', TraitType.Endurance, 1),
 				FeatureLogic.createTraitFeature('valkyrie-start-2', TraitType.Resolve, 1),
@@ -2420,7 +2420,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'background-acrobat',
 			name: 'Acrobat',
-			description: 'Spent years learning how to fall properly.',
+			description: 'A nimble performer, quick on their feet and hard to keep down.',
 			startingFeatures: [],
 			features: [
 				FeatureLogic.createTraitFeature('acrobat-feature-2', TraitType.Speed, 1),
@@ -2470,7 +2470,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'background-commander',
 			name: 'Commander',
-			description: 'Sees the shape of the field a round before anyone else.',
+			description: 'A battlefield leader who directs their allies.',
 			startingFeatures: [],
 			features: [
 				FeatureLogic.createSkillFeature('commander-feature-1', SkillType.Presence, 2),
@@ -2601,7 +2601,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'background-noble',
 			name: 'Noble',
-			description: 'Has never had to raise their voice to be obeyed.',
+			description: 'A person of high birth whose presence inspires their allies.',
 			startingFeatures: [],
 			features: [
 				FeatureLogic.createSkillFeature('noble-feature-1', SkillType.Presence, 2),
@@ -2700,7 +2700,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'background-outrider',
 			name: 'Outrider',
-			description: 'Rides ahead, finds the ground, and comes back for the rest of you.',
+			description: 'A scout who rides ahead to find the way.',
 			startingFeatures: [
 				FeatureLogic.createSkillFeature('outrider-start-1', SkillType.Perception, 2)
 			],
@@ -2751,7 +2751,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'background-reaver',
 			name: 'Reaver',
-			description: 'Came for the sack, not the siege.',
+			description: 'A raider who fights with savage ferocity.',
 			startingFeatures: [],
 			features: [
 				FeatureLogic.createSkillFeature('reaver-feature-1', SkillType.Brawl, 2),
@@ -2803,7 +2803,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'background-sentinel',
 			name: 'Sentinel',
-			description: 'Nothing gets past a sentinel unless they allow it.',
+			description: 'A guardian who protects their allies and holds enemies in place.',
 			startingFeatures: [],
 			features: [
 				FeatureLogic.createTraitFeature('sentinel-feature-1', TraitType.Endurance, 1),
@@ -2857,7 +2857,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'item-amulet',
 			name: 'Amulet',
-			description: 'A worked disc on a cord, warm against the breastbone.',
+			description: 'A charm worn on a cord around the neck, used to focus magic.',
 			baseItem: '',
 			magic: false,
 			proficiency: ItemProficiencyType.Implements,
@@ -2905,7 +2905,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'item-battleaxe',
 			name: 'Battleaxe',
-			description: 'Head-heavy, slow to bring round, final when it arrives.',
+			description: 'A heavy, two-handed axe.',
 			baseItem: '',
 			magic: false,
 			proficiency: ItemProficiencyType.LargeWeapons,
@@ -2930,7 +2930,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'item-belt',
 			name: 'Belt',
-			description: 'Thick leather, punched with more holes than it started with.',
+			description: 'A thick leather belt.',
 			baseItem: '',
 			magic: false,
 			proficiency: ItemProficiencyType.None,
@@ -2946,7 +2946,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'item-boots',
 			name: 'Boots',
-			description: 'Worn leather, resoled more than once.',
+			description: 'Sturdy leather boots.',
 			baseItem: '',
 			magic: false,
 			proficiency: ItemProficiencyType.None,
@@ -3057,7 +3057,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'item-catapult',
 			name: 'Catapult',
-			description: 'A frame, a cord, and a basket of river rock.',
+			description: 'A forked frame with an elastic cord, used to launch stones.',
 			baseItem: '',
 			magic: false,
 			proficiency: ItemProficiencyType.RangedWeapons,
@@ -3129,7 +3129,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'item-charm',
 			name: 'Charm',
-			description: 'A knot of hair, wire and something small that once had a use.',
+			description: 'A small trinket worn around the neck.',
 			baseItem: '',
 			magic: false,
 			proficiency: ItemProficiencyType.None,
@@ -3193,7 +3193,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'item-crossbow',
 			name: 'Crossbow',
-			description: 'Slow to wind; it does not care how strong you are.',
+			description: 'A mechanical bow that shoots bolts.',
 			baseItem: '',
 			magic: false,
 			proficiency: ItemProficiencyType.RangedWeapons,
@@ -3218,7 +3218,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'item-crown',
 			name: 'Crown',
-			description: 'Heavy, gold, and not subtle.',
+			description: 'A heavy gold crown.',
 			baseItem: '',
 			magic: false,
 			proficiency: ItemProficiencyType.None,
@@ -3259,7 +3259,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'item-diadem',
 			name: 'Diadem',
-			description: 'A jewelled band said to mark the favour of something older than kings.',
+			description: 'A jewelled headband.',
 			baseItem: '',
 			magic: false,
 			proficiency: ItemProficiencyType.None,
@@ -3391,7 +3391,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'item-hand-crossbow',
 			name: 'Hand Crossbow',
-			description: 'Small enough to keep up a sleeve until the moment it is levelled.',
+			description: 'A small, one-handed crossbow.',
 			baseItem: '',
 			magic: false,
 			proficiency: ItemProficiencyType.RangedWeapons,
@@ -3457,7 +3457,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'item-hide-armor',
 			name: 'Hide Armor',
-			description: 'Cut from something large, with the hair left on.',
+			description: 'Armour made from thick animal hide.',
 			baseItem: '',
 			magic: false,
 			proficiency: ItemProficiencyType.LightArmor,
@@ -3569,7 +3569,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'item-khopesh',
 			name: 'Khopesh',
-			description: 'The hook at the tip is for dragging a shield aside.',
+			description: 'A sword with a hooked, sickle-shaped blade.',
 			baseItem: '',
 			magic: false,
 			proficiency: ItemProficiencyType.MilitaryWeapons,
@@ -3762,7 +3762,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'item-orb',
 			name: 'Orb',
-			description: 'Glass, cold, heavier than it looks.',
+			description: 'A glass sphere used to focus magic.',
 			baseItem: '',
 			magic: false,
 			proficiency: ItemProficiencyType.Implements,
@@ -3819,7 +3819,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'item-plate-armor',
 			name: 'Plate Armor',
-			description: 'Jointed steel, fitted to one body and no other.',
+			description: 'A full suit of jointed steel plates.',
 			baseItem: '',
 			magic: false,
 			proficiency: ItemProficiencyType.HeavyArmor,
@@ -3948,7 +3948,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'item-sandals',
 			name: 'Sandals',
-			description: 'Leather soles and a great deal of open air.',
+			description: 'Simple leather-soled sandals.',
 			baseItem: '',
 			magic: false,
 			proficiency: ItemProficiencyType.None,
@@ -4018,7 +4018,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'item-scimitar',
 			name: 'Scimitar',
-			description: 'The curve does the work on the draw.',
+			description: 'A sword with a curved blade.',
 			baseItem: '',
 			magic: false,
 			proficiency: ItemProficiencyType.MilitaryWeapons,
@@ -4151,7 +4151,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'item-staff',
 			name: 'Staff',
-			description: 'Shoulder-height, with the grain worn smooth where the hand goes.',
+			description: 'A tall wooden staff used to focus magic.',
 			baseItem: '',
 			magic: false,
 			proficiency: ItemProficiencyType.Implements,
@@ -4208,7 +4208,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'item-tome',
 			name: 'Tome',
-			description: 'A spellbook too heavy to hold open one-handed for long.',
+			description: 'A heavy spellbook used to focus magic.',
 			baseItem: '',
 			magic: false,
 			proficiency: ItemProficiencyType.Implements,
@@ -4265,7 +4265,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'item-tower-shield',
 			name: 'Tower Shield',
-			description: 'Tall enough to kneel behind.',
+			description: 'A large shield that covers most of the body.',
 			baseItem: '',
 			magic: false,
 			proficiency: ItemProficiencyType.Shields,
@@ -4311,7 +4311,7 @@ export const core = (): PackModel => ({
 		{
 			id: 'item-wand',
 			name: 'Wand',
-			description: 'A finger of black wood, worn pale at one end.',
+			description: 'A short wooden rod used to focus magic.',
 			baseItem: '',
 			magic: false,
 			proficiency: ItemProficiencyType.Implements,

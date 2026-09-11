@@ -104,7 +104,7 @@ export const codexArcanum = (): PackModel => ({
 		{
 			id: 'species-homunculus',
 			name: 'Homunculus',
-			description: 'Knee-high, quick, and seldom encountered alone.',
+			description: 'A small creature created by magic, usually found in groups.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [
@@ -1138,8 +1138,6 @@ export const codexArcanum = (): PackModel => ({
 			weapon: null,
 			armor: null,
 			potion: {
-				// One removeCondition takes the worst condition off you; an antidote should clear
-				// what ails you, so it names each trait in turn
 				effects: [
 					ActionEffects.removeCondition(TraitType.Endurance),
 					ActionEffects.removeCondition(TraitType.Resolve),
@@ -1617,7 +1615,7 @@ export const codexArcanum = (): PackModel => ({
 		{
 			id: 'scroll-recall',
 			name: 'Scroll of Recall',
-			description: 'It names one place, in the confident expectation that you are standing in it.',
+			description: 'A scroll that describes a place so clearly, you could already be standing in it.',
 			baseItem: '',
 			magic: false,
 			proficiency: ItemProficiencyType.None,

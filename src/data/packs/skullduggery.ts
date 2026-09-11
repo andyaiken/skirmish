@@ -23,7 +23,7 @@ export const skullduggery = (): PackModel => ({
 		{
 			id: 'species-doppelganger',
 			name: 'Doppelganger',
-			description: 'Left in a cradle in place of someone else.',
+			description: 'A shapeshifter that can take on the appearance of others.',
 			type: CombatantType.Hero,
 			size: 1,
 			quirks: [],
@@ -278,7 +278,7 @@ export const skullduggery = (): PackModel => ({
 		{
 			id: 'role-corsair',
 			name: 'Corsair',
-			description: 'A swashbuckler, who fights best in the moment after everyone else has lost track of the plan.',
+			description: 'A swashbuckling fighter who fights with a blade in each hand.',
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('corsair-start-1', TraitType.Speed, 1),
 				FeatureLogic.createSkillFeature('corsair-start-2', SkillType.Reactions, 2),
@@ -570,7 +570,7 @@ export const skullduggery = (): PackModel => ({
 			// trouble, and it wants to be paid in loot
 			id: 'role-sellsword',
 			name: 'Sellsword',
-			description: 'Asks what the work pays before asking what it is.',
+			description: 'A mercenary soldier who fights for pay.',
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('sellsword-start-1', TraitType.Endurance, 1),
 				FeatureLogic.createSkillFeature('sellsword-start-2', SkillType.Weapon, 2),
@@ -771,7 +771,7 @@ export const skullduggery = (): PackModel => ({
 		{
 			id: 'background-thief',
 			name: 'Thief',
-			description: 'Never put your trust in a thief, even when they\'re on your side.',
+			description: 'A sneak who steals, hides and disarms traps.',
 			startingFeatures: [
 				FeatureLogic.createSkillFeature('thief-start-1', SkillType.Stealth, 2),
 				FeatureLogic.createSkillFeature('thief-start-2', SkillType.Reactions, 2)
@@ -842,7 +842,7 @@ export const skullduggery = (): PackModel => ({
 		{
 			id: 'background-trapper',
 			name: 'Trapper',
-			description: 'The trapper knows where to put a snare.',
+			description: 'A hunter who sets traps and snares.',
 			startingFeatures: [
 				FeatureLogic.createSkillFeature('trapper-start-1', SkillType.Perception, 2)
 			],

@@ -23,7 +23,7 @@ export const workshop = (): PackModel => ({
 		{
 			id: 'species-automaton',
 			name: 'Automaton',
-			description: 'Brass and clockwork, built to hold a gun.',
+			description: 'A clockwork soldier of brass, built to use firearms.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [],
@@ -179,7 +179,7 @@ export const workshop = (): PackModel => ({
 		{
 			id: 'species-mutant',
 			name: 'Mutant',
-			description: 'Grown in a vat by someone who stopped checking on it.',
+			description: 'An unstable creature grown in an alchemist\'s vat.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [
@@ -302,7 +302,7 @@ export const workshop = (): PackModel => ({
 		{
 			id: 'species-tinderjack',
 			name: 'Tinderjack',
-			description: 'Packed with powder and built to explode.',
+			description: 'A mindless construct packed with gunpowder, which explodes when destroyed.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [
@@ -400,7 +400,7 @@ export const workshop = (): PackModel => ({
 		{
 			id: 'role-alchemist',
 			name: 'Alchemist',
-			description: 'Alchemists throw the things that other people refuse to even carry.',
+			description: 'An expert in chemistry who throws flasks of acid, fire and other volatile mixtures.',
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('alchemist-start-1', TraitType.Resolve, 1),
 				FeatureLogic.createSkillFeature('alchemist-start-2', SkillType.Spellcasting, 2),
@@ -836,7 +836,7 @@ export const workshop = (): PackModel => ({
 		{
 			id: 'item-carbine',
 			name: 'Carbine',
-			description: 'Smaller than a rifle, larger than a pistol.',
+			description: 'A two-handed gun, smaller than a rifle.',
 			baseItem: '',
 			magic: false,
 			proficiency: ItemProficiencyType.PowderWeapons,
@@ -861,7 +861,7 @@ export const workshop = (): PackModel => ({
 		{
 			id: 'item-pistol',
 			name: 'Pistol',
-			description: 'A less powerful hand-held gun.',
+			description: 'A one-handed gun.',
 			baseItem: '',
 			magic: false,
 			proficiency: ItemProficiencyType.PowderWeapons,
@@ -886,7 +886,7 @@ export const workshop = (): PackModel => ({
 		{
 			id: 'item-rifle',
 			name: 'Rifle',
-			description: 'A large gun that requires two hands to use.',
+			description: 'A large, long-range gun that needs two hands to use.',
 			baseItem: '',
 			magic: false,
 			proficiency: ItemProficiencyType.PowderWeapons,

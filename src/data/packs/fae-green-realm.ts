@@ -151,7 +151,7 @@ export const faeGreenRealm = (): PackModel => ({
 		{
 			id: 'species-bramblewight',
 			name: 'Bramblewight',
-			description: 'It does not come to you. It has other ways of closing the distance.',
+			description: 'A mindless creature of thorns and brambles that seizes and crushes its prey.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [
@@ -252,7 +252,7 @@ export const faeGreenRealm = (): PackModel => ({
 			description: 'A humanoid with powerful goat-like legs.',
 			type: CombatantType.Hero,
 			size: 1,
-			quirks: [],
+			quirks: [ QuirkType.SureFooted ],
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('faun-start-1', TraitType.Speed, 1),
 				FeatureLogic.createSkillFeature('faun-start-2', SkillType.Brawl, 2),
@@ -314,7 +314,7 @@ export const faeGreenRealm = (): PackModel => ({
 		{
 			id: 'species-heartwood',
 			name: 'Heartwood',
-			description: 'The oldest thing in the wood, and the reason the rest of it is awake.',
+			description: 'An ancient, living tree that can call the forest to its aid.',
 			type: CombatantType.Monster,
 			size: 2,
 			quirks: [
@@ -445,7 +445,7 @@ export const faeGreenRealm = (): PackModel => ({
 		{
 			id: 'species-rotcap',
 			name: 'Rotcap',
-			description: 'Where it has been standing, nothing else will.',
+			description: 'A mindless fungus creature that spreads rot and spores.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [
@@ -563,7 +563,7 @@ export const faeGreenRealm = (): PackModel => ({
 		{
 			id: 'species-siren',
 			name: 'Siren',
-			description: 'Getting closer sounds like the only good idea you have ever had.',
+			description: 'A creature whose enchanting song lures people to their doom.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [],
@@ -644,7 +644,7 @@ export const faeGreenRealm = (): PackModel => ({
 		{
 			id: 'species-sylvan',
 			name: 'Sylvan',
-			description: 'Plant-kin, grown rather than born.',
+			description: 'A humanoid plant creature, able to take root and regrow.',
 			type: CombatantType.Hero,
 			size: 1,
 			quirks: [
@@ -1092,7 +1092,7 @@ export const faeGreenRealm = (): PackModel => ({
 		{
 			id: 'role-thornwright',
 			name: 'Thornwright',
-			description: 'Where the geomancer moves rock, the thornwright grows things in the way.',
+			description: 'A spellcaster who grows thorns and plants to control the battlefield.',
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('thornwright-start-1', TraitType.Resolve, 1),
 				FeatureLogic.createSkillFeature('thornwright-start-2', SkillType.Spellcasting, 2),

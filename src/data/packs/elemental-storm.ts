@@ -25,7 +25,7 @@ export const elementalStorm = (): PackModel => ({
 		{
 			id: 'species-frostkin',
 			name: 'Frostkin',
-			description: 'Cold-adapted, unhurried, and entirely untroubled by the ground.',
+			description: 'A humanoid adapted to ice and snow, who can cross any terrain.',
 			type: CombatantType.Hero,
 			size: 1,
 			quirks: [
@@ -102,7 +102,7 @@ export const elementalStorm = (): PackModel => ({
 		{
 			id: 'species-merrow',
 			name: 'Merrow',
-			description: 'A heavy-shouldered thing of the deep water, all teeth and patience.',
+			description: 'A powerfully built humanoid from the deep sea, with a savage bite.',
 			type: CombatantType.Hero,
 			size: 1,
 			quirks: [
@@ -282,7 +282,7 @@ export const elementalStorm = (): PackModel => ({
 		{
 			id: 'species-rimewight',
 			name: 'Rimewight',
-			description: 'A corpse that froze before it could finish dying.',
+			description: 'A frozen undead corpse that chills everything around it.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [
@@ -641,7 +641,7 @@ export const elementalStorm = (): PackModel => ({
 		{
 			id: 'species-wendigo',
 			name: 'Wendigo',
-			description: 'It has been following the party for two days, waiting for one of them to bleed.',
+			description: 'A tall, gaunt predator of the frozen wilds that stalks its prey.',
 			type: CombatantType.Monster,
 			size: 2,
 			quirks: [
@@ -782,7 +782,7 @@ export const elementalStorm = (): PackModel => ({
 		{
 			id: 'species-yeti',
 			name: 'Yeti',
-			description: 'Being hit by something that cold is a thing you spend a while recovering from.',
+			description: 'A huge, shaggy-furred beast of the high snows.',
 			type: CombatantType.Monster,
 			size: 2,
 			quirks: [],
@@ -976,7 +976,7 @@ export const elementalStorm = (): PackModel => ({
 		{
 			id: 'role-rimecaller',
 			name: 'Rimecaller',
-			description: 'Its whole argument is that going second is worse than taking three damage.',
+			description: 'A spellcaster who uses ice and cold to slow enemies down.',
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('rimecaller-start-1', TraitType.Resolve, 1),
 				FeatureLogic.createSkillFeature('rimecaller-start-2', SkillType.Spellcasting, 2),
@@ -1257,7 +1257,7 @@ export const elementalStorm = (): PackModel => ({
 		{
 			id: 'role-stormcaller',
 			name: 'Stormcaller',
-			description: 'Weather, brought indoors and pointed at someone.',
+			description: 'A warrior-mage who calls down wind and lightning.',
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('stormcaller-start-1', TraitType.Endurance, 1),
 				FeatureLogic.createSkillFeature('stormcaller-start-2', SkillType.Spellcasting, 2),
@@ -1375,7 +1375,7 @@ export const elementalStorm = (): PackModel => ({
 		{
 			id: 'role-tidecaller',
 			name: 'Tidecaller',
-			description: 'Water goes where it is told, and then it is told to stop being water.',
+			description: 'A spellcaster who controls water, flooding and freezing the battlefield.',
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('tidecaller-start-1', TraitType.Resolve, 1),
 				FeatureLogic.createSkillFeature('tidecaller-start-2', SkillType.Spellcasting, 2),
@@ -1487,7 +1487,7 @@ export const elementalStorm = (): PackModel => ({
 		{
 			id: 'item-furs',
 			name: 'Furs',
-			description: 'Heavy, unlovely, and the difference between a cold night and a last one.',
+			description: 'Heavy animal furs that keep out the cold.',
 			baseItem: '',
 			magic: false,
 			proficiency: ItemProficiencyType.LightArmor,

@@ -19,7 +19,7 @@ import { TraitType } from '../../enums/trait-type';
 export const faithAndDamnation = (): PackModel => ({
 	id: 'pack_faith_and_damnation',
 	name: 'Faith and Damnation',
-	description: 'These cards bring you heroes with power given by a higher - or lower - power.',
+	description: 'These cards bring you heroes with power granted by a higher - or lower - power.',
 	species: [
 		{
 			id: 'species-apostate',
@@ -283,7 +283,7 @@ export const faithAndDamnation = (): PackModel => ({
 		{
 			id: 'species-fiend',
 			name: 'Fiend',
-			description: 'A greater devil, which expects to be addressed by its full title.',
+			description: 'A powerful devil that breathes hellfire.',
 			type: CombatantType.Monster,
 			size: 2,
 			quirks: [],
@@ -365,7 +365,7 @@ export const faithAndDamnation = (): PackModel => ({
 		{
 			id: 'species-hellhound',
 			name: 'Hellhound',
-			description: 'It was a dog once, in the way that ash was once wood.',
+			description: 'A fiery hound from the underworld.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [
@@ -450,7 +450,7 @@ export const faithAndDamnation = (): PackModel => ({
 		{
 			id: 'species-imp-swarm',
 			name: 'Imp Swarm',
-			description: 'Nobody has ever reported meeting a single imp.',
+			description: 'A swarm of small, spiteful demons.',
 			type: CombatantType.Monster,
 			size: 2,
 			quirks: [
@@ -546,7 +546,7 @@ export const faithAndDamnation = (): PackModel => ({
 		{
 			id: 'role-cleric',
 			name: 'Cleric',
-			description: 'Priests who draw on what the gods lend; lending is not giving.',
+			description: 'A priest who uses divine power to heal and bless allies.',
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('cleric-start-1', TraitType.Resolve, 1),
 				FeatureLogic.createSkillFeature('cleric-start-2', SkillType.Presence, 2)
@@ -633,7 +633,7 @@ export const faithAndDamnation = (): PackModel => ({
 		{
 			id: 'role-inquisitor',
 			name: 'Inquisitor',
-			description: 'Has come a long way to hear one particular answer.',
+			description: 'A heavily armoured hunter of heretics, armed with chains and fire.',
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('inquisitor-start-1', TraitType.Endurance, 1),
 				FeatureLogic.createSkillFeature('inquisitor-start-2', SkillType.Brawl, 2),
@@ -805,7 +805,7 @@ export const faithAndDamnation = (): PackModel => ({
 		{
 			id: 'role-lifestealer',
 			name: 'Lifestealer',
-			description: 'Wears other people\'s health until it wears through.',
+			description: 'A spellcaster who drains the life from enemies.',
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('lifestealer-start-1', TraitType.Resolve, 1),
 				FeatureLogic.createSkillFeature('lifestealer-start-2', SkillType.Spellcasting, 2),
@@ -1042,7 +1042,7 @@ export const faithAndDamnation = (): PackModel => ({
 		{
 			id: 'role-warlock',
 			name: 'Warlock',
-			description: 'Warlocks, having made a bargain they cannot break, pay for every casting in their own blood.',
+			description: 'A spellcaster whose dark power comes from a bargain, paid for in their own blood.',
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('warlock-start-1', TraitType.Resolve, 1),
 				FeatureLogic.createSkillFeature('warlock-start-2', SkillType.Spellcasting, 2),

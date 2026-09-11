@@ -128,16 +128,48 @@ export class CardPage extends Component<Props, State> {
 					));
 			case 'structures':
 				return PackLogic.getStructures(pack.id)
-					.map(s => <Text key={s.id} type={TextType.Small}>{s.name}</Text>);
+					.map(s => (
+						<div
+							key={s.id}
+							className='card-tile'
+						>
+							<div className='card-name'>{s.name}</div>
+							<div className='card-description'>{s.description}</div>
+						</div>
+					));
 			case 'potions':
 				return PackLogic.getPotions(pack.id)
-					.map(p => <Text key={p.id} type={TextType.Small}>{p.name}</Text>);
+					.map(p => (
+						<div
+							key={p.id}
+							className='card-tile'
+						>
+							<div className='card-name'>{p.name}</div>
+							<div className='card-description'>{p.description}</div>
+						</div>
+					));
 			case 'scrolls':
 				return PackLogic.getScrolls(pack.id)
-					.map(sc => <Text key={sc.id} type={TextType.Small}>{sc.name}</Text>);
+					.map(s => (
+						<div
+							key={s.id}
+							className='card-tile'
+						>
+							<div className='card-name'>{s.name}</div>
+							<div className='card-description'>{s.description}</div>
+						</div>
+					));
 			case 'items':
 				return PackLogic.getItems(pack.id)
-					.map(i => <Text key={i.id} type={TextType.Small}>{i.name}</Text>);
+					.map(i => (
+						<div
+							key={i.id}
+							className='card-tile'
+						>
+							<div className='card-name'>{i.name}</div>
+							<div className='card-description'>{i.description}</div>
+						</div>
+					));
 		}
 
 		return null;

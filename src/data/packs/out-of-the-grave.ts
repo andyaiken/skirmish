@@ -26,7 +26,7 @@ export const outOfTheGrave = (): PackModel => ({
 		{
 			id: 'species-draugr',
 			name: 'Draugr',
-			description: 'A drowned thing that walked back out, still wearing the weight that took it under.',
+			description: 'The undead corpse of someone who drowned.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [
@@ -108,7 +108,7 @@ export const outOfTheGrave = (): PackModel => ({
 		{
 			id: 'species-ghoul',
 			name: 'Ghoul',
-			description: 'It ate the dead until the dead stopped being enough.',
+			description: 'An undead creature that feeds on corpses.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [
@@ -269,7 +269,7 @@ export const outOfTheGrave = (): PackModel => ({
 		{
 			id: 'species-ooze',
 			name: 'Ooze',
-			description: 'It takes the shape of whatever it is currently dissolving.',
+			description: 'A mindless blob of acidic slime.',
 			type: CombatantType.Monster,
 			size: 2,
 			quirks: [
@@ -374,7 +374,7 @@ export const outOfTheGrave = (): PackModel => ({
 		{
 			id: 'species-revenant',
 			name: 'Revenant',
-			description: 'It came back for a reason, and it has not finished with it yet.',
+			description: 'A person who has returned from the dead, driven by unfinished business.',
 			type: CombatantType.Hero,
 			size: 1,
 			quirks: [
@@ -523,7 +523,7 @@ export const outOfTheGrave = (): PackModel => ({
 		{
 			id: 'species-vampire',
 			name: 'Vampire',
-			description: 'The blood is the life.',
+			description: 'An undead creature that drinks the blood of the living.',
 			type: CombatantType.Monster,
 			size: 1,
 			quirks: [
@@ -917,7 +917,7 @@ export const outOfTheGrave = (): PackModel => ({
 		{
 			id: 'role-plaguebearer',
 			name: 'Plaguebearer',
-			description: 'Plaguebearers rarely kill anyone quickly.',
+			description: 'A spellcaster who spreads disease and poison.',
 			startingFeatures: [
 				FeatureLogic.createTraitFeature('plaguebearer-start-1', TraitType.Endurance, 1),
 				FeatureLogic.createSkillFeature('plaguebearer-start-2', SkillType.Spellcasting, 2),
@@ -1038,7 +1038,7 @@ export const outOfTheGrave = (): PackModel => ({
 		{
 			id: 'background-physician',
 			name: 'Physician',
-			description: 'For many groups, a physician is the difference between life and death.',
+			description: 'A doctor who treats wounds and ailments.',
 			startingFeatures: [
 			],
 			features: [

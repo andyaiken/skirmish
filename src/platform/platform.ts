@@ -22,7 +22,22 @@ import { StoreKitStore } from './storekit-store';
 
 import pkg from '../../package.json';
 
+declare global {
+	interface Window {
+		// Set by the native shell before the page loads, and only in a Debug build; see SkirmishViewController.swift
+		skirmishDebugBuild?: boolean;
+	}
+}
+
 export class Platform {
+	static canUseDeveloperMode = () => {
+		if (Capacitor.isNativePlatform()) {
+			return window.skirmishDebugBuild === true;
+		}
+
+		return window.location.hostname === 'localhost';
+	};
+
 	worker: Worker;
 	// StoreKit on a device, and a stub everywhere else - the browser has no App Store, so
 	// prices are simply absent there rather than the app pretending otherwise.
@@ -127,6 +142,12 @@ export class Platform {
 
 		options.version = pkg.version;
 		options.renderer = this.getRenderer();
+
+		// Hiding the switch isn't enough: Developer Mode switched on somewhere it was offered,
+		// or before this check existed, is saved, and would carry on with no way to turn it off.
+		if (!Platform.canUseDeveloperMode()) {
+			options.developer = false;
+		}
 
 		return { game: game, options: options };
 	};

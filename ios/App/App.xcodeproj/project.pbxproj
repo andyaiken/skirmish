@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1E59303F305C11BC00311995 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 1E59303E305C11BC00311995 /* AppIcon.icon */; };
+		1E593041305C293600311995 /* SkirmishViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E593040305C293600311995 /* SkirmishViewController.swift */; };
 		2FAD9763203C412B000D30F8 /* config.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2FAD9762203C412B000D30F8 /* config.xml */; };
 		50379B232058CBB4000EE86E /* capacitor.config.json in Resources */ = {isa = PBXBuildFile; fileRef = 50379B222058CBB4000EE86E /* capacitor.config.json */; };
 		504EC3081FED79650016851F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504EC3071FED79650016851F /* AppDelegate.swift */; };
@@ -21,6 +22,7 @@
 
 /* Begin PBXFileReference section */
 		1E59303E305C11BC00311995 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
+		1E593040305C293600311995 /* SkirmishViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkirmishViewController.swift; sourceTree = "<group>"; };
 		23FBD41B289478F4B2EF4F29 /* Pods_Skirmish.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Skirmish.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2FAD9762203C412B000D30F8 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = config.xml; sourceTree = "<group>"; };
 		50379B222058CBB4000EE86E /* capacitor.config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = capacitor.config.json; sourceTree = "<group>"; };
@@ -81,6 +83,7 @@
 				2FAD9762203C412B000D30F8 /* config.xml */,
 				50B271D01FEDC1A000F3C39B /* public */,
 				1E59303E305C11BC00311995 /* AppIcon.icon */,
+				1E593040305C293600311995 /* SkirmishViewController.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -223,6 +226,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				504EC3081FED79650016851F /* AppDelegate.swift in Sources */,
+				1E593041305C293600311995 /* SkirmishViewController.swift in Sources */,
 				9582B6852FE996820072D4E8 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

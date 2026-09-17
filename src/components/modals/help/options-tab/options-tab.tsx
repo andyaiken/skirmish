@@ -5,6 +5,8 @@ import type { OptionsModel } from '../../../../models/options';
 
 import { Sound } from '../../../../utils/sound/sound';
 
+import { Platform } from '../../../../platform/platform';
+
 import { ConfirmButton, Selector, StatValue, Switch, Text, TextType } from '../../../controls';
 
 import './options-tab.scss';
@@ -72,7 +74,7 @@ export class OptionsTab extends Component<Props, State> {
 				/>
 				<hr />
 				{
-					window.location.href.includes('localhost') ?
+					Platform.canUseDeveloperMode() ?
 						<Switch label='Developer Mode' checked={this.props.options.developer} onChange={this.props.setDeveloperMode} />
 						: null
 				}

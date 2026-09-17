@@ -6,6 +6,9 @@ const config: CapacitorConfig = {
 	// Matches the Vite outDir; `npx cap copy` reads the built app from here.
 	webDir: 'build',
 	ios: {
+		// The Xcode target and scheme are named after the game; Capacitor assumes 'App' unless told.
+		// The project, workspace and ios/App folders keep that name, which the CLI hardcodes.
+		scheme: 'Skirmish',
 		// Matches --control in index.scss. The webview is white until the app's own
 		// stylesheet applies, which shows as a flash between the launch screen and the
 		// board on a cold start; painting the webview itself removes the gap.

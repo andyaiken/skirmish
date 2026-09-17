@@ -20,7 +20,7 @@ def capacitor_pods
   pod 'SkirmishStore', :path => '../../plugins/skirmish-store'
 end
 
-target 'App' do
+target 'Skirmish' do
   capacitor_pods
   # Add your Pods here
 end

@@ -35,6 +35,7 @@
 		"update": "npx npm-check-updates --interactive --format group",
 		"start": "vite",
 		"build": "tsc --noEmit && vite build",
+		"ios": "npm run build && cap copy ios",
 		"preview": "vite preview",
 		"lint": "eslint src vite.config.ts",
 		"test": "vitest run",

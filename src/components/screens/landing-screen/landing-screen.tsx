@@ -9,7 +9,7 @@ import { PackLogic } from '../../../logic/pack/pack-logic';
 import type { GameModel } from '../../../models/game';
 import type { OptionsModel } from '../../../models/options';
 
-import { PlayingCard, Tag, Text } from '../../controls';
+import { PlayingCard, Text } from '../../controls';
 import { LogoPanel } from '../../panels';
 import { PlaceholderCard } from '../../cards';
 
@@ -98,16 +98,14 @@ export class LandingScreen extends Component<Props> {
 					</Text>
 					<div className='action-buttons'>
 						{mainBtn}
-						{packsBtn}
-						<button className='help-btn' title='Help' onClick={() => this.props.showHelp('landing')}>
-							<IconHelpCircle />
-							Help
-						</button>
+						<div>
+							{packsBtn}
+							<button className='help-btn' title='Help' onClick={() => this.props.showHelp('landing')}>
+								<IconHelpCircle />
+								Help
+							</button>
+						</div>
 					</div>
-				</div>
-				<div className='landing-footer'>
-					<Tag>Version {this.props.options.version}</Tag>
-					<Tag>© Andy Aiken 2026</Tag>
 				</div>
 			</div>
 		);

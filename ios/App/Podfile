@@ -8,6 +8,12 @@ use_frameworks!
 # Requires CocoaPods 1.6 or newer
 install! 'cocoapods', :disable_input_output_paths => true
 
+# The running Xcode as it stamps projects and schemes it has checked - 27.0 is "2700"
+def xcode_upgrade_version
+  xcode = `xcodebuild -version 2>/dev/null`.match(/Xcode (\d+)\.(\d+)/)
+  xcode ? ((xcode[1].to_i * 100) + (xcode[2].to_i * 10)).to_s : nil
+end
+
 def capacitor_pods
   pod 'Capacitor', :path => '../../node_modules/@capacitor/ios'
   pod 'CapacitorCordova', :path => '../../node_modules/@capacitor/ios'
@@ -19,13 +25,59 @@ target 'App' do
   # Add your Pods here
 end
 
+# The option above leaves CocoaPods' embed-frameworks phase with no declared outputs, so it
+# already runs on every build and Xcode warns that it will. Marking it as always out of date -
+# Xcode's "Based on dependency analysis" unchecked - says so outright and silences the warning
+# without giving up the workaround. It lives here so that every pod install puts it back.
+post_integrate do |installer|
+  installer.aggregate_targets.map(&:user_project).uniq.each do |project|
+    project.targets.each do |target|
+      target.shell_script_build_phases.each do |phase|
+        next unless phase.name.to_s.start_with?('[CP]')
+        # A list read back from an existing project is nil rather than empty when absent
+        next unless Array(phase.output_paths).empty? && Array(phase.output_file_list_paths).empty?
+        phase.always_out_of_date = '1'
+      end
+    end
+    project.save
+  end
+
+  # The Pods schemes are only written after post_install runs, so their half of the "already
+  # checked" stamp described there goes on here.
+  if (checked = xcode_upgrade_version)
+    Dir.glob(File.join(installer.sandbox.project_path, '**', '*.xcscheme')).each do |scheme|
+      text = File.read(scheme)
+      stamped = text.gsub(/LastUpgradeVersion = "\d+"/, "LastUpgradeVersion = \"#{checked}\"")
+      File.write(scheme, stamped) unless stamped == text
+    end
+  end
+end
+
 post_install do |installer|
   assertDeploymentTarget(installer)
+
+  # Xcode offers "Update to recommended settings" on the generated Pods project. Accepting it
+  # switches on the module verifier, which rejects the quoted includes in Capacitor's Cordova
+  # headers and fails every fresh build. CocoaPods rewrites this project on each install anyway,
+  # so it is marked as already checked against the Xcode in use and the offer never appears.
+  # Its schemes carry their own stamp, which post_integrate sets once they have been written.
+  if (checked = xcode_upgrade_version)
+    installer.pods_project.root_object.attributes['LastUpgradeCheck'] = checked
+    installer.pods_project.root_object.attributes['LastSwiftUpdateCheck'] = checked
+  end
   # The app reaches the Mac through Catalyst, and CocoaPods builds its targets for
   # iOS only by default, so the pods have no slice to link against there.
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
       config.build_settings['SUPPORTS_MACCATALYST'] = 'YES'
+
+      # Capacitor's own warnings can't be fixed from here - its sources are replaced on every npm
+      # install. This is what :inhibit_warnings would do, but it can't go on the pods above:
+      # `npx cap sync` regenerates that list and drops it. Our StoreKit plugin still warns.
+      if [ 'Capacitor', 'CapacitorCordova' ].include?(target.name)
+        config.build_settings['SWIFT_SUPPRESS_WARNINGS'] = 'YES'
+        config.build_settings['GCC_WARN_INHIBIT_ALL_WARNINGS'] = 'YES'
+      end
     end
   end
 end

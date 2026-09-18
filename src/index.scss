@@ -47,8 +47,12 @@ body,
 
 #root {
 	// The webview runs edge to edge (viewport-fit=cover above), so the whole app is
-	// inset once here rather than in every screen that reaches a corner.
-	padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+	// inset once here rather than in every screen that reaches a corner. Not at the bottom:
+	// that inset is the home indicator's, which fades out while playing (SystemBars in
+	// capacitor.config.ts), and every screen ends in scrolling content that can run beneath
+	// it - taps there work as normal, only a swipe up from the edge goes home. Keeping the
+	// inset left an empty strip along the bottom of the screen.
+	padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
 }
 
 body {

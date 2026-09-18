@@ -22,6 +22,14 @@ const config: CapacitorConfig = {
 		contentInset: 'never',
 		// The game is wholly offline; nothing should be loading over the network.
 		limitsNavigationsToAppBoundDomains: true
+	},
+	plugins: {
+		SystemBars: {
+			// The game fills the screen: no clock or battery across the top, and the home
+			// indicator fades out while playing. UIStatusBarHidden in Info.plist does the same
+			// for the launch screen, before this takes effect.
+			hidden: true
+		}
 	}
 };
 

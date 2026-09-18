@@ -13,6 +13,7 @@ export default defineConfig({
 	assetsInclude: [ '**/*.md' ],
 	build: {
 		outDir: 'build',
+		chunkSizeWarningLimit: 2000,
 		// Keep the rules documents as separate files rather than inlining the
 		// smaller ones into the bundle, so they are only fetched when opened.
 		assetsInlineLimit: (filePath: string) => filePath.endsWith('.md') ? false : undefined

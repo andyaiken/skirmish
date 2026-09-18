@@ -39,6 +39,7 @@ import type { PackModel } from '../../models/pack';
 import type { RegionModel } from '../../models/region';
 import type { StructureModel } from '../../models/structure';
 
+import type { CloudAdoptionReason, CloudCampaignModel, CloudConflictModel } from '../../platform/cloud-sync';
 import type { Platform } from '../../platform/platform';
 
 import { Collections } from '../../utils/collections/collections';
@@ -106,6 +107,9 @@ export class Main extends Component<Props, State> {
 		// StoreKit can also hand us a purchase we never asked for - an Ask to Buy approved
 		// later, or a buy made on another device.
 		this.props.platform.onOwnershipChanged = packIDs => this.setOwnedPacks(packIDs);
+		// The campaign can arrive from, or be contested by, the player's other devices
+		this.props.platform.onCloudAdopted = (game, deviceName, reason) => this.adoptCloudCampaign(game, deviceName, reason);
+		this.props.platform.onCloudConflict = conflict => this.showCloudConflict(conflict);
 
 		Sound.volume = this.state.options.soundEffectsVolume;
 	}
@@ -113,6 +117,7 @@ export class Main extends Component<Props, State> {
 	componentDidMount = () => {
 		this.props.platform.loadStore(PackLogic.getExpansionPacks().map(p => p.id));
 		this.props.platform.syncOwnedPacks(this.state.options);
+		this.props.platform.startCloudSync();
 
 		fetch(encounters).then(response => response.text()).then(text => {
 			rules['encounters'] = text;
@@ -311,6 +316,100 @@ export class Main extends Component<Props, State> {
 			this.saveOptions();
 		});
 	};
+
+	//#region Syncing between devices
+
+	adoptCloudCampaign = (game: GameModel | null, deviceName: string, reason: CloudAdoptionReason) => {
+		try {
+			// A campaign taken from another device can replace the one under whatever screen is
+			// showing, so play resumes from the landing screen. A later save from a device already
+			// being followed updates in place, unless the screen can no longer show it. Hero setup
+			// is left alone: nothing there is saved yet, so leaving it would lose the player's work.
+			const stale = ((this.props.screen === ScreenType.Encounter) && !game?.encounter)
+				|| ((this.props.screen === ScreenType.Campaign) && !game);
+			const busy = (this.props.screen === ScreenType.Setup) || (this.props.screen === ScreenType.Backstage);
+			if (!busy && ((reason !== 'following') || stale)) {
+				this.props.setScreen(ScreenType.Landing);
+			}
+
+			this.setState({
+				game: game
+			});
+
+			// Said once, when another device picks up the campaign, rather than on every save
+			if (reason === 'carried-on') {
+				this.showNotification(game ? `Picked up your campaign from your ${deviceName}.` : `Your campaign was ended on your ${deviceName}.`);
+			}
+		} catch (ex) {
+			this.logException(ex);
+		}
+	};
+
+	showCloudConflict = (conflict: CloudConflictModel) => {
+		try {
+			// No way to close this without choosing: until the player does, neither campaign is
+			// uploaded, and guessing would lose one of them
+			this.setState({
+				dialog: (
+					<div>
+						<Text type={TextType.Heading}>Which Campaign?</Text>
+						<Text type={TextType.SubHeading}>Your campaign has been played on two devices while they were out of touch.</Text>
+						<Text>Choose the one to carry on with. It will replace the other on all of your devices.</Text>
+						<div className='card-options'>
+							<PlayingCard
+								front={<PlaceholderCard text={`This ${conflict.local.deviceName}`} subtext={this.getSavedWhen(conflict.local)} content={this.getCampaignSummary(conflict.local)} />}
+								onClick={() => this.resolveCloudConflict(true)}
+							/>
+							<PlayingCard
+								front={<PlaceholderCard text={`Your ${conflict.cloud.deviceName}`} subtext={this.getSavedWhen(conflict.cloud)} content={this.getCampaignSummary(conflict.cloud)} />}
+								onClick={() => this.resolveCloudConflict(false)}
+							/>
+						</div>
+					</div>
+				)
+			});
+		} catch (ex) {
+			this.logException(ex);
+		}
+	};
+
+	resolveCloudConflict = (keepThisDevice: boolean) => {
+		this.setState({
+			dialog: null
+		}, () => {
+			(keepThisDevice ? this.props.platform.keepThisDeviceCampaign() : this.props.platform.keepCloudCampaign())
+				.catch(ex => this.logException(ex));
+		});
+	};
+
+	getSavedWhen = (campaign: CloudCampaignModel) => {
+		// A campaign from before syncing has no recorded time
+		if (campaign.savedAt === null) {
+			return 'Saved on this device';
+		}
+
+		return `Saved ${new Date(campaign.savedAt).toLocaleString(undefined, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}`;
+	};
+
+	getCampaignSummary = (campaign: CloudCampaignModel) => {
+		if (!campaign.game) {
+			return <div className='cloud-campaign-summary'>No campaign in progress</div>;
+		}
+
+		const squares = campaign.game.map.squares;
+		const controlled = squares.length > 0 ? Math.floor(100 * squares.filter(sq => sq.regionID === '').length / squares.length) : 0;
+		const heroes = campaign.game.heroes.length;
+
+		return (
+			<div className='cloud-campaign-summary'>
+				<div>{controlled}% of the island</div>
+				<div>{heroes} {heroes === 1 ? 'hero' : 'heroes'}</div>
+				{campaign.game.encounter ? <div>Mid-encounter</div> : null}
+			</div>
+		);
+	};
+
+	//#endregion
 
 	//#region Campaign
 
@@ -1807,6 +1906,7 @@ export class Main extends Component<Props, State> {
 							setReduceMotion={this.setReduceMotion}
 							setSoundEffectsVolume={this.setSoundEffectsVolume}
 							setRenderer={this.setRenderer}
+							restorePurchases={this.restorePurchases}
 						/>
 					}
 					onClose={() => this.setState({ showHelp: null })}
@@ -1822,7 +1922,6 @@ export class Main extends Component<Props, State> {
 							getPrice={this.getPackPrice}
 							addPacks={this.addPacks}
 							removePack={this.removePack}
-							restorePurchases={this.restorePurchases}
 						/>
 					}
 					onClose={() => this.setState({ showPacks: false })}

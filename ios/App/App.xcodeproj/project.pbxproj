@@ -23,6 +23,7 @@
 /* Begin PBXFileReference section */
 		1E59303E305C11BC00311995 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		1E593040305C293600311995 /* SkirmishViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkirmishViewController.swift; sourceTree = "<group>"; };
+		1E593042305C387700311995 /* Skirmish.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Skirmish.entitlements; sourceTree = "<group>"; };
 		23FBD41B289478F4B2EF4F29 /* Pods_Skirmish.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Skirmish.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2FAD9762203C412B000D30F8 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = config.xml; sourceTree = "<group>"; };
 		50379B222058CBB4000EE86E /* capacitor.config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = capacitor.config.json; sourceTree = "<group>"; };
@@ -54,6 +55,7 @@
 		504EC2FB1FED79650016851F = {
 			isa = PBXGroup;
 			children = (
+				1E593042305C387700311995 /* Skirmish.entitlements */,
 				A1B2C3D400000000000000F1 /* Skirmish.storekit */,
 				504EC3061FED79650016851F /* App */,
 				504EC3051FED79650016851F /* Products */,
@@ -378,6 +380,7 @@
 			baseConfigurationReference = ADC10B9AED8584492059A5D8 /* Pods-Skirmish.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Skirmish.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				INFOPLIST_FILE = App/Info.plist;
@@ -402,6 +405,7 @@
 			baseConfigurationReference = 94CAA5C7C35118BE790BF2C7 /* Pods-Skirmish.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Skirmish.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				INFOPLIST_FILE = App/Info.plist;

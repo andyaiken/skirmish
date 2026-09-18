@@ -17,7 +17,6 @@ interface Props {
 	getPrice: (pack: PackModel) => string | null;
 	addPacks: (packs: PackModel[]) => void;
 	removePack: (pack: PackModel) => void;
-	restorePurchases: () => void;
 }
 
 interface State {
@@ -88,11 +87,6 @@ export class PacksModal extends Component<Props, State> {
 				{owned.length > 0 ? <hr /> : null}
 				{owned.length > 0 ? <Text type={TextType.SubHeading}>My Packs</Text> : null}
 				{owned.length > 0 ? <CardList cards={owned} /> : null}
-				<hr />
-				<button className='restore-btn' onClick={() => this.props.restorePurchases()}>Restore Purchases</button>
-				<Text type={TextType.Small}>
-					<p>Already bought some packs? Restore them here after reinstalling or on a new device.</p>
-				</Text>
 				{this.getDialog()}
 			</div>
 		);

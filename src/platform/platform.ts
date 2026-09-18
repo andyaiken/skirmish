@@ -9,6 +9,9 @@ import { BoonGenerator } from '../generators/boon/boon-generator';
 import { GameLogic } from '../logic/game/game-logic';
 import { StrongholdLogic } from '../logic/stronghold/stronghold-logic';
 
+import { CloudSyncLogic } from '../logic/cloud-sync/cloud-sync-logic';
+
+import type { CloudSyncStateModel } from '../models/cloud-save';
 import type { GameModel } from '../models/game';
 import type { OptionsModel } from '../models/options';
 import type { PackModel } from '../models/pack';
@@ -16,7 +19,10 @@ import type { StructureModel } from '../models/structure';
 
 import { Utils } from '../utils/utils/utils';
 
+import type { CloudAdoptionReason, CloudConflictModel } from './cloud-sync';
 import { DeveloperStore, priceForPack } from './store';
+import { CloudSync } from './cloud-sync';
+import { ICloudBackend } from './icloud-backend';
 import type { Store } from './store';
 import { StoreKitStore } from './storekit-store';
 
@@ -50,6 +56,11 @@ export class Platform {
 	// asked for, so the app needs telling to look again.
 	onStoreUpdated: () => void;
 	onOwnershipChanged: (packIDs: string[]) => void;
+	// The campaign follows the player between devices through iCloud. Most of the time another
+	// device's save is simply taken; when two devices have both moved on, the player is asked.
+	cloudSync: CloudSync;
+	onCloudAdopted: (game: GameModel | null, deviceName: string, reason: CloudAdoptionReason) => void;
+	onCloudConflict: (conflict: CloudConflictModel) => void;
 
 	constructor() {
 		this.worker = new Worker(new URL('./worker.ts', import.meta.url), { type: 'module' });
@@ -76,6 +87,18 @@ export class Platform {
 		this.onOwnershipChanged = () => {
 			// Assigned by Main once it is mounted.
 		};
+
+		this.onCloudAdopted = () => {
+			// Assigned by Main once it is mounted.
+		};
+
+		this.onCloudConflict = () => {
+			// Assigned by Main once it is mounted.
+		};
+
+		// Replaced in logIn by one that knows the saved game and this device's place against
+		// iCloud; this one only stands in if loading the save fails
+		this.cloudSync = this.createCloudSync(CloudSyncLogic.createState(), null);
 
 		// StoreKit on a device; in a browser there is no App Store to ask, so Developer Mode
 		// hands packs over instead. The check is on the platform rather than the build, so a
@@ -149,7 +172,47 @@ export class Platform {
 			options.developer = false;
 		}
 
+		let sync = await localforage.getItem<CloudSyncStateModel>('skirmish-sync');
+		if (!sync) {
+			sync = CloudSyncLogic.createState();
+		}
+		this.cloudSync = this.createCloudSync(sync, game);
+
 		return { game: game, options: options };
+	};
+
+	private createCloudSync = (state: CloudSyncStateModel, game: GameModel | null) => {
+		// iCloud on a device; a browser has none, so there the campaign is simply saved locally
+		const backend = Capacitor.isNativePlatform() ? new ICloudBackend(ex => this.logException(ex)) : null;
+
+		return new CloudSync(backend, {
+			getGame: () => this.getGame(),
+			persist: (game, sync) => this.worker.postMessage({ type: 'game', payload: { game: game, sync: sync } }),
+			backup: game => this.worker.postMessage({ type: 'backup', payload: game }),
+			onAdopted: (game, deviceName, reason) => this.onCloudAdopted(game, deviceName, reason),
+			onConflict: conflict => this.onCloudConflict(conflict),
+			logException: ex => this.logException(ex)
+		}, state, game);
+	};
+
+	startCloudSync = () => {
+		this.cloudSync.start();
+
+		// Another device's save is announced while the app is running, but coming back to the
+		// app is a good moment to look again in case a notice was missed
+		document.addEventListener('visibilitychange', () => {
+			if (document.visibilityState === 'visible') {
+				this.cloudSync.check();
+			}
+		});
+	};
+
+	keepThisDeviceCampaign = () => {
+		return this.cloudSync.keepThisDevice();
+	};
+
+	keepCloudCampaign = () => {
+		return this.cloudSync.keepCloud();
 	};
 
 	getDefaultOptions = (): OptionsModel => {
@@ -252,8 +315,9 @@ export class Platform {
 		return 'safari';
 	};
 
+	// Saves locally and, where there is iCloud, uploads for the player's other devices
 	saveGame = Utils.debounce(() => {
-		this.worker.postMessage({ type: 'game', payload: this.getGame() });
+		this.cloudSync.save();
 	});
 
 	saveOptions = Utils.debounce(() => {

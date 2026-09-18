@@ -20,6 +20,7 @@ interface Props {
 	setReduceMotion: (value: boolean) => void;
 	setSoundEffectsVolume: (value: number) => void;
 	setRenderer: (value: string) => void;
+	restorePurchases: () => void;
 }
 
 interface State {
@@ -99,7 +100,23 @@ export class OptionsTab extends Component<Props, State> {
 						: null
 				}
 				<hr />
-				{this.props.game ? <ConfirmButton label='Abandon this campaign' onClick={() => this.props.endCampaign()} /> : null}
+				<Text type={TextType.SubHeading}>Store</Text>
+				<Text>
+					Already bought some packs? Restore them here after reinstalling or on a new device.
+				</Text>
+				<button className='restore-btn' onClick={() => this.props.restorePurchases()}>Restore Purchases</button>
+				{
+					this.props.game ?
+						<>
+							<hr />
+							<Text type={TextType.SubHeading}>Campaign</Text>
+							<Text>
+								Want to start over?
+							</Text>
+							<ConfirmButton label='Abandon this campaign' onClick={() => this.props.endCampaign()} />
+						</>
+						: null
+				}
 			</div>
 		);
 	};

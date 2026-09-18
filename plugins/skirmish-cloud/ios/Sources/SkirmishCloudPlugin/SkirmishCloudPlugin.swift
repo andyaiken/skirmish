@@ -74,10 +74,11 @@ public class SkirmishCloudPlugin: CAPPlugin, CAPBridgedPlugin {
             return
         }
 
+        // Always an object: resolving with nothing reaches the page as undefined, not as {}
         if let value = store.string(forKey: key) {
             call.resolve(["value": value])
         } else {
-            call.resolve()
+            call.resolve([:])
         }
     }
 

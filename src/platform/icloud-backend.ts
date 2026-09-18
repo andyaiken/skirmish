@@ -19,7 +19,8 @@ export class ICloudBackend implements CloudBackend {
 
 	getDeviceName = () => plugin.getDeviceName().then(result => result.deviceName);
 
-	read = () => plugin.get({ key: CAMPAIGN_KEY }).then(result => result.value);
+	// An empty store can come back as nothing at all rather than an object without a value
+	read = () => plugin.get({ key: CAMPAIGN_KEY }).then(result => result?.value);
 
 	write = (text: string) => plugin.set({ key: CAMPAIGN_KEY, value: text });
 

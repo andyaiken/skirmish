@@ -332,12 +332,15 @@ export class Main extends Component<Props, State> {
 				this.props.setScreen(ScreenType.Landing);
 			}
 
+			const ended = !game && !!this.state.game;
+
 			this.setState({
 				game: game
 			});
 
-			// Said once, when another device picks up the campaign, rather than on every save
-			if (reason === 'carried-on') {
+			// Said once, when another device picks up the campaign, rather than on every save - but
+			// an ending is always said, since it takes the player off whatever they were looking at
+			if ((reason === 'carried-on') || (ended && (reason === 'following'))) {
 				this.showNotification(game ? `Picked up your campaign from your ${deviceName}.` : `Your campaign was ended on your ${deviceName}.`);
 			}
 		} catch (ex) {

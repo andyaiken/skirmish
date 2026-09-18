@@ -270,9 +270,13 @@ export class Main extends Component<Props, State> {
 	};
 
 	restorePurchases = () => {
-		this.props.platform
+		return this.props.platform
 			.restorePurchases()
-			.then(this.setOwnedPacks)
+			.then(packIDs => {
+				this.setOwnedPacks(packIDs);
+				const count = packIDs.length;
+				this.showNotification(count === 0 ? 'There are no purchases on this Apple Account to restore.' : `Restored ${count} ${count === 1 ? 'pack' : 'packs'}.`);
+			})
 			.catch(ex => this.handlePurchaseError(ex));
 	};
 

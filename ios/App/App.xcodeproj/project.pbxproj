@@ -383,7 +383,7 @@
 				CODE_SIGN_ENTITLEMENTS = Skirmish.entitlements;
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Skirmish-Mac.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				INFOPLIST_FILE = App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -409,7 +409,7 @@
 				CODE_SIGN_ENTITLEMENTS = Skirmish.entitlements;
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Skirmish-Mac.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				INFOPLIST_FILE = App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (

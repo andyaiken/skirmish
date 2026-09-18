@@ -20,11 +20,12 @@ interface Props {
 	setReduceMotion: (value: boolean) => void;
 	setSoundEffectsVolume: (value: number) => void;
 	setRenderer: (value: string) => void;
-	restorePurchases: () => void;
+	restorePurchases: () => Promise<void>;
 }
 
 interface State {
 	systemReducesMotion: boolean;
+	restoring: boolean;
 }
 
 export class OptionsTab extends Component<Props, State> {
@@ -37,7 +38,8 @@ export class OptionsTab extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
-			systemReducesMotion: this.motionQuery.matches
+			systemReducesMotion: this.motionQuery.matches,
+			restoring: false
 		};
 	}
 
@@ -58,6 +60,11 @@ export class OptionsTab extends Component<Props, State> {
 	setSoundEffectsVolume = (value: number) => {
 		this.props.setSoundEffectsVolume(value);
 		Sound.play(Sound.dong);
+	};
+
+	restorePurchases = () => {
+		this.setState({ restoring: true });
+		this.props.restorePurchases().finally(() => this.setState({ restoring: false }));
 	};
 
 	render = () => {
@@ -104,7 +111,9 @@ export class OptionsTab extends Component<Props, State> {
 				<Text>
 					Already bought some packs? Restore them here after reinstalling or on a new device.
 				</Text>
-				<button className='restore-btn' onClick={() => this.props.restorePurchases()}>Restore Purchases</button>
+				<button className='restore-btn' disabled={this.state.restoring} onClick={this.restorePurchases}>
+					{this.state.restoring ? 'Restoring…' : 'Restore Purchases'}
+				</button>
 				{
 					this.props.game ?
 						<>

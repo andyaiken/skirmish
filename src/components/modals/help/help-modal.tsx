@@ -22,7 +22,7 @@ interface Props {
 	setReduceMotion: (value: boolean) => void;
 	setSoundEffectsVolume: (value: number) => void;
 	setRenderer: (value: string) => void;
-	restorePurchases: () => void;
+	restorePurchases: () => Promise<void>;
 }
 
 interface State {

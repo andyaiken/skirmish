@@ -338,10 +338,14 @@ export class Main extends Component<Props, State> {
 				game: game
 			});
 
-			// Said once, when another device picks up the campaign, rather than on every save - but
-			// an ending is always said, since it takes the player off whatever they were looking at
-			if ((reason === 'carried-on') || (ended && (reason === 'following'))) {
-				this.showNotification(game ? `Picked up your campaign from your ${deviceName}.` : `Your campaign was ended on your ${deviceName}.`);
+			// A campaign taken up is said once, when another device picks it up, rather than on every
+			// save. An ending is said whenever it takes a campaign away - but not to a device that
+			// had none, such as a fresh install, where there is nothing to have ended.
+			if (game && (reason === 'carried-on')) {
+				this.showNotification(`Picked up your campaign from your ${deviceName}.`);
+			}
+			if (ended && (reason !== 'chosen')) {
+				this.showNotification(`Your campaign was ended on your ${deviceName}.`);
 			}
 		} catch (ex) {
 			this.logException(ex);

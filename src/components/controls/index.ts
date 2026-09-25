@@ -4,12 +4,14 @@ import { Badge } from './badge/badge';
 import { Box } from './box/box';
 import { CardChoice } from './card-choice/card-choice';
 import { CardList } from './card-list/card-list';
+import { Carousel } from './carousel/carousel';
 import { ConfirmButton } from './confirm-button/confirm-button';
 import { Dialog } from './dialog/dialog';
 import { ErrorBoundary } from './error-boundary/error-boundary';
 import { Expander } from './expander/expander';
 import { Gauge } from './gauge/gauge';
 import { PlayingCard } from './playing-card/playing-card';
+import { ScaleToFit } from './scale-to-fit/scale-to-fit';
 import { Selector } from './selector/selector';
 import { StatValue } from './stat-value/stat-value';
 import { Switch } from './switch/switch';
@@ -23,11 +25,13 @@ export {
 	Box,
 	CardChoice,
 	CardList,
+	Carousel,
 	ConfirmButton,
 	Dialog,
 	Gauge,
 	IconSize, IconType, IconValue,
 	PlayingCard,
+	ScaleToFit,
 	Selector,
 	StatValue,
 	Switch,

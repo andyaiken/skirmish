@@ -1,0 +1,90 @@
+.carousel {
+	width: 500px;
+	height: 370px;
+	display: flex;
+	flex-direction: column;
+	border: 2px solid var(--border);
+	border-radius: 10px;
+	padding: 0 15px;
+	background-color: rgb(255, 255, 255);
+	margin-bottom: 10px;
+
+	.carousel-viewport {
+		flex: 1 1 0;
+		overflow: hidden;
+		touch-action: pan-y;
+		user-select: none;
+
+		.carousel-track {
+			height: 100%;
+			display: flex;
+			transition: transform 300ms ease-in-out;
+
+			.carousel-slide {
+				flex: 0 0 100%;
+				min-width: 0;
+			}
+		}
+	}
+
+	.carousel-controls {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 10px;
+		margin-bottom: 5px;
+
+		button {
+			margin: 0;
+			padding: 0;
+			min-height: 0;
+			width: auto;
+			border: none;
+			background: none;
+		}
+
+		.carousel-arrow {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 32px;
+			height: 32px;
+			color: var(--text);
+			cursor: pointer;
+
+			&:disabled {
+				opacity: 0.2;
+				cursor: default;
+			}
+		}
+
+		.carousel-dots {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+
+			.carousel-dot {
+				width: 8px;
+				height: 8px;
+				border-radius: 50%;
+				background-color: var(--border);
+				cursor: pointer;
+
+				&.selected {
+					background-color: var(--primary);
+				}
+			}
+		}
+	}
+
+	&:focus-visible {
+		outline: 2px solid var(--primary);
+		outline-offset: 4px;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.carousel .carousel-viewport .carousel-track {
+		transition: none;
+	}
+}

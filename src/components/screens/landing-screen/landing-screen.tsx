@@ -9,9 +9,11 @@ import { PackLogic } from '../../../logic/pack/pack-logic';
 import type { GameModel } from '../../../models/game';
 import type { OptionsModel } from '../../../models/options';
 
-import { PlayingCard, Text } from '../../controls';
+import { Carousel, PlayingCard } from '../../controls';
 import { LogoPanel } from '../../panels';
 import { PlaceholderCard } from '../../cards';
+
+import { EncounterIllustration, IslandIllustration, MagicItemIllustration, MoneyIllustration } from './landing-illustrations';
 
 import './landing-screen.scss';
 
@@ -77,25 +79,41 @@ export class LandingScreen extends Component<Props> {
 					<LogoPanel size={this.props.orientation === OrientationType.Landscape ? 140 : 100} />
 				</div>
 				<div className='landing-content'>
-					<Text>
-						<p>
-							Skirmish is a tactical battle game in which you control a band of heroes, each represented by a stack of cards.
-							Your objective is to gain control of an island.
-						</p>
-						<p>
-							This island, however, is populated by monstrous enemies which you will have to defeat in a series of encounters.
-						</p>
-						<p>
-							Some parts of the island might be easier to control than others, but each region will provide you with some reward for conquering it.
-						</p>
-						<p>
-							As you gain control over more and more of the island your heroes will become more powerful,
-							and you&apos;ll pick up allies and magic items which will help you in your encounters.
-						</p>
-						<p>
-							Good luck!
-						</p>
-					</Text>
+					<Carousel
+						slides={[
+							<div key='intro' className='landing-slide'>
+								<p>
+									Skirmish is a tactical battle game in which you control a band of heroes, each represented by a stack of cards.
+									Your objective is to gain control of an island.
+								</p>
+								<IslandIllustration options={this.props.options} />
+							</div>,
+							<div key='enemies' className='landing-slide'>
+								<p>
+									This island, however, is populated by monstrous enemies which you will have to defeat in a series of encounters.
+								</p>
+								<EncounterIllustration />
+							</div>,
+							<div key='regions' className='landing-slide'>
+								<p>
+									Some parts of the island might be easier to control than others, but each region will provide you with some reward for conquering it.
+								</p>
+								<MoneyIllustration />
+							</div>,
+							<div key='progress' className='landing-slide'>
+								<p>
+									As you gain control over more and more of the island your heroes will become more powerful,
+									and you&apos;ll pick up allies and magic items which will help you in your encounters.
+								</p>
+								<MagicItemIllustration />
+							</div>,
+							<div key='good-luck' className='landing-slide'>
+								<p>
+									Good luck!
+								</p>
+							</div>
+						]}
+					/>
 					<div className='action-buttons'>
 						{mainBtn}
 						<div>

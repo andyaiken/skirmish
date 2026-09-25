@@ -118,6 +118,7 @@ export class IntentsLogic {
 
 	static getCombatantTargetIntents = (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel, faction: CombatantType, paths: PathModel[], edges: EncounterMapEdgeModel) => {
 		const range = ActionLogic.getActionRange(action, combatant);
+		const reachablePaths = paths.filter(p => p.cost <= combatant.combat.movement);
 
 		const intents: IntentsModel[] = [];
 
@@ -127,23 +128,13 @@ export class IntentsLogic {
 			.filter(c => (c.combat.state !== CombatantState.Unconscious) && (c.combat.state !== CombatantState.Dead))
 			.forEach(target => {
 				const targetSquares = EncounterLogic.getCombatantSquares(encounter, target);
-				const candidatePaths = encounter.mapSquares
-					.filter(sq => EncounterMapLogic.canSeeAny(edges, targetSquares, [ sq ]))
-					.filter(sq => {
-						// Limit this to squares which would put us within range for this action
-						return EncounterMapLogic.getDistanceAny(targetSquares, [ sq ]) <= range;
-					})
-					.map(sq => {
-						// Find the cheapest path to this square
-						return paths.find(path => (sq.x === path.x) && (sq.y === path.y)) || null;
-					})
-					.filter(p => {
-						// Limit this to paths we have enough movement for
-						const cost = p ? p.cost : Number.MAX_VALUE;
-						return cost <= combatant.combat.movement;
-					});
+				// Only the squares we can reach are worth checking, and line of sight is by far
+				// the most expensive test, so it runs last
+				const candidatePaths = reachablePaths
+					.filter(p => EncounterMapLogic.getDistanceAny(targetSquares, [ p ]) <= range)
+					.filter(p => EncounterMapLogic.canSeeAny(edges, targetSquares, [ p ]));
 				if (candidatePaths.length > 0) {
-					const path = Collections.min(candidatePaths, p => p?.cost || Number.MAX_VALUE);
+					const path = Collections.min(candidatePaths, p => p.cost);
 					if (path) {
 						intents.push({
 							description: action.name,
@@ -163,28 +154,19 @@ export class IntentsLogic {
 
 	static getSquareTargetIntents = (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel, paths: PathModel[], edges: EncounterMapEdgeModel) => {
 		const range = ActionLogic.getActionRange(action, combatant);
+		const reachablePaths = paths.filter(p => p.cost <= combatant.combat.movement);
 
 		const intents: IntentsModel[] = [];
 
 		encounter.mapSquares
 			.forEach(targetSquare => {
-				const candidatePaths = encounter.mapSquares
-					.filter(sq => EncounterMapLogic.canSee(edges, targetSquare, sq))
-					.filter(sq => {
-						// Limit this to squares which would put us within range for this action
-						return EncounterMapLogic.getDistance(targetSquare, sq) <= range;
-					})
-					.map(sq => {
-						// Find the cheapest path to this square
-						return paths.find(path => (sq.x === path.x) && (sq.y === path.y)) || null;
-					})
-					.filter(p => {
-						// Limit this to paths we have enough movement for
-						const cost = p ? p.cost : Number.MAX_VALUE;
-						return cost <= combatant.combat.movement;
-					});
+				// Only the squares we can reach are worth checking, and line of sight is by far
+				// the most expensive test, so it runs last
+				const candidatePaths = reachablePaths
+					.filter(p => EncounterMapLogic.getDistance(targetSquare, p) <= range)
+					.filter(p => EncounterMapLogic.canSee(edges, targetSquare, p));
 				if (candidatePaths.length > 0) {
-					const path = Collections.min(candidatePaths, p => p?.cost || Number.MAX_VALUE);
+					const path = Collections.min(candidatePaths, p => p.cost);
 					if (path) {
 						let weight = 1;
 						const param = action.parameters.find(p => p.id === 'targets');

@@ -2189,7 +2189,9 @@ export const core = (): PackModel => ({
 								ActionEffects.dealWeaponDamage()
 							]
 						}),
-						ActionEffects.addMovement()
+						ActionEffects.toSelf([
+							ActionEffects.addMovement()
+						])
 					]
 				},
 				{
@@ -2283,7 +2285,9 @@ export const core = (): PackModel => ({
 								ActionEffects.dealWeaponDamage()
 							]
 						}),
-						ActionEffects.addMovement()
+						ActionEffects.toSelf([
+							ActionEffects.addMovement()
+						])
 					]
 				}
 			]

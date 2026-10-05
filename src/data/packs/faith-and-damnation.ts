@@ -422,7 +422,9 @@ export const faithAndDamnation = (): PackModel => ({
 								ActionEffects.knockDown()
 							]
 						}),
-						ActionEffects.addMovement()
+						ActionEffects.toSelf([
+							ActionEffects.addMovement()
+						])
 					]
 				},
 				{

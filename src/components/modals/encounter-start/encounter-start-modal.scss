@@ -11,70 +11,40 @@
 		margin-bottom: 10px;
 	}
 
-	.hero-page,
-	.monster-page,
-	.advanced-page {
-		flex: 1 1 0;
+	// The switches stay put above everything that scrolls, so a panel can always be closed again
+	// without scrolling back up to find them
+	.panel-toggles {
+		flex: 0 0 auto;
+		display: flex;
+		gap: 10px;
+
+		.switch {
+			flex: 1 1 0;
+		}
 	}
 
-	// The options and their explanation sit above the tab's content and keep their own height,
-	// so the list below still takes what is left
-	.hero-mode {
-		flex: 0 0 auto;
+	// The party, or whichever panel is switched on in its place, scrolls on its own, so the switches
+	// above it and the start button below it always stay put
+	.encounter-start-content {
+		flex: 1 1 0;
+		overflow-x: hidden;
+		overflow-y: auto;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	.party {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 20px;
+		padding: 10px 0;
 	}
 
 	.hero-page {
-		flex: 1 1 0;
-		display: flex;
-		overflow-x: hidden;
-		overflow-y: hidden;
-
-		.hero-list-column {
-			overflow-x: hidden;
-			overflow-y: auto;
-			-webkit-overflow-scrolling: touch;
-
-			&.candidates {
-				flex: 1 0 225px;
-			}
-
-			&.selected {
-				flex: 0 0 450px;
-				display: flex;
-				flex-direction: column;
-				gap: 8px;
-			}
-
-			.empty-hero-slot {
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				height: 75px;
-				border: 1px solid var(--border);
-				border-radius: 10px;
-				padding: 0 15px;
-				color: rgb(100, 100, 100);
-			}
-		}
-
-		.divider {
-			flex: 0 0 2px;
-			margin: 0 20px 0 10px;
-			border: 1px solid var(--border);
-		}
-
-		&.party {
-			justify-content: center;
-
-			.hero-list-column.selected {
-				flex: 0 1 460px;
-				padding: 0 10px;
-			}
-
-			&.all {
-				display: block;
-				overflow-y: auto;
-			}
+		.hero-option.selected .playing-card-front,
+		.hero-option.selected .playing-card-back {
+			border-color: var(--primary);
+			box-shadow: 0 0 0 3px var(--primary);
 		}
 	}
 

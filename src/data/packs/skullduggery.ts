@@ -251,7 +251,9 @@ export const skullduggery = (): PackModel => ({
 								ActionEffects.dealWeaponDamage()
 							]
 						}),
-						ActionEffects.addMovement()
+						ActionEffects.toSelf([
+							ActionEffects.addMovement()
+						])
 					]
 				},
 				{
@@ -606,7 +608,9 @@ export const skullduggery = (): PackModel => ({
 								ActionEffects.dealWeaponDamage()
 							]
 						}),
-						ActionEffects.addMovement()
+						ActionEffects.toSelf([
+							ActionEffects.addMovement()
+						])
 					]
 				},
 				{

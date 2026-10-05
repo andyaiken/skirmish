@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
+import type { ActionEffectModel, ActionTargetParameterModel } from '../../models/action';
 import type { RegionModel } from '../../models/region';
 import type { ScrollModel } from '../../models/item';
 
+import { ActionTargetType } from '../../enums/action-target-type';
 import { CombatantType } from '../../enums/combatant-type';
 import { QuirkType } from '../../enums/quirk-type';
 import { SummonType } from '../../enums/summon-type';
@@ -79,6 +81,28 @@ describe('action IDs across every pack', () => {
 			...GameLogic.getScrollDeck(allPackIDs()).map(sc => (sc.scroll as ScrollModel).action.id)
 		];
 		expect([ ...new Set(ids) ]).toHaveLength(ids.length);
+	});
+});
+
+// Bonus movement goes to whoever is in the targets parameter, so on an attack card it went to the
+// enemy that was hit unless it was wrapped in toSelf. Cut and Run, Cut Your Losses, Opening Move,
+// Running Skirmish and Run It Down all had this, and nothing looked wrong until someone noticed
+// they never got to move
+describe('every action that targets enemies', () => {
+	const movementReachingTargets = (effects: ActionEffectModel[]): boolean => effects
+		.filter(e => e.id !== 'toSelf')
+		.some(e => (e.id === 'addMovement') || movementReachingTargets(e.children));
+
+	it('gives its bonus movement to the user, not to the enemy', () => {
+		const actions = [
+			...GameLogic.getAllActions(allPackIDs()),
+			...GameLogic.getScrollDeck(allPackIDs()).map(sc => (sc.scroll as ScrollModel).action)
+		];
+		const wrong = actions
+			.filter(a => a.parameters.some(p => (p.id === 'targets') && ((p as ActionTargetParameterModel).targets?.type === ActionTargetType.Enemies)))
+			.filter(a => movementReachingTargets(a.effects))
+			.map(a => a.name);
+		expect(wrong).toEqual([]);
 	});
 });
 

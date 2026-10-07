@@ -1088,6 +1088,11 @@ export class Main extends Component<Props, State> {
 				lp.position.x = pos.x;
 				lp.position.y = pos.y;
 			});
+			encounter.traps.forEach(trap => {
+				const pos = move(trap.position, 1);
+				trap.position.x = pos.x;
+				trap.position.y = pos.y;
+			});
 			EncounterMapLogic.visibilityCache.reset();
 
 			this.setState({

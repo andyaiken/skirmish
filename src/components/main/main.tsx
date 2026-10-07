@@ -15,9 +15,9 @@ import { CampaignMapGenerator } from '../../generators/campaign-map/campaign-map
 import { EncounterGenerator } from '../../generators/encounter/encounter-generator';
 import { EncounterMapGenerator } from '../../generators/encounter-map/encounter-map-generator';
 
+import { CampaignLogic } from '../../logic/campaign/campaign-logic';
 import { CampaignMapLogic } from '../../logic/campaign-map/campaign-map-logic';
 import { CombatantLogic } from '../../logic/combatant/combatant-logic';
-import { ConditionLogic } from '../../logic/condition/condition-logic';
 import { EncounterLogic } from '../../logic/encounter/encounter-logic';
 import { EncounterMapLogic } from '../../logic/encounter-map/encounter-map-logic';
 import { Factory } from '../../logic/factory/factory';
@@ -29,7 +29,6 @@ import { StrongholdLogic } from '../../logic/stronghold/stronghold-logic';
 import type { ActionModel, ActionParameterModel } from '../../models/action';
 import type { BoonModel } from '../../models/boon';
 import type { CombatantModel } from '../../models/combatant';
-import type { ConditionModel } from '../../models/condition';
 import type { EncounterModel } from '../../models/encounter';
 import type { FeatureModel } from '../../models/feature';
 import type { GameModel } from '../../models/game';
@@ -860,32 +859,7 @@ export class Main extends Component<Props, State> {
 		try {
 			if (this.state.game) {
 				const game = this.state.game;
-
-				// A region that doesn't border your land was reached by sea, which costs a Shipyard
-				// charge per attack - conquering it outright may take several voyages
-				if (!CampaignMapLogic.isAdjacentToTerritory(game.map, region) && !this.state.options.developer) {
-					StrongholdLogic.spendCharge(game, StructureType.Shipyard, 1);
-				}
-
-				heroes.forEach(h => CombatantLogic.resetCombatant(h));
-				game.heroes = game.heroes.filter(h => !heroes.includes(h));
-				game.encounter = EncounterGenerator.createEncounter(region, heroes, this.state.options.packIDs);
-
-				for (let n = 0; n < benefits; ++n) {
-					const hero = Collections.draw(game.encounter.combatants.filter(c => c.faction === CombatantType.Hero));
-					hero.combat.conditions.push(ConditionLogic.createRandomBeneficialCondition() as ConditionModel);
-				}
-				if (!this.state.options.developer) {
-					StrongholdLogic.spendCharge(game, StructureType.Temple, benefits);
-				}
-
-				for (let n = 0; n < detriments; ++n) {
-					const hero = Collections.draw(game.encounter.combatants.filter(c => c.faction === CombatantType.Monster));
-					hero.combat.conditions.push(ConditionLogic.createRandomDetrimentalCondition() as ConditionModel);
-				}
-				if (!this.state.options.developer) {
-					StrongholdLogic.spendCharge(game, StructureType.Intelligencer, detriments);
-				}
+				CampaignLogic.startEncounter(game, region, heroes, benefits, detriments, this.state.options.packIDs, this.state.options.developer, EncounterGenerator.createEncounter);
 
 				EncounterMapLogic.visibilityCache.reset();
 
@@ -923,50 +897,7 @@ export class Main extends Component<Props, State> {
 		try {
 			if (this.state.game) {
 				const game = this.state.game;
-				// Read before the encounters are consumed below, or every hero earns nothing.
-				const encounterCount = region.encounters.length;
-
-				// Fight through everything the region still holds, so conquering it from the map
-				// is worth what playing it would have been. Each encounter is built from the seed
-				// the real one would have used, which is why the seeds are taken one at a time
-				// exactly as winning them does.
-				while (region.encounters.length > 0) {
-					// The heroes are copied because the generator places combatants on its map, and
-					// positioning the real ones would leave them standing in a battle that never
-					// happened. Levels still scale the monsters, since the copies carry them.
-					const heroes = JSON.parse(JSON.stringify(game.heroes)) as CombatantModel[];
-					const encounter = EncounterGenerator.createEncounter(region, heroes, this.state.options.packIDs);
-
-					// Killing them is what rolls their money, so this has to happen before the
-					// piles are collected.
-					EncounterLogic.defeatStandingMonsters(encounter);
-
-					// The piles now hold what the map was generated with as well as what the
-					// monsters dropped. Whatever is still on a monster - a boss's magic item among
-					// it - comes across separately, exactly as an ordinary victory collects it.
-					const spoils: ItemModel[] = [];
-					encounter.loot.forEach(lp => {
-						spoils.push(...lp.items);
-						game.money += lp.money;
-					});
-					encounter.combatants
-						.filter(c => (c.type === CombatantType.Monster) && (c.faction === CombatantType.Monster))
-						.forEach(c => {
-							spoils.push(...c.items);
-							spoils.push(...c.carried);
-						});
-					// Held to the same limit as winning the encounter by hand
-					GameLogic.addItemsToGame(game, spoils);
-
-					region.encounters.splice(0, 1);
-				}
-
-				// Read while the region is still on the map, as the ordinary path does.
-				game.money += StrongholdLogic.getConquestIncome(game, region);
-				CampaignMapLogic.conquerRegion(game.map, region);
-				game.heroes.forEach(h => h.xp += encounterCount);
-				game.heroSlots += 1;
-				game.boons.push(region.boon);
+				CampaignLogic.conquerRegion(game, region, this.state.options.packIDs, EncounterGenerator.createEncounter);
 
 				this.setState({
 					game: game
@@ -1000,38 +931,11 @@ export class Main extends Component<Props, State> {
 		try {
 			if (this.state.game) {
 				const game = this.state.game;
-
-				// Price the region before conquering it, while it's still on the map, and note what a
-				// Counting House would make of it
-				game.money = Math.max(0, game.money - CampaignMapLogic.getPurchasePrice(game, region));
-				const income = StrongholdLogic.getConquestIncome(game, region);
-
-				if (!this.state.options.developer) {
-					// As with an attack, getting to a region across the water costs a Shipyard charge
-					if (!CampaignMapLogic.isAdjacentToTerritory(game.map, region)) {
-						StrongholdLogic.spendCharge(game, StructureType.Shipyard, 1);
-					}
-
-					// The guilds don't broker a sale for nothing; the discount is already in the price
-					StrongholdLogic.spendCharge(game, StructureType.Guildhall, 1);
-				}
-
-				CampaignMapLogic.conquerRegion(game.map, region);
-
-				// The boon and the hero slot are awarded exactly as for a conquest, but no XP -
-				// nobody fought for this one
-				let dialogContent = null;
-				if (CampaignMapLogic.isConquered(game.map)) {
-					dialogContent = this.getVictoryDialog();
-				} else {
-					game.heroSlots += 1;
-					game.boons.push(region.boon);
-					game.money += income;
-				}
+				const conquered = CampaignLogic.purchaseRegion(game, region, this.state.options.developer);
 
 				this.setState({
 					game: game,
-					dialog: dialogContent
+					dialog: conquered ? this.getVictoryDialog() : null
 				}, () => {
 					this.saveGame();
 				});

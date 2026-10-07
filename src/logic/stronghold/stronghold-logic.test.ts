@@ -189,6 +189,38 @@ describe('StrongholdLogic.getConquestIncome', () => {
 	});
 });
 
+describe('StrongholdLogic.getBenefits', () => {
+	it('returns no benefits for an empty stronghold', () => {
+		const benefits = StrongholdLogic.getBenefits(createGame());
+
+		expect(benefits.hasBenefits).toBe(false);
+		expect(benefits.redrawTotal).toBe(0);
+		expect(benefits.encounterTotal).toBe(0);
+		expect(benefits.campaignTotal).toBe(0);
+	});
+
+	it('summarizes charged and permanent benefits', () => {
+		const game = createGame([
+			createStructure(StructureType.Hall, 2),
+			createStructure(StructureType.Temple, 1),
+			createStructure(StructureType.Shipyard, 3),
+			createStructure(StructureType.Bazaar, 0),
+			createStructure(StructureType.CountingHouse, 0)
+		]);
+
+		expect(StrongholdLogic.getBenefits(game)).toMatchObject({
+			redraws: { heroes: 2 },
+			redrawTotal: 2,
+			encounters: { benefits: 1 },
+			encounterTotal: 1,
+			campaign: { voyages: 3 },
+			campaignTotal: 3,
+			permanent: { shopDiscount: true, regionIncome: true },
+			hasBenefits: true
+		});
+	});
+});
+
 describe('the buildable structure deck', () => {
 	const buildable = (packIDs: string[]) =>
 		GameLogic.getStructureDeck(packIDs).filter(s => StrongholdLogic.canBuild(s)).map(s => s.type);

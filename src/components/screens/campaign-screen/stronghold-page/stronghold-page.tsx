@@ -77,63 +77,41 @@ export class StrongholdPage extends Component<Props, State> {
 	};
 
 	getStrongholdBenefits = () => {
-		const heroRedraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Hall);
-		const itemRedraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Quartermaster);
-		const featureRedraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.TrainingGround);
-		const actionRedraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Observatory);
-		const magicRedraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.WizardTower);
-		const structureRedraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Forge);
+		const benefits = StrongholdLogic.getBenefits(this.props.game);
 
-		const redraws = heroRedraws + itemRedraws + featureRedraws + actionRedraws + magicRedraws + structureRedraws;
-
-		const benefitMods = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Temple);
-		const detrimentMods = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Intelligencer);
-		const additionalActions = StrongholdLogic.getStructureCharges(this.props.game, StructureType.ThievesGuild);
-		const additionalHeroes = StrongholdLogic.getStructureCharges(this.props.game, StructureType.WarRoom);
-		const encounters = benefitMods + detrimentMods + additionalActions;
-
-		const heroXP = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Academy);
-		const hero = heroXP;
-
-		const seaVoyages = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Shipyard);
-		const regionDiscounts = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Guildhall);
-		const recharges = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Tavern);
-		const scrolls = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Scriptorium);
-		const campaign = seaVoyages + regionDiscounts + recharges + scrolls;
-
-		// The permanent structures have no charges to report, so they're listed as standing effects
-		const shopDiscount = this.props.game.stronghold.some(s => s.type === StructureType.Bazaar);
-		const regionIncome = this.props.game.stronghold.some(s => s.type === StructureType.CountingHouse);
-		const permanent = (shopDiscount ? 1 : 0) + (regionIncome ? 1 : 0);
-
-		if (redraws + encounters + hero + campaign + permanent === 0) {
+		if (!benefits.hasBenefits) {
 			return null;
 		}
 
 		return (
 			<div className='sidebar-section'>
 				<Box label='Stronghold Benefits'>
-					{heroRedraws > 0 ? <StatValue label='Hero Card Redraws' value={heroRedraws} /> : null}
-					{itemRedraws > 0 ? <StatValue label='Item Card Redraws' value={itemRedraws} /> : null}
-					{featureRedraws > 0 ? <StatValue label='Feature Card Redraws' value={featureRedraws} /> : null}
-					{actionRedraws > 0 ? <StatValue label='Action Card Redraws' value={actionRedraws} /> : null}
-					{magicRedraws > 0 ? <StatValue label='Magic Item Card Redraws' value={magicRedraws} /> : null}
-					{structureRedraws > 0 ? <StatValue label='Structure Card Redraws' value={structureRedraws} /> : null}
-					{(redraws > 0) && (encounters + hero > 0) ? <hr /> : null}
-					{benefitMods > 0 ? <StatValue label='Encounter Benefits' value={benefitMods} /> : null}
-					{detrimentMods > 0 ? <StatValue label='Encounter Detriments' value={detrimentMods} /> : null}
-					{additionalActions > 0 ? <StatValue label='Additional Actions' value={additionalActions} /> : null}
-					{additionalHeroes > 0 ? <StatValue label='Additional Heroes' value={additionalHeroes} /> : null}
-					{(hero > 0) && (redraws + encounters > 0) ? <hr /> : null}
-					{heroXP > 0 ? <StatValue label='Additional XP' value={heroXP} /> : null}
-					{(campaign > 0) && (redraws + encounters + hero > 0) ? <hr /> : null}
-					{seaVoyages > 0 ? <StatValue label='Sea Voyages' value={seaVoyages} /> : null}
-					{regionDiscounts > 0 ? <StatValue label='Region Discounts' value={regionDiscounts} /> : null}
-					{recharges > 0 ? <StatValue label='Free Recharges' value={recharges} /> : null}
-					{scrolls > 0 ? <StatValue label='Free Scrolls' value={scrolls} /> : null}
-					{(permanent > 0) && (redraws + encounters + hero + campaign > 0) ? <hr /> : null}
-					{shopDiscount ? <StatValue label='Shop Prices' value='-25%' /> : null}
-					{regionIncome ? <StatValue label='Region Income' value='Yes' /> : null}
+					{benefits.redraws.heroes > 0 ? <StatValue label='Hero Card Redraws' value={benefits.redraws.heroes} /> : null}
+					{benefits.redraws.items > 0 ? <StatValue label='Item Card Redraws' value={benefits.redraws.items} /> : null}
+					{benefits.redraws.features > 0 ? <StatValue label='Feature Card Redraws' value={benefits.redraws.features} /> : null}
+					{benefits.redraws.actions > 0 ? <StatValue label='Action Card Redraws' value={benefits.redraws.actions} /> : null}
+					{benefits.redraws.magicItems > 0 ? <StatValue label='Magic Item Card Redraws' value={benefits.redraws.magicItems} /> : null}
+					{benefits.redraws.structures > 0 ? <StatValue label='Structure Card Redraws' value={benefits.redraws.structures} /> : null}
+					{(benefits.redrawTotal > 0) && (benefits.encounterTotal + benefits.heroXP > 0) ? <hr /> : null}
+					{benefits.encounters.benefits > 0 ? <StatValue label='Encounter Benefits' value={benefits.encounters.benefits} /> : null}
+					{benefits.encounters.detriments > 0 ? <StatValue label='Encounter Detriments' value={benefits.encounters.detriments} /> : null}
+					{benefits.encounters.actions > 0 ? <StatValue label='Additional Actions' value={benefits.encounters.actions} /> : null}
+					{benefits.encounters.heroes > 0 ? <StatValue label='Additional Heroes' value={benefits.encounters.heroes} /> : null}
+					{(benefits.heroXP > 0) && (benefits.redrawTotal + benefits.encounterTotal > 0) ? <hr /> : null}
+					{benefits.heroXP > 0 ? <StatValue label='Additional XP' value={benefits.heroXP} /> : null}
+					{(benefits.campaignTotal > 0) && (benefits.redrawTotal + benefits.encounterTotal + benefits.heroXP > 0) ? <hr /> : null}
+					{benefits.campaign.voyages > 0 ? <StatValue label='Sea Voyages' value={benefits.campaign.voyages} /> : null}
+					{benefits.campaign.discounts > 0 ? <StatValue label='Region Discounts' value={benefits.campaign.discounts} /> : null}
+					{benefits.campaign.recharges > 0 ? <StatValue label='Free Recharges' value={benefits.campaign.recharges} /> : null}
+					{benefits.campaign.scrolls > 0 ? <StatValue label='Free Scrolls' value={benefits.campaign.scrolls} /> : null}
+					{
+						(benefits.permanent.shopDiscount || benefits.permanent.regionIncome)
+						&& (benefits.redrawTotal + benefits.encounterTotal + benefits.heroXP + benefits.campaignTotal > 0)
+							? <hr />
+							: null
+					}
+					{benefits.permanent.shopDiscount ? <StatValue label='Shop Prices' value='-25%' /> : null}
+					{benefits.permanent.regionIncome ? <StatValue label='Region Income' value='Yes' /> : null}
 				</Box>
 			</div>
 		);

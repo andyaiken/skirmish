@@ -208,6 +208,51 @@ export class StrongholdLogic {
 		return Collections.sum(game.stronghold.filter(s => s.type === type), s => s.charges);
 	};
 
+	static getBenefits = (game: GameModel) => {
+		const getCharges = (type: StructureType) => StrongholdLogic.getStructureCharges(game, type);
+		const redraws = {
+			heroes: getCharges(StructureType.Hall),
+			items: getCharges(StructureType.Quartermaster),
+			features: getCharges(StructureType.TrainingGround),
+			actions: getCharges(StructureType.Observatory),
+			magicItems: getCharges(StructureType.WizardTower),
+			structures: getCharges(StructureType.Forge)
+		};
+		const encounters = {
+			benefits: getCharges(StructureType.Temple),
+			detriments: getCharges(StructureType.Intelligencer),
+			actions: getCharges(StructureType.ThievesGuild),
+			heroes: getCharges(StructureType.WarRoom)
+		};
+		const heroXP = getCharges(StructureType.Academy);
+		const campaign = {
+			voyages: getCharges(StructureType.Shipyard),
+			discounts: getCharges(StructureType.Guildhall),
+			recharges: getCharges(StructureType.Tavern),
+			scrolls: getCharges(StructureType.Scriptorium)
+		};
+		const permanent = {
+			shopDiscount: game.stronghold.some(s => s.type === StructureType.Bazaar),
+			regionIncome: game.stronghold.some(s => s.type === StructureType.CountingHouse)
+		};
+		const redrawTotal = Object.values(redraws).reduce((total, count) => total + count, 0);
+		const encounterTotal = Object.values(encounters).reduce((total, count) => total + count, 0);
+		const campaignTotal = Object.values(campaign).reduce((total, count) => total + count, 0);
+		const permanentTotal = Number(permanent.shopDiscount) + Number(permanent.regionIncome);
+
+		return {
+			redraws: redraws,
+			redrawTotal: redrawTotal,
+			encounters: encounters,
+			encounterTotal: encounterTotal,
+			heroXP: heroXP,
+			campaign: campaign,
+			campaignTotal: campaignTotal,
+			permanent: permanent,
+			hasBenefits: redrawTotal + encounterTotal + heroXP + campaignTotal + permanentTotal > 0
+		};
+	};
+
 	static spendCharge = (game: GameModel, type: StructureType, count: number) => {
 		for (let n = 0; n < count; ++n) {
 			const structures = game.stronghold

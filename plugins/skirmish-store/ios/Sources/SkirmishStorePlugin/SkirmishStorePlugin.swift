@@ -29,6 +29,25 @@ public class SkirmishStorePlugin: CAPPlugin, CAPBridgedPlugin {
 		CAPPluginMethod(name: "getOwned", returnType: CAPPluginReturnPromise)
 	]
 
+	// Every product this app sells, spelled out in full. The web layer passes the
+	// identifiers it wants on each call, so this list isn't needed to make a purchase
+	// work - it is here because App Review scans the compiled binary for the identifiers
+	// of the purchases under review. Building them at runtime, as the web layer does,
+	// leaves nothing in the binary to find, and the submission is rejected under
+	// guideline 2.1(b) as an app whose purchases "could not be found in the binary".
+	// It also gives getProducts something sensible to ask for if it is ever called
+	// without a list.
+	private let productIdentifiers = [
+		"com.andyaiken.skirmish.pack_codex_arcanum",
+		"com.andyaiken.skirmish.pack_elemental_storm",
+		"com.andyaiken.skirmish.pack_fae_green_realm",
+		"com.andyaiken.skirmish.pack_faith_and_damnation",
+		"com.andyaiken.skirmish.pack_menagerie",
+		"com.andyaiken.skirmish.pack_out_of_the_grave",
+		"com.andyaiken.skirmish.pack_skullduggery",
+		"com.andyaiken.skirmish.pack_workshop"
+	]
+
 	// A purchase can complete when we are not asking about it - an Ask to Buy approval
 	// arriving hours later, or a purchase finished on another device. StoreKit delivers
 	// those here, and we tell the web layer to re-read what is owned.
@@ -61,10 +80,9 @@ public class SkirmishStorePlugin: CAPPlugin, CAPBridgedPlugin {
 	// Asks the App Store what these products cost. The price comes back already formatted
 	// in the viewer's own currency, which is why the app never builds a price string.
 	@objc func getProducts(_ call: CAPPluginCall) {
-		guard let identifiers = call.getArray("productIDs", String.self) else {
-			call.reject("productIDs is required")
-			return
-		}
+		// An empty or missing list means "everything this app sells"
+		let requested = call.getArray("productIDs", String.self) ?? []
+		let identifiers = requested.isEmpty ? productIdentifiers : requested
 
 		storeLog("getProducts called with \(identifiers.count) identifiers: \(identifiers.joined(separator: ", "))")
 

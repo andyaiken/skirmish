@@ -8,7 +8,24 @@ import type { PackModel } from '../models/pack';
 // underscores in a product ID, which is why the pack IDs carry underscores too.
 const PRODUCT_PREFIX = 'com.andyaiken.skirmish.';
 
-export const productIDForPack = (packID: string) => `${PRODUCT_PREFIX}${packID}`;
+// The identifiers are written out in full rather than only assembled from the prefix,
+// because they have to appear literally in what ships. App Review scans the submitted
+// app for the identifiers of the purchases being reviewed, and a build that only ever
+// builds them at runtime reads as an app with no in-app purchases at all - which is
+// what guideline 2.1(b) was raised against. A pack missing from here still works, by
+// the fallback below; it just won't be found by that scan.
+const PRODUCT_IDS: Record<string, string> = {
+	pack_codex_arcanum: 'com.andyaiken.skirmish.pack_codex_arcanum',
+	pack_elemental_storm: 'com.andyaiken.skirmish.pack_elemental_storm',
+	pack_fae_green_realm: 'com.andyaiken.skirmish.pack_fae_green_realm',
+	pack_faith_and_damnation: 'com.andyaiken.skirmish.pack_faith_and_damnation',
+	pack_menagerie: 'com.andyaiken.skirmish.pack_menagerie',
+	pack_out_of_the_grave: 'com.andyaiken.skirmish.pack_out_of_the_grave',
+	pack_skullduggery: 'com.andyaiken.skirmish.pack_skullduggery',
+	pack_workshop: 'com.andyaiken.skirmish.pack_workshop'
+};
+
+export const productIDForPack = (packID: string) => PRODUCT_IDS[packID] ?? `${PRODUCT_PREFIX}${packID}`;
 export const packIDForProduct = (productID: string) => productID.startsWith(PRODUCT_PREFIX) ? productID.substring(PRODUCT_PREFIX.length) : '';
 
 export interface StoreProductModel {

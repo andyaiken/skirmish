@@ -154,57 +154,52 @@ export class IntentsLogic {
 
 	static getSquareTargetIntents = (encounter: EncounterModel, combatant: CombatantModel, action: ActionModel, paths: PathModel[], edges: EncounterMapEdgeModel) => {
 		const range = ActionLogic.getActionRange(action, combatant);
-		const reachablePaths = paths.filter(p => p.cost <= combatant.combat.movement);
+		const reachablePaths = paths
+			.filter(p => p.cost <= combatant.combat.movement)
+			.sort((a, b) => a.cost - b.cost);
 
 		const intents: IntentsModel[] = [];
 
 		encounter.mapSquares
 			.forEach(targetSquare => {
-				// Only the squares we can reach are worth checking, and line of sight is by far
-				// the most expensive test, so it runs last
-				const candidatePaths = reachablePaths
-					.filter(p => EncounterMapLogic.getDistance(targetSquare, p) <= range)
-					.filter(p => EncounterMapLogic.canSee(edges, targetSquare, p));
-				if (candidatePaths.length > 0) {
-					const path = Collections.min(candidatePaths, p => p.cost);
-					if (path) {
-						let weight = 1;
-						const param = action.parameters.find(p => p.id === 'targets');
-						if (param) {
-							const targetParam = param as ActionTargetParameterModel;
-							if (targetParam.targets) {
-								switch (targetParam.targets.type) {
-									case ActionTargetType.Allies:
-										weight = encounter.combatants
-											.filter(c => c.faction === CombatantType.Monster)
-											.filter(c => {
-												const dist = EncounterMapLogic.getDistanceAny(EncounterLogic.getCombatantSquares(encounter, c), [ targetSquare ]);
-												return dist <= targetParam.range.radius;
-											})
-											.length;
-										break;
-									case ActionTargetType.Combatants:
-									case ActionTargetType.Enemies:
-										weight = encounter.combatants
-											.filter(c => c.faction === CombatantType.Hero)
-											.filter(c => {
-												const dist = EncounterMapLogic.getDistanceAny(EncounterLogic.getCombatantSquares(encounter, c), [ targetSquare ]);
-												return dist <= targetParam.range.radius;
-											})
-											.length;
-										break;
-								}
+				const path = reachablePaths.find(p => (EncounterMapLogic.getDistance(targetSquare, p) <= range) && EncounterMapLogic.canSee(edges, targetSquare, p));
+				if (path) {
+					let weight = 1;
+					const param = action.parameters.find(p => p.id === 'targets');
+					if (param) {
+						const targetParam = param as ActionTargetParameterModel;
+						if (targetParam.targets) {
+							switch (targetParam.targets.type) {
+								case ActionTargetType.Allies:
+									weight = encounter.combatants
+										.filter(c => c.faction === CombatantType.Monster)
+										.filter(c => {
+											const dist = EncounterMapLogic.getDistanceAny(EncounterLogic.getCombatantSquares(encounter, c), [ targetSquare ]);
+											return dist <= targetParam.range.radius;
+										})
+										.length;
+									break;
+								case ActionTargetType.Combatants:
+								case ActionTargetType.Enemies:
+									weight = encounter.combatants
+										.filter(c => c.faction === CombatantType.Hero)
+										.filter(c => {
+											const dist = EncounterMapLogic.getDistanceAny(EncounterLogic.getCombatantSquares(encounter, c), [ targetSquare ]);
+											return dist <= targetParam.range.radius;
+										})
+										.length;
+									break;
 							}
 						}
-						intents.push({
-							description: action.name,
-							intents: [
-								...path.steps.map(step => IntentsData.move(step)),
-								IntentsData.action(action)
-							],
-							weight: weight
-						});
 					}
+					intents.push({
+						description: action.name,
+						intents: [
+							...path.steps.map(step => IntentsData.move(step)),
+							IntentsData.action(action)
+						],
+						weight: weight
+					});
 				}
 			});
 

@@ -662,14 +662,22 @@ export const outOfTheGrave = (): PackModel => ({
 				},
 				{
 					id: 'wraith-action-3',
-					name: 'Pass Through The Wall',
+					name: 'Grave Chill',
 					prerequisites: [],
 					parameters: [
-						ActionTargetParameters.burst(ActionTargetType.Squares, 1, 8)
+						ActionTargetParameters.burst(ActionTargetType.Enemies, 1, 10)
 					],
 					effects: [
-						ActionEffects.moveToTargetSquare(),
-						ActionEffects.hide()
+						ActionEffects.attack({
+							weapon: false,
+							skill: SkillType.Presence,
+							trait: TraitType.Resolve,
+							skillBonus: 0,
+							hit: [
+								ActionEffects.dealDamage(DamageType.Decay, 2),
+								ActionEffects.addCondition(ConditionLogic.createTraitPenaltyCondition(TraitType.Resolve, 4, TraitType.Speed))
+							]
+						})
 					]
 				}
 			],

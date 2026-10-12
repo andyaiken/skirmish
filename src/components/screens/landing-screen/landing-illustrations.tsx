@@ -3,6 +3,8 @@ import { BoonType } from '../../../enums/boon-type';
 import { CampaignMapGenerator } from '../../../generators/campaign-map/campaign-map-generator';
 import { CombatantLogic } from '../../../logic/combatant/combatant-logic';
 import { EncounterGenerator } from '../../../generators/encounter/encounter-generator';
+import { EncounterLogic } from '../../../logic/encounter/encounter-logic';
+import { EncounterMapLogic } from '../../../logic/encounter-map/encounter-map-logic';
 import { HeroGenerator } from '../../../generators/hero/hero-generator';
 import { MagicItemGenerator } from '../../../generators/magic-item/magic-item-generator';
 
@@ -46,6 +48,12 @@ const getIllustrations = (): Illustrations => {
 			heroes.push(hero);
 		}
 		const encounter = EncounterGenerator.createEncounter(map.regions[0], heroes, []);
+		const dims = EncounterMapLogic.getDimensions(encounter.mapSquares);
+		const width = 1 + dims.right - dims.left;
+		const height = 1 + dims.bottom - dims.top;
+		if (height > width) {
+			EncounterLogic.rotate(encounter, 'r');
+		}
 
 		const item = MagicItemGenerator.generateRandomMagicItem([], rng);
 

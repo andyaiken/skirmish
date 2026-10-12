@@ -1,11 +1,8 @@
 import { Component, ReactNode } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 
-import { BoonType } from '../../enums/boon-type';
-import { CombatantState } from '../../enums/combatant-state';
 import { CombatantType } from '../../enums/combatant-type';
 import { EncounterState } from '../../enums/encounter-state';
-import { FeatureType } from '../../enums/feature-type';
 import { OrientationType } from '../../enums/orientation-type';
 import { PageType } from '../../enums/page-type';
 import { ScreenType } from '../../enums/screen-type';
@@ -16,7 +13,6 @@ import { EncounterGenerator } from '../../generators/encounter/encounter-generat
 import { EncounterMapGenerator } from '../../generators/encounter-map/encounter-map-generator';
 
 import { CampaignLogic } from '../../logic/campaign/campaign-logic';
-import { CampaignMapLogic } from '../../logic/campaign-map/campaign-map-logic';
 import { CombatantLogic } from '../../logic/combatant/combatant-logic';
 import { EncounterLogic } from '../../logic/encounter/encounter-logic';
 import { EncounterMapLogic } from '../../logic/encounter-map/encounter-map-logic';
@@ -463,8 +459,7 @@ export class Main extends Component<Props, State> {
 		try {
 			const currentGame = this.state.game as GameModel;
 			const game = Factory.createGame(this.state.options.packIDs);
-			game.heroes = currentGame.heroes;
-			game.heroSlots = 0;
+			GameLogic.startNextIsland(game, currentGame);
 
 			this.setState({
 				game: game,
@@ -483,11 +478,7 @@ export class Main extends Component<Props, State> {
 	restartCampaign = () => {
 		try {
 			const game = this.state.game as GameModel;
-			game.heroSlots = 5;
-			game.heroes = [];
-			game.items = [];
-			game.boons = [];
-			game.money = 0;
+			GameLogic.restartCampaign(game);
 
 			this.setState({
 				game: game,
@@ -530,11 +521,7 @@ export class Main extends Component<Props, State> {
 		try {
 			const game = this.state.game as GameModel;
 
-			StrongholdLogic.addStructure(game, structure);
-
-			if (cost > 0) {
-				game.money = Math.max(0, game.money - cost);
-			}
+			StrongholdLogic.buyStructure(game, structure, cost);
 
 			this.setState({
 				game: game
@@ -550,8 +537,7 @@ export class Main extends Component<Props, State> {
 		try {
 			const game = this.state.game as GameModel;
 
-			game.stronghold = game.stronghold.filter(s => s.id !== structure.id);
-			game.money += 25;
+			StrongholdLogic.sellStructure(game, structure);
 
 			this.setState({
 				game: game
@@ -567,14 +553,7 @@ export class Main extends Component<Props, State> {
 		try {
 			const game = this.state.game as GameModel;
 
-			if (useTavern) {
-				// The Tavern does the work instead of the money
-				StrongholdLogic.spendCharge(game, StructureType.Tavern, 1);
-			} else {
-				game.money = Math.max(0, game.money - 100);
-			}
-
-			StrongholdLogic.rechargeStructure(structure);
+			StrongholdLogic.chargeStructure(game, structure, useTavern);
 
 			this.setState({
 				game: game
@@ -590,10 +569,7 @@ export class Main extends Component<Props, State> {
 		try {
 			const game = this.state.game as GameModel;
 
-			const money = 50 * structure.level;
-			game.money = Math.max(0, game.money - money);
-
-			structure.level += 1;
+			StrongholdLogic.upgradeStructure(game, structure);
 
 			this.setState({
 				game: game
@@ -643,11 +619,7 @@ export class Main extends Component<Props, State> {
 		try {
 			const game = this.state.game as GameModel;
 
-			hero.xp += 1;
-
-			if (spendCharge) {
-				StrongholdLogic.spendCharge(game, spendCharge, 1);
-			}
+			GameLogic.addXP(game, hero, spendCharge);
 
 			this.setState({
 				game: game
@@ -677,28 +649,7 @@ export class Main extends Component<Props, State> {
 		try {
 			const game = this.state.game as GameModel;
 
-			// Add XP
-			const spent = hero.level * (hero.level - 1) / 2;
-			const total = spent + hero.xp;
-			const xp = Math.floor(total / 2);
-			if (xp > 0) {
-				game.boons.push({
-					id: Utils.guid(),
-					type: BoonType.ExtraXP,
-					data: xp
-				});
-			}
-
-			// Remove the hero
-			game.heroSlots += 1;
-			game.heroes = game.heroes.filter(h => h.id !== hero.id);
-
-			// Add magic items, potions and scrolls. The retire dialog only offers the button when
-			// there is room for all of these, so nothing is turned away here.
-			GameLogic.addItemsToGame(game, ([] as ItemModel[])
-				.concat(hero.items)
-				.concat(hero.carried)
-				.filter(i => i.magic || i.potion || i.scroll));
+			GameLogic.retireHero(game, hero);
 
 			this.setState({
 				game: game
@@ -714,58 +665,7 @@ export class Main extends Component<Props, State> {
 		try {
 			const game = this.state.game as GameModel;
 
-			// A magic item boon would bring something home, so it keeps until there is room
-			// for it - redeeming it into full stores would spend the boon for nothing.
-			if ((boon.type === BoonType.MagicItem) && GameLogic.storesAreFull(game)) {
-				return;
-			}
-
-			game.boons = game.boons.filter(b => b.id !== boon.id);
-
-			switch (boon.type) {
-				case BoonType.ExtraHero:
-					game.heroSlots += 1;
-					break;
-				case BoonType.ExtraXP:
-					(hero as CombatantModel).xp += boon.data as number;
-					break;
-				case BoonType.LevelUp:
-					(hero as CombatantModel).xp += (hero as CombatantModel).level;
-					break;
-				case BoonType.MagicItem:
-					game.items.push(boon.data as ItemModel);
-					break;
-				case BoonType.Money:
-					game.money += boon.data as number;
-					break;
-				case BoonType.EnchantItem: {
-					const original = item as ItemModel;
-					const upgrade = newItem as ItemModel;
-					game.heroes.forEach(h => {
-						h.items.forEach((i, n) => {
-							if (i.id === original.id) {
-								h.items[n] = upgrade;
-							}
-						});
-						h.carried.forEach((i, n) => {
-							if (i.id === original.id) {
-								h.carried[n] = upgrade;
-							}
-						});
-					});
-					game.items.forEach((i, n) => {
-						if (i.id === original.id) {
-							game.items[n] = upgrade;
-						}
-					});
-					break;
-				}
-				case BoonType.Structure:
-					StrongholdLogic.addStructure(game, boon.data as StructureModel);
-					break;
-			}
-
-			game.money -= cost;
+			GameLogic.redeemBoon(game, boon, hero, item, newItem, cost);
 
 			this.setState({
 				game: game
@@ -785,17 +685,7 @@ export class Main extends Component<Props, State> {
 		try {
 			const game = this.state.game as GameModel;
 
-			// The shop buttons are disabled when the stores are full; this is the backstop, and
-			// it runs before any money changes hands.
-			if (GameLogic.storesAreFull(game)) {
-				return;
-			}
-
-			game.items.push(item);
-
-			if (!free) {
-				game.money = Math.max(0, game.money - StrongholdLogic.getItemPrice(game, item));
-			}
+			GameLogic.buyItem(game, item, free);
 
 			this.setState({
 				game: game
@@ -809,21 +699,9 @@ export class Main extends Component<Props, State> {
 
 	sellItem = (item: ItemModel, all: boolean) => {
 		try {
-			const sell = (item: ItemModel) => {
-				game.items = game.items.filter(i => i !== item);
-
-				game.money += StrongholdLogic.getSalePrice(item);
-			};
-
 			const game = this.state.game as GameModel;
 
-			if (all) {
-				game.items
-					.filter(i => i.name === item.name)
-					.forEach(i => sell(i));
-			} else {
-				sell(item);
-			}
+			GameLogic.sellItem(game, item, all);
 
 			this.setState({
 				game: game
@@ -951,53 +829,7 @@ export class Main extends Component<Props, State> {
 
 	rotateMap = (encounter: EncounterModel, dir: 'l' | 'r') => {
 		try {
-			const move = (position: { x: number, y: number }, size: number): { x: number, y: number } => {
-				const result = {
-					x: position.x,
-					y: position.y
-				};
-
-				switch (dir) {
-					case 'l':
-						result.x = position.y;
-						result.y = -position.x - size;
-						break;
-					case 'r':
-						result.x = -position.y - size;
-						result.y = position.x;
-						break;
-				}
-
-				return result;
-			};
-
-			encounter.mapSquares.forEach(sq => {
-				const pos = move(sq, 1);
-				sq.x = pos.x;
-				sq.y = pos.y;
-			});
-			encounter.combatants.forEach(c => {
-				const pos = move(c.combat.position, c.size);
-				c.combat.position.x = pos.x;
-				c.combat.position.y = pos.y;
-
-				c.combat.trail.forEach(step => {
-					const pos = move(step, c.size);
-					step.x = pos.x;
-					step.y = pos.y;
-				});
-			});
-			encounter.loot.forEach(lp => {
-				const pos = move(lp.position, 1);
-				lp.position.x = pos.x;
-				lp.position.y = pos.y;
-			});
-			encounter.traps.forEach(trap => {
-				const pos = move(trap.position, 1);
-				trap.position.x = pos.x;
-				trap.position.y = pos.y;
-			});
-			EncounterMapLogic.visibilityCache.reset();
+			EncounterLogic.rotate(encounter, dir);
 
 			this.setState({
 				game: this.state.game
@@ -1013,13 +845,7 @@ export class Main extends Component<Props, State> {
 		try {
 			const game = this.state.game as GameModel;
 			const encounter = game.encounter as EncounterModel;
-			EncounterLogic.rollInitiative(encounter);
-
-			const active = EncounterLogic.getActiveCombatants(encounter);
-			const current = active.length > 0 ? active[0] : null;
-			if (current) {
-				EncounterLogic.startOfTurn(encounter, current);
-			}
+			EncounterLogic.rollInitiativeAndStart(encounter);
 
 			this.setState({
 				game: game
@@ -1039,8 +865,7 @@ export class Main extends Component<Props, State> {
 			const region = game.map.regions.find(r => r.id === encounter.regionID);
 			encounter.mapSquares = EncounterMapGenerator.generateEncounterMap(Math.random, region ? region.demographics.terrain : '');
 
-			encounter.combatants.forEach(c => c.combat.position = { x: Number.MIN_VALUE, y: Number.MIN_VALUE });
-			encounter.loot.forEach(lp => lp.position = { x: Number.MIN_VALUE, y: Number.MIN_VALUE });
+			EncounterLogic.clearPositions(encounter);
 
 			EncounterGenerator.placeCombatants(encounter, Math.random);
 			EncounterGenerator.placeLoot(encounter, Math.random);
@@ -1097,7 +922,7 @@ export class Main extends Component<Props, State> {
 
 	addMovement = (encounter:EncounterModel, combatant: CombatantModel, value: number) => {
 		try {
-			combatant.combat.movement += value;
+			EncounterLogic.addMovement(combatant, value);
 
 			this.setState({
 				game: this.state.game
@@ -1272,7 +1097,7 @@ export class Main extends Component<Props, State> {
 		try {
 			this.cancelMonsterTurn();
 
-			if (combatant.combat.stunned || (combatant.combat.state === CombatantState.Unconscious) || (combatant.combat.state === CombatantState.Dead)) {
+			if (!EncounterLogic.canMonsterAct(combatant)) {
 				// Can't act
 
 				EncounterLogic.endTurn(encounter);
@@ -1347,13 +1172,7 @@ export class Main extends Component<Props, State> {
 		try {
 			const game = this.state.game as GameModel;
 
-			if (game.encounter) {
-				EncounterLogic.equipItem(game.encounter, combatant, item);
-			} else {
-				game.items = game.items.filter(i => i.id !== item.id);
-				combatant.carried = combatant.carried.filter(i => i.id !== item.id);
-				combatant.items.push(item);
-			}
+			CampaignLogic.equipItem(game, item, combatant);
 
 			this.setState({
 				game: game
@@ -1369,12 +1188,7 @@ export class Main extends Component<Props, State> {
 		try {
 			const game = this.state.game as GameModel;
 
-			if (game.encounter) {
-				EncounterLogic.unequipItem(game.encounter, combatant, item);
-			} else {
-				combatant.items = combatant.items.filter(i => i.id !== item.id);
-				combatant.carried.push(item);
-			}
+			CampaignLogic.unequipItem(game, item, combatant);
 
 			this.setState({
 				game: game
@@ -1390,16 +1204,7 @@ export class Main extends Component<Props, State> {
 		try {
 			const game = this.state.game as GameModel;
 
-			if (game.encounter) {
-				EncounterLogic.pickUpItem(game.encounter, combatant, item);
-			} else {
-				game.items = game.items.filter(i => i.id !== item.id);
-				if (CombatantLogic.canEquip(combatant, item)) {
-					combatant.items.push(item);
-				} else {
-					combatant.carried.push(item);
-				}
-			}
+			CampaignLogic.pickUpItem(game, item, combatant);
 
 			this.setState({
 				game: game
@@ -1415,20 +1220,7 @@ export class Main extends Component<Props, State> {
 		try {
 			const game = this.state.game as GameModel;
 
-			if (game.encounter) {
-				EncounterLogic.dropItem(game.encounter, combatant, item);
-			} else {
-				// Between encounters the item goes to the stores, so it stays where it is when
-				// there is no room - better held by the hero than lost.
-				if (GameLogic.storesAreFull(game)) {
-					return;
-				}
-
-				combatant.items = combatant.items.filter(i => i.id !== item.id);
-				combatant.carried = combatant.carried.filter(i => i.id !== item.id);
-
-				game.items.push(item);
-			}
+			CampaignLogic.dropItem(game, item, combatant);
 
 			this.setState({
 				game: game
@@ -1449,120 +1241,39 @@ export class Main extends Component<Props, State> {
 				return;
 			}
 
-			const encounter = game.encounter;
-			if (!encounter) {
-				return;
-			}
-
-			const region = game.map.regions.find(r => r.id === encounter.regionID);
-			if (!region) {
+			const result = CampaignLogic.finishEncounter(game, state);
+			if (!result) {
 				return;
 			}
 
 			let dialogContent = null;
-			switch (state) {
-				case EncounterState.Victory: {
-					// Any monster still on its feet means the encounter was conceded rather than
-					// fought out, and it has not dropped anything. Doing it here keeps a manual
-					// win worth the same as a real one; in an ordinary victory every monster is
-					// already down, so this finds nobody.
-					EncounterLogic.defeatStandingMonsters(encounter);
-					// Get equipment and money from loot piles, add to game items
-					const spoils: ItemModel[] = [];
-					encounter.loot.forEach(lp => {
-						spoils.push(...lp.items);
-						game.money += lp.money;
-					});
-					encounter.combatants
-						.filter(c => (c.type === CombatantType.Monster) && (c.faction === CombatantType.Monster))
-						.forEach(c => {
-							spoils.push(...c.items);
-							spoils.push(...c.carried);
-						});
-					// Coin always comes home; items only as far as there is room for them
-					const leftBehind = GameLogic.addItemsToGame(game, spoils);
-					// Increment XP for surviving heroes
-					encounter.combatants
-						.filter(c => (c.type === CombatantType.Hero) && (c.faction === CombatantType.Hero))
-						.filter(h => (h.combat.state === CombatantState.Standing) || (h.combat.state === CombatantState.Prone))
-						.forEach(h => h.xp += 1);
-					// Add surviving heroes back into the game
-					encounter.combatants
-						.filter(c => (c.type === CombatantType.Hero) && (c.faction === CombatantType.Hero))
-						.filter(h => (h.combat.state === CombatantState.Standing) || (h.combat.state === CombatantState.Prone) || (h.combat.state === CombatantState.Unconscious))
-						.forEach(h => game.heroes.push(h));
-					game.heroes = Collections.sort(game.heroes, n => n.name);
-					// Remove the first encounter for this region
-					region.encounters.splice(0, 1);
-					if (region.encounters.length === 0) {
-						// Read the income while the region is still on the map
-						const income = StrongholdLogic.getConquestIncome(game, region);
-						// Conquer the region
-						CampaignMapLogic.conquerRegion(game.map, region);
-						if (CampaignMapLogic.isConquered(game.map)) {
-							// Show message
-							dialogContent = this.getVictoryDialog();
-						} else {
-							// Add a new hero slot
-							game.heroSlots += 1;
-							// Add the region's boon
-							game.boons.push(region.boon);
-							// A Counting House starts collecting from the region
-							game.money += income;
-						}
-					}
-					// Say so rather than letting the loot quietly go missing - but not over the end
-					// of the campaign, where the stores no longer matter
-					if ((leftBehind.length > 0) && (dialogContent === null)) {
-						dialogContent = (
-							<div>
-								<Text type={TextType.Heading}>Your Stores Are Full</Text>
-								<Text type={TextType.SubHeading}>
-									You left {leftBehind.length === 1 ? 'an item' : `${leftBehind.length} items`} behind in {region.name}.
-								</Text>
-								<Text>You can keep {GameLogic.maxItems} items. Sell something to make room for the next encounter.</Text>
-							</div>
-						);
-					}
-					// Clear the current encounter
-					game.encounter = null;
-					break;
-				}
-				case EncounterState.Defeat: {
-					// Clear the current encounter
-					game.encounter = null;
-					const heroes = game.heroes.length + game.heroSlots + game.boons.filter(b => b.type === BoonType.ExtraHero).length;
-					if (heroes === 0) {
-						// Show message
-						dialogContent = (
-							<div>
-								<Text type={TextType.Heading}>Defeat</Text>
-								<Text type={TextType.SubHeading}>You lost the encounter in {region.name}, and have no more heroes.</Text>
-								<Text>You can either continue your campaign with a new group of heroes, or abandon it.</Text>
-								<div className='card-options'>
-									<PlayingCard front={<PlaceholderCard text='Continue' />} onClick={() => this.restartCampaign()} />
-									<PlayingCard front={<PlaceholderCard text='Abandon' />} onClick={() => this.endCampaign()} />
-								</div>
-							</div>
-						);
-					}
-					break;
-				}
-				case EncounterState.Retreat: {
-					// Add conscious heroes back into the game
-					encounter.combatants
-						.filter(c => (c.type === CombatantType.Hero) && (c.faction === CombatantType.Hero))
-						.filter(h => (h.combat.state === CombatantState.Standing) || (h.combat.state === CombatantState.Prone))
-						.forEach(h => game.heroes.push(h));
-					game.heroes = Collections.sort(game.heroes, n => n.name);
-					// Clear the current encounter
-					game.encounter = null;
-					break;
-				}
+			if (result.islandConquered) {
+				dialogContent = this.getVictoryDialog();
+			} else if (result.leftBehind.length > 0) {
+				// Say so rather than letting the loot quietly go missing
+				const left = result.leftBehind.length;
+				dialogContent = (
+					<div>
+						<Text type={TextType.Heading}>Your Stores Are Full</Text>
+						<Text type={TextType.SubHeading}>
+							You left {left === 1 ? 'an item' : `${left} items`} behind in {result.region.name}.
+						</Text>
+						<Text>You can keep {GameLogic.maxItems} items. Sell something to make room for the next encounter.</Text>
+					</div>
+				);
+			} else if (result.noHeroesRemain) {
+				dialogContent = (
+					<div>
+						<Text type={TextType.Heading}>Defeat</Text>
+						<Text type={TextType.SubHeading}>You lost the encounter in {result.region.name}, and have no more heroes.</Text>
+						<Text>You can either continue your campaign with a new group of heroes, or abandon it.</Text>
+						<div className='card-options'>
+							<PlayingCard front={<PlaceholderCard text='Continue' />} onClick={() => this.restartCampaign()} />
+							<PlayingCard front={<PlaceholderCard text='Abandon' />} onClick={() => this.endCampaign()} />
+						</div>
+					</div>
+				);
 			}
-
-			game.heroes.forEach(h => CombatantLogic.resetCombatant(h));
-			EncounterMapLogic.visibilityCache.reset();
 
 			// Switch screen in the same batch as the state change; if we did it afterwards,
 			// the encounter screen would be rendered once with no encounter to show
@@ -1583,9 +1294,7 @@ export class Main extends Component<Props, State> {
 		try {
 			const game = this.state.game as GameModel;
 
-			const featureDeck = CombatantLogic.getFeatureDeck(combatant).filter(f => f.type !== FeatureType.Proficiency);
-			CombatantLogic.incrementCombatantLevel(combatant, Collections.draw(featureDeck), this.props.options.packIDs);
-			EncounterLogic.drawActions(game.encounter as EncounterModel, combatant);
+			EncounterLogic.incrementMonsterLevel(game.encounter as EncounterModel, combatant, this.props.options.packIDs);
 
 			this.setState({
 				game: game
@@ -1601,8 +1310,7 @@ export class Main extends Component<Props, State> {
 		try {
 			const game = this.state.game as GameModel;
 
-			combatant.faction = (combatant.faction === CombatantType.Hero) ? CombatantType.Monster : CombatantType.Hero;
-			EncounterLogic.drawActions(game.encounter as EncounterModel, combatant);
+			EncounterLogic.switchAllegiance(game.encounter as EncounterModel, combatant);
 
 			this.setState({
 				game: game
@@ -1618,7 +1326,7 @@ export class Main extends Component<Props, State> {
 		try {
 			const game = this.state.game as GameModel;
 
-			combatant.combat.stunned = !combatant.combat.stunned;
+			EncounterLogic.toggleStun(combatant);
 
 			this.setState({
 				game: game
@@ -1669,8 +1377,7 @@ export class Main extends Component<Props, State> {
 			const game = this.state.game as GameModel;
 			const encounter = game.encounter as EncounterModel;
 
-			combatant.combat.initiative += delta;
-			EncounterLogic.sortInitiative(encounter);
+			EncounterLogic.nudgeInitiative(encounter, combatant, delta);
 
 			this.setState({
 				game: game

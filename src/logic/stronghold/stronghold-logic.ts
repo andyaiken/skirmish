@@ -264,4 +264,33 @@ export class StrongholdLogic {
 			}
 		}
 	};
+
+	static buyStructure = (game: GameModel, structure: StructureModel, cost: number) => {
+		StrongholdLogic.addStructure(game, structure);
+
+		if (cost > 0) {
+			game.money = Math.max(0, game.money - cost);
+		}
+	};
+
+	static sellStructure = (game: GameModel, structure: StructureModel) => {
+		game.stronghold = game.stronghold.filter(s => s.id !== structure.id);
+		game.money += 25;
+	};
+
+	static chargeStructure = (game: GameModel, structure: StructureModel, useTavern: boolean) => {
+		if (useTavern) {
+			// The Tavern does the work instead of the money
+			StrongholdLogic.spendCharge(game, StructureType.Tavern, 1);
+		} else {
+			game.money = Math.max(0, game.money - 100);
+		}
+
+		StrongholdLogic.rechargeStructure(structure);
+	};
+
+	static upgradeStructure = (game: GameModel, structure: StructureModel) => {
+		game.money = Math.max(0, game.money - 50 * structure.level);
+		structure.level += 1;
+	};
 }

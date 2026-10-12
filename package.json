@@ -4,9 +4,9 @@
 	"type": "module",
 	"repository": "https://github.com/andyaiken/skirmish.git",
 	"dependencies": {
-		"@capacitor/cli": "^8.5.2",
-		"@capacitor/core": "^8.5.2",
-		"@capacitor/ios": "^8.5.2",
+		"@capacitor/cli": "^8.5.3",
+		"@capacitor/core": "^8.5.3",
+		"@capacitor/ios": "^8.5.3",
 		"@tabler/icons-react": "^3.49.0",
 		"localforage": "^1.10.0",
 		"react": "^19.3.0",
@@ -28,8 +28,8 @@
 		"globals": "^17.13.0",
 		"sass": "^1.105.1",
 		"typescript": "^6.0.3",
-		"typescript-eslint": "^8.70.0",
-		"vite": "^8.3.3",
+		"typescript-eslint": "^8.71.1",
+		"vite": "^8.3.4",
 		"vitest": "^5.0.3"
 	},
 	"scripts": {

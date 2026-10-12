@@ -9,6 +9,7 @@ import { DamageCategoryType } from '../../enums/damage-category-type';
 import { DamageType } from '../../enums/damage-type';
 import { EncounterMapSquareType } from '../../enums/encounter-map-square-type';
 import { EncounterState } from '../../enums/encounter-state';
+import { FeatureType } from '../../enums/feature-type';
 import { QuirkType } from '../../enums/quirk-type';
 import { SkillType } from '../../enums/skill-type';
 import { TraitType } from '../../enums/trait-type';
@@ -247,6 +248,57 @@ export class EncounterLogic {
 				EncounterLogic.kill(encounter, combatant);
 			}
 		}
+	};
+
+	static rotate = (encounter: EncounterModel, dir: 'l' | 'r') => {
+		const move = (position: { x: number, y: number }, size: number): { x: number, y: number } => {
+			const result = {
+				x: position.x,
+				y: position.y
+			};
+
+			switch (dir) {
+				case 'l':
+					result.x = position.y;
+					result.y = -position.x - size;
+					break;
+				case 'r':
+					result.x = -position.y - size;
+					result.y = position.x;
+					break;
+			}
+
+			return result;
+		};
+
+		encounter.mapSquares.forEach(sq => {
+			const pos = move(sq, 1);
+			sq.x = pos.x;
+			sq.y = pos.y;
+		});
+		encounter.combatants.forEach(c => {
+			const pos = move(c.combat.position, c.size);
+			c.combat.position.x = pos.x;
+			c.combat.position.y = pos.y;
+
+			c.combat.trail.forEach(step => {
+				const pos = move(step, c.size);
+				step.x = pos.x;
+				step.y = pos.y;
+			});
+		});
+		encounter.loot.forEach(lp => {
+			const pos = move(lp.position, 1);
+			lp.position.x = pos.x;
+			lp.position.y = pos.y;
+		});
+		encounter.traps.forEach(trap => {
+			const pos = move(trap.position, 1);
+			trap.position.x = pos.x;
+			trap.position.y = pos.y;
+		});
+
+		EncounterMapLogic.visibilityCache.reset();
 	};
 
 	static spreadContagion = (encounter: EncounterModel, combatant: CombatantModel, rng: () => number = Math.random) => {
@@ -1505,5 +1557,50 @@ export class EncounterLogic {
 		});
 
 		return walls;
+	};
+
+	static rollInitiativeAndStart = (encounter: EncounterModel) => {
+		EncounterLogic.rollInitiative(encounter);
+
+		const active = EncounterLogic.getActiveCombatants(encounter);
+		const current = active.length > 0 ? active[0] : null;
+		if (current) {
+			EncounterLogic.startOfTurn(encounter, current);
+		}
+	};
+
+	static clearPositions = (encounter: EncounterModel) => {
+		encounter.combatants.forEach(c => c.combat.position = { x: Number.MIN_VALUE, y: Number.MIN_VALUE });
+		encounter.loot.forEach(lp => lp.position = { x: Number.MIN_VALUE, y: Number.MIN_VALUE });
+	};
+
+	static addMovement = (combatant: CombatantModel, value: number) => {
+		combatant.combat.movement += value;
+	};
+
+	static incrementMonsterLevel = (encounter: EncounterModel, combatant: CombatantModel, packIDs: string[]) => {
+		const featureDeck = CombatantLogic.getFeatureDeck(combatant).filter(f => f.type !== FeatureType.Proficiency);
+		CombatantLogic.incrementCombatantLevel(combatant, Collections.draw(featureDeck), packIDs);
+		EncounterLogic.drawActions(encounter, combatant);
+	};
+
+	static switchAllegiance = (encounter: EncounterModel, combatant: CombatantModel) => {
+		combatant.faction = (combatant.faction === CombatantType.Hero) ? CombatantType.Monster : CombatantType.Hero;
+		EncounterLogic.drawActions(encounter, combatant);
+	};
+
+	static toggleStun = (combatant: CombatantModel) => {
+		combatant.combat.stunned = !combatant.combat.stunned;
+	};
+
+	static nudgeInitiative = (encounter: EncounterModel, combatant: CombatantModel, delta: number) => {
+		combatant.combat.initiative += delta;
+		EncounterLogic.sortInitiative(encounter);
+	};
+
+	static canMonsterAct = (combatant: CombatantModel) => {
+		return !combatant.combat.stunned
+			&& (combatant.combat.state !== CombatantState.Unconscious)
+			&& (combatant.combat.state !== CombatantState.Dead);
 	};
 }

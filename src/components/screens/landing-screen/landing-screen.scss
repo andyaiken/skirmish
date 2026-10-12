@@ -39,6 +39,12 @@
 				margin-bottom: 10px;
 				pointer-events: none;
 
+				&.island {
+					border: 2px solid var(--primary);
+					border-radius: 10px;
+					background-color: rgb(130, 200, 250);
+				}
+
 				// Room for the cards' shadows, which fall outside the space they measure
 				&.card .scale-to-fit {
 					inset: 5px 0;

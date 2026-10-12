@@ -8,6 +8,7 @@ import { FeatureType } from '../../enums/feature-type';
 import { ItemProficiencyType } from '../../enums/item-proficiency-type';
 import { SkillCategoryType } from '../../enums/skill-category-type';
 import { SkillType } from '../../enums/skill-type';
+import { StructureType } from '../../enums/structure-type';
 import { TraitType } from '../../enums/trait-type';
 
 import type { ActionEffectModel, ActionModel, ActionTargetParameterModel } from '../../models/action';
@@ -17,12 +18,14 @@ import type { ConditionModel } from '../../models/condition';
 import type { FeatureModel } from '../../models/feature';
 import type { GameModel } from '../../models/game';
 import type { ItemModel } from '../../models/item';
+import type { StructureModel } from '../../models/structure';
 
 import { Collections } from '../../utils/collections/collections';
 import { Utils } from '../../utils/utils/utils';
 
 import { ActionLogic } from '../action/action-logic';
 import { PackLogic } from '../pack/pack-logic';
+import { StrongholdLogic } from '../stronghold/stronghold-logic';
 
 // Species, roles and backgrounds are all checked for balance the same way. Only a species has death
 // actions; features are here for the skill check sketched out in getBalanceIssues
@@ -598,5 +601,135 @@ export class GameLogic {
 		}
 
 		return 1;
+	};
+
+	static startNextIsland = (game: GameModel, previous: GameModel) => {
+		game.heroes = previous.heroes;
+		game.heroSlots = 0;
+	};
+
+	static restartCampaign = (game: GameModel) => {
+		game.heroSlots = 5;
+		game.heroes = [];
+		game.items = [];
+		game.boons = [];
+		game.money = 0;
+	};
+
+	static addXP = (game: GameModel, hero: CombatantModel, spendCharge: StructureType | null) => {
+		hero.xp += 1;
+
+		if (spendCharge) {
+			StrongholdLogic.spendCharge(game, spendCharge, 1);
+		}
+	};
+
+	static retireHero = (game: GameModel, hero: CombatantModel) => {
+		// Add XP
+		const spent = hero.level * (hero.level - 1) / 2;
+		const total = spent + hero.xp;
+		const xp = Math.floor(total / 2);
+		if (xp > 0) {
+			game.boons.push({
+				id: Utils.guid(),
+				type: BoonType.ExtraXP,
+				data: xp
+			});
+		}
+
+		// Remove the hero
+		game.heroSlots += 1;
+		game.heroes = game.heroes.filter(h => h.id !== hero.id);
+
+		// Add magic items, potions and scrolls. The retire dialog only offers the button when
+		// there is room for all of these, so nothing is turned away here.
+		GameLogic.addItemsToGame(game, ([] as ItemModel[])
+			.concat(hero.items)
+			.concat(hero.carried)
+			.filter(i => i.magic || i.potion || i.scroll));
+	};
+
+	static redeemBoon = (game: GameModel, boon: BoonModel, hero: CombatantModel | null, item: ItemModel | null, newItem: ItemModel | null, cost: number) => {
+		// A magic item boon would bring something home, so it keeps until there is room
+		// for it - redeeming it into full stores would spend the boon for nothing.
+		if ((boon.type === BoonType.MagicItem) && GameLogic.storesAreFull(game)) {
+			return;
+		}
+
+		game.boons = game.boons.filter(b => b.id !== boon.id);
+
+		switch (boon.type) {
+			case BoonType.ExtraHero:
+				game.heroSlots += 1;
+				break;
+			case BoonType.ExtraXP:
+				(hero as CombatantModel).xp += boon.data as number;
+				break;
+			case BoonType.LevelUp:
+				(hero as CombatantModel).xp += (hero as CombatantModel).level;
+				break;
+			case BoonType.MagicItem:
+				game.items.push(boon.data as ItemModel);
+				break;
+			case BoonType.Money:
+				game.money += boon.data as number;
+				break;
+			case BoonType.EnchantItem: {
+				const original = item as ItemModel;
+				const upgrade = newItem as ItemModel;
+				game.heroes.forEach(h => {
+					h.items.forEach((i, n) => {
+						if (i.id === original.id) {
+							h.items[n] = upgrade;
+						}
+					});
+					h.carried.forEach((i, n) => {
+						if (i.id === original.id) {
+							h.carried[n] = upgrade;
+						}
+					});
+				});
+				game.items.forEach((i, n) => {
+					if (i.id === original.id) {
+						game.items[n] = upgrade;
+					}
+				});
+				break;
+			}
+			case BoonType.Structure:
+				StrongholdLogic.addStructure(game, boon.data as StructureModel);
+				break;
+		}
+
+		game.money -= cost;
+	};
+
+	static buyItem = (game: GameModel, item: ItemModel, free: boolean) => {
+		// The shop buttons are disabled when the stores are full; this is the backstop, and
+		// it runs before any money changes hands.
+		if (GameLogic.storesAreFull(game)) {
+			return;
+		}
+
+		game.items.push(item);
+
+		if (!free) {
+			game.money = Math.max(0, game.money - StrongholdLogic.getItemPrice(game, item));
+		}
+	};
+
+	static sellItem = (game: GameModel, item: ItemModel, all: boolean) => {
+		const sell = (item: ItemModel) => {
+			game.items = game.items.filter(i => i !== item);
+			game.money += StrongholdLogic.getSalePrice(item);
+		};
+
+		if (all) {
+			game.items
+				.filter(i => i.name === item.name)
+				.forEach(i => sell(i));
+		} else {
+			sell(item);
+		}
 	};
 }

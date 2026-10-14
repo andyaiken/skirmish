@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component, ReactNode } from 'react';
 
 import { BaseData } from '../../../data/base-data';
 
@@ -18,7 +18,7 @@ import { Collections } from '../../../utils/collections/collections';
 import { Utils } from '../../../utils/utils/utils';
 
 import { ActionCard, FeatureCard } from '../../cards';
-import { CardList, Tabs, Tag, Text, TextType } from '../../controls';
+import { CardList, CardPreview, Tabs, Tag, Text, TextType } from '../../controls';
 import { Items } from './items/items';
 import { LevelUp } from './level-up/level-up';
 import { Stats } from './stats/stats';
@@ -41,6 +41,7 @@ interface Props {
 interface State {
 	view: string;
 	features: FeatureModel[];
+	preview: ReactNode | null;
 }
 
 export class CharacterSheetModal extends Component<Props, State> {
@@ -48,7 +49,8 @@ export class CharacterSheetModal extends Component<Props, State> {
 		super(props);
 		this.state = {
 			view: (props.game.encounter === null) && (props.combatant.xp >= props.combatant.level) ? 'levelup' : 'stats',
-			features: this.drawFeatures(props.combatant)
+			features: this.drawFeatures(props.combatant),
+			preview: null
 		};
 	}
 
@@ -172,6 +174,15 @@ export class CharacterSheetModal extends Component<Props, State> {
 						feature={f}
 						footer={CombatantLogic.getFeatureSource(this.props.combatant, f.id)}
 						footerType={CombatantLogic.getFeatureSourceType(this.props.combatant, f.id)}
+						onClick={feature => this.setState({
+							preview: (
+								<FeatureCard
+									feature={feature}
+									footer={CombatantLogic.getFeatureSource(this.props.combatant, feature.id)}
+									footerType={CombatantLogic.getFeatureSourceType(this.props.combatant, feature.id)}
+								/>
+							)
+						})}
 					/>
 				));
 				content = (
@@ -186,6 +197,15 @@ export class CharacterSheetModal extends Component<Props, State> {
 						action={a}
 						footer={CombatantLogic.getActionSource(this.props.combatant, a.id)}
 						footerType={CombatantLogic.getActionSourceType(this.props.combatant, a.id)}
+						onClick={action => this.setState({
+							preview: (
+								<ActionCard
+									action={action}
+									footer={CombatantLogic.getActionSource(this.props.combatant, action.id)}
+									footerType={CombatantLogic.getActionSourceType(this.props.combatant, action.id)}
+								/>
+							)
+						})}
 					/>
 				));
 				content = (
@@ -221,6 +241,14 @@ export class CharacterSheetModal extends Component<Props, State> {
 						{content}
 					</div>
 				</div>
+				{
+					this.state.preview ?
+						<CardPreview
+							card={this.state.preview}
+							onClose={() => this.setState({ preview: null })}
+						/>
+						: null
+				}
 			</div>
 		);
 	};

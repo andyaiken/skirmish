@@ -5,20 +5,26 @@ import { CardType } from '../../../../enums/card-type';
 import { GameLogic } from '../../../../logic/game/game-logic';
 import { PackLogic } from '../../../../logic/pack/pack-logic';
 
+import type { BackgroundModel } from '../../../../models/background';
+import type { ItemModel } from '../../../../models/item';
 import type { OptionsModel } from '../../../../models/options';
-
-import type { CardSelection } from '../../card-details/card-details-modal';
+import type { RoleModel } from '../../../../models/role';
+import type { SpeciesModel } from '../../../../models/species';
+import type { StructureModel } from '../../../../models/structure';
 
 // Imported from their own files rather than through the modals barrel: this component is reached
 // from that barrel by way of the help modal, so going back through it would close a cycle
-import { BackgroundModal } from '../../background/background-modal';
-import { RoleModal } from '../../role/role-modal';
-import { SpeciesModal } from '../../species/species-modal';
-
 import { BackgroundCard, ItemCard, RoleCard, SpeciesCard, StructureCard } from '../../../cards';
-import { Badge, CardList, Dialog, Selector, Text, TextType } from '../../../controls';
+import { Badge, CardList, CardPreview, Selector, Text, TextType } from '../../../controls';
 
 import './decks-tab.scss';
+
+type CardPreviewSelection =
+	{ type: CardType.Species, card: SpeciesModel } |
+	{ type: CardType.Role, card: RoleModel } |
+	{ type: CardType.Background, card: BackgroundModel } |
+	{ type: CardType.Item, card: ItemModel } |
+	{ type: CardType.Structure, card: StructureModel };
 
 interface Props {
 	options: OptionsModel;
@@ -26,7 +32,7 @@ interface Props {
 
 interface State {
 	tab: string;
-	selected: CardSelection | null;
+	selected: CardPreviewSelection | null;
 }
 
 export class DecksTab extends Component<Props, State> {
@@ -44,7 +50,7 @@ export class DecksTab extends Component<Props, State> {
 		});
 	};
 
-	setSelected = (selected: CardSelection) => {
+	setSelected = (selected: CardPreviewSelection) => {
 		this.setState({
 			selected: selected
 		});
@@ -56,14 +62,18 @@ export class DecksTab extends Component<Props, State> {
 		});
 	};
 
-	getSelectedModal = (selected: CardSelection) => {
+	getSelectedCard = (selected: CardPreviewSelection) => {
 		switch (selected.type) {
 			case CardType.Species:
-				return <SpeciesModal species={selected.card} />;
+				return <SpeciesCard species={selected.card} />;
 			case CardType.Role:
-				return <RoleModal role={selected.card} />;
+				return <RoleCard role={selected.card} />;
 			case CardType.Background:
-				return <BackgroundModal background={selected.card} />;
+				return <BackgroundCard background={selected.card} />;
+			case CardType.Item:
+				return <ItemCard item={selected.card} />;
+			case CardType.Structure:
+				return <StructureCard structure={selected.card} />;
 		}
 	};
 
@@ -125,7 +135,7 @@ export class DecksTab extends Component<Props, State> {
 					.forEach(s => {
 						cards.push(
 							<Badge key={s.id} value={this.getBadge(s.id)}>
-								<StructureCard structure={s} />
+								<StructureCard structure={s} onClick={structure => this.setSelected({ type: CardType.Structure, card: structure })} />
 							</Badge>
 						);
 					});
@@ -135,7 +145,7 @@ export class DecksTab extends Component<Props, State> {
 					.forEach(i => {
 						cards.push(
 							<Badge key={i.id} value={this.getBadge(i.id)}>
-								<ItemCard item={i} />
+								<ItemCard item={i} onClick={item => this.setSelected({ type: CardType.Item, card: item })} />
 							</Badge>
 						);
 					});
@@ -145,7 +155,7 @@ export class DecksTab extends Component<Props, State> {
 					.forEach(p => {
 						cards.push(
 							<Badge key={p.id} value={this.getBadge(p.id)}>
-								<ItemCard item={p} />
+								<ItemCard item={p} onClick={item => this.setSelected({ type: CardType.Item, card: item })} />
 							</Badge>
 						);
 					});
@@ -155,19 +165,18 @@ export class DecksTab extends Component<Props, State> {
 					.forEach(sc => {
 						cards.push(
 							<Badge key={sc.id} value={this.getBadge(sc.id)}>
-								<ItemCard item={sc} />
+								<ItemCard item={sc} onClick={item => this.setSelected({ type: CardType.Item, card: item })} />
 							</Badge>
 						);
 					});
 				break;
 		}
 
-		let dialog = null;
+		let preview = null;
 		if (this.state.selected) {
-			dialog = (
-				<Dialog
-					content={this.getSelectedModal(this.state.selected)}
-					level={2}
+			preview = (
+				<CardPreview
+					card={this.getSelectedCard(this.state.selected)}
 					onClose={this.clearSelected}
 				/>
 			);
@@ -191,7 +200,7 @@ export class DecksTab extends Component<Props, State> {
 				/>
 				{cards.length > 0 ? <CardList cards={cards} /> : null}
 				{cards.length > 0 ? null : <Text type={TextType.Small}>None.</Text>}
-				{dialog}
+				{preview}
 			</div>
 		);
 	};

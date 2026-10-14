@@ -18,7 +18,7 @@ import { Utils } from '../../../../utils/utils/utils';
 
 import { BoonCard, ItemCard } from '../../../cards';
 import { BuyEquipmentModal, BuyMagicItemModal, BuyPotionModal, BuyScrollModal, EnchantItemModal, MagicItemInfoModal } from '../../../modals';
-import { CardList, Dialog, IconSize, IconType, IconValue, Text, TextType } from '../../../controls';
+import { CardList, CardPreview, Dialog, IconSize, IconType, IconValue, Text, TextType } from '../../../controls';
 
 import './items-page.scss';
 
@@ -39,6 +39,7 @@ interface State {
 	showMarket: 'magical' | 'potion' | 'scroll' | 'scriptorium' | 'mundane' | null;
 	showEnchant: boolean;
 	selectedMagicItem: ItemModel | null;
+	previewItem: ItemModel | null;
 	selectedBoon: BoonModel | null;
 }
 
@@ -49,6 +50,7 @@ export class ItemsPage extends Component<Props, State> {
 			showMarket: null,
 			showEnchant: false,
 			selectedMagicItem: null,
+			previewItem: null,
 			selectedBoon: null
 		};
 	}
@@ -168,7 +170,7 @@ export class ItemsPage extends Component<Props, State> {
 
 			return (
 				<div key={item.id}>
-					<ItemCard item={item} count={count} />
+					<ItemCard item={item} count={count} onClick={i => this.setState({ previewItem: i })} />
 					{footer}
 				</div>
 			);
@@ -382,6 +384,15 @@ export class ItemsPage extends Component<Props, State> {
 			);
 		}
 
+		if (this.state.previewItem) {
+			return (
+				<CardPreview
+					card={<ItemCard item={this.state.previewItem} />}
+					onClose={() => this.setState({ previewItem: null })}
+				/>
+			);
+		}
+
 		return null;
 	};
 
@@ -425,7 +436,7 @@ export class ItemsPage extends Component<Props, State> {
 
 				return (
 					<div key={item.id}>
-						<ItemCard item={item} count={count} />
+						<ItemCard item={item} count={count} onClick={i => this.setState({ previewItem: i })} />
 						{footer}
 					</div>
 				);

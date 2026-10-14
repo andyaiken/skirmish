@@ -13,7 +13,7 @@ import type { ItemModel } from '../../../../models/item';
 
 import { Collections } from '../../../../utils/collections/collections';
 
-import { CardList, IconSize, IconType, IconValue, PlayingCard, Selector, StatValue, Text, TextType } from '../../../controls';
+import { CardList, CardPreview, IconSize, IconType, IconValue, PlayingCard, Selector, StatValue, Text, TextType } from '../../../controls';
 import { ItemCard, PlaceholderCard } from '../../../cards';
 
 import './items.scss';
@@ -29,13 +29,15 @@ interface Props {
 
 interface State {
 	view: ItemLocationType;
+	previewItem: ItemModel | null;
 }
 
 export class Items extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
-			view: ItemLocationType.Hand
+			view: ItemLocationType.Hand,
+			previewItem: null
 		};
 	}
 
@@ -303,7 +305,7 @@ export class Items extends Component<Props, State> {
 
 		return (
 			<div key={item.id} className='item'>
-				<ItemCard item={item} count={count} />
+				<ItemCard item={item} count={count} onClick={i => this.setState({ previewItem: i })} />
 				{options}
 			</div>
 		);
@@ -335,6 +337,14 @@ export class Items extends Component<Props, State> {
 				{nearby !== null ? <hr /> : null}
 				{nearby !== null ? <Text type={TextType.SubHeading}>Nearby Items</Text> : null}
 				{nearby}
+				{
+					this.state.previewItem ?
+						<CardPreview
+							card={<ItemCard item={this.state.previewItem} />}
+							onClose={() => this.setState({ previewItem: null })}
+						/>
+						: null
+				}
 			</div>
 		);
 	};

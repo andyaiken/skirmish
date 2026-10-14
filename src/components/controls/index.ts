@@ -4,6 +4,7 @@ import { Badge } from './badge/badge';
 import { Box } from './box/box';
 import { CardChoice } from './card-choice/card-choice';
 import { CardList } from './card-list/card-list';
+import { CardPreview } from './card-preview/card-preview';
 import { Carousel } from './carousel/carousel';
 import { ConfirmButton } from './confirm-button/confirm-button';
 import { Dialog } from './dialog/dialog';
@@ -25,6 +26,7 @@ export {
 	Box,
 	CardChoice,
 	CardList,
+	CardPreview,
 	Carousel,
 	ConfirmButton,
 	Dialog,

@@ -1,6 +1,6 @@
 {
 	"name": "skirmish",
-	"version": "1.166.0",
+	"version": "1.167.0",
 	"type": "module",
 	"repository": "https://github.com/andyaiken/skirmish.git",
 	"dependencies": {
@@ -9,8 +9,8 @@
 		"@capacitor/ios": "^8.5.3",
 		"@tabler/icons-react": "^3.49.0",
 		"localforage": "^1.10.0",
-		"react": "^19.3.0",
-		"react-dom": "^19.3.0",
+		"react": "^19.3.1",
+		"react-dom": "^19.3.1",
 		"react-hot-toast": "^2.6.1",
 		"react-markdown": "^10.1.0",
 		"react-responsive": "^10.0.1",
@@ -26,11 +26,11 @@
 		"eslint-plugin-react": "^7.37.5",
 		"eslint-plugin-react-hooks": "^7.1.1",
 		"globals": "^17.13.0",
-		"sass": "^1.105.1",
+		"sass": "^1.105.2",
 		"typescript": "^6.0.3",
-		"typescript-eslint": "^8.71.1",
+		"typescript-eslint": "^8.71.2",
 		"vite": "^8.3.4",
-		"vitest": "^5.0.3"
+		"vitest": "^5.0.5"
 	},
 	"scripts": {
 		"update": "npx npm-check-updates --interactive --format group",

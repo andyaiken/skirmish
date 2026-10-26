@@ -17,7 +17,7 @@ import type { OptionsModel } from '../../../../models/options';
 import type { StructureModel } from '../../../../models/structure';
 
 import { BoonCard, StructureCard } from '../../../cards';
-import { Box, CardList, Dialog, Expander, IconSize, IconType, IconValue, StatValue, Text, TextType } from '../../../controls';
+import { Box, CardList, Dialog, Expander, IconSize, IconType, IconValue, PreviewableCard, StatValue, Text, TextType } from '../../../controls';
 import { BuyStructureModal } from '../../../modals/buy-structure/buy-structure-modal';
 import { StrongholdMapPanel } from '../../../panels';
 
@@ -219,7 +219,7 @@ export class StrongholdPage extends Component<Props, State> {
 			return (
 				<div key={this.state.selectedStructure.id} className='sidebar'>
 					<div className='sidebar-section'>
-						<CardList cards={[ <StructureCard key='selected' structure={this.state.selectedStructure} /> ]} />
+						<CardList cards={[ <PreviewableCard key='selected' card={<StructureCard structure={this.state.selectedStructure} />} /> ]} />
 					</div>
 					{upgrade}
 					{charge}

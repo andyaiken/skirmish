@@ -8,14 +8,16 @@ import { CampaignMapLogic } from '../../../../logic/campaign-map/campaign-map-lo
 import { StrongholdLogic } from '../../../../logic/stronghold/stronghold-logic';
 
 import type { CombatantModel } from '../../../../models/combatant';
+import type { FeatureModel } from '../../../../models/feature';
 import type { GameModel } from '../../../../models/game';
+import type { ItemModel } from '../../../../models/item';
 import type { OptionsModel } from '../../../../models/options';
 import type { RegionModel } from '../../../../models/region';
 
 import { Collections } from '../../../../utils/collections/collections';
 
 import { BoonCard, RegionCard } from '../../../cards';
-import { CardList, Dialog, Expander, Gauge, IconSize, IconType, IconValue, StatValue, Text, TextType } from '../../../controls';
+import { CardList, Dialog, Expander, Gauge, IconSize, IconType, IconValue, PreviewableCard, StatValue, Text, TextType } from '../../../controls';
 import { CampaignMapPanel } from '../../../panels';
 import { EncounterStartModal } from '../../../modals';
 
@@ -29,11 +31,20 @@ interface Props {
 	regenerateCampaignMap: () => void;
 	conquer: (region: RegionModel) => void;
 	purchaseRegion: (region: RegionModel) => void;
+	// Passed through to the hero cards in the Start an Encounter modal, so a hero's sheet
+	// can be opened there while choosing who to send
+	equipItem: (item: ItemModel, hero: CombatantModel) => void;
+	unequipItem: (item: ItemModel, hero: CombatantModel) => void;
+	pickUpItem: (item: ItemModel, hero: CombatantModel) => void;
+	dropItem: (item: ItemModel, hero: CombatantModel) => void;
+	levelUp: (feature: FeatureModel, hero: CombatantModel) => void;
+	spendCharge: (type: StructureType, count: number) => void;
 }
 
 interface State {
 	selectedRegion: RegionModel | null;
 	showHeroSelection: boolean;
+	// A region card and its reward card are small in the sidebar and both have backs worth
 }
 
 export class CampaignMapPage extends Component<Props, State> {
@@ -75,7 +86,14 @@ export class CampaignMapPage extends Component<Props, State> {
 			return (
 				<div key={this.state.selectedRegion.id} className='sidebar'>
 					<div className='sidebar-section'>
-						<CardList cards={[ <RegionCard key='region' map={this.props.game.map} region={this.state.selectedRegion} options={this.props.options} /> ]} />
+						<CardList
+							cards={[
+								<PreviewableCard
+									key='region'
+									card={<RegionCard map={this.props.game.map} region={this.state.selectedRegion} options={this.props.options} />}
+								/>
+							]}
+						/>
 					</div>
 					<div className='sidebar-section'>
 						{this.props.options.developer ? <button className='developer' onClick={() => this.conquer(this.state.selectedRegion as RegionModel)}>Conquer</button> : null}
@@ -142,7 +160,7 @@ export class CampaignMapPage extends Component<Props, State> {
 						}
 					</div>
 					<div className='sidebar-section'>
-						<CardList cards={[ <BoonCard key='boon' boon={this.state.selectedRegion.boon} /> ]} />
+						<CardList cards={[ <PreviewableCard key='boon' card={<BoonCard boon={this.state.selectedRegion.boon} />} /> ]} />
 					</div>
 				</div>
 			);
@@ -226,6 +244,12 @@ export class CampaignMapPage extends Component<Props, State> {
 						game={this.props.game}
 						options={this.props.options}
 						startEncounter={this.props.startEncounter}
+						equipItem={this.props.equipItem}
+						unequipItem={this.props.unequipItem}
+						pickUpItem={this.props.pickUpItem}
+						dropItem={this.props.dropItem}
+						levelUp={this.props.levelUp}
+						spendCharge={this.props.spendCharge}
 					/>
 				)}
 				onClose={() => {

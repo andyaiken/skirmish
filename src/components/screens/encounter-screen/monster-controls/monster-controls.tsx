@@ -7,7 +7,7 @@ import type { EncounterModel } from '../../../../models/encounter';
 import type { OptionsModel } from '../../../../models/options';
 
 import { CombatStatsPanel, CombatantNotices, CombatantRowPanel } from '../../../panels';
-import { Expander, Text, TextType } from '../../../controls';
+import { Expander, PreviewableCard, Text, TextType } from '../../../controls';
 import { ActionCard } from '../../../cards';
 
 import './monster-controls.scss';
@@ -48,10 +48,14 @@ export class MonsterControls extends Component<Props, State> {
 		if (this.props.combatant.combat.selectedAction) {
 			action = (
 				<div className='selected-action-card'>
-					<ActionCard
-						action={this.props.combatant.combat.selectedAction.action}
-						footer={CombatantLogic.getActionSource(this.props.combatant, this.props.combatant.combat.selectedAction.action.id)}
-						footerType={CombatantLogic.getActionSourceType(this.props.combatant, this.props.combatant.combat.selectedAction.action.id)}
+					<PreviewableCard
+						card={(
+							<ActionCard
+								action={this.props.combatant.combat.selectedAction.action}
+								footer={CombatantLogic.getActionSource(this.props.combatant, this.props.combatant.combat.selectedAction.action.id)}
+								footerType={CombatantLogic.getActionSourceType(this.props.combatant, this.props.combatant.combat.selectedAction.action.id)}
+							/>
+						)}
 					/>
 				</div>
 			);

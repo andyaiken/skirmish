@@ -5,7 +5,7 @@ import { PackLogic } from '../../../logic/pack/pack-logic';
 import type { PackModel } from '../../../models/pack';
 
 import { BackgroundCard, ItemCard, RoleCard, SpeciesCard, StructureCard } from '../../cards';
-import { CardList, Text, TextType } from '../../controls';
+import { CardList, PreviewableCard, Text, TextType } from '../../controls';
 
 import './pack-modal.scss';
 
@@ -71,14 +71,14 @@ export class PackModal extends Component<Props> {
 					<p style={{ textAlign: 'center' }}>{this.props.pack.description}</p>
 				</Text>
 				{this.getBuyOption()}
-				{this.getSection('Hero Species Cards', PackLogic.getHeroSpecies(packID).map(s => <SpeciesCard key={s.id} species={s} />))}
-				{this.getSection('Monster Species Cards', PackLogic.getMonsterSpecies(packID).map(s => <SpeciesCard key={s.id} species={s} />))}
-				{this.getSection('Role Cards', PackLogic.getRoles(packID).map(r => <RoleCard key={r.id} role={r} />))}
-				{this.getSection('Background Cards', PackLogic.getBackgrounds(packID).map(b => <BackgroundCard key={b.id} background={b} />))}
-				{this.getSection('Structure Cards', PackLogic.getStructures(packID).map(s => <StructureCard key={s.id} structure={s} />))}
-				{this.getSection('Item Cards', PackLogic.getItems(packID).map(i => <ItemCard key={i.id} item={i} />))}
-				{this.getSection('Potion Cards', PackLogic.getPotions(packID).map(p => <ItemCard key={p.id} item={p} />))}
-				{this.getSection('Scroll Cards', PackLogic.getScrolls(packID).map(sc => <ItemCard key={sc.id} item={sc} />))}
+				{this.getSection('Hero Species Cards', PackLogic.getHeroSpecies(packID).map(s => <PreviewableCard key={s.id} card={<SpeciesCard species={s} />} />))}
+				{this.getSection('Monster Species Cards', PackLogic.getMonsterSpecies(packID).map(s => <PreviewableCard key={s.id} card={<SpeciesCard species={s} />} />))}
+				{this.getSection('Role Cards', PackLogic.getRoles(packID).map(r => <PreviewableCard key={r.id} card={<RoleCard role={r} />} />))}
+				{this.getSection('Background Cards', PackLogic.getBackgrounds(packID).map(b => <PreviewableCard key={b.id} card={<BackgroundCard background={b} />} />))}
+				{this.getSection('Structure Cards', PackLogic.getStructures(packID).map(s => <PreviewableCard key={s.id} card={<StructureCard structure={s} />} />))}
+				{this.getSection('Item Cards', PackLogic.getItems(packID).map(i => <PreviewableCard key={i.id} card={<ItemCard item={i} />} />))}
+				{this.getSection('Potion Cards', PackLogic.getPotions(packID).map(p => <PreviewableCard key={p.id} card={<ItemCard item={p} />} />))}
+				{this.getSection('Scroll Cards', PackLogic.getScrolls(packID).map(sc => <PreviewableCard key={sc.id} card={<ItemCard item={sc} />} />))}
 			</div>
 		);
 	};

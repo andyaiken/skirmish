@@ -79,6 +79,12 @@ export class CampaignScreen extends Component<Props> {
 						regenerateCampaignMap={this.props.regenerateCampaignMap}
 						conquer={this.props.conquer}
 						purchaseRegion={this.props.purchaseRegion}
+						equipItem={this.props.equipItem}
+						unequipItem={this.props.unequipItem}
+						pickUpItem={this.props.pickUpItem}
+						dropItem={this.props.dropItem}
+						levelUp={this.props.levelUp}
+						spendCharge={this.props.spendCharge}
 					/>
 				);
 				break;

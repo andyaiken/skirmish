@@ -6,14 +6,17 @@ import { CampaignMapLogic } from '../../../logic/campaign-map/campaign-map-logic
 import { StrongholdLogic } from '../../../logic/stronghold/stronghold-logic';
 
 import type { CombatantModel } from '../../../models/combatant';
+import type { FeatureModel } from '../../../models/feature';
 import type { GameModel } from '../../../models/game';
+import type { ItemModel } from '../../../models/item';
 import type { OptionsModel } from '../../../models/options';
 import type { RegionModel } from '../../../models/region';
 
 import { Collections } from '../../../utils/collections/collections';
 
-import { CardList, Switch, Text, TextType } from '../../controls';
+import { CardList, Dialog, Switch, Text, TextType } from '../../controls';
 import { HeroCard, SpeciesCard, StrongholdBenefitCard } from '../../cards';
+import { CharacterSheetModal } from '../character-sheet/character-sheet-modal';
 
 import './encounter-start-modal.scss';
 
@@ -22,6 +25,12 @@ interface Props {
 	game: GameModel;
 	options: OptionsModel;
 	startEncounter: (region: RegionModel, heroes: CombatantModel[], benefits: number, detriments: number) => void;
+	equipItem: (item: ItemModel, hero: CombatantModel) => void;
+	unequipItem: (item: ItemModel, hero: CombatantModel) => void;
+	pickUpItem: (item: ItemModel, hero: CombatantModel) => void;
+	dropItem: (item: ItemModel, hero: CombatantModel) => void;
+	levelUp: (feature: FeatureModel, hero: CombatantModel) => void;
+	spendCharge: (type: StructureType, count: number) => void;
 }
 
 interface State {
@@ -29,6 +38,9 @@ interface State {
 	selectedHeroes: CombatantModel[];
 	benefits: number;
 	detriments: number;
+	// The hero whose character sheet is open, so a party can be chosen by what the heroes
+	// can actually do rather than by name alone
+	sheetHero: CombatantModel | null;
 }
 
 export class EncounterStartModal extends Component<Props, State> {
@@ -47,9 +59,44 @@ export class EncounterStartModal extends Component<Props, State> {
 			panel: null,
 			selectedHeroes: Collections.sort(EncounterStartModal.getBestHeroes(props.game.heroes), n => n.name),
 			benefits: 0,
-			detriments: 0
+			detriments: 0,
+			sheetHero: null
 		};
 	}
+
+	setSheetHero = (sheetHero: CombatantModel | null) => {
+		this.setState({
+			sheetHero: sheetHero
+		});
+	};
+
+	getSheet = () => {
+		if (!this.state.sheetHero) {
+			return null;
+		}
+
+		return (
+			<Dialog
+				content={(
+					<CharacterSheetModal
+						combatant={this.state.sheetHero}
+						game={this.props.game}
+						developer={this.props.options.developer}
+						equipItem={this.props.equipItem}
+						unequipItem={this.props.unequipItem}
+						pickUpItem={this.props.pickUpItem}
+						dropItem={this.props.dropItem}
+						levelUp={this.props.levelUp}
+						// Retiring a hero belongs on the Heroes page, not in the middle of
+						// choosing who to send into a fight
+						retireHero={() => null}
+						spendCharge={this.props.spendCharge}
+					/>
+				)}
+				onClose={() => this.setSheetHero(null)}
+			/>
+		);
+	};
 
 	setPanel = (panel: string | null) => {
 		this.setState({
@@ -87,7 +134,7 @@ export class EncounterStartModal extends Component<Props, State> {
 
 		return (
 			<div className='party'>
-				{this.state.selectedHeroes.map(h => <HeroCard key={h.id} hero={h} />)}
+				{this.state.selectedHeroes.map(h => <HeroCard key={h.id} hero={h} onCharacterSheet={this.setSheetHero} />)}
 			</div>
 		);
 	};
@@ -100,7 +147,11 @@ export class EncounterStartModal extends Component<Props, State> {
 				const selected = this.state.selectedHeroes.includes(h);
 				return (
 					<div key={h.id} className={selected ? 'hero-option selected' : 'hero-option'}>
-						<HeroCard hero={h} onClick={selected || !full ? hero => this.toggleHero(hero) : null} />
+						<HeroCard
+							hero={h}
+							onClick={selected || !full ? hero => this.toggleHero(hero) : null}
+							onCharacterSheet={this.setSheetHero}
+						/>
 					</div>
 				);
 			});
@@ -220,6 +271,7 @@ export class EncounterStartModal extends Component<Props, State> {
 				>
 					Start the Encounter
 				</button>
+				{this.getSheet()}
 			</div>
 		);
 	};

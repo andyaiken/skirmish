@@ -40,7 +40,7 @@ import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
 import type { OptionsModel } from '../../../models/options';
 
-import { CardList, Dialog, IconSize, IconType, IconValue, PlayingCard, StatValue, Tabs, Text, TextType } from '../../controls';
+import { CardList, Dialog, IconSize, IconType, IconValue, PlayingCard, PreviewableCard, StatValue, Tabs, Text, TextType } from '../../controls';
 import { CombatantRowPanel, EncounterLogPanel, EncounterMapPanel, InitiativeListPanel, LogoPanel, TrapRowPanel, TreasureRowPanel } from '../../panels';
 import { ItemCard, PlaceholderCard } from '../../cards';
 import { ActionControls } from './action-controls/action-controls';
@@ -1025,7 +1025,7 @@ export class EncounterScreen extends Component<Props, State> {
 		}
 
 		if (this.state.detailsLoot) {
-			const cards = this.state.detailsLoot.items.map(i => <ItemCard key={i.id} item={i} />);
+			const cards = this.state.detailsLoot.items.map(i => <PreviewableCard key={i.id} card={<ItemCard item={i} />} />);
 			if (this.state.detailsLoot.money > 0) {
 				cards.push(
 					<PlayingCard

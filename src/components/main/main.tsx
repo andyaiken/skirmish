@@ -84,17 +84,19 @@ export class Main extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 
+		// Seeded from the platform rather than from props: props carry the campaign as it was
+		// when the app started, and this component can be remounted mid-game - a device
+		// rotating does it - at which point the props would be stale. The platform holds what
+		// is current. See Platform.setGame.
 		this.state = {
-			game: props.game,
-			options: props.options,
+			game: props.platform.getGame() ?? props.game,
+			options: props.platform.getOptions() ?? props.options,
 			showHelp: null,
 			showPacks: false,
 			dialog: null,
 			exceptions: []
 		};
 
-		this.props.platform.getGame = () => this.state.game;
-		this.props.platform.getOptions = () => this.state.options;
 		this.props.platform.logException = ex => this.logException(ex);
 		// Prices land after the first render, so this pulls the packs modal back through
 		// render once they are known.
@@ -108,6 +110,15 @@ export class Main extends Component<Props, State> {
 
 		Sound.volume = this.state.options.soundEffectsVolume;
 	}
+
+	// Every change to the campaign or the settings is handed straight back to the platform,
+	// which owns them, saves them and syncs them. Doing it here rather than at each of the
+	// places that change them means none can be forgotten, and it runs before the setState
+	// callbacks that trigger a save.
+	componentDidUpdate = () => {
+		this.props.platform.setGame(this.state.game);
+		this.props.platform.setOptions(this.state.options);
+	};
 
 	componentDidMount = () => {
 		this.props.platform.loadStore(PackLogic.getExpansionPacks().map(p => p.id));

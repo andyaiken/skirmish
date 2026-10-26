@@ -12,7 +12,7 @@ import type { OptionsModel } from '../../../models/options';
 
 import { Collections } from '../../../utils/collections/collections';
 
-import { Dialog, IconSize, IconType, IconValue, PlayingCard, Text, TextType } from '../../controls';
+import { Dialog, IconSize, IconType, IconValue, PlayingCard, PreviewableCard, Text, TextType } from '../../controls';
 import { ItemCard, PlaceholderCard } from '../../cards';
 import { CombatantRowPanel } from '../../panels';
 
@@ -66,7 +66,7 @@ export class MagicItemInfoModal extends Component<Props, State> {
 
 		const current = this.state.hero.items.filter(i => i.location === this.props.item.location).map(i => (
 			<div key={i.id} className='card-container'>
-				<ItemCard item={i} />
+				<PreviewableCard card={<ItemCard item={i} />} />
 				<button onClick={() => this.props.dropItem(i, this.state.hero as CombatantModel)}>Drop</button>
 			</div>
 		));
@@ -104,7 +104,7 @@ export class MagicItemInfoModal extends Component<Props, State> {
 							<div className='item-column'>
 								<Text type={TextType.SubHeading}>New Item</Text>
 								<div className='card-container'>
-									<ItemCard item={this.props.item} />
+									<PreviewableCard card={<ItemCard item={this.props.item} />} />
 									{equippable ? <button onClick={() => { this.props.equipItem(this.props.item, this.state.hero as CombatantModel); this.setComparison(null); }}>Equip</button> : null}
 								</div>
 							</div>
@@ -171,7 +171,7 @@ export class MagicItemInfoModal extends Component<Props, State> {
 				<hr />
 				<div className='magic-item-info-content'>
 					<div className='card'>
-						<ItemCard item={this.props.item} />
+						<PreviewableCard card={<ItemCard item={this.props.item} />} />
 						<button onClick={() => this.props.sellItem(this.props.item)}>
 							Sell<br /><IconValue type={IconType.Money} value={50} size={IconSize.Button} />
 						</button>

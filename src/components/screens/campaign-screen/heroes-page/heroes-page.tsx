@@ -16,7 +16,7 @@ import type { GameModel } from '../../../../models/game';
 import type { ItemModel } from '../../../../models/item';
 import type { OptionsModel } from '../../../../models/options';
 
-import { Badge, CardList, ConfirmButton, Dialog, PlayingCard, Text, TextType } from '../../../controls';
+import { Badge, CardList, ConfirmButton, Dialog, PlayingCard, PreviewableCard, Text, TextType } from '../../../controls';
 import { BoonCard, HeroCard, PlaceholderCard, StrongholdBenefitCard } from '../../../cards';
 import { CharacterSheetModal, HeroBuilderModal } from '../../../modals';
 
@@ -330,7 +330,7 @@ export class HeroesPage extends Component<Props, State> {
 						<div>
 							<Text type={TextType.Heading}>Retire This Hero</Text>
 							<div className='retire-hero-card'>
-								<HeroCard hero={this.state.retiringHero} />
+								<PreviewableCard card={<HeroCard hero={this.state.retiringHero} />} />
 								<div>
 									<Text type={TextType.Information}>
 										<p><b>You can retire this hero.</b> If you do:</p>

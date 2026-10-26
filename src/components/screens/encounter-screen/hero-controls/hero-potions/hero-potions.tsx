@@ -11,7 +11,7 @@ import type { ItemModel } from '../../../../../models/item';
 
 import { Collections } from '../../../../../utils/collections/collections';
 
-import { IconSize, IconType, IconValue, Text, TextType } from '../../../../controls';
+import { IconSize, IconType, IconValue, PreviewableCard, Text, TextType } from '../../../../controls';
 import { ItemCard } from '../../../../cards';
 
 import './hero-potions.scss';
@@ -38,7 +38,7 @@ export class HeroPotions extends Component<Props> {
 				return (
 					<div key={n}>
 						<div className='potion-card'>
-							<ItemCard item={p} count={count} />
+							<PreviewableCard card={<ItemCard item={p} count={count} />} />
 						</div>
 						<button disabled={this.props.combatant.combat.movement < 2} onClick={() => this.props.drinkPotion(this.props.encounter, this.props.combatant, this.props.combatant, p)}>
 							Drink<br /><IconValue type={IconType.Movement} value={2} size={IconSize.Button} />

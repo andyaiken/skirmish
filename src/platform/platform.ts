@@ -49,8 +49,15 @@ export class Platform {
 	// prices are simply absent there rather than the app pretending otherwise.
 	store: Store;
 
-	getGame: () => (GameModel | null);
-	getOptions: () => (OptionsModel | null);
+	// The campaign and settings as they stand right now. They live here rather than in a
+	// component because this is what loads them, saves them and syncs them to iCloud, and
+	// because a component can be unmounted: Main used to own them, and a remount - which a
+	// device rotating can cause - brought back the campaign as it was at launch and saved
+	// that over the real one, losing an encounter in progress. Main mirrors these into its
+	// own state for rendering and writes every change back (see its componentDidUpdate).
+	private game: GameModel | null = null;
+	private options: OptionsModel | null = null;
+
 	logException: (msg: unknown) => void;
 	// Prices arrive after the first render, and StoreKit can hand us a purchase we never
 	// asked for, so the app needs telling to look again.
@@ -66,14 +73,6 @@ export class Platform {
 		this.worker = new Worker(new URL('./worker.ts', import.meta.url), { type: 'module' });
 		this.worker.onmessage = message => {
 			this.logException(message);
-		};
-
-		this.getGame = () => {
-			return null;
-		};
-
-		this.getOptions = () => {
-			return null;
 		};
 
 		this.logException = msg => {
@@ -177,6 +176,10 @@ export class Platform {
 			sync = CloudSyncLogic.createState();
 		}
 		this.cloudSync = this.createCloudSync(sync, game);
+
+		// What was loaded is now the current campaign and settings, before anything renders
+		this.game = game;
+		this.options = options;
 
 		return { game: game, options: options };
 	};
@@ -316,6 +319,20 @@ export class Platform {
 	};
 
 	// Saves locally and, where there is iCloud, uploads for the player's other devices
+	getGame = () => this.game;
+
+	getOptions = () => this.options;
+
+	// Called by Main whenever its state changes, so that what is saved and synced is always
+	// the campaign being played rather than a copy that stopped being current.
+	setGame = (game: GameModel | null) => {
+		this.game = game;
+	};
+
+	setOptions = (options: OptionsModel) => {
+		this.options = options;
+	};
+
 	saveGame = Utils.debounce(() => {
 		this.cloudSync.save();
 	});

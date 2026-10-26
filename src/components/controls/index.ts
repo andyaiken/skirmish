@@ -12,6 +12,7 @@ import { ErrorBoundary } from './error-boundary/error-boundary';
 import { Expander } from './expander/expander';
 import { Gauge } from './gauge/gauge';
 import { PlayingCard } from './playing-card/playing-card';
+import { PreviewableCard } from './previewable-card/previewable-card';
 import { ScaleToFit } from './scale-to-fit/scale-to-fit';
 import { Selector } from './selector/selector';
 import { StatValue } from './stat-value/stat-value';
@@ -33,6 +34,7 @@ export {
 	Gauge,
 	IconSize, IconType, IconValue,
 	PlayingCard,
+	PreviewableCard,
 	ScaleToFit,
 	Selector,
 	StatValue,

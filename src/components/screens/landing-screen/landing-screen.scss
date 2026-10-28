@@ -2,6 +2,10 @@
     height: 100%;
     display: flex;
     flex-direction: column;
+	// See the note in setup-screen.scss: the intro and the start card together come to more than a
+	// phone's height, so this screen scrolls rather than cutting the card off.
+	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
 
 	&.portrait {
 		.landing-content {

@@ -8,6 +8,7 @@ import { OrientationType } from '../../../enums/orientation-type';
 import { HeroGenerator } from '../../../generators/hero/hero-generator';
 
 import { Factory } from '../../../logic/factory/factory';
+import { OrientationLogic } from '../../../logic/orientation/orientation-logic';
 import { PackLogic } from '../../../logic/pack/pack-logic';
 
 import type { CombatantModel } from '../../../models/combatant';
@@ -140,7 +141,7 @@ export class SetupScreen extends Component<Props, State> {
 		}
 
 		return (
-			<div className={`setup-screen ${this.props.orientation}`}>
+			<div className={`setup-screen ${OrientationLogic.getClassName(this.props.orientation)}`}>
 				<div className='setup-top-bar'>
 					<LogoPanel size={100} />
 				</div>

@@ -4,6 +4,7 @@ import { Component } from 'react';
 import { CardType } from '../../../enums/card-type';
 import { OrientationType } from '../../../enums/orientation-type';
 
+import { OrientationLogic } from '../../../logic/orientation/orientation-logic';
 import { PackLogic } from '../../../logic/pack/pack-logic';
 
 import type { GameModel } from '../../../models/game';
@@ -74,9 +75,9 @@ export class LandingScreen extends Component<Props> {
 		}
 
 		return (
-			<div className={`landing-screen ${this.props.orientation}`}>
+			<div className={`landing-screen ${OrientationLogic.getClassName(this.props.orientation)}`}>
 				<div className='landing-top-bar'>
-					<LogoPanel size={this.props.orientation === OrientationType.Landscape ? 140 : 100} />
+					<LogoPanel size={OrientationLogic.isLandscape(this.props.orientation) ? 140 : 100} />
 				</div>
 				<div className='landing-content'>
 					<Carousel

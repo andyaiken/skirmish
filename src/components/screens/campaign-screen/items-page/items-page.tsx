@@ -5,6 +5,7 @@ import { OrientationType } from '../../../../enums/orientation-type';
 import { StructureType } from '../../../../enums/structure-type';
 
 import { GameLogic } from '../../../../logic/game/game-logic';
+import { OrientationLogic } from '../../../../logic/orientation/orientation-logic';
 import { StrongholdLogic } from '../../../../logic/stronghold/stronghold-logic';
 
 import type { BoonModel } from '../../../../models/boon';
@@ -458,7 +459,7 @@ export class ItemsPage extends Component<Props, State> {
 		}
 
 		return (
-			<div className={`items-page ${this.props.orientation}`}>
+			<div className={`items-page ${OrientationLogic.getClassName(this.props.orientation)}`}>
 				<div className='items-content'>
 					{magicItemSection ? <Text type={TextType.SubHeading}>Magic Items</Text> : null}
 					{magicItemSection}

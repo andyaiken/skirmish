@@ -32,6 +32,7 @@ import { StructureType } from '../../../enums/structure-type';
 import { ActionLogic } from '../../../logic/action/action-logic';
 import { EncounterLogLogic } from '../../../logic/encounter-log/encounter-log-logic';
 import { EncounterLogic } from '../../../logic/encounter/encounter-logic';
+import { OrientationLogic } from '../../../logic/orientation/orientation-logic';
 
 import type { ActionModel, ActionOriginParameterModel, ActionParameterModel, ActionTargetParameterModel } from '../../../models/action';
 import type { EncounterModel, LogMessageModel, LootPileModel, TrapModel } from '../../../models/encounter';
@@ -1070,9 +1071,9 @@ export class EncounterScreen extends Component<Props, State> {
 		const left = this.getLeftControls();
 		const right = this.getRightControls();
 
-		if (this.props.orientation === OrientationType.Portrait) {
+		if (OrientationLogic.isPortrait(this.props.orientation)) {
 			return (
-				<div className={`encounter-screen ${this.props.orientation}`}>
+				<div className={`encounter-screen ${OrientationLogic.getClassName(this.props.orientation)}`}>
 					{top}
 					<div className='encounter-main-panel'>
 						<div className='encounter-central-column'>
@@ -1113,7 +1114,7 @@ export class EncounterScreen extends Component<Props, State> {
 		}
 
 		return (
-			<div className={`encounter-screen ${this.props.orientation}`}>
+			<div className={`encounter-screen ${OrientationLogic.getClassName(this.props.orientation)}`}>
 				{top}
 				<div className='encounter-main-panel'>
 					{left}

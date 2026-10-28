@@ -7,6 +7,7 @@ import { StructureType } from '../../../../enums/structure-type';
 
 import { Factory } from '../../../../logic/factory/factory';
 import { GameLogic } from '../../../../logic/game/game-logic';
+import { OrientationLogic } from '../../../../logic/orientation/orientation-logic';
 import { StrongholdLogic } from '../../../../logic/stronghold/stronghold-logic';
 
 import type { BoonModel } from '../../../../models/boon';
@@ -399,7 +400,7 @@ export class HeroesPage extends Component<Props, State> {
 
 	render = () => {
 		return (
-			<div className={`heroes-page ${this.props.orientation}`}>
+			<div className={`heroes-page ${OrientationLogic.getClassName(this.props.orientation)}`}>
 				<div className='heroes-content'>
 					{this.getContent()}
 				</div>

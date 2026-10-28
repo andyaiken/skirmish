@@ -6,6 +6,7 @@ import { PageType } from '../../../enums/page-type';
 import { StructureType } from '../../../enums/structure-type';
 
 import { GameLogic } from '../../../logic/game/game-logic';
+import { OrientationLogic } from '../../../logic/orientation/orientation-logic';
 import { PackLogic } from '../../../logic/pack/pack-logic';
 
 import type { BoonModel } from '../../../models/boon';
@@ -182,7 +183,7 @@ export class CampaignScreen extends Component<Props> {
 		const availablePacks = PackLogic.getExpansionPacks().filter(pack => !this.props.options.packIDs.includes(pack.id)).length;
 
 		return (
-			<div className={`campaign-screen ${this.props.orientation}`}>
+			<div className={`campaign-screen ${OrientationLogic.getClassName(this.props.orientation)}`}>
 				<div className='campaign-top-bar'>
 					<div className='branding'>
 						<LogoPanel size={36} />

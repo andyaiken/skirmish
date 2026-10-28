@@ -1,9 +1,11 @@
-import { useMediaQuery } from 'react-responsive';
 import { useState } from 'react';
 
-import { OrientationType } from '../../enums/orientation-type';
 import { PageType } from '../../enums/page-type';
 import { ScreenType } from '../../enums/screen-type';
+
+import { OrientationLogic } from '../../logic/orientation/orientation-logic';
+
+import { useMediaQuery } from '../../utils/media-query/media-query';
 
 import type { GameModel } from '../../models/game';
 import type { OptionsModel } from '../../models/options';
@@ -36,8 +38,14 @@ export const Layout = (props: Props) => {
 	// 740 rather than 768 on the short edge, because the iPad mini is 744pt there and was
 	// the one current iPad the old threshold shut out - in both orientations, since 744
 	// is its width in portrait and its height in landscape.
-	const isBigEnough = useMediaQuery({ query: '(min-width: 1024px) and (min-height: 740px), (min-width: 740px) and (min-height: 1024px)' });
-	const isLandscape = useMediaQuery({ query: '(orientation: landscape)' });
+	const isBigEnough = useMediaQuery('(min-width: 1024px) and (min-height: 740px), (min-width: 740px) and (min-height: 1024px)');
+	const isLandscape = useMediaQuery('(orientation: landscape)');
+
+	// Whether this is a phone rather than a tablet. Every iPhone has a short edge of 440pt or less
+	// and the smallest iPad 744, so 500 separates them with room on both sides. Asking about either
+	// dimension rather than the width means the answer is the same whichever way up it is held, and
+	// so does not change under the player's hands during a rotation.
+	const isSmall = useMediaQuery('(max-width: 500px), (max-height: 500px)');
 
 	return (
 		<>
@@ -45,7 +53,7 @@ export const Layout = (props: Props) => {
 				game={props.game}
 				options={props.options}
 				platform={props.platform}
-				orientation={isLandscape ? OrientationType.Landscape : OrientationType.Portrait}
+				orientation={OrientationLogic.getOrientation(isLandscape, isSmall)}
 				screen={screen}
 				page={page}
 				setScreen={setScreen}

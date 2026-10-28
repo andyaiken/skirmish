@@ -5,6 +5,7 @@ import { OrientationType } from '../../../../enums/orientation-type';
 import { StructureType } from '../../../../enums/structure-type';
 
 import { CampaignMapLogic } from '../../../../logic/campaign-map/campaign-map-logic';
+import { OrientationLogic } from '../../../../logic/orientation/orientation-logic';
 import { StrongholdLogic } from '../../../../logic/stronghold/stronghold-logic';
 
 import type { CombatantModel } from '../../../../models/combatant';
@@ -263,7 +264,7 @@ export class CampaignMapPage extends Component<Props, State> {
 
 	render = () => {
 		return (
-			<div className={`campaign-map-page ${this.props.orientation}`}>
+			<div className={`campaign-map-page ${OrientationLogic.getClassName(this.props.orientation)}`}>
 				<div className='map-content' onClick={() => this.setState({ selectedRegion: null })}>
 					<CampaignMapPanel
 						map={this.props.game.map}

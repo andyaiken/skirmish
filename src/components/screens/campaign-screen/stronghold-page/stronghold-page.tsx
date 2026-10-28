@@ -7,6 +7,7 @@ import { PageType } from '../../../../enums/page-type';
 import { StructureType } from '../../../../enums/structure-type';
 
 import { GameLogic } from '../../../../logic/game/game-logic';
+import { OrientationLogic } from '../../../../logic/orientation/orientation-logic';
 import { StrongholdLogic } from '../../../../logic/stronghold/stronghold-logic';
 
 import type { BoonModel } from '../../../../models/boon';
@@ -323,7 +324,7 @@ export class StrongholdPage extends Component<Props, State> {
 
 	render = () => {
 		return (
-			<div className={`stronghold-page ${this.props.orientation}`}>
+			<div className={`stronghold-page ${OrientationLogic.getClassName(this.props.orientation)}`}>
 				<div className='map-content' onClick={() => this.setState({ selectedStructure: null })}>
 					<StrongholdMapPanel
 						stronghold={this.props.game.stronghold}

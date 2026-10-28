@@ -1,5 +1,7 @@
 .carousel {
-	width: 500px;
+	// Wide enough to read a slide on a tablet, and no wider than the space it's in: a phone is
+	// narrower than this, and the app clips rather than scrolls.
+	width: min(500px, calc(100% - 20px));
 	height: 370px;
 	display: flex;
 	flex-direction: column;

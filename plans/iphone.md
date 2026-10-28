@@ -182,46 +182,195 @@ risk in touching shared stylesheets.
 
 Also fixed in passing: the `title='Right Panal'` typo on the toolbar button.
 
-Still outstanding from Phase 2: the landing/setup fixed widths (`.logo-text` 564, `.carousel` 500,
-the two 500px setup panels).
+Those landing and setup widths are now done too — see below.
 
+### Phase 2 complete — 28 October 2026
 
-## Phase 1 — The size class
+The remaining four widths, same technique again:
 
-Add the phone/tablet distinction and thread it through, with no visual change yet.
+- **`.carousel`** — `width: min(500px, calc(100% - 20px))`, so it keeps a gutter rather than sitting
+  flush to both edges on a phone.
+- **`.left-panel` / `.right-panel`** in setup — `min(500px, 100%)` and `min(320px, 100%)`.
+- **The logo** was the one that needed thought, because its size is computed in `logo-panel.tsx`
+  rather than set in CSS. The caller picks a size to suit the screen it is drawing on, so the cap
+  belongs with it: every dimension is now `min(chosen, (100vw - 40px) * share)`, where `share` is
+  that dimension's fraction of the panel's total width. The panel measures about seven times the
+  font size with the wordmark in it, so this reads as "the largest size that still leaves 20px
+  either side", and on any screen with room for the size that was asked for it does not bind at all.
 
-- A `DeviceSize` enum beside `OrientationType`, resolved in `layout.tsx` from the same
-  `useMediaQuery` call that resolves orientation, and passed into `Main` the same way.
-- The breakpoint is a short-edge test, not a width test, so it survives rotation: the existing gate
-  already learned this lesson, and its comment explains why the iPad mini's 744pt short edge forced
-  740 rather than 768. A phone is a device whose short edge is under ~500pt.
-- Be careful of the trap the gate comment documents: during rotation the two queries don't update in
-  the same instant, so a device briefly matches neither. Anything keyed off the size class must
-  tolerate a frame of the wrong answer, and must not unmount `Main` on the strength of it.
+  A first attempt capped against a flat `16vw`, which was wrong twice over: the real ratio is 7, not
+  the 5.6 estimated, so it still overflowed by 22px a side; and *any* flat `vw` cap shrinks the iPad
+  too — 13vw would have taken the landscape logo from 140px to 133px. Measuring caught both.
 
-This phase ships green: nothing looks different, and `npm run test`, `tsc --noEmit`, `npm run lint`
-and `npm run build` all still pass.
+| | 1024×768 | 768×1024 | 390×844 | 320×568 |
+|---|---|---|---|---|
+| Logo font | 140 (unchanged) | 100 (unchanged) | 50 | 40 |
+| Logo margins | 24 either side | 36 | 21 | 21 |
+| Carousel | 500 (unchanged) | 500 (unchanged) | 370 | 300 |
+| Setup panels | 500 / 320 (unchanged) | 500 / 500 (unchanged) | fits | 300 / 300 |
+| Elements wider than viewport | none | none | **none** | **none** |
 
+**No screen clips anything off-edge on a phone any more.** That was the Phase 2 milestone, and it is
+the point at which this is worth putting on real hardware.
 
-## Phase 2 — The fixed widths
+### Vertical space — found, scoped and fixed, 28 October 2026
 
-This is the mechanical phase, and it is where most of the breakage lives. Thirteen declarations are
-wider than a phone:
+Fixing the widths surfaced the other axis, and the first reading of it was too narrow. Landing was
+measured at 320 and 390 and the problem reported as specific to 320x568. It is not. The setup
+screen, with a full team of five, is taller than the screen it is on at **every** size an iPhone
+comes in - and on an iPad held in portrait:
 
-| What | Where | Note |
+| Viewport | Device | Setup overflowed by |
 |---|---|---|
-| `min-width: 724px` | `controls/dialog/dialog.scss:15` | **The single biggest blocker.** Every modal in the app goes through `Dialog` — 12 files use it. |
-| `width: 650px` ×8 | the `buy-*` modals, `enchant-item`, `level-up`, `hero-builder` card and equipment pages | One repeated idiom, so one shared fix rather than eight. |
-| `width: 500px` | `carousel.scss:2` (plus `height: 370px`) | Used in the hero builder and help. |
-| `width: 500px` ×2 | `setup-screen.scss:16,40` | `.left-panel`, and `.right-panel` in the portrait variant. |
-| `min-width: 250px` | `encounter-screen.scss`, `.icon-section button:not(.icon-btn)` | Forces the encounter toolbar wider than a phone. |
+| 375x667 | SE 2nd/3rd gen, iPhone 8 | 384 |
+| 375x812 | 12/13 mini | 239 |
+| 390x844 | 14/15/16 | 210 |
+| 440x956 | 16 Pro Max, the largest iPhone | 107 |
+| 768x1024 | iPad, portrait | 86 |
 
-`.playing-card` is `width: 200px; min-width: 200px` with a 2:3 aspect ratio. One card fits a phone;
-two side by side do not. The `card-list` grid already handles that, but check the places that lay
-cards out by hand.
+So a gate floor could not have fixed this: "Begin the Campaign" was cut off on every phone, the
+biggest included, and on a portrait iPad. The cause was not the sizes but that neither screen
+scrolls. The campaign screen was fine throughout only because its pages scroll internally.
 
-Do the dialog first and in isolation — it will fix a dozen screens at once, and it is the change
-most likely to have surprising knock-on effects on the iPad, which must not regress.
+**The fix** is `overflow-y: auto` on `.landing-screen` and `.setup-screen`. Capacitor's
+`scrollEnabled: false` only turns off the webview's outer bounce; an element that asks to scroll
+still does, which is how `.dialog-content` and `.tab-content` already work.
+
+It sits on the screen rather than on the content inside it. Putting it on `.setup-content` meant
+also capping that container with `min-height: 0`, which stopped it growing to its natural height and
+introduced scrolling where there had been none. On the screen, a size with room for everything is
+untouched: landing at 1024x768 still reports a scroll range of 0.
+
+| | 1024x768 | 768x1024 | 375x667 | 320x568 |
+|---|---|---|---|---|
+| Landing: start card reachable | yes (no scroll) | yes (no scroll) | **yes** | **yes** |
+| Setup: begin card reachable | **yes** | **yes** | **yes** | **yes** |
+
+A measurement caveat worth remembering: `scrollHeight` reports no overflow on a container that is
+clipped and does not scroll, so an element can be losing content while measuring clean. The iPad
+landscape setup screen read as fitting exactly and was in fact 804px of content in 768px - the lost
+36px being `.setup-content`'s bottom margin. Checking `scrollHeight` alone will understate this; the
+reliable test is where a known element's rect actually falls.
+
+### Decision: the gate keeps a floor above 568
+
+The 1st-generation iPhone SE at 320x568 is out of scope. The gate's floor, when it is rewritten in
+Phase 5, should admit a short edge from about 360 and a long edge from about 640 - which takes in
+375x667 and everything above it, and excludes only the 320x568 SE.
+
+Now that both screens scroll, 320x568 is no longer technically broken, so this is a product choice
+rather than a forced one. It still looks like the right call: at that size the encounter screen's
+side panels are 171 and 205 wide, and the start card needs a scroll to reach at all.
+
+Note the deployment target is iOS 15, which the 1st-gen SE runs, so the gate is what excludes it -
+not the target.
+
+## Phase 1 — the size class — done 28 October 2026
+
+`OrientationType` now carries four values rather than two:
+
+```ts
+export enum OrientationType {
+	Landscape = 'landscape',
+	LandscapeSmall = 'landscape-small',
+	Portrait = 'portrait',
+	PortraitSmall = 'portrait-small'
+}
+```
+
+Putting the size into the orientation rather than beside it means a phone arrives everywhere the
+orientation already does - all eight screens and pages take it and write it straight into their
+class name - with nothing new threaded through `Layout`, `Main` and the screens.
+
+The cost is that `PortraitSmall` is not equal to `Portrait`, and taken literally that quietly breaks
+two things: the encounter screen's `=== OrientationType.Portrait` would fall through to the
+landscape branch on a phone, and the eleven `&.portrait` / `&.landscape` blocks across seven
+stylesheets would stop matching. `OrientationLogic` (in `logic/orientation/`, with tests, following
+the `*Logic` convention) is what makes the four values safe:
+
+- `isPortrait` / `isLandscape` - what the two behavioural checks now use instead of `===`.
+- `isSmall` - for phone-specific behaviour, not yet used by anything.
+- `getClassName` - a small orientation emits **both** names, `portrait portrait-small`. Everything
+  already written against `.portrait` keeps applying on a phone, and `.portrait-small` is there for
+  the rules that need to differ. Styling a phone is adding rules, not repeating working ones.
+- `getOrientation(isLandscape, isSmall)` - combines the two media queries in `Layout`.
+
+Small is `(max-width: 500px), (max-height: 500px)`: every iPhone has a short edge of 440pt or less
+and the smallest iPad 744, and asking about either dimension rather than the width keeps the answer
+the same whichever way up the device is held, so it does not change under the player's hands partway
+through a rotation.
+
+Verified by reloading at each size:
+
+| Viewport | Class | Encounter layout |
+|---|---|---|
+| 1024x768 | `landscape` | side by side (unchanged) |
+| 768x1024 | `portrait` | stacked (unchanged) |
+| 390x844 | `portrait portrait-small` | **stacked** - the TSX branch and the `.portrait` rules both still apply |
+| 844x390 | `landscape landscape-small` | side by side |
+
+Nothing yet uses `portrait-small`, `landscape-small` or `isSmall`; they are the hooks Phase 3 hangs
+the phone-specific encounter layout on.
+
+### Resizing now re-evaluates it
+
+What looked at first like the browser pane failing to re-run react-responsive's listeners turned out
+to be real: the class read stale while `matchMedia` itself reported the new value correctly, because
+react-responsive listens only for the query's own change event and that does not dependably fire
+when a window is resized. **The Mac build's window is resizable**, so this was a live bug there -
+resizing past a threshold did not re-evaluate the layout - not merely a testing nuisance.
+
+`utils/media-query/media-query.ts` replaces it with a `useMediaQuery` of the same shape (taking the
+query as a plain string rather than `{ query }`) built on `useSyncExternalStore`, listening for both
+the query's change event and `resize`, and reading the query again each time. It re-renders only
+when the answer actually changes, so dragging a window edge without crossing a threshold costs a
+read and nothing more.
+
+Verified by resizing with no reload: 1024x768 `landscape`, 390x844 `portrait portrait-small`,
+844x390 `landscape landscape-small`, 768x1024 `portrait`. react-responsive is now unused - it is
+still in `package.json`, and the bundle dropped 5.6kB once it stopped being imported.
+
+### The gate has a blind spot for near-square screens
+
+Worth recording before Phase 5 rewrites the gate. It is written as two rectangles - `(min-width:
+1024px) and (min-height: 740px)` or `(min-width: 740px) and (min-height: 1024px)` - which between
+them miss a screen that is large but close to square:
+
+Worked through with the iPhone Duo's published figures. Its outer display is 1398x2034 at 460ppi
+and its inner 1878x2670 at 430ppi; at @3x those are 466x678pt and 626x890pt, and @3x is the right
+reading because it puts the outer panel at 153pt/inch, exactly an iPhone's, where @2x would give an
+implausible 230. Opened out as a passport the long edge of the inner display is the horizontal one,
+so it presents as 890x626.
+
+| Size | Orientation | Passes the gate |
+|---|---|---|
+| 466x678 - Duo folded | `PortraitSmall` | no, rightly |
+| 890x626 - Duo opened as a passport | `Landscape` | **no** |
+| 626x890 - Duo opened, turned upright | `Portrait` | **no** |
+| 744x1133 - iPad mini | `Portrait` | yes |
+| 1024x768 | `Landscape` | yes |
+
+So the size class reads the Duo correctly in both states, and the gate then turns it away in both of
+its opened ones - its short edge of 626 clears neither 740 nor 1024. An iPad in Split View or Stage
+Manager at an awkward size hits the same gap.
+
+A short-edge/long-edge gate would need a short edge of about 600 to admit it, against an iPad mini's
+744.
+
+The fix when the gate is rewritten is to test the short and long edges rather than width and height
+separately: a minimum short edge and a minimum long edge, which is orientation-agnostic and has no
+square-shaped hole in it.
+
+Admitting it would raise the harder question. `Landscape` is right by the rule - neither edge is
+under 500, so it is not a phone - but it is the wrong treatment: the encounter screen's fixed 250
+and 300 side columns would leave about 300pt of map out of its 890, against an iPad mini's 543 in
+landscape. Better than a phone's 254, and still not enough. The device would pass as a tablet and
+play like a phone.
+
+That is the argument for keying Phase 3's encounter layout on how much room the map actually gets
+rather than on the orientation, or even on the size class: a rule about the map's width would do the
+right thing for a phone, for a folding phone opened out, and for an iPad sharing its screen with
+another app, without any of them being enumerated.
 
 
 ## Phase 3 — Screen by screen
@@ -242,8 +391,54 @@ In increasing order of difficulty, which is also roughly increasing order of how
    to one-at-a-time sheets over the map. The panels already collapse
    (`.encounter-right-column.collapsed`), so the state to drive it partly exists.
 
-There are no component or layout tests — all 16 test files are logic — so verification here is
+There are no component or layout tests - all 16 test files are logic - so verification here is
 visual throughout. The simulator is the tool for Phase 3; the browser pane is fine for Phase 2.
+
+### Sliding panels, and what 'small' should come to mean
+
+The intended end state for the encounter screen is that on a small layout the side panels slide in
+over the map, one at a time, instead of sitting beside it and taking a fixed share of the width.
+The panels already collapse, so some of the state exists.
+
+That changes what the size class is for. Today `isSmall` means "this is a phone", on a short edge of
+500. Once the panels slide, the question a screen is really asking is "is there room for the panels
+beside the map?" - and that is not the same question, because it depends on which way up the device
+is. Beside the map, the panels want 250 + 300 plus gaps; below it, in the portrait layout, they only
+need to be wide enough to read.
+
+The rule that follows is orientation-dependent:
+
+```
+small = landscape ? (width < ~1000) : (width < ~500)
+```
+
+Against every size that matters, this changes exactly one:
+
+| Device | Size | Today | With the rule above | Map if panels stay fixed |
+|---|---|---|---|---|
+| Duo folded | 466x678 | `PortraitSmall` | `PortraitSmall` | - |
+| **Duo open, as a passport** | **890x626** | **`Landscape`** | **`LandscapeSmall`** | **300pt** |
+| Duo open, turned upright | 626x890 | `Portrait` | `Portrait` | - |
+| iPhone 16 Pro Max portrait | 440x956 | `PortraitSmall` | `PortraitSmall` | - |
+| iPhone 16 Pro Max landscape | 956x440 | `LandscapeSmall` | `LandscapeSmall` | 366pt |
+| iPad mini landscape | 1133x744 | `Landscape` | `Landscape` | 543pt |
+| iPad landscape | 1024x768 | `Landscape` | `Landscape` | 434pt |
+| iPad 13in landscape | 1366x1024 | `Landscape` | `Landscape` | 776pt |
+
+So the opened Duo becomes `LandscapeSmall` and gets the sliding panels, which is what it wants: with
+fixed panels it would have 300pt of map out of 890, against a full iPad's 434. Turned upright it
+stays `Portrait`, correctly - there the panels sit below the map and get about 313pt each, close to
+an iPad's 374.
+
+**This is deliberately not implemented yet.** Nothing consumes `isSmall` or the `-small` classes, so
+changing the threshold today would be inert, and the constant should be whatever the sliding layout
+turns out to need rather than the estimate above. The shape of the rule is settled; the number is
+Phase 3's to set.
+
+When it is implemented, compose it in JavaScript from separate queries rather than writing one
+compound `(orientation: landscape) and (max-width: ...)` query - the orientation and the width
+update independently during a rotation, and keeping them apart makes that easier to reason about
+than a compound query that can briefly match neither.
 
 
 ## Phase 4 — Phone ergonomics

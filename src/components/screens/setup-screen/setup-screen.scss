@@ -2,6 +2,14 @@
     height: 100%;
     display: flex;
     flex-direction: column;
+	// With five heroes this screen is taller than every iPhone, and taller than an iPad held in
+	// portrait, so it scrolls rather than cutting off the card at the bottom. The app turns off the
+	// webview's own scrolling (scrollEnabled in capacitor.config.ts), which only disables the outer
+	// bounce; an element that asks to scroll still does, as the dialogs and tab panels already do.
+	// It sits here rather than on .setup-content so that the content keeps its natural height and
+	// a screen with room for all of it is unaffected.
+	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
 
 	&.portrait {
 		.setup-content {
@@ -13,7 +21,7 @@
 			}
 
 			.right-panel {
-				width: 500px;
+				width: min(500px, 100%);
 				gap: 0;
 			}
 		}
@@ -37,7 +45,7 @@
 		margin: 50px 10px;
 
 		.left-panel {
-			width: 500px;
+			width: min(500px, 100%);
 			display: flex;
 			flex-direction: column;
 			justify-content: center;
@@ -45,7 +53,7 @@
 		}
 
 		.right-panel {
-			width: 320px;
+			width: min(320px, 100%);
 			display: flex;
 			flex-direction: column;
 			align-items: center;

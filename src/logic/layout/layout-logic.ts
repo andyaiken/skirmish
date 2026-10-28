@@ -28,6 +28,11 @@ export class LayoutLogic {
 	static panelWidths = 250 + 300;
 	static layoutGaps = 30;
 
+	// The encounter screen's own padding, left and right, and the strip of map a sheet leaves
+	// uncovered beside it so that it reads as something laid over the board.
+	static screenPadding = 20;
+	static sheetMapStrip = 50;
+
 	// --- the campaign screen's page selector ---
 
 	static topBarHeight = 60;
@@ -37,6 +42,16 @@ export class LayoutLogic {
 
 	// What the page below it needs to be worth showing.
 	static minCampaignContentHeight = 450;
+
+	// --- the campaign screen's page selector, across ---
+	//
+	// The four labels at their narrowest, which is each one's longest word and the padding around
+	// it. Measured from the band that didn't fit at 320: 330 of columns in 294 of selector, which
+	// is what pushed Equipment off the edge. Two long labels and two short ones.
+
+	static selectorLongLabel = 100;
+	static selectorShortLabel = 65;
+	static selectorMargins = 20;
 
 	// --- the campaign screen's top bar ---
 	//
@@ -48,6 +63,21 @@ export class LayoutLogic {
 	// The packs button and the help button, with the gap between them.
 	static topBarButtonsWidth = (LayoutLogic.minTouchTarget * 2) + 15;
 	static topBarSpacing = 105;
+
+	// --- the smallest screen the game can be played on ---
+	//
+	// Measured rather than chosen: every one of these is a size below which something the game
+	// needs stops being there, not merely gets tight. A screen that is only cramped is one the
+	// player may still want to play on.
+
+	// The island map's floor on the campaign screen, below which a region is smaller than a
+	// fingertip, and the least the panel under it can show and still be worth scrolling.
+	static minIslandMapHeight = 200;
+	static minCampaignPanelHeight = 100;
+
+	// The selector wraps its labels to two rows on a narrow screen, which is the case that matters
+	// here; 77 is the one-row height.
+	static selectorBandHeightWrapped = 97;
 
 	// --- the thresholds those sizes add up to ---
 
@@ -62,6 +92,26 @@ export class LayoutLogic {
 
 	// Everything the top bar carries, side by side.
 	static widthForBranding = LayoutLogic.brandingWidth + LayoutLogic.moneyWidth + LayoutLogic.topBarButtonsWidth + LayoutLogic.topBarSpacing;
+
+	// All four of the selector's labels across, rather than two rows of two.
+	static widthForSelectorColumns = (LayoutLogic.selectorLongLabel * 2) + (LayoutLogic.selectorShortLabel * 2) + LayoutLogic.selectorMargins;
+
+	// A panel over the map at the width this file calls readable, the strip of map it leaves beside
+	// it, and the screen's padding either side. Below this a panel is narrower than it can be read
+	// at, and the encounter screen has nowhere left to put one. Measured: at 280 the panels are
+	// 210, at 320 they are 250.
+	static minShortEdge = LayoutLogic.minPanelWidth + LayoutLogic.sheetMapStrip + LayoutLogic.screenPadding;
+
+	// The campaign screen runs out of height first, and it is the screen an encounter is started
+	// from: its top bar, its selector wrapped to two rows, the island map's floor and a panel below
+	// it with something in it, plus the gaps and padding between them. Measured: at 500 the panel
+	// has 93 and scrolls, at 440 it is down to two lines and the page is being clipped.
+	static minLongEdge = LayoutLogic.topBarHeight
+		+ LayoutLogic.selectorBandHeightWrapped
+		+ LayoutLogic.minIslandMapHeight
+		+ LayoutLogic.minCampaignPanelHeight
+		+ LayoutLogic.layoutGaps
+		+ 10;
 
 	static getModel = (isLandscape: boolean, room: Omit<LayoutModel, 'orientation'>): LayoutModel => {
 		// Which of the two panel questions decides it depends on where the panels would go, which

@@ -12,6 +12,7 @@ const modelFor = (width: number, height: number) => {
 		roomForPanelsBesideMap: width >= LayoutLogic.widthForPanelsBesideMap,
 		roomForPanelsBelowMap: width >= LayoutLogic.widthForPanelsBelowMap,
 		roomForSelectorBand: height >= LayoutLogic.heightForSelectorBand,
+		roomForSelectorColumns: width >= LayoutLogic.widthForSelectorColumns,
 		roomForBranding: width >= LayoutLogic.widthForBranding
 	});
 };
@@ -24,6 +25,42 @@ describe('LayoutLogic', () => {
 			expect(LayoutLogic.widthForPanelsBelowMap).toEqual(500);
 			expect(LayoutLogic.heightForSelectorBand).toEqual(587);
 			expect(LayoutLogic.widthForBranding).toEqual(473);
+			expect(LayoutLogic.widthForSelectorColumns).toEqual(350);
+			expect(LayoutLogic.minShortEdge).toEqual(305);
+			expect(LayoutLogic.minLongEdge).toEqual(497);
+		});
+	});
+
+	// The gate's job is to turn away a screen nothing can be laid out in, and nothing else.
+	describe('the smallest screen it will play on', () => {
+		const fits = (width: number, height: number) => {
+			return (Math.min(width, height) >= LayoutLogic.minShortEdge) && (Math.max(width, height) >= LayoutLogic.minLongEdge);
+		};
+
+		it('lets every iPhone in, either way up', () => {
+			// The smallest there is, and the one the old floor shut out.
+			expect(fits(320, 568)).toEqual(true);
+			expect(fits(568, 320)).toEqual(true);
+			expect(fits(375, 667)).toEqual(true);
+			expect(fits(402, 874)).toEqual(true);
+			expect(fits(440, 956)).toEqual(true);
+		});
+
+		it('lets a tablet and a folding phone in, either way up', () => {
+			expect(fits(768, 1024)).toEqual(true);
+			expect(fits(1024, 768)).toEqual(true);
+			expect(fits(744, 1133)).toEqual(true);
+			// Both of the opened states the old pair of rectangles turned away.
+			expect(fits(890, 626)).toEqual(true);
+			expect(fits(626, 890)).toEqual(true);
+		});
+
+		it('turns away a window nothing fits in', () => {
+			// Too narrow for a readable panel over the map.
+			expect(fits(300, 900)).toEqual(false);
+			// Room across, but the campaign screen has nowhere to put the island and its panel.
+			expect(fits(320, 480)).toEqual(false);
+			expect(fits(400, 400)).toEqual(false);
 		});
 	});
 

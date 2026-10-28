@@ -5,8 +5,7 @@ import { ScreenType } from '../../enums/screen-type';
 
 import { LayoutLogic } from '../../logic/layout/layout-logic';
 
-import { useHeightAtLeast, useIsLandscape, useWidthAtLeast } from '../../utils/available-space/available-space';
-import { useMediaQuery } from '../../utils/media-query/media-query';
+import { useEdgesAtLeast, useHeightAtLeast, useIsLandscape, useWidthAtLeast } from '../../utils/available-space/available-space';
 
 import type { GameModel } from '../../models/game';
 import type { OptionsModel } from '../../models/options';
@@ -32,14 +31,19 @@ export const Layout = (props: Props) => {
 	// over the top of it. Swapping Main out for the message instead would unmount it, and
 	// Main holds the campaign being played: it would come back with the game as it was at
 	// launch, losing an encounter in progress and then saving that stale game over the
-	// real one. A device rotating passes through exactly that state, because the queries
-	// below do not change in the same instant - briefly the new width is known and the old
-	// height still is, which matches neither size.
+	// real one.
 	//
-	// 740 rather than 768 on the short edge, because the iPad mini is 744pt there and was
-	// the one current iPad the old threshold shut out - in both orientations, since 744
-	// is its width in portrait and its height in landscape.
-	const isBigEnough = useMediaQuery('(min-width: 1024px) and (min-height: 740px), (min-width: 740px) and (min-height: 1024px)');
+	// A short edge and a long edge rather than a width and a height, so the answer doesn't
+	// change as a device turns over, and so there is no square-shaped hole between two
+	// rectangles - the pair of them the gate used to be turned a folding phone opened out
+	// away in both of its opened states. Of the room rather than the window, as everything
+	// else here is.
+	//
+	// The floors are what the game needs rather than what any device happens to be: the
+	// smallest iPhone, at 320x568, clears both with room to spare, and what they shut out
+	// is a window dragged to a size nothing can be laid out in.
+	const isBigEnough = useEdgesAtLeast(LayoutLogic.minShortEdge, LayoutLogic.minLongEdge);
+
 	// Every question a screen can ask about its space is asked here, because this is the only
 	// component with hooks - the screens are classes. Each is about room for one particular thing,
 	// and the sizes they come from are in LayoutLogic. They are all asked every time, so the hooks
@@ -48,13 +52,13 @@ export const Layout = (props: Props) => {
 	// Of the space the app has rather than of the window, because they are not the same thing and
 	// the difference is a layout: on the largest iPhones held sideways the safe area takes 124pt
 	// off the width, which is the difference between the encounter screen's roomy layout and a map
-	// squeezed to 242pt. The gate above still asks the window, because its own numbers were chosen
-	// against window sizes and re-scoping it is Phase 5's.
+	// squeezed to 242pt. The gate above asks the same way, of the same measurement.
 	const isLandscape = useIsLandscape();
 	const layout = LayoutLogic.getModel(isLandscape, {
 		roomForPanelsBesideMap: useWidthAtLeast(LayoutLogic.widthForPanelsBesideMap),
 		roomForPanelsBelowMap: useWidthAtLeast(LayoutLogic.widthForPanelsBelowMap),
 		roomForSelectorBand: useHeightAtLeast(LayoutLogic.heightForSelectorBand),
+		roomForSelectorColumns: useWidthAtLeast(LayoutLogic.widthForSelectorColumns),
 		roomForBranding: useWidthAtLeast(LayoutLogic.widthForBranding)
 	});
 

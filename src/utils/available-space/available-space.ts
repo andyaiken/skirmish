@@ -68,6 +68,20 @@ export const useHeightAtLeast = (px: number) => {
 	return useSyncExternalStore(subscribe, getSnapshot);
 };
 
+// Whether there is this much room, asked as a short edge and a long edge rather than as a width and
+// a height, so that the answer is the same whichever way up the screen is held and there is no
+// square-shaped hole between two rectangles - which is what the gate used to have, and what turned
+// a folding phone opened out away in both of its opened states.
+export const useEdgesAtLeast = (shortEdge: number, longEdge: number) => {
+	const getSnapshot = useCallback(() => {
+		const room = getRoom();
+
+		return (Math.min(room.width, room.height) >= shortEdge) && (Math.max(room.width, room.height) >= longEdge);
+	}, [ shortEdge, longEdge ]);
+
+	return useSyncExternalStore(subscribe, getSnapshot);
+};
+
 // Which way up the space is, rather than which way up the device is. The two agree on every size
 // that matters - no inset is anywhere near large enough to turn one into the other - but taking it
 // from the same measurement as the others means a layout is never decided from a width and a height

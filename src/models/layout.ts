@@ -20,6 +20,9 @@ export interface LayoutModel {
 	// Room to spend a band of height on the campaign screen's page selector.
 	roomForSelectorBand: boolean;
 
+	// Room for that band to carry all four of its labels across, rather than two rows of two.
+	roomForSelectorColumns: boolean;
+
 	// Room for the campaign screen's top bar to carry its branding as well as everything else.
 	roomForBranding: boolean;
 }

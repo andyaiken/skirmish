@@ -26,8 +26,20 @@
 			width: 100%;
 		}
 
+		// The map is what the player presses to start an encounter; the panel below it is text that
+		// scrolls. So on a screen too short for both, the map keeps a floor and the panel gives way
+		// - the other way round left the map 16px tall on a 568pt screen, which is not a map.
+		//
+		// 200 is roughly what the island needs for a region to be worth aiming at: it is drawn to
+		// fit its box, and below that the regions are smaller than a fingertip.
+		.map-content {
+			min-height: 200px;
+		}
+
 		.sidebar {
-			flex-basis: 365px;
+			// Shrinks from 365 rather than holding it, and scrolls inside whatever it is left with.
+			flex: 0 1 365px;
+			min-height: 0;
 			flex-direction: row;
 			align-items: flex-start;
 		}

@@ -377,17 +377,18 @@ landscape setup screen read as fitting exactly and was in fact 804px of content 
 36px being `.setup-content`'s bottom margin. Checking `scrollHeight` alone will understate this; the
 reliable test is where a known element's rect actually falls.
 
-### Decision: the gate keeps a floor above 568
+### Decision: the gate keeps a floor above 568 — reversed, see Phase 5
 
-The 1st-generation iPhone SE at 320x568 is out of scope. The gate's floor, when it is rewritten in
-Phase 5, should admit a short edge from about 360 and a long edge from about 640 - which takes in
-375x667 and everything above it, and excludes only the 320x568 SE.
+This said the 1st-generation iPhone SE at 320x568 was out of scope, on the grounds that the
+encounter screen's side panels were 171 and 205 wide there. That was true of the layout it was
+written against, where the panels sat below the map in two columns. They are sheets over the map
+now, and 250 wide at that size - above the 235 this document calls readable - so the reason the
+decision rested on has gone.
 
-Now that both screens scroll, 320x568 is no longer technically broken, so this is a product choice
-rather than a forced one. It still looks like the right call: at that size the encounter screen's
-side panels are 171 and 205 wide, and the start card needs a scroll to reach at all.
+It is admitted. The floor is in Phase 5, and it is 305 by 497 rather than 360 by 640 - measured
+from what the game stops being able to draw rather than from which devices it was meant to take in.
 
-Note the deployment target is iOS 15, which the 1st-gen SE runs, so the gate is what excludes it -
+Note the deployment target is iOS 15, which the 1st-gen SE runs, so the gate was what excluded it -
 not the target.
 
 ## Phase 1 — the size class — done 28 October 2026
@@ -484,7 +485,7 @@ A short-edge/long-edge gate would need a short edge of about 600 to admit it, ag
 
 The fix when the gate is rewritten is to test the short and long edges rather than width and height
 separately: a minimum short edge and a minimum long edge, which is orientation-agnostic and has no
-square-shaped hole in it.
+square-shaped hole in it. **Done in Phase 5; the Duo is admitted in both of its opened states.**
 
 Admitting it would raise the harder question. `Landscape` is right by the rule - neither edge is
 under 500, so it is not a phone - but it is the wrong treatment: the encounter screen's fixed 250
@@ -600,8 +601,8 @@ file.
 
 - The home indicator sits over the bottom of the screen, and `index.scss:55` drops the bottom safe
   area by choice - a decision made for the iPad, where it left an empty strip. On the landing screen
-  the Help button runs flush to the bottom edge, inside the swipe-up zone. This is the Phase 4 item,
-  now confirmed rather than predicted.
+  the Help button runs flush to the bottom edge, inside the swipe-up zone. This was the Phase 4
+  item, now confirmed rather than predicted - and since fixed there.
 - The two side panels below the map are as cramped as the measurements suggested. That is what the
   sliding panels are for - now built, below.
 
@@ -991,10 +992,9 @@ relative units throughout, which is its own piece of work.
 
 Only now does the gate come down.
 
-1. `TARGETED_DEVICE_FAMILY = 1,2` in both Debug and Release (`project.pbxproj:400,425`).
-2. Remove or re-scope the gate in `layout.tsx:39`. Decide whether any phone is still too small — a
-   1st-gen iPhone SE is 320×568 and runs iOS 15, which is the deployment target, so it is in scope
-   unless that is raised.
+1. ~~`TARGETED_DEVICE_FAMILY = 1,2` in both Debug and Release.~~ Done, in Debug and Release.
+2. ~~Remove or re-scope the gate in `layout.tsx`.~~ Done; see below. No phone is too small now -
+   the 1st-gen SE included, once the two things that were actually broken at that size were fixed.
 3. `npx cap sync`, and remember the Podfile `capacitor_pods` block is regenerated.
 4. iPhone screenshots — a required asset, and a new set rather than a resize of the iPad ones. Read
    the current required sizes off App Store Connect rather than assuming; they change.
@@ -1007,6 +1007,68 @@ Only now does the gate come down.
 
 The description says "for iPad and Mac" in two places (the listing and `docs/index.html:14`), and
 both need updating when this ships.
+
+### The gate comes down — 28 October 2026
+
+The rule it is built on: **restrict the app only at a size where it is genuinely unplayable**, not
+merely cramped. A screen that is tight is one a player may still want to play on, and the gate is
+not the place to make that choice for them. That turned the question from *which devices should be
+let in* into *where does the game stop working*, which is answerable by measuring.
+
+`TARGETED_DEVICE_FAMILY` is `"1,2"` in Debug and Release.
+
+**Two things were genuinely broken at 320x568, and neither was the gate's business.**
+
+- **The island map was 296x16.** `.campaign-map-page .sidebar` was `flex: 0 0 365px` in portrait -
+  a fixed height that would not give way - so on a 568pt screen the map got whatever was left,
+  which was nothing. The map is what you press to start an encounter, and the panel below it is
+  text that scrolls, so the map now keeps a floor of 200 and the panel gives way to it. At 320x568
+  the map is 296x196 and the panel 161, scrolling 551 inside it. This is the same fixed-pixel
+  failure as the rest of Phase 2, in a screen nobody had looked at this short.
+- **The page selector ran off the edge.** `repeat(4, 1fr)` has an implicit minimum of the content's
+  own width, so the four labels came to 330 in a 294 band and Equipment hung past the screen. The
+  selector now wraps to two rows of two when four across won't fit, which is `columnCount` doing
+  what Phase 3 said it was for. Measured: 2 columns of 145 at 320, 4 at 375 (73/100/73/98 in 349,
+  which is where the 350 threshold comes from), 4 of 248 on an iPad.
+
+With those fixed, 320x568 plays: the encounter map is 300x374, the toolbar fits all nine buttons on
+one line at 32pt with Retreat on screen, the sheets are 250 wide against the 235 this document
+calls readable, the hand needs no scroll, and the Start an Encounter modal fits with its close
+button reachable.
+
+**The floors, measured rather than chosen.** Each is a sum of things the game draws, and each marks
+where something stops being there rather than merely getting tight:
+
+| | Sum | |
+|---|---|---|
+| `minShortEdge` | 235 readable panel + 50 map strip + 20 screen padding | **305** |
+| `minLongEdge` | 60 top bar + 97 selector wrapped + 200 island map + 100 panel + 30 gaps + 10 | **497** |
+
+The short edge is the encounter screen: a sheet is `min(320px, calc(100% - 50px))` of the main
+panel, so at 280 the panels are 210 and at 320 they are 250 - 305 is where they reach 235. The long
+edge is the campaign screen, which runs out first and is where an encounter is started from: at 500
+the panel under the island has 93 and scrolls, at 440 it is down to two lines and the page is being
+clipped.
+
+**The gate itself** is `useEdgesAtLeast(minShortEdge, minLongEdge)` - a short edge and a long edge
+rather than the two overlapping rectangles it used to be, so the answer doesn't change as a device
+turns over and there is no square-shaped hole between them. Of the room rather than the window,
+like everything else now. `utils/media-query` is deleted; the gate was its last caller.
+
+Verified by resizing, with nothing hidden:
+
+| Size | | |
+|---|---|---|
+| 320x568 | the smallest iPhone | playable |
+| 568x320 | the same, sideways | playable |
+| 890x626 and 626x890 | the folding phone opened out | playable - both states the old gate refused |
+| 1024x768, 768x1024 | iPad | playable |
+| 300x900 | too narrow for a readable panel | blocked |
+| 320x480 | no room for the island and its panel | blocked |
+
+**Still to do in Phase 5:** `npx cap sync` (left for whoever next builds, since it rewrites
+generated files in the iOS project), the iPhone screenshots, testing on real hardware, and the two
+places the description says "for iPad and Mac".
 
 
 ## Sequencing

@@ -75,6 +75,17 @@ export class CampaignScreen extends Component<Props> {
 		return OrientationLogic.isLandscape(this.props.layout.orientation) && !this.props.layout.roomForSelectorBand;
 	};
 
+	// One column down the side as a rail; otherwise all four across where they fit, and two rows of
+	// two where they don't - at 320 the four together are wider than the band, and the last label
+	// ran off the edge of the screen rather than being cut off neatly inside it.
+	getSelectorColumns = () => {
+		if (this.usesPageRail()) {
+			return 1;
+		}
+
+		return this.props.layout.roomForSelectorColumns ? 0 : 2;
+	};
+
 	// Whether the bar can carry its branding as well as the money and the buttons.
 	showsBranding = () => {
 		return this.props.layout.roomForBranding;
@@ -232,7 +243,7 @@ export class CampaignScreen extends Component<Props> {
 						{this.props.options.developer ? <button className='icon-btn developer' title='Backstage' onClick={this.props.toggleBackstage}><IconCodeCircle2 /></button> : null}
 					</div>
 				</div>
-				<Selector options={options} columnCount={this.usesPageRail() ? 1 : 0} selectedID={this.props.page} onSelect={id => this.props.setPage(id as PageType)} />
+				<Selector options={options} columnCount={this.getSelectorColumns()} selectedID={this.props.page} onSelect={id => this.props.setPage(id as PageType)} />
 				<div className='campaign-content'>
 					{content}
 				</div>

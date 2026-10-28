@@ -3,8 +3,6 @@ import { Component } from 'react';
 
 import { CardType } from '../../../enums/card-type';
 import { CombatantType } from '../../../enums/combatant-type';
-import { OrientationType } from '../../../enums/orientation-type';
-
 import { HeroGenerator } from '../../../generators/hero/hero-generator';
 
 import { Factory } from '../../../logic/factory/factory';
@@ -14,6 +12,7 @@ import { PackLogic } from '../../../logic/pack/pack-logic';
 import type { CombatantModel } from '../../../models/combatant';
 import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
+import type { LayoutModel } from '../../../models/layout';
 import type { OptionsModel } from '../../../models/options';
 
 import { CharacterSheetModal, HeroBuilderModal } from '../../modals';
@@ -26,7 +25,7 @@ import './setup-screen.scss';
 interface Props {
 	game: GameModel;
 	options: OptionsModel;
-	orientation: OrientationType;
+	layout: LayoutModel;
 	addHero: (hero: CombatantModel) => void;
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
 	unequipItem: (item: ItemModel, hero: CombatantModel) => void;
@@ -141,7 +140,7 @@ export class SetupScreen extends Component<Props, State> {
 		}
 
 		return (
-			<div className={`setup-screen ${OrientationLogic.getClassName(this.props.orientation)}`}>
+			<div className={`setup-screen ${OrientationLogic.getClassName(this.props.layout.orientation)}`}>
 				<div className='setup-top-bar'>
 					<LogoPanel size={100} />
 				</div>

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { PageType } from '../../enums/page-type';
 import { ScreenType } from '../../enums/screen-type';
 
-import { OrientationLogic } from '../../logic/orientation/orientation-logic';
+import { LayoutLogic } from '../../logic/layout/layout-logic';
 
 import { useMediaQuery } from '../../utils/media-query/media-query';
 
@@ -39,13 +39,17 @@ export const Layout = (props: Props) => {
 	// the one current iPad the old threshold shut out - in both orientations, since 744
 	// is its width in portrait and its height in landscape.
 	const isBigEnough = useMediaQuery('(min-width: 1024px) and (min-height: 740px), (min-width: 740px) and (min-height: 1024px)');
-	const isLandscape = useMediaQuery('(orientation: landscape)');
-
-	// Whether this is a phone rather than a tablet. Every iPhone has a short edge of 440pt or less
-	// and the smallest iPad 744, so 500 separates them with room on both sides. Asking about either
-	// dimension rather than the width means the answer is the same whichever way up it is held, and
-	// so does not change under the player's hands during a rotation.
-	const isSmall = useMediaQuery('(max-width: 500px), (max-height: 500px)');
+	// Every question a screen can ask about its space is asked here, because this is the only
+	// component with hooks - the screens are classes. Each is about room for one particular thing,
+	// and the sizes they come from are in LayoutLogic. They are all asked every time, so the hooks
+	// keep their order, and a screen reads the ones it cares about.
+	const isLandscape = useMediaQuery(LayoutLogic.queries.landscape);
+	const layout = LayoutLogic.getModel(isLandscape, {
+		roomForPanelsBesideMap: useMediaQuery(LayoutLogic.queries.panelsBesideMap),
+		roomForPanelsBelowMap: useMediaQuery(LayoutLogic.queries.panelsBelowMap),
+		roomForSelectorBand: useMediaQuery(LayoutLogic.queries.selectorBand),
+		roomForBranding: useMediaQuery(LayoutLogic.queries.branding)
+	});
 
 	return (
 		<>
@@ -53,7 +57,7 @@ export const Layout = (props: Props) => {
 				game={props.game}
 				options={props.options}
 				platform={props.platform}
-				orientation={OrientationLogic.getOrientation(isLandscape, isSmall)}
+				layout={layout}
 				screen={screen}
 				page={page}
 				setScreen={setScreen}

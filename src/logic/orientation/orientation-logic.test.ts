@@ -60,4 +60,5 @@ describe('OrientationLogic', () => {
 			expect(OrientationLogic.getOrientation(true, true)).toEqual(OrientationType.LandscapeSmall);
 		});
 	});
+
 });

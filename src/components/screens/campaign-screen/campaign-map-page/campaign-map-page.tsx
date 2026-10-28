@@ -1,7 +1,5 @@
 import { Component } from 'react';
 
-import { OrientationType } from '../../../../enums/orientation-type';
-
 import { StructureType } from '../../../../enums/structure-type';
 
 import { CampaignMapLogic } from '../../../../logic/campaign-map/campaign-map-logic';
@@ -12,6 +10,7 @@ import type { CombatantModel } from '../../../../models/combatant';
 import type { FeatureModel } from '../../../../models/feature';
 import type { GameModel } from '../../../../models/game';
 import type { ItemModel } from '../../../../models/item';
+import type { LayoutModel } from '../../../../models/layout';
 import type { OptionsModel } from '../../../../models/options';
 import type { RegionModel } from '../../../../models/region';
 
@@ -27,7 +26,7 @@ import './campaign-map-page.scss';
 interface Props {
 	game: GameModel;
 	options: OptionsModel;
-	orientation: OrientationType;
+	layout: LayoutModel;
 	startEncounter: (region: RegionModel, heroes: CombatantModel[], benefits: number, detriments: number) => void;
 	regenerateCampaignMap: () => void;
 	conquer: (region: RegionModel) => void;
@@ -264,7 +263,7 @@ export class CampaignMapPage extends Component<Props, State> {
 
 	render = () => {
 		return (
-			<div className={`campaign-map-page ${OrientationLogic.getClassName(this.props.orientation)}`}>
+			<div className={`campaign-map-page ${OrientationLogic.getClassName(this.props.layout.orientation)}`}>
 				<div className='map-content' onClick={() => this.setState({ selectedRegion: null })}>
 					<CampaignMapPanel
 						map={this.props.game.map}

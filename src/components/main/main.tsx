@@ -3,7 +3,6 @@ import toast, { Toaster } from 'react-hot-toast';
 
 import { CombatantType } from '../../enums/combatant-type';
 import { EncounterState } from '../../enums/encounter-state';
-import { OrientationType } from '../../enums/orientation-type';
 import { PageType } from '../../enums/page-type';
 import { ScreenType } from '../../enums/screen-type';
 import { StructureType } from '../../enums/structure-type';
@@ -29,6 +28,7 @@ import type { EncounterModel } from '../../models/encounter';
 import type { FeatureModel } from '../../models/feature';
 import type { GameModel } from '../../models/game';
 import type { ItemModel } from '../../models/item';
+import type { LayoutModel } from '../../models/layout';
 import type { OptionsModel } from '../../models/options';
 import type { PackModel } from '../../models/pack';
 import type { RegionModel } from '../../models/region';
@@ -64,7 +64,7 @@ interface Props {
 	game: GameModel | null;
 	options: OptionsModel;
 	platform: Platform;
-	orientation: OrientationType;
+	layout: LayoutModel;
 	screen: ScreenType;
 	page: PageType;
 	setScreen: (screen: ScreenType) => void;
@@ -1411,7 +1411,7 @@ export class Main extends Component<Props, State> {
 					<LandingScreen
 						game={this.state.game}
 						options={this.state.options}
-						orientation={this.props.orientation}
+						layout={this.props.layout}
 						startCampaign={this.startCampaign}
 						continueCampaign={this.continueCampaign}
 						showPacks={this.showPacks}
@@ -1423,7 +1423,7 @@ export class Main extends Component<Props, State> {
 					<SetupScreen
 						game={this.state.game as GameModel}
 						options={this.state.options}
-						orientation={this.props.orientation}
+						layout={this.props.layout}
 						addHero={this.addHero}
 						equipItem={this.equipItem}
 						unequipItem={this.unequipItem}
@@ -1440,7 +1440,7 @@ export class Main extends Component<Props, State> {
 						game={this.state.game as GameModel}
 						options={this.state.options}
 						platform={this.props.platform}
-						orientation={this.props.orientation}
+						layout={this.props.layout}
 						page={this.props.page}
 						hasExceptions={this.state.exceptions.length > 0}
 						setPage={this.props.setPage}
@@ -1481,7 +1481,7 @@ export class Main extends Component<Props, State> {
 						encounter={this.state.game.encounter}
 						game={this.state.game as GameModel}
 						options={this.state.options}
-						orientation={this.props.orientation}
+						layout={this.props.layout}
 						hasExceptions={this.state.exceptions.length > 0}
 						showHelp={this.showHelp}
 						rotateMap={this.rotateMap}

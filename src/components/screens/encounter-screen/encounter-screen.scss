@@ -5,6 +5,32 @@
 	flex-direction: column;
 	gap: 10px;
 
+	// On a phone the toolbar has to earn its place: wrapping its buttons onto a second line costs
+	// the map a row of vertical space it can't spare, so instead the space between and around them
+	// gives way first, and only then the buttons themselves. Nine 40pt buttons need 360pt, which
+	// fits across every phone from 375pt up once the padding and gaps are gone; below that they
+	// shrink, down to a floor that still leaves them reachable.
+	&.portrait-small,
+	&.landscape-small {
+		// Nested through .encounter-top-panel to match the base rule below, which is otherwise an
+		// exact specificity tie and wins on source order - the toolbar kept wrapping until this
+		// matched its shape.
+		.encounter-top-panel .encounter-toolbar {
+			flex-wrap: nowrap;
+			padding: 5px;
+
+			.icon-section {
+				gap: 0;
+				min-width: 0;
+
+				.icon-btn {
+					flex: 0 1 40px;
+					min-width: 30px;
+				}
+			}
+		}
+	}
+
 	&.portrait {
 		flex-direction: column;
 

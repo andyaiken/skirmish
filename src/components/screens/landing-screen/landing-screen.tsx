@@ -2,12 +2,11 @@ import { IconCards, IconHelpCircle } from '@tabler/icons-react';
 import { Component } from 'react';
 
 import { CardType } from '../../../enums/card-type';
-import { OrientationType } from '../../../enums/orientation-type';
-
 import { OrientationLogic } from '../../../logic/orientation/orientation-logic';
 import { PackLogic } from '../../../logic/pack/pack-logic';
 
 import type { GameModel } from '../../../models/game';
+import type { LayoutModel } from '../../../models/layout';
 import type { OptionsModel } from '../../../models/options';
 
 import { Carousel, PlayingCard } from '../../controls';
@@ -21,7 +20,7 @@ import './landing-screen.scss';
 interface Props {
 	game: GameModel | null;
 	options: OptionsModel;
-	orientation: OrientationType;
+	layout: LayoutModel;
 	startCampaign: () => void;
 	continueCampaign: () => void;
 	showPacks: () => void;
@@ -29,6 +28,19 @@ interface Props {
 }
 
 export class LandingScreen extends Component<Props> {
+	// A phone gets one size whichever way up it is held, because it is the same screen either way.
+	// The two below are chosen for a tablet, and sideways on a phone 140 takes a third of the 402pt
+	// of height before the bar's padding is counted. 50 is close to what LogoPanel's width cap was
+	// already reducing it to when the phone was upright, so upright is unchanged to the eye and only
+	// sideways gets smaller.
+	logoSize = () => {
+		if (OrientationLogic.isSmall(this.props.layout.orientation)) {
+			return 50;
+		}
+
+		return OrientationLogic.isLandscape(this.props.layout.orientation) ? 140 : 100;
+	};
+
 	render = () => {
 		let mainBtn = null;
 		if (this.props.game) {
@@ -75,9 +87,9 @@ export class LandingScreen extends Component<Props> {
 		}
 
 		return (
-			<div className={`landing-screen ${OrientationLogic.getClassName(this.props.orientation)}`}>
+			<div className={`landing-screen ${OrientationLogic.getClassName(this.props.layout.orientation)}`}>
 				<div className='landing-top-bar'>
-					<LogoPanel size={OrientationLogic.isLandscape(this.props.orientation) ? 140 : 100} />
+					<LogoPanel size={this.logoSize()} />
 				</div>
 				<div className='landing-content'>
 					<Carousel

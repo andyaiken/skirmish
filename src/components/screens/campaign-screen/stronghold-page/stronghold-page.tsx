@@ -2,7 +2,6 @@ import { IconHexagon, IconHexagonFilled } from '@tabler/icons-react';
 import { Component } from 'react';
 
 import { BoonType } from '../../../../enums/boon-type';
-import { OrientationType } from '../../../../enums/orientation-type';
 import { PageType } from '../../../../enums/page-type';
 import { StructureType } from '../../../../enums/structure-type';
 
@@ -14,6 +13,7 @@ import type { BoonModel } from '../../../../models/boon';
 import type { CombatantModel } from '../../../../models/combatant';
 import type { GameModel } from '../../../../models/game';
 import type { ItemModel } from '../../../../models/item';
+import type { LayoutModel } from '../../../../models/layout';
 import type { OptionsModel } from '../../../../models/options';
 import type { StructureModel } from '../../../../models/structure';
 
@@ -27,7 +27,7 @@ import './stronghold-page.scss';
 interface Props {
 	game: GameModel;
 	options: OptionsModel;
-	orientation: OrientationType;
+	layout: LayoutModel;
 	setPage: (page: PageType) => void;
 	buyStructure: (structure: StructureModel, cost: number) => void;
 	sellStructure: (structure: StructureModel) => void;
@@ -324,7 +324,7 @@ export class StrongholdPage extends Component<Props, State> {
 
 	render = () => {
 		return (
-			<div className={`stronghold-page ${OrientationLogic.getClassName(this.props.orientation)}`}>
+			<div className={`stronghold-page ${OrientationLogic.getClassName(this.props.layout.orientation)}`}>
 				<div className='map-content' onClick={() => this.setState({ selectedStructure: null })}>
 					<StrongholdMapPanel
 						stronghold={this.props.game.stronghold}

@@ -3,6 +3,41 @@
     display: flex;
     flex-direction: column;
 
+	// When a band across the top would cost more height than there is to spend, the page selector
+	// becomes a rail of icons down the left instead and the content takes the height that frees up.
+	// A grid rather than the column the screen uses elsewhere, because the top bar still spans both.
+	//
+	// Keyed on the screen's own name for the layout it chose, not on the size class: the two parted
+	// company at 1200x400, where there is width enough not to be 'small' and no height at all for a
+	// band, and the markup was railing while the stylesheet was not.
+	&.page-rail {
+		display: grid;
+		grid-template-columns: auto 1fr;
+		grid-template-rows: auto 1fr;
+
+		.campaign-top-bar {
+			grid-column: 1 / -1;
+		}
+
+		.selector {
+			grid-column: 1;
+			grid-row: 2;
+			margin: 10px 0 10px 10px;
+			// Wrap the icons rather than stretching down the whole side, which leaves a tall empty
+			// box under them.
+			align-self: start;
+		}
+
+		.campaign-content {
+			grid-column: 2;
+			grid-row: 2;
+			// Grid items refuse to shrink past their content without this, which would push the
+			// rail off the side on a page with a wide one.
+			min-width: 0;
+			min-height: 0;
+		}
+	}
+
 	.campaign-top-bar {
 		flex: 0 0 60px;
 		background-color: rgb(230, 230, 230);

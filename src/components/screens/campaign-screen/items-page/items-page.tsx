@@ -1,7 +1,6 @@
 import { Component } from 'react';
 
 import { BoonType } from '../../../../enums/boon-type';
-import { OrientationType } from '../../../../enums/orientation-type';
 import { StructureType } from '../../../../enums/structure-type';
 
 import { GameLogic } from '../../../../logic/game/game-logic';
@@ -12,6 +11,7 @@ import type { BoonModel } from '../../../../models/boon';
 import type { CombatantModel } from '../../../../models/combatant';
 import type { GameModel } from '../../../../models/game';
 import type { ItemModel } from '../../../../models/item';
+import type { LayoutModel } from '../../../../models/layout';
 import type { OptionsModel } from '../../../../models/options';
 
 import { Collections } from '../../../../utils/collections/collections';
@@ -26,7 +26,7 @@ import './items-page.scss';
 interface Props {
 	game: GameModel;
 	options: OptionsModel;
-	orientation: OrientationType;
+	layout: LayoutModel;
 	buyItem: (item: ItemModel, free?: boolean) => void;
 	sellItem: (item: ItemModel, all: boolean) => void;
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
@@ -459,7 +459,7 @@ export class ItemsPage extends Component<Props, State> {
 		}
 
 		return (
-			<div className={`items-page ${OrientationLogic.getClassName(this.props.orientation)}`}>
+			<div className={`items-page ${OrientationLogic.getClassName(this.props.layout.orientation)}`}>
 				<div className='items-content'>
 					{magicItemSection ? <Text type={TextType.SubHeading}>Magic Items</Text> : null}
 					{magicItemSection}

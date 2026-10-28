@@ -26,7 +26,6 @@ import { CardType } from '../../../enums/card-type';
 import { CombatantState } from '../../../enums/combatant-state';
 import { CombatantType } from '../../../enums/combatant-type';
 import { EncounterState } from '../../../enums/encounter-state';
-import { OrientationType } from '../../../enums/orientation-type';
 import { StructureType } from '../../../enums/structure-type';
 
 import { ActionLogic } from '../../../logic/action/action-logic';
@@ -39,6 +38,7 @@ import type { EncounterModel, LogMessageModel, LootPileModel, TrapModel } from '
 import type { CombatantModel } from '../../../models/combatant';
 import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
+import type { LayoutModel } from '../../../models/layout';
 import type { OptionsModel } from '../../../models/options';
 
 import { CardList, Dialog, IconSize, IconType, IconValue, PlayingCard, PreviewableCard, StatValue, Tabs, Text, TextType } from '../../controls';
@@ -57,7 +57,7 @@ interface Props {
 	encounter: EncounterModel;
 	game: GameModel;
 	options: OptionsModel;
-	orientation: OrientationType;
+	layout: LayoutModel;
 	hasExceptions: boolean;
 	showHelp: (file: string) => void;
 	rotateMap: (encounter: EncounterModel, dir: 'l' | 'r') => void;
@@ -1071,9 +1071,9 @@ export class EncounterScreen extends Component<Props, State> {
 		const left = this.getLeftControls();
 		const right = this.getRightControls();
 
-		if (OrientationLogic.isPortrait(this.props.orientation)) {
+		if (OrientationLogic.isPortrait(this.props.layout.orientation)) {
 			return (
-				<div className={`encounter-screen ${OrientationLogic.getClassName(this.props.orientation)}`}>
+				<div className={`encounter-screen ${OrientationLogic.getClassName(this.props.layout.orientation)}`}>
 					{top}
 					<div className='encounter-main-panel'>
 						<div className='encounter-central-column'>
@@ -1114,7 +1114,7 @@ export class EncounterScreen extends Component<Props, State> {
 		}
 
 		return (
-			<div className={`encounter-screen ${OrientationLogic.getClassName(this.props.orientation)}`}>
+			<div className={`encounter-screen ${OrientationLogic.getClassName(this.props.layout.orientation)}`}>
 				{top}
 				<div className='encounter-main-panel'>
 					{left}

@@ -1,18 +1,143 @@
-# iPhone
+# Responsive layout
 
-The game ships iPad-only (`TARGETED_DEVICE_FAMILY = 2`), and every iPhone is turned away at the
-door by the size gate in `src/components/layout/layout.tsx:39`. Both of those are one-line changes.
-Neither is the work.
+**The goal is an app that lays itself out correctly at almost any width and height, and adjusts as
+that changes - rotated, resized, split.** Running on a phone is the demanding case that forces the
+issue, and the case this document tests against, but it is not the point. The Mac's window is
+resizable today. An iPad can be given half a screen today. A folding phone changes size in the hand.
+Shipping on iPhone is one consequence of getting this right, not the objective.
 
 The work is that the app has no responsive layout at all. Across the whole of `src/` there are
 exactly two media queries, and both are `prefers-reduced-motion`. There are no breakpoints, 82
 fixed pixel dimensions, and 13 declarations wider than an iPhone is. The layout was written for one
-size class and it shows.
+size class and it shows. The game also ships iPad-only (`TARGETED_DEVICE_FAMILY = 2`), with every
+iPhone turned away by the size gate in `src/components/layout/layout.tsx:39` - but both of those are
+one-line changes, and neither is the work.
+
+## The principle: ask how much room there is, not what device this is
+
+The distinction decides whether a change serves the goal or only looks like it does.
+
+A rule phrased as *"this is a phone, so stack it"* answers a question about hardware. It is right
+until something arrives that the categories do not fit - a folding phone opened out, an iPad sharing
+its screen, a Mac window dragged narrow - and then it is wrong in a way that no amount of tuning the
+threshold fixes, because the threshold was never measuring the thing that mattered.
+
+A rule phrased as *"there is not room for the panels beside the map, so put them over it"* answers a
+question about space, and is right for all of those without any of them being enumerated.
+
+Most of what is done already works this way, which is why it has held up: the `min()` floors adapt
+at every width rather than at a breakpoint, the two screens that scroll do so whenever their content
+is taller than they are, and the toolbar's buttons shrink by however much they need to. The parts
+that do not - the size class defined as "is this a phone", the gate, and the encounter screen's
+fixed side columns - are exactly the parts still outstanding.
+
+**What this rules out, where CSS can express it:** a breakpoint chosen from a device's dimensions.
+**What it rules in:** `min()`, `max()` and `clamp()` floors; grids that reflow by content width;
+elements that scroll when they overflow; and, where CSS cannot ask the question, measuring.
+`ScaleToFit` and `CardPreview` already measure their container with a `ResizeObserver`, so the
+pattern is established in the codebase. Container queries would be the natural tool and are not
+available: they need iOS 16 and the deployment target is 15.
 
 What makes this tractable is that the hard part is already done twice over: the encounter screen and
 the setup screen both have full portrait variants, because the iPad supports portrait. The app
 already knows how to stack. It just doesn't know how to be narrow.
 
+
+## `isSmall` now asks about space — and one global question isn't enough
+
+`isSmall` was `(max-width: 500px), (max-height: 500px)`: a phone, measured by the dimensions phones
+happen to have. It now asks whether there is room to lay the encounter screen out the roomy way,
+with both thresholds derived in `OrientationLogic` from what that screen's parts need rather than
+chosen from any device:
+
+```
+minMapWidth 350 + panelWidths 550 + gaps 30  =  930   // panels beside the map, in landscape
+minPanelWidth 235 x 2 + gaps 30              =  500   // panels below it, two abreast, in portrait
+```
+
+The encounter screen sets them because it is the only screen that puts two panels beside or below
+the map, so it is the first to run out of room; every other screen still has slack when it does.
+Change a panel's width and these follow, which is the point.
+
+Phones and tablets classify exactly as before. What changes is everything in between, which a rule
+about phones never saw: a folding phone opened out at 890x626 is now `LandscapeSmall` rather than
+`Landscape`, as is a window dragged to 800x700, and a tablet given a 320pt share of its own screen.
+
+### But the architecture underneath is too simple, and here is the proof
+
+The model is: classify the size once, globally, and each page renders one of a set of named layouts.
+Most of that is right - a small set of named layouts per screen is far easier to reason about, test
+and keep consistent than continuous adaptation everywhere, and CSS classes express it naturally.
+
+The flaw is the word *once*. It assumes every page is asking the same question, and they are not:
+
+| What is deciding | The question it actually asks | Axis |
+|---|---|---|
+| Encounter panels | room for two panels beside or below the map? | width |
+| Campaign page selector | can I afford 77pt of height for a band? | **height** |
+| Campaign top bar | room for branding, money and buttons across? | width, ~470 |
+| Encounter toolbar | room for nine 40pt buttons across? | width, ~420 |
+
+Four different questions, two different axes, four different numbers - and one class answering all
+of them.
+
+**Measured, not argued:** at 1200x400 the app now reports `landscape`, not `landscape-small`, so the
+page selector stays a band across the top. But 400pt of height is precisely when a rail is worth
+having. The old height-based rule got that shape right by accident; the new width-based one gets it
+wrong for the same reason. Neither is really answering the selector's question.
+
+### Done — screens now ask their own questions
+
+The `orientation` prop became a `LayoutModel`, threaded the same way through `Main` and the seven
+screens that took orientation before:
+
+```ts
+export interface LayoutModel {
+	orientation: OrientationType;
+	roomForPanelsBesideMap: boolean;
+	roomForPanelsBelowMap: boolean;
+	roomForSelectorBand: boolean;
+	roomForBranding: boolean;
+}
+```
+
+The answers rather than the dimensions, deliberately. A flag only changes when a threshold is
+crossed; handing down the width would re-render every screen on every frame of a window drag, and
+the campaign map alone is a thousand elements - the same cost `index.scss` already warns about for
+transitions. If a screen ever needs genuinely continuous sizing it can use a `ResizeObserver`, as
+`ScaleToFit` and `CardPreview` do, scoped to one element rather than the whole tree.
+
+`LayoutLogic` holds the sizes and the sums they make. Every number is something the game draws:
+
+| Threshold | Sum | Who asks |
+|---|---|---|
+| `widthForPanelsBesideMap` | 350 map + 550 panels + 30 gaps = 930 | encounter, via the size class |
+| `widthForPanelsBelowMap` | 235 x 2 + 30 gaps = 500 | encounter, via the size class |
+| `heightForSelectorBand` | 60 bar + 77 band + 450 content = 587 | campaign page selector |
+| `widthForBranding` | 175 + 90 + 100 + 105 = 470 | campaign top bar |
+
+`Layout` holds the hooks, so it asks all four every render and hands the answers down.
+`OrientationType` keeps its four values as the default for screens whose question really is just
+"roomy or not", and `OrientationLogic` went back to being about the enum alone.
+
+**And a screen now names the layout it chose.** The campaign screen emits `page-rail` or
+`page-band`, and the stylesheet keys on that instead of on `landscape-small`. This was not
+cosmetic: at 1200x400 the markup had already started railing while the stylesheet, still watching
+the size class, had not - the two had quietly parted company, which is exactly the failure the
+whole change is about.
+
+Measured afterwards, with the two shapes that disagree:
+
+| Size | Size class | Selector | Branding |
+|---|---|---|---|
+| 1200x400 | `landscape` | **rail** - no height for a band | yes |
+| 890x626 | `landscape-small` | **band** - height to spare | yes |
+| 874x402 | `landscape-small` | rail | yes |
+| 1024x768 | `landscape` | band | yes |
+| 768x1024 | `portrait` | band | yes |
+| 402x874 | `portrait-small` | band | no |
+
+Both disagreements now resolve the right way, and neither could have under a single class.
 
 ## What already works in our favour
 
@@ -439,6 +564,98 @@ When it is implemented, compose it in JavaScript from separate queries rather th
 compound `(orientation: landscape) and (max-width: ...)` query - the orientation and the width
 update independently during a rotation, and keeping them apart makes that easier to reason about
 than a compound query that can briefly match neither.
+
+
+### Run on an iPhone — 28 October 2026
+
+First time the game has been on a phone. Device family is iPad-only, so it took two throwaway local
+changes to get there - `TARGETED_DEVICE_FAMILY = "1,2"` and the gate lifted - both reverted after.
+An iPhone 17 simulator, 402x874.
+
+Everything from Phases 0-2 held up: the logo fits with margins, the carousel keeps its gutter, both
+screens scroll to reach their cards, the toolbar showed every button including Retreat, and the
+Start an Encounter modal - which was impossible to dismiss before - fits with its close button
+reachable. The game is playable end to end on a phone.
+
+Two things were fixed from what it showed:
+
+- **The toolbar wrapped to two lines**, which cost the map a row of vertical space it can't spare.
+  Now, on a small layout only, the padding and gaps go first and then the buttons shrink: nine
+  buttons on one line at 402pt at their full 40pt, and at 375pt shrunk to 38pt, still one line with
+  nothing cut off.
+- **The campaign top bar dropped its branding** when upright on a phone. The bar has the branding,
+  the money and the buttons to fit across it, and on a phone it couldn't: the packs badge was
+  clipped and the help button was off the edge entirely. The name went first, and then the mark with
+  it - once the name is gone the icon is decoration, and the player knows which game they opened.
+  `space-between` then puts the money on the left and the buttons on the right with room to spare.
+  Turned sideways the phone has the room, so the branding comes back; only upright does it go.
+
+The toolbar fix needed a second go, and the reason is worth remembering. `.encounter-screen.portrait-small
+.encounter-toolbar` is three classes, and so is the base `.encounter-screen .encounter-top-panel
+.encounter-toolbar` that it was meant to override - an exact specificity tie, settled by source
+order, which the base rule won. Nesting the override through `.encounter-top-panel` as well fixes
+it. The existing `&.portrait` block already did this; it just wasn't obvious why until something
+silently failed to apply. Worth copying the shape of the neighbouring block when adding to this
+file.
+
+**Still open, seen on the device:**
+
+- The home indicator sits over the bottom of the screen, and `index.scss:55` drops the bottom safe
+  area by choice - a decision made for the iPad, where it left an empty strip. On the landing screen
+  the Help button runs flush to the bottom edge, inside the swipe-up zone. This is the Phase 4 item,
+  now confirmed rather than predicted.
+- The two side panels below the map are as cramped as the measurements suggested. That is what the
+  sliding panels are for.
+
+### The page selector becomes a rail when the phone is sideways
+
+Turned sideways a phone has 874pt of width and 402pt of height, and the selector was spending about
+77pt of the scarce one on a band across the top. In `landscape-small` it is now a rail of icons down
+the left instead: the screen becomes a grid, the top bar spans both columns, and the content takes
+back the height.
+
+The selector's options were text-only, so this needed four icons chosen - `IconMap2`,
+`IconBuildingCastle`, `IconUsers` and `IconBackpack` for Island, Stronghold, Team and Equipment.
+Easily swapped if any of them reads wrong; they are picked in one list in `campaign-screen.tsx`.
+The icons render only in the rail, so the iPad and a phone held upright keep their text labels
+exactly as before. The star that marks a page with something waiting on it survives the move - it
+is the only thing in the selector a player would miss - and each icon carries its label as a title.
+
+The rail hugs its icons rather than stretching down the whole side, which otherwise left a tall
+empty box beneath them.
+
+The landing screen's logo went with it. It was sized by orientation alone - 140 in landscape, 100 in
+portrait - and sideways on a phone 140 took a third of the 402pt of height before the bar's padding.
+A phone now gets one size whichever way up it is held, 50, because it is the same screen either way.
+Upright is unchanged to the eye: LogoPanel's width cap was already reducing 100 to about 52 there,
+so the cap no longer binds and is back to being the safety net it was meant to be.
+
+### Could the header sit around the Dynamic Island?
+
+Measured on the iPhone 17 rather than guessed. The top inset is about 63pt - almost exactly the
+60pt the bar itself is tall - and the island occupies the middle 126pt of the 402pt width, leaving
+about 138pt clear either side. The bar's contents now sit at precisely those edges: the money group
+is roughly 90pt and the buttons about 100pt, so both would clear the island comfortably. On this
+device it would work, and it would buy back a bar's worth of height.
+
+It is still not a change to make casually, for three reasons:
+
+- **CSS cannot ask where the island is.** `env(safe-area-inset-*)` gives the four insets and nothing
+  about the cutout's width or position, so any centre clearance is a hardcoded guess.
+- **The notch generation breaks the guess.** The cutout on an iPhone 11 through 14 is far wider,
+  around 210pt, with a shorter inset - leaving roughly 82pt clear a side, which the money group
+  does not fit into. The constant that works here is wrong there.
+- **It is a no-op on the small end.** The SE 3rd generation, which the gate floor admits, has no
+  cutout, and with the status bar hidden its top inset is nil. Nothing to reclaim.
+
+It also isn't a self-contained change: the inset is applied once for the whole app at
+`index.scss:55`, so lifting one bar into it means moving that decision into the screens.
+
+**Recommendation: fold it into the Phase 4 safe-area item rather than treating it separately.** That
+item already exists for the bottom edge, where the home indicator overlaps the Help button, and it
+is the same decision seen from the other end - the app-wide inset was chosen for an iPad and both
+edges want revisiting for a phone. Worth doing together, with a real device per cutout generation
+to check against.
 
 
 ## Phase 4 — Phone ergonomics

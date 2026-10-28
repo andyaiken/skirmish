@@ -35,9 +35,7 @@ export class OrientationLogic {
 		}
 	};
 
-	// Small is a phone: every iPhone has a short edge of 440 or less, and the smallest iPad 744.
-	// Measuring the short edge rather than the width means the answer doesn't change when the
-	// device is turned over.
+	// The two axes combined. What counts as small is LayoutLogic's question, not this one's.
 	static getOrientation = (isLandscape: boolean, isSmall: boolean) => {
 		if (isLandscape) {
 			return isSmall ? OrientationType.LandscapeSmall : OrientationType.Landscape;

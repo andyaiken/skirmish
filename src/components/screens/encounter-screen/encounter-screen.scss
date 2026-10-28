@@ -5,13 +5,17 @@
 	flex-direction: column;
 	gap: 10px;
 
-	// On a phone the toolbar has to earn its place: wrapping its buttons onto a second line costs
-	// the map a row of vertical space it can't spare, so instead the space between and around them
-	// gives way first, and only then the buttons themselves. Nine 40pt buttons need 360pt, which
-	// fits across every phone from 375pt up once the padding and gaps are gone; below that they
-	// shrink, down to a floor that still leaves them reachable.
+	// A layout too small to hold the panels where the orientation would otherwise put them. The
+	// rules below are the ones that differ because of it; everything the full-sized layout does
+	// still applies, since a small orientation carries both class names.
 	&.portrait-small,
 	&.landscape-small {
+		// The toolbar has to earn its place: wrapping its buttons onto a second line costs the map
+		// a row of vertical space it can't spare, so instead the space between and around them
+		// gives way first, and only then the buttons themselves. Nine 40pt buttons need 360pt,
+		// which fits across every phone from 375pt up once the padding and gaps are gone; below
+		// that they shrink, down to a floor that still leaves them reachable.
+		//
 		// Nested through .encounter-top-panel to match the base rule below, which is otherwise an
 		// exact specificity tie and wins on source order - the toolbar kept wrapping until this
 		// matched its shape.
@@ -26,6 +30,93 @@
 				.icon-btn {
 					flex: 0 1 40px;
 					min-width: 30px;
+				}
+			}
+		}
+
+		// There is no room for the panels beside or below the map - which is what makes the layout
+		// a small one - so they go over it instead, one at a time, and the map keeps the whole
+		// screen underneath. The main panel already clips what overflows it, so a sheet covers the
+		// board and nothing else.
+		.encounter-main-panel {
+			position: relative;
+
+			.encounter-sheet {
+				position: absolute;
+				z-index: 1;
+				display: flex;
+				flex-direction: column;
+				padding: 5px;
+				border-radius: 10px;
+				background-color: var(--control);
+				// The panels are white boxes on a board that is nearly white too, so what says
+				// one is lying over the other is the shadow.
+				box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.25);
+
+				// A strip of map stays uncovered whichever side it comes in from, so a sheet reads
+				// as something laid over the board rather than as the board having gone away.
+				&.left,
+				&.right {
+					top: 0;
+					bottom: 0;
+					width: min(320px, calc(100% - 50px));
+
+					.encounter-left-column,
+					.encounter-right-column {
+						flex: 1 1 0;
+						width: 100%;
+						min-height: 0;
+					}
+				}
+
+				&.left {
+					left: 0;
+				}
+
+				&.right {
+					right: 0;
+				}
+
+				// The hand is as tall as the cards in it and no taller, so on a screen with room
+				// it leaves the board showing below the sheet above it. It is allowed the whole
+				// board when it needs it, unlike the two at the sides: the cards keep their size
+				// and their text with it, and looking at your hand is a moment of its own.
+				&.bottom {
+					left: 0;
+					right: 0;
+					bottom: 0;
+					max-height: 100%;
+
+					.encounter-bottom-panel {
+						flex: 0 1 auto;
+						min-height: 0;
+						overflow-x: hidden;
+						// A screen too short even for that scrolls to the foot of the cards
+						// rather than cutting it off.
+						overflow-y: auto;
+						-webkit-overflow-scrolling: touch;
+					}
+				}
+			}
+		}
+
+		// The slide is the sheet showing which edge it came in from; with motion reduced it simply
+		// appears. Both the system setting and the game's own option, the pair index.scss handles
+		// the same way for the decoration that moves.
+		@media (prefers-reduced-motion: no-preference) {
+			.skirmish:not(.reduce-motion) & {
+				.encounter-main-panel .encounter-sheet {
+					&.left {
+						animation: encounter-sheet-from-left 0.2s ease-out;
+					}
+
+					&.right {
+						animation: encounter-sheet-from-right 0.2s ease-out;
+					}
+
+					&.bottom {
+						animation: encounter-sheet-from-bottom 0.2s ease-out;
+					}
 				}
 			}
 		}
@@ -194,5 +285,23 @@
 	.treasure-money {
 		font-size: 40px;
 		font-weight: 600;
+	}
+}
+
+@keyframes encounter-sheet-from-left {
+	from {
+		transform: translateX(-100%);
+	}
+}
+
+@keyframes encounter-sheet-from-right {
+	from {
+		transform: translateX(100%);
+	}
+}
+
+@keyframes encounter-sheet-from-bottom {
+	from {
+		transform: translateY(100%);
 	}
 }

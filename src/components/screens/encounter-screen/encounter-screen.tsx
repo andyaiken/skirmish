@@ -116,11 +116,17 @@ interface State {
 export class EncounterScreen extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
+
+		// Where the panels go over the map rather than beside it, only one of them can be open at
+		// a time, so none of them starts open and the map has the screen to itself. An encounter
+		// still opens on something to do: the round controls show themselves whatever this says.
+		const panelsOverMap = OrientationLogic.isSmall(props.layout.orientation);
+
 		this.state = {
 			mapSquareSize: 15,
-			showLeftPanel: true,
-			showBottomPanel: true,
-			showRightPanel: true,
+			showLeftPanel: !panelsOverMap,
+			showBottomPanel: !panelsOverMap,
+			showRightPanel: !panelsOverMap,
 			leftTab: 'init',
 			selectedActionParameter: null,
 			selectableCombatantIDs: [],
@@ -164,6 +170,7 @@ export class EncounterScreen extends Component<Props, State> {
 
 	componentDidUpdate = () => {
 		this.checkMonsterTurn();
+		this.closeStackedPanels();
 	};
 
 	componentWillUnmount = () => {
@@ -217,22 +224,51 @@ export class EncounterScreen extends Component<Props, State> {
 		});
 	};
 
-	toggleLeftPanel = () => {
+	// Whether the panels go over the map rather than beside or below it. The orientation carries
+	// the answer: it is a small one exactly when there is not room for the panels where that
+	// orientation would otherwise put them, which is the same question asked once in LayoutLogic.
+	panelsOverMap = () => {
+		return OrientationLogic.isSmall(this.props.layout.orientation);
+	};
+
+	// Over the map the panels cover each other, so showing one puts the others away. Beside the
+	// map they don't, and each is left as the player had it.
+	showPanel = (panel: 'left' | 'bottom' | 'right', show: boolean) => {
+		const putOthersAway = show && this.panelsOverMap();
+
 		this.setState({
-			showLeftPanel: !this.state.showLeftPanel
+			showLeftPanel: panel === 'left' ? show : this.state.showLeftPanel && !putOthersAway,
+			showBottomPanel: panel === 'bottom' ? show : this.state.showBottomPanel && !putOthersAway,
+			showRightPanel: panel === 'right' ? show : this.state.showRightPanel && !putOthersAway
 		});
+	};
+
+	// A window dragged narrow, or a device rotated, arrives at the layout where the panels go over
+	// the map still carrying whatever was open while there was room for them side by side. They
+	// would then sit on top of each other, so all but one are put away.
+	closeStackedPanels = () => {
+		if (!this.panelsOverMap()) {
+			return;
+		}
+
+		const open = [ this.state.showLeftPanel, this.state.showBottomPanel, this.state.showRightPanel ].filter(shown => shown);
+		if (open.length > 1) {
+			// The right-hand one is the one kept, because that is where the current turn is played.
+			const keep: 'left' | 'bottom' | 'right' = this.state.showRightPanel ? 'right' : (this.state.showBottomPanel ? 'bottom' : 'left');
+			this.showPanel(keep, true);
+		}
+	};
+
+	toggleLeftPanel = () => {
+		this.showPanel('left', !this.state.showLeftPanel);
 	};
 
 	toggleBottomPanel = () => {
-		this.setState({
-			showBottomPanel: !this.state.showBottomPanel
-		});
+		this.showPanel('bottom', !this.state.showBottomPanel);
 	};
 
 	toggleRightPanel = () => {
-		this.setState({
-			showRightPanel: !this.state.showRightPanel
-		});
+		this.showPanel('right', !this.state.showRightPanel);
 	};
 
 	selectCombatant = (combatant: CombatantModel) => {
@@ -603,13 +639,45 @@ export class EncounterScreen extends Component<Props, State> {
 		}
 	};
 
-	getTopControls = () => {
-		let state = this.state.manualEncounterState;
-		if (state === EncounterState.Active) {
-			state = EncounterLogic.getEncounterState(this.props.encounter);
+	// The encounter's state, with a manual one - a retreat, or a developer's win - taking
+	// precedence over what the board says. Four things ask, and they have to get the same answer:
+	// the toolbar buttons are drawn from this and the panels they open are built from it.
+	getEncounterState = () => {
+		if (this.state.manualEncounterState !== EncounterState.Active) {
+			return this.state.manualEncounterState;
 		}
 
-		if (state !== EncounterState.Active) {
+		return EncounterLogic.getEncounterState(this.props.encounter);
+	};
+
+	// The right-hand panel shows the round controls, or the end-of-encounter ones, whether or not it
+	// has been asked to - from either of those there is no other way on. Its toggle has nothing to
+	// say while one of them is up.
+	hasFixedRightControls = () => {
+		if (this.getEncounterState() !== EncounterState.Active) {
+			return true;
+		}
+
+		return !this.props.encounter.combatants.some(c => c.combat.current);
+	};
+
+	// The bottom panel holds the hand of whoever's turn it is, so there is nothing for it to hold on
+	// a monster's turn, or a stunned hero's, or one who has played every card.
+	hasBottomControls = () => {
+		if (this.getEncounterState() !== EncounterState.Active) {
+			return false;
+		}
+
+		const currentCombatant = this.props.encounter.combatants.find(c => c.combat.current) || null;
+		if (!currentCombatant) {
+			return false;
+		}
+
+		return (currentCombatant.faction === CombatantType.Hero) && !currentCombatant.combat.stunned && (currentCombatant.combat.actions.length > 0);
+	};
+
+	getTopControls = () => {
+		if (this.getEncounterState() !== EncounterState.Active) {
 			return (
 				<div className='encounter-top-panel'>
 					<LogoPanel size={36} />
@@ -756,11 +824,11 @@ export class EncounterScreen extends Component<Props, State> {
 						<button className='icon-btn' title='Left Panel' onClick={() => this.toggleLeftPanel()}>
 							{this.state.showLeftPanel ? <IconLayoutSidebarLeftCollapseFilled /> : <IconLayoutSidebarLeftExpandFilled />}
 						</button>
-						<button className='icon-btn' title='Bottom Panel' onClick={() => this.toggleBottomPanel()}>
-							{this.state.showBottomPanel ? <IconLayoutBottombarCollapseFilled /> : <IconLayoutBottombarExpandFilled />}
+						<button disabled={!this.hasBottomControls()} className='icon-btn' title='Bottom Panel' onClick={() => this.toggleBottomPanel()}>
+							{this.state.showBottomPanel && this.hasBottomControls() ? <IconLayoutBottombarCollapseFilled /> : <IconLayoutBottombarExpandFilled />}
 						</button>
-						<button className='icon-btn' title='Right Panel' onClick={() => this.toggleRightPanel()}>
-							{this.state.showRightPanel ? <IconLayoutSidebarRightCollapseFilled /> : <IconLayoutSidebarRightExpandFilled />}
+						<button disabled={this.hasFixedRightControls()} className='icon-btn' title='Right Panel' onClick={() => this.toggleRightPanel()}>
+							{this.state.showRightPanel || this.hasFixedRightControls() ? <IconLayoutSidebarRightCollapseFilled /> : <IconLayoutSidebarRightExpandFilled />}
 						</button>
 					</div>
 					<div className='icon-section'>
@@ -803,64 +871,54 @@ export class EncounterScreen extends Component<Props, State> {
 	};
 
 	getBottomControls = () => {
-		let state = this.state.manualEncounterState;
-		if (state === EncounterState.Active) {
-			state = EncounterLogic.getEncounterState(this.props.encounter);
-		}
-
-		if (state !== EncounterState.Active) {
+		if (!this.hasBottomControls()) {
 			return null;
 		}
 
-		const currentCombatant = this.props.encounter.combatants.find(c => c.combat.current) || null;
-		if (currentCombatant) {
-			if ((currentCombatant.faction === CombatantType.Hero) && !currentCombatant.combat.stunned && (currentCombatant.combat.actions.length > 0)) {
-				return (
-					<div className='encounter-bottom-panel'>
-						<ActionControls
-							combatant={currentCombatant}
-							encounter={this.props.encounter}
-							game={this.props.game}
-							developer={this.props.options.developer}
-							currentActionParameter={this.state.selectedActionParameter}
-							collapsed={!this.state.showBottomPanel}
-							toggleCollapsed={() => this.setState({ showBottomPanel: !this.state.showBottomPanel })}
-							drawActions={this.props.drawActions}
-							selectAction={this.selectAction}
-							deselectAction={this.deselectAction}
-							setActionParameter={this.setActionParameter}
-							setWeaponParameterValue={(param, weaponID) => {
-								this.props.setActionParameterValue(param, weaponID);
-							}}
-							setOriginParameterValue={(param, sq) => {
-								this.setState({
-									selectedSquares: [ sq ]
-								}, () => {
-									param.value = [ sq ];
-									const combatant = this.props.encounter.combatants.find(c => c.combat.current) as CombatantModel;
-									const action = combatant.combat.selectedAction ? combatant.combat.selectedAction.action : null;
-									if (action) {
-										const targetParam = action.parameters.find(a => a.id === 'targets') as ActionTargetParameterModel;
-										ActionLogic.checkTargetParameter(targetParam, this.props.encounter, combatant, action, false);
-									}
-									this.props.setActionParameterValue(param, [ sq ]);
-								});
-							}}
-							setTargetParameterValue={(param, targetIDs) => {
-								this.setState({
-									selectedCombatantIDs: targetIDs
-								}, () => {
-									this.props.setActionParameterValue(param, targetIDs);
-								});
-							}}
-							runAction={this.runAction}
-						/>
-					</div>
-				);
-			}
-		}
+		const currentCombatant = this.props.encounter.combatants.find(c => c.combat.current) as CombatantModel;
 
-		return null;
+		return (
+			<div className='encounter-bottom-panel'>
+				<ActionControls
+					combatant={currentCombatant}
+					encounter={this.props.encounter}
+					game={this.props.game}
+					developer={this.props.options.developer}
+					currentActionParameter={this.state.selectedActionParameter}
+					collapsed={!this.state.showBottomPanel}
+					toggleCollapsed={() => this.toggleBottomPanel()}
+					drawActions={this.props.drawActions}
+					selectAction={this.selectAction}
+					deselectAction={this.deselectAction}
+					setActionParameter={this.setActionParameter}
+					setWeaponParameterValue={(param, weaponID) => {
+						this.props.setActionParameterValue(param, weaponID);
+					}}
+					setOriginParameterValue={(param, sq) => {
+						this.setState({
+							selectedSquares: [ sq ]
+						}, () => {
+							param.value = [ sq ];
+							const combatant = this.props.encounter.combatants.find(c => c.combat.current) as CombatantModel;
+							const action = combatant.combat.selectedAction ? combatant.combat.selectedAction.action : null;
+							if (action) {
+								const targetParam = action.parameters.find(a => a.id === 'targets') as ActionTargetParameterModel;
+								ActionLogic.checkTargetParameter(targetParam, this.props.encounter, combatant, action, false);
+							}
+							this.props.setActionParameterValue(param, [ sq ]);
+						});
+					}}
+					setTargetParameterValue={(param, targetIDs) => {
+						this.setState({
+							selectedCombatantIDs: targetIDs
+						}, () => {
+							this.props.setActionParameterValue(param, targetIDs);
+						});
+					}}
+					runAction={this.runAction}
+				/>
+			</div>
+		);
 	};
 
 	getLeftControls = () => {
@@ -908,10 +966,7 @@ export class EncounterScreen extends Component<Props, State> {
 	};
 
 	getRightControls = () => {
-		let state = this.state.manualEncounterState;
-		if (state === EncounterState.Active) {
-			state = EncounterLogic.getEncounterState(this.props.encounter);
-		}
+		const state = this.getEncounterState();
 		if (state !== EncounterState.Active) {
 			return (
 				<div className='encounter-right-column'>
@@ -986,6 +1041,13 @@ export class EncounterScreen extends Component<Props, State> {
 					/>
 				</div>
 			);
+		}
+
+		// Beside the map, a closed right panel leaves a strip behind showing whose turn it is. Over
+		// the map there is nothing to leave it in: the map is the whole screen, and the toolbar
+		// button is what brings the panel back.
+		if (this.panelsOverMap()) {
+			return null;
 		}
 
 		return (
@@ -1065,37 +1127,81 @@ export class EncounterScreen extends Component<Props, State> {
 		return null;
 	};
 
+	getMap = () => {
+		return (
+			<EncounterMapPanel
+				ref={this.mapRef}
+				encounter={this.props.encounter}
+				squareSize={this.state.mapSquareSize}
+				selectableCombatantIDs={this.state.selectableCombatantIDs}
+				selectableLootIDs={this.state.selectableLootIDs}
+				selectableTrapIDs={this.state.selectableTrapIDs}
+				selectableSquares={this.state.selectableSquares}
+				selectedCombatantIDs={this.state.selectedCombatantIDs}
+				selectedLootIDs={this.state.selectedLootIDs}
+				selectedTrapIDs={this.state.selectedTrapIDs}
+				selectedSquares={this.state.selectedSquares}
+				onClickCombatant={this.selectCombatant}
+				onClickLoot={this.selectLoot}
+				onClickTrap={this.selectTrap}
+				onClickSquare={this.selectSquare}
+				onClickOff={this.clearSelection}
+			/>
+		);
+	};
+
 	render = () => {
 		const top = this.getTopControls();
 		const bottom = this.getBottomControls();
 		const left = this.getLeftControls();
 		const right = this.getRightControls();
 
-		if (OrientationLogic.isPortrait(this.props.layout.orientation)) {
+		const className = `encounter-screen ${OrientationLogic.getClassName(this.props.layout.orientation)}`;
+
+		// There is not room for the panels beside or below the map, so they go over it instead and
+		// the map keeps the whole screen underneath. Only one is over it at a time: the state says
+		// so, except for the right-hand panel, which shows itself unasked when the round or the
+		// encounter is waiting on the player. One the player opened wins over that, so opening a
+		// panel is never a tap that appears to do nothing.
+		if (this.panelsOverMap()) {
+			let sheet = null;
+			if (left) {
+				sheet = <div className='encounter-sheet left'>{left}</div>;
+			} else if (bottom && this.state.showBottomPanel) {
+				sheet = <div className='encounter-sheet bottom'>{bottom}</div>;
+			} else if (right) {
+				sheet = <div className='encounter-sheet right'>{right}</div>;
+			}
+
 			return (
-				<div className={`encounter-screen ${OrientationLogic.getClassName(this.props.layout.orientation)}`}>
+				<div className={className}>
 					{top}
 					<div className='encounter-main-panel'>
 						<div className='encounter-central-column'>
 							<div className='encounter-center-panel'>
-								<EncounterMapPanel
-									ref={this.mapRef}
-									encounter={this.props.encounter}
-									squareSize={this.state.mapSquareSize}
-									selectableCombatantIDs={this.state.selectableCombatantIDs}
-									selectableLootIDs={this.state.selectableLootIDs}
-									selectableTrapIDs={this.state.selectableTrapIDs}
-									selectableSquares={this.state.selectableSquares}
-									selectedCombatantIDs={this.state.selectedCombatantIDs}
-									selectedLootIDs={this.state.selectedLootIDs}
-									selectedTrapIDs={this.state.selectedTrapIDs}
-									selectedSquares={this.state.selectedSquares}
-									onClickCombatant={this.selectCombatant}
-									onClickLoot={this.selectLoot}
-									onClickTrap={this.selectTrap}
-									onClickSquare={this.selectSquare}
-									onClickOff={this.clearSelection}
-								/>
+								{this.getMap()}
+							</div>
+							{
+								// Collapsed, the hand is a strip along the bottom of the map saying
+								// it's there; expanded, it's the sheet above.
+								this.state.showBottomPanel ? null : bottom
+							}
+						</div>
+						{sheet}
+					</div>
+					{this.getDialog()}
+				</div>
+			);
+		}
+
+		if (OrientationLogic.isPortrait(this.props.layout.orientation)) {
+			return (
+				<div className={className}>
+					{top}
+					<div className='encounter-main-panel'>
+						<div className='encounter-central-column'>
+							<div className='encounter-center-panel'>
+								{this.getMap()}
 							</div>
 							{bottom}
 						</div>
@@ -1114,30 +1220,13 @@ export class EncounterScreen extends Component<Props, State> {
 		}
 
 		return (
-			<div className={`encounter-screen ${OrientationLogic.getClassName(this.props.layout.orientation)}`}>
+			<div className={className}>
 				{top}
 				<div className='encounter-main-panel'>
 					{left}
 					<div className='encounter-central-column'>
 						<div className='encounter-center-panel'>
-							<EncounterMapPanel
-								ref={this.mapRef}
-								encounter={this.props.encounter}
-								squareSize={this.state.mapSquareSize}
-								selectableCombatantIDs={this.state.selectableCombatantIDs}
-								selectableLootIDs={this.state.selectableLootIDs}
-								selectableTrapIDs={this.state.selectableTrapIDs}
-								selectableSquares={this.state.selectableSquares}
-								selectedCombatantIDs={this.state.selectedCombatantIDs}
-								selectedLootIDs={this.state.selectedLootIDs}
-								selectedTrapIDs={this.state.selectedTrapIDs}
-								selectedSquares={this.state.selectedSquares}
-								onClickCombatant={this.selectCombatant}
-								onClickLoot={this.selectLoot}
-								onClickTrap={this.selectTrap}
-								onClickSquare={this.selectSquare}
-								onClickOff={this.clearSelection}
-							/>
+							{this.getMap()}
 						</div>
 						{bottom}
 					</div>

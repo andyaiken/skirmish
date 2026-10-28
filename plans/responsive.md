@@ -511,10 +511,8 @@ In increasing order of difficulty, which is also roughly increasing order of how
 4. **Setup.** Has a portrait variant already; needs the two 500px panels unpinned and the carousel
    dealt with.
 5. **Encounter.** The real work, and where the Phase 0 catalogue and the Option 1/2 decision meet.
-   Start by simply letting the existing portrait layout run at phone width and playing an encounter
-   on a real device. If the two-column side panel is as cramped as expected, convert the side panels
-   to one-at-a-time sheets over the map. The panels already collapse
-   (`.encounter-right-column.collapsed`), so the state to drive it partly exists.
+   The two-column side panel was as cramped as expected, so the side panels - and the hand with
+   them - are now one-at-a-time sheets over the map. Done; see the end of this phase.
 
 There are no component or layout tests - all 16 test files are logic - so verification here is
 visual throughout. The simulator is the tool for Phase 3; the browser pane is fine for Phase 2.
@@ -555,15 +553,15 @@ fixed panels it would have 300pt of map out of 890, against a full iPad's 434. T
 stays `Portrait`, correctly - there the panels sit below the map and get about 313pt each, close to
 an iPad's 374.
 
-**This is deliberately not implemented yet.** Nothing consumes `isSmall` or the `-small` classes, so
-changing the threshold today would be inert, and the constant should be whatever the sliding layout
-turns out to need rather than the estimate above. The shape of the rule is settled; the number is
-Phase 3's to set.
+**Done - see below.** The number never had to be set: `widthForPanelsBesideMap`, which `LayoutLogic`
+already derives from the map's floor plus both panels, says 930 where this estimated ~1000, and it
+says it as a sum of what the game draws rather than as a guess. So the size class was already asking
+exactly the question the sliding layout needed, and the layout consumes `isSmall` as it stands.
 
-When it is implemented, compose it in JavaScript from separate queries rather than writing one
-compound `(orientation: landscape) and (max-width: ...)` query - the orientation and the width
-update independently during a rotation, and keeping them apart makes that easier to reason about
-than a compound query that can briefly match neither.
+The rule is composed in JavaScript from separate queries rather than written as one compound
+`(orientation: landscape) and (max-width: ...)` query - the orientation and the width update
+independently during a rotation, and keeping them apart is easier to reason about than a compound
+query that can briefly match neither.
 
 
 ### Run on an iPhone — 28 October 2026
@@ -605,7 +603,7 @@ file.
   the Help button runs flush to the bottom edge, inside the swipe-up zone. This is the Phase 4 item,
   now confirmed rather than predicted.
 - The two side panels below the map are as cramped as the measurements suggested. That is what the
-  sliding panels are for.
+  sliding panels are for - now built, below.
 
 ### The page selector becomes a rail when the phone is sideways
 
@@ -657,6 +655,117 @@ is the same decision seen from the other end - the app-wide inset was chosen for
 edges want revisiting for a phone. Worth doing together, with a real device per cutout generation
 to check against.
 
+
+### The panels now slide over the map — 28 October 2026
+
+The Phase 3 item, and the last thing on the encounter screen that was broken rather than merely
+tight. On a small layout the two side panels and the hand of action cards are no longer laid out
+beside or below the map: they are sheets over it, one at a time, and the map has the whole screen
+underneath.
+
+**What it was.** Measured in a real encounter, on a hero's turn with the hand showing:
+
+| | Map | The panels |
+|---|---|---|
+| 402x874 | **382x138** | 171 and 205 wide below it, overflowing their own 382pt row |
+| 874x402 | **284x4** | 250 and 300 beside it, the hand taking everything else |
+
+Four pixels of map. Sideways on a phone the game had no board at all, and no arrangement of two
+fixed columns and a 335pt hand inside 297pt of height was ever going to give it one. The portrait
+reading is the one the earlier audit predicted; the landscape one is worse than predicted, because
+the audit was taken before initiative had been rolled and the hand was not yet on screen.
+
+**What it is now**, the same encounter at the same sizes:
+
+| | Map | Map behind an open sheet | The sheet |
+|---|---|---|---|
+| 402x874 | 382x735 | 382x735 | 320 wide, full height |
+| 874x402 | 854x242 | 854x242 | 320 wide, 534pt of map still showing |
+| 890x626 - Duo opened out | 870x466 | 870x466 | 320 wide, 550pt showing |
+| 375x667 | 355x473 | 355x473 | 305 wide - the `calc(100% - 50px)` floor binding |
+
+The map never changes size when a panel opens or closes, which is the substance of the change: the
+panels cost it nothing now, where before they cost it two thirds of the screen.
+
+**It asks the question the size class already answers.** `OrientationLogic.isSmall` is exactly "there
+is not room for the panels where this orientation would put them" - that is what makes a layout
+small - so the screen needed no threshold of its own, and the estimate in the design note above was
+never needed. Change a panel's width and `LayoutLogic` moves the threshold, and the sheets follow.
+
+What had to be decided, and what was decided:
+
+- **Nothing starts open.** Over the map only one panel fits, so opening all three by default is not
+  available; the map gets the screen and the toolbar's three buttons fetch what is wanted. An
+  encounter still opens on something to do, because the round controls show themselves whatever the
+  state says.
+- **One at a time, enforced twice.** Showing one panel puts the others away. That covers the taps;
+  it does not cover a window dragged narrow or a device rotated, which arrive at this layout
+  carrying whatever was open while there was room for all three. So the screen also puts the extras
+  away when it finds them stacked, keeping the right-hand one - that is where the current turn is
+  played. Verified by opening all three at 1024x768 and resizing to 402x874: one sheet, the right.
+- **A panel the player opened wins over the one that shows itself.** The right-hand panel ignores
+  its own toggle when the encounter has ended or the round is waiting to be rolled, which is right -
+  those are the only way on - but it would then sit under or over a panel the player had just asked
+  for. Opening one takes precedence, so no tap looks like it did nothing. Retreating at 402x874 puts
+  the confirmation up with OK and Cancel both reachable, which is the case that matters: Retreat is
+  the only way out of an encounter.
+- **The collapsed right-hand strip goes.** Beside the map a closed right panel leaves a narrow
+  column showing whose turn it is. Over the map there is nothing to leave it in, and 60 of 382pt is
+  too much of the board to spend on it, so on a small layout it is simply not drawn.
+- **The hand is the third sheet, and is allowed the whole board.** Collapsed it stays in flow as the
+  45pt strip of card tops it already was, along the bottom of the map; expanded it slides up over
+  the map. The two at the sides always leave 50pt of board showing, because a panel wants reading
+  against the board behind it. The hand does not: the cards keep their own size, and their text with
+  it, and looking at your hand is a moment of its own.
+
+**The iPad is untouched**, which was the risk in editing a shared stylesheet. Every new rule is
+inside the existing `&.portrait-small, &.landscape-small` block, and the full-sized layouts render
+the same markup as before - the map was lifted into a method of its own only because three layouts
+now draw it. Measured with all three panels open: 1024x768 gives left 250, right 300, map 434x318,
+hand 434x335, and 768x1024 gives side columns of 369 each inside a 748pt row with nothing
+overflowing. Both are what they were.
+
+**The slide** is a 0.2s transform, which composites rather than putting the map's several hundred
+elements through layout - the distinction `index.scss` draws at the top of the file. It is off for
+anyone who has asked for less motion, by either the system setting or the game's own option; the
+sheet then simply appears.
+
+**Two toolbar buttons that did nothing, found by looking at the sheets and fixed.** Both pre-date
+this change and both were there on the iPad too; the sheets made the first one obvious, because a
+panel that will not go away reads differently from a column that was always beside the map.
+
+- The right-hand panel shows the round controls, or the end-of-encounter ones, whether or not it has
+  been asked to - from either of those there is no other way on. So between rounds its button flipped
+  its own icon and nothing moved.
+- The bottom panel holds the hand of whoever's turn it is, so on a monster's turn there is nothing
+  for its button to show at all.
+
+Both are now drawn from what the screen is showing rather than from the flag behind it: the button is
+`disabled`, which the toolbar already does for Zoom at the ends of its range and `index.scss` already
+dims to half opacity, and the right-hand icon reads as open while the panel is up. The conditions
+live in `hasFixedRightControls` and `hasBottomControls`, and `getBottomControls` is built from the
+second of them, so the button and the panel cannot drift apart - which is the same failure the page
+selector had when the markup railed and the stylesheet did not. `getEncounterState` came out of the
+three copies of the manual-override check while they were being read.
+
+| State | Left Panel | Bottom Panel | Right Panel |
+|---|---|---|---|
+| A hero's turn | enabled | enabled | enabled |
+| A monster's turn | enabled | **disabled** | enabled |
+| Between rounds, waiting on Roll Initiative | enabled | **disabled** | **disabled**, icon reads open |
+| Encounter over | the toolbar is the logo instead |
+
+**Three rough edges, all measured, none of them losing anything:**
+
+- At 402pt of height the hand is 335pt of cards in 297pt, so it scrolls 48pt to reach the card
+  footers. Shrinking the cards instead was tried on paper and rejected: a card's text does not scale
+  with it, so a 141pt card trades a short scroll of the hand for a permanent one inside every card.
+- With an action chosen, the card and its details column are 580pt of content in a 372pt row, so Go,
+  Cancel and the two select-on-map buttons need a horizontal scroll. All four measured reachable,
+  and the row already tells the player to scroll it.
+- Choosing a target from the hand while sideways on a phone means collapsing the hand to see the
+  board, because there the hand covers it. Upright there is room for both: at 402x874 the map shows
+  the action's whole area of effect above the sheet.
 
 ## Phase 4 — Phone ergonomics
 

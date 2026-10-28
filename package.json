@@ -7,7 +7,7 @@
 		"@capacitor/cli": "^8.5.3",
 		"@capacitor/core": "^8.5.3",
 		"@capacitor/ios": "^8.5.3",
-		"@tabler/icons-react": "^3.49.0",
+		"@tabler/icons-react": "^3.50.0",
 		"localforage": "^1.10.0",
 		"react": "^19.3.1",
 		"react-dom": "^19.3.1",
@@ -26,10 +26,10 @@
 		"eslint-plugin-react": "^7.37.5",
 		"eslint-plugin-react-hooks": "^7.1.1",
 		"globals": "^17.13.0",
-		"sass": "^1.105.2",
+		"sass": "^1.106.1",
 		"typescript": "^6.0.3",
-		"typescript-eslint": "^8.71.2",
-		"vite": "^8.3.4",
+		"typescript-eslint": "^8.72.1",
+		"vite": "^8.3.5",
 		"vitest": "^5.0.5"
 	},
 	"scripts": {

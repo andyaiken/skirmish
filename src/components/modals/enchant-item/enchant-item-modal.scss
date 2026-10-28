@@ -10,6 +10,6 @@
 	// This dialog nests inside the item chooser, so it has to say so itself.
 	&.enchantment-selection .card-selection-row {
 		// Three enchantments, held close enough together to be compared.
-		width: 650px;
+		width: min(650px, 100%);
 	}
 }

@@ -1,6 +1,6 @@
 .level-up {
 	margin: 0 auto;
-	width: 650px;
+	width: min(650px, 100%);
 	display: flex;
 	flex-direction: column;
 

@@ -11,7 +11,7 @@
 
 		.card-selection-row {
 			margin: 0 auto;
-			width: 650px;
+			width: min(650px, 100%);
 		}
 	}
 

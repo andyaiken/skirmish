@@ -51,18 +51,25 @@
 	}
 
 	.encounter-top-panel {
-		flex: 0 0 75px;
+		// Tall enough for a combatant row, and taller when the toolbar needs a second line. A fixed
+		// height would cut off whichever buttons didn't fit across one - Retreat among them, which is
+		// the only way out of an encounter - and the screen clips rather than scrolls, so they would
+		// be gone rather than merely out of sight. The children stretch to whatever height it settles
+		// on, which is what the removed `height: 100%` used to do while the height was fixed.
+		flex: 0 0 auto;
+		min-height: 75px;
 		display: flex;
-		align-items: center;
+		align-items: stretch;
 		gap: 10px;
 
 		.encounter-toolbar {
-			height: 100%;
 			flex: 1 1 0;
-			padding: 0 20px;
+			padding: 5px 20px;
 			display: flex;
+			flex-wrap: wrap;
 			align-items: center;
 			justify-content: space-between;
+			row-gap: 5px;
 			border: 2px solid var(--border);
 			border-radius: 10px;
 			background-color: white;
@@ -79,7 +86,6 @@
 
 		.action-container {
 			flex: 0 0 300px;
-			height: 100%;
 			display: flex;
 			align-items: center;
 			justify-content: center;

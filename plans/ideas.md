@@ -1,7 +1,6 @@
 # Improvements / Enhancements
 
-## Stringhold View
-* Structures should show what they are, and their charge state
+## Stronghold View
 * People should sometimes say things
 
 ## Encounters
@@ -21,8 +20,8 @@
 ## Keys
 * Another sort of consumable item, like a potion
 * Make doors lockable
-  * Thieves can pick locks
 * Destroyed when used to lock / unlock
+* Lockpicking is an extra skill, granted to eg thieves
 
 ## Blur Aura
 * Mountebank, Ninja, Sensei, and Pixie should have a blur aura
@@ -53,22 +52,6 @@
 
 # Content Ideas
 
-## Ideas for Species
-* Small:
-  * Pixie, Gnome, Goblin, Scarab
-  * Can't be size 0 - that'll mess with grid sizing - needs to be a quirk
-  * Probably just a display effect, rather than a mechanical effect
-* Quirks:
-  * Insubstantial / phasing / ghostly
-    * Takes half damage from physical damage
-    * Move through / see through walls
-    * No movement penalty for obstructed terrain
-* Kobold
-* Demon
-* Beasts:
-  * Dragon
-  * Kruthik / Ankheg
-
 ## Ideas for Structures
 
 | Structure     | Effect                                                            | Pack    |
@@ -90,9 +73,3 @@
   * Gallery
   * Theatre
   * Gardens
-
-# Tech Debt
-
-* Convert to functional components, using hooks
-* Convert to React Native / Electron
-* Port to ipadOS, macOS

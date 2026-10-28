@@ -758,7 +758,7 @@ export class EncounterScreen extends Component<Props, State> {
 						<button className='icon-btn' title='Bottom Panel' onClick={() => this.toggleBottomPanel()}>
 							{this.state.showBottomPanel ? <IconLayoutBottombarCollapseFilled /> : <IconLayoutBottombarExpandFilled />}
 						</button>
-						<button className='icon-btn' title='Right Panal' onClick={() => this.toggleRightPanel()}>
+						<button className='icon-btn' title='Right Panel' onClick={() => this.toggleRightPanel()}>
 							{this.state.showRightPanel ? <IconLayoutSidebarRightCollapseFilled /> : <IconLayoutSidebarRightExpandFilled />}
 						</button>
 					</div>

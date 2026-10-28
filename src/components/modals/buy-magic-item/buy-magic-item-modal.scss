@@ -3,6 +3,6 @@
 
 	.card-selection-row {
 		margin: 20px auto;
-		width: 650px;
+		width: min(650px, 100%);
 	}
 }

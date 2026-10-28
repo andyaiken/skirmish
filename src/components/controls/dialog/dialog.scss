@@ -12,7 +12,11 @@
 .dialog {
 	position: absolute;
 	width: calc(100% - 60px);
-	min-width: 724px;
+	// The floor keeps a dialog wide enough to lay a hand of cards out in three columns, but it
+	// has to give way on a screen narrower than the floor itself. The dialog is centred with a
+	// transform, so an over-wide one hangs off both edges, taking the close button out of reach -
+	// and everything here is clipped rather than scrolled, so there is no way to bring it back.
+	min-width: min(724px, calc(100% - 20px));
 	max-width: 1200px;
 	left: 50%;
 	transform: translateX(-50%);

@@ -6,6 +6,10 @@
 	// phone's height, so this screen scrolls rather than cutting the card off.
 	overflow-y: auto;
 	-webkit-overflow-scrolling: touch;
+	// The Help button is the last thing on the screen and ended 24pt inside the home indicator's
+	// strip. Because the screen scrolls this is scroll extent rather than a gap: it only shows
+	// once there is nothing left to scroll to.
+	padding-bottom: var(--bottom-inset);
 
 	&.portrait {
 		.landing-content {

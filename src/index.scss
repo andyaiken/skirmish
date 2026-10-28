@@ -36,6 +36,18 @@
 	--good: rgb(0, 100, 0);
 	--bad: rgb(160, 0, 0);
 	--bad-light: rgb(255, 240, 240);
+
+	// Apple's floor for anything you tap. Every button is at least this tall, and the handful of
+	// places that pin an icon button's width hold it to the same number so the buttons stay square.
+	// LayoutLogic.minTouchTarget is the same figure, where the sums the layout is made of need it.
+	--touch-target: 44px;
+
+	// How much of the bottom edge belongs to the system rather than to the game. The home
+	// indicator sits in it and a swipe up from it goes home, so a control whose whole target
+	// is inside it is one the player has to be careful to press. Named rather than written as
+	// env() at each use so that there is one place to read the policy, and so that it can be
+	// given a value to lay the app out against, which env() itself cannot be.
+	--bottom-inset: env(safe-area-inset-bottom);
 }
 
 html,
@@ -47,11 +59,17 @@ body,
 
 #root {
 	// The webview runs edge to edge (viewport-fit=cover above), so the whole app is
-	// inset once here rather than in every screen that reaches a corner. Not at the bottom:
-	// that inset is the home indicator's, which fades out while playing (SystemBars in
-	// capacitor.config.ts), and every screen ends in scrolling content that can run beneath
-	// it - taps there work as normal, only a swipe up from the edge goes home. Keeping the
-	// inset left an empty strip along the bottom of the screen.
+	// inset once here rather than in every screen that reaches a corner. Not at the bottom,
+	// where reserving it for the whole app left a strip below every screen whether anything
+	// needed one or not - and where it would also add to whatever padding the screen already
+	// had, which on a phone is 34pt of nothing on top of the screen's own 10.
+	//
+	// It was dropped altogether on the grounds that every screen ends in scrolling content,
+	// which can run under the indicator because only a swipe from the edge goes home. Two
+	// screens don't: the landing screen ends in the Help button and the encounter screen in
+	// the strip that opens your hand, and measured on a phone both sat inside it. So the
+	// screens that end in something tappable now keep their own bottom spacing clear of it
+	// with max(10px, var(--bottom-inset)), and content that only has to be seen still runs under.
 	padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
 }
 
@@ -181,7 +199,11 @@ hr {
 button {
 	margin: 10px 0;
 	padding: 6px;
-	min-height: 40px;
+	// Apple asks for 44pt square on anything you tap. It costs an iPad nothing - its buttons had
+	// room to spare at 40 - and on a phone it is the difference between a button you press and one
+	// you aim at. The one place it does not reach is the encounter toolbar on a small layout, where
+	// nine buttons have to fit across a phone and 44 apiece would not; see encounter-screen.scss.
+	min-height: var(--touch-target);
 	font-family: 'PT Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 	font-size: 15px;
 	text-transform: uppercase;

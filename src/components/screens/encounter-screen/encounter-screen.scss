@@ -1,6 +1,9 @@
 .encounter-screen {
 	height: 100%;
-	padding: 10px;
+	// The hand's collapsed strip sits along the bottom of the map and is what you press to see
+	// your cards, so it has to clear the indicator; measured on a phone it was wholly inside it.
+	// max() rather than both, so the screen's own 10pt is absorbed rather than added to.
+	padding: 10px 10px max(10px, var(--bottom-inset)) 10px;
 	display: flex;
 	flex-direction: column;
 	gap: 10px;
@@ -27,11 +30,26 @@
 				gap: 0;
 				min-width: 0;
 
+				// Nine of these across a phone is 360pt at 40 apiece, which fits from 375pt up once
+				// the padding and gaps are gone. At the 44 index.scss asks for they would be 396
+				// and would not, and the second line that bought would cost the map more than the
+				// 4pt is worth - so this is the one place in the game below the guidance.
 				.icon-btn {
 					flex: 0 1 40px;
 					min-width: 30px;
+					min-height: 40px;
 				}
 			}
+		}
+
+		// The top panel goes to the bottom, where a thumb can reach it. It holds the toolbar and
+		// the button that ends your turn - the things pressed most often in an encounter - and at
+		// the top of a 6.9in phone they are the far corner of the screen. The order within the
+		// panel already puts the toolbar above the action button, so at the foot of the screen the
+		// action button is the nearer of the two. It stays at the top on a tablet, where the whole
+		// screen is within reach of the hand holding it and the map wants the lower half.
+		.encounter-top-panel {
+			order: 1;
 		}
 
 		// There is no room for the panels beside or below the map - which is what makes the layout
@@ -252,6 +270,23 @@
 
 		.encounter-left-column {
 			flex: 0 0 250px;
+
+			&.collapsed {
+				flex: 0 0 auto;
+				align-items: center;
+				gap: 5px;
+				padding: 5px 10px;
+				overflow-x: hidden;
+				overflow-y: auto;
+				-webkit-overflow-scrolling: touch;
+				cursor: e-resize;
+
+				// The tokens keep their size and the column scrolls where there are more combatants
+				// than there is height for, rather than squashing them to fit.
+				.encounter-map-mini-token {
+					flex: 0 0 auto;
+				}
+			}
 		}
 
 		.encounter-right-column {

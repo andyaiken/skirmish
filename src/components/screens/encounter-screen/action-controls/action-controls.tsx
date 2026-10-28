@@ -1,4 +1,5 @@
-import { Component, ReactNode } from 'react';
+import { Component, ReactNode, createRef } from 'react';
+import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 
 import { CardType } from '../../../../enums/card-type';
 import { StructureType } from '../../../../enums/structure-type';
@@ -36,7 +37,83 @@ interface Props {
 	runAction: (encounter: EncounterModel, combatant: CombatantModel) => void;
 }
 
-export class ActionControls extends Component<Props> {
+interface State {
+	canScrollLeft: boolean;
+	canScrollRight: boolean;
+}
+
+export class ActionControls extends Component<Props, State> {
+	constructor(props: Props) {
+		super(props);
+		this.state = {
+			canScrollLeft: false,
+			canScrollRight: false
+		};
+	}
+
+	contentRef = createRef<HTMLDivElement>();
+
+	componentDidMount = () => {
+		this.updateScroll();
+		// How much of the row is past the edge depends on how wide the row is.
+		window.addEventListener('resize', this.updateScroll);
+	};
+
+	componentDidUpdate = () => {
+		// Drawing a new hand, or choosing a card, changes what is in the row and so what is off
+		// the end of it. This runs after every one of those.
+		this.updateScroll();
+	};
+
+	componentWillUnmount = () => {
+		window.removeEventListener('resize', this.updateScroll);
+	};
+
+	// Whether there is anything past each end of the row, which is all the arrows say. A pixel of
+	// slack either side, because a scroll position is fractional and a row scrolled all the way
+	// over rarely comes out exactly equal. Nothing is set unless an answer changed, so this is
+	// safe to call from componentDidUpdate.
+	updateScroll = () => {
+		const content = this.contentRef.current;
+		if (!content) {
+			return;
+		}
+
+		const canScrollLeft = content.scrollLeft > 1;
+		const canScrollRight = (content.scrollLeft + content.clientWidth) < (content.scrollWidth - 1);
+
+		if ((canScrollLeft !== this.state.canScrollLeft) || (canScrollRight !== this.state.canScrollRight)) {
+			this.setState({
+				canScrollLeft: canScrollLeft,
+				canScrollRight: canScrollRight
+			});
+		}
+	};
+
+	// How far one press moves the row: a card and the gap after it, read from the row rather than
+	// written down here, so it follows whatever size the cards are. The row holding a chosen action
+	// has a card and a column of details in it rather than a hand, and there most of the width is
+	// the right amount to move.
+	getScrollStep = () => {
+		const content = this.contentRef.current;
+		if (!content) {
+			return 0;
+		}
+
+		const card = content.querySelector('.playing-card');
+		if (!card) {
+			return content.clientWidth * 0.8;
+		}
+
+		return card.getBoundingClientRect().width + (parseFloat(getComputedStyle(content).columnGap) || 0);
+	};
+
+	scrollRow = (direction: -1 | 1) => {
+		// Smoothly or not is the stylesheet's business, so that it can be turned off along with
+		// the rest of the motion the game makes.
+		this.contentRef.current?.scrollBy({ left: direction * this.getScrollStep() });
+	};
+
 	showParameter = (parameter: ActionParameterModel) => {
 		switch (parameter.id) {
 			case 'weapon':
@@ -106,13 +183,13 @@ export class ActionControls extends Component<Props> {
 		}
 
 		return (
-			<div key='not-selected' className='action-controls-content'>
+			<>
 				{actionCards}
 				{benefit ? <div className='separator' /> : null}
 				{benefit}
 				{baseCards.length > 0 ? <div className='separator' /> : null}
 				{baseCards}
-			</div>
+			</>
 		);
 	};
 
@@ -159,7 +236,7 @@ export class ActionControls extends Component<Props> {
 		});
 
 		return (
-			<div key={action.id} className='action-controls-content'>
+			<>
 				<ActionCard
 					action={action}
 					footer={CombatantLogic.getActionSource(this.props.combatant, action.id)}
@@ -185,7 +262,7 @@ export class ActionControls extends Component<Props> {
 						</button>
 					</div>
 				</div>
-			</div>
+			</>
 		);
 	};
 
@@ -204,7 +281,7 @@ export class ActionControls extends Component<Props> {
 		}
 
 		return (
-			<div key={action.id + ' used'} className='action-controls-content'>
+			<>
 				<ActionCard
 					action={action}
 					footer={CombatantLogic.getActionSource(this.props.combatant, action.id)}
@@ -219,28 +296,20 @@ export class ActionControls extends Component<Props> {
 						{this.props.combatant.combat.movement > 0 ? <p>You still have some movement points you can use.</p> : null }
 					</Text>
 				</div>
-			</div>
+			</>
 		);
 	};
 
 	render = () => {
-		let banner = null;
-		let content = null;
-		if (this.props.combatant.combat.selectedAction) {
-			if (this.props.combatant.combat.selectedAction.used) {
-				content = this.getUsed(this.props.combatant.combat.selectedAction.action);
-			} else {
-				content = this.getInProgress(this.props.combatant.combat.selectedAction.action);
-			}
-		} else {
-			if (!this.props.collapsed) {
-				banner = (
-					<div className='banner'>
-						Scroll left and right to see all the action cards in your hand.
-					</div>
-				);
-			}
-			content = this.getNotSelected();
+		// The key is the row's: it changes when the row's contents are replaced wholesale, which
+		// remounts it and so puts it back to the left rather than leaving it scrolled to where the
+		// last set of cards happened to be.
+		let key = 'not-selected';
+		let content = this.getNotSelected();
+		const selected = this.props.combatant.combat.selectedAction;
+		if (selected) {
+			key = selected.used ? `${selected.action.id} used` : selected.action.id;
+			content = selected.used ? this.getUsed(selected.action) : this.getInProgress(selected.action);
 		}
 
 		return (
@@ -253,8 +322,33 @@ export class ActionControls extends Component<Props> {
 					}
 				}}
 			>
-				{banner}
-				{content}
+				<div key={key} ref={this.contentRef} className='action-controls-content' onScroll={this.updateScroll}>
+					{content}
+				</div>
+				{
+					// Which way the row has more to show, and a press that goes there. Not while
+					// it's shut: it doesn't scroll then, and the strip has no room to say anything.
+					// There is no disabled state because an arrow with nowhere to go isn't drawn.
+					this.props.collapsed ?
+						null
+						:
+						<>
+							{
+								this.state.canScrollLeft ?
+									<button className='scroll-arrow left' title='Scroll left' onClick={e => { e.stopPropagation(); this.scrollRow(-1); }}>
+										<IconChevronLeft />
+									</button>
+									: null
+							}
+							{
+								this.state.canScrollRight ?
+									<button className='scroll-arrow right' title='Scroll right' onClick={e => { e.stopPropagation(); this.scrollRow(1); }}>
+										<IconChevronRight />
+									</button>
+									: null
+							}
+						</>
+				}
 			</div>
 		);
 	};

@@ -5,6 +5,7 @@ import { ScreenType } from '../../enums/screen-type';
 
 import { LayoutLogic } from '../../logic/layout/layout-logic';
 
+import { useHeightAtLeast, useIsLandscape, useWidthAtLeast } from '../../utils/available-space/available-space';
 import { useMediaQuery } from '../../utils/media-query/media-query';
 
 import type { GameModel } from '../../models/game';
@@ -43,12 +44,18 @@ export const Layout = (props: Props) => {
 	// component with hooks - the screens are classes. Each is about room for one particular thing,
 	// and the sizes they come from are in LayoutLogic. They are all asked every time, so the hooks
 	// keep their order, and a screen reads the ones it cares about.
-	const isLandscape = useMediaQuery(LayoutLogic.queries.landscape);
+	//
+	// Of the space the app has rather than of the window, because they are not the same thing and
+	// the difference is a layout: on the largest iPhones held sideways the safe area takes 124pt
+	// off the width, which is the difference between the encounter screen's roomy layout and a map
+	// squeezed to 242pt. The gate above still asks the window, because its own numbers were chosen
+	// against window sizes and re-scoping it is Phase 5's.
+	const isLandscape = useIsLandscape();
 	const layout = LayoutLogic.getModel(isLandscape, {
-		roomForPanelsBesideMap: useMediaQuery(LayoutLogic.queries.panelsBesideMap),
-		roomForPanelsBelowMap: useMediaQuery(LayoutLogic.queries.panelsBelowMap),
-		roomForSelectorBand: useMediaQuery(LayoutLogic.queries.selectorBand),
-		roomForBranding: useMediaQuery(LayoutLogic.queries.branding)
+		roomForPanelsBesideMap: useWidthAtLeast(LayoutLogic.widthForPanelsBesideMap),
+		roomForPanelsBelowMap: useWidthAtLeast(LayoutLogic.widthForPanelsBelowMap),
+		roomForSelectorBand: useHeightAtLeast(LayoutLogic.heightForSelectorBand),
+		roomForBranding: useWidthAtLeast(LayoutLogic.widthForBranding)
 	});
 
 	return (

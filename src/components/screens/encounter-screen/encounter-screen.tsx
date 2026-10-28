@@ -48,6 +48,7 @@ import { ActionControls } from './action-controls/action-controls';
 import { CharacterSheetModal } from '../../modals';
 import { EncounterControls } from './encounter-controls/encounter-controls';
 import { HeroControls } from './hero-controls/hero-controls';
+import { MiniToken } from '../../panels/encounter-map/mini-token/mini-token';
 import { MonsterControls } from './monster-controls/monster-controls';
 import { RoundControls } from './round-controls/round-controls';
 
@@ -962,7 +963,39 @@ export class EncounterScreen extends Component<Props, State> {
 			);
 		}
 
-		return null;
+		// Beside the map a closed panel leaves a strip behind rather than nothing, as the right-hand
+		// one does: the turn order in tokens, which is the one thing in this panel worth keeping in
+		// sight when it is shut - whose turn it is, who is next, who is down. The same combatants
+		// the list holds, in the same order. Over the map there is no room for it, for the reason
+		// in getRightControls.
+		if (this.panelsOverMap()) {
+			return null;
+		}
+
+		const combatants = [
+			...EncounterLogic.getActiveCombatants(this.props.encounter),
+			...EncounterLogic.getActedCombatants(this.props.encounter),
+			...EncounterLogic.getDeadCombatants(this.props.encounter)
+		];
+
+		return (
+			<div className='encounter-left-column collapsed' onClick={() => this.toggleLeftPanel()}>
+				{
+					combatants.map(combatant => (
+						<MiniToken
+							key={combatant.id}
+							combatant={combatant}
+							encounter={null}
+							squareSize={40}
+							mapDimensions={{ left: 0, top: 0 }}
+							selectable={true}
+							selected={this.state.selectedCombatantIDs.includes(combatant.id)}
+							onClick={this.selectCombatant}
+						/>
+					))
+				}
+			</div>
+		);
 	};
 
 	getRightControls = () => {

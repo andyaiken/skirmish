@@ -73,6 +73,9 @@
 		flex: 1 1 0;
 		overflow-x: hidden;
 		overflow-y: hidden;
-		padding: 0 10px 10px 10px;
+		// The pages inside scroll, and a region's Start an Encounter and Buy this Region buttons can
+		// be the last thing in one, so this screen keeps the strip clear as well. max() rather than
+		// both, so the page's own 10pt is absorbed into it rather than added to it.
+		padding: 0 10px max(10px, var(--bottom-inset)) 10px;
 	}
 }

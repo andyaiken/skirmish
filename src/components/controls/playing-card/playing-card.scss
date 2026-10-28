@@ -59,7 +59,11 @@
 
 				.card-footer-text {
 					flex: 1 1 0;
-					font-size: 10px;
+					// 11px rather than 10 because 11 is the floor Apple gives for text at all, and
+					// at 10 this was the only thing in the game below it. The cards keep their size
+					// on a phone - the hand slides over the map rather than being squeezed beside
+					// it - so the footer had room for the extra pixel without anything else moving.
+					font-size: 11px;
 					text-transform: uppercase;
 					letter-spacing: 1.5px;
 					font-weight: 600;
@@ -81,7 +85,7 @@
 					align-items: center;
 
 					.icon-btn {
-						flex: 0 0 40px;
+						flex: 0 0 var(--touch-target);
 					}
 				}
 			}

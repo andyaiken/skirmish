@@ -45,12 +45,15 @@
 			background: none;
 		}
 
+		// These two opt out of the app's button sizing above, so the touch target has to be put
+		// back by hand. The arrow is the whole square; a dot is eight pixels of paint inside a
+		// target the size of every other control in the game.
 		.carousel-arrow {
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			width: 32px;
-			height: 32px;
+			width: var(--touch-target);
+			height: var(--touch-target);
 			color: var(--text);
 			cursor: pointer;
 
@@ -63,16 +66,27 @@
 		.carousel-dots {
 			display: flex;
 			align-items: center;
-			gap: 8px;
+			// No gap of its own: the space between the dots is the part of each one's target that
+			// isn't painted, so the two can't drift apart.
+			gap: 0;
 
 			.carousel-dot {
-				width: 8px;
-				height: 8px;
-				border-radius: 50%;
-				background-color: var(--border);
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				width: 24px;
+				height: var(--touch-target);
 				cursor: pointer;
 
-				&.selected {
+				&::before {
+					content: '';
+					width: 8px;
+					height: 8px;
+					border-radius: 50%;
+					background-color: var(--border);
+				}
+
+				&.selected::before {
 					background-color: var(--primary);
 				}
 			}

@@ -23,7 +23,7 @@ describe('LayoutLogic', () => {
 			expect(LayoutLogic.widthForPanelsBesideMap).toEqual(930);
 			expect(LayoutLogic.widthForPanelsBelowMap).toEqual(500);
 			expect(LayoutLogic.heightForSelectorBand).toEqual(587);
-			expect(LayoutLogic.widthForBranding).toEqual(470);
+			expect(LayoutLogic.widthForBranding).toEqual(473);
 		});
 	});
 

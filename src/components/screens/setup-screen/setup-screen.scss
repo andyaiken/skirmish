@@ -10,6 +10,9 @@
 	// a screen with room for all of it is unaffected.
 	overflow-y: auto;
 	-webkit-overflow-scrolling: touch;
+	// As on the landing screen: this one ends in the Help button, and it scrolls, so this is
+	// scroll extent rather than a gap.
+	padding-bottom: var(--bottom-inset);
 
 	&.portrait {
 		.setup-content {

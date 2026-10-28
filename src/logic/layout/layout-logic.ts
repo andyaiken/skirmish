@@ -9,6 +9,10 @@ import { OrientationLogic } from '../orientation/orientation-logic';
 // from a phone's width is right until something arrives that is not a phone, and then it is wrong
 // in a way that no amount of adjusting it fixes. Change what the game draws and these follow.
 export class LayoutLogic {
+	// Apple's floor for anything you tap, and what index.scss gives every button. It is here
+	// because the sums below are made of buttons, so raising it has to move them with it.
+	static minTouchTarget = 44;
+
 	// --- the encounter screen's map and panels ---
 	//
 	// It is the only screen that puts two panels beside or below the map, so it runs out of room
@@ -41,7 +45,8 @@ export class LayoutLogic {
 
 	static brandingWidth = 175;
 	static moneyWidth = 90;
-	static topBarButtonsWidth = 100;
+	// The packs button and the help button, with the gap between them.
+	static topBarButtonsWidth = (LayoutLogic.minTouchTarget * 2) + 15;
 	static topBarSpacing = 105;
 
 	// --- the thresholds those sizes add up to ---
@@ -57,15 +62,6 @@ export class LayoutLogic {
 
 	// Everything the top bar carries, side by side.
 	static widthForBranding = LayoutLogic.brandingWidth + LayoutLogic.moneyWidth + LayoutLogic.topBarButtonsWidth + LayoutLogic.topBarSpacing;
-
-	// The media queries that ask them. Layout holds the hooks, so it is the one place that asks.
-	static queries = {
-		landscape: '(orientation: landscape)',
-		panelsBesideMap: `(min-width: ${LayoutLogic.widthForPanelsBesideMap}px)`,
-		panelsBelowMap: `(min-width: ${LayoutLogic.widthForPanelsBelowMap}px)`,
-		selectorBand: `(min-height: ${LayoutLogic.heightForSelectorBand}px)`,
-		branding: `(min-width: ${LayoutLogic.widthForBranding}px)`
-	};
 
 	static getModel = (isLandscape: boolean, room: Omit<LayoutModel, 'orientation'>): LayoutModel => {
 		// Which of the two panel questions decides it depends on where the panels would go, which

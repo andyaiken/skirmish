@@ -1,4 +1,6 @@
 .action-controls {
+	// The arrows at the ends of the row are placed against this.
+	position: relative;
 
 	&.collapsed {
 		height: 45px;
@@ -17,6 +19,16 @@
 		overflow-x: auto;
 		overflow-y: hidden;
 		-webkit-overflow-scrolling: touch;
+
+		// How the arrows move the row. Smooth only for a player who hasn't asked for less motion -
+		// either by the system setting or by the game's own option, the pair index.scss handles the
+		// same way - and otherwise the row simply arrives, which is the same move without the
+		// travel. A drag is unaffected either way.
+		@media (prefers-reduced-motion: no-preference) {
+			.skirmish:not(.reduce-motion) & {
+				scroll-behavior: smooth;
+			}
+		}
 	
 		.separator {
 			margin: 0 10px;
@@ -40,15 +52,47 @@
 		}
 	}
 
-	.banner {
-		background-color: var(--border);
-		color: rgb(100, 100, 100);
-		font-size: 12px;
-		height: 20px;
+	// Which way the row has more to show, and a press that takes it there. It fades the end of the
+	// row out rather than sitting on top of a card as a button would, which gives the chevron
+	// something plain to be read against; the gradient is the board colour because that is what is
+	// behind the row, beside the map and inside the sheet alike. Wide enough to press, which does
+	// mean the far edge of the card underneath is the arrow's rather than the card's - a fair
+	// trade, since that edge is exactly where you reach when there is more to see.
+	.scroll-arrow {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		width: var(--touch-target);
+		// It is a button, so it arrives with the game's button styling on it; none of that suits
+		// something laid over the row.
+		margin: 0;
+		padding: 0;
+		min-height: 0;
+		border: none;
+		border-radius: 0;
+		background: none;
 		display: flex;
+		flex-direction: row;
 		align-items: center;
-		justify-content: center;
-		border-radius: 5px;
-		margin-bottom: 5px;
+		cursor: pointer;
+		color: rgb(100, 100, 100);
+
+		&.left {
+			left: 0;
+			justify-content: flex-start;
+			background: linear-gradient(to right, var(--control) 40%, transparent);
+		}
+
+		&.right {
+			right: 0;
+			justify-content: flex-end;
+			background: linear-gradient(to left, var(--control) 40%, transparent);
+		}
+
+		// The arrows beat the game's own hover and :not(:disabled) colours on specificity by
+		// being nested here, so the only thing left to say is what a press looks like.
+		&:active {
+			color: var(--text);
+		}
 	}
 }

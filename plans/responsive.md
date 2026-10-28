@@ -725,6 +725,70 @@ now draw it. Measured with all three panels open: 1024x768 gives left 250, right
 hand 434x335, and 768x1024 gives side columns of 369 each inside a 748pt row with nothing
 overflowing. Both are what they were.
 
+**The hand says which way it runs rather than telling you to scroll it.** The row used to carry a
+banner reading *Scroll left and right to see all the action cards in your hand* - 25pt of a phone's
+scarcest dimension spent on a sentence, shown whether the row had anything past its edge or not.
+It is now a chevron at whichever end has more: `ActionControls` watches the row's `scrollLeft`
+against its `scrollWidth` and shows one, both or neither. Each is a button, and pressing it moves
+the row on by a card - a card's width plus the gap after it, read from the row rather than written
+down, so it follows whatever size the cards are. There is no disabled state, because an arrow with
+nowhere to go isn't drawn in the first place.
+
+It fades the end of the row out rather than sitting on top of a card as a button usually would,
+which gives the chevron something plain to be read against; the gradient is the board colour
+because that is what is behind the row, beside the map and inside the sheet alike. At
+`--touch-target` wide it does take the far edge of the card underneath, which is a fair trade -
+that edge is exactly where you reach when there is more to see. The scroll is smooth for a player
+who hasn't asked for less motion, by the system setting or the game's own, and otherwise the row
+simply arrives; dragging it is unaffected either way.
+
+Measured by pressing them: at the left end the right arrow alone, and a press moves the row 210pt,
+which is a 200pt card and the 10pt gap; four presses reach 710 of 710 and the right arrow goes;
+a press on the left brings it back to 500 with both showing. On an iPad the step clamps at the end
+of a shorter row, 156 of 156 in one press. Neither arrow is drawn where nothing is past the edge -
+an iPad with an action chosen fits its 926pt of content in 926pt. They work in the two states the
+banner never appeared in, where the chosen card and its details also run past the edge. Losing the
+banner gave the hand's 25pt back: the sheet is 310pt rather than 335 on a phone, and an iPad's map
+went from 318 to 343.
+
+### A closed panel leaves a strip, and what decides whether it may — 28 October 2026
+
+Two of the three panels already had a collapsed mode and the left one didn't: closing it returned
+`null`, so the space went to the map and the player was told nothing. The right-hand one is the
+opposite - collapsed is as small as it gets, and it can never be fully hidden. The left panel now
+leaves a strip too, a column of `MiniToken`s in the order the initiative list holds them: whose
+turn it is, who is next, who is down. The current one marks itself, because `MiniToken` reads
+`combat.current` whether or not it is being drawn on a map.
+
+The two that existed are not actually the same pattern, which is worth knowing before copying
+either. The hand's is a **peek** - the top 45pt of the real cards, clipped, with `pointer-events`
+off - and it works only because a card's top edge is its title. The right-hand one is a
+**summary**: not the panel clipped at all but a substitute rendering, `CombatantRowPanel`'s
+`column` mode, of the single fact worth keeping. The left-hand one is both at once, which is why
+the tokens could come straight from the list it stands in for.
+
+**What decides whether a strip may have its place is the share of the board it takes**, which is
+the same question the rest of the layout asks, pointed at something else:
+
+| | Strip | The map beside it | Share |
+|---|---|---|---|
+| Left, iPad 1024x768 | 60 wide | 624 wide | 9% |
+| Right, iPad 1024x768 | 68 wide | 926 wide | 7% |
+| Hand, iPad | 45 tall | 584 tall | 8% |
+| Hand, phone 402x874 | 45 tall | 656 tall | 7% |
+| A side strip on a phone | 68 wide | 382 wide | **18%** |
+
+Every strip that exists costs about the same tenth of the board. A side strip on a phone costs
+nearly a fifth of it for one combatant's name, which is why the right-hand one goes when the panels
+become sheets, and why the left-hand one is not drawn there either - measured at 402x874, closing
+it still leaves the map its full 382. The hand keeps its strip on a phone because 45pt of 656 is
+the same seventh of nothing that the others cost.
+
+A token in the strip selects that combatant, as it does in the list; `MiniToken` stops the click,
+so the strip's own handler - which opens the panel - sees only the clicks that missed. The cursor
+says `e-resize`, which reads as *pressing this makes it bigger that way*, matching `w-resize` on
+the right-hand strip and `n-resize` on the hand.
+
 **The slide** is a 0.2s transform, which composites rather than putting the map's several hundred
 elements through layout - the distinction `index.scss` draws at the top of the file. It is off for
 anyone who has asked for less motion, by either the system setting or the game's own option; the
@@ -757,9 +821,10 @@ three copies of the manual-override check while they were being read.
 
 **Three rough edges, all measured, none of them losing anything:**
 
-- At 402pt of height the hand is 335pt of cards in 297pt, so it scrolls 48pt to reach the card
-  footers. Shrinking the cards instead was tried on paper and rejected: a card's text does not scale
-  with it, so a 141pt card trades a short scroll of the hand for a permanent one inside every card.
+- At 402pt of height the hand doesn't quite fit: 310pt of cards in the 276 the sheet has once the
+  home indicator's strip is out, so it scrolls 34pt to reach the card footers. Shrinking the cards
+  instead was tried on paper and rejected: a card's text does not scale with it, so a 141pt card
+  trades a short scroll of the hand for a permanent one inside every card.
 - With an action chosen, the card and its details column are 580pt of content in a 372pt row, so Go,
   Cancel and the two select-on-map buttons need a horizontal scroll. All four measured reachable,
   and the row already tells the player to scroll it.
@@ -785,6 +850,141 @@ Things that are not layout but are not optional either.
   The encounter toolbar is at the top today.
 - **Text.** 15pt body with 0.5px letter-spacing, and 10pt uppercase card footers. The card footers
   will be the first thing to become unreadable when cards shrink.
+
+### All five done — 28 October 2026
+
+Measured at 375x667, 402x874 and 874x402 with the insets a phone actually reports, and checked at
+1024x768 and 768x1024 after each one. `env()` cannot be given a value to test against, so the
+bottom inset is now read through `--bottom-inset`, which can be - that is half the reason for
+naming it.
+
+**The bottom safe area.** `#root` dropped it on the grounds that every screen ends in scrolling
+content, which can run under the home indicator because only a swipe from the edge goes home. Two
+screens don't, and measuring found both:
+
+| | Where it sat | The strip is |
+|---|---|---|
+| Landing, scrolled to the end | Help button at 824-864 | 840-874 |
+| Encounter, hand collapsed | the strip that opens it, 824-874 | 840-874 |
+
+The hand's strip was wholly inside it - the one control in the game you press most and the hardest
+to press. It is now folded into each screen's own bottom spacing with `max()` rather than put back
+at the root, for two reasons. The root's inset would have *added* to the 10pt the screens already
+have, so a phone would lose 44pt where it needs 34; and the author's objection to the strip was that
+every screen got one whether it needed it or not. Four screens take it, and what it costs them:
+
+| | Before | After | Cost |
+|---|---|---|---|
+| Landing, 402x874 | Help at 824-864 | nothing below 840 | scroll extent only |
+| Encounter, 402x874 | map 382x680 | map 382x656 | 24pt |
+| Encounter, 874x402 | map 854x242 | map 854x231 | 11pt |
+| Encounter, 1024x768 iPad | map 930x608 | map 930x598 | 10pt |
+
+**Landscape insets - they hold, and the size class doesn't.** The layout itself is fine inside
+them: simulated at 956x440 with 62pt either side, every screen laid out in the 832pt that leaves
+with nothing clipped. What is not fine is the question being asked. The media queries in
+`LayoutLogic.queries` measure the **viewport**, and the app lives inside the safe area, which on
+the biggest iPhones in landscape is 124pt narrower:
+
+| | Viewport | Usable | Size class | Map, both panels open |
+|---|---|---|---|---|
+| iPhone 16/17 Pro Max landscape | 956 | **832** | `Landscape` - roomy | **242pt** |
+
+So the one device the 930pt threshold exists to protect is the one it lets through: 956 clears it,
+832 does not, and the map ends up at 242 against the 350 floor the threshold is built from. Every
+other size is unaffected - an iPad reports no side insets, and the folding phone at 890 is already
+below the threshold either way. **Fixed; see below.**
+
+### The questions are asked of the room now, not the window — 28 October 2026
+
+`utils/available-space/available-space.ts` measures `#root`'s content box - the element the safe
+area is taken out of, so the one that knows how much is left - and answers `useWidthAtLeast`,
+`useHeightAtLeast` and `useIsLandscape`. `LayoutLogic.queries` is gone with the media queries that
+used it; what is left there is what the file was always for, the sizes and the sums they make.
+
+Deliberately the same shape as `useMediaQuery`, down to the `useSyncExternalStore` and the
+`useCallback`: each hook answers one threshold with a yes or no rather than handing back a size, so
+a render happens only when a threshold is crossed and dragging a window edge costs a measurement
+and nothing more. The alternative - handing the width down - would re-render every screen on every
+frame of a drag, which is the thing Phase 1 wrote the flags to avoid.
+
+It listens for a resize, as `useMediaQuery` does, and also observes `#root` with a `ResizeObserver`.
+The observer is there for the case the resize event cannot catch: on iOS the safe area can settle a
+frame or two after a rotation, and a `resize` has been and gone by then. It also means the width and
+the height always come from one measurement, so they cannot disagree the way two media queries can
+partway through a rotation.
+
+Measured by simulating the insets - which is the other half of why `--bottom-inset` is a named
+property rather than `env()` at each use, since `env()` cannot be given a value to test against:
+
+| Viewport | Insets | Room | Was | Now |
+|---|---|---|---|---|
+| 956x440 | none | 956x440 | `landscape` | `landscape` |
+| 956x440 | 62 a side | **832x440** | `landscape` | **`landscape-small`** |
+| 956x440 | 31 a side | 894x440 | `landscape` | **`landscape-small`** |
+| 874x402 | 59 a side | 756x402 | `landscape-small` | `landscape-small` |
+| 402x874 | 63 top | 402x811 | `portrait-small` | `portrait-small` |
+| 890x626 | none | 890x626 | `landscape-small` | `landscape-small` |
+| 1024x768 | none | 1024x768 | `landscape` | `landscape` |
+| 768x1024 | none | 768x1024 | `portrait` | `portrait` |
+
+The height question moved with it, and it was wrong in the same way for the same reason. At 900x620
+the campaign selector is a band; give it the 63pt top inset a phone has and the room is 900x557, 30
+short of the 587 a band needs, and it is correctly a rail. 1200x400 still rails and 1024x768 still
+bands, as the Phase 1 table says they should.
+
+Two things it does not cover, both on purpose. The gate still asks the window, because its numbers
+were chosen against window sizes and re-scoping it is Phase 5's. And the measured height is short by
+whatever strip the screen reserves for the home indicator itself, because `#root` doesn't carry that
+one - the top inset, which is the larger of the two, is in it.
+
+A note for whoever tests this next: the browser pane does not run rendering steps - a
+`requestAnimationFrame` never fires in it - so a `ResizeObserver` callback cannot be delivered there
+at all. The resize listener is the path these measurements exercised; the observer is reasoned
+about rather than tested, and wants a real device or a browser window that paints.
+
+**Touch targets.** `button` now asks for `--touch-target`, 44pt, rather than 40. The four places
+that pinned an icon button's width to 40 take the same value, so they stay square, and
+`LayoutLogic.minTouchTarget` carries the same figure into the sums the layout is made of -
+`topBarButtonsWidth` is two of them plus the gap, so `widthForBranding` moved 470 to 473 on its own.
+
+Two things the audit turned up that the 40pt figure had hidden. The carousel's controls opt out of
+the app's button sizing altogether: its arrows were 32x32 and its **dots 8x8**, by some way the
+smallest targets in the game. The arrows are now 44 square and a dot is 8px of paint inside a 24x44
+button, with the gap between dots replaced by the unpainted part of each target so the two can't
+drift apart. And the encounter toolbar is the one place that stays below the guidance: nine buttons
+at 44 is 396pt and will not cross a phone, and the second line that would buy costs the map more
+than 4pt is worth. It keeps 40, and 38 at 375pt, as it did.
+
+| | Before | After |
+|---|---|---|
+| Buttons generally | 40 | 44 |
+| Carousel arrows | 32x32 | 44x44 |
+| Carousel dots | 8x8 | 8px dot, 24x44 target |
+| Encounter toolbar, 402pt | 40x40, one line | unchanged |
+| Encounter toolbar, 375pt | 38x40, one line | unchanged |
+
+**Reachability.** On a small layout the top panel is now the bottom one: `order: 1`, nothing more.
+It carries the toolbar and the button that ends your turn - the two things pressed most in an
+encounter - and at the top of a 6.9in phone they are the far corner of the screen. The order inside
+the panel already puts the toolbar above the action button, so at the foot of the screen the action
+button is the nearer of the two. At 402x874 the map now runs 10-666, the hand's strip 676-721 and
+the controls 731-840: board, then hand, then the controls under the thumb. The sheets are unaffected
+- they are inside the main panel, so they slide over the map and stop above the toolbar, which
+stays visible to close them with. A tablet keeps it at the top, where the whole screen is within
+reach of the hand holding it and the map wants the lower half.
+
+**Text.** The worry recorded here was that the card footers would go first when cards shrank. They
+didn't shrink - the hand slides over the map rather than being squeezed beside it - so the only
+thing to do was the footers themselves, at 10px the one thing in the game below the 11px floor
+Apple gives for text at all. They are 11px now, measured at 375pt with nothing clipped. What is in
+the app otherwise: 11px tags, 12px stat labels, 15px body, 17-18px headings. Nothing else is under
+11, and raising the 15px body would reflow every width Phase 2 measured, for a gain nobody has
+asked for.
+
+Worth recording for later rather than fixing now: every size in the app is in `px`, so a player who
+has set a larger text size system-wide gets nothing. Supporting Dynamic Type means typography in
+relative units throughout, which is its own piece of work.
 
 
 ## Phase 5 — Ship it

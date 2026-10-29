@@ -25,4 +25,8 @@ export interface LayoutModel {
 
 	// Room for the campaign screen's top bar to carry its branding as well as everything else.
 	roomForBranding: boolean;
+
+	// Room for a campaign page's sidebar to sit as a row below the content, rather than going over
+	// it as a sheet.
+	roomForSidebarRow: boolean;
 }

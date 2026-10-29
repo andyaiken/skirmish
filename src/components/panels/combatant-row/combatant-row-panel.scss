@@ -65,8 +65,10 @@
 				justify-content: center;
 				gap: 5px;
 
+				// The only .button-row here is the developer one, so this never reaches a player's
+				// hands - but it is a button, and the rest of them are a touch target tall.
 				button {
-					max-height: 40px;
+					max-height: var(--touch-target);
 				}
 			}
 		}

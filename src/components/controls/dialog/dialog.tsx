@@ -39,8 +39,12 @@ export class Dialog extends Component<Props> {
 			);
 		}
 
+		// The button is pinned to the dialog's corner rather than put in a row of its own: a row
+		// left it marooned above the title with the width beside it empty. Pinned, it stays put
+		// while the content scrolls - and the content reserves its corner (see dialog.scss), so
+		// the first line of a title flows around it instead of under it.
 		return (
-			<div className={`dialog level-${this.props.level}`} onClick={this.dialogClick}>
+			<div className={`dialog level-${this.props.level} ${this.props.onClose ? 'closable' : ''}`} onClick={this.dialogClick}>
 				{closeBtn}
 				<div className='dialog-content'>
 					<ErrorBoundary className='dialog-content'>

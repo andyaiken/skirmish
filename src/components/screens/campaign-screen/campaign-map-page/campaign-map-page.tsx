@@ -17,7 +17,7 @@ import type { RegionModel } from '../../../../models/region';
 import { Collections } from '../../../../utils/collections/collections';
 
 import { BoonCard, RegionCard } from '../../../cards';
-import { CardList, Dialog, Expander, Gauge, IconSize, IconType, IconValue, PreviewableCard, StatValue, Text, TextType } from '../../../controls';
+import { CardList, CollapsibleSidebar, Dialog, Expander, Gauge, IconSize, IconType, IconValue, PreviewableCard, StatValue, Text, TextType } from '../../../controls';
 import { CampaignMapPanel } from '../../../panels';
 import { EncounterStartModal } from '../../../modals';
 
@@ -272,7 +272,13 @@ export class CampaignMapPage extends Component<Props, State> {
 						onSelectRegion={region => this.setState({ selectedRegion: region })}
 					/>
 				</div>
-				{this.getSidebar()}
+				<CollapsibleSidebar
+					collapsible={!this.props.layout.roomForSidebarRow}
+					summary={this.state.selectedRegion ? this.state.selectedRegion.name : 'The Island'}
+					openFor={this.state.selectedRegion ? this.state.selectedRegion.id : null}
+				>
+					{this.getSidebar()}
+				</CollapsibleSidebar>
 				{this.getDialog()}
 			</div>
 		);

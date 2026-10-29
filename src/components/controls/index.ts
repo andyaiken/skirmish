@@ -6,6 +6,7 @@ import { CardChoice } from './card-choice/card-choice';
 import { CardList } from './card-list/card-list';
 import { CardPreview } from './card-preview/card-preview';
 import { Carousel } from './carousel/carousel';
+import { CollapsibleSidebar } from './collapsible-sidebar/collapsible-sidebar';
 import { ConfirmButton } from './confirm-button/confirm-button';
 import { Dialog } from './dialog/dialog';
 import { ErrorBoundary } from './error-boundary/error-boundary';
@@ -29,6 +30,7 @@ export {
 	CardList,
 	CardPreview,
 	Carousel,
+	CollapsibleSidebar,
 	ConfirmButton,
 	Dialog,
 	Gauge,

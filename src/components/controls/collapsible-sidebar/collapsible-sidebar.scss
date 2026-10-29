@@ -1,0 +1,92 @@
+// The sheet is placed against .campaign-content, which is the page's area of the screen - below
+// the top bar and the page selector, and inside the strip the screen keeps clear at the bottom. It
+// is the one ancestor all four pages share, so this is set once rather than on each of them.
+.campaign-content {
+	position: relative;
+}
+
+.collapsible-sidebar {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 10;
+	display: flex;
+	flex-direction: column;
+	// Open, it covers the lower half and no more. The content behind it is centred in its box, so
+	// a taller sheet hides it completely and the page reads as empty rather than as covered - the
+	// island map in particular disappears behind it. The sheet scrolls inside whatever this leaves.
+	max-height: 55%;
+	border: 2px solid var(--border);
+	border-radius: 10px 10px 0 0;
+	background-color: rgb(255, 255, 255);
+	box-shadow: 0 -4px 12px 0 rgba(0, 0, 0, 0.15);
+
+	// Shut, everything but the handle is below the bottom of the page; open, it is all in view.
+	// Transformed rather than resized so that the slide costs no layout - the campaign map inside
+	// is a thousand elements, which is the same reason index.scss transitions nothing but paint.
+	transition: transform 0.2s ease-in-out;
+
+	@media (prefers-reduced-motion: reduce) {
+		transition: none;
+	}
+
+	.skirmish.reduce-motion & {
+		transition: none;
+	}
+
+	&.shut {
+		transform: translateY(calc(100% - var(--touch-target)));
+	}
+
+	&.open {
+		transform: none;
+	}
+
+	.sidebar-handle {
+		flex: 0 0 var(--touch-target);
+		// It is a button, so it arrives with the game's button styling; none of that suits a strip.
+		margin: 0;
+		min-height: 0;
+		border: none;
+		border-radius: 8px 8px 0 0;
+		background: none;
+		flex-direction: row;
+		justify-content: space-between;
+		gap: 10px;
+		padding: 0 15px;
+		color: var(--text);
+		cursor: pointer;
+
+		.sidebar-handle-text {
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+	}
+}
+
+// The sidebar inside the sheet has the whole width to itself, so its sections stack rather than
+// sharing a row - laid out as a row on a phone they came out at 119px and were clipped.
+//
+// Four classes, because the rule it is overriding - .campaign-map-page.portrait .sidebar and its
+// three siblings - is three, and a tie would be settled by whichever stylesheet the bundler put
+// last. The encounter toolbar was silently not overridden for exactly this reason.
+.campaign-screen .collapsible-sidebar.open .sidebar,
+.campaign-screen .collapsible-sidebar.shut .sidebar {
+	flex: 1 1 auto;
+	flex-direction: column;
+	// The row it was laying out as sets this to flex-start, which in a column leaves each section
+	// as wide as its contents rather than as wide as the sheet.
+	align-items: stretch;
+	width: auto;
+	min-height: 0;
+	border: none;
+	border-radius: 0;
+	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
+
+	.sidebar-section {
+		flex: 0 0 auto;
+	}
+}

@@ -93,6 +93,15 @@ export class LayoutLogic {
 	// Everything the top bar carries, side by side.
 	static widthForBranding = LayoutLogic.brandingWidth + LayoutLogic.moneyWidth + LayoutLogic.topBarButtonsWidth + LayoutLogic.topBarSpacing;
 
+	// Room for the campaign pages' sidebar to sit as a row of sections below the content. Two
+	// readable panels abreast is the case that matters: most pages show one or two sections, and
+	// the island shows three only while a region is selected. Below this the sidebar goes over the
+	// content as a sheet instead, where it has the whole width to itself.
+	//
+	// The same arithmetic as the encounter's panels-below-the-map, and the same reasoning, but a
+	// different question about a different screen - they are free to part company.
+	static widthForSidebarRow = (LayoutLogic.minPanelWidth * 2) + LayoutLogic.layoutGaps;
+
 	// All four of the selector's labels across, rather than two rows of two.
 	static widthForSelectorColumns = (LayoutLogic.selectorLongLabel * 2) + (LayoutLogic.selectorShortLabel * 2) + LayoutLogic.selectorMargins;
 

@@ -499,6 +499,54 @@ right thing for a phone, for a folding phone opened out, and for an iPad sharing
 another app, without any of them being enumerated.
 
 
+## The campaign sidebar becomes a sheet on a narrow screen — 29 October 2026
+
+The sidebar laid itself out as a row of sections below the content in portrait, which is right on a
+tablet and wrong on a phone: at 402pt the island's three sections came out **210 / 119 / 210**,
+scrolling 619px inside a 378px box with `overflow-x: hidden` - 241px of it unreachable, and the
+middle column narrow enough to break text one character per line. It was long-standing iPad
+behaviour rather than anything new; a phone was simply the first screen to expose it.
+
+It now goes over the content as a sheet, the same idea the encounter screen already uses for its
+panels: shut, a strip along the bottom naming what is behind it; open, it covers the lower part of
+the page with the whole width to itself.
+
+`CollapsibleSidebar` (in `controls/`) wraps each page's existing `getSidebar()` without touching the
+markup inside it, so all four pages share one implementation. It takes:
+
+- `collapsible` - `!layout.roomForSidebarRow`, so a tablet keeps the row it had.
+- `summary` - what the handle says: the selected thing's name, or the page's.
+- `openFor` - the selected thing's id. A change to something opens the sheet, because the player
+  just asked to see it; a change to nothing shuts it, which is what tapping the content does. The
+  same rule the encounter's right-hand panel follows when a round is waiting on the player.
+
+`widthForSidebarRow` is `(minPanelWidth x 2) + layoutGaps` - room for two readable panels abreast,
+which is the common case. Same arithmetic as the encounter's panels-below-the-map and the same
+reasoning, but a different question about a different screen, so it is named separately and is free
+to diverge.
+
+Measured at 402x874, with the island's three sections:
+
+| | Before | After |
+|---|---|---|
+| Map height | 315 | **711** |
+| Section widths | 210 / 119 / 210 | **358 / 358 / 358** |
+| Clipped, unreachable | 241px | **none** |
+
+Verified: shut by default on all four pages; opens itself when a region is selected; shuts when the
+map is tapped; the handle toggles it; iPad stays inline and unchanged at both 768x1024 and 1024x768;
+and widening with the sheet open returns to the inline row without leaving it open behind.
+
+Two things worth knowing:
+
+- **The sheet is capped at 55% of the page.** The content behind it is centred in its box, so a
+  taller sheet hides it completely and the page reads as empty rather than as covered - at 75% the
+  island map disappeared entirely behind it.
+- **The override needed four classes.** The rules it replaces are `.campaign-map-page.portrait
+  .sidebar` and its three siblings, at three; a tie would have been settled by whichever stylesheet
+  the bundler put last. This is the second time that has come up, after the encounter toolbar.
+
+
 ## Phase 3 — Screen by screen
 
 In increasing order of difficulty, which is also roughly increasing order of how much it matters:
@@ -934,10 +982,13 @@ the campaign selector is a band; give it the 63pt top inset a phone has and the 
 short of the 587 a band needs, and it is correctly a rail. 1200x400 still rails and 1024x768 still
 bands, as the Phase 1 table says they should.
 
-Two things it does not cover, both on purpose. The gate still asks the window, because its numbers
-were chosen against window sizes and re-scoping it is Phase 5's. And the measured height is short by
-whatever strip the screen reserves for the home indicator itself, because `#root` doesn't carry that
-one - the top inset, which is the larger of the two, is in it.
+One thing it does not cover, on purpose: the measured height is short by whatever strip the screen
+reserves for the home indicator itself, because `#root` doesn't carry that one - the top inset,
+which is the larger of the two, is in it.
+
+The gate was the other, and only until Phase 5 reached it: it asked the window here because its
+numbers had been chosen against window sizes, and re-scoping it was that phase's. It now asks the
+room like everything else, through `useEdgesAtLeast`.
 
 A note for whoever tests this next: the browser pane does not run rendering steps - a
 `requestAnimationFrame` never fires in it - so a `ResizeObserver` callback cannot be delivered there
@@ -986,6 +1037,53 @@ asked for.
 Worth recording for later rather than fixing now: every size in the app is in `px`, so a player who
 has set a larger text size system-wide gets nothing. Supporting Dynamic Type means typography in
 relative units throughout, which is its own piece of work.
+
+
+### The dialog title and its close button — 29 October 2026
+
+The close button is laid over the dialog's top-right corner and nothing reserved room for it, so a
+title wide enough to reach it ran underneath: at 440pt the X sat on the last letter of 'Start an
+Encounter'. The title now gives up the button's width and inset, and only on that side - taking it
+from both keeps the title on the dialog's centre line, but at 320pt that leaves 152 for it. Only a
+dialog that has a button pays for it, which is what the `closable` class is for.
+
+That alone was not enough, and it took two goes to find out why: a title is 30px with 5px of
+tracking, so 'ENCOUNTER' by itself wants 207 of the 192 left once the button's side is taken out,
+and the word broke across lines mid-letter. Capping the title at `min(30px, 7.5vw)` fixed that, and
+then both workarounds were thrown away for the thing that made them unnecessary.
+
+### The content reserves the button's corner
+
+Both of those were the same workaround twice: the button was laid over the dialog's corner, so
+anything that reached the corner had to be told to avoid it, and what it gave up to do so was the
+width it needed to break on whole words.
+
+A header row holding the button was tried first and thrown away. It fixed the overlap, but it left
+the button marooned in a row of its own with the width beside it empty, and the title pushed below
+it - 59px of nothing on every dialog that has a close button. The title belongs in that row, and
+could not get there: of twenty-five dialogs most keep their heading inside a modal component rather
+than at the call site, and two of those components are used in three and four places, so giving
+them a `title` prop means changing call sites that have no dialog in them at all.
+
+What is there instead: the button stays pinned to the corner, and the content reserves that corner
+with a floated shape of the same size. The first line of whatever starts the dialog - a title,
+every time so far - is shortened by exactly the button's box and flows around it; every line after
+it has the full width back. That is what padding the title could not do, because padding shortens
+every line, and what cost 'ENCOUNTER' the room to stay in one piece.
+
+A float rather than putting the button itself in flow, because it has to stay where it is while the
+content scrolls: measured through 2278px of scrolling in the help dialog, it does not move.
+
+The title is back at the 30px it was designed at, at every width:
+
+| | Title | Lines | Overlap |
+|---|---|---|---|
+| 320x568 | 30px | 2, on whole words | none |
+| 1024x768 | 30px | 1 | none |
+
+Checked on the help, card packs and start-an-encounter dialogs, which differ in what their content
+starts with. The float changes nothing below the first line: with it and without it, every element
+in the start-an-encounter dialog sits at the same place to the pixel.
 
 
 ## Phase 5 — Ship it

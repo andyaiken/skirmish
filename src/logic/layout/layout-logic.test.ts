@@ -13,7 +13,8 @@ const modelFor = (width: number, height: number) => {
 		roomForPanelsBelowMap: width >= LayoutLogic.widthForPanelsBelowMap,
 		roomForSelectorBand: height >= LayoutLogic.heightForSelectorBand,
 		roomForSelectorColumns: width >= LayoutLogic.widthForSelectorColumns,
-		roomForBranding: width >= LayoutLogic.widthForBranding
+		roomForBranding: width >= LayoutLogic.widthForBranding,
+		roomForSidebarRow: width >= LayoutLogic.widthForSidebarRow
 	});
 };
 

@@ -18,7 +18,7 @@ import type { OptionsModel } from '../../../../models/options';
 import type { StructureModel } from '../../../../models/structure';
 
 import { BoonCard, StructureCard } from '../../../cards';
-import { Box, CardList, Dialog, Expander, IconSize, IconType, IconValue, PreviewableCard, StatValue, Text, TextType } from '../../../controls';
+import { Box, CardList, CollapsibleSidebar, Dialog, Expander, IconSize, IconType, IconValue, PreviewableCard, StatValue, Text, TextType } from '../../../controls';
 import { BuyStructureModal } from '../../../modals/buy-structure/buy-structure-modal';
 import { StrongholdMapPanel } from '../../../panels';
 
@@ -339,7 +339,13 @@ export class StrongholdPage extends Component<Props, State> {
 						onSelectStructure={structure => this.setState({ selectedStructure: structure })}
 					/>
 				</div>
-				{this.getSidebar()}
+				<CollapsibleSidebar
+					collapsible={!this.props.layout.roomForSidebarRow}
+					summary={this.state.selectedStructure ? this.state.selectedStructure.name : 'Your Stronghold'}
+					openFor={this.state.selectedStructure ? this.state.selectedStructure.id : null}
+				>
+					{this.getSidebar()}
+				</CollapsibleSidebar>
 				{this.getDialog()}
 			</div>
 		);

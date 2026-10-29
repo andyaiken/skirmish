@@ -19,7 +19,7 @@ import { Utils } from '../../../../utils/utils/utils';
 
 import { BoonCard, ItemCard } from '../../../cards';
 import { BuyEquipmentModal, BuyMagicItemModal, BuyPotionModal, BuyScrollModal, EnchantItemModal, MagicItemInfoModal } from '../../../modals';
-import { CardList, CardPreview, Dialog, IconSize, IconType, IconValue, Text, TextType } from '../../../controls';
+import { CardList, CardPreview, CollapsibleSidebar, Dialog, IconSize, IconType, IconValue, Text, TextType } from '../../../controls';
 
 import './items-page.scss';
 
@@ -471,7 +471,13 @@ export class ItemsPage extends Component<Props, State> {
 					{mundaneItemSection}
 					{empty}
 				</div>
-				{this.getSidebar()}
+				<CollapsibleSidebar
+					collapsible={!this.props.layout.roomForSidebarRow}
+					summary={this.state.selectedMagicItem ? this.state.selectedMagicItem.name : 'Your Equipment'}
+					openFor={this.state.selectedMagicItem ? this.state.selectedMagicItem.id : null}
+				>
+					{this.getSidebar()}
+				</CollapsibleSidebar>
 				{this.getDialog()}
 			</div>
 		);

@@ -17,7 +17,7 @@ import type { ItemModel } from '../../../../models/item';
 import type { LayoutModel } from '../../../../models/layout';
 import type { OptionsModel } from '../../../../models/options';
 
-import { Badge, CardList, ConfirmButton, Dialog, PlayingCard, PreviewableCard, Text, TextType } from '../../../controls';
+import { Badge, CardList, CollapsibleSidebar, ConfirmButton, Dialog, PlayingCard, PreviewableCard, Text, TextType } from '../../../controls';
 import { BoonCard, HeroCard, PlaceholderCard, StrongholdBenefitCard } from '../../../cards';
 import { CharacterSheetModal, HeroBuilderModal } from '../../../modals';
 
@@ -404,7 +404,13 @@ export class HeroesPage extends Component<Props, State> {
 				<div className='heroes-content'>
 					{this.getContent()}
 				</div>
-				{this.getSidebar()}
+				<CollapsibleSidebar
+					collapsible={!this.props.layout.roomForSidebarRow}
+					summary={this.state.selectedHero ? this.state.selectedHero.name : 'Your Team'}
+					openFor={this.state.selectedHero ? this.state.selectedHero.id : null}
+				>
+					{this.getSidebar()}
+				</CollapsibleSidebar>
 				{this.getDialog()}
 			</div>
 		);

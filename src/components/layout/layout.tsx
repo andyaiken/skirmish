@@ -59,7 +59,8 @@ export const Layout = (props: Props) => {
 		roomForPanelsBelowMap: useWidthAtLeast(LayoutLogic.widthForPanelsBelowMap),
 		roomForSelectorBand: useHeightAtLeast(LayoutLogic.heightForSelectorBand),
 		roomForSelectorColumns: useWidthAtLeast(LayoutLogic.widthForSelectorColumns),
-		roomForBranding: useWidthAtLeast(LayoutLogic.widthForBranding)
+		roomForBranding: useWidthAtLeast(LayoutLogic.widthForBranding),
+		roomForSidebarRow: useWidthAtLeast(LayoutLogic.widthForSidebarRow)
 	});
 
 	return (

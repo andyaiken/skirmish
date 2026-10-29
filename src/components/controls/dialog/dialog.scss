@@ -45,11 +45,27 @@
 		z-index: 4000;
 	}
 
+	// The content reserves the dialog's top-right corner, so the first line of whatever starts the
+	// dialog - a title, every time so far - is shortened by exactly the button's box and flows
+	// around it. Later lines have the full width back, which is what padding the title could not
+	// do: that shortened every line, and cost 'ENCOUNTER' the room to stay in one piece.
+	//
+	// A float rather than the button itself, because the button has to stay pinned while the
+	// content scrolls. The float is the shape it leaves behind; the button sits over it.
+	&.closable .dialog-content::before {
+		content: '';
+		float: right;
+		width: calc(var(--touch-target) + 10px);
+		height: var(--touch-target);
+	}
+
 	.close-btn {
-		width: 40px;
+		// The same square as every other icon button. It is an .icon-btn, so index.scss already
+		// gives it the height; this is the width that goes with it.
+		width: var(--touch-target);
 		position: absolute;
-		right: 30px;
-		top: 30px;
+		top: 15px;
+		right: 15px;
 		z-index: 1000;
 		background-color: rgb(255, 255, 255);
 		border: 1px solid var(--border);

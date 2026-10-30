@@ -30,6 +30,11 @@
 		overflow-x: hidden;
 		overflow-y: auto;
 		-webkit-overflow-scrolling: touch;
+		// The cards are 3D-transformed, which WebKit promotes to layers that can sit over (and
+		// take taps from) the start button; this keeps them behind it
+		position: relative;
+		z-index: 0;
+		isolation: isolate;
 	}
 
 	.party {
@@ -58,6 +63,8 @@
 	}
 
 	.action {
+		position: relative;
+		z-index: 1;
 		margin-bottom: 0;
 	}
 }

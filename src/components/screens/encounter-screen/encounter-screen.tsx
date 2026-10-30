@@ -26,6 +26,7 @@ import { CardType } from '../../../enums/card-type';
 import { CombatantState } from '../../../enums/combatant-state';
 import { CombatantType } from '../../../enums/combatant-type';
 import { EncounterState } from '../../../enums/encounter-state';
+import { OrientationType } from '../../../enums/orientation-type';
 import { StructureType } from '../../../enums/structure-type';
 
 import { ActionLogic } from '../../../logic/action/action-logic';
@@ -669,6 +670,10 @@ export class EncounterScreen extends Component<Props, State> {
 
 	getTopControls = () => {
 		if (this.getEncounterState() !== EncounterState.Active) {
+			if ([ OrientationType.PortraitSmall, OrientationType.LandscapeSmall ].includes(this.props.layout.orientation)) {
+				return null;
+			}
+
 			return (
 				<div className='encounter-top-panel'>
 					<LogoPanel size={36} />

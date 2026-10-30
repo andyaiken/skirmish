@@ -1,7 +1,7 @@
 PODS:
-  - Capacitor (8.5.2):
+  - Capacitor (8.5.3):
     - CapacitorCordova
-  - CapacitorCordova (8.5.2)
+  - CapacitorCordova (8.5.3)
   - SkirmishCloud (1.0.0):
     - Capacitor
   - SkirmishStore (1.0.0):
@@ -24,8 +24,8 @@ EXTERNAL SOURCES:
     :path: "../../plugins/skirmish-store"
 
 SPEC CHECKSUMS:
-  Capacitor: 89067779e14fb7ea56af07b4817f45d1f0c2a269
-  CapacitorCordova: 5bec5648cbd09a176ce34ce5e7b6cdabb2c8a327
+  Capacitor: 2f67eaeb8ed79909cd35b5e7439a5c2a9ca58e0f
+  CapacitorCordova: 0b7326439c7a09fc5d20eced5e0dab986327a493
   SkirmishCloud: 684c89f0450bdb7eb7a735a1528f1a6c73eaf402
   SkirmishStore: 68e0f77cf7467d225fc1fe62d5dc4ce42a51325b
 

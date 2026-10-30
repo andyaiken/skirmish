@@ -1,4 +1,4 @@
-import { Component, createRef } from 'react';
+import { Component, ReactNode, createRef } from 'react';
 import {
 	IconArrowBackUpDouble,
 	IconCircleCheckFilled,
@@ -8,16 +8,19 @@ import {
 	IconHelpCircleFilled,
 	IconLayoutBottombarCollapseFilled,
 	IconLayoutBottombarExpandFilled,
+	IconLayoutDashboard,
 	IconLayoutSidebarLeftCollapseFilled,
 	IconLayoutSidebarLeftExpandFilled,
 	IconLayoutSidebarRightCollapseFilled,
 	IconLayoutSidebarRightExpandFilled,
 	IconListDetails,
 	IconNotes,
+	IconRotate,
 	IconRotate2,
 	IconRotateClockwise2,
 	IconZoomIn,
-	IconZoomOut
+	IconZoomOut,
+	IconZoomScan
 } from '@tabler/icons-react';
 import toast from 'react-hot-toast';
 
@@ -94,7 +97,20 @@ interface Props {
 	finishEncounter: (state: EncounterState) => void;
 }
 
+// One group of the toolbar's buttons. The row draws each as a section; the column draws each as a
+// single button that opens the rest, unless there is only the one.
+interface ToolGroup {
+	id: string;
+	title: string;
+	icon: ReactNode;
+	// Whether the column's fly-out shuts once a button in it is used. Rotating and zooming are
+	// pressed again and again, so those stay open; the rest are done in one.
+	closeOnUse: boolean;
+	buttons: ReactNode[];
+}
+
 interface State {
+	openToolGroup: string | null;
 	mapSquareSize: number;
 	showLeftPanel: boolean;
 	showBottomPanel: boolean;
@@ -126,6 +142,7 @@ export class EncounterScreen extends Component<Props, State> {
 		const panelsOverMap = OrientationLogic.isSmall(props.layout.orientation);
 
 		this.state = {
+			openToolGroup: null,
 			mapSquareSize: 15,
 			showLeftPanel: !panelsOverMap,
 			showBottomPanel: !panelsOverMap,
@@ -171,9 +188,15 @@ export class EncounterScreen extends Component<Props, State> {
 		};
 	};
 
-	componentDidUpdate = () => {
+	componentDidUpdate = (prevProps: Props) => {
 		this.checkMonsterTurn();
 		this.closeStackedPanels();
+
+		// A group left open sideways would otherwise be open again the next time the phone was
+		// turned that way, with no memory of why.
+		if (prevProps.layout.orientation !== this.props.layout.orientation) {
+			this.closeToolGroup();
+		}
 	};
 
 	componentWillUnmount = () => {
@@ -815,53 +838,147 @@ export class EncounterScreen extends Component<Props, State> {
 
 		return (
 			<div className='encounter-top-panel'>
-				<div className='encounter-toolbar'>
-					<div className='icon-section'>
-						<button className='icon-btn' title='Left Panel' onClick={() => this.toggleLeftPanel()}>
-							{this.state.showLeftPanel ? <IconLayoutSidebarLeftCollapseFilled /> : <IconLayoutSidebarLeftExpandFilled />}
-						</button>
-						<button disabled={!this.hasBottomControls()} className='icon-btn' title='Bottom Panel' onClick={() => this.toggleBottomPanel()}>
-							{this.state.showBottomPanel && this.hasBottomControls() ? <IconLayoutBottombarCollapseFilled /> : <IconLayoutBottombarExpandFilled />}
-						</button>
-						<button className='icon-btn' title='Right Panel' onClick={() => this.toggleRightPanel()}>
-							{this.state.showRightPanel ? <IconLayoutSidebarRightCollapseFilled /> : <IconLayoutSidebarRightExpandFilled />}
-						</button>
-					</div>
-					<div className='icon-section'>
-						<button className='icon-btn' title='Rotate Left' onClick={() => this.props.rotateMap(this.props.encounter, 'l')}>
-							<IconRotate2 />
-						</button>
-						<button className='icon-btn' title='Rotate Right' onClick={() => this.props.rotateMap(this.props.encounter, 'r')}>
-							<IconRotateClockwise2 />
-						</button>
-					</div>
-					<div className='icon-section'>
-						<button disabled={this.state.mapSquareSize <= 5} className='icon-btn' title='Zoom Out' onClick={() => this.nudgeMapSize(-5)}>
-							<IconZoomOut />
-						</button>
-						<button disabled={this.state.mapSquareSize >= 50} className='icon-btn' title='Zoom In' onClick={() => this.nudgeMapSize(+5)}>
-							<IconZoomIn />
-						</button>
-					</div>
-					<div className='icon-section'>
-						<button className='icon-btn' title='Retreat' onClick={() => this.setManualEncounterState(EncounterState.Retreat)}>
-							<IconArrowBackUpDouble />
-						</button>
-						{
-							this.props.options.developer ?
-								<button className='icon-btn developer' title='Win' onClick={() => this.setManualEncounterState(EncounterState.Victory)}>
-									<IconConfetti />
-								</button>
-								: null
-						}
-					</div>
-					<div className='icon-section'>
-						<button className='icon-btn' title='Help' onClick={() => this.props.showHelp('encounters')}>
-							{this.props.options.developer && this.props.hasExceptions ? <IconHelpCircleFilled /> : <IconHelpCircle />}
-						</button>
-					</div>
-				</div>
+				{this.toolbarInColumn() ? null : this.getToolbar()}
 				{actionBtn}
+			</div>
+		);
+	};
+
+	// Sideways on a phone the toolbar is a column down the left rather than part of the row along
+	// the bottom. The row is replaced wholesale by whatever is selected, which takes the tools with
+	// it until the selection is cleared; the column is not, so they are always there.
+	toolbarInColumn = () => {
+		return OrientationLogic.isSmall(this.props.layout.orientation) && OrientationLogic.isLandscape(this.props.layout.orientation);
+	};
+
+	closeToolGroup = () => {
+		if (this.state.openToolGroup !== null) {
+			this.setState({ openToolGroup: null });
+		}
+	};
+
+	getToolGroups = (): ToolGroup[] => {
+		return [
+			{
+				id: 'panels',
+				title: 'Panels',
+				icon: <IconLayoutDashboard />,
+				closeOnUse: true,
+				buttons: [
+					<button key='left' className='icon-btn' title='Left Panel' onClick={() => this.toggleLeftPanel()}>
+						{this.state.showLeftPanel ? <IconLayoutSidebarLeftCollapseFilled /> : <IconLayoutSidebarLeftExpandFilled />}
+					</button>,
+					<button key='bottom' disabled={!this.hasBottomControls()} className='icon-btn' title='Bottom Panel' onClick={() => this.toggleBottomPanel()}>
+						{this.state.showBottomPanel && this.hasBottomControls() ? <IconLayoutBottombarCollapseFilled /> : <IconLayoutBottombarExpandFilled />}
+					</button>,
+					<button key='right' className='icon-btn' title='Right Panel' onClick={() => this.toggleRightPanel()}>
+						{this.state.showRightPanel ? <IconLayoutSidebarRightCollapseFilled /> : <IconLayoutSidebarRightExpandFilled />}
+					</button>
+				]
+			},
+			{
+				id: 'rotate',
+				title: 'Rotate',
+				icon: <IconRotate />,
+				closeOnUse: false,
+				buttons: [
+					<button key='left' className='icon-btn' title='Rotate Left' onClick={() => this.props.rotateMap(this.props.encounter, 'l')}>
+						<IconRotate2 />
+					</button>,
+					<button key='right' className='icon-btn' title='Rotate Right' onClick={() => this.props.rotateMap(this.props.encounter, 'r')}>
+						<IconRotateClockwise2 />
+					</button>
+				]
+			},
+			{
+				id: 'zoom',
+				title: 'Zoom',
+				icon: <IconZoomScan />,
+				closeOnUse: false,
+				buttons: [
+					<button key='out' disabled={this.state.mapSquareSize <= 5} className='icon-btn' title='Zoom Out' onClick={() => this.nudgeMapSize(-5)}>
+						<IconZoomOut />
+					</button>,
+					<button key='in' disabled={this.state.mapSquareSize >= 50} className='icon-btn' title='Zoom In' onClick={() => this.nudgeMapSize(+5)}>
+						<IconZoomIn />
+					</button>
+				]
+			},
+			{
+				id: 'retreat',
+				title: 'Retreat',
+				icon: <IconArrowBackUpDouble />,
+				closeOnUse: true,
+				buttons: [
+					<button key='retreat' className='icon-btn' title='Retreat' onClick={() => this.setManualEncounterState(EncounterState.Retreat)}>
+						<IconArrowBackUpDouble />
+					</button>,
+					this.props.options.developer ?
+						<button key='win' className='icon-btn developer' title='Win' onClick={() => this.setManualEncounterState(EncounterState.Victory)}>
+							<IconConfetti />
+						</button>
+						: null
+				].filter(b => b !== null)
+			},
+			{
+				id: 'help',
+				title: 'Help',
+				icon: <IconHelpCircle />,
+				closeOnUse: true,
+				buttons: [
+					<button key='help' className='icon-btn' title='Help' onClick={() => this.props.showHelp('encounters')}>
+						{this.props.options.developer && this.props.hasExceptions ? <IconHelpCircleFilled /> : <IconHelpCircle />}
+					</button>
+				]
+			}
+		];
+	};
+
+	getToolbar = () => {
+		return (
+			<div className='encounter-toolbar'>
+				{this.getToolGroups().map(group => <div key={group.id} className='icon-section'>{group.buttons}</div>)}
+			</div>
+		);
+	};
+
+	// A group of one is just its button. A group of more is a button that opens the rest beside it,
+	// so the column is five buttons tall rather than ten.
+	getToolColumn = () => {
+		if (this.getEncounterState() !== EncounterState.Active) {
+			return null;
+		}
+
+		return (
+			<div className='encounter-tool-column'>
+				{
+					this.getToolGroups().map(group => {
+						if (group.buttons.length === 1) {
+							return <div key={group.id} className='tool-group'>{group.buttons}</div>;
+						}
+
+						const open = this.state.openToolGroup === group.id;
+						return (
+							<div key={group.id} className='tool-group'>
+								<button
+									className={open ? 'icon-btn tool-trigger open' : 'icon-btn tool-trigger'}
+									title={group.title}
+									aria-expanded={open}
+									onClick={() => this.setState({ openToolGroup: open ? null : group.id })}
+								>
+									{group.icon}
+								</button>
+								{
+									open ?
+										<div className='tool-flyout' onClick={group.closeOnUse ? this.closeToolGroup : undefined}>
+											{group.buttons}
+										</div>
+										: null
+								}
+							</div>
+						);
+					})
+				}
 			</div>
 		);
 	};
@@ -1216,7 +1333,9 @@ export class EncounterScreen extends Component<Props, State> {
 				<div className={className}>
 					{top}
 					<div className='encounter-main-panel'>
-						<div className='encounter-central-column'>
+						{this.toolbarInColumn() ? this.getToolColumn() : null}
+						{/* A tap on the board puts away whichever of the column's groups is open. */}
+						<div className='encounter-central-column' onPointerDownCapture={this.closeToolGroup}>
 							<div className='encounter-center-panel'>
 								{this.getMap()}
 								{

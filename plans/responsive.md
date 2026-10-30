@@ -1248,8 +1248,8 @@ Only now does the gate come down.
    started on iPad opens on the phone, since the save is device-independent but has never been read
    on a 390pt screen.
 
-The description says "for iPad and Mac" in two places (the listing and `docs/index.html:14`), and
-both need updating when this ships.
+The website description in `docs/index.html` now says "for iPhone, iPad and Mac". The App Store
+listing still needs updating in App Store Connect when this ships.
 
 ### The gate comes down — 28 October 2026
 
@@ -1310,8 +1310,8 @@ Verified by resizing, with nothing hidden:
 | 320x480 | no room for the island and its panel | blocked |
 
 **Still to do in Phase 5:** `npx cap sync` (left for whoever next builds, since it rewrites
-generated files in the iOS project), the iPhone screenshots, testing on real hardware, and the two
-places the description says "for iPad and Mac".
+generated files in the iOS project), the iPhone screenshots, testing on real hardware, and updating
+the App Store listing to say "for iPhone, iPad and Mac".
 
 
 ## Sequencing

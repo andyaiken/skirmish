@@ -188,6 +188,53 @@
 		}
 	}
 
+	// The toolbar as a column down the left, sideways on a phone; see toolbarInColumn. One button
+	// per group, spread down the height the way the campaign screen's page rail is, and a group of
+	// more than one opens beside its button rather than lengthening the column.
+	.encounter-tool-column {
+		flex: 0 0 auto;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: space-evenly;
+		padding: 5px;
+		border: 2px solid var(--border);
+		border-radius: 10px;
+		background-color: white;
+
+		.tool-group {
+			position: relative;
+			width: var(--touch-target);
+
+			.tool-trigger.open {
+				background-color: var(--primary-light);
+			}
+		}
+
+		.tool-flyout {
+			position: absolute;
+			// Clear of the column: past its padding and border, and then the same 10 the screen
+			// leaves between everything else.
+			left: calc(100% + 5px + 2px + 10px);
+			top: 50%;
+			transform: translateY(-50%);
+			// Over the board and over any sheet laid on it, which are 1.
+			z-index: 20;
+			display: flex;
+			gap: 5px;
+			padding: 5px;
+			border: 2px solid var(--border);
+			border-radius: 10px;
+			background-color: white;
+			box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.25);
+
+			.icon-btn {
+				flex: 0 0 var(--touch-target);
+				width: var(--touch-target);
+			}
+		}
+	}
+
 	.encounter-top-panel {
 		// Tall enough for a combatant row, and taller when the toolbar needs a second line. A fixed
 		// height would cut off whichever buttons didn't fit across one - Retreat among them, which is
@@ -228,6 +275,12 @@
 			align-items: center;
 			justify-content: center;
 			gap: 10px;
+
+			// On its own in the row - which is the case sideways on a phone, where the toolbar has
+			// gone to the column - it takes the row rather than sitting in 300 of it.
+			&:only-child {
+				flex: 1 1 auto;
+			}
 
 			.stat-value {
 				flex: 1 1 0;

@@ -4,6 +4,10 @@
 	position: absolute;
 	filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.6));
 
+	&.zoomable {
+		touch-action: none;
+	}
+
 	.campaign-map-hex {
 		stroke-width: 0.05;
 		transform-origin: center;

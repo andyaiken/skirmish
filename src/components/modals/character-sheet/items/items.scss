@@ -2,6 +2,7 @@
 	.location-section {
 		display: flex;
 		gap: 20px;
+		flex-wrap: wrap;
 
 		.location-sidebar {
 			flex: 0 0 200px;
@@ -24,7 +25,8 @@
 		}
 
 		.location-details {
-			flex: 1 1 0;
+			flex: 1 1 250px;
+			min-width: 0;
 		}
 	}
 

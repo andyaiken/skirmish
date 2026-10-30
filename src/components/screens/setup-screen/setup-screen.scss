@@ -81,8 +81,11 @@
 			// upright was more than the screen had spare.
 			gap: 5px;
 
+			// The information boxes above them take the column's whole width, so these do too; at
+			// the 200 they are held to elsewhere they sat against the left edge of it.
 			.packs-btn,
 			.help-btn {
+				width: 100%;
 				margin: 0;
 			}
 		}
@@ -93,15 +96,6 @@
 			gap: 10px;
 		}
 
-		// The card is on the sheet, so this column is the information boxes and these two, and
-		// those boxes take its whole width. The 200 they are held to elsewhere is for standing
-		// beside a card, and here only made them narrower than everything above them.
-		.right-panel-rest {
-			.packs-btn,
-			.help-btn {
-				width: 100%;
-			}
-		}
 	}
 
 	// The Begin card as a panel over the right-hand side, once the team is complete; see

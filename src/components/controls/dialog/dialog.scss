@@ -26,21 +26,25 @@
 	box-shadow: 10px 10px 30px 0 rgba(0, 0, 0, 0.2);
 	border: 2px solid var(--border);
 
+	// 5% of the screen above and below, or clear of the strips the screen keeps for the camera
+	// housing and the home indicator if those are bigger. An absolutely positioned box is placed
+	// against the padding box, so 5% alone measured from the very top of the screen: on an iPhone
+	// that is 44pt, inside the 62pt the housing takes, and the dialog's top edge ran under it.
 	&.level-1 {
-		top: 5%;
-		bottom: 5%;
+		top: max(5%, calc(var(--top-inset) + 10px));
+		bottom: max(5%, calc(var(--bottom-inset) + 10px));
 		z-index: 2000;
 	}
 
 	&.level-2 {
-		top: 5%;
-		bottom: 5%;
+		top: max(5%, calc(var(--top-inset) + 10px));
+		bottom: max(5%, calc(var(--bottom-inset) + 10px));
 		z-index: 3000;
 	}
 
 	&.level-3 {
-		top: 5%;
-		bottom: 5%;
+		top: max(5%, calc(var(--top-inset) + 10px));
+		bottom: max(5%, calc(var(--bottom-inset) + 10px));
 		z-index: 4000;
 	}
 

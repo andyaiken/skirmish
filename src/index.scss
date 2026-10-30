@@ -48,6 +48,12 @@
 	// env() at each use so that there is one place to read the policy, and so that it can be
 	// given a value to lay the app out against, which env() itself cannot be.
 	--bottom-inset: env(safe-area-inset-bottom);
+
+	// The same, for the top edge, where the camera housing sits. Named for the same two reasons,
+	// and needed by anything pinned to the top of the window rather than laid out inside #root:
+	// a fixed box is placed against the viewport, so it runs under the housing unless it says
+	// otherwise.
+	--top-inset: env(safe-area-inset-top);
 }
 
 html,
@@ -70,7 +76,7 @@ body,
 	// the strip that opens your hand, and measured on a phone both sat inside it. So the
 	// screens that end in something tappable now keep their own bottom spacing clear of it
 	// with max(10px, var(--bottom-inset)), and content that only has to be seen still runs under.
-	padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
+	padding: var(--top-inset) env(safe-area-inset-right) 0 env(safe-area-inset-left);
 }
 
 body {
@@ -228,8 +234,13 @@ button {
 		color: rgb(90, 90, 90);
 		padding: 0;
 
+		// An icon button has no border and no background, so unlike every other button there is
+		// no outline left to say it is a button at all - only the glyph. Dimmer than the 0.5 the
+		// rest of the app fades a disabled control to, because at 0.5 these read as buttons that
+		// ought to work rather than as ones that are off: the encounter toolbar's are the ones
+		// this is measured on, where two are off until initiative is rolled.
 		&:disabled {
-			opacity: 0.5;
+			opacity: 0.35;
 		}
 	}
 

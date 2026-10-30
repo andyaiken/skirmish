@@ -23,14 +23,16 @@
 			grid-column: 1;
 			grid-row: 2;
 			margin: 10px 0 10px 10px;
-			// Wrap the icons rather than stretching down the whole side, which leaves a tall empty
-			// box under them.
-			align-self: start;
+			// Down the whole side, with its four rows sharing that height between them, so the
+			// icons are spread rather than huddled at the top above an empty box.
+			grid-auto-rows: 1fr;
 		}
 
 		.campaign-content {
 			grid-column: 2;
 			grid-row: 2;
+			// It sat directly against the bar's border; the same 10 the rail beside it leaves.
+			margin-top: 10px;
 			// Grid items refuse to shrink past their content without this, which would push the
 			// rail off the side on a page with a wide one.
 			min-width: 0;

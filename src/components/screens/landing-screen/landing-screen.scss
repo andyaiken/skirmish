@@ -1,3 +1,8 @@
+// How tall the carousel is allowed to grow. It fills the screen where there is less than this,
+// which is what a phone gives it; past this the illustrations stop gaining anything and the
+// paragraph above them is left floating in the middle of a tall white box.
+$carousel-max-height: 540px;
+
 .landing-screen {
     height: 100%;
     display: flex;
@@ -17,6 +22,7 @@
 		}
 	}
 
+
 	.landing-top-bar {
 		flex: 0 0 auto;
 		background-color: rgb(230, 230, 230);
@@ -25,11 +31,38 @@
 		padding: 30px 0;
 	}
 
+	// Sideways on a phone the bar is not there at all. It is the game's name over a screen that
+	// already says it on every card, and it was taking 110 of the 320 this orientation has - at
+	// 568x320 that left the slide below 140 for three buttons that need 152. The name is on the
+	// cards, and the height goes to the thing being used.
+	&.landscape-small .landing-top-bar {
+		display: none;
+	}
+
 	.landing-content {
 		flex: 1 1 auto;
+		// So it can be shorter than its contents want, which is what lets the carousel below cap
+		// itself at the height actually available rather than overflowing the screen.
+		min-height: 0;
         display: flex;
         align-items: center;
         justify-content: space-evenly;
+
+		// Showing the introduction, which is the only thing on the screen: the carousel takes the
+		// lesser of its own cap and the height the screen has left, so it fills a phone and keeps
+		// its proportions on anything bigger. Nothing scrolls either way.
+		&.introduction {
+			justify-content: center;
+
+			.carousel {
+				height: min(#{$carousel-max-height}, 100%);
+				// The margin held the carousel off whatever was below it, and with the
+				// introduction showing there is nothing below it. Left in, it put the carousel
+				// 10px past the height it had just been capped to - centred, so the slide lost
+				// the same amount off its top.
+				margin: 0;
+			}
+		}
 
 		.landing-slide {
 			height: 100%;
@@ -69,6 +102,29 @@
 				}
 			}
 
+			// The last slide has no illustration: the logo stands in for one, and the button
+			// under it is the way out of the introduction.
+			&.landing-slide-finish {
+				align-items: center;
+				justify-content: center;
+				gap: 20px;
+				padding-bottom: 10px;
+
+				.finish-logo {
+					flex: 0 1 auto;
+					min-height: 0;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+				}
+
+				button {
+					flex: 0 0 auto;
+					width: min(240px, 100%);
+					margin: 0;
+				}
+			}
+
 			.scale-to-fit {
 				position: absolute;
 				inset: 0;
@@ -89,8 +145,11 @@
 			align-items: center;
 			gap: 20px;
 
-			.logo-panel {
-				margin-top: 20px;
+			.secondary-buttons {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				gap: 20px;
 			}
 
 			.packs-btn,
@@ -100,7 +159,28 @@
 				flex-direction: row;
 				align-items: center;
 				gap: 15px;
+				// The column spaces these itself; left in, a button's own margin was added to the
+				// gap above and below it, so the two buttons sat 40 apart and the card 30 from
+				// the first of them.
+				margin: 0;
 			}
 		}
 	}
+}
+
+// Held sideways the card and the two buttons under it come to 439 of the 402 there is, so the
+// Help button fell off the bottom. Beside the card instead, which is what this orientation has
+// width for - the same answer as the carousel's own slides.
+//
+// Written out in full rather than nested: the rule it overrides is three classes deep
+// (.landing-screen .landing-content .action-buttons) and nesting this under .landscape-small
+// would have come to three as well, which is a tie decided by source order.
+.landing-screen.landscape-small .landing-content .action-buttons {
+	flex-direction: row;
+	align-items: center;
+	gap: 25px;
+	// The row is only as wide as the card and the buttons, so centring it left the right-hand
+	// half of the screen empty. Across the whole width instead, with the space shared out.
+	width: 100%;
+	justify-content: space-evenly;
 }

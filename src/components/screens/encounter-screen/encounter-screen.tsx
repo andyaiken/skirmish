@@ -120,7 +120,8 @@ export class EncounterScreen extends Component<Props, State> {
 
 		// Where the panels go over the map rather than beside it, only one of them can be open at
 		// a time, so none of them starts open and the map has the screen to itself. An encounter
-		// still opens on something to do: the round controls show themselves whatever this says.
+		// then opens on the board, with Roll Initiative on screen below it; the round's summary is
+		// a tap away on the toolbar rather than laid over the board before it has been looked at.
 		const panelsOverMap = OrientationLogic.isSmall(props.layout.orientation);
 
 		this.state = {
@@ -651,17 +652,6 @@ export class EncounterScreen extends Component<Props, State> {
 		return EncounterLogic.getEncounterState(this.props.encounter);
 	};
 
-	// The right-hand panel shows the round controls, or the end-of-encounter ones, whether or not it
-	// has been asked to - from either of those there is no other way on. Its toggle has nothing to
-	// say while one of them is up.
-	hasFixedRightControls = () => {
-		if (this.getEncounterState() !== EncounterState.Active) {
-			return true;
-		}
-
-		return !this.props.encounter.combatants.some(c => c.combat.current);
-	};
-
 	// The bottom panel holds the hand of whoever's turn it is, so there is nothing for it to hold on
 	// a monster's turn, or a stunned hero's, or one who has played every card.
 	hasBottomControls = () => {
@@ -828,8 +818,8 @@ export class EncounterScreen extends Component<Props, State> {
 						<button disabled={!this.hasBottomControls()} className='icon-btn' title='Bottom Panel' onClick={() => this.toggleBottomPanel()}>
 							{this.state.showBottomPanel && this.hasBottomControls() ? <IconLayoutBottombarCollapseFilled /> : <IconLayoutBottombarExpandFilled />}
 						</button>
-						<button disabled={this.hasFixedRightControls()} className='icon-btn' title='Right Panel' onClick={() => this.toggleRightPanel()}>
-							{this.state.showRightPanel || this.hasFixedRightControls() ? <IconLayoutSidebarRightCollapseFilled /> : <IconLayoutSidebarRightExpandFilled />}
+						<button className='icon-btn' title='Right Panel' onClick={() => this.toggleRightPanel()}>
+							{this.state.showRightPanel ? <IconLayoutSidebarRightCollapseFilled /> : <IconLayoutSidebarRightExpandFilled />}
 						</button>
 					</div>
 					<div className='icon-section'>
@@ -1017,6 +1007,17 @@ export class EncounterScreen extends Component<Props, State> {
 
 		const currentCombatant = this.props.encounter.combatants.find(c => c.combat.current) || null;
 		if (currentCombatant === null) {
+			// Between rounds, and before the first one. Unlike the panel above, this one is the
+			// player's to close: it holds the round's summary rather than anything to do with it,
+			// and the only way on - Roll Initiative - is in the top panel either way. Over the map
+			// it covers the whole board, and seeing where everyone ended up before rolling again
+			// is a fair thing to want.
+			if (!this.state.showRightPanel) {
+				// Nothing to leave behind, on either layout: a closed right panel is a strip
+				// saying whose turn it is, and between rounds it is nobody's.
+				return null;
+			}
+
 			return (
 				<div className='encounter-right-column'>
 					<RoundControls
@@ -1192,10 +1193,10 @@ export class EncounterScreen extends Component<Props, State> {
 		const className = `encounter-screen ${OrientationLogic.getClassName(this.props.layout.orientation)}`;
 
 		// There is not room for the panels beside or below the map, so they go over it instead and
-		// the map keeps the whole screen underneath. Only one is over it at a time: the state says
-		// so, except for the right-hand panel, which shows itself unasked when the round or the
-		// encounter is waiting on the player. One the player opened wins over that, so opening a
-		// panel is never a tap that appears to do nothing.
+		// the map keeps the whole screen underneath. Only one is over it at a time, which the state
+		// says, except once the encounter has been decided: the right-hand panel then shows itself
+		// unasked, because its controls are the only way on from there. One the player opened wins
+		// over that, so opening a panel is never a tap that appears to do nothing.
 		if (this.panelsOverMap()) {
 			let sheet = null;
 			if (left) {
@@ -1213,6 +1214,14 @@ export class EncounterScreen extends Component<Props, State> {
 						<div className='encounter-central-column'>
 							<div className='encounter-center-panel'>
 								{this.getMap()}
+								{
+									// Inside the board rather than beside it, so that a sheet is
+									// bounded by the map it is laid over and leaves the hand's
+									// collapsed strip below alone. Anchored to the whole panel it
+									// ran down across the strip, covering all but the last 67px of
+									// it and slicing a card name in half at the edge.
+									sheet
+								}
 							</div>
 							{
 								// Collapsed, the hand is a strip along the bottom of the map saying
@@ -1220,7 +1229,6 @@ export class EncounterScreen extends Component<Props, State> {
 								this.state.showBottomPanel ? null : bottom
 							}
 						</div>
-						{sheet}
 					</div>
 					{this.getDialog()}
 				</div>

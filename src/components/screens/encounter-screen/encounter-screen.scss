@@ -54,10 +54,13 @@
 
 		// There is no room for the panels beside or below the map - which is what makes the layout
 		// a small one - so they go over it instead, one at a time, and the map keeps the whole
-		// screen underneath. The main panel already clips what overflows it, so a sheet covers the
-		// board and nothing else.
+		// screen underneath. The sheets are placed against the board itself rather than the panel
+		// holding it, so that a sheet covers the board and nothing else: the hand's collapsed
+		// strip sits below the board, and against the panel a sheet ran down across it.
 		.encounter-main-panel {
-			position: relative;
+			.encounter-center-panel {
+				position: relative;
+			}
 
 			.encounter-sheet {
 				position: absolute;

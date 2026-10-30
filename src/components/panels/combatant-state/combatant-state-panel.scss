@@ -8,6 +8,12 @@
 	align-items: center;
 	justify-content: space-between;
 
+	// Too narrow for the labels, so the boxes are the icons and the padding around them. The
+	// panel decides this of its own width; see combatant-state-panel.tsx.
+	&.icons-only .state-box {
+		flex: 0 0 auto;
+	}
+
 	.state-box {
 		flex: 0 0 50px;
 		display: flex;
@@ -18,7 +24,10 @@
 		border-radius: 3px;
 
 		.state-text {
-			font-size: 10px;
+			// 11 is the floor Apple gives for text at all. 'Standing' is the widest of the four
+			// and wants 46 of the box's 44 at this size, so the box takes itself to 52: a flex
+			// item will not shrink below its own min-content, and the other three stay at 50.
+			font-size: 11px;
 			text-align: center;
 		}
 

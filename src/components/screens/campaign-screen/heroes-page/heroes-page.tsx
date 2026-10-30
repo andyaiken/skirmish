@@ -404,10 +404,12 @@ export class HeroesPage extends Component<Props, State> {
 				<div className='heroes-content'>
 					{this.getContent()}
 				</div>
+				{/* Selecting a hero opens a dialog rather than changing the sidebar, so the sheet
+					has nothing to say about one: it keeps the page's own name, and stays shut. */}
 				<CollapsibleSidebar
 					collapsible={!this.props.layout.roomForSidebarRow}
-					summary={this.state.selectedHero ? this.state.selectedHero.name : 'Your Team'}
-					openFor={this.state.selectedHero ? this.state.selectedHero.id : null}
+					summary='Your Team'
+					openFor={null}
 				>
 					{this.getSidebar()}
 				</CollapsibleSidebar>

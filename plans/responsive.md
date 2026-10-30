@@ -1030,9 +1030,15 @@ reach of the hand holding it and the map wants the lower half.
 didn't shrink - the hand slides over the map rather than being squeezed beside it - so the only
 thing to do was the footers themselves, at 10px the one thing in the game below the 11px floor
 Apple gives for text at all. They are 11px now, measured at 375pt with nothing clipped. What is in
-the app otherwise: 11px tags, 12px stat labels, 15px body, 17-18px headings. Nothing else is under
-11, and raising the 15px body would reflow every width Phase 2 measured, for a gain nobody has
-asked for.
+the app otherwise: 11px tags, 12px stat labels, 15px body, 17-18px headings. Raising the 15px body
+would reflow every width Phase 2 measured, for a gain nobody has asked for.
+
+Corrected 29 October 2026: "nothing else is under 11" was wrong when it was written. Four 10px
+sizes survived, found while counting the app's typography for the Dynamic Type question. Two are
+in the backstage screen, which is behind `options.developer` and so is nobody's problem; the two a
+player sees - the count badge on the card packs button, and the Standing / Prone / Unc. / Dead
+labels in the encounter's right-hand panel - are 11px now. The app's full set is eleven sizes: 11,
+12, 13, 15, 16, 17, 18, 20, 30, 40, plus the two developer ones.
 
 Worth recording for later rather than fixing now: every size in the app is in `px`, so a player who
 has set a larger text size system-wide gets nothing. Supporting Dynamic Type means typography in
@@ -1084,6 +1090,145 @@ The title is back at the 30px it was designed at, at every width:
 Checked on the help, card packs and start-an-encounter dialogs, which differ in what their content
 starts with. The float changes nothing below the first line: with it and without it, every element
 in the start-an-encounter dialog sits at the same place to the pixel.
+
+
+## A full pass for UI weirdness — 29 October 2026
+
+A sweep of every screen at 320x568, 375x667, 402x874, 440x956, 768x1024, 874x402, 1024x768 and
+1366x1024 in the browser, then the same on an iPhone 17 simulator, which is the only place the safe
+areas are real. The browser found nothing. **Everything below was found on the device, and four of
+the six are about an edge the browser has no way to show.**
+
+Two false positives, recorded so they are not chased again: the landing carousel's dots are 24x44
+by design, and its illustration contains a 29x29 Flip button that `ScaleToFit` shrinks and
+`pointer-events: none` makes unhittable, so no hit test ever reaches it.
+
+### Two of my own, in the sheet I had just built
+
+- **The handle sat in the home indicator's strip.** An absolutely positioned box is placed against
+  its ancestor's *padding* box, so `bottom: 0` sat *across* that padding rather than above it:
+  measured with a 34pt inset, 36 of the handle's 44 were inside the strip, and the handle is the
+  only way to open the sidebar. Now `bottom: max(10px, var(--bottom-inset))` - the same expression
+  `.campaign-content` pads itself with, so the two agree. Intrusion is 2px, which is the border.
+- **The heroes and equipment pages had a handle that lied.** Selecting a hero or an item opens a
+  *dialog*; it does not change the sidebar. Wiring `summary`/`openFor` to that selection anyway
+  popped the sheet open behind the modal, labelled with the hero's name but holding the page's
+  generic blurb. Both now keep the page's own name and stay shut. The island and stronghold pages
+  were right, because there the selection really does change the sidebar.
+
+### Every page said its own name twice
+
+The handle names the sheet, and each sidebar opens with a `SubHeading` saying the same thing a line
+below it. Only the leading one is hidden, and only inside the sheet. It matches nothing on a sheet
+showing something chosen - a region, a structure - because those open with that thing's card. Shown
+on all four pages at 1024 wide, hidden on all four at 402.
+
+### Notifications knew nothing about either edge
+
+`react-hot-toast` is fixed to the window and pins itself 16px off each edge, so it had no idea about
+either strip. Two separate problems, and only the first is a safe-area one:
+
+- **It sat in the strips.** `containerStyle` now pins `max(16px, var(--top-inset))` and
+  `max(16px, var(--bottom-inset))`. There was only a `--bottom-inset`; `--top-inset` is new, named
+  for the same two reasons, and `#root`'s padding now reads it so the policy has one home. Anything
+  pinned to the window rather than laid out inside `#root` needs it, because a fixed box is placed
+  against the viewport.
+- **Bottom right is empty space on a roomy screen and the worst place on a small one.** The bottom
+  edge there is controls across its whole width - the encounter toolbar and turn bar, a campaign
+  page's sheet handle - so a notification landed on them for its five seconds. `position` is now
+  `top-center` when `OrientationLogic.isSmall`, which is the answer the layout already works out
+  rather than a new threshold, and is true exactly when the bottom edge is given over to controls.
+
+| | Before | After |
+|---|---|---|
+| 402x874, insets 59/34 | bottom right, over the turn bar | top 59, centred, clear of the housing |
+| 1024x768, no insets | right 1008, bottom 752 | unchanged |
+
+**The trade is deliberate:** at phone width this now covers the *campaign* screen's top bar. There
+is no free edge at that width either way, and the encounter screen is where notifications actually
+fire - there the top is only map.
+
+**A sweep for more of the same found none.** Only two things are pinned at screen level: the dialog
+backdrop, which sits inside `#root`'s padding box with 5% margins, and the card preview, which is
+centred, scaled to fit and dismissed by tapping anywhere. Everything else positioned that way is
+inside its own component's box.
+
+### A sheet ran across the hand's collapsed strip
+
+The side sheets were anchored to `.encounter-main-panel`, which is the board *plus* the strip below
+it, so a sheet ran down across the strip and covered all but its last 67px, slicing a card name in
+half at the edge. The sheet's own comment already said it should cover "the board and nothing else";
+it was simply anchored to the wrong box. `{sheet}` now sits inside `.encounter-center-panel` with
+`position: relative` moved there with it, so the sheet is bounded by the thing it is laid over and
+the strip is out of its reach. No new numbers and nothing to keep in step.
+
+Measured at 402x874, with the slide-in animation suppressed:
+
+| | Before | After |
+|---|---|---|
+| Left sheet | 15-325 x 15-**740** | 10-330 x 10-**690** |
+| Right sheet | - | 72-392 x 10-**690** |
+| Hand strip | 10-392 x **700**-745 | unchanged, now wholly clear |
+
+Both still leave 62px of map showing on the side they came in from. The expanded hand is untouched
+- full width, 425-745 - because no collapsed strip is rendered while it is open.
+
+### Disabled icon buttons did not look disabled
+
+Before initiative is rolled, two of the encounter toolbar's buttons are genuinely `disabled`
+(`hasFixedRightControls` and `hasBottomControls` both return early while no combatant is current),
+so they were mis-signalled rather than misbehaving. `.icon-btn:disabled` went from `opacity: 0.5` to
+`0.35` - rgb(172,172,172) to rgb(197,197,197) on white, against rgb(88,88,88) enabled.
+
+0.5 is right for every other button and wrong for these, and the reason is specific: an icon button
+has no border and no background, so the glyph is all there is. Several toolbar glyphs are *filled*
+shapes, and a filled shape at 0.5 still reads as a solid, pressable control - there is no outline
+left over to say "button, currently off". It is the shared rule in `index.scss`, so it applies to
+all six places an icon button can be disabled; they are all the same kind of "off right now", and
+splitting it for the toolbar alone would be worse.
+
+### The right-hand panel was nailed open between rounds
+
+Not "re-asserting itself", which is how this was first described here: `getRightControls()` ignored
+`showRightPanel` whenever no combatant was current, and `hasFixedRightControls()` disabled the
+toolbar button in the same breath, so between rounds there was **no dismissal at all**. On a tablet
+the panel is a column beside the map and covers nothing, which is why it had never mattered. On a
+phone it is a sheet over the whole board, so the player could not look at where everyone had ended
+up before rolling again.
+
+The justification was that the player must always be able to reach the way on. **That is true of the
+end-of-encounter panel and not of this one:** Roll Initiative is in the *top* panel and on screen
+whatever the right-hand panel is doing. The only action inside `RoundControls` is the optional War
+Room 'Add a Hero' card. Everything else is a summary.
+
+So the forcing is now narrowed to `state !== EncounterState.Active`, where `EncounterControls`
+genuinely is the only way on. Between rounds the panel is an ordinary panel: `showRightPanel`
+governs it, and closed it renders nothing, because a collapsed right panel is a strip saying whose
+turn it is and between rounds it is nobody's.
+
+**`hasFixedRightControls()` fell out entirely.** Both its call sites are inside the toolbar, and
+`getTopControls()` returns the logo alone once the encounter is decided - so the toolbar only exists
+while the state is Active, where the narrowed test is constantly false. The function is gone and the
+right-hand toggle is now a plain toggle with no special case in it.
+
+| | Before | After |
+|---|---|---|
+| Phone, between rounds | board covered, button dead | board clear, button live, summary one tap away |
+| Phone, encounter decided | panel fixed open | unchanged - and there is no toolbar there to disable |
+| Tablet, fresh start | column open with the summary | unchanged, and now collapsible |
+
+What a phone opens on changes with it: the board, with Roll Initiative below it, rather than a
+summary laid over the board before it has been looked at. The cost is that a new player is no longer
+shown the round tip unasked; it is inside an Expander and gated on `showTips` either way.
+
+### What this leaves
+
+Phone-related and still open:
+
+- **Dynamic Type**, recorded above: every size in the app is in `px`.
+- The Phase 5 items below, of which **testing on real hardware** is the one with a known gap behind
+  it: four of the six bugs on this page were safe-area bugs, and the simulator is the only place
+  this pass could see them.
 
 
 ## Phase 5 — Ship it

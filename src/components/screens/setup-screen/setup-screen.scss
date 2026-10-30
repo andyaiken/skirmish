@@ -13,6 +13,8 @@
 	// As on the landing screen: this one ends in the Help button, and it scrolls, so this is
 	// scroll extent rather than a gap.
 	padding-bottom: var(--bottom-inset);
+	// What .setup-sheet is placed against.
+	position: relative;
 
 	&.portrait {
 		.setup-content {
@@ -36,6 +38,115 @@
 		border-bottom: 2px solid var(--border);
 		text-align: center;
 		padding: 10px 0;
+	}
+
+	// On a phone the banner is the game's name over a screen that is already trying not to
+	// scroll, and it is the one thing here that is decoration rather than something to use:
+	// 89 of the 874 upright and 152 of the 402 sideways. The height goes to the team instead.
+	&.portrait-small .setup-top-bar,
+	&.landscape-small .setup-top-bar {
+		display: none;
+	}
+
+	// On a phone the five rows are the screen, so everything around and between them gives way
+	// until they fit. Five rows at 75 are 375 of the 381 a 402pt screen has sideways once the home
+	// indicator's strip is off it, so the gaps alone could never have done it - the rows come down
+	// too. At 60 they still hold a 44pt button.
+	//
+	// Nested through .setup-content because the rules these replace are, and matching their shape
+	// is the only way to beat them: .setup-screen .setup-content .empty-panel is three classes and
+	// so was .setup-screen.landscape-small .empty-panel, which is a tie decided by source order.
+	// The fourth time this has come up, after the encounter toolbar, the campaign sidebar and the
+	// landing screen.
+	&.portrait-small .setup-content,
+	&.landscape-small .setup-content {
+		// The padding round the edges is worth less here than the row it pays for.
+		margin: 5px;
+
+		.left-panel {
+			gap: 10px;
+		}
+
+		.empty-panel,
+		.combatant-row-panel.list {
+			height: 60px;
+		}
+
+		// The column spaces these itself; their own margins were being added to the gap above and
+		// below each one, which upright came to 40 of the height the team needed.
+		.right-panel-rest {
+			display: flex;
+			flex-direction: column;
+			// Enough to tell the buttons apart and no more: at 10 it cost 20 of the height, which
+			// upright was more than the screen had spare.
+			gap: 5px;
+
+			.packs-btn,
+			.help-btn {
+				margin: 0;
+			}
+		}
+	}
+
+	&.landscape-small .setup-content {
+		.right-panel {
+			gap: 10px;
+		}
+
+		// The card is on the sheet, so this column is the information boxes and these two, and
+		// those boxes take its whole width. The 200 they are held to elsewhere is for standing
+		// beside a card, and here only made them narrower than everything above them.
+		.right-panel-rest {
+			.packs-btn,
+			.help-btn {
+				width: 100%;
+			}
+		}
+	}
+
+	// The Begin card as a panel over the right-hand side, once the team is complete; see
+	// cardInSheet in setup-screen.tsx. It is laid over what is there rather than fitted in
+	// beside it, so the rows and the buttons keep the sizes they had while the team was being
+	// built - which is the whole point of it.
+	.setup-sheet {
+		position: absolute;
+		right: 0;
+		// Clear of the strip the screen keeps for the home indicator, and the same at the top so
+		// the panel sits evenly: an absolutely positioned box is placed against the padding box,
+		// so 0 would sit across that strip rather than above it.
+		top: max(10px, var(--bottom-inset));
+		bottom: max(10px, var(--bottom-inset));
+		z-index: 10;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		// The card fills what this leaves rather than sitting at its own size inside it, so this
+		// padding is the space around it on all four sides. Centred in a full-height panel it was
+		// 38 from the top and bottom against 14 at the sides.
+		padding: 15px;
+		border-radius: 10px 0 0 10px;
+		border: 2px solid var(--border);
+		border-right: none;
+		background-color: var(--control);
+		// The panels behind are white on a near-white screen, so what says one is lying over
+		// the other is the shadow - the same as the encounter screen's sheets.
+		box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.25);
+
+		// Its height is the panel's, and the aspect ratio turns that into a width - which is
+		// also what gives the panel its own width, since nothing else here has one.
+		.playing-card {
+			flex: 0 1 auto;
+			height: 100%;
+			min-height: 0;
+			width: auto;
+			min-width: 0;
+		}
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		.skirmish:not(.reduce-motion) & .setup-sheet {
+			animation: setup-sheet-from-right 0.2s ease-out;
+		}
 	}
 
 	.setup-content {
@@ -83,7 +194,7 @@
 			border: 1px solid var(--border);
 			border-radius: 10px;
 			background-color: rgb(250, 250, 250);
-			padding: 0 15px;
+			padding: 0 8px;
 			color: rgb(150, 150, 150);
 
 			.random-btn {
@@ -97,5 +208,11 @@
 			width: 100%;
 			height: 75px;
 		}
+	}
+}
+
+@keyframes setup-sheet-from-right {
+	from {
+		transform: translateX(100%);
 	}
 }

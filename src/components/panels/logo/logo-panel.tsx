@@ -20,6 +20,11 @@ export class LogoPanel extends Component<Props> {
 	static widthPerFont = 7;
 	static margin = 40;
 
+	// Without the name it is the image on its own, which is narrower than it is tall. Measuring it
+	// as seven times its height capped a logo that had room to spare: at 402pt the card's 60 came
+	// out at 52, and a 120 on the landing screen's last slide came out at the same 52.
+	static widthPerImage = 1;
+
 	render = () => {
 		// The caller picks a size to suit the screen it's drawing on, which assumes a tablet's width.
 		// On a phone that size runs the wordmark off both edges - and the app clips rather than
@@ -27,7 +32,8 @@ export class LogoPanel extends Component<Props> {
 		// here is also capped at whatever would leave a margin either side, scaled in step so the
 		// panel keeps its proportions. The cap only shrinks: on a screen with room for the size that
 		// was asked for it does not bind at all, which is why a tablet is unaffected.
-		const share = (value: number) => value / this.props.size / LogoPanel.widthPerFont;
+		const widthPerSize = this.props.text ? LogoPanel.widthPerFont : LogoPanel.widthPerImage;
+		const share = (value: number) => value / this.props.size / widthPerSize;
 		const cap = (value: number) => `min(${value}px, calc((100vw - ${LogoPanel.margin}px) * ${share(value)}))`;
 
 		return (

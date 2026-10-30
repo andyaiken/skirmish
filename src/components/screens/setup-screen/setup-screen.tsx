@@ -48,6 +48,31 @@ export class SetupScreen extends Component<Props, State> {
 		};
 	}
 
+	// Sideways on a phone the Begin card has nowhere to go: the rows and the buttons already fill
+	// the height, and fitting it in beside them squeezed both. So once the team is complete it
+	// arrives as a panel over the right-hand side instead, and nothing underneath has to move.
+	cardInSheet = () => {
+		return OrientationLogic.isSmall(this.props.layout.orientation)
+			&& OrientationLogic.isLandscape(this.props.layout.orientation)
+			&& (this.props.game.heroes.length >= 5);
+	};
+
+	getBeginCard = () => {
+		return (
+			<PlayingCard
+				type={CardType.Role}
+				stack={true}
+				front={
+					<PlaceholderCard
+						text='Begin the Campaign'
+						content={<LogoPanel text={null} size={170} />}
+					/>
+				}
+				onClick={this.props.beginCampaign}
+			/>
+		);
+	};
+
 	createHero = () => {
 		this.setState({
 			hero: Factory.createCombatant(CombatantType.Hero)
@@ -151,39 +176,31 @@ export class SetupScreen extends Component<Props, State> {
 					<div className='right-panel'>
 						{
 							this.props.game.heroes.length >= 5 ?
-								<PlayingCard
-									type={CardType.Role}
-									stack={true}
-									front={
-										<PlaceholderCard
-											text='Begin the Campaign'
-											content={<LogoPanel text={null} size={170} />}
-										/>
-									}
-									onClick={this.props.beginCampaign}
-								/>
+								(this.cardInSheet() ? null : this.getBeginCard())
 								:
 								<Text type={TextType.Information}>
 									<p><b>Recruit your team.</b> These five heroes will begin the task of conquering the island.</p>
 									<p>You can click the <IconDice5 /> button to generate a random hero.</p>
 								</Text>
 						}
-						{
-							this.props.options.showTips ?
-								<Expander
-									header={
-										<Text type={TextType.Tip}>When you see a box like this, you can tap it to show more information.</Text>
-									}
-									content={
-										<div>
-											<p>We&apos;ll use these boxes to explain how to play the game.</p>
-											<p>You can tap it again to close it.</p>
-										</div>
-									}
-								/>
-								: null
-						}
-						<div>
+						{/* Grouped so that a phone held sideways can put them beside the card rather
+							than under it: the card alone is 300 of the 361 that orientation has. */}
+						<div className='right-panel-rest'>
+							{
+								this.props.options.showTips ?
+									<Expander
+										header={
+											<Text type={TextType.Tip}>When you see a box like this, you can tap it to show more information.</Text>
+										}
+										content={
+											<div>
+												<p>We&apos;ll use these boxes to explain how to play the game.</p>
+												<p>You can tap it again to close it.</p>
+											</div>
+										}
+									/>
+									: null
+							}
 							{packsBtn}
 							<button className='help-btn' title='Help' onClick={() => this.props.showHelp('setup')}>
 								<IconHelpCircle />
@@ -192,6 +209,7 @@ export class SetupScreen extends Component<Props, State> {
 						</div>
 					</div>
 				</div>
+				{this.cardInSheet() ? <div className='setup-sheet'>{this.getBeginCard()}</div> : null}
 				{this.getDialog()}
 			</div>
 		);

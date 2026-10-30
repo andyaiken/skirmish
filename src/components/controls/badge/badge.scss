@@ -14,7 +14,9 @@
 		color: white;
 		min-width: 16px;
 		height: 16px;
-		font-size: 10px;
+		// 11 is the floor Apple gives for text at all. The pill grows with its content either
+		// way - it is a min-width and side padding - so a wider number simply widens it.
+		font-size: 11px;
 		display: flex;
 		align-items: center;
 		justify-content: center;

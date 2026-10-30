@@ -471,10 +471,11 @@ export class ItemsPage extends Component<Props, State> {
 					{mundaneItemSection}
 					{empty}
 				</div>
+				{/* As on the heroes page: selecting an item opens a dialog, not the sidebar. */}
 				<CollapsibleSidebar
 					collapsible={!this.props.layout.roomForSidebarRow}
-					summary={this.state.selectedMagicItem ? this.state.selectedMagicItem.name : 'Your Equipment'}
-					openFor={this.state.selectedMagicItem ? this.state.selectedMagicItem.id : null}
+					summary='Your Equipment'
+					openFor={null}
 				>
 					{this.getSidebar()}
 				</CollapsibleSidebar>

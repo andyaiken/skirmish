@@ -18,6 +18,7 @@ import { EncounterMapLogic } from '../../logic/encounter-map/encounter-map-logic
 import { Factory } from '../../logic/factory/factory';
 import { GameLogic } from '../../logic/game/game-logic';
 import { IntentsLogic } from '../../logic/intents/intents-logic';
+import { OrientationLogic } from '../../logic/orientation/orientation-logic';
 import { PackLogic } from '../../logic/pack/pack-logic';
 import { StrongholdLogic } from '../../logic/stronghold/stronghold-logic';
 
@@ -1574,10 +1575,27 @@ export class Main extends Component<Props, State> {
 			);
 		}
 
+		const small = OrientationLogic.isSmall(this.props.layout.orientation);
+
 		return (
 			<div className={this.state.options.reduceMotion ? 'skirmish reduce-motion' : 'skirmish'}>
 				<Toaster
-					position='bottom-right'
+					// Bottom right is empty space on a roomy screen, and the one place a
+					// notification is in the way on a small one: the bottom edge there is given
+					// over to controls across its whole width - the encounter screen's toolbar and
+					// turn bar, a campaign page's sheet handle - and a notification landed on top
+					// of them for its five seconds. The top of a small screen is the map, which is
+					// a better thing to cover than the buttons being used.
+					position={small ? 'top-center' : 'bottom-right'}
+					// The toaster is fixed to the window and pins itself 16px off each edge, so it
+					// knows nothing about the strips the screen keeps for the home indicator and
+					// the camera housing: measured on a phone, a notification sat inside one or
+					// the other at both ends. Its own 16 where there is no strip, the strip where
+					// there is one, so nothing changes on a screen that has neither.
+					containerStyle={{
+						top: 'max(16px, var(--top-inset))',
+						bottom: 'max(16px, var(--bottom-inset))'
+					}}
 					toastOptions={{
 						duration: 5 * 1000
 					}}

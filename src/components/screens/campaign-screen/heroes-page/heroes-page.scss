@@ -3,7 +3,10 @@
 	display: flex;
 	flex-direction: row;
 	align-items: center;
-	gap: 20px;
+	// The gutter between the page and its sidebar: the same 10 the screen leaves everywhere else
+	// around them - see .campaign-content in campaign-screen.scss - so the sidebar sits as far
+	// from the map as it does from the edge of the screen.
+	gap: 10px;
 
 	&.landscape {
 		.heroes-content,

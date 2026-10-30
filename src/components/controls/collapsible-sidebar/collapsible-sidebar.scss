@@ -9,7 +9,12 @@
 	position: absolute;
 	left: 0;
 	right: 0;
-	bottom: 0;
+	// Clear of the strip the screen keeps for the home indicator. An absolutely positioned box is
+	// placed against its ancestor's padding box, so bottom: 0 sits *across* that padding rather
+	// than above it - which put 36 of the handle's 44pt inside the strip, and the handle is how
+	// the sidebar is opened. The same expression .campaign-content pads itself with, so the two
+	// agree.
+	bottom: max(10px, var(--bottom-inset));
 	z-index: 10;
 	display: flex;
 	flex-direction: column;
@@ -89,4 +94,12 @@
 	.sidebar-section {
 		flex: 0 0 auto;
 	}
+}
+
+// The handle names what the sheet is holding, so the heading at the top of the sidebar would say
+// the same thing again, a line below it. Only the leading one goes: every page's sidebar opens
+// with its own name, and the sheets that show something chosen - a region, a structure - open with
+// that thing's card instead, so this matches nothing there.
+.collapsible-sidebar .sidebar > .sidebar-section:first-child > .skirmish-text.subheading:first-child {
+	display: none;
 }

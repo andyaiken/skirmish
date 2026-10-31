@@ -29,7 +29,7 @@ export class GameCenter {
 
 	isAvailable = () => this.plugin !== null;
 
-	start = (options: OptionsModel) => {
+	start = (getOptions: () => OptionsModel) => {
 		const plugin = this.plugin;
 		if (!plugin) {
 			return;
@@ -40,7 +40,7 @@ export class GameCenter {
 			if (!data.authenticated) {
 				this.reported.clear();
 			}
-			this.setAccessPointVisible(options.gameCenter.accessPoint);
+			this.setAccessPointVisible(getOptions().gameCenter.accessPoint);
 			this.onAuthenticationChanged(data.authenticated);
 		}).catch(this.onError);
 

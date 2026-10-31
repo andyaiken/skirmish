@@ -17,8 +17,9 @@ end
 def capacitor_pods
   pod 'Capacitor', :path => '../../node_modules/@capacitor/ios'
   pod 'CapacitorCordova', :path => '../../node_modules/@capacitor/ios'
-  pod 'SkirmishGameCenter', :path => '../../plugins/skirmish-gamecenter'
+  pod 'CapacitorHaptics', :path => '../../node_modules/@capacitor/haptics'
   pod 'SkirmishCloud', :path => '../../plugins/skirmish-cloud'
+  pod 'SkirmishGameCenter', :path => '../../plugins/skirmish-game-center'
   pod 'SkirmishStore', :path => '../../plugins/skirmish-store'
 end
 

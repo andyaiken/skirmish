@@ -1,5 +1,5 @@
 {
-	"name": "skirmish-gamecenter",
+	"name": "skirmish-game-center",
 	"version": "1.0.0",
 	"description": "Game Center sign-in, achievements and leaderboards for Skirmish, as a local Capacitor plugin.",
 	"private": true,

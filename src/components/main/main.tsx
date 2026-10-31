@@ -140,7 +140,7 @@ export class Main extends Component<Props, State> {
 		};
 		this.updateGameCenterProgress(this.state.game);
 		this.reportGameCenter(this.state.game);
-		this.props.platform.gameCenter.start(this.state.options);
+		this.props.platform.gameCenter.start(() => this.state.options);
 
 		fetch(encounters).then(response => response.text()).then(text => {
 			rules['encounters'] = text;
@@ -196,7 +196,8 @@ export class Main extends Component<Props, State> {
 	};
 
 	updateGameCenterProgress = (game: GameModel | null) => {
-		if (!game) {
+		// Inside an encounter nothing counted here changes hands until it finishes
+		if (!game || game.encounter) {
 			return false;
 		}
 
@@ -204,6 +205,17 @@ export class Main extends Component<Props, State> {
 		let changed = false;
 		if (game.money > progress.highestMoney) {
 			progress.highestMoney = game.money;
+			changed = true;
+		}
+		// Credit for what an existing campaign has already built; the counters only go up
+		// The two default buildings (barracks and warehouse) don't count
+		const built = Math.max(0, game.stronghold.length - 2);
+		if (built > progress.buildingsBuilt) {
+			progress.buildingsBuilt = built;
+			changed = true;
+		}
+		if ((progress.buildingsUpgraded === 0) && game.stronghold.some(s => s.level > 1)) {
+			progress.buildingsUpgraded = 1;
 			changed = true;
 		}
 		if (!progress.wellEquipped && (GameCenterLogic.getOwnedMagicItemCount(game) >= GameCenterLogic.magicItemsForWellEquipped)) {
@@ -1376,7 +1388,7 @@ export class Main extends Component<Props, State> {
 			const storedItemsBeforeEncounter = game.items.length;
 			const heroes = encounter.combatants.filter(c => (c.type === CombatantType.Hero) && (c.faction === CombatantType.Hero));
 			const monsters = encounter.combatants.filter(c => (c.type === CombatantType.Monster) && (c.faction === CombatantType.Monster));
-			const finishedAtFullHealth = (heroes.length > 0) && heroes.every(h => (h.combat.damage === 0) && (h.combat.wounds === 0));
+			const finishedAtFullHealth = (state === EncounterState.Victory) && (heroes.length > 0) && heroes.every(h => (h.combat.damage === 0) && (h.combat.wounds === 0));
 			const bossesKilled = monsters
 				.filter(c => c.quirks.includes(QuirkType.Boss) && (c.combat.state === CombatantState.Dead))
 				.length;

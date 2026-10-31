@@ -4,10 +4,10 @@
 	"type": "module",
 	"repository": "https://github.com/andyaiken/skirmish.git",
 	"dependencies": {
-		"@capacitor/cli": "^8.5.3",
-		"@capacitor/core": "^8.5.3",
+		"@capacitor/cli": "^8.6.0",
+		"@capacitor/core": "^8.6.0",
 		"@capacitor/haptics": "^8.0.2",
-		"@capacitor/ios": "^8.5.3",
+		"@capacitor/ios": "^8.6.0",
 		"@tabler/icons-react": "^3.50.0",
 		"localforage": "^1.10.0",
 		"react": "^19.3.1",
@@ -16,7 +16,7 @@
 		"react-markdown": "^10.1.0",
 		"react-responsive": "^10.0.1",
 		"skirmish-cloud": "file:plugins/skirmish-cloud",
-		"skirmish-gamecenter": "file:plugins/skirmish-gamecenter",
+		"skirmish-game-center": "file:plugins/skirmish-game-center",
 		"skirmish-store": "file:plugins/skirmish-store"
 	},
 	"devDependencies": {
@@ -28,7 +28,7 @@
 		"eslint-plugin-react": "^7.37.5",
 		"eslint-plugin-react-hooks": "^7.1.1",
 		"globals": "^17.13.0",
-		"sass": "^1.106.1",
+		"sass": "^1.107.1",
 		"typescript": "^6.0.3",
 		"typescript-eslint": "^8.72.1",
 		"vite": "^8.3.5",

@@ -62,11 +62,21 @@ public class SkirmishGameCenterPlugin: CAPPlugin, CAPBridgedPlugin {
 
 		GKAchievement.report(achievements) { error in
 			if let error {
-				call.reject("Could not report achievements.", nil, error)
+				call.reject("Could not report achievements: \(describe(error))", nil, error)
 			} else {
 				call.resolve()
 			}
 		}
+	}
+
+	// GameKit's own message is often just "could not be completed"; the domain, code and underlying error say why
+	private func describe(_ error: Error) -> String {
+		let nsError = error as NSError
+		var text = "\(nsError.domain) \(nsError.code): \(nsError.localizedDescription)"
+		if let underlying = nsError.userInfo[NSUnderlyingErrorKey] as? NSError {
+			text += " (\(underlying.domain) \(underlying.code))"
+		}
+		return text
 	}
 
 	// A leaderboard keeps the player's best score, so a lower one later is simply ignored
@@ -98,7 +108,7 @@ public class SkirmishGameCenterPlugin: CAPPlugin, CAPBridgedPlugin {
 
 		group.notify(queue: .main) {
 			if let failure {
-				call.reject("Could not submit scores.", nil, failure)
+				call.reject("Could not submit scores: \(describe(failure))", nil, failure)
 			} else {
 				call.resolve()
 			}

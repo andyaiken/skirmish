@@ -1,8 +1,12 @@
 PODS:
-  - Capacitor (8.5.3):
+  - Capacitor (8.6.0):
     - CapacitorCordova
-  - CapacitorCordova (8.5.3)
+  - CapacitorCordova (8.6.0)
+  - CapacitorHaptics (8.0.2):
+    - Capacitor
   - SkirmishCloud (1.0.0):
+    - Capacitor
+  - SkirmishGameCenter (1.0.0):
     - Capacitor
   - SkirmishStore (1.0.0):
     - Capacitor
@@ -10,7 +14,9 @@ PODS:
 DEPENDENCIES:
   - "Capacitor (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
+  - "CapacitorHaptics (from `../../node_modules/@capacitor/haptics`)"
   - SkirmishCloud (from `../../plugins/skirmish-cloud`)
+  - SkirmishGameCenter (from `../../plugins/skirmish-game-center`)
   - SkirmishStore (from `../../plugins/skirmish-store`)
 
 EXTERNAL SOURCES:
@@ -18,17 +24,23 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/ios"
   CapacitorCordova:
     :path: "../../node_modules/@capacitor/ios"
+  CapacitorHaptics:
+    :path: "../../node_modules/@capacitor/haptics"
   SkirmishCloud:
     :path: "../../plugins/skirmish-cloud"
+  SkirmishGameCenter:
+    :path: "../../plugins/skirmish-game-center"
   SkirmishStore:
     :path: "../../plugins/skirmish-store"
 
 SPEC CHECKSUMS:
-  Capacitor: 2f67eaeb8ed79909cd35b5e7439a5c2a9ca58e0f
-  CapacitorCordova: 0b7326439c7a09fc5d20eced5e0dab986327a493
+  Capacitor: 62cab4ab4ba04ea925576ddd1be188869e90d9ea
+  CapacitorCordova: 922f0a94dae286165215f0c7cf16fbde662d5ee4
+  CapacitorHaptics: 296f771ecd89c7a1bd92a7b6826a7d268e2e70f5
   SkirmishCloud: 684c89f0450bdb7eb7a735a1528f1a6c73eaf402
+  SkirmishGameCenter: afe9529d7478a7582c89ebc3a3d26e3a7199f63a
   SkirmishStore: 68e0f77cf7467d225fc1fe62d5dc4ce42a51325b
 
-PODFILE CHECKSUM: d175d697c3ae877ca6bc8988eeaf931de89d77e6
+PODFILE CHECKSUM: f74de5c2843521654df6c1cdbd91ba3cd999873e
 
 COCOAPODS: 1.17.0

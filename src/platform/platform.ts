@@ -417,13 +417,13 @@ export class Platform {
 		return this.store.purchase(packs.map(pack => pack.id));
 	};
 
-	// App Review requires this to be reachable, and it is the only way a player who
-	// reinstalls gets their packs back - nothing about ownership is stored on our side.
 	// iOS decides whether the prompt is actually shown; there is nothing to ask in a browser
 	requestReview = (): Promise<void> => {
 		return this.store instanceof StoreKitStore ? this.store.requestReview() : Promise.resolve();
 	};
 
+	// App Review requires this to be reachable, and it is the only way a player who
+	// reinstalls gets their packs back - nothing about ownership is stored on our side.
 	restorePurchases = (): Promise<string[]> => {
 		return this.store.restore();
 	};

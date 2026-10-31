@@ -100,10 +100,10 @@ describe('GameCenterLogic', () => {
 	});
 
 	it('tracks progress toward Grand Architect and Campaign Veteran', () => {
-		const playerOptions = options(0, 0, { buildingsBuilt: 3, regionsConquered: 2 });
+		const playerOptions = options(0, 0, { buildingsBuilt: 5, regionsConquered: 2 });
 
-		expect(percentFor(GameCenterLogic.achievements.grandArchitect, null, playerOptions)).toBe(60);
-		expect(percentFor(GameCenterLogic.achievements.campaignVeteran, null, playerOptions)).toBe(40);
+		expect(percentFor(GameCenterLogic.achievements.grandArchitect, null, playerOptions)).toBe(50);
+		expect(percentFor(GameCenterLogic.achievements.campaignVeteran, null, playerOptions)).toBe(20);
 	});
 
 	it('reports completed one-time achievements', () => {
@@ -131,10 +131,11 @@ describe('GameCenterLogic', () => {
 		const mundaneItem = { magic: false };
 		const playerGame = {
 			heroes: [
-				{ id: 'hero-1', level: 5, items: [ magicItem, magicItem ], carried: [ magicItem ] },
-				{ id: 'hero-2', level: 5, items: [ magicItem ], carried: [] },
-				{ id: 'hero-3', level: 5, items: [], carried: [] },
-				{ id: 'hero-4', level: 5, items: [], carried: [ mundaneItem ] }
+				{ id: 'hero-1', level: 20, items: [ magicItem, magicItem ], carried: [ magicItem ] },
+				{ id: 'hero-2', level: 20, items: [ magicItem ], carried: [] },
+				{ id: 'hero-3', level: 20, items: [], carried: [] },
+				{ id: 'hero-4', level: 20, items: [], carried: [ mundaneItem ] },
+				{ id: 'hero-5', level: 20, items: [], carried: [] }
 			],
 			items: [ magicItem ]
 		} as unknown as GameModel;

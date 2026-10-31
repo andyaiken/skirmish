@@ -1,5 +1,3 @@
-import { CombatantType } from '../../enums/combatant-type';
-
 import type { CombatantModel } from '../../models/combatant';
 import type { GameModel } from '../../models/game';
 import type { OptionsModel } from '../../models/options';
@@ -64,12 +62,10 @@ export class GameCenterLogic {
 	static heroesForLegendaryCompany = 5;
 	static legendaryHeroLevel = 20;
 
+	// Only the heroes as the campaign holds them: anything picked up during an encounter counts
+	// once the encounter is over, so a fight that is then lost can't earn an achievement
 	static getPlayerHeroes = (game: GameModel | null): CombatantModel[] => {
-		const heroes = [
-			...(game?.heroes ?? []),
-			...(game?.encounter?.combatants.filter(c => (c.type === CombatantType.Hero) && (c.faction === CombatantType.Hero)) ?? [])
-		];
-		return [ ...new Map(heroes.map(hero => [ hero.id, hero ])).values() ];
+		return game?.heroes ?? [];
 	};
 
 	static getOwnedMagicItemCount = (game: GameModel | null) => {
@@ -90,15 +86,15 @@ export class GameCenterLogic {
 			.filter(hero => hero.level >= GameCenterLogic.legendaryHeroLevel).length >= GameCenterLogic.heroesForLegendaryCompany;
 	};
 
-	static getHighestHeroLevel = (game: GameModel | null) => {
-		return Math.max(0, ...(game?.heroes ?? []).map(h => h.level));
+	static getHighestHeroLevel = (game: GameModel | null, options: OptionsModel) => {
+		return Math.max(options.gameCenter.highestHeroLevel, ...(game?.heroes ?? []).map(h => h.level));
 	};
 
 	// Progress as it stands right now. Game Center keeps the best it has seen, so there is no
 	// need to work out what changed.
 	static getAchievementProgress = (game: GameModel | null, options: OptionsModel): AchievementProgress[] => {
 		const percent = (value: number, target: number) => Math.min(100, Math.floor((value / target) * 100));
-		const highestHeroLevel = Math.max(GameCenterLogic.getHighestHeroLevel(game), options.gameCenter.highestHeroLevel);
+		const highestHeroLevel = GameCenterLogic.getHighestHeroLevel(game, options);
 		const hasProgress = (value: boolean) => value ? 100 : 0;
 
 		return [
@@ -134,7 +130,7 @@ export class GameCenterLogic {
 	static getScores = (game: GameModel | null, options: OptionsModel): LeaderboardScore[] => {
 		return [
 			{ id: GameCenterLogic.leaderboards.encountersWon, score: options.gameCenter.encountersWon },
-			{ id: GameCenterLogic.leaderboards.highestHeroLevel, score: GameCenterLogic.getHighestHeroLevel(game) }
+			{ id: GameCenterLogic.leaderboards.highestHeroLevel, score: GameCenterLogic.getHighestHeroLevel(game, options) }
 		].filter(s => s.score > 0);
 	};
 }

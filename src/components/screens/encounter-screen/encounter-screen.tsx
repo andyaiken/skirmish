@@ -1,9 +1,7 @@
 import { Component, ReactNode, createRef } from 'react';
 import {
 	IconArrowBackUpDouble,
-	IconCircleCheckFilled,
 	IconConfetti,
-	IconDots,
 	IconHelpCircle,
 	IconHelpCircleFilled,
 	IconLayoutBottombarCollapseFilled,
@@ -45,16 +43,18 @@ import type { ItemModel } from '../../../models/item';
 import type { LayoutModel } from '../../../models/layout';
 import type { OptionsModel } from '../../../models/options';
 
-import { CardList, Dialog, IconSize, IconType, IconValue, PlayingCard, PreviewableCard, StatValue, Tabs, Text, TextType } from '../../controls';
+import { CardList, Dialog, IconSize, IconType, IconValue, PlayingCard, PreviewableCard, Tabs, Text, TextType } from '../../controls';
 import { CombatantRowPanel, EncounterLogPanel, EncounterMapPanel, InitiativeListPanel, LogoPanel, TrapRowPanel, TreasureRowPanel } from '../../panels';
 import { ItemCard, PlaceholderCard } from '../../cards';
 import { ActionControls } from './action-controls/action-controls';
 import { CharacterSheetModal } from '../../modals';
 import { EncounterControls } from './encounter-controls/encounter-controls';
 import { HeroControls } from './hero-controls/hero-controls';
+import { HeroStrip } from './hero-controls/hero-strip';
 import { MiniToken } from '../../panels/encounter-map/mini-token/mini-token';
 import { MonsterControls } from './monster-controls/monster-controls';
 import { RoundControls } from './round-controls/round-controls';
+import { centrePopover } from './popover';
 
 import './encounter-screen.scss';
 
@@ -194,7 +194,9 @@ export class EncounterScreen extends Component<Props, State> {
 
 		// A group left open sideways would otherwise be open again the next time the phone was
 		// turned that way, with no memory of why.
-		if (prevProps.layout.orientation !== this.props.layout.orientation) {
+		const previousID = prevProps.encounter.combatants.find(c => c.combat.current)?.id ?? null;
+		const currentID = this.props.encounter.combatants.find(c => c.combat.current)?.id ?? null;
+		if ((prevProps.layout.orientation !== this.props.layout.orientation) || (previousID !== currentID)) {
 			this.closeToolGroup();
 		}
 	};
@@ -704,86 +706,7 @@ export class EncounterScreen extends Component<Props, State> {
 			);
 		}
 
-		let actionBtn = (
-			<div className='action-container'>
-				<button
-					key='init-btn'
-					className='primary action'
-					onClick={() => this.props.rollInitiative()}
-					onDoubleClick={e => e.stopPropagation()}
-				>
-					Roll Initiative
-				</button>
-			</div>
-		);
-
-		const currentCombatant = this.props.encounter.combatants.find(c => c.combat.current) || null;
-		if (currentCombatant) {
-			const canAct = !currentCombatant.combat.stunned && (currentCombatant.combat.state !== CombatantState.Unconscious) && (currentCombatant.combat.state !== CombatantState.Dead);
-			if (currentCombatant.faction === CombatantType.Hero) {
-				if (canAct) {
-					const actionTaken = currentCombatant.combat.selectedAction && currentCombatant.combat.selectedAction.used;
-					actionBtn = (
-						<div className='action-container'>
-							<StatValue
-								orientation='vertical'
-								label='Movement'
-								value={<IconValue value={currentCombatant.combat.movement} type={IconType.Movement} size={IconSize.Large} />}
-							/>
-							<StatValue
-								orientation='vertical'
-								label='Action'
-								value={actionTaken ? <IconCircleCheckFilled className='action-taken' size={39} /> : <IconDots size={39} />}
-							/>
-							<button
-								key='hero-btn'
-								className={actionTaken ? 'primary action' : 'action'}
-								onClick={() => this.endTurn()}
-								onDoubleClick={e => e.stopPropagation()}
-							>
-								End My Turn
-							</button>
-						</div>
-					);
-				} else {
-					actionBtn = (
-						<div className='action-container'>
-							<button
-								key='hero-btn'
-								className='primary action'
-								onClick={() => this.endTurn()}
-								onDoubleClick={e => e.stopPropagation()}
-							>
-								Skip My Turn
-							</button>
-						</div>
-					);
-				}
-			}
-			if (currentCombatant.faction === CombatantType.Monster) {
-				const label = canAct ? 'Take Monster Turn' : 'Skip Monster Turn';
-				actionBtn = (
-					<div className='action-container'>
-						{
-							this.props.options.developer ?
-								<button
-									key='monster-btn'
-									className='primary action'
-									disabled={this.state.thinking}
-									onClick={() => this.runMonsterTurn()}
-									onDoubleClick={e => e.stopPropagation()}
-								>
-									{this.state.thinking ? 'Thinking' : label}
-								</button>
-								:
-								<button key='monster-btn' className='primary action' disabled={true}>
-									Thinking
-								</button>
-						}
-					</div>
-				);
-			}
-		}
+		const actionBtn = this.actionInColumn() ? null : this.getActionContainer();
 
 		if (this.state.selectedCombatantIDs.length === 1) {
 			const combatant = EncounterLogic.getCombatant(this.props.encounter, this.state.selectedCombatantIDs[0]);
@@ -836,6 +759,10 @@ export class EncounterScreen extends Component<Props, State> {
 			}
 		}
 
+		if (this.toolbarInColumn() && !actionBtn) {
+			return null;
+		}
+
 		return (
 			<div className='encounter-top-panel'>
 				{this.toolbarInColumn() ? null : this.getToolbar()}
@@ -844,11 +771,151 @@ export class EncounterScreen extends Component<Props, State> {
 		);
 	};
 
-	// Sideways on a phone the toolbar is a column down the left rather than part of the row along
-	// the bottom. The row is replaced wholesale by whatever is selected, which takes the tools with
-	// it until the selection is cleared; the column is not, so they are always there.
+	// The top panel's action area, which on a phone is the hero's strip down the right (or across
+	// the bottom) to match the tools down the left (or across the top).
+	actionInColumn = () => {
+		return this.toolbarInColumn() && (this.getEncounterState() === EncounterState.Active);
+	};
+
+	// The hero's strip of buttons: the collapsed right panel beside the map, and the column down the
+	// right sideways on a phone, where it also has the button that ends the turn.
+	getHeroStrip = (combatant: CombatantModel, endTurn?: ReactNode) => {
+		return (
+			<HeroStrip
+				combatant={combatant}
+				encounter={this.props.encounter}
+				game={this.props.game}
+				options={this.props.options}
+				showToken={() => this.scrollToCombatant('current')}
+				showCharacterSheet={this.showDetailsCombatant}
+				move={this.move}
+				addMovement={this.props.addMovement}
+				inspire={this.props.inspire}
+				scan={this.props.scan}
+				treatWounds={this.props.treatWounds}
+				hide={this.props.hide}
+				levelUp={this.props.levelUp}
+				switchAllegiance={this.props.switchAllegiance}
+				stun={this.props.stun}
+				knockout={this.props.knockout}
+				kill={this.props.kill}
+				toggleBottomPanel={this.toggleBottomPanel}
+				drinkPotion={this.props.drinkPotion}
+				horizontal={this.toolbarsInBars()}
+				endTurn={endTurn}
+			/>
+		);
+	};
+
+	getActionColumn = () => {
+		const combatant = this.props.encounter.combatants.find(c => c.combat.current) || null;
+		if (combatant && (combatant.faction === CombatantType.Hero)) {
+			const canAct = !combatant.combat.stunned && (combatant.combat.state !== CombatantState.Unconscious) && (combatant.combat.state !== CombatantState.Dead);
+			if (canAct) {
+				const actionTaken = combatant.combat.selectedAction && combatant.combat.selectedAction.used;
+				return this.getHeroStrip(
+					combatant,
+					<button
+						key='hero-btn'
+						className={actionTaken ? 'primary action' : 'action'}
+						onClick={() => this.endTurn()}
+						onDoubleClick={e => e.stopPropagation()}
+					>
+						End My Turn
+					</button>
+				);
+			}
+		}
+
+		return this.getActionContainer();
+	};
+
+	getActionContainer = () => {
+		let actionBtn = (
+			<div className='action-container'>
+				<button
+					key='init-btn'
+					className='primary action'
+					onClick={() => this.props.rollInitiative()}
+					onDoubleClick={e => e.stopPropagation()}
+				>
+					Roll Initiative
+				</button>
+			</div>
+		);
+
+		const currentCombatant = this.props.encounter.combatants.find(c => c.combat.current) || null;
+		if (currentCombatant) {
+			const canAct = !currentCombatant.combat.stunned && (currentCombatant.combat.state !== CombatantState.Unconscious) && (currentCombatant.combat.state !== CombatantState.Dead);
+			if (currentCombatant.faction === CombatantType.Hero) {
+				if (canAct) {
+					const actionTaken = currentCombatant.combat.selectedAction && currentCombatant.combat.selectedAction.used;
+					actionBtn = (
+						<div className='action-container'>
+							<button
+								key='hero-btn'
+								className={actionTaken ? 'primary action' : 'action'}
+								onClick={() => this.endTurn()}
+								onDoubleClick={e => e.stopPropagation()}
+							>
+								End My Turn
+							</button>
+						</div>
+					);
+				} else {
+					actionBtn = (
+						<div className='action-container'>
+							<button
+								key='hero-btn'
+								className='primary action'
+								onClick={() => this.endTurn()}
+								onDoubleClick={e => e.stopPropagation()}
+							>
+								Skip My Turn
+							</button>
+						</div>
+					);
+				}
+			}
+			if (currentCombatant.faction === CombatantType.Monster) {
+				const label = canAct ? 'Take Monster Turn' : 'Skip Monster Turn';
+				actionBtn = (
+					<div className='action-container'>
+						{
+							this.props.options.developer ?
+								<button
+									key='monster-btn'
+									className='primary action'
+									disabled={this.state.thinking}
+									onClick={() => this.runMonsterTurn()}
+									onDoubleClick={e => e.stopPropagation()}
+								>
+									{this.state.thinking ? 'Thinking' : label}
+								</button>
+								:
+								<button key='monster-btn' className='primary action' disabled={true}>
+									Thinking
+								</button>
+						}
+					</div>
+				);
+			}
+		}
+
+		return actionBtn;
+	};
+
+	// On a phone the toolbar is a column down the left, or a bar across the top, rather than part of
+	// the top panel. The panel is replaced wholesale by whatever is selected, which takes the tools
+	// with it until the selection is cleared; the column is not, so they are always there.
 	toolbarInColumn = () => {
-		return OrientationLogic.isSmall(this.props.layout.orientation) && OrientationLogic.isLandscape(this.props.layout.orientation);
+		return OrientationLogic.isSmall(this.props.layout.orientation);
+	};
+
+	// Upright on a phone the two are bars rather than columns: the tools across the top of the map
+	// and the hero's across the foot of it.
+	toolbarsInBars = () => {
+		return this.toolbarInColumn() && OrientationLogic.isPortrait(this.props.layout.orientation);
 	};
 
 	closeToolGroup = () => {
@@ -970,7 +1037,7 @@ export class EncounterScreen extends Component<Props, State> {
 								</button>
 								{
 									open ?
-										<div className='tool-flyout' onClick={group.closeOnUse ? this.closeToolGroup : undefined}>
+										<div className='tool-flyout' ref={e => centrePopover(e, this.toolbarsInBars())} onClick={group.closeOnUse ? this.closeToolGroup : undefined}>
 											{group.buttons}
 										</div>
 										: null
@@ -1208,14 +1275,19 @@ export class EncounterScreen extends Component<Props, State> {
 
 		return (
 			<div className='encounter-right-column collapsed' onClick={() => this.toggleRightPanel()}>
-				<CombatantRowPanel
-					mode='column'
-					combatant={currentCombatant}
-					encounter={this.props.encounter}
-					options={this.props.options}
-					onTokenClick={() => this.scrollToCombatant('current')}
-					onDetails={this.showDetailsCombatant}
-				/>
+				{
+					currentCombatant.faction === CombatantType.Hero ?
+						this.getHeroStrip(currentCombatant)
+						:
+						<CombatantRowPanel
+							mode='column'
+							combatant={currentCombatant}
+							encounter={this.props.encounter}
+							options={this.props.options}
+							onTokenClick={() => this.scrollToCombatant('current')}
+							onDetails={this.showDetailsCombatant}
+						/>
+				}
 			</div>
 		);
 	};
@@ -1349,10 +1421,13 @@ export class EncounterScreen extends Component<Props, State> {
 							</div>
 							{
 								// Collapsed, the hand is a strip along the bottom of the map saying
-								// it's there; expanded, it's the sheet above.
-								this.state.showBottomPanel ? null : bottom
+								// it's there; expanded, it's the sheet above. This layout has no height
+								// to spare for the strip, so shut means gone; the toolbar's hand button
+								// brings it back.
+								this.state.showBottomPanel || OrientationLogic.isSmall(this.props.layout.orientation) ? null : bottom
 							}
 						</div>
+						{this.actionInColumn() ? <div className='encounter-action-column'>{this.getActionColumn()}</div> : null}
 					</div>
 					{this.getDialog()}
 				</div>

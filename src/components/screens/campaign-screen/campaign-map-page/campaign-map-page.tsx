@@ -243,6 +243,7 @@ export class CampaignMapPage extends Component<Props, State> {
 						region={this.state.selectedRegion as RegionModel}
 						game={this.props.game}
 						options={this.props.options}
+						rows={OrientationLogic.isSmall(this.props.layout.orientation)}
 						startEncounter={this.props.startEncounter}
 						equipItem={this.props.equipItem}
 						unequipItem={this.props.unequipItem}

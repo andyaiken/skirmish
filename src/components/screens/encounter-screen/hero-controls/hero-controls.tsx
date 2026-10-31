@@ -1,5 +1,5 @@
-import { IconArrowsMove, IconFlask2, IconUser } from '@tabler/icons-react';
-import { Component } from 'react';
+import { Component, ReactNode } from 'react';
+import { IconArrowsMove, IconFlask2, IconId } from '@tabler/icons-react';
 
 import { StructureType } from '../../../../enums/structure-type';
 
@@ -9,11 +9,11 @@ import type { GameModel } from '../../../../models/game';
 import type { ItemModel } from '../../../../models/item';
 import type { OptionsModel } from '../../../../models/options';
 
-import { Expander, Tabs, Text, TextType } from '../../../controls';
-import { CombatantRowPanel } from '../../../panels';
+import { Expander, Text, TextType } from '../../../controls';
 import { HeroMove } from './hero-move/hero-move';
 import { HeroOverview } from './hero-overview/hero-overview';
 import { HeroPotions } from './hero-potions/hero-potions';
+import { MiniToken } from '../../../panels/encounter-map/mini-token/mini-token';
 
 import './hero-controls.scss';
 
@@ -39,97 +39,48 @@ interface Props {
 }
 
 interface State {
-	tab: string;
+	// Which of the toolbar's panels is hovering over the controls, if any; one at a time
+	submenu: 'move' | 'potion' | null;
 }
 
 export class HeroControls extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
-			tab: 'stats'
+			submenu: null
 		};
 	}
 
-	setTab = (tab: string) => {
-		this.setState({
-			tab: tab
-		});
+	getSubmenuButton = (id: 'move' | 'potion', title: string, icon: ReactNode) => {
+		const open = this.state.submenu === id;
+		return (
+			<button
+				className={open ? 'icon-btn open' : 'icon-btn'}
+				title={title}
+				aria-expanded={open}
+				onClick={() => this.setState({ submenu: open ? null : id })}
+			>
+				{icon}
+			</button>
+		);
 	};
 
 	render = () => {
-		const options = [
-			{ id: 'stats', display: <IconUser /> },
-			{ id: 'move', display: <IconArrowsMove /> }
-		];
-
-		if (this.props.combatant.carried.some(i => i.potion)) {
-			options.splice(2, 0, { id: 'potion', display: <IconFlask2 /> });
-		}
-
-		let content = null;
-		switch (this.state.tab) {
-			case 'stats':
-				content = (
-					<HeroOverview
-						combatant={this.props.combatant}
-						encounter={this.props.encounter}
-						game={this.props.game}
-						options={this.props.options}
-						inspire={this.props.inspire}
-						scan={this.props.scan}
-						treatWounds={this.props.treatWounds}
-						hide={this.props.hide}
-						levelUp={this.props.levelUp}
-						switchAllegiance={this.props.switchAllegiance}
-						stun={this.props.stun}
-						knockout={this.props.knockout}
-						kill={this.props.kill}
-					/>
-				);
-				break;
-			case 'move':
-				content = (
-					<HeroMove
-						combatant={this.props.combatant}
-						encounter={this.props.encounter}
-						options={this.props.options}
-						move={this.props.move}
-						addMovement={this.props.addMovement}
-					/>
-				);
-				break;
-			case 'potion':
-				content = (
-					<HeroPotions
-						combatant={this.props.combatant}
-						encounter={this.props.encounter}
-						drinkPotion={this.props.drinkPotion}
-					/>
-				);
-				break;
-		}
+		const hasPotions = this.props.combatant.carried.some(i => i.potion);
 
 		return (
 			<div className='hero-controls' key={this.props.combatant.id}>
-				<CombatantRowPanel
-					mode='header'
-					combatant={this.props.combatant}
-					encounter={this.props.encounter}
-					options={this.props.options}
-					onTokenClick={this.props.showToken}
-					onDetails={this.props.showCharacterSheet}
-				/>
 				{
 					this.props.options.showTips ?
 						<Expander
 							header={
-								<Text type={TextType.Tip}>It is {this.props.combatant.name}&apos;s turn; explore the tabs below to see what they can do.</Text>
+								<Text type={TextType.Tip}>It is {this.props.combatant.name}&apos;s turn; explore the buttons below to see what they can do.</Text>
 							}
 							content={
 								<div>
 									<p>The most important things to know are:</p>
 									<ul>
-										<li>You can move your hero around the map with the <IconArrowsMove size={15} /> tab.</li>
+										<li>You can move your hero around the map with the <IconArrowsMove size={15} /> button.</li>
 										<li>You can choose your action - you only get one per turn! Your action cards are shown below the map.</li>
 										<li>If you can&apos;t see your hero&apos;s token on the map, press their icon and the map will scroll them into view.</li>
 									</ul>
@@ -139,13 +90,67 @@ export class HeroControls extends Component<Props, State> {
 						/>
 						: null
 				}
-				<Tabs
-					options={options}
-					selectedID={this.state.tab}
-					onSelect={this.setTab}
-				/>
-				<div className='tab-content'>
-					{content}
+				<div className='hero-content'>
+					<Text type={TextType.SubHeading}>{this.props.combatant.name}</Text>
+					<div className='hero-toolbar'>
+						<div className='hero-buttons'>
+							<MiniToken
+								combatant={this.props.combatant}
+								encounter={null}
+								squareSize={40}
+								mapDimensions={{ left: 0, top: 0 }}
+								selectable={true}
+								selected={false}
+								onClick={this.props.showToken}
+							/>
+							{this.getSubmenuButton('move', 'Movement', <IconArrowsMove size={36} />)}
+							{hasPotions ? this.getSubmenuButton('potion', 'Potions', <IconFlask2 size={36} />) : null}
+							<button className='icon-btn' title='Character Sheet' onClick={() => this.props.showCharacterSheet(this.props.combatant)}>
+								<IconId size={36} />
+							</button>
+						</div>
+						{
+							this.state.submenu === 'move' ?
+								<div className='hero-submenu'>
+									<HeroMove
+										combatant={this.props.combatant}
+										encounter={this.props.encounter}
+										options={this.props.options}
+										move={this.props.move}
+										addMovement={this.props.addMovement}
+									/>
+								</div>
+								: null
+						}
+						{
+							this.state.submenu === 'potion' && hasPotions ?
+								<div className='hero-submenu'>
+									<HeroPotions
+										combatant={this.props.combatant}
+										encounter={this.props.encounter}
+										drinkPotion={this.props.drinkPotion}
+									/>
+								</div>
+								: null
+						}
+					</div>
+					<div className='hero-stats'>
+						<HeroOverview
+							combatant={this.props.combatant}
+							encounter={this.props.encounter}
+							game={this.props.game}
+							options={this.props.options}
+							inspire={this.props.inspire}
+							scan={this.props.scan}
+							treatWounds={this.props.treatWounds}
+							hide={this.props.hide}
+							levelUp={this.props.levelUp}
+							switchAllegiance={this.props.switchAllegiance}
+							stun={this.props.stun}
+							knockout={this.props.knockout}
+							kill={this.props.kill}
+						/>
+					</div>
 				</div>
 			</div>
 		);

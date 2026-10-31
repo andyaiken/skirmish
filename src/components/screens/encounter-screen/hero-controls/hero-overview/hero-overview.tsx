@@ -30,9 +30,15 @@ interface Props {
 	stun: (combatant: CombatantModel) => void;
 	knockout: (combatant: CombatantModel) => void;
 	kill: (combatant: CombatantModel) => void;
+	// Off where Inspire, Scan and Hide are a button of their own
+	quickActions: boolean;
 }
 
 export class HeroOverview extends Component<Props> {
+	static defaultProps = {
+		quickActions: true
+	};
+
 	getTreatment = () => {
 		const unconscious = this.props.combatant.combat.state === CombatantState.Unconscious;
 		if ((this.props.combatant.combat.wounds === 0) && !unconscious) {
@@ -61,7 +67,7 @@ export class HeroOverview extends Component<Props> {
 			<div className='hero-overview'>
 				<CombatStatsPanel combatant={this.props.combatant} encounter={this.props.encounter} />
 				{this.getTreatment()}
-				<div className='quick-actions'>
+				{this.props.quickActions ? <div className='quick-actions'>
 					<button
 						disabled={this.props.combatant.combat.stunned || (this.props.combatant.combat.movement < 4)}
 						onClick={() => this.props.inspire(this.props.encounter, this.props.combatant)}
@@ -80,7 +86,7 @@ export class HeroOverview extends Component<Props> {
 					>
 						Hide<br /><IconValue value={4} type={IconType.Movement} size={IconSize.Button} />
 					</button>
-				</div>
+				</div> : null}
 				<CombatantNotices combatant={this.props.combatant} />
 				{
 					this.props.options.developer ?

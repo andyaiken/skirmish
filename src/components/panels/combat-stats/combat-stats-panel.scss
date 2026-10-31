@@ -23,6 +23,11 @@
 		&>* {
 			flex: 1 1 0;
 		}
+
+		// Damage is a number and Wounds a row of hearts, so wounds gets the room.
+		&.health>:last-child {
+			flex: 2 1 0;
+		}
 	}
 }
 

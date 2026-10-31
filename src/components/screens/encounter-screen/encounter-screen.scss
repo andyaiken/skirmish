@@ -235,6 +235,96 @@
 		}
 	}
 
+	// The hero's buttons as a column down the right, the counterpart of the tool column; see
+	// actionInColumn. What is not the hero's strip - Roll Initiative, Skip My Turn, a monster's
+	// turn - is one button, which fills the column with its text running up it.
+	.encounter-action-column {
+		flex: 0 0 auto;
+		display: flex;
+		flex-direction: column;
+		padding: 5px;
+		border: 2px solid var(--border);
+		border-radius: 10px;
+		background-color: white;
+
+		// Tighter than beside the map, as a phone has little height to spare.
+		.hero-strip {
+			gap: 4px;
+			padding: 0;
+		}
+
+		.action-container {
+			flex: 1 1 0;
+			min-height: 0;
+			display: flex;
+			align-items: center;
+			flex-direction: column;
+			width: var(--touch-target);
+
+			.action {
+				flex: 1 1 0;
+				min-height: 0;
+				width: 100%;
+				height: auto;
+				margin: 0;
+				padding: 2px;
+				writing-mode: vertical-rl;
+				transform: rotate(180deg);
+				white-space: nowrap;
+			}
+		}
+	}
+
+	// Upright on a phone the two columns are bars, across the top of the map and across the foot of
+	// it, and what opens from them opens below and above rather than beside.
+	&.portrait-small {
+		.encounter-tool-column {
+			flex-direction: row;
+
+			.tool-flyout {
+				left: 50%;
+				top: calc(100% + 5px + 2px + 10px);
+				transform: translateX(-50%);
+			}
+		}
+
+		.encounter-action-column {
+			flex-direction: row;
+
+			.hero-strip {
+				height: auto;
+				width: 100%;
+				flex-direction: row;
+				gap: 0;
+
+				.icon-btn {
+					flex: 0 1 var(--touch-target);
+					min-width: 30px;
+				}
+
+				.hero-strip-submenu {
+					top: auto;
+					bottom: calc(100% + 5px + 2px + 10px);
+					right: auto;
+					left: 50%;
+					transform: translateX(-50%);
+				}
+			}
+
+			// Skip My Turn and a monster's turn are one button, which fills the bar.
+			.action-container {
+				flex-direction: row;
+				width: 100%;
+
+				.action {
+					writing-mode: horizontal-tb;
+					transform: none;
+					height: var(--touch-target);
+				}
+			}
+		}
+	}
+
 	.encounter-top-panel {
 		// Tall enough for a combatant row, and taller when the toolbar needs a second line. A fixed
 		// height would cut off whichever buttons didn't fit across one - Retreat among them, which is

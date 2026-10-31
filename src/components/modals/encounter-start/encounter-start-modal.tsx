@@ -17,6 +17,7 @@ import { Collections } from '../../../utils/collections/collections';
 import { CardList, Dialog, Switch, Text, TextType } from '../../controls';
 import { HeroCard, SpeciesCard, StrongholdBenefitCard } from '../../cards';
 import { CharacterSheetModal } from '../character-sheet/character-sheet-modal';
+import { CombatantRowPanel } from '../../panels';
 
 import './encounter-start-modal.scss';
 
@@ -24,6 +25,9 @@ interface Props {
 	region: RegionModel;
 	game: GameModel;
 	options: OptionsModel;
+	// On a small screen a hero is a row rather than a card, so that a party does not mean a
+	// long scroll
+	rows: boolean;
 	startEncounter: (region: RegionModel, heroes: CombatantModel[], benefits: number, detriments: number) => void;
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
 	unequipItem: (item: ItemModel, hero: CombatantModel) => void;
@@ -132,6 +136,14 @@ export class EncounterStartModal extends Component<Props, State> {
 			);
 		}
 
+		if (this.props.rows) {
+			return (
+				<div className='party rows'>
+					{this.state.selectedHeroes.map(h => <CombatantRowPanel key={h.id} combatant={h} options={this.props.options} onDetails={this.setSheetHero} />)}
+				</div>
+			);
+		}
+
 		return (
 			<div className='party'>
 				{this.state.selectedHeroes.map(h => <HeroCard key={h.id} hero={h} onCharacterSheet={this.setSheetHero} />)}
@@ -142,7 +154,36 @@ export class EncounterStartModal extends Component<Props, State> {
 	getHeroes = () => {
 		const full = this.state.selectedHeroes.length >= EncounterStartModal.partySize;
 
-		const heroes = Collections.sort([ ...this.props.game.heroes ], n => n.name)
+		const sorted = Collections.sort([ ...this.props.game.heroes ], n => n.name);
+
+		if (this.props.rows) {
+			return (
+				<div className='hero-page'>
+					<Text>
+						Tap a hero to add them to the party or remove them from it. <b>Up to {EncounterStartModal.partySize} heroes</b> can take part in this encounter.
+					</Text>
+					<div className='hero-rows'>
+						{
+							sorted.map(h => {
+								const selected = this.state.selectedHeroes.includes(h);
+								return (
+									<div key={h.id} className={selected ? 'hero-option selected' : 'hero-option'}>
+										<CombatantRowPanel
+											combatant={h}
+											options={this.props.options}
+											onClick={selected || !full ? hero => this.toggleHero(hero) : null}
+											onDetails={this.setSheetHero}
+										/>
+									</div>
+								);
+							})
+						}
+					</div>
+				</div>
+			);
+		}
+
+		const heroes = sorted
 			.map(h => {
 				const selected = this.state.selectedHeroes.includes(h);
 				return (

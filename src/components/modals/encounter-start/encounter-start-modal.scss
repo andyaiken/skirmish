@@ -45,7 +45,25 @@
 		padding: 10px 0;
 	}
 
+	.party.rows,
+	.hero-rows {
+		display: flex;
+		flex-direction: column;
+		gap: 5px;
+		padding: 10px 0;
+	}
+
+	.party.rows {
+		flex-wrap: nowrap;
+		justify-content: flex-start;
+	}
+
 	.hero-page {
+		.hero-option.selected .combatant-row-panel {
+			border-color: var(--primary);
+			box-shadow: 0 0 0 1px var(--primary);
+		}
+
 		.hero-option.selected .playing-card-front,
 		.hero-option.selected .playing-card-back {
 			border-color: var(--primary);

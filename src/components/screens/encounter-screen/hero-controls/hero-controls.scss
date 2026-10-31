@@ -3,7 +3,64 @@
 	flex-direction: column;
 	height: 100%;
 
-	.tabs {
-		margin-top: 10px;
+	.hero-buttons {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 10px;
+
+		// An icon button is square and, in a row, stretched to the width the row gives it, which
+		// made this one as tall as it was wide.
+		.icon-btn {
+			flex: 0 0 var(--touch-target);
+			width: var(--touch-target);
+			height: var(--touch-target);
+
+			&.open {
+				background-color: var(--primary-light);
+			}
+		}
+	}
+
+	// What the submenu is placed against.
+	.hero-toolbar {
+		position: relative;
+	}
+
+	// Over what is below the buttons rather than pushing it down, the way the tool column's groups
+	// open over the board.
+	.hero-submenu {
+		position: absolute;
+		top: calc(100% + 5px);
+		left: 0;
+		right: 0;
+		z-index: 20;
+		padding: 10px;
+		border: 2px solid var(--border);
+		border-radius: 10px;
+		background-color: white;
+		box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.25);
+	}
+
+	// What the tab content used to be, now holding the hero's name and buttons as well.
+	.hero-content {
+		flex: 1 1 0;
+		min-height: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 5px;
+		border: 2px solid var(--border);
+		border-radius: 10px;
+		background-color: rgb(255, 255, 255);
+		padding: 0 10px 10px 10px;
+	}
+
+	// Only the stats scroll, so that the submenu hovering over them is not clipped by the box.
+	.hero-stats {
+		flex: 1 1 0;
+		min-height: 0;
+		overflow-x: hidden;
+		overflow-y: auto;
+		-webkit-overflow-scrolling: touch;
 	}
 }

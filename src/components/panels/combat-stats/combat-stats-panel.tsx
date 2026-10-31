@@ -44,7 +44,7 @@ export class CombatStatsPanel extends Component<Props> {
 		}
 
 		return (
-			<div className='combat-stats-row'>
+			<div className='combat-stats-row health'>
 				<StatValue orientation='vertical' label='Damage' value={this.props.combatant.combat.damage} />
 				<StatValue orientation='vertical' label='Wounds' value={<div className='wounds-section'>{woundsInRows}</div>} />
 			</div>
@@ -60,6 +60,7 @@ export class CombatStatsPanel extends Component<Props> {
 					<CombatantStatePanel combatant={this.props.combatant} />
 					<hr />
 					<div className='combat-stats-row'>
+						<StatValue orientation='vertical' label='Movement' value={this.props.combatant.combat.movement} />
 						<StatValue orientation='vertical' label='Senses' value={this.props.combatant.combat.senses} />
 						<StatValue orientation='vertical' label='Hidden' value={this.props.combatant.combat.hidden} />
 					</div>

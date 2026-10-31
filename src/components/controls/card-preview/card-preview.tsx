@@ -1,4 +1,5 @@
 import { Component, MouseEvent, ReactNode, createRef } from 'react';
+import { createPortal } from 'react-dom';
 
 import './card-preview.scss';
 
@@ -65,14 +66,18 @@ export class CardPreview extends Component<Props, State> {
 	};
 
 	render = () => {
-		return (
+		// Portalled out of wherever the card sits: inside a scrolling sheet (the campaign sidebar on a
+		// phone) a fixed element is clipped to and positioned against that sheet, not the screen.
+		const root = document.querySelector('.skirmish') ?? document.body;
+		return createPortal(
 			<div className='card-preview-backdrop' onClick={this.closeClick}>
 				<div className='card-preview' ref={this.previewRef} role='dialog' aria-modal='true' aria-label='Card preview'>
 					<div className='card-preview-content' style={{ zoom: this.state.scale }} onClick={this.cardClick}>
 						{this.props.card}
 					</div>
 				</div>
-			</div>
+			</div>,
+			root
 		);
 	};
 }

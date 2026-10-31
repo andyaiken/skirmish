@@ -25,7 +25,7 @@ public class SkirmishGameCenterPlugin: CAPPlugin, CAPBridgedPlugin {
 	// "authenticationChanged" event rather than as this call's result.
 	@objc func authenticate(_ call: CAPPluginCall) {
 		DispatchQueue.main.async {
-			GKLocalPlayer.local.authenticateHandler = { [weak self] viewController, _ in
+            GKLocalPlayer.local.authenticateHandler = { [weak self = self] viewController, _ in
 				if let viewController {
 					self?.bridge?.viewController?.present(viewController, animated: true)
 					return
@@ -62,7 +62,7 @@ public class SkirmishGameCenterPlugin: CAPPlugin, CAPBridgedPlugin {
 
 		GKAchievement.report(achievements) { error in
 			if let error {
-				call.reject("Could not report achievements: \(describe(error))", nil, error)
+				call.reject("Could not report achievements: \(SkirmishGameCenterPlugin.describe(error))", nil, error)
 			} else {
 				call.resolve()
 			}
@@ -70,7 +70,7 @@ public class SkirmishGameCenterPlugin: CAPPlugin, CAPBridgedPlugin {
 	}
 
 	// GameKit's own message is often just "could not be completed"; the domain, code and underlying error say why
-	private func describe(_ error: Error) -> String {
+	private static func describe(_ error: Error) -> String {
 		let nsError = error as NSError
 		var text = "\(nsError.domain) \(nsError.code): \(nsError.localizedDescription)"
 		if let underlying = nsError.userInfo[NSUnderlyingErrorKey] as? NSError {
@@ -108,7 +108,7 @@ public class SkirmishGameCenterPlugin: CAPPlugin, CAPBridgedPlugin {
 
 		group.notify(queue: .main) {
 			if let failure {
-				call.reject("Could not submit scores: \(describe(failure))", nil, failure)
+				call.reject("Could not submit scores: \(SkirmishGameCenterPlugin.describe(failure))", nil, failure)
 			} else {
 				call.resolve()
 			}

@@ -225,6 +225,7 @@ export class Platform {
 			showTips: true,
 			reduceMotion: false,
 			soundEffectsVolume: 0.5,
+			haptics: true,
 			packIDs: [],
 			renderer: this.getRenderer()
 		};
@@ -299,6 +300,10 @@ export class Platform {
 
 		if (options.reduceMotion === undefined) {
 			options.reduceMotion = false;
+		}
+
+		if (options.haptics === undefined) {
+			options.haptics = true;
 		}
 	};
 

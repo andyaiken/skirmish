@@ -4,6 +4,7 @@ export interface OptionsModel {
 	showTips: boolean;
 	reduceMotion: boolean;
 	soundEffectsVolume: number;
+	haptics: boolean;
 	packIDs: string[];
 	renderer: string;
 }

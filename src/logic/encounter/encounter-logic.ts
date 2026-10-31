@@ -25,6 +25,7 @@ import type { ConditionModel } from '../../models/condition';
 import type { ItemModel } from '../../models/item';
 
 import { Collections } from '../../utils/collections/collections';
+import { Haptic } from '../../utils/haptics/haptics';
 import { Random } from '../../utils/random/random';
 import { Sound } from '../../utils/sound/sound';
 import { Utils } from '../../utils/utils/utils';
@@ -1097,6 +1098,7 @@ export class EncounterLogic {
 		EncounterLogLogic.logState(encounter, combatant);
 		EncounterLogic.dropAllItems(encounter, combatant);
 		Sound.play(Sound.dong);
+		Haptic.heavy();
 	};
 
 	static knockout = (encounter: EncounterModel, combatant: CombatantModel) => {

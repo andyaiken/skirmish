@@ -1,3 +1,4 @@
+import { Capacitor } from '@capacitor/core';
 import { Component } from 'react';
 
 import type { GameModel } from '../../../../models/game';
@@ -19,6 +20,7 @@ interface Props {
 	setShowTips: (value: boolean) => void;
 	setReduceMotion: (value: boolean) => void;
 	setSoundEffectsVolume: (value: number) => void;
+	setHaptics: (value: boolean) => void;
 	setRenderer: (value: string) => void;
 	restorePurchases: () => Promise<void>;
 }
@@ -81,6 +83,7 @@ export class OptionsTab extends Component<Props, State> {
 					onChange={e => this.setSoundEffectsVolume(parseFloat(e.target.value))}
 				/>
 				<hr />
+				{Capacitor.isNativePlatform() ? <Switch label='Haptic Feedback' checked={this.props.options.haptics} onChange={this.props.setHaptics} /> : null}
 				{
 					Platform.canUseDeveloperMode() ?
 						<Switch label='Developer Mode' checked={this.props.options.developer} onChange={this.props.setDeveloperMode} />

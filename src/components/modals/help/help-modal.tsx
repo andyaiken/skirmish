@@ -21,6 +21,7 @@ interface Props {
 	setShowTips: (value: boolean) => void;
 	setReduceMotion: (value: boolean) => void;
 	setSoundEffectsVolume: (value: number) => void;
+	setHaptics: (value: boolean) => void;
 	setRenderer: (value: string) => void;
 	restorePurchases: () => Promise<void>;
 }
@@ -76,6 +77,7 @@ export class HelpModal extends Component<Props, State> {
 							setShowTips={this.props.setShowTips}
 							setReduceMotion={this.props.setReduceMotion}
 							setSoundEffectsVolume={this.props.setSoundEffectsVolume}
+							setHaptics={this.props.setHaptics}
 							setRenderer={this.props.setRenderer}
 							restorePurchases={this.props.restorePurchases}
 						/>

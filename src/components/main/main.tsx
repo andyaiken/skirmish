@@ -39,6 +39,7 @@ import type { CloudAdoptionReason, CloudCampaignModel, CloudConflictModel } from
 import type { Platform } from '../../platform/platform';
 
 import { Collections } from '../../utils/collections/collections';
+import { Haptic } from '../../utils/haptics/haptics';
 import { Sound } from '../../utils/sound/sound';
 import { Utils } from '../../utils/utils/utils';
 
@@ -110,6 +111,7 @@ export class Main extends Component<Props, State> {
 		this.props.platform.onCloudConflict = conflict => this.showCloudConflict(conflict);
 
 		Sound.volume = this.state.options.soundEffectsVolume;
+		Haptic.enabled = this.state.options.haptics;
 	}
 
 	// Every change to the campaign or the settings is handed straight back to the platform,
@@ -219,6 +221,20 @@ export class Main extends Component<Props, State> {
 	setReduceMotion = (value: boolean) => {
 		const options = this.state.options;
 		options.reduceMotion = value;
+
+		this.setState({
+			options: options
+		}, () => {
+			this.saveOptions();
+		});
+	};
+
+	setHaptics = (value: boolean) => {
+		const options = this.state.options;
+		options.haptics = value;
+
+		Haptic.enabled = value;
+		Haptic.select();
 
 		this.setState({
 			options: options
@@ -1544,6 +1560,7 @@ export class Main extends Component<Props, State> {
 							setShowTips={this.setShowTips}
 							setReduceMotion={this.setReduceMotion}
 							setSoundEffectsVolume={this.setSoundEffectsVolume}
+							setHaptics={this.setHaptics}
 							setRenderer={this.setRenderer}
 							restorePurchases={this.restorePurchases}
 						/>

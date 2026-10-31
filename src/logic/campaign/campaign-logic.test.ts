@@ -1,8 +1,11 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { BoonType } from '../../enums/boon-type';
 import { CombatantType } from '../../enums/combatant-type';
+import { EncounterState } from '../../enums/encounter-state';
 import { StructureType } from '../../enums/structure-type';
+
+import { Haptic } from '../../utils/haptics/haptics';
 
 import type { CampaignMapModel } from '../../models/campaign-map';
 import type { CombatantModel } from '../../models/combatant';
@@ -168,5 +171,33 @@ describe('CampaignLogic.purchaseRegion', () => {
 		expect(victory).toBe(true);
 		expect(game.heroSlots).toBe(0);
 		expect(game.boons).toHaveLength(0);
+	});
+});
+
+describe('CampaignLogic.finishEncounter haptics', () => {
+	it('celebrates a victory', () => {
+		const region = createRegion([ 'one' ]);
+		const game = createGame(region);
+		game.encounter = createEncounter();
+		game.encounter.regionID = region.id;
+		const success = vi.spyOn(Haptic, 'success');
+
+		CampaignLogic.finishEncounter(game, EncounterState.Victory);
+
+		expect(success).toHaveBeenCalledOnce();
+		success.mockRestore();
+	});
+
+	it('does not celebrate a retreat', () => {
+		const region = createRegion([ 'one' ]);
+		const game = createGame(region);
+		game.encounter = createEncounter();
+		game.encounter.regionID = region.id;
+		const success = vi.spyOn(Haptic, 'success');
+
+		CampaignLogic.finishEncounter(game, EncounterState.Retreat);
+
+		expect(success).not.toHaveBeenCalled();
+		success.mockRestore();
 	});
 });

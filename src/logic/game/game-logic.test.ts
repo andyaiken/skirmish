@@ -1,11 +1,13 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { ActionEffects, ActionTargetParameters } from '../action/action-logic';
 import { ActionTargetType } from '../../enums/action-target-type';
 import { CardType } from '../../enums/card-type';
+import { CombatantType } from '../../enums/combatant-type';
 import { ConditionLogic } from '../condition/condition-logic';
 import { ContagionType } from '../../enums/contagion-type';
 import { DamageType } from '../../enums/damage-type';
+import { Factory } from '../factory/factory';
 import { GameLogic } from '../game/game-logic';
 
 import type { BalanceCardModel } from '../game/game-logic';
@@ -18,6 +20,8 @@ import type { CombatantModel } from '../../models/combatant';
 import type { ConditionModel } from '../../models/condition';
 import type { GameModel } from '../../models/game';
 import type { ItemModel } from '../../models/item';
+
+import { Haptic } from '../../utils/haptics/haptics';
 
 const packs = () => PackLogic.getAllPacks();
 const heroSpecies = () => packs().flatMap(pack => PackLogic.getHeroSpecies(pack.id));
@@ -250,5 +254,18 @@ describe('GameLogic.addItemsToGame', () => {
 		const game = gameWith(0, GameLogic.maxItems + 10);
 		expect(GameLogic.addItemsToGame(game, newItems(4))).toHaveLength(4);
 		expect(game.items).toHaveLength(GameLogic.maxItems + 10);
+	});
+});
+
+describe('GameLogic.addXP haptics', () => {
+	it('celebrates XP progress', () => {
+		const hero = Factory.createCombatant(CombatantType.Hero);
+		const success = vi.spyOn(Haptic, 'success');
+
+		GameLogic.addXP(gameWith(0, 0), hero, null);
+
+		expect(hero.xp).toBe(1);
+		expect(success).toHaveBeenCalledOnce();
+		success.mockRestore();
 	});
 });

@@ -30,6 +30,7 @@ import { EncounterLogic } from './encounter-logic';
 import { Factory } from '../factory/factory';
 import { FeatureLogic } from '../feature/feature-logic';
 import { GameLogic } from '../game/game-logic';
+import { Haptic } from '../../utils/haptics/haptics';
 import { PackLogic } from '../pack/pack-logic';
 import { PathLogic } from '../path/path-logic';
 
@@ -811,6 +812,71 @@ describe('EncounterLogic.knockout', () => {
 
 		expect(hero.combat.state).toBe(CombatantState.Unconscious);
 		expect(hero.combat.wounds).toBe(EncounterLogic.getTraitRank(encounter, hero, TraitType.Resolve));
+	});
+
+	it('warns when a combatant is knocked unconscious', () => {
+		const encounter = createEncounter();
+		const hero = addCombatant(encounter, CombatantType.Hero, 2, 2);
+		const warning = vi.spyOn(Haptic, 'warning');
+
+		EncounterLogic.knockout(encounter, hero);
+
+		expect(warning).toHaveBeenCalledOnce();
+		warning.mockRestore();
+	});
+});
+
+describe('EncounterLogic haptics', () => {
+	it('gives light feedback for damage that does not cause a wound', () => {
+		const encounter = createEncounter();
+		const hero = addCombatant(encounter, CombatantType.Hero, 2, 2);
+		const light = vi.spyOn(Haptic, 'light');
+		const warning = vi.spyOn(Haptic, 'warning');
+		vi.spyOn(Math, 'random').mockReturnValue(0.85);
+
+		EncounterLogic.takeDamage(encounter, hero, 1, DamageType.Edged);
+
+		expect(light).toHaveBeenCalledOnce();
+		expect(warning).not.toHaveBeenCalled();
+		vi.restoreAllMocks();
+	});
+
+	it('gives warning feedback for a nonfatal wound', () => {
+		const encounter = createEncounter();
+		const hero = addCombatant(encounter, CombatantType.Hero, 2, 2);
+		const warning = vi.spyOn(Haptic, 'warning');
+
+		EncounterLogic.wound(encounter, hero, 1);
+
+		expect(warning).toHaveBeenCalledOnce();
+		warning.mockRestore();
+	});
+
+	it('gives success feedback when healing revives an unconscious combatant', () => {
+		const encounter = createEncounter();
+		const hero = addCombatant(encounter, CombatantType.Hero, 2, 2);
+		hero.combat.state = CombatantState.Unconscious;
+		hero.combat.wounds = EncounterLogic.getTraitRank(encounter, hero, TraitType.Resolve);
+		const success = vi.spyOn(Haptic, 'success');
+
+		EncounterLogic.healWounds(encounter, hero, 1);
+
+		expect(hero.combat.state).toBe(CombatantState.Prone);
+		expect(success).toHaveBeenCalledOnce();
+		success.mockRestore();
+	});
+
+	it('gives selection feedback when choosing an action', () => {
+		const encounter = createEncounter();
+		const hero = addCombatant(encounter, CombatantType.Hero, 2, 2);
+		EncounterLogic.drawActions(encounter, hero);
+		const action = hero.combat.actions[0];
+		const select = vi.spyOn(Haptic, 'select');
+
+		EncounterLogic.selectAction(encounter, hero, action);
+
+		expect(select).toHaveBeenCalledOnce();
+		select.mockRestore();
 	});
 });
 

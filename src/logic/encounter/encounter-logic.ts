@@ -456,6 +456,7 @@ export class EncounterLogic {
 			used: false
 		};
 		EncounterLogic.checkActionParameters(encounter, combatant, false);
+		Haptic.select();
 	};
 
 	static deselectAction = (encounter: EncounterModel, combatant: CombatantModel) => {
@@ -819,6 +820,7 @@ export class EncounterLogic {
 	};
 
 	static healDamage = (encounter: EncounterModel, combatant: CombatantModel, value: number) => {
+		const damage = combatant.combat.damage;
 		combatant.combat.damage = Math.max(0, combatant.combat.damage - value);
 
 		EncounterLogic.checkActionParameters(encounter, combatant);
@@ -827,9 +829,15 @@ export class EncounterLogic {
 			EncounterLogLogic.combatant(combatant),
 			EncounterLogLogic.text(`heals damage (${value} pts) and is now at ${combatant.combat.damage}`)
 		]);
+
+		if (combatant.combat.damage < damage) {
+			Haptic.light();
+		}
 	};
 
 	static healWounds = (encounter: EncounterModel, combatant: CombatantModel, value: number) => {
+		const wounds = combatant.combat.wounds;
+		const wasUnconscious = combatant.combat.state === CombatantState.Unconscious;
 		combatant.combat.wounds = Math.max(0, combatant.combat.wounds - value);
 
 		EncounterLogLogic.log(encounter, [
@@ -844,6 +852,12 @@ export class EncounterLogic {
 		}
 
 		EncounterLogic.checkActionParameters(encounter, combatant);
+
+		if (wasUnconscious && (combatant.combat.state !== CombatantState.Unconscious)) {
+			Haptic.success();
+		} else if (combatant.combat.wounds < wounds) {
+			Haptic.light();
+		}
 	};
 
 	static dealDamage = (encounter: EncounterModel, combatant: CombatantModel, target: CombatantModel, rank: number, type: DamageType) => {
@@ -894,6 +908,7 @@ export class EncounterLogic {
 		// What the target was hit with, before its own resistances - conduction passes on the same
 		// damage, and each combatant it reaches applies their own resistances to it
 		const incoming = value;
+		const wounds = combatant.combat.wounds;
 
 		EncounterLogLogic.log(encounter, [
 			EncounterLogLogic.combatant(combatant),
@@ -957,6 +972,10 @@ export class EncounterLogic {
 		}
 
 		EncounterLogic.checkActionParameters(encounter, combatant);
+
+		if ((value > 0) && (combatant.combat.state !== CombatantState.Dead) && (combatant.combat.wounds === wounds)) {
+			Haptic.light();
+		}
 	};
 
 	// Water conducts, freezes and thaws. All of it radiates from the square the target is standing
@@ -1025,6 +1044,7 @@ export class EncounterLogic {
 			return;
 		}
 
+		const wounds = combatant.combat.wounds;
 		combatant.combat.damage = 0;
 		combatant.combat.wounds += value;
 		EncounterLogLogic.log(encounter, [
@@ -1051,6 +1071,11 @@ export class EncounterLogic {
 		}
 
 		EncounterLogic.checkActionParameters(encounter, combatant);
+		if ((combatant.combat.wounds > wounds)
+			&& !combatant.quirks.includes(QuirkType.Drone)
+			&& (combatant.combat.wounds <= EncounterLogic.getTraitRank(encounter, combatant, TraitType.Resolve))) {
+			Haptic.warning();
+		}
 	};
 
 	static runDeathActions = (encounter: EncounterModel, combatant: CombatantModel) => {
@@ -1115,6 +1140,7 @@ export class EncounterLogic {
 		combatant.combat.intents = null;
 
 		EncounterLogLogic.logState(encounter, combatant);
+		Haptic.warning();
 	};
 
 	static goProne = (encounter: EncounterModel, combatant: CombatantModel) => {

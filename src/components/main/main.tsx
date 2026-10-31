@@ -745,6 +745,7 @@ export class Main extends Component<Props, State> {
 			const options = this.state.options;
 			CombatantLogic.incrementCombatantLevel(hero, feature, this.state.options.packIDs);
 			options.gameCenter.highestHeroLevel = Math.max(options.gameCenter.highestHeroLevel, hero.level);
+			Haptic.success();
 
 			this.setState({
 				game: this.state.game

@@ -12,6 +12,7 @@ import type { ItemModel } from '../../models/item';
 import type { RegionModel } from '../../models/region';
 
 import { Collections } from '../../utils/collections/collections';
+import { Haptic } from '../../utils/haptics/haptics';
 
 import { CampaignMapLogic } from '../campaign-map/campaign-map-logic';
 import { CombatantLogic } from '../combatant/combatant-logic';
@@ -254,6 +255,10 @@ export class CampaignLogic {
 
 		game.heroes.forEach(h => CombatantLogic.resetCombatant(h));
 		EncounterMapLogic.visibilityCache.reset();
+
+		if (state === EncounterState.Victory) {
+			Haptic.success();
+		}
 
 		return result;
 	};

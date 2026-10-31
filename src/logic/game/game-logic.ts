@@ -21,6 +21,7 @@ import type { ItemModel } from '../../models/item';
 import type { StructureModel } from '../../models/structure';
 
 import { Collections } from '../../utils/collections/collections';
+import { Haptic } from '../../utils/haptics/haptics';
 import { Utils } from '../../utils/utils/utils';
 
 import { ActionLogic } from '../action/action-logic';
@@ -622,6 +623,8 @@ export class GameLogic {
 		if (spendCharge) {
 			StrongholdLogic.spendCharge(game, spendCharge, 1);
 		}
+
+		Haptic.success();
 	};
 
 	static retireHero = (game: GameModel, hero: CombatantModel) => {

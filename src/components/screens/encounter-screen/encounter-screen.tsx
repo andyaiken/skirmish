@@ -43,6 +43,8 @@ import type { ItemModel } from '../../../models/item';
 import type { LayoutModel } from '../../../models/layout';
 import type { OptionsModel } from '../../../models/options';
 
+import { Haptic } from '../../../utils/haptics/haptics';
+
 import { CardList, Dialog, IconSize, IconType, IconValue, PlayingCard, PreviewableCard, Tabs, Text, TextType } from '../../controls';
 import { CombatantRowPanel, EncounterLogPanel, EncounterMapPanel, InitiativeListPanel, LogoPanel, TrapRowPanel, TreasureRowPanel } from '../../panels';
 import { ItemCard, PlaceholderCard } from '../../cards';
@@ -647,6 +649,7 @@ export class EncounterScreen extends Component<Props, State> {
 			selectableSquares: [],
 			selectedSquares: []
 		}, () => {
+			Haptic.light();
 			this.props.endTurn(this.props.encounter);
 		});
 	};

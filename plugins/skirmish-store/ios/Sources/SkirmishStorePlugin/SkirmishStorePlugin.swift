@@ -1,6 +1,7 @@
 import Capacitor
 import Foundation
 import StoreKit
+import UIKit
 
 // Bridges StoreKit to the web layer. Three jobs, matching the Store interface in
 // src/platform/store.ts: list what is for sale, buy one thing, and report everything
@@ -26,7 +27,8 @@ public class SkirmishStorePlugin: CAPPlugin, CAPBridgedPlugin {
 		CAPPluginMethod(name: "getProducts", returnType: CAPPluginReturnPromise),
 		CAPPluginMethod(name: "purchase", returnType: CAPPluginReturnPromise),
 		CAPPluginMethod(name: "restore", returnType: CAPPluginReturnPromise),
-		CAPPluginMethod(name: "getOwned", returnType: CAPPluginReturnPromise)
+		CAPPluginMethod(name: "getOwned", returnType: CAPPluginReturnPromise),
+		CAPPluginMethod(name: "requestReview", returnType: CAPPluginReturnPromise)
 	]
 
 	// Every product this app sells, spelled out in full. The web layer passes the
@@ -75,6 +77,24 @@ public class SkirmishStorePlugin: CAPPlugin, CAPBridgedPlugin {
 	@MainActor
 	private func notifyOwnershipChanged() {
 		notifyListeners("ownershipChanged", data: [:])
+	}
+
+	// Asks iOS to show its rating prompt. iOS decides whether it actually appears - it
+	// limits how often an app may ask, and shows nothing at all in a TestFlight build - so
+	// this resolves either way and the caller cannot tell which happened.
+	@objc func requestReview(_ call: CAPPluginCall) {
+		DispatchQueue.main.async {
+			let scene = UIApplication.shared.connectedScenes
+				.first { $0.activationState == .foregroundActive } as? UIWindowScene
+			if let scene {
+				if #available(iOS 16.0, *) {
+					AppStore.requestReview(in: scene)
+				} else {
+					SKStoreReviewController.requestReview(in: scene)
+				}
+			}
+			call.resolve()
+		}
 	}
 
 	// Asks the App Store what these products cost. The price comes back already formatted

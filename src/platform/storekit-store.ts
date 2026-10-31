@@ -8,6 +8,7 @@ interface SkirmishStorePlugin {
 	purchase: (options: { productID: string }) => Promise<{ productIDs: string[] }>;
 	restore: () => Promise<{ productIDs: string[] }>;
 	getOwned: () => Promise<{ productIDs: string[] }>;
+	requestReview: () => Promise<void>;
 	addListener: (event: 'ownershipChanged', handler: () => void) => Promise<{ remove: () => Promise<void> }>;
 }
 
@@ -64,4 +65,6 @@ export class StoreKitStore implements Store {
 			.getOwned()
 			.then(result => result.productIDs.map(packIDForProduct).filter(id => id !== ''));
 	};
+
+	requestReview = () => plugin.requestReview();
 }

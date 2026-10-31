@@ -22,6 +22,7 @@ import { Utils } from '../utils/utils/utils';
 import type { CloudAdoptionReason, CloudConflictModel } from './cloud-sync';
 import { DeveloperStore, priceForPack } from './store';
 import { CloudSync } from './cloud-sync';
+import { GameCenter } from './game-center';
 import { ICloudBackend } from './icloud-backend';
 import type { Store } from './store';
 import { StoreKitStore } from './storekit-store';
@@ -68,6 +69,7 @@ export class Platform {
 	cloudSync: CloudSync;
 	onCloudAdopted: (game: GameModel | null, deviceName: string, reason: CloudAdoptionReason) => void;
 	onCloudConflict: (conflict: CloudConflictModel) => void;
+	gameCenter: GameCenter;
 
 	constructor() {
 		this.worker = new Worker(new URL('./worker.ts', import.meta.url), { type: 'module' });
@@ -94,6 +96,8 @@ export class Platform {
 		this.onCloudConflict = () => {
 			// Assigned by Main once it is mounted.
 		};
+
+		this.gameCenter = new GameCenter(ex => this.logException(ex));
 
 		// Replaced in logIn by one that knows the saved game and this device's place against
 		// iCloud; this one only stands in if loading the save fails
@@ -226,6 +230,28 @@ export class Platform {
 			reduceMotion: false,
 			soundEffectsVolume: 0.5,
 			haptics: true,
+			gameCenter: {
+				accessPoint: false,
+				encountersWon: 0,
+				islandsConquered: 0,
+				buildingsBuilt: 0,
+				buildingsUpgraded: 0,
+				bossesKilled: 0,
+				fullHealthEncounters: 0,
+				outnumberedEncountersWon: 0,
+				magicItemsBought: 0,
+				itemsEnchanted: 0,
+				highestHeroLevel: 0,
+				highestMoney: 0,
+				regionsBought: 0,
+				regionsConquered: 0,
+				oneHeroArmy: false,
+				noOneLeftBehind: false,
+				treasureHaul: false,
+				wellEquipped: false,
+				legendaryCompany: false,
+				packRat: false
+			},
 			packIDs: [],
 			renderer: this.getRenderer()
 		};
@@ -290,6 +316,12 @@ export class Platform {
 	};
 
 	private updateOptions = (options: OptionsModel) => {
+		const legacyOptions = options as OptionsModel & {
+			gameCenterAccessPoint?: boolean;
+			encountersWon?: number;
+			islandsConquered?: number;
+		};
+
 		if (options.showTips === undefined) {
 			options.showTips = true;
 		}
@@ -305,6 +337,33 @@ export class Platform {
 		if (options.haptics === undefined) {
 			options.haptics = true;
 		}
+
+		options.gameCenter = {
+			accessPoint: options.gameCenter?.accessPoint ?? legacyOptions.gameCenterAccessPoint ?? false,
+			encountersWon: options.gameCenter?.encountersWon ?? legacyOptions.encountersWon ?? 0,
+			islandsConquered: options.gameCenter?.islandsConquered ?? legacyOptions.islandsConquered ?? 0,
+			buildingsBuilt: options.gameCenter?.buildingsBuilt ?? 0,
+			buildingsUpgraded: options.gameCenter?.buildingsUpgraded ?? 0,
+			bossesKilled: options.gameCenter?.bossesKilled ?? 0,
+			fullHealthEncounters: options.gameCenter?.fullHealthEncounters ?? 0,
+			outnumberedEncountersWon: options.gameCenter?.outnumberedEncountersWon ?? 0,
+			magicItemsBought: options.gameCenter?.magicItemsBought ?? 0,
+			itemsEnchanted: options.gameCenter?.itemsEnchanted ?? 0,
+			highestHeroLevel: options.gameCenter?.highestHeroLevel ?? 0,
+			highestMoney: options.gameCenter?.highestMoney ?? 0,
+			regionsBought: options.gameCenter?.regionsBought ?? 0,
+			regionsConquered: options.gameCenter?.regionsConquered ?? 0,
+			oneHeroArmy: options.gameCenter?.oneHeroArmy ?? false,
+			noOneLeftBehind: options.gameCenter?.noOneLeftBehind ?? false,
+			treasureHaul: options.gameCenter?.treasureHaul ?? false,
+			wellEquipped: options.gameCenter?.wellEquipped ?? false,
+			legendaryCompany: options.gameCenter?.legendaryCompany ?? false,
+			packRat: options.gameCenter?.packRat ?? false
+		};
+
+		delete legacyOptions.gameCenterAccessPoint;
+		delete legacyOptions.encountersWon;
+		delete legacyOptions.islandsConquered;
 	};
 
 	private getRenderer = () => {
@@ -360,6 +419,11 @@ export class Platform {
 
 	// App Review requires this to be reachable, and it is the only way a player who
 	// reinstalls gets their packs back - nothing about ownership is stored on our side.
+	// iOS decides whether the prompt is actually shown; there is nothing to ask in a browser
+	requestReview = (): Promise<void> => {
+		return this.store instanceof StoreKitStore ? this.store.requestReview() : Promise.resolve();
+	};
+
 	restorePurchases = (): Promise<string[]> => {
 		return this.store.restore();
 	};

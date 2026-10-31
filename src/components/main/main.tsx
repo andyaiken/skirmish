@@ -1,9 +1,12 @@
 import { Component, ReactNode } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 
+import { BoonType } from '../../enums/boon-type';
+import { CombatantState } from '../../enums/combatant-state';
 import { CombatantType } from '../../enums/combatant-type';
 import { EncounterState } from '../../enums/encounter-state';
 import { PageType } from '../../enums/page-type';
+import { QuirkType } from '../../enums/quirk-type';
 import { ScreenType } from '../../enums/screen-type';
 import { StructureType } from '../../enums/structure-type';
 
@@ -16,6 +19,7 @@ import { CombatantLogic } from '../../logic/combatant/combatant-logic';
 import { EncounterLogic } from '../../logic/encounter/encounter-logic';
 import { EncounterMapLogic } from '../../logic/encounter-map/encounter-map-logic';
 import { Factory } from '../../logic/factory/factory';
+import { GameCenterLogic } from '../../logic/game-center/game-center-logic';
 import { GameLogic } from '../../logic/game/game-logic';
 import { IntentsLogic } from '../../logic/intents/intents-logic';
 import { OrientationLogic } from '../../logic/orientation/orientation-logic';
@@ -121,12 +125,22 @@ export class Main extends Component<Props, State> {
 	componentDidUpdate = () => {
 		this.props.platform.setGame(this.state.game);
 		this.props.platform.setOptions(this.state.options);
+		if (this.updateGameCenterProgress(this.state.game)) {
+			this.reportGameCenter(this.state.game);
+		}
 	};
 
 	componentDidMount = () => {
 		this.props.platform.loadStore(PackLogic.getExpansionPacks().map(p => p.id));
 		this.props.platform.syncOwnedPacks(this.state.options);
 		this.props.platform.startCloudSync();
+		this.props.platform.gameCenter.onAuthenticationChanged = () => {
+			this.props.platform.gameCenter.report(this.state.game, this.state.options);
+			this.forceUpdate();
+		};
+		this.updateGameCenterProgress(this.state.game);
+		this.reportGameCenter(this.state.game);
+		this.props.platform.gameCenter.start(this.state.options);
 
 		fetch(encounters).then(response => response.text()).then(text => {
 			rules['encounters'] = text;
@@ -171,6 +185,42 @@ export class Main extends Component<Props, State> {
 	saveOptions = Utils.debounce(() => {
 		this.props.platform.saveOptions();
 	});
+
+	reportGameCenter = (game: GameModel | null) => {
+		if (game) {
+			const options = this.state.options;
+			options.gameCenter.highestMoney = Math.max(options.gameCenter.highestMoney, game.money);
+		}
+		this.saveOptions();
+		this.props.platform.gameCenter.report(game, this.state.options);
+	};
+
+	updateGameCenterProgress = (game: GameModel | null) => {
+		if (!game) {
+			return false;
+		}
+
+		const progress = this.state.options.gameCenter;
+		let changed = false;
+		if (game.money > progress.highestMoney) {
+			progress.highestMoney = game.money;
+			changed = true;
+		}
+		if (!progress.wellEquipped && (GameCenterLogic.getOwnedMagicItemCount(game) >= GameCenterLogic.magicItemsForWellEquipped)) {
+			progress.wellEquipped = true;
+			changed = true;
+		}
+		if (!progress.legendaryCompany && GameCenterLogic.hasLegendaryCompany(game)) {
+			progress.legendaryCompany = true;
+			changed = true;
+		}
+		if (!progress.packRat && GameCenterLogic.hasPackRat(game)) {
+			progress.packRat = true;
+			changed = true;
+		}
+
+		return changed;
+	};
 
 	setScreen = (screen: ScreenType) => {
 		this.setState({
@@ -235,6 +285,19 @@ export class Main extends Component<Props, State> {
 
 		Haptic.enabled = value;
 		Haptic.select();
+
+		this.setState({
+			options: options
+		}, () => {
+			this.saveOptions();
+		});
+	};
+
+	setGameCenterAccessPoint = (value: boolean) => {
+		const options = this.state.options;
+		options.gameCenter.accessPoint = value;
+
+		this.props.platform.gameCenter.setAccessPointVisible(value);
 
 		this.setState({
 			options: options
@@ -548,13 +611,16 @@ export class Main extends Component<Props, State> {
 	buyStructure = (structure: StructureModel, cost: number) => {
 		try {
 			const game = this.state.game as GameModel;
+			const options = this.state.options;
 
 			StrongholdLogic.buyStructure(game, structure, cost);
+			options.gameCenter.buildingsBuilt += 1;
 
 			this.setState({
 				game: game
 			}, () => {
 				this.saveGame();
+				this.reportGameCenter(game);
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -596,13 +662,16 @@ export class Main extends Component<Props, State> {
 	upgradeStructure = (structure: StructureModel) => {
 		try {
 			const game = this.state.game as GameModel;
+			const options = this.state.options;
 
 			StrongholdLogic.upgradeStructure(game, structure);
+			options.gameCenter.buildingsUpgraded += 1;
 
 			this.setState({
 				game: game
 			}, () => {
 				this.saveGame();
+				this.reportGameCenter(game);
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -661,12 +730,15 @@ export class Main extends Component<Props, State> {
 
 	levelUp = (feature: FeatureModel, hero: CombatantModel) => {
 		try {
+			const options = this.state.options;
 			CombatantLogic.incrementCombatantLevel(hero, feature, this.state.options.packIDs);
+			options.gameCenter.highestHeroLevel = Math.max(options.gameCenter.highestHeroLevel, hero.level);
 
 			this.setState({
 				game: this.state.game
 			}, () => {
 				this.saveGame();
+				this.reportGameCenter(this.state.game);
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -692,13 +764,22 @@ export class Main extends Component<Props, State> {
 	redeemBoon = (boon: BoonModel, hero: CombatantModel | null, item: ItemModel | null, newItem: ItemModel | null, cost: number) => {
 		try {
 			const game = this.state.game as GameModel;
+			const options = this.state.options;
 
 			GameLogic.redeemBoon(game, boon, hero, item, newItem, cost);
+			if (boon.type === BoonType.Structure) {
+				options.gameCenter.buildingsBuilt += 1;
+			} else if (boon.type === BoonType.EnchantItem) {
+				options.gameCenter.itemsEnchanted += 1;
+			}
 
 			this.setState({
 				game: game
 			}, () => {
 				this.saveGame();
+				if ((boon.type === BoonType.Structure) || (boon.type === BoonType.EnchantItem)) {
+					this.reportGameCenter(game);
+				}
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -712,13 +793,21 @@ export class Main extends Component<Props, State> {
 	buyItem = (item: ItemModel, free = false) => {
 		try {
 			const game = this.state.game as GameModel;
+			const options = this.state.options;
 
 			GameLogic.buyItem(game, item, free);
+			const boughtMagicItem = !free && item.magic && game.items.includes(item);
+			if (boughtMagicItem) {
+				options.gameCenter.magicItemsBought += 1;
+			}
 
 			this.setState({
 				game: game
 			}, () => {
 				this.saveGame();
+				if (boughtMagicItem) {
+					this.reportGameCenter(game);
+				}
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -803,12 +892,15 @@ export class Main extends Component<Props, State> {
 		try {
 			if (this.state.game) {
 				const game = this.state.game;
+				const options = this.state.options;
 				CampaignLogic.conquerRegion(game, region, this.state.options.packIDs, EncounterGenerator.createEncounter);
+				options.gameCenter.regionsConquered += 1;
 
 				this.setState({
 					game: game
 				}, () => {
 					this.saveGame();
+					this.reportGameCenter(game);
 				});
 			}
 		} catch (ex) {
@@ -839,11 +931,18 @@ export class Main extends Component<Props, State> {
 				const game = this.state.game;
 				const conquered = CampaignLogic.purchaseRegion(game, region, this.state.options.developer);
 
+				const options = this.state.options;
+				options.gameCenter.regionsBought += 1;
+				if (conquered) {
+					options.gameCenter.islandsConquered += 1;
+				}
+
 				this.setState({
 					game: game,
 					dialog: conquered ? this.getVictoryDialog() : null
 				}, () => {
 					this.saveGame();
+					this.reportGameCenter(game);
 				});
 			}
 		} catch (ex) {
@@ -1269,9 +1368,64 @@ export class Main extends Component<Props, State> {
 				return;
 			}
 
+			const encounter = game.encounter;
+			if (!encounter) {
+				return;
+			}
+
+			const storedItemsBeforeEncounter = game.items.length;
+			const heroes = encounter.combatants.filter(c => (c.type === CombatantType.Hero) && (c.faction === CombatantType.Hero));
+			const monsters = encounter.combatants.filter(c => (c.type === CombatantType.Monster) && (c.faction === CombatantType.Monster));
+			const finishedAtFullHealth = (heroes.length > 0) && heroes.every(h => (h.combat.damage === 0) && (h.combat.wounds === 0));
+			const bossesKilled = monsters
+				.filter(c => c.quirks.includes(QuirkType.Boss) && (c.combat.state === CombatantState.Dead))
+				.length;
+			const outnumberedVictory = (state === EncounterState.Victory) && (heroes.length > 0) && (heroes.length < monsters.length);
+			const oneHeroArmyVictory = (state === EncounterState.Victory) && (heroes.length === 1);
+			const noOneLeftBehindVictory = (state === EncounterState.Victory) && (heroes.length > 0) && heroes.every(h => h.combat.state === CombatantState.Standing);
+			const region = game.map.regions.find(r => r.id === encounter.regionID);
+			const regionConquered = (state === EncounterState.Victory) && (region?.encounters.length === 1);
+
 			const result = CampaignLogic.finishEncounter(game, state);
 			if (!result) {
 				return;
+			}
+
+			const options = this.state.options;
+			let achievementProgressChanged = false;
+			if (state === EncounterState.Victory) {
+				options.gameCenter.encountersWon += 1;
+				if (result.islandConquered) {
+					options.gameCenter.islandsConquered += 1;
+				}
+			}
+			if (finishedAtFullHealth) {
+				options.gameCenter.fullHealthEncounters += 1;
+				achievementProgressChanged = true;
+			}
+			if (outnumberedVictory) {
+				options.gameCenter.outnumberedEncountersWon += 1;
+				achievementProgressChanged = true;
+			}
+			if (oneHeroArmyVictory && !options.gameCenter.oneHeroArmy) {
+				options.gameCenter.oneHeroArmy = true;
+				achievementProgressChanged = true;
+			}
+			if (noOneLeftBehindVictory && !options.gameCenter.noOneLeftBehind) {
+				options.gameCenter.noOneLeftBehind = true;
+				achievementProgressChanged = true;
+			}
+			if ((state === EncounterState.Victory) && (game.items.length - storedItemsBeforeEncounter >= 10) && !options.gameCenter.treasureHaul) {
+				options.gameCenter.treasureHaul = true;
+				achievementProgressChanged = true;
+			}
+			if (bossesKilled > 0) {
+				options.gameCenter.bossesKilled += bossesKilled;
+				achievementProgressChanged = true;
+			}
+			if (regionConquered) {
+				options.gameCenter.regionsConquered += 1;
+				achievementProgressChanged = true;
 			}
 
 			let dialogContent = null;
@@ -1312,6 +1466,9 @@ export class Main extends Component<Props, State> {
 				dialog: dialogContent
 			}, () => {
 				this.saveGame();
+				if ((state === EncounterState.Victory) || achievementProgressChanged) {
+					this.reportGameCenter(game);
+				}
 			});
 		} catch (ex) {
 			this.logException(ex);
@@ -1561,6 +1718,9 @@ export class Main extends Component<Props, State> {
 							setReduceMotion={this.setReduceMotion}
 							setSoundEffectsVolume={this.setSoundEffectsVolume}
 							setHaptics={this.setHaptics}
+							setGameCenterAccessPoint={this.setGameCenterAccessPoint}
+							requestReview={() => this.props.platform.requestReview()}
+							gameCenter={this.props.platform.gameCenter}
 							setRenderer={this.setRenderer}
 							restorePurchases={this.restorePurchases}
 						/>

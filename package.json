@@ -16,6 +16,7 @@
 		"react-markdown": "^10.1.0",
 		"react-responsive": "^10.0.1",
 		"skirmish-cloud": "file:plugins/skirmish-cloud",
+		"skirmish-gamecenter": "file:plugins/skirmish-gamecenter",
 		"skirmish-store": "file:plugins/skirmish-store"
 	},
 	"devDependencies": {

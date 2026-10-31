@@ -6,6 +6,7 @@ import type { OptionsModel } from '../../../../models/options';
 
 import { Sound } from '../../../../utils/sound/sound';
 
+import type { GameCenter } from '../../../../platform/game-center';
 import { Platform } from '../../../../platform/platform';
 
 import { ConfirmButton, Selector, StatValue, Switch, Text, TextType } from '../../../controls';
@@ -21,6 +22,9 @@ interface Props {
 	setReduceMotion: (value: boolean) => void;
 	setSoundEffectsVolume: (value: number) => void;
 	setHaptics: (value: boolean) => void;
+	setGameCenterAccessPoint: (value: boolean) => void;
+	requestReview: () => Promise<void>;
+	gameCenter: GameCenter;
 	setRenderer: (value: string) => void;
 	restorePurchases: () => Promise<void>;
 }
@@ -106,6 +110,34 @@ export class OptionsTab extends Component<Props, State> {
 								selectedID={this.props.options.renderer}
 								onSelect={this.props.setRenderer}
 							/>
+						</>
+						: null
+				}
+				{
+					this.props.gameCenter.isAvailable() ?
+						<>
+							<hr />
+							<Text type={TextType.SubHeading}>Game Center</Text>
+							{
+								this.props.gameCenter.authenticated ?
+									<>
+										<Switch label='Show Game Center button' checked={this.props.options.gameCenter.accessPoint} onChange={this.props.setGameCenterAccessPoint} />
+										<button className='restore-btn' onClick={() => this.props.gameCenter.showDashboard()}>Achievements and Leaderboards</button>
+									</>
+									: <Text>Sign in to Game Center in the Settings app to see achievements and leaderboards.</Text>
+							}
+						</>
+						: null
+				}
+				{
+					Capacitor.isNativePlatform() ?
+						<>
+							<hr />
+							<Text type={TextType.SubHeading}>Review</Text>
+							<Text>
+								Enjoying Skirmish? A rating on the App Store helps others find it.
+							</Text>
+							<button className='restore-btn' onClick={() => this.props.requestReview().catch(() => null)}>Rate Skirmish</button>
 						</>
 						: null
 				}

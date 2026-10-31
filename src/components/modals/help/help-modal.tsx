@@ -3,6 +3,8 @@ import { Component } from 'react';
 import type { GameModel } from '../../../models/game';
 import type { OptionsModel } from '../../../models/options';
 
+import type { GameCenter } from '../../../platform/game-center';
+
 import { Tabs, Text, TextType } from '../../controls';
 import { AboutTab } from './about-tab/about-tab';
 import { DecksTab } from './decks-tab/decks-tab';
@@ -22,6 +24,9 @@ interface Props {
 	setReduceMotion: (value: boolean) => void;
 	setSoundEffectsVolume: (value: number) => void;
 	setHaptics: (value: boolean) => void;
+	setGameCenterAccessPoint: (value: boolean) => void;
+	requestReview: () => Promise<void>;
+	gameCenter: GameCenter;
 	setRenderer: (value: string) => void;
 	restorePurchases: () => Promise<void>;
 }
@@ -78,6 +83,9 @@ export class HelpModal extends Component<Props, State> {
 							setReduceMotion={this.props.setReduceMotion}
 							setSoundEffectsVolume={this.props.setSoundEffectsVolume}
 							setHaptics={this.props.setHaptics}
+							setGameCenterAccessPoint={this.props.setGameCenterAccessPoint}
+							requestReview={this.props.requestReview}
+							gameCenter={this.props.gameCenter}
 							setRenderer={this.props.setRenderer}
 							restorePurchases={this.props.restorePurchases}
 						/>

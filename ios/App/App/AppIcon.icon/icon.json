@@ -13,17 +13,17 @@
       "layers" : [
         {
           "blend-mode" : "normal",
-          "fill-specializations" : [
+          "glass" : true,
+          "image-name" : "Image.png",
+          "image-name-specializations" : [
             {
-              "value" : "system-dark"
+              "value" : "Image.png"
             },
             {
               "appearance" : "dark",
-              "value" : "system-light"
+              "value" : "Image-dark.png"
             }
           ],
-          "glass" : true,
-          "image-name" : "Image.png",
           "name" : "Image"
         }
       ],

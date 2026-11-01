@@ -1,15 +1,26 @@
-# The Island
+# The Campaign Map
 
-On this page you'll see the map of the island.
+The map is divided into regions. Select a region to see how many encounters remain there, the kinds of enemies you might face, and the reward you will receive for taking it. Your territory is the part of the map you already control.
 
-It's divided into a number of regions. You can click on a region to see information about it - most importantly, the number of encounters it will take to conquer it, the sorts of monsters you can expect to face, and the reward you'll get for doing so.
+## Choose where to go
 
-When you're ready to start an encounter, select the region you want to attack. You can attack any neighboring region.
+You can attack a region that borders your territory. To reach a more distant region by sea, both the destination and your territory must have a coastline, and your stronghold must have a charged **Shipyard**. A sea voyage spends one Shipyard charge. Select the region and turn over its card to check its coastline.
 
-You can also reach a region that doesn't border your land, provided both it and your own territory have a coastline, and you have a `Shipyard` in your stronghold with at least one charge. Each voyage costs one charge, so conquering a distant region may take several. Select a region and flip its card over to see whether it has a coastline.
+When you are ready to fight:
 
-To begin the encounter, click the `Start An Encounter` button, and you'll be asked to choose which of your heroes are going to take part (you can choose up to five heroes). Once you've made your selection, press `Start the Encounter`.
+1. Select a reachable region.
+2. Choose **Start an encounter**.
+3. Select up to five heroes to take part.
+4. Choose **Start the encounter**.
 
-If a region is proving too tough to fight your way through, you can buy it instead - including a region you can only reach by sea, though that costs a `Shipyard` charge just as attacking it would. Click the `Buy This Region` button to take control of it without an encounter; you'll get the same reward, and the same chance to recruit a new hero, but your heroes won't earn any XP for it.
+Win every encounter in a region to take control of it. Surviving participating heroes gain XP after each victory. Taking the region also lets you recruit a hero and gives you its displayed reward. A region can take more than one encounter to conquer.
 
-Buying a region is expensive - considerably more expensive than the loot you'd win by fighting for it. The price depends on how many encounters are left in the region and on how many people live there, so a region gets cheaper as you fight your way through it. Your most persuasive hero will talk the price down: the higher their Presence, the better the deal, up to half off. A `Guildhall` will then take a quarter off whatever's left, at the cost of one of its charges. If you have a `Counting House`, taking a region also brings in money of its own.
+## Buy a region instead
+
+If you would rather avoid a fight, you can buy a reachable region if you have enough money. Buying it grants the same region reward and recruit opportunity as conquering it, but your heroes do not gain encounter XP. A sea voyage still costs a Shipyard charge.
+
+The price is shown in the region details. It depends on how much of the region remains to be conquered and its population. Your hero with the highest Presence can negotiate a discount, and a charged **Guildhall** can take a further quarter off the price for one charge.
+
+## Rewards
+
+Rewards are shown as cards and wait for you to redeem them on the relevant campaign screen. A reward might provide a structure, hero, item, enchantment, XP, or money. The reward card describes what it gives you.

@@ -1,17 +1,23 @@
 # Your Stronghold
 
-This page is where you'll find your stronghold.
+Your stronghold is your base between encounters. It starts with a **Barracks** and a **Warehouse**; other structures can provide campaign benefits, improve your encounter options, or help you manage your team.
 
-You'll start your campaign with one **barracks** building and one **warehouse** building, but as you progress you'll be able to buy more structures.
+## Read the stronghold map
 
-To buy a new structure, press the **Add Structure** button. You'll be given a choice of three structure cards, from which you can pick one, at a cost of 50 money.
+Select a structure to see its benefit and available options. The summary on the page shows benefits you currently have, including any remaining charges. A structure's card describes exactly what it does.
 
-Most structures hold charges, which are spent to use their benefit and can be replenished for 100 money. A few are permanent instead: they have no charges, never need recharging, and can't be upgraded. A `Monument` can't be demolished either, since its recruit has already arrived; the others can be, and their benefit ends with them. A `Bazaar` takes a quarter off everything you buy; a `Counting House` collects from every region you take, according to how many people live there; a `Monument` brings in a new recruit the moment it's raised.
+Most structures have charges. Spend a charge to use their benefit, then recharge the structure for the displayed cost. Upgrading a charged structure increases its usefulness. A **Tavern** can spend one of its own charges to recharge another structure. Some structures provide a permanent benefit instead of charges.
 
-If you have a `Tavern`, you can spend one of its charges to recharge another structure instead of paying for it.
+To build a structure, choose **Build a Structure**, select from the offered cards, and pay the displayed price. Campaign rewards can also give you a structure. Select a reward card to redeem it. Structures that can be demolished return some money; the **Monument** cannot be demolished.
 
-## Stronghold Rewards
+## Common benefits
 
-The right-hand column will list any reward cards you've recieved from conquered map regions. Select the reward card to redeem the reward.
+- A **Shipyard** lets you make sea voyages to reachable coastal regions; each voyage uses a charge.
+- A **Guildhall** can discount the price of buying a region.
+- A **Bazaar** permanently discounts purchases.
+- A **Counting House** earns money when you take a region.
+- Other structures can improve card draws, encounters, or hero progression. Check their cards for details.
 
-* **Structure**: This reward gives you a new structure to add to your stronghold.
+## Rewards
+
+Stronghold rewards appear as cards on this page. Select a card to redeem it. If the reward is a structure, it is added to your stronghold; other reward types are redeemed on their relevant page.

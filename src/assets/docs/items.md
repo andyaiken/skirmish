@@ -1,22 +1,29 @@
-# Your Equipment
+# Your Items
 
-This page shows you all the equipment you've gathered during the course of your campaign.
+The Items page holds items that are not currently equipped or carried by a hero. Select an item to inspect it. Items equipped by a hero are managed from that hero's character sheet.
 
-Initially there'll be nothing here, but when you win an encounter you'll get all of your opponents' equipment, plus anything else that was lying around the battlefield.
+## Shop and manage items
 
-You can sell any magic items you don't want for 50 money each.
-You can sell any non-magic items you don't want for 1 money each.
+Use the shop buttons to buy equipment, magic items, potions, and scrolls. Each shop offers cards to choose from, and the current price is shown on the button. A **Bazaar** reduces purchase prices. Enchanting an item costs 100 money unless you redeem an enchantment reward.
 
-## Money
+You can sell items you no longer need:
 
-At the top of the screen you can see how much money your heroes have. You can use this money to buy a magic (or mundane) item, or to enchant an existing item.
+- Mundane equipment sells for 1 money.
+- Potions sell for 10 money.
+- Scrolls sell for 15 money.
+- Magic items sell for 50 money.
 
-You'll be given a choice of three item cards, from which you can pick one, at a cost of 100 money.
+Your stores can hold up to 100 items. When they are full, you cannot buy or draw more items, and some encounter loot may be left behind. Sell items to make room.
 
-## Item Rewards
+## Items in encounters
 
-The right-hand column will list any reward cards you've recieved from conquered map regions. Select the reward card to redeem the reward.
+- **Equipment** can be equipped by a hero with the matching proficiency. Equipping, unequipping, or picking up an item during an encounter costs movement points.
+- **Potions** can be drunk by the hero carrying them or given to an adjacent ally. This costs movement points.
+- **Scrolls** appear as extra action cards in an encounter. Reading one uses your action for the turn and consumes the scroll.
+- **Magic items** have the effects described on their cards.
 
-* **Magic Item**: This reward gives you a particular magic item.
-* **Enchant Item**: This reward allows you to enchant an item.
-* **Money**: This reward grants you extra money.
+After a victory, items found among the opponents' equipment or on the battlefield can be added to your stores, if there is room.
+
+## Item rewards
+
+Item rewards appear as cards on this page. Select a card to redeem it. A reward may provide money, a magic item, or an enchantment.

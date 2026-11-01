@@ -1,29 +1,20 @@
-# Setup
+# Build Your Team
 
-On this page, you create your team of heroes.
+Before the campaign begins, recruit five heroes. You can build each hero yourself or use the dice button to generate one at random. A hero is ready once you have chosen their cards, selected their starting equipment, and confirmed their name and color.
 
-## Building a Hero
+## Create a hero
 
-Building a hero is simple, and has only three steps:
+1. **Choose species, role, and background.** Pick one card from each row. These choices determine your hero's traits, skills, features, actions, and item proficiencies.
+2. **Choose equipment.** For each proficiency, choose one of the offered items. The character sheet lets you review the hero as you build them.
+3. **Finish the hero.** Confirm the name and color, then recruit them to your team.
 
-* **Choosing species, role, and background**: Three species cards, three role cards, and three background cards will be drawn for you; pick one card from each row.
-* **Choosing equipment**: For every proficiency your hero has, three item cards will be drawn for you; pick one card from each row.
-* **Choose a name and a color**: Click the `Change Name` and `Change Color` buttons until you're happy with your new hero.
+Repeat until you have five heroes, then choose **Begin** to start the campaign. You can review or change a hero's equipment later.
 
-## The Character Sheet
+## What the cards mean
 
-When you've built your character, you can click on their hero card to see their character sheet, which has these tabs:
+- **Species** describes what your hero is and contributes traits and abilities.
+- **Role** describes their training and contributes skills and actions.
+- **Background** adds further skills and abilities.
+- **Proficiencies** show which kinds of equipment the hero can use.
 
-* The `Statistics` tab shows your hero's statistics, and also shows the hero's decks of feature cards and action cards.
-* The `Equipment` tab shows the items your hero is wielding or carrying.
-* The `Features` tab shows the hero's feature deck, which is built from their species, role, and background, and is used when levelling up.
-* The `Actions` tab shows the hero's action deck, which is built from their species, role, and background, and is used when it is their turn in an encounter.
-
-Let's take a closer look at the contents of the `Statistics` tab.
-
-* **Traits**: Traits are very important: they're your defenses against attacks, but they also have other functions. When damage is dealt to a hero, Endurance is used to prevent that damage turning into a wound, which is more serious. Resolve governs the number of wounds a hero can suffer before becoming unconscious. Speed is used to determine how far a hero can move every round.
-* **Skills**: Some skills are used to make attacks (Brawl, Spellcasting, and Weapon). Stealth is used to avoid detection, while Perception is used to foil it. Presence is used whenever a hero needs to exert their influence. Reactions is used to determine who acts first every round.
-* **Damage Bonuses / Damage Resistances**: Many heroes, either through training or armor, have a certain amount of resistance to some damage types. Some have learned to deal additional damage when their attacks hit.
-* **XP**: At the end of every successful encounter, each surviving hero gains 1 XP. Once a hero has enough XP, they can level up.
-* **Proficiencies**: This list shows which items a hero is capable of using.
-* **Auras**: Auras are effects which are applied to any allies or enemies who stand next to you in an encounter.
+Don't worry about memorizing every number before you start. In an encounter, the hero's **Speed** helps determine movement, **Reactions** helps determine turn order, and their traits and skills are used by the actions on their cards. The in-game Help and card text explain the details when you need them.

@@ -45,8 +45,8 @@ export class HelpModal extends Component<Props, State> {
 
 	render = () => {
 		const tabs = [
-			{ id: 'rules', display: 'Game Rules' },
-			{ id: 'decks', display: 'Your Cards' },
+			{ id: 'rules', display: 'Rules' },
+			{ id: 'decks', display: 'Cards' },
 			{ id: 'options', display: 'Options' },
 			{ id: 'about', display: 'About' }
 		];

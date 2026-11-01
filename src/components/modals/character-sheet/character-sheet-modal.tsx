@@ -22,7 +22,7 @@ import { Collections } from '../../../utils/collections/collections';
 import { Utils } from '../../../utils/utils/utils';
 
 import { ActionCard, FeatureCard } from '../../cards';
-import { CardList, Dialog, PreviewableCard, Tabs, Tag, Text, TextType } from '../../controls';
+import { CardList, Dialog, HeroQuote, PreviewableCard, Tabs, Tag, Text, TextType } from '../../controls';
 import { Items } from './items/items';
 import { LevelUp } from './level-up/level-up';
 import { Personality } from './personality/personality';
@@ -239,23 +239,6 @@ export class CharacterSheetModal extends Component<Props, State> {
 								<Tag>Level {this.props.combatant.level}</Tag>
 								{this.props.combatant.quirks.map((q, n) => (<Tag key={n}>{q}</Tag>))}
 							</div>
-							<div className='thought-row'>
-								{this.state.thought
-									? <Text type={TextType.Information}><p>“{this.state.thought.text}”</p></Text>
-									: null}
-								{this.props.combatant.type === CombatantType.Hero
-									? <button
-										type='button'
-										className='personality-button'
-										aria-label='View personality'
-										aria-haspopup='dialog'
-										title='View personality'
-										onClick={() => this.setState({ personalityOpen: true })}
-									>
-										<IconInfoCircle />
-									</button>
-									: null}
-							</div>
 						</div>
 						<Tabs
 							options={options}
@@ -266,6 +249,24 @@ export class CharacterSheetModal extends Component<Props, State> {
 							{content}
 						</div>
 					</div>
+					{this.state.thought
+						? <HeroQuote
+							hero={this.props.combatant}
+							text={this.state.thought.text}
+							action={this.props.combatant.type === CombatantType.Hero
+								? <button
+									type='button'
+									className='personality-button'
+									aria-label='View personality'
+									aria-haspopup='dialog'
+									title='View personality'
+									onClick={() => this.setState({ personalityOpen: true })}
+								>
+									<IconInfoCircle />
+								</button>
+								: null}
+						/>
+						: null}
 				</div>
 				{this.state.personalityOpen
 					? <Dialog content={<Personality combatant={this.props.combatant} />} level={2} onClose={() => this.setState({ personalityOpen: false })} />

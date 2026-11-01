@@ -12,6 +12,7 @@ export enum TextType {
 	ListItem = 'listitem',
 	Information = 'information',
 	Tip = 'tip',
+	Quote = 'quote',
 	Small = 'small',
 	Empty = 'empty'
 }

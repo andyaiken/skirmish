@@ -112,11 +112,13 @@ export const Personality = ({ combatant }: Props) => (
 		<Box label='Recent memories'>
 			{combatant.mind.memories.length > 0
 				? combatant.mind.memories.slice(0, 8).map((memory, index) => (
-					<Text key={`${memory.type}-${memory.subject}-${index}`} type={TextType.Information}>
-						<p>{formatMemory(memory)}</p>
-						{memory.personalityChange
-							? <p>Shifted toward {memory.personalityChange.trait} (axis position {memory.personalityChange.from} to {memory.personalityChange.to}).</p>
-							: null}
+					<Text key={`${memory.type}-${memory.subject}-${index}`}>
+						<span>{formatMemory(memory)}</span>
+						{
+							memory.personalityChange
+								? <p>Shifted toward {memory.personalityChange.trait} (axis position {memory.personalityChange.from} to {memory.personalityChange.to}).</p>
+								: null
+						}
 					</Text>
 				))
 				: <Text type={TextType.Dimmed}>No memories yet.</Text>

@@ -17,6 +17,8 @@ thought content or weights change. Significant milestones can shift an axis one 
 associated pole. The change is stored with its memory, and recent memories can produce thoughts
 that reflect on personality shifts, injuries, enemies, and places. These foundations are in place;
 future work should build on them rather than reimplement them.
+When choosing purchases, a hero can recommend an offered structure or item based on personality
+and equipment compatibility.
 
 ## Remaining work
 

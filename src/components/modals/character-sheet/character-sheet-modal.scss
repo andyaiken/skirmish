@@ -1,16 +1,14 @@
 .character-sheet-modal {
 	display: flex;
 	flex-direction: column;
-	overflow-x: hidden;
-	overflow-y: hidden;
 	height: 100%;
 
 	.main-section {
 		display: flex;
 		flex-direction: column;
-		overflow-x: hidden;
-		overflow-y: hidden;
-		height: 100%;
+		overflow: hidden;
+		flex: 1 1 0;
+		min-height: 0;
 
 		.header {
 			flex: 0 0 auto;
@@ -22,23 +20,6 @@
 				margin-bottom: 15px;
 			}
 
-			.thought-row {
-				display: flex;
-				align-items: center;
-				gap: 8px;
-
-				.skirmish-text {
-					flex: 1 1 auto;
-					min-width: 0;
-				}
-
-				.personality-button {
-					flex: 0 0 44px;
-					width: 44px;
-					margin: 0;
-					color: var(--text);
-				}
-			}
 		}
 
 		.content {
@@ -47,6 +28,23 @@
 			overflow-y: auto;
 			-webkit-overflow-scrolling: touch;
 			padding-top: 10px;
+		}
+	}
+
+	> .hero-quote {
+		flex: 0 0 auto;
+		margin: auto -15px -15px;
+		border-top: 1px solid var(--border);
+		padding: 10px 15px;
+		background-color: white;
+		border-radius: 0 0 15px 15px;
+		box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+
+		.personality-button {
+			width: 44px;
+			margin: 0;
+			color: var(--text);
+			border: none;
 		}
 	}
 }

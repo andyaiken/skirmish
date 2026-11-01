@@ -3,6 +3,7 @@ import { Component } from 'react';
 import { StructureType } from '../../../enums/structure-type';
 
 import { GameLogic } from '../../../logic/game/game-logic';
+import { PurchaseAdviceLogic } from '../../../logic/thought/purchase-advice';
 import { StrongholdLogic } from '../../../logic/stronghold/stronghold-logic';
 
 import type { GameModel } from '../../../models/game';
@@ -11,7 +12,7 @@ import type { StructureModel } from '../../../models/structure';
 
 import { Collections } from '../../../utils/collections/collections';
 
-import { CardList, IconSize, IconType, IconValue, Text, TextType } from '../../controls';
+import { CardList, IconSize, IconType, IconValue, PurchaseAdvice, Text, TextType } from '../../controls';
 import { StructureCard } from '../../cards';
 
 import './buy-structure-modal.scss';
@@ -62,10 +63,11 @@ export class BuyStructureModal extends Component<Props, State> {
 			<StructureCard key={s.id} structure={s} onClick={this.props.buyStructure} />
 		));
 
+		const advice = PurchaseAdviceLogic.getStructureAdvice(this.props.game, this.state.structures);
 		const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Forge);
 
 		return (
-			<div className='buy-structure-modal'>
+			<div className='purchase-options-modal buy-structure-modal'>
 				<Text type={TextType.Heading}>Choose a Structure</Text>
 				<hr />
 				<Text type={TextType.Information}>
@@ -83,6 +85,7 @@ export class BuyStructureModal extends Component<Props, State> {
 							: null
 					}
 				</div>
+				<PurchaseAdvice advice={advice} />
 			</div>
 		);
 	};

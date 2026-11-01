@@ -34,7 +34,7 @@ export class ThoughtLogic {
 	static maxRecentCategories = 5;
 	static voiceChance = 0.6;
 	static categoryRecencyPenalty = 0.65;
-	static stabilityWindowMs = 30_000;
+	static stabilityWindowMs = 5 * 60 * 1000;
 
 	// What each hero has said lately, so that the same thought doesn't come round twice in a row.
 	// This is deliberately not saved: it only has to last for a session.

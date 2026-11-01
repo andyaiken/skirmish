@@ -6,6 +6,7 @@ import { StructureType } from '../../../enums/structure-type';
 import { MagicItemGenerator } from '../../../generators/magic-item/magic-item-generator';
 
 import { CombatantLogic } from '../../../logic/combatant/combatant-logic';
+import { PurchaseAdviceLogic } from '../../../logic/thought/purchase-advice';
 import { StrongholdLogic } from '../../../logic/stronghold/stronghold-logic';
 
 import type { GameModel } from '../../../models/game';
@@ -14,7 +15,7 @@ import type { OptionsModel } from '../../../models/options';
 
 import { Collections } from '../../../utils/collections/collections';
 
-import { CardChoice, CardList, IconSize, IconType, IconValue, Text, TextType } from '../../controls';
+import { CardChoice, CardList, IconSize, IconType, IconValue, PurchaseAdvice, Text, TextType } from '../../controls';
 import { ItemCard } from '../../cards';
 
 import './buy-magic-item-modal.scss';
@@ -101,10 +102,11 @@ export class BuyMagicItemModal extends Component<Props, State> {
 			/>
 		));
 
+		const advice = PurchaseAdviceLogic.getItemAdvice(this.props.game, this.state.magicItems);
 		const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.WizardTower);
 
 		return (
-			<div className='buy-magic-item-modal'>
+			<div className='purchase-options-modal buy-magic-item-modal'>
 				<Text type={TextType.Heading}>Choose a Magic Item</Text>
 				<hr />
 				<Text type={TextType.Information}>
@@ -122,6 +124,7 @@ export class BuyMagicItemModal extends Component<Props, State> {
 							: null
 					}
 				</div>
+				<PurchaseAdvice advice={advice} />
 			</div>
 		);
 	};

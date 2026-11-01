@@ -4,6 +4,7 @@ import { ItemLocationType } from '../../../enums/item-location-type';
 import { ItemProficiencyType } from '../../../enums/item-proficiency-type';
 
 import { GameLogic } from '../../../logic/game/game-logic';
+import { PurchaseAdviceLogic } from '../../../logic/thought/purchase-advice';
 
 import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
@@ -11,7 +12,7 @@ import type { OptionsModel } from '../../../models/options';
 
 import { Collections } from '../../../utils/collections/collections';
 
-import { CardList, Selector, Text, TextType } from '../../controls';
+import { CardList, PurchaseAdvice, Selector, Text, TextType } from '../../controls';
 import { ItemCard } from '../../cards';
 
 import './buy-equipment-modal.scss';
@@ -46,13 +47,15 @@ export class BuyEquipmentModal extends Component<Props, State> {
 	};
 
 	render = () => {
-		const cards = this.getItems()
+		const items = this.getItems();
+		const cards = items
 			.map(item => (
 				<ItemCard key={item.id} item={item} onClick={this.props.buyItem} />
 			));
+		const advice = PurchaseAdviceLogic.getItemAdvice(this.props.game, items);
 
 		return (
-			<div className='buy-equipment-modal'>
+			<div className='purchase-options-modal buy-equipment-modal'>
 				<Text type={TextType.Heading}>Buy Equipment</Text>
 				<hr />
 				<div className='card-selection-row'>
@@ -92,6 +95,7 @@ export class BuyEquipmentModal extends Component<Props, State> {
 					<hr />
 					<CardList cards={cards} />
 				</div>
+				<PurchaseAdvice advice={advice} />
 			</div>
 		);
 	};

@@ -3,6 +3,7 @@ import { Component } from 'react';
 import { StructureType } from '../../../enums/structure-type';
 
 import { GameLogic } from '../../../logic/game/game-logic';
+import { PurchaseAdviceLogic } from '../../../logic/thought/purchase-advice';
 import { StrongholdLogic } from '../../../logic/stronghold/stronghold-logic';
 
 import type { GameModel } from '../../../models/game';
@@ -12,7 +13,7 @@ import type { OptionsModel } from '../../../models/options';
 import { Collections } from '../../../utils/collections/collections';
 import { Utils } from '../../../utils/utils/utils';
 
-import { CardChoice, CardList, IconSize, IconType, IconValue, Text, TextType } from '../../controls';
+import { CardChoice, CardList, IconSize, IconType, IconValue, PurchaseAdvice, Text, TextType } from '../../controls';
 import { ItemCard } from '../../cards';
 
 import './buy-scroll-modal.scss';
@@ -80,10 +81,11 @@ export class BuyScrollModal extends Component<Props, State> {
 			/>
 		));
 
+		const advice = PurchaseAdviceLogic.getItemAdvice(this.props.game, this.state.scrolls);
 		const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.WizardTower);
 
 		return (
-			<div className='buy-scroll-modal'>
+			<div className='purchase-options-modal buy-scroll-modal'>
 				<Text type={TextType.Heading}>Choose a Scroll</Text>
 				<hr />
 				<Text type={TextType.Information}>
@@ -101,6 +103,7 @@ export class BuyScrollModal extends Component<Props, State> {
 							: null
 					}
 				</div>
+				<PurchaseAdvice advice={advice} />
 			</div>
 		);
 	};

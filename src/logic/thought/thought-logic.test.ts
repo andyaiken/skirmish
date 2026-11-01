@@ -413,6 +413,7 @@ describe('ThoughtLogic', () => {
 	it('thinks back on recent personality changes and lets old callbacks fade', () => {
 		const { game, hero } = createFixture();
 		hero.mind.memories = [];
+		hero.mind.personality[PersonalityAxis.BoldCautious] = MindLogic.neutralPersonalityAxisValue;
 		MindLogic.remember(hero, MemoryType.SlewBoss, 'The Brute');
 		let ctx = ThoughtLogic.buildContext(game, hero, packIDs());
 		const callback = ThoughtLogic.getCandidates(ctx).find(c => c.template.say.some(s => s.includes('{experience}')));

@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import { IconCircleCheck } from '@tabler/icons-react';
 
 import { StructureType } from '../../../enums/structure-type';
 
@@ -13,9 +14,10 @@ import type { OptionsModel } from '../../../models/options';
 import { Collections } from '../../../utils/collections/collections';
 import { Utils } from '../../../utils/utils/utils';
 
-import { CardChoice, CardList, IconSize, IconType, IconValue, PurchaseAdvice, Text, TextType } from '../../controls';
+import { CardChoice, CardList, HeroQuote, IconSize, IconType, IconValue, Text, TextType } from '../../controls';
 import { ItemCard } from '../../cards';
 
+import '../purchase-options-modal.scss';
 import './buy-scroll-modal.scss';
 
 interface Props {
@@ -103,7 +105,22 @@ export class BuyScrollModal extends Component<Props, State> {
 							: null
 					}
 				</div>
-				<PurchaseAdvice advice={advice} />
+				{advice
+					? <HeroQuote
+						hero={advice.hero}
+						text={advice.message}
+						action={
+							<button className='icon-btn' title={`Choose ${advice.choice}`} onClick={() => {
+								const choice = this.state.scrolls.find(x => x.id === advice.choiceID);
+								if (choice) {
+									this.props.buyItem(choice);
+								}
+							}}>
+								<IconCircleCheck size={28} />
+							</button>
+						}
+					/>
+					: null}
 			</div>
 		);
 	};

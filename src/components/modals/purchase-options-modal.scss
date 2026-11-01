@@ -5,15 +5,12 @@
 	padding-bottom: 80px;
 }
 
-.purchase-advice {
+.purchase-options-modal > .hero-quote {
 	position: absolute;
 	right: 0;
 	bottom: 0;
 	left: 0;
 	z-index: 100;
-	display: flex;
-	align-items: center;
-	gap: 12px;
 	margin: 0;
 	border-top: 1px solid var(--border);
 	padding: 10px 15px;

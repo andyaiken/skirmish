@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import { IconCircleCheck } from '@tabler/icons-react';
 
 import { ItemLocationType } from '../../../enums/item-location-type';
 import { ItemProficiencyType } from '../../../enums/item-proficiency-type';
@@ -12,9 +13,10 @@ import type { OptionsModel } from '../../../models/options';
 
 import { Collections } from '../../../utils/collections/collections';
 
-import { CardList, PurchaseAdvice, Selector, Text, TextType } from '../../controls';
+import { CardList, HeroQuote, Selector, Text, TextType } from '../../controls';
 import { ItemCard } from '../../cards';
 
+import '../purchase-options-modal.scss';
 import './buy-equipment-modal.scss';
 
 interface Props {
@@ -95,7 +97,22 @@ export class BuyEquipmentModal extends Component<Props, State> {
 					<hr />
 					<CardList cards={cards} />
 				</div>
-				<PurchaseAdvice advice={advice} />
+				{advice
+					? <HeroQuote
+						hero={advice.hero}
+						text={advice.message}
+						action={
+							<button className='icon-btn' title={`Choose ${advice.choice}`} onClick={() => {
+								const choice = items.find(x => x.id === advice.choiceID);
+								if (choice) {
+									this.props.buyItem(choice);
+								}
+							}}>
+								<IconCircleCheck size={28} />
+							</button>
+						}
+					/>
+					: null}
 			</div>
 		);
 	};

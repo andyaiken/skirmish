@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import { IconCircleCheck } from '@tabler/icons-react';
 
 import { StructureType } from '../../../enums/structure-type';
 
@@ -12,9 +13,10 @@ import type { StructureModel } from '../../../models/structure';
 
 import { Collections } from '../../../utils/collections/collections';
 
-import { CardList, IconSize, IconType, IconValue, PurchaseAdvice, Text, TextType } from '../../controls';
+import { CardChoice, CardList, HeroQuote, IconSize, IconType, IconValue, Text, TextType } from '../../controls';
 import { StructureCard } from '../../cards';
 
+import '../purchase-options-modal.scss';
 import './buy-structure-modal.scss';
 
 interface Props {
@@ -38,11 +40,13 @@ export class BuyStructureModal extends Component<Props, State> {
 	}
 
 	getStructures = () => {
+		const deck = GameLogic.getStructureDeck(this.props.options.packIDs).filter(s => StrongholdLogic.canBuild(s));
 		const structures: StructureModel[] = [];
 
-		while (structures.length < 3) {
-			const deck = GameLogic.getStructureDeck(this.props.options.packIDs).filter(s => StrongholdLogic.canBuild(s));
-			structures.push(Collections.draw(deck));
+		while ((structures.length < 3) && (deck.length > 0)) {
+			const structure = Collections.draw(deck);
+			deck.splice(deck.indexOf(structure), 1);
+			structures.push(structure);
 		}
 
 		return Collections.sort(structures, n => n.name);
@@ -60,7 +64,12 @@ export class BuyStructureModal extends Component<Props, State> {
 
 	render = () => {
 		const cards = this.state.structures.map(s => (
-			<StructureCard key={s.id} structure={s} onClick={this.props.buyStructure} />
+			<CardChoice
+				key={s.id}
+				card={<StructureCard structure={s} />}
+				label='Build this structure'
+				onSelect={() => this.props.buyStructure(s)}
+			/>
 		));
 
 		const advice = PurchaseAdviceLogic.getStructureAdvice(this.props.game, this.state.structures);
@@ -85,7 +94,22 @@ export class BuyStructureModal extends Component<Props, State> {
 							: null
 					}
 				</div>
-				<PurchaseAdvice advice={advice} />
+				{advice
+					? <HeroQuote
+						hero={advice.hero}
+						text={advice.message}
+						action={
+							<button className='icon-btn' title={`Choose ${advice.choice}`} onClick={() => {
+								const choice = this.state.structures.find(x => x.id === advice.choiceID);
+								if (choice) {
+									this.props.buyStructure(choice);
+								}
+							}}>
+								<IconCircleCheck size={28} />
+							</button>
+						}
+					/>
+					: null}
 			</div>
 		);
 	};

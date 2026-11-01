@@ -17,6 +17,7 @@ interface AdviceProfile {
 export interface PurchaseAdviceModel {
 	hero: CombatantModel;
 	choice: string;
+	choiceID: string;
 	message: string;
 }
 
@@ -147,6 +148,7 @@ export class PurchaseAdviceLogic {
 		return {
 			hero: best.hero,
 			choice: best.structure.name,
+			choiceID: best.structure.id,
 			message: message
 		};
 	};
@@ -177,6 +179,7 @@ export class PurchaseAdviceLogic {
 		return {
 			hero: best.hero,
 			choice: best.item.name,
+			choiceID: best.item.id,
 			message: recommendation(
 				best.hero,
 				best.item.name,

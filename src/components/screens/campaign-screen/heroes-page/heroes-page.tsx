@@ -257,6 +257,7 @@ export class HeroesPage extends Component<Props, State> {
 						content={(
 							<CharacterSheetModal
 								combatant={this.state.selectedHero}
+								packIDs={this.props.options.packIDs}
 								game={this.props.game}
 								developer={this.props.options.developer}
 								equipItem={this.props.equipItem}

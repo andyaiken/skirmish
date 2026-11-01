@@ -6,6 +6,7 @@ import { DamageCategoryType } from '../../enums/damage-category-type';
 import { DamageType } from '../../enums/damage-type';
 import { FeatureType } from '../../enums/feature-type';
 import { ItemProficiencyType } from '../../enums/item-proficiency-type';
+import { MemoryType } from '../../enums/memory-type';
 import { SkillCategoryType } from '../../enums/skill-category-type';
 import { SkillType } from '../../enums/skill-type';
 import { StructureType } from '../../enums/structure-type';
@@ -25,6 +26,7 @@ import { Haptic } from '../../utils/haptics/haptics';
 import { Utils } from '../../utils/utils/utils';
 
 import { ActionLogic } from '../action/action-logic';
+import { MindLogic } from '../mind/mind-logic';
 import { PackLogic } from '../pack/pack-logic';
 import { StrongholdLogic } from '../stronghold/stronghold-logic';
 
@@ -379,6 +381,7 @@ export class GameLogic {
 
 	static addHeroToGame = (game: GameModel, hero: CombatantModel) => {
 		game.heroSlots = Math.max(game.heroSlots - 1, 0);
+		MindLogic.rememberAll(game.heroes, MemoryType.NewComrade, hero.name);
 		game.heroes.push(hero);
 		game.heroes = Collections.sort(game.heroes, n => n.name);
 	};
@@ -643,6 +646,7 @@ export class GameLogic {
 		// Remove the hero
 		game.heroSlots += 1;
 		game.heroes = game.heroes.filter(h => h.id !== hero.id);
+		MindLogic.rememberAll(game.heroes, MemoryType.ComradeRetired, hero.name);
 
 		// Add magic items, potions and scrolls. The retire dialog only offers the button when
 		// there is room for all of these, so nothing is turned away here.

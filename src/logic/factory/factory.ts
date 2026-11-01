@@ -13,6 +13,7 @@ import { TraitType } from '../../enums/trait-type';
 import { CampaignMapGenerator } from '../../generators/campaign-map/campaign-map-generator';
 
 import { GameLogic } from '../game/game-logic';
+import { MindLogic } from '../mind/mind-logic';
 import { StrongholdLogic } from '../stronghold/stronghold-logic';
 
 import type { CombatantModel } from '../../models/combatant';
@@ -42,6 +43,7 @@ export class Factory {
 			features: [],
 			items: [],
 			carried: [],
+			mind: MindLogic.create(),
 			combat: {
 				current: false,
 				state: CombatantState.Standing,
@@ -60,7 +62,8 @@ export class Factory {
 				conditions: [],
 				actions: [],
 				selectedAction: null,
-				intents: null
+				intents: null,
+				tally: MindLogic.createTally()
 			}
 		};
 	};

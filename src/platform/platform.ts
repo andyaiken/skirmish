@@ -7,6 +7,7 @@ import { StructureType } from '../enums/structure-type';
 import { BoonGenerator } from '../generators/boon/boon-generator';
 
 import { GameLogic } from '../logic/game/game-logic';
+import { MindLogic } from '../logic/mind/mind-logic';
 import { StrongholdLogic } from '../logic/stronghold/stronghold-logic';
 
 import { CloudSyncLogic } from '../logic/cloud-sync/cloud-sync-logic';
@@ -271,6 +272,7 @@ export class Platform {
 			if (h.faction === undefined) {
 				h.faction = h.type;
 			}
+			MindLogic.ensure(h);
 		});
 
 		if (!game.stronghold) {
@@ -291,6 +293,7 @@ export class Platform {
 				if (c.faction === undefined) {
 					c.faction = c.type;
 				}
+				MindLogic.ensure(c);
 			});
 
 			game.encounter.loot.forEach(lp => {

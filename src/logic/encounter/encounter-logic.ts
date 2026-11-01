@@ -35,6 +35,7 @@ import { ConditionLogic } from '../condition/condition-logic';
 import { EncounterLogLogic } from '../encounter-log/encounter-log-logic';
 import { EncounterMapLogic } from '../encounter-map/encounter-map-logic';
 import { Factory } from '../factory/factory';
+import { MindLogic } from '../mind/mind-logic';
 
 export class EncounterLogic {
 	static getCombatantSquares = (encounter: EncounterModel, combatant: CombatantModel, position: { x: number, y: number } | null = null) => {
@@ -508,7 +509,9 @@ export class EncounterLogic {
 				]);
 			}
 
+			const before = MindLogic.snapshotOpponents(encounter, combatant);
 			action.effects.forEach(effect => ActionEffects.run(effect, encounter, combatant, action.parameters));
+			MindLogic.creditAction(encounter, combatant, before);
 		}
 	};
 

@@ -21,6 +21,24 @@
 				margin-top: -10px;
 				margin-bottom: 15px;
 			}
+
+			.thought-row {
+				display: flex;
+				align-items: center;
+				gap: 8px;
+
+				.skirmish-text {
+					flex: 1 1 auto;
+					min-width: 0;
+				}
+
+				.personality-button {
+					flex: 0 0 44px;
+					width: 44px;
+					margin: 0;
+					color: var(--text);
+				}
+			}
 		}
 
 		.content {

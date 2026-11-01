@@ -2,6 +2,7 @@ import { BoonType } from '../../enums/boon-type';
 import { CombatantState } from '../../enums/combatant-state';
 import { CombatantType } from '../../enums/combatant-type';
 import { EncounterState } from '../../enums/encounter-state';
+import { MemoryType } from '../../enums/memory-type';
 import { StructureType } from '../../enums/structure-type';
 
 import type { CombatantModel } from '../../models/combatant';
@@ -20,6 +21,7 @@ import { ConditionLogic } from '../condition/condition-logic';
 import { EncounterLogic } from '../encounter/encounter-logic';
 import { EncounterMapLogic } from '../encounter-map/encounter-map-logic';
 import { GameLogic } from '../game/game-logic';
+import { MindLogic } from '../mind/mind-logic';
 import { StrongholdLogic } from '../stronghold/stronghold-logic';
 
 export class CampaignLogic {
@@ -107,6 +109,7 @@ export class CampaignLogic {
 		}
 
 		CampaignMapLogic.conquerRegion(game.map, region);
+		MindLogic.rememberAll(game.heroes, MemoryType.RegionBought, region.name);
 
 		if (CampaignMapLogic.isConquered(game.map)) {
 			return true;
@@ -125,6 +128,10 @@ export class CampaignLogic {
 			game.items = game.items.filter(i => i.id !== item.id);
 			combatant.carried = combatant.carried.filter(i => i.id !== item.id);
 			combatant.items.push(item);
+		}
+
+		if (item.magic) {
+			MindLogic.remember(combatant, MemoryType.NewGear, item.name);
 		}
 	};
 
@@ -180,6 +187,9 @@ export class CampaignLogic {
 			return null;
 		}
 
+		// Before anything is reset or handed back: this is where the heroes find out what the fight did to them
+		MindLogic.recordEncounter(game, encounter, state, region.name);
+
 		const result = {
 			region: region,
 			islandConquered: false,
@@ -227,6 +237,7 @@ export class CampaignLogic {
 					if (CampaignMapLogic.isConquered(game.map)) {
 						result.islandConquered = true;
 					} else {
+						MindLogic.rememberAll(game.heroes, MemoryType.RegionConquered, region.name);
 						// Add a new hero slot
 						game.heroSlots += 1;
 						// Add the region's boon

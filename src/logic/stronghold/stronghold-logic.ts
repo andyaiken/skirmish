@@ -1,3 +1,4 @@
+import { MemoryType } from '../../enums/memory-type';
 import { StructureType } from '../../enums/structure-type';
 
 import type { GameModel } from '../../models/game';
@@ -7,6 +8,8 @@ import type { StructureModel } from '../../models/structure';
 
 import { Collections } from '../../utils/collections/collections';
 import { Utils } from '../../utils/utils/utils';
+
+import { MindLogic } from '../mind/mind-logic';
 
 export class StrongholdLogic {
 	static getDimensions = (stronghold: StructureModel[]) => {
@@ -35,6 +38,11 @@ export class StrongholdLogic {
 			copy.charges = copy.level;
 		}
 		game.stronghold.push(copy);
+
+		// The Barracks and Warehouse are there from the start, so there's nothing to remember about them
+		if (StrongholdLogic.canBuild(copy)) {
+			MindLogic.rememberAll(game.heroes, MemoryType.StructureBuilt, copy.name);
+		}
 
 		// A Monument is a standing advertisement for the company, so raising one brings someone in.
 		// canDemolish refuses it, which is what stops the slot being banked and the structure then
@@ -276,6 +284,7 @@ export class StrongholdLogic {
 	static sellStructure = (game: GameModel, structure: StructureModel) => {
 		game.stronghold = game.stronghold.filter(s => s.id !== structure.id);
 		game.money += 25;
+		MindLogic.rememberAll(game.heroes, MemoryType.StructureSold, structure.name);
 	};
 
 	static chargeStructure = (game: GameModel, structure: StructureModel, useTavern: boolean) => {
@@ -292,5 +301,6 @@ export class StrongholdLogic {
 	static upgradeStructure = (game: GameModel, structure: StructureModel) => {
 		game.money = Math.max(0, game.money - 50 * structure.level);
 		structure.level += 1;
+		MindLogic.rememberAll(game.heroes, MemoryType.StructureUpgraded, structure.name, structure.level);
 	};
 }

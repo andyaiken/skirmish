@@ -1,26 +1,31 @@
 import { Component } from 'react';
+import { IconInfoCircle } from '@tabler/icons-react';
 
 import { BaseData } from '../../../data/base-data';
 
+import { CombatantType } from '../../../enums/combatant-type';
 import { FeatureType } from '../../../enums/feature-type';
 import { QuirkType } from '../../../enums/quirk-type';
 import { StructureType } from '../../../enums/structure-type';
 
 import { CombatantLogic } from '../../../logic/combatant/combatant-logic';
 import { GameLogic } from '../../../logic/game/game-logic';
+import { ThoughtLogic } from '../../../logic/thought/thought-logic';
 
 import type { CombatantModel } from '../../../models/combatant';
 import type { FeatureModel } from '../../../models/feature';
 import type { GameModel } from '../../../models/game';
 import type { ItemModel } from '../../../models/item';
+import type { ThoughtModel } from '../../../models/thought';
 
 import { Collections } from '../../../utils/collections/collections';
 import { Utils } from '../../../utils/utils/utils';
 
 import { ActionCard, FeatureCard } from '../../cards';
-import { CardList, PreviewableCard, Tabs, Tag, Text, TextType } from '../../controls';
+import { CardList, Dialog, PreviewableCard, Tabs, Tag, Text, TextType } from '../../controls';
 import { Items } from './items/items';
 import { LevelUp } from './level-up/level-up';
+import { Personality } from './personality/personality';
 import { Stats } from './stats/stats';
 
 import './character-sheet-modal.scss';
@@ -36,11 +41,14 @@ interface Props {
 	levelUp: (feature: FeatureModel, combatant: CombatantModel) => void;
 	retireHero: (combatant: CombatantModel) => void;
 	spendCharge: (type: StructureType, count: number) => void;
+	packIDs?: string[];
 }
 
 interface State {
 	view: string;
 	features: FeatureModel[];
+	thought: ThoughtModel | null;
+	personalityOpen: boolean;
 }
 
 export class CharacterSheetModal extends Component<Props, State> {
@@ -48,9 +56,20 @@ export class CharacterSheetModal extends Component<Props, State> {
 		super(props);
 		this.state = {
 			view: (props.game.encounter === null) && (props.combatant.xp >= props.combatant.level) ? 'levelup' : 'stats',
-			features: this.drawFeatures(props.combatant)
+			features: this.drawFeatures(props.combatant),
+			thought: this.think(),
+			personalityOpen: false
 		};
 	}
+
+	think = () => {
+		const hero = this.props.combatant;
+		const inGame = this.props.game.heroes.some(h => h.id === hero.id) || !!this.props.game.encounter?.combatants.some(c => c.id === hero.id);
+		if (!this.props.packIDs || !inGame || (hero.type !== CombatantType.Hero)) {
+			return null;
+		}
+		return ThoughtLogic.getStableThought(this.props.game, hero, this.props.packIDs);
+	};
 
 	drawFeatures = (combatant: CombatantModel) => {
 		let features: FeatureModel[] = [];
@@ -208,28 +227,50 @@ export class CharacterSheetModal extends Component<Props, State> {
 		const background = GameLogic.getBackground(this.props.combatant.backgroundID);
 
 		return (
-			<div className='character-sheet-modal'>
-				<div className='main-section'>
-					<div className='header'>
-						<Text type={TextType.Heading}>{this.props.combatant.name || 'unnamed hero'}</Text>
-						<div className='tags'>
-							{species ? <Tag>{species.name}</Tag> : null}
-							{role ? <Tag>{role.name}</Tag> : null}
-							{background ? <Tag>{background.name}</Tag> : null}
-							<Tag>Level {this.props.combatant.level}</Tag>
-							{this.props.combatant.quirks.map((q, n) => (<Tag key={n}>{q}</Tag>))}
+			<>
+				<div className='character-sheet-modal'>
+					<div className='main-section'>
+						<div className='header'>
+							<Text type={TextType.Heading}>{this.props.combatant.name || 'unnamed hero'}</Text>
+							<div className='tags'>
+								{species ? <Tag>{species.name}</Tag> : null}
+								{role ? <Tag>{role.name}</Tag> : null}
+								{background ? <Tag>{background.name}</Tag> : null}
+								<Tag>Level {this.props.combatant.level}</Tag>
+								{this.props.combatant.quirks.map((q, n) => (<Tag key={n}>{q}</Tag>))}
+							</div>
+							<div className='thought-row'>
+								{this.state.thought
+									? <Text type={TextType.Information}><p>“{this.state.thought.text}”</p></Text>
+									: null}
+								{this.props.combatant.type === CombatantType.Hero
+									? <button
+										type='button'
+										className='personality-button'
+										aria-label='View personality'
+										aria-haspopup='dialog'
+										title='View personality'
+										onClick={() => this.setState({ personalityOpen: true })}
+									>
+										<IconInfoCircle />
+									</button>
+									: null}
+							</div>
+						</div>
+						<Tabs
+							options={options}
+							selectedID={this.state.view}
+							onSelect={id => this.setState({ view: id })}
+						/>
+						<div className='content'>
+							{content}
 						</div>
 					</div>
-					<Tabs
-						options={options}
-						selectedID={this.state.view}
-						onSelect={id => this.setState({ view: id })}
-					/>
-					<div className='content'>
-						{content}
-					</div>
 				</div>
-			</div>
+				{this.state.personalityOpen
+					? <Dialog content={<Personality combatant={this.props.combatant} />} level={2} onClose={() => this.setState({ personalityOpen: false })} />
+					: null}
+			</>
 		);
 	};
 }

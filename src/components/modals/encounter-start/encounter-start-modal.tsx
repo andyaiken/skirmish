@@ -84,6 +84,7 @@ export class EncounterStartModal extends Component<Props, State> {
 				content={(
 					<CharacterSheetModal
 						combatant={this.state.sheetHero}
+						packIDs={this.props.options.packIDs}
 						game={this.props.game}
 						developer={this.props.options.developer}
 						equipItem={this.props.equipItem}

@@ -7,6 +7,7 @@ import type { ConditionModel } from './condition';
 import type { FeatureModel } from './feature';
 import type { IntentsModel } from './intent';
 import type { ItemModel } from './item';
+import type { MindModel } from './mind';
 
 export interface CombatantModel {
 	id: string;
@@ -27,6 +28,8 @@ export interface CombatantModel {
 	features: FeatureModel[];
 	items: ItemModel[];
 	carried: ItemModel[];
+
+	mind: MindModel;
 
 	combat: {
 		current: boolean;
@@ -53,5 +56,11 @@ export interface CombatantModel {
 			used: boolean;
 		} | null;
 		intents: IntentsModel | null;
+		// What the combatant has done in this encounter; it becomes memory when the encounter ends
+		tally: {
+			slain: number;
+			bosses: { name: string, species: string }[];
+			mostAtOnce: number;
+		};
 	}
 }

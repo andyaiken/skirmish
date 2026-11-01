@@ -9,6 +9,7 @@ import { DamageType } from '../../enums/damage-type';
 import { FeatureType } from '../../enums/feature-type';
 import { ItemLocationType } from '../../enums/item-location-type';
 import { ItemProficiencyType } from '../../enums/item-proficiency-type';
+import { MemoryType } from '../../enums/memory-type';
 import { QuirkType } from '../../enums/quirk-type';
 import { SkillCategoryType } from '../../enums/skill-category-type';
 import { SkillType } from '../../enums/skill-type';
@@ -28,6 +29,7 @@ import { Utils } from '../../utils/utils/utils';
 
 import { Factory } from '../factory/factory';
 import { GameLogic } from '../game/game-logic';
+import { MindLogic } from '../mind/mind-logic';
 
 export class CombatantLogic {
 	// In the same band as a strong species resistance feature, of which the packs have several
@@ -74,6 +76,7 @@ export class CombatantLogic {
 	static incrementCombatantLevel = (combatant: CombatantModel, feature: FeatureModel, packIDs: string[]) => {
 		combatant.xp = Math.max(combatant.xp - combatant.level, 0);
 		combatant.level += 1;
+		MindLogic.remember(combatant, MemoryType.LevelUp, '', combatant.level);
 
 		// Add the new feature
 		combatant.features.push(feature);
@@ -421,6 +424,7 @@ export class CombatantLogic {
 		combatant.combat.actions = [];
 		combatant.combat.selectedAction = null;
 		combatant.combat.intents = null;
+		combatant.combat.tally = MindLogic.createTally();
 	};
 
 	static getFeatures = (combatant: CombatantModel) => {

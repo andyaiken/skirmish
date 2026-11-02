@@ -96,34 +96,6 @@ const checkMap = (map: CampaignMapModel) => {
 		expect(region.demographics.terrain).toBe(commonTerrain);
 	});
 
-	const riverKeys = new Set(map.squares.filter(square => square.river).map(square => key(square.x, square.y)));
-	expect(riverKeys.size).toBeGreaterThan(0);
-	while (riverKeys.size > 0) {
-		const startKey = riverKeys.values().next().value as string;
-		const [ x, y ] = startKey.split(',').map(Number);
-		const queue = [ squareAt.get(key(x, y)) as CampaignMapSquareModel ];
-		const component = new Set([ startKey ]);
-		riverKeys.delete(startKey);
-		let reachesWater = false;
-		for (let i = 0; i < queue.length; i++) {
-			const current = queue[i];
-			const adjacent = adjacentCoordinates(current.x, current.y).map(pt => squareAt.get(key(pt.x, pt.y)));
-			if (adjacent.some(square => !square)) {
-				reachesWater = true;
-			}
-			adjacent
-				.filter((square): square is CampaignMapSquareModel => !!square && !!square.river)
-				.forEach(square => {
-					const squareKey = key(square.x, square.y);
-					if (!component.has(squareKey)) {
-						component.add(squareKey);
-						riverKeys.delete(squareKey);
-						queue.push(square);
-					}
-				});
-		}
-		expect(reachesWater).toBe(true);
-	}
 };
 
 describe('CampaignMapGenerator', () => {

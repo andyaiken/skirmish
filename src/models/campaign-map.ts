@@ -10,7 +10,6 @@ export interface CampaignMapSquareModel {
 	// the player's land. A settlement is the one square of a region where its label goes, and stays on its square after
 	// the region is conquered. 'lake' only exists while a map is being generated; finished maps leave lakes out entirely
 	feature?: 'peak' | 'lake' | 'settlement' | 'road';
-	river?: boolean;
 }
 
 export interface CampaignMapModel {

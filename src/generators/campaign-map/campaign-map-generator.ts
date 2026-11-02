@@ -197,8 +197,7 @@ const getMoistureDistances = (
 	squareAt: HashTable<CampaignMapSquareModel>
 ) => {
 	const distances = new Map<string, number>();
-	const queue = squares.filter(sq =>
-		isCoastalSquare(sq, squareAt) || (sq.feature === 'lake') || sq.river);
+	const queue = squares.filter(sq => isCoastalSquare(sq, squareAt) || (sq.feature === 'lake'));
 	queue.forEach(sq => distances.set(key(sq.x, sq.y), 0));
 
 	for (let i = 0; i < queue.length; i++) {
@@ -246,7 +245,6 @@ const isRainShadowed = (
 const getTerrain = (
 	square: CampaignMapSquareModel,
 	moisture: number,
-	isRiverbank: boolean,
 	isWarm: boolean,
 	rng: () => number
 ) => {
@@ -272,7 +270,7 @@ const getTerrain = (
 		return Collections.draw([ 'Desert', 'Salt flats' ], rng);
 	}
 	if (moisture <= 5) {
-		return isRiverbank ? 'Riverlands' : 'Plains';
+		return 'Plains';
 	}
 	if (isWarm) {
 		return Collections.draw([ 'Jungle', 'Rainforest' ], rng);
@@ -390,82 +388,6 @@ export class CampaignMapGenerator {
 			}
 		}
 
-		const headwaters = Collections.shuffle(squares.filter(square =>
-			!square.feature
-			&& getAdjacentCoordinates(square.x, square.y)
-				.some(pt => squareAt.search(key(pt.x, pt.y))?.feature === 'peak')
-			&& getAdjacentCoordinates(square.x, square.y)
-				.some(pt => {
-					const adjacent = squareAt.search(key(pt.x, pt.y));
-					return !!adjacent && !adjacent.feature && (adjacent.height < square.height);
-				})
-		), rng);
-		const desiredRiverCount = Random.randomNumber(3, rng) + 3;
-		let riversMade = 0;
-
-		for (const source of headwaters) {
-			if (riversMade >= desiredRiverCount) {
-				break;
-			}
-			if (source.river) {
-				continue;
-			}
-
-			const path: CampaignMapSquareModel[] = [];
-			const visited = new Set<string>();
-			let current = source;
-			let finished = false;
-			for (let step = 0; step < squares.length; step++) {
-				const currentKey = key(current.x, current.y);
-				if (visited.has(currentKey) || current.feature) {
-					break;
-				}
-				visited.add(currentKey);
-				path.push(current);
-				current.river = true;
-
-				if (isCoastalSquare(current, squareAt)) {
-					finished = true;
-					break;
-				}
-
-				const adjacent = getAdjacentCoordinates(current.x, current.y)
-					.map(pt => squareAt.search(key(pt.x, pt.y)))
-					.filter((sq): sq is CampaignMapSquareModel => !!sq);
-				if (adjacent.some(sq => sq.feature === 'lake' || (sq.river && !visited.has(key(sq.x, sq.y))))) {
-					finished = true;
-					break;
-				}
-
-				const downhill = adjacent
-					.filter(sq => !sq.feature && !visited.has(key(sq.x, sq.y)) && (sq.height < current.height))
-					.sort((a, b) => a.height - b.height);
-				if (downhill.length > 0) {
-					current = downhill[0];
-					continue;
-				}
-
-				const basin = adjacent
-					.filter(sq => !sq.feature && !sq.river && (sq.height <= current.height))
-					.sort((a, b) => a.height - b.height);
-				for (const lake of basin) {
-					lake.feature = 'lake';
-					if (getComponents(squares, squareAt).length === 1) {
-						finished = true;
-						break;
-					}
-					lake.feature = undefined;
-				}
-				break;
-			}
-
-			if (finished) {
-				riversMade++;
-			} else {
-				path.forEach(square => square.river = undefined);
-			}
-		}
-
 		ensurePassableLandIsConnected(squares, squareAt);
 
 		const moistureDistances = getMoistureDistances(squares, squareAt);
@@ -477,10 +399,8 @@ export class CampaignMapGenerator {
 			const rainShadow = isRainShadowed(square, squareAt, windDirection) ? 3 : 0;
 			const moisture = Math.max(0, Math.min(9,
 				9 - (distance * 1.1) - rainShadow + ((candidateAt.search(key(square.x, square.y))?.noise ?? 0.5) - 0.5) * 2));
-			const riverbank = getAdjacentCoordinates(square.x, square.y)
-				.some(pt => squareAt.search(key(pt.x, pt.y))?.river);
 			const isWarm = square.y > (minY + ((maxY - minY) * 0.55));
-			square.terrain = getTerrain(square, moisture, !!riverbank, isWarm, rng);
+			square.terrain = getTerrain(square, moisture, isWarm, rng);
 		});
 
 		const claimable = squares.filter(CampaignMapLogic.isClaimable);
@@ -577,7 +497,6 @@ export class CampaignMapGenerator {
 						.filter((sq): sq is CampaignMapSquareModel => !!sq && (sq.regionID === region.id));
 					const parentCost = Math.min(...parents.map(parent =>
 						Math.max(0, square.height - parent.height)
-						+ ((parent.river !== square.river) ? 2 : 0)
 						+ ((square.terrain === seedTerrain.get(region.id)) ? 0 : 1)
 					));
 					const cost = parentCost + (rng() * 0.001);
@@ -661,7 +580,7 @@ export class CampaignMapGenerator {
 			}
 		});
 
-		// Lakes shaped the land (moisture, rivers, region borders) but are not part of the map:
+		// Lakes shape the land (moisture and region borders) but are not part of the map:
 		// they are left as gaps, like the sea.
 		const map: CampaignMapModel = {
 			squares: squares.filter(square => square.feature !== 'lake'),

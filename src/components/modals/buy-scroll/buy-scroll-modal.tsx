@@ -14,10 +14,9 @@ import type { OptionsModel } from '../../../models/options';
 import { Collections } from '../../../utils/collections/collections';
 import { Utils } from '../../../utils/utils/utils';
 
-import { CardChoice, CardList, HeroQuote, IconSize, IconType, IconValue, Text, TextType } from '../../controls';
+import { CardChoice, CardList, Dialog, HeroQuote, IconSize, IconType, IconValue, Text, TextType } from '../../controls';
 import { ItemCard } from '../../cards';
 
-import '../purchase-options-modal.scss';
 import './buy-scroll-modal.scss';
 
 interface Props {
@@ -26,6 +25,7 @@ interface Props {
 	free: boolean;
 	buyItem: (item: ItemModel) => void;
 	spendCharge: (type: StructureType, count: number) => void;
+	onClose?: (() => void) | null;
 }
 
 interface State {
@@ -85,27 +85,31 @@ export class BuyScrollModal extends Component<Props, State> {
 
 		const advice = PurchaseAdviceLogic.getItemAdvice(this.props.game, this.state.scrolls);
 		const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.WizardTower);
+		const instruction = `${cards.length === 1 ? 'A scroll card has' : `${cards.length} scroll cards have`} been drawn for you. Choose one card to ${this.props.free ? 'take' : 'buy'} that scroll.`;
 
 		return (
-			<div className='purchase-options-modal buy-scroll-modal'>
-				<Text type={TextType.Heading}>Choose a Scroll</Text>
-				<hr />
-				<Text type={TextType.Information}>
-					<p>{cards.length === 1 ? 'A scroll card has' : `${cards.length} scroll cards have`} been drawn for you. Choose one card to {this.props.free ? 'take' : 'buy'} that scroll.</p>
-				</Text>
-				<div className='card-selection-row'>
-					<CardList cards={cards} />
-					{
-						(redraws > 0) || this.props.options.developer ?
-							<button className={this.props.options.developer ? 'developer' : ''} onClick={() => this.redraw()}>
-								Redraw Scroll Cards
-								<br />
-								<IconValue type={IconType.Redraw} value={redraws} size={IconSize.Button} />
-							</button>
-							: null
-					}
-				</div>
-				{advice
+			<Dialog
+				header={<Text type={TextType.Heading}>Choose a Scroll</Text>}
+				content={
+					<div className='buy-scroll-modal'>
+						<Text type={TextType.Information}>
+							<p>{instruction}</p>
+						</Text>
+						<div className='card-selection-row'>
+							<CardList cards={cards} />
+							{
+								(redraws > 0) || this.props.options.developer ?
+									<button className={this.props.options.developer ? 'developer' : ''} onClick={() => this.redraw()}>
+										Redraw Scroll Cards
+										<br />
+										<IconValue type={IconType.Redraw} value={redraws} size={IconSize.Button} />
+									</button>
+									: null
+							}
+						</div>
+					</div>
+				}
+				footer={advice
 					? <HeroQuote
 						hero={advice.hero}
 						text={advice.message}
@@ -121,7 +125,8 @@ export class BuyScrollModal extends Component<Props, State> {
 						}
 					/>
 					: null}
-			</div>
+				onClose={this.props.onClose || null}
+			/>
 		);
 	};
 }

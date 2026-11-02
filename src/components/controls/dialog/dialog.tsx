@@ -7,6 +7,9 @@ import './dialog.scss';
 
 interface Props {
 	content: ReactNode;
+	header?: ReactNode;
+	footer?: ReactNode;
+	className?: string;
 	level: number;
 	onClose: (() => void) | null;
 }
@@ -44,13 +47,27 @@ export class Dialog extends Component<Props> {
 		// while the content scrolls - and the content reserves its corner (see dialog.scss), so
 		// the first line of a title flows around it instead of under it.
 		return (
-			<div className={`dialog level-${this.props.level} ${this.props.onClose ? 'closable' : ''}`} onClick={this.dialogClick}>
+			<div className={`dialog level-${this.props.level} ${this.props.onClose ? 'closable' : ''} ${this.props.className || ''}`.trim()} onClick={this.dialogClick}>
 				{closeBtn}
+				{this.props.header
+					? <div className='dialog-header'>
+						<ErrorBoundary>
+							{this.props.header}
+						</ErrorBoundary>
+					</div>
+					: null}
 				<div className='dialog-content'>
 					<ErrorBoundary className='dialog-content'>
 						{this.props.content}
 					</ErrorBoundary>
 				</div>
+				{this.props.footer
+					? <div className='dialog-footer'>
+						<ErrorBoundary>
+							{this.props.footer}
+						</ErrorBoundary>
+					</div>
+					: null}
 			</div>
 		);
 	};

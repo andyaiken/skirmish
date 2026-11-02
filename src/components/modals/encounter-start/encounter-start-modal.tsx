@@ -29,6 +29,7 @@ interface Props {
 	// long scroll
 	rows: boolean;
 	startEncounter: (region: RegionModel, heroes: CombatantModel[], benefits: number, detriments: number) => void;
+	onClose?: (() => void) | null;
 	equipItem: (item: ItemModel, hero: CombatantModel) => void;
 	unequipItem: (item: ItemModel, hero: CombatantModel) => void;
 	pickUpItem: (item: ItemModel, hero: CombatantModel) => void;
@@ -80,24 +81,20 @@ export class EncounterStartModal extends Component<Props, State> {
 		}
 
 		return (
-			<Dialog
-				content={(
-					<CharacterSheetModal
-						combatant={this.state.sheetHero}
-						packIDs={this.props.options.packIDs}
-						game={this.props.game}
-						developer={this.props.options.developer}
-						equipItem={this.props.equipItem}
-						unequipItem={this.props.unequipItem}
-						pickUpItem={this.props.pickUpItem}
-						dropItem={this.props.dropItem}
-						levelUp={this.props.levelUp}
-						// Retiring a hero belongs on the Heroes page, not in the middle of
-						// choosing who to send into a fight
-						retireHero={() => null}
-						spendCharge={this.props.spendCharge}
-					/>
-				)}
+			<CharacterSheetModal
+				combatant={this.state.sheetHero}
+				packIDs={this.props.options.packIDs}
+				game={this.props.game}
+				developer={this.props.options.developer}
+				equipItem={this.props.equipItem}
+				unequipItem={this.props.unequipItem}
+				pickUpItem={this.props.pickUpItem}
+				dropItem={this.props.dropItem}
+				levelUp={this.props.levelUp}
+				// Retiring a hero belongs on the Heroes page, not in the middle of
+				// choosing who to send into a fight
+				retireHero={() => null}
+				spendCharge={this.props.spendCharge}
 				onClose={() => this.setSheetHero(null)}
 			/>
 		);
@@ -292,29 +289,35 @@ export class EncounterStartModal extends Component<Props, State> {
 		}
 
 		return (
-			<div className='encounter-start-modal'>
-				<div className='header'>
-					<Text type={TextType.Heading}>Start an Encounter</Text>
-				</div>
-				<div className='panel-toggles'>
-					{
-						toggles.map(t => (
-							<Switch key={t.id} label={t.display} checked={this.state.panel === t.id} onChange={value => this.setPanel(value ? t.id : null)} />
-						))
+			<>
+				<Dialog
+					className='encounter-start-modal'
+					header={
+						<>
+							<Text type={TextType.Heading}>Start an Encounter</Text>
+							<div className='panel-toggles'>
+								{
+									toggles.map(t => (
+										<Switch key={t.id} label={t.display} checked={this.state.panel === t.id} onChange={value => this.setPanel(value ? t.id : null)} />
+									))
+								}
+							</div>
+						</>
 					}
-				</div>
-				<div className='encounter-start-content'>
-					{this.getContent()}
-				</div>
-				<button
-					className='action primary'
-					disabled={(this.state.selectedHeroes.length < 1) || (this.state.selectedHeroes.length > EncounterStartModal.partySize)}
-					onClick={this.startEncounter}
-				>
-					Start the Encounter
-				</button>
+					content={<div className='encounter-start-content'>{this.getContent()}</div>}
+					footer={
+						<button
+							className='action primary'
+							disabled={(this.state.selectedHeroes.length < 1) || (this.state.selectedHeroes.length > EncounterStartModal.partySize)}
+							onClick={this.startEncounter}
+						>
+							Start the Encounter
+						</button>
+					}
+					onClose={this.props.onClose || null}
+				/>
 				{this.getSheet()}
-			</div>
+			</>
 		);
 	};
 }

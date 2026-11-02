@@ -17,7 +17,7 @@ import type { RegionModel } from '../../../../models/region';
 import { Collections } from '../../../../utils/collections/collections';
 
 import { BoonCard, RegionCard } from '../../../cards';
-import { CardList, CollapsibleSidebar, Dialog, Expander, Gauge, IconSize, IconType, IconValue, PreviewableCard, StatValue, Text, TextType } from '../../../controls';
+import { CardList, CollapsibleSidebar, Expander, Gauge, IconSize, IconType, IconValue, PreviewableCard, StatValue, Text, TextType } from '../../../controls';
 import { CampaignMapPanel } from '../../../panels';
 import { EncounterStartModal } from '../../../modals';
 
@@ -238,22 +238,18 @@ export class CampaignMapPage extends Component<Props, State> {
 		}
 
 		return (
-			<Dialog
-				content={(
-					<EncounterStartModal
-						region={this.state.selectedRegion as RegionModel}
-						game={this.props.game}
-						options={this.props.options}
-						rows={OrientationLogic.isSmall(this.props.layout.orientation)}
-						startEncounter={this.props.startEncounter}
-						equipItem={this.props.equipItem}
-						unequipItem={this.props.unequipItem}
-						pickUpItem={this.props.pickUpItem}
-						dropItem={this.props.dropItem}
-						levelUp={this.props.levelUp}
-						spendCharge={this.props.spendCharge}
-					/>
-				)}
+			<EncounterStartModal
+				region={this.state.selectedRegion as RegionModel}
+				game={this.props.game}
+				options={this.props.options}
+				rows={OrientationLogic.isSmall(this.props.layout.orientation)}
+				startEncounter={this.props.startEncounter}
+				equipItem={this.props.equipItem}
+				unequipItem={this.props.unequipItem}
+				pickUpItem={this.props.pickUpItem}
+				dropItem={this.props.dropItem}
+				levelUp={this.props.levelUp}
+				spendCharge={this.props.spendCharge}
 				onClose={() => {
 					this.setState({
 						showHeroSelection: false

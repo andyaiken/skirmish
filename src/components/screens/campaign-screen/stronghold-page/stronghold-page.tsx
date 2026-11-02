@@ -18,7 +18,7 @@ import type { OptionsModel } from '../../../../models/options';
 import type { StructureModel } from '../../../../models/structure';
 
 import { BoonCard, StructureCard } from '../../../cards';
-import { Box, CardList, CollapsibleSidebar, Dialog, Expander, IconSize, IconType, IconValue, PreviewableCard, StatValue, Text, TextType } from '../../../controls';
+import { Box, CardList, CollapsibleSidebar, Expander, IconSize, IconType, IconValue, PreviewableCard, StatValue, Text, TextType } from '../../../controls';
 import { BuyStructureModal } from '../../../modals/buy-structure/buy-structure-modal';
 import { StrongholdMapPanel } from '../../../panels';
 
@@ -299,15 +299,11 @@ export class StrongholdPage extends Component<Props, State> {
 	getDialog = () => {
 		if (this.state.addingStructure !== '') {
 			return (
-				<Dialog
-					content={(
-						<BuyStructureModal
-							game={this.props.game}
-							options={this.props.options}
-							buyStructure={this.buyStructure}
-							spendCharge={this.props.spendCharge}
-						/>
-					)}
+				<BuyStructureModal
+					game={this.props.game}
+					options={this.props.options}
+					buyStructure={this.buyStructure}
+					spendCharge={this.props.spendCharge}
 				/>
 			);
 		}

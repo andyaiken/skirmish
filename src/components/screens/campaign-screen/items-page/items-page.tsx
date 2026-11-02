@@ -292,60 +292,44 @@ export class ItemsPage extends Component<Props, State> {
 	getDialog = () => {
 		if (this.state.showMarket === 'magical') {
 			return (
-				<Dialog
-					content={(
-						<BuyMagicItemModal
-							game={this.props.game}
-							options={this.props.options}
-							buyItem={this.buyItem}
-							spendCharge={this.props.spendCharge}
-						/>
-					)}
+				<BuyMagicItemModal
+					game={this.props.game}
+					options={this.props.options}
+					buyItem={this.buyItem}
+					spendCharge={this.props.spendCharge}
 				/>
 			);
 		}
 
 		if (this.state.showMarket === 'potion') {
 			return (
-				<Dialog
-					content={(
-						<BuyPotionModal
-							game={this.props.game}
-							options={this.props.options}
-							buyItem={this.buyItem}
-							spendCharge={this.props.spendCharge}
-						/>
-					)}
+				<BuyPotionModal
+					game={this.props.game}
+					options={this.props.options}
+					buyItem={this.buyItem}
+					spendCharge={this.props.spendCharge}
 				/>
 			);
 		}
 
 		if ((this.state.showMarket === 'scroll') || (this.state.showMarket === 'scriptorium')) {
 			return (
-				<Dialog
-					content={(
-						<BuyScrollModal
-							game={this.props.game}
-							options={this.props.options}
-							free={this.state.showMarket === 'scriptorium'}
-							buyItem={this.buyItem}
-							spendCharge={this.props.spendCharge}
-						/>
-					)}
+				<BuyScrollModal
+					game={this.props.game}
+					options={this.props.options}
+					free={this.state.showMarket === 'scriptorium'}
+					buyItem={this.buyItem}
+					spendCharge={this.props.spendCharge}
 				/>
 			);
 		}
 
 		if (this.state.showMarket === 'mundane') {
 			return (
-				<Dialog
-					content={(
-						<BuyEquipmentModal
-							game={this.props.game}
-							options={this.props.options}
-							buyItem={this.buyItem}
-						/>
-					)}
+				<BuyEquipmentModal
+					game={this.props.game}
+					options={this.props.options}
+					buyItem={this.buyItem}
 					onClose={() => this.showMarket(null)}
 				/>
 			);

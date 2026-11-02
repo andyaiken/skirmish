@@ -42,6 +42,8 @@ interface Props {
 	retireHero: (combatant: CombatantModel) => void;
 	spendCharge: (type: StructureType, count: number) => void;
 	packIDs?: string[];
+	level?: number;
+	onClose?: (() => void) | null;
 }
 
 interface State {
@@ -228,9 +230,12 @@ export class CharacterSheetModal extends Component<Props, State> {
 
 		return (
 			<>
-				<div className='character-sheet-modal'>
-					<div className='main-section'>
-						<div className='header'>
+				<Dialog
+					className='character-sheet-dialog'
+					level={this.props.level ?? 1}
+					onClose={this.props.onClose || null}
+					header={
+						<div className='character-sheet-header'>
 							<Text type={TextType.Heading}>{this.props.combatant.name || 'unnamed hero'}</Text>
 							<div className='tags'>
 								{species ? <Tag>{species.name}</Tag> : null}
@@ -239,17 +244,19 @@ export class CharacterSheetModal extends Component<Props, State> {
 								<Tag>Level {this.props.combatant.level}</Tag>
 								{this.props.combatant.quirks.map((q, n) => (<Tag key={n}>{q}</Tag>))}
 							</div>
+							<Tabs
+								options={options}
+								selectedID={this.state.view}
+								onSelect={id => this.setState({ view: id })}
+							/>
 						</div>
-						<Tabs
-							options={options}
-							selectedID={this.state.view}
-							onSelect={id => this.setState({ view: id })}
-						/>
-						<div className='content'>
+					}
+					content={
+						<div className='character-sheet-content'>
 							{content}
 						</div>
-					</div>
-					{this.state.thought
+					}
+					footer={this.state.thought
 						? <HeroQuote
 							hero={this.props.combatant}
 							text={this.state.thought.text}
@@ -267,7 +274,7 @@ export class CharacterSheetModal extends Component<Props, State> {
 								: null}
 						/>
 						: null}
-				</div>
+				/>
 				{this.state.personalityOpen
 					? <Dialog content={<Personality combatant={this.props.combatant} />} level={2} onClose={() => this.setState({ personalityOpen: false })} />
 					: null}

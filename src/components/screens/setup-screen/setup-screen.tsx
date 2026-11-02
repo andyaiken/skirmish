@@ -117,21 +117,17 @@ export class SetupScreen extends Component<Props, State> {
 		}
 
 		return (
-			<Dialog
-				content={
-					<CharacterSheetModal
-						combatant={this.state.hero}
-						game={this.props.game}
-						developer={this.props.options.developer}
-						equipItem={this.props.equipItem}
-						unequipItem={this.props.unequipItem}
-						pickUpItem={this.props.pickUpItem}
-						dropItem={this.props.dropItem}
-						levelUp={() => null}
-						retireHero={() => null}
-						spendCharge={() => null}
-					/>
-				}
+			<CharacterSheetModal
+				combatant={this.state.hero}
+				game={this.props.game}
+				developer={this.props.options.developer}
+				equipItem={this.props.equipItem}
+				unequipItem={this.props.unequipItem}
+				pickUpItem={this.props.pickUpItem}
+				dropItem={this.props.dropItem}
+				levelUp={() => null}
+				retireHero={() => null}
+				spendCharge={() => null}
 				onClose={() => this.selectHero(null)}
 			/>
 		);

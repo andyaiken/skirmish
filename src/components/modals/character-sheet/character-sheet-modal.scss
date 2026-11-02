@@ -1,50 +1,25 @@
-.character-sheet-modal {
-	display: flex;
-	flex-direction: column;
-	height: 100%;
+.character-sheet-dialog {
+	.dialog-header {
+		padding-bottom: 0;
+	}
 
-	.main-section {
-		display: flex;
-		flex-direction: column;
-		overflow: hidden;
-		flex: 1 1 0;
-		min-height: 0;
-
-		.header {
-			flex: 0 0 auto;
-
-			.tags {
-				display: flex;
-				justify-content: center;
-				margin-top: -10px;
-				margin-bottom: 15px;
-			}
-
-		}
-
-		.content {
-			flex: 1 1 0;
-			overflow-x: auto;
-			overflow-y: auto;
-			-webkit-overflow-scrolling: touch;
-			padding-top: 10px;
+	.character-sheet-header {
+		.tags {
+			display: flex;
+			justify-content: center;
+			margin-top: 0;
+			margin-bottom: 15px;
 		}
 	}
 
-	> .hero-quote {
-		flex: 0 0 auto;
-		margin: auto -15px -15px;
-		border-top: 1px solid var(--border);
-		padding: 10px 15px;
-		background-color: white;
-		border-radius: 0 0 15px 15px;
-		box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+	.character-sheet-content {
+		padding-top: 10px;
+	}
 
-		.personality-button {
-			width: 44px;
-			margin: 0;
-			color: var(--text);
-			border: none;
-		}
+	.personality-button {
+		width: 44px;
+		margin: 0;
+		color: var(--text);
+		border: none;
 	}
 }

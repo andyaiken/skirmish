@@ -253,22 +253,18 @@ export class HeroesPage extends Component<Props, State> {
 				);
 			} else {
 				return (
-					<Dialog
-						content={(
-							<CharacterSheetModal
-								combatant={this.state.selectedHero}
-								packIDs={this.props.options.packIDs}
-								game={this.props.game}
-								developer={this.props.options.developer}
-								equipItem={this.props.equipItem}
-								unequipItem={this.props.unequipItem}
-								pickUpItem={this.props.pickUpItem}
-								dropItem={this.props.dropItem}
-								levelUp={this.props.levelUp}
-								retireHero={this.retireHero}
-								spendCharge={this.props.spendCharge}
-							/>
-						)}
+					<CharacterSheetModal
+						combatant={this.state.selectedHero}
+						packIDs={this.props.options.packIDs}
+						game={this.props.game}
+						developer={this.props.options.developer}
+						equipItem={this.props.equipItem}
+						unequipItem={this.props.unequipItem}
+						pickUpItem={this.props.pickUpItem}
+						dropItem={this.props.dropItem}
+						levelUp={this.props.levelUp}
+						retireHero={this.retireHero}
+						spendCharge={this.props.spendCharge}
 						onClose={this.state.selectedHero.xp >= this.state.selectedHero.level ? null : () => {
 							this.setState({
 								selectedHero: null

@@ -13,16 +13,16 @@ import type { OptionsModel } from '../../../models/options';
 
 import { Collections } from '../../../utils/collections/collections';
 
-import { CardList, HeroQuote, Selector, Text, TextType } from '../../controls';
+import { CardList, Dialog, HeroQuote, Selector, Text, TextType } from '../../controls';
 import { ItemCard } from '../../cards';
 
-import '../purchase-options-modal.scss';
 import './buy-equipment-modal.scss';
 
 interface Props {
 	game: GameModel;
 	options: OptionsModel;
 	buyItem: (item: ItemModel) => void;
+	onClose?: (() => void) | null;
 }
 
 interface State {
@@ -57,47 +57,50 @@ export class BuyEquipmentModal extends Component<Props, State> {
 		const advice = PurchaseAdviceLogic.getItemAdvice(this.props.game, items);
 
 		return (
-			<div className='purchase-options-modal buy-equipment-modal'>
-				<Text type={TextType.Heading}>Buy Equipment</Text>
-				<hr />
-				<div className='card-selection-row'>
-					<Text type={TextType.SubHeading}>Filter by proficiency</Text>
-					<Selector
-						options={[
-							{ id: ItemProficiencyType.Any, display: 'Any proficiency' },
-							{ id: ItemProficiencyType.None, display: 'No proficiency' },
-							{ id: ItemProficiencyType.MilitaryWeapons },
-							{ id: ItemProficiencyType.LargeWeapons },
-							{ id: ItemProficiencyType.PairedWeapons },
-							{ id: ItemProficiencyType.RangedWeapons },
-							{ id: ItemProficiencyType.PowderWeapons },
-							{ id: ItemProficiencyType.Implements },
-							{ id: ItemProficiencyType.LightArmor },
-							{ id: ItemProficiencyType.HeavyArmor },
-							{ id: ItemProficiencyType.Shields }
-						]}
-						columnCount={4}
-						selectedID={this.state.proficiency}
-						onSelect={prof => this.setState({ proficiency: prof as ItemProficiencyType })}
-					/>
-					<Text type={TextType.SubHeading}>Filter by location</Text>
-					<Selector
-						options={[
-							{ id: ItemLocationType.Any, display: 'Any location' },
-							{ id: ItemLocationType.Head },
-							{ id: ItemLocationType.Neck },
-							{ id: ItemLocationType.Body },
-							{ id: ItemLocationType.Feet },
-							{ id: ItemLocationType.Hand },
-							{ id: ItemLocationType.Ring }
-						]}
-						selectedID={this.state.location}
-						onSelect={loc => this.setState({ location: loc as ItemLocationType })}
-					/>
-					<hr />
-					<CardList cards={cards} />
-				</div>
-				{advice
+			<Dialog
+				header={<Text type={TextType.Heading}>Buy Equipment</Text>}
+				content={
+					<div className='buy-equipment-modal'>
+						<div className='card-selection-row'>
+							<Text type={TextType.SubHeading}>Filter by proficiency</Text>
+							<Selector
+								options={[
+									{ id: ItemProficiencyType.Any, display: 'Any proficiency' },
+									{ id: ItemProficiencyType.None, display: 'No proficiency' },
+									{ id: ItemProficiencyType.MilitaryWeapons },
+									{ id: ItemProficiencyType.LargeWeapons },
+									{ id: ItemProficiencyType.PairedWeapons },
+									{ id: ItemProficiencyType.RangedWeapons },
+									{ id: ItemProficiencyType.PowderWeapons },
+									{ id: ItemProficiencyType.Implements },
+									{ id: ItemProficiencyType.LightArmor },
+									{ id: ItemProficiencyType.HeavyArmor },
+									{ id: ItemProficiencyType.Shields }
+								]}
+								columnCount={4}
+								selectedID={this.state.proficiency}
+								onSelect={prof => this.setState({ proficiency: prof as ItemProficiencyType })}
+							/>
+							<Text type={TextType.SubHeading}>Filter by location</Text>
+							<Selector
+								options={[
+									{ id: ItemLocationType.Any, display: 'Any location' },
+									{ id: ItemLocationType.Head },
+									{ id: ItemLocationType.Neck },
+									{ id: ItemLocationType.Body },
+									{ id: ItemLocationType.Feet },
+									{ id: ItemLocationType.Hand },
+									{ id: ItemLocationType.Ring }
+								]}
+								selectedID={this.state.location}
+								onSelect={loc => this.setState({ location: loc as ItemLocationType })}
+							/>
+							<hr />
+							<CardList cards={cards} />
+						</div>
+					</div>
+				}
+				footer={advice
 					? <HeroQuote
 						hero={advice.hero}
 						text={advice.message}
@@ -113,7 +116,8 @@ export class BuyEquipmentModal extends Component<Props, State> {
 						}
 					/>
 					: null}
-			</div>
+				onClose={this.props.onClose || null}
+			/>
 		);
 	};
 }

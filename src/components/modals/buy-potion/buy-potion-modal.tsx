@@ -14,10 +14,9 @@ import type { OptionsModel } from '../../../models/options';
 import { Collections } from '../../../utils/collections/collections';
 import { Utils } from '../../../utils/utils/utils';
 
-import { CardChoice, CardList, HeroQuote, IconSize, IconType, IconValue, Text, TextType } from '../../controls';
+import { CardChoice, CardList, Dialog, HeroQuote, IconSize, IconType, IconValue, Text, TextType } from '../../controls';
 import { ItemCard } from '../../cards';
 
-import '../purchase-options-modal.scss';
 import './buy-potion-modal.scss';
 
 interface Props {
@@ -25,6 +24,7 @@ interface Props {
 	options: OptionsModel;
 	buyItem: (item: ItemModel) => void;
 	spendCharge: (type: StructureType, count: number) => void;
+	onClose?: (() => void) | null;
 }
 
 interface State {
@@ -81,25 +81,28 @@ export class BuyPotionModal extends Component<Props, State> {
 		const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.WizardTower);
 
 		return (
-			<div className='purchase-options-modal buy-potion-modal'>
-				<Text type={TextType.Heading}>Choose a Potion</Text>
-				<hr />
-				<Text type={TextType.Information}>
-					<p>Three potion cards have been drawn for you. Choose one card to buy that potion.</p>
-				</Text>
-				<div className='card-selection-row'>
-					<CardList cards={cards} />
-					{
-						(redraws > 0) || this.props.options.developer ?
-							<button className={this.props.options.developer ? 'developer' : ''} onClick={() => this.redraw()}>
-								Redraw Potion Cards
-								<br />
-								<IconValue type={IconType.Redraw} value={redraws} size={IconSize.Button} />
-							</button>
-							: null
-					}
-				</div>
-				{advice
+			<Dialog
+				header={<Text type={TextType.Heading}>Choose a Potion</Text>}
+				content={
+					<div className='buy-potion-modal'>
+						<Text type={TextType.Information}>
+							<p>Three potion cards have been drawn for you. Choose one card to buy that potion.</p>
+						</Text>
+						<div className='card-selection-row'>
+							<CardList cards={cards} />
+							{
+								(redraws > 0) || this.props.options.developer ?
+									<button className={this.props.options.developer ? 'developer' : ''} onClick={() => this.redraw()}>
+										Redraw Potion Cards
+										<br />
+										<IconValue type={IconType.Redraw} value={redraws} size={IconSize.Button} />
+									</button>
+									: null
+							}
+						</div>
+					</div>
+				}
+				footer={advice
 					? <HeroQuote
 						hero={advice.hero}
 						text={advice.message}
@@ -115,7 +118,8 @@ export class BuyPotionModal extends Component<Props, State> {
 						}
 					/>
 					: null}
-			</div>
+				onClose={this.props.onClose || null}
+			/>
 		);
 	};
 }

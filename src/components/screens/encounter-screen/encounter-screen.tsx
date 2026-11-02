@@ -1298,22 +1298,18 @@ export class EncounterScreen extends Component<Props, State> {
 	getDialog = () => {
 		if (this.state.detailsCombatant) {
 			return (
-				<Dialog
-					content={
-						<CharacterSheetModal
-							combatant={this.state.detailsCombatant}
-							packIDs={this.props.options.packIDs}
-							game={this.props.game}
-							developer={this.props.options.developer}
-							equipItem={this.props.equipItem}
-							unequipItem={this.props.unequipItem}
-							pickUpItem={this.props.pickUpItem}
-							dropItem={this.props.dropItem}
-							levelUp={() => null}
-							retireHero={() => null}
-							spendCharge={this.props.spendCharge}
-						/>
-					}
+				<CharacterSheetModal
+					combatant={this.state.detailsCombatant}
+					packIDs={this.props.options.packIDs}
+					game={this.props.game}
+					developer={this.props.options.developer}
+					equipItem={this.props.equipItem}
+					unequipItem={this.props.unequipItem}
+					pickUpItem={this.props.pickUpItem}
+					dropItem={this.props.dropItem}
+					levelUp={() => null}
+					retireHero={() => null}
+					spendCharge={this.props.spendCharge}
 					onClose={() => this.clearDetails()}
 				/>
 			);

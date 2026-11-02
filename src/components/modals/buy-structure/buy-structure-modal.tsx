@@ -13,10 +13,9 @@ import type { StructureModel } from '../../../models/structure';
 
 import { Collections } from '../../../utils/collections/collections';
 
-import { CardChoice, CardList, HeroQuote, IconSize, IconType, IconValue, Text, TextType } from '../../controls';
+import { CardChoice, CardList, Dialog, HeroQuote, IconSize, IconType, IconValue, Text, TextType } from '../../controls';
 import { StructureCard } from '../../cards';
 
-import '../purchase-options-modal.scss';
 import './buy-structure-modal.scss';
 
 interface Props {
@@ -24,6 +23,7 @@ interface Props {
 	options: OptionsModel;
 	buyStructure: (structure: StructureModel) => void;
 	spendCharge: (type: StructureType, count: number) => void;
+	onClose?: (() => void) | null;
 }
 
 interface State {
@@ -76,25 +76,28 @@ export class BuyStructureModal extends Component<Props, State> {
 		const redraws = StrongholdLogic.getStructureCharges(this.props.game, StructureType.Forge);
 
 		return (
-			<div className='purchase-options-modal buy-structure-modal'>
-				<Text type={TextType.Heading}>Choose a Structure</Text>
-				<hr />
-				<Text type={TextType.Information}>
-					<p>Three structure cards have been drawn for you. Choose one card to add it to your stronghold.</p>
-				</Text>
-				<div className='card-selection-row'>
-					<CardList cards={cards} />
-					{
-						(redraws > 0) || this.props.options.developer ?
-							<button className={this.props.options.developer ? 'developer' : ''} onClick={() => this.redraw()}>
-								Redraw Structure Cards
-								<br />
-								<IconValue type={IconType.Redraw} value={redraws} size={IconSize.Button} />
-							</button>
-							: null
-					}
-				</div>
-				{advice
+			<Dialog
+				header={<Text type={TextType.Heading}>Choose a Structure</Text>}
+				content={
+					<div className='buy-structure-modal'>
+						<Text type={TextType.Information}>
+							<p>Three structure cards have been drawn for you. Choose one card to add it to your stronghold.</p>
+						</Text>
+						<div className='card-selection-row'>
+							<CardList cards={cards} />
+							{
+								(redraws > 0) || this.props.options.developer ?
+									<button className={this.props.options.developer ? 'developer' : ''} onClick={() => this.redraw()}>
+										Redraw Structure Cards
+										<br />
+										<IconValue type={IconType.Redraw} value={redraws} size={IconSize.Button} />
+									</button>
+									: null
+							}
+						</div>
+					</div>
+				}
+				footer={advice
 					? <HeroQuote
 						hero={advice.hero}
 						text={advice.message}
@@ -110,7 +113,8 @@ export class BuyStructureModal extends Component<Props, State> {
 						}
 					/>
 					: null}
-			</div>
+				onClose={this.props.onClose || null}
+			/>
 		);
 	};
 }

@@ -195,6 +195,7 @@ interface RiverNode {
 	neighbors: Set<string>;
 }
 
+const MOUNTAIN_HEIGHT = 7;
 const MIN_RIVER_WIDTH = 0.03;
 const MAX_RIVER_WIDTH = 0.15;
 const RIVER_WIDTH_PER_SECTION = 0.004;
@@ -270,7 +271,8 @@ const findRiverRoute = (
 	startNodeID?: string,
 	allowUphill = false,
 	allowLakeJoin = true,
-	blockedLakeIDs: Set<string> = new Set()
+	blockedLakeIDs: Set<string> = new Set(),
+	joinMaxElevation = Number.MAX_VALUE
 ) => {
 	const sourceKey = key(source.x, source.y);
 	const starts = getHexVertices(source);
@@ -279,7 +281,7 @@ const findRiverRoute = (
 	const startIDs = startNodeID ? [ startNodeID ] : starts.map(point => `${point.x},${point.y}`);
 	startIDs.forEach(id => {
 		const node = nodes.get(id);
-		if (node && (startNodeID || !riverNodeIDs.has(id)) && !parent.has(id)) {
+		if (node && node.hasLand && (startNodeID || !riverNodeIDs.has(id)) && !parent.has(id)) {
 			parent.set(id, null);
 			queue.push({ node, elevation: source.height });
 		}
@@ -295,7 +297,7 @@ const findRiverRoute = (
 		if ((parent.get(current.node.id) !== null)
 			&& avoidsBlockedLake
 			&& (current.node.coast
-				|| (allowRiverJoin && riverNodeIDs.has(current.node.id))
+				|| (allowRiverJoin && riverNodeIDs.has(current.node.id) && (current.node.elevation < joinMaxElevation))
 				|| (allowLakeJoin && reachesLake))) {
 			target = current.node;
 			break;
@@ -305,7 +307,9 @@ const findRiverRoute = (
 			const neighbor = nodes.get(neighborID) as RiverNode;
 			const edgeID = [ current.node.id, neighborID ].sort().join('|');
 			if (parent.has(neighborID)
+				|| !neighbor.hasLand
 				|| (!allowRiverJoin && riverNodeIDs.has(neighborID))
+				|| (riverNodeIDs.has(neighborID) && (neighbor.elevation >= joinMaxElevation))
 				|| riverEdgeIDs.has(edgeID)
 				|| (!allowUphill && (neighbor.elevation > current.elevation))) {
 				continue;
@@ -463,7 +467,9 @@ const createRivers = (
 		if (rivers.length >= riverCount) {
 			break;
 		}
-		const route = findRiverRoute(source, nodes, riverNodeIDs, riverEdgeIDs);
+		// Prefer joining another river only once out of the mountains
+		const route = findRiverRoute(source, nodes, riverNodeIDs, riverEdgeIDs, true, undefined, false, true, new Set(), MOUNTAIN_HEIGHT)
+			?? findRiverRoute(source, nodes, riverNodeIDs, riverEdgeIDs);
 		if (route) {
 			const endpoint = route[route.length - 1];
 			const endpointID = endpoint.id;
@@ -496,6 +502,24 @@ const createRivers = (
 	}
 	normalizeRiverWidths(rivers);
 
+	const getLakeBody = (startID: string) => {
+		const body = new Set<string>([ startID ]);
+		const pending = [ startID ];
+		while (pending.length > 0) {
+			const lake = lakeSquares.get(pending.pop() as string);
+			if (!lake) {
+				continue;
+			}
+			getAdjacentCoordinates(lake.x, lake.y).forEach(point => {
+				const id = key(point.x, point.y);
+				if (lakeSquares.has(id) && !body.has(id)) {
+					body.add(id);
+					pending.push(id);
+				}
+			});
+		}
+		return body;
+	};
 	const lakeOutflows = new Set<string>();
 	const lakesToDrain = [ ...lakeEntries.keys() ];
 	const lakeAncestors = new Map<string, Set<string>>();
@@ -512,7 +536,10 @@ const createRivers = (
 		const entries = lakeEntries.get(lakeID) ?? [];
 		const entry = entries.reduce((widest, point) => point.width > widest.width ? point : widest);
 		const startWidth = entry.width;
-		const ancestors = lakeAncestors.get(lakeID) ?? new Set<string>();
+		const ancestors = new Set<string>(getLakeBody(lakeID));
+		(lakeAncestors.get(lakeID) ?? new Set<string>()).forEach(ancestorID =>
+			getLakeBody(ancestorID).forEach(id => ancestors.add(id)));
+		ancestors.delete(lakeID);
 		const route = findRiverRoute(
 			lake,
 			nodes,

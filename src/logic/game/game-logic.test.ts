@@ -212,7 +212,7 @@ const gameWith = (heroCount: number, itemCount: number): GameModel => ({
 	items: Array.from({ length: itemCount }, (_, n) => ({ id: `item-${n}` }) as ItemModel),
 	boons: [],
 	money: 0,
-	map: { squares: [], regions: [] },
+	map: { squares: [], regions: [], seed: '', history: [] },
 	stronghold: [],
 	encounter: null
 });

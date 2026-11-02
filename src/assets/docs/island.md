@@ -1,6 +1,6 @@
 # The Campaign Map
 
-The map is divided into regions. Select a region to see how many encounters remain there, the kinds of enemies you might face, and the reward you will receive for taking it. Your territory is the part of the map you already control.
+The map is divided into regions. Select a region to see how many encounters remain there, the kinds of enemies you might face, and the reward you will receive for taking it. Enemies are drawn mostly from species suited to the region's terrain. Your territory is the part of the map you already control.
 
 ## Choose where to go
 

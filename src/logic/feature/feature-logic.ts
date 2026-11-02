@@ -189,24 +189,24 @@ export class FeatureLogic {
 		return feature;
 	};
 
-	static createRandomFeature = () => {
-		switch (Random.randomNumber(8)) {
+	static createRandomFeature = (rng: () => number = Math.random) => {
+		switch (Random.randomNumber(8, rng)) {
 			case 0:
-				return FeatureLogic.createDamageBonusFeature(Utils.guid(), GameLogic.getRandomDamageType(), Random.randomBonus());
+				return FeatureLogic.createDamageBonusFeature(Utils.guid(rng), GameLogic.getRandomDamageType(undefined, rng), Random.randomBonus(rng));
 			case 1:
-				return FeatureLogic.createDamageCategoryBonusFeature(Utils.guid(), GameLogic.getRandomDamageCategoryType(), Random.randomBonus());
+				return FeatureLogic.createDamageCategoryBonusFeature(Utils.guid(rng), GameLogic.getRandomDamageCategoryType(rng), Random.randomBonus(rng));
 			case 2:
-				return FeatureLogic.createDamageResistFeature(Utils.guid(), GameLogic.getRandomDamageType(), Random.randomBonus());
+				return FeatureLogic.createDamageResistFeature(Utils.guid(rng), GameLogic.getRandomDamageType(undefined, rng), Random.randomBonus(rng));
 			case 3:
-				return FeatureLogic.createDamageCategoryResistFeature(Utils.guid(), GameLogic.getRandomDamageCategoryType(), Random.randomBonus());
+				return FeatureLogic.createDamageCategoryResistFeature(Utils.guid(rng), GameLogic.getRandomDamageCategoryType(rng), Random.randomBonus(rng));
 			case 4:
-				return FeatureLogic.createProficiencyFeature(Utils.guid(), GameLogic.getRandomItemProficiency());
+				return FeatureLogic.createProficiencyFeature(Utils.guid(rng), GameLogic.getRandomItemProficiency(rng));
 			case 5:
-				return FeatureLogic.createTraitFeature(Utils.guid(), GameLogic.getRandomTrait(), Random.randomBonus());
+				return FeatureLogic.createTraitFeature(Utils.guid(rng), GameLogic.getRandomTrait(rng), Random.randomBonus(rng));
 			case 6:
-				return FeatureLogic.createSkillFeature(Utils.guid(), GameLogic.getRandomSkill(), Random.randomBonus());
+				return FeatureLogic.createSkillFeature(Utils.guid(rng), GameLogic.getRandomSkill(undefined, rng), Random.randomBonus(rng));
 			default:
-				return FeatureLogic.createSkillCategoryFeature(Utils.guid(), GameLogic.getRandomSkillCategory(), Random.randomBonus());
+				return FeatureLogic.createSkillCategoryFeature(Utils.guid(rng), GameLogic.getRandomSkillCategory(rng), Random.randomBonus(rng));
 		}
 	};
 

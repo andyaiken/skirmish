@@ -13,6 +13,8 @@ import type { StructureModel } from '../../models/structure';
 import { CampaignMapLogic } from './campaign-map-logic';
 import { Factory } from '../factory/factory';
 import { FeatureLogic } from '../feature/feature-logic';
+import { GameLogic } from '../game/game-logic';
+import { PackLogic } from '../pack/pack-logic';
 
 const createRegion = (id: string): RegionModel => ({
 	id: id,
@@ -27,11 +29,11 @@ const createRegion = (id: string): RegionModel => ({
 // (regionID ''), any other character is the ID of the region owning it.
 const createMap = (rows: string[]): CampaignMapModel => {
 	const squares = rows.flatMap((row, y) =>
-		[ ...row ].map((ch, x) => ({ x: x, y: y, regionID: ch === '.' ? '' : ch })));
+		[ ...row ].map((ch, x) => ({ x: x, y: y, regionID: ch === '.' ? '' : ch, terrain: 'Plains', height: 0 })));
 
 	const ids = [ ...new Set(squares.map(sq => sq.regionID)) ].filter(id => id !== '');
 
-	return { squares: squares, regions: ids.map(createRegion) };
+	return { squares: squares, regions: ids.map(createRegion), seed: '', history: [] };
 };
 
 const region = (map: CampaignMapModel, id: string) => map.regions.find(r => r.id === id) as RegionModel;
@@ -127,6 +129,7 @@ describe('CampaignMapLogic.conquerRegion', () => {
 
 		expect(map.squares.filter(sq => sq.regionID === 'b')).toHaveLength(0);
 		expect(map.regions.map(r => r.id)).toEqual([ 'a' ]);
+		expect(map.history).toHaveLength(1);
 	});
 
 	it('opens up a newly landlocked region for attack', () => {
@@ -147,6 +150,73 @@ describe('CampaignMapLogic.isConquered', () => {
 
 	it('is true once every square is unclaimed', () => {
 		expect(CampaignMapLogic.isConquered(createMap([ '..' ]))).toBe(true);
+	});
+
+	it('ignores impassable peaks when checking completion', () => {
+		const map = createMap([ '.a.' ]);
+		map.squares[0].feature = 'peak';
+		CampaignMapLogic.conquerRegion(map, region(map, 'a'));
+		expect(CampaignMapLogic.isConquered(map)).toBe(true);
+	});
+
+	it('does not count impassable features as owned territory', () => {
+		const map = createMap([ '..' ]);
+		map.squares[0].feature = 'peak';
+		expect(CampaignMapLogic.isOwned(map.squares[0])).toBe(false);
+		expect(CampaignMapLogic.isOwned(map.squares[1])).toBe(true);
+		expect(CampaignMapLogic.hasCoastalTerritory(map)).toBe(true);
+	});
+
+	it('keeps terrain on squares after a region is conquered', () => {
+		const map = createMap([ 'ab' ]);
+		map.squares[1].terrain = 'Mountains';
+		CampaignMapLogic.conquerRegion(map, region(map, 'b'));
+		expect(map.squares[1].terrain).toBe('Mountains');
+	});
+});
+
+describe('CampaignMapLogic.conquerRegion roads', () => {
+	it('lays a road over conquered squares to the nearest conquered settlement', () => {
+		const map = createMap([ '...aa' ]);
+		map.squares[0].feature = 'settlement';
+		map.squares[4].feature = 'settlement';
+		CampaignMapLogic.conquerRegion(map, region(map, 'a'));
+		expect(map.squares.map(sq => sq.feature)).toEqual([ 'settlement', 'road', 'road', 'road', 'settlement' ]);
+		expect(map.squares.every(sq => sq.regionID === '')).toBe(true);
+	});
+
+	it('joins an existing road rather than going all the way to a settlement', () => {
+		const map = createMap([ '....aa' ]);
+		map.squares[0].feature = 'settlement';
+		map.squares[1].feature = 'road';
+		map.squares[5].feature = 'settlement';
+		CampaignMapLogic.conquerRegion(map, region(map, 'a'));
+		expect(map.squares.map(sq => sq.feature)).toEqual([ 'settlement', 'road', 'road', 'road', 'road', 'settlement' ]);
+	});
+
+	it('never puts a road on a square that is not conquered', () => {
+		const map = createMap([ '..ab.' ]);
+		map.squares[0].feature = 'settlement';
+		map.squares[2].feature = 'settlement';
+		map.squares[3].feature = 'settlement';
+		CampaignMapLogic.conquerRegion(map, region(map, 'b'));
+		expect(map.squares[2].feature).toBe('settlement');
+		expect(map.squares.filter(sq => sq.feature === 'road')).toHaveLength(0);
+	});
+
+	it('builds no road when there is no conquered path', () => {
+		const map = createMap([ '..a' ]);
+		map.squares[0].feature = 'settlement';
+		map.squares[1].feature = 'peak';
+		map.squares[2].feature = 'settlement';
+		CampaignMapLogic.conquerRegion(map, region(map, 'a'));
+		expect(map.squares.some(sq => sq.feature === 'road')).toBe(false);
+	});
+
+	it('treats roads as owned land', () => {
+		const map = createMap([ '.' ]);
+		map.squares[0].feature = 'road';
+		expect(CampaignMapLogic.isOwned(map.squares[0])).toBe(true);
 	});
 });
 
@@ -399,5 +469,73 @@ describe('CampaignMapLogic.canPurchaseRegion by sea', () => {
 
 		expect(CampaignMapLogic.canPurchaseRegion(createGame(map, 1000), target)).toBe(false);
 		expect(CampaignMapLogic.canPurchaseRegion(createGame(map, 1000, [], [ createShipyard(1) ]), target)).toBe(true);
+	});
+});
+
+describe('CampaignMapLogic.getMonsters', () => {
+	const allPacks = PackLogic.getExpansionPacks().map(pack => pack.id);
+
+	it('chooses mostly species suited to the region terrain', () => {
+		const target = createRegion('forest encounter');
+		target.demographics.terrain = 'Forest';
+		const selected = CampaignMapLogic.getMonsters(target, allPacks);
+		const terrainSpecies = new Set(
+			CampaignMapLogic.habitats
+				.filter(habitat => habitat.terrains.includes('Forest'))
+				.flatMap(habitat => habitat.speciesIDs)
+		);
+
+		expect([ 2, 3 ]).toContain(selected.length);
+		expect(selected.filter(species => terrainSpecies.has(species.id)).length)
+			.toBeGreaterThanOrEqual(Math.round(selected.length * 0.75));
+		expect(new Set(selected.map(species => species.id)).size).toBe(selected.length);
+	});
+
+	it('falls back to the full monster deck when a terrain has no habitat data', () => {
+		const target = createRegion('unknown encounter');
+		target.demographics.terrain = 'Unknown';
+		const selected = CampaignMapLogic.getMonsters(target, []);
+		const available = new Set(GameLogic.getMonsterSpeciesDeck([]).map(species => species.id));
+
+		expect(selected.length).toBeGreaterThan(0);
+		expect(selected.every(species => available.has(species.id))).toBe(true);
+	});
+
+	it('keeps monster selection reproducible for a region', () => {
+		const target = createRegion('repeatable encounter');
+		target.demographics.terrain = 'Mountains';
+
+		expect(CampaignMapLogic.getMonsters(target, allPacks))
+			.toEqual(CampaignMapLogic.getMonsters(target, allPacks));
+	});
+
+	it('only references monster species present in the game data', () => {
+		const allMonsterIDs = new Set(GameLogic.getMonsterSpeciesDeck(allPacks).map(species => species.id));
+		const habitatIDs = CampaignMapLogic.habitats.flatMap(habitat => habitat.speciesIDs);
+		const terrains = CampaignMapLogic.habitats.flatMap(habitat => habitat.terrains);
+
+		expect(habitatIDs.every(id => allMonsterIDs.has(id))).toBe(true);
+		expect(terrains).toEqual(expect.arrayContaining([
+			'Badlands',
+			'Canyons',
+			'Desert',
+			'Fens',
+			'Forest',
+			'Jungle',
+			'Lakes',
+			'Marshland',
+			'Mountains',
+			'Plains',
+			'Plateaus',
+			'Rainforest',
+			'Riverlands',
+			'Salt flats',
+			'Scrubland',
+			'Steppe',
+			'Taiga',
+			'Valleys',
+			'Volcanic',
+			'Wetlands'
+		]));
 	});
 });

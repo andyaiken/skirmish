@@ -64,7 +64,10 @@ export class ThoughtLogic {
 		const drained = game.stronghold.filter(s => StrongholdLogic.canCharge(s) && (s.charges === 0));
 
 		const squares = game.map.squares;
-		const conquered = squares.length > 0 ? squares.filter(sq => sq.regionID === '').length / squares.length : 0;
+		const claimable = squares.filter(CampaignMapLogic.isClaimable);
+		const conquered = claimable.length > 0
+			? claimable.filter(CampaignMapLogic.isOwned).length / claimable.length
+			: 0;
 		const regions = game.map.regions;
 		const targets = regions.filter(r => CampaignMapLogic.canAttackRegion(game, r));
 

@@ -1,6 +1,8 @@
 import { SkillType } from '../../enums/skill-type';
 import { StructureType } from '../../enums/structure-type';
 
+import { habitats } from '../../data/habitats-data';
+
 import { CombatantLogic } from '../combatant/combatant-logic';
 import { GameLogic } from '../game/game-logic';
 import { StrongholdLogic } from '../stronghold/stronghold-logic';
@@ -13,6 +15,8 @@ import { Collections } from '../../utils/collections/collections';
 import { Random } from '../../utils/random/random';
 
 export class CampaignMapLogic {
+	static habitats = habitats;
+
 	static getAdjacentSquares = (map: CampaignMapModel, x: number, y: number) => {
 		const adj: CampaignMapSquareModel[] = [];
 
@@ -88,6 +92,10 @@ export class CampaignMapLogic {
 		return map.squares.filter(sq => sq.regionID === region.id);
 	};
 
+	static isClaimable = (square: CampaignMapSquareModel) => !square.feature || (square.feature === 'settlement') || (square.feature === 'road');
+
+	static isOwned = (square: CampaignMapSquareModel) => (square.regionID === '') && CampaignMapLogic.isClaimable(square);
+
 	static getCentralSquare = (map: CampaignMapModel, region: RegionModel) => {
 		const squares = CampaignMapLogic.getSquares(map, region);
 		const x = Collections.mean(squares, s => s.x);
@@ -99,9 +107,16 @@ export class CampaignMapLogic {
 		});
 	};
 
+	// The region's settlement, which the generator marks once. A map saved before settlements
+	// existed has none, so it falls back to working the square out.
+	static getSettlement = (map: CampaignMapModel, region: RegionModel) => {
+		return CampaignMapLogic.getSquares(map, region).find(sq => sq.feature === 'settlement')
+			?? CampaignMapLogic.getCentralSquare(map, region);
+	};
+
 	static isAdjacentToTerritory = (map: CampaignMapModel, region: RegionModel) => {
 		const squares = CampaignMapLogic.getSquares(map, region);
-		return squares.some(sq => CampaignMapLogic.getAdjacentSquares(map, sq.x, sq.y).some(a => a.regionID === ''));
+		return squares.some(sq => CampaignMapLogic.getAdjacentSquares(map, sq.x, sq.y).some(CampaignMapLogic.isOwned));
 	};
 
 	// The island is a hex grid, so a square in open water has fewer than six neighbours on the map.
@@ -116,7 +131,7 @@ export class CampaignMapLogic {
 	// so it stays correct if the map generator ever changes.
 	static hasCoastalTerritory = (map: CampaignMapModel) => {
 		return map.squares
-			.filter(sq => sq.regionID === '')
+			.filter(CampaignMapLogic.isOwned)
 			.some(sq => CampaignMapLogic.getAdjacentSquares(map, sq.x, sq.y).length < 6);
 	};
 
@@ -172,6 +187,19 @@ export class CampaignMapLogic {
 	};
 
 	static conquerRegion = (map: CampaignMapModel, region: RegionModel) => {
+		const centre = CampaignMapLogic.getSettlement(map, region);
+		if (centre && !centre.feature) {
+			centre.feature = 'settlement';
+		}
+		if (centre) {
+			map.history.push({
+				regionID: region.id,
+				name: region.name,
+				x: centre.x,
+				y: centre.y
+			});
+		}
+
 		map.squares.forEach(sq => {
 			if (sq.regionID === region.id) {
 				sq.regionID = '';
@@ -179,17 +207,66 @@ export class CampaignMapLogic {
 		});
 
 		map.regions = map.regions.filter(r => map.squares.some(sq => sq.regionID === r.id));
+
+		if (centre) {
+			CampaignMapLogic.buildRoad(map, centre);
+		}
+	};
+
+	// Marks a road along the shortest path, over conquered squares only, from a newly conquered
+	// settlement to the nearest other conquered settlement or road. Nothing is marked if the
+	// settlement has no such connection, for instance when the region was reached by sea.
+	static buildRoad = (map: CampaignMapModel, settlement: CampaignMapSquareModel) => {
+		const isConnection = (sq: CampaignMapSquareModel) =>
+			(sq !== settlement) && (sq.regionID === '') && ((sq.feature === 'settlement') || (sq.feature === 'road'));
+		const key = (sq: CampaignMapSquareModel) => `${sq.x},${sq.y}`;
+
+		const previous = new Map<string, CampaignMapSquareModel>();
+		const visited = new Set<string>([ key(settlement) ]);
+		const queue = [ settlement ];
+		for (let i = 0; i < queue.length; i++) {
+			const current = queue[i];
+			for (const next of CampaignMapLogic.getAdjacentSquares(map, current.x, current.y)) {
+				if (visited.has(key(next)) || !CampaignMapLogic.isOwned(next)) {
+					continue;
+				}
+				visited.add(key(next));
+				previous.set(key(next), current);
+
+				if (isConnection(next)) {
+					for (let sq = previous.get(key(next)); sq && (sq !== settlement); sq = previous.get(key(sq))) {
+						if (!sq.feature) {
+							sq.feature = 'road';
+						}
+					}
+					return;
+				}
+
+				queue.push(next);
+			}
+		}
 	};
 
 	static isConquered = (map: CampaignMapModel) => {
-		return map.squares.every(sq => sq.regionID === '');
+		return map.squares.every(sq =>
+			CampaignMapLogic.isOwned(sq)
+			|| ((sq.regionID === '') && !CampaignMapLogic.isClaimable(sq)));
 	};
 
 	static getMonsters = (region: RegionModel, packIDs: string[]) => {
 		const monsterIDs = GameLogic.getMonsterSpeciesDeck(packIDs);
+		const terrainHabitats = CampaignMapLogic.habitats.filter(entry => entry.terrains.includes(region.demographics.terrain));
+		const habitatIDs = monsterIDs.filter(species =>
+			terrainHabitats.some(habitat => habitat.speciesIDs.includes(species.id)));
 
 		const rng = Random.getSeededRNG(region.id);
 		const count = Random.randomNumber(2, rng) + 2;
-		return Collections.shuffle(monsterIDs, rng).slice(0, count);
+		const habitatCount = habitatIDs.length > 0 ? Math.round(count * 0.75) : 0;
+		const matching = Collections.shuffle(habitatIDs, rng).slice(0, habitatCount);
+		const remaining = monsterIDs.filter(species => !matching.some(selected => selected.id === species.id));
+		return [
+			...matching,
+			...Collections.shuffle(remaining, rng).slice(0, count - matching.length)
+		];
 	};
 }

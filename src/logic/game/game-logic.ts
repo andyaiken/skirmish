@@ -160,7 +160,7 @@ export class GameLogic {
 		return actions;
 	};
 
-	static getRandomAction = (item: ItemModel, packIDs: string[]) => {
+	static getRandomAction = (item: ItemModel, packIDs: string[], rng: () => number = Math.random) => {
 		const actions = GameLogic.getAllActions(packIDs).filter(a => {
 			// Ignore actions that require a different sort of item
 			const prerequisite = a.prerequisites.find(p => p.id === 'item');
@@ -174,15 +174,15 @@ export class GameLogic {
 			return true;
 		});
 
-		const action = Collections.draw(actions);
+		const action = Collections.draw(actions, rng);
 		const copy = JSON.parse(JSON.stringify(action)) as ActionModel;
-		copy.id = Utils.guid();
+		copy.id = Utils.guid(rng);
 
 		return copy;
 	};
 
-	static getRandomDamageType = (category: DamageCategoryType = DamageCategoryType.Any) => {
-		return Collections.draw(GameLogic.getDamageTypes(category));
+	static getRandomDamageType = (category: DamageCategoryType = DamageCategoryType.Any, rng: () => number = Math.random) => {
+		return Collections.draw(GameLogic.getDamageTypes(category), rng);
 	};
 
 	static getDamageTypes = (category: DamageCategoryType = DamageCategoryType.Any) => {
@@ -226,17 +226,17 @@ export class GameLogic {
 		return options;
 	};
 
-	static getRandomDamageCategoryType = () => {
+	static getRandomDamageCategoryType = (rng: () => number = Math.random) => {
 		const options = [
 			DamageCategoryType.Physical,
 			DamageCategoryType.Energy,
 			DamageCategoryType.Corruption
 		];
 
-		return Collections.draw(options);
+		return Collections.draw(options, rng);
 	};
 
-	static getRandomItemProficiency = () => {
+	static getRandomItemProficiency = (rng: () => number = Math.random) => {
 		const options = [
 			ItemProficiencyType.MilitaryWeapons,
 			ItemProficiencyType.LargeWeapons,
@@ -249,10 +249,10 @@ export class GameLogic {
 			ItemProficiencyType.Shields
 		];
 
-		return Collections.draw(options);
+		return Collections.draw(options, rng);
 	};
 
-	static getRandomSkill = (category: SkillCategoryType = SkillCategoryType.Any) => {
+	static getRandomSkill = (category: SkillCategoryType = SkillCategoryType.Any, rng: () => number = Math.random) => {
 		const options = [];
 
 		switch (category) {
@@ -278,26 +278,26 @@ export class GameLogic {
 				break;
 		}
 
-		return Collections.draw(options);
+		return Collections.draw(options, rng);
 	};
 
-	static getRandomSkillCategory = () => {
+	static getRandomSkillCategory = (rng: () => number = Math.random) => {
 		const options = [
 			SkillCategoryType.Physical,
 			SkillCategoryType.Mental
 		];
 
-		return Collections.draw(options);
+		return Collections.draw(options, rng);
 	};
 
-	static getRandomTrait = () => {
+	static getRandomTrait = (rng: () => number = Math.random) => {
 		const options = [
 			TraitType.Endurance,
 			TraitType.Resolve,
 			TraitType.Speed
 		];
 
-		return Collections.draw(options);
+		return Collections.draw(options, rng);
 	};
 
 	///////////////////////////////////////////////////////////////////////////

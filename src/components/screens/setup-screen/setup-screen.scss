@@ -169,14 +169,21 @@
 			justify-content: center;
 			gap: 30px;
 
-			.randomize-btn,
-			.packs-btn,
-			.help-btn {
+			.randomize-btn {
 				width: 200px;
 				display: flex;
 				flex-direction: row;
 				align-items: center;
 				gap: 15px;
+			}
+
+			.right-panel-rest {
+				width: 100%;
+
+				.packs-btn,
+				.help-btn {
+					width: 100%;
+				}
 			}
 		}
 

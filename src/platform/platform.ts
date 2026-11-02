@@ -18,6 +18,7 @@ import type { OptionsModel } from '../models/options';
 import type { PackModel } from '../models/pack';
 import type { StructureModel } from '../models/structure';
 
+import { Collections } from '../utils/collections/collections';
 import { Utils } from '../utils/utils/utils';
 
 import type { CloudAdoptionReason, CloudConflictModel } from './cloud-sync';
@@ -259,6 +260,30 @@ export class Platform {
 	};
 
 	private updateGame = (game: GameModel) => {
+		if (!game.map.seed) {
+			game.map.seed = Utils.guid();
+		}
+		if (!game.map.history) {
+			game.map.history = [];
+		}
+
+		game.map.squares.forEach(square => {
+			if (square.height === undefined) {
+				square.height = 0;
+			}
+			if (square.regionID && (square.terrain === undefined)) {
+				square.terrain = game.map.regions.find(region => region.id === square.regionID)?.demographics.terrain ?? 'Plains';
+			}
+		});
+		const terrainSquares = game.map.squares.filter(square => square.terrain !== undefined);
+		game.map.squares.forEach(square => {
+			if (square.terrain === undefined) {
+				const nearest = Collections.min(terrainSquares, candidate =>
+					Math.pow(candidate.x - square.x, 2) + Math.pow(candidate.y - square.y, 2));
+				square.terrain = nearest?.terrain ?? 'Plains';
+			}
+		});
+
 		game.map.regions.forEach(r => {
 			if (r.boon.type === BoonType.Structure) {
 				const s = r.boon.data as StructureModel;

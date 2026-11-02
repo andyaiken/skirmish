@@ -1,4 +1,5 @@
 import { Component, createRef } from 'react';
+import { IconTower } from '@tabler/icons-react';
 
 import { CampaignMapLogic } from '../../../logic/campaign-map/campaign-map-logic';
 
@@ -7,7 +8,6 @@ import type { OptionsModel } from '../../../models/options';
 import type { RegionModel } from '../../../models/region';
 
 import { Color } from '../../../utils/color/color';
-import { Random } from '../../../utils/random/random';
 
 import './campaign-map-panel.scss';
 
@@ -32,11 +32,84 @@ interface PointerPosition {
 	y: number;
 }
 
+interface MapPoint {
+	x: number;
+	y: number;
+}
+
 interface State {
 	viewBox: ViewBox | null;
 }
 
+// Open polylines (no baseline) on a 1x1 grid; each square with a peak uses one of them.
+const MOUNTAIN_PATHS = [
+	'M0.06 0.82 L0.36 0.22 L0.51 0.49 L0.67 0.13 L0.96 0.82',
+	'M0.1 0.8 L0.5 0.12 L0.9 0.8',
+	'M0.05 0.8 L0.28 0.38 L0.42 0.58 L0.62 0.18 L0.95 0.8',
+	'M0.08 0.82 L0.3 0.3 L0.45 0.55 L0.58 0.4 L0.7 0.62 L0.92 0.82',
+	'M0.12 0.8 L0.4 0.25 L0.55 0.5 L0.85 0.15 L0.95 0.8',
+	'M0.04 0.82 L0.25 0.45 L0.38 0.6 L0.55 0.1 L0.72 0.5 L0.84 0.38 L0.97 0.82',
+	'M0.15 0.8 L0.35 0.4 L0.5 0.6 L0.65 0.2 L0.88 0.8',
+	'M0.06 0.82 L0.2 0.5 L0.32 0.62 L0.5 0.15 L0.66 0.55 L0.8 0.35 L0.94 0.82',
+	'M0.1 0.82 L0.45 0.2 L0.6 0.45 L0.7 0.32 L0.9 0.82',
+	'M0.08 0.8 L0.3 0.18 L0.48 0.62 L0.74 0.28 L0.92 0.8',
+	'M0.05 0.82 L0.33 0.35 L0.46 0.48 L0.6 0.12 L0.8 0.58 L0.95 0.82',
+	'M0.12 0.82 L0.28 0.5 L0.4 0.58 L0.52 0.3 L0.62 0.45 L0.78 0.14 L0.93 0.82'
+];
+
+const getHexCenter = (square: CampaignMapSquareModel): MapPoint => ({
+	x: square.x + 0.5,
+	y: square.y + 0.5 + ((square.x % 2 === 0) ? 0.25 : -0.25)
+});
+
+const getHexPoints = (square: CampaignMapSquareModel, scale = 1): MapPoint[] => {
+	const center = getHexCenter(square);
+	const padding = 0.024;
+	const dx = 0.1;
+	const points = [
+		{ x: square.x + padding + dx, y: square.y + padding },
+		{ x: square.x + 1 - padding - dx, y: square.y + padding },
+		{ x: square.x + 1 + dx - padding, y: square.y + 0.5 },
+		{ x: square.x + 1 - padding - dx, y: square.y + 1 - padding },
+		{ x: square.x + padding + dx, y: square.y + 1 - padding },
+		{ x: square.x + padding - dx, y: square.y + 0.5 }
+	];
+	if (square.x % 2 === 0) {
+		points.forEach(point => point.y += 0.25);
+	} else {
+		points.forEach(point => point.y -= 0.25);
+	}
+	return points.map(point => ({
+		x: center.x + ((point.x - center.x) * scale),
+		y: center.y + ((point.y - center.y) * scale)
+	}));
+};
+
+const getAdjacentCoordinates = (x: number, y: number): MapPoint[] => {
+	if (x % 2 === 0) {
+		return [
+			{ x: x, y: y - 1 },
+			{ x: x + 1, y: y },
+			{ x: x + 1, y: y + 1 },
+			{ x: x, y: y + 1 },
+			{ x: x - 1, y: y + 1 },
+			{ x: x - 1, y: y }
+		];
+	}
+
+	return [
+		{ x: x, y: y - 1 },
+		{ x: x + 1, y: y - 1 },
+		{ x: x + 1, y: y },
+		{ x: x, y: y + 1 },
+		{ x: x - 1, y: y },
+		{ x: x - 1, y: y - 1 }
+	];
+};
+
 export class CampaignMapPanel extends Component<Props, State> {
+	private static nextSymbolsID = 0;
+
 	public static defaultProps = {
 		mode: 'map',
 		zoomable: false,
@@ -48,6 +121,7 @@ export class CampaignMapPanel extends Component<Props, State> {
 	private dragStart: { pointer: PointerPosition; viewBox: ViewBox } | null = null;
 	private suppressClickUntil = 0;
 	private svgRef = createRef<SVGSVGElement>();
+	private readonly symbolsID = CampaignMapPanel.nextSymbolsID++;
 
 	constructor(props: Props) {
 		super(props);
@@ -241,17 +315,20 @@ export class CampaignMapPanel extends Component<Props, State> {
 		};
 	};
 
-	getHex = (square: CampaignMapSquareModel) => {
+	getShadedColor = (color: { r: number, g: number, b: number }, height: number) => {
+		const shade = (height - 4.5) * 0.018;
+		return shade < 0 ? Color.darken(color, 1 + shade) : Color.lighten(color, shade);
+	};
+
+	getHex = (square: CampaignMapSquareModel, regionAt: Map<string, RegionModel>) => {
 		let backgroundColor = 'rgb(255, 255, 255)';
 		let borderColor = 'var(--control)';
 
-		const region = this.props.map.regions.find(r => r.id === square.regionID) || null;
+		const region = regionAt.get(square.regionID) || null;
 		if (region) {
 			let color = Color.parse(region.color);
 			if (color) {
-				const id = `${square.x} ${square.y}`;
-				const rng = Random.getSeededRNG(id);
-				color = Color.tweak(color, 6, rng);
+				color = this.getShadedColor(color, square.height);
 
 				backgroundColor = Color.toString(color);
 				borderColor = Color.toString(Color.darken(color, 0.95));
@@ -261,23 +338,15 @@ export class CampaignMapPanel extends Component<Props, State> {
 					borderColor = Color.toString(color);
 				}
 			}
-		}
-
-		const padding = 0.024;
-		const dx = 0.1;
-		const points = [
-			{ x: square.x + padding + dx, y: square.y + padding },
-			{ x: square.x + 1 - padding - dx, y: square.y + padding },
-			{ x: square.x + 1 + dx - padding, y: square.y + 0.5 },
-			{ x: square.x + 1 - padding - dx, y: square.y + 1 - padding },
-			{ x: square.x + padding + dx, y: square.y + 1 - padding },
-			{ x: square.x + padding - dx, y: square.y + 0.5 }
-		];
-
-		if (square.x % 2 === 0) {
-			points.forEach(pt => pt.y += 0.25);
-		} else {
-			points.forEach(pt => pt.y -= 0.25);
+		} else if (square.regionID === '') {
+			let color = { r: 255, g: 255, b: 255 };
+			if (square.feature === 'peak') {
+				color = { r: 0, g: 0, b: 0 };
+			} else if (square.feature === 'road') {
+				color = { r: 220, g: 220, b: 220 };
+			}
+			backgroundColor = Color.toString(color);
+			borderColor = Color.toString(Color.darken(color, 0.68));
 		}
 
 		return (
@@ -285,7 +354,7 @@ export class CampaignMapPanel extends Component<Props, State> {
 				key={`${square.x} ${square.y}`}
 				className='campaign-map-hex'
 				points={
-					points
+					getHexPoints(square)
 						.map(pt => `${pt.x},${pt.y}`)
 						.join(' ')
 				}
@@ -298,8 +367,74 @@ export class CampaignMapPanel extends Component<Props, State> {
 		);
 	};
 
+	// One ring of the shallows. All the outer rings are drawn before any inner ring, so that a
+	// neighbouring hex's outer ring never covers this one's inner ring.
+	getShallows = (square: CampaignMapSquareModel, outer: boolean) => (
+		<polygon
+			key={`shallows-${outer ? 'outer' : 'inner'}-${square.x}-${square.y}`}
+			className={outer ? 'campaign-map-shallows outer' : 'campaign-map-shallows'}
+			points={getHexPoints(square, outer ? 1.8 : 1.4).map(point => `${point.x},${point.y}`).join(' ')}
+			pointerEvents='none'
+		/>
+	);
+
+	// On the whole map a region still to be taken has its label on its settlement, so only conquered
+	// ones get the icon. A single region has no label, so its settlement always does.
+	getSettlement = (square: CampaignMapSquareModel) => {
+		if ((square.feature !== 'settlement') || ((square.regionID !== '') && (this.props.mode !== 'region'))) {
+			return null;
+		}
+
+		const center = getHexCenter(square);
+		const size = 0.85;
+		return (
+			<IconTower
+				key={`settlement-${square.x}-${square.y}`}
+				x={center.x - (size / 2)}
+				y={center.y - (size / 2)}
+				width={size}
+				height={size}
+				strokeWidth={1.5}
+				className='campaign-map-settlement'
+				pointerEvents='none'
+			/>
+		);
+	};
+
+	getFeature = (square: CampaignMapSquareModel) => {
+		if (square.feature !== 'peak') {
+			return null;
+		}
+
+		const center = getHexCenter(square);
+		const size = 0.9;
+		const variant = Math.abs((square.x * 73856093) ^ (square.y * 19349663)) % MOUNTAIN_PATHS.length;
+		return (
+			<use
+				key={`feature-${square.x}-${square.y}`}
+				href={`#campaign-map-${this.symbolsID}-mountain-${variant}`}
+				x={center.x - (size / 2)}
+				y={center.y - (size / 2)}
+				width={size}
+				height={size}
+				className='campaign-map-feature peak'
+				pointerEvents='none'
+			/>
+		);
+	};
+
+	getSymbols = () => (
+		<defs>
+			{MOUNTAIN_PATHS.map((path, index) => (
+				<symbol key={index} id={`campaign-map-${this.symbolsID}-mountain-${index}`} viewBox='0 0 1 1'>
+					<path fill='none' stroke='var(--campaign-map-mountain)' strokeWidth='0.05' strokeLinecap='round' strokeLinejoin='round' d={path} />
+				</symbol>
+			))}
+		</defs>
+	);
+
 	getLabel = (region: RegionModel) => {
-		const square = CampaignMapLogic.getCentralSquare(this.props.map, region);
+		const square = CampaignMapLogic.getSettlement(this.props.map, region);
 		if (square) {
 			let dx = 0;
 			let dy = 0;
@@ -350,6 +485,11 @@ export class CampaignMapPanel extends Component<Props, State> {
 
 		const baseViewBox = this.getBaseViewBox();
 		const viewBox = this.state.viewBox || baseViewBox;
+		const squareAt = new Map(this.props.map.squares.map(square => [ `${square.x},${square.y}`, square ]));
+		const regionAt = new Map(this.props.map.regions.map(region => [ region.id, region ]));
+		const regionOnly = (this.props.mode === 'region') && (this.props.selectedRegion !== null);
+		const coastline = regionOnly ? [] : mapSquares.filter(square =>
+			getAdjacentCoordinates(square.x, square.y).some(point => !squareAt.has(`${point.x},${point.y}`)));
 
 		return (
 			<svg
@@ -363,8 +503,19 @@ export class CampaignMapPanel extends Component<Props, State> {
 				onPointerCancel={this.onPointerUp}
 				onClick={e => this.onClick(e, null)}
 			>
-				{mapSquares.map(this.getHex)}
-				{this.props.mode === 'map' ? this.props.map.regions.map(this.getLabel) : null}
+				{this.getSymbols()}
+				<g className='campaign-map-sea'>
+					{coastline.map(square => this.getShallows(square, true))}
+					{coastline.map(square => this.getShallows(square, false))}
+				</g>
+				<g className='campaign-map-land'>{mapSquares.map(square => this.getHex(square, regionAt))}</g>
+				<g className='campaign-map-features'>
+					{mapSquares.map(square => this.getFeature(square))}
+				</g>
+				<g className='campaign-map-settlements'>{mapSquares.map(square => this.getSettlement(square))}</g>
+				<g className='campaign-map-labels'>
+					{this.props.mode === 'map' ? this.props.map.regions.map(this.getLabel) : null}
+				</g>
 			</svg>
 		);
 	};

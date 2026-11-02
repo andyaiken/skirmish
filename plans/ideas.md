@@ -1,8 +1,5 @@
 # Improvements / Enhancements
 
-## Stronghold View
-* People should sometimes say things
-
 ## Encounters
 * Undo movement
   * Can't undo movement if you've done anything (taken an action, hidden, etc)
@@ -32,44 +29,6 @@
 * Get a certain number of heroes to a specific area and stay there for a certain number of rounds
 * Defeat a specific opponent within a certain number of rounds
 
-## Hero History
-* Randomly generated history of a hero
-* Shown on the character sheet
-
 ## Styling
 * Dark mode
 * Action animations (fireball etc)
-
-## Sound
-* Add sound effects
-  * On move
-  * On hit
-  * On miss
-  * On wound
-  * On victory
-  * On defeat
-* Add music
-
-# Content Ideas
-
-## Ideas for Structures
-
-| Structure     | Effect                                                            | Pack    |
-|---------------|-------------------------------------------------------------------|---------|
-| XXX           | Add 1 rank in any physical skill to a hero                        |         |
-| XXX           | Add 1 rank in any mental skill to a hero                          |         |
-| Trophy Room   | Add charge when a boss is defeated; use charges for ???           |         |
-
-* Armory
-* Sanctuary / Sacristy / Reliquary
-* Sanctum
-* Archive / Vault
-* Cartographer
-* Engineer
-* Laboratory
-* Morale buildings:
-  * Museum
-  * Library
-  * Gallery
-  * Theatre
-  * Gardens

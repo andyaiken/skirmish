@@ -28,7 +28,7 @@ const createGame = (stronghold: StructureModel[] = []): GameModel => ({
 	items: [],
 	boons: [],
 	money: 0,
-	map: { squares: [], regions: [] },
+	map: { squares: [], regions: [], seed: '', history: [] },
 	stronghold: stronghold,
 	encounter: null
 });

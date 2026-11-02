@@ -167,8 +167,9 @@ export class CampaignMapPage extends Component<Props, State> {
 		}
 
 		const regions = Collections.distinct(this.props.game.map.squares.map(sq => sq.regionID).filter(id => id !== ''), id => id);
-		const owned = this.props.game.map.squares.filter(sq => sq.regionID === '');
-		const ownedFraction = owned.length / this.props.game.map.squares.length;
+		const owned = this.props.game.map.squares.filter(CampaignMapLogic.isOwned);
+		const claimable = this.props.game.map.squares.filter(CampaignMapLogic.isClaimable);
+		const ownedFraction = claimable.length > 0 ? owned.length / claimable.length : 0;
 		const encounters = Collections.sum(this.props.game.map.regions, r => r.encounters.length);
 
 		return (

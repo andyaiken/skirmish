@@ -1,11 +1,31 @@
 .campaign-map {
+	--campaign-map-water: rgb(130, 200, 250);
+	--campaign-map-shallow-outer: rgb(145, 210, 255);
+	--campaign-map-shallow: rgb(160, 220, 255);
+	--campaign-map-mountain: rgb(96, 96, 96);
+	--campaign-map-settlement: rgb(65, 65, 65);
+	--campaign-map-label: rgb(255, 255, 255);
+	--campaign-map-label-stroke: rgb(105, 105, 105);
+	--campaign-map-label-text: rgb(65, 65, 65);
+
 	width: 100%;
 	height: 100%;
 	position: absolute;
-	filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.6));
 
 	&.zoomable {
 		touch-action: none;
+	}
+
+	.campaign-map-sea {
+		pointer-events: none;
+	}
+
+	.campaign-map-shallows {
+		fill: var(--campaign-map-shallow);
+
+		&.outer {
+			fill: var(--campaign-map-shallow-outer);
+		}
 	}
 
 	.campaign-map-hex {
@@ -13,16 +33,33 @@
 		transform-origin: center;
 	}
 
+	.campaign-map-features {
+		pointer-events: none;
+	}
+
+	.campaign-map-feature {
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+
 	.campaign-map-label-container {
-		fill: rgb(255, 255, 255);
-		stroke: rgb(200, 200, 200);
+		fill: var(--campaign-map-label);
+		stroke: var(--campaign-map-label-stroke);
 		stroke-width: 0.1;
 		transform-origin: center;
 	}
 
 	.campaign-map-label-text {
-		fill: rgb(100, 100, 100);
+		fill: var(--campaign-map-label-text);
 		font-size: 2.8%;
 		font-weight: 600;
+	}
+
+	.campaign-map-settlements {
+		pointer-events: none;
+
+		.campaign-map-settlement {
+			color: var(--campaign-map-settlement);
+		}
 	}
 }

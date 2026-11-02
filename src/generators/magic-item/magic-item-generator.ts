@@ -35,7 +35,7 @@ export class MagicItemGenerator {
 		}
 
 		const item = JSON.parse(JSON.stringify(baseItem)) as ItemModel;
-		item.id = Utils.guid();
+		item.id = Utils.guid(rng);
 		item.name = NameGenerator.generateName(rng);
 		item.description = `Magical ${baseItem.name.toLowerCase()}`;
 		item.baseItem = baseItem.name;
@@ -90,7 +90,7 @@ export class MagicItemGenerator {
 			}
 
 			// Increase Weapon skill
-			const copyW4 = MagicItemGenerator.addFeature(item, FeatureLogic.createSkillFeature(Utils.guid(), SkillType.Weapon, Random.randomBonus(rng)));
+			const copyW4 = MagicItemGenerator.addFeature(item, FeatureLogic.createSkillFeature(Utils.guid(rng), SkillType.Weapon, Random.randomBonus(rng)));
 			options.push(copyW4);
 
 			// Negate unreliability
@@ -118,7 +118,7 @@ export class MagicItemGenerator {
 			const f2 = arm2.features.find(f => f.type === FeatureType.DamageCategoryResist);
 			if (f2) {
 				const f2Copy = JSON.parse(JSON.stringify(f2)) as FeatureModel;
-				f2Copy.id = Utils.guid();
+				f2Copy.id = Utils.guid(rng);
 				f2Copy.damageCategory = Random.randomBoolean(rng) ? DamageCategoryType.Energy : DamageCategoryType.Corruption;
 				// Only worth doing if this category isn't already resisted
 				if (!arm2.features.find(f => FeatureLogic.featuresAreEquivalent(f, f2Copy))) {
@@ -148,15 +148,15 @@ export class MagicItemGenerator {
 
 		if (item.proficiency === ItemProficiencyType.Implements) {
 			// Increase Spellcasting skill
-			const copyI1 = MagicItemGenerator.addFeature(item, FeatureLogic.createSkillFeature(Utils.guid(), SkillType.Spellcasting, Random.randomBonus(rng)));
+			const copyI1 = MagicItemGenerator.addFeature(item, FeatureLogic.createSkillFeature(Utils.guid(rng), SkillType.Spellcasting, Random.randomBonus(rng)));
 			options.push(copyI1);
 
 			// Increase Energy damage
-			const copyI2 = MagicItemGenerator.addFeature(item, FeatureLogic.createDamageCategoryBonusFeature(Utils.guid(), DamageCategoryType.Energy, Random.randomBonus(rng)));
+			const copyI2 = MagicItemGenerator.addFeature(item, FeatureLogic.createDamageCategoryBonusFeature(Utils.guid(rng), DamageCategoryType.Energy, Random.randomBonus(rng)));
 			options.push(copyI2);
 
 			// Increase Corruption damage
-			const copyI3 = MagicItemGenerator.addFeature(item, FeatureLogic.createDamageCategoryBonusFeature(Utils.guid(), DamageCategoryType.Corruption, Random.randomBonus(rng)));
+			const copyI3 = MagicItemGenerator.addFeature(item, FeatureLogic.createDamageCategoryBonusFeature(Utils.guid(rng), DamageCategoryType.Corruption, Random.randomBonus(rng)));
 			options.push(copyI3);
 		}
 
@@ -169,50 +169,50 @@ export class MagicItemGenerator {
 
 		if (item.location === ItemLocationType.Head) {
 			// Increase a mental skill
-			const copyH1 = MagicItemGenerator.addFeature(item, FeatureLogic.createSkillFeature(Utils.guid(), GameLogic.getRandomSkill(SkillCategoryType.Mental), Random.randomBonus(rng)));
+			const copyH1 = MagicItemGenerator.addFeature(item, FeatureLogic.createSkillFeature(Utils.guid(rng), GameLogic.getRandomSkill(SkillCategoryType.Mental, rng), Random.randomBonus(rng)));
 			options.push(copyH1);
 
 			// Increase all physical or mental skills
 			const skillCategory = Random.randomBoolean(rng) ? SkillCategoryType.Physical : SkillCategoryType.Mental;
-			const copyH2 = MagicItemGenerator.addFeature(item, FeatureLogic.createSkillCategoryFeature(Utils.guid(), skillCategory, Random.randomBonus(rng)));
+			const copyH2 = MagicItemGenerator.addFeature(item, FeatureLogic.createSkillCategoryFeature(Utils.guid(rng), skillCategory, Random.randomBonus(rng)));
 			options.push(copyH2);
 
 			// Increase Resolve
-			const copyH3 = MagicItemGenerator.addFeature(item, FeatureLogic.createTraitFeature(Utils.guid(), TraitType.Resolve, Random.randomBonus(rng)));
+			const copyH3 = MagicItemGenerator.addFeature(item, FeatureLogic.createTraitFeature(Utils.guid(rng), TraitType.Resolve, Random.randomBonus(rng)));
 			options.push(copyH3);
 		}
 
 		if (item.location === ItemLocationType.Feet) {
 			// Increase Speed
-			const copy = MagicItemGenerator.addFeature(item, FeatureLogic.createTraitFeature(Utils.guid(), TraitType.Speed, Random.randomBonus(rng)));
+			const copy = MagicItemGenerator.addFeature(item, FeatureLogic.createTraitFeature(Utils.guid(rng), TraitType.Speed, Random.randomBonus(rng)));
 			options.push(copy);
 		}
 
 		if (item.location === ItemLocationType.Neck) {
 			// Increase Endurance
-			const copyN1 = MagicItemGenerator.addFeature(item, FeatureLogic.createTraitFeature(Utils.guid(), TraitType.Endurance, Random.randomBonus(rng)));
+			const copyN1 = MagicItemGenerator.addFeature(item, FeatureLogic.createTraitFeature(Utils.guid(rng), TraitType.Endurance, Random.randomBonus(rng)));
 			options.push(copyN1);
 
 			// Increase Resolve
-			const copyN2 = MagicItemGenerator.addFeature(item, FeatureLogic.createTraitFeature(Utils.guid(), TraitType.Resolve, Random.randomBonus(rng)));
+			const copyN2 = MagicItemGenerator.addFeature(item, FeatureLogic.createTraitFeature(Utils.guid(rng), TraitType.Resolve, Random.randomBonus(rng)));
 			options.push(copyN2);
 		}
 
 		// A random feature
-		const randomFeature = FeatureLogic.createRandomFeature();
+		const randomFeature = FeatureLogic.createRandomFeature(rng);
 		const isDuplicate = !!item.features.find(f => FeatureLogic.featuresAreEquivalent(f, randomFeature));
 		if (!isDuplicate || (randomFeature.rank !== 0)) {
 			// A rank 0 duplicate (ie a proficiency the item already grants) would do nothing
 			const copyFeature = MagicItemGenerator.addFeature(item, randomFeature);
-			copyFeature.id = Utils.guid();
+			copyFeature.id = Utils.guid(rng);
 			options.push(copyFeature);
 		}
 
 		if (item.actions.length === 0) {
 			// A random action
 			const copyAction = JSON.parse(JSON.stringify(item)) as ItemModel;
-			copyAction.id = Utils.guid();
-			copyAction.actions.push(GameLogic.getRandomAction(item, packIDs));
+			copyAction.id = Utils.guid(rng);
+			copyAction.actions.push(GameLogic.getRandomAction(item, packIDs, rng));
 			options.push(copyAction);
 		}
 

@@ -15,6 +15,7 @@ import { EncounterGenerator } from '../../generators/encounter/encounter-generat
 import { EncounterMapGenerator } from '../../generators/encounter-map/encounter-map-generator';
 
 import { CampaignLogic } from '../../logic/campaign/campaign-logic';
+import { CampaignMapLogic } from '../../logic/campaign-map/campaign-map-logic';
 import { CombatantLogic } from '../../logic/combatant/combatant-logic';
 import { EncounterLogic } from '../../logic/encounter/encounter-logic';
 import { EncounterMapLogic } from '../../logic/encounter-map/encounter-map-logic';
@@ -506,7 +507,10 @@ export class Main extends Component<Props, State> {
 		}
 
 		const squares = campaign.game.map.squares;
-		const controlled = squares.length > 0 ? Math.floor(100 * squares.filter(sq => sq.regionID === '').length / squares.length) : 0;
+		const claimable = squares.filter(CampaignMapLogic.isClaimable);
+		const controlled = claimable.length > 0
+			? Math.floor(100 * claimable.filter(CampaignMapLogic.isOwned).length / claimable.length)
+			: 0;
 		const heroes = campaign.game.heroes.length;
 
 		return (

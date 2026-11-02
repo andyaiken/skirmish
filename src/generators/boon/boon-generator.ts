@@ -55,7 +55,7 @@ export class BoonGenerator {
 		}
 
 		return {
-			id: Utils.guid(),
+			id: Utils.guid(rng),
 			type: type,
 			data: data
 		};

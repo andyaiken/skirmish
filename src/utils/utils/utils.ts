@@ -1,11 +1,11 @@
 import { Random } from '../random/random';
 
 export class Utils {
-	static guid = (): string => {
+	static guid = (rng: () => number = Math.random): string => {
 		const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890';
 		let id = '';
 		while (id.length < 16) {
-			const n = Random.randomNumber(letters.length);
+			const n = Random.randomNumber(letters.length, rng);
 			id += letters[n];
 		}
 		return id;

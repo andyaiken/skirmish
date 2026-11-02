@@ -28,10 +28,12 @@ const createRegion = (encounters: string[] = []): RegionModel => ({
 
 const createMap = (region: RegionModel): CampaignMapModel => ({
 	squares: [
-		{ x: 0, y: 0, regionID: '' },
-		{ x: 1, y: 0, regionID: region.id }
+		{ x: 0, y: 0, regionID: '', terrain: 'Plains', height: 0 },
+		{ x: 1, y: 0, regionID: region.id, terrain: 'Plains', height: 0 }
 	],
-	regions: [ region ]
+	regions: [ region ],
+	seed: '',
+	history: []
 });
 
 const createStructure = (type: StructureType, charges: number): StructureModel => ({
@@ -147,7 +149,7 @@ describe('CampaignLogic.purchaseRegion', () => {
 		const game = createGame(region, [ Factory.createCombatant(CombatantType.Hero) ], 1000);
 		const otherRegion = createRegion();
 		otherRegion.id = 'other';
-		game.map.squares.push({ x: 2, y: 0, regionID: otherRegion.id });
+		game.map.squares.push({ x: 2, y: 0, regionID: otherRegion.id, terrain: 'Plains', height: 0 });
 		game.map.regions.push(otherRegion);
 		game.stronghold.push(createStructure(StructureType.CountingHouse, 0));
 		game.stronghold.push(createStructure(StructureType.Guildhall, 1));

@@ -27,18 +27,7 @@ interface Props {
 	showHelp: (file: string) => void;
 }
 
-interface State {
-	introductionClosed: boolean;
-}
-
-export class LandingScreen extends Component<Props, State> {
-	constructor(props: Props) {
-		super(props);
-		this.state = {
-			introductionClosed: false
-		};
-	}
-
+export class LandingScreen extends Component<Props> {
 	// A phone gets one size whichever way up it is held, because it is the same screen either way.
 	// The two below are chosen for a tablet, and sideways on a phone 140 takes a third of the 402pt
 	// of height before the bar's padding is counted. 50 is close to what LogoPanel's width cap was
@@ -52,43 +41,19 @@ export class LandingScreen extends Component<Props, State> {
 		return OrientationLogic.isLandscape(this.props.layout.orientation) ? 140 : 100;
 	};
 
-	// The introduction is for someone who has not played yet, so a campaign in progress skips it
-	// entirely; otherwise it shows until it is closed. Not a saved option: there is nothing to
-	// remember once there is a campaign, and until there is one it is worth reading.
-	showIntroduction = () => {
-		return !this.props.game && !this.state.introductionClosed;
-	};
-
 	getMainCard = () => {
-		if (this.props.game) {
-			return (
-				<PlayingCard
-					type={CardType.Role}
-					stack={true}
-					front={
-						<PlaceholderCard
-							text='Continue'
-							subtext='Click here to continue your campaign.'
-							content={<LogoPanel text={null} size={60} />}
-						/>
-					}
-					onClick={this.props.continueCampaign}
-				/>
-			);
-		}
-
 		return (
 			<PlayingCard
 				type={CardType.Role}
 				stack={true}
 				front={
 					<PlaceholderCard
-						text='Start'
-						subtext='Click here to begin a new campaign.'
+						text='Continue'
+						subtext='Click here to continue your campaign.'
 						content={<LogoPanel text={null} size={60} />}
 					/>
 				}
-				onClick={this.props.startCampaign}
+				onClick={this.props.continueCampaign}
 			/>
 		);
 	};
@@ -153,7 +118,7 @@ export class LandingScreen extends Component<Props, State> {
 						<div className='finish-logo'>
 							<LogoPanel text={null} size={120} />
 						</div>
-						<button className='primary' onClick={() => this.setState({ introductionClosed: true })}>
+						<button className='primary' onClick={this.props.startCampaign}>
 							Let&apos;s play
 						</button>
 					</div>
@@ -162,15 +127,18 @@ export class LandingScreen extends Component<Props, State> {
 		);
 	};
 
+	// The introduction is for someone who has not played yet, so a campaign in progress shows the
+	// Continue card instead. The introduction's last slide starts the campaign.
 	render = () => {
+		const introduction = !this.props.game;
 		return (
 			<div className={`landing-screen ${OrientationLogic.getClassName(this.props.layout.orientation)}`}>
 				<div className='landing-top-bar'>
 					<LogoPanel size={this.logoSize()} />
 				</div>
-				<div className={this.showIntroduction() ? 'landing-content introduction' : 'landing-content'}>
+				<div className={introduction ? 'landing-content introduction' : 'landing-content'}>
 					{
-						this.showIntroduction() ?
+						introduction ?
 							this.getIntroduction()
 							: (
 								<div className='action-buttons'>

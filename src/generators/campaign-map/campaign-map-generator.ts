@@ -1,8 +1,9 @@
 import { CampaignMapLogic } from '../../logic/campaign-map/campaign-map-logic';
 
-import type { CampaignMapModel, CampaignMapSquareModel } from '../../models/campaign-map';
+import type { CampaignMapModel, CampaignMapRiverModel, CampaignMapSquareModel } from '../../models/campaign-map';
 import type { RegionModel } from '../../models/region';
 
+import { getHexCenter, getHexVertices } from '../../utils/hex-grid/hex-grid';
 import { Collections } from '../../utils/collections/collections';
 import { Color } from '../../utils/color/color';
 import { HashTable } from '../../utils/hash-table/hash-table';
@@ -164,6 +165,436 @@ const isCoastalSquare = (
 ) => {
 	return getAdjacentCoordinates(square.x, square.y)
 		.some(pt => !squareAt.search(key(pt.x, pt.y)));
+};
+
+const getSideToSquare = (square: CampaignMapSquareModel, adjacent: { x: number, y: number }) => {
+	const points = getHexVertices(square);
+	const center = getHexCenter(adjacent);
+	let side = 0;
+	let distance = Number.MAX_VALUE;
+	for (let i = 0; i < points.length; i++) {
+		const next = points[(i + 1) % points.length];
+		const midpoint = { x: (points[i].x + next.x) / 2, y: (points[i].y + next.y) / 2 };
+		const candidateDistance = Math.hypot(center.x - midpoint.x, center.y - midpoint.y);
+		if (candidateDistance < distance) {
+			side = i;
+			distance = candidateDistance;
+		}
+	}
+	return side;
+};
+
+interface RiverNode {
+	id: string;
+	x: number;
+	y: number;
+	elevation: number;
+	hasLand: boolean;
+	coast: boolean;
+	lakes: Set<string>;
+	neighbors: Set<string>;
+}
+
+const MIN_RIVER_WIDTH = 0.03;
+const MAX_RIVER_WIDTH = 0.15;
+const RIVER_WIDTH_PER_SECTION = 0.004;
+const RIVER_WIDTH_PER_TRIBUTARY = 0.004;
+const MAX_SECTION_WIDTH_INCREASE = 0.008;
+
+const getRiverGraph = (
+	squares: CampaignMapSquareModel[],
+	squareAt: HashTable<CampaignMapSquareModel>
+) => {
+	const nodes = new Map<string, RiverNode>();
+	const getNode = (point: { x: number, y: number }) => {
+		const id = `${point.x},${point.y}`;
+		if (!nodes.has(id)) {
+			nodes.set(id, {
+				id,
+				x: point.x,
+				y: point.y,
+				elevation: Number.MAX_VALUE,
+				hasLand: false,
+				coast: false,
+				lakes: new Set<string>(),
+				neighbors: new Set<string>()
+			});
+		}
+		return nodes.get(id) as RiverNode;
+	};
+
+	for (const square of squares) {
+		const vertices = getHexVertices(square);
+		const adjacent = getAdjacentCoordinates(square.x, square.y);
+		const sideNeighbors = new Array<{ x: number, y: number }>(vertices.length);
+		adjacent.forEach(point => {
+			sideNeighbors[getSideToSquare(square, point)] = point;
+		});
+		const isLake = square.feature === 'lake';
+		vertices.forEach(point => {
+			const node = getNode(point);
+			if (isLake) {
+				node.lakes.add(key(square.x, square.y));
+			} else {
+				node.hasLand = true;
+				node.elevation = Math.min(node.elevation, square.height);
+			}
+		});
+		vertices.forEach((point, index) => {
+			const next = vertices[(index + 1) % vertices.length];
+			const first = getNode(point);
+			const second = getNode(next);
+			first.neighbors.add(second.id);
+			second.neighbors.add(first.id);
+			if (!sideNeighbors[index] || !squareAt.search(key(sideNeighbors[index].x, sideNeighbors[index].y))) {
+				first.coast = true;
+				second.coast = true;
+			}
+		});
+	}
+
+	nodes.forEach(node => {
+		if (node.elevation === Number.MAX_VALUE) {
+			node.elevation = 0;
+		}
+	});
+	return nodes;
+};
+
+const findRiverRoute = (
+	source: CampaignMapSquareModel,
+	nodes: Map<string, RiverNode>,
+	riverNodeIDs: Set<string>,
+	riverEdgeIDs: Set<string>,
+	allowRiverJoin = true,
+	startNodeID?: string,
+	allowUphill = false,
+	allowLakeJoin = true,
+	blockedLakeIDs: Set<string> = new Set()
+) => {
+	const sourceKey = key(source.x, source.y);
+	const starts = getHexVertices(source);
+	const queue: { node: RiverNode, elevation: number }[] = [];
+	const parent = new Map<string, string | null>();
+	const startIDs = startNodeID ? [ startNodeID ] : starts.map(point => `${point.x},${point.y}`);
+	startIDs.forEach(id => {
+		const node = nodes.get(id);
+		if (node && (startNodeID || !riverNodeIDs.has(id)) && !parent.has(id)) {
+			parent.set(id, null);
+			queue.push({ node, elevation: source.height });
+		}
+	});
+
+	let target: RiverNode | null = null;
+	for (let i = 0; (i < queue.length) && !target; i++) {
+		const current = queue[i];
+		const avoidsBlockedLake = [ ...current.node.lakes ].every(lake => !blockedLakeIDs.has(lake));
+		const reachesLake = [ ...current.node.lakes ].some(lake =>
+			(lake !== sourceKey) && !blockedLakeIDs.has(lake))
+			&& avoidsBlockedLake;
+		if ((parent.get(current.node.id) !== null)
+			&& avoidsBlockedLake
+			&& (current.node.coast
+				|| (allowRiverJoin && riverNodeIDs.has(current.node.id))
+				|| (allowLakeJoin && reachesLake))) {
+			target = current.node;
+			break;
+		}
+
+		for (const neighborID of current.node.neighbors) {
+			const neighbor = nodes.get(neighborID) as RiverNode;
+			const edgeID = [ current.node.id, neighborID ].sort().join('|');
+			if (parent.has(neighborID)
+				|| (!allowRiverJoin && riverNodeIDs.has(neighborID))
+				|| riverEdgeIDs.has(edgeID)
+				|| (!allowUphill && (neighbor.elevation > current.elevation))) {
+				continue;
+			}
+			parent.set(neighborID, current.node.id);
+			queue.push({ node: neighbor, elevation: neighbor.elevation });
+		}
+	}
+
+	if (!target) {
+		return null;
+	}
+
+	const route = [ target ];
+	let cursor: string | null = target.id;
+	while (cursor !== null) {
+		const parentID = parent.get(cursor);
+		if (parentID === undefined) {
+			return null;
+		}
+		if (parentID !== null) {
+			route.unshift(nodes.get(parentID) as RiverNode);
+		}
+		cursor = parentID;
+	}
+	return route;
+};
+
+const createRiver = (route: RiverNode[], endWidth: number, startWidth?: number): CampaignMapRiverModel | null => {
+	if (route.length < 2) {
+		return null;
+	}
+	if (startWidth !== undefined) {
+		endWidth = Math.max(startWidth, endWidth);
+	}
+	const widthPerSection = (endWidth - MIN_RIVER_WIDTH) / (route.length - 1);
+	const outletWidthPerSection = startWidth === undefined
+		? 0
+		: (endWidth - startWidth) / Math.max(1, route.length - 2);
+	return {
+		points: route.map((node, index) => ({
+			x: node.x,
+			y: node.y,
+			width: Math.min(MAX_RIVER_WIDTH, startWidth === undefined
+				? MIN_RIVER_WIDTH + (index * widthPerSection)
+				: startWidth + (Math.max(0, index - 1) * outletWidthPerSection))
+		}))
+	};
+};
+
+const normalizeRiverWidths = (rivers: CampaignMapRiverModel[]) => {
+	const widths = new Map<string, number>();
+	const edges: { from: string, to: string }[] = [];
+	rivers.forEach(river => {
+		river.points.forEach(point => {
+			const id = `${point.x},${point.y}`;
+			widths.set(id, Math.max(widths.get(id) ?? MIN_RIVER_WIDTH, point.width));
+		});
+		river.points.slice(1).forEach((point, index) => {
+			edges.push({
+				from: `${river.points[index].x},${river.points[index].y}`,
+				to: `${point.x},${point.y}`
+			});
+		});
+	});
+
+	let changed = true;
+	for (let iteration = 0; changed && (iteration < widths.size); iteration++) {
+		changed = false;
+		edges.forEach(edge => {
+			const fromWidth = widths.get(edge.from) ?? MIN_RIVER_WIDTH;
+			const toWidth = widths.get(edge.to) ?? MIN_RIVER_WIDTH;
+			const nextWidth = Math.min(MAX_RIVER_WIDTH, Math.max(toWidth, fromWidth));
+			const previousWidth = Math.min(MAX_RIVER_WIDTH, Math.max(fromWidth, nextWidth - MAX_SECTION_WIDTH_INCREASE));
+			if ((nextWidth > toWidth) || (previousWidth > fromWidth)) {
+				widths.set(edge.to, nextWidth);
+				widths.set(edge.from, previousWidth);
+				changed = true;
+			}
+		});
+	}
+
+	rivers.forEach(river => river.points.forEach(point => {
+		point.width = widths.get(`${point.x},${point.y}`) ?? MIN_RIVER_WIDTH;
+	}));
+};
+
+const widenDownstream = (rivers: CampaignMapRiverModel[], startID: string) => {
+	const downstream = new Map<string, Set<string>>();
+	rivers.forEach(river => river.points.slice(1).forEach((point, index) => {
+		const fromID = `${river.points[index].x},${river.points[index].y}`;
+		const toID = `${point.x},${point.y}`;
+		if (!downstream.has(fromID)) {
+			downstream.set(fromID, new Set<string>());
+		}
+		downstream.get(fromID)?.add(toID);
+	}));
+
+	const downstreamNodes = new Set([ startID ]);
+	const queue = [ startID ];
+	for (let i = 0; i < queue.length; i++) {
+		downstream.get(queue[i])?.forEach(next => {
+			if (!downstreamNodes.has(next)) {
+				downstreamNodes.add(next);
+				queue.push(next);
+			}
+		});
+	}
+
+	rivers.forEach(river => river.points.forEach(point => {
+		const pointID = `${point.x},${point.y}`;
+		if (downstreamNodes.has(pointID)) {
+			point.width = Math.min(MAX_RIVER_WIDTH, point.width + RIVER_WIDTH_PER_TRIBUTARY);
+		}
+	}));
+
+	rivers.forEach(river => river.points.forEach((point, index) => {
+		if (`${point.x},${point.y}` !== startID) {
+			return;
+		}
+		for (let distance = 1; distance <= 3; distance++) {
+			const upstreamPoint = river.points[index - distance];
+			if (upstreamPoint) {
+				const taper = (4 - distance) / 4;
+				upstreamPoint.width = Math.min(
+					MAX_RIVER_WIDTH,
+					upstreamPoint.width + (RIVER_WIDTH_PER_TRIBUTARY * taper)
+				);
+			}
+		}
+	}));
+};
+
+const createRivers = (
+	squares: CampaignMapSquareModel[],
+	squareAt: HashTable<CampaignMapSquareModel>
+) => {
+	const nodes = getRiverGraph(squares, squareAt);
+	const sourceCount = squares.filter(square => (square.feature === 'peak') || (square.feature === 'lake')).length;
+	const sources = squares
+		.filter(square => square.feature === 'peak')
+		.sort((a, b) =>
+			(b.height - a.height)
+			|| (a.y - b.y)
+			|| (a.x - b.x));
+	const lakeSquares = new Map(squares
+		.filter(square => square.feature === 'lake')
+		.map(square => [ key(square.x, square.y), square ]));
+	const lakeEntries = new Map<string, CampaignMapRiverModel['points'][number][]>();
+	const riverCount = Math.max(3, Math.round(sourceCount * 0.12));
+	const rivers: CampaignMapRiverModel[] = [];
+	const riverNodeIDs = new Set<string>();
+	const riverEdgeIDs = new Set<string>();
+	for (const source of sources) {
+		if (rivers.length >= riverCount) {
+			break;
+		}
+		const route = findRiverRoute(source, nodes, riverNodeIDs, riverEdgeIDs);
+		if (route) {
+			const endpoint = route[route.length - 1];
+			const endpointID = endpoint.id;
+			const joinedRiver = rivers.some(river =>
+				river.points.some(point => `${point.x},${point.y}` === endpointID));
+			if (joinedRiver) {
+				widenDownstream(rivers, endpointID);
+			}
+			const endWidth = joinedRiver
+				? Math.max(...rivers.flatMap(river =>
+					river.points
+						.filter(point => `${point.x},${point.y}` === endpointID)
+						.map(point => point.width)))
+				: Math.min(MAX_RIVER_WIDTH, MIN_RIVER_WIDTH + ((route.length - 1) * RIVER_WIDTH_PER_SECTION));
+			const river = createRiver(route, endWidth);
+			if (river) {
+				rivers.push(river);
+				route.forEach(node => riverNodeIDs.add(node.id));
+				route.slice(1).forEach((node, index) => {
+					riverEdgeIDs.add([ route[index].id, node.id ].sort().join('|'));
+				});
+				endpoint.lakes.forEach(lakeID => {
+					if (!lakeEntries.has(lakeID)) {
+						lakeEntries.set(lakeID, []);
+					}
+					lakeEntries.get(lakeID)?.push(river.points[river.points.length - 1]);
+				});
+			}
+		}
+	}
+	normalizeRiverWidths(rivers);
+
+	const lakeOutflows = new Set<string>();
+	const lakesToDrain = [ ...lakeEntries.keys() ];
+	const lakeAncestors = new Map<string, Set<string>>();
+	for (let i = 0; i < lakesToDrain.length; i++) {
+		const lakeID = lakesToDrain[i];
+		if (lakeOutflows.has(lakeID)) {
+			continue;
+		}
+		lakeOutflows.add(lakeID);
+		const lake = lakeSquares.get(lakeID);
+		if (!lake) {
+			continue;
+		}
+		const entries = lakeEntries.get(lakeID) ?? [];
+		const entry = entries.reduce((widest, point) => point.width > widest.width ? point : widest);
+		const startWidth = entry.width;
+		const ancestors = lakeAncestors.get(lakeID) ?? new Set<string>();
+		const route = findRiverRoute(
+			lake,
+			nodes,
+			riverNodeIDs,
+			riverEdgeIDs,
+			false,
+			undefined,
+			false,
+			true,
+			ancestors
+		) ?? findRiverRoute(lake, nodes, riverNodeIDs, riverEdgeIDs, false, undefined, true, true, ancestors);
+		if (!route) {
+			continue;
+		}
+		const endpoint = route[route.length - 1];
+		const endpointID = endpoint.id;
+		const joinedRiver = rivers.some(river =>
+			river.points.some(point => `${point.x},${point.y}` === endpointID));
+		if (joinedRiver) {
+			widenDownstream(rivers, endpointID);
+		}
+		const endWidth = joinedRiver
+			? Math.max(startWidth, ...rivers.flatMap(river =>
+				river.points
+					.filter(point => `${point.x},${point.y}` === endpointID)
+					.map(point => point.width)))
+			: Math.min(MAX_RIVER_WIDTH, startWidth + (Math.max(0, route.length - 2) * RIVER_WIDTH_PER_SECTION));
+		const river = createRiver(route, endWidth, startWidth);
+		if (river) {
+			rivers.push(river);
+			route.forEach(node => riverNodeIDs.add(node.id));
+			route.slice(1).forEach((node, index) => {
+				riverEdgeIDs.add([ route[index].id, node.id ].sort().join('|'));
+			});
+			endpoint.lakes.forEach(nextLakeID => {
+				if ((nextLakeID === lakeID) || lakeOutflows.has(nextLakeID)) {
+					return;
+				}
+				if (!lakeEntries.has(nextLakeID)) {
+					lakeEntries.set(nextLakeID, []);
+				}
+				lakeEntries.get(nextLakeID)?.push(river.points[river.points.length - 1]);
+				const nextAncestors = lakeAncestors.get(nextLakeID) ?? new Set<string>();
+				ancestors.forEach(ancestorID => nextAncestors.add(ancestorID));
+				nextAncestors.add(lakeID);
+				lakeAncestors.set(nextLakeID, nextAncestors);
+				if (!lakesToDrain.includes(nextLakeID)) {
+					lakesToDrain.push(nextLakeID);
+				}
+			});
+		}
+	}
+	for (let iteration = 0; iteration <= lakeSquares.size; iteration++) {
+		normalizeRiverWidths(rivers);
+		let changed = false;
+		lakeSquares.forEach(lake => {
+			const vertexIDs = new Set(getHexVertices(lake).map(point => `${point.x},${point.y}`));
+			const incomingPoints = rivers
+				.filter(river => vertexIDs.has(`${river.points[river.points.length - 1].x},${river.points[river.points.length - 1].y}`))
+				.map(river => river.points[river.points.length - 1]);
+			const outgoingRivers = rivers.filter(river => vertexIDs.has(`${river.points[0].x},${river.points[0].y}`));
+			if ((incomingPoints.length === 0) || (outgoingRivers.length === 0)) {
+				return;
+			}
+			const connectedPoints = [
+				...incomingPoints,
+				...outgoingRivers.flatMap(river => river.points.slice(0, 2))
+			];
+			const width = Math.max(...connectedPoints.map(point => point.width));
+			connectedPoints.forEach(point => {
+				if (point.width < width) {
+					point.width = width;
+					changed = true;
+				}
+			});
+		});
+		if (!changed) {
+			break;
+		}
+	}
+	normalizeRiverWidths(rivers);
+	return rivers;
 };
 
 const getDistancesFromCoast = (
@@ -586,7 +1017,11 @@ export class CampaignMapGenerator {
 			squares: squares.filter(square => square.feature !== 'lake'),
 			regions: regions,
 			seed: seed,
-			history: []
+			history: [],
+			lakes: squares
+				.filter(square => square.feature === 'lake')
+				.map(square => ({ x: square.x, y: square.y })),
+			rivers: createRivers(squares, squareAt)
 		};
 		map.regions.forEach(region => {
 			const centre = CampaignMapLogic.getCentralSquare(map, region);

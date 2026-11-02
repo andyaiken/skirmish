@@ -1,5 +1,4 @@
 .campaign-map {
-	--campaign-map-water: rgb(130, 200, 250);
 	--campaign-map-shallow-outer: rgb(145, 210, 255);
 	--campaign-map-shallow: rgb(160, 220, 255);
 	--campaign-map-mountain: rgb(96, 96, 96);
@@ -35,6 +34,16 @@
 
 	.campaign-map-features {
 		pointer-events: none;
+	}
+
+	.campaign-map-rivers {
+		pointer-events: none;
+
+		.campaign-map-river {
+			fill: none;
+			stroke: var(--campaign-map-shallow);
+			stroke-linecap: round;
+		}
 	}
 
 	.campaign-map-feature {

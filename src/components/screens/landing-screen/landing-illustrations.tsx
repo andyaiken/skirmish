@@ -37,7 +37,7 @@ let illustrations: Illustrations | null = null;
 
 const getIllustrations = (): Illustrations => {
 	if (!illustrations) {
-		const rng = Random.getSeededRNG('landing');
+		const rng = Random.getSeededRNG('x');
 
 		const map = CampaignMapGenerator.generateCampaignMap([], rng);
 

@@ -17,4 +17,14 @@ export interface CampaignMapModel {
 	regions: RegionModel[];
 	seed: string;
 	history: { regionID: string, name: string, x: number, y: number }[];
+	lakes?: { x: number, y: number }[];
+	rivers?: CampaignMapRiverModel[];
+}
+
+export interface CampaignMapRiverModel {
+	points: {
+		x: number;
+		y: number;
+		width: number;
+	}[];
 }

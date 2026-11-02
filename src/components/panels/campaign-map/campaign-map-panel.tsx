@@ -7,6 +7,7 @@ import type { CampaignMapModel, CampaignMapSquareModel } from '../../../models/c
 import type { OptionsModel } from '../../../models/options';
 import type { RegionModel } from '../../../models/region';
 
+import { getHexCenter, getHexPoints } from '../../../utils/hex-grid/hex-grid';
 import { Color } from '../../../utils/color/color';
 
 import './campaign-map-panel.scss';
@@ -56,34 +57,6 @@ const MOUNTAIN_PATHS = [
 	'M0.05 0.82 L0.33 0.35 L0.46 0.48 L0.6 0.12 L0.8 0.58 L0.95 0.82',
 	'M0.12 0.82 L0.28 0.5 L0.4 0.58 L0.52 0.3 L0.62 0.45 L0.78 0.14 L0.93 0.82'
 ];
-
-const getHexCenter = (square: CampaignMapSquareModel): MapPoint => ({
-	x: square.x + 0.5,
-	y: square.y + 0.5 + ((square.x % 2 === 0) ? 0.25 : -0.25)
-});
-
-const getHexPoints = (square: CampaignMapSquareModel, scale = 1): MapPoint[] => {
-	const center = getHexCenter(square);
-	const padding = 0.024;
-	const dx = 0.1;
-	const points = [
-		{ x: square.x + padding + dx, y: square.y + padding },
-		{ x: square.x + 1 - padding - dx, y: square.y + padding },
-		{ x: square.x + 1 + dx - padding, y: square.y + 0.5 },
-		{ x: square.x + 1 - padding - dx, y: square.y + 1 - padding },
-		{ x: square.x + padding + dx, y: square.y + 1 - padding },
-		{ x: square.x + padding - dx, y: square.y + 0.5 }
-	];
-	if (square.x % 2 === 0) {
-		points.forEach(point => point.y += 0.25);
-	} else {
-		points.forEach(point => point.y -= 0.25);
-	}
-	return points.map(point => ({
-		x: center.x + ((point.x - center.x) * scale),
-		y: center.y + ((point.y - center.y) * scale)
-	}));
-};
 
 const getAdjacentCoordinates = (x: number, y: number): MapPoint[] => {
 	if (x % 2 === 0) {
@@ -423,6 +396,24 @@ export class CampaignMapPanel extends Component<Props, State> {
 		);
 	};
 
+	getRivers = () => (this.props.map.rivers ?? []).map((river, riverIndex) => (
+		<g key={`river-${riverIndex}`} className='campaign-map-river'>
+			{river.points.slice(1).map((point, index) => {
+				const previous = river.points[index];
+				return (
+					<line
+						key={index}
+						x1={previous.x}
+						y1={previous.y}
+						x2={point.x}
+						y2={point.y}
+						strokeWidth={point.width}
+					/>
+				);
+			})}
+		</g>
+	));
+
 	getSymbols = () => (
 		<defs>
 			{MOUNTAIN_PATHS.map((path, index) => (
@@ -509,6 +500,7 @@ export class CampaignMapPanel extends Component<Props, State> {
 					{coastline.map(square => this.getShallows(square, false))}
 				</g>
 				<g className='campaign-map-land'>{mapSquares.map(square => this.getHex(square, regionAt))}</g>
+				{regionOnly ? null : <g className='campaign-map-rivers'>{this.getRivers()}</g>}
 				<g className='campaign-map-features'>
 					{mapSquares.map(square => this.getFeature(square))}
 				</g>

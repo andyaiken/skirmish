@@ -3,6 +3,7 @@ import { Component } from 'react';
 import { StructureType } from '../../../enums/structure-type';
 
 import { CampaignMapLogic } from '../../../logic/campaign-map/campaign-map-logic';
+import { EncounterAdviceLogic } from '../../../logic/thought/encounter-advice';
 import { StrongholdLogic } from '../../../logic/stronghold/stronghold-logic';
 
 import type { CombatantModel } from '../../../models/combatant';
@@ -14,7 +15,7 @@ import type { RegionModel } from '../../../models/region';
 
 import { Collections } from '../../../utils/collections/collections';
 
-import { CardList, Dialog, Switch, Text, TextType } from '../../controls';
+import { CardList, Dialog, HeroQuote, Switch, Text, TextType } from '../../controls';
 import { HeroCard, SpeciesCard, StrongholdBenefitCard } from '../../cards';
 import { CharacterSheetModal } from '../character-sheet/character-sheet-modal';
 import { CombatantRowPanel } from '../../panels';
@@ -306,13 +307,27 @@ export class EncounterStartModal extends Component<Props, State> {
 					}
 					content={<div className='encounter-start-content'>{this.getContent()}</div>}
 					footer={
-						<button
-							className='action primary'
-							disabled={(this.state.selectedHeroes.length < 1) || (this.state.selectedHeroes.length > EncounterStartModal.partySize)}
-							onClick={this.startEncounter}
-						>
-							Start the Encounter
-						</button>
+						<>
+							{
+								this.state.panel !== 'heroes' ?
+									null
+									:
+									<div className='encounter-advice'>
+										{
+											EncounterAdviceLogic
+												.getAdvice(this.props.game.heroes, this.state.selectedHeroes, EncounterStartModal.partySize)
+												.map(a => <HeroQuote key={a.hero.id} hero={a.hero} text={a.message} />)
+										}
+									</div>
+							}
+							<button
+								className='action primary'
+								disabled={(this.state.selectedHeroes.length < 1) || (this.state.selectedHeroes.length > EncounterStartModal.partySize)}
+								onClick={this.startEncounter}
+							>
+								Start the Encounter
+							</button>
+						</>
 					}
 					onClose={this.props.onClose || null}
 				/>

@@ -80,4 +80,10 @@
 		z-index: 1;
 		margin-bottom: 0;
 	}
+
+	.encounter-advice {
+		display: flex;
+		flex-direction: column;
+		gap: 5px;
+	}
 }

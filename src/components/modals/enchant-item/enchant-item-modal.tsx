@@ -1,9 +1,11 @@
+import { IconCircleMinus, IconCirclePlus } from '@tabler/icons-react';
 import { Component } from 'react';
 
 import { StructureType } from '../../../enums/structure-type';
 
 import { MagicItemGenerator } from '../../../generators/magic-item/magic-item-generator';
 
+import { FeatureLogic } from '../../../logic/feature/feature-logic';
 import { StrongholdLogic } from '../../../logic/stronghold/stronghold-logic';
 
 import type { GameModel } from '../../../models/game';
@@ -56,6 +58,60 @@ export class EnchantItemModal extends Component<Props, State> {
 		return Collections.sort(items, n => n.name);
 	};
 
+	getChanges = (oldItem: ItemModel, newItem: ItemModel) => {
+		const changes: { description: string; delta: number }[] = [];
+
+		const describeWeapon = (item: ItemModel) => {
+			const lines: string[] = [];
+			if (item.weapon) {
+				lines.push(`Range: ${item.weapon.range}`);
+				lines.push(`Unreliable: ${item.weapon.unreliable}`);
+			}
+			return lines;
+		};
+
+		const lists = (item: ItemModel) => ({
+			weapon: describeWeapon(item),
+			features: FeatureLogic.collateFeatures(item.features.concat(item.armor ? item.armor.features : [])),
+			actions: item.actions.map(a => a.name)
+		});
+
+		const before = lists(oldItem);
+		const after = lists(newItem);
+
+		const oldDamage = oldItem.weapon?.damage ?? [];
+		const newDamage = newItem.weapon?.damage ?? [];
+		const damageTypes = new Set([ ...oldDamage, ...newDamage ].map(d => d.type));
+		damageTypes.forEach(type => {
+			const oldRank = oldDamage.reduce((rank, d) => rank + (d.type === type ? d.rank : 0), 0);
+			const newRank = newDamage.reduce((rank, d) => rank + (d.type === type ? d.rank : 0), 0);
+			const delta = newRank - oldRank;
+			if (delta !== 0) {
+				changes.push({ description: `Damage: ${type} ${Math.abs(delta)}`, delta });
+			}
+		});
+
+		after.weapon.filter(l => !before.weapon.includes(l)).forEach(l => changes.push({ description: l, delta: 1 }));
+
+		const featureChanges = before.features.map(f => ({ feature: f, delta: -f.rank }));
+		after.features.forEach(f => {
+			const existing = featureChanges.find(c => FeatureLogic.featuresAreEquivalent(c.feature, f));
+			if (existing) {
+				existing.delta += f.rank;
+			} else {
+				featureChanges.push({ feature: f, delta: f.rank });
+			}
+		});
+		featureChanges.filter(c => c.delta !== 0).forEach(c => {
+			const description = FeatureLogic.getFeatureDescription({ ...c.feature, rank: Math.abs(c.delta) });
+			changes.push({ description, delta: c.delta });
+		});
+		before.actions.filter(l => !after.actions.includes(l)).forEach(l => changes.push({ description: `Action: ${l}`, delta: -1 }));
+		after.actions.filter(l => !before.actions.includes(l)).forEach(l => changes.push({ description: `Action: ${l}`, delta: 1 }));
+
+		return changes;
+	};
+
 	redraw = () => {
 		this.setState({
 			magicItems: this.getItems(this.state.selectedItem as ItemModel)
@@ -73,6 +129,16 @@ export class EnchantItemModal extends Component<Props, State> {
 				<div key={item.id}>
 					<CardChoice
 						card={<ItemCard item={item} />}
+						details={
+							<ul className='enchant-changes'>
+								{(this.getChanges(this.state.selectedItem as ItemModel, item)).map((c, n) => (
+									<li key={n}>
+										{c.delta > 0 ? <IconCirclePlus className='gained' size={16} /> : <IconCircleMinus className='lost' size={16} />}
+										{c.description}
+									</li>
+								))}
+							</ul>
+						}
 						label='Choose this enchantment'
 						onSelect={() => this.props.enchantItem(this.state.selectedItem as ItemModel, item)}
 					/>

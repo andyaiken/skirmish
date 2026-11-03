@@ -13,3 +13,32 @@
 		width: min(650px, 100%);
 	}
 }
+
+.enchant-changes {
+	margin: 10px 0 0 0;
+	padding: 0;
+	max-width: 200px;
+	font-size: 0.9em;
+	list-style: none;
+
+	li {
+		display: flex;
+		align-items: center;
+		gap: 5px;
+		min-height: 34px;
+	}
+
+	.gained, .lost {
+		margin: 0;
+		border: unset;
+		background-color: unset;
+	}
+
+	.gained {
+		color: var(--good);
+	}
+
+	.lost {
+		color: var(--bad);
+	}
+}

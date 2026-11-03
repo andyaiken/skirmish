@@ -5,6 +5,7 @@ import './card-choice.scss';
 interface Props {
 	card: ReactNode;
 	label: ReactNode;
+	details?: ReactNode;
 	onSelect: () => void;
 }
 
@@ -15,6 +16,7 @@ export const CardChoice = (props: Props) => {
 	return (
 		<div className='card-choice'>
 			{props.card}
+			{props.details}
 			<button onClick={props.onSelect}>{props.label}</button>
 		</div>
 	);

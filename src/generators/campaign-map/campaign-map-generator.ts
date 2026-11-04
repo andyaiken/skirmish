@@ -195,6 +195,11 @@ interface RiverNode {
 	neighbors: Set<string>;
 }
 
+interface RiverGraph {
+	nodes: Map<string, RiverNode>;
+	mountainEdgeIDs: Set<string>;
+}
+
 const MOUNTAIN_HEIGHT = 7;
 const MIN_RIVER_WIDTH = 0.03;
 const MAX_RIVER_WIDTH = 0.15;
@@ -205,8 +210,9 @@ const MAX_SECTION_WIDTH_INCREASE = 0.008;
 const getRiverGraph = (
 	squares: CampaignMapSquareModel[],
 	squareAt: HashTable<CampaignMapSquareModel>
-) => {
+): RiverGraph => {
 	const nodes = new Map<string, RiverNode>();
+	const mountainEdgeIDs = new Set<string>();
 	const getNode = (point: { x: number, y: number }) => {
 		const id = `${point.x},${point.y}`;
 		if (!nodes.has(id)) {
@@ -247,7 +253,15 @@ const getRiverGraph = (
 			const second = getNode(next);
 			first.neighbors.add(second.id);
 			second.neighbors.add(first.id);
-			if (!sideNeighbors[index] || !squareAt.search(key(sideNeighbors[index].x, sideNeighbors[index].y))) {
+			const edgeID = [ first.id, second.id ].sort().join('|');
+			const sideNeighbor = sideNeighbors[index]
+				? squareAt.search(key(sideNeighbors[index].x, sideNeighbors[index].y))
+				: undefined;
+			if ((square.feature !== 'lake' && square.height >= MOUNTAIN_HEIGHT)
+				|| (sideNeighbor?.feature !== 'lake' && (sideNeighbor?.height ?? 0) >= MOUNTAIN_HEIGHT)) {
+				mountainEdgeIDs.add(edgeID);
+			}
+			if (!sideNeighbor) {
 				first.coast = true;
 				second.coast = true;
 			}
@@ -259,12 +273,12 @@ const getRiverGraph = (
 			node.elevation = 0;
 		}
 	});
-	return nodes;
+	return { nodes, mountainEdgeIDs };
 };
 
 const findRiverRoute = (
 	source: CampaignMapSquareModel,
-	nodes: Map<string, RiverNode>,
+	graph: RiverGraph,
 	riverNodeIDs: Set<string>,
 	riverEdgeIDs: Set<string>,
 	allowRiverJoin = true,
@@ -274,22 +288,65 @@ const findRiverRoute = (
 	blockedLakeIDs: Set<string> = new Set(),
 	joinMaxElevation = Number.MAX_VALUE
 ) => {
+	const { nodes, mountainEdgeIDs } = graph;
 	const sourceKey = key(source.x, source.y);
 	const starts = getHexVertices(source);
-	const queue: { node: RiverNode, elevation: number }[] = [];
+	const queue: { node: RiverNode, elevation: number, cost: number }[] = [];
 	const parent = new Map<string, string | null>();
+	const distances = new Map<string, number>();
+	// One fewer mountain edge should outweigh any difference in route length.
+	const mountainEdgePenalty = nodes.size + 1;
+	const push = (entry: { node: RiverNode, elevation: number, cost: number }) => {
+		queue.push(entry);
+		let index = queue.length - 1;
+		while (index > 0) {
+			const parentIndex = Math.floor((index - 1) / 2);
+			if (queue[parentIndex].cost <= entry.cost) {
+				break;
+			}
+			queue[index] = queue[parentIndex];
+			index = parentIndex;
+		}
+		queue[index] = entry;
+	};
+	const pop = () => {
+		const first = queue[0];
+		const last = queue.pop() as { node: RiverNode, elevation: number, cost: number };
+		if (queue.length > 0) {
+			let index = 0;
+			while (true) {
+				const left = (index * 2) + 1;
+				const right = left + 1;
+				if (left >= queue.length) {
+					break;
+				}
+				const child = right < queue.length && queue[right].cost < queue[left].cost ? right : left;
+				if (queue[child].cost >= last.cost) {
+					break;
+				}
+				queue[index] = queue[child];
+				index = child;
+			}
+			queue[index] = last;
+		}
+		return first;
+	};
 	const startIDs = startNodeID ? [ startNodeID ] : starts.map(point => `${point.x},${point.y}`);
 	startIDs.forEach(id => {
 		const node = nodes.get(id);
 		if (node && node.hasLand && (startNodeID || !riverNodeIDs.has(id)) && !parent.has(id)) {
 			parent.set(id, null);
-			queue.push({ node, elevation: source.height });
+			distances.set(id, 0);
+			push({ node, elevation: source.height, cost: 0 });
 		}
 	});
 
 	let target: RiverNode | null = null;
-	for (let i = 0; (i < queue.length) && !target; i++) {
-		const current = queue[i];
+	while ((queue.length > 0) && !target) {
+		const current = pop();
+		if (current.cost !== distances.get(current.node.id)) {
+			continue;
+		}
 		const avoidsBlockedLake = [ ...current.node.lakes ].every(lake => !blockedLakeIDs.has(lake));
 		const reachesLake = [ ...current.node.lakes ].some(lake =>
 			(lake !== sourceKey) && !blockedLakeIDs.has(lake))
@@ -306,16 +363,20 @@ const findRiverRoute = (
 		for (const neighborID of current.node.neighbors) {
 			const neighbor = nodes.get(neighborID) as RiverNode;
 			const edgeID = [ current.node.id, neighborID ].sort().join('|');
-			if (parent.has(neighborID)
-				|| !neighbor.hasLand
+			if (!neighbor.hasLand
 				|| (!allowRiverJoin && riverNodeIDs.has(neighborID))
 				|| (riverNodeIDs.has(neighborID) && (neighbor.elevation >= joinMaxElevation))
 				|| riverEdgeIDs.has(edgeID)
 				|| (!allowUphill && (neighbor.elevation > current.elevation))) {
 				continue;
 			}
+			const nextCost = current.cost + 1 + (mountainEdgeIDs.has(edgeID) ? mountainEdgePenalty : 0);
+			if (nextCost >= (distances.get(neighborID) ?? Number.MAX_VALUE)) {
+				continue;
+			}
 			parent.set(neighborID, current.node.id);
-			queue.push({ node: neighbor, elevation: neighbor.elevation });
+			distances.set(neighborID, nextCost);
+			push({ node: neighbor, elevation: neighbor.elevation, cost: nextCost });
 		}
 	}
 
@@ -447,7 +508,7 @@ const createRivers = (
 	squares: CampaignMapSquareModel[],
 	squareAt: HashTable<CampaignMapSquareModel>
 ) => {
-	const nodes = getRiverGraph(squares, squareAt);
+	const graph = getRiverGraph(squares, squareAt);
 	const sourceCount = squares.filter(square => (square.feature === 'peak') || (square.feature === 'lake')).length;
 	const sources = squares
 		.filter(square => square.feature === 'peak')
@@ -468,8 +529,8 @@ const createRivers = (
 			break;
 		}
 		// Prefer joining another river only once out of the mountains
-		const route = findRiverRoute(source, nodes, riverNodeIDs, riverEdgeIDs, true, undefined, false, true, new Set(), MOUNTAIN_HEIGHT)
-			?? findRiverRoute(source, nodes, riverNodeIDs, riverEdgeIDs);
+		const route = findRiverRoute(source, graph, riverNodeIDs, riverEdgeIDs, true, undefined, false, true, new Set(), MOUNTAIN_HEIGHT)
+			?? findRiverRoute(source, graph, riverNodeIDs, riverEdgeIDs);
 		if (route) {
 			const endpoint = route[route.length - 1];
 			const endpointID = endpoint.id;
@@ -542,7 +603,7 @@ const createRivers = (
 		ancestors.delete(lakeID);
 		const route = findRiverRoute(
 			lake,
-			nodes,
+			graph,
 			riverNodeIDs,
 			riverEdgeIDs,
 			false,
@@ -550,7 +611,7 @@ const createRivers = (
 			false,
 			true,
 			ancestors
-		) ?? findRiverRoute(lake, nodes, riverNodeIDs, riverEdgeIDs, false, undefined, true, true, ancestors);
+		) ?? findRiverRoute(lake, graph, riverNodeIDs, riverEdgeIDs, false, undefined, true, true, ancestors);
 		if (!route) {
 			continue;
 		}

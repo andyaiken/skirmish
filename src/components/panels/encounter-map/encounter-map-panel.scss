@@ -10,5 +10,40 @@
 		position: relative;
 		margin: 0 auto;
 		filter: drop-shadow(3px 3px 2px rgba(0, 0, 0, 0.4));
+
+		// Focus from the keyboard or a controller is a dark ring drawn with a shadow, rather than
+		// the outline used everywhere else, because on the map the outline already means selected
+		// - and a token can be both at once.
+		.encounter-map-mini-token,
+		.encounter-map-loot-token,
+		.encounter-map-trap-token,
+		.encounter-map-floor,
+		.encounter-map-wall {
+			&:focus-visible {
+				box-shadow: 0 0 0 2px rgb(255, 255, 255), 0 0 0 5px var(--text);
+				z-index: 100;
+
+				&:not(.selected) {
+					outline: none;
+				}
+			}
+		}
+	}
+}
+
+html[data-input="controller"] .encounter-map .encounter-map-square-container {
+	.encounter-map-mini-token,
+	.encounter-map-loot-token,
+	.encounter-map-trap-token,
+	.encounter-map-floor,
+	.encounter-map-wall {
+		&:focus {
+			box-shadow: 0 0 0 2px rgb(255, 255, 255), 0 0 0 5px var(--text);
+			z-index: 100;
+
+			&:not(.selected) {
+				outline: none;
+			}
+		}
 	}
 }

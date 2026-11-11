@@ -58,6 +58,17 @@
 		transform-origin: center;
 	}
 
+	// A label is the region's handle for the keyboard and a controller. The ring the rest of the
+	// app draws with outline does not follow an SVG shape, so the label's own circle shows focus.
+	.campaign-map-label {
+		outline: none;
+
+		&:focus-visible .campaign-map-label-container {
+			stroke: var(--primary);
+			stroke-width: 0.15;
+		}
+	}
+
 	.campaign-map-label-text {
 		fill: var(--campaign-map-label-text);
 		font-size: 2.8%;
@@ -70,5 +81,14 @@
 		.campaign-map-settlement {
 			color: var(--campaign-map-settlement);
 		}
+	}
+}
+
+html[data-input="controller"] .campaign-map .campaign-map-label:focus {
+	outline: none;
+
+	.campaign-map-label-container {
+		stroke: var(--primary);
+		stroke-width: 0.15;
 	}
 }

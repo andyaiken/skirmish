@@ -267,6 +267,7 @@ export class CampaignMapPage extends Component<Props, State> {
 						map={this.props.game.map}
 						options={this.props.options}
 						zoomable={true}
+						selectable={true}
 						selectedRegion={this.state.selectedRegion}
 						onSelectRegion={region => this.setState({ selectedRegion: region })}
 					/>

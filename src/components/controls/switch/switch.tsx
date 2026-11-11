@@ -1,6 +1,8 @@
 import { IconCircle, IconCircleCheckFilled } from '@tabler/icons-react';
 import { MouseEvent } from 'react';
 
+import { Keyboard } from '../../../utils/keyboard/keyboard';
+
 import './switch.scss';
 
 interface Props {
@@ -16,7 +18,7 @@ export const Switch = (props: Props) => {
 	};
 
 	return (
-		<div className='switch' onClick={onClick}>
+		<div className='switch' {...Keyboard.clickable(true, 'switch')} aria-checked={props.checked} onClick={onClick}>
 			<div className='switch-label'>{props.label}</div>
 			{props.checked ? <IconCircleCheckFilled className='switch-icon checked' /> : <IconCircle className='switch-icon' />}
 		</div>

@@ -17,6 +17,8 @@ import { ActionCard, StrongholdBenefitCard } from '../../../cards';
 import { Text, TextType } from '../../../controls';
 import { ActionParameter } from './action-parameter/action-parameter';
 
+import { Keyboard } from '../../../../utils/keyboard/keyboard';
+
 import './action-controls.scss';
 
 interface Props {
@@ -316,6 +318,9 @@ export class ActionControls extends Component<Props, State> {
 			<div
 				key={this.props.combatant.id}
 				className={`action-controls ${this.props.collapsed ? 'collapsed' : 'expanded'}`}
+				// Shut, the whole strip is the press that opens it
+				{...Keyboard.clickable(this.props.collapsed)}
+				aria-label={this.props.collapsed ? 'Show actions' : undefined}
 				onClick={() => {
 					if (this.props.collapsed) {
 						this.props.toggleCollapsed();

@@ -47,6 +47,7 @@ interface Props {
 
 export class EncounterMapPanel extends Component<Props> {
 
+	containerRef = createRef<HTMLDivElement>();
 	currentCombatantRef = createRef<MiniToken>();
 	selectedCombatantRef = createRef<MiniToken>();
 
@@ -97,6 +98,48 @@ export class EncounterMapPanel extends Component<Props> {
 			dims: this.cachedDimensions,
 			edges: this.cachedEdges
 		};
+	};
+
+	componentDidUpdate = (prev: Props) => {
+		// When an action starts asking for targets, focus goes to the nearest of them. Otherwise,
+		// on the keyboard or a controller, the targets are somewhere across the screen from the
+		// button that asked for them, with no direction that reliably leads there. After a tap,
+		// focus moved by script draws no ring, so on a touch screen this changes nothing visible.
+		const started = (now: unknown[], before: unknown[]) => (now.length > 0) && (now !== before);
+		if (started(this.props.selectableSquares, prev.selectableSquares)
+			|| started(this.props.selectableCombatantIDs, prev.selectableCombatantIDs)
+			|| started(this.props.selectableLootIDs, prev.selectableLootIDs)
+			|| started(this.props.selectableTrapIDs, prev.selectableTrapIDs)) {
+			this.focusNearestTarget();
+		}
+	};
+
+	focusNearestTarget = () => {
+		const container = this.containerRef.current;
+		if (!container) {
+			return;
+		}
+
+		const targets = Array.from(container.querySelectorAll<HTMLElement>('.selectable[tabindex="0"]'))
+			.filter(t => !t.classList.contains('current'));
+		if (targets.length === 0) {
+			return;
+		}
+
+		const centre = (el: Element) => {
+			const rect = el.getBoundingClientRect();
+			return { x: (rect.left + rect.right) / 2, y: (rect.top + rect.bottom) / 2 };
+		};
+		const current = container.querySelector('.encounter-map-mini-token.current');
+		const from = current ? centre(current) : centre(targets[0]);
+		const distance = (el: Element) => {
+			const to = centre(el);
+			return Math.hypot(to.x - from.x, to.y - from.y);
+		};
+
+		targets
+			.reduce((best, t) => distance(t) < distance(best) ? t : best)
+			.focus();
 	};
 
 	scrollToCombatant = (combatant: 'current' | 'selected') => {
@@ -156,6 +199,15 @@ export class EncounterMapPanel extends Component<Props> {
 		}
 
 		return effect;
+	};
+
+	// Escape, or B on a controller, does what a tap on empty ground does: drops an action's
+	// targeting if one is under way, and otherwise clears what is selected.
+	onKeyDown = (e: React.KeyboardEvent) => {
+		if (e.key === 'Escape') {
+			e.stopPropagation();
+			this.props.onClickOff();
+		}
 	};
 
 	render = () => {
@@ -350,7 +402,13 @@ export class EncounterMapPanel extends Component<Props> {
 
 		return (
 			<div className='encounter-map' onClick={() => this.props.onClickOff()}>
-				<div className='encounter-map-square-container' style={{ maxWidth: `${this.props.squareSize * width}px`, maxHeight: `${this.props.squareSize * height}px` }}>
+				<div
+					ref={this.containerRef}
+					className='encounter-map-square-container'
+					data-nav-group='encounter-map'
+					style={{ maxWidth: `${this.props.squareSize * width}px`, maxHeight: `${this.props.squareSize * height}px` }}
+					onKeyDown={this.onKeyDown}
+				>
 					{floor}
 					{auras}
 					{trails}

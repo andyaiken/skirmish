@@ -1,6 +1,7 @@
 import { Component } from 'react';
 
 import type { EncounterModel, LootPileModel } from '../../../../models/encounter';
+import { Keyboard } from '../../../../utils/keyboard/keyboard';
 
 import './loot-token.scss';
 
@@ -54,6 +55,8 @@ export class LootToken extends Component<Props, State> {
 					top: this.props.encounter ? `${((this.props.loot.position.y - this.props.mapDimensions.top) * this.props.squareSize)}px` : '0'
 				}}
 				title='Treasure'
+				{...Keyboard.clickable(!!this.props.encounter && this.props.selectable)}
+				aria-label='Treasure'
 				onClick={e => this.onClick(e)}
 				onMouseEnter={() => this.setMouseOver(true)}
 				onMouseLeave={() => this.setMouseOver(false)}

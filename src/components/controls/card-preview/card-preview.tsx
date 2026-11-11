@@ -1,6 +1,8 @@
 import { Component, MouseEvent, ReactNode, createRef } from 'react';
 import { createPortal } from 'react-dom';
 
+import { Keyboard } from '../../../utils/keyboard/keyboard';
+
 import './card-preview.scss';
 
 interface Props {
@@ -15,6 +17,7 @@ interface State {
 export class CardPreview extends Component<Props, State> {
 	private previewRef = createRef<HTMLDivElement>();
 	private resizeObserver: ResizeObserver | null = null;
+	private previousFocus: HTMLElement | null = null;
 
 	constructor(props: Props) {
 		super(props);
@@ -24,7 +27,15 @@ export class CardPreview extends Component<Props, State> {
 	}
 
 	componentDidMount = () => {
-		document.addEventListener('keydown', this.onKeyDown);
+		// Captured, and stopped, so that Escape closes only the preview: it is often open over a dialog,
+		// which would otherwise close too.
+		document.addEventListener('keydown', this.onKeyDown, true);
+
+		// Takes focus, and gives it back on close, as a dialog does: the preview is portalled out
+		// of any dialog it was opened from, so that dialog's hold on Tab would otherwise keep focus
+		// behind it, where the card's own controls (Flip) cannot be reached.
+		this.previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+		this.previewRef.current?.focus({ preventScroll: true });
 
 		const preview = this.previewRef.current;
 		if (preview) {
@@ -35,8 +46,12 @@ export class CardPreview extends Component<Props, State> {
 	};
 
 	componentWillUnmount = () => {
-		document.removeEventListener('keydown', this.onKeyDown);
+		document.removeEventListener('keydown', this.onKeyDown, true);
 		this.resizeObserver?.disconnect();
+
+		if (this.previousFocus?.isConnected) {
+			this.previousFocus.focus({ preventScroll: true });
+		}
 	};
 
 	measure = () => {
@@ -53,6 +68,7 @@ export class CardPreview extends Component<Props, State> {
 
 	onKeyDown = (e: KeyboardEvent) => {
 		if (e.key === 'Escape') {
+			e.stopPropagation();
 			this.props.onClose();
 		}
 	};
@@ -71,7 +87,15 @@ export class CardPreview extends Component<Props, State> {
 		const root = document.querySelector('.skirmish') ?? document.body;
 		return createPortal(
 			<div className='card-preview-backdrop' onClick={this.closeClick}>
-				<div className='card-preview' ref={this.previewRef} role='dialog' aria-modal='true' aria-label='Card preview'>
+				<div
+					className='card-preview'
+					ref={this.previewRef}
+					role='dialog'
+					aria-modal='true'
+					aria-label='Card preview'
+					tabIndex={-1}
+					onKeyDown={e => Keyboard.trapTab(e, this.previewRef.current)}
+				>
 					<div className='card-preview-content' style={{ zoom: this.state.scale }} onClick={this.cardClick}>
 						{this.props.card}
 					</div>

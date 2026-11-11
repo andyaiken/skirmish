@@ -11,6 +11,7 @@ import type { CombatantModel } from '../../../../models/combatant';
 import type { EncounterModel } from '../../../../models/encounter';
 
 import { Color } from '../../../../utils/color/color';
+import { Keyboard } from '../../../../utils/keyboard/keyboard';
 
 import './mini-token.scss';
 
@@ -143,6 +144,10 @@ export class MiniToken extends Component<Props, State> {
 					transform: this.props.encounter ? `translate(${x}px, ${y}px)` : undefined,
 					backgroundImage: `linear-gradient(135deg, ${this.props.combatant.color}, ${colorDark})`
 				}}
+				// On the map only: off it, the token is an avatar inside a row or a strip which is
+				// itself what takes focus
+				{...Keyboard.clickable(!!this.props.encounter && this.props.selectable)}
+				aria-label={this.props.encounter ? this.props.combatant.name : undefined}
 				onClick={e => this.onClick(e)}
 				onMouseEnter={() => this.setMouseOver(true)}
 				onMouseLeave={() => this.setMouseOver(false)}

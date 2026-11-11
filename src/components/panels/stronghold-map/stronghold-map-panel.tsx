@@ -8,6 +8,7 @@ import { StructureType } from '../../../enums/structure-type';
 import type { StructureModel } from '../../../models/structure';
 
 import { Color } from '../../../utils/color/color';
+import { Keyboard } from '../../../utils/keyboard/keyboard';
 import { Random } from '../../../utils/random/random';
 
 import './stronghold-map-panel.scss';
@@ -45,6 +46,18 @@ export class StrongholdMapPanel extends Component<Props> {
 		this.props.onSelectStructure(structure);
 	};
 
+	// The group each building is drawn in, which is what takes focus from the keyboard or a
+	// controller, and so what is clicked: a click dispatched on it does not reach the shape inside.
+	// Only on the whole map - a single structure, shown on its own, is not something to choose.
+	getStructureProps = (structure: StructureModel) => {
+		return {
+			className: 'structure-group',
+			...Keyboard.clickable(this.props.mode === 'map'),
+			'aria-label': structure.name,
+			onClick: (e: React.MouseEvent) => this.onClick(e, structure)
+		};
+	};
+
 	getStructure = (structure: StructureModel) => {
 		const rng = Random.getSeededRNG(structure.id);
 
@@ -64,14 +77,13 @@ export class StrongholdMapPanel extends Component<Props> {
 		// plaque. The smaller of its two dimensions keeps the disc inside its own square.
 		if (structure.type === StructureType.Monument) {
 			return (
-				<g key={structure.id}>
+				<g key={structure.id} {...this.getStructureProps(structure)}>
 					<circle
 						className='structure'
 						cx={structure.position.x + 0.5}
 						cy={structure.position.y + 0.5}
 						r={Math.min(width, height) / 200}
 						style={{ fill: Color.toString(color) }}
-						onClick={e => this.onClick(e, structure)}
 					>
 						<title>{structure.name}</title>
 					</circle>
@@ -145,7 +157,7 @@ export class StrongholdMapPanel extends Component<Props> {
 		const offsetY = (100 - height) / 2;
 
 		return (
-			<g key={structure.id}>
+			<g key={structure.id} {...this.getStructureProps(structure)}>
 				<polygon
 					className='structure'
 					points={
@@ -161,7 +173,6 @@ export class StrongholdMapPanel extends Component<Props> {
 						fill: Color.toString(color),
 						rotate: `${degrees}deg`
 					}}
-					onClick={e => this.onClick(e, structure)}
 				>
 					<title>{structure.name}</title>
 				</polygon>
@@ -341,7 +352,12 @@ export class StrongholdMapPanel extends Component<Props> {
 		return (
 			<div className='stronghold-map'>
 				{people.length > 0 ? <svg className='people-layer' viewBox={viewBox}>{people}</svg> : null}
-				<svg className='structure-layer' viewBox={viewBox} onClick={e => this.onClick(e, null)}>
+				<svg
+					className='structure-layer'
+					viewBox={viewBox}
+					data-nav-group={this.props.mode === 'map' ? 'stronghold-map' : undefined}
+					onClick={e => this.onClick(e, null)}
+				>
 					{structures.map(this.getStructure)}
 					{structures.map(this.getPanel)}
 				</svg>

@@ -14,6 +14,7 @@ import type { ItemModel } from '../../../../../models/item';
 
 import { DirectionIndicatorPanel, DirectionPanel } from '../../../../panels';
 import { Selector, Tag, Text, TextType } from '../../../../controls';
+import { Keyboard } from '../../../../../utils/keyboard/keyboard';
 
 import './action-parameter.scss';
 
@@ -316,7 +317,7 @@ export class ActionParameter extends Component<Props, State> {
 											if (this.state.showTargetSelectControl) {
 												return (
 													<Tag key={target.id}>
-														<div className='combatant-candidate selected' onClick={() => this.removeCombatant(targetParam, target.id)}>
+														<div className='combatant-candidate selected' {...Keyboard.clickable()} onClick={() => this.removeCombatant(targetParam, target.id)}>
 															{target.name}
 															<IconCircleMinus size={15} />
 														</div>
@@ -349,7 +350,7 @@ export class ActionParameter extends Component<Props, State> {
 											.map(candidate => {
 												return (
 													<Tag key={candidate.id}>
-														<div className='combatant-candidate not-selected' onClick={() => this.addCombatant(targetParam, candidate.id)}>
+														<div className='combatant-candidate not-selected' {...Keyboard.clickable()} onClick={() => this.addCombatant(targetParam, candidate.id)}>
 															{candidate.name}
 															<IconCirclePlus size={15} />
 														</div>
@@ -394,6 +395,7 @@ export class ActionParameter extends Component<Props, State> {
 										<Tag key={trap.id}>
 											<div
 												className={`combatant-candidate ${selected ? 'selected' : 'not-selected'}`}
+												{...Keyboard.clickable()}
 												onClick={() => selected ? this.removeCombatant(targetParam, trap.id) : this.addCombatant(targetParam, trap.id)}
 											>
 												{trap.name}

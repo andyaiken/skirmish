@@ -42,7 +42,7 @@ export class TrapRowPanel extends Component<Props> {
 					<Tag>{this.props.trap.armed ? 'Armed' : 'Sprung'}</Tag>
 					<Text type={TextType.Small}>{TrapData.getDescription(this.props.trap.type)}</Text>
 				</div>
-				<button className='icon-btn' onClick={e => this.onCancel(e)}>
+				<button className='icon-btn' aria-label='Cancel' onClick={e => this.onCancel(e)}>
 					<IconX />
 				</button>
 			</div>

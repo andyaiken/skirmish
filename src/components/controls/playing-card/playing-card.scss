@@ -211,3 +211,16 @@
 		}
 	}
 }
+
+// The focus ring goes round the card itself, not the whole element: on a stack the element is
+// the box the stack sits in, so its ring is drawn half hidden behind the cards fanned out over it.
+// The rules repeat the selectors in index.scss, with the card's class, to take precedence over them.
+.playing-card.clickable:focus-visible,
+html[data-input="controller"] .playing-card.clickable:focus {
+	outline: none;
+
+	.playing-card-inner {
+		outline: 3px solid var(--primary);
+		outline-offset: 2px;
+	}
+}

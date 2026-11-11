@@ -1,5 +1,7 @@
 import { MouseEvent, ReactNode, useEffect, useRef, useState } from 'react';
 
+import { Keyboard } from '../../../utils/keyboard/keyboard';
+
 import './expander.scss';
 
 interface Props {
@@ -75,7 +77,7 @@ export const Expander = (props: Props) => {
 
 	return (
 		<div className='expander' ref={containerRef} onClick={onClick}>
-			<div className='expander-header'>
+			<div className='expander-header' {...Keyboard.clickable()} aria-expanded={opened}>
 				{props.header}
 			</div>
 			{opened ? <div className='expander-content' ref={contentRef}>{props.content}</div> : null}

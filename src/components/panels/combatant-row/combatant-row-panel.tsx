@@ -14,6 +14,7 @@ import type { EncounterModel } from '../../../models/encounter';
 import type { OptionsModel } from '../../../models/options';
 
 import { Collections } from '../../../utils/collections/collections';
+import { Keyboard } from '../../../utils/keyboard/keyboard';
 
 import { StatValue, Tag, Text, TextType } from '../../controls';
 import { MiniToken } from '../encounter-map/mini-token/mini-token';
@@ -117,9 +118,9 @@ export class CombatantRowPanel extends Component<Props> {
 				{
 					showButtons ?
 						<div className='button-row developer'>
-							<button className='icon-btn' onClick={e => this.onNudgeInitiative(e, -1)}><IconCircleArrowDown /></button>
+							<button className='icon-btn' aria-label='Lower initiative' onClick={e => this.onNudgeInitiative(e, -1)}><IconCircleArrowDown /></button>
 							<StatValue label='Init' value={this.props.combatant.combat.initiative} />
-							<button className='icon-btn' onClick={e => this.onNudgeInitiative(e, 1)}><IconCircleArrowUp /></button>
+							<button className='icon-btn' aria-label='Raise initiative' onClick={e => this.onNudgeInitiative(e, 1)}><IconCircleArrowUp /></button>
 						</div>
 						: null
 				}
@@ -273,7 +274,7 @@ export class CombatantRowPanel extends Component<Props> {
 		let selectBtn = null;
 		if (this.props.onSelect) {
 			selectBtn = (
-				<button className='icon-btn' onClick={e => this.onSelect(e)}>
+				<button className='icon-btn' aria-label='Select' onClick={e => this.onSelect(e)}>
 					<IconCheck />
 				</button>
 			);
@@ -282,7 +283,7 @@ export class CombatantRowPanel extends Component<Props> {
 		let detailsBtn = null;
 		if (this.props.onDetails) {
 			detailsBtn = (
-				<button className='icon-btn' onClick={e => this.onDetails(e)}>
+				<button className='icon-btn' aria-label='Details' onClick={e => this.onDetails(e)}>
 					<IconId />
 				</button>
 			);
@@ -291,14 +292,14 @@ export class CombatantRowPanel extends Component<Props> {
 		let cancelBtn = null;
 		if (this.props.onCancel) {
 			cancelBtn = (
-				<button className='icon-btn' onClick={e => this.onCancel(e)}>
+				<button className='icon-btn' aria-label='Cancel' onClick={e => this.onCancel(e)}>
 					<IconX />
 				</button>
 			);
 		}
 
 		return (
-			<div className={className} onClick={e => this.onClick(e)}>
+			<div className={className} {...Keyboard.clickable(this.props.onClick !== null)} onClick={e => this.onClick(e)}>
 				<MiniToken
 					combatant={this.props.combatant}
 					encounter={null}

@@ -77,7 +77,7 @@ export class OptionsTab extends Component<Props, State> {
 		return (
 			<div className='options-tab'>
 				<Text type={TextType.SubHeading}>Sound</Text>
-				<StatValue label='Sound effects volume' value={`${this.props.options.soundEffectsVolume * 100}%`} />
+				<StatValue label='Sound effects volume' value={`${Math.round(this.props.options.soundEffectsVolume * 100)}%`} />
 				<input
 					type='range'
 					min={0}

@@ -254,6 +254,32 @@ export class EncounterScreen extends Component<Props, State> {
 		});
 	};
 
+	// + and - zoom the map, as the toolbar's buttons do and within the same limits; a controller's
+	// triggers send the same keys. Not from inside a dialog, which has the screen to itself, or a
+	// text field, where they are characters.
+	onKeyDown = (e: React.KeyboardEvent) => {
+		if (e.altKey || e.ctrlKey || e.metaKey) {
+			return;
+		}
+
+		const target = e.target as Element;
+		if (target.closest('.dialog') || (target instanceof HTMLInputElement) || (target instanceof HTMLTextAreaElement)) {
+			return;
+		}
+
+		let delta = 0;
+		if ((e.key === '+') || (e.key === '=')) {
+			delta = this.state.mapSquareSize < 50 ? 5 : 0;
+		} else if (e.key === '-') {
+			delta = this.state.mapSquareSize > 5 ? -5 : 0;
+		}
+
+		if (delta !== 0) {
+			e.preventDefault();
+			this.nudgeMapSize(delta);
+		}
+	};
+
 	// Whether the panels go over the map rather than beside or below it. The orientation carries
 	// the answer: it is a small one exactly when there is not room for the panels where that
 	// orientation would otherwise put them, which is the same question asked once in LayoutLogic.
@@ -1132,8 +1158,8 @@ export class EncounterScreen extends Component<Props, State> {
 				<div className='encounter-left-column'>
 					<Tabs
 						options={[
-							{ id: 'init', display: <IconListDetails /> },
-							{ id: 'log', display: <IconNotes /> }
+							{ id: 'init', display: <IconListDetails />, label: 'Combatants' },
+							{ id: 'log', display: <IconNotes />, label: 'Encounter Log' }
 						]}
 						selectedID={this.state.leftTab}
 						onSelect={id => this.setState({ leftTab: id })}
@@ -1402,7 +1428,7 @@ export class EncounterScreen extends Component<Props, State> {
 			}
 
 			return (
-				<div className={className}>
+				<div className={className} onKeyDown={this.onKeyDown}>
 					{top}
 					<div className='encounter-main-panel'>
 						{this.toolbarInColumn() ? this.getToolColumn() : null}
@@ -1436,7 +1462,7 @@ export class EncounterScreen extends Component<Props, State> {
 
 		if (OrientationLogic.isPortrait(this.props.layout.orientation)) {
 			return (
-				<div className={className}>
+				<div className={className} onKeyDown={this.onKeyDown}>
 					{top}
 					<div className='encounter-main-panel'>
 						<div className='encounter-central-column'>
@@ -1460,7 +1486,7 @@ export class EncounterScreen extends Component<Props, State> {
 		}
 
 		return (
-			<div className={className}>
+			<div className={className} onKeyDown={this.onKeyDown}>
 				{top}
 				<div className='encounter-main-panel'>
 					{left}

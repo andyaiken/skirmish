@@ -99,6 +99,26 @@
 	}
 }
 
+// Focus, from the keyboard or a controller, is shown on the building's own outline: the ring the
+// rest of the app draws with outline would be a box around a shape that is not one.
+.stronghold-map .structure-group {
+	outline: none;
+
+	&:focus-visible .structure {
+		stroke: var(--primary);
+		stroke-width: 0.06;
+	}
+}
+
+html[data-input="controller"] .stronghold-map .structure-group:focus {
+	outline: none;
+
+	.structure {
+		stroke: var(--primary);
+		stroke-width: 0.06;
+	}
+}
+
 @keyframes stronghold-person {
 	from {
 		offset-distance: 0%;

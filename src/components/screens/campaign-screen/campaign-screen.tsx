@@ -243,7 +243,7 @@ export class CampaignScreen extends Component<Props> {
 						{this.props.options.developer ? <button className='icon-btn developer' title='Backstage' onClick={this.props.toggleBackstage}><IconCodeCircle2 /></button> : null}
 					</div>
 				</div>
-				<Selector options={options} columnCount={this.getSelectorColumns()} selectedID={this.props.page} onSelect={id => this.props.setPage(id as PageType)} />
+				<Selector options={options} columnCount={this.getSelectorColumns()} tabs={true} selectedID={this.props.page} onSelect={id => this.props.setPage(id as PageType)} />
 				<div className='campaign-content'>
 					{content}
 				</div>

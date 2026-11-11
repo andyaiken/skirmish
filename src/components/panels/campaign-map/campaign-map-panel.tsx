@@ -7,8 +7,9 @@ import type { CampaignMapModel, CampaignMapSquareModel } from '../../../models/c
 import type { OptionsModel } from '../../../models/options';
 import type { RegionModel } from '../../../models/region';
 
-import { getHexCenter, getHexPoints } from '../../../utils/hex-grid/hex-grid';
+import { HEX_ROW_HEIGHT, getHexDisplayCenter, getHexPoints, toDisplay } from '../../../utils/hex-grid/hex-grid';
 import { Color } from '../../../utils/color/color';
+import { Keyboard } from '../../../utils/keyboard/keyboard';
 
 import './campaign-map-panel.scss';
 
@@ -17,6 +18,9 @@ interface Props {
 	options: OptionsModel;
 	mode: 'map' | 'region';
 	zoomable?: boolean;
+	// Whether the region labels can be reached by keyboard or controller. Off for a map that is
+	// only there to be looked at, such as the one on the landing screen.
+	selectable?: boolean;
 	selectedRegion: RegionModel | null;
 	onSelectRegion: (region: RegionModel | null) => void;
 }
@@ -86,6 +90,7 @@ export class CampaignMapPanel extends Component<Props, State> {
 	public static defaultProps = {
 		mode: 'map',
 		zoomable: false,
+		selectable: false,
 		onSelectRegion: () => null
 	};
 
@@ -258,6 +263,80 @@ export class CampaignMapPanel extends Component<Props, State> {
 		});
 	};
 
+	// Zooms by the given factor, centred on a point on the map, for the keyboard and a controller:
+	// there is no pointer to zoom around, so the thing being looked at is put in the middle.
+	zoomBy = (factor: number, centre: MapPoint) => {
+		const base = this.getBaseViewBox();
+		const current = this.state.viewBox || base;
+		const zoom = Math.max(1, Math.min(4, (base.width / current.width) * factor));
+		if (zoom === 1) {
+			this.setState({ viewBox: null });
+			return;
+		}
+
+		const width = base.width / zoom;
+		const height = base.height / zoom;
+		this.setState({
+			viewBox: {
+				x: Math.max(base.x, Math.min(base.x + base.width - width, centre.x - (width / 2))),
+				y: Math.max(base.y, Math.min(base.y + base.height - height, centre.y - (height / 2))),
+				width,
+				height
+			}
+		});
+	};
+
+	// When the map is zoomed in, moving focus to a region whose label is out of view pans the map
+	// to bring it into view, so the D-pad doubles as a way of moving around the map.
+	revealPoint = (point: MapPoint) => {
+		const current = this.state.viewBox;
+		if (!current) {
+			return;
+		}
+
+		const margin = 1;
+		const inView = (point.x >= current.x + margin) && (point.x <= current.x + current.width - margin)
+			&& (point.y >= current.y + margin) && (point.y <= current.y + current.height - margin);
+		if (!inView) {
+			this.zoomBy(1, point);
+		}
+	};
+
+	getLabelCentre = (square: CampaignMapSquareModel): MapPoint => {
+		return getHexDisplayCenter(square);
+	};
+
+	// + and - zoom in and out (a controller's triggers send the same keys), around the region
+	// with focus if there is one, and otherwise around the middle of what is on screen.
+	onKeyDown = (e: React.KeyboardEvent<SVGSVGElement>) => {
+		if (!this.props.zoomable || e.altKey || e.ctrlKey || e.metaKey) {
+			return;
+		}
+
+		let factor = 0;
+		if ((e.key === '+') || (e.key === '=')) {
+			factor = 1.5;
+		} else if (e.key === '-') {
+			factor = 1 / 1.5;
+		}
+		if (factor === 0) {
+			return;
+		}
+
+		e.preventDefault();
+
+		const current = this.state.viewBox || this.getBaseViewBox();
+		let centre = { x: current.x + (current.width / 2), y: current.y + (current.height / 2) };
+		const regionID = (e.target as Element).getAttribute?.('data-region');
+		const region = this.props.map.regions.find(r => r.id === regionID);
+		const square = region ? CampaignMapLogic.getSettlement(this.props.map, region) : null;
+		if (square) {
+			centre = this.getLabelCentre(square);
+		}
+
+		this.zoomBy(factor, centre);
+	};
+
 	getDistance = (a: PointerPosition, b: PointerPosition) => Math.hypot(a.x - b.x, a.y - b.y);
 
 	getMapPoint = (svg: SVGSVGElement, x: number, y: number, viewBox: ViewBox): PointerPosition => {
@@ -280,11 +359,13 @@ export class CampaignMapPanel extends Component<Props, State> {
 		dims.top -= 1;
 		dims.right += 1;
 		dims.bottom += 1;
+		// The dimensions are in squares of the grid; the map is drawn with its rows spread to suit
+		// regular hexes (see toDisplay), so the box is spread to match.
 		return {
 			x: dims.left,
-			y: dims.top,
+			y: dims.top * HEX_ROW_HEIGHT,
 			width: 1 + (dims.right - dims.left),
-			height: 1 + (dims.bottom - dims.top)
+			height: (1 + (dims.bottom - dims.top)) * HEX_ROW_HEIGHT
 		};
 	};
 
@@ -358,7 +439,7 @@ export class CampaignMapPanel extends Component<Props, State> {
 			return null;
 		}
 
-		const center = getHexCenter(square);
+		const center = getHexDisplayCenter(square);
 		const size = 0.85;
 		return (
 			<IconTower
@@ -379,7 +460,7 @@ export class CampaignMapPanel extends Component<Props, State> {
 			return null;
 		}
 
-		const center = getHexCenter(square);
+		const center = getHexDisplayCenter(square);
 		const size = 0.9;
 		const variant = Math.abs((square.x * 73856093) ^ (square.y * 19349663)) % MOUNTAIN_PATHS.length;
 		return (
@@ -399,14 +480,16 @@ export class CampaignMapPanel extends Component<Props, State> {
 	getRivers = () => (this.props.map.rivers ?? []).map((river, riverIndex) => (
 		<g key={`river-${riverIndex}`} className='campaign-map-river'>
 			{river.points.slice(1).map((point, index) => {
-				const previous = river.points[index];
+				// Stored on the map's grid; see toDisplay
+				const from = toDisplay(river.points[index]);
+				const to = toDisplay(point);
 				return (
 					<line
 						key={index}
-						x1={previous.x}
-						y1={previous.y}
-						x2={point.x}
-						y2={point.y}
+						x1={from.x}
+						y1={from.y}
+						x2={to.x}
+						y2={to.y}
 						strokeWidth={point.width}
 					/>
 				);
@@ -443,17 +526,25 @@ export class CampaignMapPanel extends Component<Props, State> {
 			}
 
 			return (
-				<g key={region.id} onClick={e => this.onClick(e, region)}>
+				<g
+					key={region.id}
+					className='campaign-map-label'
+					data-region={region.id}
+					{...Keyboard.clickable(this.props.selectable)}
+					aria-label={`${region.name}: ${region.encounters.length} ${region.encounters.length === 1 ? 'encounter' : 'encounters'}`}
+					onFocus={() => this.revealPoint(this.getLabelCentre(square))}
+					onClick={e => this.onClick(e, region)}
+				>
 					<circle
 						className='campaign-map-label-container'
-						cx={square.x + 0.5}
-						cy={square.y + 0.5 + ((square.x % 2 === 0) ? 0.25 : -0.25)}
+						cx={this.getLabelCentre(square).x}
+						cy={this.getLabelCentre(square).y}
 						r={0.33}
 					/>
 					<text
 						className='campaign-map-label-text'
-						x={square.x + 0.5 + dx}
-						y={square.y + 0.5 + dy + ((square.x % 2 === 0) ? 0.25 : -0.25)}
+						x={this.getLabelCentre(square).x + dx}
+						y={this.getLabelCentre(square).y + dy}
 						textLength={0.5}
 						dominantBaseline='middle'
 						textAnchor='middle'
@@ -486,12 +577,14 @@ export class CampaignMapPanel extends Component<Props, State> {
 			<svg
 				ref={this.svgRef}
 				className={`campaign-map ${this.props.zoomable ? 'zoomable' : ''}`}
+				data-nav-group={this.props.selectable ? 'campaign-map' : undefined}
 				viewBox={`${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`}
 				onClickCapture={this.onClickCapture}
 				onPointerDown={this.onPointerDown}
 				onPointerMove={this.onPointerMove}
 				onPointerUp={this.onPointerUp}
 				onPointerCancel={this.onPointerUp}
+				onKeyDown={this.onKeyDown}
 				onClick={e => this.onClick(e, null)}
 			>
 				{this.getSymbols()}

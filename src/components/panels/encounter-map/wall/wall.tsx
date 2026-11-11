@@ -1,5 +1,7 @@
 import { PureComponent } from 'react';
 
+import { Keyboard } from '../../../../utils/keyboard/keyboard';
+
 import './wall.scss';
 
 interface Props {
@@ -36,6 +38,8 @@ export class Wall extends PureComponent<Props> {
 					left: `${((this.props.wall.x - this.props.mapDimensions.left) * this.props.squareSize)}px`,
 					top: `${((this.props.wall.y - this.props.mapDimensions.top) * this.props.squareSize)}px`
 				}}
+				{...Keyboard.clickable(this.props.selectable)}
+				aria-label={this.props.selectable ? `Wall ${this.props.wall.x}, ${this.props.wall.y}` : undefined}
 				onClick={e => this.onClick(e)}
 			/>
 		);

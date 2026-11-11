@@ -61,10 +61,10 @@ export class TreasureRowPanel extends Component<Props> {
 				<div className='name'>
 					<Text type={TextType.MinorHeading}>{name}</Text>
 				</div>
-				<button className='icon-btn' onClick={e => this.onDetails(e)}>
+				<button className='icon-btn' aria-label='Details' onClick={e => this.onDetails(e)}>
 					<IconList />
 				</button>
-				<button className='icon-btn' onClick={e => this.onCancel(e)}>
+				<button className='icon-btn' aria-label='Cancel' onClick={e => this.onCancel(e)}>
 					<IconX />
 				</button>
 			</div>

@@ -195,6 +195,26 @@ code {
 	font-family: unset;
 }
 
+// Where the keyboard or a controller is. :focus-visible shows the ring for those but not for a
+// tap or a mouse click, so touch play looks exactly as it did. A dialog takes focus itself so that
+// Tab has somewhere to start (see dialog.tsx); it is not a control, so it gets no ring.
+:focus-visible {
+	outline: 3px solid var(--primary);
+	outline-offset: 2px;
+}
+
+// Focus moved by a controller is moved by script, which the browser does not count as keyboard
+// focus, so it would draw no ring; controller.ts marks the page while a controller is in use.
+html[data-input="controller"] :focus {
+	outline: 3px solid var(--primary);
+	outline-offset: 2px;
+}
+
+[tabindex="-1"]:focus-visible,
+html[data-input="controller"] [tabindex="-1"]:focus {
+	outline: none;
+}
+
 hr {
 	border: none;
 	border-top: 2px solid var(--border);
@@ -293,7 +313,6 @@ input[type="range"] {
 	height: 20px;
 	margin: 10px 0;
 	cursor: pointer;
-	outline: none;
 	overflow: hidden;
 	border-radius: 5px;
 

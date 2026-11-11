@@ -4,6 +4,8 @@ import type { EncounterMapSquareType } from '../../../../enums/encounter-map-squ
 
 import type { EncounterMapSquareModel } from '../../../../models/encounter';
 
+import { Keyboard } from '../../../../utils/keyboard/keyboard';
+
 import './floor.scss';
 
 interface Props {
@@ -45,6 +47,8 @@ export class Floor extends PureComponent<Props> {
 					left: `${((this.props.square.x - this.props.mapDimensions.left) * this.props.squareSize)}px`,
 					top: `${((this.props.square.y - this.props.mapDimensions.top) * this.props.squareSize)}px`
 				}}
+				{...Keyboard.clickable(this.props.selectable)}
+				aria-label={this.props.selectable ? `Square ${this.props.square.x}, ${this.props.square.y}` : undefined}
 				onClick={e => this.onClick(e)}
 			/>
 		);

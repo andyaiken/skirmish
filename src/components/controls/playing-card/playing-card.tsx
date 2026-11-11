@@ -2,6 +2,7 @@ import { Component, MouseEvent, ReactNode } from 'react';
 
 import { CardType } from '../../../enums/card-type';
 import { ErrorBoundary } from '../error-boundary/error-boundary';
+import { Keyboard } from '../../../utils/keyboard/keyboard';
 import { Random } from '../../../utils/random/random';
 
 import './playing-card.scss';
@@ -78,7 +79,7 @@ export class PlayingCard extends Component<Props> {
 		const footerType = (this.props.footerType || this.props.type).toLowerCase();
 
 		return (
-			<div className={className} onClick={this.onClick}>
+			<div className={className} {...Keyboard.clickable((this.props.onClick !== null) && !this.props.disabled)} onClick={this.onClick}>
 				{stack}
 				<div className='playing-card-inner'>
 					<div className={`playing-card-front ${this.props.type.toLowerCase()}`}>

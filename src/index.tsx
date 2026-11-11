@@ -1,6 +1,8 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
+import { Controller } from './utils/controller/controller';
+import { Navigation } from './utils/navigation/navigation';
 import { Platform } from './platform/platform';
 
 import { ErrorBoundary } from './components/controls';
@@ -24,6 +26,10 @@ const { game, options } = await platform
 		platform.logException(ex);
 		return { game: null, options: platform.getDefaultOptions() };
 	});
+
+// The arrow keys and a game controller move focus around the screen by direction.
+Navigation.install();
+Controller.install();
 
 const container = document.getElementById('root');
 if (container) {

@@ -1,6 +1,7 @@
 import { Component } from 'react';
 
 import type { EncounterModel, TrapModel } from '../../../../models/encounter';
+import { Keyboard } from '../../../../utils/keyboard/keyboard';
 
 import './trap-token.scss';
 
@@ -38,6 +39,8 @@ export class TrapToken extends Component<Props> {
 					top: this.props.encounter ? `${((this.props.trap.position.y - this.props.mapDimensions.top) * this.props.squareSize)}px` : '0'
 				}}
 				title={this.props.trap.armed ? this.props.trap.name : `${this.props.trap.name} (sprung)`}
+				{...Keyboard.clickable(!!this.props.encounter && this.props.selectable)}
+				aria-label={this.props.trap.armed ? this.props.trap.name : `${this.props.trap.name} (sprung)`}
 				onClick={e => this.onClick(e)}
 			>
 				<div className='trap-token-face' />

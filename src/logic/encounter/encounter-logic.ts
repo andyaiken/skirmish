@@ -438,12 +438,14 @@ export class EncounterLogic {
 				combatant.combat.actions = Collections.shuffle(deck).splice(0, 3);
 				// Scrolls aren't part of the deck - they're always in hand, and a redraw doesn't lose them
 				combatant.combat.actions.push(...CombatantLogic.getScrollActions(combatant));
+				combatant.combat.actions.push(...CombatantLogic.getItemActions(combatant));
 				combatant.combat.actions.push(...BaseData.getBaseActions());
 				combatant.combat.selectedAction = null;
 				break;
 			case CombatantType.Monster:
 				combatant.combat.actions = deck;
 				combatant.combat.actions.push(...CombatantLogic.getScrollActions(combatant));
+				combatant.combat.actions.push(...CombatantLogic.getItemActions(combatant));
 				combatant.combat.actions.push(...BaseData.getBaseActions());
 				EncounterLogic.checkActionParameters(encounter, combatant);
 				combatant.combat.selectedAction = null;

@@ -1,6 +1,7 @@
 import { ActionRangeType } from '../enums/action-range-type';
 import { ActionTargetType } from '../enums/action-target-type';
 import { EncounterMapSquareType } from '../enums/encounter-map-square-type';
+import type { ItemProficiencyType } from '../enums/item-proficiency-type';
 
 export interface ActionPrerequisiteModel {
 	id: string;
@@ -17,6 +18,8 @@ export interface ActionParameterModel {
 export interface ActionWeaponParameterModel extends ActionParameterModel {
 	id: 'weapon';
 	type: 'melee' | 'ranged';
+	// When set, only equipped items with exactly this proficiency are candidates
+	proficiency?: ItemProficiencyType;
 }
 
 export interface ActionOriginParameterModel extends ActionParameterModel {

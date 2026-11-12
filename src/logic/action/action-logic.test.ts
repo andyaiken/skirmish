@@ -1,24 +1,32 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+
+import { BaseData } from '../../data/base-data';
 
 import { ActionTargetType } from '../../enums/action-target-type';
 import { CombatantState } from '../../enums/combatant-state';
 import { CombatantType } from '../../enums/combatant-type';
+import { ConditionType } from '../../enums/condition-type';
 import { DamageType } from '../../enums/damage-type';
 import { EncounterMapSquareType } from '../../enums/encounter-map-square-type';
+import { ItemProficiencyType } from '../../enums/item-proficiency-type';
 import { SkillType } from '../../enums/skill-type';
 import { TargetStateType } from '../../enums/target-state-type';
 import { TraitType } from '../../enums/trait-type';
 
+import type { ActionEffectModel, ActionModel, ActionTargetParameterModel, ActionWeaponParameterModel } from '../../models/action';
 import type { CombatantModel } from '../../models/combatant';
 import type { ConditionModel } from '../../models/condition';
 import type { EncounterModel } from '../../models/encounter';
+import type { ItemModel } from '../../models/item';
 
-import { ActionEffects, ActionLogic, ActionPrerequisites, ActionTargetParameters } from './action-logic';
+import { ActionEffects, ActionLogic, ActionPrerequisites, ActionTargetParameters, ActionWeaponParameters } from './action-logic';
 import { ConditionLogic } from '../condition/condition-logic';
 import { EncounterLogic } from '../encounter/encounter-logic';
 import { Factory } from '../factory/factory';
+import { FeatureLogic } from '../feature/feature-logic';
 import { GameLogic } from '../game/game-logic';
 import { PackLogic } from '../pack/pack-logic';
+import { Random } from '../../utils/random/random';
 
 const combatantWith = (...conditions: ConditionModel[]) => {
 	return { combat: { conditions: conditions } } as CombatantModel;
@@ -388,5 +396,275 @@ describe('ActionEffects.createTerrain', () => {
 	it('describes what it will convert, not just what it creates', () => {
 		const thaw = ActionEffects.createTerrain(EncounterMapSquareType.Water, { radius: 1, from: EncounterMapSquareType.Ice });
 		expect(ActionEffects.getDescription(thaw, null, null)).toBe('Turn ice terrain within 1 square to water');
+	});
+});
+
+const equip = (combatant: CombatantModel, itemID: string) => {
+	const item = JSON.parse(JSON.stringify(GameLogic.getItem(itemID))) as ItemModel;
+	item.id = `${itemID}-${combatant.items.length}`;
+	combatant.items.push(item);
+	return item;
+};
+
+const proficient = (combatant: CombatantModel, proficiency: ItemProficiencyType) => {
+	combatant.features.push(FeatureLogic.createProficiencyFeature(`test-${proficiency}`, proficiency));
+};
+
+describe('ActionPrerequisites.proficiency', () => {
+	it('is satisfied by an equipped weapon of that group the combatant is proficient with', () => {
+		const hero = Factory.createCombatant(CombatantType.Hero);
+		equip(hero, 'item-sword');
+		proficient(hero, ItemProficiencyType.MilitaryWeapons);
+		expect(ActionPrerequisites.isSatisfied(ActionPrerequisites.proficiency(ItemProficiencyType.MilitaryWeapons), hero)).toBe(true);
+	});
+
+	it('is not satisfied without the proficiency', () => {
+		const hero = Factory.createCombatant(CombatantType.Hero);
+		equip(hero, 'item-sword');
+		expect(ActionPrerequisites.isSatisfied(ActionPrerequisites.proficiency(ItemProficiencyType.MilitaryWeapons), hero)).toBe(false);
+	});
+
+	// A Greatsword and Military proficiency is not a proficient Military weapon
+	it('is not satisfied by a weapon from some other group', () => {
+		const hero = Factory.createCombatant(CombatantType.Hero);
+		equip(hero, 'item-greatsword');
+		proficient(hero, ItemProficiencyType.MilitaryWeapons);
+		expect(ActionPrerequisites.isSatisfied(ActionPrerequisites.proficiency(ItemProficiencyType.MilitaryWeapons), hero)).toBe(false);
+	});
+
+	it('names the group it needs', () => {
+		expect(ActionPrerequisites.proficiency(ItemProficiencyType.MilitaryWeapons).description).toBe('Requires you to have a military weapon');
+		expect(ActionPrerequisites.proficiency(ItemProficiencyType.Implements).description).toBe('Requires you to have an implement');
+	});
+});
+
+describe('ActionLogic.checkWeaponParameter', () => {
+	const candidatesFor = (parameter: ActionWeaponParameterModel, ...itemIDs: string[]) => {
+		const hero = Factory.createCombatant(CombatantType.Hero);
+		const items = itemIDs.map(id => equip(hero, id));
+		ActionLogic.checkWeaponParameter(parameter, hero);
+		return parameter.candidates.map(id => items.find(i => i.id === id)?.name);
+	};
+
+	it('offers only the named group when a proficiency is set', () => {
+		expect(candidatesFor(ActionWeaponParameters.forProficiency(ItemProficiencyType.MilitaryWeapons), 'item-sword', 'item-greatsword')).toEqual([ 'Sword' ]);
+		expect(candidatesFor(ActionWeaponParameters.forProficiency(ItemProficiencyType.LargeWeapons), 'item-sword', 'item-greatsword')).toEqual([ 'Greatsword' ]);
+	});
+
+	it('offers nothing when no weapon of that group is equipped', () => {
+		const parameter = ActionWeaponParameters.forProficiency(ItemProficiencyType.RangedWeapons);
+		expect(candidatesFor(parameter, 'item-sword')).toEqual([]);
+		expect(parameter.value).toBeNull();
+	});
+
+	// Role cards use the plain melee / ranged parameters, which must still span every group
+	it('still offers every melee weapon to a melee parameter', () => {
+		expect(candidatesFor(ActionWeaponParameters.melee(), 'item-sword', 'item-greatsword', 'item-longbow')).toEqual([ 'Sword', 'Greatsword' ]);
+	});
+
+	it('still offers every ranged weapon to a ranged parameter', () => {
+		expect(candidatesFor(ActionWeaponParameters.ranged(), 'item-sword', 'item-longbow')).toEqual([ 'Longbow' ]);
+	});
+
+	it('classes each group as melee or ranged', () => {
+		const type = (proficiency: ItemProficiencyType) => ActionWeaponParameters.forProficiency(proficiency).type;
+		expect([ ItemProficiencyType.MilitaryWeapons, ItemProficiencyType.LargeWeapons, ItemProficiencyType.PairedWeapons ].map(type)).toEqual([ 'melee', 'melee', 'melee' ]);
+		expect([ ItemProficiencyType.RangedWeapons, ItemProficiencyType.PowderWeapons ].map(type)).toEqual([ 'ranged', 'ranged' ]);
+	});
+
+	it('names the group on the card', () => {
+		expect(ActionLogic.getParameterDescription(ActionWeaponParameters.forProficiency(ItemProficiencyType.MilitaryWeapons))).toBe('Uses weapon: Military weapons');
+		expect(ActionLogic.getParameterDescription(ActionWeaponParameters.melee())).toBe('Uses weapon: melee');
+	});
+});
+
+describe('resolving an item default action', () => {
+	afterEach(() => {
+		vi.restoreAllMocks();
+	});
+
+	const setUp = (itemID: string, proficiency: ItemProficiencyType) => {
+		const mapSquares = [];
+		for (let x = 0; x < 5; ++x) {
+			for (let y = 0; y < 5; ++y) {
+				mapSquares.push({ x: x, y: y, type: EncounterMapSquareType.Clear });
+			}
+		}
+		const encounter: EncounterModel = {
+			regionID: '', packIDs: [], round: 0, combatants: [], loot: [], traps: [], log: [], mapSquares: mapSquares
+		};
+
+		const hero = Factory.createCombatant(CombatantType.Hero);
+		hero.combat.position = { x: 1, y: 1 };
+		equip(hero, itemID);
+		proficient(hero, proficiency);
+
+		const monster = Factory.createCombatant(CombatantType.Monster);
+		monster.combat.position = { x: 2, y: 1 };
+		encounter.combatants.push(hero, monster);
+
+		const action = BaseData.getItemAction(proficiency) as ActionModel;
+		EncounterLogic.checkParameters(encounter, hero, action);
+		const targets = action.parameters.find(p => p.id === 'targets') as ActionTargetParameterModel;
+		expect(targets.candidates).toContain(monster.id);
+		targets.value = [ monster.id ];
+
+		return { encounter, hero, monster, action };
+	};
+
+	// The attack roll comes first and the defence roll second; anything after that is damage
+	const rollAttack = (hit: boolean) => {
+		return vi.spyOn(Random, 'dice')
+			.mockReturnValueOnce(hit ? 50 : 1)
+			.mockReturnValueOnce(hit ? 1 : 50)
+			.mockReturnValue(1);
+	};
+
+	const run = (encounter: EncounterModel, hero: CombatantModel, action: ActionModel) => {
+		EncounterLogic.selectAction(encounter, hero, action);
+		EncounterLogic.runAction(encounter, hero);
+	};
+
+	const resistance = (hero: CombatantModel) => {
+		return hero.combat.conditions.filter(c => c.type === ConditionType.DamageResistance);
+	};
+
+	it('gives Guarded Strike a rank 1 resistance to all damage on a hit', () => {
+		const { encounter, hero, action } = setUp('item-sword', ItemProficiencyType.MilitaryWeapons);
+		vi.spyOn(EncounterLogic, 'dealDamage').mockImplementation(() => {});
+		rollAttack(true);
+		run(encounter, hero, action);
+
+		const conditions = resistance(hero);
+		expect(conditions).toHaveLength(1);
+		expect(conditions[0].rank).toBe(1);
+		expect(conditions[0].trait).toBe(TraitType.Endurance);
+		expect(conditions[0].details.damage).toBe(DamageType.All);
+		expect(EncounterLogic.dealDamage).toHaveBeenCalled();
+	});
+
+	it('gives Guarded Strike its resistance on a miss too', () => {
+		const { encounter, hero, action } = setUp('item-sword', ItemProficiencyType.MilitaryWeapons);
+		vi.spyOn(EncounterLogic, 'dealDamage').mockImplementation(() => {});
+		rollAttack(false);
+		run(encounter, hero, action);
+
+		expect(resistance(hero)).toHaveLength(1);
+		expect(EncounterLogic.dealDamage).not.toHaveBeenCalled();
+	});
+
+	it('rolls Nimble Strike and Aimed Shot at +1', () => {
+		[
+			{ itemID: 'item-dagger', proficiency: ItemProficiencyType.PairedWeapons },
+			{ itemID: 'item-longbow', proficiency: ItemProficiencyType.RangedWeapons }
+		].forEach(({ itemID, proficiency }) => {
+			const { encounter, hero, action } = setUp(itemID, proficiency);
+			vi.spyOn(EncounterLogic, 'dealDamage').mockImplementation(() => {});
+			const dice = rollAttack(true);
+			const rank = EncounterLogic.getSkillRank(encounter, hero, SkillType.Weapon);
+			run(encounter, hero, action);
+
+			expect(dice.mock.calls[0][0]).toBe(rank + 1);
+			vi.restoreAllMocks();
+		});
+	});
+
+	it('rolls Guarded Strike at no bonus', () => {
+		const { encounter, hero, action } = setUp('item-sword', ItemProficiencyType.MilitaryWeapons);
+		vi.spyOn(EncounterLogic, 'dealDamage').mockImplementation(() => {});
+		const dice = rollAttack(true);
+		const rank = EncounterLogic.getSkillRank(encounter, hero, SkillType.Weapon);
+		run(encounter, hero, action);
+
+		expect(dice.mock.calls[0][0]).toBe(rank);
+	});
+
+	it('has Focused Bolt deal rank 2 Electricity damage with Spellcasting', () => {
+		const { encounter, hero, monster, action } = setUp('item-wand', ItemProficiencyType.Implements);
+		const damage = vi.spyOn(EncounterLogic, 'dealDamage').mockImplementation(() => {});
+		const dice = rollAttack(true);
+		const rank = EncounterLogic.getSkillRank(encounter, hero, SkillType.Spellcasting);
+		run(encounter, hero, action);
+
+		expect(dice.mock.calls[0][0]).toBe(rank);
+		expect(damage).toHaveBeenCalledWith(encounter, hero, monster, 2, DamageType.Electricity);
+	});
+});
+
+// A default card is there so that nobody is ever without a basic action; it must never be a reason
+// to pick it over a role card
+describe('item default actions', () => {
+	const templates = BaseData.getItemActionTemplates();
+
+	const allEffects = (effects: ActionEffectModel[]): ActionEffectModel[] => {
+		return effects.flatMap(e => [ e, ...allEffects(e.children) ]);
+	};
+
+	const forEachEffect = (check: (action: ActionModel, effect: ActionEffectModel) => void) => {
+		templates.forEach(t => allEffects(t.action.effects).forEach(e => check(t.action, e)));
+	};
+
+	it('cover every weapon group and implements, once each', () => {
+		expect(templates.map(t => t.proficiency)).toEqual([
+			ItemProficiencyType.MilitaryWeapons,
+			ItemProficiencyType.LargeWeapons,
+			ItemProficiencyType.PairedWeapons,
+			ItemProficiencyType.RangedWeapons,
+			ItemProficiencyType.PowderWeapons,
+			ItemProficiencyType.Implements
+		]);
+		expect(new Set(templates.map(t => t.action.id)).size).toBe(templates.length);
+	});
+
+	it('are each gated on their own group', () => {
+		templates.forEach(t => {
+			expect(t.action.prerequisites.map(p => p.data)).toEqual([ [ t.proficiency ] ]);
+			const weapon = t.action.parameters.find(p => p.id === 'weapon') as ActionWeaponParameterModel | undefined;
+			if (t.proficiency !== ItemProficiencyType.Implements) {
+				expect(weapon?.proficiency).toBe(t.proficiency);
+			}
+		});
+	});
+
+	it('do not share a name with any card in any pack', () => {
+		const names = GameLogic.getAllActions(PackLogic.getAllPacks().map(p => p.id)).map(a => a.name);
+		templates.forEach(t => expect(names).not.toContain(t.action.name));
+	});
+
+	it('make one attack at no more than +1', () => {
+		templates.forEach(t => {
+			const attacks = allEffects(t.action.effects).filter(e => e.id === 'attack');
+			expect(attacks).toHaveLength(1);
+			expect((attacks[0].data as { skillBonus: number }).skillBonus).toBeLessThanOrEqual(1);
+		});
+	});
+
+	it('have no control or tempo effects', () => {
+		const banned = [ 'knockdown', 'stun', 'disarm', 'forceMovement', 'takeAnotherAction' ];
+		forEachEffect((action, effect) => expect(banned, action.name).not.toContain(effect.id));
+	});
+
+	it('never add to weapon damage', () => {
+		forEachEffect((action, effect) => {
+			if (effect.id === 'weapondamage') {
+				expect(effect.data as number, action.name).toBeLessThanOrEqual(0);
+			}
+		});
+	});
+
+	it('add no condition above rank 1', () => {
+		forEachEffect((action, effect) => {
+			if (effect.id === 'addcondition') {
+				expect((effect.data as ConditionModel).rank, action.name).toBeLessThanOrEqual(1);
+			}
+		});
+	});
+
+	it('deal no fixed damage above rank 2', () => {
+		forEachEffect((action, effect) => {
+			if (effect.id === 'damage') {
+				expect((effect.data as { rank: number }).rank, action.name).toBeLessThanOrEqual(2);
+			}
+		});
 	});
 });

@@ -69,6 +69,37 @@ export class ActionPrerequisites {
 		};
 	};
 
+	// A single item group, for the default action that group's items grant
+	static proficiency = (proficiency: ItemProficiencyType): ActionPrerequisiteModel => {
+		let item = 'an item';
+		switch (proficiency) {
+			case ItemProficiencyType.MilitaryWeapons:
+				item = 'a military weapon';
+				break;
+			case ItemProficiencyType.LargeWeapons:
+				item = 'a large weapon';
+				break;
+			case ItemProficiencyType.PairedWeapons:
+				item = 'a paired weapon';
+				break;
+			case ItemProficiencyType.RangedWeapons:
+				item = 'a ranged weapon';
+				break;
+			case ItemProficiencyType.PowderWeapons:
+				item = 'a powder weapon';
+				break;
+			case ItemProficiencyType.Implements:
+				item = 'an implement';
+				break;
+		}
+
+		return {
+			id: 'item',
+			description: `Requires you to have ${item}`,
+			data: [ proficiency ]
+		};
+	};
+
 	static armor = (): ActionPrerequisiteModel => {
 		return {
 			id: 'item',
@@ -303,6 +334,17 @@ export class ActionWeaponParameters {
 		return {
 			id: 'weapon',
 			type: 'ranged',
+			candidates: [],
+			value: null
+		};
+	};
+
+	static forProficiency = (proficiency: ItemProficiencyType): ActionWeaponParameterModel => {
+		const ranged = (proficiency === ItemProficiencyType.RangedWeapons) || (proficiency === ItemProficiencyType.PowderWeapons);
+		return {
+			id: 'weapon',
+			type: ranged ? 'ranged' : 'melee',
+			proficiency: proficiency,
 			candidates: [],
 			value: null
 		};
@@ -1316,6 +1358,7 @@ export class ActionEffects {
 						]);
 						target.combat.selectedAction = null;
 						target.combat.actions = CombatantLogic.getActionDeck(target).filter(action => ActionLogic.getActionType(action) === 'Attack');
+						target.combat.actions.push(...CombatantLogic.getItemActions(target).filter(action => ActionLogic.getActionType(action) === 'Attack'));
 						target.combat.actions.push(...BaseData.getBaseActions().filter(action => ActionLogic.getActionType(action) === 'Attack'));
 						EncounterLogic.checkActionParameters(encounter, target, (combatant.faction !== target.faction));
 						const intents = IntentsLogic.getAttackIntents(encounter, target, (combatant.faction !== target.faction));
@@ -1872,7 +1915,7 @@ export class ActionLogic {
 			}
 			case 'weapon': {
 				const weaponParam = parameter as ActionWeaponParameterModel;
-				return `Uses weapon: ${weaponParam.type}`;
+				return `Uses weapon: ${weaponParam.proficiency ? weaponParam.proficiency : weaponParam.type}`;
 			}
 			case 'targets': {
 				const targetParam = parameter as ActionTargetParameterModel;
@@ -2057,16 +2100,21 @@ export class ActionLogic {
 		let value = parameter.value as string | null;
 
 		const proficiencies: ItemProficiencyType[] = [];
-		switch (parameter.type) {
-			case 'melee':
-				proficiencies.push(ItemProficiencyType.LargeWeapons);
-				proficiencies.push(ItemProficiencyType.PairedWeapons);
-				proficiencies.push(ItemProficiencyType.MilitaryWeapons);
-				break;
-			case 'ranged':
-				proficiencies.push(ItemProficiencyType.RangedWeapons);
-				proficiencies.push(ItemProficiencyType.PowderWeapons);
-				break;
+		if (parameter.proficiency) {
+			// An item-group default action can only use that group's weapons
+			proficiencies.push(parameter.proficiency);
+		} else {
+			switch (parameter.type) {
+				case 'melee':
+					proficiencies.push(ItemProficiencyType.LargeWeapons);
+					proficiencies.push(ItemProficiencyType.PairedWeapons);
+					proficiencies.push(ItemProficiencyType.MilitaryWeapons);
+					break;
+				case 'ranged':
+					proficiencies.push(ItemProficiencyType.RangedWeapons);
+					proficiencies.push(ItemProficiencyType.PowderWeapons);
+					break;
+			}
 		}
 
 		combatant.items

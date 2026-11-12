@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import { CardType } from '../../enums/card-type';
 import { CombatantType } from '../../enums/combatant-type';
 import { ConditionType } from '../../enums/condition-type';
 import { EncounterMapSquareType } from '../../enums/encounter-map-square-type';
@@ -9,12 +10,14 @@ import { TraitType } from '../../enums/trait-type';
 import type { CombatantModel } from '../../models/combatant';
 import type { ConditionModel } from '../../models/condition';
 import type { EncounterModel } from '../../models/encounter';
+import type { ItemModel } from '../../models/item';
 
 import { CombatantLogic } from './combatant-logic';
 import { ConditionLogic } from '../condition/condition-logic';
 import { EncounterLogic } from '../encounter/encounter-logic';
 import { Factory } from '../factory/factory';
 import { FeatureLogic } from '../feature/feature-logic';
+import { GameLogic } from '../game/game-logic';
 
 const createEncounter = (): EncounterModel => {
 	const mapSquares = [];
@@ -112,5 +115,61 @@ describe('a condition that moves every skill at once', () => {
 		const combatant = Factory.createCombatant(CombatantType.Hero);
 		const penalty = ConditionLogic.createSkillPenaltyCondition(TraitType.Resolve, 3, SkillType.All);
 		expect(CombatantLogic.getSkillRank(combatant, [ penalty ], SkillType.Brawl)).toBe(0);
+	});
+});
+
+// Each distinct item group a combatant has equipped grants one default card; the card's weapon
+// parameter then picks between that group's weapons, so two of a kind never mean two cards
+describe('CombatantLogic.getItemActions', () => {
+	const heroWith = (...itemIDs: string[]) => {
+		const hero = Factory.createCombatant(CombatantType.Hero);
+		itemIDs.forEach((id, n) => {
+			const item = JSON.parse(JSON.stringify(GameLogic.getItem(id))) as ItemModel;
+			item.id = `${id}-${n}`;
+			hero.items.push(item);
+		});
+		return hero;
+	};
+
+	const itemActionIDs = (...itemIDs: string[]) => CombatantLogic.getItemActions(heroWith(...itemIDs)).map(a => a.id);
+
+	it('gives nothing to a combatant with nothing equipped', () => {
+		expect(itemActionIDs()).toEqual([]);
+	});
+
+	it('gives one card per item group', () => {
+		expect(itemActionIDs('item-sword', 'item-greatsword')).toEqual([ 'default-military', 'default-large' ]);
+	});
+
+	it('gives two weapons from the same group a single card', () => {
+		expect(itemActionIDs('item-sword', 'item-mace')).toEqual([ 'default-military' ]);
+	});
+
+	it('gives implements a single card, whatever slot they occupy', () => {
+		expect(itemActionIDs('item-wand', 'item-amulet')).toEqual([ 'default-implement' ]);
+	});
+
+	it('gives a card for an implement held in the hand', () => {
+		expect(itemActionIDs('item-staff')).toEqual([ 'default-implement' ]);
+	});
+
+	it('gives nothing for items with no default action', () => {
+		expect(itemActionIDs('item-shield')).toEqual([]);
+	});
+
+	// Parameters hold their candidates and chosen value, so two combatants must never share them
+	it('returns fresh actions on every call', () => {
+		const hero = heroWith('item-sword');
+		const first = CombatantLogic.getItemActions(hero)[0];
+		first.parameters[0].value = 'changed';
+		expect(CombatantLogic.getItemActions(hero)[0].parameters[0].value).toBeNull();
+	});
+
+	it('shows default cards as standard cards', () => {
+		const hero = heroWith('item-sword', 'item-wand');
+		CombatantLogic.getItemActions(hero).forEach(action => {
+			expect(CombatantLogic.getActionSource(hero, action.id)).toBe('Standard');
+			expect(CombatantLogic.getActionSourceType(hero, action.id)).toBe(CardType.Base);
+		});
 	});
 });

@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { BaseData } from '../../data/base-data';
 import { TrapData } from '../../data/trap-data';
 
 import { ActionTargetType } from '../../enums/action-target-type';
@@ -31,6 +32,7 @@ import { Factory } from '../factory/factory';
 import { FeatureLogic } from '../feature/feature-logic';
 import { GameLogic } from '../game/game-logic';
 import { Haptic } from '../../utils/haptics/haptics';
+import { IntentsLogic } from '../intents/intents-logic';
 import { PackLogic } from '../pack/pack-logic';
 import { PathLogic } from '../path/path-logic';
 
@@ -1229,5 +1231,91 @@ describe('EncounterLogic.defeatStandingMonsters', () => {
 		EncounterLogic.defeatStandingMonsters(encounter);
 
 		expect(encounter.loot.length).toBe(0);
+	});
+});
+
+describe('item default actions in the hand', () => {
+	const equip = (combatant: CombatantModel, itemID: string) => {
+		const item = JSON.parse(JSON.stringify(GameLogic.getItem(itemID))) as ItemModel;
+		item.id = `${itemID}-${combatant.items.length}`;
+		combatant.items.push(item);
+		return item;
+	};
+
+	const baseIDs = BaseData.getBaseActions().map(a => a.id);
+
+	it('no longer deals the generic weapon attacks', () => {
+		const encounter = createEncounter();
+		const hero = addCombatant(encounter, CombatantType.Hero, 2, 2);
+		equip(hero, 'item-sword');
+		equip(hero, 'item-longbow');
+		EncounterLogic.drawActions(encounter, hero);
+
+		const ids = hero.combat.actions.map(a => a.id);
+		expect(ids).not.toContain('base-1');
+		expect(ids).not.toContain('base-2');
+		expect(ids).toContain('default-military');
+		expect(ids).toContain('default-ranged');
+	});
+
+	it('deals drawn cards, then scrolls, then item defaults, then base actions', () => {
+		const encounter = createEncounter();
+		const hero = addCombatant(encounter, CombatantType.Hero, 2, 2);
+		hero.roleID = 'role-arcanist';
+		equip(hero, 'item-sword');
+		equip(hero, 'item-wand');
+		const scroll = JSON.parse(JSON.stringify(GameLogic.getScroll('scroll-warding'))) as ItemModel;
+		scroll.id = 'carried-scroll';
+		hero.carried.push(scroll);
+		EncounterLogic.drawActions(encounter, hero);
+
+		const deckIDs = CombatantLogic.getActionDeck(hero).map(a => a.id);
+		const ids = hero.combat.actions.map(a => a.id);
+		expect(ids.slice(0, 3).every(id => deckIDs.includes(id))).toBe(true);
+		expect(ids.slice(3)).toEqual([ scroll.id, 'default-military', 'default-implement', ...baseIDs ]);
+	});
+
+	it('deals item defaults to monsters after their own cards', () => {
+		const encounter = createEncounter();
+		const monster = addCombatant(encounter, CombatantType.Monster, 2, 2);
+		equip(monster, 'item-greatsword');
+		EncounterLogic.drawActions(encounter, monster);
+
+		const ids = monster.combat.actions.map(a => a.id);
+		expect(ids.slice(-(baseIDs.length + 1))).toEqual([ 'default-large', ...baseIDs ]);
+	});
+
+	it('gives each combatant its own copy of a default card', () => {
+		const encounter = createEncounter();
+		const first = addCombatant(encounter, CombatantType.Hero, 1, 1);
+		const second = addCombatant(encounter, CombatantType.Hero, 3, 3);
+		equip(first, 'item-sword');
+		equip(second, 'item-sword');
+		EncounterLogic.drawActions(encounter, first);
+		EncounterLogic.drawActions(encounter, second);
+
+		const a = first.combat.actions.find(x => x.id === 'default-military') as ActionModel;
+		const b = second.combat.actions.find(x => x.id === 'default-military') as ActionModel;
+		expect(a).not.toBe(b);
+		expect(a.parameters[0]).not.toBe(b.parameters[0]);
+	});
+
+	// A commanded combatant attacks with whatever attacks it has, so it needs its item defaults and
+	// the unarmed attack that the generic weapon attacks used to sit beside
+	it('are among the attacks a commanded combatant can make', () => {
+		const encounter = createEncounter();
+		const commander = addCombatant(encounter, CombatantType.Hero, 1, 2);
+		const ally = addCombatant(encounter, CombatantType.Hero, 2, 2);
+		equip(ally, 'item-sword');
+		const intents = vi.spyOn(IntentsLogic, 'getAttackIntents').mockReturnValue([]);
+
+		const param = ActionTargetParameters.self();
+		param.value = [ ally.id ];
+		ActionEffects.run(ActionEffects.commandAction(), encounter, commander, [ param ]);
+
+		const ids = ally.combat.actions.map(a => a.id);
+		expect(ids).toContain('default-military');
+		expect(ids).toContain('base-3');
+		intents.mockRestore();
 	});
 });

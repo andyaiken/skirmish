@@ -7,9 +7,9 @@ You can lead up to ten heroes in a campaign, but you can send no more than five 
 ## The character sheet
 
 - **Statistics** shows the hero's traits, skills, damage bonuses and resistances, XP, proficiencies, and auras.
-- **Equipment** shows what the hero has equipped or is carrying. You can equip an item only if the hero can use it.
+- **Equipment** shows what the hero has equipped or is carrying. You can equip an item only if the hero can use it. Each kind of weapon equipped, and any implement, also gives the hero a standard attack card in encounters.
 - **Features** shows the cards that may be offered when the hero levels up.
-- **Actions** shows the cards that provide actions during encounters.
+- **Actions** shows the cards in the hero's deck, which provide actions during encounters. Standard cards, including the ones equipment gives, are not part of the deck and are always in hand.
 
 Some useful statistics:
 

@@ -253,6 +253,18 @@ export class CombatantLogic {
 		});
 	};
 
+	// One default action per distinct item group equipped (implements share a single card)
+	static getItemActions = (combatant: CombatantModel) => {
+		const actions: ActionModel[] = [];
+		combatant.items.forEach(i => {
+			const action = BaseData.getItemAction(i.proficiency);
+			if (action && !actions.some(a => a.id === action.id)) {
+				actions.push(action);
+			}
+		});
+		return actions;
+	};
+
 	static getScrollForAction = (combatant: CombatantModel, cardID: string) => {
 		return combatant.carried.find(i => !!i.scroll && (i.id === cardID)) || null;
 	};
@@ -334,7 +346,7 @@ export class CombatantLogic {
 	};
 
 	static getActionSource = (combatant: CombatantModel, cardID: string) => {
-		if (BaseData.getBaseActions().find(a => a.id === cardID)) {
+		if (BaseData.getBaseActions().find(a => a.id === cardID) || BaseData.isItemAction(cardID)) {
 			return 'Standard';
 		}
 
@@ -372,7 +384,7 @@ export class CombatantLogic {
 	};
 
 	static getActionSourceType = (combatant: CombatantModel, cardID: string) => {
-		if (BaseData.getBaseActions().find(a => a.id === cardID)) {
+		if (BaseData.getBaseActions().find(a => a.id === cardID) || BaseData.isItemAction(cardID)) {
 			return CardType.Base;
 		}
 

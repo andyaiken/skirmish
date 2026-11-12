@@ -48,6 +48,17 @@ Movement points can also be spent to:
 
 At the start of a hero's turn, the game draws three action cards from their deck. Scrolls you carry are added as extra action cards. Select a card to read its details; the game will ask for any required weapon, target, or square before you can choose **Go**. A card can be disabled when you do not meet its prerequisites.
 
+Every combatant also has **standard** cards, shown after the others. They are always in hand, but appear only while you can use them. **Unarmed Attack** needs a free hand, **Stand Up** needs you to be Prone, and **Dig** needs a wall beside you. Each kind of weapon you have equipped also gives one standard card, and so do implements:
+
+- **Guarded Strike** (military weapons): a Weapon attack that deals weapon damage. Hit or miss, you also gain rank 1 resistance to all damage until your next turn.
+- **Heavy Blow** (large weapons): a Weapon attack that deals weapon damage.
+- **Nimble Strike** (paired weapons): a Weapon attack at +1 that deals weapon damage.
+- **Aimed Shot** (ranged weapons): a Weapon attack at +1 that deals weapon damage.
+- **Discharge** (powder weapons): a Weapon attack that deals weapon damage.
+- **Focused Bolt** (implements): a Spellcasting attack against an enemy within 10 squares that deals rank 2 Electricity damage.
+
+Two weapons of the same kind share one card, and you choose which of them to use. Weapons of different kinds give a card each. However many implements you have equipped, you get one Focused Bolt. A weapon or implement card appears only if the hero is proficient with that kind of item.
+
 An attack compares the attacker's named skill with the target's named trait. The attacker hits if their roll is higher. If a weapon is required and has an **Unreliable** rank, roll that many dice first; a result of 10 or more means the weapon fails and the attack ends. An action card's text describes its effects. A scroll is consumed when read, whether or not its effect succeeds.
 
 Using an action does not spend your remaining movement points. Some stronghold benefits can let a hero act again or redraw action cards; the benefit card shows when one is available.

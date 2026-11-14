@@ -161,4 +161,8 @@ export class BaseData {
 	static isItemAction = (id: string): boolean => {
 		return BaseData.getItemActionTemplates().some(t => t.action.id === id);
 	};
+
+	static getItemActionProficiency = (id: string): ItemProficiencyType | null => {
+		return BaseData.getItemActionTemplates().find(t => t.action.id === id)?.proficiency ?? null;
+	};
 }

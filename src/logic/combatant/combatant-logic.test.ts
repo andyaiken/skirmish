@@ -4,6 +4,7 @@ import { CardType } from '../../enums/card-type';
 import { CombatantType } from '../../enums/combatant-type';
 import { ConditionType } from '../../enums/condition-type';
 import { EncounterMapSquareType } from '../../enums/encounter-map-square-type';
+import { ItemProficiencyType } from '../../enums/item-proficiency-type';
 import { SkillType } from '../../enums/skill-type';
 import { TraitType } from '../../enums/trait-type';
 
@@ -168,8 +169,13 @@ describe('CombatantLogic.getItemActions', () => {
 	it('shows default cards as standard cards', () => {
 		const hero = heroWith('item-sword', 'item-wand');
 		CombatantLogic.getItemActions(hero).forEach(action => {
-			expect(CombatantLogic.getActionSource(hero, action.id)).toBe('Standard');
 			expect(CombatantLogic.getActionSourceType(hero, action.id)).toBe(CardType.Base);
 		});
+	});
+
+	it('names the proficiency that grants each default card', () => {
+		const hero = heroWith('item-sword', 'item-wand');
+		const sources = CombatantLogic.getItemActions(hero).map(action => CombatantLogic.getActionSource(hero, action.id));
+		expect(sources).toEqual([ ItemProficiencyType.MilitaryWeapons, ItemProficiencyType.Implements ]);
 	});
 });

@@ -346,8 +346,14 @@ export class CombatantLogic {
 	};
 
 	static getActionSource = (combatant: CombatantModel, cardID: string) => {
-		if (BaseData.getBaseActions().find(a => a.id === cardID) || BaseData.isItemAction(cardID)) {
+		if (BaseData.getBaseActions().find(a => a.id === cardID)) {
 			return 'Standard';
+		}
+
+		// Item default cards are still standard cards, but name the proficiency that grants them
+		const proficiency = BaseData.getItemActionProficiency(cardID);
+		if (proficiency) {
+			return proficiency as string;
 		}
 
 		const s = GameLogic.getSpecies(combatant.speciesID);

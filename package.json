@@ -4,10 +4,10 @@
 	"type": "module",
 	"repository": "https://github.com/andyaiken/skirmish.git",
 	"dependencies": {
-		"@capacitor/cli": "^8.6.0",
-		"@capacitor/core": "^8.6.0",
+		"@capacitor/cli": "^8.6.2",
+		"@capacitor/core": "^8.6.2",
 		"@capacitor/haptics": "^8.0.2",
-		"@capacitor/ios": "^8.6.0",
+		"@capacitor/ios": "^8.6.2",
 		"@tabler/icons-react": "^3.51.0",
 		"localforage": "^1.10.0",
 		"react": "^19.3.1",
